@@ -1,0 +1,35 @@
+<header class="page-header">
+    <h1 class="heading-xlarge">Instructions</h1>
+</header>
+
+<div class="hidden">
+    <ul class="text list list-bullet">
+        <li>This check has <strong>30 questions</strong>.</li>
+        <li>Each question will show for <strong>5 seconds</strong>.</li>
+        <li>There will be a <strong>2-second</strong> pause between each question.</li>
+        <li>You can answer the questions using:
+            <ol class="list list-number no-bottom-margin">
+                <li>your computer keyboard</li>
+                <li>on-screen numbers using a mouse</li>
+                <li>on-screen numbers using a touch screen</li>
+            </ol>
+        </li>
+        <li>You can press ‘Enter’ on the keyboard, number pad or on screen with your mouse.</li>
+        <li>After 5 seconds, the number in the answer box will be accepted, even if you haven't pressed 'Enter'.</li>
+        <li>There will be 3 warm-up questions before you start the check.</li>
+    </ul>
+
+    <div>
+        <p>
+            <a class="button" href="/warm-up/intro" role="button" id="start-now-button">Start warm-up questions</a>
+        </p>
+    </div>
+</div>
+
+
+<script>
+  // This check requires javascript
+  $(document).ready(function () {
+    $('div.hidden').removeClass('hidden');
+  });
+</script>

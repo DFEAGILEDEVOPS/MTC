@@ -1,0 +1,19 @@
+version: '2'
+services:
+  web:
+    ports:
+      - "80:3001"
+    image: mtcbeta.azurecr.io/check-development-app:latest
+    environment:
+      USER: node
+      AUTH_OPTION: 4pin
+      SESSION_SECRET: JKLF89SGH4hf879sgS
+      MONGO_CONNECTION_STRING:
+      AZURE_STORAGE_CONNECTION_STRING: DefaultEndpointsProtocol=https;AccountName=mtcswarmdev;AccountKey=Dl8Av4VJ7ulipA478LHgz0m4Lv6IEQDZMHeAp7VCtcrO/c2Z4JT6gcBRaipZOcuGx/Kd4Xwz+Uo3lq2iE+vJMA==;EndpointSuffix=core.windows.net
+      NODE_ENV: production
+      TSO_AUTH_PUBLIC_KEY:
+      MTC_AUTH_PRIVATE_KEY:
+  proxy:
+    ports:
+      - "443:80"
+    image: nginx:latest

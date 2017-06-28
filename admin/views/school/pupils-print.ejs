@@ -1,0 +1,62 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="heading-block">
+            <header class="page-header">
+                <div class="organisation-logo">
+                    <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+                </div>
+            </header>
+            <br />
+            <form action="/school/manage-pupils">
+                <div class="form-group">
+                    <input id="back" class="button no-print" type="submit" value="Back">
+                </div>
+            </form>
+        </div>
+        <div class="heading-medium">Activation PIN(s) for the multiplication tables check</div>
+        <div class='pupil-print-table'>
+            <br style="clear:both"/>
+            <% if (typeof pupils !== 'object' || Object.keys(pupils).length < 1) { %>
+            <p>No pupils found</p>
+            <% } else { %>
+            <table>
+                <% for(let i = 0; i < pupils.length; i += 3) { %>
+                    <tr class="page">
+                        <td>
+                            <strong>Multiplication Tables Check</strong>
+                            <div class="pupil-content"><%= pupils[i].fullName %></div>
+                            <div class="pupil-content">School Password: <%= pupils[i].schoolPin %></div>
+                            <div class="pupil-content">Pupil PIN: <%= pupils[i].pupilPin %></div>
+                        </td>
+                        <% if (pupils[i + 1]) { %>
+                        <td>
+                            <strong>Multiplication Tables Check</strong>
+                            <div class="pupil-content"><%= pupils[i + 1].fullName %></div>
+                            <div class="pupil-content">School Password: <%= pupils[i + 1].schoolPin %></div>
+                            <div class="pupil-content">Pupil PIN: <%= pupils[i + 1].pupilPin %></div>
+                        </td>
+                        <% } else { %>
+                        <td></td>
+                        <% } %>
+                        <% if (pupils[i + 2]) { %>
+                        <td>
+                            <strong>Multiplication Tables Check</strong>
+                            <div class="pupil-content"><%= pupils[i + 2].fullName %></div>
+                            <div class="pupil-content">School Password: <%= pupils[i + 2].schoolPin %></div>
+                            <div class="pupil-content">Pupil PIN: <%= pupils[i + 2].pupilPin %></div>
+                        </td>
+                        <% } else { %>
+                        <td></td>
+                        <% } %>
+                    </tr>
+                <% }} %>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    window.print();
+  });
+</script>

@@ -1,0 +1,98 @@
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <% if (error.hasError()) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+                <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    Check the details in the headteacher's declaration form
+                </h1>
+                <p>Look at the declaration options, job title, and signature details. Maximum length fields are 35 characters.</p>
+                <ul class="error-summary-list">
+                    <% error.getUniqueFields(['declaration', 'jobTitle', 'fullName']).map(f => { %>
+                    <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                    <% }); %>
+                </ul>
+            </div>
+            <% } %>
+            <h1 class="heading-xlarge">Headteacher's declaration form</h1>
+        </div>
+    </div>
+</header>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <form method="post" action="/school/submit-declaration-form" autocomplete="off">
+            <div class="form-group <%= error.isError('declaration') ? 'form-group-error' : '' %>" id="declaration">
+                <fieldset>
+                    <legend>
+                        <% if (error.isError('declaration')) { %>
+                        <span class="error-message"><%= error.get('declaration') %></span>
+                        <% } %>
+                    </legend>
+                    <div class="multiple-choice">
+                        <input id="confirm"
+                               type="radio"
+                               name="declaration"
+                               value="confirm"
+                               <% if (formData['declaration'] === 'confirm') { %> checked="checked"
+                                <% } %>
+                        />
+                        <label for="confirm" class="font-medium">I <strong>confirm</strong> that my school administered
+                            the multiplication tables check according to the arrangements set out in the guidance, and
+                            in
+                            particular:</label>
+                        <br style="clear: both;">
+                        <ul class="list list-bullet font-small">
+                            <li>attendance register details are correct</li>
+                            <li>each pupil took the check using the PIN generated for them</li>
+                        </ul>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="decline"
+                               type="radio"
+                               name="declaration"
+                               value="decline"
+                               <% if (formData['declaration'] === 'decline') { %> checked="checked"
+                                <% } %>
+                        />
+                        <label for="decline" class="font-medium">I am <strong>unable to confirm</strong> the statements
+                            above and have
+                            reported the incident
+                            to the Standards and Testing Agency (STA)</label>
+                    </div>
+                </fieldset>
+            </div>
+            <br/>
+            <div class="panel panel-border-wide">
+                <p>
+                    In the absence of the headteacher, a delegated senior member of staff should submit this
+                    declaration.
+                </p>
+            </div>
+            <br/>
+            <div class="form-group <%= error.isError('jobTitle') ? 'form-group-error' : '' %>">
+                <label class="form-label" for="jobTitle"><strong>Job title</strong>
+                    <% if (error.isError('jobTitle')) { %>
+                    <span class="error-message"><%= error.get('jobTitle') %></span>
+                    <% } %>
+                </label>
+                <input class="form-control"
+                       id="jobTitle"
+                       name="jobTitle"
+                       value="<%= formData['jobTitle'] %>"/>
+            </div>
+            <div class="form-group <%= error.isError('fullName') ? 'form-group-error' : '' %>">
+                <label class="form-label" for="fullName"><strong>Signature</strong>
+                    <% if (error.isError('fullName')) { %>
+                    <span class="error-message"><%= error.get('fullName') %></span>
+                    <% } %>
+                </label>
+                <input class="form-control"
+                       id="fullName"
+                       name="fullName"
+                       value="<%= formData['fullName'] %>"/>
+            </div>
+            <input class="button" type="submit" value="Submit">
+        </form>
+    </div>
+</div>

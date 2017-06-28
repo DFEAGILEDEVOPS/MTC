@@ -1,0 +1,18 @@
+<header class="page-header">
+    <h1 class="heading-xlarge">Thank you for your feedback</h1>
+</header>
+
+<div>
+    <p class="form-buttons">
+        <a id='electron-exit' class="exit-app button hidden">Exit</a>
+        <a id='sign-out' href="/sign-out" class="button">Next pupil</a>
+    </p>
+
+
+    <script>
+      if (window && window.process && window.process.type) {
+        $('#electron-exit').removeClass('hidden').show();
+        $('#sign-out').removeClass('button').addClass('button-secondary');
+      }
+    </script>
+</div>
