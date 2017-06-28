@@ -83,6 +83,18 @@ class MongoDbHelper
     collection=CLIENT[:pupils].find({'pin': pin})
     result = []
     collection.find.each { |pupil| result << pupil }
+    result.first
   end
+
+  def self.expire_pin(forename,lastname,school_id,flag=true)
+    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+                               {'$set' => {'pinExpired' => flag}})
+  end
+
+  def self.reset_pin(forename,lastname,school_id,flag=nil)
+    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+                               {'$set' => {'pin' => flag}})
+  end
+
 
 end

@@ -242,9 +242,10 @@ end
 
 Given(/^I have logged in$/) do
   sign_in_page.load
-  @pupil_information = MongoDbHelper.find_next_pupil
-  @school_pin = MongoDbHelper.school_pin_retriever(@pupil_information['school'])
-  sign_in_page.login(@school_pin, @pupil_information['pin'])
+  MongoDbHelper.expire_pin("Automated","Account",9991999,false)
+  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
+  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
+  sign_in_page.login("abc12345","9999a")
   sign_in_page.sign_in_button.click
 end
 
@@ -313,7 +314,7 @@ end
 Then(/^I should see that the correct pin details are used for a given answer$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
   event = MongoDbHelper.logon_event(session_id)
-  expect(event['schoolPin']).to eql @school_pin
+  expect(event['schoolPin']).to eql "abc12345"
   expect(event['pupilPin']).to eql @pupil_information['pin']
 end
 
@@ -358,9 +359,7 @@ end
 
 When(/^I attempt to login with just a pupil pin$/) do
   sign_in_page.load
-  @pupil_information = MongoDbHelper.find_next_pupil
-  @school_pin = MongoDbHelper.school_pin_retriever(@pupil_information['school'])
-  sign_in_page.login(nil, @pupil_information['pin'])
+  sign_in_page.login(nil,"9999a")
   sign_in_page.sign_in_button.click
 end
 
