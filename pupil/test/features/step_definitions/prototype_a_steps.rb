@@ -86,8 +86,8 @@ Then(/^the details of the login should be recorded$/) do
   event = MongoDbHelper.logon_event(session_id)
   if AUTH
     expect(event['isAuthenticated']).to be true
-    expect(event['schoolPin']).to eql @school_pin
-    expect(event['pupilPin']).to eql @pupil_information['pin']
+    expect(event['schoolPin']).to eql "abc12345"
+    expect(event['pupilPin']).to eql "9999a"
   else
     expect(event['isAuthenticated']).to be true
     expect(event['pin4Digit']).to eql @pin
