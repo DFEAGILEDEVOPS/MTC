@@ -1,0 +1,551 @@
+// Path to assets for use with the file-url function
+// in the govuk frontend toolkit's url-helpers partial
+$path: '/govuk_template/stylesheets/images/';
+
+// Base GDS Toolkit
+// Settings (variables)
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/colours';                            // Colour variables
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/font_stack';                         // Font family variables
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/measurements';                       // Widths and gutter variables
+
+$mainstream-brand: $department-for-education;
+
+// Mixins
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/conditionals';                       // Media query mixin
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/device-pixels';                      // Retina image mixin
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/grid_layout';                        // Basic grid layout mixin
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/typography';                         // Core bold and heading mixins, also external links
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/shims';                              // Inline block mixin, clearfix placeholder
+
+// Extras
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/helpers';                            // needed for tables.
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/alpha-beta';
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/buttons';
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/breadcrumbs';
+@import '../../node_modules/govuk_frontend_toolkit/stylesheets/url-helpers';
+
+// From https://github.com/alphagov/govuk_elements
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/helpers';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/layout';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/elements-typography';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/buttons';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/forms';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/forms/form-multiple-choice';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/forms/form-validation';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/forms/form-date';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/panels';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/icons';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/details';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/shame';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/lists';
+
+// Phase banner
+.phase-banner {
+  @include phase-banner();
+}
+
+.phase-tag {
+  @include phase-tag;
+}
+
+// Headers
+.page-header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.heading-border-top {
+  border-top: 1px solid $black;
+  padding-top: 2rem;
+}
+
+.heading-large-no-bold {
+  @extend .heading-large;
+  font-weight: normal;
+}
+
+.heading-xlarge {
+  margin-bottom: 0.813em;
+}
+
+// Layout
+.text-center {
+  text-align: center;
+}
+
+.right {
+  float: right;
+}
+
+.hidden {
+  display: none;
+}
+
+.preload {
+  margin-bottom: pem(120px);
+  margin-top: pem(120px);
+}
+
+.organisation-logo {
+  background-image: file-url('crests/org_crest_13px.png');
+  background-position: 5px top;
+  background-repeat: no-repeat;
+  background-size: auto 20px;
+  border-left: 2px solid $department-for-education;
+  font-family: "Helvetica", "Arial";
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 15px;
+  padding: 20px 0 0 6px;
+
+  @include media(tablet) {
+    background-image: file-url('crests/org_crest_18px.png');
+    background-position: 6px top;
+    background-size: auto 25px;
+    border-width: 2px;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 25px 0 0 7px;
+  }
+
+  @include media(desktop) {
+    background-image: file-url('crests/org_crest_27px.png');
+    background-position: 6px top;
+    background-size: auto 40px;
+    border-width: 3px;
+    font-size: 27px;
+    line-height: 30px;
+    padding: 40px 0 0 10px;
+  }
+}
+
+//  General
+.logo-text {
+  padding-top: 5px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+#footer {
+  border-top: 10px solid $mainstream-brand;
+}
+
+.step-counter {
+  color: $grey-2;
+}
+
+hr.divider {
+  clear: both;
+  border: 0;
+  height: 1px;
+  color: $grey-2; /* old IE */
+  background-color: $grey-2;
+  padding: 0;
+}
+
+.font-greyed-out {
+  color: $grey-1;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.left-padding {
+  padding-left: 30px;
+}
+
+.side-padding {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.blue-top-border {
+  border-top: 10px solid $link-colour;
+  margin-top: 35px;
+}
+
+// Show a input like it was a link
+input.link {
+  @include copy-19;
+
+  text-align: left;
+  color: $link-colour;
+  background: none;
+  margin: 0;
+  padding: 0 0 0 0;
+  border: none;
+  cursor: pointer;
+}
+
+// Lists
+dl dd {
+  margin-left: 0;
+}
+
+// Forms
+.textarea {
+  width: 30em;
+  max-width: 100%;
+  height: 10em;
+  resize: vertical;
+}
+
+legend {
+  padding: 0;
+}
+
+.form-horizontal {
+  select {
+    height: 36px;
+  }
+
+  input[type=submit] {
+    padding-top: .4em;
+    padding-bottom: .2em;
+    height: 35px;
+  }
+
+  @include media(tablet) {
+    select {
+      width: auto;
+    }
+
+    input[type=submit] {
+      width: auto
+    }
+  }
+}
+
+input[type=checkbox]:disabled {
+  cursor: not-allowed;
+}
+
+// Hide 'check all' checkboxes if JS is not enabled
+.tick-all-boxes {
+  display: none;
+  visibility: hidden;
+}
+
+.js-enabled .tick-all-boxes {
+  visibility: visible;
+  display: table-cell;
+}
+
+.tick-all-boxes-nojs {
+  display: table-cell;
+  visibility: visible;
+  margin-left: .5em;
+}
+
+.js-enabled .tick-all-boxes-nojs {
+  display: none;
+  visibility: hidden;
+}
+
+// Grey buttons
+.button-secondary {
+  @include button($grey-3);
+
+  margin-top: em(20);
+
+  @include media(tablet) {
+    margin-top: 0;
+  }
+}
+
+// Tables
+table.spacious {
+
+  border-bottom: 1px solid $grey-2;
+  border-collapse: collapse;
+  margin-bottom: 2em;
+  margin-top: 2em;
+  width: 100%;
+
+  tr {
+    border-bottom: 1px solid $grey-2;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  td {
+    padding-bottom: 15px;
+    padding-top: 15px;
+  }
+}
+
+table.spacious-two-column {
+  @extend table.spacious;
+
+  th {
+    width: 50%;
+  }
+}
+
+// View the check form
+dl.inline-definition-list {
+  @include core-36;
+
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+dt.inline-definition-list {
+  @include core-36;
+
+  float: left;
+  margin: 0 0 1em 0;
+  padding: 0;
+  width: 90%;
+
+  @include media(tablet) {
+    width: 80%;
+  }
+  @include media(desktop) {
+    width: 90%;
+  }
+}
+
+dd.inline-definition-list {
+  @include core-24;
+
+  color: $grey-1;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 10%;
+
+  @include media(tablet) {
+    float: left;
+    width: 20%;
+  }
+
+  @include media(desktop) {
+    float: left;
+    width: 10%;
+  }
+}
+
+.fixed-factors {
+
+  // mobile
+  display: inline-block;
+  text-align: right;
+  width: 3.5em;
+  word-spacing: inherit;
+
+  @include media(tablet) {
+    word-spacing: 0.1em;
+    width: 3.1em;
+  }
+
+  @include media(desktop) {
+    word-spacing: 0.5em;
+    width: 4.5em;
+  }
+}
+
+.equals-sign {
+  padding-left: 0.42em;
+  padding-right: 0.42em;
+
+  @include media(tablet) {
+    padding-left: 0.22em;
+    padding-right: 0.22em;
+  }
+}
+
+.fixed-result {
+  display: inline-block;
+  text-align: left;
+}
+
+.information {
+  @include core-24;
+
+  text-align: center;
+  width: 100%;
+  clear: both;
+  padding: 1em 0;
+  margin: 2em 0;
+  background-color: $grey-3;
+  display: table;
+
+  p {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+input {
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-weight: normal;
+}
+
+
+.thin-border {
+  border: 1px solid $grey-2;
+}
+
+// Boxes
+.box-grey {
+  background-color: $grey-3;
+  display: block;
+  position: relative;
+  padding: 1em;
+  width: 100%;
+  a {
+    position: absolute;
+    margin-left: 15px;
+    margin-top: 0.6em;
+  }
+}
+
+.box-light-grey {
+  background-color: $grey-3;
+  display: inline-block;
+  padding: .5em 0;
+  width: 100%;
+}
+
+// Page specific elements
+
+// Pupils list
+.pupils-list label {
+  padding-bottom: 0;
+  padding-top: 0;
+  a {
+    display: inline;
+    left: 16em;
+    position: absolute;
+  }
+}
+
+.pupils-print-pins {
+  font-size: .8em;
+  padding-right: .5em;
+
+  &:before {
+    background-image: url('/images/icon-printer.png');
+    background-repeat: no-repeat;
+    content: " ";
+    margin-left: .5em;
+    margin-top: 12px;
+    padding-left: .5em;
+    padding-right: 1.5em;
+  }
+}
+
+// Sign-out
+#sign-out {
+  color: $white;
+  text-decoration: none;
+  float: right;
+  :visited {
+    color: $white;
+  }
+}
+
+// form-buttons
+.form-buttons {
+  @extend .form-group;
+
+  input, a {
+    margin-right: em(20);
+  }
+}
+
+// Breadcrumbs
+.breadcrumbs {
+  padding-top: 10px;
+  padding-bottom: 15px;
+
+  div {
+    display: inline-block;
+    font-size: medium;
+
+    a {
+      font-size: medium;
+    }
+  }
+}
+
+.breadcrumb-separator {
+  color: $grey-2;
+  font-weight: bold;
+  margin-left: .5em;
+  margin-right: .5em;
+}
+
+// needs to be refactored for reusability
+@media print {
+  #content {
+    padding-bottom: 0;
+  }
+  .no-print{
+    display: none;
+  }
+}
+
+.pupil-print-table {
+  table, td, tr {
+    border: 1px dashed $black;
+    text-align: center;
+    vertical-align: middle;
+    margin-bottom: -1px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  tr.page
+  {
+    page-break-before: auto;
+    page-break-after: auto;
+    page-break-inside: avoid;
+  }
+  td {
+    padding: 1em;
+    strong {
+      font-size: medium;
+    }
+  }
+  td, tr {
+    min-height: 180px;
+    min-width: 200px;
+    max-height: 180px;
+    max-width: 200px;
+  }
+  .pupil-content {
+    line-height: 2em;
+    font-size: .8em;
+  }
+}
+
+//results styles
+
+#results {
+  table-layout: fixed;
+}
+
+// Styles used in electron
+.warning-panel {
+  @extend .panel;
+
+  background-color: $red-25;
+  border-left-style: solid;
+  border-color: $red;
+}

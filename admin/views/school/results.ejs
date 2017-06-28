@@ -1,0 +1,41 @@
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">Results</h1>
+        </div>
+    </div>
+</header>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <p class="lede">Use this page to view individual pupil results. You can download the pupil results to see the breakdown of questions completed by each pupil.</p>
+    </div>
+</div>
+<br style="clear: both" />
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h2> Individual pupil results</h2>
+    </div>
+    <div class="column-one-third">
+        <span class="font-xsmall" >Download pupil result</span><br />
+        <a href="/school/download-results" class="font-xsmall">(CSV)</a>
+    </div>
+</div>
+<table id="results" class="spacious">
+    <thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th class="numeric" scope="col">Score</th>
+        <th class="numeric" scope="col">Percentage</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% pupils.forEach((p) => { %>
+    <tr>
+        <td><%= p.fullName %></td>
+        <td class="numeric"><%= p.score %></td>
+        <td class="numeric"><%= p.percentage %></td>
+    </tr>
+    </tbody>
+    <% }) %>
+</table>

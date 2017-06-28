@@ -1,0 +1,81 @@
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">Attendance register</h1>
+        </div>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="panel panel-border-wide">
+                    <p>Your school's trial will close when you submit the attendance register.<br>
+                        You can only submit this form once.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <p class="lede">
+            Use this page to confirm pupil attendance.
+        <ul class="list list-bullet font-small">
+            <li>This page will populate with pupil details when they have taken the check.</li>
+            <li>Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
+            <li>Please only submit this form when all pupils have completed the check.</li>
+            <li>You will then be able to sign the headteacher's declaration form.</li>
+        </ul>
+        </p>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (pupils.some((p) => p.hasScore)) { %>
+        <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+            <div class="form-group form-horizontal">
+                <input class="button" type="submit" value="Submit">
+            </div>
+            <table class="spacious" id="attendanceList">
+                <thead>
+                    <tr>
+                        <th scope="col" class="multiple-choice tick-all-boxes">
+                            <% if (pupils.some((p) => !p.hasAttended)) { %>
+                            <input id="tickAllCheckboxes" name="allAttendees" type="checkbox">
+                            <% } %>
+                            <label for="allAttendees">Pupil</label>
+                        </th>
+                        <th scope="col" class="multiple-choice tick-all-boxes-nojs">Score</th>
+                        <th scope="col" class="nowrap">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% pupils.forEach( (pupil, index) => { %>
+                <tr>
+                    <td>
+                        <div class="multiple-choice">
+                            <% if (!pupil.hasAttended) { %>
+                            <input id="attendee-<%= pupil.id %>"
+                                   name="attendee[<%= index %>]"
+                                   type="checkbox"
+                                   value="<%= pupil.id %>">
+                            <% } %>
+                            <label for="attendee-<%= pupil.id %>">
+                                <span><%= pupil.fullName %></span><br />
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <% if (pupil.scorePercentage) { %>
+                        <span><%= pupil.scorePercentage %></span>
+                        <% } else { %>
+                        <span class="font-greyed-out">n/a</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+        </form>
+        <% } %>
+    </div>
+</div>

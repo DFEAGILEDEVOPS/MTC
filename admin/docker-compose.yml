@@ -1,0 +1,19 @@
+version: '2'
+services:
+  web:
+    ports:
+      - "80:3001"
+    image: mtcbeta.azurecr.io/check-development-app:latest
+    environment:
+      USER: node
+      AUTH_OPTION: 4pin
+      SESSION_SECRET: JKLF89SGH4hf879sgS
+      MONGO_CONNECTION_STRING:
+      AZURE_STORAGE_CONNECTION_STRING: ***REMOVED***
+      NODE_ENV: production
+      TSO_AUTH_PUBLIC_KEY:
+      MTC_AUTH_PRIVATE_KEY:
+  proxy:
+    ports:
+      - "443:80"
+    image: nginx:latest

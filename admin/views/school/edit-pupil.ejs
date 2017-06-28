@@ -1,0 +1,22 @@
+<%
+const err = error;
+const input = (typeof formData !== 'undefined') ? formData : {};
+const heading = 'Edit pupil details';
+const submitLabel = 'Save changes';
+const headingClass = 'heading-xlarge';
+%>
+
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    <h1 class="heading-xlarge">Edit pupil details</h1>
+</header>
+
+<%- partial('school/_pupil-form', {
+    input: input,
+    err: err,
+    school: school,
+    formData: input,
+    heading: heading,
+    submitLabel: submitLabel,
+    headingClass: headingClass
+}) %>

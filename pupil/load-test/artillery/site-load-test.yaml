@@ -1,0 +1,46 @@
+config:
+  target: "http://mtc:Ch3ck@mtcpreview.azurewebsites.net"
+  phases:
+    - duration: 60
+      arrivalRate: 20
+
+scenarios:
+  - flow:
+    - get:
+        url: "/"
+    - get:
+        url: "/check/connection"
+    - get:
+        url: "/check/start"
+    - get:
+        url: "/check/question/1"
+    - think: 5
+    - get:
+        url: "/check/question/2"
+    - think: 5
+    - get:
+        url: "/check/question/3"
+    - think: 5
+    - get:
+        url: "/check/question/4"
+    - think: 5
+    - get:
+        url: "/check/question/5"
+    - think: 5
+    - get:
+        url: "/check/question/6"
+    - think: 5
+    - get:
+        url: "/check/question/7"
+    - think: 5
+    - get:
+        url: "/check/question/8"
+    - think: 5
+    - get:
+        url: "/check/question/9"
+    - think: 5
+    - get:
+        url: "/check/question/10"
+    - think: 5
+    - get:
+        url: "/check/complete"

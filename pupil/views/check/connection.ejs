@@ -1,0 +1,72 @@
+
+
+<div class="js-in-progress section hidden">
+    <header class="page-header text-center">
+        <h1 class="heading-xlarge">Running connection test</h1>
+    </header>
+    <p class="text-center">This will take up to 30 seconds. Please do not refresh the page.</p>
+    <img id="spinner" class="center" alt="Running connection test." width="120" height="120">
+</div>
+
+<div class="section js-setup hidden text">
+     <header class="page-header">
+        <h1 class="heading-xlarge">Connection test</h1>
+    </header>
+
+    <p class="text-center">This will take up to 30 seconds. Please do not refresh the page.</p>
+
+    <p>
+        <a href="#" class="button speed-check-start" role="button">Run connection test</a>
+    </p>
+</div>
+
+<div class="js-error section hidden text">
+    <header class="page-header">
+        <h1 class="heading-xlarge">Connection test - error</h1>
+    </header>
+
+    <p>
+       We're sorry, something went wrong and we weren't able to gather the connection data.  Please proceed to preview
+       the multiplication tables check.
+    </p>
+
+    <p>
+        <a href="/check/start" class="button" role="button">Preview multiplication tables check</a>
+    </p>
+</div>
+
+<div class="js-success section hidden text">
+
+    <header class="page-header">
+        <h1 class="heading-xlarge">
+            Completed successfully
+        </h1>
+    </header>
+
+    <p>
+        Thank you for participating in the connection test.
+    </p>
+    <p>
+        You can now close your browser, or continue to preview the multiplication tables check.
+    </p>
+    <p>
+        <a href="/check/start" class="button" role="button">Preview check</a>
+    </p>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+      $('.speed-check-start').click(GOVUK.speedTest.start);
+
+      var $el = $('#spinner');
+      if (Modernizr.smil) {
+        $el.attr('src', '/images/spinner-120x120.svg');
+      } else {
+        // Fall back for IE / Edge browsers
+        $el.attr('src', '/images/spinner-120x120.gif');
+      }
+
+      GOVUK.speedTest.start();
+    });
+</script>

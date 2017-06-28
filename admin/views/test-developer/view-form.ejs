@@ -1,0 +1,62 @@
+<%
+let halfLength = Math.ceil(form.questions.length / 2);
+let col1 = form.questions.filter(function(el, index) {
+      return index < halfLength;
+});
+let col2 = form.questions.filter(function(el, index) {
+    return index >= halfLength;
+});
+let num = 1;
+ %>
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    <h1 class="heading-xlarge"><%= form.name %></h1>
+</header>
+
+<div class="information">
+    <p>
+        <% if (form.checkWindows.length > 0) { %>
+        This form is assigned to: <%= form.checkWindows.map( cw => { return cw.name; }).join(', '); %>
+        <% } else { %>
+        This form is unassigned
+        <% } %>
+    </p>
+</div>
+
+<div class="grid-row">
+    <div class="column-half">
+        <dl class="inline-definition-list">
+        <% col1.forEach((q) => { %>
+            <dd class="inline-definition-list">Q<%= num++ %></dd>
+            <dt class="inline-definition-list">
+
+                <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
+                <span class="equals-sign">=</span>
+                <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
+            </dt>
+        <% }); %>
+        </dl>
+    </div>
+    <div class="column-half">
+        <dl class="inline-definition-list">
+            <% col2.forEach((q) => { %>
+            <dd class="inline-definition-list">Q<%= num++ %></dd>
+            <dt class="inline-definition-list">
+
+                <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
+                <span class="equals-sign">=</span>
+                <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
+            </dt>
+            <% }); %>
+        </dl>
+    </div>
+</div>
+
+<div class="form-group">
+    <a href="/test-developer/manage-check-forms" class="button button-secondary">Go back to manage check forms</a>
+    <% if (canDelete) { %>
+    <form action="/test-developer/delete-form/<%= form._id %>" method="post" style="display: inline">
+        <input type="submit" class="button-secondary" value="Delete form" />
+    </form>
+    <% } %>
+</div>

@@ -1,0 +1,34 @@
+<header class="page-header">
+    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+</header>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge"><%= schoolName %></h1>
+        <p class="lede">To start the check you will need to generate PINs for each individual pupil.</p>
+        <ul class="list">
+            <li>
+                <h2 class="heading-small"><a href="/school/manage-pupils">Manage pupils</a></h2>
+                <p>Generate PINs for pupils to start the multiplication tables check and select pupil attendance codes</p>
+            </li>
+
+            <li>
+                <h2 class="heading-small"><a href="/school/submit-attendance">Submit attendance register</a></h2>
+                <p>Review your attendance register and submit the headteacher's declaration form</p>
+            </li>
+
+            <li>
+                <h2 class="heading-small"><a href="/school/results">Results</a></h2>
+                <p>View detailed pupil results</p>
+            </li>
+        </ul>
+    </div>
+    <div class="column-one-third blue-top-border">
+        <h3 class="heading-medium">Before you start</h3>
+        <ul class="list">
+            <li>
+                <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+            </li>
+        </ul>
+    </div>
+</div>
