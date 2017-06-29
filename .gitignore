@@ -44,3 +44,4 @@ jspm_packages
 # Ignore these package-lock.json files as they break Heroku
 /admin/package-lock.json
 /pupil/package-lock.json
+/MTC.iml
