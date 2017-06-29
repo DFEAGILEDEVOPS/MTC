@@ -37,3 +37,11 @@ jspm_packages
 .node_repl_history
 
 .DS_Store
+
+# Jetbrains IntelliJ
+/.idea/
+
+# Ignore these package-lock.json files as they break Heroku
+/admin/package-lock.json
+/pupil/package-lock.json
+/MTC.iml

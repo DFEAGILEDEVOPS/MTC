@@ -55,7 +55,7 @@ router.get('/question/:number', isAuthenticated(), async function (req, res, nex
     }
   }
 
-  let questionService = new QuestionService('form-01');
+  let questionService = new QuestionService('sample-questions');
   let question = questionService.getQuestion(num);
   res.locals.factor1 = question[0];
   res.locals.factor2 = question[1];
@@ -85,7 +85,7 @@ router.post('/question/:number', isAuthenticated(), function (req, res, next) {
     return next(new Error('Missing testId'));
   }
 
-  questionService = new QuestionService('form-01');
+  questionService = new QuestionService('sample-questions');
   question = questionService.getQuestion(num);
 
   if (!req.session.answer) {

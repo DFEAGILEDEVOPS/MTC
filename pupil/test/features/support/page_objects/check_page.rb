@@ -62,7 +62,7 @@ class CheckPage < SitePrism::Page
 
   def complete_check_with_leading_zeros
     @array_of_answers = []
-    30.times do
+    10.times do
       wait_for_preload
       wait_for_question(2)
       @question = check_page.question.text
