@@ -20,10 +20,6 @@ class WarmUpPage < SitePrism::Page
     number_pad.enter.click
   end
 
-  def complete_warm_up_questions
-    enter_answer_via_keyboard(7)
-    enter_answer_via_keyboard(30)
-    enter_answer_via_keyboard(12)
-  end
+
 
 end

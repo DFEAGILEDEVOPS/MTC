@@ -152,7 +152,7 @@ Then(/^I should be able to use the on screen keyboard to complete the test$/) do
 end
 
 Then(/^I should be able to use the on screen keyboard to complete the warm up questions$/) do
-  warm_up_page.complete_warm_up_questions
+  check_page.complete_check_with_correct_answers(3)
   expect(warm_up_complete_page).to be_displayed
 end
 
@@ -419,7 +419,7 @@ Given(/^I have completed the check$/) do
   confirmation_page.read_instructions.click
   warm_up_page.start_warm_up_questions.click
   warm_up_page.start_now.click
-  warm_up_page.complete_warm_up_questions
+  check_page.complete_check_with_correct_answers(3)
   warm_up_complete_page.start_check.click
   @start_time = Time.now
   check_page.complete_check_with_correct_answers(10)
