@@ -147,7 +147,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
 end
 
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
-  @answers = check_page.complete_check_with_correct_answers(30)
+  @answers = check_page.complete_check_with_correct_answers(10)
   expect(complete_page).to be_displayed
 end
 
@@ -272,7 +272,7 @@ And(/^the result should be stored$/) do
 end
 
 When(/^I could not answer the question$/) do
-  @answers = check_page.complete_check_with_correct_answers(29)
+  @answers = check_page.complete_check_with_correct_answers(9)
   check_page.wait_for_timer(5)
   expect(complete_page).to be_displayed
 end
@@ -285,28 +285,28 @@ end
 Given(/^I did not answer enough questions correctly to pass$/) do
   step "I have logged in"
   check_page.load(number: 1)
-  @answers = check_page.complete_check_with_correct_answers(19)
-  @answers = check_page.complete_check_with_wrong_answers(11)
+  @answers = check_page.complete_check_with_correct_answers(5)
+  @answers = check_page.complete_check_with_wrong_answers(5)
   expect(complete_page).to be_displayed
 end
 
 Then(/^the result should be stored as fail$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 19
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 5
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be false
 end
 
 Given(/^I did answer enough questions correctly to pass$/) do
   step "I have logged in"
   check_page.load(number: 1)
-  @answers = check_page.complete_check_with_correct_answers(20)
-  @answers = check_page.complete_check_with_wrong_answers(10)
+  @answers = check_page.complete_check_with_correct_answers(7)
+  @answers = check_page.complete_check_with_wrong_answers(3)
   expect(complete_page).to be_displayed
 end
 
 Then(/^the result should be stored as pass$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 20
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 7
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be true
 end
 
@@ -393,7 +393,7 @@ end
 
 Then(/^the results should be stored as pass$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 30
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 10
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be true
 end
 
@@ -422,7 +422,7 @@ Given(/^I have completed the check$/) do
   warm_up_page.complete_warm_up_questions
   warm_up_complete_page.start_check.click
   @start_time = Time.now
-  check_page.complete_check_with_correct_answers(30)
+  check_page.complete_check_with_correct_answers(10)
   @finish_time = Time.now
 end
 
