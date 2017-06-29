@@ -60,6 +60,7 @@ Sheet must be set in the environment:
 
 * GOOGLE_SVC_EMAIL - the email address of the service account (if feedback is going to Google Sheets)
 * GOOGLE_SVC_PK - the private key of the service account (if feedback is going to Google Sheets)
+* GOOGLE_SVC_DOC_KEY - the document ID for the spreadsheet to send the feedback to ((if feedback is going to Google Sheets)
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there is
   a tracking code and in production mode, eg `NODE_ENV=production`
 * SESSION_SECRET - secret key to sign the cookie with HMAC (prod only as dev has a fallback)
