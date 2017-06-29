@@ -6,7 +6,7 @@ module.exports = {
 
   up(db, next) {
 
-    let objs = [];
+    const objs = [];
 
     objs.push({
       name: 'Summer 2017',
