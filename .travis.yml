@@ -2,8 +2,5 @@ language: node_js
 node_js: 
   - 8.1.0
 
-install:
-  - npm install -g gulp
-  - ./pupil/npm install
-  - ./admin/npm install
+script: sh -c 'cd pupil && npm install && bundle install && cd ../admin && npm install && bundle install'
 
