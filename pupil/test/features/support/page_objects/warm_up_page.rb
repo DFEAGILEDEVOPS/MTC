@@ -21,12 +21,9 @@ class WarmUpPage < SitePrism::Page
   end
 
   def complete_warm_up_questions
-    t1 = Time.now
     enter_answer_via_keyboard(7)
     enter_answer_via_keyboard(30)
     enter_answer_via_keyboard(12)
-    t2 = Time.now
-    t2 - t1
   end
 
 end
