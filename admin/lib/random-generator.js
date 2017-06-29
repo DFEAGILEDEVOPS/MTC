@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-const crypto = require('crypto');
-const School = require('../models/school');
+const crypto = require('crypto')
+const School = require('../models/school')
 
 /**
  * @brief Returns a random string
@@ -12,25 +12,23 @@ const School = require('../models/school');
  */
 const getRandom = module.exports.getRandom = function (length, chars) {
   if (!chars) {
-    throw new Error(`Argument 'chars' is undefined`);
+    throw new Error(`Argument 'chars' is undefined`)
   }
 
-  let charsLength = chars.length;
+  let charsLength = chars.length
   if (charsLength > 256) {
     throw new Error(`Argument 'chars' should not have more than 256 characters, 
-      otherwise unpredictability will be broken`);
+      otherwise unpredictability will be broken`)
   }
 
-  let randomBytes = crypto.randomBytes(length);
-  let result = [];
+  let randomBytes = crypto.randomBytes(length)
+  let result = []
 
-  let cursor = 0;
+  let cursor = 0
   for (let i = 0; i < length; i++) {
-    cursor += randomBytes[i];
-    result[i] = chars[cursor % charsLength];
+    cursor += randomBytes[i]
+    result[i] = chars[cursor % charsLength]
   }
 
-  return result.join('');
-};
-
-
+  return result.join('')
+}

@@ -1,12 +1,12 @@
-const bunyan = require('bunyan');
-const azBunyan = require('az-bunyan');
+const bunyan = require('bunyan')
+const azBunyan = require('az-bunyan')
 
-let tableName = 'checkadminlogs';
-let loggerName = 'mtcCheckAdminLogger';
-let logger = null;
+let tableName = 'checkadminlogs'
+let loggerName = 'mtcCheckAdminLogger'
+let logger = null
 
 if (process.env.MTC_SERVICE) {
-  loggerName = process.env.MTC_SERVICE;
+  loggerName = process.env.MTC_SERVICE
 }
 
 if (process.env.AZURE_STORAGE_LOGGING_ENABLED) {
@@ -14,7 +14,7 @@ if (process.env.AZURE_STORAGE_LOGGING_ENABLED) {
   let azureStream = azBunyan.createTableStorageStream('info', {
     connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
     tableName: tableName
-  });
+  })
 
   logger = bunyan.createLogger({
     name: loggerName,
@@ -29,7 +29,7 @@ if (process.env.AZURE_STORAGE_LOGGING_ENABLED) {
       },
       azureStream
     ]
-  });
+  })
 } else {
   logger = bunyan.createLogger({
     name: loggerName,
@@ -39,7 +39,7 @@ if (process.env.AZURE_STORAGE_LOGGING_ENABLED) {
     },
     stream: process.stdout,
     level: 'info'
-  });
+  })
 }
 
-module.exports = logger;
+module.exports = logger

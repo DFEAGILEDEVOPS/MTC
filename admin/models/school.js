@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const randomGenerator = require('../lib/random-generator');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const randomGenerator = require('../lib/random-generator')
 
 const School = new Schema({
   _id: { type: Number },
@@ -38,21 +38,21 @@ const School = new Schema({
     signedDate: { type: Date },
     declaration: { type: String },
     fullName: { type: String },
-    jobTitle: { type: String  },
+    jobTitle: { type: String }
   }
 }, {
   timestamps: true
-});
+})
 
 School.pre('validate', function (next) {
-  this._id = parseInt('' + this.leaCode + this.estabCode, 10);
-  next();
-});
+  this._id = parseInt('' + this.leaCode + this.estabCode, 10)
+  next()
+})
 
-function getRandomSchoolPin() {
-  const length = 8;
-  const chars = '23456789bcdfghjkmnpqrstvwxyz';
-  return randomGenerator.getRandom(length, chars);
+function getRandomSchoolPin () {
+  const length = 8
+  const chars = '23456789bcdfghjkmnpqrstvwxyz'
+  return randomGenerator.getRandom(length, chars)
 }
 
 /**
@@ -63,19 +63,19 @@ School.statics.getUniqueSchoolPin = function () {
   return new Promise(async (resolve, reject) => {
     try {
       for (let i = 0; i < 100; i++) {
-        const pin = getRandomSchoolPin();
+        const pin = getRandomSchoolPin()
         // check it against the db to ensure it is unique
-        const school = await this.findOne({schoolPin: pin}).exec();
+        const school = await this.findOne({schoolPin: pin}).exec()
         if (!school) {
-          return resolve(pin);
+          return resolve(pin)
         }
       }
-      reject(new Error('Failed to find a unique school pin'));
+      reject(new Error('Failed to find a unique school pin'))
     } catch (error) {
-      console.log('error finding a pin: ' + error.message);
-      reject(error);
+      console.log('error finding a pin: ' + error.message)
+      reject(error)
     }
-  });
+  })
 }
 
-module.exports = mongoose.model('School', School);
+module.exports = mongoose.model('School', School)

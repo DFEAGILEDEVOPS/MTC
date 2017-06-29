@@ -1,16 +1,15 @@
-'use strict';
+'use strict'
 
-const moment = require('moment');
-const { version: appVersion } = require('../package.json');
-
+const moment = require('moment')
+const { version: appVersion } = require('../package.json')
 
 const formatPageTitle = function (pageTitle) {
-  let title = 'GOV.UK';
+  let title = 'GOV.UK'
   if (typeof pageTitle !== 'undefined') {
-    title = pageTitle + ' - ' + title;
+    title = pageTitle + ' - ' + title
   }
-  return title;
-};
+  return title
+}
 
 /**
  *
@@ -18,8 +17,8 @@ const formatPageTitle = function (pageTitle) {
  * @return {String} e.g 2 May 2017
  */
 const formatGdsDate = function (date) {
-  return moment(date).format('D MMM YYYY');
-};
+  return moment(date).format('D MMM YYYY')
+}
 
 /**
  *
@@ -27,26 +26,26 @@ const formatGdsDate = function (date) {
  * @return {String} e.g 2 May 2017
  */
 const formatFullGdsDate = function (date) {
-  return moment(date).format('D MMMM YYYY');
-};
+  return moment(date).format('D MMMM YYYY')
+}
 
 module.exports = function (app) {
-  'use strict';
-  if (typeof app === 'undefined') throw new Error('Please pass an app to this module!');
-  app.locals.assetPath = '/';
-  app.locals.bodyClasses = '';
-  app.locals.formatPageTitle = formatPageTitle;
-  app.locals.govukRoot = 'https://gov.uk';
-  app.locals.govukTemplateAssetPath = '/govuk_template/';
-  app.locals.headerClass = 'with-proposition no-print';
-  app.locals.htmlLang = 'en';
-  app.locals.skipLinkMessage = null;
-  app.locals.homepageUrl = '/';
-  app.locals.logoLinkTitle = 'Go to the home page';
-  app.locals.globalHeaderText = 'GOV.UK';
-  app.locals.crownCopyrightMessage = null;
-  app.locals.googleTrackingId = process.env.GOOGLE_TRACKING_ID;
-  app.locals.deployVersion = appVersion;
-  app.locals.formatGdsDate = formatGdsDate;
-  app.locals.formatFullGdsDate = formatFullGdsDate;
-};
+  'use strict'
+  if (typeof app === 'undefined') throw new Error('Please pass an app to this module!')
+  app.locals.assetPath = '/'
+  app.locals.bodyClasses = ''
+  app.locals.formatPageTitle = formatPageTitle
+  app.locals.govukRoot = 'https://gov.uk'
+  app.locals.govukTemplateAssetPath = '/govuk_template/'
+  app.locals.headerClass = 'with-proposition no-print'
+  app.locals.htmlLang = 'en'
+  app.locals.skipLinkMessage = null
+  app.locals.homepageUrl = '/'
+  app.locals.logoLinkTitle = 'Go to the home page'
+  app.locals.globalHeaderText = 'GOV.UK'
+  app.locals.crownCopyrightMessage = null
+  app.locals.googleTrackingId = process.env.GOOGLE_TRACKING_ID
+  app.locals.deployVersion = appVersion
+  app.locals.formatGdsDate = formatGdsDate
+  app.locals.formatFullGdsDate = formatFullGdsDate
+}

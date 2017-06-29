@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 const AdminLogonEvent = new Schema({
   sessionId: {type: String},
@@ -18,6 +18,6 @@ const AdminLogonEvent = new Schema({
   ncaSessionToken: {type: String},
   school: {type: Number, ref: 'School'},
   role: {type: String}
-}, {timestamps: true});
+}, {timestamps: true})
 
-module.exports = mongoose.model('AdminLogonEvent', AdminLogonEvent);
+module.exports = mongoose.model('AdminLogonEvent', AdminLogonEvent)
