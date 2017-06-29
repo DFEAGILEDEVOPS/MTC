@@ -64,3 +64,18 @@ If you ever update PATH this will not automatically be reflected in VSO agent me
 ### running phantomJS against a local node web server
 
 The test.sh script runs `node server.js &` to fire up a non blocking node web server process for the app, which is then killed once the tests are complete.  Running `npm start &` was troublesome as node is spawned as a separate process.
+
+### Install Docker on build server
+
+follow [these](https://docs.docker.com/engine/installation/linux/ubuntu/#install-from-a-package) instructions to install latest package
+
+add build user to docker group to allow running without sudo...
+`sudo usermod -aG docker $USER`
+Update environment variables for build agent....
+``` bash
+# update the vso PATH metadata
+~/vstsagent/env.sh 
+# restart the vso agent service
+~/vstsagent/svc.sh stop
+~/vstsagent/svc.sh start
+```
