@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/DFEAGILEDEVOPS/MTC.svg?branch=master)](https://travis-ci.org/DFEAGILEDEVOPS/MTC)
+
 # Multiplication Tables Check (MTC) Project
 
 The MTC solution consists of 3 core projects...
