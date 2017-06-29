@@ -9,7 +9,7 @@
     "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
   "engines": {
-    "node": "8.1.0"
+    "node": "8.1.2"
   },
   "dependencies": {
     "az-bunyan": "0.0.5",
