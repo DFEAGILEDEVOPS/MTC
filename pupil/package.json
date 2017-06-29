@@ -53,7 +53,7 @@
     "migrate-mongo": "^2.2.1",
     "minimist": "^1.2.0",
     "mongodb": "^2.2.26",
-    "mongoose": "^4.9.6",
+    "mongoose": "4.9.6",
     "morgan": "~1.8.1",
     "newrelic": "^1.40.0",
     "passport": "^0.3.2",
