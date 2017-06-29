@@ -428,7 +428,7 @@ end
 
 Then(/^the time i started and finished should be recorded$/) do
   actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkStartDate'].to_i
-  expect(actual/10).to eql @start_time.utc.to_i/10
+  expect(actual/100).to eql @start_time.utc.to_i/100
   actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkEndDate'].to_i
-  expect(actual/10).to eql @finish_time.utc.to_i/10
+  expect(actual/100).to eql @finish_time.utc.to_i/100
 end
