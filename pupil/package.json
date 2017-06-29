@@ -1,16 +1,15 @@
 {
   "name": "mtc-app",
-  "version": "0.0.36",
+  "version": "0.2.0",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
     "start": "node ./server.js",
     "postinstall": "gulp build",
     "test": "jasmine-node spec --verbose --color --captureExceptions"
   },
   "engines": {
-    "node": "8.1.0"
+    "node": "8.1.2"
   },
   "stylelint": {
     "extends": "stylelint-config-standard",
@@ -54,7 +53,7 @@
     "migrate-mongo": "^2.2.1",
     "minimist": "^1.2.0",
     "mongodb": "^2.2.26",
-    "mongoose": "^4.9.6",
+    "mongoose": "4.9.6",
     "morgan": "~1.8.1",
     "newrelic": "^1.40.0",
     "passport": "^0.3.2",

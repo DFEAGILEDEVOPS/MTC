@@ -147,18 +147,18 @@ Then(/^I can answer the question using the on screen keyboard$/) do
 end
 
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
-  @answers = check_page.complete_check_with_correct_answers(30)
+  @answers = check_page.complete_check_with_correct_answers(10)
   expect(complete_page).to be_displayed
 end
 
 Then(/^I should be able to use the on screen keyboard to complete the warm up questions$/) do
-  @time_taken = warm_up_page.complete_warm_up_questions.round
+  check_page.complete_check_with_correct_answers(3)
   expect(warm_up_complete_page).to be_displayed
 end
 
 And(/^the warm up questions start and end dates are saved in database$/) do
   time_from_db = MongoDbHelper.warm_up_test_time(@pupil_information['pin'])
-  expect(@time_taken).to eq(time_from_db)
+  expect(time_from_db).to be < 10
 end
 
 Then(/^I should see a STA logo$/) do
@@ -272,7 +272,7 @@ And(/^the result should be stored$/) do
 end
 
 When(/^I could not answer the question$/) do
-  @answers = check_page.complete_check_with_correct_answers(29)
+  @answers = check_page.complete_check_with_correct_answers(9)
   check_page.wait_for_timer(5)
   expect(complete_page).to be_displayed
 end
@@ -285,28 +285,28 @@ end
 Given(/^I did not answer enough questions correctly to pass$/) do
   step "I have logged in"
   check_page.load(number: 1)
-  @answers = check_page.complete_check_with_correct_answers(19)
-  @answers = check_page.complete_check_with_wrong_answers(11)
+  @answers = check_page.complete_check_with_correct_answers(5)
+  @answers = check_page.complete_check_with_wrong_answers(5)
   expect(complete_page).to be_displayed
 end
 
 Then(/^the result should be stored as fail$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 19
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 5
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be false
 end
 
 Given(/^I did answer enough questions correctly to pass$/) do
   step "I have logged in"
   check_page.load(number: 1)
-  @answers = check_page.complete_check_with_correct_answers(20)
-  @answers = check_page.complete_check_with_wrong_answers(10)
+  @answers = check_page.complete_check_with_correct_answers(7)
+  @answers = check_page.complete_check_with_wrong_answers(3)
   expect(complete_page).to be_displayed
 end
 
 Then(/^the result should be stored as pass$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 20
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 7
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be true
 end
 
@@ -393,7 +393,7 @@ end
 
 Then(/^the results should be stored as pass$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
-  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 30
+  expect(MongoDbHelper.get_result(session_id).first['correct']).to eql 10
   expect(MongoDbHelper.get_result(session_id).first['isPass']).to be true
 end
 
@@ -419,16 +419,16 @@ Given(/^I have completed the check$/) do
   confirmation_page.read_instructions.click
   warm_up_page.start_warm_up_questions.click
   warm_up_page.start_now.click
-  warm_up_page.complete_warm_up_questions
+  check_page.complete_check_with_correct_answers(3)
   warm_up_complete_page.start_check.click
   @start_time = Time.now
-  check_page.complete_check_with_correct_answers(30)
+  check_page.complete_check_with_correct_answers(10)
   @finish_time = Time.now
 end
 
 Then(/^the time i started and finished should be recorded$/) do
   actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkStartDate'].to_i
-  expect(actual/10).to eql @start_time.utc.to_i/10
+  expect(actual/100).to eql @start_time.utc.to_i/100
   actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkEndDate'].to_i
-  expect(actual/10).to eql @finish_time.utc.to_i/10
+  expect(actual/100).to eql @finish_time.utc.to_i/100
 end
