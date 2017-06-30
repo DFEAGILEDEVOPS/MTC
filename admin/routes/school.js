@@ -22,4 +22,4 @@ const school = (router) => {
   router.get('/declaration-form-submitted', isAuthenticated(), (req, res, next) => getHDFSubmitted(req, res, next))
 }
 
-module.exports = school;
+module.exports = school
