@@ -2,7 +2,6 @@
 
 const express = require('express')
 const router = express.Router()
-const passport = require('passport')
 const uuidV4 = require('uuid/v4')
 
 const QuestionService = require('../lib/question-service')
@@ -107,7 +106,6 @@ router.post('/question/:number', isAuthenticated(), function (req, res, next) {
       input: req.body.answer,
       registeredInputs
     }]
-
   } else {
     answer = new Answer(req.session.answer)
     answer.sessionId = req.session.id
@@ -189,7 +187,7 @@ router.get('/feedback', isAuthenticated(), function (req, res, next) {
 
 /* POST from the feedback form */
 router.post('/feedback', async function (req, res, next) {
-  let feedback = new Feedback
+  const feedback = new Feedback()
   feedback.comment = req.body.comment
   feedback.inputType = req.body['input-type']
   feedback.satisfactionRating = req.body['satisfaction-group']
@@ -237,7 +235,6 @@ router.post('/feedback', async function (req, res, next) {
   } catch (error) {
     return next(error)
   }
-
 })
 
 /* GET the thank you form */
