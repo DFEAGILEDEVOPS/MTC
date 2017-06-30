@@ -55,8 +55,8 @@ router.get('/question/:number', isAuthenticated(), async function (req, res, nex
     }
   }
 
-  let questionService = new QuestionService('sample-questions');
-  let question = questionService.getQuestion(num);
+  const questionService = new QuestionService('sample-questions');
+  const question = questionService.getQuestion(num);
   res.locals.factor1 = question[0];
   res.locals.factor2 = question[1];
   res.locals.expectedAnswer = question[2];
