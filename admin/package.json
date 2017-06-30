@@ -6,7 +6,7 @@
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
     "start": "node ./bin/www",
     "postinstall": "gulp build",
-    "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit"
+    "test": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
   "engines": {
     "node": "8.1.2"
@@ -55,6 +55,26 @@
     "gulp-standard": "^10.0.0",
     "jasmine-node": "^1.14.5",
     "nodemon": "^1.11.0",
-    "standard": "^10.0.2"
+    "standard": "^10.0.2",
+    "nyc": "^11.0.3"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.spec.js",
+      "**/*Spec.js",
+      "newrelic.js",
+      "gulpfile.js",
+      "bin/**/*",
+      "public/govuk_template/**/*",
+      "public/javascripts/app.js",
+      "assets/javascripts/details.polyfill.js",
+      "assets/javascripts/jquery-1.12.4.js",
+      "assets/javascripts/modernizr-custom.js",
+      "app.js",
+      "server.js",
+      "data/migrations/"
+    ],
+    "all": true,
+    "cache": true
   }
 }
