@@ -6,7 +6,7 @@ services:
     image: mtcbeta.azurecr.io/app:latest
     environment:
       USER: node
-      AUTH_OPTION: 4pin
+      AUTH_OPTION: 5pin
       SESSION_SECRET: ch4ckd3cvk489gsh
       MONGO_CONNECTION_STRING:
       NODE_ENV: production

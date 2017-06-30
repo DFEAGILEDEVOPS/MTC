@@ -74,6 +74,8 @@ Sheet must be set in the environment:
 | 4pin.stamtc.uk        | Usability study - 4 PIN auth option | `master` | UA-92976848-4 |
 | 5pin.stamtc.uk        | Usability study - 5 PIN auth option | `master` | UA-92976848-5 |
 
+Note that 4pin is not used any longer.
+
 ### Running the test suite
 
 `npm test`
