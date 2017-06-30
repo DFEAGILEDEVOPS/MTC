@@ -1,9 +1,8 @@
-'use strict';
+'use strict'
 
-const ValidationError = require('./validation-error');
+const ValidationError = require('./validation-error')
 
 module.exports = class ErrorConverter {
-
   /**
    *
    * @param mongooseError
@@ -11,36 +10,35 @@ module.exports = class ErrorConverter {
    * @param validationError - optional
    * @return {ValidationError} - returns a new ValidationError
    */
-  static fromMongoose(mongooseError, errorMessages, validationError) {
+  static fromMongoose (mongooseError, errorMessages, validationError) {
     if (!mongooseError) {
-      throw new TypeError('mongooseError is not defined');
+      throw new TypeError('mongooseError is not defined')
     }
 
     if (!(typeof mongooseError === 'object' && mongooseError.name === 'ValidationError' &&
-        mongooseError.hasOwnProperty('errors')))
-    {
-      throw new TypeError('mongooseError must be an instanceof MongooseError');
+        mongooseError.hasOwnProperty('errors'))) {
+      throw new TypeError('mongooseError must be an instanceof MongooseError')
     }
 
     if (validationError && !(validationError instanceof ValidationError)) {
-      throw new TypeError('validationError must be an instanceof ValidationError');
+      throw new TypeError('validationError must be an instanceof ValidationError')
     }
 
-    let newValidationError =  new ValidationError();
+    let newValidationError = new ValidationError()
 
     for (let error in mongooseError.errors) {
-      let fieldError = mongooseError.errors[error];
-      let message = errorMessages[error] ? errorMessages[error] : fieldError.message;
-      newValidationError.addError(fieldError.path, message);
+      let fieldError = mongooseError.errors[error]
+      let message = errorMessages[error] ? errorMessages[error] : fieldError.message
+      newValidationError.addError(fieldError.path, message)
     };
 
     if (validationError && validationError.errors) {
       for (let field in validationError.errors) {
-        newValidationError.addError(field, validationError.get(field));
+        newValidationError.addError(field, validationError.get(field))
       }
     }
 
-    return newValidationError;
+    return newValidationError
   }
 
   /**
@@ -57,12 +55,11 @@ module.exports = class ErrorConverter {
    * }
    *
    */
-  static fromExpressValidator(params) {
-    let validationError = new ValidationError();
+  static fromExpressValidator (params) {
+    let validationError = new ValidationError()
     for (let field in params) {
-      validationError.addError(params[field].param, params[field].msg);
+      validationError.addError(params[field].param, params[field].msg)
     }
-    return validationError;
+    return validationError
   }
-
 }
