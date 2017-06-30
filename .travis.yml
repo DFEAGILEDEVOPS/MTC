@@ -12,7 +12,7 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-    
+
 services: mongodb
 
 sudo: false
@@ -22,5 +22,5 @@ before_install:
 
 install: true
 
-script: sh -c 'cd pupil && npm install && npm start && npm test && cd ../admin && npm install && npm start && npm test'
+script: sh -c 'cd pupil && npm install && npm test && cd ../admin && npm install && npm test'
 
