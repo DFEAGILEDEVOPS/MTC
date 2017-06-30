@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 // Store NCA Auth Tokens to prevent replay attacks
 const NcaToolsAuthToken = new Schema({
@@ -12,6 +12,6 @@ const NcaToolsAuthToken = new Schema({
   ncaUserName: { type: String, required: true },
   ncaEmailAddress: { type: String, required: true },
   school: { type: String, required: true }
-}, {timestamps: true});
+}, {timestamps: true})
 
-module.exports = mongoose.model('NcaToolsAuthToken', NcaToolsAuthToken);
+module.exports = mongoose.model('NcaToolsAuthToken', NcaToolsAuthToken)

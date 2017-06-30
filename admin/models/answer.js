@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const PASS_MARK = 65;
-const date = new Date;
+const PASS_MARK = 65
+const date = new Date()
 
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 
 /**
  * This collection is expected to be large.  There will be the same number of documents created as questions,
@@ -28,15 +28,15 @@ const Answer = new Schema({
     isCorrect: Boolean,
     registeredInputs: [{
       _id: false,
-      input: { type: String, required: true  },
-      eventType: { type: String, required: true  },
-      clientInputDate: { type: Date, required: true },
+      input: { type: String, required: true },
+      eventType: { type: String, required: true },
+      clientInputDate: { type: Date, required: true }
     }]
   }],
   result: {
     correct: Number,
     isPass: Boolean
   }
-}, { timestamps: true });
+}, { timestamps: true })
 
-module.exports = mongoose.model('Answer', Answer, 'answers-' + date.getFullYear());
+module.exports = mongoose.model('Answer', Answer, 'answers-' + date.getFullYear())

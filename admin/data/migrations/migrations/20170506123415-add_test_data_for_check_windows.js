@@ -1,12 +1,11 @@
-'use strict';
+'use strict'
 
-const moment = require('moment');
+const moment = require('moment')
 
 module.exports = {
 
-  up(db, next) {
-
-    const objs = [];
+  up (db, next) {
+    const objs = []
 
     objs.push({
       name: 'Summer 2017',
@@ -16,7 +15,7 @@ module.exports = {
       registrationEndDate: moment('2017-06-13 23:59:59').toDate(),
       createdAt: Date.now,
       updatedAt: Date.now
-    });
+    })
 
     objs.push({
       name: 'Spring 2017',
@@ -26,7 +25,7 @@ module.exports = {
       registrationEndDate: moment('2017-05-31 23:59:59').toDate(),
       createdAt: Date.now,
       updatedAt: Date.now
-    });
+    })
 
     objs.push({
       name: 'Summer 2018',
@@ -36,7 +35,7 @@ module.exports = {
       registrationEndDate: moment('2018-06-13 23:59:59').toDate(),
       createdAt: Date.now,
       updatedAt: Date.now
-    });
+    })
 
     objs.push({
       name: 'Winter 2018',
@@ -46,20 +45,20 @@ module.exports = {
       registrationEndDate: moment('2018-12-10 23:59:59').toDate(),
       createdAt: Date.now,
       updatedAt: Date.now
-    });
+    })
 
-    db.collection('checkwindows').insertMany(objs, function(error) {
+    db.collection('checkwindows').insertMany(objs, function (error) {
       if (error) {
-        console.log(error);
-        next(error);
+        console.log(error)
+        next(error)
       }
-    });
-    next();
+    })
+    next()
   },
 
-  down(db, next) {
-    db.collection('checkwindows').drop();
-    next();
+  down (db, next) {
+    db.collection('checkwindows').drop()
+    next()
   }
 
-};
+}
