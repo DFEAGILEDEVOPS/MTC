@@ -189,58 +189,56 @@ router.get('/feedback', isAuthenticated(), function (req, res, next) {
 });
 
 /* POST from the feedback form */
-router.post('/feedback', async function(req, res, next) {
+router.post('/feedback', async function (req, res, next) {
   let feedback = new Feedback;
-  let error;
-
   feedback.comment = req.body.comment;
   feedback.inputType = req.body['input-type'];
   feedback.satisfactionRating = req.body['satisfaction-group'];
   feedback.sessionId = req.session.id;
-  error = feedback.validateSync();
 
-  if (error) {
+  try {
+    await feedback.validate();
+  } catch (error) {
     res.locals.pageTitle = 'Multiplication tables check - give feedback';
-    res.render(
+    return res.render(
       'check/feedback',
       {
         error: error ? error : {},
         form: req.body,
         layout: 'question-layout' // Temp layout
       });
-  } else {
-
-    try {
-      const feedbackExists = await Feedback.findOne({ 'sessionId': feedback.sessionId }).exec();
-      if (!feedbackExists) {
-        feedback.save(function(err) {
-          if (err) {
-            return next(err);
-          }
-          res.redirect('/check/feedback-thanks');
-        });
-
-        // Insert into Google Sheet
-        let schoolName = '';
-        if ((((res || {}).req || {}).user || {}).school) {
-          schoolName = res.req.user.school.name;
-        }
-
-        const googleSheetData = {
-          'Timestamp': feedback.creationDate,
-          'School Name': schoolName,
-          'Satisfaction Rating': feedback.satisfactionRating,
-          'Input Type': feedback.inputType,
-          'Comment': feedback.comment || ''
-        };
-        GoogleSheetService.addFeedback(googleSheetData);
-      } else {
-        res.redirect('/check/feedback-sent');
-      }
-    } catch (error) {
-      return next(error);
-    }
   }
+  
+  try {
+    const feedbackExists = await Feedback.findOne({'sessionId': feedback.sessionId}).exec();
+    if (feedbackExists) {
+      return res.redirect('/check/feedback-sent');
+    }
+
+    // Save to our db
+    await feedback.save();
+
+    // Insert into Google Sheet
+    let schoolName = '';
+    if ((((res || {}).req || {}).user || {}).school) {
+      schoolName = res.req.user.school.name;
+    }
+
+    // Insert to Google Sheets
+    const googleSheetData = {
+      'Timestamp': feedback.creationDate,
+      'School Name': schoolName,
+      'Satisfaction Rating': feedback.satisfactionRating,
+      'Input Type': feedback.inputType,
+      'Comment': feedback.comment || ''
+    };
+    GoogleSheetService.addFeedback(googleSheetData);
+
+    return res.redirect('/check/feedback-thanks');
+  } catch (error) {
+    return next(error);
+  }
+
 });
 
 /* GET the thank you form */
