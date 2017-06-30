@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./server.js",
     "postinstall": "gulp build",
-    "test": "jasmine-node spec --verbose --color --captureExceptions"
+    "test": "nyc jasmine-node spec --verbose --color --captureExceptions"
   },
   "engines": {
     "node": "8.1.2"
@@ -73,8 +73,28 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-spec-reporter": "0.0.30",
     "nodemon": "^1.11.0",
+    "nyc": "^11.0.3",
     "stylelint": "^7.8.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-order": "^0.4.3"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.spec.js",
+      "**/*Spec.js",
+      "newrelic.js",
+      "gulpfile.js",
+      "assets/javascripts/**/*",
+      "bin/**/*",
+      "public/govuk_template/**/*",
+      "public/javascripts/app.js",
+      "assets/javascripts/details.polyfill.js",
+      "assets/javascripts/jquery-1.12.4.js",
+      "assets/javascripts/modernizr-custom.js",
+      "app.js",
+      "server.js"
+    ],
+    "all": true,
+    "cache": true
   }
 }
