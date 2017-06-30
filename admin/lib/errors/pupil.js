@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports.addPupil = {
   foreName: 'Check the first name',
