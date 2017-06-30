@@ -202,7 +202,7 @@ router.post('/feedback', async function (req, res, next) {
     return res.render(
       'check/feedback',
       {
-        error: error ? error : {},
+        error: error || {},
         form: req.body,
         layout: 'question-layout' // Temp layout
       })
