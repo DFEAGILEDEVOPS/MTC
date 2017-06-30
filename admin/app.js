@@ -1,49 +1,49 @@
-'use strict';
+'use strict'
 
-require('newrelic');
-const express = require('express');
-const path = require('path');
-const favicon = require('serve-favicon');
-const logger = require('morgan');
-const cookieParser = require('cookie-parser');
-const busboy = require('express-busboy');
-const partials = require('express-partials');
-const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
-const uuidV4 = require('uuid/v4');
-const expressValidator = require('express-validator');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const CustomStrategy = require('passport-custom').Strategy;
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const breadcrumbs = require('express-breadcrumbs');
+require('newrelic')
+const express = require('express')
+const path = require('path')
+const favicon = require('serve-favicon')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const busboy = require('express-busboy')
+const partials = require('express-partials')
+const mongoose = require('mongoose')
+const autoIncrement = require('mongoose-auto-increment')
+const uuidV4 = require('uuid/v4')
+const expressValidator = require('express-validator')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const CustomStrategy = require('passport-custom').Strategy
+const session = require('express-session')
+const MongoStore = require('connect-mongo')(session)
+const breadcrumbs = require('express-breadcrumbs')
 
-mongoose.promise = global.Promise;
-const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc';
-mongoose.connect(connectionString, function(err) {
+mongoose.promise = global.Promise
+const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
+mongoose.connect(connectionString, function (err) {
   if (err) {
-    throw new Error('Could not connect to mongodb: ' + err.message);
+    throw new Error('Could not connect to mongodb: ' + err.message)
   }
-});
-autoIncrement.initialize(mongoose.connection);
+})
+autoIncrement.initialize(mongoose.connection)
 
-const index = require('./routes/index');
-const testDeveloper = require('./routes/test-developer');
-const school = require('./routes/school');
+const index = require('./routes/index')
+const testDeveloper = require('./routes/test-developer')
+const school = require('./routes/school')
 
-const app = express();
-const helpers = require('./helpers')(app);
+const app = express()
+const helpers = require('./helpers')(app)
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
-app.use(partials());
-app.use(logger('dev'));
+app.use(partials())
+app.use(logger('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
@@ -51,12 +51,12 @@ busboy.extend(app, {
   mimeTypeLimit: [
     'text/csv'
   ]
-});
+})
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
   collection: 'adminsessions'
-};
+}
 const sessionOptions = {
   name: 'staff-app.sid',
   secret: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
@@ -65,30 +65,30 @@ const sessionOptions = {
   saveUninitialized: false,
   cookie: { maxAge: 1200000 }, // Expire after 20 minutes inactivity
   store: new MongoStore(mongoStoreOptions)
-};
-app.use(session(sessionOptions));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(expressValidator());
-app.use(express.static(path.join(__dirname, 'public')));
+}
+app.use(session(sessionOptions))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(expressValidator())
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Breadcrumbs
-app.use(breadcrumbs.init());
-app.use(breadcrumbs.setHome());
+app.use(breadcrumbs.init())
+app.use(breadcrumbs.setHome())
 
 // Initialise Passport
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
+passport.serializeUser(function (user, done) {
+  done(null, user)
+})
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
+passport.deserializeUser(function (user, done) {
+  done(null, user)
+})
 
 // passport with custom strategy
 passport.use(new CustomStrategy(
   require('./authentication/nca-tools-authentication-strategy')
-));
+))
 
 // Passport with local strategy
 passport.use(
@@ -96,70 +96,69 @@ passport.use(
     {passReqToCallback: true},
     require('./authentication/local-strategy')
   )
-);
-
+)
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
 if (process.env.NODE_ENV === 'production') {
-  app.use(require('./lib/azure-upload'));
+  app.use(require('./lib/azure-upload'))
 }
 
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
     res.redirect(`https://${req.header('host')}${req.url}`)
   } else {
-    next();
+    next()
   }
-});
-
-app.use(function(req, res, next) {
-  // make the user and isAuthenticated vars available in the view templates
-  if (req.isAuthenticated()) {
-    res.locals.isAuthenticated = true;
-    res.locals.user = req.user;
-  } else {
-    res.locals.isAuthenticated = false;
-    res.locals.user = null;
-  }
-  next();
-});
+})
 
 app.use(function (req, res, next) {
-  res.removeHeader("X-Powered-By");
-  next();
-});
+  // make the user and isAuthenticated vars available in the view templates
+  if (req.isAuthenticated()) {
+    res.locals.isAuthenticated = true
+    res.locals.user = req.user
+  } else {
+    res.locals.isAuthenticated = false
+    res.locals.user = null
+  }
+  next()
+})
 
-app.use('/', index);
-app.use('/test-developer', testDeveloper);
-app.use('/school', school);
+app.use(function (req, res, next) {
+  res.removeHeader('X-Powered-By')
+  next()
+})
+
+app.use('/', index)
+app.use('/test-developer', testDeveloper)
+app.use('/school', school)
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  let err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+app.use(function (req, res, next) {
+  let err = new Error('Not Found')
+  err.status = 404
+  next(err)
+})
 
 // error handler
 app.use(function (err, req, res, next) {
-  let errorId = uuidV4();
+  let errorId = uuidV4()
   // set locals, only providing error in development
   // TODO change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
-  console.error('ERROR: ' + err.message + ' ID:' + errorId);
-  console.error(err.stack);
+  console.error('ERROR: ' + err.message + ' ID:' + errorId)
+  console.error(err.stack)
 
   // render the error page
   // TODO provide an error code and phone number? for the user to call support
-  res.locals.message = 'An error occurred';
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.locals.errorId = errorId;
-  res.locals.errorCode = '';
-  res.status(err.status || 500);
-  res.locals.pageTitle = 'Error';
-  res.render('error');
-});
+  res.locals.message = 'An error occurred'
+  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.errorId = errorId
+  res.locals.errorCode = ''
+  res.status(err.status || 500)
+  res.locals.pageTitle = 'Error'
+  res.render('error')
+})
 
-module.exports = app;
+module.exports = app
