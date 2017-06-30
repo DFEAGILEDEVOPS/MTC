@@ -7,4 +7,4 @@ function isAuthenticated () {
   }
 }
 
-module.exports = isAuthenticated;
+module.exports = isAuthenticated
