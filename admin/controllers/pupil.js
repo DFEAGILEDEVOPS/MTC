@@ -6,7 +6,7 @@ const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
-const { fetchPupilsData, fetchPupilAnswers } = require('../helpers/routes')
+const { fetchPupilsData, fetchPupilAnswers } = require('../services/pupilService')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
@@ -204,7 +204,7 @@ const getEditPupil = async (req, res, next) => {
 
 const getManagePupils = async (req, res, next) => {
   res.locals.pageTitle = 'Manage pupils'
-  const {pupils, schoolData} = await fetchPupilsData(req, next)
+  const {pupils, schoolData} = await fetchPupilsData(req.user.School)
   let pupilsData = pupils.map(e => e.toJSON())
 
   // Format DOB
@@ -230,7 +230,7 @@ const getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
   try {
-    const {pupils, schoolData} = await fetchPupilsData(req, next)
+    const {pupils, schoolData} = await fetchPupilsData(req.user.School)
     const pupilsData = pupils.map(e => e.toJSON()).filter(p => !!p.pin && !p.pinExpired)
     pupilsFormatted = pupilsData.map(p => {
       return {
