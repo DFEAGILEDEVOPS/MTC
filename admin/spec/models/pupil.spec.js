@@ -99,7 +99,7 @@ describe('Pupil schema', function () {
     done()
   })
 
-  it('method getPupils returns an object', async function (done) {
+  xit('method getPupils returns an object', async function (done) {
     try {
       const pupils = await Pupil.getPupils().limit(1).exec()
       expect(typeof pupils).toEqual('object')
