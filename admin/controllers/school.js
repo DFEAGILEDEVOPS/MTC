@@ -8,7 +8,7 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers } = require('../helpers/routes')
+const { fetchPupilsData, fetchPupilAnswers } = require('../services/pupilService')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -31,7 +31,7 @@ const getHome = async (req, res, next) => {
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
-  const {pupils, schoolData} = await fetchPupilsData(req, next)
+  const {pupils, schoolData} = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const answers = await fetchPupilAnswers(p._id, next)
@@ -65,7 +65,7 @@ const getResults = async (req, res, next) => {
 const downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
-  const {schoolData, pupils} = await fetchPupilsData(req, next)
+  const {schoolData, pupils} = await fetchPupilsData(req.user.School)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
@@ -183,7 +183,7 @@ const generatePins = async (req, res, next) => {
 const getSubmitAttendance = async (req, res, next) => {
   res.locals.pageTitle = 'Attendance register'
   req.breadcrumbs(res.locals.pageTitle)
-  const {pupils, schoolData} = await fetchPupilsData(req, next)
+  const {pupils, schoolData} = await fetchPupilsData(req.user.School)
   // Redirect to confirmation of submission if hdf has been signed
   if (schoolData.hdf && schoolData.hdf.signedDate) {
     return res.redirect('/school/declaration-form-submitted')
@@ -221,7 +221,7 @@ const postSubmitAttendance = async (req, res, next) => {
   }
   const data = Object.values(req.body['attendee'] || null)
   let selected
-  const {pupils} = await fetchPupilsData(req, next)
+  const { pupils } = await fetchPupilsData(req.user.School)
   try {
     selected = await Pupil.find({_id: data}).exec()
   } catch (error) {
@@ -242,7 +242,7 @@ const postSubmitAttendance = async (req, res, next) => {
 }
 
 const getDeclarationForm = async (req, res, next) => {
-  const {schoolData} = await fetchPupilsData(req, next)
+  const {schoolData} = await fetchPupilsData(req.user.School)
   if (schoolData.hdf && schoolData.hdf.signedDate) {
     return res.redirect('/school/declaration-form-submitted')
   }
