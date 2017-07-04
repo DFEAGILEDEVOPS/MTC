@@ -1,0 +1,80 @@
+// Check forms
+
+dl.inline-definition-list {
+  @include core-36;
+
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+dt.inline-definition-list {
+  @include core-36;
+
+  float: left;
+  margin: 0 0 1em 0;
+  padding: 0;
+  width: 90%;
+
+  @include media(tablet) {
+    width: 80%;
+  }
+  @include media(desktop) {
+    width: 90%;
+  }
+}
+
+dd.inline-definition-list {
+  @include core-24;
+
+  color: $grey-1;
+  float: left;
+  margin: 0;
+  padding: 0;
+  width: 10%;
+
+  @include media(tablet) {
+    float: left;
+    width: 20%;
+  }
+
+  @include media(desktop) {
+    float: left;
+    width: 10%;
+  }
+}
+
+.fixed-factors {
+
+  // mobile
+  display: inline-block;
+  text-align: right;
+  width: 3.5em;
+  word-spacing: inherit;
+
+  @include media(tablet) {
+    word-spacing: 0.1em;
+    width: 3.1em;
+  }
+
+  @include media(desktop) {
+    word-spacing: 0.5em;
+    width: 4.5em;
+  }
+}
+
+.equals-sign {
+  padding-left: 0.42em;
+  padding-right: 0.42em;
+
+  @include media(tablet) {
+    padding-left: 0.22em;
+    padding-right: 0.22em;
+  }
+}
+
+.fixed-result {
+  display: inline-block;
+  text-align: left;
+}

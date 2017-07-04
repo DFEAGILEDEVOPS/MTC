@@ -1,0 +1,19 @@
+// Headers
+.page-header {
+  padding-top: 45px;
+  padding-bottom: 15px;
+}
+
+.heading-border-top {
+  border-top: 1px solid $black;
+  padding-top: 2rem;
+}
+
+.heading-large-no-bold {
+  @extend .heading-large;
+  font-weight: normal;
+}
+
+.heading-xlarge {
+  margin-bottom: 0.813em;
+}
