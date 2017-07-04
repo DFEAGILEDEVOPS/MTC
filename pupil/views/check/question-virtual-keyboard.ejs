@@ -15,7 +15,6 @@ if (typeof nextQuestion === 'number') {
 
     <br style="clear:both"/>
 
-
     <div class="question-container">
 
         <form id='js-question-form' action="/check/question/<%= num %>" method="POST" autocomplete="off">
@@ -24,7 +23,7 @@ if (typeof nextQuestion === 'number') {
             <input type="hidden" id="js-form-electron" name="electron" value="false">
             <input type="hidden" name="pageLoadDate" id="pageLoadDate" value="">
             <div class="question-and-answer"><span class="question"><%= factor1 %> &times; <%= factor2 %> = </span>
-                <div class="answer-container"><span class="answer" id="js-answer" autofocus></span>
+                <div class="answer-container"><span class="answer" id="js-answer"></span>
                     <div class="numpad-container">
 
                         <table class="numpad" id="js-numpad">
