@@ -7,9 +7,9 @@ if (typeof nextQuestion === 'number') {
 }
 %>
 <br style="clear:both"/>
-<p>
+<h1 class="page-header heading-small">
     <span class="warm-up-questions-label">Warm-up questions</span>
-</p>
+</h1>
 <div class="hidden" id="js-content-div">
 
     <div class="remaining-time">
@@ -21,7 +21,7 @@ if (typeof nextQuestion === 'number') {
         <form id='js-question-form' action="/warm-up/question/<%= num %>" method="POST" autocomplete="off">
             <input type="hidden" id="js-form-answer" name="answer" value="">
             <div class="question-and-answer"><span class="question"><%= factor1 %> &times; <%= factor2 %> = </span>
-                <div class="answer-container"><span class="answer" id="js-answer" autofocus></span>
+                <div class="answer-container"><span class="answer" id="js-answer"></span>
                     <div class="numpad-container">
 
                         <table class="numpad" id="js-numpad">
