@@ -4,8 +4,6 @@ const passport = require('passport');
 
 // const logger = require('../lib/logger');
 
-const signInFailureSuffix = (process.env.AUTH_OPTION === '5PIN' || process.env.AUTH_OPTION === '4PIN' ? process.env.AUTH_OPTION.toLowerCase() : '4pin');
-
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.locals.pageTitle = 'Multiplication Tables Check';
@@ -52,7 +50,7 @@ router.get('/sign-in-success' , function (req, res) {
 /* Sign in failure */
 router.get('/sign-in-failure', function (req, res) {
   res.locals.pageTitle = 'Multiplication tables check - Sign-in error';
-  res.render(`sign-in-failure-${signInFailureSuffix}`, { layout: 'question-layout' }); // Temp layout
+  res.render('sign-in-failure-5pin', { layout: 'question-layout' }); // Temp layout
 });
 
 /* Health check */
