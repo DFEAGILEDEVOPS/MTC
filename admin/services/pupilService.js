@@ -5,6 +5,10 @@ const Pupil = require('../models/pupil')
 const Answer = require('../models/answer')
 
 const pupilService = {
+  /**
+   * Returns an object that consists of a plain JS school data and pupils.
+   * @param {number} schoolId - School unique Id.
+   */
   fetchPupilsData: async (schoolId) => {
     const [ schoolData, pupils ] = await Promise.all([
       School.findOne({'_id': schoolId}).lean().exec(),
@@ -17,14 +21,18 @@ const pupilService = {
       pupils
     }
   },
-  fetchPupilAnswers: async (id, next) => {
+  /**
+   * Fetches latest set of pupils answers who have completed the check.
+   * @param {string} id - Pupil Id.
+   */
+  fetchPupilAnswers: async (id) => {
     try {
       return await Answer.findOne({
         pupil: mongoose.Types.ObjectId(id),
         result: {$exists: true}
       }).sort({createdAt: -1}).exec()
     } catch (error) {
-      return next(error)
+      throw new Error(error)
     }
   }
 }

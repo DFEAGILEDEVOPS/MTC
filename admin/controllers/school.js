@@ -34,7 +34,7 @@ const getResults = async (req, res, next) => {
   const {pupils, schoolData} = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const answers = await fetchPupilAnswers(p._id, next)
+    const answers = await fetchPupilAnswers(p._id)
     const pupilScore = answers && answers.result
     const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
     const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'n/a'
@@ -70,7 +70,7 @@ const downloadResults = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const dob = moment(p.dob).format('DD/MM/YYYY')
-    const answersSet = await fetchPupilAnswers(p._id, next)
+    const answersSet = await fetchPupilAnswers(p._id)
     if (!answersSet) return
     let answers = answersSet.answers && answersSet.answers.sort((a1, a2) => {
       const f1 = a1.factor1 - a2.factor1
@@ -191,7 +191,7 @@ const getSubmitAttendance = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const {_id: id, hasAttended} = p
-    const answers = await fetchPupilAnswers(p._id, next)
+    const answers = await fetchPupilAnswers(p._id)
     const pupilScore = answers && answers.result
     const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
     const scorePercentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
