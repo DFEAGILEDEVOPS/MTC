@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/DFEAGILEDEVOPS/MTC.svg?branch=master)](https://travis-ci.org/DFEAGILEDEVOPS/MTC)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f1ef3308c8c407284322926f501d537)]
 
 # Multiplication Tables Check (MTC) Project
 
