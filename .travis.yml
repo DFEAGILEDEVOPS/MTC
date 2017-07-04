@@ -25,5 +25,6 @@ install: true
 
 script: 
   - sh -c 'cd pupil && npm install && npm test && cd ../admin && npm install && npm test'
-  - sh -c 'gem install bundler && cd admin/test && bundle install'
+#  - sh -c 'gem install bundler && cd admin/test && bundle install'
+  - ./pupil/test.sh
 
