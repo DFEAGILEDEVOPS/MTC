@@ -1,13 +1,14 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <header class="page-header">
-            <h1 class="heading-xlarge">Welcome <%= foreName %></h1>
+            <h1 class="heading-xlarge">Welcome, <%= foreName %></h1>
         </header>
         <p class="lede">
             Check your details below. Begin the multiplication tables check by clicking on ‘Read instructions’.
         </p>
+        <br />
         <p id="first-name" class="lede">First name: <strong class="bold-medium"><%= foreName %></strong></p>
-        <p id="last-name" class="lede">Last name: <strong class="bold-medium"><%= lastName %></strong></p></p>
+        <p id="last-name" class="lede">Last name: <strong class="bold-medium"><%= lastName %></strong></p>
         <p id="school" class="lede">School: <strong class="bold-medium"><%= school %></strong></p>
         <p class="lede">
             <a href="/sign-out">This is not me, I will enter my details again</a>
