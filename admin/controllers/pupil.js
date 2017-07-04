@@ -203,7 +203,7 @@ const getEditPupil = async (req, res, next) => {
   res.redirect('/school/manage-pupils')
 }
 
-const getManagePupils = async (req, res, next) => {
+const getManagePupils = async (req, res) => {
   res.locals.pageTitle = 'Manage pupils'
   const {pupils, schoolData} = await fetchPupilsData(req.user.School)
   let pupilsData = pupils.map(e => e.toJSON())
@@ -212,7 +212,7 @@ const getManagePupils = async (req, res, next) => {
   pupilsData = await Promise.all(pupilsData.map(async (item) => {
     const dob = new Date(item.dob)
     item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
-    const answers = await fetchPupilAnswers(item._id, next)
+    const answers = await fetchPupilAnswers(item._id)
     const pupilScore = answers && answers.result
     item.hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
     item.percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
