@@ -7,6 +7,10 @@ Feature:
     Given I am on the add pupil page
     Then I should see fields that will allow me to capture pupil data
 
+  Scenario: Add pupil page has fields to capture pupil data
+    Given I am on the add pupil page
+    Then I should see fields that will allow me to capture pupil data
+
   Scenario: Pupil data is stored when valid details are entered
     Given I am on the add pupil page
     When I have submitted valid pupil details

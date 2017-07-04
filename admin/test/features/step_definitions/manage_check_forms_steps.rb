@@ -20,6 +20,11 @@ end
 
 When(/^I upload a csv file$/) do
   @current_form_count = manage_check_forms_page.available_checks.rows.count
+  driver = page.driver.browser
+  driver.file_detector = lambda do |args|
+    str = args.first.to_s
+    str if File.exist?(str)
+  end
   page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
   manage_check_forms_page.upload.click
 end

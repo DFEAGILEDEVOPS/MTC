@@ -1,0 +1,9 @@
+require 'cucumber/rake/task'
+require_relative '../test/features/support/browserstack_settings'
+
+BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
+  Cucumber::Rake::Task.new("bs_#{browser}".to_sym) do |task|
+    task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser}"
+    task.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+  end
+end
