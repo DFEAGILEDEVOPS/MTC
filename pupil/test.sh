@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+cd pupil
 npm start &
 PID=$!
 
