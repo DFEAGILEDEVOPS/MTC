@@ -1,4 +1,3 @@
-
 // Path to assets for use with the file-url function
 // in the govuk frontend toolkit's url-helpers partial
 $path: '/govuk_template/stylesheets/images/';
@@ -38,43 +37,32 @@ $mainstream-brand: $department-for-education;
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/shame';
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/lists';
 
-// Phase banner
-.phase-banner {
-  @include phase-banner();
+// STA-MTC project elements
+@import './elements/no-js';
+@import './elements/phase-banner';
+@import './elements/organization-logo';
+@import './elements/headings';
+@import './elements/timer';
+@import './elements/check';
+@import './elements/warm-up';
+@import './elements/manage-pins';
+
+// Header and footer
+
+#footer {
+  border-top: 10px solid $mainstream-brand;
 }
 
-.phase-tag {
-  @include phase-tag;
+// General elements
+
+legend {
+  padding: 0;
 }
 
-// Js / no-Js
-.js-content {
-  visibility: hidden;
-  display: none;
-}
+// Layout and Spacing
 
-.js-enabled .js-content {
-  visibility: visible;
-  display: block;
-}
-
-.nojs-content {
-  visibility: visible;
-  display: block;
-}
-
-.js-enabled .nojs-content {
-  visibility: hidden;
-  display: none;
-}
-
-.nojs-content .page-header {
-  padding-top: 45px;
-}
-
-// Layout
 .top-padding {
-  padding-top: 30px;
+  padding-top: $gutter;
 }
 
 .no-top-margin {
@@ -85,85 +73,42 @@ $mainstream-brand: $department-for-education;
   margin-bottom: 0;
 }
 
-.text-center {
-  text-align: center;
-}
+// Alignment
 
 .right {
   float: right;
 }
 
-.heading-xlarge {
-  margin-bottom: 0.813em;
+.item-center {
+  text-align: center;
+  margin: 0 auto;
+  display: block;
 }
 
-// When showing the time remaining we want to prevent the "remaining time" label
-// from moving at all - so we give the dynamic timer element enough space for 2 digits
-// and prevent it from shrinking when display '1'.
-.timer {
-  display: inline-block;
-  width: 15px;
+.text-center {
+  text-align: center;
 }
 
-.remaining-time {
-  float: right;
-  position: absolute;
-  right: 1.58em;
-  vertical-align: top;
+// Buttons and links
+
+.button-secondary {
+  @include button($grey-3);
+
+  margin-top: em(20);
+
+  @include media(tablet) {
+    margin-top: 0;
+  }
 }
+
+// Visibility
 
 .hidden {
   display: none;
 }
 
-.preload {
-  margin-bottom: pem(120px);
-  margin-top: pem(120px);
-}
+// Errors, alerts, notifications
 
-.heading-block {
-  padding-bottom: 10px;
-  padding-top: 20px;
-}
-
-.organisation-logo {
-  background-image: file-url('crests/org_crest_13px.png');
-  background-position: 5px top;
-  background-repeat: no-repeat;
-  background-size: auto 20px;
-  border-left: 2px solid $department-for-education;
-  font-family: "Helvetica", "Arial";
-  font-size: 13px;
-  font-weight: normal;
-  line-height: 15px;
-  padding: 20px 0 0 6px;
-
-  @include media(tablet) {
-    background-image: file-url('crests/org_crest_18px.png');
-    background-position: 6px top;
-    background-size: auto 25px;
-    border-width: 2px;
-    font-size: 18px;
-    line-height: 20px;
-    padding: 25px 0 0 7px;
-  }
-
-  @include media(desktop) {
-    background-image: file-url('crests/org_crest_27px.png');
-    background-position: 6px top;
-    background-size: auto 40px;
-    border-width: 3px;
-    font-size: 27px;
-    line-height: 30px;
-    padding: 40px 0 0 10px;
-  }
-}
-
-.logo-text {
-  padding-top: 5px;
-}
-
-// Errors
 .alert {
   border-color: $error-colour;
   background-color: $grey-4;
@@ -173,81 +118,7 @@ $mainstream-brand: $department-for-education;
   margin-bottom: 0;
 }
 
-// Form
-.question-container {
-  margin-top: pem(30px, 16);
-}
-
-.question-and-answer {
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.question {
-  @include core-80;
-
-  display: inline-block;
-  padding-top: 3px; // allow for the border that the .answer has
-  vertical-align: top;
-  line-height: 1.15 !important;
-}
-
-.answer-container {
-  display: inline-block;
-}
-
-.answer {
-  @include core-80;
-
-  border: 3px solid $focus-colour;
-  display: block;
-  height: pem(80px, 80);
-  margin: auto;
-  text-align: left;
-  width: 3.02em; // IE Edge needs 0.02em more than other browsers.
-  line-height: 1.15 !important;
-}
-
-// Numpad
-.numpad-container {
-  margin-top: 2em;
-  text-align: center;
-}
-
-.numpad {
-  border-spacing: pem(10px, 16);
-}
-
-.key {
-  @include core-36;
-
-  background-color: $grey-3;
-  cursor: pointer;
-  height: 2em;
-  text-align: center;
-  width: 2em;
-
-  img {
-    vertical-align: middle;
-  }
-}
-
-.enter-key {
-  @extend .key;
-
-  @include core-27;
-}
-
-.center {
-  text-align: center;
-  margin: 0 auto;
-  display: block;
-}
-
-#footer {
-  border-top: 10px solid $mainstream-brand;
-}
+// Forms
 
 .textarea {
   width: 30em;
@@ -256,65 +127,12 @@ $mainstream-brand: $department-for-education;
   resize: vertical;
 }
 
-.width-1-char {
-  width: 2.1em;
-  text-align: left;
-  padding-left: 0.75em;
-}
-
-.width-2-char {
-  width: 3.5em;
-  text-align: left;
-  padding-left: 0.75em;
-}
-
-.width-pin {
-  width: 5.5em;
-  text-align: left;
-  padding-left: 0.75em;
-}
-
 .form-date .form-group {
   float: left;
   width: 50px;
   margin-right: 1.5em;
   margin-bottom: 0;
   clear: none;
-}
-
-// PIN grouping
-.pin-entry {
-  width: 8em;
-  text-align: left;
-  padding-left: 0.75em;
-}
-
-.pin-group .pin-entry:not(:first-child) {
-  margin-left: 0.5em;
-}
-
-legend {
-  padding: 0;
-}
-
-// Warm-up questions
-.warm-up-questions-label {
-  background-color: $govuk-blue;
-  color: $white;
-  padding:.526315em .789473em .263157em;
-  font-size: 1em;
-  font-weight: bold
-}
-
-// Grey buttons
-.button-secondary {
-  @include button($grey-3);
-
-  margin-top: em(20);
-
-  @include media(tablet) {
-    margin-top: 0;
-  }
 }
 
 // form-buttons

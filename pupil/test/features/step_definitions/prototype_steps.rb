@@ -172,7 +172,7 @@ Then(/^I should be shown instructions on how the check works$/) do
 end
 
 Then(/^I should be shown the confirmation page displaying my name$/) do
-  expect(confirmation_page).to have_heading(text: "Welcome #{@pupil_information['foreName']}", match: :prefer_exact)
+  expect(confirmation_page).to have_heading(text: "Welcome, #{@pupil_information['foreName']}", match: :prefer_exact)
   expect(confirmation_page).to have_page_instructions
   expect(confirmation_page).to have_first_name(text: @pupil_information['foreName'], match: :prefer_exact)
   expect(confirmation_page).to have_last_name(text: @pupil_information['lastName'], match: :prefer_exact)
