@@ -1,5 +1,5 @@
 'use strict'
-const {version: appVersion} = require('../package.json')
+const { version: appVersion } = require('../package.json')
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
