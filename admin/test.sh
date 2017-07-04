@@ -1,10 +1,10 @@
 #!/bin/bash -x
 
-cd pupil
+cd admin
 npm start &
 PID=$!
 
-MSG='pupil app is running under process '
+MSG='admin app is running under process '
 MSG+=$PID
 echo $MSG
 
