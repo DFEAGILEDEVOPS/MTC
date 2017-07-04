@@ -10,7 +10,8 @@ const { fetchPupilsData, fetchPupilAnswers } = require('../services/pupilService
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
-  const schoolId = req.user.School // school object from session
+  // school id from session
+  const schoolId = req.user.School
   let school
 
   try {
