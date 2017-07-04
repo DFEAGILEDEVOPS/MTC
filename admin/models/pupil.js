@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 const Pupil = new Schema({
   school: {
@@ -54,21 +54,21 @@ const Pupil = new Schema({
   }
 }, {
   timestamps: true
-});
+})
 
 /**
  * Retrieve pupil records by school code
  * @return {Promise}
  */
-Pupil.statics.getPupils = function(schoolCode) {
+Pupil.statics.getPupils = function (schoolCode) {
   if (schoolCode < 1) {
-    throw new Error('Missing school code');
+    throw new Error('Missing school code')
   }
-  const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null;
+  const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null
   if (!pupils) {
-    console.log('getPupils ERROR', error);
+    console.log('getPupils ERROR', error)
   }
-  return pupils;
-};
+  return pupils
+}
 
-module.exports = mongoose.model('Pupil', Pupil);
+module.exports = mongoose.model('Pupil', Pupil)

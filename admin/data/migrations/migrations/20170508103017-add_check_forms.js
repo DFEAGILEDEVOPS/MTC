@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
 module.exports = {
 
-  up(db, next) {
-    const objs = [];
+  up (db, next) {
+    const objs = []
 
     objs.push({
       _id: 100,
@@ -33,7 +33,7 @@ module.exports = {
         {f1: 10, f2: 5},
         {f1: 12, f2: 12}
       ]
-    });
+    })
 
     objs.push({
       _id: 101,
@@ -63,7 +63,7 @@ module.exports = {
         {f1: 10, f2: 5},
         {f1: 12, f2: 12}
       ]
-    });
+    })
 
     objs.push({
       _id: 102,
@@ -93,23 +93,23 @@ module.exports = {
         {f1: 10, f2: 5},
         {f1: 12, f2: 12}
       ]
-    });
+    })
 
-    db.collection('checkforms').insertMany(objs, function(error) {
+    db.collection('checkforms').insertMany(objs, function (error) {
       if (error) {
-        console.log(error);
-        next(error);
+        console.log(error)
+        next(error)
       }
-    });
+    })
 
-    next();
+    next()
   },
 
-  down(db, next) {
+  down (db, next) {
     db.collection('checkforms').drop(error => {
-      if (error) next(error);
-      next();
-    });
+      if (error) next(error)
+      next()
+    })
   }
 
-};
+}

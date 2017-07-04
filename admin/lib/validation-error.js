@@ -1,73 +1,69 @@
-'use strict';
+'use strict'
 
 module.exports = class ValidationError {
-
   /**
    *
    * @param {String} field - the html field that is invalid
    * @param {String} message - the message to display in the GDS format just above the field
    */
-  constructor(field, message) {
-    this.errors = {};
+  constructor (field, message) {
+    this.errors = {}
     if (field && message) {
-      this.errors[field] = message;
+      this.errors[field] = message
     }
   }
-
 
   /**
    *
    * @param {String} field - the html field
    * @param {String} message - the message to display
    */
-  addError(field, message) {
-    this.errors[field] = message;
+  addError (field, message) {
+    this.errors[field] = message
   }
-
 
   /**
    *
    * @param {String} field
    * @return {boolean}
    */
-  isError(field) {
+  isError (field) {
     if (this.errors.hasOwnProperty(field)) {
-      return true;
+      return true
     }
-    return false;
+    return false
   }
-
 
   /**
    *
    * @param {String} field
    * @return {String}  - possibly empty string
    */
-  get(field) {
+  get (field) {
     if (this.errors.hasOwnProperty(field)) {
-      return this.errors[field];
+      return this.errors[field]
     }
-    return '';
+    return ''
   }
 
   /**
    *
    * @return {boolean}
    */
-  hasError() {
-    return Object.keys(this.errors).length > 0;
+  hasError () {
+    return Object.keys(this.errors).length > 0
   }
 
   /**
    *
    * @return {Array}
    */
-  getFields() {
-    return Object.keys(this.errors);
+  getFields () {
+    return Object.keys(this.errors)
   }
 
-  removeError(field) {
-    return delete this.errors[field];
+  removeError (field) {
+    return delete this.errors[field]
   }
 
   /**
@@ -76,50 +72,48 @@ module.exports = class ValidationError {
    * Date of birth [day, month, year] fields are likely to all have the
    * same error message.
    */
-  getUniqueFields(sortArray) {
-    let hash = {};
+  getUniqueFields (sortArray) {
+    let hash = {}
     for (let field in this.errors) {
-      hash[this.errors[field]] = field;
+      hash[this.errors[field]] = field
     }
-    let unique = {};
+    let unique = {}
     for (let field in hash) {
-      unique[hash[field]] = field;
+      unique[hash[field]] = field
     }
-    let uniqueKeys = Object.keys(unique);
+    let uniqueKeys = Object.keys(unique)
 
     if (sortArray) {
-      return ValidationError.sortByFieldOrder(uniqueKeys, sortArray);
+      return ValidationError.sortByFieldOrder(uniqueKeys, sortArray)
     }
-    return uniqueKeys;
+    return uniqueKeys
   }
 
-  static sortByFieldOrder(arrayToSort, fieldOrder) {
-
+  static sortByFieldOrder (arrayToSort, fieldOrder) {
     if (!Array.isArray(arrayToSort)) {
-      throw new TypeError('arrayToSort is not an array');
+      throw new TypeError('arrayToSort is not an array')
     }
 
     if (!Array.isArray(fieldOrder)) {
-      throw new TypeError('fieldOrder is not an array');
+      throw new TypeError('fieldOrder is not an array')
     }
 
-    const sortedFields = [];
+    const sortedFields = []
 
     fieldOrder.forEach((val, idx) => {
       if (arrayToSort.indexOf(val) !== -1) {
-        sortedFields.push(val);
+        sortedFields.push(val)
       }
-    });
+    })
 
     arrayToSort.forEach(val => {
       if (sortedFields.indexOf(val) === -1) {
         // We have found a key (unique field with an error) that is not specified in the sort order
         // - add it the end rather than drop it.
-        sortedFields.push(val);
+        sortedFields.push(val)
       }
-    });
+    })
 
-    return sortedFields;
+    return sortedFields
   }
 }
-
