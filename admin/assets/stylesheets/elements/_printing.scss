@@ -1,0 +1,44 @@
+// needs to be refactored for re-usability
+@media print {
+  #content {
+    padding-bottom: 0;
+  }
+  .no-print{
+    display: none;
+  }
+}
+
+.pupil-print-table {
+  table, td, tr {
+    border: 1px dashed $black;
+    text-align: center;
+    vertical-align: middle;
+    margin-bottom: -1px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  tr.page
+  {
+    page-break-before: auto;
+    page-break-after: auto;
+    page-break-inside: avoid;
+  }
+  td {
+    padding: 1em;
+    strong {
+      font-size: medium;
+    }
+  }
+  td, tr {
+    min-height: 180px;
+    min-width: 200px;
+    max-height: 180px;
+    max-width: 200px;
+  }
+  .pupil-content {
+    line-height: 2em;
+    font-size: .8em;
+  }
+}

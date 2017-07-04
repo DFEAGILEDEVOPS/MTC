@@ -1,0 +1,21 @@
+// Breadcrumbs
+.breadcrumbs {
+  padding-top: 10px;
+  padding-bottom: 15px;
+
+  div {
+    display: inline-block;
+    font-size: medium;
+
+    a {
+      font-size: medium;
+    }
+  }
+}
+
+.breadcrumb-separator {
+  color: $grey-2;
+  font-weight: bold;
+  margin-left: .5em;
+  margin-right: .5em;
+}
