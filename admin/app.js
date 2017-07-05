@@ -20,6 +20,19 @@ const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const fs = require('fs')
 const config = require('./config')
+const whitelist = require('./whitelist')
+
+const unsetVars = []
+Object.keys(config).map((key) => {
+  if (!config[key] && !whitelist.includes(key)) {
+    unsetVars.push(`${key}`)
+  }
+})
+
+if (unsetVars.length > 0) {
+  console.log(`The following environment variables need to be defined:\n${unsetVars.join('\n')}`)
+  process.exit()
+}
 
 mongoose.promise = global.Promise
 const connectionString = config.MONGO_CONNECTION_STRING

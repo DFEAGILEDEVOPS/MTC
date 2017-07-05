@@ -4,6 +4,7 @@ const compression = require('compression')
 const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
 const mongoose = require('mongoose')
+// const morgan = require('morgan')
 const partials = require('express-partials')
 const passport = require('passport')
 const path = require('path')
@@ -17,6 +18,19 @@ const mtcCheck = require('./routes/mtc-check')
 const mtcWarmUp = require('./routes/mtc-warm-up')
 const Pupil = require('./models/pupil')
 const config = require('./config')
+const whitelist = require('./whitelist')
+
+const unsetVars = []
+Object.keys(config).map((key) => {
+  if (!config[key] && !whitelist.includes(key)) {
+    unsetVars.push(`${key}`)
+  }
+})
+
+if (unsetVars.length > 0) {
+  console.log(`The following environment variables need to be defined:\n${unsetVars.join('\n')}`)
+  process.exit()
+}
 
 // override Mongoose's default promise library with one from Node.
 mongoose.promise = global.Promise
