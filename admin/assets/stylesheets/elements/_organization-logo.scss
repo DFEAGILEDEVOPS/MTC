@@ -1,3 +1,8 @@
+.organisation-container {
+    padding-top: 0;
+    padding-bottom: 25px;
+}
+
 .organisation-logo {
   background-image: file-url('crests/org_crest_13px.png');
   background-position: 5px top;
@@ -29,6 +34,10 @@
     line-height: 30px;
     padding: 40px 0 0 10px;
   }
+}
+
+.organisation-logo.home {
+  margin-top: $gutter-two-thirds;
 }
 
 //  Logo

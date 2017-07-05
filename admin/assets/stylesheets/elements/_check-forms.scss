@@ -7,41 +7,41 @@ dl.inline-definition-list {
   overflow: hidden;
   padding: 0;
   width: 100%;
-}
 
-dt.inline-definition-list {
-  @include core-36;
+  dd {
+    @include core-36;
 
-  float: left;
-  margin: 0 0 1em 0;
-  padding: 0;
-  width: 90%;
-
-  @include media(tablet) {
-    width: 80%;
-  }
-  @include media(desktop) {
+    float: left;
+    margin: 0 0 1em 0;
+    padding: 0;
     width: 90%;
-  }
-}
 
-dd.inline-definition-list {
-  @include core-24;
-
-  color: $grey-1;
-  float: left;
-  margin: 0;
-  padding: 0;
-  width: 10%;
-
-  @include media(tablet) {
-    float: left;
-    width: 20%;
+    @include media(tablet) {
+      width: 80%;
+    }
+    @include media(desktop) {
+      width: 90%;
+    }
   }
 
-  @include media(desktop) {
+  dt {
+    @include core-24;
+
+    color: $grey-1;
     float: left;
+    margin: 0;
+    padding: 5px 0;
     width: 10%;
+
+    @include media(tablet) {
+      float: left;
+      width: 20%;
+    }
+
+    @include media(desktop) {
+      float: left;
+      width: 10%;
+    }
   }
 }
 
