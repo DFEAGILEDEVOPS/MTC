@@ -67,8 +67,6 @@ Sheet must be set in the environment:
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there is
   a tracking code and in production mode, eg `NODE_ENV=production`
- 
-
 
 ### Running the test suite
 
@@ -100,6 +98,22 @@ cd data/migrations
 ```
 You can then edit the skeleton file created with the required `up` and `down` migrations. 
 
+
+## Live reloading on change
+
+In devDependencies, make sure you have npm-run-all:
+
+"npm-run-all": "^4.0.2",
+"nodemon": "^1.11.0",
+
+If not, install them.
+In scripts, have the following:
+
+"startn": "nodemon ./server.js",
+"watch-jscss": "gulp watch"
+
+On the console:
+npm-run-all --parallel watch-jscss startn
 
 ## Docker setup
 
