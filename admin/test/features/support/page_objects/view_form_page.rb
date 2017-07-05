@@ -1,7 +1,7 @@
 class ViewFormPage < SitePrism::Page
   set_url '/test-developer/view-form{/check_id}'
 
-  element :heading, '.heading-xlarge'
+  element :heading, '#content h1'
   element :information, '.information'
   element :back_to_manage_forms, 'a[href="/test-developer/manage-check-forms"]'
   element :delete_form, 'input[value="Delete form"]'
