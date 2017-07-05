@@ -4,6 +4,7 @@ env:
   global:
     - STD_LOG_FILE="./build.log"
     - CXX=g++-4.8
+    - GOOGLE_SVC_DOC_KEY=17V1vMudgvkJ4YMmR3SzdC7zEfYuy5l7Si2stAjR2GBo
 
 node_js: 
   - 8.1.0
