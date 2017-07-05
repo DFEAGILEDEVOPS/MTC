@@ -3,9 +3,7 @@
 require('newrelic')
 const express = require('express')
 const path = require('path')
-const favicon = require('serve-favicon')
 const logger = require('morgan')
-const cookieParser = require('cookie-parser')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const mongoose = require('mongoose')
@@ -19,9 +17,10 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const fs = require('fs')
+const config = require('./config')
 
 mongoose.promise = global.Promise
-const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
+const connectionString = config.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
@@ -40,8 +39,8 @@ const helpers = require('./helpers')(app)
 logging is not yet correctly implemented, so this is a temporary workaround
  see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
  */
-if (process.env.STD_LOG_FILE) {
-  const appLog = fs.createWriteStream(process.env.STD_LOG_FILE)
+if (config.STD_LOG_FILE) {
+  const appLog = fs.createWriteStream(config.STD_LOG_FILE)
   process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
   process.on('uncaughtException', function (err) {
     console.error((err && err.stack) ? err.stack : err)
@@ -72,7 +71,7 @@ const mongoStoreOptions = {
 }
 const sessionOptions = {
   name: 'staff-app.sid',
-  secret: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
+  secret: process.env.NODE_ENV === 'production' ? config.SESSION_SECRET : 'anti tamper for dev',
   resave: false,
   rolling: true,
   saveUninitialized: false,

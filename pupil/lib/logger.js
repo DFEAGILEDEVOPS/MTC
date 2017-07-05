@@ -1,18 +1,20 @@
 const bunyan = require('bunyan')
 const azBunyan = require('az-bunyan')
 
+const config = require('../config')
+
 let tableName = 'itcSurveyData'
 let loggerName = 'mtcLogger'
 let logger = null
 
-if (process.env.MTC_SERVICE) {
-  loggerName = process.env.MTC_SERVICE
+if (config.MTC_SERVICE) {
+  loggerName = config.MTC_SERVICE
 }
 
 if (process.env.NODE_ENV === 'production') {
   // initialize the az-bunyan table storage stream
   let azureStream = azBunyan.createTableStorageStream('info', {
-    connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+    connectionString: config.AZURE_STORAGE_CONNECTION_STRING,
     tableName: tableName
   })
 
