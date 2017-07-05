@@ -5,7 +5,7 @@
         <% if (error.hasError()) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
             <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                Check the details in the headteacher's declaration form
+                Check the details in the headteacher’s declaration form
             </h1>
 
             <p>Look at the declaration options, job title, and signature details. Maximum length fields are 35 characters.</p>
@@ -18,7 +18,7 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge">Headteacher's declaration form</h1>
+        <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
 
         <form method="post" action="/school/submit-declaration-form" autocomplete="off">
             <div class="form-group <%= error.isError('declaration') ? 'form-group-error' : '' %>" id="declaration">
