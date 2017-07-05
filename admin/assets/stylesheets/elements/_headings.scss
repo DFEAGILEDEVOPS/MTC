@@ -1,7 +1,7 @@
 // Headers
 .heading-border-top {
   border-top: 1px solid $black;
-  padding-top: 2rem;
+  padding-top: $gutter-and-a-half;
 }
 
 .heading-large-no-bold {
@@ -20,5 +20,5 @@
 }
 
 h1 {
-  padding-bottom: 10px;
+  padding-bottom: $gutter-one-third;
 }

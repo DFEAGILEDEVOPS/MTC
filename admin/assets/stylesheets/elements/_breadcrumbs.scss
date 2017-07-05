@@ -1,7 +1,7 @@
 // Breadcrumbs
 .breadcrumbs {
-  padding-top: 10px;
-  padding-bottom: 15px;
+  padding-top: $gutter-one-third;
+  padding-bottom: $gutter-half;
 
   div {
     display: inline-block;
@@ -16,6 +16,6 @@
 .breadcrumb-separator {
   color: $grey-2;
   font-weight: bold;
-  margin-left: .5em;
-  margin-right: .5em;
+  margin-left: $gutter-one-third;
+  margin-right: $gutter-one-third;
 }

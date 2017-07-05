@@ -59,7 +59,7 @@ $mainstream-brand: $department-for-education;
 }
 
 .sidebar-top-border {
-  border-top: 10px solid $link-colour;
+  border-top: $gutter-one-third solid $link-colour;
   margin-top: $gutter-and-a-half;
   padding: 0;
 
@@ -90,7 +90,7 @@ hr.divider {
   width: 100%;
   clear: both;
   padding: 1em 0;
-  margin: 2em 0;
+  margin: $gutter-and-a-half 0;
   background-color: $grey-3;
   display: table;
 
@@ -115,12 +115,16 @@ hr.divider {
 }
 
 .left-padding {
-  padding-left: 30px;
+  padding-left: $gutter;
 }
 
 .side-padding {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: $gutter;
+  padding-right: $gutter;
+}
+
+.bottom-padding {
+  padding-bottom: $gutter-half;
 }
 
 // Visibility
@@ -273,8 +277,8 @@ table.spacious {
 
   border-bottom: 1px solid $grey-2;
   border-collapse: collapse;
-  margin-bottom: 2em;
-  margin-top: 2em;
+  margin-bottom: $gutter-and-a-half;
+  margin-top: $gutter-and-a-half;
   width: 100%;
 
   tr {
@@ -286,8 +290,8 @@ table.spacious {
   }
 
   td {
-    padding-bottom: 15px;
-    padding-top: 15px;
+    padding-bottom: $gutter-half;
+    padding-top: $gutter-half;
   }
 }
 
