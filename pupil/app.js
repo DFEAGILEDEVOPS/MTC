@@ -4,7 +4,6 @@ const compression = require('compression')
 const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
 const mongoose = require('mongoose')
-const morgan = require('morgan')
 const partials = require('express-partials')
 const passport = require('passport')
 const path = require('path')
@@ -38,7 +37,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 // if (process.env.NODE_ENV === 'production') {
 //   logger = require('./lib/logger')
 //   // bunyan logger saving to Azure, warnings and above to stdout as well
@@ -57,10 +56,10 @@ if (config.MONGO_CONNECTION_STRING) {
   connectionString = config.MONGO_CONNECTION_STRING
 }
 
-mongoose.connect(connectionString, function(err) {
+mongoose.connect(connectionString, function (err) {
   if (err) {
-    console.log('Could not connect to mongodb. Ensure that you have mongodb running on localhost and mongodb accepts '
-      +  'connections on standard ports!')
+    console.log('Could not connect to mongodb. Ensure that you have mongodb running on localhost and mongodb accepts ' +
+      'connections on standard ports!')
   }
 })
 
@@ -73,7 +72,7 @@ mongoStoreOptions = {
 
 sessionOptions = {
   name: 'pupil-app.sid',
-  secret: process.env.NODE_ENV === 'production' ? config.SESSION_SECRET : 'anti tamper for dev',
+  secret: config.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   store: new MongoStore(mongoStoreOptions),
@@ -112,11 +111,11 @@ app.use(passport.session())
 app.use(compression({filter: shouldCompress}))
 
 // Initialise Passport
-passport.serializeUser(function(pupil, done) {
+passport.serializeUser(function (pupil, done) {
   done(null, pupil._id)
 })
 
-passport.deserializeUser(async function(pupilId, done) {
+passport.deserializeUser(async function (pupilId, done) {
   if (!pupilId) {
     return done(null, false)
   }
@@ -136,13 +135,13 @@ passport.deserializeUser(async function(pupilId, done) {
   }
 })
 
-app.use(express.static(path.join(__dirname, 'public'),  {
+app.use(express.static(path.join(__dirname, 'public'), {
   maxage: '1d',
   setHeaders: function (res, fullpath) {
     'use strict'
     let re = new RegExp('^' + __dirname + '/public')
     let appPath = fullpath.replace(re, '')
-    if (appPath.substring(0,6) === '/data/') {
+    if (appPath.substring(0, 6) === '/data/') {
       res.setHeader('Cache-Control', 'public, max-age=0')
     }
   }}))
@@ -157,9 +156,9 @@ app.use('/', index)
 app.use('/check', mtcCheck)
 app.use('/warm-up', mtcWarmUp)
 
-function shouldCompress(req, res) {
+function shouldCompress (req, res) {
   'use strict'
-  if (req.url.substring(0,6) === '/data/') {
+  if (req.url.substring(0, 6) === '/data/') {
     // don't compress the files used for the speed test
     return false
   }

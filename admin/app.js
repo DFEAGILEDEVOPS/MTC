@@ -3,7 +3,9 @@
 require('newrelic')
 const express = require('express')
 const path = require('path')
+// const favicon = require('serve-favicon')
 const logger = require('morgan')
+// const cookieParser = require('cookie-parser')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const mongoose = require('mongoose')
@@ -20,7 +22,7 @@ const fs = require('fs')
 const config = require('./config')
 
 mongoose.promise = global.Promise
-const connectionString = config.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
+const connectionString = config.MONGO_CONNECTION_STRING
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
@@ -71,7 +73,7 @@ const mongoStoreOptions = {
 }
 const sessionOptions = {
   name: 'staff-app.sid',
-  secret: process.env.NODE_ENV === 'production' ? config.SESSION_SECRET : 'anti tamper for dev',
+  secret: config.SESSION_SECRET,
   resave: false,
   rolling: true,
   saveUninitialized: false,
