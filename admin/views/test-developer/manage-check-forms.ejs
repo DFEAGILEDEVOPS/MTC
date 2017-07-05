@@ -1,96 +1,104 @@
 <% let err = (typeof error !== 'undefined') ? error : false; %>
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <h1 class="heading-xlarge">Manage check forms</h1>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
-<% if (err) { %>
-    <% if (err.hasOwnProperty('message')) { %>
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-            <%= err.message %>
-        </h1>
+<div class="grid-row">
+    <div class="column-two-thirds">
 
-        <p>The form upload spreadsheet:</p>
-
-        <ul class="list list-bullet">
-            <li> must be in CSV format</li>
-            <li> must only contain 2 columns</li>
-            <li> must not have a header row</li>
-            <li> must only contain numbers between 1 and 12</li>
-        </ul>
-
-        <ul class="error-summary-list">
-            <li><a href="#file-upload">Please try uploading a file again</a></li>
-        </ul>
-    </div>
-    <% } %>
-<% } %>
-
-<p class="lede">
-    Use this page to upload CSV check forms and assign them to check windows
-</p>
-
-<form id="upload-form" action="/test-developer/manage-check-forms" method="post" enctype="multipart/form-data">
-    <div class="form-group <% if (err) { %>form-group-error<% } %>" style="margin-bottom: 15px">
         <% if (err) { %>
-        <label class="error-message"><%= err.message %></label>
-        <% } %>
-        <p class="font-xsmall">
-            <input type="file" name="csvFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload">
-        </p>
-    </div>
+            <% if (err.hasOwnProperty('message')) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+                <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    <%= err.message %>
+                </h1>
 
-    <div class="form-group">
-        <input type="reset" value="Remove" class="link" /> <br>
-        <input id="upload-form-submit" type="submit" class="button" value="Upload file" />
-    </div>
-</form>
+                <p>The form upload spreadsheet:</p>
 
-<hr class="divider"/>
+                <ul class="list list-bullet">
+                    <li> must be in CSV format</li>
+                    <li> must only contain 2 columns</li>
+                    <li> must not have a header row</li>
+                    <li> must only contain numbers between 1 and 12</li>
+                </ul>
 
-<form method="get" action="choose-check-window">
-    <div class="form-group">
-        <input type="submit" value="Assign" class="button-secondary" />
-    </div>
-
-    <div class="group">
-        <table class="spacious" id="checkFormsList">
-            <thead>
-                <tr>
-                    <th scope="col" class="multiple-choice tick-all-boxes">
-                        <input id="tickAllCheckboxes" name="allCheckForms" type="checkbox">
-                        <label for="allCheckForms">Title:</label>
-                    </th>
-                    <th scope="col" class="multiple-choice tick-all-boxes-nojs">Title:</th>
-                    <th scope="col"> Assigned to:</th>
-                    <th scope="col"> Uploaded on:</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            <% if (Array.isArray(forms)) { %>
-                <% forms.forEach( form => { %>
-                <tr>
-                    <td>
-                        <div class="multiple-choice">
-                            <input id="check-form-<%= form._id %>" type="checkbox" name="check-form" value="<%= form._id %>">
-                            <label for="check-form-<%= form._id %>"><a href="/test-developer/view-form/<%= form._id %>"><%= form.name %> </a></label>
-                        </div>
-                    </td>
-                    <td>
-                        <%= form.checkWindows.map( cw => { return cw.name;  }).join(', '); %>
-                    </td>
-                    <td> <%= formatGdsDate(form.createdAt) %> </td>
-                </tr>
-                <% }) %>
-            <% } else { %>
-                <td colspan="3">No forms currently entered</td>
+                <ul class="error-summary-list">
+                    <li><a href="#file-upload">Please try uploading a file again</a></li>
+                </ul>
+            </div>
             <% } %>
-            </tbody>
-        </table>
+        <% } %>
+
+        <h1 class="heading-xlarge">Manage check forms</h1>
+
+        <p class="lede">
+            Use this page to upload CSV check forms and assign them to check windows
+        </p>
+
+        <form id="upload-form" action="/test-developer/manage-check-forms" method="post" enctype="multipart/form-data">
+            <div class="form-group <% if (err) { %>form-group-error<% } %>" style="margin-bottom: 15px">
+                <% if (err) { %>
+                <label class="error-message"><%= err.message %></label>
+                <% } %>
+                <p class="font-xsmall">
+                    <input type="file" name="csvFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <input type="reset" value="Remove" class="link" /> <br>
+                <input id="upload-form-submit" type="submit" class="button" value="Upload file" />
+            </div>
+        </form>
+
+        <hr class="divider"/>
+
+        <form method="get" action="choose-check-window">
+            <div class="form-group">
+                <input type="submit" value="Assign" class="button-secondary" />
+            </div>
+
+            <div class="group">
+                <table class="spacious" id="checkFormsList">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="multiple-choice tick-all-boxes">
+                                    <input id="tickAllCheckboxes" name="allCheckForms" type="checkbox">
+                                    <label for="tickAllCheckboxes">Title:</label>
+                                </div>
+                                <div class="multiple-choice tick-all-boxes-nojs">
+                                    Title:
+                                </div>
+                            </th>
+                            <th scope="col"> Assigned to:</th>
+                            <th scope="col"> Uploaded on:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    <% if (Array.isArray(forms)) { %>
+                        <% forms.forEach( form => { %>
+                        <tr>
+                            <td>
+                                <div class="multiple-choice">
+                                    <input id="check-form-<%= form._id %>" type="checkbox" name="check-form" value="<%= form._id %>">
+                                    <label for="check-form-<%= form._id %>"><a href="/test-developer/view-form/<%= form._id %>"><%= form.name %> </a></label>
+                                </div>
+                            </td>
+                            <td>
+                                <%= form.checkWindows.map( cw => { return cw.name;  }).join(', '); %>
+                            </td>
+                            <td> <%= formatGdsDate(form.createdAt) %> </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <td colspan="3">No forms currently entered</td>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 <script>
     $(document).ready(function() {

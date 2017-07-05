@@ -39,6 +39,7 @@ $mainstream-brand: $department-for-education;
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/shame';
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/lists';
 
+@import '_variables';
 @import 'elements/_phase-banner';
 @import 'elements/_headings';
 @import 'elements/_organization-logo';
@@ -59,7 +60,12 @@ $mainstream-brand: $department-for-education;
 
 .sidebar-top-border {
   border-top: 10px solid $link-colour;
-  margin-top: 35px;
+  margin-top: $gutter-and-a-half;
+  padding: 0;
+
+  h3 {
+    margin-top: $gutter-two-thirds;
+  }
 }
 
 hr.divider {
@@ -123,6 +129,15 @@ hr.divider {
   display: none;
 }
 
+.hidden-and-readable {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow:hidden;
+}
+
 // Footer
 
 #footer {
@@ -143,6 +158,10 @@ hr.divider {
 
 dl dd {
   margin-left: 0;
+}
+
+.list-nested {
+  margin-left: 35px;
 }
 
 // Forms
@@ -213,6 +232,18 @@ input {
   }
 }
 
+// Grey buttons
+
+.button-secondary {
+  @include button($grey-3);
+
+  margin-top: em(20);
+
+  @include media(tablet) {
+    margin-top: 0;
+  }
+}
+
 // Hide 'check all' checkboxes if JS is not enabled
 
 .tick-all-boxes {
@@ -234,18 +265,6 @@ input {
 .js-enabled .tick-all-boxes-nojs {
   display: none;
   visibility: hidden;
-}
-
-// Grey buttons
-
-.button-secondary {
-  @include button($grey-3);
-
-  margin-top: em(20);
-
-  @include media(tablet) {
-    margin-top: 0;
-  }
 }
 
 // Tables
