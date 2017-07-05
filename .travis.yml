@@ -1,8 +1,9 @@
 language: node_js
 
 env:
-  - CXX=g++-4.8
-  - STD_LOG_FILE="./build.log"
+  global:
+    - STD_LOG_FILE="./build.log"
+    - CXX=g++-4.8
 
 node_js: 
   - 8.1.0
