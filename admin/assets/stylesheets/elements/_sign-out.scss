@@ -4,7 +4,8 @@
   color: $white;
   text-decoration: none;
   float: right;
-  :visited {
-    color: $white;
-  }
+}
+
+#sign-out:visited {
+  color: $white;
 }
