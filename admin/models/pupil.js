@@ -58,7 +58,7 @@ const Pupil = new Schema({
 
 /**
  * Retrieve pupil records by school code
- * @return {Promise}
+ * @return {Query} || null
  */
 Pupil.statics.getPupils = function (schoolCode) {
   if (schoolCode < 1) {
