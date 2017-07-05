@@ -27,3 +27,9 @@
     padding-right: 1.5em;
   }
 }
+
+.width-60 {
+  @include media(mobile) {
+    width: 60%;
+  }
+}
