@@ -12,7 +12,7 @@ const pupil = (router) => {
   router.post('/pupil/add', isAuthenticated(), (req, res, next) => postAddPupil(req, res, next))
   router.get('/pupil/edit/:id', (req, res, next) => getEditPupilById(req, res, next))
   router.post('/pupil/edit', (req, res, next) => getEditPupil(req, res, next))
-  router.get('/manage-pupils', isAuthenticated(), (req, res, next) => getManagePupils(req, res, next))
+  router.get('/manage-pupils', isAuthenticated(), (req, res) => getManagePupils(req, res))
   router.get('/print-pupils', isAuthenticated(), (req, res, next) => getPrintPupils(req, res, next))
 }
 
