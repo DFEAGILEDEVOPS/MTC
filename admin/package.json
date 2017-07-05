@@ -55,8 +55,10 @@
     "gulp-standard": "^10.0.0",
     "jasmine-node": "^1.14.5",
     "nodemon": "^1.11.0",
-    "standard": "^10.0.2",
-    "nyc": "^11.0.3"
+    "nyc": "^11.0.3",
+    "sinon": "^2.3.6",
+    "sinon-mongoose": "^2.0.2",
+    "standard": "^10.0.2"
   },
   "nyc": {
     "exclude": [
