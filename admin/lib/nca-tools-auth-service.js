@@ -65,16 +65,16 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
     // Check the token is new, and not being re-used
     try {
       const token = await
-      new NcaToolsAuthToken({
-        _id: data.SessionToken,
-        logonDate: new Date(),
-        ncaUserName: data.UserName,
-        ncaUserType: data.UserType,
-        ncaEmailAddress: data.EmailAddress,
-        roleGiven: data.role,
-        school: data.School
-      })
-        .save()
+        new NcaToolsAuthToken({
+          _id: data.SessionToken,
+          logonDate: new Date(),
+          ncaUserName: data.UserName,
+          ncaUserType: data.UserType,
+          ncaEmailAddress: data.EmailAddress,
+          roleGiven: data.role,
+          school: data.School
+        })
+      token.save()
     } catch (error) {
       return reject(new Error('Failed to save SessionToken - possible replay attack: ' + error.message))
     }
