@@ -7,7 +7,7 @@ module.exports = {
   MTC_SERVICE: process.env.MTC_SERVICE,
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
-  PORT: process.env.PORT || '3000',
+  PORT: process.env.PORT || '3001',
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   STD_LOG_FILE: process.env.STD_LOG_FILE,
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY

@@ -18,18 +18,19 @@ const mtcCheck = require('./routes/mtc-check')
 const mtcWarmUp = require('./routes/mtc-warm-up')
 const Pupil = require('./models/pupil')
 const config = require('./config')
-const whitelist = require('./whitelist')
+const devWhitelist = require('./whitelist-dev')
 
 const unsetVars = []
 Object.keys(config).map((key) => {
-  if (!config[key] && !whitelist.includes(key)) {
+  if (!config[key] && !devWhitelist.includes(key)) {
     unsetVars.push(`${key}`)
   }
 })
 
 if (unsetVars.length > 0) {
-  console.log(`The following environment variables need to be defined:\n${unsetVars.join('\n')}`)
-  process.exit()
+  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
+  process.exitCode = 1
+  throw new Error(error)
 }
 
 // override Mongoose's default promise library with one from Node.

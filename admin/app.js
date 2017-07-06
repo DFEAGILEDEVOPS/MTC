@@ -20,18 +20,19 @@ const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const fs = require('fs')
 const config = require('./config')
-const whitelist = require('./whitelist')
+const devWhitelist = require('./whitelist-dev')
 
 const unsetVars = []
 Object.keys(config).map((key) => {
-  if (!config[key] && !whitelist.includes(key)) {
+  if (!config[key] && !devWhitelist.includes(key)) {
     unsetVars.push(`${key}`)
   }
 })
 
 if (unsetVars.length > 0) {
-  console.log(`The following environment variables need to be defined:\n${unsetVars.join('\n')}`)
-  process.exit()
+  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
+  process.exitCode = 1
+  throw new Error(error)
 }
 
 mongoose.promise = global.Promise

@@ -2,7 +2,7 @@
  * Optional environment variables
  */
 
-module.exports = [
+const whitelist = [
   'AZURE_STORAGE_LOGGING_ENABLED',
   'GOOGLE_TRACKING_ID',
   'MTC_AUTH_PRIVATE_KEY',
@@ -12,3 +12,5 @@ module.exports = [
   'STD_LOG_FILE',
   'TSO_AUTH_PUBLIC_KEY'
 ]
+
+module.exports = process.env.NODE_ENV !== 'production' ? whitelist : []
