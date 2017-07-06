@@ -1,0 +1,35 @@
+// Pupils list
+.pupils-list div {
+  margin-left: $gutter-one-third;
+}
+
+.pupils-list label {
+  padding-bottom: 0;
+  padding-top: 0;
+  a {
+    display: inline;
+    left: 16em;
+    position: absolute;
+  }
+}
+
+.pupils-print-pins {
+  font-size: .8em;
+  padding-right: .5em;
+
+  &:before {
+    background-image: url('/images/icon-printer.png');
+    background-repeat: no-repeat;
+    content: " ";
+    margin-left: .5em;
+    margin-top: 12px;
+    padding-left: .5em;
+    padding-right: 1.5em;
+  }
+}
+
+.width-60 {
+  @include media(mobile) {
+    width: 60%;
+  }
+}
