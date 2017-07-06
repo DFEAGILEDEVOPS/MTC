@@ -4,6 +4,14 @@ const crypto = require('crypto')
 const iconv = require('iconv-lite')
 const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
 
+/**
+ * Decrypt and authenticate a data packet
+ * @param {String} encKey  (base64 encoded)
+ * @param {String} encIv   (base64 encoded)
+ * @param {String} encData (base64 encoded)
+ * @param {String} encSignature (base64 encoded)
+ * @return {Promise} plain object if ok: Example output: { School: 999, EmailAddress: me@mydomain.com, ... }
+ */
 const authenticate = function (encKey, encIv, encData, encSignature) {
   return new Promise(async function (resolve, reject) {
     if (!(encKey && encIv && encData && encSignature)) {
