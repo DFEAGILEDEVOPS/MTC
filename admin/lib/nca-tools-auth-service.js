@@ -3,7 +3,6 @@
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
 const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
-const config = require('../config')
 
 /**
  * Decrypt and authenticate a data packet
@@ -15,12 +14,12 @@ const config = require('../config')
  */
 const authenticate = function (encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey) {
   return new Promise(async function (resolve, reject) {
-    if (!(encKey && encIv && encData && encSignature & senderPublicKey && recipientPrivateKey)) {
+    if (!(encKey && encIv && encData && encSignature && senderPublicKey && recipientPrivateKey)) {
       return reject(new Error('Missing parameters'))
     }
 
     /**
-     * Step 1: verify we can decrypt the signature, with the public TSO key
+     * Step 1: verify we can decrypt the signature, with the sender's public key
      * @type {boolean}
      */
     const isVerified = verifySignature(
@@ -39,13 +38,13 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
      *
      * @type {Buffer}
      */
-    const key = mtcRsaDecrypt(Buffer.from(encKey, 'base64'), recipientPrivateKey)
+    const key = rsaDecrypt(Buffer.from(encKey, 'base64'), recipientPrivateKey)
 
     /**
      *
      * @type {Buffer}
      */
-    const iv = mtcRsaDecrypt(Buffer.from(encIv, 'base64'), recipientPrivateKey)
+    const iv = rsaDecrypt(Buffer.from(encIv, 'base64'), recipientPrivateKey)
 
     /**
      * Decrypt the message data, which was encrypted with the key and IV
@@ -77,17 +76,16 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
 
     // Check the token is new, and not being re-used
     try {
-      const token = await
-        new NcaToolsAuthToken({
-          _id: data.SessionToken,
-          logonDate: new Date(),
-          ncaUserName: data.UserName,
-          ncaUserType: data.UserType,
-          ncaEmailAddress: data.EmailAddress,
-          roleGiven: data.role,
-          school: data.School
-        })
-      token.save()
+      const token = new NcaToolsAuthToken({
+        _id: data.SessionToken,
+        logonDate: new Date(),
+        ncaUserName: data.UserName,
+        ncaUserType: data.UserType,
+        ncaEmailAddress: data.EmailAddress,
+        roleGiven: data.role,
+        school: data.School
+      })
+      await token.save()
     } catch (error) {
       return reject(new Error('Failed to save SessionToken - possible replay attack: ' + error.message))
     }
@@ -112,9 +110,6 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
  * @return {boolean} - true is the sig is verified, false otherwise
  */
 function verifySignature (sig, data, senderPublicKey) {
-  if (!senderPublicKey) {
-    throw new Error('senderPublicKey not found')
-  }
   const verify = crypto.createVerify('RSA-SHA1')
   verify.update(data)
   return verify.verify(senderPublicKey, sig)
@@ -128,10 +123,7 @@ function verifySignature (sig, data, senderPublicKey) {
  * @param {Buffer} buffer - encrypted data
  * @return {Buffer} - Buffer containing plaintext
  */
-function mtcRsaDecrypt (buffer, privateKey) {
-  if (!privateKey) {
-    throw new Error('Private Key not found')
-  }
+function rsaDecrypt (buffer, privateKey) {
   return crypto.privateDecrypt(privateKey, buffer)
 }
 
