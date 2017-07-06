@@ -6,7 +6,6 @@
   "dependencies": {
     "base-64": "^0.1.0",
     "fs-extra": "^0.30.0",
-    "grunt": "^1.0.1",
     "gulp": "^3.9.1"
   },
   "devDependencies": {
@@ -15,7 +14,6 @@
     "chai-smoothie": "^0.3.1",
     "cucumber": "2.3.1",
     "cucumber-html-reporter": "2.0.0",
-    "grunt-protractor-runner": "5.0.0",
     "gulp-protractor": "^4.1.0",
     "protractor": "5.1.2",
     "protractor-cucumber-framework": "3.1.2"
