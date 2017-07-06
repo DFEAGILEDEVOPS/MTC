@@ -1,13 +1,14 @@
 <% let err = (typeof error !== 'undefined') ? error : false; %>
 <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
-<div class="information">
-    <p>Check form(s): <%= forms.map( f => { return f.name ;} ).join(', ') %></p>
-</div>
-
 <div class="grid-row">
     <div class="column-two-thirds">
+
         <h1 class="heading-xlarge">Choose check window </h1>
+
+        <div class="information">
+            <p>Check form(s): <%= forms.map( f => { return f.name ;} ).join(', ') %></p>
+        </div>
 
         <p class="lede">Use this page to choose which check window you want to assign forms to.</p>
 
