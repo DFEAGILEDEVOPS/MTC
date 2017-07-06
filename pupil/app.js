@@ -11,6 +11,7 @@ const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const uuidV4 = require('uuid/v4');
+const fs = require('fs')
 
 const index = require('./routes/index');
 const mtcCheck = require('./routes/mtc-check');
@@ -79,6 +80,18 @@ sessionOptions = {
   cookie: { maxAge: 600000 }, // Expire after 10 minutes inactivity,
   rolling: true
 };
+
+/* for Azure Linux App Service only
+logging is not yet correctly implemented, so this is a temporary workaround
+ see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
+ */
+if (process.env.STD_LOG_FILE) {
+  const appLog = fs.createWriteStream(process.env.STD_LOG_FILE)
+  process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
+  process.on('uncaughtException', function (err) {
+    console.error((err && err.stack) ? err.stack : err)
+  })
+}
 
 app.use(function (req, res, next) {
   res.removeHeader('X-Powered-By');
