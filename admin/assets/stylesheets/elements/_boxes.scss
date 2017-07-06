@@ -3,7 +3,7 @@
   background-color: $grey-3;
   display: block;
   position: relative;
-  padding: $gutter-two-third;
+  padding: $gutter-two-thirds;
   width: 100%;
   a {
     position: absolute;
@@ -15,6 +15,6 @@
 .box-light-grey {
   background-color: $grey-3;
   display: inline-block;
-  padding: $gutter-one-third 0;
+  padding: $gutter-two-thirds 0;
   width: 100%;
 }
