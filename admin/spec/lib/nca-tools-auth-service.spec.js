@@ -90,7 +90,6 @@ KSqAIs+iBJ3UI9QnKNOeO8ORvkRmtz+V7jHj/7xuCs/joD6/UtXKvEIw4vaVBKci
 -----END PUBLIC KEY-----`
 
 function getEncryptedVars (data) {
-
   const utf16Data = iconv.encode(data, 'utf16')
   const keyBuf = crypto.createHash('sha256').update('abcdefghijk').digest()
   const ivBuf = Buffer.from('MTCSTA0000000009')
