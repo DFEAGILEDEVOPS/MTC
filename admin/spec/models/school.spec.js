@@ -90,16 +90,17 @@ describe('school schema', function () {
   })
 
   it('has a method to provide a school pin - error path', async function (done) {
+    const message = 'Failed to find a unique school pin'
     sinon.mock(School)
       .expects('findOne')
       .chain('exec')
-      .rejects(new Error('something went wrong'))
+      .rejects(new Error(message))
 
     try {
       await School.getUniqueSchoolPin()
       done(new Error('failed to catch rejected promise'))
     } catch (err) {
-      expect(err.message).toBe('something went wrong')
+      expect(err.message).toBe(message)
     }
     School.findOne.restore()
     done()
