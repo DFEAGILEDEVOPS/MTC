@@ -4,9 +4,10 @@
 
 const mongoose = require('mongoose')
 const moment = require('moment')
+const config = require('../../config')
 
 // To check the pre-save functionality - this suite needs a connection to mongo.
-let connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
+let connectionString = config.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
