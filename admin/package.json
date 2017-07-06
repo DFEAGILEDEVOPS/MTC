@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
-    "start": "node ./bin/www",
+    "start": "node ./server.js",
     "postinstall": "gulp build",
     "test": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
@@ -47,6 +47,7 @@
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
+    "piping": "^1.0.0-rc.4",
     "serve-favicon": "~2.4.2",
     "uuid": "^3.0.1",
     "xregexp": "^3.2.0"
@@ -55,8 +56,8 @@
     "gulp-standard": "^10.0.0",
     "jasmine-node": "^1.14.5",
     "nodemon": "^1.11.0",
-    "standard": "^10.0.2",
-    "nyc": "^11.0.3"
+    "nyc": "^11.0.3",
+    "standard": "^10.0.2"
   },
   "nyc": {
     "exclude": [

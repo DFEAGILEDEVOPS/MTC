@@ -58,6 +58,7 @@
     "newrelic": "^1.40.0",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
+    "piping": "^1.0.0-rc.4",
     "request-progress": "^3.0.0",
     "serve-favicon": "~2.4.1",
     "through": "^2.3.8",

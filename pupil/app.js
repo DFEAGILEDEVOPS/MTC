@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const compression = require('compression')
 const CustomStrategy = require('passport-custom').Strategy
 const express = require('express')
+const piping = require('piping')
 const mongoose = require('mongoose')
 // const morgan = require('morgan')
 const partials = require('express-partials')
@@ -44,7 +45,9 @@ let connectionString = 'mongodb://localhost/mtc'
 let sessionOptions
 let mongoStoreOptions
 
-const app = express()
+let app
+if (piping()) app = express()
+
 const helpers = require('./helpers')(app)
 
 // view engine setup
