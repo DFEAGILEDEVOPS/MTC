@@ -42,7 +42,7 @@ Then(/^I should see the before you start section$/) do
 end
 
 Then(/^I should see option to view guidance in the before you start section$/) do
-  expect(school_landing_page.before_you_start).to have_guidance
+  expect(school_landing_page).to have_guidance
 end
 
 Then(/^I should see option to manage check forms in the before you start section$/) do

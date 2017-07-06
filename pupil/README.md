@@ -106,6 +106,26 @@ cd data/migrations
 ```
 You can then edit the skeleton file created with the required `up` and `down` migrations. 
 
+## Live reloading on change
+
+In devDependencies, make sure you have npm-run-all:
+
+`"npm-run-all": "^4.0.2",`
+
+`"nodemon": "^1.11.0",`
+
+If not, install them.
+
+In scripts, have the following:
+
+`"startn": "nodemon ./server.js",`
+
+`"watch-jscss": "gulp watch"`
+
+On the console:
+
+`npm-run-all --parallel watch-jscss startn`
+
 ## Licence
 
 UNLICENCED - for STA use only
