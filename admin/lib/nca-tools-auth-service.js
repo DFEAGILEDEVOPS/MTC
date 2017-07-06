@@ -13,9 +13,9 @@ const config = require('../config')
  * @param {String} encSignature (base64 encoded)
  * @return {Promise} plain object if ok: Example output: { School: 999, EmailAddress: me@mydomain.com, ... }
  */
-const authenticate = function (encKey, encIv, encData, encSignature) {
+const authenticate = function (encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey) {
   return new Promise(async function (resolve, reject) {
-    if (!(encKey && encIv && encData && encSignature)) {
+    if (!(encKey && encIv && encData && encSignature & senderPublicKey && recipientPrivateKey)) {
       return reject(new Error('Missing parameters'))
     }
 
@@ -23,7 +23,11 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
      * Step 1: verify we can decrypt the signature, with the public TSO key
      * @type {boolean}
      */
-    const isVerified = verifySignature(Buffer.from(encSignature, 'base64'), Buffer.from(encData, 'base64'))
+    const isVerified = verifySignature(
+      Buffer.from(encSignature, 'base64'),
+      Buffer.from(encData, 'base64'),
+      senderPublicKey
+    )
 
     if (!isVerified) {
       // the signature does not verify, so the user cannot be logged in.
@@ -35,13 +39,13 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
      *
      * @type {Buffer}
      */
-    const key = mtcRsaDecrypt(Buffer.from(encKey, 'base64'))
+    const key = mtcRsaDecrypt(Buffer.from(encKey, 'base64'), recipientPrivateKey)
 
     /**
      *
      * @type {Buffer}
      */
-    const iv = mtcRsaDecrypt(Buffer.from(encIv, 'base64'))
+    const iv = mtcRsaDecrypt(Buffer.from(encIv, 'base64'), recipientPrivateKey)
 
     /**
      * Decrypt the message data, which was encrypted with the key and IV
@@ -104,16 +108,16 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
  *
  * @param {Buffer} sig - Buffer containing the encrypted signature
  * @param {Buffer} data - Buffer containing the encrypted message data
+ * @param {String} senderPublicKey - String containing the public RSA key (PEM format) of the sender
  * @return {boolean} - true is the sig is verified, false otherwise
  */
-function verifySignature (sig, data) {
-  const TSOPublicKey = config.TSO_AUTH_PUBLIC_KEY
-  if (!TSOPublicKey) {
-    throw new Error('TSOPublicKey not found in the environment')
+function verifySignature (sig, data, senderPublicKey) {
+  if (!senderPublicKey) {
+    throw new Error('senderPublicKey not found')
   }
   const verify = crypto.createVerify('RSA-SHA1')
   verify.update(data)
-  return verify.verify(TSOPublicKey, sig)
+  return verify.verify(senderPublicKey, sig)
 }
 
 /**
@@ -124,12 +128,11 @@ function verifySignature (sig, data) {
  * @param {Buffer} buffer - encrypted data
  * @return {Buffer} - Buffer containing plaintext
  */
-function mtcRsaDecrypt (buffer) {
-  const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
-  if (!mtcPrivateKey) {
-    throw new Error('MTC Private Key not found in environment `MTC_AUTH_PRIVATE_KEY`')
+function mtcRsaDecrypt (buffer, privateKey) {
+  if (!privateKey) {
+    throw new Error('Private Key not found')
   }
-  return crypto.privateDecrypt(mtcPrivateKey, buffer)
+  return crypto.privateDecrypt(privateKey, buffer)
 }
 
 /**
