@@ -3,6 +3,7 @@
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
 const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
+const config = require('../config')
 
 /**
  * Decrypt and authenticate a data packet
@@ -106,7 +107,7 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
  * @return {boolean} - true is the sig is verified, false otherwise
  */
 function verifySignature (sig, data) {
-  const TSOPublicKey = process.env.TSO_AUTH_PUBLIC_KEY
+  const TSOPublicKey = config.TSO_AUTH_PUBLIC_KEY
   if (!TSOPublicKey) {
     throw new Error('TSOPublicKey not found in the environment')
   }
@@ -124,7 +125,7 @@ function verifySignature (sig, data) {
  * @return {Buffer} - Buffer containing plaintext
  */
 function mtcRsaDecrypt (buffer) {
-  const mtcPrivateKey = process.env.MTC_AUTH_PRIVATE_KEY
+  const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
   if (!mtcPrivateKey) {
     throw new Error('MTC Private Key not found in environment `MTC_AUTH_PRIVATE_KEY`')
   }

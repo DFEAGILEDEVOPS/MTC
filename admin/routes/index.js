@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+
+const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
 const { home,
   getSignIn,
@@ -17,7 +19,7 @@ router.get('/sign-in', (req, res) => getSignIn(req, res))
 /* Login validation */
 router.post('/sign-in', (req, res, next) => {
   // Only allow post requests if NCA TOOLS is disabled
-  if (process.env.NCA_TOOLS_AUTH_URL) {
+  if (config.NCA_TOOLS_AUTH_URL) {
     return res.status(404).send('Not found')
   }
   next()
@@ -36,7 +38,7 @@ router.get('/ping', (req, res) => res.status(200).send('OK'))
 router.post('/auth',
   function (req, res, next) {
     // Only allow post requests if NCA TOOLS is enabled
-    if (!process.env.NCA_TOOLS_AUTH_URL) {
+    if (!config.NCA_TOOLS_AUTH_URL) {
       return res.status(404).send('Not found')
     }
     next()

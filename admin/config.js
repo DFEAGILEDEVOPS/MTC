@@ -1,0 +1,14 @@
+module.exports = {
+  AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
+  AZURE_STORAGE_LOGGING_ENABLED: process.env.AZURE_STORAGE_LOGGING_ENABLED,
+  GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
+  MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc',
+  MTC_AUTH_PRIVATE_KEY: process.env.MTC_AUTH_PRIVATE_KEY,
+  MTC_SERVICE: process.env.MTC_SERVICE,
+  NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
+  NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
+  PORT: process.env.PORT || '3001',
+  SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
+  STD_LOG_FILE: process.env.STD_LOG_FILE,
+  TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY
+}
