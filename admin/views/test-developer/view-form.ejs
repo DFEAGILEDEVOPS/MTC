@@ -8,10 +8,8 @@ let col2 = form.questions.filter(function(el, index) {
 });
 let num = 1;
  %>
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <h1 class="heading-xlarge"><%= form.name %></h1>
-</header>
+
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
 <div class="information">
     <p>
@@ -23,30 +21,31 @@ let num = 1;
     </p>
 </div>
 
+<h1 class="heading-xlarge-no-top-space"><%= form.name %></h1>
+<br />
+
 <div class="grid-row">
     <div class="column-half">
         <dl class="inline-definition-list">
-        <% col1.forEach((q) => { %>
-            <dd class="inline-definition-list">Q<%= num++ %></dd>
-            <dt class="inline-definition-list">
-
+            <% col1.forEach((q) => { %>
+            <dt class="inline-definition-list">Q<%= num++ %></dt>
+            <dd class="inline-definition-list">
                 <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
                 <span class="equals-sign">=</span>
                 <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
-            </dt>
-        <% }); %>
+            </dd>
+            <% }); %>
         </dl>
     </div>
     <div class="column-half">
         <dl class="inline-definition-list">
             <% col2.forEach((q) => { %>
-            <dd class="inline-definition-list">Q<%= num++ %></dd>
-            <dt class="inline-definition-list">
-
+            <dt class="inline-definition-list">Q<%= num++ %></dt>
+            <dd class="inline-definition-list">
                 <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
                 <span class="equals-sign">=</span>
                 <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
-            </dt>
+            </dd>
             <% }); %>
         </dl>
     </div>

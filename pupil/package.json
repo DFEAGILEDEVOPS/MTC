@@ -5,6 +5,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node ./server.js",
+    "startn": "nodemon ./server.js",
+    "watch-jscss": "gulp watch",
     "postinstall": "gulp build",
     "test": "nyc jasmine-node spec --verbose --color --captureExceptions"
   },
@@ -74,6 +76,8 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "karma-spec-reporter": "0.0.30",
     "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
+    "npm-run-all": "^4.0.2",
     "nyc": "^11.0.3",
     "stylelint": "^7.8.0",
     "stylelint-config-standard": "^16.0.0",

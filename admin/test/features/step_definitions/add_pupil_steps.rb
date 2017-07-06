@@ -151,8 +151,8 @@ Then(/^the pupil details should be stored$/) do
   expect(gender).to eql @stored_pupil_details['gender']
   expect(@details_hash[:upn].to_s).to eql @stored_pupil_details['upn']
   expect(Time.parse(@details_hash[:day]+ "-"+ @details_hash[:month]+"-"+ @details_hash[:year])).to eql @stored_pupil_details['dob']
-  expect(@time_stored).to eql @stored_pupil_details['createdAt'].strftime("%Y-%m-%d %H")
-  expect(@time_stored).to eql @stored_pupil_details['updatedAt'].strftime("%Y-%m-%d %H")
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
 end
 
 When(/^I have submitted invalid pupil details$/) do
@@ -174,7 +174,7 @@ When(/^I submit the form with the name fields set as (.*)$/) do |value|
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
-  @time_stored = Time.now.utc.strftime("%Y-%m-%d %H")
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
 
 Then(/^I should see a validation errors for the name fields$/) do
