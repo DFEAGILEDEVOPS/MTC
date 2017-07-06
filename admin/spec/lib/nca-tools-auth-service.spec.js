@@ -98,7 +98,7 @@ function getEncryptedVars (data) {
   const buf2 = cipher.final()
   const encBuf = Buffer.concat([buf1, buf2])
 
-  // We need to encrypt the keyBuf and ivBuf with the public of the recipient
+  // We need to encrypt the keyBuf and ivBuf with the public key of the recipient
   const encKeyBuf = crypto.publicEncrypt(recipientFakePublicKey, keyBuf)
   const encIvBuf = crypto.publicEncrypt(recipientFakePublicKey, ivBuf)
 
