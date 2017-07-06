@@ -1,11 +1,9 @@
 # Test framework for writing BDD tests using Protractor and Cucumber
 
-The framework uses latest versions of Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other. This is self installable project and you need not have Protractor etc. installed before.
-
+The framework Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other. 
 
 # Getting started
 
-After cloning this project into your system folder, use below steps:
 
 1) Install protractor, cucumber and dependencies
 	
@@ -13,21 +11,14 @@ After cloning this project into your system folder, use below steps:
 
 2) Update WebDriver-Manager to get latest binaries
 
-		.node_modules/protractor/bin/webdriver-manager update
+		./node_modules/protractor/bin/webdriver-manager update
 	 
-3) Launch test directly with protractor
+3) Launch test with gulp
    	
-		grunt protractor:test
+		gulp protractor
 	
 	
-4) To run tests without grunt, uncomment below lines from conf.js:
-
-   /*	// configuration parameters
-	params: {
-		testEnv: 'test'
-    },*/
-    
-    Run tests using protractor installed locally as below:
+4) To run tests without gulp and with protractor installed locally :
     
     	node_modules/protractor/bin/protractor conf.js
 

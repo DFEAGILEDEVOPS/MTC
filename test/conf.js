@@ -16,10 +16,10 @@ exports.config = {
 	// setting protractor to ignore uncaught exceptions to take care by protractor-cucumber-framework
 	ignoreUncaughtExceptions : true,
 
-/*	// configuration parameters
+	// configuration parameters
 	params: {
 		testEnv: 'test'
-    },*/
+    },
 	
 	// browser to launch tests
 	capabilities : {
