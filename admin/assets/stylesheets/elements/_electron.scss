@@ -1,0 +1,8 @@
+// Styles used in electron
+.warning-panel {
+  @extend .panel;
+
+  background-color: $red-25;
+  border-left-style: solid;
+  border-color: $red;
+}
