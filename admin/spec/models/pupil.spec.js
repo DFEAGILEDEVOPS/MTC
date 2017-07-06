@@ -1,13 +1,12 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect */
+/* global beforeEach, describe, it, expect, xit */
 
 const Pupil = require('../../models/pupil')
 const moment = require('moment')
 
 describe('Pupil schema', function () {
   let pupil
-  let school
 
   beforeEach(function () {
     pupil = new Pupil({
