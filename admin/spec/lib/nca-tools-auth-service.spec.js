@@ -106,12 +106,12 @@ function getEncryptedVars (data) {
   const sign = crypto.createSign('RSA-SHA1')
   sign.write(encBuf)
   sign.end()
-  const signatureb64 = sign.sign(senderFakePrivateKey, 'base64')
-  return {encBuf, encKeyBuf, encIvBuf, signatureb64}
+  const signatureB64 = sign.sign(senderFakePrivateKey, 'base64')
+  return {encBuf, encKeyBuf, encIvBuf, signatureB64}
 }
 
 const data = 'SessionToken=abc-1234;UserName=Test User;UserType=SuperUser;School=9991001;EmailAddress=example@example.com'
-const {encBuf, encKeyBuf, encIvBuf, signatureb64} = getEncryptedVars(data)
+const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
 
 describe('nca tools auth service', function () {
   it('authenticates a valid packet', async function (done) {
@@ -120,7 +120,7 @@ describe('nca tools auth service', function () {
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
-        signatureb64,
+        signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
@@ -137,12 +137,12 @@ describe('nca tools auth service', function () {
   it('maps to teacher for an unknown role', async function (done) {
     try {
       const data = 'SessionToken=abcd-1234;UserName=Test User;UserType=Batman;School=9991001;EmailAddress=example@example.com'
-      const {encBuf, encKeyBuf, encIvBuf, signatureb64} = getEncryptedVars(data)
+      const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
       const result = await ncaToolsAuthService(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
-        signatureb64,
+        signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
@@ -162,7 +162,7 @@ describe('nca tools auth service', function () {
       await ncaToolsAuthService(
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
-        signatureb64,
+        signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
@@ -179,7 +179,7 @@ describe('nca tools auth service', function () {
         null,
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
-        signatureb64,
+        signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
@@ -210,12 +210,12 @@ describe('nca tools auth service', function () {
   it('rejects a promise if the SessionToken is not provided', async function (done) {
     try {
       const data = 'UserName=Test User;UserType=SuperUser;School=9991001;EmailAddress=example@example.com'
-      const {encBuf, encKeyBuf, encIvBuf, signatureb64} = getEncryptedVars(data)
+      const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
       await ncaToolsAuthService(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
-        signatureb64,
+        signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
