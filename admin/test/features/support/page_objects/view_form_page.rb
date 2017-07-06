@@ -9,12 +9,12 @@ class ViewFormPage < SitePrism::Page
 
   section :first_column, '.column-half:nth-of-type(1)' do
     elements :question_numbers, 'dd.inline-definition-list'
-    elements :question_and_answers, 'dt.inline-definition-list'
+    elements :question_and_answers, 'dd.inline-definition-list'
   end
 
   section :second_column, '.column-half:nth-of-type(2)' do
     elements :question_numbers, 'dd.inline-definition-list'
-    elements :question_and_answers, 'dt.inline-definition-list'
+    elements :question_and_answers, 'dd.inline-definition-list'
   end
 
   def question_and_answers_on_page
