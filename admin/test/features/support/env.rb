@@ -41,6 +41,8 @@ end
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
+Mongo::Logger.logger.level = ::Logger::FATAL
+
 if ENV['MONGO_CONNECTION_STRING']
   CLIENT = Mongo::Client.new(ENV['MONGO_CONNECTION_STRING'])
 else

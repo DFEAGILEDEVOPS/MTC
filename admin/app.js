@@ -18,6 +18,7 @@ const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
+const fs = require('fs')
 
 mongoose.promise = global.Promise
 const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
@@ -30,10 +31,22 @@ autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
-const school = require('./routes/school')
+const admin = require('./routes/admin')
 
 const app = express()
 const helpers = require('./helpers')(app)
+
+/* for Azure Linux App Service only
+logging is not yet correctly implemented, so this is a temporary workaround
+ see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
+ */
+if (process.env.STD_LOG_FILE) {
+  const appLog = fs.createWriteStream(process.env.STD_LOG_FILE)
+  process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
+  process.on('uncaughtException', function (err) {
+    console.error((err && err.stack) ? err.stack : err)
+  })
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -131,7 +144,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
-app.use('/school', school)
+app.use('/school', admin)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
