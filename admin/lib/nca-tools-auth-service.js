@@ -60,10 +60,10 @@ const authenticate = function (encKey, encIv, encData, encSignature) {
      * E.g.
      *
      * { School: '9989998',
-       UserName: 'Mr Rob Foulsham',
-       UserType: 'SuperAdmin',
+       UserName: 'Mr John Smith',
+       UserType: 'Admin',
        SessionToken: 'd61cbae7-0508-4251-ad90-ec0a3c6b8150',
-       EmailAddress: 'robert.foulsham@tso.co.uk' }
+       EmailAddress: 'example@example.com' }
      */
     const data = parseMessage(plaintext)
 
