@@ -5,6 +5,8 @@
   "scripts": {
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
     "start": "node ./bin/www",
+    "startn": "nodemon ./server.js",
+    "watch-jscss": "gulp watch",
     "postinstall": "gulp build",
     "test": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
@@ -55,6 +57,7 @@
     "gulp-standard": "^10.0.0",
     "jasmine-node": "^1.14.5",
     "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
     "standard": "^10.0.2",
     "nyc": "^11.0.3"
   },
