@@ -1,9 +1,7 @@
 class MongoDbHelper {
-
-    static pupil_details(upn) {
-        console.log(upn);
-    }
-
+  static pupilDetails (upn) {
+    console.log(upn)
+  }
 }
 
-module.exports = MongoDbHelper;
+module.exports = MongoDbHelper
