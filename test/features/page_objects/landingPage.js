@@ -3,8 +3,8 @@
 
 class LandingPage {
   constructor () {
-    this.home = element(by.css('#content > .page-header > .breadcrumbs a'))
-    this.breadcrumb = element(by.css('#content > .page-header > .breadcrumbs'))
+    this.home = element(by.css('#content .breadcrumbs a'))
+    this.breadcrumb = element(by.css('#content .breadcrumbs'))
   }
 }
 
