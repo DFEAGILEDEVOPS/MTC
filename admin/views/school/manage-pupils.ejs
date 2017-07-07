@@ -2,9 +2,9 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Manage pupils</h1>
-        <p class="lede">Use this section to add and edit pupils and generate PINs for pupils</p>
-        <p><a class="button button-secondary" href="/school/pupil/add" role="button">Add pupils</a></p>
+        <h1 tabindex="0" class="heading-xlarge">Manage pupils</h1>
+        <p tabindex="0" class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">Use this section to add and edit pupils and generate PINs for pupils</p>
+        <p><a class="button button-secondary" href="/school/pupil/add">Add pupils</a></p>
     </div>
 </div>
 
@@ -12,9 +12,9 @@
 <div class="grid-row">
     <div class="column-one-half">
         <div class="box-light-grey">
-            <div class="left-padding">
-                <p class="font-small">School password for <%= formatFullGdsDate(todayDate) %></p>
-                <div class="font-xxlarge"><strong><%= schoolPin %></strong></div>
+            <div class="left-padding" aria-describedby="school-password">
+                <p class="font-small" id="school-password" tabindex="0">School password for <%= formatFullGdsDate(todayDate) %></p>
+                <div class="font-xxlarge" tabindex="0"><strong><%= schoolPin %></strong></div>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
     <% const candidates = pupils.filter((p) => !p.hasScore)%>
     <div class="grid-row">
         <div class="column-one-half">
-            <h3 class="heading-medium heading-border-top">Pupils to take check</h3>
+            <h2 class="heading-medium heading-border-top" tabindex="0">Pupils to take check</h2>
 
             <form method="post" action="/school/generate-pins" autocomplete="off">
                 <div class="form-group box-grey form-horizontal">
@@ -35,13 +35,13 @@
                     <a href="/school/print-pupils" class="pupils-print-pins">Print PINs</a>
                 </div>
 
-                <table class="spacious" id="pupilsList">
+                <table class="spacious" id="pupilsList" role="listbox" aria-label="List of pupils to take check.">
                     <thead>
                         <tr>
                             <th scope="col" class="multiple-choice">
                                 <div class="tick-all-boxes">
                                     <% if (candidates.some((p) => !p.pin)) { %>
-                                    <input id="tickAllCheckboxes" name="allPupils" type="checkbox">
+                                    <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
                                     <% } %>
                                     <label for="tickAllCheckboxes">Pupil</label>
                                 </div>
@@ -60,7 +60,9 @@
                                     <input id="pupil-<%= candidate._id %>"
                                            name="pupil[<%= index %>]"
                                            type="checkbox"
-                                           value="<%= candidate._id %>">
+                                           value="<%= candidate._id %>"
+                                           aria-label="Tick pupil <%= candidate.foreName %> <%= candidate.lastName %>."
+                                           role="checkbox">
                                     <label for="pupil-<%= candidate._id %>">
                                         <strong><%= candidate.foreName %> <%= candidate.lastName %></strong><br />
                                         <span class="font-xsmall">Date of birth: <%= candidate.dob %></span>
@@ -74,17 +76,17 @@
                                 </div>
                             </td>
                             <td>
-                                <a href="/school/pupil/edit/<%= candidate._id %>" class="font-xsmall"><i>edit</i></a>
+                                <a href="/school/pupil/edit/<%= candidate._id %>" class="font-xsmall" aria-label="Edit <%= candidate.foreName %> <%= candidate.lastName %>."><i>edit</i></a>
                             </td>
                             <td>
                                 <% if (candidate.pin !== null) { %>
                                     <% if (candidate.pinExpired === true) { %>
                                     <span class="font-xsmall font-greyed-out italic">PIN expired</span>
                                     <% } else { %>
-                                    <span ><%= candidate.pin %></span>
+                                    <span tabindex="0" aria-label="Pin for pupil<%= candidate.foreName %> <%= candidate.lastName %> is <%= candidate.pin %>."><%= candidate.pin %></span>
                                     <% } %>
                                 <% } else { %>
-                                <span class="font-greyed-out">n/a</span>
+                                <span class="font-greyed-out" tabindex="0" aria-label="No PIN available.">n/a</span>
                                 <% } %>
                             </td>
                         </tr>
@@ -94,12 +96,12 @@
             </form>
         </div>
         <div class="column-one-half">
-            <h3 class="heading-medium heading-border-top">Check completed</h3>
+            <h2 class="heading-medium heading-border-top" tabindex="0">Checks completed</h2>
             <% const pupilsCompleted = pupils.filter((p) => p.hasScore)%>
             <% if (pupilsCompleted.length < 1) { %>
             <p>No pupils completed</p>
             <% } else { %>
-            <table class="spacious" id="resultsList">
+            <table class="spacious" id="resultsList" role="list">
                 <thead>
                     <tr>
                         <th scope="col" class="bottom-padding">Pupil</th>
@@ -108,13 +110,13 @@
                 </thead>
                 <tbody>
                 <% pupilsCompleted.forEach((pupil) => { %>
-                <tr>
+                <tr role="listitem">
                     <td>
-                        <strong><%= pupil.foreName %> <%= pupil.lastName %></strong><br />
+                        <strong tabindex="0" aria-label="Pupil <%= pupil.foreName %> <%= pupil.lastName %>"><%= pupil.foreName %> <%= pupil.lastName %></strong><br />
                         <span class="font-xsmall">Date of birth: <%= pupil.dob %></span>
                     </td>
                     <td>
-                        <span><%= pupil.percentage %></span>
+                        <span tabindex="0" aria-label="Score is <%= pupil.percentage %>"><%= pupil.percentage %></span>
                     </td>
                 </tr>
                 <% }) %>
