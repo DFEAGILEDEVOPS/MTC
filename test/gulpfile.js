@@ -8,5 +8,7 @@ gulp.task('protractor', function () {
     configFile: './conf.js',
     args: ['--baseUrl', 'http://localhost:3001']
   }))
-    .on('error', function (e) { throw e })
+        .on('error', function (e) {
+          throw e
+        })
 })
