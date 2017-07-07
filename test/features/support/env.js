@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // Environment global constiables declaration
 const configure = function () {
   this.setDefaultTimeout(240 * 1000)

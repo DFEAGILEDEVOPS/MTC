@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 'use strict'
 
 class ManagePupilPage {

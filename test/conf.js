@@ -1,4 +1,3 @@
-/* eslint-disable no-tabs */
 exports.config = {
 
 	// setting to launch tests directly without selenium server

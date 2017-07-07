@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // Step definitions
 
 const {defineSupportCode} = require('cucumber')
