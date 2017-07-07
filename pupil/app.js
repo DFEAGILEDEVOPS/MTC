@@ -45,8 +45,8 @@ let connectionString = 'mongodb://localhost/mtc'
 let sessionOptions
 let mongoStoreOptions
 
-let app
-if (piping()) app = express()
+if (process.env.NODE_ENV !== 'production') piping()
+const app = express()
 
 const helpers = require('./helpers')(app)
 

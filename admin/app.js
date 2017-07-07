@@ -49,8 +49,8 @@ const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const admin = require('./routes/admin')
 
-let app
-if (piping()) app = express()
+if (process.env.NODE_ENV !== 'production') piping()
+const app = express()
 
 const helpers = require('./helpers')(app)
 
