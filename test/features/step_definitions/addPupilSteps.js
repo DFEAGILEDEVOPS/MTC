@@ -1,4 +1,4 @@
-var {defineSupportCode} = require('cucumber')
+const {defineSupportCode} = require('cucumber')
 
 defineSupportCode(function ({Given, When, Then}) {
   Given(/^I am on the add pupil page$/, function (callback) {

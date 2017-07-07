@@ -1,19 +1,19 @@
 /* eslint-disable no-undef */
 // Before And After hooks used while feature executes
 
-var outputDir = './reports/'
-var screenshotDir = './reports/screenshots/'
-var targetJson = outputDir + 'cucumber_report.json'
+const outputDir = './reports/'
+const screenshotDir = './reports/screenshots/'
+const targetJson = outputDir + 'cucumber_report.json'
 
-var JsonFormatter = require('cucumber').JsonFormatter
-var fse = require('fs-extra')
-var reporter = require('cucumber-html-reporter')
+const JsonFormatter = require('cucumber').JsonFormatter
+const fse = require('fs-extra')
+const reporter = require('cucumber-html-reporter')
 
-var {defineSupportCode} = require('cucumber')
+const {defineSupportCode} = require('cucumber')
 
 defineSupportCode(function ({registerHandler}) {
   registerHandler('BeforeFeatures', function () {
-    var configData = require('../../data/config.json')
+    const configData = require('../../data/config.json')
     signIn = require('../page_objects/signInPage')
     landingPage = require('../page_objects/landingPage')
     signInFailure = require('../page_objects/signInFailure')
@@ -32,14 +32,14 @@ defineSupportCode(function ({setDefaultTimeout}) {
 })
 
 defineSupportCode(function ({After, registerListener}) {
-  var writeScreenshotToFile = function (image) {
+  const writeScreenshotToFile = function (image) {
     if (!fse.existsSync(screenshotDir)) {
       fse.mkdirSync(screenshotDir)
     }
-    var date = new Date()
-    var timestamp = date.getTime()
-    var filename = 'error_' + timestamp + '.png'
-    var stream = fse.createWriteStream(screenshotDir + filename)
+    const date = new Date()
+    const timestamp = date.getTime()
+    const filename = 'error_' + timestamp + '.png'
+    const stream = fse.createWriteStream(screenshotDir + filename)
     stream.write(image)
     stream.end()
   }
@@ -61,8 +61,8 @@ defineSupportCode(function ({After, registerListener}) {
     }
   })
 
-  var createHtmlReport = function (sourceJson) {
-    var options = {
+  const createHtmlReport = function (sourceJson) {
+    const options = {
       theme: 'bootstrap',
       jsonFile: sourceJson,
       output: outputDir + 'cucumber_report.html',
