@@ -1,6 +1,4 @@
 server: "hub-cloud.browserstack.com"
-user: mohsen20
-authkey: ZyZxbzNCWSdnp1sgLCEz
 
 common_caps:
   "browserstack.debug": true
