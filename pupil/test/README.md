@@ -77,5 +77,5 @@ If your want to run a specific feature, you can like:
 
 `rake bs_capitan_chrome_58 OPTS='features/prototype.feature'`
 
-Please note this feature is still under development, as there are some issues with the integration. There maybe some failures, in this case please
+Please note this feature is still under development (awaiting browserstack support), as there are some issues with the integration. There maybe some failures, in this case please
 test manually and report to a QA for investigation. 
