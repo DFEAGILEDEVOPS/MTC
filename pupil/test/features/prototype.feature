@@ -81,15 +81,11 @@ Feature:
     Given I am on the check page
     Then I should see the on screen keyboard
 
-  Scenario: Users can submit using Enter on their physical keyboard
-    Given I am on the check page
-    Then I can submit an answer using enter on my physical keyboard
-
   Scenario: Users can enter answers by using the on screen keyboard
     Given I am on the check page
     Then I can answer the question using the on screen keyboard
 
-  @check_complete
+  @check_complete @non_browserstack_compliant
   Scenario: Users can complete the test using the on screen keyboard
     Given I am on the check page
     Then I should be able to use the on screen keyboard to complete the test
@@ -97,23 +93,23 @@ Feature:
     And the result should be stored
     And I should see that the correct pin details are used for a given answer
 
-  @check_complete
+  @check_complete @non_browserstack_compliant
   Scenario: When no answer is provided an empty answer is recorded
     Given I am on the check page
     When I could not answer the question
     Then the answer should be stored as empty
 
-  @check_complete
+  @check_complete @non_browserstack_compliant
   Scenario: Result stored as fail when Pass mark is not met
     Given I did not answer enough questions correctly to pass
     Then the result should be stored as fail
 
-  @check_complete
+  @check_complete @non_browserstack_compliant
   Scenario: Result stored as pass when Pass mark is met
     Given I did answer enough questions correctly to pass
     Then the result should be stored as pass
 
-  @check_complete
+  @check_complete @non_browserstack_compliant
   Scenario: Result can be stored with no leading zeros
     Given I answered questions correctly but with leading zeros
     Then the results should be stored as pass
