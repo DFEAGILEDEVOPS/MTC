@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // Page class for Landing page
 'use strict'
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // Before And After hooks used while feature executes
 
 const outputDir = './reports/'

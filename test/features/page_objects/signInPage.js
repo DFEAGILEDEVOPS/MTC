@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // Page class for SignIn page
 'use strict'
 
