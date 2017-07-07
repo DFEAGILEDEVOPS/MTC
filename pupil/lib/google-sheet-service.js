@@ -5,13 +5,11 @@ const async = require('async')
 
 const config = require('../config')
 
-let docKey = ''
-
 /**
  * Spreadsheet key. Must enter one for production.
  */
 
-docKey = config.GOOGLE_SVC_DOC_KEY
+const docKey = config.GOOGLE_SVC_DOC_KEY
 
 /**
  * @brief Submit the feedback form data to a Google Sheet
