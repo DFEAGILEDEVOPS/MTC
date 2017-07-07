@@ -2,7 +2,7 @@ server: "hub-cloud.browserstack.com"
 
 common_caps:
   "browserstack.debug": true
-  "browserstack.local": "true"
+  "browserstack.local": true
   "browserstack.ie.driver": "2.21"
 
 browser_caps:
