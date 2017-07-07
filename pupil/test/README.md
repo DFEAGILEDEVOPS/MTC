@@ -69,7 +69,7 @@ If you want to run in Browserstack, please run the following to get a list of av
 
 `rake -T`
 
-This will return a list, just cut and paste the browser of your choice and run the command. Fro example: 
+This will return a list, just cut and paste the browser of your choice and run the command. For example: 
 
 `rake bs_capitan_chrome_58`
 
