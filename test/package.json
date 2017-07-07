@@ -8,6 +8,10 @@
     "fs-extra": "^0.30.0",
     "gulp": "^3.9.1"
   },
+  "scripts": {
+    "test": "gulp protractor",
+    "postinstall": "./node_modules/protractor/bin/webdriver-manager update"
+  },
   "devDependencies": {
     "chai": "3.5.0",
     "chai-as-promised": "6.0.0",
