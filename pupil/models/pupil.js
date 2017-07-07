@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 const Pupil = new Schema({
   school: {
@@ -49,19 +49,19 @@ const Pupil = new Schema({
     default: false
   },
   warmUpStartDate: {
-    type: Date,
+    type: Date
   },
   warmUpEndDate: {
-    type: Date,
+    type: Date
   },
   checkStartDate: {
-    type: Date,
+    type: Date
   },
   checkEndDate: {
     type: Date
   }
 }, {
   timestamps: true
-});
+})
 
-module.exports = mongoose.model('Pupil', Pupil);
+module.exports = mongoose.model('Pupil', Pupil)

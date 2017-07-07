@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const School = new Schema({
-  _id: { type: Number },
+  _id: {type: Number},
   leaCode: {
     type: Schema.Types.Number,
     required: true,
@@ -29,23 +29,23 @@ const School = new Schema({
   }
 }, {
   timestamps: true
-});
+})
 
 /**
  * Retrieve school record from PIN.
  * @return {Promise}
  */
-School.statics.getSchoolFromPin = function(schoolPin) {
+School.statics.getSchoolFromPin = function (schoolPin) {
   if (schoolPin < 1) {
-    throw new Error('Missing pupil id');
+    throw new Error('Missing pupil id')
   }
-  let school;
+  let school
   try {
-    school = this.find({ schoolPin: schoolPin });
+    school = this.find({schoolPin: schoolPin})
   } catch (error) {
-    console.log('getSchoolFromPin ERROR', error);
+    console.log('getSchoolFromPin ERROR', error)
   }
-  return school;
-};
+  return school
+}
 
-module.exports = mongoose.model('School', School);
+module.exports = mongoose.model('School', School)

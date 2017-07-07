@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 const User = new Schema({
   email: {
@@ -25,6 +25,6 @@ const User = new Schema({
     enum: ['TE', 'TD', 'HD'],
     required: true
   }
-}, {timestamps: true});
+}, {timestamps: true})
 
-module.exports = mongoose.model('User', User);
+module.exports = mongoose.model('User', User)
