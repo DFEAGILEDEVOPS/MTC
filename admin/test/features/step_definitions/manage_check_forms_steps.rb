@@ -24,7 +24,7 @@ When(/^I upload a csv file$/) do
   driver.file_detector = lambda do |args|
     str = args.first.to_s
     str if File.exist?(str)
-  end
+  end if Capybara.current_driver.to_s.include? 'bs_'
   page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
   manage_check_forms_page.upload.click
 end
