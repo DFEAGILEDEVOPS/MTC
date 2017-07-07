@@ -24,8 +24,8 @@ Then(/^this should be saved$/) do
   expect(gender).to eql @stored_pupil_details['gender']
   expect(@updated_details_hash[:upn].to_s).to eql @stored_pupil_details['upn']
   expect(Time.parse(@updated_details_hash[:day]+ "-"+ @updated_details_hash[:month]+"-"+ @updated_details_hash[:year])).to eql @stored_pupil_details['dob']
-  expect(@time_stored).to eql @stored_pupil_details['createdAt'].strftime("%Y-%m-%d %H")
-  expect(@time_stored).to eql @stored_pupil_details['updatedAt'].strftime("%Y-%m-%d %H")
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
+  expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
 end
 
 

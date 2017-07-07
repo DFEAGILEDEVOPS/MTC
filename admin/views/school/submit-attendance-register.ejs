@@ -1,30 +1,23 @@
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-xlarge">Attendance register</h1>
-        </div>
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <div class="panel panel-border-wide">
-                    <p>Your school's trial will close when you submit the attendance register.<br>
-                        You can only submit this form once.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+
 <div class="grid-row">
     <div class="column-two-thirds">
-        <p class="lede">
-            Use this page to confirm pupil attendance.
+        <h1 class="heading-xlarge">Attendance register</h1>
+
+        <div class="panel panel-border-wide">
+            <p>Your school’s trial will close when you submit the attendance register.<br>
+                You can only submit this form once.</p>
+        </div>
+
+        <br style="clear: both"/>
+
+        <p class="lede">Use this page to confirm pupil attendance.</p>
         <ul class="list list-bullet font-small">
             <li>This page will populate with pupil details when they have taken the check.</li>
             <li>Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
             <li>Please only submit this form when all pupils have completed the check.</li>
-            <li>You will then be able to sign the headteacher's declaration form.</li>
+            <li>You will then be able to sign the headteacher’s declaration form.</li>
         </ul>
-        </p>
     </div>
 </div>
 
@@ -35,6 +28,7 @@
             <div class="form-group form-horizontal">
                 <input class="button" type="submit" value="Submit">
             </div>
+
             <table class="spacious" id="attendanceList">
                 <thead>
                     <tr>
@@ -42,7 +36,7 @@
                             <% if (pupils.some((p) => !p.hasAttended)) { %>
                             <input id="tickAllCheckboxes" name="allAttendees" type="checkbox">
                             <% } %>
-                            <label for="allAttendees">Pupil</label>
+                            <label for="tickAllCheckboxes">Pupil</label>
                         </th>
                         <th scope="col" class="multiple-choice tick-all-boxes-nojs">Score</th>
                         <th scope="col" class="nowrap">Score</th>
@@ -75,6 +69,7 @@
                 <% }) %>
                 </tbody>
             </table>
+
         </form>
         <% } %>
     </div>
