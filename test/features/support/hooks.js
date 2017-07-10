@@ -1,4 +1,5 @@
 // Before And After hooks used while feature executes
+/* global browser */
 
 const outputDir = './reports/'
 const screenshotDir = './reports/screenshots/'

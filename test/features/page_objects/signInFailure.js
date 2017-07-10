@@ -1,5 +1,6 @@
 // Page class for SignIn Failure page
 'use strict'
+/* global element by */
 
 class SignInFailurePage {
   constructor () {
