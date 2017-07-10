@@ -59,6 +59,7 @@
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
     "nyc": "^11.0.3",
+    "proxyquire": "^1.8.0",
     "sinon": "^2.3.6",
     "sinon-mongoose": "^2.0.2",
     "standard": "^10.0.2"
