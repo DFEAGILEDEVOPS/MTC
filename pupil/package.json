@@ -78,6 +78,8 @@
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
     "nyc": "^11.0.3",
+    "sinon": "^2.3.6",
+    "sinon-mongoose": "^2.0.2",
     "stylelint": "^7.8.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-order": "^0.4.3"
