@@ -1,5 +1,6 @@
 // Page class for SignIn page
 'use strict'
+/* global element by */
 
 class SignInPage {
   constructor () {

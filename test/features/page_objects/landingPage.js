@@ -1,5 +1,6 @@
 // Page class for Landing page
 'use strict'
+/* global element by */
 
 class LandingPage {
   constructor () {

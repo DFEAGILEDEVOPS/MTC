@@ -1,4 +1,5 @@
 // Step definitions
+/* global browser expect config signIn landingPage signInFailure */
 
 const {defineSupportCode} = require('cucumber')
 

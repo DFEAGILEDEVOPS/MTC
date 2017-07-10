@@ -1,4 +1,5 @@
 // Environment global constiables declaration
+/* global protractor */
 const configure = function () {
   this.setDefaultTimeout(240 * 1000)
 }
