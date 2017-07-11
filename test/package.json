@@ -4,7 +4,6 @@
   "description": "e2e BDD tests",
   "main": "index.js",
   "dependencies": {
-    "base-64": "^0.1.0",
     "fs-extra": "^0.30.0",
     "gulp": "^3.9.1"
   },
