@@ -94,7 +94,7 @@
                                 </div>
                             </td>
                             <td tabindex="0" aria-label="Assigned to <%= form.checkWindows.map( cw => { return cw.name;  }).join(', ') || 'pending' %>.">
-                                <%= form.checkWindows.map( cw => { return cw.name;  }).join(', ') || '(Pending)'; %>
+                                <%= form.checkWindows.map( cw => cw.name ).join(', ') || '(Pending)'; %>
                             </td>
                             <td tabindex="0" aria-label="Uploaded on <%= formatGdsDate(form.createdAt) %>."> <%= formatGdsDate(form.createdAt) %> </td>
                         </tr>
