@@ -3,6 +3,7 @@
  */
 
 const whitelist = [
+  'AZURE_STORAGE_CONNECTION_STRING',
   'GOOGLE_TRACKING_ID',
   'MTC_SERVICE',
   'NEW_RELIC_LICENSE_KEY',
