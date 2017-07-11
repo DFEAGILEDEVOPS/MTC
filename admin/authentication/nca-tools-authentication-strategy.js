@@ -1,6 +1,7 @@
 'use strict'
 const ncaToolsAuthService = require('../lib/nca-tools-auth-service')
 const AdminLogonEvent = require('../models/admin-logon-event')
+const config = require('../config')
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -37,7 +38,9 @@ module.exports = async function (req, done) {
   })
 
   try {
-    const userData = await ncaToolsAuthService(encKey, encIv, encData, encSignature)
+    const senderPublicKey = config.TSO_AUTH_PUBLIC_KEY
+    const recipientPrivateKey = config.MTC_AUTH_PRIVATE_KEY
+    const userData = await ncaToolsAuthService(encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey)
 
     // auth success
     logonEvent.isAuthenticated = true

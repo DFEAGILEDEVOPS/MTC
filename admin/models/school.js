@@ -72,7 +72,6 @@ School.statics.getUniqueSchoolPin = function () {
       }
       reject(new Error('Failed to find a unique school pin'))
     } catch (error) {
-      console.log('error finding a pin: ' + error.message)
       reject(error)
     }
   })
