@@ -1,12 +1,14 @@
 {
   "name": "check-development-app",
   "version": "0.2.0",
-  "private": true,
+  "private": false,
+  "license": "GPL-3.0",
   "scripts": {
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
     "start": "node ./bin/www",
     "postinstall": "gulp build",
-    "test": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
+    "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
+    "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
   "engines": {
     "node": "8.1.2"
