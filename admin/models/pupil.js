@@ -58,7 +58,7 @@ const Pupil = new Schema({
 
 /**
  * Retrieve pupil records by school code
- * @return {Promise}
+ * @return {Query} || null
  */
 Pupil.statics.getPupils = function (schoolCode) {
   if (schoolCode < 1) {
@@ -66,7 +66,7 @@ Pupil.statics.getPupils = function (schoolCode) {
   }
   const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null
   if (!pupils) {
-    console.log('getPupils ERROR', error)
+    console.log('getPupils ERROR: no pupils found')
   }
   return pupils
 }
