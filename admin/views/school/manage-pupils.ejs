@@ -1,13 +1,13 @@
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <h1 class="heading-xlarge">Manage pupils</h1>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+
 <div class="grid-row">
     <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Manage pupils</h1>
         <p class="lede">Use this section to add and edit pupils and generate PINs for pupils</p>
         <p><a class="button button-secondary" href="/school/pupil/add" role="button">Add pupils</a></p>
     </div>
 </div>
+
 <% if (schoolPin.length > 0) { %>
 <div class="grid-row">
     <div class="column-one-half">
@@ -31,21 +31,23 @@
 
             <form method="post" action="/school/generate-pins" autocomplete="off">
                 <div class="form-group box-grey form-horizontal">
-                    <input class="button" type="submit" value="Generate PIN(s)">
+                    <input class="button width-60" type="submit" value="Generate PIN(s)">
                     <a href="/school/print-pupils" class="pupils-print-pins">Print PINs</a>
                 </div>
 
                 <table class="spacious" id="pupilsList">
                     <thead>
                         <tr>
-                            <th scope="col" class="multiple-choice tick-all-boxes">
-                                <% if (candidates.some((p) => !p.pin)) { %>
-                                <input id="tickAllCheckboxes" name="allPupils" type="checkbox">
-                                <% } %>
-                                <label for="allPupils">Pupil</label>
+                            <th scope="col" class="multiple-choice">
+                                <div class="tick-all-boxes">
+                                    <% if (candidates.some((p) => !p.pin)) { %>
+                                    <input id="tickAllCheckboxes" name="allPupils" type="checkbox">
+                                    <% } %>
+                                    <label for="tickAllCheckboxes">Pupil</label>
+                                </div>
+                                <div class="tick-all-boxes-nojs">Pupil</div>
                             </th>
-                            <th scope="col" class="multiple-choice tick-all-boxes-nojs">Pupil</th>
-                            <th class="side-padding"></th>
+                            <th class="side-padding"><span class="hidden-and-readable">Edit Pupil</span></th>
                             <th scope="col" class="nowrap">Pupil PIN</th>
                         </tr>
                     </thead>
@@ -59,11 +61,16 @@
                                            name="pupil[<%= index %>]"
                                            type="checkbox"
                                            value="<%= candidate._id %>">
-                                    <% } %>
                                     <label for="pupil-<%= candidate._id %>">
                                         <strong><%= candidate.foreName %> <%= candidate.lastName %></strong><br />
                                         <span class="font-xsmall">Date of birth: <%= candidate.dob %></span>
                                     </label>
+                                    <% } else { %>
+                                    <div>
+                                        <strong><%= candidate.foreName %> <%= candidate.lastName %></strong><br />
+                                        <span class="font-xsmall">Date of birth: <%= candidate.dob %></span>
+                                    </div>
+                                    <% } %>
                                 </div>
                             </td>
                             <td>
@@ -95,8 +102,8 @@
             <table class="spacious" id="resultsList">
                 <thead>
                     <tr>
-                        <th scope="col">Pupil</th>
-                        <th scope="col">Results</th>
+                        <th scope="col" class="bottom-padding">Pupil</th>
+                        <th scope="col" class="bottom-padding">Results</th>
                     </tr>
                 </thead>
                 <tbody>

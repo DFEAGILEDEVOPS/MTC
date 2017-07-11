@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const { version: appVersion } = require('../package.json')
+const config = require('../config')
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
@@ -44,7 +45,7 @@ module.exports = function (app) {
   app.locals.logoLinkTitle = 'Go to the home page'
   app.locals.globalHeaderText = 'GOV.UK'
   app.locals.crownCopyrightMessage = null
-  app.locals.googleTrackingId = process.env.GOOGLE_TRACKING_ID
+  app.locals.googleTrackingId = config.GOOGLE_TRACKING_ID
   app.locals.deployVersion = appVersion
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate

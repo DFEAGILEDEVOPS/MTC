@@ -2,13 +2,16 @@
 
 const GoogleSpreadsheet = require('google-spreadsheet')
 const async = require('async')
+
+const config = require('../config')
+
 let docKey = ''
 
 /**
  * Spreadsheet key. Must enter one for production.
  */
 
-docKey = process.env.GOOGLE_SVC_DOC_KEY
+docKey = config.GOOGLE_SVC_DOC_KEY
 
 /**
  * @brief Submit the feedback form data to a Google Sheet
@@ -19,8 +22,8 @@ module.exports.addFeedback = function addFeedback (data) {
   let doc = new GoogleSpreadsheet(docKey)
   let sheet
   let creds = {
-    client_email: process.env.GOOGLE_SVC_EMAIL,
-    private_key: process.env.GOOGLE_SVC_PK.replace(/\\n/g, '\n')
+    client_email: config.GOOGLE_SVC_EMAIL,
+    private_key: config.GOOGLE_SVC_PK.replace(/\\n/g, '\n')
   }
 
   // marshall async calls in a series

@@ -1,21 +1,18 @@
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-xlarge">Results</h1>
-        </div>
-    </div>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+
 <div class="grid-row">
     <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Results</h1>
         <p class="lede">This page will show individual pupil results. You can download the pupil results to see the breakdown of questions completed by each pupil.<br />
-            In order to view the results you must:
+            In order to view the results you must:</p>
+
         <ul class="list list-bullet font-medium">
             <li>approve your school’s attendance register</li>
             <li>submit the headteacher’s declaration form</li>
         </ul>
-        </p>
+
         <br style="clear: both"/>
+
         <form action="/school/submit-attendance">
             <input class="button-secondary" type="submit" value="Go to attendance register" />
         </form>
