@@ -6,7 +6,7 @@ const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
-const { fetchPupilsData, fetchPupilAnswers } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
@@ -214,8 +214,9 @@ const getManagePupils = async (req, res) => {
     item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
     const answers = await fetchPupilAnswers(item._id)
     const pupilScore = answers && answers.result
-    item.hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
-    item.percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
+    const { hasScore, percentage } = await fetchScoreDetails(answers, pupilScore)
+    item.hasScore = hasScore
+    item.percentage = percentage
     return item
   }))
   req.breadcrumbs(res.locals.pageTitle)

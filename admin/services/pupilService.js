@@ -34,6 +34,21 @@ const pupilService = {
     } catch (error) {
       throw new Error(error)
     }
+  },
+  /**
+   * Fetches score details for pupils who have taken the check.
+   * @param {object} answers - Pupil's answers set.
+   * @param {object} pupilScore - Pupil's score object.
+   */
+  fetchScoreDetails: (answers, pupilScore) => {
+    const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
+    const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'n/a'
+    const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
+    return {
+      hasScore,
+      score,
+      percentage
+    }
   }
 }
 
