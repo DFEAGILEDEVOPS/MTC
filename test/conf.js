@@ -32,7 +32,7 @@ exports.config = {
   // Specify Test Files
   //
   // Define which tests should execute
-  specs: ['features/*.feature'],
+  specs: ['features/admin/*.feature'],
 
   // Define which tests should be excluded from execution.
   // 'features/search.feature'
