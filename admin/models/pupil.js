@@ -51,6 +51,18 @@ const Pupil = new Schema({
   hasAttended: {
     type: Boolean,
     default: false
+  },
+  warmUpStartDate: {
+    type: Date
+  },
+  warmUpEndDate: {
+    type: Date
+  },
+  checkStartDate: {
+    type: Date
+  },
+  checkEndDate: {
+    type: Date
   }
 }, {
   timestamps: true
@@ -66,7 +78,7 @@ Pupil.statics.getPupils = function (schoolCode) {
   }
   const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null
   if (!pupils) {
-    console.log('getPupils ERROR', error)
+    console.log('getPupils ERROR: no pupils found')
   }
   return pupils
 }
