@@ -1,7 +1,8 @@
 'use strict'
-
 require('newrelic')
+
 const express = require('express')
+const piping = require('piping')
 const path = require('path')
 // const favicon = require('serve-favicon')
 const logger = require('morgan')
@@ -48,7 +49,9 @@ const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const admin = require('./routes/admin')
 
+if (process.env.NODE_ENV === 'development') piping()
 const app = express()
+
 const helpers = require('./helpers')(app)
 
 /* for Azure Linux App Service only

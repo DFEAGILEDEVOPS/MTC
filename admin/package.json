@@ -5,7 +5,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
-    "start": "node ./bin/www",
+    "start": "node ./server.js",
     "postinstall": "gulp build",
     "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
     "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
@@ -49,6 +49,7 @@
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
+    "piping": "^1.0.0-rc.4",
     "serve-favicon": "~2.4.2",
     "uuid": "^3.0.1",
     "xregexp": "^3.2.0"
