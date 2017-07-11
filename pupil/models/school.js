@@ -7,7 +7,7 @@ const randomGenerator = require('../lib/random-generator')
 const School = new Schema({
   _id: {type: Number},
   leaCode: {
-    type: Schema.Types.Number,
+    type: Number,
     required: true,
     trim: true,
     max: 999,
