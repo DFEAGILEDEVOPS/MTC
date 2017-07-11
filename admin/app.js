@@ -49,7 +49,7 @@ const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const admin = require('./routes/admin')
 
-if (process.env.NODE_ENV === 'development') piping()
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
 
 const helpers = require('./helpers')(app)
