@@ -1,14 +1,15 @@
 {
   "name": "mtc-app",
   "version": "0.2.0",
-  "private": true,
-  "license": "UNLICENSED",
+  "private": false,
+  "license": "GPL-3.0",
   "scripts": {
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
     "watch-jscss": "gulp watch",
     "postinstall": "gulp build",
-    "test": "nyc jasmine-node spec --verbose --color --captureExceptions"
+    "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
+    "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
   "engines": {
     "node": "8.1.2"
@@ -60,6 +61,7 @@
     "newrelic": "^1.40.0",
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
+    "piping": "^1.0.0-rc.4",
     "request-progress": "^3.0.0",
     "serve-favicon": "~2.4.1",
     "through": "^2.3.8",
@@ -76,8 +78,9 @@
     "karma-spec-reporter": "0.0.30",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
-    "npm-run-all": "^4.0.2",
     "nyc": "^11.0.3",
+    "sinon": "^2.3.6",
+    "sinon-mongoose": "^2.0.2",
     "stylelint": "^7.8.0",
     "stylelint-config-standard": "^16.0.0",
     "stylelint-order": "^0.4.3"
