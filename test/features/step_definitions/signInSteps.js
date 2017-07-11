@@ -1,9 +1,8 @@
 // Step definitions
 /* global browser expect */
-
-const signIn = require('../page_objects/signInPage')
-const landingPage = require('../page_objects/landingPage')
-const signInFailure = require('../page_objects/signInFailure')
+const signIn = require('../../page_objects/signInPage')
+const landingPage = require('../../page_objects/landingPage')
+const signInFailure = require('../../page_objects/signInFailure')
 const config = require('../../data/config.json')[browser.params.testEnv]
 console.log('Launching test in environment: ', browser.params.testEnv)
 
