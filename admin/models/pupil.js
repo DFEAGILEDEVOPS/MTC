@@ -51,6 +51,18 @@ const Pupil = new Schema({
   hasAttended: {
     type: Boolean,
     default: false
+  },
+  warmUpStartDate: {
+    type: Date
+  },
+  warmUpEndDate: {
+    type: Date
+  },
+  checkStartDate: {
+    type: Date
+  },
+  checkEndDate: {
+    type: Date
   }
 }, {
   timestamps: true
