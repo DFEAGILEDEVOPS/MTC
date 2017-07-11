@@ -4,24 +4,13 @@
 const outputDir = './reports/'
 const screenshotDir = './reports/screenshots/'
 const targetJson = outputDir + 'cucumber_report.json'
-
 const JsonFormatter = require('cucumber').JsonFormatter
 const fse = require('fs-extra')
 const reporter = require('cucumber-html-reporter')
-
 const {defineSupportCode} = require('cucumber')
 
 defineSupportCode(function ({registerHandler}) {
   registerHandler('BeforeFeatures', function () {
-    const configData = require('../../data/config.json')
-    signIn = require('../page_objects/signInPage')
-    landingPage = require('../page_objects/landingPage')
-    signInFailure = require('../page_objects/signInFailure')
-    managePupilPage = require('../page_objects/managePupilPage')
-    helpers = require('../lib/helpers')
-    mongo = require('../lib/mongoDbHelper')
-    console.log('Launching test in environment: ', browser.params.testEnv)
-    config = configData[browser.params.testEnv]
     browser.driver.manage().window().maximize()
     browser.waitForAngularEnabled(false)
   })
@@ -73,7 +62,7 @@ defineSupportCode(function ({After, registerListener}) {
     reporter.generate(options)
   }
 
-  jsonFormatter = new JsonFormatter()
+  const jsonFormatter = new JsonFormatter()
   jsonFormatter.log = function (string) {
     if (!fse.existsSync(outputDir)) {
       fse.mkdirSync(outputDir)
