@@ -13,10 +13,8 @@ if (formData._id) {
     <div class="column-two-thirds">
 
         <% if (err.hasError()) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                Check the pupil’s details
-            </h1>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
 
             <p>Look at the names, date of birth and other details. Maximum length fields are 35 characters.</p>
 
@@ -28,7 +26,7 @@ if (formData._id) {
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge"><%- formHeader %> pupil details</h1>
+        <h1 class="heading-xlarge" tabindex="0"><%- formHeader %> pupil details</h1>
 
         <form action="<%= createOrSave %>" method="post" novalidate>
             <input type="hidden" name="school" value="<%= school._id %>"/>
@@ -94,9 +92,9 @@ if (formData._id) {
 
             <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
                  id="dob">
-                <fieldset>
+                <fieldset tabindex="0" aria-labelledby="date-of-birth">
                     <legend>
-                        <span class="form-label-bold">Date of birth</span>
+                        <span class="form-label-bold" id="date-of-birth">Date of birth</span>
                         <span class="form-hint">For example, 31 3 2006</span>
                         <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
                         <span class="error-message">
@@ -143,7 +141,7 @@ if (formData._id) {
             </div>
 
             <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
-                <fieldset>
+                <fieldset tabindex="0" role="radiogroup" >
                     <legend class="form-label-bold">Gender
                         <% if (err.isError('gender')) { %>
                         <span class="error-message"><%= err.get('gender') %></span>
@@ -152,6 +150,8 @@ if (formData._id) {
                     <div class="multiple-choice">
                         <input id="gender-female"
                                type="radio"
+                               role="radio"
+                               aria-checked="false"
                                name="gender"
                                value="F"
                                <% if (formData['gender'] === 'F') { %>checked="checked"
@@ -163,6 +163,8 @@ if (formData._id) {
                     <div class="multiple-choice">
                         <input id="gender-male"
                                type="radio"
+                               role="radio"
+                               aria-checked="false"
                                name="gender"
                                value="M"
                                <% if (formData['gender'] === 'M') { %>checked="checked"
