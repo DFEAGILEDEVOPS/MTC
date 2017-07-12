@@ -1,8 +1,6 @@
 'use strict'
 
 const gulp = require('gulp')
-const path = require('path')
-const fs = require('fs')
 const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
@@ -35,9 +33,9 @@ gulp.task('bundleJs', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
     .pipe(uglify({
-      compress: { screw_ie8: false },
-      mangle: { screw_ie8: false },
-      output: { screw_ie8: false }
+      compress: {screw_ie8: false},
+      mangle: {screw_ie8: false},
+      output: {screw_ie8: false}
     }).on('error', function (e) {
       console.log(e)
     }))
@@ -61,8 +59,8 @@ gulp.task('copyImages', function () {
 
 gulp.task('copyPDFs', function () {
   gulp
-  .src(['./assets/PDFs/*'])
-  .pipe(gulp.dest('public/PDFs'))
+    .src(['./assets/PDFs/*'])
+    .pipe(gulp.dest('public/PDFs'))
 })
 
 gulp.task('standard', function () {
