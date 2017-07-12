@@ -12,7 +12,7 @@ let num = 1;
 <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
 <div class="information">
-    <p>
+    <p tabindex="0">
         <% if (form.checkWindows.length > 0) { %>
         This form is assigned to: <%= form.checkWindows.map( cw => { return cw.name; }).join(', '); %>
         <% } else { %>
@@ -21,18 +21,18 @@ let num = 1;
     </p>
 </div>
 
-<h1 class="heading-xlarge-no-top-space"><%= form.name %></h1>
+<h1 class="heading-xlarge-no-top-space" tabindex="0"><%= form.name %></h1>
 <br />
 
 <div class="grid-row">
     <div class="column-half">
-        <dl class="inline-definition-list">
+        <dl class="inline-definition-list" tabindex="0" role="list">
             <% col1.forEach((q) => { %>
-            <dt class="inline-definition-list">Q<%= num++ %></dt>
+            <dt class="inline-definition-list" tabindex="0" role="listitem">Q<%= num++ %></dt>
             <dd class="inline-definition-list">
-                <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
-                <span class="equals-sign">=</span>
-                <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
+                <span class="fixed-factors" tabindex="0" role="listitem"><%= q.f1 %> &times; <%= q.f2 %></span>
+                <span class="equals-sign" tabindex="0" role="listitem">=</span>
+                <span class="fixed-result" tabindex="0" role="listitem"><%= (q.f1 * q.f2) %></span>
             </dd>
             <% }); %>
         </dl>

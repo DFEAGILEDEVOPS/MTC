@@ -3,7 +3,7 @@ Then(/^I should see that we are in the (.+) development phase on the (.+) page$/
 end
 
 Then(/^I should see a new tab open when i want to provide feedback link from the (.+) page$/) do |current_page|
-  expect(send("#{current_page}_page").phase_banner.feedback.text).to eql "This is a new service – your feedback will help us to improve it."
+  expect(send("#{current_page}_page").phase_banner.feedback.text).to eql "BETAThis is a new service – your feedback will help us to improve it."
   expect(send("#{current_page}_page").phase_banner.feedback).to have_link
   send("#{current_page}_page").phase_banner.feedback.link.click
   feedback_page_title = 'Multiplication tables check June 2017 trial survey'
