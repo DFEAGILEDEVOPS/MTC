@@ -45,3 +45,7 @@ jspm_packages
 /admin/package-lock.json
 /pupil/package-lock.json
 /MTC.iml
+
+
+# ignore test reports folder
+/test/reports/
