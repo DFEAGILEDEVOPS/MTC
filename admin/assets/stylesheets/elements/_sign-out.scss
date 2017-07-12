@@ -6,6 +6,8 @@
   float: right;
 }
 
-#sign-out:visited {
-  color: $white;
+#sign-out {
+  a:visited {
+    color: $white;
+  }
 }
