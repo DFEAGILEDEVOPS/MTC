@@ -2,21 +2,22 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Attendance register</h1>
+        <h1 class="heading-xlarge" tabindex="0">Attendance register</h1>
 
         <div class="panel panel-border-wide">
-            <p>Your school’s trial will close when you submit the attendance register.<br>
+            <p tabindex="0" id="intro-paragraph" aria-labelledby="intro-paragraph">Your school’s trial will close when you submit the attendance register.<br>
                 You can only submit this form once.</p>
         </div>
 
         <br style="clear: both"/>
 
-        <p class="lede">Use this page to confirm pupil attendance.</p>
-        <ul class="list list-bullet font-small">
-            <li>This page will populate with pupil details when they have taken the check.</li>
-            <li>Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
-            <li>Please only submit this form when all pupils have completed the check.</li>
-            <li>You will then be able to sign the headteacher’s declaration form.</li>
+        <p class="lede" id="lead-paragraph" tabindex="0" aria-labelledby="lead-paragraph">Use this page to confirm pupil attendance.</p>
+
+        <ul class="list list-bullet font-small" role="list" tabindex="0">
+            <li tabindex="0" role="listitem">This page will populate with pupil details when they have taken the check.</li>
+            <li tabindex="0" role="listitem">Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
+            <li tabindex="0" role="listitem">Please only submit this form when all pupils have completed the check.</li>
+            <li tabindex="0" role="listitem">You will then be able to sign the headteacher’s declaration form.</li>
         </ul>
     </div>
 </div>
@@ -29,17 +30,19 @@
                 <input class="button" type="submit" value="Submit">
             </div>
 
-            <table class="spacious" id="attendanceList">
+            <table class="spacious" id="attendanceList" role="listbox" aria-label="Tick to confirm pupil attendance">
                 <thead>
                     <tr>
-                        <th scope="col" class="multiple-choice tick-all-boxes">
-                            <% if (pupils.some((p) => !p.hasAttended)) { %>
-                            <input id="tickAllCheckboxes" name="allAttendees" type="checkbox">
-                            <% } %>
-                            <label for="tickAllCheckboxes">Pupil</label>
+                        <th scope="col">
+                            <div class="multiple-choice tick-all-boxes">
+                                <% if (pupils.some((p) => !p.hasAttended)) { %>
+                                <input id="tickAllCheckboxes" name="allAttendees" type="checkbox" aria-label="Select all pupils.">
+                                <% } %>
+                                <label for="tickAllCheckboxes">Pupil</label>
+                            </div>
+                            <div class="tick-all-boxes-nojs">Pupil</div>
                         </th>
-                        <th scope="col" class="multiple-choice tick-all-boxes-nojs">Score</th>
-                        <th scope="col" class="nowrap">Score</th>
+                        <th scope="col">Score</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +54,10 @@
                             <input id="attendee-<%= pupil.id %>"
                                    name="attendee[<%= index %>]"
                                    type="checkbox"
-                                   value="<%= pupil.id %>">
+                                   value="<%= pupil.id %>"
+                                   tabindex="0"
+                                   aria-label="Tick pupil <%= pupil.fullName %>"
+                                   role="option">
                             <% } %>
                             <label for="attendee-<%= pupil.id %>">
                                 <span><%= pupil.fullName %></span><br />
@@ -60,9 +66,9 @@
                     </td>
                     <td>
                         <% if (pupil.percentage) { %>
-                        <span><%= pupil.percentage %></span>
+                        <span tabindex="0" aria-label="Score is <%= pupil.percentage %>"><%= pupil.percentage %></span>
                         <% } else { %>
-                        <span class="font-greyed-out">n/a</span>
+                        <span class="font-greyed-out" tabindex="0" aria-label="Score is not available">n/a</span>
                         <% } %>
                     </td>
                 </tr>
