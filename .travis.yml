@@ -17,8 +17,6 @@ addons:
 services: mongodb
 sudo: false
 before_install:
-- openssl aes-256-cbc -K $encrypted_5458ac808434_key -iv $encrypted_5458ac808434_iv
-  -in GOOGLE_SVC_PK.enc -out GOOGLE_SVC_PK -d
 - "$CXX --version"
 - rvm install 2.3.3
 install: true
