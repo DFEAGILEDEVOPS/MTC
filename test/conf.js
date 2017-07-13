@@ -48,7 +48,7 @@ exports.config = {
   cucumberOpts: {
     require: [
       'features/support/*.js',
-      'features/step_definitions/*.js'
+      'features/step_definitions/**/*.js'
     ],
     tags: ['~@wip'],
     format: 'pretty',
