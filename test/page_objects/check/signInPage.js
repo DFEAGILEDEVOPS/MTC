@@ -1,26 +1,24 @@
 // Page class for SignIn page
 'use strict'
 /* global element by */
+/* global browser browser */
 
-class SignInPage {
+class CheckSignIn {
   constructor () {
-    this.heading = element(by.css('.heading-xlarge'))
-    this.instructions = element(by.css('p.lede'))
-    this.usernameField = element(by.css('#username'))
-    this.passwordField = element(by.css('#password'))
-    this.signIn = element(by.css('input[value="Sign in"]'))
-    this.phase_banner = element(by.css('phase-banner'))
+    this.pin = element(by.css('.pin-entry'))
+    this.school_pin = element(by.css('#school-pin'))
+    this.pupil_pin = element(by.css('#pupil-pin'))
+    this.sign_in_button = element(by.css('.button-start'))
   }
 
-  enterCredentials (username, password) {
-    this.usernameField.sendKeys(username)
-    this.passwordField.sendKeys(password)
+  load () {
+    browser.get('#/sign_in')
   }
 
-  login (username, password) {
-    this.enterCredentials(username, password)
-    // this.signIn.click()
+  login (pinSchool, pinPupil) {
+    this.school_pin.send_keys(pinSchool)
+    this.pupil_pin.send_keys(pinPupil)
   }
 }
 
-module.exports = new SignInPage()
+module.exports = new CheckSignIn()
