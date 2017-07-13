@@ -35,8 +35,7 @@ const getResults = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const answers = await fetchPupilAnswers(p._id)
-    const pupilScore = answers && answers.result
-    const { hasScore, score, percentage } = await fetchScoreDetails(answers, pupilScore)
+    const { hasScore, score, percentage } = fetchScoreDetails(answers)
     return {
       fullName,
       hasScore,
@@ -190,8 +189,7 @@ const getSubmitAttendance = async (req, res, next) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const {_id: id, hasAttended} = p
     const answers = await fetchPupilAnswers(p._id)
-    const pupilScore = answers && answers.result
-    const { hasScore, percentage } = fetchScoreDetails(answers, pupilScore)
+    const { hasScore, percentage } = fetchScoreDetails(answers)
     return {
       id,
       fullName,

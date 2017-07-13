@@ -10,6 +10,7 @@ const pupilService = {
    * @param {number} schoolId - School unique Id.
    */
   fetchPupilsData: async (schoolId) => {
+    // TODO: Introduce integration tests
     const [ schoolData, pupils ] = await Promise.all([
       School.findOne({'_id': schoolId}).lean().exec(),
       Pupil.getPupils(schoolId).exec()
@@ -26,6 +27,7 @@ const pupilService = {
    * @param {string} id - Pupil Id.
    */
   fetchPupilAnswers: async (id) => {
+    // TODO: Introduce integration tests
     try {
       return await Answer.findOne({
         pupil: mongoose.Types.ObjectId(id),
@@ -40,7 +42,8 @@ const pupilService = {
    * @param {object} answers - Pupil's answers set.
    * @param {object} pupilScore - Pupil's score object.
    */
-  fetchScoreDetails: (answers, pupilScore) => {
+  fetchScoreDetails: (answers) => {
+    const pupilScore = answers && answers.result
     const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
     const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'n/a'
     const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'

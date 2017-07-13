@@ -213,8 +213,7 @@ const getManagePupils = async (req, res) => {
     const dob = new Date(item.dob)
     item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
     const answers = await fetchPupilAnswers(item._id)
-    const pupilScore = answers && answers.result
-    const { hasScore, percentage } = await fetchScoreDetails(answers, pupilScore)
+    const { hasScore, percentage } = fetchScoreDetails(answers)
     item.hasScore = hasScore
     item.percentage = percentage
     return item
