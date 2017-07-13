@@ -19,12 +19,11 @@
     border-collapse: collapse;
     width: 100%;
   }
-  tr.page
-  {
-    page-break-before: auto;
-    page-break-after: auto;
-    page-break-inside: avoid;
+
+  table.page-break {
+    page-break-before:always;
   }
+
   td {
     padding: 1em;
     strong {
