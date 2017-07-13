@@ -200,7 +200,6 @@ const getSubmitAttendance = async (req, res, next) => {
   })).catch((error) => next(error))
   pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
   // Redirect to declaration form if at least one has been submitted for attendance
-  console.log(pupilsFormatted)
   if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
     return res.redirect('/school/declaration-form')
   }
