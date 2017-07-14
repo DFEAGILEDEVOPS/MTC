@@ -40,7 +40,6 @@ const pupilService = {
   /**
    * Fetches score details for pupils who have taken the check.
    * @param {object} answers - Pupil's answers set.
-   * @param {object} pupilScore - Pupil's score object.
    */
   fetchScoreDetails: (answers) => {
     const pupilScore = answers && answers.result
