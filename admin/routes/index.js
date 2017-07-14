@@ -1,99 +1,51 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+
+const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
+const { home,
+  getSignIn,
+  postSignIn,
+  getSignOut,
+  getSignInFailure,
+  getProfile,
+  postAuth } = require('../controllers/authentication')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  if (req.isAuthenticated()) {
-    if (req.user.role === 'TEACHER' || req.user.role === 'HEADTEACHER') {
-      return res.redirect('/school/school-home')
-    } else {
-      return res.redirect('/school/school-home')
-    }
-  } else {
-    res.redirect('/sign-in')
-  }
-})
-
+router.get('/', (req, res) => home(req, res))
 /* Login page */
-router.get('/sign-in', function (req, res) {
-  res.locals.pageTitle = 'Check Development - Login'
-  if (req.isAuthenticated()) {
-    res.redirect('/school/school-home')
-  } else {
-    if (process.env.NCA_TOOLS_AUTH_URL) {
-      res.redirect(process.env.NCA_TOOLS_AUTH_URL)
-    } else {
-      res.render('sign-in')
-    }
-  }
-})
-
+router.get('/sign-in', (req, res) => getSignIn(req, res))
 /* Login validation */
-router.post('/sign-in',
-  function (req, res, next) {
-    // Only allow post requests if NCA TOOLS is disabled
-    if (process.env.NCA_TOOLS_AUTH_URL) {
-      return res.status(404).send('Not found')
-    }
-    next()
-  },
-  passport.authenticate('local', {failureRedirect: '/sign-in-failure'}),
-  function (req, res) {
-    if (req.user.role === 'TEACHER' || req.user.role === 'HEADTEACHER') {
-      return res.redirect('/school/school-home')
-    }
-    // There is no landing page for Test Developers yet.
-    res.redirect('/school/school-home')
+router.post('/sign-in', (req, res, next) => {
+  // Only allow post requests if NCA TOOLS is disabled
+  if (config.NCA_TOOLS_AUTH_URL) {
+    return res.status(404).send('Not found')
   }
+  next()
+}, passport.authenticate('local', {failureRedirect: '/sign-in-failure'}),
+  (req, res) => postSignIn(req, res)
 )
-
 /* Sign out */
-router.get('/sign-out', isAuthenticated(), function (req, res) {
-  req.logout()
-  req.session.regenerate(function () {
-    // session has been regenerated
-    res.redirect('/')
-  })
-})
-
+router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
 /* Sign in failure */
-router.get('/sign-in-failure', function (req, res) {
-  res.locals.pageTitle = 'Check Development App - Sign-in error'
-  res.render('sign-in-failure')
-})
-
+router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Profile page */
-router.get('/profile', isAuthenticated(), function (req, res) {
-  res.locals.pageTitle = 'Check Development - Profile'
-  res.render('profile')
-})
-
+router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
 /* Health check */
-router.get('/ping', function (req, res) {
-  res.status(200).send('OK')
-})
-
+router.get('/ping', (req, res) => res.status(200).send('OK'))
 /* NCA Tools Authentication Endpoint */
 router.post('/auth',
   function (req, res, next) {
     // Only allow post requests if NCA TOOLS is enabled
-    if (!process.env.NCA_TOOLS_AUTH_URL) {
+    if (!config.NCA_TOOLS_AUTH_URL) {
       return res.status(404).send('Not found')
     }
     next()
   },
   passport.authenticate('custom', {
     failureRedirect: '/sign-in-failure'
-  }),
-  function (req, res) {
-    // Please leave this in until we are confident we have identified all the NCA Tools roles.
-    console.log(req.user)
-    // Schools roles should redirect to school-home:
-    // no mapping provided yet.
-    return res.redirect('/school/school-home')
-  }
+  }), (req, res) => postAuth(req, res)
 )
 
 module.exports = router

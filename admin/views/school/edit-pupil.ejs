@@ -6,10 +6,7 @@ const submitLabel = 'Save changes';
 const headingClass = 'heading-xlarge';
 %>
 
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    <h1 class="heading-xlarge">Edit pupil details</h1>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
 <%- partial('school/_pupil-form', {
     input: input,
@@ -18,5 +15,6 @@ const headingClass = 'heading-xlarge';
     formData: input,
     heading: heading,
     submitLabel: submitLabel,
-    headingClass: headingClass
+    headingClass: headingClass,
+    formHeader: 'Edit'
 }) %>

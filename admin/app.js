@@ -1,11 +1,12 @@
 'use strict'
-
 require('newrelic')
+
 const express = require('express')
+const piping = require('piping')
 const path = require('path')
-const favicon = require('serve-favicon')
+// const favicon = require('serve-favicon')
 const logger = require('morgan')
-const cookieParser = require('cookie-parser')
+// const cookieParser = require('cookie-parser')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const mongoose = require('mongoose')
@@ -18,9 +19,25 @@ const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
+const fs = require('fs')
+const config = require('./config')
+const devWhitelist = require('./whitelist-dev')
+
+const unsetVars = []
+Object.keys(config).map((key) => {
+  if (!config[key] && !devWhitelist.includes(key)) {
+    unsetVars.push(`${key}`)
+  }
+})
+
+if (unsetVars.length > 0) {
+  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
+  process.exitCode = 1
+  throw new Error(error)
+}
 
 mongoose.promise = global.Promise
-const connectionString = process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc'
+const connectionString = config.MONGO_CONNECTION_STRING
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
@@ -30,10 +47,24 @@ autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
-const school = require('./routes/school')
+const admin = require('./routes/admin')
 
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
+
 const helpers = require('./helpers')(app)
+
+/* for Azure Linux App Service only
+logging is not yet correctly implemented, so this is a temporary workaround
+ see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
+ */
+if (config.STD_LOG_FILE) {
+  const appLog = fs.createWriteStream(config.STD_LOG_FILE)
+  process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
+  process.on('uncaughtException', function (err) {
+    console.error((err && err.stack) || err)
+  })
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -59,7 +90,7 @@ const mongoStoreOptions = {
 }
 const sessionOptions = {
   name: 'staff-app.sid',
-  secret: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
+  secret: config.SESSION_SECRET,
   resave: false,
   rolling: true,
   saveUninitialized: false,
@@ -131,7 +162,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
-app.use('/school', school)
+app.use('/school', admin)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

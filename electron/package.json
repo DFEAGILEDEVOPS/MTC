@@ -1,6 +1,7 @@
 {
   "name": "multiplication-tables-check-app",
   "version": "0.0.6",
+  "license": "GPL-3.0",
   "description": "Multiplication Tables Check Application",
   "main": "lib/main.js",
   "scripts": {
@@ -21,7 +22,6 @@
     "Check"
   ],
   "author": "Jon Shipley <js@ovix.co.uk>",
-  "license": "UNLICENSED",
   "dependencies": {
     "jquery": "^3.1.1"
   },

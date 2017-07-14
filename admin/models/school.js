@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const randomGenerator = require('../lib/random-generator')
 
 const School = new Schema({
-  _id: { type: Number },
+  _id: {type: Number},
   leaCode: {
     type: Number,
     required: true,
@@ -35,10 +35,10 @@ const School = new Schema({
   },
   hdf: {
     _id: false,
-    signedDate: { type: Date },
-    declaration: { type: String },
-    fullName: { type: String },
-    jobTitle: { type: String }
+    signedDate: {type: Date},
+    declaration: {type: String},
+    fullName: {type: String},
+    jobTitle: {type: String}
   }
 }, {
   timestamps: true
@@ -72,10 +72,26 @@ School.statics.getUniqueSchoolPin = function () {
       }
       reject(new Error('Failed to find a unique school pin'))
     } catch (error) {
-      console.log('error finding a pin: ' + error.message)
       reject(error)
     }
   })
+}
+
+/**
+ * Retrieve school record from PIN.
+ * @return {Promise}
+ */
+School.statics.getSchoolFromPin = function (schoolPin) {
+  if (schoolPin < 1) {
+    throw new Error('Missing pupil id')
+  }
+  let school
+  try {
+    school = this.find({schoolPin: schoolPin})
+  } catch (error) {
+    console.log('getSchoolFromPin ERROR', error)
+  }
+  return school
 }
 
 module.exports = mongoose.model('School', School)

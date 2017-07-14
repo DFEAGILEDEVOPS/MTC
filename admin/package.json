@@ -1,12 +1,14 @@
 {
   "name": "check-development-app",
   "version": "0.2.0",
-  "private": true,
+  "private": false,
+  "license": "GPL-3.0",
   "scripts": {
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
-    "start": "node ./bin/www",
+    "start": "node ./server.js",
     "postinstall": "gulp build",
-    "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit"
+    "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
+    "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit"
   },
   "engines": {
     "node": "8.1.2"
@@ -47,6 +49,7 @@
     "passport": "^0.3.2",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
+    "piping": "^1.0.0-rc.4",
     "serve-favicon": "~2.4.2",
     "uuid": "^3.0.1",
     "xregexp": "^3.2.0"
@@ -55,6 +58,30 @@
     "gulp-standard": "^10.0.0",
     "jasmine-node": "^1.14.5",
     "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
+    "nyc": "^11.0.3",
+    "proxyquire": "^1.8.0",
+    "sinon": "^2.3.6",
+    "sinon-mongoose": "^2.0.2",
     "standard": "^10.0.2"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.spec.js",
+      "**/*Spec.js",
+      "newrelic.js",
+      "gulpfile.js",
+      "bin/**/*",
+      "public/govuk_template/**/*",
+      "public/javascripts/app.js",
+      "assets/javascripts/details.polyfill.js",
+      "assets/javascripts/jquery-1.12.4.js",
+      "assets/javascripts/modernizr-custom.js",
+      "app.js",
+      "server.js",
+      "data/migrations/"
+    ],
+    "all": true,
+    "cache": true
   }
 }

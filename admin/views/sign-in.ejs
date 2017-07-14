@@ -1,26 +1,34 @@
-<header class="page-header">
-    <div class="organisation-logo">
-        <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+<div class="organisation-container" aria-describedby="standards-and-testing-agency">
+    <div class="organisation-logo home">
+        <div class="logo-text" tabindex="0" id="standards-and-testing-agency">Standards<br>&amp; Testing<br>Agency</div>
     </div>
-</header>
+</div>
 
 <div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Check Development Service</h1>
+    <div class="column-two-thirds" aria-describedby="lead-paragraph">
+        <h1 class="heading-xlarge" tabindex="0">Check Development Service</h1>
 
-        <p class="lede">
-            Sign-in to access the Check Development Service
-        </p>
+        <p class="lede" id="lead-paragraph" tabindex="0">Sign-in to access the Check Development Service</p>
 
-        <form action="/sign-in" method="post" autocomplete="off">
+        <form action="/sign-in" method="post" aria-label="Sign-in below" autocomplete="off">
             <div class="form-group">
                 <label for="username" class="form-label-bold"> Username </label>
-                <input class="form-control" id="username" name="username" type="text">
+                <input class="form-control"
+                       id="username"
+                       name="username"
+                       type="text"
+                       aria-required="true"
+                       aria-label="Enter your user name.">
             </div>
 
             <div class="form-group">
                 <label for="password" class="form-label-bold"> Password </label>
-                <input class="form-control" id="password" name="password" type="password">
+                <input class="form-control"
+                       id="password"
+                       name="password"
+                       type="password"
+                       aria-required="true"
+                       aria-label="Enter your password.">
             </div>
 
             <div class="form-group">

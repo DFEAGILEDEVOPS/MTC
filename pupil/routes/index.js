@@ -1,63 +1,30 @@
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
+const express = require('express')
+const router = express.Router()
+const { getHome,
+  getLogger,
+  getSignIn,
+  postSignIn,
+  getSignOut,
+  getSignInSucess,
+  getSignInFailure,
+  getPing } = require('../controllers/pupil')
 
-// const logger = require('../lib/logger');
-
-const signInFailureSuffix = (process.env.AUTH_OPTION === '5PIN' || process.env.AUTH_OPTION === '4PIN' ? process.env.AUTH_OPTION.toLowerCase() : '4pin');
+// const logger = require('../lib/logger')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.locals.pageTitle = 'Multiplication Tables Check';
-  if (req.isAuthenticated()) {
-    res.redirect('/check/start');
-  } else {
-    res.redirect('/sign-in');
-  }
-});
-
+router.get('/', (req, res) => getHome(req, res))
 /* GET Logger function */
-router.get('/logger', function (req, res, next) {
-  // logger.info({ logVars: req.query }, 'logger request');
-  res.writeHead(200, {'content-type': 'text/html'});
-  res.end("OK");
-});
-
+router.get('/logger', (req, res) => getLogger(req, res))
 /* Login page */
-router.get('/sign-in', function (req, res, next) {
-  res.locals.pageTitle = 'Multiplication tables check - Login';
-  res.render('sign-in-5-digit-pin', { layout: 'question-layout' }); // Temp layout
-});
-
+router.get('/sign-in', (req, res) => getSignIn(req, res))
 /* Login validation */
-router.post('/sign-in', passport.authenticate('custom', {
-    failureRedirect: '/sign-in-failure',
-    successRedirect: '/sign-in-success'
-  })
-);
-
+router.post('/sign-in', (req, res) => postSignIn(req, res))
 /* Sign out */
-router.get('/sign-out', function (req, res) {
-  req.logout();
-  req.session.regenerate(function() {
-    // session has been regenerated
-    res.redirect('/');
-  });
-});
-
-router.get('/sign-in-success' , function (req, res) {
-  res.redirect('/check/sign-in-success');
-});
-
+router.get('/sign-out', (req, res) => getSignOut(req, res))
+router.get('/sign-in-success', (req, res) => getSignInSucess(req, res))
 /* Sign in failure */
-router.get('/sign-in-failure', function (req, res) {
-  res.locals.pageTitle = 'Multiplication tables check - Sign-in error';
-  res.render(`sign-in-failure-${signInFailureSuffix}`, { layout: 'question-layout' }); // Temp layout
-});
-
+router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Health check */
-router.get('/ping', function (req, res) {
-  res.status(200).send("OK");
-});
+router.get('/ping', (req, res) => getPing(req, res))
 
-module.exports = router;
+module.exports = router
