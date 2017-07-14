@@ -1,6 +1,5 @@
 'use strict'
 const pupilService = require('../../services/pupilService')
-const {Types: { ObjectId }} = require('mongoose')
 
 /* global beforeEach, describe, it, expect */
 
