@@ -8,7 +8,7 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -35,10 +35,7 @@ const getResults = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const answers = await fetchPupilAnswers(p._id)
-    const pupilScore = answers && answers.result
-    const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
-    const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'n/a'
-    const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
+    const { hasScore, score, percentage } = fetchScoreDetails(answers)
     return {
       fullName,
       hasScore,
@@ -192,18 +189,16 @@ const getSubmitAttendance = async (req, res, next) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const {_id: id, hasAttended} = p
     const answers = await fetchPupilAnswers(p._id)
-    const pupilScore = answers && answers.result
-    const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
-    const scorePercentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
+    const { hasScore, percentage } = fetchScoreDetails(answers)
     return {
       id,
       fullName,
       hasAttended,
       hasScore,
-      scorePercentage
+      percentage
     }
   })).catch((error) => next(error))
-  pupilsFormatted = pupilsFormatted.filter((p) => p.scorePercentage !== 'n/a')
+  pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
   // Redirect to declaration form if at least one has been submitted for attendance
   if (pupilsFormatted.length > 0 && pupilsFormatted.some((p) => p.hasAttended)) {
     return res.redirect('/school/declaration-form')
