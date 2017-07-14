@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
+const Schema = mongoose.Schema
 
 const Pupil = new Schema({
   school: {
-    type: Schema.Types.Number,
+    type: Number,
     required: true,
     ref: 'School'
   },
@@ -48,20 +48,39 @@ const Pupil = new Schema({
     type: Boolean,
     default: false
   },
+  hasAttended: {
+    type: Boolean,
+    default: false
+  },
   warmUpStartDate: {
-    type: Date,
+    type: Date
   },
   warmUpEndDate: {
-    type: Date,
+    type: Date
   },
   checkStartDate: {
-    type: Date,
+    type: Date
   },
   checkEndDate: {
     type: Date
   }
 }, {
   timestamps: true
-});
+})
 
-module.exports = mongoose.model('Pupil', Pupil);
+/**
+ * Retrieve pupil records by school code
+ * @return {Query} || null
+ */
+Pupil.statics.getPupils = function (schoolCode) {
+  if (schoolCode < 1) {
+    throw new Error('Missing school code')
+  }
+  const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null
+  if (!pupils) {
+    console.log('getPupils ERROR: no pupils found')
+  }
+  return pupils
+}
+
+module.exports = mongoose.model('Pupil', Pupil)

@@ -1,43 +1,43 @@
 #!/usr/bin/env node
-'use strict';
+'use strict'
 
-const mongoose = require('mongoose');
-mongoose.promise = global.Promise;
-const config = require('../data/migrations/config');
-const LogonEvent = require('../models/logon-event');
-const Answers = require('../models/answer');
-const csv = require('fast-csv');
-const fs = require('fs');
-const csvStream = csv.createWriteStream({headers: true});
-const writableStream = fs.createWriteStream('out.csv');
+const mongoose = require('mongoose')
+mongoose.promise = global.Promise
+const LogonEvent = require('../models/logon-event')
+const Answers = require('../models/answer')
+const csv = require('fast-csv')
+const fs = require('fs')
+const csvStream = csv.createWriteStream({headers: true})
+const writableStream = fs.createWriteStream('out.csv')
+const config = require('../config')
 
-writableStream.on("finish", function(){
-  console.error("DONE!");
-});
+writableStream.on('finish', function () {
+  console.error('DONE!')
+})
 
-csvStream.pipe(writableStream);
+csvStream.pipe(writableStream)
 
-mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function(error) {
-  if (error) { console.error(error); }
+mongoose.connect(config.MONGO_CONNECTION_STRING, async function (error) {
+  if (error) { console.error(error) }
 
-  let answers;
+  let answers
 
   // extract all complete answers
   try {
-    answers = await Answers.find({ result : { $exists : true }, createdAt: {$gt: '2017-05-22 00:00:00'}}).sort({createdAt: 1}).exec();
+    answers = await Answers.find({ result : { $exists : true }, createdAt: {$gt: '2017-05-22 00:00:00'}}).sort({createdAt: 1}).exec()
   } catch (error) {
-    console.error(error);
-    process.exit(1);
+    console.error(error)
+    process.exit(1)
   }
 
   for (let index in answers) {
-    let answer = answers[index];
-    let logonEvent = null;
+    let answer = answers[index]
+    let logonEvent = null
     if (answer.logonEvent) {
-     logonEvent = await getLogon(answer.logonEvent);
+     logonEvent = await getLogon(answer.logonEvent)
     } else {
-      console.log(`Logon Event not in schema`);
-      logonEvent = {};
+      console.log(`Logon Event not in schema`)
+      logonEvent = {}
     }
 
     csvStream.write({
@@ -53,32 +53,26 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function(error) {
         .map(ans => {
           return `${ans.factor1} x ${ans.factor2}`
         }).join(', ')
-    });
-  };
+    })
+  }
 
-  csvStream.end();
-  mongoose.connection.close();
-});
+  csvStream.end()
+  mongoose.connection.close()
+})
 
 
 function getLogon(logonEventId) {
   return new Promise(async function (resolve, reject) {
     try {
-      let logonEvent = await LogonEvent.findOne({_id: logonEventId}).exec();
+      let logonEvent = await LogonEvent.findOne({_id: logonEventId}).exec()
       if (!logonEvent) {
-        console.log(`Logon Event [${logonEventId}] not found`);
-        resolve({});
+        console.log(`Logon Event [${logonEventId}] not found`)
+        resolve({})
       }
-      // console.log(logonEvent);
-      resolve(logonEvent);
+      // console.log(logonEvent)
+      resolve(logonEvent)
     } catch (error) {
-      reject(error);
+      reject(error)
     }
-  });
+  })
 }
-
-
-
-
-
-

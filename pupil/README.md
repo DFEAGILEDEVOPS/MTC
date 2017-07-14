@@ -74,6 +74,8 @@ Sheet must be set in the environment:
 | 4pin.stamtc.uk        | Usability study - 4 PIN auth option | `master` | UA-92976848-4 |
 | 5pin.stamtc.uk        | Usability study - 5 PIN auth option | `master` | UA-92976848-5 |
 
+Note that 4pin is not used any longer.
+
 ### Running the test suite
 
 `npm test`
@@ -103,6 +105,26 @@ cd data/migrations
  ../../node_modules/.bin/migrate-mongo create 'my new feature'
 ```
 You can then edit the skeleton file created with the required `up` and `down` migrations. 
+
+## Live reloading on change
+
+In devDependencies, make sure you have npm-run-all:
+
+`"npm-run-all": "^4.0.2",`
+
+`"nodemon": "^1.11.0",`
+
+If not, install them.
+
+In scripts, have the following:
+
+`"startn": "nodemon ./server.js",`
+
+`"watch-jscss": "gulp watch"`
+
+On the console:
+
+`npm-run-all --parallel watch-jscss startn`
 
 ## Licence
 

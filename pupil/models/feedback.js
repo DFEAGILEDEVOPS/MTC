@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const maxMessageLength = [
   1200,
   'You have exceeded the word limit'
-];
+]
 
 const inputStates = [
   'Touchscreen',
   'Mouse',
   'Keyboard',
   'Mix of the above'
-];
+]
 
 const satisfactionStates = [
   'Very easy',
@@ -19,7 +19,7 @@ const satisfactionStates = [
   'Neither easy or difficult',
   'Difficult',
   'Very difficult'
-];
+]
 
 const Feedback = new Schema({
   sessionId: String,
@@ -41,7 +41,7 @@ const Feedback = new Schema({
     type: String,
     trim: true,
     maxlength: maxMessageLength
-  },
-}, { timestamps: true });
+  }
+}, {timestamps: true})
 
-module.exports = mongoose.model('Feedback', Feedback, 'feedback');
+module.exports = mongoose.model('Feedback', Feedback, 'feedback')
