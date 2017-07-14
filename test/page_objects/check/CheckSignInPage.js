@@ -1,9 +1,8 @@
 // Page class for SignIn page
 'use strict'
 /* global element by */
-/* global browser browser */
 
-class CheckSignIn {
+class CheckSignInPage {
   constructor () {
     this.pin = element(by.css('.pin-entry'))
     this.school_pin = element(by.css('#school-pin'))
@@ -11,14 +10,11 @@ class CheckSignIn {
     this.sign_in_button = element(by.css('.button-start'))
   }
 
-  load () {
-    browser.get('#/sign_in')
-  }
 
   login (pinSchool, pinPupil) {
-    this.school_pin.send_keys(pinSchool)
-    this.pupil_pin.send_keys(pinPupil)
+    this.school_pin.sendKeys(pinSchool)
+    this.pupil_pin.sendKeys(pinPupil)
   }
 }
 
-module.exports = new CheckSignIn()
+module.exports = new CheckSignInPage()

@@ -4,7 +4,7 @@
 const {defineSupportCode} = require('cucumber')
 defineSupportCode(function ({Given, When, Then}) {
   Given(/^I am on the sign in page$/, function (callback) {
-    browser.get(this.config.appUrl)
+    browser.get(this.config.adminUrl)
     expect(this.signIn.usernameField).to.eventually.be.present
       .then(callback)
   })
