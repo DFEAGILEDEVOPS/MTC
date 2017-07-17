@@ -59,8 +59,8 @@ const setUpdateTiming = async (req, res, next) => {
   } else {
     settings = new Settings()
   }
-  settings.questionTimeLimit = Math.round(req.body.questionTimeLimit * 10) / 10
-  settings.loadingTimeLimit = Math.round(req.body.loadingTimeLimit * 10) / 10
+  settings.questionTimeLimit = Math.round(req.body.questionTimeLimit * 100) / 100
+  settings.loadingTimeLimit = Math.round(req.body.loadingTimeLimit * 100) / 100
 
   let validationError = await settingsValidator.validate(req)
   if (validationError.hasError()) {
