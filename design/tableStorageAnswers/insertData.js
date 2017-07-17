@@ -15,7 +15,12 @@ function insertBatch(entityCount) {
 
     var tableBatch = new azure.TableBatch();
 
-    for (var batchCount = 0; batchCount < 1000; batchCount++) {
+    for (var batchIndex = 0; batchIndex < 1000; batchIndex++) {
+
+      process.stdout.write('inserting batch ' + batchIndex)
+      process.stdout.clearLine()
+      process.stdout.cursorTo(0)
+      process.stdout.write('inserting entity ' + index)
 
       var entities = generateEntityBatch(tableBatch)
 
@@ -26,6 +31,7 @@ function insertBatch(entityCount) {
           console.error('Error inserting entity batch:%s', error)
         }
       })
+      tableBatch.clear()
     }
   })
 }
@@ -33,12 +39,6 @@ function insertBatch(entityCount) {
 function generateEntityBatch(tableBatch) {
 
   for (var index = 0; index < 100; index++) {
-
-    process.stdout.write('inserting entities...')
-    process.stdout.clearLine()
-    process.stdout.cursorTo(0)
-    process.stdout.write('inserting entity ' + index)
-
     tableBatch.insertEntity(createPupilCheck())
   }
 }
@@ -59,7 +59,7 @@ function createPupilCheck() {
     isElectron: false
   }
 
-  for (var question = 0; question < 30; question++) {
+  for (var questionIndex = 0; questionIndex < 30; questionIndex++) {
 
     var answer = {
       pageLoadDate: entGen.DateTime(Date.now),
