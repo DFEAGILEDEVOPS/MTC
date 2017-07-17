@@ -18,5 +18,8 @@ defineSupportCode(function ({Given, When, Then}) {
     return expect(this.checkPage.preload).to.eventually.be.present
   })
   Then('I should have {int} seconds before i see the first question', function (int) {
+    this.waitForVisibility(this.checkPage.preload, int * 1000)
+    this.waitForInVisibility(this.checkPage.preload, int * 1000)
+    return expect(this.checkPage.preload).to.eventually.not.be.displayed
   })
 })

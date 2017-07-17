@@ -18,8 +18,11 @@ function CustomWorld ({attach, parameters}) {
   this.startPage = require('../../page_objects/check/startPage')
   this.checkPage = require('../../page_objects/check/checkPage')
 
-  this.waitForDisplayed = function(element) {
-    browser.wait(EC.visibilityOf(element), 5000)
+  this.waitForVisibility = function (element, timeOut = 5000) {
+    browser.wait(EC.visibilityOf(element), timeOut)
+  }
+  this.waitForInVisibility = function (element, timeOut = 5000) {
+    browser.wait(EC.invisibilityOf(element), timeOut)
   }
 }
 
