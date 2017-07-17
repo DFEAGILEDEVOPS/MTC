@@ -4,6 +4,7 @@ const passport = require('passport')
 
 const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
+const { getAdministration } = require('../controllers/administrator')
 const { home,
   getSignIn,
   postSignIn,
@@ -32,6 +33,8 @@ router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
 router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Profile page */
 router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
+/* Administration page */
+router.get('/administrator', isAuthenticated(), (req, res) => getAdministration(req, res))
 /* Health check */
 router.get('/ping', (req, res) => res.status(200).send('OK'))
 /* NCA Tools Authentication Endpoint */

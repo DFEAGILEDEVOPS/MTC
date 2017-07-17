@@ -1,0 +1,75 @@
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+
+<div class="grid-row" aria-describedby="lead-paragraph">
+    <div class="column-two-thirds">
+
+        <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
+
+        <div class="box-successful padding-first-item">
+            <h2 class="heading-large">Changes have been saved</h2>
+        </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined') { %>
+        <div class="error-summary padding-first-item" role="group" aria-labelledby="error-summary-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-1">Check the settings details</h1>
+            <p>Question time and time between questions are measured in seconds.</p>
+
+            <% if (typeof error === 'object') { %>
+            <ul class="error-summary-list">
+            <% ['questionTimeLimit', 'loadingTimeLimit'].map(errorKey => { %>
+                <% if (error[errorKey]) { %>
+                <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
+                <% } %>
+            <% }) %>
+            </ul>
+            <% } %>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge" tabindex="0">Check settings</h1>
+
+        <p class="lede" id="lead-paragraph" tabindex="0">Use the form below to customise time settings.
+        </p>
+
+        <form action="/administrator/check-settings" method="post">
+            <div class="form-group">
+                <label for="questionTimeLimit" class="form-label-bold">
+                    Question time limit
+                    <span class="form-hint">For example, 5 for 5 seconds</span>
+                    <% if (typeof error !== 'undefined' &&  error.questionTimeLimit) { %>
+                    <span class="error-message"><%= errorMessage.questionTimeLimit %></span>
+                    <% } %>
+                </label>
+                <input class="form-control narrow-width"
+                       id="questionTimeLimit"
+                       name="questionTimeLimit"
+                       type="text"
+                       value="<%= settings.questionTimeLimit %>"
+                       aria-required="true"
+                       aria-label="Question time limit.">
+            </div>
+            <div class="form-group">
+                <label for="loadingTimeLimit" class="form-label-bold">
+                    Time between questions
+                    <span class="form-hint">For example, 2 for 2 seconds</span>
+                    <% if (typeof error !== 'undefined' &&  error.loadingTimeLimit) { %>
+                    <span class="error-message"><%= errorMessage.loadingTimeLimit %></span>
+                    <% } %>
+                </label>
+                <input class="form-control narrow-width"
+                       id="loadingTimeLimit"
+                       name="loadingTimeLimit"
+                       type="text"
+                       value="<%= settings.loadingTimeLimit %>"
+                       aria-required="true"
+                       aria-label="Time between questions.">
+            </div>
+            <div class="form-group">
+                <p>
+                    <input class="button" type="submit" value="Save changes">
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
