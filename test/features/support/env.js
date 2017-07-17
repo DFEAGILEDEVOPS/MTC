@@ -1,4 +1,4 @@
-// Environment global constiables declaration
+// Environment global declaration
 const configure = function () {
   this.setDefaultTimeout(240 * 1000)
 }
