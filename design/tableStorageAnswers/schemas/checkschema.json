@@ -5,18 +5,45 @@
   "RowKey": {
     "UPN": 456789
   },
-  "Answers": [
+  "updatedAt": {
+    "$date": 1498772430169
+  },
+  "createdAt": {
+    "$date": 1498772430169
+  },
+  "school": 9282016,
+  "pupil": {
+    "$oid": "59555ecd4911e93136e4550a"
+  },
+  "logonEvent": {
+    "$oid": "595573aed961140046c0ebcf"
+  },
+  "testId": "87829559-abc0-4ecf-a6d0-521f7f5bc15e",
+  "sessionId": "zREmHpL5blt3NGiitrK9LKdrpf6s15P9",
+  "answers": [
     {
-      "QuestionIndex": 1,
-      "F1": 3,
-      "F2": 3,
-      "Answer": 9,
-      "RegisteredInputs": [
-        3,
-        4,
-        1,
-        25
-      ] //TODO get correct format
+      "pageLoadDate": {
+        "$date": 1498772396897
+      },
+      "answerDate": {
+        "$date": 1498772430142
+      },
+      "factor1": 7,
+      "factor2": 1,
+      "input": "7",
+      "registeredInputs": [
+        {
+          "input": "7",
+          "eventType": "touch keydown",
+          "clientInputDate": {
+            "$date": 1498772399960
+          }
+        }
+      ]
     }
-  ]
+  ],
+  "creationDate": {
+    "$date": 1498772430135
+  },
+  "isElectron": false
 }
