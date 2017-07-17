@@ -1,16 +1,17 @@
 #!/bin/bash -x
 
-node server.js &
+cd pupil
+npm start &
 PID=$!
 
-MSG='node is running under process '
+MSG='pupil app is running under process '
 MSG+=$PID
 echo $MSG
 
 cd test
 gem install bundler
 bundle install
-BASE_URL=http://localhost:3000 cucumber
+cucumber
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID

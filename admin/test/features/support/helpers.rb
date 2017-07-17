@@ -6,4 +6,8 @@ module Helpers
     end
   end
 
+  def time_to_nearest_hour(time)
+    time - time.sec - 60 * time.min
+    return time.strftime("%Y-%m-%d %H")
+  end
 end

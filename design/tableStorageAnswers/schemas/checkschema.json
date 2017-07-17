@@ -1,0 +1,22 @@
+{
+  "PartitionKey": {
+    "URN": 123456
+  },
+  "RowKey": {
+    "UPN": 456789
+  },
+  "Answers": [
+    {
+      "QuestionIndex": 1,
+      "F1": 3,
+      "F2": 3,
+      "Answer": 9,
+      "RegisteredInputs": [
+        3,
+        4,
+        1,
+        25
+      ] //TODO get correct format
+    }
+  ]
+}

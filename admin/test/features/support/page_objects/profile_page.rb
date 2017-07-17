@@ -6,7 +6,7 @@ class ProfilePage < SitePrism::Page
   element :manage_check_forms, 'a[href="/test-developer/manage-check-forms"]'
   element :add_pupil, 'a[href="/school/pupil/add"]'
   element :manage_pupil, 'a[href="/school/manage-pupils"]'
-  element :breadcrumb, '#content > .page-header > .breadcrumbs'
-  element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
+  element :breadcrumb, '#content .breadcrumbs'
+  element :home, '#content .breadcrumbs a', text: 'Home'
   section :phase_banner, PhaseBanner, '.phase-banner'
 end

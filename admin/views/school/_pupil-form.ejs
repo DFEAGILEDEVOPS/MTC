@@ -11,14 +11,12 @@ if (formData._id) {
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <% if (err.hasError()) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                Check the pupil’s details
-            </h1>
 
-            <p>Look at the names, date of birth and other details. Maximum length fields are 35
-                characters.</p>
+        <% if (err.hasError()) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
+
+            <p>Look at the names, date of birth and other details. Maximum length fields are 35 characters.</p>
 
             <ul class="error-summary-list">
                 <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
@@ -27,6 +25,8 @@ if (formData._id) {
             </ul>
         </div>
         <% } %>
+
+        <h1 class="heading-xlarge" tabindex="0"><%- formHeader %> pupil details</h1>
 
         <form action="<%= createOrSave %>" method="post" novalidate>
             <input type="hidden" name="school" value="<%= school._id %>"/>
@@ -92,9 +92,9 @@ if (formData._id) {
 
             <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
                  id="dob">
-                <fieldset>
+                <fieldset tabindex="0" aria-labelledby="date-of-birth">
                     <legend>
-                        <span class="form-label-bold">Date of birth</span>
+                        <span class="form-label-bold" id="date-of-birth">Date of birth</span>
                         <span class="form-hint">For example, 31 3 2006</span>
                         <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
                         <span class="error-message">
@@ -114,7 +114,6 @@ if (formData._id) {
                                    id="dob-day"
                                    name="dob-day"
                                    type="number"
-                                   pattern="[0-9]{1,2}*"
                                    min="0" max="31"
                                    value="<%= formData['dob-day'] %>"/>
                         </div>
@@ -124,7 +123,6 @@ if (formData._id) {
                                    id="dob-month"
                                    name="dob-month"
                                    type="number"
-                                   pattern="[0-9]{1,2}*"
                                    min="0"
                                    max="12"
                                    value="<%= formData['dob-month'] %>"/>
@@ -134,7 +132,6 @@ if (formData._id) {
                             <input class="form-control <%= err.isError('dob-year') ? 'form-control-error' : '' %>"
                                    id="dob-year" name="dob-year"
                                    type="number"
-                                   pattern="[0-9]{4}*"
                                    min="0"
                                    max="<%= currentYear %>"
                                    value="<%= formData['dob-year'] %>">
@@ -144,7 +141,7 @@ if (formData._id) {
             </div>
 
             <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
-                <fieldset>
+                <fieldset tabindex="0" role="radiogroup" >
                     <legend class="form-label-bold">Gender
                         <% if (err.isError('gender')) { %>
                         <span class="error-message"><%= err.get('gender') %></span>
@@ -153,6 +150,8 @@ if (formData._id) {
                     <div class="multiple-choice">
                         <input id="gender-female"
                                type="radio"
+                               role="radio"
+                               aria-checked="false"
                                name="gender"
                                value="F"
                                <% if (formData['gender'] === 'F') { %>checked="checked"
@@ -164,6 +163,8 @@ if (formData._id) {
                     <div class="multiple-choice">
                         <input id="gender-male"
                                type="radio"
+                               role="radio"
+                               aria-checked="false"
                                name="gender"
                                value="M"
                                <% if (formData['gender'] === 'M') { %>checked="checked"
@@ -181,4 +182,3 @@ if (formData._id) {
         </form>
     </div>
 </div>
-
