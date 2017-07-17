@@ -1,0 +1,88 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "MTC Admin API",
+        "version": "1.0.0",
+        "title": "MTC Admin API",
+        "license": {
+            "name": "GPL",
+            "url": "https://opensource.org/licenses/GPL-3.0"
+        }
+    },
+    "tags": [
+        {
+            "name": "check data",
+            "description": "endpoints that pupil app depends upon"
+        }
+    ],
+    "paths": {
+        "/questions": {
+            "get": {
+                "tags": [
+                    "developers"
+                ],
+                "summary": "returns question set for check",
+                "operationId": "getQuestions",
+                "description": "By passing in the appropriate options, you can retrieve a set of questions\n",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "pupilDetails",
+                        "description": "Pupil taking the check",
+                        "schema": {
+                            "$ref": "#/definitions/PupilDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "question set returned"
+                    },
+                    "400": {
+                        "description": "invalid input, object invalid"
+                    },
+                    "404": {
+                        "description": "question set not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "PupilDetails": {
+            "type": "object",
+            "required": [
+                "pupilId",
+                "schoolId",
+                "sessionId"
+            ],
+            "properties": {
+                "pupilId": {
+                    "type": "number",
+                    "format": "int32",
+                    "example": 1234
+                },
+                "schoolId": {
+                    "type": "number",
+                    "example": 5678
+                },
+                "sessionId": {
+                    "type": "number",
+                    "format": "int32",
+                    "example": 1234
+                }
+            }
+        }
+    },
+    "host": "virtserver.swaggerhub.com",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/GuyHarwood/mtc-admin/1.0.0"
+}

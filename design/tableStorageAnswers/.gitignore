@@ -36,16 +36,26 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+# JetBrains
+.idea
+
+# No need to check in compiled stylesheets
+public/stylesheets/application*.css*
+
+# mac files
 .DS_Store
 
-# Jetbrains IntelliJ
-/.idea/
+# gulp package output
+_package/**
 
-# Ignore these package-lock.json files as they break Heroku
-/admin/package-lock.json
-/pupil/package-lock.json
-/MTC.iml
+nohup.out
+public/data/*.text
+public/javascripts/app.js
 
+#screenshots
+test/screenshots/*.png
+test/screenshots/*.html
+test/reports/*
 
-# ignore test reports folder
-/test/reports/
+# Artillery
+load-test/artillery/artillery_report_*.json
