@@ -9,7 +9,6 @@ class SignInPage {
     this.usernameField = element(by.css('#username'))
     this.passwordField = element(by.css('#password'))
     this.signIn = element(by.css('input[value="Sign in"]'))
-    this.phase_banner = element(by.css('phase-banner'))
   }
 
   enterCredentials (username, password) {
