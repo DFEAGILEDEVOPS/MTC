@@ -1,12 +1,11 @@
-<header class="page-header">
-    <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-</header>
+<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
 
-<div class="grid-row">
+<div class="grid-row" aria-describedby="lead-paragraph">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge"><%= schoolName %></h1>
-        <p class="lede">To start the check you will need to generate PINs for each individual pupil.</p>
-        <ul class="list">
+        <h1 class="heading-xlarge" tabindex="0"><%= schoolName %></h1>
+        <p class="lede" id="lead-paragraph" tabindex="0">To start the check you will need to generate PINs for each individual pupil.</p>
+
+        <ol class="list">
             <li>
                 <h2 class="heading-small"><a href="/school/manage-pupils">Manage pupils</a></h2>
                 <p>Generate PINs for pupils to start the multiplication tables check and select pupil attendance codes</p>
@@ -14,17 +13,18 @@
 
             <li>
                 <h2 class="heading-small"><a href="/school/submit-attendance">Submit attendance register</a></h2>
-                <p>Review your attendance register and submit the headteacher's declaration form</p>
+                <p>Review your attendance register and submit the headteacher’s declaration form</p>
             </li>
 
             <li>
                 <h2 class="heading-small"><a href="/school/results">Results</a></h2>
                 <p>View detailed pupil results</p>
             </li>
-        </ul>
+        </ol>
     </div>
-    <div class="column-one-third blue-top-border">
-        <h3 class="heading-medium">Before you start</h3>
+
+    <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
+        <h3 class="heading-medium" tabindex="0">Before you start</h3>
         <ul class="list">
             <li>
                 <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
