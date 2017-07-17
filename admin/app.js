@@ -63,7 +63,7 @@ if (config.STD_LOG_FILE) {
   const appLog = fs.createWriteStream(config.STD_LOG_FILE)
   process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
   process.on('uncaughtException', function (err) {
-    console.error((err && err.stack) ? err.stack : err)
+    console.error((err && err.stack) || err)
   })
 }
 
