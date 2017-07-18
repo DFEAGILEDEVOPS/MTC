@@ -35,7 +35,7 @@
   // Taken from jquery 1.12
   // https://github.com/jquery/jquery/blob/2d4f53416e5f74fa98e0c1d66b6f3c285a12f0ce/src/css/hiddenVisibleSelectors.js
   // Find out if an element is visible
-  GOVUK.isVisible = function(elem) {
+  GOVUK.isVisible = function (elem) {
     return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
   }
 
@@ -110,6 +110,7 @@
   GOVUK.addInput = function (element, char) {
     const currentAnswer = GOVUK.getTextContent(element)
     const currentLength = currentAnswer.length
+    
     if (currentLength === 5) {
       // 5 is the maxlength - we drop the input.
       return
@@ -125,7 +126,7 @@
   GOVUK.submitPageOnTimeout = function () {
     const form = document.getElementById('js-question-form')
     const questionTimeLimit = GOVUK.getQuestionTimeLimit()
-
+    
     // Prefix setTimeout with `global` scope for IE8
     global.setTimeout(function () {
       // Copy the user input from the <span> into the <form>
@@ -202,6 +203,7 @@
       // All other codes accumulate chars in the answer
       const code = event.which || event.keyCode // event.keyCode required for IE8
       const char = String.fromCharCode(code)
+
       if (allowedChars.indexOf(parseInt(char), 0) !== -1) {
         GOVUK.addInput(answer, char)
         GOVUK.preventDefault(event) // consume the event with IE8 support
@@ -214,7 +216,7 @@
       const event = e || global.event
       const eventType = isTouch ? 'touch ' + event.type : event.type
       let clickButton
-
+      
       if (!event.which) {
         /* IE case */
         clickButton = (event.button < 2) ? 'left click' : ((event.button === 4) ? 'middle click' : 'right click')
@@ -260,6 +262,7 @@
       if (keyCode === 8) {
         GOVUK.preventDefault(event)
       }
+
       const eventType = isTouch ? 'touch ' + event.type : event.type
       GOVUK.registerInput(eventKey, eventType)
       const currentAnswer = GOVUK.getTextContent(answer) // answer.textContent;
@@ -342,7 +345,7 @@
       // Write it in the input box
       const currentAnswer = GOVUK.getTextContent(answer)
       if (char === 'backspace') {
-        GOVUK.setTextContent(answer, currentAnswer.slice(0, currentAnswer.length - 1));
+        GOVUK.setTextContent(answer, currentAnswer.slice(0, currentAnswer.length - 1))
       } else if (char === 'enter') {
         // Enter should submit the form if it is not empty
         if (!isSubmitted && currentAnswer.length > 0) {
@@ -380,6 +383,7 @@
     const form = document.getElementById('js-question-form') // Never used?
     const formAnswer = document.getElementById('js-form-answer')
     const formRegisteredInputs = document.getElementById('js-form-registered-inputs')
+
     formAnswer.value = GOVUK.getTextContent(answer)
     if (formRegisteredInputs) {
       formRegisteredInputs.value = JSON.stringify(registerInputs)

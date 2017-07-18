@@ -11,7 +11,7 @@ class CheckPage < SitePrism::Page
 
   def wait_for_preload
     wait_until_preload_visible
-    sleep 2.05
+    sleep 2.10
     wait_until_preload_invisible
   end
 
