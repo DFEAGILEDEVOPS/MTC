@@ -2,8 +2,8 @@
   'use strict';
   var GOVUK = global.GOVUK || {};
   var startTime;
-  var pageInterval = 5;  // seconds allowed per page
-  var preloadInterval = 2; //seconds for student preparation
+  var defaultQuestionTimeLimit = 5;  // seconds allowed per page
+  var defaultPreloadInterval = 2; //seconds for student preparation
   var deadline;
 
   var registerInputs = [];
@@ -39,7 +39,6 @@
   GOVUK.isVisible = function(elem) {
     return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
   };
-
 
   // For IE8
   Date.now = Date.now || function() { return +new Date; };
@@ -121,47 +120,68 @@
     GOVUK.setTextContent(element, '' + currentAnswer + char);
   };
 
-
   // This is key, the user only has a few seconds to submit an answer or
   // the page will auto-submit (even if there is no input from the user)
   GOVUK.submitPageOnTimeout = function() {
-    var form = document.getElementById('js-question-form');
-    // Prefix setTimeout with `global` scope for IE8
-    global.setTimeout(function() {
-      // Copy the user input from the <span> into the <form>
-      GOVUK.addInputToForm();
-      form.submit();
-    }, (pageInterval * 1000));
-  };
+    const form = document.getElementById('js-question-form')
+    const questionTimeLimit = GOVUK.getQuestionTimeLimit()
 
+    // Prefix setTimeout with `global` scope for IE8
+    global.setTimeout(function () {
+      // Copy the user input from the <span> into the <form>
+      GOVUK.addInputToForm()
+      form.submit()
+    }, (questionTimeLimit * 1000))
+  }
 
   // Provide an indication to the user of how much time they have remaining.
-  GOVUK.updatePageTimer = function() {
-    // set the page timer to the countdown on page load
-    var pageTimer = document.getElementById('js-page-timer');
-    GOVUK.setTextContent(pageTimer, pageInterval.toString());
+  GOVUK.updatePageTimer = function () {
+    // Set the page timer to the countdown on page load
+    const pageTimer = document.getElementById('js-page-timer')
+    let questionTimeLimit = GOVUK.getQuestionTimeLimit()
 
-    setInterval(function() {
-      var remaining = Math.ceil((deadline - Date.now()) / 1000);
-      if (remaining < 0) { remaining = 0; }
-      GOVUK.setTextContent(pageTimer, remaining.toString());
-    }, 100);
-  };
+    GOVUK.setTextContent(pageTimer, questionTimeLimit.toString())
+    setInterval(function () {
+      let remaining = Math.ceil((deadline - Date.now()) / 1000)
+      if (remaining < 0) {
+        remaining = 0
+      }
+      GOVUK.setTextContent(pageTimer, remaining.toString())
+    }, 100)
+  }
 
+  GOVUK.getQuestionTimeLimit = function () {
+    let questionTimeLimit = defaultQuestionTimeLimit
+    const pageSettings = document.getElementById('js-page-time-settings')
+    if (pageSettings.dataset.value) {
+      questionTimeLimit = pageSettings.dataset.value
+    }
+    return questionTimeLimit
+  }
+
+  GOVUK.getLoadingTime = function () {
+    let loadingTime = defaultPreloadInterval
+    const loadingTimeContainer = document.getElementById('js-preload-div')
+    if (loadingTimeContainer.dataset.value) {
+      loadingTime = loadingTimeContainer.dataset.value
+    }
+    return loadingTime
+  }
 
   // Show the 'Loading' screen for a short time before we ask a question
-  GOVUK.preloadTimer = function() {
-    setTimeout(function() {
-      var preloadDiv = document.getElementById('js-preload-div');
-      var contentDiv = document.getElementById('js-content-div');
-      preloadDiv.style.display = 'none';
-      contentDiv.className = '';
+  GOVUK.preloadTimer = function () {
+    const loadingTime = GOVUK.getLoadingTime()
+
+    setTimeout(function () {
+      const preloadDiv = document.getElementById('js-preload-div')
+      const contentDiv = document.getElementById('js-content-div')
+      preloadDiv.style.display = 'none'
+      contentDiv.className = ''
       // This was originally emitted a custom event to decouple the dependencies.
       // However, you can't do that in IE8, so we now call this wrapper function.
-      GOVUK.onContentShown();
-    }, preloadInterval * 1000);
-  };
-
+      GOVUK.onContentShown()
+    }, loadingTime * 1000)
+  }
 
   GOVUK.keyPressListener = function () {
     var answer = document.getElementById('js-answer');
@@ -269,7 +289,6 @@
 
     });
   };
-
 
   // Prevent the form being submitted by the user without
   // any input.
@@ -379,18 +398,17 @@
     GOVUK.preventRightClick();
   };
 
-
-  GOVUK.onContentShown = function() {
+  GOVUK.onContentShown = function () {
     // Start the timers as the question is now visible
-    startTime = Date.now();
-    deadline = startTime + (pageInterval * 1000);
-    GOVUK.submitPageOnTimeout();
-    GOVUK.updatePageTimer();
-  };
-
+    const questionTimeLimit = GOVUK.getQuestionTimeLimit()
+    startTime = Date.now()
+    deadline = startTime + (questionTimeLimit * 1000)
+    GOVUK.submitPageOnTimeout()
+    GOVUK.updatePageTimer()
+  }
 
   // IE8 does not trigger the DOMContentLoaded event, so use onload instead
-  GOVUK.addEvent(global, 'load', GOVUK.onDOMContentReady);
+  GOVUK.addEvent(global, 'load', GOVUK.onDOMContentReady)
 
-  global.GOVUK = GOVUK;
+  global.GOVUK = GOVUK
 })(window);

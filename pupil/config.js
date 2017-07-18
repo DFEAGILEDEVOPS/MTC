@@ -9,5 +9,7 @@ module.exports = {
   NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
   PORT: process.env.PORT || '3000',
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  STD_LOG_FILE: process.env.STD_LOG_FILE
+  STD_LOG_FILE: process.env.STD_LOG_FILE,
+  QUESTION_TIME_LIMIT: 5,
+  TIME_BETWEEN_QUESTIONS: 2
 }
