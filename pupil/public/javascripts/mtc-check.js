@@ -135,20 +135,20 @@
   }
 
   // Provide an indication to the user of how much time they have remaining.
-  GOVUK.updatePageTimer = function () {
-    // Set the page timer to the countdown on page load
-    const pageTimer = document.getElementById('js-page-timer')
-    let questionTimeLimit = GOVUK.getQuestionTimeLimit()
-
-    GOVUK.setTextContent(pageTimer, questionTimeLimit.toString())
-    setInterval(function () {
-      let remaining = Math.ceil((deadline - Date.now()) / 1000)
-      if (remaining < 0) {
-        remaining = 0
-      }
-      GOVUK.setTextContent(pageTimer, remaining.toString())
-    }, 100)
-  }
+  // GOVUK.updatePageTimer = function () {
+  //   // Set the page timer to the countdown on page load
+  //   const pageTimer = document.getElementById('js-page-timer')
+  //   let questionTimeLimit = GOVUK.getQuestionTimeLimit()
+  //
+  //   GOVUK.setTextContent(pageTimer, questionTimeLimit.toString())
+  //   setInterval(function () {
+  //     let remaining = Math.ceil((deadline - Date.now()) / 1000)
+  //     if (remaining < 0) {
+  //       remaining = 0
+  //     }
+  //     GOVUK.setTextContent(pageTimer, remaining.toString())
+  //   }, 100)
+  // }
 
   GOVUK.getQuestionTimeLimit = function () {
     let questionTimeLimit = defaultQuestionTimeLimit
@@ -402,7 +402,7 @@
     startTime = Date.now()
     deadline = startTime + (questionTimeLimit * 1000)
     GOVUK.submitPageOnTimeout()
-    GOVUK.updatePageTimer()
+    //GOVUK.updatePageTimer()
   }
 
   // IE8 does not trigger the DOMContentLoaded event, so use onload instead
