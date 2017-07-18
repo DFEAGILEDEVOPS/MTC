@@ -13,7 +13,7 @@ Feature: Question time limit tests
   Scenario: The 'Question time limit' contains the value it was last populated with
     Given I have updated the Question time limit to 6 seconds
     Then I should see that Question time limit is set to 6 seconds
-@test
+
   Scenario Outline: Error message is shown when the input for Question time limit is not valid
     When I attempt to enter Question time limit as "<value>" seconds
     Then I should see a validation error for Question time limit
@@ -21,12 +21,11 @@ Feature: Question time limit tests
     Examples: values
       | value |
       | zzz   |
-#      | -3    |
-#      | 0     |
+      | -3    |
+      | 0     |
 
   Scenario: Question time limit can only have 2 decimal places
-    Given I am on the check settings page
-    When I attempt to enter Question time limit as 5.55555 seconds
+    When I have updated the Question time limit to 5.5555 seconds
     Then I should see that Question time limit is set to 5.56 seconds
 
   Scenario: An audit record is created that defines the date and date from which the new

@@ -16,6 +16,13 @@ class CheckSettingsPage {
     this.questionTimeLimit.sendKeys(value)
     this.saveChanges.click()
   }
+
+  updateTimeBetweenQuestions (value) {
+    this.timeBetweenQuestions.clear()
+    this.timeBetweenQuestions.sendKeys(value)
+    this.saveChanges.click()
+  }
+
 }
 
 module.exports = new CheckSettingsPage()
