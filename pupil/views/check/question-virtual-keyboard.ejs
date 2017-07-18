@@ -9,7 +9,7 @@ if (typeof nextQuestion === 'number') {
 
 <div class="hidden" id="js-content-div">
 
-    <div class="remaining-time">
+    <div class="remaining-time" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
         Remaining time: <span id="js-page-timer" class="bold timer"></span>
     </div>
 
@@ -59,8 +59,7 @@ if (typeof nextQuestion === 'number') {
     </div>
 </div>
 
-
-<div class="preload" id="js-preload-div">
+<div class="preload" id="js-preload-div" data-value="<%= loadingTime %>">
     <div>
         <p class="font-large text-center">
             Loading question <%= num %> out of <%= total %>
