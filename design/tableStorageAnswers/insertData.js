@@ -1,46 +1,103 @@
 let azure = require('azure-storage')
 let uuid = require('uuid/v4')
+let readline = require('readline')
+let util = require('util')
+let async = require('async')
 
 const answersTable = 'answersQueryPerfTest'
 let tableSvc = azure.createTableService()
 
-function insertBatch(entityCount) {
 
-  tableSvc.createTableIfNotExists(answersTable, function (error, result, response) {
-    //  insert 500k entities
+function insertOne(done) {
+
+  var entGen = azure.TableUtilities.entityGenerator
+
+  var pupilCheck = {
+    PartitionKey: entGen.String(Date.now().toString()),
+    RowKey: entGen.String(Date.now().toString()),
+    createdAt: Date.now(),
+    logonEvent: entGen.Guid(uuid()),
+    isElectron: entGen.Boolean(false)
+  }
+
+  console.dir(pupilCheck)
+
+  tableSvc.insertEntity(answersTable, pupilCheck, function (error, result, response) {
     if (error) {
-      console.error('Error creating table:%s', error)
-      return
-    }
-
-    var tableBatch = new azure.TableBatch();
-
-    for (var batchIndex = 0; batchIndex < 1000; batchIndex++) {
-
-      process.stdout.write('inserting batch ' + batchIndex)
-      process.stdout.clearLine()
-      process.stdout.cursorTo(0)
-      process.stdout.write('inserting entity ' + index)
-
-      var entities = generateEntityBatch(tableBatch)
-
-      tableSvc.executeBatch(answersTable, tableBatch, function (error, result, response) {
-        if (!error) {
-          console.log('%s entities inserted', entityCount)
-        } else {
-          console.error('Error inserting entity batch:%s', error)
-        }
-      })
-      tableBatch.clear()
+      done(error)
+    } else {
+      done()
     }
   })
 }
 
-function generateEntityBatch(tableBatch) {
+function insertData(done) {
 
-  for (var index = 0; index < 100; index++) {
-    tableBatch.insertEntity(createPupilCheck())
+  tableSvc.createTableIfNotExists(answersTable, function (error, result, response) {
+    if (error) {
+      done(error)
+    } else {
+      var batches = createBatches()
+      async.eachOf(batches, function (batch, index, callback) {
+        tableSvc.executeBatch(answersTable, batch, function (error, result, response) {
+          if (error) {
+            return callback(error)
+          }
+          else {
+            console.log('batch % inserted successfully', index)
+            callback()
+          }
+        })
+      }, function (err) {
+        if (err) console.error(err.message)
+        done(err)
+      })
+      done()
+    }
+  })
+}
+
+module.exports = insertData
+
+function insertOld() {
+
+  let createTable = util.promisify(tableSvc.createTableIfNotExists, null);
+  let executeBatch = util.promisify(tableSvc.executeBatch)
+
+  createTable(answersTable)
+    .then(async function () {
+      var batches = createBatches()
+      var index = 1;
+      for (let batch of batches) {
+        updateBatchProgress(index++)
+        await executeBatch(answersTable, batch)
+      }
+    },
+    (err) => {
+      console.log('error:%', err)
+    })
+    .catch((err) => {
+      console.log('error:%', err)
+    })
+}
+
+function createBatches() {
+
+  var batches = [];
+  var entGen = azure.TableUtilities.entityGenerator
+
+  for (var batchIndex = 0; batchIndex < 5; batchIndex++) {
+
+    var batch = new azure.TableBatch()
+    var pk = new Date().getTime().toString()
+    for (var index = 0; index < 99; index++) {
+      var check = createPupilCheck()
+      check.PartitionKey = entGen.String(pk)
+      batch.insertEntity(check)
+    }
+    batches.push(batch)
   }
+  return batches;
 }
 
 function createPupilCheck() {
@@ -48,30 +105,30 @@ function createPupilCheck() {
   var entGen = azure.TableUtilities.entityGenerator
 
   var pupilCheck = {
-    PartitionKey: entGen.String("123456"),
-    RowKey: entGen.String("456789"),
-    createdAt: entGen.DateTime(Date.now),
+    PartitionKey: entGen.String(new Date().getTime().toString()),
+    RowKey: entGen.String(new Date().getTime().toString()),
+    createdAt: Date.now(),
     logonEvent: entGen.Guid(uuid()),
     testId: entGen.Guid(uuid()),
     sessionId: entGen.Guid(uuid()),
     answers: [],
-    creationDate: entGen.DateTime(Date.now),
-    isElectron: false
+    creationDate: Date.now(),
+    isElectron: entGen.Boolean(false)
   }
 
   for (var questionIndex = 0; questionIndex < 30; questionIndex++) {
 
     var answer = {
-      pageLoadDate: entGen.DateTime(Date.now),
-      answerDate: entGen.DateTime(Date.now),
-      factor1: 7,
-      factor2: 1,
+      pageLoadDate: Date.now(),
+      answerDate: Date.now(),
+      factor1: entGen.Int32(7),
+      factor2: entGen.Int32(1),
       input: entGen.String("7"),
       registeredInputs: [
         {
           input: entGen.String("7"),
           eventType: entGen.String("touch keydown"),
-          clientInputDate: entGen.DateTime(Date.now)
+          clientInputDate: Date.now()
         }
       ]
     }
@@ -81,6 +138,9 @@ function createPupilCheck() {
   return pupilCheck
 }
 
-module.exports = {
-  insertBatch: insertBatch
+function updateBatchProgress(batch) {
+  readline.clearLine(process.stdout, 0)
+  readline.cursorTo(process.stdout, 0)
+  let text = `processing batch... ${batch}`
+  process.stdout.write(text)
 }
