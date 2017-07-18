@@ -1,5 +1,4 @@
 // Page class for SignIn page
-'use strict'
 /* global element by */
 
 class SignInPage {
@@ -17,8 +16,9 @@ class SignInPage {
   }
 
   login (username, password) {
+    expect(this.usernameField.isPresent()).to.eventually.be.true
     this.enterCredentials(username, password)
-    // this.signIn.click()
+    this.signIn.click()
   }
 }
 
