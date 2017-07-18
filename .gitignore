@@ -49,3 +49,6 @@ jspm_packages
 
 # ignore test reports folder
 /test/reports/
+
+# ignore personal vscode configs
+.vscode/**
