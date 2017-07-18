@@ -1,4 +1,3 @@
-@test
 Feature:
   As a development team
   We would like to show key stakeholders a prototype of the app

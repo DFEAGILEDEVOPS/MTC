@@ -8,6 +8,8 @@ function CustomWorld ({attach, parameters}) {
   this.signIn = require('../../page_objects/admin/signInPage')
   this.landingPage = require('../../page_objects/admin/landingPage')
   this.signInFailure = require('../../page_objects/admin/signInFailure')
+  this.administratorPage = require('../../page_objects/admin/administratorPage')
+  this.checkSettingsPage = require('../../page_objects/admin/checkSettingsPage')
   this.config = require('../../data/config.json')[browser.params.testEnv]
   this.checkSignInPage = require('../../page_objects/check/CheckSignInPage')
   this.attach = attach
