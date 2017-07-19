@@ -34,7 +34,7 @@ const Answer = new Schema({
       _id: false,
       input: {type: String, required: true},
       eventType: {type: String, required: true},
-      clientInputDate: {type: Date, required: true},
+      clientInputDate: {type: Date, required: true}
     }]
   }],
   result: {
