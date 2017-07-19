@@ -39,8 +39,8 @@ const getUpdateTiming = async (req, res, next) => {
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('administrator/check-settings', {
-      settings: settings,
-      successfulPost: successfulPost,
+      settings,
+      successfulPost,
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
