@@ -24,7 +24,7 @@ mongoose.connect(config.MONGO_CONNECTION_STRING, async function (error) {
 
   // extract all complete answers
   try {
-    answers = await Answers.find({ result : { $exists : true }, createdAt: {$gt: '2017-05-22 00:00:00'}}).sort({createdAt: 1}).exec()
+    answers = await Answers.find({ result: { $exists: true }, createdAt: {$gt: '2017-05-22 00:00:00'}}).sort({createdAt: 1}).exec()
   } catch (error) {
     console.error(error)
     process.exit(1)
@@ -34,7 +34,7 @@ mongoose.connect(config.MONGO_CONNECTION_STRING, async function (error) {
     let answer = answers[index]
     let logonEvent = null
     if (answer.logonEvent) {
-     logonEvent = await getLogon(answer.logonEvent)
+      logonEvent = await getLogon(answer.logonEvent)
     } else {
       console.log(`Logon Event not in schema`)
       logonEvent = {}
@@ -60,8 +60,7 @@ mongoose.connect(config.MONGO_CONNECTION_STRING, async function (error) {
   mongoose.connection.close()
 })
 
-
-function getLogon(logonEventId) {
+function getLogon (logonEventId) {
   return new Promise(async function (resolve, reject) {
     try {
       let logonEvent = await LogonEvent.findOne({_id: logonEventId}).exec()
