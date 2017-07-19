@@ -20,17 +20,24 @@ The dev team members should be assigned as reviewers and as soon as the code cha
 ## Travis
 [Travis](https://travis-ci.org/)is a hosted, distributed continuous integration service used to build and test software projects hosted at GitHub.
 
-## Callbacks - Promises - Async/Await
+## Server side
+### Using Callbacks
 In Javascript the only way to "freeze" a computation and have the "rest of it" execute latter (asynchronously) is to put "the rest of it" inside a callback.
-When lots of nested callbacks exist in the codebase it gets harder to work with them.
+When multiple callbacks are nested after each other in a chain of asynchronous activity the code is much harder to read. For more information read[here.](http://callbackhell.com/)
+
+### Promises - Async/Await 
+Solutions like promises and async functions drastically decrease the complexity and the length of callbacks and make the logical flow of the code much easier to follow.
 
 [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)are a way to write async code that still appears as though it is executing in a top-down way, and handles more types of errors due to encouraged use of try/catch style error handling.
 
-[Async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)will further wrap generators and promises in a higher level syntax.
+[Async functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) will further wrap generators and promises in a higher level syntax.
 
-## ES6/ES7 and on
+### ES6/ES7
 
-Javascript used in the browser today is constantly changing and is actually just an implementation of a standard called [ECMAScript.](http://www.ecma-international.org)The term ECMAScript 6 or 7 refers to the specific version of this standard.
+Javascript is constantly changing and is actually just an implementation of a standard called [ECMAScript.](http://www.ecma-international.org)The term ECMAScript 6 or 7 refers to the specific version of this standard.
+
+## Client side
+Taking into account that[cross-browser compatibility](https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices)is necessary, HTML, CSS and Javascript must render web pages in the same way.
 
 ## Unit testing
 
