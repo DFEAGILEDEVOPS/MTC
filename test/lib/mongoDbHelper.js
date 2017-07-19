@@ -13,7 +13,7 @@ module.exports = {
   },
   SettingsLogs: function () {
     return MongoClient.connect(url).then(function (db) {
-      var collection = db.collection('settinglogss')
+      var collection = db.collection('settinglogs')
 
       return collection.find().sort({datefield: 1}).toArray()
     }).then(function (items) {
