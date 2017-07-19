@@ -1,6 +1,5 @@
 // Step definitions
 /* global browser expect */
-
 const {defineSupportCode} = require('cucumber')
 defineSupportCode(function ({Given, When, Then}) {
   Given(/^I am on the admin page$/, function () {
@@ -42,20 +41,51 @@ defineSupportCode(function ({Given, When, Then}) {
     return expect(this.checkSettingsPage.errorMessage.getText()).to.eventually.to.equal('Question time limit requires a number between 1 and 60, up to two decimals are valid')
   })
 
-  When(/^I attempt to enter Question time limit as (\d)$/, function (float) {
-
-  })
-
   When(/^I update the Question time limit from (\d) to (\d) seconds$/, function (int, int2) {
-
+    browser.get(this.config.adminUrl + 'administrator')
+    this.waitForVisibility(this.administratorPage.checkSettings, 2000)
+    this.administratorPage.checkSettings.click()
+    this.checkSettingsPage.updateQuestionTimeLimit(int)
+    this.checkSettingsPage.updateQuestionTimeLimit(int2)
+    this.int = int2
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
+  })
+  When(/^I update the Time between questions from (\d) to (\d) seconds$/, function (int, int2) {
+    browser.get(this.config.adminUrl + 'administrator')
+    this.waitForVisibility(this.administratorPage.checkSettings, 2000)
+    this.administratorPage.checkSettings.click()
+    this.checkSettingsPage.updateTimeBetweenQuestions(int)
+    this.checkSettingsPage.updateTimeBetweenQuestions(int2)
+    this.int = int2
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
   })
 
-  Then(/^I should see a record that has date and time of the change in database$/, function () {
-
+  Then(/^I should see a record that has date and time of the Question time limit change in database$/, function () {
+    this.mongo.Settings().then(function (item) {
+      expect(item['questionTimeLimit:']).to.equal(this.int)
+      let date = new Date(item['updatedAt']).format('DD-MM-YY-h')
+      let newDate = new Date().format('DD-MM-YY-h')
+      expect(newDate - date < 0.5).to.become(true)
+    }, function (err) {
+      console.error('The connection is not established', err, err.stack)
+    })
+    this.checkSettingsPage.updateQuestionTimeLimit(5)
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
   })
 
-  Then(/^I should see a historic record appended in the database$/, function () {
-
+  Then(/^I should see a historic record appended for Question Time limit in the database$/, function () {
+    this.mongo.SettingsLogs().then(function (item) {
+      expect(item['questionTimeLimit:']).to.equal(this.int)
+      let date = new Date(item['updatedAt']).format('DD-MM-YY-h')
+      let newDate = new Date().format('DD-MM-YY-h')
+      expect(newDate - date < 0.5).to.become(true)
+      expect(item['userName']).to.equal('teacher1')
+      expect(item['emailAddress']).to.equal('teacher1')
+    }, function (err) {
+      console.error('The connection is not established', err, err.stack)
+    })
+    this.checkSettingsPage.updateQuestionTimeLimit(5)
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
   })
 
   Then(/^I should see that Time between questions is set to (default )*(.*) seconds$/, function (flag, int) {
@@ -86,15 +116,31 @@ defineSupportCode(function ({Given, When, Then}) {
     return expect(this.checkSettingsPage.errorMessage.getText()).to.eventually.to.equal('Time between questions requires a number between 1 and 5, up to two decimals are valid')
   })
 
-  When(/^I update the Time between questions from (\d) to (\d) seconds$/, function (int, int2) {
-
+  Then(/^I should see a record that has date and time of the Time between questions change in database$/, function () {
+    this.mongo.Settings().then(function (item) {
+      expect(item['loadingTimeLimit:']).to.equal(this.int)
+      let date = new Date(item['updatedAt']).format('DD-MM-YY-h')
+      let newDate = new Date().format('DD-MM-YY-h')
+      expect(newDate - date < 0.5).to.become(true)
+    }, function (err) {
+      console.error('The connection is not established', err, err.stack)
+    })
+    this.checkSettingsPage.updateTimeBetweenQuestions(2)
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
   })
 
-  Then(/^I should see a record that has date and time of the change in database$/, function () {
-
-  })
-
-  Then(/^I should see a historic record appended in the database$/, function () {
-
+  Then(/^I should see a historic record appended for Time between questions in the database$/, function () {
+    this.mongo.SettingsLogs().then(function (item) {
+      expect(item['loadingTimeLimit:']).to.equal(this.int)
+      let date = new Date(item['updatedAt']).format('DD-MM-YY-h')
+      let newDate = new Date().format('DD-MM-YY-h')
+      expect(newDate - date < 0.5).to.become(true)
+      expect(item['userName']).to.equal('teacher1')
+      expect(item['emailAddress']).to.equal('teacher1')
+    }, function (err) {
+      console.error('The connection is not established', err, err.stack)
+    })
+    this.checkSettingsPage.updateTimeBetweenQuestions(2)
+    return expect(this.checkSettingsPage.successfulChanges.getText()).to.eventually.to.equal('Changes have been saved')
   })
 })
