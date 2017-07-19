@@ -279,6 +279,7 @@ end
 
 Then(/^the answer should be stored as empty$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
+  wait_until {MongoDbHelper.get_answers(session_id).last.map {|answer| answer['input']}.include?("")}
   expect(MongoDbHelper.get_answers(session_id).last.map {|answer| answer['input']}).to include ""
 end
 
