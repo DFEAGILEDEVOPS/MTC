@@ -279,6 +279,7 @@ end
 
 Then(/^the answer should be stored as empty$/) do
   session_id = URI.unescape(get_me_the_cookie('pupil-app.sid')[:value]).split(':')[1].split('.')[0]
+  wait_until {MongoDbHelper.get_answers(session_id).last.map {|answer| answer['input']}.include?("")}
   expect(MongoDbHelper.get_answers(session_id).last.map {|answer| answer['input']}).to include ""
 end
 
@@ -427,8 +428,9 @@ Given(/^I have completed the check$/) do
 end
 
 Then(/^the time i started and finished should be recorded$/) do
-  actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkStartDate'].to_i
-  expect(actual/100).to eql @start_time.utc.to_i/100
-  actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkEndDate'].to_i
-  expect(actual/100).to eql @finish_time.utc.to_i/100
+  actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkStartDate']
+  expect(@start_time.utc - actual).to be < 0.5
+  actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkEndDate']
+  expect(@finish_time.utc- actual).to be < 0.5
+
 end

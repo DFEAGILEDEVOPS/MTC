@@ -103,5 +103,12 @@
     ],
     "all": true,
     "cache": true
+  },
+  "standard": {
+    "ignore": [
+      "public/govuk_template/**/*",
+      "assets/javascripts/modernizr-custom.js",
+      "assets/javascripts/jquery-1.12.4.js"
+    ]
   }
 }

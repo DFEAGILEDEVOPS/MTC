@@ -1,7 +1,6 @@
 {
-	"test":{
-			"appUrl": "http://localhost:3001/"
-		}
-		
-
+  "test": {
+    "adminUrl": "http://localhost:3001/",
+    "checkUrl": "http://localhost:3000/"
+  }
 }
