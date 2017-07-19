@@ -32,9 +32,9 @@ Feature: Time between questions
 
   Scenario: An audit record is created that defines the date and date from which the new
   value of the Time between questions was applied
-    When I update the Time between questions from 7 to 5 seconds
-    Then I should see a record that has date and time of the change in database
+    When I update the Time between questions from 2 to 4 seconds
+    Then I should see a record that has date and time of the Time between questions change in database
 
   Scenario: A historic record is appended for every change of Time between questions
-    When I update the Time between questions from 5 to 7 seconds
-    Then I should see a historic record appended in the database
+    When I update the Time between questions from 4 to 2 seconds
+    Then I should see a historic record appended for Time between questions in the database

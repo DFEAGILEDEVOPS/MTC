@@ -1,71 +1,23 @@
 let MongoClient = require('mongodb').MongoClient
-let myCollection
+const url = 'mongodb://127.0.0.1:27017/mtc' // will need to be changed to ENV variable for other connections
 
-class MongoDbHelper {
-  static createConnectionSchools (onCreate) {
-    MongoClient.connect('mongodb://127.0.0.1:27017/mtc', function (err, db) {
-      if (err) {
-        throw err
-      }
-      console.log('connected to the mongoDB !')
-      myCollection = db.collection('schools')
-      onCreate()
-    })
-  }
+module.exports = {
+  Settings: function () {
+    return MongoClient.connect(url).then(function (db) {
+      var collection = db.collection('settings')
 
-  static findSchool (schoolId) {
-    this.createConnectionSchools(function () {
-      var cursor = myCollection.find({'_id': schoolId})
-      cursor.each(function (err, doc) {
-        if (err) {
-          throw err
-        }
-        if (doc == null) { return }
-        console.log('document find:')
-        console.log(doc.name)
-      })
+      return collection.find().toArray()
+    }).then(function (items) {
+      return items
     })
-  }
+  },
+  SettingsLogs: function () {
+    return MongoClient.connect(url).then(function (db) {
+      var collection = db.collection('settinglogss')
 
-  static createConnectionPupils (onCreate) {
-    MongoClient.connect('mongodb://127.0.0.1:27017/mtc', function (err, db) {
-      if (err) {
-        throw err
-      }
-      console.log('connected to the mongoDB !')
-      myCollection = db.collection('pupils')
-      onCreate()
-    })
-  }
-
-  static expirePin (forName, lastName, schoolId, flag = true) {
-    this.createConnectionPupils(function () {
-      myCollection.updateOne({
-        'foreName': forName,
-        'lastName': lastName,
-        'school': schoolId
-      }, {$set: {'pinExpired': flag}}, function (err) {
-        if (err) {
-          throw err
-        }
-        console.log('entry update')
-      })
-    })
-  }
-  static resetPin (forName, lastName, schoolId, pin = undefined) {
-    this.createConnectionPupils(function () {
-      myCollection.updateOne({
-        'foreName': forName,
-        'lastName': lastName,
-        'school': schoolId
-      }, {$set: {'pin': pin}}, function (err) {
-        if (err) {
-          throw err
-        }
-        console.log('entry update')
-      })
+      return collection.find().sort({datefield: 1}).toArray()
+    }).then(function (items) {
+      return items
     })
   }
 }
-
-module.exports = MongoDbHelper

@@ -31,8 +31,8 @@ Feature: Question time limit tests
   Scenario: An audit record is created that defines the date and date from which the new
   value of the Question time limit was applied
     When I update the Question time limit from 7 to 5 seconds
-    Then I should see a record that has date and time of the change in database
+    Then I should see a record that has date and time of the Question time limit change in database
 
   Scenario: A historic record is appended for every change of Question time limit
     When I update the Question time limit from 5 to 7 seconds
-    Then I should see a historic record appended in the database
+    Then I should see a historic record appended for Question Time limit in the database
