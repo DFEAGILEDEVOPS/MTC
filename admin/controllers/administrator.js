@@ -20,7 +20,7 @@ const getAdministration = async (req, res, next) => {
 const getUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
-  const successfulPost = req.params.status || false
+  const successfulPost = !!req.params.status
 
   try {
     const settingsRecord = await Settings.find().exec()
@@ -72,29 +72,28 @@ const setUpdateTiming = async (req, res, next) => {
       errorMessage: settingsErrorMessages,
       breadcrumbs: req.breadcrumbs()
     })
-  } else {
-    try {
-      await settings.save()
-      status = 'updated'
-
-      let settingsLog = new SettingsLog()
-
-      settingsLog.adminSession = req.session.id
-      settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
-      settingsLog.userName = ((res.locals).user || {}).UserName
-      settingsLog.questionTimeLimit = settings.questionTimeLimit
-      settingsLog.loadingTimeLimit = settings.loadingTimeLimit
-
-      try {
-        await settingsLog.save()
-      } catch (error) {
-        console.log('Could not save setting log.')
-      }
-    } catch (error) {
-      return next(error)
-    }
-    return res.redirect(`/administrator/check-settings/${status}`)
   }
+
+  try {
+    await settings.save()
+
+    let settingsLog = new SettingsLog()
+
+    settingsLog.adminSession = req.session.id
+    settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
+    settingsLog.userName = ((res.locals).user || {}).UserName
+    settingsLog.questionTimeLimit = settings.questionTimeLimit
+    settingsLog.loadingTimeLimit = settings.loadingTimeLimit
+
+    try {
+      await settingsLog.save()
+    } catch (error) {
+      console.log('Could not save setting log.')
+    }
+  } catch (error) {
+    return next(error)
+  }
+  return res.redirect('/administrator/check-settings/updated')
 }
 
 module.exports = {
