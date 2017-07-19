@@ -1,6 +1,7 @@
-(function(global) {
-  'use strict';
-  var GOVUK = global.GOVUK || {};
+/* global $ ga */
+(function (global) {
+  'use strict'
+  var GOVUK = global.GOVUK || {}
 
   GOVUK.speedTest = {
     startTime: null,
@@ -21,7 +22,7 @@
       '16mb.text',
       '32mb.text',
       '64mb.text',
-      '128mb.text',
+      '128mb.text'
     ],
     baseFilePath: '/data/',
 
@@ -32,110 +33,110 @@
      * @returns {boolean}
      */
     control: function (timeTaken, size) {
-      var downloadSpeedKbps = 0;
-      var file = '';
+      var downloadSpeedKbps = 0
+      var file = ''
 
       if (!$.isNumeric(timeTaken)) {
-        return false;
+        return false
       }
 
       if (timeTaken >= GOVUK.speedTest.minimumTransferTime || GOVUK.speedTest.isLastFile()) {
         // we are prepared to accept this
-        downloadSpeedKbps = this.calculate(size, timeTaken);
-        this.downloadSpeedKbps = downloadSpeedKbps;
+        downloadSpeedKbps = this.calculate(size, timeTaken)
+        this.downloadSpeedKbps = downloadSpeedKbps
         // ga('set', 'metric1', downloadSpeedKbps);
-        this.ui.showSuccess();
-        return true;
+        this.ui.showSuccess()
+        return true
       }
 
-      this.downloadIndex += 1;
-      file = this.files[this.downloadIndex];
-      this.download(file);
-      return true;
+      this.downloadIndex += 1
+      file = this.files[this.downloadIndex]
+      this.download(file)
+      return true
     },
 
     isLastFile: function () {
-      var i = 1;
+      var i = 1
       // We dont want to give the 128M file to IE8 at it wont work.
       if (GOVUK.speedTest.isIE8() && GOVUK.speedTest.downloadIndex === 9) {
-        return true;
+        return true
       }
-      return (GOVUK.speedTest.downloadIndex + i) === GOVUK.speedTest.files.length;
+      return (GOVUK.speedTest.downloadIndex + i) === GOVUK.speedTest.files.length
     },
 
     isIE8: function () {
       if (document.addEventListener) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
 
     ui: {
       round2: function (num) {
-        return Math.round(num * 100) / 100;
+        return Math.round(num * 100) / 100
       },
 
       showInProgress: function () {
-        $('div.section').addClass('hidden');
-        $('div.js-in-progress').removeClass('hidden');
+        $('div.section').addClass('hidden')
+        $('div.js-in-progress').removeClass('hidden')
 
         if (global.ga) {
-          ga('send', 'event', 'speedTest', 'in-progress', 'Speed Test');
+          ga('send', 'event', 'speedTest', 'in-progress', 'Speed Test')
         }
       },
 
       showSuccess: function () {
-        $('div.section').addClass('hidden');
-        $('div.js-success').removeClass('hidden');
+        $('div.section').addClass('hidden')
+        $('div.js-success').removeClass('hidden')
         // send the data to the back end
         var data = {
           downloadSpeedKbps: GOVUK.speedTest.downloadSpeedKbps,
           resolution: global.screen.width + 'x' + global.screen.height
-        };
-        $.get('/logger', data);
+        }
+        $.get('/logger', data)
         if (global.ga) {
           ga('send', 'event', 'speedTest', 'success', 'Speed Test', {
             metric1: GOVUK.speedTest.downloadSpeedKbps
-          });
+          })
         }
       },
 
       showError: function () {
-        $('div.section').addClass('hidden');
-        $('div.js-error').removeClass('hidden');
+        $('div.section').addClass('hidden')
+        $('div.js-error').removeClass('hidden')
         if (global.ga) {
-          ga('send', 'event', 'speedTest', 'error', 'Speed Test');
+          ga('send', 'event', 'speedTest', 'error', 'Speed Test')
         }
       },
 
       getSpeedTestResult: function (kbps) {
         if (kbps / 1024 >= 1024) {
-          return this.round2(kbps / 1024 / 1024).toString() + ' Gbps';
+          return this.round2(kbps / 1024 / 1024).toString() + ' Gbps'
         } else if (kbps >= 1024) {
-          return this.round2(kbps / 1024).toString() + ' Mbps';
+          return this.round2(kbps / 1024).toString() + ' Mbps'
         } else {
-          return this.round2(kbps).toString() + ' Kbps';
+          return this.round2(kbps).toString() + ' Kbps'
         }
       }
     }, // ui
 
     start: function () {
-      var self = GOVUK.speedTest;
+      var self = GOVUK.speedTest
 
-      self.ui.showInProgress();
-      self.downloadIndex = 0;
-      self.sessionStartTime = new Date().getTime();
-      self.startDownload();
+      self.ui.showInProgress()
+      self.downloadIndex = 0
+      self.sessionStartTime = new Date().getTime()
+      self.startDownload()
     },
 
     startDownload: function () {
-      var file = this.files[this.downloadIndex];
-      this.download(file);
+      var file = this.files[this.downloadIndex]
+      this.download(file)
     },
 
     download: function (file) {
-      this.startTime = new Date().getTime();
-      var url = this.baseFilePath + file;
+      this.startTime = new Date().getTime()
+      var url = this.baseFilePath + file
       $.ajax({
         type: 'GET',
         url: url,
@@ -145,20 +146,20 @@
         async: true,
         timeout: this.timeout,
         success: function (data, status, xhr) {
-          GOVUK.speedTest.endTime = new Date().getTime();
-          var timeTaken = GOVUK.speedTest.endTime - GOVUK.speedTest.startTime; // ms
-          GOVUK.speedTest.control(timeTaken, data.length);
+          GOVUK.speedTest.endTime = new Date().getTime()
+          var timeTaken = GOVUK.speedTest.endTime - GOVUK.speedTest.startTime // ms
+          GOVUK.speedTest.control(timeTaken, data.length)
         },
         error: function (xhr, errorType, error) {
-          console.log(errorType);
+          console.log(errorType)
           // show error
-          console.log(error);
+          console.log(error)
           if (global.ga) {
-            ga('send', 'event', 'speedTest', 'error', 'Speed Test');
+            ga('send', 'event', 'speedTest', 'error', 'Speed Test')
           }
-          GOVUK.speedTest.ui.showError();
+          GOVUK.speedTest.ui.showError()
         }
-      });
+      })
     },
 
     /**
@@ -168,13 +169,12 @@
      * @returns {number}
      */
     calculate: function (size, time) {
-      var bandwidth = size * (1000 / time); // bytes per second
-      var bandwidthKbps = Math.round((bandwidth / 1024) * 8); // Kilobits per second
-      return bandwidthKbps;
+      var bandwidth = size * (1000 / time) // bytes per second
+      var bandwidthKbps = Math.round((bandwidth / 1024) * 8) // Kilobits per second
+      return bandwidthKbps
     }
 
-  };  // speedtest
+  }  // speedtest
 
-  global.GOVUK = GOVUK;
-})(window);
-
+  global.GOVUK = GOVUK
+})(window)
