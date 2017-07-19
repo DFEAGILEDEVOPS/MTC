@@ -35,7 +35,7 @@
   // Taken from jquery 1.12
   // https://github.com/jquery/jquery/blob/2d4f53416e5f74fa98e0c1d66b6f3c285a12f0ce/src/css/hiddenVisibleSelectors.js
   // Find out if an element is visible
-  GOVUK.isVisible = function(elem) {
+  GOVUK.isVisible = function (elem) {
     return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
   }
 
@@ -110,6 +110,7 @@
   GOVUK.addInput = function (element, char) {
     var currentAnswer = GOVUK.getTextContent(element)
     var currentLength = currentAnswer.length
+
     if (currentLength === 5) {
       // 5 is the maxlength - we drop the input.
       return
@@ -244,6 +245,7 @@
       if (keyCode === 8) {
         GOVUK.preventDefault(event)
       }
+
       var eventType = isTouch ? 'touch ' + event.type : event.type
       GOVUK.registerInput(eventKey, eventType)
       var currentAnswer = GOVUK.getTextContent(answer) // answer.textContent;
@@ -364,6 +366,7 @@
     var form = document.getElementById('js-question-form') // Never used?
     var formAnswer = document.getElementById('js-form-answer')
     var formRegisteredInputs = document.getElementById('js-form-registered-inputs')
+
     formAnswer.value = GOVUK.getTextContent(answer)
     if (formRegisteredInputs) {
       formRegisteredInputs.value = JSON.stringify(registerInputs)
