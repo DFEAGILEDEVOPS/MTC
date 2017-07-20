@@ -36,10 +36,10 @@ const getQuestion = async (req, res, next) => {
   let questionTimeLimit = config.TIME_BETWEEN_QUESTIONS
 
   try {
-    const timeSettings = await Setting.find().exec()
-    if (timeSettings[0]) {
-      loadingTime = timeSettings[0].loadingTimeLimit
-      questionTimeLimit = timeSettings[0].questionTimeLimit
+    const timeSettings = await Setting.findOne().exec()
+    if (timeSettings) {
+      loadingTime = timeSettings.loadingTimeLimit
+      questionTimeLimit = timeSettings.questionTimeLimit
     }
   } catch (error) {
     console.log('Loading time not found, default value used')
