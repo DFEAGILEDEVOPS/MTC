@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "fs-extra": "^0.30.0",
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "mongodb": "^2.2.30"
   },
   "scripts": {
     "test": "gulp protractor",
@@ -14,10 +15,11 @@
   "devDependencies": {
     "chai": "3.5.0",
     "chai-as-promised": "6.0.0",
-    "chai-smoothie": "^0.3.1",
     "cucumber": "2.3.1",
     "cucumber-html-reporter": "2.0.0",
     "gulp-protractor": "^4.1.0",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.30",
     "protractor": "5.1.2",
     "protractor-cucumber-framework": "3.1.2"
   }

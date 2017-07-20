@@ -22,7 +22,7 @@ const User = new Schema({
   role: {
     type: String,
     // TE - teacher, TD - test developer, HD - head teacher
-    enum: ['TEACHER', 'TEST-DEVELOPER'],
+    enum: ['TEACHER', 'TEST-DEVELOPER', 'ADMINISTRATOR'],
     required: true
   }
 }, {timestamps: true})

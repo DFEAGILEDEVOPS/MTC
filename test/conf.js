@@ -1,3 +1,5 @@
+/* global browser */
+
 exports.config = {
 
   // setting to launch tests directly without selenium server
@@ -32,7 +34,7 @@ exports.config = {
   // Specify Test Files
   //
   // Define which tests should execute
-  specs: ['features/admin/*.feature'],
+  specs: ['features/**/*.feature'],
 
   // Define which tests should be excluded from execution.
   // 'features/search.feature'
@@ -45,14 +47,16 @@ exports.config = {
   // arguments to cucumber.js
   cucumberOpts: {
     require: [
-      'features/support/env.js',
-      'features/support/hooks.js',
-      'features/step_definitions/signInSteps.js'
+      'features/support/*.js',
+      'features/step_definitions/**/*.js'
     ],
     tags: ['~@wip'],
     format: 'pretty',
     profile: false,
     'no-source': true
+  },
+  onPrepare: function () {
+    browser.manage().window().maximize()
   }
 
 }
