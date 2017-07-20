@@ -19,5 +19,11 @@ Cucumber::Rake::Task.new(:features) do |t|
 end
 
 at_exit do
-  Rake::Task[:failing_tests].invoke unless File.read('rerun.txt').empty?
+  begin
+    Rake::Task[:failing_tests].invoke unless File.read('rerun.txt').empty?
+  rescue Exception => e
+    puts "#{e.class}: #{e.message}"
+  end
+  puts "THE EXIT STATUS CODE IS: #{$?.exitstatus}"
 end
+
