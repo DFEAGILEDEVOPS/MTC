@@ -11,7 +11,7 @@ echo $MSG
 cd test
 gem install bundler
 bundle install
-cucumber
+rake features
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
