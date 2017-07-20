@@ -144,6 +144,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
   @question = check_page.question.text
   values = @question.gsub('=', '').split('×').map {|n| n.strip}
   check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)
+  check_page.number_pad.enter.click
 end
 
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
@@ -158,7 +159,8 @@ end
 
 And(/^the warm up questions start and end dates are saved in database$/) do
   time_from_db = MongoDbHelper.warm_up_test_time(@pupil_information['pin'])
-  expect(time_from_db).to be < 10
+  expect(time_from_db.first['warmUpStartDate']).to_not be_nil
+  expect(time_from_db.first['warmUpEndDate']).to_not be_nil
 end
 
 Then(/^I should see a STA logo$/) do
