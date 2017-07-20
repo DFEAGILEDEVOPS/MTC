@@ -34,7 +34,7 @@ const getAdministration = async (req, res, next) => {
 const getUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
-  const successfulPost = !!req.params.status
+  const successfulPost = req.params.status || false
 
   try {
     const settingsRecord = await Settings.findOne().exec()
@@ -96,7 +96,6 @@ const setUpdateTiming = async (req, res, next) => {
 
   try {
     await settings.save()
-
     let settingsLog = new SettingsLog()
 
     settingsLog.adminSession = req.session.id
