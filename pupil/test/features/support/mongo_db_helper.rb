@@ -76,7 +76,7 @@ class MongoDbHelper
     result = []
     collection = CLIENT[:pupils].find({pin: pin})
     collection.each {|a| result << a}
-    (result[0]['warmUpEndDate'] - result[0]['warmUpStartDate']).round
+    result
   end
 
   def self.find_pupil_via_pin(pin)
