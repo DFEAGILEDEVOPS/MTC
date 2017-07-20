@@ -74,7 +74,7 @@ class MongoDbHelper
 
   def self.reset_pin(forename,lastname,school_id)
     CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
-                               {'$set' => {'pin' => NIL}})
+                               {'$set' => {'pin' => NI  bvghv L}})
   end
 
 end
