@@ -434,4 +434,5 @@ Then(/^the time i started and finished should be recorded$/) do
   expect(@start_time.utc - actual).to be < 0.5
   actual = MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['checkEndDate']
   expect(@finish_time.utc- actual).to be < 0.5
+
 end

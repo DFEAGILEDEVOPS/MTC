@@ -11,8 +11,8 @@ const {defineSupportCode} = require('cucumber')
 
 defineSupportCode(function ({registerHandler}) {
   registerHandler('BeforeFeatures', function () {
-    browser.driver.manage().window().maximize()
     browser.waitForAngularEnabled(false)
+    console.log('Launching test in environment: ', browser.params.testEnv)
   })
 })
 
