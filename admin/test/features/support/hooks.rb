@@ -19,6 +19,7 @@ Before("@add_5_pupils") do
 end
 
 After do |scenario|
+  visit ENV['BASE_URL'] + '/sign-out'
   if (scenario.failed?)
     image_name = "screenshots/#{scenario.__id__}.png"
     save_screenshot(image_name, :full => true)
