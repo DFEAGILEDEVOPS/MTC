@@ -64,3 +64,18 @@ If you want to change the url while executing parallel tests ( use the -o option
 If you want to run a set of tests in parallel tagged with a tag for example @smoke:
  
  `parallel_cucumber features/ -n 2 -o "-p parallel_chrome -t @smoke"`
+
+If you want to run in Browserstack, please run the following to get a list of available browsers: 
+
+`rake -T`
+
+This will return a list, just cut and paste the browser of your choice and run the command. For example: 
+
+`rake bs_capitan_chrome_58 BS_USER=XXXX BS_KEY=XXXX` 
+
+If your want to run a specific feature, you can like:
+
+`rake bs_capitan_chrome_58 BS_USER=XXXX BS_KEY=XXXX OPTS='features/prototype.feature'`
+
+Please note this feature is still under development (awaiting browserstack support), as there are some issues with the integration. There maybe some failures, in this case please
+test manually and report to a QA for investigation. 
