@@ -16,7 +16,7 @@ Feature: Time between questions
 
 
   Scenario Outline: Error message is shown when the input for Time between questions is not valid
-    When I attempt to enter Time between questions as "<value>" seconds
+    When I attempt to enter Time between questions as <value> seconds
     Then I should see a validation error for Time between questions
 
     Examples: values
