@@ -12,7 +12,7 @@ BrowserstackSettings.browser_caps.keys.each do |browser|
       bs_local_args = {"key" => "#{ENV['BS_KEY']}", "force" => 'true'}
       @bs_local.start(bs_local_args)
     end
-    url = "http://#{ENV['BS_USER']}:#{ENV['BS_USER']}@#{BrowserstackSettings.server}/wd/hub"
+    url = "http://#{ENV['BS_USER']}:#{ENV['BS_KEY']}@#{BrowserstackSettings.server}/wd/hub"
     Capybara::Selenium::Driver.new(app, browser: :remote,
                                    url: url,
                                    desired_capabilities: @caps)
