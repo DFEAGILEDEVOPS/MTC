@@ -31,6 +31,8 @@ These two commands will install all the gems that the tests need.
 
 ## Running the tests
 
+#####Basic
+
 To run the tests with the default options ( headless and app running on localhost:3000 ) give the command below:
 
 `cucumber`
@@ -49,6 +51,7 @@ If you want to run the tests on a different url:
 
 `cucumber BASE_URL='https://check-development.herokuapp.com'`
 
+#####Parallel
 
 If you want to run the tests in parallel to save time:
  
@@ -65,6 +68,8 @@ If you want to run a set of tests in parallel tagged with a tag for example @smo
  
  `parallel_cucumber features/ -n 2 -o "-p parallel_chrome -t @smoke"`
 
+#####Browserstack
+
 If you want to run in Browserstack, please run the following to get a list of available browsers: 
 
 `rake -T`
@@ -79,3 +84,15 @@ If your want to run a specific feature, you can like:
 
 Please note this feature is still under development (awaiting browserstack support), as there are some issues with the integration. There maybe some failures, in this case please
 test manually and report to a QA for investigation. 
+
+#####Rerun failing scenarios
+
+To run the tests with re run turned on use the following:
+
+`rake features`
+
+Options available:
+
+`rake features OPTS='features/prototype.feature' DRIVER=XXXX`
+
+Note: if no `DRIVER` is passed in, the default driver will be used
