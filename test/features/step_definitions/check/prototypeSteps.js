@@ -24,6 +24,11 @@ defineSupportCode(function ({Given, When, Then}) {
   })
   Then(/^I should see the Question time limit is set to (\d+) seconds in the check page$/, function (int) {
     this.waitForVisibility(this.checkPage.pageTimeSettings, int * 1000)
-    expect(this.checkPage.pageTimeSettings.getAttribute('data-value')).to.eventually.to.equal(int)
+    return expect(this.checkPage.pageTimeSettings.getAttribute('data-value')).to.eventually.to.equal(int.toString())
+  })
+  Then(/^I should see the Time between questions is set to (\d+) seconds in the check page$/, function (int) {
+    this.waitForVisibility(this.checkPage.loadingTime, int * 1000)
+    console.log('the loading time ' + this.checkPage.loadingTime.getAttribute('data-value'))
+    return expect(this.checkPage.loadingTime.getAttribute('data-value')).to.eventually.to.equal(int.toString())
   })
 })
