@@ -9,18 +9,18 @@ defineSupportCode(function ({Given, When, Then}) {
     browser.get(this.config.checkUrl)
     this.checkSignInPage.login('abc12345', '9999a')
     this.checkSignInPage.signInButton.click()
-    return expect(this.confirmationPage.readInstructions).to.eventually.be.present
+    return expect(this.confirmationPage.readInstructions.isPresent()).to.eventually.be.true
   })
   When(/^I start the check$/, function () {
     this.confirmationPage.readInstructions.click()
     browser.get(this.config.checkUrl + 'warm-up/complete')
     this.startPage.startCheck.click()
-    return expect(this.checkPage.preload).to.eventually.be.present
+    return expect(this.checkPage.preload.isPresent()).to.eventually.be.true
   })
   Then(/^I should have (\d+) seconds before i see the first question$/, function (int) {
     this.waitForVisibility(this.checkPage.preload, int * 1000)
     this.waitForInVisibility(this.checkPage.preload, int * 1000)
-    return expect(this.checkPage.preload).to.eventually.not.be.displayed
+    return expect(this.checkPage.preload.isPresent()).to.eventually.be.true
   })
   Then(/^I should see the Question time limit is set to (\d+) seconds in the check page$/, function (int) {
     this.waitForVisibility(this.checkPage.pageTimeSettings, int * 1000)
