@@ -2,7 +2,6 @@ Given(/^I am on the add pupil page$/) do
   step  'I am on the manage pupil page'
   manage_pupil_page.add_pupil.click
   @page = add_pupil_page
-  # @page.load
 end
 
 Then(/^I should see fields that will allow me to capture pupil data$/) do
