@@ -16,6 +16,7 @@ module.exports = {
       var collection = db.collection('settinglogs')
 
       return collection.find().sort({datefield: 1}).toArray()
+      // date is a JavaScript Date object.
     }).then(function (items) {
       return items
     })
