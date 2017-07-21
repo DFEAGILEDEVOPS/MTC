@@ -73,7 +73,7 @@ function getRow (answer) {
     'TestDate': moment(answer.creationDate).format('YYYYMMDD'),
     'TimeComplete': moment(answer.pupil.checkEndDate).format('h:mm:ss a'),
     'TimeStart': moment(answer.pupil.checkStartDate).format('h:mm:ss a'),
-    'TimeTaken': moment(moment(answer.pupil.checkEndDate).diff(moment(answer.pupil.checkStartDate))).format('h:mm:ss'),
+    'TimeTaken': moment(moment(answer.pupil.checkEndDate).diff(moment(answer.pupil.checkStartDate))).format('HH:mm:ss'),
     'AppId': answer.isElectron ? 'electron' : 'web'
   }
   const p = (idx) => { return 'Q' + (idx + 1).toString() }
