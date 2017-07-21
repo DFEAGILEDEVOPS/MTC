@@ -62,9 +62,9 @@ end
 
 Then(/^I should see that i have (\d+) seconds to answer the question$/) do |wait_time|
   check_page.wait_for_preload
-  expect(check_page.timer.visible?).to be true
+  expect(check_page.number_pad.enter.visible?).to be true
   check_page.wait_for_timer(wait_time)
-  expect(check_page.timer.visible?).to be false
+  expect(check_page.number_pad.enter.visible?).to be false
 end
 
 And(/^I could not answer the question within (\d+) seconds$/) do |wait_time|
@@ -244,10 +244,10 @@ end
 
 Given(/^I have logged in$/) do
   sign_in_page.load
-  MongoDbHelper.expire_pin("Automated","Account",9991999,false)
-  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
+  MongoDbHelper.expire_pin("Automated", "Account", 9991999, false)
+  MongoDbHelper.reset_pin("Automated", "Account", 9991999, "9999a")
   @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
-  sign_in_page.login("abc12345","9999a")
+  sign_in_page.login("abc12345", "9999a")
   sign_in_page.sign_in_button.click
 end
 
@@ -343,7 +343,7 @@ Given(/^I am on the warm up complete page$/) do
   warm_up_complete_page.load
 end
 
-Then(/^I should see that we are in the (.+) development phase on the (.+) page$/) do |phase,page|
+Then(/^I should see that we are in the (.+) development phase on the (.+) page$/) do |phase, page|
   expect(send("#{page}_page").phase_banner.phase.text).to eql phase.upcase
 end
 
@@ -362,7 +362,7 @@ end
 
 When(/^I attempt to login with just a pupil pin$/) do
   sign_in_page.load
-  sign_in_page.login(nil,"9999a")
+  sign_in_page.login(nil, "9999a")
   sign_in_page.sign_in_button.click
 end
 
