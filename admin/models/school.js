@@ -13,7 +13,7 @@ const School = new Schema({
     max: 999,
     min: 0
   },
-  upn: {
+  urn: {
     type: Number,
     trim: true,
     min: 0

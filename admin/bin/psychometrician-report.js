@@ -65,7 +65,7 @@ function getRow (answer) {
     'middlenames': '',
     'PupilId': '',
     'schnam': answer.school.name,
-    'schoolurn': answer.school.upn,
+    'schoolurn': answer.school.urn,
     'FakeSurname': 'Pupil',
     'T1attend': 2,
     'T1attend_AR': '',
