@@ -114,7 +114,7 @@ function report (sessions) {
   const report = {}
   report.howMany = howMany(sessions)
   report.howManySuccessful = howManySuccessful(sessions)
-  report.howManyHadACapitalInFirstPosition = howManyHaveACapitalLetterInFirstPosition(sessions)
+  report.howManyHaveACapitalInFirstPosition = howManyHaveACapitalLetterInFirstPosition(sessions)
   report.howManyHasACapitalLetter = howManyHaveACapitalLetter(sessions)
   report.howManyHaveASpace = howManyHaveASpace(sessions)
   report.averageJourneyLength = averageJourneyLength(sessions)
@@ -229,7 +229,6 @@ function averageJourneyLength (sessions) {
     total += parseInt(sessions[i].length, 10)
     count += 1
   }
-  console.log(`count is ${count} total is ${total}`)
   return (total / count).toFixed(2)
 }
 
