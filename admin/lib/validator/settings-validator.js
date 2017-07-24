@@ -26,7 +26,7 @@ module.exports.validate = function (req) {
     let validationError = new ValidationError()
     try {
       req.checkBody(settingsValidationSchema)
-      let result = await req.getValidationResult()
+      const result = await req.getValidationResult()
       validationError = errorConverter.fromExpressValidator(result.mapped())
     } catch (error) {
       return reject(error)

@@ -50,7 +50,7 @@ exports.config = {
       'features/support/*.js',
       'features/step_definitions/**/*.js'
     ],
-    tags: ['~@wip'],
+    tags: ['@test'],
     format: 'pretty',
     profile: false,
     'no-source': true
@@ -58,5 +58,4 @@ exports.config = {
   onPrepare: function () {
     browser.manage().window().maximize()
   }
-
 }

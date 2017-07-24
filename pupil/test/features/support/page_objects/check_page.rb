@@ -2,7 +2,7 @@ class CheckPage < SitePrism::Page
   set_url '/check/question/{number}{?query*}'
 
   element :preload, '.preload'
-  element :timer, '.remaining-time'
+  # element :timer, '.remaining-time'
   element :question, '.question'
   element :answer, '#js-answer'
 
@@ -16,7 +16,7 @@ class CheckPage < SitePrism::Page
   end
 
   def wait_for_timer(seconds)
-    sleep seconds.to_i + 1
+    sleep seconds.to_i + 0.5
   end
 
   def enter_answer_via_keyboard(answer)
