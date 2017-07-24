@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'active_support'
 require 'capybara'
 require 'capybara/cucumber'
@@ -11,11 +12,9 @@ require 'capybara-screenshot/cucumber'
 require 'mongo'
 require 'csv'
 require 'waitutil'
-
+require_relative '../../../test/features/support/browserstack_driver_helper'
 require_relative 'helpers'
 include Helpers
-
-
 
 raise 'Please pass a BASE_URL with the cucumber command.' unless ENV['BASE_URL']
 

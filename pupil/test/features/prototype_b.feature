@@ -12,6 +12,7 @@ Feature:
     Given I have attempted to login 5 times
     Then the number of attempts should be recorded
 
+  @non_browserstack_compliant
   Scenario: The details of login are recorded
     Given I have logged in
     Then the details of the login should be recorded
