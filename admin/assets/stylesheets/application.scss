@@ -118,6 +118,10 @@ hr.divider {
   padding-left: $gutter;
 }
 
+.padding-first-item {
+  margin-top: $gutter-and-a-half;
+}
+
 .side-padding {
   padding-left: $gutter;
   padding-right: $gutter;
@@ -189,6 +193,10 @@ input.link {
   max-width: 100%;
   height: 10em;
   resize: vertical;
+}
+
+.narrow-width {
+  width: 60px;
 }
 
 legend {

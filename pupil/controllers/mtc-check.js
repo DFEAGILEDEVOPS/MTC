@@ -5,6 +5,8 @@ const GoogleSheetService = require('../lib/google-sheet-service')
 const Feedback = require('../models/feedback')
 const Answer = require('../models/answer')
 const Pupil = require('../models/pupil')
+const Setting = require('../models/setting')
+const config = require('../config')
 
 const getStart = (req, res) => {
   res.locals.pageTitle = 'Multiplication Tables Check - start'
@@ -42,8 +44,23 @@ const getQuestion = async (req, res, next) => {
     }
   }
 
+  let loadingTime = config.TIME_BETWEEN_QUESTIONS
+  let questionTimeLimit = config.TIME_BETWEEN_QUESTIONS
+
+  try {
+    const timeSettings = await Setting.findOne().exec()
+    if (timeSettings) {
+      loadingTime = timeSettings.loadingTimeLimit
+      questionTimeLimit = timeSettings.questionTimeLimit
+    }
+  } catch (error) {
+    console.log('Custom time settings not found, default values used.')
+  }
+
   let questionService = new QuestionService('sample-questions')
   let question = questionService.getQuestion(num)
+  res.locals.loadingTime = loadingTime
+  res.locals.questionTimeLimit = questionTimeLimit
   res.locals.factor1 = question[0]
   res.locals.factor2 = question[1]
   res.locals.expectedAnswer = question[2]
