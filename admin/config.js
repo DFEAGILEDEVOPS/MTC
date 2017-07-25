@@ -10,5 +10,7 @@ module.exports = {
   PORT: process.env.PORT || '3001',
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   STD_LOG_FILE: process.env.STD_LOG_FILE,
-  TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY
+  TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
+  QUESTION_TIME_LIMIT: 5,
+  TIME_BETWEEN_QUESTIONS: 2
 }

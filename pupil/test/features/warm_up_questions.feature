@@ -2,7 +2,6 @@ Feature: Warm up questions
   As a pupil I want some warm up questions
   So that I can prepare myself for the check
 
-
   Scenario: Warm up page has a heading
     Given I am on the warm up intro page
     Then I should see a warm up page heading

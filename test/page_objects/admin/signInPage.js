@@ -1,5 +1,4 @@
 // Page class for SignIn page
-'use strict'
 /* global element by */
 
 class SignInPage {
@@ -9,7 +8,6 @@ class SignInPage {
     this.usernameField = element(by.css('#username'))
     this.passwordField = element(by.css('#password'))
     this.signIn = element(by.css('input[value="Sign in"]'))
-    this.phase_banner = element(by.css('phase-banner'))
   }
 
   enterCredentials (username, password) {
@@ -18,8 +16,9 @@ class SignInPage {
   }
 
   login (username, password) {
+    expect(this.usernameField.isPresent()).to.eventually.be.true
     this.enterCredentials(username, password)
-    // this.signIn.click()
+    this.signIn.click()
   }
 }
 

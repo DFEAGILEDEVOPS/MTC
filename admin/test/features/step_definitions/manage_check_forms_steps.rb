@@ -20,13 +20,17 @@ end
 
 When(/^I upload a csv file$/) do
   @current_form_count = manage_check_forms_page.available_checks.rows.count
+  driver = page.driver.browser
+  driver.file_detector = lambda do |args|
+    str = args.first.to_s
+    str if File.exist?(str)
+  end if Capybara.current_driver.to_s.include? 'bs_'
   page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
   manage_check_forms_page.upload.click
 end
 
 Then(/^it should be added to the list of forms$/) do
-  sleep 2 # need to address this sleep , test fails randomly with out this
-  expect(manage_check_forms_page.available_checks.rows.count).to eql(@current_form_count + 1)
+  wait_until{(manage_check_forms_page.available_checks.rows.count).eql?(@current_form_count + 1)}
 end
 
 Given(/^I am ready to upload a csv file$/) do
@@ -75,8 +79,7 @@ When(/^I have assigned the check form to another check window$/) do
 end
 
 Then(/^the check form should be displayed as being assigned to multiple check window$/) do
-  sleep 2 # need to address this sleep , test fails randomly with out this
-  expect(manage_check_forms_page.available_checks.rows.first.assigned_to.text).to eql @first_window_name + ', ' + @last_window_name
+  wait_until{(manage_check_forms_page.available_checks.rows.first.assigned_to.text).eql? @first_window_name + ', ' + @last_window_name}
 end
 
 When(/^I choose to preview the check form questions$/) do
