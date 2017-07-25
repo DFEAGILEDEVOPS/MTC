@@ -1,21 +1,25 @@
-@wip
 Feature:
   As a development team
   We would like to show key stakeholders a prototype of the app
   In order to gain feedback and show progress
 
-  Scenario: Sign in page has a STA logo
-    Given I am on the sign in page
-    Then I should see a STA logo
+  Scenario: Starting the checks gives users 2 seconds before the first question is displayed
+    Given I am logged in on pupil page
+    When I start the check
+    Then I should have 2 seconds before i see the first question
 
-  Scenario: Sign in has a heading
-    Given I am on the sign in page
-    Then I should see a sign in page heading
+  @test
+  Scenario: Question time limit is reflected in the check page
+    Given I am on the admin page
+    And I have updated the Question time limit to 10 seconds
+    And I am logged in on pupil page
+    When I start the check
+    Then I should see the Question time limit is set to 10 seconds in the check page
 
-  Scenario: Sign in has intro text
-    Given I am on the sign in page
-    Then I should see some sign in page intro text
-
-  Scenario: Sign in page has a sign in button
-    Given I am on the sign in page
-    Then I should see a sign in button
+  @test
+  Scenario: Time between questions is reflected in the check page
+    Given I am on the admin page
+    Given I have updated the Time between questions to 3 seconds
+    And I am logged in on pupil page
+    When I start the check
+    Then I should see the Time between questions is set to 3 seconds in the check page

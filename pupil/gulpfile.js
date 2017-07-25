@@ -106,7 +106,6 @@ gulp.task('realclean', ['clean'], function () {
 gulp.task('build', ['sass', 'bundleJs'])
 
 gulp.task('dist', ['build'], function () {
-
   var packagePaths = ['**',
     '!**/_package/**',
     '!**/typings/**',

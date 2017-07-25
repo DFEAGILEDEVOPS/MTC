@@ -2,7 +2,6 @@ Given(/^I am on the add pupil page$/) do
   step  'I am on the manage pupil page'
   manage_pupil_page.add_pupil.click
   @page = add_pupil_page
-  # @page.load
 end
 
 Then(/^I should see fields that will allow me to capture pupil data$/) do
@@ -143,7 +142,7 @@ end
 
 Then(/^the pupil details should be stored$/) do
   gender = @details_hash[:male] ? 'M' : 'F'
-  sleep 2
+  wait_until{!(MongoDbHelper.pupil_details(@upn.to_s)).nil?}
   @stored_pupil_details =  MongoDbHelper.pupil_details @upn.to_s
   expect(@details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
@@ -164,8 +163,7 @@ When(/^I have submitted invalid pupil details$/) do
 end
 
 Then(/^the pupil details should not be stored$/) do
-  sleep 2
-  expect(MongoDbHelper.pupil_details @upn.to_s).to be_nil
+  wait_until{(MongoDbHelper.pupil_details @upn.to_s).nil?}
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|

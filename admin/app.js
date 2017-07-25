@@ -47,6 +47,7 @@ autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
+const administrator = require('./routes/administrator')
 const admin = require('./routes/admin')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
@@ -162,6 +163,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
+app.use('/administrator', administrator)
 app.use('/school', admin)
 
 // catch 404 and forward to error handler

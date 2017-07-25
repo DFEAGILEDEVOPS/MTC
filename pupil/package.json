@@ -71,6 +71,7 @@
     "fast-csv": "^2.4.0",
     "jasmine": "^2.5.3",
     "jasmine-node": "^1.14.5",
+    "jsdoc": "^3.5.3",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",
@@ -103,5 +104,12 @@
     ],
     "all": true,
     "cache": true
+  },
+  "standard": {
+    "ignore": [
+      "public/govuk_template/**/*",
+      "assets/javascripts/modernizr-custom.js",
+      "assets/javascripts/jquery-1.12.4.js"
+    ]
   }
 }

@@ -1,11 +1,3 @@
-# Azure Table Storage Spike
+# Design and exploratory work
 
-## Goals
-
-- Establish partition key and row key design
-- Define pupil check schema
-
-## Running the application
-
-Configure `AZURE_STORAGE_CONNECTION_STRING` env var in target app slot.
-
+This folder is for spikes and exploratory work
