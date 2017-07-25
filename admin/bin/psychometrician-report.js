@@ -76,7 +76,7 @@ function getRow (answer) {
     'TimeTaken': moment(moment(answer.pupil.checkEndDate).diff(moment(answer.pupil.checkStartDate))).format('HH:mm:ss'),
     'AppId': answer.isElectron ? 'electron' : 'web'
   }
-  const p = (idx) => { return 'Q' + (idx + 1).toString() }
+  const p = (idx) => 'Q' + (idx + 1).toString()
   answer.answers.forEach((ans, idx) => {
     obj[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     obj[p(idx)] = ans.input
