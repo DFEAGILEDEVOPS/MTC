@@ -12,7 +12,13 @@ if (typeof nextQuestion === 'number') {
 </h1>
 <div class="hidden" id="js-content-div">
 
-    <div class="question-container" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
+    <div class="remaining-time" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
+        Remaining time: <span id="js-page-timer" class="bold timer"></span>
+    </div>
+
+    <br style="clear:both"/>
+
+    <div class="question-container">
         <form id='js-question-form' action="/warm-up/question/<%= num %>" method="POST" autocomplete="off">
             <input type="hidden" id="js-form-answer" name="answer" value="">
             <div class="question-and-answer"><span class="question"><%= factor1 %> &times; <%= factor2 %> = </span>
