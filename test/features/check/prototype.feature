@@ -1,4 +1,3 @@
-@wip
 Feature:
   As a development team
   We would like to show key stakeholders a prototype of the app
@@ -9,7 +8,6 @@ Feature:
     When I start the check
     Then I should have 2 seconds before i see the first question
 
-  @test
   Scenario: Question time limit is reflected in the check page
     Given I am on the admin page
     And I have updated the Question time limit to 10 seconds
@@ -17,7 +15,6 @@ Feature:
     When I start the check
     Then I should see the Question time limit is set to 10 seconds in the check page
 
-  @test
   Scenario: Time between questions is reflected in the check page
     Given I am on the admin page
     Given I have updated the Time between questions to 3 seconds
