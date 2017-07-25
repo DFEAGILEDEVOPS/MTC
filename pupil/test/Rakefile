@@ -28,4 +28,5 @@ at_exit do
     puts "#{e.class}: #{e.message}"
   end
   puts "THE EXIT STATUS CODE IS: #{$?.exitstatus}"
+  exit $?.exitstatus
 end

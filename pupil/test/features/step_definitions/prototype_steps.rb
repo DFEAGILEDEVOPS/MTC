@@ -63,8 +63,7 @@ end
 Then(/^I should see that i have (\d+) seconds to answer the question$/) do |wait_time|
   check_page.wait_for_preload
   expect(check_page.timer.visible?).to be true
-  check_page.wait_for_timer(wait_time)
-  expect(check_page.timer.visible?).to be false
+  wait_until(7,0.1){!check_page.timer.visible?}
 end
 
 And(/^I could not answer the question within (\d+) seconds$/) do |wait_time|
