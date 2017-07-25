@@ -50,7 +50,7 @@ exports.config = {
       'features/support/*.js',
       'features/step_definitions/**/*.js'
     ],
-    tags: ['@test'],
+    tags: ['~@wip'],
     format: 'pretty',
     profile: false,
     'no-source': true
