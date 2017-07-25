@@ -1,25 +1,24 @@
-/* global Touch DocumentTouch Event */
-
 (function (global) {
   'use strict'
-  var GOVUK = global.GOVUK || {}
-  var startTime
-  var pageInterval = 5  // seconds allowed per page
-  var preloadInterval = 2 // seconds for student preparation
-  var deadline
 
-  var registerInputs = []
+  var GOVUK = global.GOVUK || {}
+  var defaultQuestionTimeLimit = 5  // seconds allowed per page
+  var defaultPreloadInterval = 2 // seconds for student preparation
   var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints || navigator.maxTouchPoints ||
     (window.Touch && document instanceof Touch) || (window.DocumentTouch && document instanceof DocumentTouch)
+
+  var deadline
+  var startTime
+  var registerInputs = []
+
   // Needed for IE8
   if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (elt /* , from */) {
+    Array.prototype.indexOf = function (elt) {
       var len = this.length >>> 0
-
       var from = Number(arguments[1]) || 0
-      from = (from < 0)
-        ? Math.ceil(from)
-        : Math.floor(from)
+
+      from = (from < 0) ? Math.ceil(from) : Math.floor(from)
+
       if (from < 0) {
         from += len
       }
@@ -63,10 +62,12 @@
   }
 
   // Needed for IE8
-  GOVUK.addEvent = function addEvent (obj, type, fn) {
+  GOVUK.addEvent = function addEvent ( obj, type, fn) {
     if (obj.attachEvent) {
       obj['e' + type + fn] = fn
-      obj[type + fn] = function () { obj['e' + type + fn](window.event) }
+      obj[type + fn] = function (){
+        obj['e' + type + fn](window.event)
+      }
       obj.attachEvent('on' + type, obj[type + fn])
     } else {
       obj.addEventListener(type, fn, false)
@@ -109,6 +110,7 @@
   GOVUK.addInput = function (element, char) {
     var currentAnswer = GOVUK.getTextContent(element)
     var currentLength = currentAnswer.length
+
     if (currentLength === 5) {
       // 5 is the maxlength - we drop the input.
       return
@@ -123,29 +125,38 @@
   // the page will auto-submit (even if there is no input from the user)
   GOVUK.submitPageOnTimeout = function () {
     var form = document.getElementById('js-question-form')
+    var questionTimeLimit = GOVUK.getQuestionTimeLimit()
+
     // Prefix setTimeout with `global` scope for IE8
     global.setTimeout(function () {
       // Copy the user input from the <span> into the <form>
       GOVUK.addInputToForm()
       form.submit()
-    }, (pageInterval * 1000))
+    }, (questionTimeLimit * 1000))
   }
 
-  // Provide an indication to the user of how much time they have remaining.
-  GOVUK.updatePageTimer = function () {
-    // set the page timer to the countdown on page load
-    var pageTimer = document.getElementById('js-page-timer')
-    GOVUK.setTextContent(pageTimer, pageInterval.toString())
+  GOVUK.getQuestionTimeLimit = function () {
+    var questionTimeLimit = defaultQuestionTimeLimit
+    var pageSettings = document.getElementById('js-page-time-settings')
+    if (pageSettings.dataset.value) {
+      questionTimeLimit = pageSettings.dataset.value
+    }
+    return questionTimeLimit
+  }
 
-    setInterval(function () {
-      var remaining = Math.ceil((deadline - Date.now()) / 1000)
-      if (remaining < 0) { remaining = 0 }
-      GOVUK.setTextContent(pageTimer, remaining.toString())
-    }, 100)
+  GOVUK.getLoadingTime = function () {
+    var loadingTime = defaultPreloadInterval
+    var loadingTimeContainer = document.getElementById('js-preload-div')
+    if (loadingTimeContainer.dataset.value) {
+      loadingTime = loadingTimeContainer.dataset.value
+    }
+    return loadingTime
   }
 
   // Show the 'Loading' screen for a short time before we ask a question
   GOVUK.preloadTimer = function () {
+    var loadingTime = GOVUK.getLoadingTime()
+
     setTimeout(function () {
       var preloadDiv = document.getElementById('js-preload-div')
       var contentDiv = document.getElementById('js-content-div')
@@ -154,12 +165,12 @@
       // This was originally emitted a custom event to decouple the dependencies.
       // However, you can't do that in IE8, so we now call this wrapper function.
       GOVUK.onContentShown()
-    }, preloadInterval * 1000)
+    }, loadingTime * 1000)
   }
 
   GOVUK.keyPressListener = function () {
     var answer = document.getElementById('js-answer')
-    // var form = document.getElementById('js-question-form')
+    var form = document.getElementById('js-question-form') // Never used?
 
     GOVUK.addEvent(document, 'keypress', function (e) {
       // keyCodes
@@ -188,6 +199,7 @@
       var event = e || global.event
       var eventType = isTouch ? 'touch ' + event.type : event.type
       var clickButton
+
       if (!event.which) {
         /* IE case */
         clickButton = (event.button < 2) ? 'left click' : ((event.button === 4) ? 'middle click' : 'right click')
@@ -210,6 +222,7 @@
       // keyCode is deprecated.
       var keyCode = event.keyCode
       var eventKey = event.key
+
       // IE 9 cases
       if (!eventKey) {
         eventKey = keyCode
@@ -227,13 +240,16 @@
         if (eventKey === ' ') eventKey = 'space'
         if (eventKey.length > 1) eventKey = eventKey.toLowerCase()
       }
+
       // Handle backspace before the question has finished loading
       if (keyCode === 8) {
         GOVUK.preventDefault(event)
       }
+
       var eventType = isTouch ? 'touch ' + event.type : event.type
       GOVUK.registerInput(eventKey, eventType)
       var currentAnswer = GOVUK.getTextContent(answer) // answer.textContent;
+
       if (!GOVUK.isVisible(answer)) {
         // keypress made when the form is hidden; ignore
         return false
@@ -262,7 +278,7 @@
   // Prevent the form being submitted by the user without
   // any input.
   GOVUK.preventEmptyFormSubmit = function () {
-    var form = document.getElementById('js-question-form')
+    var form = document.getElementById('js-question-form') // Never used?
     var answer = document.getElementById('js-answer')
     GOVUK.addEvent(form, 'submit', function (e) {
       var event = e || global.event
@@ -290,13 +306,13 @@
       var event = e || global.event
 
       if (!GOVUK.isVisible(answer)) {
-        // keypress made when the form is hidden; ignore
+        // Keypress made when the form is hidden; ignore
         return false
       }
 
       var target = null
       if (typeof event.target !== 'undefined') {
-        target = event.target // standard
+        target = event.target // Standard
       } else {
         target = event.srcElement // Hello, IE8
       }
@@ -308,6 +324,7 @@
       var char = attr.value
       var eventType = isTouch ? 'touch ' + event.type : event.type
       GOVUK.registerInput(char, eventType)
+
       // Write it in the input box
       var currentAnswer = GOVUK.getTextContent(answer)
       if (char === 'backspace') {
@@ -333,6 +350,7 @@
       return false
     })
   }
+
   /**
    * Push the keystroke, virtual key or click button in an array to be sent on form.submit()
    */
@@ -343,11 +361,12 @@
   /**
    * Copy the written answer to a hidden <input> so that it is sent on form.submit()
    */
-  GOVUK.addInputToForm = function () {
+  GOVUK.addInputToForm = function() {
     var answer = document.getElementById('js-answer')
-    // var form = document.getElementById('js-question-form')
+    var form = document.getElementById('js-question-form') // Never used?
     var formAnswer = document.getElementById('js-form-answer')
     var formRegisteredInputs = document.getElementById('js-form-registered-inputs')
+
     formAnswer.value = GOVUK.getTextContent(answer)
     if (formRegisteredInputs) {
       formRegisteredInputs.value = JSON.stringify(registerInputs)
@@ -366,10 +385,10 @@
 
   GOVUK.onContentShown = function () {
     // Start the timers as the question is now visible
+    var questionTimeLimit = GOVUK.getQuestionTimeLimit()
     startTime = Date.now()
-    deadline = startTime + (pageInterval * 1000)
+    deadline = startTime + (questionTimeLimit * 1000)
     GOVUK.submitPageOnTimeout()
-    GOVUK.updatePageTimer()
   }
 
   // IE8 does not trigger the DOMContentLoaded event, so use onload instead
