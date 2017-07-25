@@ -1,6 +1,6 @@
 # Test framework for writing BDD tests using Protractor and Cucumber
 
-The framework Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other. 
+The framework uses Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other. 
 
 # Getting started
 

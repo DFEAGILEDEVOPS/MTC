@@ -12,6 +12,7 @@ require 'capybara-screenshot/cucumber'
 require 'mongo'
 require 'waitutil'
 require 'show_me_the_cookies'
+require_relative '../../../test/features/support/browserstack_driver_helper'
 
 require_relative 'helpers'
 include Helpers
@@ -34,7 +35,7 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
 end
 
-Capybara::Screenshot.register_filename_prefix_formatter(:cucumber) do |scenario|
+Capybara::Screenshot.register_filename_prefix_formatter(ENV['DRIVER'].to_sym) do |scenario|
   "/screenshots/screenshot_#{scenario.title.tr(' ', '-').gsub(%r{/^.*\/cucumber\//}, '')}"
 end
 
@@ -42,6 +43,8 @@ Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 Mongo::Logger.logger.level = ::Logger::FATAL
+ShowMeTheCookies.register_adapter(ENV['DRIVER'].to_sym, ShowMeTheCookies::Selenium) unless ENV['DRIVER'] == 'poltergeist'
+ShowMeTheCookies.register_adapter('poltergeist', ShowMeTheCookies::Selenium) if ENV['DRIVER'] == 'poltergeist'
 
 if ENV['MONGO_CONNECTION_STRING']
   CLIENT = Mongo::Client.new(ENV['MONGO_CONNECTION_STRING'])
@@ -50,8 +53,6 @@ else
 end
 
 Capybara.visit Capybara.app_host
-# auth_five = Capybara.all('input[value="5PIN"]')
-# pin_type = '5' unless auth_five.empty?
 AUTH='5'
 
 World(ShowMeTheCookies)

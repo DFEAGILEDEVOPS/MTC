@@ -9,13 +9,7 @@ if (typeof nextQuestion === 'number') {
 
 <div class="hidden" id="js-content-div">
 
-    <div class="remaining-time">
-        Remaining time: <span id="js-page-timer" class="bold timer"></span>
-    </div>
-
-    <br style="clear:both"/>
-
-    <div class="question-container">
+    <div class="question-container" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
 
         <form id='js-question-form' action="/check/question/<%= num %>" method="POST" autocomplete="off">
             <input type="hidden" id="js-form-answer" name="answer" value="">
@@ -59,8 +53,7 @@ if (typeof nextQuestion === 'number') {
     </div>
 </div>
 
-
-<div class="preload" id="js-preload-div">
+<div class="preload" id="js-preload-div" data-value="<%= loadingTime %>">
     <div>
         <p class="font-large text-center">
             Loading question <%= num %> out of <%= total %>
