@@ -2,7 +2,7 @@ class CheckPage < SitePrism::Page
   set_url '/check/question/{number}{?query*}'
 
   element :preload, '.preload'
-  element :timer, '.remaining-time'
+  # element :timer, '.remaining-time'
   element :question, '.question'
   element :answer, '#js-answer'
 

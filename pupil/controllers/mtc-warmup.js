@@ -2,6 +2,8 @@ const uuidV4 = require('uuid/v4')
 
 const QuestionService = require('../lib/question-service')
 const Pupil = require('../models/pupil')
+const Setting = require('../models/setting')
+const config = require('../config')
 
 const getIntro = (req, res) => {
   res.locals.pageTitle = 'Warm-up questions'
@@ -30,8 +32,23 @@ const getQuestion = async (req, res, next) => {
     }
   }
 
+  let loadingTime = config.TIME_BETWEEN_QUESTIONS
+  let questionTimeLimit = config.TIME_BETWEEN_QUESTIONS
+
+  try {
+    const timeSettings = await Setting.findOne().exec()
+    if (timeSettings) {
+      loadingTime = timeSettings.loadingTimeLimit
+      questionTimeLimit = timeSettings.questionTimeLimit
+    }
+  } catch (error) {
+    console.log('Loading time not found, default value used')
+  }
+
   const questionService = new QuestionService('form-warm-up')
   const question = questionService.getQuestion(num)
+  res.locals.loadingTime = loadingTime
+  res.locals.questionTimeLimit = questionTimeLimit
   res.locals.factor1 = question[0]
   res.locals.factor2 = question[1]
   res.locals.expectedAnswer = question[2]
