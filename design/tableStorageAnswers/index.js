@@ -1,7 +1,9 @@
-let azure = require('azure-storage')
-let tableSvc = azure.createTableService()
-
-tableSvc.createTableIfNotExists('answersPerfTest', function (error, result, response) {
-    //bulk inserts to test performance
+let insertData = require('./insertData.js')
+insertData(function(err){
+  if(err){
+    console.log('error in insertData...')
+    console.dir(err)
+  } else {
+    console.log('Done')
+  }
 })
-
