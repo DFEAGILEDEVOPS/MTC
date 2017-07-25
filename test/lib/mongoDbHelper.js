@@ -20,31 +20,31 @@ module.exports = {
     })
   },
   SetExpirePin: function (forName, lastName, schoolId, flag = false) {
-    MongoClient.connect(url, function (db) {
+    MongoClient.connect(url).then(function (db) {
       let collection = db.collection('pupils')
       collection.updateOne({
         'foreName': forName,
         'lastName': lastName,
         'school': schoolId
-      }, {$set: {'pinExpired': flag}}, function (err) {
-        if (err) {
-          throw err
-        }
-      })
+      }, {$set: {'pinExpired': flag}})
+    }, function (err) {
+      if (err) {
+        throw err
+      }
     })
   },
   ResetPin: function (forName, lastName, schoolId, pin = undefined) {
-    MongoClient.connect(url, function (db) {
+    MongoClient.connect(url).then(function (db) {
       let collection = db.collection('pupils')
       collection.updateOne({
         'foreName': forName,
         'lastName': lastName,
         'school': schoolId
-      }, {$set: {'pin': pin}}, function (err) {
-        if (err) {
-          throw err
-        }
-      })
+      }, {$set: {'pin': pin}})
+    }, function (err) {
+      if (err) {
+        throw err
+      }
     })
   }
 }
