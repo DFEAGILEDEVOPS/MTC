@@ -24,7 +24,6 @@ at_exit do
   begin
     puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
     Rake::Task[:failing_tests].invoke unless File.read('rerun.txt').empty?
-    exit $?.exitstatus
   rescue Exception => e
     puts "#{e.class}: #{e.message}"
   end
