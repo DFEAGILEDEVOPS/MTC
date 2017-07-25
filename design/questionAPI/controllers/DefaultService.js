@@ -7,8 +7,22 @@ exports.getQuestions = function(args, res, next) {
   **/
     var examples = {};
   examples['application/json'] = {
-  "factor2" : 5.0,
-  "factor1" : 3.0
+  "school" : {
+    "name" : "Hogwarts School of Witchcraft and Wizardry",
+    "Id" : 123456
+  },
+  "questions" : [ {
+    "factor2" : 2,
+    "rank" : 1,
+    "factor1" : 3
+  } ],
+  "pupil" : {
+    "firstName" : "Morgan",
+    "lastName" : "Freeman",
+    "loadingTime" : 1.3579000000000001069366817318950779736042022705078125,
+    "sessionId" : "aeiou",
+    "questionTime" : 1.3579000000000001069366817318950779736042022705078125
+  }
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
