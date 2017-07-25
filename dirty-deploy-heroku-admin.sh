@@ -15,9 +15,3 @@ heroku git:remote -a check-development
 git push -f heroku master
 cd $CWD
 rm -rf $TEMP_DIR
-
-
-
-
-
-
