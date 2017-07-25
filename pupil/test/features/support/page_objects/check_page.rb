@@ -10,13 +10,12 @@ class CheckPage < SitePrism::Page
 
 
   def wait_for_preload
-    wait_until_preload_visible
-    sleep 2.10
-    wait_until_preload_invisible
+    wait_until(3, 0.1) {preload.visible?}
+    wait_until(3, 0.1) {!preload.visible?}
   end
 
   def wait_for_timer(seconds)
-    sleep seconds.to_i + 0.5
+    sleep seconds.to_i + 2
   end
 
   def enter_answer_via_keyboard(answer)
