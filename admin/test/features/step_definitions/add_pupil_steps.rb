@@ -163,7 +163,7 @@ When(/^I have submitted invalid pupil details$/) do
 end
 
 Then(/^the pupil details should not be stored$/) do
-  wait_until{expect(MongoDbHelper.pupil_details @upn.to_s).to be_nil}
+  wait_until{(MongoDbHelper.pupil_details @upn.to_s).nil?}
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
