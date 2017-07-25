@@ -15,7 +15,7 @@ Feature: Question time limit tests
     Then I should see that Question time limit is set to 6 seconds
 
   Scenario Outline: Error message is shown when the input for Question time limit is not valid
-    When I attempt to enter Question time limit as "<value>" seconds
+    When I attempt to enter Question time limit as <value> seconds
     Then I should see a validation error for Question time limit
 
     Examples: values
