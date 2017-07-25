@@ -16,7 +16,7 @@ end
 
 Then(/^this should be saved$/) do
   gender = @updated_details_hash[:male] ? 'M' : 'F'
-  sleep 2
+  wait_until{!(MongoDbHelper.pupil_details(@updated_upn.to_s)).nil?}
   @stored_pupil_details = MongoDbHelper.pupil_details @updated_upn.to_s
   expect(@updated_details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@updated_details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
