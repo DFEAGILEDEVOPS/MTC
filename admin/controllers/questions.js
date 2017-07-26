@@ -12,7 +12,7 @@ const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 
 const getQuestions = async (req, res) => {
   const { pupilPin, schoolPin } = req.body
-  if (!pupilPin || !schoolPin) res.status(400).send('invalid input')
+  if (!pupilPin || !schoolPin) res.status(400).json({ error: 'Invalid input' })
   let checkForm, pupil, school
   try {
     // Until we determine the logic behind fetching the appropriate check form
@@ -23,8 +23,8 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     throw new Error(error)
   }
-  if (!checkForm) res.status(404).send('Question set not found for pupil')
-  if (!pupil || !school) res.status(401).send('Unauthorised')
+  if (!checkForm) res.status(404).json({ error: 'Question set not found for pupil' })
+  if (!pupil || !school) res.status(401).json({ error: 'Unauthorised' })
   let { questions } = checkForm
   questions = questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
   pupil = {
