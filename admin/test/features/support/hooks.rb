@@ -18,6 +18,14 @@ Before("@add_5_pupils") do
   end
 end
 
+Before("@poltergeist") do
+  Capybara.current_driver = :poltergeist
+end
+
+Before("~@poltergeist") do
+  Capybara.current_driver = ENV['DRIVER']
+end
+
 After do |scenario|
   visit ENV['BASE_URL'] + '/sign-out'
   if (scenario.failed?)

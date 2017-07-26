@@ -36,7 +36,7 @@ paths:
         200:
           description: "question set returned"
           schema:
-            $ref: "#/definitions/QuestionSet"
+            $ref: "#/definitions/PupilCheck"
         400:
           description: "invalid input"
         401:
@@ -57,14 +57,50 @@ definitions:
       schoolId:
         type: "string"
         example: "9999a"
-  QuestionSet:
+  PupilCheck:
     type: "object"
     properties:
+      questions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Question"
+      pupil:
+        $ref: "#/definitions/PupilCheck_pupil"
+      school:
+        $ref: "#/definitions/PupilCheck_school"
+  Question:
+    type: "object"
+    properties:
+      rank:
+        type: "integer"
+        example: 1
+        minimum: 1
       factor1:
-        type: "number"
-        format: "int32"
+        type: "integer"
         example: 3
       factor2:
+        type: "integer"
+        example: 2
+  PupilCheck_pupil:
+    properties:
+      firstName:
+        type: "string"
+        example: "Morgan"
+      lastName:
+        type: "string"
+        example: "Freeman"
+      sessionId:
+        type: "string"
+      questionTime:
         type: "number"
-        format: "int32"
-        example: 5
+      loadingTime:
+        type: "number"
+  PupilCheck_school:
+    properties:
+      Id:
+        type: "integer"
+        example: 123456
+      name:
+        type: "string"
+        example: "Hogwarts School of Witchcraft and Wizardry"
+    description: "should this be URN?"
