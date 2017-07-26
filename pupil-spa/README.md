@@ -23,6 +23,26 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 Before running the tests make sure you are serving the app via `ng serve`.
 
+## Connecting from Virtualised Clients
+
+If you want to connect from a Virtualised client, perhaps for browser testing you may see this error:
+
+```
+Invalid Host header
+```
+
+This is a security precaution in the server.  You can temporarily allow them by starting 
+the server like this: 
+
+```shell
+ng serve --disable-host-check
+```
+
+For Virtualbox users you can then access the site running on the Host's localhost by connecting to
+
+```
+http://10.0.2.2:<$port>/
+```
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
