@@ -11,15 +11,15 @@ const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
  */
 
 const getQuestions = async (req, res) => {
-  const { pupilId, schoolId } = req.body
-  if (!pupilId || !schoolId) res.status(400).send('invalid input')
+  const { pupilPin, schoolPin } = req.body
+  if (!pupilPin || !schoolPin) res.status(400).send('invalid input')
   let checkForm, pupil, school
   try {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first one
+    pupil = await Pupil.findOne({ 'pin': pupilPin }).lean().exec()
+    school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
     checkForm = await CheckForm.findOne({}).sort({createdAt: 1}).lean().exec()
-    pupil = await Pupil.findOne({ '_id': pupilId }).lean().exec()
-    school = await School.findOne({_id: schoolId}).lean().exec()
   } catch (error) {
     throw new Error(error)
   }
