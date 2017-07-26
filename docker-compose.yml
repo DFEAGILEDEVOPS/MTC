@@ -1,0 +1,17 @@
+version: '3'
+services:
+  pupil-app:
+    build: ./pupil
+    ports:
+    - "3000:3000"
+    links:
+    - esb
+  admin-app:
+    build: ./admdin
+    ports:
+    - "3001:3001"
+    links:
+    - esb
+  esb:
+    image: rabbitmq:3
+    container_name: mtcrmq
