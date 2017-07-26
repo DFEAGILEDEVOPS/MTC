@@ -7,7 +7,7 @@ Before('@5_digit') do
 end
 
 Before('@non_browserstack_compliant') do
-  skip_this_scenario if Capybara.current_driver.to_s.include? '_ie_'
+  skip_this_scenario if Capybara.current_driver.to_s.include? 'bs'
 end
 
 After do |scenario|
