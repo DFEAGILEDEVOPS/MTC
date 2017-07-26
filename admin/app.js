@@ -166,7 +166,7 @@ app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/administrator', administrator)
 app.use('/school', admin)
-app.use('/questions', questions)
+app.use('/api/questions', questions)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
