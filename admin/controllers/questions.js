@@ -30,16 +30,19 @@ const getQuestions = async (req, res) => {
   pupil = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
-    sessionId: req.session.id,
+    sessionId: req.session.id
+  }
+  school = { id: school._id, name: school.name }
+  const config = {
     questionTime: QUESTION_TIME_LIMIT,
     loadingTime: TIME_BETWEEN_QUESTIONS
   }
-  school = { id: school._id, name: school.name }
   res.setHeader('Content-Type', 'application/json')
   res.send(JSON.stringify({
     questions,
     pupil,
-    school
+    school,
+    config
   }))
 }
 
