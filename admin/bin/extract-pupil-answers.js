@@ -56,7 +56,7 @@ function getRow (answer) {
     'Pupil Id': answer.pupil._id,
     'School': answer.school.name,
     'School Id': answer.school._id,
-    'URN': answer.school.upn,
+    'URN': answer.school.urn,
     'App type': answer.isElectron ? 'Electron' : 'Web',
     'Marks': answer.result ? answer.result.correct : 'n/a',
     'Number of Questions Answered': answer.answers.length,
