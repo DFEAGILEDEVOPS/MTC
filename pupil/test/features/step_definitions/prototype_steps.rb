@@ -123,7 +123,7 @@ end
 
 Then(/^I should see the on screen keyboard$/) do
   check_page.wait_for_preload
-  expect(check_page.number_pad).to be_all_there
+  expect(check_page).to have_number_pad
 end
 
 Then(/^I can submit an answer using enter on my physical keyboard$/) do

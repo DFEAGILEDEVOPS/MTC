@@ -21,6 +21,7 @@ class CheckPage < SitePrism::Page
   def enter_answer_via_keyboard(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
+      wait_for_number_pad
       number_pad.send(NumbersInWords.in_words(number.to_i)).click
     end
   end
