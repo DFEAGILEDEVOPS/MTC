@@ -7,14 +7,15 @@ if (typeof nextQuestion === 'number') {
 }
 %>
 <br style="clear:both"/>
+
+<div class="remaining-time-warmup" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
+    Remaining time: <span id="js-page-timer" class="bold timer"></span>
+</div>
+
 <h1 class="page-header heading-small">
     <span class="warm-up-questions-label">Warm-up questions</span>
 </h1>
 <div class="hidden" id="js-content-div">
-
-    <div class="remaining-time" id="js-page-time-settings" data-value="<%= questionTimeLimit %>">
-        Remaining time: <span id="js-page-timer" class="bold timer"></span>
-    </div>
 
     <br style="clear:both"/>
 
