@@ -7,7 +7,7 @@ services:
     links:
     - esb
   admin-app:
-    build: ./admdin
+    build: ./admin
     ports:
     - "3001:3001"
     links:
