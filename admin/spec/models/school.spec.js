@@ -105,4 +105,13 @@ describe('school schema', function () {
     School.findOne.restore()
     done()
   })
+
+  it('has a URN', function(done) {
+    const urn = 123456789
+    school.urn = urn
+    school.validate(function() {
+      expect(school.urn).toBe(urn)
+      done()
+    })
+  })
 })
