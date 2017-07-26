@@ -15,7 +15,9 @@ const getQuestions = async (req, res) => {
   if (!pupilId || !schoolId) res.status(400).send('invalid input')
   let checkForm, pupil, school
   try {
-    checkForm = await CheckForm.findOne({}).sort({createdAt: -1}).lean().exec()
+    // Until we determine the logic behind fetching the appropriate check form
+    // the pupil will receive the first one
+    checkForm = await CheckForm.findOne({}).sort({createdAt: 1}).lean().exec()
     pupil = await Pupil.findOne({ '_id': pupilId }).lean().exec()
     school = await School.findOne({_id: schoolId}).lean().exec()
   } catch (error) {
