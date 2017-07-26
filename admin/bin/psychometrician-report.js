@@ -73,16 +73,19 @@ function getRow (answer) {
     'TestDate': moment(answer.creationDate).format('YYYYMMDD'),
     'TimeComplete': moment(answer.pupil.checkEndDate).format('h:mm:ss a'),
     'TimeStart': moment(answer.pupil.checkStartDate).format('h:mm:ss a'),
-    'TimeTaken': moment(moment(answer.pupil.checkEndDate).diff(moment(answer.pupil.checkStartDate))).format('h:mm:ss'),
+    'TimeTaken': moment(moment(answer.pupil.checkEndDate).diff(moment(answer.pupil.checkStartDate))).format('HH:mm:ss'),
     'AppId': answer.isElectron ? 'electron' : 'web'
   }
+  const p = (idx) => 'Q' + (idx + 1).toString()
   answer.answers.forEach((ans, idx) => {
-    obj['Q' + (idx + 1).toString() + 'ID'] = ans.factor1 + ' x ' + ans.factor2
-    obj['Q' + (idx + 1).toString()] = ans.input
-    obj['Q' + (idx + 1).toString() + 'k'] = getUserInput(ans)
-    obj['Q' + (idx + 1).toString() + 'sco'] = ans.isCorrect ? 1 : 0
-    obj['Q' + (idx + 1).toString() + 't'] = getFirstResponseTime(ans)
-    obj['Q' + (idx + 1).toString() + 'to'] = hasTimeoutFlag(ans)
+    obj[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
+    obj[p(idx)] = ans.input
+    obj[p(idx) + 'k'] = getUserInput(ans)
+    obj[p(idx) + 'sco'] = ans.isCorrect ? 1 : 0
+    obj[p(idx) + 't'] = getFirstResponseTime(ans)
+    obj[p(idx) + 'to'] = hasTimeoutFlag(ans)
+    obj[p(idx) + 'rt'] = getResponseTime(ans)
+    obj[p(idx) + 'im'] = getInputMethod(ans) // k = keyboard, m = mouse, t = touch or mouse, m = mixed
   })
   return obj
 }
@@ -177,4 +180,52 @@ function hasTimeoutFlag (answer) {
     }
   }
   return timeout
+}
+
+function getResponseTime (answer) {
+  if (!(answer.registeredInputs && answer.registeredInputs.length)) {
+    return ''
+  }
+  const firstInput = answer.registeredInputs[0].clientInputDate
+  const lastInput = answer.registeredInputs[answer.registeredInputs.length - 1].clientInputDate
+  return moment(moment(lastInput).diff(moment(firstInput))).format('s.SSS')
+}
+
+function getInputMethod (answer) {
+  if (!(answer.registeredInputs && answer.registeredInputs.length)) {
+    return ''
+  }
+  const inputMethods = new Set()
+  for (const ri of answer.registeredInputs) {
+    switch (ri.eventType) {
+      case 'keydown':
+      case 'touch keydown':
+        // hardware keyboard was pressed
+        inputMethods.add('k')
+        break
+      case 'click':
+      case 'mousedown':
+        // Mouse was pressed
+        inputMethods.add('m')
+        break
+      case 'touch click':
+      case 'touch mousedown':
+        // Mouse or fingers on a screen
+        inputMethods.add('t')
+        break
+      default:
+        console.log('Unknown input type: ' + ri.eventType)
+        console.log('inp ', ri)
+        inputMethods.add('u')
+        break
+    }
+  }
+  const deduped = Array.from(inputMethods)
+  if (deduped.length === 0) {
+    return ''
+  } else if (deduped.length === 1) {
+    return deduped[0]
+  } else {
+    return 'x'
+  }
 }
