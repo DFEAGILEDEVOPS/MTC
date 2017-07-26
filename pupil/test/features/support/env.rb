@@ -35,6 +35,16 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
 end
 
+Capybara.register_driver :headless_chrome do |app|
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+      chromeOptions: { args: %w(headless disable-gpu) }
+  )
+
+  Capybara::Selenium::Driver.new app,
+                                 browser: :chrome,
+                                 desired_capabilities: capabilities
+end
+
 Capybara::Screenshot.register_filename_prefix_formatter(ENV['DRIVER'].to_sym) do |scenario|
   "/screenshots/screenshot_#{scenario.title.tr(' ', '-').gsub(%r{/^.*\/cucumber\//}, '')}"
 end
