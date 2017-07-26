@@ -3,6 +3,7 @@ class WarmUpPage < SitePrism::Page
 
   element :heading, '.heading-xlarge', text: "Warm-up questions"
   element :preload, '.preload'
+  element :timer,'.remaining-time-warmup'
   element :question, '.question'
   element :start_warm_up_questions, 'a[href="/warm-up/intro"]'
   element :welcome_message, '.lede', text: "Press 'Start now' to see 3 warm-up questions. Use them to familiarise yourself with what the questions will look like and how to enter your answers."

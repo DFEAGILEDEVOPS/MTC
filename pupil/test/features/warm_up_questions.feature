@@ -21,7 +21,7 @@ Feature: Warm up questions
 
   Scenario: Warm up page check has a 5 second timer for each question
     Given I am on the warm up check page
-    Then I should see that i have 5 seconds to answer the question
+    Then I should see that i have 5 seconds to answer the warm up question
 
   Scenario: Warm up page check gives users 5 seconds to answer the question and then moves on
     Given I am on the warm up check page

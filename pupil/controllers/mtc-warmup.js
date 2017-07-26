@@ -33,7 +33,7 @@ const getQuestion = async (req, res, next) => {
   }
 
   let loadingTime = config.TIME_BETWEEN_QUESTIONS
-  let questionTimeLimit = config.TIME_BETWEEN_QUESTIONS
+  let questionTimeLimit = config.QUESTION_TIME_LIMIT
 
   try {
     const timeSettings = await Setting.findOne().exec()

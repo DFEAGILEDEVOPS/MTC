@@ -62,9 +62,16 @@ end
 
 Then(/^I should see that i have (\d+) seconds to answer the question$/) do |wait_time|
   check_page.wait_for_preload
-  expect(check_page.number_pad.enter.visible?).to be true
+  expect(check_page.timer.visible?).to be true
   check_page.wait_for_timer(wait_time)
-  expect(check_page.number_pad.enter.visible?).to be false
+  expect(check_page.timer.visible?).to be false
+end
+
+Then(/^I should see that i have (\d+) seconds to answer the warm up question$/) do |wait_time|
+  check_page.wait_for_preload
+  expect(warm_up_page.timer.visible?).to be true
+  check_page.wait_for_timer(wait_time)
+  expect(warm_up_page.timer.visible?).to be false
 end
 
 And(/^I could not answer the question within (\d+) seconds$/) do |wait_time|
