@@ -22,7 +22,7 @@ if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`)
 
   // Fork workers.
-  for (let i = 0; i < numCpus; i++) {
+  for (let i = 0; i < numCpus / 2; i++) {
     cluster.fork()
   }
 
