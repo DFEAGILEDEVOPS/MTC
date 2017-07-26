@@ -106,10 +106,10 @@ describe('school schema', function () {
     done()
   })
 
-  it('has a URN', function(done) {
+  it('has a URN', function (done) {
     const urn = 123456789
     school.urn = urn
-    school.validate(function() {
+    school.validate(function () {
       expect(school.urn).toBe(urn)
       done()
     })
