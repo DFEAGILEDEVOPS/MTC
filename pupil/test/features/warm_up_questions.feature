@@ -14,6 +14,7 @@ Feature: Warm up questions
     Given I am on the warm up check page
     Then I should have 2 seconds before i see the first question
 
+  @non_browserstack_compliant
   Scenario: Users can complete the warm up questions using the on screen keyboard
     Given I am on the warm up check page
     Then I should be able to use the on screen keyboard to complete the warm up questions
