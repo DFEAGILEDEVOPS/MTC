@@ -1,7 +1,7 @@
 /* global describe it */
 
 require('./hooks')
-var assert = require('assert')
+const assert = require('assert')
 
 describe('application launch', function () {
   this.timeout(20000)
