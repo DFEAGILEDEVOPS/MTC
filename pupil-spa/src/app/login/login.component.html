@@ -1,0 +1,34 @@
+<div class="heading-block">
+  <header>
+    <div class="organisation-logo">
+      <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+    </div>
+  </header>
+</div>
+
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <header class="page-header">
+      <h1 class="heading-xlarge">Multiplication tables check</h1>
+    </header>
+
+    <p class="lede">
+      To start your multiplication tables check, enter the school password and pupil PIN provided by your teacher,
+      then click ‘Sign in’.
+    </p>
+
+      <div class="form-group">
+        <label for="school-pin" class="form-label-bold"> School password </label>
+        <input #schoolPin class="form-control" type="text">
+      </div>
+      <div class="form-group">
+        <label for="pupil-pin" class="form-label-bold"> Pupil PIN </label>
+        <input #pupilPin class="form-control" type="text">
+      </div>
+      <div class="form-group">
+        <p>
+          <button (click)="authenticate(schoolPin.value, pupilPin.value)">Sign in</button>
+        </p>
+      </div>
+  </div>
+</div>
