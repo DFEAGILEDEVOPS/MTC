@@ -2,16 +2,39 @@ version: '3'
 services:
   pupil-app:
     build: ./pupil
+    container_name: mtc_pupil
     ports:
     - "3000:3000"
+    environment:
+      MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
+      GOOGLE_SVC_PK:
+      GOOGLE_SVC_EMAIL:
+      GOOGLE_SVC_DOC_KEY:
+    # remove mongo links and dependencies when introducing SPA
+    depends_on:
+    - esb
+    - mongo
     links:
     - esb
+    - mongo
   admin-app:
     build: ./admin
+    container_name: mtc_admin
     ports:
     - "3001:3001"
+    environment:
+      MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
+    depends_on:
+    - esb
+    - mongo
     links:
     - esb
+    - mongo
   esb:
-    image: rabbitmq:3
-    container_name: mtcrmq
+    image: rabbitmq
+    container_name: mtc_esb
+  mongo:
+    image: mongo
+    container_name: mtc_db
+    ports:
+    - "27017:27017"
