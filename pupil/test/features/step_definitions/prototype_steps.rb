@@ -357,6 +357,7 @@ Then(/^I should be taken to the sign in failure page$/) do
 end
 
 Then(/^my pin should be expired$/) do
+  wait_until{MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['pinExpired']}
   expect(MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['pinExpired']).to be true
 end
 
