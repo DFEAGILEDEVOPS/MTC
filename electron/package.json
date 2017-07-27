@@ -39,5 +39,10 @@
       "category": "Education"
     },
     "productName": "Multiplication Tables Check App"
+  },
+  "standard": {
+    "ignore": [
+      "app/govuk_template/"
+    ]
   }
 }
