@@ -46,3 +46,15 @@ http://10.0.2.2:<$port>/
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+### Upgrading old versions
+
+You can upgrade an old version like this:
+
+```shell
+npm uninstall -g angular-cli
+npm uninstall -g @angular/cli
+npm cache clean
+npm install -g @angular/cli
+``` 
+
