@@ -4,11 +4,12 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node copyGovukFrontendToolkit && ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "copygovuktoolkit": "node copyGovukFrontendToolkit"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
     "core-js": "^2.4.1",
+    "fs-extra": "^4.0.0",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "rxjs": "^5.4.1",
