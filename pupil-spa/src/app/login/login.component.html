@@ -19,15 +19,15 @@
 
       <div class="form-group">
         <label for="school-pin" class="form-label-bold"> School password </label>
-        <input #schoolPin class="form-control" type="text">
+        <input #schoolPin id="school-pin" class="form-control">
       </div>
       <div class="form-group">
         <label for="pupil-pin" class="form-label-bold"> Pupil PIN </label>
-        <input #pupilPin class="form-control" type="text">
+        <input #pupilPin id="pupil-pin" class="form-control">
       </div>
       <div class="form-group">
         <p>
-          <button (click)="authenticate(schoolPin.value, pupilPin.value)">Sign in</button>
+          <button (click)="submit(schoolPin.value, pupilPin.value)">Sign in</button>
         </p>
       </div>
   </div>
