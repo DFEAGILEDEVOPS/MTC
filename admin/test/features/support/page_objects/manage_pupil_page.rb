@@ -52,6 +52,7 @@ class ManagePupilPage < SitePrism::Page
   end
 
   def find_pupil_row(name)
+    wait_until{!(pupil_list.pupil_row.find {|pupil| pupil.text.include? name}).nil?}
     pupil_list.pupil_row.find {|pupil| pupil.text.include? name}
   end
 

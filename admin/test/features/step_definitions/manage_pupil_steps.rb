@@ -77,6 +77,7 @@ end
 
 Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
+  wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
   pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
   expect(manage_pupil_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
 end

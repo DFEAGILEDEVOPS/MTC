@@ -12,11 +12,11 @@ end
 
 desc 're run failing test'
 Cucumber::Rake::Task.new :failing_tests, 'Re-run failing tests from the rerun.txt file' do |t|
-  t.cucumber_opts = "@rerun.txt -f pretty DRIVER=#{(Rake.application.top_level_tasks.first == 'features') ? 'poltergeist' : Rake.application.top_level_tasks.first}"
+  t.cucumber_opts = "@rerun.txt -f pretty DRIVER=#{(Rake.application.top_level_tasks.first == 'features') ? 'headless_chrome' : Rake.application.top_level_tasks.first}"
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "--format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'poltergeist'}"
+  t.cucumber_opts = "--format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 
