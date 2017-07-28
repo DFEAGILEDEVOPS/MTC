@@ -1,5 +1,10 @@
 version: '3'
 services:
+  pupil-spa:
+    build: ./pupil-spa
+    container_name: mtc_pupil_spa
+    ports:
+    - "3002:3002"
   pupil-app:
     build: ./pupil
     container_name: mtc_pupil
