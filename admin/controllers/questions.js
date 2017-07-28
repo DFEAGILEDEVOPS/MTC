@@ -12,7 +12,7 @@ const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 
 const getQuestions = async (req, res) => {
   const { pupilPin, schoolPin } = req.body
-  if (!pupilPin || !schoolPin) res.status(400).json({ error: 'Invalid input' })
+  if (!pupilPin || !schoolPin) return res.status(400).json({ error: 'Invalid input' })
   let checkForm, pupil, school
   try {
     // Until we determine the logic behind fetching the appropriate check form
@@ -21,10 +21,11 @@ const getQuestions = async (req, res) => {
     school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
     checkForm = await CheckForm.findOne({}).sort({createdAt: 1}).lean().exec()
   } catch (error) {
+    console.log(error)
     throw new Error(error)
   }
-  if (!checkForm) res.status(404).json({ error: 'Question set not found for pupil' })
-  if (!pupil || !school) res.status(401).json({ error: 'Unauthorised' })
+  if (!checkForm) return res.status(404).json({ error: 'Question set not found for pupil' })
+  if (!pupil || !school) return res.status(401).json({ error: 'Unauthorised' })
   let { questions } = checkForm
   questions = questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
   pupil = {
@@ -37,8 +38,7 @@ const getQuestions = async (req, res) => {
     questionTime: QUESTION_TIME_LIMIT,
     loadingTime: TIME_BETWEEN_QUESTIONS
   }
-  res.setHeader('Content-Type', 'application/json')
-  res.send(JSON.stringify({
+  return res.send(JSON.stringify({
     questions,
     pupil,
     school,
