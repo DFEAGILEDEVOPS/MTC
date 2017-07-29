@@ -13,13 +13,12 @@ export class UserService {
   login(schoolPin, pupilPin): Promise<any> {
     return new Promise((resolve) => {
         if (schoolPin === 'abc12345' && pupilPin === '9999a') {
-          console.warn("log in is good");
           this.loggedIn = true;
           localStorage.setItem(auth_token, responseMock['pupil'].sessionId);
           localStorage.setItem('data', JSON.stringify(responseMock));
           return resolve(responseMock);
         }
-        resolve({error: 'Your login was unsuccessful'});
+        resolve({error: 'Login error'});
     });
   }
 

@@ -20,8 +20,6 @@ export class LoginComponent implements OnInit {
           if (res.error) {
             this.router.navigate(['sign-in-failure']);
           } else {
-            console.warn("logged in response: ", res);
-
             this.router.navigate(['sign-in-success']);
           }
         },
