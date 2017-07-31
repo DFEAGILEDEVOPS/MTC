@@ -138,6 +138,7 @@ Feature:
     Then I should be able to submit my feedback
     And I should be shown the thanks page
 
+  @non_browserstack_compliant
   Scenario: Start and finish times of the check are recorded
     Given I have completed the check
     Then the time i started and finished should be recorded

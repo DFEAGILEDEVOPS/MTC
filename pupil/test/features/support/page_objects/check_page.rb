@@ -21,6 +21,7 @@ class CheckPage < SitePrism::Page
   def enter_answer_via_keyboard(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
+      wait_for_number_pad
       number_pad.send(NumbersInWords.in_words(number.to_i)).click
     end
   end
@@ -30,6 +31,7 @@ class CheckPage < SitePrism::Page
     number_of_questions.to_i.times do
       wait_for_preload
       wait_for_question(2)
+      wait_until{check_page.question.visible?}
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
