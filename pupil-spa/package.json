@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "node copyGovukFrontendToolkit && ng serve",
+    "start": "ng serve",
+    "startwithtoolkit": "node copyGovukFrontendToolkit && ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -45,8 +46,10 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "node-dir": "^0.1.17",
     "node-sass": "^4.5.3",
     "protractor": "~5.1.2",
+    "replace-in-file": "^2.5.3",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
     "typescript": "~2.3.3"
