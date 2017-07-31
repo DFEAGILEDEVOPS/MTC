@@ -14,6 +14,7 @@ Feature: Warm up questions
     Given I am on the warm up check page
     Then I should have 2 seconds before i see the first question
 
+  @non_browserstack_compliant
   Scenario: Users can complete the warm up questions using the on screen keyboard
     Given I am on the warm up check page
     Then I should be able to use the on screen keyboard to complete the warm up questions
@@ -21,7 +22,7 @@ Feature: Warm up questions
 
   Scenario: Warm up page check has a 5 second timer for each question
     Given I am on the warm up check page
-    Then I should see that i have 5 seconds to answer the question
+    Then I should see that i have 5 seconds to answer the warm up question
 
   Scenario: Warm up page check gives users 5 seconds to answer the question and then moves on
     Given I am on the warm up check page
