@@ -4,8 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: [
-    './app.component.css',
-    '../../node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss'
+    './app.component.css'
   ]
 })
 export class AppComponent {

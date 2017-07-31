@@ -23,7 +23,9 @@
       ],
       "stylePreprocessorOptions": {
         "includePaths": [
-          "~govuk_frontend_toolkit/stylesheets"
+          "./src/vendor/govuk_frontend_toolkit/stylesheets/colours",
+          "./src/vendor/govuk_frontend_toolkit/stylesheets/design-patterns",
+          "./src/vendor/govuk_frontend_toolkit/stylesheets"
         ]
       },
       "scripts": [],
