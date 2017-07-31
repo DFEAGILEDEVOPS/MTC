@@ -37,13 +37,11 @@ Feature: Login page
     When I have not entered any sign in details
     Then I should be taken to the sign in failure page
 
-
   Scenario: Login failure page allows users to try again
     Given I am on the SPA login failure page
     When I want to try logging in again
     Then I should be taken to the sign in page
 
-  @mohsen
   Scenario: Login failure page has a heading
     Given I am on the SPA login failure page
     Then I should see a sign in page failure heading
