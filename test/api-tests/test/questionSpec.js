@@ -1,7 +1,9 @@
-const chai = require('chai'),
-  supertest = require('supertest'),
-  api = supertest('http://localhost:3001'),
-  expect = chai.expect
+const chai = require('chai')
+const supertest = require('supertest')
+const api = supertest('http://localhost:3001')
+const expect = chai.expect
+
+/* global describe, context, it */
 
 describe('Questions API', function () {
   context('POST request to /api/questions', function () {
@@ -24,12 +26,11 @@ describe('Questions API', function () {
     })
   })
   context('GET request to /api/questions', function () {
-    it('returns 404 Not Found', function () {
+    it('returns 405 Method Not Allowed', function () {
       return api.get('/api/questions')
         .then(response => {
-          expect(response.statusCode).to.equal(404)
-          expect(response.notFound).to.equal(true)
-          expect(response.res.statusMessage).to.equal('Not Found')
+          expect(response.statusCode).to.equal(405)
+          expect(response.res.statusMessage).to.equal('Method Not Allowed')
         })
     })
   })
