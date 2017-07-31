@@ -24,7 +24,6 @@ describe('AppComponent', () => {
   it(`should have as title 'Multiplication Tables Check'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    console.log(app.title);
     expect(app.title).toEqual('Multiplication Tables Check');
   }));
 
