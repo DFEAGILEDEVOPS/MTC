@@ -1,6 +1,7 @@
 {
   "test": {
     "adminUrl": "http://localhost:3001/",
-    "checkUrl": "http://localhost:3000/"
+    "checkUrl": "http://localhost:3000/",
+    "spaUrl": "http://localhost:4200/"
   }
 }

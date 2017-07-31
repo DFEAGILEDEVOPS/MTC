@@ -12,6 +12,8 @@ function CustomWorld ({attach, parameters}) {
   this.checkSettingsPage = require('../../page_objects/admin/checkSettingsPage')
   this.config = require('../../data/config.json')[browser.params.testEnv]
   this.checkSignInPage = require('../../page_objects/check/CheckSignInPage')
+  this.spaSignInPage = require('../../page_objects/pupil-spa/spaSignInPage')
+  this.spaSignInFailurePage = require('../../page_objects/pupil-spa/spaSignInFailurePage')
   this.attach = attach
   this.parameters = parameters
   this.mongo = require('../../lib/mongoDbHelper')
