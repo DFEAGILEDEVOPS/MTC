@@ -34,4 +34,10 @@ describe('LoginSuccessComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('asks the user to confirm their details', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('p.lede').textContent).toMatch(/Check your details below/);
+  });
+
 });

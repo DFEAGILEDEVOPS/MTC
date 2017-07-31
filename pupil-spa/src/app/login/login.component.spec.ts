@@ -27,8 +27,6 @@ describe('LoginComponent', () => {
   });
 
   it('should render schoolPin and pupil pin input boxes', () => {
-    const fixture = TestBed.createComponent(LoginComponent);
-    fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('#school-pin')).toBeTruthy();
     expect(compiled.querySelector('#pupil-pin')).toBeTruthy();
