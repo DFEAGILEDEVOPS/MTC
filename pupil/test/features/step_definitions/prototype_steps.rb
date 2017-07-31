@@ -130,7 +130,7 @@ end
 
 Then(/^I should see the on screen keyboard$/) do
   check_page.wait_for_preload
-  expect(check_page.number_pad).to be_all_there
+  expect(check_page).to have_number_pad
 end
 
 Then(/^I can submit an answer using enter on my physical keyboard$/) do
@@ -364,6 +364,7 @@ Then(/^I should be taken to the sign in failure page$/) do
 end
 
 Then(/^my pin should be expired$/) do
+  wait_until{MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['pinExpired']}
   expect(MongoDbHelper.find_pupil_via_pin(@pupil_information['pin'])['pinExpired']).to be true
 end
 
