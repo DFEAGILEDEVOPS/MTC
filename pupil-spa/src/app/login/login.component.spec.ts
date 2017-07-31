@@ -10,9 +10,9 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      declarations: [ LoginComponent ],
-      providers: [ UserService ]
+      imports: [RouterTestingModule],
+      declarations: [LoginComponent],
+      providers: [UserService]
     }).compileComponents();
   }));
 
@@ -24,5 +24,13 @@ describe('LoginComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render schoolPin and pupil pin input boxes', () => {
+    const fixture = TestBed.createComponent(LoginComponent);
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('#school-pin')).toBeTruthy();
+    expect(compiled.querySelector('#pupil-pin')).toBeTruthy();
   });
 });
