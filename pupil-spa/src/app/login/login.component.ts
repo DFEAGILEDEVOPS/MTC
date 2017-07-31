@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  submit(schoolPin, pupilPin) {
+  onSubmit(schoolPin, pupilPin) {
     this.userService.login(schoolPin, pupilPin)
       .then((res) => {
           if (res.error) {

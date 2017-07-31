@@ -1,9 +1,10 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {FormsModule} from '@angular/forms';
 
 import {AppComponent} from './app.component';
 import {LoginComponent} from './login/login.component';
-import {RouterModule, Routes} from '@angular/router';
 import {UserService} from './user.service';
 import {LoginSuccessComponent} from './login-success/login-success.component';
 import {LogoutComponent} from './logout/logout.component';
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
       appRoutes,
       {enableTracing: true} // <-- debugging purposes only
     ),
+    FormsModule,
     BrowserModule
   ],
   providers: [UserService],
