@@ -12,6 +12,7 @@ describe('Questions API', function () {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body).to.be.an('Object')
+          expect(response.res.statusMessage).to.equal('OK')
           expect(response.body).to.have.property('questions').with.lengthOf(20)
           expect(response.body.pupil.firstName).to.equal('Automated')
           expect(response.body.pupil.lastName).to.equal('Account')
@@ -27,6 +28,8 @@ describe('Questions API', function () {
       return api.get('/api/questions')
         .then(response => {
           expect(response.statusCode).to.equal(404)
+          expect(response.notFound).to.equal(true)
+          expect(response.res.statusMessage).to.equal('Not Found')
         })
     })
   })
@@ -36,6 +39,8 @@ describe('Questions API', function () {
         .send({'schoolPin': 'abc12345'})
         .then(response => {
           expect(response.statusCode).to.equal(400)
+          expect(response.badRequest).to.equal(true)
+          expect(response.res.statusMessage).to.equal('Bad Request')
         })
     })
   })
@@ -45,6 +50,8 @@ describe('Questions API', function () {
         .send({'pupilPin': '9999a'})
         .then(response => {
           expect(response.statusCode).to.equal(400)
+          expect(response.badRequest).to.equal(true)
+          expect(response.res.statusMessage).to.equal('Bad Request')
         })
     })
   })
@@ -54,6 +61,8 @@ describe('Questions API', function () {
         .send({'schoolPin': '12345', 'pupilPin': '9999a'})
         .then(response => {
           expect(response.statusCode).to.equal(401)
+          expect(response.unauthorized).to.equal(true)
+          expect(response.res.statusMessage).to.equal('Unauthorized')
         })
     })
   })
