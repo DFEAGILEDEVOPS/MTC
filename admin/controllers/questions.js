@@ -12,7 +12,7 @@ const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 
 const getQuestions = async (req, res) => {
   const { pupilPin, schoolPin } = req.body
-  if (!pupilPin || !schoolPin) return res.status(400).json({ error: 'Invalid input' })
+  if (!pupilPin || !schoolPin) return res.status(400).json({ error: 'Bad Request' })
   let checkForm, pupil, school
   try {
     // Until we determine the logic behind fetching the appropriate check form
