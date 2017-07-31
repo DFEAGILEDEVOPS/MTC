@@ -22,4 +22,9 @@ describe('LoginFailureComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should tell the user whats wrong', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('p.lede').textContent).toMatch(/The details entered do not match our records. Please check with your teacher that you used the correct school password and pupil PIN\./);
+  });
 });

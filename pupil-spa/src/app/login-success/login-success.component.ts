@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {Pupil} from '../pupil';
-import {School} from '../school';
+import { Pupil } from '../pupil';
+import { School } from '../school';
+
 
 @Component({
   selector: 'app-login-success',
@@ -14,7 +15,6 @@ export class LoginSuccessComponent implements OnInit {
 
   constructor() {
     const data = JSON.parse(localStorage.getItem('data'));
-    console.warn('data from storage: ', data);
     this.pupil = new Pupil;
     this.pupil.firstName = data['pupil'].firstName;
     this.pupil.lastName = data['pupil'].lastName;
