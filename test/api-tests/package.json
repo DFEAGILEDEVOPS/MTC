@@ -1,0 +1,16 @@
+{
+  "name": "api-tests",
+  "version": "1.0.0",
+  "description": "API tests for Questions API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -u bdd -R spec -t 500"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
+  }
+}
