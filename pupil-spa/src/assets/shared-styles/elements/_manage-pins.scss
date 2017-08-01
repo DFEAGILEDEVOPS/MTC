@@ -1,0 +1,16 @@
+// PINs
+.pin-entry {
+  width: 8em;
+  text-align: left;
+  padding-left: 0.75em;
+}
+
+.pin-group .pin-entry:not(:first-child) {
+  margin-left: 0.5em;
+}
+
+.width-pin {
+  width: 5.5em;
+  text-align: left;
+  padding-left: 0.75em;
+}
