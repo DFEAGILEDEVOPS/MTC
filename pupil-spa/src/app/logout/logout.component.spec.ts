@@ -16,7 +16,7 @@ describe('LogoutComponent', () => {
     };
     mockUserService = {
       logout: jasmine.createSpy('logout')
-    }
+    };
     TestBed.configureTestingModule({
       declarations: [LogoutComponent],
       providers: [

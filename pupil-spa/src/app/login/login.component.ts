@@ -26,16 +26,16 @@ export class LoginComponent implements OnInit {
     }
     this.submitted = true;
     this.userService.login(schoolPin, pupilPin)
-      .then((res) => {
-          if (res.error) {
-            this.router.navigate(['sign-in-failure']);
-          } else {
-            this.router.navigate(['sign-in-success']);
-          }
+      .then(
+        () => {
+          this.router.navigate(['sign-in-success']);
         },
-        (err) => {
-          console.warn('Sign in failure: ', err);
+        () => {
           this.router.navigate(['sign-in-failure']);
-        });
+        })
+      .catch(() => {
+        this.router.navigate(['sign-in-failure']);
+      });
   }
 }
+
