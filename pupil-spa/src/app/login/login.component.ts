@@ -9,12 +9,22 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  private submitted: boolean;
+
   constructor(private userService: UserService,  private router: Router) { }
 
   ngOnInit() {
+    this.submitted = false;
   }
 
+  /**
+   * Handler for the login form submit action
+   */
   onSubmit(schoolPin, pupilPin) {
+    if (this.submitted === true) {
+      return;
+    }
+    this.submitted = true;
     this.userService.login(schoolPin, pupilPin)
       .then((res) => {
           if (res.error) {
