@@ -1,0 +1,14 @@
+$nta-light: "nta", Arial, sans-serif;
+$nta-light-tabular: "ntatabularnumbers", $nta-light;
+
+$helvetica-regular: "HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif;
+
+$toolkit-font-stack: $nta-light !default;
+$toolkit-font-stack-tabular: $nta-light-tabular !default;
+
+$print-reset: sans-serif;
+
+$NTA-Light: $nta-light;
+$NTA-Light-Tabular: $nta-light-tabular;
+$Helvetica-Regular: $helvetica-regular;
+$Print-reset: $print-reset;
