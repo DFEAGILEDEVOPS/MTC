@@ -1,4 +1,9 @@
-require('newrelic')
+'use strict'
+
+if (process.env.NODE_ENV === 'production') {
+  require('newrelic')
+}
+
 const bodyParser = require('body-parser')
 const compression = require('compression')
 const CustomStrategy = require('passport-custom').Strategy
