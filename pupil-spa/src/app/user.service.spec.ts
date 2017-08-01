@@ -1,6 +1,6 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 
-import { UserService } from './user.service';
+import {UserService} from './user.service';
 
 let service: UserService;
 
@@ -17,15 +17,15 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('returns a promise that resolves on valid logon',() => {
+  it('returns a promise that resolves on valid logon', () => {
     service.login('abc12345', '9999a').then(
       (res) => {
         expect(res).toBeTruthy();
       }
-    )
+    );
   });
 
-  it('returns a promise that rejects on invalid login',() => {
+  it('returns a promise that rejects on invalid login', () => {
     service.login('xxx', 'xxx').then(
       (res) => {
         expect(1).toBe(2);
@@ -33,7 +33,7 @@ describe('UserService', () => {
       (err) => {
         expect(err).toBeTruthy();
       }
-    )
+    );
   });
 
   it('logs a user out', () => {
@@ -42,6 +42,6 @@ describe('UserService', () => {
         service.logout();
         expect(service.isLoggedIn()).toBe(false);
       }
-    )
+    );
   });
 });
