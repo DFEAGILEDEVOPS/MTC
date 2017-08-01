@@ -1,17 +1,19 @@
-# Test framework for writing BDD tests using Protractor and Cucumber
+# Automated Browser Test framework using Protractor and Cucumber
 
-The framework uses Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other. 
+The framework uses Protractor, Cucumber.js and Protractor-Cucumber-Framework which are compatible with each other.
+ The tests in this folder are primarily browser automated tests.
 
 # Getting started
 
 
-1) Install protractor, cucumber and dependencies
+1) Install protractor, cucumber and other dependencies by
 	
 		npm install
  
-2) Launch test 
+2) Launch tests 
    	
 		npm test
+	The tests will run in chrome by default.	
 		
 3) Launch test with gulp
    	

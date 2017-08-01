@@ -52,6 +52,7 @@ const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const administrator = require('./routes/administrator')
 const admin = require('./routes/admin')
+const questions = require('./routes/questions')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
@@ -168,6 +169,7 @@ app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/administrator', administrator)
 app.use('/school', admin)
+app.use('/api/questions', questions)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
