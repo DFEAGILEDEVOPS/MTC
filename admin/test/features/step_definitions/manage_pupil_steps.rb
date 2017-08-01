@@ -99,7 +99,7 @@ end
 
 And(/^I should see the date for the password$/) do
   t = Time.now
-  expect(manage_pupil_page.school_password_information.password_date.text).to eql "School password for " + t.strftime("%e %B %Y")
+  expect(manage_pupil_page.school_password_information.password_date.text).to eql "School password for " + t.strftime("%e %B %Y").strip
 end
 
 Then(/^there should not be a checkbox against the pupil$/) do
