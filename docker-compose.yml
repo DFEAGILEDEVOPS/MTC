@@ -5,8 +5,6 @@ services:
     container_name: mtc_pupil_spa
     ports:
     - "3002:80"
-    # moved from dockerfile to here as it hangs the VSO build waiting for the CMD to exit, which never does.
-    command: /bin/bash -c "sleep 2 && echo starting && nginx -g 'daemon off;'"
   pupil-app:
     build: ./pupil
     container_name: mtc_pupil
