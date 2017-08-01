@@ -13,7 +13,7 @@
     <p class="lede">
       <a routerLink="/sign-out" >This is not me, I will enter my details again</a>
     </p>
-    <form action="/check/start" method="GET">
+    <form (ngSubmit)="onSubmit()">
       <div class="form-group">
         <input type="submit" class="button" value="Read Instructions">
       </div>

@@ -9,13 +9,21 @@ import {UserService} from './user.service';
 import {LoginSuccessComponent} from './login-success/login-success.component';
 import {LogoutComponent} from './logout/logout.component';
 import {LoginFailureComponent} from './login-failure/login-failure.component';
+import { LoadingComponent } from './loading/loading.component';
+import { InstructionsComponent } from './instructions/instructions.component';
+import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
+import { QuestionComponent } from './question/question.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent},
   {path: 'sign-out', component: LogoutComponent},
-  {path: 'sign-in-failure', component: LoginFailureComponent}
+  {path: 'sign-in-failure', component: LoginFailureComponent},
+  {path: 'check-start', component: InstructionsComponent},
+  {path: 'warm-up-intro', component: WarmupIntroComponent},
+  {path: 'warm-up-start', component: LoadingComponent},
+  {path: 'warm-up-question', component: QuestionComponent},
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -25,7 +33,11 @@ const appRoutes: Routes = [
     LoginComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    LoginFailureComponent
+    LoginFailureComponent,
+    LoadingComponent,
+    InstructionsComponent,
+    WarmupIntroComponent,
+    QuestionComponent
   ],
   imports: [
     RouterModule.forRoot(
