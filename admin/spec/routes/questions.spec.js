@@ -40,7 +40,7 @@ describe('questions controller', () => {
     await getQuestions(req, res)
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(400)
-    expect(data.error).toBe('Invalid input')
+    expect(data.error).toBe('Bad Request')
     done()
   })
   it('throws an authentication error if pupil or school details are not found', async (done) => {
