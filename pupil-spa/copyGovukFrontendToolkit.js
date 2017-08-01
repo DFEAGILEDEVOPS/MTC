@@ -5,7 +5,7 @@
 
 const fse = require('fs-extra')
 const replaceContent = require('replace-in-file')
-const folders = ['images', 'stylesheets', 'javascripts']
+const folders = ['stylesheets', 'javascripts']
 
 for (let folder of folders) {
   let origin = `${__dirname}/node_modules/govuk_frontend_toolkit/${folder}`
@@ -43,4 +43,21 @@ for (let folder of folders) {
   } catch (err) {
     console.log(err)
   }
+}
+
+/**
+ * Copy files over.
+ */
+const imgOrigin = `${__dirname}/node_modules/govuk_frontend_toolkit/images`
+const imgDest = `${__dirname}/src/assets/govuk_images/frontend_toolkit/images`
+
+try {
+  if (fse.existsSync(imgOrigin)) {
+    fse.copySync(imgOrigin, imgDest, {overwrite: true, errorOnExist: true})
+    console.log(`govuk_frontend-toolkit/${folder} has been copied over to vendor/govuk_frontend-toolkit/${folder}`)
+  } else {
+    console.log(`Failed to copy govuk_frontend-toolkit/${folder}`)
+  }
+} catch (err) {
+  console.log(err)
 }
