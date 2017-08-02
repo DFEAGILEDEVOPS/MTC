@@ -21,8 +21,8 @@ describe('LoginComponent', () => {
 
     const loginPromise = new Promise((resolve, reject) => {
       promiseHelper = {
-        resolve: resolve,
-        reject: reject
+        resolve,
+        reject
       };
     });
 
