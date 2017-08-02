@@ -4,6 +4,8 @@ const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const Answer = require('../models/answer')
 
+/** @namespace */
+
 const pupilService = {
   /**
    * Returns an object that consists of a plain JS school data and pupils.
