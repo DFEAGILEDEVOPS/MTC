@@ -1,4 +1,4 @@
-Feature:
+Feature: Check feature
   As a development team
   We would like to show key stakeholders a prototype of the app
   In order to gain feedback and show progress
