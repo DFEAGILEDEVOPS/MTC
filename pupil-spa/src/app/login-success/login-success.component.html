@@ -1,0 +1,22 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <header class="page-header">
+      <h1 class="heading-xlarge">Welcome, {{pupil.firstName}}</h1>
+    </header>
+    <p class="lede">
+      Check your details below. Begin the multiplication tables check by clicking on ‘Read instructions’.
+    </p>
+    <br />
+    <p id="first-name" class="lede">First name: <strong class="bold-medium">{{pupil.firstName}}</strong></p>
+    <p id="last-name" class="lede">Last name: <strong class="bold-medium">{{pupil.lastName}}</strong></p>
+    <p id="school" class="lede">School: <strong class="bold-medium">{{school.name}}</strong></p>
+    <p class="lede">
+      <a routerLink="/sign-out" >This is not me, I will enter my details again</a>
+    </p>
+    <form action="/check/start" method="GET">
+      <div class="form-group">
+        <input type="submit" class="button" value="Read Instructions">
+      </div>
+    </form>
+  </div>
+</div>

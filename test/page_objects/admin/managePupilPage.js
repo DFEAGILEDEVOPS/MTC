@@ -2,8 +2,8 @@
 
 class ManagePupilPage {
   get () {
-  browser.get('#//school/manage-pupils')
-}
+    browser.get('#//school/manage-pupils')
+  }
 }
 
 module.exports = new ManagePupilPage()
