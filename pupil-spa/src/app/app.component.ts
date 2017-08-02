@@ -10,8 +10,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   govukRoot = 'https://www.gov.uk';
-  homepageUrl = '/';
-  logoLinkTitle = 'Go to the home page';
   govukAssetPath = 'assets/govuk_template';
   globalHeaderText = 'GOV.UK';
 }
