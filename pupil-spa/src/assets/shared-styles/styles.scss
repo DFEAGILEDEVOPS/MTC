@@ -20,12 +20,14 @@ $image-path: "../../assets/govuk_template/stylesheets/";
   }
 }
 
-/* Settings (variables */
+/* Settings (variables) */
 @import "../../assets/govuk_frontend_toolkit/stylesheets/colours/palette";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/colours/organisation";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/colours";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/font_stack";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/measurements";
+
+$mainstream-brand: $department-for-education;
 
 /* Mixins */
 @import "../../assets/govuk_frontend_toolkit/stylesheets/conditionals";
@@ -42,9 +44,6 @@ $image-path: "../../assets/govuk_template/stylesheets/";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/alpha-beta";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/breadcrumbs";
 @import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/media-player";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/url-helpers";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/css3";
 
 /* From Govuk Elements SASS */
 @import '../../assets/govuk-elements-sass/elements/helpers';
@@ -60,7 +59,7 @@ $image-path: "../../assets/govuk_template/stylesheets/";
 @import '../../assets/govuk-elements-sass/elements/lists';
 
 /* From public */
-@import "../../assets/govuk_template/stylesheets/fonts";
+@import "../../assets/govuk_template/stylesheets/fonts.css";
 @import "../../assets/govuk_template/stylesheets/styleguide/colours";
 /*@import "../../assets/govuk_template/stylesheets/styleguide/print";*/
 @import "../../assets/govuk_template/stylesheets/accessibility";

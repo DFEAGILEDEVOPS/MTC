@@ -12,7 +12,7 @@
 @import "styleguide/colours";
 
 // basic styles for HTML5 and other elements
-@import "basic";
-@import "accessibility";
-@import "header";
-@import "footer";
+@import "../../../assets/govuk_template/stylesheets/basic";
+@import "../../../assets/govuk_template/stylesheets/accessibility";
+@import "../../../assets/govuk_template/stylesheets/header";
+@import "../../../assets/govuk_template/stylesheets/footer";
