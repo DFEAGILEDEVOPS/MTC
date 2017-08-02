@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-warmup-intro',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WarmupIntroComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  onClick() {
+    this.router.navigate(['warm-up-start']);
   }
 
 }

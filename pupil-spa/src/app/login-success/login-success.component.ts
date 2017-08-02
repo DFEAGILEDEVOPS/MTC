@@ -25,7 +25,7 @@ export class LoginSuccessComponent implements OnInit {
   ngOnInit() {
   }
 
-  onSubmit() {
+  onClick() {
     this.router.navigate(['check-start']);
   }
 }

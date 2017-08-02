@@ -1,8 +1,5 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-
-// to be imported from config
-const countdown = 3000;
 
 @Component({
   selector: 'app-loading',
@@ -12,15 +9,15 @@ const countdown = 3000;
 
 export class LoadingComponent implements AfterViewInit {
 
-  question;
-  total;
+  @Input()
+  countdown: number = 3000;
+  question = 1;
+  total = 3;
 
   constructor(private router: Router) {
-    this.question = 1;
-    this.total = 3
   }
 
   ngAfterViewInit() {
-    window.setTimeout(() => this.router.navigate(['warm-up-question']), countdown)
+    window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown)
   }
 }

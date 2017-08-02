@@ -30,4 +30,9 @@ describe('InstructionsComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('redirects to warm up introduction page', () => {
+    component.onClick()
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['warm-up-intro']);
+  });
 });
