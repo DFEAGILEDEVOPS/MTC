@@ -9,7 +9,4 @@ import { Component } from '@angular/core';
   ]
 })
 export class AppComponent {
-  govukRoot = 'https://www.gov.uk';
-  govukAssetPath = 'assets/govuk_template';
-  globalHeaderText = 'GOV.UK';
 }
