@@ -56,7 +56,7 @@ defineSupportCode(function ({After, registerListener}) {
       jsonFile: sourceJson,
       output: outputDir + 'cucumber_report.html',
       reportSuiteAsScenarios: true,
-      launchReport: true
+      launchReport: false
     }
 
     reporter.generate(options)

@@ -1,0 +1,35 @@
+<div class="heading-block">
+    <header>
+        <div class="organisation-logo">
+            <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+        </div>
+    </header>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <header class="page-header">
+            <h1 class="heading-xlarge">Multiplication tables check</h1>
+        </header>
+
+        <p class="lede">
+            To start your multiplication tables check, enter the school password and pupil PIN provided by your teacher,
+            then click ‘Sign in’.
+        </p>
+        <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" autocomplete="off">
+            <div class="form-group">
+                <label for="school-pin" class="form-label-bold"> School password </label>
+                <input #schoolPin id="school-pin" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="pupil-pin" class="form-label-bold"> Pupil PIN </label>
+                <input #pupilPin id="pupil-pin" class="form-control">
+            </div>
+            <div class="form-group">
+                <p>
+                    <input class="button button-start" type="submit" value="Sign in">
+                </p>
+            </div>
+        </form>
+    </div>
+</div>

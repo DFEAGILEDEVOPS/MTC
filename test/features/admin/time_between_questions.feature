@@ -7,11 +7,11 @@ Feature: Time between questions
     Given I am on the admin page
 
   Scenario: Time between questions has a default value of 2 seconds
-    Given I am on the check settings page
+    When I am on the check settings page
     Then I should see that Time between questions is set to default 2 seconds
 
   Scenario: The 'Time between questionst' contains the value it was last populated with
-    Given I have updated the Time between questions to 3 seconds
+    When I have updated the Time between questions to 3 seconds
     Then I should see that Time between questions is set to 3 seconds
 
 
@@ -26,8 +26,8 @@ Feature: Time between questions
       | 7     |
 
   Scenario: Time between questions can only have 2 decimal places
-    Given I am on the check settings page
-    When I have updated the Time between questions to 3.555 seconds
+    When I am on the check settings page
+    And I have updated the Time between questions to 3.555 seconds
     Then I should see that Time between questions is set to 3.56 seconds
 
   Scenario: An audit record is created that defines the date and date from which the new
