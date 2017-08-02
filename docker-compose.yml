@@ -5,11 +5,15 @@ services:
     container_name: mtc_pupil_spa
     ports:
     - "3002:80"
+    volumes:
+    - ./pupil-spa/dist:/usr/share/nginx/html
   pupil-app:
     build: ./pupil
     container_name: mtc_pupil
     ports:
     - "3000:3000"
+    volumes:
+    - ./pupil:/usr/src/app
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
       GOOGLE_SVC_PK:
@@ -27,6 +31,8 @@ services:
     container_name: mtc_admin
     ports:
     - "3001:3001"
+    volumes:
+    - ./admin:/usr/src/app
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
     depends_on:
