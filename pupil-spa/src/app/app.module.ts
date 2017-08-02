@@ -9,13 +9,15 @@ import {UserService} from './user.service';
 import {LoginSuccessComponent} from './login-success/login-success.component';
 import {LogoutComponent} from './logout/logout.component';
 import {LoginFailureComponent} from './login-failure/login-failure.component';
+import {CheckCompleteComponent} from './check-complete/check-complete.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent},
   {path: 'sign-out', component: LogoutComponent},
-  {path: 'sign-in-failure', component: LoginFailureComponent}
+  {path: 'sign-in-failure', component: LoginFailureComponent},
+  {path: 'check/complete', component: CheckCompleteComponent}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -25,7 +27,8 @@ const appRoutes: Routes = [
     LoginComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    LoginFailureComponent
+    LoginFailureComponent,
+    CheckCompleteComponent
   ],
   imports: [
     RouterModule.forRoot(
