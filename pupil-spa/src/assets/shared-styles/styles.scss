@@ -1,11 +1,22 @@
 /* Base GDS Toolkit */
 
 /* Missing functions */
-@function image-url($src){
+$image-path: "../../assets/govuk_template/stylesheets/";
+
+/*,$cacheBuster:true*/
+/* url("../../assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png") no-repeat */
+
+@function image-urlx($src, $prefixImagePath:true){
   @if(type-of($src) == string) {
     $url: false;
-    $url: #{$src};
-    @return url($url);
+    @if($prefixImagePath == true){
+      $url: $image-path+$src;
+      @debug $image-path+$src;
+    }
+    @else {
+      $url: #{$src};
+    }
+    @return url($url)
   }
 }
 
@@ -49,13 +60,15 @@
 @import '../../assets/govuk-elements-sass/elements/lists';
 
 /* From public */
+@import "../../assets/govuk_template/stylesheets/fonts";
 @import "../../assets/govuk_template/stylesheets/styleguide/colours";
-@import "../../assets/govuk_template/stylesheets/styleguide/print";
+/*@import "../../assets/govuk_template/stylesheets/styleguide/print";*/
 @import "../../assets/govuk_template/stylesheets/accessibility";
 @import "../../assets/govuk_template/stylesheets/basic";
-@import "../../assets/govuk_template/stylesheets/core-print";
+/*@import "../../assets/govuk_template/stylesheets/core-print";*/
 @import "../../assets/govuk_template/stylesheets/footer";
 @import "../../assets/govuk_template/stylesheets/header";
+@import "../../assets/govuk_template/stylesheets/govuk-template";
 
 /* STA-MTC project elements */
 @import './elements/no-js';
@@ -68,7 +81,6 @@
 @import './elements/manage-pins';
 
 
-
 /* Header and footer */
 
 #footer {
@@ -76,7 +88,6 @@
 }
 
 /* General elements */
-
 legend {
   padding: 0;
 }
