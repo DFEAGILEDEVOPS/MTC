@@ -1,3 +1,4 @@
+@timer
 Feature: Time between questions
   I want to be able to vary the time given to pupils between questions during the check
   As a STA Researcher
@@ -10,7 +11,7 @@ Feature: Time between questions
     When I am on the check settings page
     Then I should see that Time between questions is set to default 2 seconds
 
-  Scenario: The 'Time between questionst' contains the value it was last populated with
+  Scenario: The 'Time between questions' contains the value it was last populated with
     When I have updated the Time between questions to 3 seconds
     Then I should see that Time between questions is set to 3 seconds
 

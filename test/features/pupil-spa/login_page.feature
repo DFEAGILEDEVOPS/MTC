@@ -1,4 +1,3 @@
-@mohsen
 Feature: Login page
 
   Scenario: Sign in page has a STA logo
