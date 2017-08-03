@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 export class LoadingComponent implements AfterViewInit {
 
   @Input()
+  // TODO: fetch these values from other entities
   countdown: number = 3000;
   question = 1;
   total = 3;
