@@ -1,10 +1,11 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect */
+/* global beforeEach, afterEach, describe, it, expect */
 
 const School = require('../../models/school')
 const sinon = require('sinon')
 require('sinon-mongoose')
+let sandbox
 
 // We need to require mongoose which is required by sinon-mongoose in order to override the internal mongoose promise
 // library, which is deprecated.
@@ -14,13 +15,16 @@ mongoose.Promise = global.Promise
 describe('school schema', function () {
   let school
 
-  beforeEach(function () {
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create()
     school = new School({
       leaCode: 123,
       estabCode: '0001',
       name: 'Ampney Crucis Primary School'
     })
   })
+
+  afterEach(() => { sandbox.restore() })
 
   it('validates a valid document', function (done) {
     school.validate(function (error) {
@@ -79,19 +83,18 @@ describe('school schema', function () {
 
   it('has a method to provide a school pin', async function (done) {
     expect(typeof School.getUniqueSchoolPin).toBe('function')
-    sinon.mock(School)
+    sandbox.mock(School)
       .expects('findOne')
       .chain('exec')
       .resolves(null)
     const r1 = await School.getUniqueSchoolPin()
     expect(r1.length).toBe(8)
-    School.findOne.restore()
     done()
   })
 
   it('has a method to provide a school pin - error path', async function (done) {
     const message = 'Failed to find a unique school pin'
-    sinon.mock(School)
+    sandbox.mock(School)
       .expects('findOne')
       .chain('exec')
       .rejects(new Error(message))
@@ -102,7 +105,6 @@ describe('school schema', function () {
     } catch (err) {
       expect(err.message).toBe(message)
     }
-    School.findOne.restore()
     done()
   })
 

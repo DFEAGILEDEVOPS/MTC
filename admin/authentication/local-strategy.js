@@ -1,6 +1,6 @@
 'use strict'
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const AdminLogonEvent = require('../models/admin-logon-event')
 

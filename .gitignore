@@ -53,3 +53,7 @@ jspm_packages
 # ignore personal vscode configs
 .vscode/**
 
+# ignore jsdoc output folder
+/admin/out
+/electron/out
+/pupil/out

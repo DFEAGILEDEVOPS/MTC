@@ -1,3 +1,4 @@
+@timer
 Feature: Question time limit tests
   I want to be able to vary the time limit used for the questions in an MTC check
   As a STA Researcher
@@ -7,11 +8,11 @@ Feature: Question time limit tests
     Given I am on the admin page
 
   Scenario: Question time limit has a default value of 5 seconds
-    Given I am on the check settings page
+    When I am on the check settings page
     Then I should see that Question time limit is set to default 5 seconds
 
   Scenario: The 'Question time limit' contains the value it was last populated with
-    Given I have updated the Question time limit to 6 seconds
+    When I have updated the Question time limit to 6 seconds
     Then I should see that Question time limit is set to 6 seconds
 
   Scenario Outline: Error message is shown when the input for Question time limit is not valid

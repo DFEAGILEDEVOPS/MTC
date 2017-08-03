@@ -1,7 +1,7 @@
 {
   "name": "pupil-spa",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
     "sass": "node-sass -wr src/assets/shared-styles/ -o src/public/styles/",
@@ -15,7 +15,6 @@
     "copygovuktoolkit": "node copyGovukFrontendToolkit",
     "copygovukelements": "node copyGovukElements"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^4.3.2",
     "@angular/common": "^4.3.2",
