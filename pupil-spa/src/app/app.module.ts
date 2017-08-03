@@ -13,6 +13,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { QuestionComponent } from './question/question.component';
+import {CheckCompleteComponent} from './check-complete/check-complete.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -24,6 +25,7 @@ const appRoutes: Routes = [
   {path: 'warm-up-intro', component: WarmupIntroComponent},
   {path: 'warm-up-start', component: LoadingComponent},
   {path: 'warm-up-question', component: QuestionComponent},
+  {path: 'check/complete', component: CheckCompleteComponent}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -37,7 +39,8 @@ const appRoutes: Routes = [
     LoadingComponent,
     InstructionsComponent,
     WarmupIntroComponent,
-    QuestionComponent
+    QuestionComponent,
+    CheckCompleteComponent
   ],
   imports: [
     RouterModule.forRoot(
