@@ -15,8 +15,8 @@ defineSupportCode(function ({Given, When, Then}) {
     return this.spaWarmUpIntroPage.startLink.click()
   })
 
-  Then(/^I should have 3 seconds before I see the first question$/, function () {
-    browser.driver.sleep(3000)
+  Then(/^I should have (\d+) seconds before I see the first question$/, function (int) {
+    this.waitForVisibility(this.spaWarmUpQuestionPage.question, int * 1100)
     return expect(this.spaWarmUpQuestionPage.question.isPresent()).to.eventually.be.true
   })
 })
