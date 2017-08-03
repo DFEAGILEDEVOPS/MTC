@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN rm -rf ./node_modules
 RUN npm install
-# RUN ./node_modules/.bin/gulp build
+RUN ./node_modules/.bin/gulp build
 
 # ------------------------
 # SSH Server support
