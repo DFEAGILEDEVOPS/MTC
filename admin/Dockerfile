@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:alpine
 MAINTAINER Jon Shipley <js@ovix.co.uk>
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
