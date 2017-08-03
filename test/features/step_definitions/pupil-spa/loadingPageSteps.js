@@ -16,7 +16,7 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   Then(/^I should have (\d+) seconds before I see the first question$/, function (int) {
-    this.waitForVisibility(this.spaWarmUpQuestionPage.question, int * 1000)
+    this.waitForVisibility(this.spaWarmUpQuestionPage.question, int * 1100)
     return expect(this.spaWarmUpQuestionPage.question.isPresent()).to.eventually.be.true
   })
 })
