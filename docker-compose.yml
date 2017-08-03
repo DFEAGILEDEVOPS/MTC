@@ -21,10 +21,10 @@ services:
       GOOGLE_SVC_DOC_KEY:
     # remove mongo links and dependencies when introducing check API
     depends_on:
-    - esb
+#    - esb
     - mongo
     links:
-    - esb
+#    - esb
     - mongo
   admin-app:
     build: ./admin
@@ -36,14 +36,14 @@ services:
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
     depends_on:
-    - esb
+#    - esb
     - mongo
     links:
-    - esb
+#    - esb
     - mongo
-  esb:
-    image: rabbitmq
-    container_name: mtc_esb
+#  esb:
+#    image: rabbitmq
+#    container_name: mtc_esb
   mongo:
     image: mongo
     container_name: mtc_db
