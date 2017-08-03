@@ -16,7 +16,7 @@
   "dependencies": {
     "az-bunyan": "0.0.5",
     "azure-storage": "^2.1.0",
-    "bcrypt": "^1.0.2",
+    "bcryptjs": "^2.4.3",
     "bunyan": "^1.8.10",
     "connect-mongo": "^1.3.2",
     "cookie-parser": "~1.4.3",
@@ -59,6 +59,7 @@
     "jasmine-node": "^1.14.5",
     "jsdoc": "^3.5.3",
     "levenshtein": "^1.0.5",
+    "node-mocks-http": "^1.6.4",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
     "nyc": "^11.0.3",

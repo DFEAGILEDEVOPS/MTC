@@ -54,7 +54,7 @@ You can upgrade an old version like this:
 ```shell
 npm uninstall -g angular-cli
 npm uninstall -g @angular/cli
-npm cache clean
+npm cache --force clean
 npm install -g @angular/cli
 ``` 
 

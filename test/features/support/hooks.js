@@ -50,13 +50,18 @@ defineSupportCode(function ({After, registerListener}) {
     }
   })
 
+  After({tags: '@timer'}, function (scenario, done) {
+    this.mongo.ResetSettings()
+    done()
+  })
+
   const createHtmlReport = function (sourceJson) {
     const options = {
       theme: 'bootstrap',
       jsonFile: sourceJson,
       output: outputDir + 'cucumber_report.html',
       reportSuiteAsScenarios: true,
-      launchReport: true
+      launchReport: false
     }
 
     reporter.generate(options)

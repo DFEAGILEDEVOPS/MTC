@@ -4,28 +4,25 @@
 
 # Multiplication Tables Check (MTC) Project
 
-The MTC solution consists of 3 core projects...
+The MTC solution consists of the following projects...
 
-- Pupil Check Application (`/pupil/`)
-- Check Administration Application (`/admin/`)
-- Electron Container for Pupil Check Application (`/electron/`)
+- Pupil Check Application (`/pupil/`) Express MVC application, soon to be retired
+- Pupil Check Application (`/pupil-spa/`) Angular SPA
+- Check Administration Application (`/admin/`) Express MVC application
+- Electron Container for Pupil Check Application (`/electron/`) Electron shell for Pupil Check Application
 
 See each projects readme for app specifics.
 
-## Build & Release Process
+## Docker setup
 
-Build and Release is performed from VSO to deployment targets (currently Heroku, and back to Azure in July)
+Each application has a dockerfile.  The [compose file in the repository root](docker-compose.yml) contains configuration to setup a local development environment, which includes the following nodes...
 
-### Builds
+Pupil MVC App (Node container)
+Admin MVC App (Node container)
+Database (MongoDB container)
+ESB (RabbitMQ container)
+Pupil SPA (Nginx alpine container)
 
-Under the VSO builds tab we have 2 jobs which create and publish Docker container images for the Pupil Check & Check Admin applications respectively.
-
-Once these builds complete successfully they trigger the release process.
-
-### Release
-
-Under the VSO releases tab we have 2 jobs which release the newly published container images to the Linux App Service instances in Azure.
-
-**Important** - The releases feature allows you to edit either the main release definition OR a prior release.  If you wish to edit the main release definition you must click the elipsis next to the release definition.  Do not edit a prior release as your changes will only be saved to that specific release instance.  Editing a release instance is only useful when trying different settings without editing the main release.  VSO does not make this very obvious. 
+Simply run `docker-compose up` from the root directory to start the environment.
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)

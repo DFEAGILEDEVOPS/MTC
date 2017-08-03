@@ -44,7 +44,6 @@
     "google-spreadsheet": "^2.0.3",
     "govuk-elements-sass": "^3.0.2",
     "govuk_template_ejs": "^0.19.2",
-    "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-download": "0.0.1",
@@ -69,6 +68,7 @@
   },
   "devDependencies": {
     "fast-csv": "^2.4.0",
+    "gulp": "^3.9.1",
     "jasmine": "^2.5.3",
     "jasmine-node": "^1.14.5",
     "jsdoc": "^3.5.3",
