@@ -21,7 +21,7 @@ function CustomWorld ({attach, parameters}) {
   this.confirmationPage = require('../../page_objects/check/confirmationPage')
   this.startPage = require('../../page_objects/check/startPage')
   this.checkPage = require('../../page_objects/check/checkPage')
-
+  this.spaCompletePage = require('../../page_objects/pupil-spa/spaCompletePage')
 
   this.waitForVisibility = function (element, timeOut = 5000) {
     browser.wait(EC.visibilityOf(element), timeOut)
