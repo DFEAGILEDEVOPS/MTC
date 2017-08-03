@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {Router} from '@angular/router';
 
 import { LoginSuccessComponent } from './login-success.component';
 import * as responseMock from '../login.response.mock.json';
@@ -7,10 +8,19 @@ describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
   let fixture: ComponentFixture<LoginSuccessComponent>;
   let store: {};
+  let mockRouter;
+
 
   beforeEach(async(() => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+
     TestBed.configureTestingModule({
-      declarations: [ LoginSuccessComponent ]
+      declarations: [ LoginSuccessComponent ],
+      providers: [
+        { provide: Router, useValue: mockRouter }
+      ]
     })
     .compileComponents();
 
@@ -38,6 +48,11 @@ describe('LoginSuccessComponent', () => {
   it('asks the user to confirm their details', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('p.lede').textContent).toMatch(/Check your details below/);
+  });
+
+  it('redirects to warm up introduction page', () => {
+    component.onClick()
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
   });
 
 });

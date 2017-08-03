@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-success',
@@ -13,7 +13,7 @@ export class LoginSuccessComponent implements OnInit {
   pupil: Pupil;
   school: School;
 
-  constructor() {
+  constructor(private router: Router) {
     const data = JSON.parse(localStorage.getItem('data'));
     this.pupil = new Pupil;
     this.pupil.firstName = data['pupil'].firstName;
@@ -25,4 +25,7 @@ export class LoginSuccessComponent implements OnInit {
   ngOnInit() {
   }
 
+  onClick() {
+    this.router.navigate(['check-start']);
+  }
 }
