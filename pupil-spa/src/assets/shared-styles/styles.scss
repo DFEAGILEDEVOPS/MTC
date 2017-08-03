@@ -1,24 +1,7 @@
 /* Base GDS Toolkit */
 
-/* Missing functions */
-$image-path: "../../assets/govuk_template/stylesheets/";
-
-/*,$cacheBuster:true*/
-/* url("../../assets/govuk_template/stylesheets/images/gov.uk_logotype_crown.png") no-repeat */
-
-@function image-urlx($src, $prefixImagePath:true){
-  @if(type-of($src) == string) {
-    $url: false;
-    @if($prefixImagePath == true){
-      $url: $image-path+$src;
-      @debug $image-path+$src;
-    }
-    @else {
-      $url: #{$src};
-    }
-    @return url($url)
-  }
-}
+/* Custom functions */
+@import "../../assets/shared-styles/helpers/helpers";
 
 /* Settings (variables) */
 @import "../../assets/govuk_frontend_toolkit/stylesheets/colours/palette";
@@ -46,6 +29,8 @@ $mainstream-brand: $department-for-education;
 @import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
+$path: "../../assets/govuk_frontend_toolkit/images/";
+
 @import '../../assets/govuk-elements-sass/elements/helpers';
 @import '../../assets/govuk-elements-sass/elements/layout';
 @import '../../assets/govuk-elements-sass/elements/elements-typography';
@@ -70,7 +55,6 @@ $mainstream-brand: $department-for-education;
 @import "../../assets/govuk_template/stylesheets/govuk-template";
 
 /* STA-MTC project elements */
-@import './elements/no-js';
 @import './elements/phase-banner';
 @import './elements/organization-logo';
 @import './elements/headings';
@@ -84,6 +68,14 @@ $mainstream-brand: $department-for-education;
 
 #footer {
   border-top: 10px solid $mainstream-brand;
+
+  .footer-wrapper {
+    padding-top: 0;
+
+    .copyright {
+      float: right;
+    }
+  }
 }
 
 /* General elements */

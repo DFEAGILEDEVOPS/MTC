@@ -1,9 +1,10 @@
+/* THIS CODE IS CRASHING ANGULAR (see zone.js, ERROR: "[Violation] 'setTimeout' handler took XXms" */
+/*
 (function () {
   'use strict'
   var root = this
   if (typeof root.GOVUK === 'undefined') { root.GOVUK = {} }
-  /* var GOVUK = root.GOVUK */
-
+*/
   /*
    Cookie methods
    ==============
@@ -19,6 +20,7 @@
    Deleting a cookie:
    GOVUK.cookie('hobnob', null);
    */
+/*
   GOVUK.cookie = function (name, value, options) {
     if (typeof value !== 'undefined') {
       if (value === false || value === null) {
@@ -110,3 +112,4 @@
     }
   }
 }).call(this)
+*/
