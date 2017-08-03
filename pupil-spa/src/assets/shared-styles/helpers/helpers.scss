@@ -1,0 +1,17 @@
+$image-path: "../../assets/govuk_template/stylesheets/";
+
+/**
+ * Replace missing function 'image-url'
+ */
+@function image-url($src, $prefixImagePath:true){
+  @if(type-of($src) == string) {
+    $url: false;
+    @if($prefixImagePath == true){
+      $url: $image-path+$src;
+    }
+    @else {
+      $url: #{$src};
+    }
+    @return url($url)
+  }
+}

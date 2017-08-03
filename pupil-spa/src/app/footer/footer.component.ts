@@ -7,8 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  govukRoot = 'https://gov.uk';
-  crownCopyrightMessage = null;
+  crownCopyrightMessage = 'Crown copyright';
 
   constructor() { }
 
