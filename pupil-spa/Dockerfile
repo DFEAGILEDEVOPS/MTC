@@ -8,7 +8,8 @@ WORKDIR $APP_PATH
 
 COPY . .
 
-COPY nginx/default.conf /etc/nginx/conf.d/
+# COPY nginx/angular.conf /etc/nginx/conf.d/
+COPY nginx/angular.conf /etc/nginx/conf.d/angular.conf
 # add prod flag when aot comp included
 RUN npm install \
   && ng build \
