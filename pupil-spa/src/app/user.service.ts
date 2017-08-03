@@ -1,24 +1,43 @@
 import { Injectable } from '@angular/core';
-import * as responseMock from './login.response.mock.json';
+import 'rxjs/add/operator/toPromise';
+import { Http } from '@angular/http';
 const auth_token = 'auth_token';
 
 @Injectable()
 export class UserService {
   private loggedIn = false;
+  private apiURL = 'http://localhost:3001'
+  data: any = {}
 
-  constructor() {
+  constructor(private http: Http) {
     this.loggedIn = !!localStorage.getItem(auth_token);
   }
 
-  login(schoolPin, pupilPin): Promise<any> {
-    return new Promise((resolve, reject) => {
-        if (schoolPin === 'abc12345' && pupilPin === '9999a') {
-          this.loggedIn = true;
-          localStorage.setItem(auth_token, responseMock['pupil'].sessionId);
-          localStorage.setItem('data', JSON.stringify(responseMock));
-          return resolve(responseMock);
-        }
-        reject({error: 'Login error'});
+  // getData(schoolPin, pupilPin) {
+  //   return
+  // }
+
+  login(schoolPin, pupilPin) {
+    return new Promise( async(resolve, reject) => {
+      let data;
+      await this.http.post(`${this.apiURL}/api/questions`,
+        {schoolPin, pupilPin},
+        {params: {'Content-Type': 'application/json'}})
+        .toPromise()
+        .then((response) => {
+          if (response.status === 200) {
+            data = response.json()
+            this.loggedIn = true;
+            localStorage.setItem(auth_token, data['pupil'].sessionId);
+            localStorage.setItem('data', JSON.stringify(data))
+          }
+        }).catch(error => {
+        throw new Error(error);
+      })
+      if (data) {
+        return resolve(data);
+      }
+      reject({error: 'Login error'});
     });
   }
 
