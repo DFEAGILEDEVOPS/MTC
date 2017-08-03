@@ -50,6 +50,11 @@ defineSupportCode(function ({After, registerListener}) {
     }
   })
 
+  After({tags: '@timer'}, function (scenario, done) {
+    this.mongo.ResetSettings()
+    done()
+  })
+
   const createHtmlReport = function (sourceJson) {
     const options = {
       theme: 'bootstrap',
