@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,6 +7,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./instructions.component.css']
 })
 export class InstructionsComponent implements OnInit {
+
+  @Input()
+  // TODO: fetch count from other entity
+  count = 20;
 
   constructor(private router: Router) { }
 
