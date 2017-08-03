@@ -19,6 +19,16 @@ module.exports = {
       return items
     })
   },
+  ResetSettings: function () {
+    MongoClient.connect(url).then(function (db) {
+      let collection = db.collection('settings')
+      collection.updateOne({}, {$set: {'loadingTimeLimit': 2, 'questionTimeLimit': 5}})
+    }, function (err) {
+      if (err) {
+        throw err
+      }
+    })
+  },
   SetExpirePin: function (forName, lastName, schoolId, flag = false) {
     MongoClient.connect(url).then(function (db) {
       let collection = db.collection('pupils')
