@@ -2,7 +2,6 @@
 
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
-const bcrypt = require('bcrypt')
 const numberToWords = require('number-to-words')
 const User = require('../../../models/user')
 const School = require('../../../models/school')
@@ -20,8 +19,8 @@ module.exports = {
       (async function () {
         try {
           const schools = await createSchools()
-          const users = await createUsers(schools)
-          const pupils = await createPupils(schools)
+          await createUsers(schools)
+          await createPupils(schools)
         } catch (error) {
           return next(error)
         }

@@ -1,10 +1,11 @@
-FROM node:alpine
-MAINTAINER Jon Shipley <js@ovix.co.uk>
+FROM node:latest
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
+RUN rm -rf ./node_modules
 RUN npm install
-RUN ./node_modules/.bin/gulp build
+# RUN ./node_modules/.bin/gulp build
 
 # ------------------------
 # SSH Server support
