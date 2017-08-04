@@ -38,6 +38,13 @@ describe('UserService', () => {
     );
   });
 
+  it('returns a promise that rejects when insufficient data are provided', () => {
+    service.login('xxx', '').then().catch((err) => {
+        expect(err.status).toBe(400);
+      }
+    );
+  });
+
   it('logs a user out', () => {
     service.login('abc12345', '9999a').then(
       () => {
