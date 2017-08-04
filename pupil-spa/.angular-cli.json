@@ -9,6 +9,8 @@
       "outDir": "dist",
       "assets": [
         "assets",
+        "public",
+        "public/images",
         "favicon.ico"
       ],
       "index": "index.html",
@@ -19,8 +21,16 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "./public/styles/styles.css"
       ],
+      "stylePreprocessorOptions": {
+        "includePaths": [
+          "assets/govuk-elements-sass",
+          "assets/govuk_frontend_toolkit/stylesheets",
+          "assets/govuk_template/stylesheets",
+          "assets/shared-styles"
+        ]
+      },
       "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -54,7 +64,8 @@
     }
   },
   "defaults": {
-    "styleExt": "css",
-    "component": {}
+    "styleExt": "scss",
+    "component": {
+    }
   }
 }

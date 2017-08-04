@@ -1,0 +1,239 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fieldset {
+  @extend %contain-floats;
+  width: 100%;
+}
+
+
+legend {
+  overflow: hidden;
+}
+
+
+@include ie-lte(7) {
+  legend {
+    margin-left: -7px;
+  }
+}
+
+
+textarea {
+  display: block;
+}
+
+
+
+
+
+.form-section,
+.form-group {
+  @extend %contain-floats;
+  @include box-sizing(border-box);
+}
+
+
+.form-section {
+  margin-bottom: $gutter;
+
+  @include media(tablet) {
+    margin-bottom: $gutter * 2;
+  }
+}
+
+
+.form-group {
+  margin-bottom: $gutter-half;
+
+  @include media(tablet) {
+    margin-bottom: $gutter;
+  }
+}
+
+
+.form-group-related {
+  margin-bottom: 10px;
+
+  @include media(tablet) {
+    margin-bottom: 20px;
+  }
+}
+
+
+.form-group-compound {
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+.form-label,
+.form-label-bold {
+  display: block;
+  color: $text-colour;
+  padding-bottom: 2px;
+}
+
+.form-label {
+  @include core-19;
+}
+
+.form-label-bold {
+  @include bold-19;
+}
+
+
+.form-block {
+  float: left;
+  clear: left;
+
+  margin-top: -5px;
+  margin-bottom: 5px;
+
+  @include media(tablet) {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+
+
+
+
+.form-hint {
+  @include core-19;
+  display: block;
+  color: $secondary-text-colour;
+  font-weight: normal;
+
+  margin-top: -2px;
+  padding-bottom: 2px;
+}
+
+.form-label .form-hint,
+.form-label-bold .form-hint {
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+
+
+
+
+
+.form-control {
+  @include box-sizing(border-box);
+  @include core-19;
+  width: 100%;
+
+  padding: 5px 4px 4px;
+  
+  
+  border: 2px solid $text-colour;
+
+  
+  
+  @include media(tablet) {
+    width: 50%;
+  }
+
+}
+
+
+
+input.form-control,
+textarea.form-control {
+  
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+textarea.form-control {
+  
+  opacity: 1;
+  background-image: none;
+}
+
+
+
+
+
+
+
+
+
+.form-control-3-4 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 75%;
+  }
+}
+
+.form-control-2-3 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 66.66%;
+  }
+}
+
+.form-control-1-2 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 50%;
+  }
+}
+
+.form-control-1-3 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 33.33%;
+  }
+}
+
+.form-control-1-4 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 25%;
+  }
+}
+
+.form-control-1-8 {
+  width: 100%;
+
+  @include media(tablet) {
+    width: 12.5%;
+  }
+}
+
+
+
+
+option:active,
+option:checked,
+select:focus::-ms-value {
+  color: $white;
+  background-color: $govuk-blue;
+}
