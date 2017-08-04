@@ -1,7 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 import {HttpModule} from '@angular/http';
 
-
 import {UserService} from './user.service';
 
 let service: UserService;
@@ -23,7 +22,7 @@ describe('UserService', () => {
   it('returns a promise that resolves on valid logon', () => {
     service.login('abc12345', '9999a').then(
       (res) => {
-        expect(res).toBeTruthy();
+        expect(res['questions'].length).toBeGreaterThan(0);
       }
     );
   });
@@ -33,15 +32,15 @@ describe('UserService', () => {
       (res) => {
         expect(1).toBe(2);
       },
-      (err) => {
-        expect(err).toBeTruthy();
+    ).catch((err) => {
+      expect(err.status).toBe(401);
       }
     );
   });
 
   it('logs a user out', () => {
     service.login('abc12345', '9999a').then(
-      (res) => {
+      () => {
         service.logout();
         expect(service.isLoggedIn()).toBe(false);
       }
