@@ -20,6 +20,7 @@ export class UserService {
   login(schoolPin, pupilPin) {
     return new Promise( async(resolve, reject) => {
       let data;
+      let err;
       await this.http.post(`${this.apiURL}/api/questions`,
         {schoolPin, pupilPin},
         {params: {'Content-Type': 'application/json'}})
@@ -30,14 +31,10 @@ export class UserService {
             this.loggedIn = true;
             localStorage.setItem(auth_token, data['pupil'].sessionId);
             localStorage.setItem('data', JSON.stringify(data))
-          }
-        }).catch(error => {
-        throw new Error(error);
-      })
-      if (data) {
-        return resolve(data);
-      }
-      reject({error: 'Login error'});
+          } else reject('Login Error')
+        }).catch(error => err = error)
+      if (err) return reject(err);
+      if (data) return resolve(data);
     });
   }
 
