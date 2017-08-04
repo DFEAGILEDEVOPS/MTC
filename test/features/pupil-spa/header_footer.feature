@@ -1,4 +1,3 @@
-@test
 Feature: Header and Footer tests
 
   Scenario: Sign in has a global header
