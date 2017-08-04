@@ -1,0 +1,143 @@
+html,
+body,
+button,
+input,
+table,
+td,
+th {
+  font-family: $toolkit-font-stack;
+}
+
+
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+article,
+aside,
+footer,
+header,
+hgroup,
+nav,
+section {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+
+main {
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
+html {
+  font-size: 62.5%; 
+  overflow-y: scroll; 
+  
+  
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); 
+  -webkit-text-size-adjust: 100%; 
+  -ms-text-size-adjust: 100%; 
+  -ms-overflow-style: scrollbar; 
+  background-color: $white;
+}
+
+
+
+
+
+
+body {
+  font-size: 160%; 
+  margin: 0; 
+
+  background: $white;
+  color: $text-colour;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ol,
+ul,
+nav ol,
+nav ul {
+  list-style: inherit;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+b,
+strong {
+  font-weight: 600;
+}
+
+img {
+  border: 0;
+}
+
+@include ie-lte(7) {
+  button {
+    overflow: visible;
+  }
+}
+
+abbr[title] {
+  cursor: help;
+}
+
+
+a:link {
+  color: $link-colour;
+}
+
+a:visited {
+  color: $link-visited-colour;
+}
+
+a:hover {
+  color: $link-hover-colour;
+}
+
+a:active {
+  color: $link-active-colour;
+}
+
+
+a {
+  
+  
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
+}
+
+a:focus {
+  background-color: $focus-colour;
+  outline: 3px solid $focus-colour;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid $focus-colour;
+  outline-offset: 0;
+}
