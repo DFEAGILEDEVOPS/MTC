@@ -3,8 +3,10 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: [
+    './app.component.scss',
+    '../assets/shared-styles/styles.scss'
+  ]
 })
 export class AppComponent {
-  title = 'Multiplication Tables Check';
 }

@@ -15,6 +15,9 @@ import { InstructionsComponent } from './instructions/instructions.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { QuestionComponent } from './question/question.component';
 import {CheckCompleteComponent} from './check-complete/check-complete.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -41,7 +44,10 @@ const appRoutes: Routes = [
     InstructionsComponent,
     WarmupIntroComponent,
     QuestionComponent,
-    CheckCompleteComponent
+    CheckCompleteComponent,
+    HeaderComponent,
+    FooterComponent,
+    PhaseBannerComponent
   ],
   imports: [
     RouterModule.forRoot(
