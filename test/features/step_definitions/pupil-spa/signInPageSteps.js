@@ -81,4 +81,8 @@ defineSupportCode(function ({Given, When, Then}) {
       return expect(data).to.be.an('array').that.is.empty
     })
   })
+
+  When(/^I have chosen that the details are not correct$/, function () {
+    return this.spaSignInSuccessPage.retry_sign_in.click()
+  })
 })

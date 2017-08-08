@@ -59,3 +59,10 @@ Feature: Login page
     When I have logged in
     Then local storage should be cleared
 
+  Scenario: Local storage is cleared when I have logged in but it is not me
+    Given I am on the SPA sign in page
+    When I have logged in
+    But I have chosen that the details are not correct
+    Then local storage should be cleared
+
+
