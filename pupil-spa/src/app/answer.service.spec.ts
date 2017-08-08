@@ -1,6 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
-
 import { AnswerService } from './answer.service';
+import { StorageService } from './storage.service';
+
 
 let service: AnswerService;
 
@@ -12,7 +13,7 @@ describe('AnswerService', () => {
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
-      providers: [AnswerService]
+      providers: [AnswerService, StorageService]
     });
     localStorage.clear();
     service = injector.get(AnswerService);
