@@ -11,9 +11,9 @@ export class QuestionComponent implements OnInit {
   // E.g.
   // <app-question [factor1]="4" [factor2]="5"></app-question>
   @Input()
-  public factor1: number = 0;
+  public factor1 = 0;
   @Input()
-  public factor2: number = 0;
+  public factor2 = 0;
 
   constructor() { }
 
