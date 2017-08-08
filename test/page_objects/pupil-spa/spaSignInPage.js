@@ -10,6 +10,9 @@ class SpaSignInPage {
     this.schoolPin = element(by.css('#school-pin'))
     this.pupilPin = element(by.css('#pupil-pin'))
     this.signInButton = element(by.buttonText('Sign in'))
+    this.globalHeader = element(by.css('#global-header .header-logo'))
+    this.feedback = element(by.css('.js-content .phase-banner span'))
+    this.footerLink = element(by.css('.footer-wrapper .footer-meta .copyright a'))
   }
 
   login (pinSchool, pinPupil) {
