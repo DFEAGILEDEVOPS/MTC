@@ -17,18 +17,19 @@ import {CheckCompleteComponent} from './check-complete/check-complete.component'
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
+import {LoggedInGuard} from './logged-in.guard';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
-  {path: 'sign-in-success', component: LoginSuccessComponent},
-  {path: 'sign-out', component: LogoutComponent},
+  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-out', component: LogoutComponent,  canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
-  {path: 'check-start', component: InstructionsComponent},
-  {path: 'warm-up-intro', component: WarmupIntroComponent},
-  {path: 'warm-up-start', component: LoadingComponent},
-  {path: 'warm-up-question', component: QuestionComponent},
-  {path: 'check/complete', component: CheckCompleteComponent}
+  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
+  {path: 'check/complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard]}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -56,7 +57,7 @@ const appRoutes: Routes = [
     FormsModule,
     BrowserModule
   ],
-  providers: [UserService],
+  providers: [UserService, LoggedInGuard],
   bootstrap: [AppComponent]
 })
 
