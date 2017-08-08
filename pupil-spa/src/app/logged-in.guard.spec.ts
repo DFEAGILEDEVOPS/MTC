@@ -37,7 +37,7 @@ describe('LoggedInGuard', () => {
     expect(mockRouter.navigate).toHaveBeenCalled();
   }));
 
-  it('should return true when the user is logged ', inject([LoggedInGuard], (guard: LoggedInGuard) => {
+  it('should return true when the user is signed in', inject([LoggedInGuard], (guard: LoggedInGuard) => {
     isLoggedIn = true;
     expect(guard.canActivate()).toBe(true);
   }));
