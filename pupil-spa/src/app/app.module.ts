@@ -17,6 +17,7 @@ import {CheckCompleteComponent} from './check-complete/check-complete.component'
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
+import { StorageService } from './storage.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -56,9 +57,8 @@ const appRoutes: Routes = [
     FormsModule,
     BrowserModule
   ],
-  providers: [UserService],
+  providers: [UserService, StorageService],
   bootstrap: [AppComponent]
 })
-
 export class AppModule {
 }
