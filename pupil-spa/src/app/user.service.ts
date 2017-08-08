@@ -6,16 +6,12 @@ const auth_token = 'auth_token';
 @Injectable()
 export class UserService {
   private loggedIn = false;
-  private apiURL = 'http://localhost:3001'
-  data: any = {}
+  private apiURL = 'http://localhost:3001';
+  data: any = {};
 
   constructor(private http: Http) {
     this.loggedIn = !!localStorage.getItem(auth_token);
   }
-
-  // getData(schoolPin, pupilPin) {
-  //   return
-  // }
 
   login(schoolPin, pupilPin) {
     return new Promise( async(resolve, reject) => {
@@ -27,14 +23,20 @@ export class UserService {
         .toPromise()
         .then((response) => {
           if (response.status === 200) {
-            data = response.json()
+            data = response.json();
             this.loggedIn = true;
             localStorage.setItem(auth_token, data['pupil'].sessionId);
-            localStorage.setItem('data', JSON.stringify(data))
-          } else reject('Login Error')
-        }).catch(error => err = error)
-      if (err) return reject(err);
-      if (data) return resolve(data);
+            localStorage.setItem('data', JSON.stringify(data));
+          } else {
+            reject('Login Error');
+          }
+        }).catch(error => err = error);
+      if (err) {
+        return reject(err);
+      }
+      if (data) {
+        return resolve(data);
+      }
     });
   }
 
