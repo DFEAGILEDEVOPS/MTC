@@ -54,6 +54,7 @@ Feature: Login page
     When I have logged in
     Then local storage should be populated with questions and pupil metadata
 
+  @wip
   Scenario: Local storage is cleared upon loading of the login page
     Given I am on the SPA sign in page
     When I have logged in
