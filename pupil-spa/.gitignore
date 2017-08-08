@@ -40,3 +40,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# GDS assets
+src/assets/govuk-elements-sass
+src/assets/govuk_frontend_toolkit
+src/assets/govuk_template
