@@ -1,3 +1,36 @@
-<p>
-  question works!
-</p>
+<div class="question-container">
+    <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="question-and-answer"><span class="question">{{ factor1 }} &times; {{ factor2 }} = </span>
+            <div class="answer-container"><span class="answer" id="js-answer"></span>
+                <div class="numpad-container">
+                    <table class="numpad" id="js-numpad">
+                        <tr>
+                            <td class="key js-key" data-value="1"> 1</td>
+                            <td class="key js-key" data-value="2"> 2</td>
+                            <td class="key js-key" data-value="3"> 3</td>
+                        </tr>
+                        <tr>
+                            <td class="key js-key" data-value="4"> 4</td>
+                            <td class="key js-key" data-value="5"> 5</td>
+                            <td class="key js-key" data-value="6"> 6</td>
+                        </tr>
+                        <tr>
+                            <td class="key js-key" data-value="7"> 7</td>
+                            <td class="key js-key" data-value="8"> 8</td>
+                            <td class="key js-key" data-value="9"> 9</td>
+                        </tr>
+                        <tr>
+                            <td class="key js-key" data-value="backspace"><img src="assets/images/backspace-35x24.png"
+                                                                               alt="Delete"
+                                                                               width="35" height="24"
+                                                                               data-value="backspace">
+                            </td>
+                            <td class="key js-key" data-value="0"> 0</td>
+                            <td class="enter-key js-key" data-value="enter"> Enter</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
