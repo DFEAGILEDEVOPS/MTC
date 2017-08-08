@@ -49,3 +49,20 @@ Feature: Login page
     Given I am on the SPA login failure page
     Then I should see some text instructing me on what to do next
 
+  Scenario: Local storage is populated with the questions and pupil metadata upon login
+    Given I am on the SPA sign in page
+    When I have logged in
+    Then local storage should be populated with questions and pupil metadata
+
+  Scenario: Local storage is cleared upon loading of the login page
+    Given I am on the SPA sign in page
+    When I have logged in
+    Then local storage should be cleared
+
+  Scenario: Local storage is cleared when I have logged in but I return to login page as details are not correct
+    Given I am on the SPA sign in page
+    When I have logged in
+    But I have chosen that the details are not correct
+    Then local storage should be cleared
+
+
