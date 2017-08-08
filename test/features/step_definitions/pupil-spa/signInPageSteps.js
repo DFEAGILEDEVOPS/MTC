@@ -1,6 +1,6 @@
 // Step definitions
 /* global browser expect */
-
+const json = require('../../../data/localStorage.json')
 const {defineSupportCode} = require('cucumber')
 
 defineSupportCode(function ({Given, When, Then}) {
@@ -68,5 +68,17 @@ defineSupportCode(function ({Given, When, Then}) {
 
   When(/^I should see some text instructing me on what to do next$/, function () {
     return expect(this.spaSignInFailurePage.instructionsMessage.isPresent()).to.eventually.be.true
+  })
+
+  When(/^local storage should be populated with questions and pupil metadata$/, function () {
+    let storage = browser.executeScript('return window.localStorage.getItem("data");')
+    return expect(storage).to.eventually.to.equal(JSON.stringify(json))
+  })
+
+  When(/^local storage should be cleared$/, function () {
+    let storage = browser.executeScript('return window.localStorage;')
+    return storage.then(function (data) {
+      return expect(data).to.be.an('array').that.is.empty
+    })
   })
 })
