@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { Http } from '@angular/http';
+import { StorageService } from './storage-service/storage.service';
 const auth_token = 'auth_token';
 
 @Injectable()
@@ -9,8 +10,8 @@ export class UserService {
   private apiURL = 'http://localhost:3001';
   data: any = {};
 
-  constructor(private http: Http) {
-    this.loggedIn = !!localStorage.getItem(auth_token);
+  constructor(private http: Http, private storageService: StorageService) {
+    this.loggedIn = !!this.storageService.getItem(auth_token);
   }
 
   login(schoolPin, pupilPin) {
@@ -25,8 +26,8 @@ export class UserService {
           if (response.status === 200) {
             data = response.json();
             this.loggedIn = true;
-            localStorage.setItem(auth_token, data['pupil'].sessionId);
-            localStorage.setItem('data', JSON.stringify(data));
+            this.storageService.setItem(auth_token, data['pupil'].sessionId);
+            this.storageService.setItem('data', JSON.stringify(data));
           } else {
             reject('Login Error');
           }
@@ -41,8 +42,8 @@ export class UserService {
   }
 
   logout() {
-    localStorage.removeItem(auth_token);
-    localStorage.removeItem('data');
+    this.storageService.removeItem(auth_token);
+    this.storageService.removeItem('data');
     this.loggedIn = false;
   }
 
