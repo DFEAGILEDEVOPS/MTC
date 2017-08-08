@@ -44,7 +44,7 @@ export class StorageService {
     })
   }
 
-  removeItem(key): Promise<void> {
+  removeItem(key): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!key) {
         var err = new Error('key is required')
@@ -56,10 +56,17 @@ export class StorageService {
     })
   }
 
-  clear(): Promise<void> {
+  clear(): Promise<any> {
     return new Promise((resolve, reject) => {
       localStorage.clear()
       resolve()
+    })
+  }
+
+  getKeys(): Promise<any> {
+    return new Promise((resolve,reject) => {
+      var keys = Object.keys(localStorage)
+      resolve(keys)
     })
   }
 
