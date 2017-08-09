@@ -1,25 +1,25 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 
-import {AppComponent} from './app.component';
-import {CheckCompleteComponent} from './check-complete/check-complete.component';
-import {FooterComponent} from './footer/footer.component';
-import {HeaderComponent} from './header/header.component';
-import {InstructionsComponent} from './instructions/instructions.component';
-import {LoadingComponent} from './loading/loading.component';
-import {LoggedInGuard} from './logged-in.guard';
-import {LoginComponent} from './login/login.component';
-import {LoginFailureComponent} from './login-failure/login-failure.component';
-import {LoginSuccessComponent} from './login-success/login-success.component';
-import {LogoutComponent} from './logout/logout.component';
-import {PhaseBannerComponent} from './phase-banner/phase-banner.component';
-import {QuestionComponent} from './question/question.component';
-import {StorageService} from './storage.service';
-import {UserService} from './user.service';
-import {WarmupIntroComponent} from './warmup-intro/warmup-intro.component';
+import { AppComponent } from './app.component';
+import { CheckCompleteComponent } from './check-complete/check-complete.component';
+import { FooterComponent } from './footer/footer.component';
+import { HeaderComponent } from './header/header.component';
+import { InstructionsComponent } from './instructions/instructions.component';
+import { LoadingComponent } from './loading/loading.component';
+import { LoggedInGuard } from './logged-in.guard';
+import { LoginComponent } from './login/login.component';
+import { LoginFailureComponent } from './login-failure/login-failure.component';
+import { LoginSuccessComponent } from './login-success/login-success.component';
+import { LogoutComponent } from './logout/logout.component';
+import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
+import { QuestionComponent } from './question/question.component';
+import { StorageService } from './storage.service';
+import { UserService } from './user.service';
+import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
