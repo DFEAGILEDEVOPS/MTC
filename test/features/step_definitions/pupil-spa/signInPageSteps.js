@@ -43,7 +43,7 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   When(/^I should be taken to the instructions page$/, function () {
-    return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
+    return expect(browser.getCurrentUrl()).to.eventually.to.include('/sign-in-success')
   })
 
   When(/^I have not entered any sign in details$/, function () {
@@ -68,6 +68,22 @@ defineSupportCode(function ({Given, When, Then}) {
 
   When(/^I should see some text instructing me on what to do next$/, function () {
     return expect(this.spaSignInFailurePage.instructionsMessage.isPresent()).to.eventually.be.true
+  })
+
+  When(/^local storage should be populated with questions and pupil metadata$/, function () {
+    let storage = browser.executeScript('return window.localStorage.getItem("data");')
+    return expect(storage).to.eventually.to.equal(JSON.stringify(json))
+  })
+
+  When(/^local storage should be cleared$/, function () {
+    let storage = browser.executeScript('return window.localStorage;')
+    return storage.then(function (data) {
+      return expect(data).to.be.an('array').that.is.empty
+    })
+  })
+
+  When(/^I have chosen that the details are not correct$/, function () {
+    return this.spaSignInSuccessPage.retry_sign_in.click()
   })
   When(/^I am logged in with a real pupil and school pin$/, function () {
     let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) { return items[0]['pin'] })

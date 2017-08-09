@@ -1,26 +1,27 @@
-import {TestBed} from '@angular/core/testing';
-import {HttpModule} from '@angular/http';
+import { TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 
-import {UserService} from './user.service';
+import { StorageService } from './storage.service';
+import { UserService } from './user.service';
 
-let service: UserService;
+let userService: UserService;
 
 describe('UserService', () => {
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
       imports: [HttpModule],
-      providers: [UserService]
+      providers: [UserService, StorageService]
     });
-    service = injector.get(UserService);
+    userService = injector.get(UserService, StorageService);
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(userService).toBeTruthy();
   });
 
   it('returns a promise that resolves on valid logon', () => {
-    service.login('abc12345', '9999a').then(
+    userService.login('abc12345', '9999a').then(
       (res) => {
         expect(res['questions'].length).toBeGreaterThan(0);
       }
@@ -28,7 +29,7 @@ describe('UserService', () => {
   });
 
   it('returns a promise that rejects on invalid login', () => {
-    service.login('xxx', 'xxx').then(
+    userService.login('xxx', 'xxx').then(
       (res) => {
         expect(1).toBe(2);
       },
@@ -39,17 +40,17 @@ describe('UserService', () => {
   });
 
   it('returns a promise that rejects when insufficient data are provided', () => {
-    service.login('xxx', '').then().catch((err) => {
+    userService.login('xxx', '').then().catch((err) => {
         expect(err.status).toBe(400);
       }
     );
   });
 
   it('logs a user out', () => {
-    service.login('abc12345', '9999a').then(
+    userService.login('abc12345', '9999a').then(
       () => {
-        service.logout();
-        expect(service.isLoggedIn()).toBe(false);
+        userService.logout();
+        expect(userService.isLoggedIn()).toBe(false);
       }
     );
   });
