@@ -1,30 +1,49 @@
 import { Injectable } from '@angular/core';
-import * as responseMock from './login.response.mock.json';
+import 'rxjs/add/operator/toPromise';
+import { Http } from '@angular/http';
+import { StorageService } from './storage.service';
 const auth_token = 'auth_token';
 
 @Injectable()
 export class UserService {
   private loggedIn = false;
+  private apiURL = 'http://localhost:3001';
+  data: any = {};
 
-  constructor() {
-    this.loggedIn = !!localStorage.getItem(auth_token);
+  constructor(private http: Http, private storageService: StorageService) {
+    this.loggedIn = !!this.storageService.getItem(auth_token);
   }
 
-  login(schoolPin, pupilPin): Promise<any> {
-    return new Promise((resolve, reject) => {
-        if (schoolPin === 'abc12345' && pupilPin === '9999a') {
-          this.loggedIn = true;
-          localStorage.setItem(auth_token, responseMock['pupil'].sessionId);
-          localStorage.setItem('data', JSON.stringify(responseMock));
-          return resolve(responseMock);
-        }
-        reject({error: 'Login error'});
+  login(schoolPin, pupilPin) {
+    return new Promise( async(resolve, reject) => {
+      let data;
+      let err;
+      await this.http.post(`${this.apiURL}/api/questions`,
+        {schoolPin, pupilPin},
+        {params: {'Content-Type': 'application/json'}})
+        .toPromise()
+        .then((response) => {
+          if (response.status === 200) {
+            data = response.json();
+            this.loggedIn = true;
+            this.storageService.setItem(auth_token, data['pupil'].sessionId);
+            this.storageService.setItem('data', JSON.stringify(data));
+          } else {
+            reject('Login Error');
+          }
+        }).catch(error => err = error);
+      if (err) {
+        return reject(err);
+      }
+      if (data) {
+        return resolve(data);
+      }
     });
   }
 
   logout() {
-    localStorage.removeItem(auth_token);
-    localStorage.removeItem('data');
+    this.storageService.removeItem(auth_token);
+    this.storageService.removeItem('data');
     this.loggedIn = false;
   }
 

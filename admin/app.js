@@ -22,6 +22,8 @@ const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
+const cors = require('cors')
+
 const fs = require('fs')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
@@ -56,6 +58,7 @@ const questions = require('./routes/questions')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
+app.use(cors())
 
 const helpers = require('./helpers')(app)
 
