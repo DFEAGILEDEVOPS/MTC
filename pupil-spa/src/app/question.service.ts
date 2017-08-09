@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Question } from './question.model';
+
 import { StorageService } from './storage.service';
+import { Config } from './config.model';
+
 
 @Injectable()
 export class QuestionService {
 
   private questions;
-  private storageService;
+  private config: Config;
 
-  constructor(storageService: StorageService) {
-    this.storageService = storageService;
-    let data = this.storageService.getItem('data');
+  constructor(private storageService: StorageService) {
+    const data = JSON.parse(this.storageService.getItem('data'));
     this.questions = data['questions'];
+    const config = new Config();
+    config.loadingTime = data['config']['loadingTime'];
+    config.questionTime = data['config']['questionTime'];
+    this.config = config;
   }
 
   public getNumberOfQuestions(): number {
@@ -54,5 +60,9 @@ export class QuestionService {
     }
 
     return currentQuestionNumber + 1;
+  }
+
+  getConfig() {
+    return this.config;
   }
 }
