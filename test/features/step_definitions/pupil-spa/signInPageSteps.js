@@ -43,7 +43,7 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   When(/^I should be taken to the instructions page$/, function () {
-    return expect(browser.getCurrentUrl()).to.eventually.to.include('/sign-in-success')
+    return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
   })
 
   When(/^I have not entered any sign in details$/, function () {
