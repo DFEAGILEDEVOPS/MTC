@@ -11,22 +11,20 @@ describe('AnswerService', () => {
     expect('this code not').toBe('executed');
   };
 
-  beforeEach((done) => {
+  beforeEach(() => {
     const injector = TestBed.configureTestingModule({
       providers: [AnswerService, StorageService]
     });
     localStorage.clear();
-
     storageService = injector.get(StorageService);
     service = new AnswerService(storageService);
-    done();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should append answer to answers object in storage service', (done) => {
+  it('should append answer to answers object in storage service', () => {
     const answer1 = new Answer(1, 1, 1);
     const answer2 = new Answer(2, 2, 2);
     const existingAnswers = JSON.stringify([answer1, answer2]);
@@ -34,37 +32,20 @@ describe('AnswerService', () => {
     const answer3 = new Answer(3, 3, 3);
     const expected = JSON.stringify([answer1, answer2, answer3]);
 
-    service.setAnswer(answer3)
-      .then(() => {
-        storageService.getItem('answers')
-          .then((actual) => {
-            expect(actual).toBe(expected);
-            done();
-          });
-      })
-      .catch((err) => {
-        shouldNotExecute();
-        done();
-      });
+    service.setAnswer(answer3);
+    const actual = storageService.getItem('answers');
+
+    expect(actual).toBe(expected);
   });
 
-  it('should create answers object if it does not already exist', (done) => {
+  it('should create answers object if it does not already exist', () => {
 
     const answer1 = new Answer(1, 1, 1);
     const expected = JSON.stringify([answer1]);
 
-    service.setAnswer(answer1)
-      .then(() => {
-        storageService.getItem('answers')
-          .then((actual) => {
-            expect(actual).toBe(expected);
-            done();
-          });
-      })
-      .catch((err) => {
-        shouldNotExecute();
-        done();
-      });
-  });
+    service.setAnswer(answer1);
+    const actual = storageService.getItem('answers');
 
+    expect(actual).toBe(expected);
+  });
 });

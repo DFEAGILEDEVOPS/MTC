@@ -9,26 +9,22 @@ export class StorageService {
 
     if (!key) {
       throw new Error('key is required');
-    } else {
-      localStorage.setItem(key, value);
     }
-
+    localStorage.setItem(key, value);
   }
 
   getItem(key): any {
     if (!key) {
       throw new Error('key is required');
-    } else {
-      return localStorage.getItem(key);
     }
+    return localStorage.getItem(key);
   }
 
   removeItem(key): void {
     if (!key) {
       throw new Error('key is required');
-    } else {
-      localStorage.removeItem(key);
     }
+    localStorage.removeItem(key);
   }
 
   clear(): void {
