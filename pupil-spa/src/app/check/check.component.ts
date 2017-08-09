@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, DoCheck } from '@angular/core';
 
 import { QuestionService } from '../question.service';
 import { Question } from '../question.model';
@@ -19,7 +19,6 @@ export class CheckComponent implements OnInit {
   private config: Config;
 
   constructor(private questionService: QuestionService) {
-    this.viewState = 'preload';
     this.questionNumber = 1;
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
     this.question = this.questionService.getQuestion(this.questionNumber);
@@ -27,12 +26,36 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.viewState = 'preload';
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      console.log('timeout called on preload');
-      this.viewState = 'question';
-    }, this.config.loadingTime * 1000);
+  ngDoCheck() {
+    switch(this.viewState) {
+      case 'preload':
+        setTimeout(() => {
+          console.log('timeout called on preload');
+          this.viewState = 'question';
+        }, this.config.loadingTime * 1000);
+      break;
+
+      case 'question':
+        setTimeout(() => {
+          console.log('timeout called on question');
+          this.nextQuestion();
+        }, this.config.questionTime * 1000);
+      break;
+    }
+  }
+
+  nextQuestion() {
+    console.log('nextQuestion called');
+    if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
+      this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber)
+      this.question = this.questionService.getQuestion(this.questionNumber);
+      this.viewState = 'preload';
+    } else {
+      // no more questions
+     this.viewState = 'complete';
+    }
   }
 }

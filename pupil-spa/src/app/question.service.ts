@@ -12,12 +12,6 @@ export class QuestionService {
   private config: Config;
 
   constructor(private storageService: StorageService) {
-    const data = JSON.parse(this.storageService.getItem('data'));
-    this.questions = data['questions'];
-    const config = new Config();
-    config.loadingTime = data['config']['loadingTime'];
-    config.questionTime = data['config']['questionTime'];
-    this.config = config;
   }
 
   public getNumberOfQuestions(): number {
@@ -25,7 +19,6 @@ export class QuestionService {
   }
 
   public getQuestion(sequenceNumber: number): Question {
-
     // The Number type in Typescript is a float, so this could be a decimal.
     if (!Number.isInteger(sequenceNumber)) {
       throw new Error('sequenceNumber is not an integer');
@@ -64,5 +57,19 @@ export class QuestionService {
 
   getConfig() {
     return this.config;
+  }
+
+  reset() {
+    this.questions = null;
+    this.config = null;
+  }
+
+  initialise() {
+    const data = JSON.parse(this.storageService.getItem('data'));
+    this.questions = data['questions'];
+    const config = new Config();
+    config.loadingTime = data['config']['loadingTime'];
+    config.questionTime = data['config']['questionTime'];
+    this.config = config;
   }
 }

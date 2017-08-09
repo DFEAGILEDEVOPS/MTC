@@ -34,7 +34,6 @@ const appRoutes: Routes = [
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
-  {path: 'check/complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard]}
   // { path: '**', component: NotFoundComponent }
 ];
 
