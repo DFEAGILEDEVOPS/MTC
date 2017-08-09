@@ -20,6 +20,12 @@ class SpaSignInPage {
     this.pupilPin.sendKeys(pinPupil)
     this.signInButton.click()
   }
+
+  realLogin (pupilPin, schoolPin) {
+    this.pupilPin.sendKeys(pupilPin)
+    this.schoolPin.sendKeys(schoolPin)
+    this.signInButton.click()
+  }
 }
 
 module.exports = new SpaSignInPage()

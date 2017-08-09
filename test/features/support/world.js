@@ -19,6 +19,7 @@ function CustomWorld ({attach, parameters}) {
   this.spaWarmUpIntroPage = require('../../page_objects/pupil-spa/spaWarmUpIntroPage')
   this.spaWarmUpStartPage = require('../../page_objects/pupil-spa/spaWarmUpStartPage')
   this.spaWarmUpQuestionPage = require('../../page_objects/pupil-spa/spaWarmUpQuestionPage')
+  this.spaConfirmationPage = require('../../page_objects/pupil-spa/spaConfirmationPage')
   this.attach = attach
   this.parameters = parameters
   this.mongo = require('../../lib/mongoDbHelper')

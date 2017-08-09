@@ -33,7 +33,7 @@ describe('WarmupIntroComponent', () => {
   });
 
   it('redirects to loading screen', () => {
-    component.onClick()
+    component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['warm-up-start']);
   });
 });

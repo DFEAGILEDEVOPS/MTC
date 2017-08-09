@@ -56,5 +56,23 @@ module.exports = {
         throw err
       }
     })
+  },
+  SchoolPinRetriever: function (schoolId) {
+    return MongoClient.connect(url).then(function (db) {
+      let collection = db.collection('schools')
+      return collection.find({'_id': schoolId}).toArray()
+    }).then(function (items) {
+      return items
+    })
+  },
+  FindNextPupil: function (schoolId) {
+    return MongoClient.connect(url).then(function (db) {
+      let collection = db.collection('pupils')
+      return collection.find({'school': schoolId}).toArray()
+    }).then(function (items) {
+      return items.filter(function (item) {
+        return (item['pinExpired'] === false && item['pin'] !== null)
+      })
+    })
   }
 }
