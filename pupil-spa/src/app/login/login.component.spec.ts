@@ -1,7 +1,7 @@
-import {async, ComponentFixture, TestBed, tick} from '@angular/core/testing';
-import {Router} from '@angular/router';
-import {UserService} from '../user.service';
-import {LoginComponent} from './login.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { UserService } from '../user.service';
+import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -60,14 +60,14 @@ describe('LoginComponent', () => {
       promiseHelper.resolve({success: 'login okay'});
     });
 
-    it('redirects to success page given a valid schoolPin and pupilPin', async () => {
+    it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then( () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
 
-    it('a second submit is not accepted', async () => {
+    it('should reject a second submit', async () => {
       component.onSubmit('goodPin', 'goodPin');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then( () => {
@@ -78,7 +78,7 @@ describe('LoginComponent', () => {
 
   });
 
-  describe('on a failed login', () => {
+  describe('should fail logging in when PIN(s) are invalid', () => {
     beforeEach(() => {
       promiseHelper.reject({error: 'login failed'});
     });
