@@ -25,7 +25,7 @@
     "@angular/platform-browser": "^4.3.3",
     "@angular/platform-browser-dynamic": "^4.3.3",
     "@angular/router": "^4.3.3",
-    "core-js": "^2.4.1",
+    "core-js": "^2.5.0",
     "fs-extra": "^4.0.1",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",

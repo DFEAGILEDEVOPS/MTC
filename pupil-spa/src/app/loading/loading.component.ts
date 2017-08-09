@@ -11,7 +11,7 @@ export class LoadingComponent implements AfterViewInit {
 
   @Input()
   // TODO: fetch these values from other entities
-  countdown: number = 3000;
+  countdown = 3000;
   question = 1;
   total = 3;
 
@@ -19,6 +19,6 @@ export class LoadingComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown)
+    window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown);
   }
 }
