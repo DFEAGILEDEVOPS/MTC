@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Question } from './question.model';
+import { StorageService } from './storage.service';
 
 @Injectable()
 export class QuestionService {
 
   private questions;
+  private storageService;
 
-  constructor() {
-    // TODO: depend on StorageClass rather than calling localStorage directly.
-    let data = localStorage.getItem('data');
+  constructor(storageService: StorageService) {
+    this.storageService = storageService;
+    let data = this.storageService.getItem('data');
     this.questions = data['questions'];
   }
 
