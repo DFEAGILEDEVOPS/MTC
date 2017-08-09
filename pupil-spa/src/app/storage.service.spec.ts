@@ -6,7 +6,7 @@ let service: StorageService;
 describe('StorageService', () => {
 
   const shouldNotExecute = () => {
-    expect(1).toBe(2);
+    expect('this code not').toBe('executed');
   };
 
   beforeEach(() => {

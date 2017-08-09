@@ -8,7 +8,7 @@ let storageService: StorageService;
 describe('AnswerService', () => {
 
   const shouldNotExecute = () => {
-    expect(1).toBe(2);
+    expect('this code not').toBe('executed');
   };
 
   beforeEach((done) => {
@@ -48,8 +48,23 @@ describe('AnswerService', () => {
       });
   });
 
-  it('should append answer to answers object in storage', () => {
+  it('should create answers object if it does not already exist', (done) => {
 
+    const answer1 = new Answer(1, 1, 1);
+    const expected = JSON.stringify([answer1]);
+
+    service.setAnswer(answer1)
+      .then(() => {
+        storageService.getItem('answers')
+          .then((actual) => {
+            expect(actual).toBe(expected);
+            done();
+          });
+      })
+      .catch((err) => {
+        shouldNotExecute();
+        done();
+      });
   });
 
 });
