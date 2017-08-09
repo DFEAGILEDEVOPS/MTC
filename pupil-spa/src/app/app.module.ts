@@ -29,7 +29,7 @@ const appRoutes: Routes = [
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
-  {path: 'check', component: CheckComponent},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
