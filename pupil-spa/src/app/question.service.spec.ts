@@ -13,7 +13,7 @@ describe('QuestionService', () => {
       getItem() {
       }
     };
-    spyOn(mockStorageService, 'getItem').and.returnValue(responseMock);
+    spyOn(mockStorageService, 'getItem').and.returnValue(JSON.stringify(responseMock));
     TestBed.configureTestingModule({
       providers: [
         QuestionService,

@@ -4,6 +4,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../question.service';
 import { Question } from '../question.model';
+import { Config } from '../config.model';
 
 let mockQuestionService;
 
@@ -21,6 +22,12 @@ describe('CheckComponent', () => {
       },
       getNextQuestionNumber() {
         return 2;
+      },
+      getConfig() {
+        const config = new Config();
+        config.loadingTime = 2;
+        config.questionTime = 5;
+        return config;
       }
     };
     TestBed.configureTestingModule({
