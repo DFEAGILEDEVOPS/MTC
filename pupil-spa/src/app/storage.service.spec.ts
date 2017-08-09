@@ -21,42 +21,37 @@ describe('StorageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('setItem: returns a promise that rejects when key missing', () => {
+  it('setItem: throws an error when key missing', () => {
     spyOn(localStorage, 'setItem');
-    service.setItem(null, 'xxxx').then(
-      () => {
-        shouldNotExecute();
-      },
-      (err) => {
-        expect(err).toBeTruthy();
-        expect(localStorage.setItem).toHaveBeenCalledTimes(0);
-        expect(err.message).toEqual('key is required');
-      });
+    try {
+      service.setItem(null, 'xxxx')
+    } catch (error) {
+      expect(error).toBeTruthy();
+      expect(localStorage.setItem).toHaveBeenCalledTimes(0);
+      expect(error.message).toEqual('key is required');
+    }
   });
 
-  it('setItem: returns a promise that resolves when key provided', () => {
+  it('setItem: adds item to localStorage when key provided', () => {
     spyOn(localStorage, 'setItem');
-    const key = 'setItem_key';
+    const key = 'answer';
     const value = 'setItem_value';
-    service.setItem(key, value).then(
-      () => {
-        expect(localStorage.setItem).toHaveBeenCalledWith(key, value);
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+
+    service.setItem(key, value);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(key, value);
   });
 
-  it('getItem: returns a promise that rejects when key missing', () => {
+  it('getItem: throws an error when key missing', () => {
     spyOn(localStorage, 'getItem');
 
-    service.getItem(null).then(
-      () => { shouldNotExecute(); },
-      (err) => {
-        expect(err).toBeTruthy();
-        expect(err.message).toEqual('key is required');
-        expect(localStorage.getItem).toHaveBeenCalledTimes(0);
-      });
+    try {
+      service.getItem(null);
+    } catch (error) {
+      expect(error).toBeTruthy();
+      expect(error.message).toEqual('key is required');
+      expect(localStorage.getItem).toHaveBeenCalledTimes(0);
+    }
   });
 
   it('getItem: returns a promise containing item when key provided and item exists', () => {
