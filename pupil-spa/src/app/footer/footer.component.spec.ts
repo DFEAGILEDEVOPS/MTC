@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FooterComponent } from './footer.component';
-import {utf8Encode} from "@angular/compiler/src/util";
 
 describe('FooterComponent', () => {
   let component: FooterComponent;

@@ -9,7 +9,7 @@ class SpaSignInSuccessPage {
     this.lastName = element(by.css('#last-name  '))
     this.school = element(by.css('#school'))
     this.notYouLink = element(by.css('a[href="/sign-out"]'))
-    this.retry_sign_in = element(by.css('div > a[href="/sign-in"]'))
+    this.retry_sign_in = element(by.css('p > a[href="/sign-out"]'))
     this.readInstructions = element(by.buttonText('Read Instructions'))
   }
 }
