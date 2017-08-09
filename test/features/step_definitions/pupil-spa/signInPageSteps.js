@@ -85,12 +85,19 @@ defineSupportCode(function ({Given, When, Then}) {
   When(/^I have chosen that the details are not correct$/, function () {
     return this.spaSignInSuccessPage.retry_sign_in.click()
   })
+  let foreName = 'test'
   When(/^I am logged in with a real pupil and school pin$/, function () {
-    let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) { return items[0]['pin'] })
+    let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) {
+      console.log('the last name is ' + this.spaConfirmationPage)
+      // this.spaConfirmationPage.dummy = 'testttt11'
+      // foreName = items[0]['foreName']
+      return items[0]['pin']
+    })
     let schoolPin = this.mongo.SchoolPinRetriever(9991001).then(function (items) { return items[0]['schoolPin'] })
     return this.spaSignInPage.realLogin(pupilPin, schoolPin)
   })
   Then(/^I should be shown the confirmation page displaying my name$/, function () {
+    console.log('the last name is ' + this.spaConfirmationPage.dummy)
     return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
   })
 })
