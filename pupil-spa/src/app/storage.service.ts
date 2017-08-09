@@ -3,40 +3,30 @@ import { Inject, Injectable } from '@angular/core';
 @Injectable()
 export class StorageService {
 
-  setItem(key, value): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        localStorage.setItem(key, value);
-        resolve();
-      }
-    });
+  setItem(key, value): void {
+
+    if (!key) {
+      throw new Error('key is required');
+    } else {
+      localStorage.setItem(key, value);
+    }
+
   }
 
-  getItem(key): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        const item = localStorage.getItem(key);
-        resolve(item);
-      }
-    });
+  getItem(key): any {
+    if (!key) {
+      throw new Error('key is required');
+    } else {
+      return localStorage.getItem(key);
+    }
   }
 
-  removeItem(key): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        localStorage.removeItem(key);
-        resolve();
-      }
-    });
+  removeItem(key): void {
+    if (!key) {
+      throw new Error('key is required');
+    } else {
+      localStorage.removeItem(key);
+    }
   }
 
   clear(): Promise<any> {
