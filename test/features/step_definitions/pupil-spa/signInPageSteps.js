@@ -69,4 +69,12 @@ defineSupportCode(function ({Given, When, Then}) {
   When(/^I should see some text instructing me on what to do next$/, function () {
     return expect(this.spaSignInFailurePage.instructionsMessage.isPresent()).to.eventually.be.true
   })
+  When(/^I am logged in with a real pupil and school pin$/, function () {
+    let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) { return items[0]['pin'] })
+    let schoolPin = this.mongo.SchoolPinRetriever(9991001).then(function (items) { return items[0]['schoolPin'] })
+    return this.spaSignInPage.realLogin(pupilPin, schoolPin)
+  })
+  Then(/^I should be shown the confirmation page displaying my name$/, function () {
+    return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
+  })
 })
