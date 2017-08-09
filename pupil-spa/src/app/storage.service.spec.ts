@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { StorageService } from './storage.service';
+import { StorageService, StorageKey } from './storage.service';
 
 let service: StorageService;
 
@@ -23,7 +23,7 @@ describe('StorageService', () => {
 
   it('setItem: returns a promise that rejects when key missing', () => {
     spyOn(localStorage, 'setItem');
-    service.setItem(null, 'xxxx').then(
+    service.setItem(null, 'answer').then(
       () => {
         shouldNotExecute();
       },
@@ -36,7 +36,7 @@ describe('StorageService', () => {
 
   it('setItem: returns a promise that resolves when key provided', () => {
     spyOn(localStorage, 'setItem');
-    const key = 'setItem_key';
+    const key : StorageKey = 'answers';
     const value = 'setItem_value';
     service.setItem(key, value).then(
       () => {
@@ -47,20 +47,8 @@ describe('StorageService', () => {
       });
   });
 
-  it('getItem: returns a promise that rejects when key missing', () => {
-    spyOn(localStorage, 'getItem');
-
-    service.getItem(null).then(
-      () => { shouldNotExecute(); },
-      (err) => {
-        expect(err).toBeTruthy();
-        expect(err.message).toEqual('key is required');
-        expect(localStorage.getItem).toHaveBeenCalledTimes(0);
-      });
-  });
-
   it('getItem: returns a promise containing item when key provided and item exists', () => {
-    const key = 'getItem_Key';
+    const key : StorageKey = 'answers';
     const value = 'getItem_Value';
     localStorage.setItem(key, value);
 
@@ -88,7 +76,7 @@ describe('StorageService', () => {
 
   it('removeItem: returns a promise that resolves when key provided', () => {
     spyOn(localStorage, 'removeItem');
-    const removeItemKey = 'removeItem_Key';
+    const removeItemKey : StorageKey = 'answers';
 
     service.removeItem(removeItemKey).then(
       () => {

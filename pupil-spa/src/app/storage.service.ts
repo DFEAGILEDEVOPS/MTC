@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 
+export type StorageKey = 'answers' | 'inputs' | 'session' | 'audit';
+
 @Injectable()
 export class StorageService {
 
-  setItem(key, value): Promise<any> {
+  setItem(key : StorageKey, value : string): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!key) {
         const err = new Error('key is required');
@@ -15,7 +17,7 @@ export class StorageService {
     });
   }
 
-  getItem(key): Promise<any> {
+  getItem(key : StorageKey): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!key) {
         const err = new Error('key is required');
@@ -27,7 +29,7 @@ export class StorageService {
     });
   }
 
-  removeItem(key): Promise<any> {
+  removeItem(key : StorageKey): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!key) {
         const err = new Error('key is required');
