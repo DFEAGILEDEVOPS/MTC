@@ -20,6 +20,9 @@ export class AnswerService {
     return new Promise((resolve, reject) => {
       this.storageService.getItem('answers')
         .then((answers) => {
+          if(!answers){
+            answers = "[]";
+          }
           let existingAnswers = JSON.parse(answers);
           existingAnswers.push(answer);
           this.storageService.setItem('answers', JSON.stringify(existingAnswers));
