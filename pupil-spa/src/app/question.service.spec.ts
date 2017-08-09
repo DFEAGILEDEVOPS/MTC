@@ -1,15 +1,24 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { QuestionService } from './question.service';
+import { StorageService } from './storage.service';
 import * as responseMock from './login.response.mock.json';
 
 describe('QuestionService', () => {
 
+  let mockStorageService;
+
   beforeEach(() => {
+    mockStorageService = {
+      getItem() {}
+    }
+    spyOn(mockStorageService, 'getItem').and.returnValue(responseMock);
     TestBed.configureTestingModule({
-      providers: [QuestionService]
+      providers: [
+        QuestionService,
+        {provide: StorageService, useValue: mockStorageService}
+      ]
     });
-    spyOn(localStorage, 'getItem').and.returnValue(responseMock);
   });
 
   it('should be created', inject([QuestionService], (service: QuestionService) => {
