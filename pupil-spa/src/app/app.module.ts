@@ -21,10 +21,13 @@ import { QuestionService } from './question.service';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
+import { VirtualKeyboardComponent } from './virtual-keyboard/virtual-keyboard.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
+  {path: 'sign-in-success', component: VirtualKeyboardComponent/*LoginSuccessComponent*/},
+  {path: 'sign-out', component: LogoutComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
@@ -50,7 +53,8 @@ const appRoutes: Routes = [
     CheckCompleteComponent,
     HeaderComponent,
     FooterComponent,
-    PhaseBannerComponent
+    PhaseBannerComponent,
+    VirtualKeyboardComponent
   ],
   imports: [
     RouterModule.forRoot(
