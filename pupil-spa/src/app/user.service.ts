@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { Http } from '@angular/http';
-import { StorageService } from './storage-service/storage.service';
+import { StorageService } from './storage.service';
 const auth_token = 'auth_token';
 
 @Injectable()
