@@ -10,15 +10,16 @@ import { Router } from '@angular/router';
 export class LoadingComponent implements AfterViewInit {
 
   @Input()
-  // TODO: fetch these values from other entities
-  countdown = 3000;
-  question = 1;
-  total = 3;
+  private countdown = 2000;
+  @Input()
+  private question = 0;
+  @Input()
+  private total = 0;
 
   constructor(private router: Router) {
   }
 
   ngAfterViewInit() {
-    window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown);
+    // window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown);
   }
 }
