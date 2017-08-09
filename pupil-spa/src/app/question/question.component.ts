@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-question',
@@ -6,6 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit {
+
+  // Initial the question
+  // E.g.
+  // <app-question [factor1]="4" [factor2]="5"></app-question>
+  @Input()
+  public factor1 = 0;
+  @Input()
+  public factor2 = 0;
 
   constructor() { }
 
