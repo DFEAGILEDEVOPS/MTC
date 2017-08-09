@@ -17,6 +17,7 @@ import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
+import { QuestionService } from './question.service';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
@@ -61,9 +62,10 @@ const appRoutes: Routes = [
     HttpModule,
   ],
   providers: [
-    UserService,
     LoggedInGuard,
-    StorageService
+    QuestionService,
+    StorageService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
