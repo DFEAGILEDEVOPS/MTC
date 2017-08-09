@@ -27,6 +27,8 @@ export class AnswerService {
           existingAnswers.push(answer);
           this.storageService.setItem('answers', JSON.stringify(existingAnswers));
           resolve();
+        },(err) => {
+          //TODO: fix as per Jons comment
         }).catch((err) => {
           reject(err);
         });
