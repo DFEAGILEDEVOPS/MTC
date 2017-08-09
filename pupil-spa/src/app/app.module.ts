@@ -7,7 +7,6 @@ import { HttpModule } from '@angular/http';
 import { AppComponent} from './app.component';
 import { LoginComponent} from './login/login.component';
 import { UserService} from './user.service';
-import { StorageService } from './storage.service';
 import { LoginSuccessComponent} from './login-success/login-success.component';
 import { LogoutComponent} from './logout/logout.component';
 import { LoginFailureComponent} from './login-failure/login-failure.component';
@@ -19,18 +18,20 @@ import { CheckCompleteComponent} from './check-complete/check-complete.component
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
+import { LoggedInGuard } from './logged-in.guard';
+import { StorageService } from './storage.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
-  {path: 'sign-in-success', component: LoginSuccessComponent},
-  {path: 'sign-out', component: LogoutComponent},
+  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-out', component: LogoutComponent,  canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
-  {path: 'check-start', component: InstructionsComponent},
-  {path: 'warm-up-intro', component: WarmupIntroComponent},
-  {path: 'warm-up-start', component: LoadingComponent},
-  {path: 'warm-up-question', component: QuestionComponent},
-  {path: 'check/complete', component: CheckCompleteComponent}
+  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
+  {path: 'check/complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard]}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -59,7 +60,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
   ],
-  providers: [UserService, StorageService],
+  providers: [UserService, LoggedInGuard, StorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
