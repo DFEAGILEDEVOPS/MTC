@@ -14,9 +14,9 @@ describe('LoadingComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [LoadingComponent],
+      declarations: [ LoadingComponent ],
       providers: [
-        {provide: Router, useValue: mockRouter, question: 1, total: 3, timeout: 3}
+        { provide: Router, useValue: mockRouter }
       ]
     })
       .compileComponents();
