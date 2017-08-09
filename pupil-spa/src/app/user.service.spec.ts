@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 
-import { StorageService } from './storage-service/storage.service';
+import { StorageService } from './storage.service';
 import { UserService } from './user.service';
 
 let userService: UserService;

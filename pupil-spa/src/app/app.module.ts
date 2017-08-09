@@ -7,7 +7,7 @@ import { HttpModule } from '@angular/http';
 import { AppComponent} from './app.component';
 import { LoginComponent} from './login/login.component';
 import { UserService} from './user.service';
-import { StorageService } from './storage-service/storage.service';
+import { StorageService } from './storage.service';
 import { LoginSuccessComponent} from './login-success/login-success.component';
 import { LogoutComponent} from './logout/logout.component';
 import { LoginFailureComponent} from './login-failure/login-failure.component';
@@ -19,7 +19,6 @@ import { CheckCompleteComponent} from './check-complete/check-complete.component
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
-import { StorageService } from './storage.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
