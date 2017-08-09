@@ -1,0 +1,4 @@
+<div [ngSwitch]="viewState">
+  <app-loading *ngSwitchCase="'preload'" [question]="questionNumber" [total]="totalNumberOfQuestions"></app-loading>
+  <app-question *ngSwitchCase="'question'" [factor1]="factor1" [factor2]="factor2"></app-question>
+</div>
