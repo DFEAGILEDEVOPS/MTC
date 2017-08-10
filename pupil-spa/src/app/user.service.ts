@@ -2,48 +2,47 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { Http } from '@angular/http';
 import { StorageService } from './storage.service';
-const auth_token = 'auth_token';
+const sessionDataKey = 'session';
+const questionsDataKey = 'questions';
 
 @Injectable()
 export class UserService {
   private loggedIn = false;
+  //TODO: source from config set on deployment
   private apiURL = 'http://localhost:3001';
   data: any = {};
 
   constructor(private http: Http, private storageService: StorageService) {
-    this.loggedIn = !!this.storageService.getItem(auth_token);
+    this.loggedIn = !!this.storageService.getItem(sessionDataKey);
   }
 
   login(schoolPin, pupilPin) {
-    return new Promise( async(resolve, reject) => {
-      let data;
-      let err;
+    return new Promise(async (resolve, reject) => {
+
       await this.http.post(`${this.apiURL}/api/questions`,
-        {schoolPin, pupilPin},
-        {params: {'Content-Type': 'application/json'}})
+        { schoolPin, pupilPin },
+        //TODO: incorrect
+        { params: { 'Content-Type': 'application/json' } })
         .toPromise()
         .then((response) => {
-          if (response.status === 200) {
-            data = response.json();
-            this.loggedIn = true;
-            this.storageService.setItem(auth_token, data['pupil'].sessionId);
-            this.storageService.setItem('data', JSON.stringify(data));
-          } else {
-            reject('Login Error');
+          if (response.status !== 200) {
+            return reject(new Error('Login Error:' + response.status + ':' + response.statusText));
           }
-        }).catch(error => err = error);
-      if (err) {
-        return reject(err);
-      }
-      if (data) {
-        return resolve(data);
-      }
+          const data = response.json();
+          this.loggedIn = true;
+          this.storageService.setItem(sessionDataKey, data['session']);
+          this.storageService.setItem(questionsDataKey, data['questions']);
+          resolve();
+        },
+        (err) => {
+          reject(err);
+        }).catch(error => reject(error));
     });
   }
 
   logout() {
-    this.storageService.removeItem(auth_token);
-    this.storageService.removeItem('data');
+    /*   this.storageService.removeItem(auth_token);
+      this.storageService.removeItem('data'); */
     this.loggedIn = false;
   }
 
