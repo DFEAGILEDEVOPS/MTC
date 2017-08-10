@@ -67,7 +67,9 @@ describe('UserService', () => {
 
     it('should return a promise that rejects on invalid login', () => {
 
-       mockBackend.connections.subscribe((connection) => {
+      spyOn(storageService, 'setItem');
+
+      mockBackend.connections.subscribe((connection) => {
         connection.mockRespond(new Response(new ResponseOptions({
           body: JSON.stringify(mockLoginResponseBody),
           status: 401
@@ -88,20 +90,22 @@ describe('UserService', () => {
       expect(storageService.setItem).not.toHaveBeenCalled();
     });
 
-    it('should return a promise that rejects when insufficient data are provided', () => {
-      userService.login('xxx', '')
-        .then(() => {
-          shouldNotExecute();
-        })
-        .catch((err) => {
-          expect(err.status).toBe(400);
-        }
-        );
-    });
-
   });
 
   describe('logout', () => {
+    it('should clear storage on logout', () => {
 
+      spyOn(storageService, 'clear');
+
+      userService.login('xxx', 'xxx')
+        .then(() => {
+          userService.logout();
+          expect(storageService.clear).toHaveBeenCalled();
+        })
+        .catch((err) => {
+          expect(err).toBeTruthy();
+        }
+        );
+    });
   });
 });
