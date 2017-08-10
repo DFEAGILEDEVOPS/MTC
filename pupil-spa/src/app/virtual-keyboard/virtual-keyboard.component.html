@@ -13,29 +13,29 @@
           <table class="numpad" id="js-numpad">
             <tr>
               <td class="key js-key" data-value="1"><button (click)="onClickAnswer(1)">1</button></td>
-              <td class="key js-key" data-value="2"> 2</td>
-              <td class="key js-key" data-value="3"> 3</td>
+              <td class="key js-key" data-value="2"><button (click)="onClickAnswer(2)">2</button></td>
+              <td class="key js-key" data-value="3"><button (click)="onClickAnswer(3)">3</button></td>
             </tr>
             <tr>
-              <td class="key js-key" data-value="4"> 4</td>
-              <td class="key js-key" data-value="5"> 5</td>
-              <td class="key js-key" data-value="6"> 6</td>
+              <td class="key js-key" data-value="4"><button (click)="onClickAnswer(4)">4</button></td>
+              <td class="key js-key" data-value="5"><button (click)="onClickAnswer(5)">5</button></td>
+              <td class="key js-key" data-value="6"><button (click)="onClickAnswer(6)">6</button></td>
             </tr>
             <tr>
-              <td class="key js-key" data-value="7"> 7</td>
-              <td class="key js-key" data-value="8"> 8</td>
-              <td class="key js-key" data-value="9"> 9</td>
+              <td class="key js-key" data-value="7"><button (click)="onClickAnswer(7)">7</button></td>
+              <td class="key js-key" data-value="8"><button (click)="onClickAnswer(8)">8</button></td>
+              <td class="key js-key" data-value="9"><button (click)="onClickAnswer(9)">9</button></td>
             </tr>
             <tr>
               <td class="key js-key" data-value="backspace">
-                <img src="/public/images/backspace-35x24.png"
+                <button (click)="onClickBackspace()"><img src="/public/images/backspace-35x24.png"
                      alt="Delete"
                      width="35"
                      height="24"
-                     data-value="backspace">
+                     data-value="backspace"></button>
               </td>
               <td class="key js-key" data-value="0"> 0</td>
-              <td class="enter-key js-key" data-value="enter"> Enter</td>
+              <td class="enter-key js-key" data-value="enter"><button class="enter-key" (click)="onClickSubmit()">Enter</button></td>
             </tr>
           </table>
         </div>

@@ -17,7 +17,17 @@ export class VirtualKeyboardComponent implements OnInit {
   num = 2;
 
   onClickAnswer(number) {
-    this.answer = number;
+    this.answer = `${this.answer}${number}`;
+  }
+
+  onClickBackspace() {
+    if (this.answer.length > 0) {
+      this.answer = this.answer.substr(0, this.answer.length - 1);
+    }
+  }
+
+  onClickSubmit() {
+    console.log('Submit form');
   }
 
   ngOnInit() {
