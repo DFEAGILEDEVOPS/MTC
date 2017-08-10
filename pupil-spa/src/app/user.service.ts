@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from './storage.service';
 const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
@@ -19,11 +19,13 @@ export class UserService {
 
   login(schoolPin, pupilPin) : Promise<any> {
     return new Promise(async (resolve, reject) => {
+      let headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      let requestArgs = new RequestOptions({headers: headers});
 
       await this.http.post(`${this.apiURL}/api/questions`,
         { schoolPin, pupilPin },
-        //TODO: incorrect
-        { params: { 'Content-Type': 'application/json' } })
+        requestArgs)
         .toPromise()
         .then((response) => {
           if (response.status !== 200) {
