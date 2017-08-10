@@ -13,7 +13,7 @@ describe('UserService', () => {
       imports: [HttpModule],
       providers: [UserService, StorageService]
     });
-    userService = injector.get(UserService, StorageService);
+    userService = injector.get(UserService);
   });
 
   it('should be created', () => {
