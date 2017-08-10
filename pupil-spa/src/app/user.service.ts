@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { StorageService } from './storage.service';
 const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
+const configDataKey = 'config';
 
 @Injectable()
 export class UserService {
@@ -30,8 +31,9 @@ export class UserService {
           }
           const data = response.json();
           this.loggedIn = true;
-          this.storageService.setItem(sessionDataKey, data['session']);
-          this.storageService.setItem(questionsDataKey, data['questions']);
+          this.storageService.setItem(sessionDataKey, data[sessionDataKey]);
+          this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
+          this.storageService.setItem(configDataKey, data[configDataKey]);
           resolve();
         },
         (err) => {

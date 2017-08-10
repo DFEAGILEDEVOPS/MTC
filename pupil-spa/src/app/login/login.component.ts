@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+
+import { UserService } from '../user.service';
+import { QuestionService } from '../question.service';
 
 @Component({
   selector: 'app-login',
@@ -11,7 +13,11 @@ export class LoginComponent implements OnInit {
 
   private submitted: boolean;
 
-  constructor(private userService: UserService,  private router: Router) { }
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private questionService: QuestionService
+  ) { }
 
   ngOnInit() {
     this.submitted = false;
@@ -28,6 +34,7 @@ export class LoginComponent implements OnInit {
     this.userService.login(schoolPin, pupilPin)
       .then(
         () => {
+          this.questionService.initialise();
           this.router.navigate(['sign-in-success']);
         },
         () => {
