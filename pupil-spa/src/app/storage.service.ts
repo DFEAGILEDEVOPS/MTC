@@ -1,4 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+
+export type StorageKey = 'answers' | 'inputs' | 'session' | 'audit' | 'questions';
 
 @Injectable()
 export class StorageService {
