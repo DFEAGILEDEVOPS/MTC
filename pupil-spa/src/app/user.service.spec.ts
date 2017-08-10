@@ -1,17 +1,19 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
 
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
+import * as userResponseMock from './user.data.mock.json';
 
 let userService: UserService;
 
 describe('UserService', () => {
 
   beforeEach(() => {
-    const injector = TestBed.configureTestingModule({
-      imports: [HttpModule],
-      providers: [UserService, StorageService]
+    TestBed.configureTestingModule({
+      providers: [
+        UserService,
+        StorageService
+      ]
     });
     userService = injector.get(UserService, StorageService);
   });
