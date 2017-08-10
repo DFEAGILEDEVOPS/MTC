@@ -1,13 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { StorageService } from './storage.service';
+import { StorageService, StorageKey } from './storage.service';
 
 let service: StorageService;
 
 describe('StorageService', () => {
-
-  const shouldNotExecute = () => {
-    expect(1).toBe(2);
-  };
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
@@ -24,7 +20,7 @@ describe('StorageService', () => {
   it('setItem: throws an error when key missing', () => {
     spyOn(localStorage, 'setItem');
     try {
-      service.setItem(null, 'xxxx')
+      service.setItem(null, 'xxxx');
     } catch (error) {
       expect(error).toBeTruthy();
       expect(localStorage.setItem).toHaveBeenCalledTimes(0);
@@ -34,7 +30,7 @@ describe('StorageService', () => {
 
   it('setItem: adds item to localStorage when key provided', () => {
     spyOn(localStorage, 'setItem');
-    const key = 'answer';
+    const key: StorageKey = 'answers';
     const value = 'setItem_value';
 
     service.setItem(key, value);

@@ -19,6 +19,7 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './question.service';
 import { StorageService } from './storage.service';
+import { AnswerService } from './answer.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 
