@@ -16,7 +16,7 @@ export class UserService {
     this.loggedIn = !!this.storageService.getItem(sessionDataKey);
   }
 
-  login(schoolPin, pupilPin) {
+  login(schoolPin, pupilPin) : Promise<any> {
     return new Promise(async (resolve, reject) => {
 
       await this.http.post(`${this.apiURL}/api/questions`,
@@ -41,8 +41,7 @@ export class UserService {
   }
 
   logout() {
-    /*   this.storageService.removeItem(auth_token);
-      this.storageService.removeItem('data'); */
+    this.storageService.clear();
     this.loggedIn = false;
   }
 

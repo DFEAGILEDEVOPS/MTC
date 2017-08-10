@@ -96,16 +96,8 @@ describe('UserService', () => {
     it('should clear storage on logout', () => {
 
       spyOn(storageService, 'clear');
-
-      userService.login('xxx', 'xxx')
-        .then(() => {
-          userService.logout();
-          expect(storageService.clear).toHaveBeenCalled();
-        })
-        .catch((err) => {
-          expect(err).toBeTruthy();
-        }
-        );
-    });
+      userService.logout();
+      expect(storageService.clear).toHaveBeenCalled();
+    })
   });
 });
