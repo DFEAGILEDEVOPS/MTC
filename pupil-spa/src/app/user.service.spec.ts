@@ -20,6 +20,7 @@ let storageService: StorageService;
 let mockBackend: MockBackend;
 const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
+const configDataKey = 'config';
 
 describe('UserService', () => {
 
@@ -54,11 +55,12 @@ describe('UserService', () => {
       spyOn(storageService, 'setItem');
 
       userService.login('abc12345', '9999a').then(() => {
-        expect(storageService.setItem).toHaveBeenCalledTimes(2);
         expect(storageService.setItem)
-          .toHaveBeenCalledWith(sessionDataKey, mockLoginResponseBody['session']);
+          .toHaveBeenCalledWith(sessionDataKey, mockLoginResponseBody[sessionDataKey]);
         expect(storageService.setItem)
-          .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody['questions']);
+          .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
+        expect(storageService.setItem)
+        .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
       },
         (err) => {
           shouldNotExecute();
@@ -89,7 +91,6 @@ describe('UserService', () => {
 
       expect(storageService.setItem).not.toHaveBeenCalled();
     });
-
   });
 
   describe('logout', () => {

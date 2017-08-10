@@ -4,6 +4,10 @@
     "AuthKey": "{K34T8GFH-3HFGKJFKSJHFJKH-4FGJSLHSDFJHF}",
     "UserId": "{494JKRJFSF-KL34JGEO84-34E8OFHSFJH-34THEF4O8W4TH}"
   },
+  "config": {
+    "loadingTime": 2,
+    "questionTime": 5
+  },
   "questions": [],
   "answers": [
     {
