@@ -6,6 +6,10 @@ import { UserService } from './user.service';
 
 let userService: UserService;
 
+const shouldNotExecute = () => {
+  expect('this code').toBe('not executed');
+};
+
 describe('UserService', () => {
 
   beforeEach(() => {
@@ -24,6 +28,9 @@ describe('UserService', () => {
     userService.login('abc12345', '9999a').then(
       (res) => {
         expect(res['questions'].length).toBeGreaterThan(0);
+      },
+      (err) => {
+        shouldNotExecute();
       }
     );
   });
@@ -31,22 +38,24 @@ describe('UserService', () => {
   it('returns a promise that rejects on invalid login', () => {
     userService.login('xxx', 'xxx').then(
       (res) => {
-        expect(1).toBe(2);
+        shouldNotExecute();
       },
     ).catch((err) => {
       expect(err.status).toBe(401);
-      }
-    );
+    }
+      );
   });
 
   it('returns a promise that rejects when insufficient data are provided', () => {
-    userService.login('xxx', '').then().catch((err) => {
-        expect(err.status).toBe(400);
-      }
-    );
+    userService.login('xxx', '').then(() => {
+      shouldNotExecute();
+    }).catch((err) => {
+      expect(err.status).toBe(400);
+    }
+      );
   });
 
-  it('logs a user out', () => {
+  it('logs a user out and clears storage', () => {
     userService.login('abc12345', '9999a').then(
       () => {
         userService.logout();
