@@ -87,23 +87,19 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   When(/^I am logged in with a real pupil and school pin$/, async function () {
-    let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) {
-      return items[0]['pin']
-    })
-
-    let schoolPin = this.mongo.SchoolPinRetriever(9991001).then(function (items) {
-      return items[0]['schoolPin']
-    })
-
     this.spaConfirmationPage.pupilDetails = await this.mongo.FindNextPupil(9991001).then(function (items) {
-      return items[0] // Save all pupil's details so that can then be used anywhere.
+      return items[0]
     })
-
-    return this.spaSignInPage.realLogin(pupilPin, schoolPin)
+    this.spaConfirmationPage.schoolDetails = this.mongo.SchoolPinRetriever(9991001).then(function (items) {
+      return items[0]
+    })
+    return this.spaSignInPage.realLogin(this.spaConfirmationPage.pupilDetails['pin'], this.spaConfirmationPage.schoolDetails['schoolPin'])
   })
 
   Then(/^I should be shown the confirmation page displaying my name$/, function () {
-    console.log('the last name is ' + this.spaConfirmationPage.pupilDetails.lastName)
+    expect(this.spaConfirmationPage.pupilDetails['foreName']).to.eventually.to.equal(this.spaConfirmationPage.foreName)
+    expect(this.spaConfirmationPage.pupilDetails['lastName']).to.eventually.to.equal(this.spaConfirmationPage.lastName)
+    expect(this.spaConfirmationPage.schoolDetails['name']).to.eventually.to.equal(this.spaConfirmationPage.schoolName)
     return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
   })
 })
