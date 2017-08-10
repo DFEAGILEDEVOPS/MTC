@@ -2,7 +2,6 @@ export class Config {
   private _questionTime: number;
   private _loadingTime: number;
 
-
   get questionTime(): number {
     return this._questionTime;
   }
