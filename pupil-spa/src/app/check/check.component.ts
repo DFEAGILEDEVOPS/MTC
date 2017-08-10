@@ -48,7 +48,6 @@ export class CheckComponent implements OnInit {
   }
 
   nextQuestion() {
-    console.log('nextQuestion called');
     if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
       this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber)
       this.question = this.questionService.getQuestion(this.questionNumber);

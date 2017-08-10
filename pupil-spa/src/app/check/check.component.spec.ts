@@ -26,7 +26,8 @@ describe('CheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    spyOn(component, 'ngDoCheck').and.returnValue('');
+    fixture.detectChanges()
   });
 
   it('should be created', () => {
@@ -36,28 +37,24 @@ describe('CheckComponent', () => {
   it('default view should be the loading screen', () => {
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
+      expect(compiled.querySelector('app-loading')).toBeTruthy();
     });
   });
 
-  // it('setting the viewState to question shows the question screen', () => {
-  //   const compiled = fixture.debugElement.nativeElement;
-  //   component.
-  //   expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
-  // });
+  xit('setting the viewState to question shows the question screen', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    // TODO: set viewState here.
+    expect(compiled.querySelector('app-question')).toBeTruthy();
+  });
 
   it('calling nextQuestion shows the next question', () => {
-    // const compiled = fixture.debugElement.nativeElement;
-    // expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
     component.nextQuestion();
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
-      console.log(compiled);
-      const el = compiled.querySelector('#js-loading');
-      if (!el) {
-        expect('Element').toBe('not matched');
-      }
-      expect(el.textContent).toMatch(/Loading question 3 of \d/);
+      // Check we can find the app-loading selector.  It won't be replaced by HTML
+      // because of the NO_ERRORS_SCHEMA.
+      expect(compiled.querySelector('app-loading')).toBeTruthy();
+      expect(component.ngDoCheck).toHaveBeenCalledTimes(1);
     });
   });
 });
