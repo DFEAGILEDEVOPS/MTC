@@ -3,12 +3,15 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../user.service';
 import { LogoutComponent } from './logout.component';
+import { QuestionService } from '../question.service';
+import { QuestionServiceMock } from '../question.service.mock';
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;
   let fixture: ComponentFixture<LogoutComponent>;
   let mockRouter;
   let mockUserService;
+  let mockQuestionService = new QuestionServiceMock();
 
   beforeEach(async(() => {
     mockRouter = {
@@ -21,7 +24,8 @@ describe('LogoutComponent', () => {
       declarations: [LogoutComponent],
       providers: [
         {provide: UserService, useValue: mockUserService},
-        {provide: Router, useValue: mockRouter}
+        {provide: Router, useValue: mockRouter},
+        {provide: QuestionService, useValue: mockQuestionService}
       ],
     })
     .compileComponents();

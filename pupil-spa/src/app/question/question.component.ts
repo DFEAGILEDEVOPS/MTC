@@ -7,9 +7,8 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class QuestionComponent implements OnInit {
 
-  // Initial the question
-  // E.g.
-  // <app-question [factor1]="4" [factor2]="5"></app-question>
+  // Initialise the question
+  // E.g: <app-question [factor1]="4" [factor2]="5"></app-question>
   @Input()
   public factor1 = 0;
   @Input()

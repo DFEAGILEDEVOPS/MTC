@@ -17,7 +17,7 @@ describe('UserService', () => {
       providers: [UserService, StorageService]
     });
 
-    userService = injector.get(UserService, StorageService);
+    userService = injector.get(UserService);
     storageService = injector.get(StorageService);
 
     spyOn(storageService, 'getItem').and.callFake(function (key) {
