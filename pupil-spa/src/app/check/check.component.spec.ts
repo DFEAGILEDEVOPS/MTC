@@ -32,4 +32,32 @@ describe('CheckComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('default view should be the loading screen', () => {
+    fixture.whenStable().then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
+    });
+  });
+
+  // it('setting the viewState to question shows the question screen', () => {
+  //   const compiled = fixture.debugElement.nativeElement;
+  //   component.
+  //   expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
+  // });
+
+  it('calling nextQuestion shows the next question', () => {
+    // const compiled = fixture.debugElement.nativeElement;
+    // expect(compiled.querySelector('#js-loading').textContent).toMatch(/Loading question \d of \d/);
+    component.nextQuestion();
+    fixture.whenStable().then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      console.log(compiled);
+      const el = compiled.querySelector('#js-loading');
+      if (!el) {
+        expect('Element').toBe('not matched');
+      }
+      expect(el.textContent).toMatch(/Loading question 3 of \d/);
+    });
+  });
 });
