@@ -1,24 +1,18 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-loading',
   templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.css']
+  styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent implements AfterViewInit {
+export class LoadingComponent {
 
   @Input()
-  // TODO: fetch these values from other entities
-  countdown = 3000;
-  question = 1;
-  total = 3;
+  private question = 0;
+  @Input()
+  private total = 0;
 
-  constructor(private router: Router) {
-  }
-
-  ngAfterViewInit() {
-    window.setTimeout(() => this.router.navigate(['warm-up-question']), this.countdown);
+  constructor() {
   }
 }

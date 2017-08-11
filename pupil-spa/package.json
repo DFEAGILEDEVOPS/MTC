@@ -13,7 +13,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
-    "copygovukelements": "node tools/copyGovukElements"
+    "copygovukelements": "node tools/copyGovukElements",
+    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements"
   },
   "dependencies": {
     "@angular/animations": "^4.3.3",

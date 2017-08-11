@@ -33,6 +33,6 @@ describe('InstructionsComponent', () => {
 
   it('redirects to warm up introduction page', () => {
     component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['warm-up-intro']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
   });
 });
