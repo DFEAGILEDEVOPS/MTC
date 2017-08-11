@@ -9,7 +9,7 @@ import {
 import { MockBackend } from '@angular/http/testing';
 import { UserService } from './user.service';
 import { StorageService } from './storage.service';
-import * as mockLoginResponseBody from './login.userService.response.mock.json'
+import * as mockLoginResponseBody from './login.userService.response.mock.json';
 
 const shouldNotExecute = () => {
   expect('this code').toBe('not executed');
@@ -99,6 +99,6 @@ describe('UserService', () => {
       spyOn(storageService, 'clear');
       userService.logout();
       expect(storageService.clear).toHaveBeenCalled();
-    })
+    });
   });
 });

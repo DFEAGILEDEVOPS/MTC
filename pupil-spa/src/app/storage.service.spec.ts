@@ -33,11 +33,11 @@ describe('StorageService', () => {
     it('adds item to localStorage when key provided', () => {
       spyOn(localStorage, 'setItem');
       const key: StorageKey = 'answers';
-      const value = 'setItem_value';
+      const value = {setItem_value: 'value'};
 
       service.setItem(key, value);
 
-      expect(localStorage.setItem).toHaveBeenCalledWith(key, value);
+      expect(localStorage.setItem).toHaveBeenCalledWith(key, JSON.stringify(value));
     });
   });
 
@@ -57,8 +57,8 @@ describe('StorageService', () => {
 
     it('returns item when key provided and item exists', () => {
       const key = 'answer';
-      const value = 'getItem_Value';
-      localStorage.setItem(key, value);
+      const value = { getItem: 'getItem_Value'};
+      localStorage.setItem(key, JSON.stringify(value));
 
       const data = service.getItem(key);
 

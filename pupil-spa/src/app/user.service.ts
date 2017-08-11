@@ -9,7 +9,7 @@ const configDataKey = 'config';
 @Injectable()
 export class UserService {
   private loggedIn = false;
-  //TODO: source from config set on deployment
+  // TODO: source from config set on deployment
   private apiURL = 'http://localhost:3001';
   data: any = {};
 
@@ -17,11 +17,11 @@ export class UserService {
     this.loggedIn = !!this.storageService.getItem(sessionDataKey);
   }
 
-  login(schoolPin, pupilPin) : Promise<any> {
+  login(schoolPin, pupilPin): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      let headers = new Headers();
+      const headers = new Headers();
       headers.append('Content-Type', 'application/json');
-      let requestArgs = new RequestOptions({headers: headers});
+      const requestArgs = new RequestOptions({headers: headers});
 
       await this.http.post(`${this.apiURL}/api/questions`,
         { schoolPin, pupilPin },
