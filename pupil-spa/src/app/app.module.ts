@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
+import { CheckComponent } from './check/check.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
@@ -19,6 +20,7 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './question.service';
 import { StorageService } from './storage.service';
+import { AnswerService } from './answer.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 
@@ -28,29 +30,30 @@ const appRoutes: Routes = [
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
-  {path: 'check/complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard]}
   // { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
+    CheckCompleteComponent,
+    CheckComponent,
+    FooterComponent,
+    HeaderComponent,
+    InstructionsComponent,
+    LoadingComponent,
     LoginComponent,
+    LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    LoginFailureComponent,
-    LoadingComponent,
-    InstructionsComponent,
-    WarmupIntroComponent,
+    PhaseBannerComponent,
     QuestionComponent,
-    CheckCompleteComponent,
-    HeaderComponent,
-    FooterComponent,
-    PhaseBannerComponent
+    WarmupIntroComponent
   ],
   imports: [
     RouterModule.forRoot(

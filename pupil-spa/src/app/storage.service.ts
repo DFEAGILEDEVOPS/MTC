@@ -1,56 +1,37 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+
+export type StorageKey = 'answers' | 'inputs' | 'session' | 'audit' | 'questions';
 
 @Injectable()
 export class StorageService {
 
-  setItem(key, value): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        localStorage.setItem(key, value);
-        resolve();
-      }
-    });
+  setItem(key, value): void {
+
+    if (!key) {
+      throw new Error('key is required');
+    }
+    localStorage.setItem(key, value);
   }
 
-  getItem(key): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        const item = localStorage.getItem(key);
-        resolve(item);
-      }
-    });
+  getItem(key): any {
+    if (!key) {
+      throw new Error('key is required');
+    }
+    return localStorage.getItem(key);
   }
 
-  removeItem(key): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (!key) {
-        const err = new Error('key is required');
-        reject(err);
-      } else {
-        localStorage.removeItem(key);
-        resolve();
-      }
-    });
+  removeItem(key): void {
+    if (!key) {
+      throw new Error('key is required');
+    }
+    localStorage.removeItem(key);
   }
 
-  clear(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      localStorage.clear();
-      resolve();
-    });
+  clear(): void {
+    localStorage.clear();
   }
 
-  getKeys(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const keys = Object.keys(localStorage);
-      resolve(keys);
-    });
+  getKeys(): string[] {
+    return Object.keys(localStorage);
   }
-
 }

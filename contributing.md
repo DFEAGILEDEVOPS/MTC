@@ -3,11 +3,34 @@
 The MTC team is following a set of patterns and practices throughout the development of this project.
 
 ## Branching
-- Master branch points to the latest stable branch of the repository which contains all the latest commits
-- Feature branches are created under the feature branch folder. The naming convention that is followed is feature/(ticket number)-(description) 
-- Bug branches similar to feature branches are created under the bug branch folder. The naming convention that is followed is bug/(ticket number)-(description)
+- Master branch points to the latest stable branch of the repository which contains approved PRs only.
+- Feature branches are created under the feature branch folder. The naming convention is `feature/(ticket number)-(description)`
+- Bug branch naming onventions are similar to feature branches: `bug/(ticket number)-(description)`
 
 ## Commits - Pull requests
+
+The process for developing new features is as follows...
+
+1.  Pull the latest version of the master branch
+2.  Create a new branch using the above naming conventions
+3.  Integrate bug/feature
+4.  pull master branch and merge back into feature/bug branch
+4.1 Optional: Rebase and squash extraneous commits
+5.  Push branch back to remote.
+5.  Create Pull Request
+6.  Get at least 1 review approval.
+7.  Choose 'Squash & merge' option to merge back into master branch
+8.  Delete remote branch
+9.  Delete local branch
+10. Brew tea & eat biscuits
+
+## SPA post development checks
+1.  run `ng lint`
+2.  run `ng test`
+3.  run `ng serve --aot --open`
+4.  run ruby tests (see additional documentation) [TODO: add link]
+5.  browse application locally and exercise new functionality
+
 Upon development of a new feature or bug the contributor will have to check the latest code locally or update to the latest version from master branch.
 
 After making the necessary commits to reach completion the contributor can raise a pull request through GitHub against master branch.
@@ -15,10 +38,10 @@ After making the necessary commits to reach completion the contributor can raise
 The dev team members should be assigned as reviewers and as soon as the code changes have been accepted the pull request can be merged using the option 'Squash and merge'
 
 ## Codacy
-[Codacy](https://www.codacy.com/)is an automated code analysis/quality tool that the team integrated with GitHub.
+[Codacy](https://www.codacy.com/) is an automated code analysis/quality tool that the team integrated with GitHub.
 
 ## Travis
-[Travis](https://travis-ci.org/)is a hosted, distributed continuous integration service used to build and test software projects hosted at GitHub.
+[Travis](https://travis-ci.org/) is a hosted, distributed continuous integration service used to build and test software projects hosted at GitHub.
 
 ## Server side
 ### Using Callbacks
