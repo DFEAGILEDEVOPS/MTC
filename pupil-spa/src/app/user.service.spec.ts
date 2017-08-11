@@ -1,77 +1,104 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
-
-import { StorageService } from './storage.service';
+import { TestBed, async, inject } from '@angular/core/testing';
+import {
+  HttpModule,
+  Http,
+  Response,
+  ResponseOptions,
+  XHRBackend
+} from '@angular/http';
+import { MockBackend } from '@angular/http/testing';
 import { UserService } from './user.service';
-import * as responseMock from './login.response.mock.json';
+import { StorageService } from './storage.service';
+import * as mockLoginResponseBody from './login.userService.response.mock.json';
+
+const shouldNotExecute = () => {
+  expect('this code').toBe('not executed');
+};
 
 let userService: UserService;
 let storageService: StorageService;
+let mockBackend: MockBackend;
+const sessionDataKey = 'session';
+const questionsDataKey = 'questions';
+const configDataKey = 'config';
 
 describe('UserService', () => {
-  let store: {};
 
   beforeEach(() => {
-    const injector = TestBed.configureTestingModule({
+
+    const inject = TestBed.configureTestingModule({
       imports: [HttpModule],
-      providers: [UserService, StorageService]
+      providers: [
+        UserService,
+        { provide: XHRBackend, useClass: MockBackend },
+        StorageService
+      ]
     });
 
-    userService = injector.get(UserService);
-    storageService = injector.get(StorageService);
+    userService = inject.get(UserService);
+    storageService = inject.get(StorageService);
+    mockBackend = inject.get(XHRBackend);
 
-    spyOn(storageService, 'getItem').and.callFake(function (key) {
-      return JSON.stringify(responseMock);
-    });
-
-    spyOn(storageService, 'setItem').and.callFake(function (key, value) {
-      return store[key] = value + '';
-    });
-
-    spyOn(storageService, 'clear').and.callFake(function () {
-      store = {};
-    });
   });
 
-  it('should be created', () => {
-    expect(userService).toBeTruthy();
-  });
+  describe('login', () => {
 
-  it('should return a promise that resolves on valid logon', () => {
-    userService.login('abc12345', '9999a').then(
-      (res) => {
-        expect(res['questions'].length).toBeGreaterThan(0);
-        userService.logout();
-      }
-    );
-  });
+    it('should persist response body to storage', () => {
 
-  it('should return a promise that rejects on invalid login', () => {
-    userService.login('xxx', 'xxx').then(
-      (res) => {
-        expect(1).toBe(2);
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockLoginResponseBody),
+          status: 200
+        })));
+      });
+
+      spyOn(storageService, 'setItem');
+
+      userService.login('abc12345', '9999a').then(() => {
+        expect(storageService.setItem)
+          .toHaveBeenCalledWith(sessionDataKey, mockLoginResponseBody[sessionDataKey]);
+        expect(storageService.setItem)
+          .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
+        expect(storageService.setItem)
+        .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
       },
-    ).catch((err) => {
-        expect(err.status).toBe(401);
-      }
-    );
+        (err) => {
+          shouldNotExecute();
+        });
+    });
+
+    it('should return a promise that rejects on invalid login', () => {
+
+      spyOn(storageService, 'setItem');
+
+      mockBackend.connections.subscribe((connection) => {
+        connection.mockRespond(new Response(new ResponseOptions({
+          body: JSON.stringify(mockLoginResponseBody),
+          status: 401
+        })));
+      });
+
+      userService.login('xxx', 'xxx').then(
+        (res) => {
+          shouldNotExecute();
+        },
+        (err) => {
+          expect(err).toBeTruthy();
+        }
+      ).catch((err) => {
+        shouldNotExecute();
+      });
+
+      expect(storageService.setItem).not.toHaveBeenCalled();
+    });
   });
 
-  it('should return a promise that rejects when insufficient data are provided', () => {
-    userService.login('xxx', '')
-      .then()
-      .catch((err) => {
-        expect(err.status).toBe(400);
-      }
-    );
-  });
+  describe('logout', () => {
+    it('should clear storage on logout', () => {
 
-  it('should log the user out', () => {
-    userService.login('abc12345', '9999a').then(
-      () => {
-        userService.logout();
-        expect(userService.isLoggedIn()).toBe(false);
-      }
-    );
+      spyOn(storageService, 'clear');
+      userService.logout();
+      expect(storageService.clear).toHaveBeenCalled();
+    });
   });
 });
