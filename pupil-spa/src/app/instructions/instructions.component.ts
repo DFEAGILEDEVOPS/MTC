@@ -18,7 +18,7 @@ export class InstructionsComponent implements OnInit {
   }
 
   onClick() {
-    this.router.navigate(['warm-up-intro']);
+    this.router.navigate(['check']);
   }
 
 }

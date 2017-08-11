@@ -1,13 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { StorageService } from './storage.service';
+import { StorageService, StorageKey } from './storage.service';
 
 let service: StorageService;
 
 describe('StorageService', () => {
-
-  const shouldNotExecute = () => {
-    expect(1).toBe(2);
-  };
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
@@ -21,97 +17,89 @@ describe('StorageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('setItem: returns a promise that rejects when key missing', () => {
+  it('setItem: throws an error when key missing', () => {
     spyOn(localStorage, 'setItem');
-    service.setItem(null, 'xxxx').then(
-      () => {
-        shouldNotExecute();
-      },
-      (err) => {
-        expect(err).toBeTruthy();
-        expect(localStorage.setItem).toHaveBeenCalledTimes(0);
-        expect(err.message).toEqual('key is required');
-      });
+    try {
+      service.setItem(null, 'xxxx');
+    } catch (error) {
+      expect(error).toBeTruthy();
+      expect(localStorage.setItem).toHaveBeenCalledTimes(0);
+      expect(error.message).toEqual('key is required');
+    }
   });
 
-  it('setItem: returns a promise that resolves when key provided', () => {
+  it('setItem: adds item to localStorage when key provided', () => {
     spyOn(localStorage, 'setItem');
-    const key = 'setItem_key';
+    const key: StorageKey = 'answers';
     const value = 'setItem_value';
-    service.setItem(key, value).then(
-      () => {
-        expect(localStorage.setItem).toHaveBeenCalledWith(key, value);
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+
+    service.setItem(key, value);
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(key, value);
   });
 
-  it('getItem: returns a promise that rejects when key missing', () => {
+  it('getItem: throws an error when key missing', () => {
     spyOn(localStorage, 'getItem');
 
-    service.getItem(null).then(
-      () => { shouldNotExecute(); },
-      (err) => {
-        expect(err).toBeTruthy();
-        expect(err.message).toEqual('key is required');
-        expect(localStorage.getItem).toHaveBeenCalledTimes(0);
-      });
+    try {
+      service.getItem(null);
+    } catch (error) {
+      expect(error).toBeTruthy();
+      expect(error.message).toEqual('key is required');
+      expect(localStorage.getItem).toHaveBeenCalledTimes(0);
+    }
   });
 
-  it('getItem: returns a promise containing item when key provided and item exists', () => {
-    const key = 'getItem_Key';
+  it('getItem: returns item when key provided and item exists', () => {
+    const key = 'answer';
     const value = 'getItem_Value';
     localStorage.setItem(key, value);
 
-    service.getItem(key).then(
-      (data) => {
-        expect(data).toBeTruthy();
-        expect(data).toEqual(value);
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+    const data = service.getItem(key);
+
+    expect(data).toBeTruthy();
+    expect(data).toEqual(value);
   });
 
-  it('removeItem: returns a promise that rejects when key not provided', () => {
+  it('getItem: returns null when key provided and item does not exist', () => {
+    const key = 'answer';
+    const value = 'getItem_Value';
+
+    const data = service.getItem(key);
+
+    expect(data).toBeNull();
+  });
+
+  it('removeItem: throws an error when key not provided', () => {
     spyOn(localStorage, 'removeItem');
 
-    service.removeItem(null).then(
-      () => { shouldNotExecute(); },
-      (err) => {
-        expect(localStorage.removeItem).toHaveBeenCalledTimes(0);
-        expect(err).toBeTruthy();
-        expect(err.message).toEqual('key is required');
-      });
+    try {
+      service.removeItem(null);
+    } catch (error) {
+      expect(localStorage.removeItem).toHaveBeenCalledTimes(0);
+      expect(error).toBeTruthy();
+      expect(error.message).toEqual('key is required');
+    }
   });
 
-  it('removeItem: returns a promise that resolves when key provided', () => {
+  it('removeItem: removes item when key provided and item exists', () => {
     spyOn(localStorage, 'removeItem');
-    const removeItemKey = 'removeItem_Key';
+    const removeItemKey = 'answer';
 
-    service.removeItem(removeItemKey).then(
-      () => {
-        expect(localStorage.removeItem).toHaveBeenCalledWith(removeItemKey);
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+    service.removeItem(removeItemKey);
+
+    expect(localStorage.removeItem).toHaveBeenCalledWith(removeItemKey);
   });
 
-  it('clear: returns a promise that resolves', () => {
+  it('clear: calls localStorage.clear', () => {
     spyOn(localStorage, 'clear');
 
-    service.clear().then(
-      () => {
-        expect(localStorage.clear).toHaveBeenCalled();
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+    service.clear();
+
+    expect(localStorage.clear).toHaveBeenCalled();
   });
 
-  it('getKeys: returns a promise that resolves all keys', () => {
+  it('getKeys: returns all keys from localStorage', () => {
     const items = [
       { key: 'item1', value: 'item1value' },
       { key: 'item2', value: 'item2value' },
@@ -120,15 +108,12 @@ describe('StorageService', () => {
     items.forEach((item) => {
       localStorage.setItem(item.key, item.value);
     });
-    service.getKeys().then(
-      (keys) => {
-        expect(keys[0]).toEqual(items[0].key);
-        expect(keys[1]).toEqual(items[1].key);
-        expect(keys[2]).toEqual(items[2].key);
-      },
-      (err) => {
-        shouldNotExecute();
-      });
+
+    const keys = service.getKeys();
+
+    expect(keys[0]).toEqual(items[0].key);
+    expect(keys[1]).toEqual(items[1].key);
+    expect(keys[2]).toEqual(items[2].key);
   });
 
 });
