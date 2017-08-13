@@ -33,15 +33,17 @@ These two commands will install all the gems that the tests need.
 
 #####Basic
 
-To run the tests with the default options ( headless and app running on localhost:3000 ) give the command below:
+To run the tests with the default options ( headless and app running on localhost:4200 ) give the command below:
 
+`cd test`
+And then: 
 `cucumber`
  
- The above command runs the tests headless & sequentially in one process on url 'http://localhost:3000'
+ The above command runs the tests headless & sequentially in one process on url 'http://localhost:4200'
 
 If you want to run the tests in chrome:
 
-`cucumber DRIVER=chrome`
+`cucumber DRIVER=selenium_chrome`
 
 If you want to run a particular test, then tag the scenario with a tag like @test and run:
 
@@ -49,7 +51,7 @@ If you want to run a particular test, then tag the scenario with a tag like @tes
 
 If you want to run the tests on a different url:
 
-`cucumber BASE_URL='https://check-development.herokuapp.com'`
+`cucumber BASE_URL='http://localhost:4200'`
 
 #####Parallel
 
