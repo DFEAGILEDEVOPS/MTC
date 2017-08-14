@@ -25,10 +25,6 @@ export class QuestionService {
     }
 
     const data = this.questions[sequenceNumber - 1];
-
-    console.log('questions is ',this.questions);
-    console.log('questions[0] is ',this.questions[0]);
-
     const last = this.getNumberOfQuestions();
 
     // Bounds check
