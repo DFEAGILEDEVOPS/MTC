@@ -13,7 +13,9 @@ describe('QuestionService', () => {
       getItem() {
       }
     };
-    spyOn(mockStorageService, 'getItem').and.returnValue(JSON.stringify(responseMock));
+    var questions = responseMock['questions'];
+    var config = responseMock['config'];
+    spyOn(mockStorageService, 'getItem').and.returnValues(questions, config);
     TestBed.configureTestingModule({
       providers: [
         QuestionService,
@@ -29,6 +31,8 @@ describe('QuestionService', () => {
   it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
     service.initialise();
     const q = service.getQuestion(1);
+    //console.log('question:', q);
+
     expect(q.constructor.name).toBe('Question');
     expect(q.factor1).toBe(2);
     expect(q.factor2).toBe(5);
