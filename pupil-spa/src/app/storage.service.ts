@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Answer } from './answer.service';
 
 export type StorageKey = 'answers' | 'inputs' | 'session' | 'audit' | 'questions';
 
 @Injectable()
 export class StorageService {
 
-  setItem(key, value): void {
+  setItem(key, value: Object | Array<Object>): void {
 
     if (!key) {
       throw new Error('key is required');
     }
-    localStorage.setItem(key, value);
+    localStorage.setItem(key, JSON.stringify(value));
   }
 
   getItem(key): any {
     if (!key) {
       throw new Error('key is required');
     }
-    return localStorage.getItem(key);
+    return JSON.parse(localStorage.getItem(key));
   }
 
   removeItem(key): void {

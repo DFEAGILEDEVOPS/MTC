@@ -6,6 +6,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
+import { CheckComponent } from './check/check.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
@@ -27,11 +28,10 @@ import { VirtualKeyboardComponent } from './virtual-keyboard/virtual-keyboard.co
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'sign-in', component: LoginComponent},
-  {path: 'sign-in-success', component: VirtualKeyboardComponent/*LoginSuccessComponent*/},
-  {path: 'sign-out', component: LogoutComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
@@ -43,18 +43,19 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
+    CheckCompleteComponent,
+    CheckComponent,
+    FooterComponent,
+    HeaderComponent,
+    InstructionsComponent,
+    LoadingComponent,
     LoginComponent,
+    LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    LoginFailureComponent,
-    LoadingComponent,
-    InstructionsComponent,
-    WarmupIntroComponent,
-    QuestionComponent,
-    CheckCompleteComponent,
-    HeaderComponent,
-    FooterComponent,
     PhaseBannerComponent,
+    QuestionComponent,
+    WarmupIntroComponent,
     VirtualKeyboardComponent
   ],
   imports: [

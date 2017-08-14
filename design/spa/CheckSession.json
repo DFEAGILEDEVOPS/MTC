@@ -1,41 +1,43 @@
 {
   "session": {
-    "PupilSession": {
-      "SessionId": "slifjlk34f89w4jso8",
-      "AuthKey": "{K34T8GFH-3HFGKJFKSJHFJKH-4FGJSLHSDFJHF}",
-      "SchoolUrn": "123456",
-      "PupilId(Not UPN)": "{494JKRJFSF-KL34JGEO84-34E8OFHSFJH-34THEF4O8W4TH}"
-    },
-    "answers": [
-      {
-        "factor1": 1,
-        "factor2": 7,
-        "answer": "7",
-        "registeredInputs": [
-          {
-            "inputType": "mouse_click",
-            "data": "6",
-            "clientTimeStamp": "2017-08-01 13:00:35"
-          },
-          {
-            "inputType": "keypress",
-            "data": "backspace",
-            "clientTimeStamp": "2017-08-01 13:00:36"
-          },
-          {
-            "inputType": "keypress",
-            "data": "7",
-            "clientTimeStamp": "2017-08-01 13:00:37"
-          },
-          {
-            "inputType": "keypress",
-            "data": "enter",
-            "clientTimeStamp": "2017-08-01 13:00:38"
-          }
-        ]
-      }
-    ]
+    "SessionId": "slifjlk34f89w4jso8",
+    "AuthKey": "{K34T8GFH-3HFGKJFKSJHFJKH-4FGJSLHSDFJHF}",
+    "UserId": "{494JKRJFSF-KL34JGEO84-34E8OFHSFJH-34THEF4O8W4TH}"
   },
+  "config": {
+    "loadingTime": 2,
+    "questionTime": 5
+  },
+  "questions": [],
+  "answers": [
+    {
+      "factor1": 1,
+      "factor2": 7,
+      "answer": "7",
+      "registeredInputs": [
+        {
+          "inputType": "mouse_click",
+          "data": "6",
+          "clientTimeStamp": "2017-08-01 13:00:35"
+        },
+        {
+          "inputType": "keypress",
+          "data": "backspace",
+          "clientTimeStamp": "2017-08-01 13:00:36"
+        },
+        {
+          "inputType": "keypress",
+          "data": "7",
+          "clientTimeStamp": "2017-08-01 13:00:37"
+        },
+        {
+          "inputType": "keypress",
+          "data": "enter",
+          "clientTimeStamp": "2017-08-01 13:00:38"
+        }
+      ]
+    }
+  ],
   "audit": [
     {
       "AuditType": "Check_Started",
