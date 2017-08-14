@@ -31,7 +31,6 @@ describe('QuestionService', () => {
   it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
     service.initialise();
     const q = service.getQuestion(1);
-    //console.log('question:', q);
 
     expect(q.constructor.name).toBe('Question');
     expect(q.factor1).toBe(2);
