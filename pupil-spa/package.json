@@ -10,6 +10,7 @@
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "ng build",
     "test": "ng test",
+    "test-single": "ng test --single-run=true",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",

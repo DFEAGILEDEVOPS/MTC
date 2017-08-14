@@ -21,7 +21,8 @@ before_install:
 - rvm install 2.3.3
 install: true
 script:
-- sh -c 'cd pupil && npm install && npm test && cd ../admin && npm install && npm
+- sh -c 'cd pupil-spa && npm install && npm run test-single && cd ../admin && npm install && npm
   test'
 - "./admin/test.sh"
-- "./pupil/test.sh"
+# TODO enable when ready
+#- "./pupil-spa/test.sh"
