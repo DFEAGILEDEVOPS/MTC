@@ -66,9 +66,8 @@ Feature: Login page
     But I have chosen that the details are not correct
     Then local storage should be cleared
 
-
   Scenario: Confirmation page is displayed to the pupil on login
     Given I am on the SPA sign in page
     When I am logged in with a real pupil and school pin
-    Then I should be taken to the instructions page
+    Then I should be shown the confirmation page displaying my name
 

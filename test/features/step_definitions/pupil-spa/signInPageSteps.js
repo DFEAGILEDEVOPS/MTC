@@ -30,7 +30,7 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   Then(/^I should be taken to the sign in failure page$/, function () {
-    return expect(browser.getCurrentUrl()).to.eventually.to.include('/sign-in-failure')
+    return expect(this.spaSignInFailurePage.retry_sign_in.isPresent()).to.eventually.be.true
   })
 
   When(/^I attempt to login with just a pupil pin$/, function () {
@@ -43,7 +43,7 @@ defineSupportCode(function ({Given, When, Then}) {
   })
 
   When(/^I should be taken to the instructions page$/, function () {
-    return expect(browser.getCurrentUrl()).to.eventually.to.include('/sign-in-success')
+    return expect(this.spaConfirmationPage.readInstructions.isPresent()).to.eventually.be.true
   })
 
   When(/^I have not entered any sign in details$/, function () {
@@ -85,12 +85,22 @@ defineSupportCode(function ({Given, When, Then}) {
   When(/^I have chosen that the details are not correct$/, function () {
     return this.spaSignInSuccessPage.retry_sign_in.click()
   })
-  When(/^I am logged in with a real pupil and school pin$/, function () {
-    let pupilPin = this.mongo.FindNextPupil(9991001).then(function (items) { return items[0]['pin'] })
-    let schoolPin = this.mongo.SchoolPinRetriever(9991001).then(function (items) { return items[0]['schoolPin'] })
-    return this.spaSignInPage.realLogin(pupilPin, schoolPin)
+
+  When(/^I am logged in with a real pupil and school pin$/, async function () {
+    this.spaConfirmationPage.pupilDetails = await this.mongo.FindNextPupil(9991001).then(function (items) {
+      return items[0] // Save all pupil's details so that can then be used anywhere.
+    })
+
+    this.spaConfirmationPage.schoolDetails = await this.mongo.SchoolPinRetriever(9991001).then(function (items) {
+      return items[0] // Save the school details
+    })
+    this.spaSignInPage.realLogin(this.spaConfirmationPage.pupilDetails['pin'], this.spaConfirmationPage.schoolDetails['schoolPin'])
+    return expect(this.spaSignInPage.pupilPin.isPresent()).to.eventually.be.false
   })
+
   Then(/^I should be shown the confirmation page displaying my name$/, function () {
-    return expect(this.spaConfirmationPage.pageInstructions.isPresent()).to.eventually.be.true
+    expect(this.spaConfirmationPage.foreName.getText()).to.eventually.equal(this.spaConfirmationPage.pupilDetails.foreName)
+    expect(this.spaConfirmationPage.lastName.getText()).to.eventually.equal(this.spaConfirmationPage.pupilDetails.lastName)
+    return expect(this.spaConfirmationPage.schoolName.getText()).to.eventually.equal(this.spaConfirmationPage.schoolDetails.name)
   })
 })
