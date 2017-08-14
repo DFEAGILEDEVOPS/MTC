@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Answer } from './answer.service';
 
-export type StorageKey = 'answers' | 'inputs' | 'session' | 'audit' | 'questions';
+export type StorageKey = 'answers' | 'inputs' | 'session' |
+'audit' | 'questions' | 'config';
 
 @Injectable()
 export class StorageService {
 
-  setItem(key, value: Object | Array<Object>): void {
+  setItem(key: StorageKey, value: Object | Array<Object>): void {
 
     if (!key) {
       throw new Error('key is required');
@@ -14,14 +15,14 @@ export class StorageService {
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  getItem(key): any {
+  getItem(key: StorageKey): any {
     if (!key) {
       throw new Error('key is required');
     }
     return JSON.parse(localStorage.getItem(key));
   }
 
-  removeItem(key): void {
+  removeItem(key: StorageKey): void {
     if (!key) {
       throw new Error('key is required');
     }
