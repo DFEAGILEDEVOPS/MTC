@@ -100,9 +100,5 @@ describe('UserService', () => {
       userService.logout();
       expect(storageService.clear).toHaveBeenCalled();
     });
-
-    it('should fail the travis build', () => {
-      expect('travis').toBe('a failed build');
-    });
   });
 });
