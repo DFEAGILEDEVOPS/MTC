@@ -65,11 +65,14 @@ export class QuestionService {
   }
 
   initialise() {
-    const data = JSON.parse(this.storageService.getItem('data'));
-    this.questions = data['questions'];
+    const questionData = this.storageService.getItem('questions');
+    //console.log('questions:', questionData);
+    const configData = this.storageService.getItem('config');
+    //console.log('config:', configData);
+    this.questions = questionData;
     const config = new Config();
-    config.loadingTime = data['config']['loadingTime'];
-    config.questionTime = data['config']['questionTime'];
+    config.loadingTime = configData['loadingTime'];
+    config.questionTime = configData['questionTime'];
     this.config = config;
   }
 }
