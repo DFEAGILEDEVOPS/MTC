@@ -4,9 +4,18 @@
 
 # Multiplication Tables Check (MTC) Project
 
+Requires Docker 17.05 or later.
+Run `docker-compose up` from repository root.
+
+Browse to....
+
+* http://localhost:3000 (Legacy Pupil Check)
+* http://localhost:3001 (Admin App)
+* http://localhost:3002 (New Pupil App)
+
 The MTC solution consists of the following projects...
 
-- Pupil Check Application (`/pupil/`) Express MVC application, soon to be retired
+- Legacy Pupil Check Application (`/pupil/`) Express MVC application, soon to be retired
 - Pupil Check Application (`/pupil-spa/`) Angular SPA
 - Check Administration Application (`/admin/`) Express MVC application
 - Electron Container for Pupil Check Application (`/electron/`) Electron shell for Pupil Check Application
@@ -17,12 +26,13 @@ See each projects readme for app specifics.
 
 Each application has a dockerfile.  The [compose file in the repository root](docker-compose.yml) contains configuration to setup a local development environment, which includes the following nodes...
 
-Pupil MVC App (Node container)
+Pupil SPA (Nginx alpine container)
+Legacy Pupil MVC App (Node container)
 Admin MVC App (Node container)
 Database (MongoDB container)
-ESB (RabbitMQ container)
-Pupil SPA (Nginx alpine container)
+ESB (RabbitMQ container) (Currently disabled until required)
 
-Simply run `docker-compose up` from the root directory to start the environment.
+Simply run `docker-compose up` from the root directory to start the environment.  See 1st paragraph above for URL info.
+
 
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
