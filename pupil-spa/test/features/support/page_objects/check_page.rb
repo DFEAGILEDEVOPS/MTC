@@ -8,14 +8,18 @@ class CheckPage < SitePrism::Page
 
   section :number_pad, NumberPadSection, '.numpad'
 
-
-  def wait_for_preload
-    wait_until(4, 0.1) {has_preload?}
-    wait_until(4, 0.1) {has_no_preload?}
+  def wait_for_preload_to_expire(time=3)
+    wait_until(time + 0.5, 0.1) {preload.visible?}
+    wait_until(time + 0.5, 0.1) {has_no_preload?}
   end
 
-  def wait_for_timer(seconds)
-    sleep seconds.to_i + 1
+  def wait_for_question_timer_to_expire(time=3)
+    wait_until(time + 0.5, 0.1) {question.visible?}
+    wait_until(time + 0.5, 0.1) {has_no_question?}
+  end
+
+  def wait_for_question(time=3)
+    wait_until(time + 0.5, 0.1) {question.visible?}
   end
 
   def enter_answer_via_keyboard(answer)
