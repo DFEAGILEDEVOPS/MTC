@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Answer } from './answer.service';
 
 export type StorageKey = 'answers' | 'inputs' | 'session' |
-'audit' | 'questions' | 'config';
+'audit' | 'questions' | 'config' | 'pupil' | 'school';
 
 @Injectable()
 export class StorageService {
