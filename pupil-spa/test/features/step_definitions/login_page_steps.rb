@@ -57,11 +57,11 @@ Then(/^I should see some text instructing me on what to do next$/) do
 end
 
 Then(/^local storage should be populated with questions and pupil metadata$/) do
-  local_storage = JSON.parse page.evaluate_script('window.localStorage.getItem("data");')
-  expect(local_storage['questions']).to_not be_nil
-  expect(local_storage['pupil']).to_not be_nil
-  expect(local_storage['school']).to_not be_nil
-  expect(local_storage['config']).to_not be_nil
+  expect(confirmation_page).to be_displayed
+  expect(JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')).to_not be_nil
+  expect(JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')).to_not be_nil
+  expect(JSON.parse page.evaluate_script('window.localStorage.getItem("school");')).to_not be_nil
+  expect(JSON.parse page.evaluate_script('window.localStorage.getItem("config");')).to_not be_nil
 end
 
 When(/^I have chosen that the details are not correct$/) do

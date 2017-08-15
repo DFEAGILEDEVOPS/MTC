@@ -1,3 +1,8 @@
+@wip
+#  wip because we would have to wait for 20 questions to complete before asserting the complete page
+#  once we can answer the questions we can speed up the time taken to get to the complete page. Then these tests will be
+#  reinstated
+
 Feature: Complete page
 
   Scenario: Completion page has a heading
