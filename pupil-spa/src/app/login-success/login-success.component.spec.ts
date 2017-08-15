@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 
 import { LoginSuccessComponent } from './login-success.component';
 import * as responseMock from '../login.response.mock.json';
+import { StorageService } from '../storage.service';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
@@ -10,30 +11,31 @@ describe('LoginSuccessComponent', () => {
   let store: {};
   let mockRouter;
 
-
-  beforeEach(async(() => {
+  beforeEach(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
 
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [ LoginSuccessComponent ],
       providers: [
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        StorageService
       ]
     })
-    .compileComponents();
+    const storageService = injector.get(StorageService);
+    injector.compileComponents();
 
-    spyOn(localStorage, 'getItem').and.callFake(function (key) {
+    spyOn(storageService, 'getItem').and.callFake(function (key) {
       return JSON.stringify(responseMock);
     });
-    spyOn(localStorage, 'setItem').and.callFake(function (key, value) {
+    spyOn(storageService, 'setItem').and.callFake(function (key, value) {
       return store[key] = value + '';
     });
-    spyOn(localStorage, 'clear').and.callFake(function () {
+    spyOn(storageService, 'clear').and.callFake(function () {
       store = {};
     });
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginSuccessComponent);

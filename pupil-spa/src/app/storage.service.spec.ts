@@ -56,7 +56,7 @@ describe('StorageService', () => {
     });
 
     it('returns item when key provided and item exists', () => {
-      const key = 'answer';
+      const key = 'answers';
       const value = { getItem: 'getItem_Value'};
       localStorage.setItem(key, JSON.stringify(value));
 
@@ -67,7 +67,7 @@ describe('StorageService', () => {
     });
 
     it('returns null when key provided and item does not exist', () => {
-      const key = 'answer';
+      const key = 'answers';
       const value = 'getItem_Value';
 
       const data = service.getItem(key);
@@ -92,7 +92,7 @@ describe('StorageService', () => {
 
     it('removes item when key provided and item exists', () => {
       spyOn(localStorage, 'removeItem');
-      const removeItemKey = 'answer';
+      const removeItemKey = 'answers';
 
       service.removeItem(removeItemKey);
 

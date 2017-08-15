@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
 import { Router } from '@angular/router';
+import { StorageService } from "../storage.service";
 
 @Component({
   selector: 'app-login-success',
@@ -13,13 +14,14 @@ export class LoginSuccessComponent implements OnInit {
   pupil: Pupil;
   school: School;
 
-  constructor(private router: Router) {
-    const data = JSON.parse(localStorage.getItem('data'));
+  constructor(private router: Router, private storageService: StorageService) {
+    const pupilData = storageService.getItem('pupil');
+    const schoolData = storageService.getItem('school');
     this.pupil = new Pupil;
-    this.pupil.firstName = data['pupil'].firstName;
-    this.pupil.lastName = data['pupil'].lastName;
+    this.pupil.firstName = pupilData.firstName;
+    this.pupil.lastName = pupilData.lastName;
     this.school = new School;
-    this.school.name = data['school'].name;
+    this.school.name = schoolData.name;
   }
 
   ngOnInit() {
