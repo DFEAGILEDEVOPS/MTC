@@ -8,6 +8,7 @@ Requires Docker 17.05 or later.
 Run `docker-compose up` from repository root.
 
 Browse to....
+
 http://localhost:3000 (Legacy Pupil Check)
 
 http://localhost:3001 (Admin App)
