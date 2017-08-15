@@ -1,8 +1,5 @@
 <div class="question-container">
-  <form id='js-question-form' action="/check/question/{{questionNum}}" method="POST" autocomplete="off">
-    <input type="hidden" id="js-form-answer" name="answer" value="">
-    <input type="hidden" id="js-form-registered-inputs" name="registered-inputs" value="">
-    <input type="hidden" id="js-form-electron" name="electron" value="false">
+  <form id='js-question-form' method="POST" autocomplete="off">
     <input type="hidden" name="pageLoadDate" id="pageLoadDate" value="">
     <div class="question-and-answer">
       <span class="question">{{factor1}} &times; {{factor2}} = </span>
