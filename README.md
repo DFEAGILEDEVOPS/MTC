@@ -10,9 +10,7 @@ Run `docker-compose up` from repository root.
 Browse to....
 
 * http://localhost:3000 (Legacy Pupil Check)
-
 * http://localhost:3001 (Admin App)
-
 * http://localhost:3002 (New Pupil App)
 
 The MTC solution consists of the following projects...
