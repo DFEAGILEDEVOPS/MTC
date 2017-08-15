@@ -1,3 +1,5 @@
+const uuidv4 = require('uuid/v4');
+
 const CheckForm = require('../models/check-form')
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
@@ -31,7 +33,7 @@ const getQuestions = async (req, res) => {
   pupil = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
-    sessionId: req.session.id
+    sessionId: uuidv4()
   }
   school = {id: school._id, name: school.name}
 
