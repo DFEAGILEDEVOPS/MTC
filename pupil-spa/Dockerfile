@@ -16,7 +16,6 @@ COPY . .
 # RUN $(npm bin)/ng build --prod
 RUN $(npm bin)/ng build
 
-
 ### STAGE 2: Setup ###
 
 FROM nginx:1.13.3-alpine
