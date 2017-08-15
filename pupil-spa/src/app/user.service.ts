@@ -5,6 +5,8 @@ import { StorageService } from './storage.service';
 const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';
+const pupilDataKey = 'pupil';
+const schoolDataKey = 'school';
 
 @Injectable()
 export class UserService {
@@ -33,9 +35,12 @@ export class UserService {
           }
           const data = response.json();
           this.loggedIn = true;
-          this.storageService.setItem(sessionDataKey, data[sessionDataKey]);
+          // TODO: fetch session object when it's implemented in the API(?)
+          // this.storageService.setItem(sessionDataKey, data[sessionDataKey]);
           this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
           this.storageService.setItem(configDataKey, data[configDataKey]);
+          this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
+          this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
           resolve();
         },
         (err) => {
