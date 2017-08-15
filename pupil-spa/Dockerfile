@@ -1,33 +1,33 @@
-FROM nginx:1.13-alpine
+### STAGE 1: Build ###
 
-ENV APP_PATH /app
-ENV PATH $APP_PATH/node_modules/@angular/cli/bin/:$PATH
+# We label our stage as 'builder'
+FROM node:8-alpine as builder
 
-RUN mkdir $APP_PATH && rm -rf /etc/nginx/conf.d/*
-WORKDIR $APP_PATH
+COPY package.json .
+
+## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
+RUN npm i && mkdir /ng-app && cp -R ./node_modules ./ng-app
+
+WORKDIR /ng-app
 
 COPY . .
 
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+## Build the angular app in production mode and store the artifacts in dist folder
+# RUN $(npm bin)/ng build --prod
+RUN $(npm bin)/ng build
 
-RUN apk add --update --no-cache nodejs
 
-# add prod flag when aot comp included
-RUN apk add --no-cache --virtual .gyp \
-        python \
-        make \
-        g++ \
-    && npm install \
-        && npm rebuild node-sass --force \
-  && ng build \
-  && rm -rf /usr/share/nginx/html/* \
-  && mv ./dist/* /usr/share/nginx/html/ \
-  && npm cache clean \
-  && apk del nodejs libstdc++ libgcc libuv http-parser ca-certificates \
-  && rm -rf ./* \
- && apk del .gyp
+### STAGE 2: Setup ###
 
-EXPOSE 80
+FROM nginx:1.13.3-alpine
+
+## Copy our default nginx config
+COPY nginx/default.conf /etc/nginx/conf.d/
+
+## Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+
+## From 'builder' stage copy over the artifacts in dist folder to default nginx public folder
+COPY --from=builder /ng-app/dist /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
-
