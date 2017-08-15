@@ -18,7 +18,7 @@ const shouldNotExecute = () => {
 let userService: UserService;
 let storageService: StorageService;
 let mockBackend: MockBackend;
-const sessionDataKey = 'session';
+const pupilDataKey = 'pupil';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';
 
@@ -56,7 +56,7 @@ describe('UserService', () => {
 
       userService.login('abc12345', '9999a').then(() => {
         expect(storageService.setItem)
-          .toHaveBeenCalledWith(sessionDataKey, mockLoginResponseBody[sessionDataKey]);
+          .toHaveBeenCalledWith(pupilDataKey, mockLoginResponseBody[pupilDataKey]);
         expect(storageService.setItem)
           .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
         expect(storageService.setItem)
