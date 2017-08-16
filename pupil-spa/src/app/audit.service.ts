@@ -9,7 +9,7 @@ export class AuditService {
 
   addEntry(auditEntry: AuditEntry): void {
     let existingEntries = this.storageService.getItem('audit') as Array<AuditEntry>;
-    if(!existingEntries){
+    if (!existingEntries) {
       existingEntries = new Array<AuditEntry>();
     }
     existingEntries.push(auditEntry);
