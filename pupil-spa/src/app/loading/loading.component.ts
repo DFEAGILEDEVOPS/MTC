@@ -9,9 +9,9 @@ import { Component, Input } from '@angular/core';
 export class LoadingComponent {
 
   @Input()
-  private question = 0;
+  public question = 0;
   @Input()
-  private total = 0;
+  public total = 0;
 
   constructor() {
   }
