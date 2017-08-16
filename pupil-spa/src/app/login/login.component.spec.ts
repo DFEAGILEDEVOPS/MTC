@@ -5,7 +5,7 @@ import { UserService } from '../user.service';
 import { LoginComponent } from './login.component';
 import { QuestionService } from '../question.service';
 import { QuestionServiceMock } from '../question.service.mock';
-import { StorageService } from "../storage.service";
+import { StorageService } from '../storage.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -13,7 +13,7 @@ describe('LoginComponent', () => {
   let mockRouter;
   let mockUserService;
   let promiseHelper;
-  let mockQuestionService = new QuestionServiceMock();
+  const mockQuestionService = new QuestionServiceMock();
   let storageService: StorageService;
 
   beforeEach(async(() => {

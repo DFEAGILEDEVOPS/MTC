@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 
 import { LoginSuccessComponent } from './login-success.component';
 import * as responseMock from '../login.response.mock.json';
@@ -17,12 +17,12 @@ describe('LoginSuccessComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ LoginSuccessComponent ],
+      declarations: [LoginSuccessComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         StorageService
       ]
-    })
+    });
     const storageService = injector.get(StorageService);
     injector.compileComponents();
 
