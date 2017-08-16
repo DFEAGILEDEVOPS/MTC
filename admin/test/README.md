@@ -6,7 +6,7 @@ This is a short guide to installing and running the MTC tests.
 ##Clone the tests
 
 ```bash
-git clone https://agilefactory.visualstudio.com/DefaultCollection/MTC/_git/app
+git clone git@github.com:DFEAGILEDEVOPS/MTC.git
 ```
 
 ##Install RVM stable with ruby
