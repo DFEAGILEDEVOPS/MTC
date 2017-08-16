@@ -26,7 +26,9 @@ export class QuestionComponent implements OnInit {
   }
 
   onClickAnswer(number) {
-    this.answer = `${this.answer}${number}`;
+    if (this.answer.length < 5) {
+      this.answer = `${this.answer}${number}`;
+    }
   }
 
   onClickBackspace() {
