@@ -12,7 +12,7 @@ import { Config } from '../config.model';
 
 export class CheckComponent implements OnInit {
 
-  public viewState: String;
+  public viewState: string;
   public questionNumber: number;
   public totalNumberOfQuestions: number;
   public question: Question;
@@ -49,13 +49,15 @@ export class CheckComponent implements OnInit {
 
   manualQuestionSubmitHandler(answer: string) {
     console.log(`check component got the answer: ${answer}`);
+    this.question.answer = answer;
     // TODO: record answer
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
     console.log(`check component got the answer from question timeout: ${answer}`);
-    // TODO record answer
+    this.question.answer = answer;
+    // TODO: record answer
     this.nextQuestion();
   }
 
