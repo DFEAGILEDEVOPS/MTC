@@ -25,7 +25,6 @@ export class QuestionComponent implements OnInit {
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   public answer = '';
-
   private submitted = false;
   private timeout;
 

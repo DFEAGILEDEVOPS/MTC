@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { QuestionService } from '../question.service';
 import { Question } from '../question.model';
@@ -29,24 +29,6 @@ export class CheckComponent implements OnInit {
     this.viewState = 'preload';
   }
 
-  ngDoCheck() {
-    switch (this.viewState) {
-      case 'preload':
-        setTimeout(() => {
-          console.log('timeout called on preload');
-          this.viewState = 'question';
-        }, this.config.loadingTime * 1000);
-        break;
-
-      case 'question':
-        // setTimeout(() => {
-        //   console.log('timeout called on question');
-        //   this.nextQuestion();
-        // }, this.config.questionTime * 1000);
-        break;
-    }
-  }
-
   manualSubmitHandler(answer: string) {
     console.log(`check component got the answer: ${answer}`);
     this.question.answer = answer;
@@ -59,6 +41,11 @@ export class CheckComponent implements OnInit {
     this.question.answer = answer;
     // TODO: record answer
     this.nextQuestion();
+  }
+
+  loadingTimeoutHandler() {
+    console.log(`loadingTimeoutHandler() called`);
+    this.viewState = 'question';
   }
 
   nextQuestion() {
