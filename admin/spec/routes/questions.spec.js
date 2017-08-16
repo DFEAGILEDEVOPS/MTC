@@ -8,6 +8,7 @@ const checkFormMock = require('../mocks/checkform')
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
 const CheckForm = mongoose.model('Dummy', new Schema({name: {type: String}}))
+const configService = require('../../services/config-service')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -17,10 +18,13 @@ const mockQuestionData = (hasPupil, hasSchool, hasCheckform) => {
   sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(hasPupil && pupilMock)
   sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(hasSchool && schoolMock)
   sandbox.mock(CheckForm).expects('findOne').chain('sort').chain('lean').chain('exec').resolves(hasCheckform && checkFormMock)
+  sandbox.mock(configService).expects('getConfig').resolves({questionTime: 6, loadingTime: 3})
+
   const { getQuestions } = proxyquire('../../controllers/questions', {
     '../models/check-form': CheckForm,
     '../models/pupil': Pupil,
-    '../models/school': School
+    '../models/school': School,
+    '../services/config-service': configService
   })
   return getQuestions
 }
@@ -103,7 +107,7 @@ describe('questions controller', () => {
     expect(data.questions.length).toBe(20)
     expect(data.pupil.firstName).toBe('Pupil')
     expect(data.school.name).toBe('Example School One')
-    expect(data.config.questionTime).toBe(5)
+    expect(data.config.questionTime).toBe(6)
     done()
   })
 })
