@@ -9,6 +9,13 @@ Before("@add_a_pupil") do
   step "the pupil details should be stored"
 end
 
+Before("@timer_reset") do
+ step 'I am on the admin page'
+ step 'I am on the check settings page'
+ check_settings_page.update_question_time_limit(5)
+ check_settings_page.update_loading_time_limit(2)
+end
+
 Before("@add_5_pupils") do
   5.times do
     @name = (0...8).map { (65 + rand(26)).chr }.join
