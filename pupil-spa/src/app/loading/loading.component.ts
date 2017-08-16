@@ -6,7 +6,7 @@ import { Component, AfterViewInit, Input, Output, EventEmitter } from '@angular/
   styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent {
+export class LoadingComponent implements AfterViewInit {
 
   @Input()
   public question = 0;
