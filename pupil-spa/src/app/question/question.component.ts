@@ -11,8 +11,11 @@ export class QuestionComponent implements OnInit {
   // E.g: <app-question [factor1]="4" [factor2]="5"></app-question>
   @Input()
   public factor1 = 0;
+
   @Input()
   public factor2 = 0;
+
+  public answer = '';
 
   constructor() { }
 
@@ -20,7 +23,20 @@ export class QuestionComponent implements OnInit {
   }
 
   public onSubmit() {
+  }
 
+  onClickAnswer(number) {
+    this.answer = `${this.answer}${number}`;
+  }
+
+  onClickBackspace() {
+    if (this.answer.length > 0) {
+      this.answer = this.answer.substr(0, this.answer.length - 1);
+    }
+  }
+
+  onClickSubmit() {
+    console.log('Submit form');
   }
 
 }
