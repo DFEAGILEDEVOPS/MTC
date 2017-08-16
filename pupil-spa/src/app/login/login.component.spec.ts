@@ -5,6 +5,7 @@ import { UserService } from '../user.service';
 import { LoginComponent } from './login.component';
 import { QuestionService } from '../question.service';
 import { QuestionServiceMock } from '../question.service.mock';
+import { StorageService } from "../storage.service";
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -13,6 +14,7 @@ describe('LoginComponent', () => {
   let mockUserService;
   let promiseHelper;
   let mockQuestionService = new QuestionServiceMock();
+  let storageService: StorageService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -39,20 +41,28 @@ describe('LoginComponent', () => {
       providers: [
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: QuestionService, useValue: mockQuestionService }
+        { provide: QuestionService, useValue: mockQuestionService },
+        StorageService
       ]
     }).compileComponents();
 
   }));
 
   beforeEach(() => {
+    storageService = TestBed.get(StorageService);
+    spyOn(storageService, 'clear');
     fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
+
   });
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should clear storageService when initialised', () => {
+    expect(storageService.clear).toHaveBeenCalledTimes(1);
   });
 
   it('should render schoolPin and pupil pin input boxes', () => {
