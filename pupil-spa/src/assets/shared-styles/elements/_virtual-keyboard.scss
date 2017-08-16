@@ -1,0 +1,27 @@
+.numpad {
+  td {
+    max-height: 72px;
+    max-width: 72px;
+  }
+
+  td > button {
+    background-color: #dee0e2;
+    border: 0;
+    cursor: hand;
+    font-size: 36px;
+    font-weight: 400;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .enter-key {
+    font-family: "nta", Arial, sans-serif;
+    font-weight: 400;
+    text-transform: none;
+    font-size: 20px;
+    line-height: 1.11111;
+  }
+}

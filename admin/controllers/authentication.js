@@ -28,8 +28,9 @@ const getSignIn = (req, res) => {
 const postSignIn = (req, res) => {
   if (req.user.role === 'TEACHER' || req.user.role === 'HEADTEACHER') {
     return res.redirect('/school/school-home')
+  } else if (req.user.role === 'TEST-DEVELOPER') {
+    return res.redirect('/administrator')
   }
-  // There is no landing page for Test Developers yet.
   res.redirect('/school/school-home')
 }
 
