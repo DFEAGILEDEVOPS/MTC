@@ -26,7 +26,7 @@ export class QuestionComponent implements OnInit {
     console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
 
-    switch(event.keyCode) {
+    switch (event.keyCode) {
       case 8:  // backspace
       case 46: // delete
         this.deleteChar();
@@ -77,7 +77,7 @@ export class QuestionComponent implements OnInit {
    */
   ngAfterViewInit() {
     this.timeout = setTimeout(() => {
-      this.sendTimeoutEvent()
+      this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
   }
 
@@ -125,7 +125,7 @@ export class QuestionComponent implements OnInit {
     // Prevent the default timeout from firing later
     if (this.timeout) {
       console.log(`Clearing timeout: ${this.timeout}`);
-      clearTimeout(this.timeout)
+      clearTimeout(this.timeout);
     }
     console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);

@@ -26,7 +26,7 @@ export class LoadingComponent {
   ngAfterViewInit() {
     console.log('loading.component: after view init called');
     setTimeout(() => {
-      this.sendTimeoutEvent()
+      this.sendTimeoutEvent();
     }, this.loadingTimeout * 1000);
   }
 
