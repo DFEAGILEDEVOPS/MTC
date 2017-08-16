@@ -37,8 +37,6 @@ export class QuestionComponent implements OnInit {
   }
 
   public onSubmit() {
-    console.log('onSubmit() called');
-    return false;
   }
 
   answerIsLongEnoughToManuallySubmit() {
@@ -75,6 +73,7 @@ export class QuestionComponent implements OnInit {
     console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
+    return true;
   }
 
   sendTimeoutEvent() {

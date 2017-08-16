@@ -22,4 +22,70 @@ describe('QuestionComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('answerIsLongEnoughToManuallySubmit', () => {
+    it('returns true for a proper answer', () => {
+      component.answer = 'test';
+      expect(component.answerIsLongEnoughToManuallySubmit()).toBeTruthy();
+    });
+    it('returns false for an empty answer', () => {
+      component.answer = '';
+      expect(component.answerIsLongEnoughToManuallySubmit()).toBeFalsy();
+    });
+  });
+
+  describe('onClickAnswer', () => {
+    it('adds the input to the answer if there is room', () => {
+      component.answer = '12';
+      component.onClickAnswer(4);
+      expect(component.answer).toBe('124');
+    });
+    it('does not add the input to the answer if the answer is 5 chars long', () => {
+      component.answer = '12345';
+      component.onClickAnswer(6);
+      expect(component.answer).toBe('12345');
+    });
+  });
+
+  describe('onClickBackspace', () => {
+    it('deletes the end character from the answer', () => {
+      component.answer = '12345';
+      component.onClickBackspace();
+      expect(component.answer).toBe('1234');
+    });
+    it('behaves when the answer is empty', () => {
+      component.answer = '';
+      component.onClickBackspace();
+      expect(component.answer).toBe('');
+    });
+  });
+
+  describe('onClickSubmit', () => {
+    it('emits the answer', async (() => {
+      component.answer = '123';
+      component.manualSubmitEvent.subscribe(g => {
+        expect(g).toEqual('123');
+      })
+      component.onClickSubmit();
+    }));
+    it('only allows submit to happen once', async(() => {
+      component.answer = '124';
+      component.onClickSubmit(); // burn the submit
+      expect(component.onClickSubmit()).toBeFalsy();  // test repeat submission fails
+    }));
+    it('returns false if the answer is too short', async(() => {
+      component.answer = '';
+      expect(component.onClickSubmit()).toBeFalsy();
+    }));
+  });
+
+  describe('sendTimeoutEvent', () => {
+    it('emits the answer', async (() => {
+      component.answer = '125';
+      component.manualSubmitEvent.subscribe(g => {
+        expect(g).toEqual('125');
+      })
+      component.sendTimeoutEvent();
+    }));
+  });
 });
