@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { StorageService } from './storage.service'
+import { StorageService } from './storage.service';
 import { AuditService } from './audit.service';
 import { AuditEntry, AuditEntryType } from './auditEntry';
 
@@ -28,22 +28,29 @@ describe('AuditService', () => {
       const entry = new AuditEntry('QuestionRendered', new Date());
       service.addEntry(entry);
 
-      expect(storageService.setItem).toHaveBeenCalledWith('audit',[entry]);
+      expect(storageService.setItem).toHaveBeenCalledWith('audit', [entry]);
     });
 
     it('should append new entries, preserve existing ones', () => {
-      const firstEntry = new AuditEntry('PauseRendered', new Date(), {foo:'bar'});
-      const secondEntry = new AuditEntry('CheckStarted', new Date())
+      const firstEntry = new AuditEntry('PauseRendered', new Date(), { foo: 'bar' });
+      const secondEntry = new AuditEntry('CheckStarted', new Date());
       const thirdEntry = new AuditEntry('QuestionRendered', new Date());
+      const expectedEntries = new Array<AuditEntry>(firstEntry, secondEntry, thirdEntry);
 
       service.addEntry(firstEntry);
       service.addEntry(secondEntry);
       service.addEntry(thirdEntry);
 
-      const expected = JSON.stringify([firstEntry, secondEntry, thirdEntry]);
-      const actual = storageService.getItem('audit');
-      expect(actual).toBe(expected);
-    });
+      const storedEntries = storageService.getItem('audit') as AuditEntry[];
 
+      for (let index = 0; index < 3; index++) {
+        const entry = storedEntries[index];
+        expect(entry).toBeTruthy();
+        expect(storedEntries[index].type).toEqual(expectedEntries[index].type);
+        const actualDate = new Date(storedEntries[index].clientTimestamp);
+        expect(actualDate).toEqual(expectedEntries[index].clientTimestamp);
+        expect(storedEntries[index].data).toEqual(expectedEntries[index].data);
+      }
+    });
   });
 });
