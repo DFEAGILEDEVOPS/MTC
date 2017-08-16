@@ -12,7 +12,7 @@ import { Config } from '../config.model';
 
 export class CheckComponent implements OnInit {
 
-  private viewState: String;
+  public viewState: String;
   private questionNumber: number;
   private totalNumberOfQuestions: number;
   private question: Question;
