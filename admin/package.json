@@ -53,7 +53,7 @@
     "passport-local": "^1.0.0",
     "piping": "^1.0.0-rc.4",
     "serve-favicon": "~2.4.2",
-    "uuid": "^3.0.1",
+    "uuid": "^3.1.0",
     "xregexp": "^3.2.0"
   },
   "devDependencies": {
