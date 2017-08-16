@@ -47,7 +47,7 @@ export class CheckComponent implements OnInit {
     }
   }
 
-  manualQuestionSubmitHandler(answer: string) {
+  manualSubmitHandler(answer: string) {
     console.log(`check component got the answer: ${answer}`);
     this.question.answer = answer;
     // TODO: record answer

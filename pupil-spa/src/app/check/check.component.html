@@ -5,7 +5,7 @@
                 [factor2]="question.factor2"
                 [questionTimeoutSecs]="config.questionTime"
                 (timeoutEvent)="questionTimeoutHandler($event)"
-                (manualSubmitEvent)="manualQuestionSubmitHandler($event)">
+                (manualSubmitEvent)="manualSubmitHandler($event)">
 
   </app-question>
   <app-check-complete *ngSwitchCase="'complete'"></app-check-complete>
