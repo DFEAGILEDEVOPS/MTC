@@ -1,8 +1,8 @@
-import {TestBed, async, inject} from '@angular/core/testing';
-import {Router} from  '@angular/router';
+import { TestBed, async, inject } from '@angular/core/testing';
+import { Router } from '@angular/router';
 
-import {LoggedInGuard} from './logged-in.guard';
-import {UserService} from './user.service';
+import { LoggedInGuard } from './logged-in.guard';
+import { UserService } from './user.service';
 
 let mockRouter;
 let mockUser;
@@ -22,8 +22,8 @@ describe('LoggedInGuard', () => {
     TestBed.configureTestingModule({
       providers: [
         LoggedInGuard,
-        {provide: UserService, useValue: mockUser},
-        {provide: Router, useValue: mockRouter}
+        { provide: UserService, useValue: mockUser },
+        { provide: Router, useValue: mockRouter }
       ]
     });
   });

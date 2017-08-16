@@ -30,31 +30,31 @@ export class CheckComponent implements OnInit {
   }
 
   ngDoCheck() {
-    switch(this.viewState) {
+    switch (this.viewState) {
       case 'preload':
         setTimeout(() => {
           console.log('timeout called on preload');
           this.viewState = 'question';
         }, this.config.loadingTime * 1000);
-      break;
+        break;
 
       case 'question':
         setTimeout(() => {
           console.log('timeout called on question');
           this.nextQuestion();
         }, this.config.questionTime * 1000);
-      break;
+        break;
     }
   }
 
   nextQuestion() {
     if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
-      this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber)
+      this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber);
       this.question = this.questionService.getQuestion(this.questionNumber);
       this.viewState = 'preload';
     } else {
       // no more questions
-     this.viewState = 'complete';
+      this.viewState = 'complete';
     }
   }
 }
