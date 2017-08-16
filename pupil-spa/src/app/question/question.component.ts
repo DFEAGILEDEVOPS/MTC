@@ -6,9 +6,6 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@
   styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit {
-
-  // Initialise the question
-  // E.g: <app-question [factor1]="4" [factor2]="5"></app-question>
   @Input()
   public factor1 = 0;
 
@@ -63,7 +60,7 @@ export class QuestionComponent implements OnInit {
 
   onClickSubmit() {
     if (this.submitted) {
-      console.log("answer already submitted");
+      console.log('answer already submitted');
       return false;
     }
     if (!this.answerIsLongEnoughToManuallySubmit()) {
@@ -82,7 +79,7 @@ export class QuestionComponent implements OnInit {
 
   sendTimeoutEvent() {
     if (this.submitted) {
-      console.log("sendTimeout(): answer already submitted");
+      console.log('sendTimeout(): answer already submitted');
       return false;
     }
     console.log(`question.component: sendTimeoutEvent(): ${this.answer}`);

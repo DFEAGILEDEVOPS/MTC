@@ -30,21 +30,19 @@ export class CheckComponent implements OnInit {
   }
 
   manualSubmitHandler(answer: string) {
-    console.log(`check component got the answer: ${answer}`);
-    this.question.answer = answer;
-    // TODO: record answer
+    console.log(`check.component: manualSubmitHandler(): ${answer}`);
+    this.setAnswer(answer);
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
-    console.log(`check component got the answer from question timeout: ${answer}`);
-    this.question.answer = answer;
-    // TODO: record answer
+    console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+    this.setAnswer(answer);
     this.nextQuestion();
   }
 
   loadingTimeoutHandler() {
-    console.log(`loadingTimeoutHandler() called`);
+    console.log(`check.component: loadingTimeoutHandler() called`);
     this.viewState = 'question';
   }
 
@@ -52,12 +50,16 @@ export class CheckComponent implements OnInit {
     if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
       this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber);
       this.question = this.questionService.getQuestion(this.questionNumber);
-      console.log(`got next question: `, this.question);
+      console.log(`check.component: nextQuestion() `, this.question);
       this.viewState = 'preload';
     } else {
       // no more questions
-      console.log('check complete');
+      console.log('check.component: nextQuestion(): setting viewState to complete');
       this.viewState = 'complete';
     }
+  }
+
+  setAnswer(answer) {
+    this.question.answer = answer;
   }
 }
