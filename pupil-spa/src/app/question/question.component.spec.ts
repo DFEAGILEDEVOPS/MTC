@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {QuestionComponent} from './question.component';
+import { QuestionComponent } from './question.component';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -67,7 +67,7 @@ describe('QuestionComponent', () => {
       component.answer = '123';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('123');
-      })
+      });
       component.onSubmit();
     }));
     it('only allows submit to happen once', async(() => {
@@ -86,21 +86,22 @@ describe('QuestionComponent', () => {
       component.answer = '125';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('125');
-      })
+      });
       component.sendTimeoutEvent();
     }));
   });
 
   describe('handleKeyboardEvent', () => {
-    function dispatchKeyEvent (keyboardDict) {
+    function dispatchKeyEvent(keyboardDict) {
       const event = new KeyboardEvent('keydown', keyboardDict);
       event.initEvent('keydown', true, true);
       document.dispatchEvent(event);
       return event;
     }
+
     it('adds to the answer when a number is given', () => {
       spyOn(component, 'handleKeyboardEvent');
-      const event1 = dispatchKeyEvent({key: '1', keyCode: 49});
+      const event1 = dispatchKeyEvent({ key: '1', keyCode: 49 });
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
       // expect(component.answer).toBe('1');

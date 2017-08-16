@@ -29,16 +29,16 @@ export class CheckComponent implements OnInit {
     this.viewState = 'preload';
   }
 
-  manualSubmitHandler(answer: string) {
-    console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    this.setAnswer(answer);
-    this.nextQuestion();
-  }
+  manualSubmitHandler(answer: string)  {
+          console.log(`check.component: manualSubmitHandler(): ${answer}`);
+          this.setAnswer(answer);
+         this.nextQuestion();
+      }
 
-  questionTimeoutHandler(answer: string) {
-    console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    this.setAnswer(answer);
-    this.nextQuestion();
+      questionTimeoutHandler(answer: string)  {
+          console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+          this.setAnswer(answer);
+         this.nextQuestion();
   }
 
   loadingTimeoutHandler() {
@@ -54,8 +54,8 @@ export class CheckComponent implements OnInit {
       this.viewState = 'preload';
     } else {
       // no more questions
-      console.log('check.component: nextQuestion(): setting viewState to complete');
-      this.viewState = 'complete';
+     console.log('check.component: nextQuestion(): setting viewState to complete');
+     this.viewState = 'complete';
     }
   }
 

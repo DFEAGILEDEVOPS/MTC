@@ -13,8 +13,8 @@ describe('QuestionService', () => {
       getItem() {
       }
     };
-    var questions = responseMock['questions'];
-    var config = responseMock['config'];
+    const questions = responseMock['questions'];
+    const config = responseMock['config'];
     spyOn(mockStorageService, 'getItem').and.returnValues(questions, config);
     TestBed.configureTestingModule({
       providers: [

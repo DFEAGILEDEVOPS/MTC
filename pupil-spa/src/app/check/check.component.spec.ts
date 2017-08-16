@@ -5,7 +5,7 @@ import { CheckComponent } from './check.component';
 import { QuestionService } from '../question.service';
 import { QuestionServiceMock } from '../question.service.mock';
 
-let mockQuestionService = new QuestionServiceMock();
+const mockQuestionService = new QuestionServiceMock();
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -14,8 +14,8 @@ describe('CheckComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [ CheckComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
+      declarations: [CheckComponent],
+      schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
         { provide: QuestionService, useValue: mockQuestionService }
       ]
@@ -26,7 +26,7 @@ describe('CheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges()
+    fixture.detectChanges();
   });
 
   it('should be created', () => {
