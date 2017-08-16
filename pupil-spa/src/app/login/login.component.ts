@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../user.service';
 import { QuestionService } from '../question.service';
+import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +17,12 @@ export class LoginComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
+    this.storageService.clear();
     this.submitted = false;
   }
 
@@ -33,13 +36,13 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     this.userService.login(schoolPin, pupilPin)
       .then(
-        () => {
-          this.questionService.initialise();
-          this.router.navigate(['sign-in-success']);
-        },
-        () => {
-          this.router.navigate(['sign-in-failure']);
-        })
+      () => {
+        this.questionService.initialise();
+        this.router.navigate(['sign-in-success']);
+      },
+      () => {
+        this.router.navigate(['sign-in-failure']);
+      })
       .catch(() => {
         this.router.navigate(['sign-in-failure']);
       });
