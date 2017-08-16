@@ -19,4 +19,8 @@ export class QuestionComponent implements OnInit {
   ngOnInit() {
   }
 
+  public onSubmit() {
+
+  }
+
 }
