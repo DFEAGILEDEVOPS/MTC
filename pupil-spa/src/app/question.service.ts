@@ -66,9 +66,7 @@ export class QuestionService {
 
   initialise() {
     const questionData = this.storageService.getItem('questions');
-    //console.log('questions:', questionData);
     const configData = this.storageService.getItem('config');
-    //console.log('config:', configData);
     this.questions = questionData;
     const config = new Config();
     config.loadingTime = configData['loadingTime'];
