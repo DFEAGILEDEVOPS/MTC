@@ -6,7 +6,7 @@ This is a short guide to installing and running the MTC tests.
 ##Clone the tests
 
 ```bash
-git clone https://agilefactory.visualstudio.com/DefaultCollection/MTC/_git/app
+git clone git@github.com:DFEAGILEDEVOPS/MTC.git
 ```
 
 ##Install RVM stable with ruby
@@ -15,11 +15,11 @@ Follow installation instructions for installing RVM here:
 
 https://rvm.io/rvm/install
  
-Once rvm is installed, we need ruby version 2.3.3, to install use the following:
- `rvm install 2.3.3`
+Once rvm is installed, we need ruby version 2.4.0, to install use the following:
+ `rvm install 2.4.0`
  
 Use ruby version 2.3.3 and set it as your default:
- `rvm use 2.3.3 --default`
+ `rvm use 2.4.0 --default`
 
 ##Installing required gems
 

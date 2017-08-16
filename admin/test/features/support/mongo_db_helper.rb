@@ -62,19 +62,29 @@ class MongoDbHelper
     end
   end
 
-  def self.change_pupil_attendance(forename,lastname,school_id,flag=false)
+  def self.change_pupil_attendance(forename, lastname, school_id, flag=false)
     CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
                                {'$set' => {'hasAttended' => flag}})
   end
 
-  def self.expire_pin(forename,lastname,school_id,flag=true)
+  def self.expire_pin(forename, lastname, school_id, flag=true)
     CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
                                {'$set' => {'pinExpired' => flag}})
   end
 
-  def self.reset_pin(forename,lastname,school_id)
+  def self.reset_pin(forename, lastname, school_id)
     CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
                                {'$set' => {'pin' => NIL}})
+  end
+
+  def self.get_settings
+    collection = CLIENT[:settings].find()
+    collection.find.each {|setting| setting}
+  end
+
+  def self.latest_setting_log
+    collection = CLIENT[:settinglogs].find().sort({createdAt:-1})
+    collection.find.each {|setting| setting}
   end
 
 end
