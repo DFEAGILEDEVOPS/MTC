@@ -23,7 +23,7 @@ export class QuestionComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(`key is ${event.key} keyCode: ${event.keyCode}`);
+    console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
 
     switch(event.keyCode) {
@@ -59,7 +59,7 @@ export class QuestionComponent implements OnInit {
       default:
         break;
     }
-    // prevent firefox, IE etc. from navigating back a page.
+    // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
     return false;
   }
 
@@ -148,6 +148,7 @@ export class QuestionComponent implements OnInit {
    * @param {string} char
    */
   addChar(char: string) {
+    console.log(`addChar() called with ${char}`);
     this.answer = this.answer.concat(char);
   }
 

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {QuestionComponent} from './question.component';
 
@@ -8,7 +8,7 @@ describe('QuestionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [QuestionComponent]
+      declarations: [ QuestionComponent ]
     })
       .compileComponents();
   }));
@@ -17,6 +17,8 @@ describe('QuestionComponent', () => {
     fixture = TestBed.createComponent(QuestionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    // prevent Timeout's being set
+    spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
@@ -60,27 +62,27 @@ describe('QuestionComponent', () => {
     });
   });
 
-  describe('onClickSubmit', () => {
-    it('emits the answer', async (() => {
+  describe('onSubmit', () => {
+    it('emits the answer', async(() => {
       component.answer = '123';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('123');
       })
-      component.onClickSubmit();
+      component.onSubmit();
     }));
     it('only allows submit to happen once', async(() => {
       component.answer = '124';
-      component.onClickSubmit(); // burn the submit
-      expect(component.onClickSubmit()).toBeFalsy();  // test repeat submission fails
+      component.onSubmit(); // burn the submit
+      expect(component.onSubmit()).toBeFalsy();  // test repeat submission fails
     }));
     it('returns false if the answer is too short', async(() => {
       component.answer = '';
-      expect(component.onClickSubmit()).toBeFalsy();
+      expect(component.onSubmit()).toBeFalsy();
     }));
   });
 
   describe('sendTimeoutEvent', () => {
-    it('emits the answer', async (() => {
+    it('emits the answer', async(() => {
       component.answer = '125';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('125');
@@ -88,4 +90,21 @@ describe('QuestionComponent', () => {
       component.sendTimeoutEvent();
     }));
   });
+
+  describe('handleKeyboardEvent', () => {
+    function dispatchKeyEvent (keyboardDict) {
+      const event = new KeyboardEvent('keydown', keyboardDict);
+      event.initEvent('keydown', true, true);
+      document.dispatchEvent(event);
+      return event;
+    }
+    it('adds to the answer when a number is given', () => {
+      spyOn(component, 'handleKeyboardEvent');
+      const event1 = dispatchKeyEvent({key: '1', keyCode: 49});
+      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
+      expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
+      // expect(component.answer).toBe('1');
+    });
+  });
+
 });
