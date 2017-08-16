@@ -1,0 +1,42 @@
+<div class="question-container">
+  <form id='js-question-form' method="POST" autocomplete="off">
+    <input type="hidden" name="pageLoadDate" id="pageLoadDate" value="">
+    <div class="question-and-answer">
+      <span class="question">{{factor1}} &times; {{factor2}} = </span>
+      <div class="answer-container">
+        <span class="answer" id="js-answer">{{answer}}</span>
+        <div class="numpad-container">
+
+          <table class="numpad" id="js-numpad">
+            <tr>
+              <td class="key js-key"><button id="kb1" (click)="onClickAnswer(1)">1</button></td>
+              <td class="key js-key"><button id="kb2" (click)="onClickAnswer(2)">2</button></td>
+              <td class="key js-key"><button id="kb3" (click)="onClickAnswer(3)">3</button></td>
+            </tr>
+            <tr>
+              <td class="key js-key"><button id="kb4" (click)="onClickAnswer(4)">4</button></td>
+              <td class="key js-key"><button id="kb5" (click)="onClickAnswer(5)">5</button></td>
+              <td class="key js-key"><button id="kb6" (click)="onClickAnswer(6)">6</button></td>
+            </tr>
+            <tr>
+              <td class="key js-key"><button id="kb7" (click)="onClickAnswer(7)">7</button></td>
+              <td class="key js-key"><button id="kb8" (click)="onClickAnswer(8)">8</button></td>
+              <td class="key js-key"><button id="kb9" (click)="onClickAnswer(9)">9</button></td>
+            </tr>
+            <tr>
+              <td class="key js-key">
+                <button id="kb-backspace" (click)="onClickBackspace()"><img src="/public/images/backspace-35x24.png"
+                     alt="Delete"
+                     width="35"
+                     height="24"
+                     data-value="backspace"></button>
+              </td>
+              <td class="key js-key"><button id="kb0" (click)="onClickAnswer(0)">0</button></td>
+              <td class="enter-key js-key"><button id="kb-enter" class="enter-key" (click)="onClickSubmit()">Enter</button></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

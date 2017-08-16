@@ -23,6 +23,7 @@ import { StorageService } from './storage.service';
 import { AnswerService } from './answer.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
+import { VirtualKeyboardComponent } from './virtual-keyboard/virtual-keyboard.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -35,6 +36,7 @@ const appRoutes: Routes = [
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
+  {path: 'check/complete', component: CheckCompleteComponent, canActivate: [LoggedInGuard]}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -53,7 +55,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     PhaseBannerComponent,
     QuestionComponent,
-    WarmupIntroComponent
+    WarmupIntroComponent,
+    VirtualKeyboardComponent
   ],
   imports: [
     RouterModule.forRoot(
