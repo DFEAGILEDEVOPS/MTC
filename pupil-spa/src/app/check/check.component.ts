@@ -1,4 +1,4 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { QuestionService } from '../question.service';
 import { Question } from '../question.model';
@@ -7,16 +7,16 @@ import { Config } from '../config.model';
 @Component({
   selector: 'app-check',
   templateUrl: './check.component.html',
-  styleUrls: ['./check.component.scss']
+  styleUrls: [ './check.component.scss' ]
 })
 
 export class CheckComponent implements OnInit {
 
-  public viewState: String;
-  private questionNumber: number;
-  private totalNumberOfQuestions: number;
-  private question: Question;
-  private config: Config;
+  public viewState: string;
+  public questionNumber: number;
+  public totalNumberOfQuestions: number;
+  public question: Question;
+  public config: Config;
 
   constructor(private questionService: QuestionService) {
     this.questionNumber = 1;
@@ -29,32 +29,37 @@ export class CheckComponent implements OnInit {
     this.viewState = 'preload';
   }
 
-  ngDoCheck() {
-    switch (this.viewState) {
-      case 'preload':
-        setTimeout(() => {
-          console.log('timeout called on preload');
-          this.viewState = 'question';
-        }, this.config.loadingTime * 1000);
-        break;
+  manualSubmitHandler(answer: string) {
+    // console.log(`check.component: manualSubmitHandler(): ${answer}`);
+    this.setAnswer(answer);
+    this.nextQuestion();
+  }
 
-      case 'question':
-        setTimeout(() => {
-          console.log('timeout called on question');
-          this.nextQuestion();
-        }, this.config.questionTime * 1000);
-        break;
-    }
+  questionTimeoutHandler(answer: string) {
+    // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+    this.setAnswer(answer);
+    this.nextQuestion();
+  }
+
+  loadingTimeoutHandler() {
+    // console.log(`check.component: loadingTimeoutHandler() called`);
+    this.viewState = 'question';
   }
 
   nextQuestion() {
     if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
       this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber);
       this.question = this.questionService.getQuestion(this.questionNumber);
+      // console.log(`check.component: nextQuestion() `, this.question);
       this.viewState = 'preload';
     } else {
       // no more questions
+      // console.log('check.component: nextQuestion(): setting viewState to complete');
       this.viewState = 'complete';
     }
+  }
+
+  setAnswer(answer) {
+    this.question.answer = answer;
   }
 }
