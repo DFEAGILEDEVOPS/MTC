@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../user.service';
 import { QuestionService } from '../question.service';
-import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +16,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private questionService: QuestionService,
-    private storageService: StorageService
+    private questionService: QuestionService
   ) { }
 
   ngOnInit() {
-    this.storageService.clear();
     this.submitted = false;
   }
 
