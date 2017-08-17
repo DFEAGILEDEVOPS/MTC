@@ -22,8 +22,11 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   public answer = '';
+  public remainingTime: number;
+  private stopTime: number; // milliseconds since the epoch
   private submitted = false;
   private timeout;
+  private countdownInterval;
 
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -71,6 +74,8 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+    this.remainingTime = this.questionTimeoutSecs;
   }
 
   /**
@@ -80,6 +85,14 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     this.timeout = setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
+    this.countdownInterval = setInterval(() => {
+      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
+      if (timeLeft < 0 ) {
+        clearInterval(this.countdownInterval);
+        timeLeft = 0;
+      }
+      this.remainingTime = Math.round(timeLeft);
+    }, 250);
   }
 
   /**
@@ -126,6 +139,8 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
     }
+    // Clear the interval timer
+    clearInterval(this.countdownInterval);
     // console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
