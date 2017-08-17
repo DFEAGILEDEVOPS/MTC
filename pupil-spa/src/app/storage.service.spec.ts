@@ -113,19 +113,21 @@ describe('StorageService', () => {
   describe('getKeys', () => {
     it('returns all keys from localStorage', () => {
       const items = [
-        { key: 'item1', value: 'item1value' },
-        { key: 'item2', value: 'item2value' },
-        { key: 'item3', value: 'item3value' },
+        { key: 'item1', value: [1,2,3] },
+        { key: 'item2', value: [4,5,6] },
+        { key: 'item3', value: [7,8,9] }
       ];
+
       items.forEach((item) => {
-        localStorage.setItem(item.key, item.value);
+        localStorage.setItem(item.key, JSON.stringify(item.value));
       });
 
       const keys = service.getKeys();
 
-      expect(keys[0]).toEqual(items[0].key);
-      expect(keys[1]).toEqual(items[1].key);
-      expect(keys[2]).toEqual(items[2].key);
+      expect(keys.length).toEqual(items.length);
+      expect(keys).toContain(keys[0]);
+      expect(keys).toContain(keys[1]);
+      expect(keys).toContain(keys[2]);
     });
   });
 });
