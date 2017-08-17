@@ -52,11 +52,6 @@ Feature: Login page
     Given I have logged in
     Then local storage should be populated with questions and pupil metadata
 
-  @wip
-  Scenario: Local storage is cleared upon loading of the login page
-    Given I am on the sign in page
-    Then local storage should be cleared
-
   Scenario: Local storage is cleared when I have logged in but I return to login page as details are not correct
     Given I have logged in
     But I have chosen that the details are not correct
