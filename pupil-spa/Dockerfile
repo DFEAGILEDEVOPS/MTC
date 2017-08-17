@@ -13,6 +13,9 @@ WORKDIR /ng-app
 COPY . .
 
 RUN npm run postinstall
+ARG api_url=http://localhost:3001
+ENV API_URL=$api_url
+RUN $(npm bin)/gulp setAppEnvironmentVariables
 
 ## Build the angular app in production mode and store the artifacts in dist folder
 RUN $(npm bin)/ng build --prod
