@@ -18,6 +18,8 @@ describe('LoadingComponent', () => {
     fixture = TestBed.createComponent(LoadingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    // prevent setTimeout's being set
+    spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
