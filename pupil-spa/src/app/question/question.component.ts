@@ -171,7 +171,9 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearTimeout(this.timeout);
     }
     // Clear the interval timer
-    clearInterval(this.countdownInterval);
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
     // console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
