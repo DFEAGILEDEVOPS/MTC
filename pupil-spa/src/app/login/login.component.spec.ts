@@ -14,7 +14,6 @@ describe('LoginComponent', () => {
   let mockUserService;
   let promiseHelper;
   const mockQuestionService = new QuestionServiceMock();
-  let storageService: StorageService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -37,32 +36,24 @@ describe('LoginComponent', () => {
     spyOn(mockUserService, 'login').and.returnValue(loginPromise);
 
     TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
+      declarations: [LoginComponent],
       providers: [
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: QuestionService, useValue: mockQuestionService },
-        StorageService
+        { provide: QuestionService, useValue: mockQuestionService }
       ]
     }).compileComponents();
 
   }));
 
   beforeEach(() => {
-    storageService = TestBed.get(StorageService);
-    spyOn(storageService, 'clear');
     fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
-
   });
 
   it('should be created', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should clear storageService when initialised', () => {
-    expect(storageService.clear).toHaveBeenCalledTimes(1);
   });
 
   it('should render schoolPin and pupil pin input boxes', () => {
@@ -80,7 +71,7 @@ describe('LoginComponent', () => {
     it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith([ 'sign-in-success' ]);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
 
@@ -88,7 +79,7 @@ describe('LoginComponent', () => {
       component.onSubmit('goodPin', 'goodPin');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith([ 'sign-in-success' ]);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
         expect(mockUserService.login).toHaveBeenCalledTimes(1);
       });
     });
@@ -103,7 +94,7 @@ describe('LoginComponent', () => {
     it('redirects to an error page when the login is rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith([ 'sign-in-failure' ]);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-failure']);
       });
     });
   });
