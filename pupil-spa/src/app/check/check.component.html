@@ -1,5 +1,18 @@
 <div [ngSwitch]="viewState">
-  <app-loading *ngSwitchCase="'preload'" [question]="questionNumber" [total]="totalNumberOfQuestions"></app-loading>
-  <app-question *ngSwitchCase="'question'" [factor1]="question.factor1" [factor2]="question.factor2"></app-question>
-  <app-check-complete *ngSwitchCase="'complete'"></app-check-complete>
+    <app-loading *ngSwitchCase="'preload'"
+                 [question]="questionNumber"
+                 [loadingTimeout]="config.loadingTime"
+                 (timeoutEvent)="loadingTimeoutHandler($event)"
+                 [total]="totalNumberOfQuestions">
+
+    </app-loading>
+    <app-question *ngSwitchCase="'question'"
+                  [factor1]="question.factor1"
+                  [factor2]="question.factor2"
+                  [questionTimeoutSecs]="config.questionTime"
+                  (timeoutEvent)="questionTimeoutHandler($event)"
+                  (manualSubmitEvent)="manualSubmitHandler($event)">
+
+    </app-question>
+    <app-check-complete *ngSwitchCase="'complete'"></app-check-complete>
 </div>
