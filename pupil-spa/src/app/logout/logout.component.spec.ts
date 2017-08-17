@@ -11,7 +11,7 @@ describe('LogoutComponent', () => {
   let fixture: ComponentFixture<LogoutComponent>;
   let mockRouter;
   let mockUserService;
-  let mockQuestionService = new QuestionServiceMock();
+  const mockQuestionService = new QuestionServiceMock();
 
   beforeEach(async(() => {
     mockRouter = {
@@ -23,12 +23,12 @@ describe('LogoutComponent', () => {
     TestBed.configureTestingModule({
       declarations: [LogoutComponent],
       providers: [
-        {provide: UserService, useValue: mockUserService},
-        {provide: Router, useValue: mockRouter},
-        {provide: QuestionService, useValue: mockQuestionService}
+        { provide: UserService, useValue: mockUserService },
+        { provide: Router, useValue: mockRouter },
+        { provide: QuestionService, useValue: mockQuestionService }
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
