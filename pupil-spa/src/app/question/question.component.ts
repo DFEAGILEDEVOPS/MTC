@@ -3,7 +3,7 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostList
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: [ './question.component.css' ]
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
   @Input()
@@ -25,7 +25,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   private submitted = false;
   private timeout;
 
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
@@ -67,7 +67,8 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
@@ -86,7 +87,9 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @return {boolean}
    */
   answerIsLongEnoughToManuallySubmit() {
-    if (this.answer.length > 0) { return true; }
+    if (this.answer.length > 0) {
+      return true;
+    }
     return false;
   }
 
