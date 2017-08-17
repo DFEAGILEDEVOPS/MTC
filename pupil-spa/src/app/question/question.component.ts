@@ -27,7 +27,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
+    // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
 
     switch (event.keyCode) {
@@ -111,19 +111,19 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   onSubmit() {
     if (this.submitted) {
-      console.log('answer already submitted');
+      // console.log('answer already submitted');
       return false;
     }
     if (!this.answerIsLongEnoughToManuallySubmit()) {
-      console.log('answer not provided');
+      // console.log('answer not provided');
       return false;
     }
     // Prevent the default timeout from firing later
     if (this.timeout) {
-      console.log(`Clearing timeout: ${this.timeout}`);
+      // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
     }
-    console.log(`submitting answer ${this.answer}`);
+    // console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
     return true;
@@ -131,10 +131,10 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   sendTimeoutEvent() {
     if (this.submitted) {
-      console.log('sendTimeout(): answer already submitted');
+      // console.log('sendTimeout(): answer already submitted');
       return false;
     }
-    console.log(`question.component: sendTimeoutEvent(): ${this.answer}`);
+    // console.log(`question.component: sendTimeoutEvent(): ${this.answer}`);
     this.timeoutEvent.emit(this.answer);
     this.submitted = true;
   }
@@ -144,7 +144,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @param {string} char
    */
   addChar(char: string) {
-    console.log(`addChar() called with ${char}`);
+    // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       this.answer = this.answer.concat(char);
     }

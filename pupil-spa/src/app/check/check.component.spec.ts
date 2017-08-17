@@ -36,7 +36,7 @@ describe('CheckComponent', () => {
   it('default view should be the loading screen', () => {
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
-      console.log('1 ' + compiled.innerHTML);
+      // console.log('1 ' + compiled.innerHTML);
       expect(compiled.querySelector('app-loading')).toBeTruthy();
     });
   });
@@ -46,7 +46,7 @@ describe('CheckComponent', () => {
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('app-question')).toBeTruthy();
-      console.log(compiled);
+      // console.log(compiled);
     });
   });
 

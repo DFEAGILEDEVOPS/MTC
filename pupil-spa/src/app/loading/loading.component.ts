@@ -31,13 +31,13 @@ export class LoadingComponent implements AfterViewInit {
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
+    // console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
     return false;
   }
 
   ngAfterViewInit() {
-    console.log('loading.component: after view init called');
+    // console.log('loading.component: after view init called');
     setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.loadingTimeout * 1000);
