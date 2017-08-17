@@ -95,18 +95,14 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @param {number} number
    */
   onClickAnswer(number: number) {
-    if (this.answer.length < 5) {
-      this.addChar(number.toString());
-    }
+    this.addChar(number.toString());
   }
 
   /**
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    if (this.answer.length > 0) {
-      this.deleteChar();
-    }
+    this.deleteChar();
   }
 
   /**
@@ -144,19 +140,23 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Add a character to the answer
+   * Add a character to the answer - up to a max of 5 which is all we can show
    * @param {string} char
    */
   addChar(char: string) {
     console.log(`addChar() called with ${char}`);
-    this.answer = this.answer.concat(char);
+    if (this.answer.length < 5) {
+      this.answer = this.answer.concat(char);
+    }
   }
 
   /**
-   * Delete a character from the end of the answer
+   * Delete a character from the end of the answer if there is one
    */
   deleteChar() {
-    this.answer = this.answer.substr(0, this.answer.length - 1);
+    if (this.answer.length > 0) {
+      this.answer = this.answer.substr(0, this.answer.length - 1);
+    }
   }
 
 }
