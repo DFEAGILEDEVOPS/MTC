@@ -5,8 +5,8 @@
 <div>
   <ul class="text list list-bullet">
     <li>This check has <strong>{{count}} questions</strong>.</li>
-    <li>Each question will show for <strong>5 seconds</strong>.</li>
-    <li>There will be a <strong>2-second</strong> pause between each question.</li>
+    <li>Each question will show for <strong>{{questionTime}} seconds</strong>.</li>
+    <li>There will be a <strong>{{loadingTime}}-second</strong> pause between each question.</li>
     <li>You can answer the questions using:
       <ol class="list list-number no-bottom-margin">
         <li>your computer keyboard</li>
@@ -15,7 +15,7 @@
       </ol>
     </li>
     <li>You can press ‘Enter’ on the keyboard, number pad or on screen with your mouse.</li>
-    <li>After 5 seconds, the number in the answer box will be accepted, even if you haven't pressed 'Enter'.</li>
+    <li>After {{questionTime}} seconds, the number in the answer box will be accepted, even if you haven't pressed ‘Enter’.</li>
     <li>There will be 3 warm-up questions before you start the check.</li>
   </ul>
 
