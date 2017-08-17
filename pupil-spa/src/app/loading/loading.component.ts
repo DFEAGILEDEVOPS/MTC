@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-loading',
@@ -21,6 +21,19 @@ export class LoadingComponent implements AfterViewInit {
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   constructor() {
+  }
+
+  /**
+   * Prevent Backspace doing anything while the load-page is showing - some browsers will
+   * go back a page.
+   *
+   * @param {KeyboardEvent} event
+   */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
+    // IMPORTANT: return false here
+    return false;
   }
 
   ngAfterViewInit() {
