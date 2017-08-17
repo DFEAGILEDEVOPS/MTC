@@ -1,6 +1,6 @@
-export type AuditEntryType = 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'UserInput';
+export type AuditEntryType = 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered';
 
-export class AuditEntry {
+export abstract class AuditEntry {
 
   constructor(
     public type: AuditEntryType,
@@ -8,14 +8,26 @@ export class AuditEntry {
     public data?: object) { }
 }
 
-export class QuestionRenderedAuditEntry extends AuditEntry {
-  constructor(){
-    super('QuestionRendered', new Date());
+export class QuestionRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionRendered', new Date(), data);
   }
 }
 
-export class CheckStartedAuditEntry extends AuditEntry {
-  constructor(){
-    super('CheckStarted', new Date());
+export class CheckStarted extends AuditEntry {
+  constructor(data?: any) {
+    super('CheckStarted', new Date(), data);
+  }
+}
+
+export class QuestionAnswered extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionAnswered', new Date(), data);
+  }
+}
+
+export class PauseRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('PauseRendered', new Date(), data);
   }
 }

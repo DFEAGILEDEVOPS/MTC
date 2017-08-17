@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from "../audit.service";
-import { QuestionRenderedAuditEntry } from "../auditEntry";
+import { QuestionRendered } from "../auditEntry";
 
 @Component({
   selector: 'app-question',
@@ -80,7 +80,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * Start the timer when the view is ready.
    */
   ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionRenderedAuditEntry());
+    this.auditService.addEntry(new QuestionRendered());
     this.timeout = setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
@@ -131,6 +131,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearTimeout(this.timeout);
     }
     // console.log(`submitting answer ${this.answer}`);
+
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
     return true;
