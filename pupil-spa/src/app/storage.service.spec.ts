@@ -123,7 +123,6 @@ describe('StorageService', () => {
       });
 
       const keys = service.getKeys();
-      console.log('keys are:', keys);
 
       expect(keys.length).toEqual(items.length);
       expect(keys).toContain(keys[0]);
