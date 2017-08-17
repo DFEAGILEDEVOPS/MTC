@@ -1,11 +1,11 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from "../audit.service";
-import { QuestionRendered } from "../auditEntry";
+import { QuestionRendered, QuestionAnswered } from "../auditEntry";
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: [ './question.component.css' ]
+  styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
@@ -31,7 +31,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   private submitted = false;
   private timeout;
 
-  @HostListener('document:keydown', [ '$event' ])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
@@ -131,7 +131,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearTimeout(this.timeout);
     }
     // console.log(`submitting answer ${this.answer}`);
-
+    this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
     return true;

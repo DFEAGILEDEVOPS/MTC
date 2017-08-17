@@ -4,5 +4,6 @@ import { AuditEntry, AuditEntryType } from './auditEntry';
 
 @Injectable()
 export class AuditServiceMock {
-  addEntry(auditEntry: AuditEntry): void { }
+  addEntry(auditEntry: AuditEntry): void {
+   }
 }
