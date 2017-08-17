@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { StorageServiceMock } from './storage.service.mock';
 import { AuditService } from './audit.service';
 import { StorageService } from './storage.service';
-import { AuditEntry, AuditEntryType } from './auditEntry';
+import { AuditEntry, AuditEntryType, QuestionRenderedAuditEntry } from './auditEntry';
 
 let service: AuditService;
 let mockStorageService: StorageServiceMock;
@@ -28,7 +28,7 @@ describe('AuditService', () => {
     it('should add entry using audit key to storageService', () => {
       spyOn(mockStorageService, 'setItem');
 
-      const entry = new AuditEntry('QuestionRendered', new Date());
+      const entry = new QuestionRenderedAuditEntry();
       service.addEntry(entry);
 
       expect(mockStorageService.setItem).toHaveBeenCalledWith('audit', [entry]);
