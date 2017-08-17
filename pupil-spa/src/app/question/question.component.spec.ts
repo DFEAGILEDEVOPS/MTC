@@ -1,14 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
+import { AuditService } from "../audit.service";
+import { AuditServiceMock } from "../audit.service.mock";
+import { QuestionRenderedAuditEntry } from "../auditEntry";
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
+  let auditServiceMock = new AuditServiceMock();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QuestionComponent ]
+      declarations: [QuestionComponent],
+      providers: [
+        { provide: AuditService, useValue: auditServiceMock }
+      ]
     })
       .compileComponents();
   }));
@@ -105,6 +112,18 @@ describe('QuestionComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
       // expect(component.answer).toBe('1');
+    });
+  });
+
+  describe('auditing', () => {
+    beforeEach(() => {
+      spyOn(auditServiceMock, 'addEntry');
+    });
+    it('adds audit entry on question rendered', () => {
+      fixture.whenRenderingDone().then(() => {
+        // expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionRenderedAuditEntry())
+      });
     });
   });
 

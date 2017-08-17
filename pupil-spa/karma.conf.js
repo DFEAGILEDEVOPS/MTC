@@ -27,7 +27,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeHeadless'],
+    browsers: ['Chrome'],
     singleRun: false,
     customLaunchers: {
       Chrome_with_debugging: {
