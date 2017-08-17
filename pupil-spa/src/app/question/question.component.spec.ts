@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuestionComponent } from './question.component';
 import { AuditService } from "../audit.service";
 import { AuditServiceMock } from "../audit.service.mock";
-import { QuestionRenderedAuditEntry } from "../auditEntry";
+import { QuestionRendered, QuestionAnswered } from "../auditEntry";
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -117,14 +117,23 @@ describe('QuestionComponent', () => {
 
   describe('auditing', () => {
     beforeEach(() => {
-      spyOn(auditServiceMock, 'addEntry');
-    });
-    it('adds audit entry on question rendered', () => {
-      fixture.whenRenderingDone().then(() => {
-        // expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionRenderedAuditEntry())
+      spyOn(auditServiceMock, 'addEntry').and.callFake((entry) => {
+        console.log('addEntry called with:', entry);
       });
     });
+    it('adds audit entry on question rendered', async(() => {
+      fixture.whenRenderingDone().then(() => {
+        expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionRendered());
+      });
+    }));
+
+    it('adds audit entry on answer submitted', async(() => {
+      fixture.whenRenderingDone().then(() => {
+        expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionAnswered());
+      });
+    }));
   });
 
 });
