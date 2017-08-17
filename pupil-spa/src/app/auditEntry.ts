@@ -7,3 +7,15 @@ export class AuditEntry {
     public clientTimestamp: Date,
     public data?: object) { }
 }
+
+export class QuestionRenderedAuditEntry extends AuditEntry {
+  constructor(){
+    super('QuestionRendered', new Date());
+  }
+}
+
+export class CheckStartedAuditEntry extends AuditEntry {
+  constructor(){
+    super('CheckStarted', new Date());
+  }
+}
