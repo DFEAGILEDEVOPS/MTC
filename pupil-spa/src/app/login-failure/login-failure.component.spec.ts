@@ -25,8 +25,8 @@ describe('LoginFailureComponent', () => {
 
   it('should tell the user whats wrong', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('p.lede').textContent).toMatch(
-      /The details entered do not match our records. Please check with your teacher that you used the correct school password and pupil PIN\./
-    );
+    const s = 'The details entered do not match our records. Please check with your teacher that you used ' +
+      'the correct school password and pupil PIN';
+    expect(compiled.querySelector('p.lede').textContent).toMatch(/s/);
   });
 });

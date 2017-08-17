@@ -26,7 +26,6 @@ describe('CheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
     component = fixture.componentInstance;
-    spyOn(component, 'ngDoCheck').and.returnValue('');
     fixture.detectChanges();
   });
 
@@ -37,15 +36,29 @@ describe('CheckComponent', () => {
   it('default view should be the loading screen', () => {
     fixture.whenStable().then(() => {
       const compiled = fixture.debugElement.nativeElement;
+      // console.log('1 ' + compiled.innerHTML);
       expect(compiled.querySelector('app-loading')).toBeTruthy();
     });
   });
 
   xit('setting the viewState to question shows the question screen', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    // TODO: set viewState here.
-    expect(compiled.querySelector('app-question')).toBeTruthy();
+    component.viewState = 'question';
+    fixture.whenStable().then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('app-question')).toBeTruthy();
+      // console.log(compiled);
+    });
   });
+
+  xit('setting the viewState to complete shows the check complete screen', () => {
+    component.viewState = 'complete';
+    fixture.whenStable().then(() => {
+        const compiled = fixture.debugElement.nativeElement;
+        expect(compiled.querySelector('app-check-complete')).toBeTruthy();
+      }
+    );
+  });
+
 
   it('calling nextQuestion shows the next question', () => {
     component.nextQuestion();
@@ -54,7 +67,51 @@ describe('CheckComponent', () => {
       // Check we can find the app-loading selector.  It won't be replaced by HTML
       // because of the NO_ERRORS_SCHEMA.
       expect(compiled.querySelector('app-loading')).toBeTruthy();
-      expect(component.ngDoCheck).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('calling nextQuestion shows the complete page at the end of the check', () => {
+    spyOn(mockQuestionService, 'getNextQuestionNumber').and.returnValue(null);
+    component.nextQuestion();
+    fixture.whenStable().then(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      // expect(compiled.querySelector('app-check-complete')).toBeTruthy();
+      expect(component.viewState).toBe('complete');
+      expect(mockQuestionService.getNextQuestionNumber).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('manualSubmitHandler', () => {
+    it('stores the answer in the Question model', () => {
+      spyOn(component, 'setAnswer');
+      component.manualSubmitHandler('testinput1');
+      expect(component.setAnswer).toHaveBeenCalledWith('testinput1');
+    });
+
+    it('calls nextQuestion()', () => {
+      spyOn(component, 'nextQuestion');
+      component.manualSubmitHandler('testinput');
+      expect(component.nextQuestion).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('questionTimeoutHandler()', () => {
+    it('stores the answer in the Question model', () => {
+      spyOn(component, 'setAnswer');
+      component.questionTimeoutHandler('testinput2');
+      expect(component.setAnswer).toHaveBeenCalledWith('testinput2');
+    });
+    it('calls nextQuestion()', () => {
+      spyOn(component, 'nextQuestion');
+      component.questionTimeoutHandler('testinput');
+      expect(component.nextQuestion).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('loadingTimeoutHandler', () => {
+    it('sets the viewState', () => {
+      component.loadingTimeoutHandler();
+      expect(component.viewState).toBe('question');
     });
   });
 });
