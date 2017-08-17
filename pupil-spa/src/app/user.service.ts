@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 import 'rxjs/add/operator/toPromise';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from './storage.service';
@@ -11,8 +12,6 @@ const schoolDataKey = 'school';
 @Injectable()
 export class UserService {
   private loggedIn = false;
-  // TODO: source from config set on deployment
-  private apiURL = 'http://localhost:3001';
   data: any = {};
 
   constructor(private http: Http, private storageService: StorageService) {
@@ -25,7 +24,7 @@ export class UserService {
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({headers: headers});
 
-      await this.http.post(`${this.apiURL}/api/questions`,
+      await this.http.post(`${environment.apiURL}/api/questions`,
         { schoolPin, pupilPin },
         requestArgs)
         .toPromise()
