@@ -21,9 +21,43 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   @Output()
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
+  /**
+   * The user's answer made up of recorded numbers.  This is a string as the user may have leading zeros
+   * which we want to store.
+   * Used in the template.
+   * @type {string}
+   */
   public answer = '';
+
+  /**
+   * The remaining time in seconds until the answer is automatically submitted
+   * Used in the template.
+   */
+  public remainingTime: number;
+
+  /**
+   * The time in ms since the epoch when the answer will be automatically submitted.
+   * Used to calculate the remaining time counter.
+   */
+  private stopTime: number;
+
+  /**
+   * Flag to indicate that the answer has been submitted (either manually or on timeout)
+   * @type {boolean}
+   */
   private submitted = false;
-  private timeout;
+
+  /**
+   * Store the return value of setTimeout used to submit the answer.  The setTimeout() is cancelled
+   * if the user manually submits the answer.
+   */
+  private timeout: number;
+
+
+  /**
+   * Store the return value of setInterval - so it can be cancelled
+   */
+  private countdownInterval: number;
 
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -71,15 +105,25 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+    this.remainingTime = this.questionTimeoutSecs;
   }
 
   /**
    * Start the timer when the view is ready.
    */
   ngAfterViewInit() {
-    this.timeout = setTimeout(() => {
+    this.timeout = window.setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
+    this.countdownInterval = window.setInterval(() => {
+      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
+      if (timeLeft < 0 ) {
+        clearInterval(this.countdownInterval);
+        timeLeft = 0;
+      }
+      this.remainingTime = Math.ceil(timeLeft);
+    }, 250);
   }
 
   /**
@@ -125,6 +169,10 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     if (this.timeout) {
       // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
+    }
+    // Clear the interval timer
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
     }
     // console.log(`submitting answer ${this.answer}`);
     this.manualSubmitEvent.emit(this.answer);
