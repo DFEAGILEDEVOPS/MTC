@@ -25,7 +25,7 @@ describe('QuestionComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     // prevent Timeout's being set
-    //spyOn(component, 'ngAfterViewInit').and.returnValue(null);
+    spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
