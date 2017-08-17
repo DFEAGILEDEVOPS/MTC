@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { QuestionComponent } from './question.component';
 import { AuditService } from "../audit.service";
 import { AuditServiceMock } from "../audit.service.mock";
-import { QuestionRendered, QuestionAnswered } from "../auditEntry";
+import { QuestionRendered, QuestionAnswered, AuditEntry } from "../auditEntry";
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -25,7 +25,7 @@ describe('QuestionComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     // prevent Timeout's being set
-    spyOn(component, 'ngAfterViewInit').and.returnValue(null);
+    //spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
@@ -115,23 +115,28 @@ describe('QuestionComponent', () => {
     });
   });
 
-  describe('auditing', () => {
+  describe('audit entry', () => {
+    let auditEntryInserted: AuditEntry;
     beforeEach(() => {
-      spyOn(auditServiceMock, 'addEntry').and.callFake((entry) => {
-        console.log('addEntry called with:', entry);
+      let auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(auditService, 'addEntry').and.callFake((entry) => {
+        auditEntryInserted = entry;
       });
     });
-    it('adds audit entry on question rendered', async(() => {
+    it('is added on question rendered', async(() => {
       fixture.whenRenderingDone().then(() => {
+        component.ngAfterViewInit();
         expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionRendered());
+        expect(auditEntryInserted instanceof QuestionRendered).toBeTruthy();
       });
     }));
 
-    it('adds audit entry on answer submitted', async(() => {
+    it('is added on answer submitted', async(() => {
       fixture.whenRenderingDone().then(() => {
+        spyOn(component,'answerIsLongEnoughToManuallySubmit').and.returnValue(true);
+        component.onSubmit();
         expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-        expect(auditServiceMock.addEntry).toHaveBeenCalledWith(new QuestionAnswered());
+        expect(auditEntryInserted instanceof QuestionAnswered).toBeTruthy();
       });
     }));
   });
