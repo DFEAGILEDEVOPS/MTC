@@ -25,7 +25,9 @@ describe('QuestionComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     // prevent Timeout's being set
-    spyOn(component, 'ngAfterViewInit').and.returnValue(null);
+    // NOTE - calling this makes no difference to sendTimeoutEvent test.
+    // all other tests work without the call below.
+    //spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
@@ -75,7 +77,6 @@ describe('QuestionComponent', () => {
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('123');
       });
-      component.onSubmit();
     }));
     it('only allows submit to happen once', async(() => {
       component.answer = '124';
@@ -89,10 +90,12 @@ describe('QuestionComponent', () => {
   });
 
   describe('sendTimeoutEvent', () => {
+    // ISSUE: assertions never run!
     it('emits the answer', async(() => {
       component.answer = '125';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('125');
+        expect(false).toBe(true);
       });
       component.sendTimeoutEvent();
     }));
@@ -123,22 +126,18 @@ describe('QuestionComponent', () => {
         auditEntryInserted = entry;
       });
     });
-    it('is added on question rendered', async(() => {
-      fixture.whenRenderingDone().then(() => {
-        component.ngAfterViewInit();
-        expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-        expect(auditEntryInserted instanceof QuestionRendered).toBeTruthy();
-      });
-    }));
+    it('is added on question rendered', () => {
+      component.ngAfterViewInit();
+      expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof QuestionRendered).toBeTruthy();
+    });
 
-    it('is added on answer submitted', async(() => {
-      fixture.whenRenderingDone().then(() => {
-        spyOn(component,'answerIsLongEnoughToManuallySubmit').and.returnValue(true);
-        component.onSubmit();
-        expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-        expect(auditEntryInserted instanceof QuestionAnswered).toBeTruthy();
-      });
-    }));
+    it('is added on answer submitted', () => {
+      component.answer = '42';
+      component.onSubmit();
+      expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof QuestionAnswered).toBeTruthy();
+    });
   });
 
 });
