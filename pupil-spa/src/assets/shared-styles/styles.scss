@@ -169,3 +169,7 @@ legend {
     margin-right: em(20);
   }
 }
+
+/* General */
+/* Prevent anything on the screen being selectable */
+body { user-select: none; }
