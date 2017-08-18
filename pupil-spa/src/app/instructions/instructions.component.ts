@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { QuestionService } from '../question.service';
+import { AuditService } from '../audit.service';
+import { CheckStarted } from '../auditEntry';
 
 @Component({
   selector: 'app-instructions',
@@ -14,7 +15,10 @@ export class InstructionsComponent implements OnInit {
   public loadingTime: number;
   public questionTime: number;
 
-  constructor(private router: Router, private questionService: QuestionService) {
+  constructor(
+    private router: Router,
+    private questionService: QuestionService,
+    private auditService: AuditService) {
     this.count = this.questionService.getNumberOfQuestions();
     const config = this.questionService.getConfig();
     this.loadingTime = config.loadingTime;
@@ -25,6 +29,7 @@ export class InstructionsComponent implements OnInit {
   }
 
   onClick() {
+    this.auditService.addEntry(new CheckStarted());
     this.router.navigate(['check']);
   }
 

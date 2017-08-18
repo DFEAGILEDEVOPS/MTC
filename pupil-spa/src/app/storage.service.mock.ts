@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StorageKey } from './storage.service'
+import { StorageKey } from './storage.service';
 
 export class StorageServiceMock {
 
