@@ -30,7 +30,8 @@
     "core-js": "^2.5.0",
     "fs-extra": "^4.0.1",
     "govuk-elements-sass": "^3.1.1",
-    "govuk_frontend_toolkit": "^7.0.1",
+    "gulp": "^3.9.1",
+    "gulp-string-replace": "^0.4.0",
     "node-sass-utils": "^1.1.2",
     "rxjs": "^5.4.1",
     "zone.js": "^0.8.16"

@@ -2674,3 +2674,8 @@ legend {
 /* form-buttons */
 .form-buttons input, .form-buttons a {
   margin-right: 1.05263em; }
+
+/* General */
+/* Prevent anything on the screen being selectable */
+body {
+  user-select: none; }
