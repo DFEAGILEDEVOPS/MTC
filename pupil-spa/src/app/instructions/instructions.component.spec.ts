@@ -4,15 +4,15 @@ import { Router } from '@angular/router';
 import { InstructionsComponent } from './instructions.component';
 import { QuestionServiceMock } from '../question.service.mock';
 import { QuestionService } from '../question.service';
-import { AuditServiceMock } from "../audit.service.mock";
-import { AuditService } from "../audit.service";
-import { AuditEntry, CheckStarted } from "../auditEntry";
+import { AuditServiceMock } from '../audit.service.mock';
+import { AuditService } from '../audit.service';
+import { AuditEntry, CheckStarted } from '../auditEntry';
 
 describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
   let fixture: ComponentFixture<InstructionsComponent>;
   let mockRouter;
-  let auditServiceMock = new AuditServiceMock();
+  const auditServiceMock = new AuditServiceMock();
 
   beforeEach(async(() => {
     mockRouter = {
@@ -48,7 +48,7 @@ describe('InstructionsComponent', () => {
   describe('audit entry', () => {
     let auditEntryInserted: AuditEntry;
     beforeEach(() => {
-      let auditService = fixture.debugElement.injector.get(AuditService);
+      const auditService = fixture.debugElement.injector.get(AuditService);
       spyOn(auditService, 'addEntry').and.callFake((entry) => {
         auditEntryInserted = entry;
       });
