@@ -50,7 +50,6 @@ describe('InstructionsComponent', () => {
     beforeEach(() => {
       let auditService = fixture.debugElement.injector.get(AuditService);
       spyOn(auditService, 'addEntry').and.callFake((entry) => {
-        console.log('addEntry called with:', entry);
         auditEntryInserted = entry;
       });
     });
