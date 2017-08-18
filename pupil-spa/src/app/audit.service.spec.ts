@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { StorageServiceMock } from './storage.service.mock';
 import { AuditService } from './audit.service';
 import { StorageService } from './storage.service';
-import { AuditEntry, AuditEntryType } from './auditEntry';
+import { AuditEntry, AuditEntryType, QuestionRendered, CheckStarted, QuestionAnswered } from './auditEntry';
 
 let service: AuditService;
 let mockStorageService: StorageServiceMock;
@@ -28,14 +28,14 @@ describe('AuditService', () => {
     it('should add entry using audit key to storageService', () => {
       spyOn(mockStorageService, 'setItem');
 
-      const entry = new AuditEntry('QuestionRendered', new Date());
+      const entry = new QuestionRendered();
       service.addEntry(entry);
 
       expect(mockStorageService.setItem).toHaveBeenCalledWith('audit', [entry]);
     });
 
     it('should add as one item array if no existing entries', () => {
-      const entry = new AuditEntry('CheckStarted', new Date());
+      const entry = new CheckStarted();
       let entries = new Array<AuditEntry>();
 
       spyOn(mockStorageService, 'getItem').and.callFake(() => {
@@ -55,9 +55,9 @@ describe('AuditService', () => {
     });
 
     it('should append new entries, preserve existing ones', () => {
-      const firstEntry = new AuditEntry('PauseRendered', new Date(), { foo: 'bar' });
-      const secondEntry = new AuditEntry('CheckStarted', new Date());
-      const thirdEntry = new AuditEntry('QuestionRendered', new Date());
+      const firstEntry = new CheckStarted({ foo: 'bar' });
+      const secondEntry = new QuestionRendered();
+      const thirdEntry = new QuestionAnswered();
       const expectedAuditEntries = new Array<AuditEntry>(firstEntry, secondEntry, thirdEntry);
       let actualAuditEntries = new Array<AuditEntry>();
 

@@ -33,7 +33,7 @@ describe('StorageService', () => {
     it('adds item to localStorage when key provided', () => {
       spyOn(localStorage, 'setItem');
       const key: StorageKey = 'answers';
-      const value = {setItem_value: 'value'};
+      const value = { setItem_value: 'value' };
 
       service.setItem(key, value);
 
@@ -57,7 +57,7 @@ describe('StorageService', () => {
 
     it('returns item when key provided and item exists', () => {
       const key = 'answers';
-      const value = { getItem: 'getItem_Value'};
+      const value = { getItem: 'getItem_Value' };
       localStorage.setItem(key, JSON.stringify(value));
 
       const data = service.getItem(key);
@@ -113,9 +113,9 @@ describe('StorageService', () => {
   describe('getKeys', () => {
     it('returns all keys from localStorage', () => {
       const items = [
-        { key: 'item1', value: [1,2,3] },
-        { key: 'item2', value: [4,5,6] },
-        { key: 'item3', value: [7,8,9] }
+        { key: 'item1', value: [1, 2, 3] },
+        { key: 'item2', value: [4, 5, 6] },
+        { key: 'item3', value: [7, 8, 9] }
       ];
 
       items.forEach((item) => {

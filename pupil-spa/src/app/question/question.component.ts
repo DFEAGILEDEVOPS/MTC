@@ -1,11 +1,17 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { AuditService } from '../audit.service';
+import { QuestionRendered, QuestionAnswered } from '../auditEntry';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: [ './question.component.css' ]
+  styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
+
+  constructor(private auditService: AuditService) {
+  }
+
   @Input()
   public factor1 = 0;
 
@@ -59,7 +65,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   private countdownInterval: number;
 
-  @HostListener('document:keydown', [ '$event' ])
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
@@ -101,9 +107,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  constructor() {
-  }
-
   ngOnInit() {
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
     this.remainingTime = this.questionTimeoutSecs;
@@ -113,6 +116,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * Start the timer when the view is ready.
    */
   ngAfterViewInit() {
+    this.auditService.addEntry(new QuestionRendered());
     this.timeout = window.setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
@@ -175,6 +179,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearInterval(this.countdownInterval);
     }
     // console.log(`submitting answer ${this.answer}`);
+    this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
     return true;
