@@ -18,8 +18,8 @@ class CheckPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
 
-  def wait_for_question(time=3)
-    wait_until(time + 0.5, 0.1) {question.visible?}
+  def wait_for_question(time=4)
+    wait_until(time + 0.5, 0.1) {has_question?}
   end
 
   def enter_answer_via_keyboard(answer)
@@ -27,6 +27,14 @@ class CheckPage < SitePrism::Page
     answer_numbers.each do |number|
       wait_for_number_pad
       number_pad.send(NumbersInWords.in_words(number.to_i)).click
+    end
+  end
+
+  def enter_answer_via_physical_keyboard(answer)
+    answer_numbers = answer.to_s.scan(/\d/)
+    answer_numbers.each do |number|
+      wait_for_number_pad
+      number_pad.one.send_keys("numpad#{number}".to_sym)
     end
   end
 
