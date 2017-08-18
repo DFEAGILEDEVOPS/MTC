@@ -1,5 +1,4 @@
-const uuidv4 = require('uuid/v4');
-
+const uuidv4 = require('uuid/v4')
 const CheckForm = require('../models/check-form')
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
