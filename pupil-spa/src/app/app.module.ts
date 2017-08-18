@@ -23,6 +23,7 @@ import { StorageService } from './storage.service';
 import { AnswerService } from './answer.service';
 import { UserService } from './user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
+import { AuditService } from "./audit.service";
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -68,7 +69,8 @@ const appRoutes: Routes = [
     LoggedInGuard,
     QuestionService,
     StorageService,
-    UserService
+    UserService,
+    AuditService
   ],
   bootstrap: [AppComponent]
 })
