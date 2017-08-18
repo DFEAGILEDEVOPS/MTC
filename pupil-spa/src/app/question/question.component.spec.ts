@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
-import { AuditService } from "../audit.service";
-import { AuditServiceMock } from "../audit.service.mock";
-import { QuestionRendered, QuestionAnswered, AuditEntry } from "../auditEntry";
+import { AuditService } from '../audit.service';
+import { AuditServiceMock } from '../audit.service.mock';
+import { QuestionRendered, QuestionAnswered, AuditEntry } from '../auditEntry';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
-  let auditServiceMock = new AuditServiceMock();
+  const auditServiceMock = new AuditServiceMock();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,7 +27,7 @@ describe('QuestionComponent', () => {
     // prevent Timeout's being set
     // NOTE - calling this makes no difference to sendTimeoutEvent test.
     // all other tests work without the call below.
-    //spyOn(component, 'ngAfterViewInit').and.returnValue(null);
+    // spyOn(component, 'ngAfterViewInit').and.returnValue(null);
   });
 
   it('should be created', () => {
@@ -121,7 +121,7 @@ describe('QuestionComponent', () => {
   describe('audit entry', () => {
     let auditEntryInserted: AuditEntry;
     beforeEach(() => {
-      let auditService = fixture.debugElement.injector.get(AuditService);
+      const auditService = fixture.debugElement.injector.get(AuditService);
       spyOn(auditService, 'addEntry').and.callFake((entry) => {
         auditEntryInserted = entry;
       });

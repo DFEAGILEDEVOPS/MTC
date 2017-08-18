@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { AuditService } from "../audit.service";
-import { QuestionRendered, QuestionAnswered } from "../auditEntry";
+import { AuditService } from '../audit.service';
+import { QuestionRendered, QuestionAnswered } from '../auditEntry';
 
 @Component({
   selector: 'app-question',
