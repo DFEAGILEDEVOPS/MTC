@@ -27,6 +27,11 @@ export class CheckComponent implements OnInit {
 
   ngOnInit() {
     this.viewState = 'preload';
+    // Prevent the user going back a page
+    history.pushState(null, null, location.href);
+    window.onpopstate = function(event) {
+      history.go(1);
+    };
   }
 
   manualSubmitHandler(answer: string) {
