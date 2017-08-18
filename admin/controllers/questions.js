@@ -26,7 +26,7 @@ const getQuestions = async (req, res) => {
     throw new Error(error)
   }
   if (!pupil || !school) return res.status(401).json({error: 'Unauthorised'})
-  if (!checkForm) return res.status(404).json({error: 'Question set not found for pupil'})
+  if (!checkForm) return res.status(500).json({error: 'Question set not found for pupil'})
 
   let {questions} = checkForm
   questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })

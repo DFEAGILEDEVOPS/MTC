@@ -41,7 +41,7 @@ paths:
           description: "invalid input"
         401:
           description: "unauthorised"
-        404:
+        500:
           description: "question set not found for pupil"
       x-swagger-router-controller: "Default"
 definitions:
