@@ -85,3 +85,8 @@ When(/^I should be able to correct my answer if i am quick enough$/) do
   check_page.enter_answer_via_physical_keyboard(values.first.to_i * values.last.to_i)
   expect(check_page.answer.text).to_not eql @value
 end
+
+
+Then(/^I should see a timer$/) do
+  expect(check_page).to have_timer
+end

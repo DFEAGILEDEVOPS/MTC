@@ -9,6 +9,11 @@ Feature: Check questions
     When the loading screen has expired
     Then I should see a question
 
+  Scenario: Check page has a timer
+    Given I have started the check
+    When the loading screen has expired
+    Then I should see a timer
+
   Scenario: Question should display for configured number of seconds
     Given I have started the check
     When the loading screen has expired
