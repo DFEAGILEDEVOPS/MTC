@@ -9,7 +9,7 @@ const copyToolkit = () => {
   const folders = ['stylesheets', 'javascripts']
 
   for (let folder of folders) {
-    let origin = `${__dirname}/../node_modules/govuk-elements-sass/node_modules/govuk_frontend_toolkit/${folder}`
+    let origin = `${__dirname}/../node_modules/govuk_frontend_toolkit/${folder}`
     let destination = `${__dirname}/../src/assets/govuk_frontend_toolkit/${folder}`
     /**
      * Copy files over.
@@ -32,7 +32,7 @@ const copyToolkit = () => {
  * Copy files over.
  */
 const copyToolkitImages = () => {
-  const imgOrigin = `${__dirname}/../node_modules/govuk-elements-sass/node_modules/govuk_frontend_toolkit/images`
+  const imgOrigin = `${__dirname}/../node_modules/govuk_frontend_toolkit/images`
   const imgDest = `${__dirname}/../src/assets/govuk_frontend_toolkit/images`
 
   try {
