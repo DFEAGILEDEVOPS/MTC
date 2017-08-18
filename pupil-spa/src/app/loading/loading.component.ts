@@ -1,4 +1,6 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { AuditService } from "../audit.service";
+import { PauseRendered } from "../auditEntry";
 
 @Component({
   selector: 'app-loading',
@@ -20,7 +22,7 @@ export class LoadingComponent implements AfterViewInit {
   @Output()
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  constructor(private auditService: AuditService) {
   }
 
   /**
@@ -38,6 +40,7 @@ export class LoadingComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     // console.log('loading.component: after view init called');
+    this.auditService.addEntry(new PauseRendered());
     setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.loadingTimeout * 1000);
