@@ -83,7 +83,7 @@ describe('questions controller', () => {
     const getQuestions = mockQuestionData(true, true, false)
     await getQuestions(req, res)
     const data = JSON.parse(res._getData())
-    expect(res.statusCode).toBe(404)
+    expect(res.statusCode).toBe(500)
     expect(data.error).toBe('Question set not found for pupil')
     done()
   })
