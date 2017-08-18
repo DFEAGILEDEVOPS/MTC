@@ -90,8 +90,8 @@ describe('QuestionComponent', () => {
   });
 
   describe('sendTimeoutEvent', () => {
-    // ISSUE: assertions never run!
-    it('emits the answer', async(() => {
+    // TODO: assertions never run!
+    xit('emits the answer', async(() => {
       component.answer = '125';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('125');
