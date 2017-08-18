@@ -21,7 +21,7 @@ const getQuestions = async (req, res) => {
     // the pupil will receive the first one
     pupil = await Pupil.findOne({'pin': pupilPin}).lean().exec()
     school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
-    checkForm = await CheckForm.findOne({}).sort({createdAt: 1}).lean().exec()
+    checkForm = await CheckForm.findOne({}).lean().exec()
   } catch (error) {
     throw new Error(error)
   }
