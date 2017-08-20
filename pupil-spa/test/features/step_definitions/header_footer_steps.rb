@@ -33,6 +33,6 @@ Given(/^I am on the instructions page$/) do
 end
 
 Given(/^I am on the complete page$/) do
-  step 'I have logged in'
-  complete_page.load
+  step 'I have started the check'
+  step 'I should be able to use the on screen keyboard to complete the test'
 end
