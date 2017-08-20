@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 import { QuestionService } from '../question.service';
 import { Question } from '../question.model';
@@ -23,6 +23,14 @@ export class CheckComponent implements OnInit {
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
     this.question = this.questionService.getQuestion(this.questionNumber);
     this.config = this.questionService.getConfig();
+  }
+
+  @HostListener('document:touchend', [ '$event' ])
+  handleTouchEndEvent() {
+    // IMPORTANT: Prevent double-tap zoom on Ipad
+    event.preventDefault();
+    event.target.dispatchEvent(new Event('click'));
+    return false;
   }
 
   ngOnInit() {
