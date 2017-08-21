@@ -4,6 +4,7 @@ import { QuestionComponent } from './question.component';
 import { AuditService } from '../audit.service';
 import { AuditServiceMock } from '../audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../auditEntry';
+import { RegisterInputService} from "../registerInput.service";
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -14,7 +15,8 @@ describe('QuestionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuestionComponent],
       providers: [
-        { provide: AuditService, useValue: auditServiceMock }
+        { provide: AuditService, useValue: auditServiceMock },
+        RegisterInputService
       ]
     })
       .compileComponents();

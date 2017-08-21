@@ -1,15 +1,18 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from '../audit.service';
 import { QuestionRendered, QuestionAnswered } from '../auditEntry';
+import { RegisterInputService} from "../registerInput.service";
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: ['./question.component.css'],
+  providers: [RegisterInputService]
+
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
-  constructor(private auditService: AuditService) {
+  constructor(private auditService: AuditService, private registerInputService: RegisterInputService) {
   }
 
   @Input()
@@ -65,11 +68,20 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   private countdownInterval: number;
 
+  @HostListener('document:mousedown', [ '$event' ])
+  handleMouseEvent(event: MouseEvent) {
+    this.registerInputService.addEntry(event)
+  }
+  @HostListener('document:touchstart', [ '$event' ])
+  handleTouchEvent(event: TouchEvent) {
+    this.registerInputService.addEntry(event)
+  }
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
-
+    // register inputs
+    this.registerInputService.addEntry(event)
     switch (event.keyCode) {
       case 8:  // backspace
       case 46: // delete
@@ -99,8 +111,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       case 104: // kp 8
       case 105: // kp 9
         this.addChar(key);
-        break;
-      default:
         break;
     }
     // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
@@ -146,6 +156,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @param {number} number
    */
   onClickAnswer(number: number) {
+    this.registerInputService.storeEntry(number.toString(), 'click')
     this.addChar(number.toString());
   }
 
