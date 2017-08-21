@@ -17,7 +17,7 @@ let sandbox
 const mockQuestionData = (hasPupil, hasSchool, hasCheckform) => {
   sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(hasPupil && pupilMock)
   sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(hasSchool && schoolMock)
-  sandbox.mock(CheckForm).expects('findOne').chain('sort').chain('lean').chain('exec').resolves(hasCheckform && checkFormMock)
+  sandbox.mock(CheckForm).expects('findOne').chain('lean').chain('exec').resolves(hasCheckform && checkFormMock)
   sandbox.mock(configService).expects('getConfig').resolves({questionTime: 6, loadingTime: 3})
 
   const { getQuestions } = proxyquire('../../controllers/questions', {
@@ -87,6 +87,7 @@ describe('questions controller', () => {
     expect(data.error).toBe('Question set not found for pupil')
     done()
   })
+
   it('returns a valid response', async (done) => {
     const req = httpMocks.createRequest({
       method: 'POST',
@@ -95,8 +96,8 @@ describe('questions controller', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        pupilPin: 'd55sg',
-        schoolPin: 'fdh6fb3h'
+        pupilPin: 'pin',
+        schoolPin: 'pin'
       }
     })
     const res = httpMocks.createResponse()
