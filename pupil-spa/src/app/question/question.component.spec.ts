@@ -4,7 +4,9 @@ import { QuestionComponent } from './question.component';
 import { AuditService } from '../audit.service';
 import { AuditServiceMock } from '../audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../auditEntry';
-import { RegisterInputService} from "../registerInput.service";
+import { RegisterInputService } from '../registerInput.service';
+import { QuestionService} from '../question.service';
+import { StorageService } from '../storage.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -16,7 +18,9 @@ describe('QuestionComponent', () => {
       declarations: [QuestionComponent],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        RegisterInputService
+        RegisterInputService,
+        QuestionService,
+        StorageService
       ]
     })
       .compileComponents();
