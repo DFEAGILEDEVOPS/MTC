@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { StorageService } from './storage.service';
-import { QuestionService} from "./question.service";
+import { QuestionService} from './question.service';
 
 
 @Injectable()
@@ -17,8 +17,8 @@ export class RegisterInputService implements OnDestroy {
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
-    eventValue = eventValue || event.key || ''
-    this.storeEntry(eventValue, event.type)
+    eventValue = eventValue || event.key || '';
+    this.storeEntry(eventValue, event.type);
   }
 
   public storeEntry(eventValue, eventType) {
@@ -26,16 +26,16 @@ export class RegisterInputService implements OnDestroy {
       input: eventValue,
       eventType: eventType,
       clientInputDate: new Date()
-    })
+    });
   }
 
   private getMouseButton(event) {
     if (!event.which) {
       /* IE case */
-      return (event.button < 2) ? 'left click' : ((event.button === 4) ? 'middle click' : 'right click')
+      return (event.button < 2) ? 'left click' : ((event.button === 4) ? 'middle click' : 'right click');
     } else {
       /* All others */
-      return (event.which < 2) ? 'left click' : ((event.which === 2) ? 'middle click' : 'right click')
+      return (event.which < 2) ? 'left click' : ((event.which === 2) ? 'middle click' : 'right click');
     }
   }
 

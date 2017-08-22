@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from '../audit.service';
 import { QuestionRendered, QuestionAnswered } from '../auditEntry';
-import { RegisterInputService} from "../registerInput.service";
+import { RegisterInputService} from '../registerInput.service';
 
 @Component({
   selector: 'app-question',
@@ -70,18 +70,18 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
-    this.registerInputService.addEntry(event)
+    this.registerInputService.addEntry(event);
   }
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event: TouchEvent) {
-    this.registerInputService.addEntry(event)
+    this.registerInputService.addEntry(event);
   }
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     const key = event.key;
     // register inputs
-    this.registerInputService.addEntry(event)
+    this.registerInputService.addEntry(event);
     switch (event.keyCode) {
       case 8:  // backspace
       case 46: // delete
@@ -156,7 +156,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @param {number} number
    */
   onClickAnswer(number: number) {
-    this.registerInputService.storeEntry(number.toString(), 'click')
+    this.registerInputService.storeEntry(number.toString(), 'click');
     this.addChar(number.toString());
   }
 
@@ -164,7 +164,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    this.registerInputService.storeEntry('backspace', 'click')
+    this.registerInputService.storeEntry('backspace', 'click');
     this.deleteChar();
   }
 
@@ -191,7 +191,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearInterval(this.countdownInterval);
     }
     // console.log(`submitting answer ${this.answer}`);
-    this.registerInputService.storeEntry('enter', 'click')
+    this.registerInputService.storeEntry('enter', 'click');
     this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
