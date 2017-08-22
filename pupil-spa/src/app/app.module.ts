@@ -68,6 +68,7 @@ const appRoutes: Routes = [
   providers: [
     LoggedInGuard,
     QuestionService,
+    AnswerService,
     StorageService,
     UserService,
     AuditService

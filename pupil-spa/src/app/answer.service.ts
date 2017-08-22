@@ -19,12 +19,11 @@ export class AnswerService {
     let answers = this.storageService.getItem('answers');
 
     if (!answers) {
-      answers = '[]';
+      answers = [];
     }
 
-    const existingAnswers = JSON.parse(answers);
-    existingAnswers.push(answer);
-    this.storageService.setItem('answers', JSON.stringify(existingAnswers));
+    answers.push(answer);
+    this.storageService.setItem('answers', answers);
   }
 
 }

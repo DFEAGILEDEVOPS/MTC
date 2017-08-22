@@ -3,6 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../question.service';
+import { AnswerService } from '../answer.service';
 import { QuestionServiceMock } from '../question.service.mock';
 
 const mockQuestionService = new QuestionServiceMock();
@@ -17,7 +18,8 @@ describe('CheckComponent', () => {
       declarations: [CheckComponent],
       schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
-        { provide: QuestionService, useValue: mockQuestionService }
+        { provide: QuestionService, useValue: mockQuestionService },
+        AnswerService
       ]
     })
       .compileComponents();
