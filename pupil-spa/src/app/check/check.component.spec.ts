@@ -74,8 +74,6 @@ describe('CheckComponent', () => {
     spyOn(mockQuestionService, 'getNextQuestionNumber').and.returnValue(null);
     component.nextQuestion();
     fixture.whenStable().then(() => {
-      // const compiled = fixture.debugElement.nativeElement;
-      // expect(compiled.querySelector('app-check-complete')).toBeTruthy();
       expect(component.viewState).toBe('complete');
       expect(mockQuestionService.getNextQuestionNumber).toHaveBeenCalledTimes(1);
     });
