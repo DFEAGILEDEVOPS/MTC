@@ -74,20 +74,12 @@ describe('CheckComponent', () => {
     spyOn(mockQuestionService, 'getNextQuestionNumber').and.returnValue(null);
     component.nextQuestion();
     fixture.whenStable().then(() => {
-      const compiled = fixture.debugElement.nativeElement;
-      // expect(compiled.querySelector('app-check-complete')).toBeTruthy();
       expect(component.viewState).toBe('complete');
       expect(mockQuestionService.getNextQuestionNumber).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('manualSubmitHandler', () => {
-    it('stores the answer in the Question model', () => {
-      spyOn(component, 'setAnswer');
-      component.manualSubmitHandler('testinput1');
-      expect(component.setAnswer).toHaveBeenCalledWith('testinput1');
-    });
-
     it('calls nextQuestion()', () => {
       spyOn(component, 'nextQuestion');
       component.manualSubmitHandler('testinput');
@@ -96,11 +88,6 @@ describe('CheckComponent', () => {
   });
 
   describe('questionTimeoutHandler()', () => {
-    it('stores the answer in the Question model', () => {
-      spyOn(component, 'setAnswer');
-      component.questionTimeoutHandler('testinput2');
-      expect(component.setAnswer).toHaveBeenCalledWith('testinput2');
-    });
     it('calls nextQuestion()', () => {
       spyOn(component, 'nextQuestion');
       component.questionTimeoutHandler('testinput');
