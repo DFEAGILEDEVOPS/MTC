@@ -22,6 +22,7 @@ export class CheckComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
+    event.preventDefault()
     return false;
   }
 

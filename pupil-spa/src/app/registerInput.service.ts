@@ -6,9 +6,9 @@ import { QuestionService} from "./question.service";
 @Injectable()
 export class RegisterInputService implements OnDestroy {
 
-  private questionInputs = this.storageService.getItem('inputs') || [];
-  private currentQuestion =this.questionService.getCurrentQuestionNumber();
-  constructor(private storageService: StorageService, private questionService: QuestionService) {
+  protected questionInputs = this.storageService.getItem('inputs') || [];
+  protected currentQuestion = this.questionService.getCurrentQuestionNumber();
+  constructor(protected storageService: StorageService, protected questionService: QuestionService) {
     this.questionInputs[this.currentQuestion] = this.questionInputs[this.currentQuestion] || [];
   }
 
@@ -17,7 +17,7 @@ export class RegisterInputService implements OnDestroy {
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
-    eventValue = eventValue || event.key || 'tap'
+    eventValue = eventValue || event.key || ''
     this.storeEntry(eventValue, event.type)
   }
 
