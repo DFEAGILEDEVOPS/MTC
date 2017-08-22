@@ -191,6 +191,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearInterval(this.countdownInterval);
     }
     // console.log(`submitting answer ${this.answer}`);
+    this.registerInputService.storeEntry('enter', 'click')
     this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
