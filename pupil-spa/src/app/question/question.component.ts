@@ -164,6 +164,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
+    this.registerInputService.storeEntry('backspace', 'click')
     this.deleteChar();
   }
 
