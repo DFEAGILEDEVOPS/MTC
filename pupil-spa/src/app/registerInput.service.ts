@@ -17,7 +17,7 @@ export class RegisterInputService implements OnDestroy {
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
-    eventValue = eventValue || event.key
+    eventValue = eventValue || event.key || 'tap'
     this.storeEntry(eventValue, event.type)
   }
 

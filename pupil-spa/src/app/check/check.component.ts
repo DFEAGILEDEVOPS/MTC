@@ -18,14 +18,6 @@ export class CheckComponent implements OnInit {
   public question: Question;
   public config: Config;
 
-  // @HostListener('document:keydown', ['$event'])
-  // handleKeyboardEvent(event: KeyboardEvent) {
-  //   // console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
-  //   // IMPORTANT: return false here
-  //   return false;
-  // }
-
-
   constructor(private questionService: QuestionService) {
     this.questionNumber = 1;
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
