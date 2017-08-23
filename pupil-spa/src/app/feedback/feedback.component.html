@@ -1,0 +1,75 @@
+<div class="grid-row">
+  <div class="column-two-thirds">
+    <header class="page-header">
+      <h1 class="heading-xlarge">Give feedback</h1>
+    </header>
+
+    <div *ngIf="(errorInputType || errorSatisfactionRating)"
+         class="error-summary"
+         role="group"
+         aria-labelledby="error-summary-heading-example-1"
+         tabindex="-1">
+      <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+        There were some problems with your input
+      </h1>
+    </div>
+
+    <form (ngSubmit)="onSubmit(commentText.value)" autocomplete="off">
+      <div [ngClass]="(errorInputType === true)?'form-group-error':'form-group'" class="text">
+        <fieldset>
+          <legend class="visually-hidden">Overall, how did you find the multiplication tables check?</legend>
+          <span *ngIf="errorInputType" class="error-message">Please choose an option below</span>
+          <div class="multiple-choice" *ngFor="let inputType of inputTypes">
+            <input type="radio"
+                   name="inputType"
+                   id="input-type-{{inputType.id}}"
+                   [value]="inputType.id"
+                   [checked]="idx === 0"
+                   (change)="onSelectionChange('inputType', inputType)">
+            <label for="input-type-{{inputType.id}}">{{inputType.value}}</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <br style="clear:both">
+
+      <h2 class="heading-medium no-top-margin">How easy or difficult was it to enter your answers today?</h2>
+
+      <div [ngClass]="(errorSatisfactionRating === true)?'form-group-error':'form-group'" class="text">
+        <fieldset>
+          <legend class="visually-hidden">How easy or difficult was it to enter your answers today?</legend>
+          <span *ngIf="errorSatisfactionRating" class="error-message">Please choose an option below</span>
+          <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
+            <input type="radio"
+                   name="satisfactionRating"
+                   id="rating-{{satisfactionRating.id}}"
+                   value="rating.id"
+                   [checked]="idx === 0"
+                   (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
+            <label for="rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
+          </div>
+        </fieldset>
+      </div>
+
+      <br style="clear:both">
+
+      <div [ngClass]="(errorCommentExists === true)?'form-group-error':'form-group'" class="text">
+        <h2 class="heading-medium no-top-margin">What would make it better?</h2>
+        <span *ngIf="errorCommentExists" class="error-message">
+          (Comment error message)
+        </span>
+        <p>
+          <textarea #commentText name="commentText" class="textarea form-control"></textarea>
+          <br>
+          (Limit is 1200 characters)
+        </p>
+      </div>
+
+      <br style="clear:both">
+
+      <div class="form-group">
+        <input class="button button-start" type="submit" value="Send feedback" [disabled]="!enableSubmit">
+      </div>
+    </form>
+  </div>
+</div>
