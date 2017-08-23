@@ -41,13 +41,15 @@ export class CheckComponent implements OnInit {
 
   manualSubmitHandler(answer: string) {
     // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    this.answerService.setAnswer({ factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) });
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) };
+    this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
     // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    this.answerService.setAnswer({ factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) });
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) };
+    this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
 
