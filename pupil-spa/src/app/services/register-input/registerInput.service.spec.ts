@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
 
-import { StorageServiceMock } from './storage.service.mock';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 import { RegisterInputService } from './registerInput.service';
-import { StorageService } from './storage.service';
-import { QuestionService } from './question.service';
+import { StorageService } from '../storage/storage.service';
+import { QuestionService } from '../question/question.service';
 
 let mockStorageService: StorageServiceMock;
 

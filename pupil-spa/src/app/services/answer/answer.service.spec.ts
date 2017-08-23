@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Answer, AnswerService } from './answer.service';
-import { StorageService } from './storage.service';
+import { StorageService } from '../storage/storage.service';
 
 let service: AnswerService;
 let storageService: StorageService;

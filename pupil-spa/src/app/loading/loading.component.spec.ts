@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoadingComponent } from './loading.component';
-import { AuditServiceMock } from '../audit.service.mock';
-import { AuditService } from '../audit.service';
-import { AuditEntry, PauseRendered } from '../auditEntry';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditEntry, PauseRendered } from '../services/audit/auditEntry';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;

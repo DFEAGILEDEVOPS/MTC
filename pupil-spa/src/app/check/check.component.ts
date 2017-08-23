@@ -1,8 +1,8 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
-import { QuestionService } from '../question.service';
-import { AnswerService } from '../answer.service';
-import { Question } from '../question.model';
+import { QuestionService } from '../services/question/question.service';
+import { AnswerService } from '../services/answer/answer.service';
+import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
 
 @Component({

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
 import { Router } from '@angular/router';
-import { StorageService } from '../storage.service';
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-login-success',

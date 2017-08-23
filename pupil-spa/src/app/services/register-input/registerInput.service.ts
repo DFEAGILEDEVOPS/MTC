@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { StorageService } from './storage.service';
-import { QuestionService} from './question.service';
+import { StorageService } from '../storage/storage.service';
+import { QuestionService} from '../question/question.service';
 
 
 @Injectable()
