@@ -22,7 +22,15 @@ class CheckPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_question?}
   end
 
-  def enter_answer_via_keyboard(answer)
+  def answer_question_via(input_type, answer)
+    if input_type == 'numpad'
+      enter_answer_via_numpad(answer)
+    else
+      enter_answer_via_keyboard(answer)
+    end
+  end
+
+  def enter_answer_via_numpad(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
       wait_for_number_pad
@@ -30,7 +38,7 @@ class CheckPage < SitePrism::Page
     end
   end
 
-  def enter_answer_via_physical_keyboard(answer)
+  def enter_answer_via_keyboard(answer)
     answer_numbers = answer.to_s.scan(/\d/)
     answer_numbers.each do |number|
       wait_for_number_pad
@@ -38,18 +46,19 @@ class CheckPage < SitePrism::Page
     end
   end
 
-  def complete_check_with_correct_answers(number_of_questions)
+  def complete_check_with_correct_answers(number_of_questions, input_type)
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
       wait_for_question(2)
-      wait_until{check_page.question.visible?}
+      wait_until {check_page.question.visible?}
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
       @array_of_answers << answer
-      enter_answer_via_keyboard(answer)
-      number_pad.enter.click
+      answer_question_via(input_type, answer)
+      number_pad.enter.click if input_type == 'numpad'
+      number_pad.one.send_keys(:enter) if input_type == 'keyboard'
     end
     @array_of_answers
   end
@@ -63,7 +72,7 @@ class CheckPage < SitePrism::Page
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = (values.first.to_i * values.last.to_i + 5)
       @array_of_answers << answer
-      enter_answer_via_keyboard(answer)
+      enter_answer_via_numpad(answer)
       number_pad.enter.click
     end
     @array_of_answers
@@ -87,7 +96,7 @@ class CheckPage < SitePrism::Page
         number_pad.zero.click
         @zeros << '0'
       end
-      enter_answer_via_keyboard(answer)
+      enter_answer_via_numpad(answer)
       @array_of_answers << @zeros.join + answer.to_s
       number_pad.enter.click
     end
@@ -95,4 +104,47 @@ class CheckPage < SitePrism::Page
   end
 
 
+  def complete_question(answer, input_type)
+    array_of_answers = []
+    wait_for_preload
+    wait_for_question(2)
+    array_of_answers << answer
+    answer_question_via(input_type, answer)
+    number_pad.enter.click if input_type == 'numpad'
+    number_pad.one.send_keys(:enter) if input_type == 'keyboard'
+    array_of_answers
+  end
+
+  def array_of_inputs_from_numpad(array_of_answers)
+    @inputs_array = []
+    @question_inputs = []
+    array_of_answers.each do |answer|
+      @ans = []
+      answer.to_s.chars.map(&:to_i).each do |char|
+        @ans << {"input" => "left click", "eventType" => "mousedown"}
+        @ans << {"input" => char.to_s, "eventType" => "click"}
+      end
+      @ans << {"input" => "left click", "eventType" => "mousedown"}
+      @ans << {"input" => "enter", "eventType" => "click"}
+      @inputs_array << @ans
+    end
+    @inputs_array
+  end
+
+  def array_of_inputs_from_keyboard(array_of_answers)
+    @inputs_array = []
+    @question_inputs = []
+    array_of_answers.each do |answer|
+      @ans = []
+      answer.to_s.chars.map(&:to_i).each do |char|
+        @ans << {"input" => char.to_s, "eventType" => "keydown"}
+      end
+      @ans << {"input" => "Enter", "eventType" => "keydown"}
+      @ans << {"input" => "enter", "eventType" => "click"}
+      @inputs_array << @ans
+    end
+    @inputs_array
+  end
+
 end
+
