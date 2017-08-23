@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
 import { QuestionService } from '../question.service';
+import { AnswerService } from '../answer.service';
 import { Question } from '../question.model';
 import { Config } from '../config.model';
 
@@ -27,7 +28,7 @@ export class CheckComponent implements OnInit {
   }
 
 
-  constructor(private questionService: QuestionService) {
+  constructor(private questionService: QuestionService, private answerService: AnswerService) {
     this.questionNumber = 1;
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
     this.question = this.questionService.getQuestion(this.questionNumber);
@@ -53,11 +54,15 @@ export class CheckComponent implements OnInit {
 
   manualSubmitHandler(answer: string) {
     // console.log(`check.component: manualSubmitHandler(): ${answer}`);
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
+    this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
     // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
+    this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
 
