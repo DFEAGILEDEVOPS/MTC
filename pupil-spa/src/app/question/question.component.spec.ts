@@ -1,9 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
-import { AuditService } from '../audit.service';
-import { AuditServiceMock } from '../audit.service.mock';
-import { QuestionRendered, QuestionAnswered, AuditEntry } from '../auditEntry';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audit/auditEntry';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { QuestionService} from '../services/question/question.service';
+import { StorageService } from '../services/storage/storage.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -14,7 +17,10 @@ describe('QuestionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [QuestionComponent],
       providers: [
-        { provide: AuditService, useValue: auditServiceMock }
+        { provide: AuditService, useValue: auditServiceMock },
+        RegisterInputService,
+        QuestionService,
+        StorageService
       ]
     })
       .compileComponents();
