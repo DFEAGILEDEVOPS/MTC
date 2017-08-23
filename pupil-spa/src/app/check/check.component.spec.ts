@@ -2,10 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { CheckComponent } from './check.component';
-import { QuestionService } from '../services/question.service';
-import { AnswerService } from '../services/answer.service';
-import { StorageService } from '../services/storage.service';
-import { QuestionServiceMock } from '../services/question.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { AnswerService } from '../services/answer/answer.service';
+import { StorageService } from '../services/storage/storage.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 const mockQuestionService = new QuestionServiceMock();
 

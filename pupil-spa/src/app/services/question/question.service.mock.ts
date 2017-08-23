@@ -1,5 +1,5 @@
 import { Question } from './question.model';
-import { Config } from '../config.model';
+import { Config } from '../../config.model';
 
 export class QuestionServiceMock {
 

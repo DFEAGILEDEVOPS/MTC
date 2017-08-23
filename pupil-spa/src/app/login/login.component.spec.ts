@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
-import { QuestionService } from '../services/question.service';
-import { QuestionServiceMock } from '../services/question.service.mock';
-import { StorageService } from '../services/storage.service';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { StorageService } from '../services/storage/storage.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

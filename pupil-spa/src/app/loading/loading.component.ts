@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { AuditService } from '../services/audit.service';
-import { PauseRendered } from '../services/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
+import { PauseRendered } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-loading',

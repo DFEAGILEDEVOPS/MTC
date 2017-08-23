@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { QuestionService } from '../services/question.service';
-import { AuditService } from '../services/audit.service';
-import { CheckStarted } from '../services/auditEntry';
+import { QuestionService } from '../services/question/question.service';
+import { AuditService } from '../services/audit/audit.service';
+import { CheckStarted } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-instructions',

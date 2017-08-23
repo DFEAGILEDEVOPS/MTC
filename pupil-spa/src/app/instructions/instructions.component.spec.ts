@@ -2,11 +2,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { InstructionsComponent } from './instructions.component';
-import { QuestionServiceMock } from '../services/question.service.mock';
-import { QuestionService } from '../services/question.service';
-import { AuditServiceMock } from '../services/audit.service.mock';
-import { AuditService } from '../services/audit.service';
-import { AuditEntry, CheckStarted } from '../services/auditEntry';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditEntry, CheckStarted } from '../services/audit/auditEntry';
 
 describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
