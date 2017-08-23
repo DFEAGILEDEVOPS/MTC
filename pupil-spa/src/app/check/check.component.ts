@@ -18,6 +18,15 @@ export class CheckComponent implements OnInit {
   public question: Question;
   public config: Config;
 
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
+    // IMPORTANT: return false here
+    event.preventDefault();
+    return false;
+  }
+
+
   constructor(private questionService: QuestionService) {
     this.questionNumber = 1;
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
@@ -39,13 +48,11 @@ export class CheckComponent implements OnInit {
 
   manualSubmitHandler(answer: string) {
     // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    this.setAnswer(answer);
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
     // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    this.setAnswer(answer);
     this.nextQuestion();
   }
 
@@ -65,9 +72,5 @@ export class CheckComponent implements OnInit {
       // console.log('check.component: nextQuestion(): setting viewState to complete');
       this.viewState = 'complete';
     }
-  }
-
-  setAnswer(answer) {
-    this.question.answer = answer;
   }
 }
