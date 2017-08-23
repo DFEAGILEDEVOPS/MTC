@@ -35,6 +35,14 @@ export class CheckComponent implements OnInit {
     this.config = this.questionService.getConfig();
   }
 
+  @HostListener('document:touchend', [ '$event' ])
+  handleTouchEndEvent() {
+    // IMPORTANT: Prevent double-tap zoom on Ipad
+    event.preventDefault();
+    event.target.dispatchEvent(new Event('click'));
+    return false;
+  }
+
   ngOnInit() {
     this.viewState = 'preload';
   }
