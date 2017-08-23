@@ -26,11 +26,11 @@ describe('AnswerService', () => {
   });
 
   it('should append answer to answers object in storage service', () => {
-    const answer1 = new Answer(1, 1, 1);
-    const answer2 = new Answer(2, 2, 2);
+    const answer1 = new Answer(1, 1, '1');
+    const answer2 = new Answer(2, 2, '2');
     const existingAnswers = [answer1, answer2];
     storageService.setItem('answers', existingAnswers);
-    const answer3 = new Answer(3, 3, 3);
+    const answer3 = new Answer(3, 3, '3');
     const expected = [toPoJo(answer1), toPoJo(answer2), toPoJo(answer3)];
     service.setAnswer(answer3);
     const actual = storageService.getItem('answers');
@@ -38,7 +38,7 @@ describe('AnswerService', () => {
   });
 
   it('should create answers object if it does not already exist', () => {
-    const answer1 = new Answer(1, 1, 1);
+    const answer1 = new Answer(1, 1, '1');
     const expected = [toPoJo(answer1)];
     service.setAnswer(answer1);
     const actual = storageService.getItem('answers');
