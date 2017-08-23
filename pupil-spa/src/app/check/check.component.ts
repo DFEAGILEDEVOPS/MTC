@@ -45,18 +45,23 @@ export class CheckComponent implements OnInit {
 
   ngOnInit() {
     this.viewState = 'preload';
+    // Prevent the user going back a page
+    history.pushState(null, null, location.href);
+    window.onpopstate = function(event) {
+      history.go(1);
+    };
   }
 
   manualSubmitHandler(answer: string) {
     // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) };
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
     this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
 
   questionTimeoutHandler(answer: string) {
     // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer: parseInt(answer, 10) };
+    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
     this.answerService.setAnswer(answerSet);
     this.nextQuestion();
   }
