@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuestionComponent } from './question.component';
-import { AuditService } from '../audit.service';
-import { AuditServiceMock } from '../audit.service.mock';
-import { QuestionRendered, QuestionAnswered, AuditEntry } from '../auditEntry';
-import { RegisterInputService } from '../registerInput.service';
-import { QuestionService} from '../question.service';
-import { StorageService } from '../storage.service';
+import { AuditService } from '../services/audit.service';
+import { AuditServiceMock } from '../services/audit.service.mock';
+import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/auditEntry';
+import { RegisterInputService } from '../services/registerInput.service';
+import { QuestionService} from '../services/question.service';
+import { StorageService } from '../services/storage.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;

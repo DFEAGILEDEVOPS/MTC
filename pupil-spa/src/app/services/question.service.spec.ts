@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { QuestionService } from './question.service';
 import { StorageService } from './storage.service';
-import * as responseMock from './login.response.mock.json';
+import * as responseMock from '../login.response.mock.json';
 
 describe('QuestionService', () => {
 

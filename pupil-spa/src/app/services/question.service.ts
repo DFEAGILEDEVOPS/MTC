@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Question } from './question.model';
 
 import { StorageService } from './storage.service';
-import { Config } from './config.model';
+import { Config } from '../config.model';
 
 
 @Injectable()

@@ -18,12 +18,12 @@ import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
-import { QuestionService } from './question.service';
-import { StorageService } from './storage.service';
-import { AnswerService } from './answer.service';
-import { UserService } from './user.service';
+import { QuestionService } from './services/question.service';
+import { StorageService } from './services/storage.service';
+import { AnswerService } from './services/answer.service';
+import { UserService } from './services/user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
-import { AuditService } from './audit.service';
+import { AuditService } from './services/audit.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
