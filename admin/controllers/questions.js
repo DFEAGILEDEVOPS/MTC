@@ -1,10 +1,10 @@
 const uuidv4 = require('uuid/v4')
+
 const CheckForm = require('../models/check-form')
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
 const configService = require('../services/config-service')
-const jwt = require('jsonwebtoken')
-
+const jwtService = require('../services/jwt-service')
 
 /**
  * Returns the set of questions, pupil details and school details in json format
@@ -20,7 +20,7 @@ const getQuestions = async (req, res) => {
   try {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first one
-    pupil = await Pupil.findOne({'pin': pupilPin}).lean().exec()
+    pupil = await Pupil.findOne({'pin': pupilPin}).exec()
     school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
     checkForm = await CheckForm.findOne({}).lean().exec()
   } catch (error) {
@@ -40,18 +40,15 @@ const getQuestions = async (req, res) => {
   school = {id: school._id, name: school.name}
   const config = await configService.getConfig()
 
-  // Generate the JWT token
-  // TODO: for additional security add in a device Id
-  const payload = {
-    iss: 'MTC Admin',                                       // Issuer
-    sub: pupil._id,                                         // Subject
-    exp: Math.floor(Date.now() / 1000) + (60 * 60),         // Expiry
-    nbf: Math.floor(Date.now() / 1000),                     // Not before
-    jwi: uuid                                               // JWT token ID
+  let token
+  try {
+    token = await jwtService.createToken(pupil)
+    console.log('token ', token)
+  } catch (error) {
+    console.error(error)
+    res.setHeader('Content-Type', 'application/json')
+    return res.status(500).json({error: 'Access token error'})
   }
-
-  // Construct a JWT token
-  const token = jwt.sign(payload, 'sekret')
 
   res.setHeader('Content-Type', 'application/json')
   return res.send(JSON.stringify({
