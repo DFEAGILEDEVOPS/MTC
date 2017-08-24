@@ -11,7 +11,6 @@ export class SubmissionService {
 
   async submitData() {
     const localStorageData = this.storageService.getAllItems();
-    console.log('all items are:', localStorageData);
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
