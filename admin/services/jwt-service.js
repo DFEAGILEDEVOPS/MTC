@@ -1,7 +1,7 @@
 'use strict'
 const Promise = require('bluebird')
 const crypto = Promise.promisifyAll(require('crypto'))
-const jwt = require('jsonwebtoken')
+const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 const ObjectId = require('mongoose').Types.ObjectId
 
@@ -33,7 +33,7 @@ const jwtService = {
     }
 
     // Construct a JWT token
-    const token = jwt.sign(payload, pupil.jwtSecret)
+    const token = await jwt.sign(payload, pupil.jwtSecret)
     return token
   },
   /**
@@ -61,7 +61,7 @@ const jwtService = {
     }
 
     try {
-      jwt.verify(token, pupil.jwtSecret)
+      await jwt.verify(token, pupil.jwtSecret)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }
