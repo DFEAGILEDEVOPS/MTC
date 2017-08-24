@@ -2,8 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { CheckComponent } from './check.component';
-import { QuestionService } from '../question.service';
-import { QuestionServiceMock } from '../question.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { AnswerService } from '../services/answer/answer.service';
+import { StorageService } from '../services/storage/storage.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 const mockQuestionService = new QuestionServiceMock();
 
@@ -17,7 +19,9 @@ describe('CheckComponent', () => {
       declarations: [CheckComponent],
       schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
-        { provide: QuestionService, useValue: mockQuestionService }
+        { provide: QuestionService, useValue: mockQuestionService },
+        AnswerService,
+        StorageService
       ]
     })
       .compileComponents();
@@ -74,20 +78,12 @@ describe('CheckComponent', () => {
     spyOn(mockQuestionService, 'getNextQuestionNumber').and.returnValue(null);
     component.nextQuestion();
     fixture.whenStable().then(() => {
-      const compiled = fixture.debugElement.nativeElement;
-      // expect(compiled.querySelector('app-check-complete')).toBeTruthy();
       expect(component.viewState).toBe('complete');
       expect(mockQuestionService.getNextQuestionNumber).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('manualSubmitHandler', () => {
-    it('stores the answer in the Question model', () => {
-      spyOn(component, 'setAnswer');
-      component.manualSubmitHandler('testinput1');
-      expect(component.setAnswer).toHaveBeenCalledWith('testinput1');
-    });
-
     it('calls nextQuestion()', () => {
       spyOn(component, 'nextQuestion');
       component.manualSubmitHandler('testinput');
@@ -96,11 +92,6 @@ describe('CheckComponent', () => {
   });
 
   describe('questionTimeoutHandler()', () => {
-    it('stores the answer in the Question model', () => {
-      spyOn(component, 'setAnswer');
-      component.questionTimeoutHandler('testinput2');
-      expect(component.setAnswer).toHaveBeenCalledWith('testinput2');
-    });
     it('calls nextQuestion()', () => {
       spyOn(component, 'nextQuestion');
       component.questionTimeoutHandler('testinput');

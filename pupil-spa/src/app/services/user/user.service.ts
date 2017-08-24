@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
+import { environment } from '../../../environments/environment';
 import 'rxjs/add/operator/toPromise';
 import { Http, RequestOptions, Headers } from '@angular/http';
-import { StorageService } from './storage.service';
+import { StorageService } from '../storage/storage.service';
 const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';

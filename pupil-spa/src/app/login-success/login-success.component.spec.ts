@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { LoginSuccessComponent } from './login-success.component';
 import * as responseMock from '../login.response.mock.json';
-import { StorageService } from '../storage.service';
+import { StorageService } from '../services/storage/storage.service';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
