@@ -16,9 +16,9 @@ describe('HDF validator', function () {
     }
   }
 
-  function notAllowed () {
-    return [':', ';', ',', '.', '!', '@', '#', '$', ' ', '%', '^', '&', '*', '(', ')', '_', '+', '=']
-  }
+  // function notAllowed () {
+  //   return [':', ';', ',', '.', '!', '@', '#', '$', ' ', '%', '^', '&', '*', '(', ')', '_', '+', '=']
+  // }
 
   beforeEach(function (done) {
     req = {
