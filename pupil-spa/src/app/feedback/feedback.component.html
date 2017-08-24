@@ -44,11 +44,11 @@
           <div class="multiple-choice" *ngFor="let satisfactionRating of satisfactionRatings">
             <input type="radio"
                    name="satisfactionRating"
-                   id="satisfactionRating-{{satisfactionRating.id}}"
+                   id="satisfaction-rating-{{satisfactionRating.id}}"
                    [value]="satisfactionRating.id"
                    [checked]="idx === 0"
                    (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
-            <label for="satisfactionRating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
+            <label for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
           </div>
         </fieldset>
       </div>
