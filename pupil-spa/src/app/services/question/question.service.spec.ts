@@ -1,7 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 
 import { QuestionService } from './question.service';
 import { StorageService } from '../storage/storage.service';
+import { SubmissionService } from '../submission/submission.service';
 import * as responseMock from '../../login.response.mock.json';
 
 describe('QuestionService', () => {
@@ -17,8 +19,10 @@ describe('QuestionService', () => {
     const config = responseMock['config'];
     spyOn(mockStorageService, 'getItem').and.returnValues(questions, config);
     TestBed.configureTestingModule({
+      imports: [HttpModule],
       providers: [
         QuestionService,
+        SubmissionService,
         {provide: StorageService, useValue: mockStorageService}
       ]
     });

@@ -5,7 +5,6 @@ export type StorageKey = 'answers' | 'inputs' | 'session' |
 
 @Injectable()
 export class StorageService {
-
   setItem(key: StorageKey, value: Object | Array<Object>): void {
 
     if (!key) {
@@ -13,26 +12,28 @@ export class StorageService {
     }
     localStorage.setItem(key, JSON.stringify(value));
   }
-
   getItem(key: StorageKey): any {
     if (!key) {
       throw new Error('key is required');
     }
     return JSON.parse(localStorage.getItem(key));
   }
-
   removeItem(key: StorageKey): void {
     if (!key) {
       throw new Error('key is required');
     }
     localStorage.removeItem(key);
   }
-
   clear(): void {
     localStorage.clear();
   }
-
   getKeys(): string[] {
     return Object.keys(localStorage);
+  }
+  getAllItems(): any {
+    return Object.keys(localStorage).reduce((obj, key) => {
+      obj[key] = JSON.parse(localStorage.getItem(key));
+      return obj;
+    }, {});
   }
 }

@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import { Question } from './question.model';
 
 import { StorageService } from '../storage/storage.service';
+import { SubmissionService } from '../submission/submission.service';
 import { Config } from '../../config.model';
 
 
 @Injectable()
+
 export class QuestionService {
 
   private questions;
   private currentQuestion;
   private config: Config;
 
-  constructor(private storageService: StorageService) {
+  constructor(private storageService: StorageService, private submissionService: SubmissionService) {
   }
 
   public getNumberOfQuestions(): number {
@@ -55,9 +57,9 @@ export class QuestionService {
 
     if (currentQuestionNumber === this.getNumberOfQuestions()) {
       // we are already on the last question, there isn't another question number.
+      this.submissionService.submitData().catch(error => new Error(error));
       return null;
     }
-
     return currentQuestionNumber + 1;
   }
 
