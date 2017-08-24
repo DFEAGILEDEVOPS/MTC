@@ -43,7 +43,7 @@
             <input type="radio"
                    name="satisfactionRating"
                    id="rating-{{satisfactionRating.id}}"
-                   value="rating.id"
+                   [value]="satisfactionRating.id"
                    [checked]="idx === 0"
                    (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
             <label for="rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
