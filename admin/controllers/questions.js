@@ -3,6 +3,8 @@ const CheckForm = require('../models/check-form')
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
 const configService = require('../services/config-service')
+const jwt = require('jsonwebtoken')
+
 
 /**
  * Returns the set of questions, pupil details and school details in json format
@@ -29,21 +31,35 @@ const getQuestions = async (req, res) => {
 
   let {questions} = checkForm
   questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
-  pupil = {
+  const uuid = uuidv4()
+  const pupilData = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
-    sessionId: uuidv4()
+    sessionId: uuid
   }
   school = {id: school._id, name: school.name}
-
   const config = await configService.getConfig()
+
+  // Generate the JWT token
+  // TODO: for additional security add in a device Id
+  const payload = {
+    iss: 'MTC Admin',                                       // Issuer
+    sub: pupil._id,                                         // Subject
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),         // Expiry
+    nbf: Math.floor(Date.now() / 1000),                     // Not before
+    jwi: uuid                                               // JWT token ID
+  }
+
+  // Construct a JWT token
+  const token = jwt.sign(payload, 'sekret')
 
   res.setHeader('Content-Type', 'application/json')
   return res.send(JSON.stringify({
     questions,
-    pupil,
+    pupilData,
     school,
-    config
+    config,
+    access_token: token
   }))
 }
 
