@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const jwt = require('jsonwebtoken')
 const proxyquire = require('proxyquire')
+const ObjectId = require('mongoose').Types.ObjectId
 
 const Pupil = require('../../models/pupil')
 
@@ -171,6 +172,137 @@ describe('JWT service', () => {
           done()
         }
       })
+    })
+  })
+
+  describe('break-in tests', () => {
+    let newPupil
+
+    beforeEach(() => {
+      newPupil = JSON.parse(JSON.stringify(pupil))
+      sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(newPupil)
+      jwtService = proxyquire('../../services/jwt-service', {
+        '../models/pupil': Pupil
+      })
+    })
+    it('denies a token that has expired 1 hour ago', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000) - (60 * 60),         // Expires an hour ago
+        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt expired')
+      }
+      done()
+    })
+
+    it('denies a token that has expired 1 second ago', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000) - 1,                 // Expires 1s ago
+        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt expired')
+      }
+      done()
+    })
+
+    it('denies a token that is not yet active, but has not yet expired', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
+        nbf: Math.floor(Date.now() / 1000) + 60                 // Not before: becomes active in 60s
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt not active')
+      }
+      done()
+    })
+
+    it('denies a token that is almost active, but has not yet expired', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
+        nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt not active')
+      }
+      done()
+    })
+
+    it('denies a token that not active, and has expired', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000) - 1,                 // Expired 1s ago
+        nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt not active')
+      }
+      done()
+    })
+
+    it('denies a weird token', async (done) => {
+      // Setup
+      const payload = {
+        iss: 'MTC Admin',                                       // Issuer
+        sub: new ObjectId(),                                    // Subject
+        exp: Math.floor(Date.now() / 1000),                     // Expired now
+        nbf: Math.floor(Date.now() / 1000)                      // Not before: becomes active mow
+      }
+      newPupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, newPupil.jwtSecret)
+      // Test
+      try {
+        await jwtService.verify(token)
+        done('Not expected to get here')
+      } catch (error) {
+        expect(error.message).toBe('Unable to verify: jwt expired')
+      }
+      done()
     })
   })
 })

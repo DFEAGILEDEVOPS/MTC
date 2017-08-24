@@ -56,7 +56,6 @@ const jwtService = {
       throw new Error('Subject not found')
     }
 
-    console.log('pupil ', pupil)
     if (!pupil.jwtSecret) {
       throw new Error('Error - missing secret')
     }
