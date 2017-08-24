@@ -56,7 +56,7 @@ const getQuestions = async (req, res) => {
   res.setHeader('Content-Type', 'application/json')
   return res.send(JSON.stringify({
     questions,
-    pupilData,
+    pupil: pupilData,
     school,
     config,
     access_token: token
