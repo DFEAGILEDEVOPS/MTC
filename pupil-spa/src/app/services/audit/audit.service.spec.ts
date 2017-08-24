@@ -1,7 +1,7 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { StorageServiceMock } from './storage.service.mock';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 import { AuditService } from './audit.service';
-import { StorageService } from './storage.service';
+import { StorageService } from '../storage/storage.service';
 import { AuditEntry, AuditEntryType, QuestionRendered, CheckStarted, QuestionAnswered } from './auditEntry';
 
 let service: AuditService;

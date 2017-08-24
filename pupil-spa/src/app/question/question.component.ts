@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
-import { AuditService } from '../audit.service';
-import { QuestionRendered, QuestionAnswered } from '../auditEntry';
-import { RegisterInputService} from '../registerInput.service';
+import { AuditService } from '../services/audit/audit.service';
+import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
+import { RegisterInputService} from '../services/register-input/registerInput.service';
 
 @Component({
   selector: 'app-question',
