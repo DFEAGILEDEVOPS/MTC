@@ -39,7 +39,6 @@ describe('FeedbackComponent', () => {
     fixture.detectChanges();
 
     spyOn(component, 'onSelectionChange').and.callFake(function (key, value) {
-      console.log('FOOOOO', key, value);
     });
   });
 
