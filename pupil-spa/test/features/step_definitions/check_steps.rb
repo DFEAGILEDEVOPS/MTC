@@ -50,7 +50,7 @@ Then(/^I can answer the question using the on screen keyboard$/) do
   check_page.wait_for_preload
   @question = check_page.question.text
   values = @question.gsub('=', '').split('×').map {|n| n.strip}
-  check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)
+  check_page.enter_answer_via_numpad(values.first.to_i * values.last.to_i)
   check_page.number_pad.enter.click
   check_page.wait_for_question
   expect(check_page.question.text).to_not eql @question
@@ -60,7 +60,7 @@ Then(/^I can answer the question using their phsyical keyboard$/) do
   check_page.wait_for_preload
   @question = check_page.question.text
   values = @question.gsub('=', '').split('×').map {|n| n.strip}
-  check_page.enter_answer_via_physical_keyboard(values.first.to_i * values.last.to_i)
+  check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)
   check_page.number_pad.one.send_keys(:enter)
   check_page.wait_for_question
   expect(check_page.question.text).to_not eql @question
@@ -74,7 +74,7 @@ end
 
 When(/^I have entered an incorrect answer$/) do
   check_page.wait_for_question
-  check_page.enter_answer_via_keyboard(20)
+  check_page.enter_answer_via_numpad(20)
   @value = check_page.answer.text
 end
 
@@ -82,10 +82,9 @@ When(/^I should be able to correct my answer if i am quick enough$/) do
   2.times {check_page.number_pad.backspace.click}
   question = check_page.question.text
   values = question.gsub('=', '').split('×').map {|n| n.strip}
-  check_page.enter_answer_via_physical_keyboard(values.first.to_i * values.last.to_i)
+  check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)
   expect(check_page.answer.text).to_not eql @value
 end
-
 
 Then(/^I should see a timer$/) do
   expect(check_page).to have_timer
