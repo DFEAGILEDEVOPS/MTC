@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { UserService } from '../user.service';
+import { UserService } from '../services/user/user.service';
 import { LogoutComponent } from './logout.component';
-import { QuestionService } from '../question.service';
-import { QuestionServiceMock } from '../question.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;

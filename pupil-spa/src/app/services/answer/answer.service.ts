@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { StorageService } from './storage.service';
+import { StorageService } from '../storage/storage.service';
 
 export class Answer {
 
   constructor(
     public factor1: number,
     public factor2: number,
-    public answer: number) { }
+    public answer: string) { }
 }
 
 @Injectable()
@@ -19,12 +19,11 @@ export class AnswerService {
     let answers = this.storageService.getItem('answers');
 
     if (!answers) {
-      answers = '[]';
+      answers = [];
     }
 
-    const existingAnswers = JSON.parse(answers);
-    existingAnswers.push(answer);
-    this.storageService.setItem('answers', JSON.stringify(existingAnswers));
+    answers.push(answer);
+    this.storageService.setItem('answers', answers);
   }
 
 }

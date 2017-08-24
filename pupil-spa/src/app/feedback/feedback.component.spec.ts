@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { StorageService } from '../storage.service';
+import { StorageService } from '../services/storage/storage.service';
 import { FeedbackComponent } from './feedback.component';
 
 describe('FeedbackComponent', () => {

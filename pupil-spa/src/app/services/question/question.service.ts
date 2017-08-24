@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Question } from './question.model';
 
-import { StorageService } from './storage.service';
-import { Config } from './config.model';
+import { StorageService } from '../storage/storage.service';
+import { Config } from '../../config.model';
 
 
 @Injectable()
 export class QuestionService {
 
   private questions;
+  private currentQuestion;
   private config: Config;
 
   constructor(private storageService: StorageService) {
@@ -18,8 +19,13 @@ export class QuestionService {
     return this.questions.length;
   }
 
+  public getCurrentQuestionNumber(): number {
+    return this.currentQuestion;
+  }
+
   public getQuestion(sequenceNumber: number): Question {
     // The Number type in Typescript is a float, so this could be a decimal.
+    this.currentQuestion = sequenceNumber;
     if (!Number.isInteger(sequenceNumber)) {
       throw new Error('sequenceNumber is not an integer');
     }
