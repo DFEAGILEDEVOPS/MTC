@@ -89,5 +89,12 @@
     ],
     "all": true,
     "cache": true
+  },
+  "standard": {
+    "ignore": [
+      "public/govuk_template/**/*",
+      "assets/javascripts/details.polyfill.js",
+      "assets/javascripts/jquery-1.12.4.js"
+    ]
   }
 }
