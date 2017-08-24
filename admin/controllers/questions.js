@@ -31,11 +31,10 @@ const getQuestions = async (req, res) => {
 
   let {questions} = checkForm
   questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
-  const uuid = uuidv4()
   const pupilData = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
-    sessionId: uuid
+    sessionId: uuidv4()
   }
   school = {id: school._id, name: school.name}
   const config = await configService.getConfig()
@@ -43,7 +42,6 @@ const getQuestions = async (req, res) => {
   let token
   try {
     token = await jwtService.createToken(pupil)
-    console.log('token ', token)
   } catch (error) {
     console.error(error)
     res.setHeader('Content-Type', 'application/json')
