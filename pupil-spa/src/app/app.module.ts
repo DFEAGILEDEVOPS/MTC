@@ -25,6 +25,8 @@ import { UserService } from './services/user/user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { AuditService } from './services/audit/audit.service';
 import { SubmissionService} from './services/submission/submission.service';
+import { FeedbackComponent } from './feedback/feedback.component';
+import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -37,6 +39,8 @@ const appRoutes: Routes = [
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
+  {path: 'feedback', component: FeedbackComponent},
+  {path: 'feedback-thanks', component: FeedbackThanksComponent},
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -55,7 +59,9 @@ const appRoutes: Routes = [
     LogoutComponent,
     PhaseBannerComponent,
     QuestionComponent,
-    WarmupIntroComponent
+    WarmupIntroComponent,
+    FeedbackComponent,
+    FeedbackThanksComponent
   ],
   imports: [
     RouterModule.forRoot(
