@@ -1,18 +1,18 @@
 class FeedbackPage < SitePrism::Page
-  set_url '/check/feedback'
+  set_url '/feedback'
 
   element :heading, '.heading-large', text: "Give feedback"
   element :title, '.heading-medium', text: "Overall, how did you feel about the service you used today?"
-  element :touchscreen, "#radio-0[value='Touchscreen']"
-  element :mouse, "#radio-1[value='Mouse']"
-  element :keyboard, "#radio-2[value='Keyboard']"
-  element :mix, "#radio-3[value='Mix of the above']"
+  element :touchscreen, "#input-type-1"
+  element :mouse, "#input-type-2"
+  element :keyboard, "#input-type-3"
+  element :mix, "#input-type-4"
 
-  element :very_easy, "#radio-0[value='Very easy']"
-  element :easy, "#radio-1[value='Easy']"
-  element :neither, "#radio-2[value='Neither easy or difficult']"
-  element :difficult, "#radio-3[value='Difficult']"
-  element :very_difficult, "#radio-4[value='Very difficult']"
+  element :very_easy, "#satisfaction-rating-1"
+  element :easy, "#satisfaction-rating-2"
+  element :neither, "#satisfaction-rating-3"
+  element :difficult, "#satisfaction-rating-4"
+  element :very_difficult, "#satisfaction-rating-5"
 
 
   element :comments_field, '.textarea'
