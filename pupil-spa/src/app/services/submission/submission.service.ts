@@ -16,7 +16,7 @@ export class SubmissionService {
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
     // TODO: build Check complete API call
-  //   await this.http.post(`${environment.apiURL}/api/complete`,
+  //   await this.http.post(`${environment.apiURL}/api/answers`,
   //     { audit, inputs, answers },
   //     requestArgs)
   //     .toPromise()
