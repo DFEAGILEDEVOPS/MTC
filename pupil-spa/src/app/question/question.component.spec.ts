@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 
 import { QuestionComponent } from './question.component';
 import { AuditService } from '../services/audit/audit.service';
@@ -7,6 +8,7 @@ import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audi
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { QuestionService} from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
+import { SubmissionService } from '../services/submission/submission.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -15,12 +17,14 @@ describe('QuestionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [HttpModule],
       declarations: [QuestionComponent],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
         RegisterInputService,
         QuestionService,
-        StorageService
+        StorageService,
+        SubmissionService
       ]
     })
       .compileComponents();

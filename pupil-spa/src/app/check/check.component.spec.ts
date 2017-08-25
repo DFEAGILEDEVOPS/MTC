@@ -1,10 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpModule } from '@angular/http';
 
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../services/question/question.service';
 import { AnswerService } from '../services/answer/answer.service';
 import { StorageService } from '../services/storage/storage.service';
+import { SubmissionService } from '../services/submission/submission.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 const mockQuestionService = new QuestionServiceMock();
@@ -16,12 +18,14 @@ describe('CheckComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
+      imports: [HttpModule],
       declarations: [CheckComponent],
       schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
         { provide: QuestionService, useValue: mockQuestionService },
         AnswerService,
-        StorageService
+        StorageService,
+        SubmissionService
       ]
     })
       .compileComponents();
