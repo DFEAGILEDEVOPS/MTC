@@ -8,8 +8,6 @@ const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
 const checkFormService = require('../lib/check-form-service')
 const isAuthenticated = require('../authentication/middleware')
-const mongoose = require('mongoose')
-const moment = require('moment')
 
 /* GET manage check forms page. */
 router.get('/manage-check-forms', isAuthenticated(), async function (req, res, next) {
@@ -167,7 +165,7 @@ router.get('/choose-check-window', isAuthenticated(), async function (req, res, 
   }
 
   try {
-    forms = await CheckForm.getActiveForms({_id: formIds }).sort({_id: 1}).exec()
+    forms = await CheckForm.getActiveForms({_id: formIds}).sort({_id: 1}).exec()
     formData = forms.map(e => { return e.toJSON() })
   } catch (error) {
     return next(error)
