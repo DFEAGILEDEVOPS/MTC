@@ -1,7 +1,6 @@
 'use strict'
 
 const crypto = require('crypto')
-const School = require('../models/school')
 
 /**
  * @brief Returns a random string
@@ -10,7 +9,7 @@ const School = require('../models/school')
  * @return {string}
  * @throws {Error}
  */
-const getRandom = module.exports.getRandom = function (length, chars) {
+const getRandom = function (length, chars) {
   if (!chars) {
     throw new Error(`Argument 'chars' is undefined`)
   }
@@ -32,3 +31,5 @@ const getRandom = module.exports.getRandom = function (length, chars) {
 
   return result.join('')
 }
+
+module.exports.getRandom = getRandom
