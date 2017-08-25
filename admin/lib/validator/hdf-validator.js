@@ -2,7 +2,6 @@
 const ValidationError = require('../validation-error')
 const errorConverter = require('../error-converter')
 const hdfErrorMessages = require('../errors/hdf')
-const XRegExp = require('xregexp')
 
 const hdfValidationSchema = {
   'declaration': {
