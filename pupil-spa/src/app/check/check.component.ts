@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 
 import { QuestionService } from '../services/question/question.service';
 import { AnswerService } from '../services/answer/answer.service';
+import { SubmissionService } from '../services/submission/submission.service';
 import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
 
@@ -18,8 +19,9 @@ export class CheckComponent implements OnInit {
   public totalNumberOfQuestions: number;
   public question: Question;
   public config: Config;
-  
-  constructor(private questionService: QuestionService, private answerService: AnswerService) {
+
+  constructor(private questionService: QuestionService, private answerService: AnswerService,
+              private submissionService: SubmissionService) {
     this.questionNumber = 1;
     this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
     this.question = this.questionService.getQuestion(this.questionNumber);
@@ -79,6 +81,7 @@ export class CheckComponent implements OnInit {
       this.viewState = 'preload';
     } else {
       // no more questions
+      this.submissionService.submitData().catch(error => new Error(error));
       // console.log('check.component: nextQuestion(): setting viewState to complete');
       this.viewState = 'complete';
     }
