@@ -16,10 +16,6 @@ describe('HDF validator', function () {
     }
   }
 
-  // function notAllowed () {
-  //   return [':', ';', ',', '.', '!', '@', '#', '$', ' ', '%', '^', '&', '*', '(', ')', '_', '+', '=']
-  // }
-
   beforeEach(function (done) {
     req = {
       query: {},
