@@ -76,7 +76,6 @@ export class FeedbackComponent implements OnInit {
     if (this.submitted === true) {
       return;
     }
-    this.submitted = false;
 
     // @TODO: Data shown in console.logs below will need to be stored in the DB via API call.
     // console.log('inputType', this.selectedInputType);
