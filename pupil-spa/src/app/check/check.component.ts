@@ -18,6 +18,13 @@ export class CheckComponent implements OnInit {
   public totalNumberOfQuestions: number;
   public question: Question;
   public config: Config;
+  
+  constructor(private questionService: QuestionService, private answerService: AnswerService) {
+    this.questionNumber = 1;
+    this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
+    this.question = this.questionService.getQuestion(this.questionNumber);
+    this.config = this.questionService.getConfig();
+  }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -28,18 +35,11 @@ export class CheckComponent implements OnInit {
   }
 
 
-  constructor(private questionService: QuestionService, private answerService: AnswerService) {
-    this.questionNumber = 1;
-    this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
-    this.question = this.questionService.getQuestion(this.questionNumber);
-    this.config = this.questionService.getConfig();
-  }
-
   @HostListener('document:touchend', [ '$event' ])
   handleTouchEndEvent() {
     // IMPORTANT: Prevent double-tap zoom on Ipad
     event.preventDefault();
-    event.target.dispatchEvent(new Event('click'));
+    event.target.dispatchEvent(new Event('click', { bubbles: true }));
     return false;
   }
 
