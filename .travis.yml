@@ -25,5 +25,4 @@ script:
 - sh -c 'cd pupil-spa && npm install && npm run test-single && cd ../admin && npm install && npm
   test'
 - "./admin/test.sh"
-# TODO enable when ready
-#- "./pupil-spa/test.sh"
+- "./pupil-spa/test.sh"
