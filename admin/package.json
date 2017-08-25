@@ -17,6 +17,7 @@
     "az-bunyan": "0.0.5",
     "azure-storage": "^2.1.0",
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.5.0",
     "bunyan": "^1.8.10",
     "connect-mongo": "^1.3.2",
     "cookie-parser": "~1.4.3",
@@ -40,6 +41,7 @@
     "gulp-standard": "^10.0.0",
     "gulp-uglify": "^2.1.2",
     "iconv-lite": "^0.4.17",
+    "jsonwebtoken": "^7.4.3",
     "migrate-mongo": "^2.2.1",
     "moment": "^2.18.1",
     "mongoose": "4.9.6",
@@ -87,5 +89,12 @@
     ],
     "all": true,
     "cache": true
+  },
+  "standard": {
+    "ignore": [
+      "public/govuk_template/**/*",
+      "assets/javascripts/details.polyfill.js",
+      "assets/javascripts/jquery-1.12.4.js"
+    ]
   }
 }

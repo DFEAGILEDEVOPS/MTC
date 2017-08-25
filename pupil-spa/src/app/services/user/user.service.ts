@@ -8,6 +8,7 @@ const questionsDataKey = 'questions';
 const configDataKey = 'config';
 const pupilDataKey = 'pupil';
 const schoolDataKey = 'school';
+const accessTokenKey = 'access_token';
 
 @Injectable()
 export class UserService {
@@ -41,6 +42,7 @@ export class UserService {
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
           this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
+          this.storageService.setItem(accessTokenKey, data[accessTokenKey]);
           resolve();
         },
         (err) => {
