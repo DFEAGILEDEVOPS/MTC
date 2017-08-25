@@ -1,6 +1,0 @@
-#screenshots
-test/screenshots/*.png
-test/screenshots/*.html
-test/reports/*
-test/*.png
-test/*.html
