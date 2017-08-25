@@ -6,6 +6,7 @@ import { Config } from '../../config.model';
 
 
 @Injectable()
+
 export class QuestionService {
 
   private questions;
@@ -57,7 +58,6 @@ export class QuestionService {
       // we are already on the last question, there isn't another question number.
       return null;
     }
-
     return currentQuestionNumber + 1;
   }
 
