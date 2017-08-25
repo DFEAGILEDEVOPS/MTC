@@ -3,7 +3,6 @@ import { HttpModule } from '@angular/http';
 
 import { QuestionService } from './question.service';
 import { StorageService } from '../storage/storage.service';
-import { SubmissionService } from '../submission/submission.service';
 import * as responseMock from '../../login.response.mock.json';
 
 describe('QuestionService', () => {
@@ -22,7 +21,6 @@ describe('QuestionService', () => {
       imports: [HttpModule],
       providers: [
         QuestionService,
-        SubmissionService,
         {provide: StorageService, useValue: mockStorageService}
       ]
     });
