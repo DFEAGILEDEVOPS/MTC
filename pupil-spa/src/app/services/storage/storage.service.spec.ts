@@ -113,9 +113,9 @@ describe('StorageService', () => {
   describe('getKeys', () => {
     it('returns all keys from localStorage', () => {
       const items = [
-        { key: 'item1', value: [1, 2, 3] },
-        { key: 'item2', value: [4, 5, 6] },
-        { key: 'item3', value: [7, 8, 9] }
+        {key: 'item1', value: [1, 2, 3]},
+        {key: 'item2', value: [4, 5, 6]},
+        {key: 'item3', value: [7, 8, 9]}
       ];
 
       items.forEach((item) => {
@@ -128,6 +128,27 @@ describe('StorageService', () => {
       expect(keys).toContain(keys[0]);
       expect(keys).toContain(keys[1]);
       expect(keys).toContain(keys[2]);
+    });
+  });
+
+  describe('getAllItems', () => {
+    it('returns all key-value pairs from localStorage in a single object', () => {
+      const items = [
+        { key: 'item1', value: [1, 2, 3] },
+        { key: 'item2', value: [4, 5, 6] },
+        { key: 'item3', value: [7, 8, 9] }
+      ];
+
+      items.forEach((item) => {
+        localStorage.setItem(item.key, JSON.stringify(item.value));
+      });
+
+      const localStorageItems = service.getAllItems();
+
+      expect(Object.keys(localStorageItems).length).toEqual(3);
+      expect(localStorageItems[items[0].key]).toEqual([1, 2, 3]);
+      expect(localStorageItems[items[1].key]).toEqual([4, 5, 6]);
+      expect(localStorageItems[items[2].key]).toEqual([7, 8, 9]);
     });
   });
 });
