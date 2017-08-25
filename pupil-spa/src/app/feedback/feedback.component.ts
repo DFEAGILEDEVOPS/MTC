@@ -27,7 +27,7 @@ export class FeedbackComponent implements OnInit {
   constructor(private router: Router, private storageService: StorageService) {}
 
   ngOnInit() {
-    if (!this.validate()) {
+    if (!this.componentValidate()) {
       this.router.navigate(['feedback-thanks']);
     }
     this.pupilData = this.storageService.getItem('pupil');
@@ -52,7 +52,7 @@ export class FeedbackComponent implements OnInit {
     this.enableSubmit = false;
   }
 
-  validate() {
+  componentValidate() {
     this.feedbackExists = this.storageService.getItem('feedback');
     return (this.feedbackExists === null);
   }
