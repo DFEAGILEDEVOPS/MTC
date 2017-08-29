@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,8 +13,11 @@ export class WarmupIntroComponent implements OnInit {
   ngOnInit() {
   }
 
+  @Output()
+  clickEvent: EventEmitter<any> = new EventEmitter();
+
   onClick() {
-    this.router.navigate(['warm-up-start']);
+    this.clickEvent.emit(null);
   }
 
 }
