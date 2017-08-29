@@ -19,7 +19,7 @@ services: mongodb
 sudo: false
 before_install:
 - "$CXX --version"
-- rvm install 2.3.3
+- rvm install 2.4.0
 install: true
 script:
 - sh -c 'cd pupil-spa && npm install && npm run test-single && cd ../admin && npm install && npm
