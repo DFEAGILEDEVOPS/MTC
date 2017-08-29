@@ -44,6 +44,7 @@ end
 
 Given(/^I have used backspace to correct my answer using the physical keyboard$/) do
   step 'I have started the check'
+  wait_until {check_page.has_number_pad?}
   check_page.number_pad.one.send_keys(:numpad1)
   check_page.number_pad.one.send_keys(:backspace)
   check_page.complete_question('12345', 'keyboard')
