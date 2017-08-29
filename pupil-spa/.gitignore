@@ -45,3 +45,8 @@ Thumbs.db
 src/assets/govuk-elements-sass
 src/assets/govuk_frontend_toolkit
 src/assets/govuk_template
+
+test/reports/
+test/screenshots/
+test/*.html
+test/*.png
