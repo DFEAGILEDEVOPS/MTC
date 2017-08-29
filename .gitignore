@@ -57,3 +57,11 @@ jspm_packages
 /admin/out
 /electron/out
 /pupil/out
+
+# pupil-spa
+/pupil-spa/test/reports/
+/pupil-spa/test/screenshots/*.png
+/pupil-spa/test/screenshots/*.html
+/pupil-spa/test/reports/*
+/pupil-spa/test/*.png
+/pupil-spa/test/*.html
