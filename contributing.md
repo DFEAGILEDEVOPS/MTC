@@ -17,12 +17,13 @@ The process for developing new features is as follows...
 4.  pull master branch and merge back into feature/bug branch
 4.1 Optional: Rebase and squash extraneous commits
 5.  Push branch back to remote.
-5.  Create Pull Request
-6.  Get at least 1 review approval.
-7.  Choose 'Squash & merge' option to merge back into master branch
-8.  Delete remote branch
-9.  Delete local branch
-10. Brew tea & eat biscuits
+5.  Create Pull Request.  The name must be of the format 'branch-name' + 'brief description'.  If the branch name contains a sufficient description, omit the brief description.
+6.  Set the assignee to yourself.
+7.  Get at least 1 review approval.
+8.  Choose 'Squash & merge' option to merge back into master branch
+9.  Delete remote branch
+10.  Delete local branch
+11. Brew tea & eat biscuits
 
 ## SPA post development checks
 1.  run `ng lint`
