@@ -28,6 +28,13 @@ export class CheckComponent implements OnInit {
               private warmupQuestionService: WarmupQuestionService) {
   }
 
+  /**
+   * By default disable the keyboard during the check.
+   * Prevents many issues, increases control.
+   * NB:// This also disables <tab> used for keyboard navigation.
+   * @param {KeyboardEvent} event
+   * @return {boolean}
+   */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
@@ -36,10 +43,12 @@ export class CheckComponent implements OnInit {
     return false;
   }
 
-
+  /**
+   * Prevent double-tap on ipads from zooming in.
+   * @return {boolean}
+   */
   @HostListener('document:touchend', [ '$event' ])
   handleTouchEndEvent() {
-    // IMPORTANT: Prevent double-tap zoom on Ipad
     event.preventDefault();
     event.target.dispatchEvent(new Event('click', { bubbles: true }));
     return false;
@@ -61,10 +70,14 @@ export class CheckComponent implements OnInit {
     this.viewState = 'warmup-intro';
   }
 
+  /**
+   * Change the state to the next allowed state.
+   * As there is a linear sequence of events the next state is determined by the
+   * current state. No args required.
+   */
   private changeState() {
     console.log(`check.component: changeState() called. Current state is ${this.state}`);
-    // As there is a linear sequence of events the next state is determined by the
-    // current state. No args required.
+
     this.state += 1; // increment state to next level - it's defined by an array
     let stateDesc = this.allowedStates[ this.state ];
     console.log(`check.component: changeState(): new state ${stateDesc}`);
@@ -116,6 +129,11 @@ export class CheckComponent implements OnInit {
     }
   }
 
+  /**
+   * The user has submitted the answer before the timer has reached zero.  They have to provide an answer
+   * to submit early.
+   * @param {string} answer
+   */
   manualSubmitHandler(answer: string) {
     console.log(`check.component: manualSubmitHandler(): ${answer}`);
     if (!this.isWarmUp) {
@@ -125,6 +143,10 @@ export class CheckComponent implements OnInit {
     this.changeState();
   }
 
+  /**
+   * Handle the timeout caused by the the timer reaching zero.  We accept whatever answer is available.
+   * @param {string} answer
+   */
   questionTimeoutHandler(answer: string) {
     console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
     if (!this.isWarmUp) {
@@ -144,7 +166,7 @@ export class CheckComponent implements OnInit {
 
   /**
    * Handle the click event from the Warm-up instruction page. This click starts the first
-   * warmup question L page.
+   * warmup question loading page.
    */
   warmupIntroClickHandler() {
     console.log('check.component: warmupIntroClickHandler() called');
@@ -153,7 +175,7 @@ export class CheckComponent implements OnInit {
 
   /**
    * Handle the click event from the warmup complete page. This click starts the first
-   * real question L page.
+   * real question loading page.
    */
   warmupCompleteClickHandler() {
     console.log('check.component: warmupCompleteClickHandler() called');
