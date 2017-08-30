@@ -9,11 +9,12 @@ import { Config } from '../../config.model';
 
 export class QuestionService {
 
-  private questions;
-  private currentQuestion;
-  private config: Config;
+  protected currentQuestion;
+  protected questions;
+  protected config: Config;
 
-  constructor(private storageService: StorageService) {
+  constructor(protected storageService: StorageService) {
+    this.currentQuestion = 1;
   }
 
   public getNumberOfQuestions(): number {
@@ -26,7 +27,6 @@ export class QuestionService {
 
   public getQuestion(sequenceNumber: number): Question {
     // The Number type in Typescript is a float, so this could be a decimal.
-    this.currentQuestion = sequenceNumber;
     if (!Number.isInteger(sequenceNumber)) {
       throw new Error('sequenceNumber is not an integer');
     }
@@ -39,6 +39,9 @@ export class QuestionService {
       throw new Error(`Out of range: question ${sequenceNumber} does not exist`);
     }
 
+    // The registered input service needs to know which question we are on.
+    this.currentQuestion = sequenceNumber;
+
     const question = new Question(
       data['factor1'],
       data['factor2'],
@@ -48,18 +51,13 @@ export class QuestionService {
     return question;
   }
 
-  getNextQuestionNumber(currentQuestionNumber: number): number {
-    // The Number type in Typescript is a float, so this could be a decimal.
-    if (!Number.isInteger(currentQuestionNumber)) {
-      throw new Error('currentQuestionNumber is not an integer');
-    }
-
-    if (currentQuestionNumber === this.getNumberOfQuestions()) {
-      // we are already on the last question, there isn't another question number.
-      return null;
-    }
-    return currentQuestionNumber + 1;
-  }
+  // getNextQuestionNumber(): number {
+  //   if (this.currentQuestion + 1 > this.getNumberOfQuestions()) {
+  //     // we are already on the last question, there isn't another question number.
+  //     return null;
+  //   }
+  //   return this.currentQuestion + 1;
+  // }
 
   getConfig() {
     return this.config;
