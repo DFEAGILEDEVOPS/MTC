@@ -100,7 +100,6 @@ describe('QuestionComponent', () => {
   });
 
   describe('sendTimeoutEvent', () => {
-    // TODO: assertions never run!
     it('emits the answer', async(() => {
       component.answer = '125';
       component.timeoutEvent.subscribe(g => {
