@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
 import { QuestionService } from '../question/question.service';
+import { SubmissionService } from '../submission/submission.service';
 
 let mockStorageService: StorageServiceMock;
 
@@ -25,9 +27,11 @@ describe('RegisterInputService', () => {
   beforeEach(() => {
     mockStorageService = new StorageServiceMock();
     TestBed.configureTestingModule({
+      imports: [HttpModule],
       providers: [
         TestRegisterInputService,
         QuestionService,
+        SubmissionService,
         {provide: StorageService, useValue: mockStorageService}
       ]
     });

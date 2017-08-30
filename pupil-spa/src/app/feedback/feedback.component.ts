@@ -77,7 +77,7 @@ export class FeedbackComponent implements OnInit {
     }
   }
 
-  onSubmit(commentText) {
+  onSubmit(comments) {
     if (this.submitted === true) {
       return;
     }
@@ -89,9 +89,9 @@ export class FeedbackComponent implements OnInit {
       this.feedbackData = {
         'inputType': this.selectedInputType,
         'satisfactionRating': this.selectedSatisfactionRating,
-        'commentText': commentText,
+        'comments': comments,
         'createdAt': new Date(),
-        'sessionId': 'e8c54d9e-6b62-43b9-a48a-91ca5d65bed8'
+        'sessionId': this.pupilData['sessionId']
       };
       this.storageService.setItem('feedback', this.feedbackData);
       this.enableSubmit = false;

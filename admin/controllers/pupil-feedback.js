@@ -7,14 +7,14 @@ const setPupilFeedback = async (req, res, next) => {
     satisfactionRating,
     comments,
     sessionId,
-    access_token } = req.body
+    accessToken } = req.body
 
   if (!inputType || !satisfactionRating || !sessionId) {
     return res.status(400).json({error: 'Bad Request'})
   }
 
   try {
-    await verify(access_token)
+    await verify(accessToken)
   } catch (err) {
     return res.status(401).json({ error: 'Unauthorised' })
   }
@@ -28,7 +28,7 @@ const setPupilFeedback = async (req, res, next) => {
 
   try {
     await pupilFeedback.save()
-    res.status(201).json('Pupil Feedback Saved')
+    res.status(201).json('Pupil feedback saved')
     return next
   } catch (error) {
     console.log('Error saving pupil feedback', error)

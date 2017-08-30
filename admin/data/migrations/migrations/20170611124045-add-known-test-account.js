@@ -14,8 +14,8 @@ module.exports = {
         next(new Error('Could not connect to mongodb: ' + error.message))
       }
       try {
-        const school = await createTestSchool()
-        const pupil = await createTestPupil()
+        await createTestSchool()
+        await createTestPupil()
         mongoose.disconnect(() => next())
       } catch (error) {
         mongoose.disconnect(() => next(error))

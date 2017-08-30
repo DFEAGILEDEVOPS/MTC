@@ -1,7 +1,7 @@
 /**
  * Global scripts.
  */
-
+/* global $ */
 $(function () {
   function tickAllCheckboxes (sel, e) {
     $('#tickAllCheckboxes').on('change', function () {
