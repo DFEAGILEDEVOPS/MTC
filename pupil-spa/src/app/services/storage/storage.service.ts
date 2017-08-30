@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 export type StorageKey = 'answers' | 'inputs' | 'session' |
-'audit' | 'questions' | 'config' | 'pupil' | 'school' | 'feedback';
+'audit' | 'questions' | 'config' | 'pupil' | 'school' | 'access_token' | 'feedback';
 
 @Injectable()
 export class StorageService {
@@ -34,5 +34,12 @@ export class StorageService {
 
   getKeys(): string[] {
     return Object.keys(localStorage);
+  }
+
+  getAllItems(): any {
+    return Object.keys(localStorage).reduce((obj, key) => {
+      obj[key] = JSON.parse(localStorage.getItem(key));
+      return obj;
+    }, {});
   }
 }

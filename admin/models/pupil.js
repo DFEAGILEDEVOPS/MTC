@@ -63,6 +63,9 @@ const Pupil = new Schema({
   },
   checkEndDate: {
     type: Date
+  },
+  jwtSecret: {
+    type: String
   }
 }, {
   timestamps: true

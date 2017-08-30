@@ -7,7 +7,6 @@ import { StorageService } from '../storage/storage.service';
 export class FeedbackService {
 
   constructor(private http: Http, private storageService: StorageService) {
-    this.storageService.clear();
   }
 
   postFeedback(): Promise<any> {
@@ -16,13 +15,12 @@ export class FeedbackService {
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({ headers: headers });
 
-      if (!this.storageService.getItem('feedback')) {
-        console.log('No feedback in local storage');
-        reject();
+      if (!this.storageService.getItem('feedback') || !this.storageService.getItem('access_token')) {
+        return reject('Missing data in local storage');
       }
 
       const storedFeedback = this.storageService.getItem('feedback');
-      console.log('storedFeedback', storedFeedback);
+      const accessToken = this.storageService.getItem('access_token');
 
       const inputType = storedFeedback.inputType.id;
       const satisfactionRating = storedFeedback.satisfactionRating.id;
@@ -30,7 +28,13 @@ export class FeedbackService {
       const sessionId = storedFeedback.sessionId;
 
       await this.http.post(`${environment.apiURL}/api/pupil-feedback`,
-        { inputType, satisfactionRating, comments, sessionId },
+        {
+          inputType,
+          satisfactionRating,
+          comments,
+          sessionId,
+          accessToken
+        },
         requestArgs)
         .toPromise()
         .then((response) => {

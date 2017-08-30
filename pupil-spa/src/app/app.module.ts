@@ -24,6 +24,7 @@ import { AnswerService } from './services/answer/answer.service';
 import { UserService } from './services/user/user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { AuditService } from './services/audit/audit.service';
+import { SubmissionService} from './services/submission/submission.service';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -66,7 +67,7 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      {enableTracing: true} // <-- debugging purposes only
+      {enableTracing: false} // <-- debugging purposes only
     ),
     FormsModule,
     BrowserModule,
@@ -79,7 +80,8 @@ const appRoutes: Routes = [
     StorageService,
     UserService,
     AuditService,
-    FeedbackService
+    FeedbackService,
+    SubmissionService
   ],
   bootstrap: [AppComponent]
 })
