@@ -28,6 +28,7 @@ import { SubmissionService} from './services/submission/submission.service';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
+import { WarmupQuestionService } from './services/question/warmup-question.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -47,6 +48,8 @@ const appRoutes: Routes = [
     AppComponent,
     CheckCompleteComponent,
     CheckComponent,
+    FeedbackComponent,
+    FeedbackThanksComponent,
     FooterComponent,
     HeaderComponent,
     InstructionsComponent,
@@ -57,10 +60,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     PhaseBannerComponent,
     QuestionComponent,
-    WarmupIntroComponent,
-    FeedbackComponent,
-    FeedbackThanksComponent,
-    WarmupCompleteComponent
+    WarmupCompleteComponent,
+    WarmupIntroComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -72,13 +73,14 @@ const appRoutes: Routes = [
     HttpModule,
   ],
   providers: [
+    AnswerService,
+    AuditService,
     LoggedInGuard,
     QuestionService,
-    AnswerService,
     StorageService,
+    SubmissionService,
     UserService,
-    AuditService,
-    SubmissionService
+    WarmupQuestionService
   ],
   bootstrap: [AppComponent]
 })

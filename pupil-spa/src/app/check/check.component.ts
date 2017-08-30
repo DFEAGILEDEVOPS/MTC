@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
 import { QuestionService } from '../services/question/question.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { AnswerService } from '../services/answer/answer.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { Question } from '../services/question/question.model';
@@ -14,21 +15,20 @@ import { Config } from '../config.model';
 
 export class CheckComponent implements OnInit {
 
-  public viewState: string;
-  public questionNumber: number;
-  public totalNumberOfQuestions: number;
-  public question: Question;
   public config: Config;
+  public isWarmUp: boolean;
+  public question: Question;
+  public state: number;
+  public viewState: string;
+  public allowedStates: Array<string> = [];
 
-  constructor(private questionService: QuestionService, private answerService: AnswerService,
-              private submissionService: SubmissionService) {
-    this.questionNumber = 1;
-    this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
-    this.question = this.questionService.getQuestion(this.questionNumber);
-    this.config = this.questionService.getConfig();
+  constructor(private questionService: QuestionService,
+              private answerService: AnswerService,
+              private submissionService: SubmissionService,
+              private warmupQuestionService: WarmupQuestionService) {
   }
 
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
@@ -46,44 +46,143 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.viewState = 'preload';
+    this.question = this.warmupQuestionService.getQuestion(1);
+    this.config = this.warmupQuestionService.getConfig();
+    this.initStates();
+
     // Prevent the user going back a page
     history.pushState(null, null, location.href);
-    window.onpopstate = function(event) {
+    window.onpopstate = function (event) {
       history.go(1);
     };
+
+    this.state = 0;
+    this.isWarmUp = true;
+    this.viewState = 'warmup-intro';
+  }
+
+  private changeState() {
+    console.log(`check.component: changeState() called. Current state is ${this.state}`);
+    // As there is a linear sequence of events the next state is determined by the
+    // current state. No args required.
+    this.state += 1; // increment state to next level - it's defined by an array
+    let stateDesc = this.allowedStates[ this.state ];
+    console.log(`check.component: changeState(): new state ${stateDesc}`);
+    switch (true) {
+      case(/^warmup-intro$/).test(stateDesc):
+        this.isWarmUp = true;
+        this.viewState = 'warmup-intro';
+        break;
+      case(/^LW(\d+)$/).test(stateDesc): {
+        const matches = /^LW(\d+)$/.exec(stateDesc);
+        console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
+        this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.isWarmUp = true;
+        this.viewState = 'preload';
+        break;
+      }
+      case(/^W(\d+)$/).test(stateDesc): {
+        const matches = /^W(\d+)$/.exec(stateDesc);
+        this.isWarmUp = true;
+        console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
+        this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'question';
+        break;
+      }
+      case(/^warmup-complete$/).test(stateDesc):
+        this.isWarmUp = true;
+        console.log(`state: ${stateDesc}`);
+        this.viewState = 'warmup-complete';
+        break;
+      case(/^L(\d+)$/).test(stateDesc):
+        this.isWarmUp = false;
+        const matches = /^L(\d+)$/.exec(stateDesc);
+        console.log(`state: ${stateDesc}`);
+        this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'preload';
+        break;
+      case(/^Q(\d+)$/).test(stateDesc): {
+        this.isWarmUp = false;
+        const matches = /^Q(\d+)$/.exec(stateDesc);
+        console.log(`state: ${stateDesc}`);
+        this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'question';
+        break;
+      }
+      case(/^complete$/).test(stateDesc):
+        this.isWarmUp = false;
+        this.viewState = 'complete';
+        break;
+    }
   }
 
   manualSubmitHandler(answer: string) {
-    // console.log(`check.component: manualSubmitHandler(): ${answer}`);
-    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
-    this.answerService.setAnswer(answerSet);
-    this.nextQuestion();
+    console.log(`check.component: manualSubmitHandler(): ${answer}`);
+    if (!this.isWarmUp) {
+      const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
+      this.answerService.setAnswer(answerSet);
+    }
+    this.changeState();
   }
 
   questionTimeoutHandler(answer: string) {
-    // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
-    const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
-    this.answerService.setAnswer(answerSet);
-    this.nextQuestion();
-  }
-
-  loadingTimeoutHandler() {
-    // console.log(`check.component: loadingTimeoutHandler() called`);
-    this.viewState = 'question';
-  }
-
-  nextQuestion() {
-    if (this.questionService.getNextQuestionNumber(this.questionNumber)) {
-      this.questionNumber = this.questionService.getNextQuestionNumber(this.questionNumber);
-      this.question = this.questionService.getQuestion(this.questionNumber);
-      // console.log(`check.component: nextQuestion() `, this.question);
-      this.viewState = 'preload';
-    } else {
-      // no more questions
-      this.submissionService.submitData().catch(error => new Error(error));
-      // console.log('check.component: nextQuestion(): setting viewState to complete');
-      this.viewState = 'complete';
+    console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+    if (!this.isWarmUp) {
+      const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
+      this.answerService.setAnswer(answerSet);
     }
+    this.changeState();
+  }
+
+  /**
+   * Handle the loading page timeout
+   */
+  loadingTimeoutHandler() {
+    console.log(`check.component: loadingTimeoutHandler() called`);
+    this.changeState();
+  }
+
+  /**
+   * Handle the click event from the Warm-up instruction page. This click starts the first
+   * warmup question L page.
+   */
+  warmupIntroClickHandler() {
+    console.log('check.component: warmupIntroClickHandler() called');
+    this.changeState();
+  }
+
+  /**
+   * Handle the click event from the warmup complete page. This click starts the first
+   * real question L page.
+   */
+  warmupCompleteClickHandler() {
+    console.log('check.component: warmupCompleteClickHandler() called');
+    this.changeState();
+  }
+
+  /**
+   * Initialise the allowedStates array.
+   * This is dynamic as it takes into account every question, whether warmup or real. The only allowed state
+   * is the next state.
+   */
+  initStates(): void {
+    // Setup the Warmup
+    this.allowedStates.push('warmup-intro');
+    for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
+      this.allowedStates.push(`LW${i + 1}`);
+      this.allowedStates.push(`W${i + 1}`);
+    }
+    this.allowedStates.push('warmup-complete');
+
+    // Setup the Questions
+    for(let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
+      this.allowedStates.push(`L${i + 1}`);
+      this.allowedStates.push(`Q${i + 1}`);
+    }
+
+    // Set up the final page
+    this.allowedStates.push('complete');
+
+    console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 }
