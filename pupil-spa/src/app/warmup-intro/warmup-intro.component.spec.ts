@@ -46,7 +46,7 @@ describe('WarmupIntroComponent', () => {
         auditEntryInserted = entry;
       });
     });
-    it('is added on question rendered', () => {
+    it('is added on WarmupIntro rendered', () => {
       component.ngAfterViewInit();
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof WarmupIntroRendered).toBeTruthy();

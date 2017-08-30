@@ -1,15 +1,22 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+
+import { AuditService } from '../services/audit/audit.service';
+import { WarmupCompleteRendered } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-warmup-complete',
   templateUrl: './warmup-complete.component.html',
   styles: []
 })
-export class WarmupCompleteComponent implements OnInit {
+export class WarmupCompleteComponent implements OnInit, AfterViewInit {
 
-  constructor() { }
+  constructor(private auditService: AuditService) { }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    this.auditService.addEntry(new WarmupCompleteRendered());
   }
 
   @Output()
