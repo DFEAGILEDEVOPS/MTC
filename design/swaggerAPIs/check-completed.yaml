@@ -1,39 +1,41 @@
 swagger: '2.0'
 info:
   description: Receives completed check payloads
-  version: 1.1.1
+  version: "1.1.1"
   title: MTC Check API
   license:
     name: GPL
-    url: 'https://opensource.org/licenses/GPL-3.0'
+    url: https://opensource.org/licenses/GPL-3.0
+
+# tags are used for organizing operations
 tags:
-  - name: check
-    description: endpoints that pupil app depends upon
+- name: check
+  description: endpoints that pupil app depends upon
+
 paths:
   /api/completed-check:
     post:
       summary: persists completed pupil check
-      description: >
-        By passing in the appropriate options, you can retrieve a set of
-        questions
+      description: |
+        By passing in the appropriate options, you can retrieve a set of questions
       consumes:
-        - application/json
+      - application/json
       produces:
-        - application/json
+      - application/json
       parameters:
-        - in: body
-          name: checkPayload
-          description: The completed check data
-          schema:
-            $ref: '#/definitions/CompletedCheck'
+      - in: body
+        name: checkPayload
+        description: The completed check data
+        schema:
+          $ref: '#/definitions/CompletedCheck'
       responses:
-        '201':
+        201:
           description: created
-        '400':
+        400:
           description: Bad Request
           schema:
             $ref: '#/definitions/Error'
-        '401':
+        401:
           description: Unauthorised
           schema:
             $ref: '#/definitions/Error'
@@ -41,19 +43,19 @@ definitions:
   Error:
     type: object
     required:
-      - text
+    - text
     properties:
       text:
         type: string
-        example: error
+        example: 'error'
   CompletedCheck:
     type: object
     required:
-      - answers
-      - inputs
-      - audit
-      - config
-      - access_token
+    - answers
+    - inputs
+    - audit
+    - config
+    - access_token
     properties:
       answers:
         type: array
@@ -69,7 +71,10 @@ definitions:
           $ref: '#defintions/Audit'
       access_token:
         type: string
-        example: ksdfbegkhsdfkuh34888d8ej4dhjd
+        example: 'ksdfbegkhsdfkuh34888d8ej4dhjd'
+      config:
+        type: object
+        $ref: '#/definitions/Config'
   Answer:
     type: object
     properties:
@@ -91,24 +96,33 @@ definitions:
     properties:
       inputType:
         type: string
-        example: mouse_click
+        example: "mouse_click"
       data:
         type: string
-        example: '7'
+        example: "7"
       clientTimestamp:
         type: string
-        example: '2017-08-22 12:53:02.139Z'
+        example: "2017-08-22 12:53:02.139Z"
   Audit:
     type: object
     properties:
       auditType:
         type: string
-        example: Check_Started
+        example: "Check_Started"
       clientTimestamp:
         type: string
-        example: '2017-08-22 12:53:02.139Z'
+        example: "2017-08-22 12:53:02.139Z"
       data:
         type: object
         description: any data structure relevant to the audit entry
+  Config:
+    type: object
+    properties:
+      loadingTime:
+        type: integer
+      questionTime:
+        type: integer
+  Inputs:
+    type: object
 schemes:
-  - https
+ - https
