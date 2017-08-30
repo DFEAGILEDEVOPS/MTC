@@ -36,11 +36,6 @@ describe('QuestionComponent', () => {
     spyOn(component, 'handleTouchEvent').and.callThrough();
     spyOn(component, 'handleMouseEvent').and.callThrough();
     fixture.detectChanges();
-    // prevent Timeout's being set
-    // NOTE - calling this makes no difference to sendTimeoutEvent test.
-    // all other tests work without the call below.
-    // spyOn(component, 'ngAfterViewInit').and.returnValue(null);
-
     registerInputService = TestBed.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry').and.callFake(function() { console.log('addEntry(): called()'); });
   });
@@ -106,13 +101,16 @@ describe('QuestionComponent', () => {
 
   describe('sendTimeoutEvent', () => {
     // TODO: assertions never run!
-    xit('emits the answer', async(() => {
+    it('emits the answer', async(() => {
       component.answer = '125';
-      component.manualSubmitEvent.subscribe(g => {
+      component.timeoutEvent.subscribe(g => {
         expect(g).toEqual('125');
-        expect(false).toBe(true);
       });
+      expect(component['submitted']).toBe(false);
       component.sendTimeoutEvent();
+      // A duplicate timeout should return false;
+      const retVal = component.sendTimeoutEvent();
+      expect(retVal).toBe(false);
     }));
   });
 
