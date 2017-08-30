@@ -15,7 +15,7 @@ tags:
 schemes:
 - "https"
 paths:
-  /questions:
+  /api/questions:
     post:
       summary: "returns question set for check"
       description: "By passing in the appropriate options, you can retrieve a set\
@@ -95,6 +95,8 @@ definitions:
         type: "number"
       loadingTime:
         type: "number"
+      access_token:
+        type: "string"
   PupilCheck_school:
     properties:
       Id:
