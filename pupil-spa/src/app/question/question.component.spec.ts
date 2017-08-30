@@ -14,6 +14,7 @@ describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
   const auditServiceMock = new AuditServiceMock();
+  let registerInputService: RegisterInputService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,18 +27,22 @@ describe('QuestionComponent', () => {
         StorageService,
         SubmissionService
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(QuestionComponent);
     component = fixture.componentInstance;
+    spyOn(component, 'handleTouchEvent').and.callThrough();
+    spyOn(component, 'handleMouseEvent').and.callThrough();
     fixture.detectChanges();
     // prevent Timeout's being set
     // NOTE - calling this makes no difference to sendTimeoutEvent test.
     // all other tests work without the call below.
     // spyOn(component, 'ngAfterViewInit').and.returnValue(null);
+
+    registerInputService = TestBed.get(RegisterInputService);
+    spyOn(registerInputService, 'addEntry').and.callFake(function() { console.log('addEntry(): called()'); });
   });
 
   it('should be created', () => {
@@ -120,13 +125,103 @@ describe('QuestionComponent', () => {
     }
 
     it('adds to the answer when a number is given', () => {
-      spyOn(component, 'handleKeyboardEvent');
-      const event1 = dispatchKeyEvent({ key: '1', keyCode: 49 });
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      const event1 = dispatchKeyEvent({ key: '1' });
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
-      // expect(component.answer).toBe('1');
+      expect(component.answer).toBe('1');
+    });
+
+    it('calls register input service for each keypress', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      dispatchKeyEvent({key: '5'});
+      dispatchKeyEvent({key: 'f'});
+      dispatchKeyEvent({key: 'Enter'});
+      dispatchKeyEvent({key: ' '}); //space bar
+      dispatchKeyEvent({key: 'Control'});
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(5);
+    });
+
+    it('keyboard calls deleteChar when pressing Backspace or Delete', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      spyOn(component, 'deleteChar').and.callThrough();
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '4' });
+      dispatchKeyEvent({ key: '7' });
+      expect(component.answer).toBe('147');
+      dispatchKeyEvent({ key: 'Backspace' });
+      expect(component.deleteChar).toHaveBeenCalledTimes(1);
+      expect(component.answer).toBe('14');
+      dispatchKeyEvent({ key: 'Delete' });
+      expect(component.answer).toBe('1');
+      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(5);
+    });
+
+    it('keyboard calls OnSubmit() when Enter is pressed (if there is an answer)', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      spyOn(component, 'onSubmit').and.returnValue(null);
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({key: 'Enter'});
+      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(2);
+      expect(component.onSubmit).toHaveBeenCalledTimes(1);
+      expect(component.answer).toBe('1');
+    })
+
+    it('keyboard accepts numbers', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      spyOn(component, 'addChar').and.callThrough();
+      dispatchKeyEvent({ key: '0' });
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
+      dispatchKeyEvent({ key: '4' });
+      expect(component.answer).toBe('01234');
+      dispatchKeyEvent({key: 'Backspace'});
+      dispatchKeyEvent({key: 'Backspace'});
+      dispatchKeyEvent({key: 'Backspace'});
+      dispatchKeyEvent({key: 'Backspace'});
+      dispatchKeyEvent({key: 'Backspace'});
+      expect(component.answer).toBe('');
+      dispatchKeyEvent({key: '5'});
+      dispatchKeyEvent({key: '6'});
+      dispatchKeyEvent({key: '7'});
+      dispatchKeyEvent({key: '8'});
+      dispatchKeyEvent({key: '9'});
+      expect(component.answer).toBe('56789');
     });
   });
+
+  describe('handleMouseEvent', () => {
+    function dispatchMouseEvent() {
+      const event = new MouseEvent('mousedown', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      document.dispatchEvent(event);
+    }
+    it ('tracks mousedown events', () => {
+      dispatchMouseEvent();
+      expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1)
+    });
+  });
+
+  describe('handleTouchEvent', () => {
+    function dispatchTouchEvent() {
+      const event = new TouchEvent('touchstart', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      document.dispatchEvent(event);
+    }
+    it ('tracks touch events', () => {
+      dispatchTouchEvent();
+      expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    });
+  })
 
   describe('audit entry', () => {
     let auditEntryInserted: AuditEntry;
