@@ -75,13 +75,13 @@ describe('QuestionService', () => {
     expect(service.getNumberOfQuestions()).toBe(10);
   }));
 
-  it('getNextQuestionNumber() returns the next question', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
-    expect(service.getNextQuestionNumber(1)).toBe(2);
-    expect(service.getNextQuestionNumber(2)).toBe(3);
-    expect(service.getNextQuestionNumber(10)).toBeNull();
-    expect(function () {
-      service.getNextQuestionNumber(5.5);
-    }).toThrow(new Error('currentQuestionNumber is not an integer'));
-  }));
+  // it('getNextQuestionNumber() returns the next question', inject([QuestionService], (service: QuestionService) => {
+  //   service.initialise();
+  //   expect(service.getNextQuestionNumber(1)).toBe(2);
+  //   expect(service.getNextQuestionNumber(2)).toBe(3);
+  //   expect(service.getNextQuestionNumber(10)).toBeNull();
+  //   expect(function () {
+  //     service.getNextQuestionNumber(5.5);
+  //   }).toThrow(new Error('currentQuestionNumber is not an integer'));
+  // }));
 });
