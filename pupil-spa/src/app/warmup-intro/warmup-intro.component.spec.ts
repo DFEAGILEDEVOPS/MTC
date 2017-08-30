@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WarmupIntroComponent } from './warmup-intro.component';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { WarmupIntroRendered, AuditEntry } from '../services/audit/auditEntry';
 
 describe('WarmupIntroComponent', () => {
   let component: WarmupIntroComponent;
@@ -10,7 +13,7 @@ describe('WarmupIntroComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ WarmupIntroComponent ],
-      providers: []
+      providers: [ { provide: AuditService, useClass: AuditServiceMock} ]
     })
     .compileComponents();
   }));
@@ -33,4 +36,20 @@ describe('WarmupIntroComponent', () => {
     });
     component.onClick();
   }));
+
+  describe('audit entry', () => {
+    let auditEntryInserted: AuditEntry;
+    let auditService;
+    beforeEach(() => {
+      auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(auditService, 'addEntry').and.callFake((entry) => {
+        auditEntryInserted = entry;
+      });
+    });
+    it('is added on question rendered', () => {
+      component.ngAfterViewInit();
+      expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof WarmupIntroRendered).toBeTruthy();
+    });
+  });
 });
