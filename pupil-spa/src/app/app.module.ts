@@ -24,6 +24,7 @@ import { AnswerService } from './services/answer/answer.service';
 import { UserService } from './services/user/user.service';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { AuditService } from './services/audit/audit.service';
+import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 
@@ -77,7 +78,8 @@ const appRoutes: Routes = [
     AnswerService,
     StorageService,
     UserService,
-    AuditService
+    AuditService,
+    FeedbackService
   ],
   bootstrap: [AppComponent]
 })

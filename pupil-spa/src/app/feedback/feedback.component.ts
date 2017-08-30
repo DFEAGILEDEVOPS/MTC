@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { FeedbackService } from '../services/feedback/feedback.service';
 
 @Component({
   selector: 'app-feedback',
@@ -24,7 +25,11 @@ export class FeedbackComponent implements OnInit {
   private feedbackData: object;
   private submitted: boolean;
 
-  constructor(private router: Router, private storageService: StorageService) {}
+  constructor(
+    private router: Router,
+    private storageService: StorageService,
+    private feedbackService: FeedbackService
+  ) {}
 
   ngOnInit() {
     if (!this.componentValidate()) {
@@ -77,22 +82,23 @@ export class FeedbackComponent implements OnInit {
       return;
     }
 
-    // @TODO: Data shown in console.logs below will need to be stored in the DB via API call.
-    // console.log('inputType', this.selectedInputType);
-    // console.log('satisfactionRating', this.selectedSatisfactionRating);
-    // console.log('commentText', commentText);
-
     this.errorInputType = (this.selectedInputType === undefined);
     this.errorSatisfactionRating = (this.selectedSatisfactionRating === undefined);
 
     if (this.errorInputType === false && this.errorSatisfactionRating === false) {
       this.feedbackData = {
+        'inputType': this.selectedInputType,
+        'satisfactionRating': this.selectedSatisfactionRating,
+        'commentText': commentText,
         'createdAt': new Date(),
-        'sessionId': this.pupilData['sessionId']
+        'sessionId': 'e8c54d9e-6b62-43b9-a48a-91ca5d65bed8'
       };
       this.storageService.setItem('feedback', this.feedbackData);
       this.enableSubmit = false;
       this.submitted = true;
+
+      // Saving in DB via API post
+      this.feedbackService.postFeedback();
 
       this.router.navigate(['feedback-thanks']);
     }

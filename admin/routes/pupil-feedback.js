@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-//const { getQuestions } = require('../controllers/questions')
+const { setPupilFeedback } = require('../controllers/pupil-feedback')
 
 router.route('/').all((req, res) => {
   if (req.method !== 'POST') return res.sendStatus(405)
-  //getQuestions(req, res)
+  setPupilFeedback(req, res)
 })
 
 module.exports = router
