@@ -22,4 +22,11 @@ describe('WarmupCompleteComponent', () => {
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
+
+  it('emits onClick()', async (() => {
+    component.clickEvent.subscribe( g => {
+      expect(g).toBe(null);
+    });
+    component.onClick();
+  }));
 });

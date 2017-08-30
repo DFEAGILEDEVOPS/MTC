@@ -1,23 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {Router} from '@angular/router';
 
 import { WarmupIntroComponent } from './warmup-intro.component';
 
 describe('WarmupIntroComponent', () => {
   let component: WarmupIntroComponent;
   let fixture: ComponentFixture<WarmupIntroComponent>;
-  let mockRouter;
 
   beforeEach(async(() => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
 
     TestBed.configureTestingModule({
       declarations: [ WarmupIntroComponent ],
-      providers: [
-        {provide: Router, useValue: mockRouter}
-      ]
+      providers: []
     })
     .compileComponents();
   }));
@@ -32,9 +25,12 @@ describe('WarmupIntroComponent', () => {
     expect(component).toBeTruthy();
   });
 
-// TODO: Skipping this test for now. Login session needs to be mocked-up? */
-/*   it('redirects to loading screen', () => {
+  it('emits onClick()', async ((done) => {
+    component.clickEvent.subscribe( g => {
+      expect(g).toBe(null);
+      // Issue: https://github.com/angular/angular/issues/15830
+      // done();
+    });
     component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['warm-up-start']);
-  }); */
+  }));
 });

@@ -25,7 +25,6 @@ export class WarmupQuestionService extends QuestionService {
     }
   ];
 
-
   constructor(protected storageService: StorageService) {
     super(storageService);
   }
