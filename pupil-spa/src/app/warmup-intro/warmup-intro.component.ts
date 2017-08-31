@@ -9,6 +9,13 @@ import { WarmupIntroRendered } from '../services/audit/auditEntry';
 })
 export class WarmupIntroComponent implements OnInit, AfterViewInit {
 
+  /**
+   * Emit when the user clicks the button
+   * @type {EventEmitter<any>}
+   */
+  @Output()
+  clickEvent: EventEmitter<any> = new EventEmitter();
+
   constructor(private auditService: AuditService) { }
 
   ngOnInit() {
@@ -17,9 +24,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.auditService.addEntry(new WarmupIntroRendered());
   }
-
-  @Output()
-  clickEvent: EventEmitter<any> = new EventEmitter();
 
   onClick() {
     this.clickEvent.emit(null);
