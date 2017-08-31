@@ -51,14 +51,6 @@ export class QuestionService {
     return question;
   }
 
-  // getNextQuestionNumber(): number {
-  //   if (this.currentQuestion + 1 > this.getNumberOfQuestions()) {
-  //     // we are already on the last question, there isn't another question number.
-  //     return null;
-  //   }
-  //   return this.currentQuestion + 1;
-  // }
-
   getConfig() {
     return this.config;
   }

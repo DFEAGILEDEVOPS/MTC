@@ -79,7 +79,7 @@ export class CheckComponent implements OnInit {
     console.log(`check.component: changeState() called. Current state is ${this.state}`);
 
     this.state += 1; // increment state to next level - it's defined by an array
-    let stateDesc = this.allowedStates[ this.state ];
+    const stateDesc = this.allowedStates[ this.state ];
     console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
       case(/^warmup-intro$/).test(stateDesc):
@@ -197,7 +197,7 @@ export class CheckComponent implements OnInit {
     this.allowedStates.push('warmup-complete');
 
     // Setup the Questions
-    for(let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
+    for (let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`L${i + 1}`);
       this.allowedStates.push(`Q${i + 1}`);
     }

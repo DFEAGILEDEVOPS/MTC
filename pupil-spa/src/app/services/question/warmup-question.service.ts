@@ -7,21 +7,21 @@ import { Config } from '../../config.model';
 @Injectable()
 export class WarmupQuestionService extends QuestionService {
 
-  private questionData =  [
+  private questionData = [
     {
-      "order": 1,
-      "factor1": 1,
-      "factor2": 7
+      'order': 1,
+      'factor1': 1,
+      'factor2': 7
     },
     {
-      "order": 2,
-      "factor1": 3,
-      "factor2": 10
+      'order': 2,
+      'factor1': 3,
+      'factor2': 10
     },
     {
-      "order": 3,
-      "factor1": 2,
-      "factor2": 6
+      'order': 3,
+      'factor1': 2,
+      'factor2': 6
     }
   ];
 
@@ -33,8 +33,8 @@ export class WarmupQuestionService extends QuestionService {
     this.questions = this.questionData;
     const configData = this.storageService.getItem('config');
     const config = new Config();
-    config.loadingTime = configData['loadingTime'];
-    config.questionTime = configData['questionTime'];
+    config.loadingTime = configData[ 'loadingTime' ];
+    config.questionTime = configData[ 'questionTime' ];
     this.config = config;
   }
 

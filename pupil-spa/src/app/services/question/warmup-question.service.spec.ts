@@ -4,7 +4,7 @@ import { WarmupQuestionService } from './warmup-question.service';
 import { StorageService } from '../storage/storage.service';
 
 let storageService;
-let config = {
+const config = {
   loadingTime: 2,
   questionTime: 5
 };
@@ -26,10 +26,10 @@ describe('WarmupQuestionService', () => {
   }));
 
   it('should initialise correctly', inject([ WarmupQuestionService ], (service: WarmupQuestionService) => {
-    expect(service['questions']).toBeFalsy();
-    expect(service['config']).toBeFalsy();
+    expect(service[ 'questions' ]).toBeFalsy();
+    expect(service[ 'config' ]).toBeFalsy();
     service.initialise();
-    expect(service['questions']).toBeDefined();
-    expect(service['config']).toBeDefined();
+    expect(service[ 'questions' ]).toBeDefined();
+    expect(service[ 'config' ]).toBeDefined();
   }));
 });
