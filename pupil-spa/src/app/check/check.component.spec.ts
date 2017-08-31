@@ -171,25 +171,25 @@ describe('CheckComponent', () => {
       expect(component['viewState']).toBe(viewState);
       expect(component['isWarmUp']).toBe(isWarmUp);
     }
-    it('sets the view to warmup-intro when the state is "warmup-intro"', () => {
+    it('shows the warmup-intro when the state is "warmup-intro"', () => {
       testStateChange('warmup-intro', 'warmup-intro', true);
     });
-    it('sets the view to loading when the state is "LW<digit>" - showing the warmup loading screen', () => {
+    it('shows the warmup loading screen when the state is "LW<digit>"', () => {
        testStateChange('LW1', 'preload', true);
     });
-    it('sets the view to question when the state is "W<digit>" - showing a warmup question', () => {
+    it('shows the warmup question when the state is "W<digit>"', () => {
       testStateChange('W1', 'question', true);
     });
-    it('sets the view to question when the state is "W<digit>" - showing a warmup question', () => {
+    it('shows the warmup complete when the state is "warmup-complete"', () => {
       testStateChange('warmup-complete', 'warmup-complete', true);
     });
-    it('sets the view to loading when the state is "L<digit>" - showing the real loading screen', () => {
+    it('shows the loading page when the state is "L<digit>"', () => {
       testStateChange('L1', 'preload', false);
     });
-    it('sets the view to question when the state is "Q<digit>" - showing the real question screen', () => {
+    it('shows the question when the state is "Q<digit>"', () => {
       testStateChange('Q1', 'question', false);
     });
-    it('sets the view to complete when the state is "complete" - showing the check complete screen', () => {
+    it('shows the check complete screen when the state is "complete"', () => {
       testStateChange('complete', 'complete', false);
     });
   });
