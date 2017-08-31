@@ -21,4 +21,7 @@ export class StorageServiceMock {
   getKeys(): string[] {
     return [];
   }
+  getAllItems(): any {
+    return {};
+  }
 }

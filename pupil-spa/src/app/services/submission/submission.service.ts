@@ -21,7 +21,7 @@ export class SubmissionService {
       .toPromise()
       .then((response) => {
           if (response.status !== 201) {
-            return new Error('Login Error:' + response.status + ':' + response.statusText);
+            return new Error('Submit Error:' + response.status + ':' + response.statusText);
           }
         },
         () => {

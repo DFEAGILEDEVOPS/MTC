@@ -28,7 +28,7 @@ const postCheck = async (req, res) => {
   try {
     await completedData.save()
   } catch (err) {
-    res.status(500).json({error: 'Server Error'})
+    return res.status(500).json({error: 'Server Error'})
   }
   return res.sendStatus(201)
 }
