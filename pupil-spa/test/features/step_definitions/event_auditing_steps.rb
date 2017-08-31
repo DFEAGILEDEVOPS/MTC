@@ -6,6 +6,10 @@ end
 Then(/^all the events should be captured$/) do
   expect(@local_storage.first['type']).to eql 'CheckStarted'
   @local_storage.shift
+  expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
+  @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}
+  expect(@local_storage.find{|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
+  @local_storage.reject!{|a| a['type'] == 'WarmupCompleteRendered'}
   @local_storage.each_slice(3) do |slice|
     expect(slice[0]['type']).to eql 'PauseRendered'
     expect(slice[1]['type']).to eql 'QuestionRendered'
