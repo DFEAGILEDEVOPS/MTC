@@ -1,7 +1,15 @@
-Given(/^I have started the check$/) do
+Given(/^I have started the check(?: using the (.+))?$/) do |input|
+  input_type = (input ? input : 'numpad')
   step 'I have logged in'
   confirmation_page.read_instructions.click
-  start_page.start_check.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step "I complete the warm up questions using the #{input_type}"
+  warm_up_complete_page.start_check.click
+end
+
+Given(/^I complete the warm up questions using the (.+)$/) do |input_type|
+  @warm_up_inputs = warm_up_page.complete_check_with_correct_answers(3, input_type)
 end
 
 Then(/^the loading page should display for the configured number of seconds$/) do
@@ -30,6 +38,7 @@ Then(/^I could not answer the question within the configured number of seconds$/
 end
 
 Then(/^I should be moved to the next question$/) do
+  check_page.wait_for_question
   expect(check_page.question.text).to_not eql @question
 end
 
@@ -58,6 +67,7 @@ end
 
 Then(/^I can answer the question using their phsyical keyboard$/) do
   check_page.wait_for_preload
+  check_page.wait_for_question
   @question = check_page.question.text
   values = @question.gsub('=', '').split('×').map {|n| n.strip}
   check_page.enter_answer_via_keyboard(values.first.to_i * values.last.to_i)
