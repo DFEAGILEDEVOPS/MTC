@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  HttpModule,
+  Http
+} from '@angular/http';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { FeedbackService } from '../services/feedback/feedback.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
 
@@ -17,12 +22,15 @@ describe('FeedbackComponent', () => {
 
     const injector = TestBed.configureTestingModule({
       declarations: [ FeedbackComponent ],
+      imports: [HttpModule],
       providers: [
         { provide: Router, useValue: mockRouter },
-        StorageService
+        StorageService,
+        FeedbackService
       ]
     });
     const storageService = injector.get(StorageService);
+    const feedbackService = injector.get(FeedbackService);
     injector.compileComponents();
 
     spyOn(storageService, 'getItem').and.callFake(function (key) {
@@ -30,6 +38,9 @@ describe('FeedbackComponent', () => {
     });
     spyOn(storageService, 'setItem').and.callFake(function (key, value) {
       return store[key] = value + '';
+    });
+    spyOn(feedbackService, 'postFeedback').and.callFake(function() {
+      return true;
     });
   }));
 
