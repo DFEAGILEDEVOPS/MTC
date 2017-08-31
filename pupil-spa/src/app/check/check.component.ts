@@ -48,7 +48,7 @@ export class CheckComponent implements OnInit {
    * @return {boolean}
    */
   @HostListener('document:touchend', [ '$event' ])
-  handleTouchEndEvent() {
+  handleTouchEndEvent(event: TouchEvent) {
     event.preventDefault();
     event.target.dispatchEvent(new Event('click', { bubbles: true }));
     return false;
@@ -83,18 +83,20 @@ export class CheckComponent implements OnInit {
     console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
       case(/^warmup-intro$/).test(stateDesc):
+        // Show the warmup-intro screen
         this.isWarmUp = true;
         this.viewState = 'warmup-intro';
         break;
       case(/^LW(\d+)$/).test(stateDesc): {
+        // Show the warmup-loading screen
         const matches = /^LW(\d+)$/.exec(stateDesc);
-        console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.isWarmUp = true;
         this.viewState = 'preload';
         break;
       }
       case(/^W(\d+)$/).test(stateDesc): {
+        // Show the warmup question screen
         const matches = /^W(\d+)$/.exec(stateDesc);
         this.isWarmUp = true;
         console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
@@ -103,11 +105,13 @@ export class CheckComponent implements OnInit {
         break;
       }
       case(/^warmup-complete$/).test(stateDesc):
+        // Show the warmup complete screen
         this.isWarmUp = true;
         console.log(`state: ${stateDesc}`);
         this.viewState = 'warmup-complete';
         break;
       case(/^L(\d+)$/).test(stateDesc):
+        // Show the loading screen
         this.isWarmUp = false;
         const matches = /^L(\d+)$/.exec(stateDesc);
         console.log(`state: ${stateDesc}`);
@@ -115,6 +119,7 @@ export class CheckComponent implements OnInit {
         this.viewState = 'preload';
         break;
       case(/^Q(\d+)$/).test(stateDesc): {
+        // Show the question screen
         this.isWarmUp = false;
         const matches = /^Q(\d+)$/.exec(stateDesc);
         console.log(`state: ${stateDesc}`);
@@ -123,6 +128,7 @@ export class CheckComponent implements OnInit {
         break;
       }
       case(/^complete$/).test(stateDesc):
+        // Show the check complete screen
         this.isWarmUp = false;
         this.viewState = 'complete';
         break;
