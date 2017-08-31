@@ -16,7 +16,7 @@ const setPupilFeedback = async (req, res, next) => {
   try {
     await verify(accessToken)
   } catch (err) {
-    return res.status(401).json({ error: 'Unauthorised' })
+    return res.status(401).json({error: 'Unauthorised'})
   }
 
   const pupilFeedback = new PupilFeedback({
