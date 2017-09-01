@@ -1,23 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {Router} from '@angular/router';
 
 import { WarmupIntroComponent } from './warmup-intro.component';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { WarmupIntroRendered, AuditEntry } from '../services/audit/auditEntry';
 
 describe('WarmupIntroComponent', () => {
   let component: WarmupIntroComponent;
   let fixture: ComponentFixture<WarmupIntroComponent>;
-  let mockRouter;
 
   beforeEach(async(() => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
-    };
 
     TestBed.configureTestingModule({
       declarations: [ WarmupIntroComponent ],
-      providers: [
-        {provide: Router, useValue: mockRouter}
-      ]
+      providers: [ { provide: AuditService, useClass: AuditServiceMock} ]
     })
     .compileComponents();
   }));
@@ -32,9 +28,28 @@ describe('WarmupIntroComponent', () => {
     expect(component).toBeTruthy();
   });
 
-// TODO: Skipping this test for now. Login session needs to be mocked-up? */
-/*   it('redirects to loading screen', () => {
+  it('emits onClick()', async ((done) => {
+    component.clickEvent.subscribe( g => {
+      expect(g).toBe(null);
+      // Issue: https://github.com/angular/angular/issues/15830
+      // done();
+    });
     component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['warm-up-start']);
-  }); */
+  }));
+
+  describe('audit entry', () => {
+    let auditEntryInserted: AuditEntry;
+    let auditService;
+    beforeEach(() => {
+      auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(auditService, 'addEntry').and.callFake((entry) => {
+        auditEntryInserted = entry;
+      });
+    });
+    it('is added on WarmupIntro rendered', () => {
+      component.ngAfterViewInit();
+      expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof WarmupIntroRendered).toBeTruthy();
+    });
+  });
 });

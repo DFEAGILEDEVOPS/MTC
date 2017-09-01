@@ -5,7 +5,7 @@ import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { StorageService } from '../services/storage/storage.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -13,7 +13,8 @@ describe('LoginComponent', () => {
   let mockRouter;
   let mockUserService;
   let promiseHelper;
-  const mockQuestionService = new QuestionServiceMock();
+  let mockQuestionService;
+  let mockWarmupQuestionService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -35,15 +36,20 @@ describe('LoginComponent', () => {
 
     spyOn(mockUserService, 'login').and.returnValue(loginPromise);
 
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [LoginComponent],
       providers: [
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: QuestionService, useValue: mockQuestionService }
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
       ]
-    }).compileComponents();
+    });
+    mockQuestionService = injector.get(QuestionService);
+    mockWarmupQuestionService = injector.get(WarmupQuestionService);
 
+    spyOn(mockQuestionService, 'initialise');
+    spyOn(mockWarmupQuestionService, 'initialise');
   }));
 
   beforeEach(() => {
@@ -63,9 +69,17 @@ describe('LoginComponent', () => {
   });
 
   describe('on successful login', () => {
-
     beforeEach(() => {
       promiseHelper.resolve({ success: 'login okay' });
+    });
+
+    it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1);
+        expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1);
+      });
     });
 
     it('should redirect to success page given a valid schoolPin and pupilPin', async () => {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { LogoutComponent } from './logout.component';
 import { QuestionService } from '../services/question/question.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 describe('LogoutComponent', () => {
@@ -11,7 +12,8 @@ describe('LogoutComponent', () => {
   let fixture: ComponentFixture<LogoutComponent>;
   let mockRouter;
   let mockUserService;
-  const mockQuestionService = new QuestionServiceMock();
+  let mockQuestionService;
+  let mockWarmupQuestionService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -20,15 +22,19 @@ describe('LogoutComponent', () => {
     mockUserService = {
       logout: jasmine.createSpy('logout')
     };
-    TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       declarations: [LogoutComponent],
       providers: [
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
-        { provide: QuestionService, useValue: mockQuestionService }
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
       ],
-    })
-      .compileComponents();
+    });
+    mockQuestionService = injector.get(QuestionService);
+    mockWarmupQuestionService = injector.get(WarmupQuestionService);
+    spyOn(mockQuestionService, 'reset');
+    spyOn(mockWarmupQuestionService, 'reset');
   }));
 
   beforeEach(() => {
@@ -43,6 +49,8 @@ describe('LogoutComponent', () => {
 
   it('should have signed out of the user service', () => {
     expect(mockUserService.logout).toHaveBeenCalled();
+    expect(mockQuestionService.reset).toHaveBeenCalledTimes(1);
+    expect(mockWarmupQuestionService.reset).toHaveBeenCalledTimes(1);
   });
 
   it('should navigate to the sign-in page', () => {
