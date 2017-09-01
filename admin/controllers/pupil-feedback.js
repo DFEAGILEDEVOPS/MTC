@@ -29,7 +29,6 @@ const setPupilFeedback = async (req, res, next) => {
   try {
     await pupilFeedback.save()
     res.status(201).json('Pupil feedback saved')
-    return next
   } catch (error) {
     console.log('Error saving pupil feedback', error)
     res.status(500).json({error: 'Server Error'})
