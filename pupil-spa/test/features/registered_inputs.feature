@@ -4,7 +4,7 @@ Feature: Registered Inputs
     Given I have used all the keys on the on screen keyboard to complete the check
     Then I should see all my number pad inputs recorded
 
-  Scenario: All inputs are recorded when using the physical keyboard
+  Scenario: All numerical inputs are recorded when using the physical keyboard
     Given I have used the physical screen keyboard to complete the check
     Then I should see all my keyboard inputs recorded
 
