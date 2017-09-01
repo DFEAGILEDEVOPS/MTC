@@ -1,12 +1,13 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
-import { RegisterInputService} from '../services/register-input/registerInput.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css']
+  styleUrls: ['./question.component.css'],
+  providers: [ RegisterInputService ]
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 

@@ -36,7 +36,9 @@ describe('QuestionComponent', () => {
     spyOn(component, 'handleTouchEvent').and.callThrough();
     spyOn(component, 'handleMouseEvent').and.callThrough();
     fixture.detectChanges();
-    registerInputService = TestBed.get(RegisterInputService);
+    // This is the best way to get the injected service, the way that _always_ _works_
+    // https://angular.io/guide/testing#get-injected-services
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry').and.callFake(function () {
       console.log('addEntry(): called()');
     });

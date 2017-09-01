@@ -23,7 +23,6 @@ import { LogoutComponent } from './logout/logout.component';
 import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
-import { RegisterInputService } from './services/register-input/registerInput.service';
 import { StorageService } from './services/storage/storage.service';
 import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
@@ -78,7 +77,6 @@ const appRoutes: Routes = [
     AuditService,
     LoggedInGuard,
     QuestionService,
-    RegisterInputService,
     StorageService,
     SubmissionService,
     UserService,
