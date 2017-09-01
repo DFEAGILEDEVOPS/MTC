@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { FeedbackService } from '../services/feedback/feedback.service';
 
 @Component({
   selector: 'app-feedback',
@@ -24,11 +25,20 @@ export class FeedbackComponent implements OnInit {
   private feedbackData: object;
   private submitted: boolean;
 
-  constructor(private router: Router, private storageService: StorageService) {}
+  constructor(
+    private router: Router,
+    private storageService: StorageService,
+    private feedbackService: FeedbackService
+  ) {}
 
   ngOnInit() {
     if (!this.componentValidate()) {
       this.router.navigate(['feedback-thanks']);
+    }
+    const questions = this.storageService.getItem('questions');
+    const answers = this.storageService.getItem('answers');
+    if (!answers || !questions || questions.length !== answers.length) {
+      this.router.navigate(['check-start']);
     }
     this.pupilData = this.storageService.getItem('pupil');
     this.inputTypes = [
@@ -72,27 +82,28 @@ export class FeedbackComponent implements OnInit {
     }
   }
 
-  onSubmit(commentText) {
+  async onSubmit(comments) {
     if (this.submitted === true) {
       return;
     }
-
-    // @TODO: Data shown in console.logs below will need to be stored in the DB via API call.
-    // console.log('inputType', this.selectedInputType);
-    // console.log('satisfactionRating', this.selectedSatisfactionRating);
-    // console.log('commentText', commentText);
 
     this.errorInputType = (this.selectedInputType === undefined);
     this.errorSatisfactionRating = (this.selectedSatisfactionRating === undefined);
 
     if (this.errorInputType === false && this.errorSatisfactionRating === false) {
       this.feedbackData = {
+        'inputType': this.selectedInputType,
+        'satisfactionRating': this.selectedSatisfactionRating,
+        'comments': comments,
         'createdAt': new Date(),
         'sessionId': this.pupilData['sessionId']
       };
       this.storageService.setItem('feedback', this.feedbackData);
       this.enableSubmit = false;
       this.submitted = true;
+
+      // Saving in DB via API post
+      await this.feedbackService.postFeedback();
 
       this.router.navigate(['feedback-thanks']);
     }
