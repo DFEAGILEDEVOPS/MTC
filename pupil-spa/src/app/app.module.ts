@@ -4,9 +4,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
+import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
+import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
+import { FeedbackComponent } from './feedback/feedback.component';
+import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
+import { FeedbackService } from './services/feedback/feedback.service';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
@@ -20,28 +25,25 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { StorageService } from './services/storage/storage.service';
-import { AnswerService } from './services/answer/answer.service';
-import { UserService } from './services/user/user.service';
-import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
-import { AuditService } from './services/audit/audit.service';
 import { SubmissionService} from './services/submission/submission.service';
-import { FeedbackService } from './services/feedback/feedback.service';
-import { FeedbackComponent } from './feedback/feedback.component';
-import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
+import { UserService } from './services/user/user.service';
+import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
+import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
+import { WarmupQuestionService } from './services/question/warmup-question.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
+  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
+  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
+  {path: 'feedback', component: FeedbackComponent},
+  {path: 'feedback-thanks', component: FeedbackThanksComponent},
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-in-failure', component: LoginFailureComponent},
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
-  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
   {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
-  {path: 'feedback', component: FeedbackComponent},
-  {path: 'feedback-thanks', component: FeedbackThanksComponent},
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -50,6 +52,8 @@ const appRoutes: Routes = [
     AppComponent,
     CheckCompleteComponent,
     CheckComponent,
+    FeedbackComponent,
+    FeedbackThanksComponent,
     FooterComponent,
     HeaderComponent,
     InstructionsComponent,
@@ -60,9 +64,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     PhaseBannerComponent,
     QuestionComponent,
-    WarmupIntroComponent,
-    FeedbackComponent,
-    FeedbackThanksComponent
+    WarmupCompleteComponent,
+    WarmupIntroComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -74,14 +77,15 @@ const appRoutes: Routes = [
     HttpModule,
   ],
   providers: [
-    LoggedInGuard,
-    QuestionService,
     AnswerService,
-    StorageService,
-    UserService,
     AuditService,
     FeedbackService,
-    SubmissionService
+    LoggedInGuard,
+    QuestionService,
+    StorageService,
+    SubmissionService,
+    UserService,
+    WarmupQuestionService
   ],
   bootstrap: [AppComponent]
 })

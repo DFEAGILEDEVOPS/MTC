@@ -12,7 +12,7 @@ import { FeedbackComponent } from './feedback.component';
 describe('FeedbackComponent', () => {
   let component: FeedbackComponent;
   let fixture: ComponentFixture<FeedbackComponent>;
-  let store: {};
+  const store = {};
   let mockRouter;
 
   beforeEach(async(() => {

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { QuestionService} from '../question/question.service';
+import { QuestionService } from '../question/question.service';
 
 
 @Injectable()
@@ -8,8 +8,9 @@ export class RegisterInputService implements OnDestroy {
 
   protected questionInputs = this.storageService.getItem('inputs') || [];
   protected currentQuestion = this.questionService.getCurrentQuestionNumber();
+
   constructor(protected storageService: StorageService, protected questionService: QuestionService) {
-    this.questionInputs[this.currentQuestion] = this.questionInputs[this.currentQuestion] || [];
+    this.questionInputs[ this.currentQuestion ] = this.questionInputs[ this.currentQuestion ] || [];
   }
 
   public addEntry(event) {
@@ -22,7 +23,7 @@ export class RegisterInputService implements OnDestroy {
   }
 
   public storeEntry(eventValue, eventType) {
-    this.questionInputs[this.currentQuestion].push({
+    this.questionInputs[ this.currentQuestion ].push({
       input: eventValue,
       eventType: eventType,
       clientInputDate: new Date()

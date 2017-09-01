@@ -1,4 +1,5 @@
-export type AuditEntryType = 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered';
+export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckCompleteRendered' |
+'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered';
 
 export abstract class AuditEntry {
 
@@ -6,6 +7,18 @@ export abstract class AuditEntry {
     public type: AuditEntryType,
     public clientTimestamp: Date,
     public data?: object) { }
+}
+
+export class WarmupIntroRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('WarmupIntroRendered', new Date(), data);
+  }
+}
+
+export class WarmupCompleteRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('WarmupCompleteRendered', new Date(), data);
+  }
 }
 
 export class QuestionRendered extends AuditEntry {
@@ -29,5 +42,11 @@ export class QuestionAnswered extends AuditEntry {
 export class PauseRendered extends AuditEntry {
   constructor(data?: any) {
     super('PauseRendered', new Date(), data);
+  }
+}
+
+export class CheckCompleteRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('CheckCompleteRendered', new Date(), data);
   }
 }

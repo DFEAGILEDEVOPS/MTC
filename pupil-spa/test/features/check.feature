@@ -19,7 +19,7 @@ Feature: Check questions
     When the loading screen has expired
     Then the question should display for the configured number of seconds
 
-  Scenario: Check page gives users 5 seconds to answer the question and then moves on
+  Scenario: Check page gives users a defined number of seconds to answer the question and then moves on
     Given I have started the check
     And I could not answer the question within the configured number of seconds
     Then I should be moved to the next question
@@ -48,3 +48,8 @@ Feature: Check questions
     Given I have started the check
     When I have entered an incorrect answer
     Then I should be able to correct my answer if i am quick enough
+
+  Scenario: Users do not have to wait for the configured time if they submit an answer before the time is up
+    Given I have started the check
+    And I could answer the question within the configured time
+    Then I should be moved to the next question
