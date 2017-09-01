@@ -35,6 +35,7 @@ export class LoadingComponent implements AfterViewInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
+    event.preventDefault();
     return false;
   }
 

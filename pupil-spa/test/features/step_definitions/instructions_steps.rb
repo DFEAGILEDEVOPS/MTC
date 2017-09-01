@@ -7,7 +7,7 @@ Then(/^I should see a bulleted list of instructions$/) do
 end
 
 Then(/^I should see a start button$/) do
-  expect(start_page).to have_start_check
+  expect(start_page).to have_start_warm_up
 end
 
 Then(/^I should see the timings between questions$/) do
