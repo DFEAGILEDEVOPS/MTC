@@ -37,8 +37,14 @@ export class CheckComponent implements OnInit {
    */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // IMPORTANT: return false here
     console.log('check.component: handleKeyboardEvent(): key: ' + event.key);
+    switch (event.key) {
+      case 'Tab':
+      case 'Enter':
+        // Allow keyboard navigation for the warmup-intro, warmup-complete, and complete page using
+        // tab end enter to click on buttons.
+        return true;
+    }
     event.preventDefault();
     return false;
   }

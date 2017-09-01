@@ -110,7 +110,7 @@ describe('CheckComponent', () => {
       return event;
     }
 
-    it('cancels all keyboard events and returns false', () => {
+    it('cancels (nearly) all keyboard events and returns false', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough();
       const ev1 = dispatchKeyEvent({ key: '5' });
       expect(ev1.defaultPrevented).toBe(true);
@@ -130,6 +130,15 @@ describe('CheckComponent', () => {
 
       // it needs to return false
       expect(component.handleKeyboardEvent(new KeyboardEvent('keydown', { key: 'x' }))).toBe(false);
+    });
+
+    it ('allows tab and enter keys for AX keyboard navigation', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      const ev1 = dispatchKeyEvent({key: 'Tab'});
+      expect(ev1.defaultPrevented).toBe(false);
+      const ev2 = dispatchKeyEvent({key: 'Enter'});
+      expect(ev2.defaultPrevented).toBe(false);
+      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(2);
     });
   });
 
