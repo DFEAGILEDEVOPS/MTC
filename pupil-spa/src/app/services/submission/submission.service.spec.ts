@@ -19,9 +19,8 @@ describe('SubmissionService', () => {
         { provide: XHRBackend, useClass: MockBackend }
       ]
     });
-
-    submissionService = inject.get(SubmissionService);
     storageService = inject.get(StorageService);
+    submissionService = inject.get(SubmissionService);
     mockBackend = inject.get(XHRBackend);
   });
 
@@ -36,7 +35,7 @@ describe('SubmissionService', () => {
         status: 200
       })));
     });
-    spyOn(storageService, 'getAllItems');
+    spyOn(storageService , 'getAllItems').and.returnValues({});
     submissionService.submitData().then(() => {
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     });
