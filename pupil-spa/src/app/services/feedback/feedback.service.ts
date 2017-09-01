@@ -41,8 +41,7 @@ export class FeedbackService {
           if (response.status !== 201) {
             return reject(new Error('Feedback Error:' + response.status + ':' + response.statusText));
           }
-          const data = response.json();
-          console.log('RETURN FROM FEEDBACK API', data);
+          //const data = response.json();
           resolve();
         },
         (err) => {
