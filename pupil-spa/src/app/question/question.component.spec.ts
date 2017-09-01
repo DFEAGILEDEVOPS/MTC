@@ -39,9 +39,7 @@ describe('QuestionComponent', () => {
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    spyOn(registerInputService, 'addEntry').and.callFake(function () {
-      console.log('addEntry(): called()');
-    });
+    spyOn(registerInputService, 'addEntry');
   });
 
   it('should be created', () => {
