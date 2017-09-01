@@ -107,10 +107,9 @@ export class CheckComponent implements OnInit {
       case(/^warmup-complete$/).test(stateDesc):
         // Show the warmup complete screen
         this.isWarmUp = true;
-        console.log(`state: ${stateDesc}`);
         this.viewState = 'warmup-complete';
         break;
-      case(/^L(\d+)$/).test(stateDesc):
+      case(/^L(\d+)$/).test(stateDesc): {
         // Show the loading screen
         this.isWarmUp = false;
         const matches = /^L(\d+)$/.exec(stateDesc);
@@ -118,6 +117,7 @@ export class CheckComponent implements OnInit {
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
         break;
+      }
       case(/^Q(\d+)$/).test(stateDesc): {
         // Show the question screen
         this.isWarmUp = false;
