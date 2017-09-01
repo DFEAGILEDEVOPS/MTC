@@ -28,7 +28,7 @@ When(/^I attempt to login with just a pupil pin$/) do
   sign_in_page.sign_in_button.click
 end
 
-Then(/^I should be taken to the instructions page$/) do
+Then(/^I should be taken to the confirmation page$/) do
   expect(confirmation_page).to be_displayed
 end
 
