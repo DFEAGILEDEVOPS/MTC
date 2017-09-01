@@ -4,17 +4,18 @@ const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 const jwtService = require('../../services/jwt-service')
-const { feedbackData } = require('../mocks/pupil-feedback')
+const {audit, inputs, answers} = require('../mocks/check-complete')
 
 require('sinon-mongoose')
+const validToken = 'good_token'
 let sandbox
 let jwtPromiseHelper
 let mockCheckData
 let goodReq
-let PupilFeedback
+let CompletedCheck
 let isSuccessful
 
-describe('Pupil Feedback controller', () => {
+describe('completed check controller', () => {
   const getResult = (isSuccessful) => {
     if (isSuccessful) return isSuccessful
     throw new Error('saving error')
@@ -22,7 +23,7 @@ describe('Pupil Feedback controller', () => {
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create()
-    PupilFeedback = class PupilFeedbacks {
+    CompletedCheck = class CompletedChecks {
       save () { return getResult(isSuccessful) }
     }
 
@@ -35,17 +36,21 @@ describe('Pupil Feedback controller', () => {
 
     mockCheckData = async() => {
       sandbox.stub(jwtService, 'verify').returns(jwtPromise)
-      const { setPupilFeedback } = proxyquire('../../controllers/pupil-feedback', {
+      const {postCheck} = proxyquire('../../controllers/completed-check', {
         '../services/jwt-service': jwtService,
-        '../models/pupil-feedback': PupilFeedback
+        '../models/completed-checks': CompletedCheck
       })
-      return setPupilFeedback
+      return postCheck
     }
+
+    goodReq = httpMocks.createRequest({
+      method: 'POST',
+      url: '/api/completed-check',
+      body: {audit, inputs, answers, validToken}
+    })
   })
-
   afterEach(() => { sandbox.restore() })
-
-  describe('when accessing token validation', () => {
+  describe('when access token validation succeeds', () => {
     beforeEach(() => {
       isSuccessful = true
       jwtPromiseHelper.resolve(true)
@@ -54,30 +59,24 @@ describe('Pupil Feedback controller', () => {
     it('returns bad request if request payload is not provided', async(done) => {
       const req = httpMocks.createRequest({
         method: 'POST',
-        url: '/api/pupil-feedback',
+        url: '/api/completed-check',
         body: {}
       })
       const res = httpMocks.createResponse()
-      const setPupilFeedback = await mockCheckData()
-      await setPupilFeedback(req, res)
+      const postCheck = await mockCheckData()
+      await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad Request')
       done()
     })
 
-    it('returns a successful response validation passes', async(done) => {
-      const req = httpMocks.createRequest({
-        method: 'POST',
-        url: '/api/pupil-feedback',
-        body: feedbackData
-      })
+    it('returns created if payload is provided', async (done) => {
+      const req = goodReq
       const res = httpMocks.createResponse()
-      const setPupilFeedback = await mockCheckData()
-      await setPupilFeedback(req, res)
-      const data = JSON.parse(res._getData())
+      const postCheck = await mockCheckData()
+      await postCheck(req, res)
       expect(res.statusCode).toBe(201)
-      expect(data).toBe('Pupil feedback saved')
       done()
     })
   })
@@ -86,16 +85,11 @@ describe('Pupil Feedback controller', () => {
     beforeEach(() => {
       jwtPromiseHelper.reject('access token error : technical')
     })
-
     it('sends a 401 error', async (done) => {
-      const req = httpMocks.createRequest({
-        method: 'POST',
-        url: '/api/pupil-feedback',
-        body: feedbackData
-      })
+      const req = goodReq
       const res = httpMocks.createResponse()
-      const setPupilFeedback = await mockCheckData()
-      await setPupilFeedback(req, res)
+      const postCheck = await mockCheckData()
+      await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(401)
       expect(data.error).toBe('Unauthorised')
@@ -103,18 +97,13 @@ describe('Pupil Feedback controller', () => {
     })
   })
 
-  describe('when setPupilFeedback fails', () => {
+  describe('when saving completed check fails', () => {
     beforeEach(() => {
       isSuccessful = false
       jwtPromiseHelper.resolve(true)
     })
-
-    it('returns a server error', async (done) => {
-      const req = httpMocks.createRequest({
-        method: 'POST',
-        url: '/api/pupil-feedback',
-        body: feedbackData
-      })
+    it('returns server error', async (done) => {
+      const req = goodReq
       const res = httpMocks.createResponse()
       const postCheck = await mockCheckData()
       await postCheck(req, res)
