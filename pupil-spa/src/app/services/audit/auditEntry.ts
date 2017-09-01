@@ -1,4 +1,4 @@
-export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupPauseRendered' | 'WarmupQuestionRendered' | 'WarmupCompleteRendered' |
+export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckCompleteRendered' |
 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered';
 
 export abstract class AuditEntry {
@@ -12,18 +12,6 @@ export abstract class AuditEntry {
 export class WarmupIntroRendered extends AuditEntry {
   constructor(data?: any) {
     super('WarmupIntroRendered', new Date(), data);
-  }
-}
-
-export class WarmupPauseRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('WarmupPauseRendered', new Date(), data);
-  }
-}
-
-export class WarmupQuestionRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('WarmupQuestionRendered', new Date(), data);
   }
 }
 
@@ -54,5 +42,11 @@ export class QuestionAnswered extends AuditEntry {
 export class PauseRendered extends AuditEntry {
   constructor(data?: any) {
     super('PauseRendered', new Date(), data);
+  }
+}
+
+export class CheckCompleteRendered extends AuditEntry {
+  constructor(data?: any) {
+    super('CheckCompleteRendered', new Date(), data);
   }
 }

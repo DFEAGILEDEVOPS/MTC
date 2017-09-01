@@ -15,13 +15,13 @@ describe('CheckComponent', () => {
   let fixture: ComponentFixture<CheckComponent>;
 
   function detectStateChange(object, method, arg?) {
-    const beforeState = component['state'];
+    const beforeState = component[ 'state' ];
     if (arg) {
-      object[method]();
+      object[ method ]();
     } else {
-      object[method](arg);
+      object[ method ](arg);
     }
-    const afterState = component['state'];
+    const afterState = component[ 'state' ];
     expect(beforeState + 1).toBe(afterState);
   }
 
@@ -85,12 +85,12 @@ describe('CheckComponent', () => {
 
   describe('questionTimeoutHandler()', () => {
     it('calls changeState()', () => {
-      detectStateChange(component, 'questionTimeoutHandler', 'testinput')
+      detectStateChange(component, 'questionTimeoutHandler', 'testinput');
     });
     it('sets the answer if it is a real question', () => {
       const answerService = fixture.debugElement.injector.get(AnswerService);
       spyOn(answerService, 'setAnswer');
-      component['isWarmUp'] = false;
+      component[ 'isWarmUp' ] = false;
       component.questionTimeoutHandler('123');
       expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
     });
@@ -164,18 +164,19 @@ describe('CheckComponent', () => {
 
   describe('changeState()', () => {
     // This is a private method, but worth testing.
-    function testStateChange(stateDesc:string, viewState: string, isWarmUp: boolean) {
-      component['allowedStates'] = [undefined, stateDesc];
-      component['state'] = 0;
-      component['changeState']();
-      expect(component['viewState']).toBe(viewState);
-      expect(component['isWarmUp']).toBe(isWarmUp);
+    function testStateChange(stateDesc: string, viewState: string, isWarmUp: boolean) {
+      component[ 'allowedStates' ] = [ undefined, stateDesc ];
+      component[ 'state' ] = 0;
+      component[ 'changeState' ]();
+      expect(component[ 'viewState' ]).toBe(viewState);
+      expect(component[ 'isWarmUp' ]).toBe(isWarmUp);
     }
+
     it('shows the warmup-intro when the state is "warmup-intro"', () => {
       testStateChange('warmup-intro', 'warmup-intro', true);
     });
     it('shows the warmup loading screen when the state is "LW<digit>"', () => {
-       testStateChange('LW1', 'preload', true);
+      testStateChange('LW1', 'preload', true);
     });
     it('shows the warmup question when the state is "W<digit>"', () => {
       testStateChange('W1', 'question', true);

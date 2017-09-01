@@ -37,8 +37,8 @@ export class CheckComponent implements OnInit {
    */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log(`check-complete.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
+    console.log('check.component: handleKeyboardEvent(): key: ' + event.key);
     event.preventDefault();
     return false;
   }
