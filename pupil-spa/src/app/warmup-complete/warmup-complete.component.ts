@@ -27,7 +27,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
   }
 
   onClick() {
-    console.log(`warmup-complete(): onClick called()`);
+    // console.log(`warmup-complete(): onClick called()`);
     this.clickEvent.emit(null);
   }
 

@@ -37,7 +37,7 @@ export class CheckComponent implements OnInit {
    */
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log('check.component: handleKeyboardEvent(): key: ' + event.key);
+    // console.log('check.component: handleKeyboardEvent(): key: ' + event.key);
     switch (event.key) {
       case 'Tab':
       case 'Enter':
@@ -82,11 +82,11 @@ export class CheckComponent implements OnInit {
    * current state. No args required.
    */
   private changeState() {
-    console.log(`check.component: changeState() called. Current state is ${this.state}`);
+    // console.log(`check.component: changeState() called. Current state is ${this.state}`);
 
     this.state += 1; // increment state to next level - it's defined by an array
     const stateDesc = this.allowedStates[ this.state ];
-    console.log(`check.component: changeState(): new state ${stateDesc}`);
+    // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
       case(/^warmup-intro$/).test(stateDesc):
         // Show the warmup-intro screen
@@ -105,7 +105,7 @@ export class CheckComponent implements OnInit {
         // Show the warmup question screen
         const matches = /^W(\d+)$/.exec(stateDesc);
         this.isWarmUp = true;
-        console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
+        // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
         break;
@@ -119,7 +119,6 @@ export class CheckComponent implements OnInit {
         // Show the loading screen
         this.isWarmUp = false;
         const matches = /^L(\d+)$/.exec(stateDesc);
-        console.log(`state: ${stateDesc}`);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
         break;
@@ -128,7 +127,6 @@ export class CheckComponent implements OnInit {
         // Show the question screen
         this.isWarmUp = false;
         const matches = /^Q(\d+)$/.exec(stateDesc);
-        console.log(`state: ${stateDesc}`);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
         break;
@@ -148,7 +146,7 @@ export class CheckComponent implements OnInit {
    * @param {string} answer
    */
   manualSubmitHandler(answer: string) {
-    console.log(`check.component: manualSubmitHandler(): ${answer}`);
+    // console.log(`check.component: manualSubmitHandler(): ${answer}`);
     if (!this.isWarmUp) {
       const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
       this.answerService.setAnswer(answerSet);
@@ -161,7 +159,7 @@ export class CheckComponent implements OnInit {
    * @param {string} answer
    */
   questionTimeoutHandler(answer: string) {
-    console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
+    // console.log(`check.component: questionTimeoutHandler(): called with ${answer}`);
     if (!this.isWarmUp) {
       const answerSet = { factor1: this.question.factor1, factor2: this.question.factor2, answer };
       this.answerService.setAnswer(answerSet);
@@ -173,7 +171,7 @@ export class CheckComponent implements OnInit {
    * Handle the loading page timeout
    */
   loadingTimeoutHandler() {
-    console.log(`check.component: loadingTimeoutHandler() called`);
+    // console.log(`check.component: loadingTimeoutHandler() called`);
     this.changeState();
   }
 
@@ -182,7 +180,7 @@ export class CheckComponent implements OnInit {
    * warmup question loading page.
    */
   warmupIntroClickHandler() {
-    console.log('check.component: warmupIntroClickHandler() called');
+    // console.log('check.component: warmupIntroClickHandler() called');
     this.changeState();
   }
 
@@ -191,7 +189,7 @@ export class CheckComponent implements OnInit {
    * real question loading page.
    */
   warmupCompleteClickHandler() {
-    console.log('check.component: warmupCompleteClickHandler() called');
+    // console.log('check.component: warmupCompleteClickHandler() called');
     this.changeState();
   }
 
@@ -217,7 +215,6 @@ export class CheckComponent implements OnInit {
 
     // Set up the final page
     this.allowedStates.push('complete');
-
-    console.log('check.component: initStates(): states set to: ', this.allowedStates);
+    // console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 }
