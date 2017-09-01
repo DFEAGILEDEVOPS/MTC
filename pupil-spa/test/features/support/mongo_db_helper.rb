@@ -55,6 +55,13 @@ class MongoDbHelper
     result.first
   end
 
+  def self.get_feedback(session_id)
+    result = []
+    collection=CLIENT[:pupilfeedbacks].find({'sessionId': session_id})
+    collection.each {|a| result << a}
+    result.first
+  end
+
   def self.get_last_answer
     collection = CLIENT["answers-#{Date.today.year}".to_sym].find().sort({createdAt:-1})
     collection.first

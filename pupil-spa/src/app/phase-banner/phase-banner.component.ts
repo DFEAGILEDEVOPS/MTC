@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-phase-banner',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PhaseBannerComponent implements OnInit {
 
-  constructor() { }
+  showFeedback = false;
+  constructor(private storageService: StorageService) {}
 
   ngOnInit() {
+    const questions = this.storageService.getItem('questions');
+    const answers = this.storageService.getItem('answers');
+    if (answers && questions && questions.length === answers.length) {
+      this.showFeedback = true;
+    }
   }
 
 }
