@@ -28,7 +28,7 @@ Feature: Login page
 
   Scenario: Users can login with valid credentials
     Given I have logged in
-    Then I should be taken to the instructions page
+    Then I should be taken to the confirmation page
 
   Scenario: Error is displayed when no details are entered
     Given I am on the sign in page

@@ -11,6 +11,7 @@ import { CheckCompleteComponent } from './check-complete/check-complete.componen
 import { CheckComponent } from './check/check.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
+import { FeedbackService } from './services/feedback/feedback.service';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
@@ -32,14 +33,17 @@ import { WarmupQuestionService } from './services/question/warmup-question.servi
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
-  {path: 'sign-in', component: LoginComponent},
-  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent},
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
+  {path: 'sign-in', component: LoginComponent},
+  {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-in-failure', component: LoginFailureComponent},
+  {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
+  {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -75,6 +79,7 @@ const appRoutes: Routes = [
   providers: [
     AnswerService,
     AuditService,
+    FeedbackService,
     LoggedInGuard,
     QuestionService,
     StorageService,

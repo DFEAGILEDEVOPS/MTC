@@ -55,6 +55,7 @@ const testDeveloper = require('./routes/test-developer')
 const administrator = require('./routes/administrator')
 const admin = require('./routes/admin')
 const questions = require('./routes/questions')
+const pupilFeedback = require('./routes/pupil-feedback')
 const completedCheck = require('./routes/completed-check')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
@@ -174,6 +175,7 @@ app.use('/test-developer', testDeveloper)
 app.use('/administrator', administrator)
 app.use('/school', admin)
 app.use('/api/questions', questions)
+app.use('/api/pupil-feedback', pupilFeedback)
 app.use('/api/completed-check', completedCheck)
 
 // catch 404 and forward to error handler
