@@ -129,6 +129,7 @@ export class CheckComponent implements OnInit {
       }
       case(/^complete$/).test(stateDesc):
         // Show the check complete screen
+        this.submissionService.submitData().catch(error => new Error(error));
         this.isWarmUp = false;
         this.viewState = 'complete';
         break;
