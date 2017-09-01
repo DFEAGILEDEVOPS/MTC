@@ -82,7 +82,7 @@ export class FeedbackComponent implements OnInit {
     }
   }
 
-  onSubmit(comments) {
+  async onSubmit(comments) {
     if (this.submitted === true) {
       return;
     }
@@ -103,7 +103,7 @@ export class FeedbackComponent implements OnInit {
       this.submitted = true;
 
       // Saving in DB via API post
-      this.feedbackService.postFeedback();
+      await this.feedbackService.postFeedback();
 
       this.router.navigate(['feedback-thanks']);
     }

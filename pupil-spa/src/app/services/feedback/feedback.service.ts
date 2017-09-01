@@ -15,12 +15,12 @@ export class FeedbackService {
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({ headers: headers });
 
-      if (!this.storageService.getItem('feedback') || !this.storageService.getItem('access_token')) {
-        return reject('Missing data in local storage');
-      }
-
       const storedFeedback = this.storageService.getItem('feedback');
       const accessToken = this.storageService.getItem('access_token');
+
+      if (!storedFeedback || !accessToken) {
+        return reject('Missing data in local storage');
+      }
 
       const inputType = storedFeedback.inputType.id;
       const satisfactionRating = storedFeedback.satisfactionRating.id;
@@ -41,7 +41,6 @@ export class FeedbackService {
           if (response.status !== 201) {
             return reject(new Error('Feedback Error:' + response.status + ':' + response.statusText));
           }
-          //const data = response.json();
           resolve();
         },
         (err) => {
