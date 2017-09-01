@@ -9,11 +9,11 @@ end
 Before('@non_browserstack_compliant') do
   skip_this_scenario if Capybara.current_driver.to_s.include? 'bs'
 end
-
-After do |scenario|
-  if (scenario.failed?)
-    image_name = "screenshots/#{scenario.__id__}.png"
-    save_screenshot(image_name, :full => true)
-    embed(image_name, "image/png", "SCREENSHOT")
-  end
-end
+#
+# After do |scenario|
+#   if (scenario.failed?)
+#     image_name = "screenshots/#{scenario.__id__}.png"
+#     save_screenshot(image_name, :full => true)
+#     embed(image_name, "image/png", "SCREENSHOT")
+#   end
+# end

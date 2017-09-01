@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private warmupQuestionService: WarmupQuestionService
   ) { }
 
   ngOnInit() {
@@ -35,6 +37,7 @@ export class LoginComponent implements OnInit {
       .then(
       () => {
         this.questionService.initialise();
+        this.warmupQuestionService.initialise();
         this.router.navigate(['sign-in-success']);
       },
       () => {

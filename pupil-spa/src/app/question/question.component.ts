@@ -1,14 +1,13 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
-import { RegisterInputService} from '../services/register-input/registerInput.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css'],
-  providers: [RegisterInputService]
-
+  providers: [ RegisterInputService ]
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
@@ -68,48 +67,53 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   private countdownInterval: number;
 
+  /**
+   * Track all mouse click activity
+   * @param {MouseEvent} event
+   */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
     this.registerInputService.addEntry(event);
   }
+
+  /**
+   * Track all taps (touch events)
+   * @param {TouchEvent} event
+   */
   @HostListener('document:touchstart', [ '$event' ])
   handleTouchEvent(event: TouchEvent) {
     this.registerInputService.addEntry(event);
   }
+
+  /**
+   * Handle key presses
+   * @param {KeyboardEvent} event
+   * @return {boolean}
+   */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log(`question.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
+    // console.log('question.component: handleKeyboardEvent(): event: ', event);
     const key = event.key;
     // register inputs
     this.registerInputService.addEntry(event);
-    switch (event.keyCode) {
-      case 8:  // backspace
-      case 46: // delete
+    switch (key) {
+      case 'Backspace':
+      case 'Delete':
         this.deleteChar();
         break;
-      case 13: // Enter
+      case 'Enter':
         this.onSubmit();
         break;
-      case 48: // 0
-      case 49: // 1
-      case 50: // 2
-      case 51: // 3
-      case 52: // 4
-      case 53: // 5
-      case 54: // 6
-      case 55: // 7
-      case 56: // 8
-      case 57: // 9
-      case 96: // kp 0
-      case 97: // kp 1
-      case 98: // kp 2
-      case 99: // kp 3
-      case 100: // kp 4
-      case 101: // kp 5
-      case 102: // kp 6
-      case 103: // kp 7
-      case 104: // kp 8
-      case 105: // kp 9
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
         this.addChar(key);
         break;
     }
@@ -198,6 +202,11 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     return true;
   }
 
+  /**
+   * Send the collected answer back to the parent component when the timer has
+   * timed out.  Send whatever answer has been collected so far.
+   * @return {boolean}
+   */
   sendTimeoutEvent() {
     if (this.submitted) {
       // console.log('sendTimeout(): answer already submitted');
