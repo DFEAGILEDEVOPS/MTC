@@ -8,6 +8,7 @@ export class AuditService {
   constructor(private storageService: StorageService) { }
 
   addEntry(auditEntry:
+    AuditTypes.WarmupIntroRendered |
     AuditTypes.CheckStarted |
     AuditTypes.QuestionRendered |
     AuditTypes.PauseRendered |

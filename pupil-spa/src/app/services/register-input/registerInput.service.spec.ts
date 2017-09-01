@@ -14,6 +14,7 @@ let mockStorageService: StorageServiceMock;
 export class TestRegisterInputService extends RegisterInputService {
   public questionInputs;
   public currentQuestion;
+
   constructor(protected storageService: StorageService, protected questionService: QuestionService) {
     super(storageService, questionService);
     this.questionInputs = [];
