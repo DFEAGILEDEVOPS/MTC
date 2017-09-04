@@ -41,11 +41,20 @@ describe('PhaseBannerComponent', () => {
     );
   });
 
-  xit('should have link to the feedback page', () => {
+  it('should have link to the feedback page if showFeedback is true', () => {
+    component['showFeedback'] = true;
+    fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.phase-banner span a').textContent).toMatch(
       /feedback/
     );
+    expect(compiled.querySelector('.phase-banner span a').getAttribute('routerLink')).toMatch(
+      '/feedback'
+    );
   });
-/* TODO: check feedback link is correct (once we know the path) */
+
+  it('should not have link to the feedback by default', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('.phase-banner span a')).toBeNull();
+  });
 });
