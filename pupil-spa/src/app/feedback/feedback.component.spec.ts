@@ -116,4 +116,28 @@ describe('FeedbackComponent', () => {
       expect(component.onSelectionChange).toHaveBeenCalledWith('satisfactionRating', {id: 2, value: 'Easy'});
     });
   });
+
+  it('should onSubmit be called when clicking button and there are no errors', () => {
+    component['errorInputType'] = false;
+    component['errorSatisfactionRating'] = false;
+
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    compiled.querySelector('input[type=submit]').click();
+    fixture.whenStable().then(() => {
+      expect(component.onSubmit).toHaveBeenCalledTimes(1);
+      expect(this.feedbackService.postFeedback).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should onSubmit NOT be called when clicking button and there are errors', () => {
+    component['errorInputType'] = true;
+    component['errorSatisfactionRating'] = true;
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    compiled.querySelector('input[type=submit]').click();
+    fixture.whenStable().then(() => {
+      expect(component.onSubmit).not.toHaveBeenCalled();
+    });
+  });
 });
