@@ -52,11 +52,6 @@ describe('SubmissionService', () => {
 
   it('returns error on invalid status code', () => {
     mockBackend.connections.subscribe((connection) => {
-      // const opts = {type: ResponseType.Error, status: 401 };
-      // const responseOpts = new ResponseOptions(opts);
-      // connection.mockRespond(new Response(new ResponseOptions({
-      //   status: 401
-      // })));
       return connection.mockError((new Response(new ResponseOptions({
         body: {
           'error': 'Unauthorised'

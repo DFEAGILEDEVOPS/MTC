@@ -65,3 +65,12 @@ jspm_packages
 /pupil-spa/test/reports/*
 /pupil-spa/test/*.png
 /pupil-spa/test/*.html
+yarn.lock
+admin/yarn.lock
+admin/data/yarn.lock
+electron/yarn.lock
+pupil/yarn.lock
+pupil-spa/yarn.lock
+pupil/test/yarn.lock
+test/yarn.lock
+test/api-tests/yarn.lock
