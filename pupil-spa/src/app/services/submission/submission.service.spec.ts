@@ -9,11 +9,6 @@ let mockBackend: MockBackend;
 let submissionService: SubmissionService;
 let storageService: StorageService;
 
-class MockError extends Response implements Error {
-  name: any;
-  message: any;
-}
-
 const shouldNotExecute = () => {
   expect('this code').toBe('not executed');
 };
