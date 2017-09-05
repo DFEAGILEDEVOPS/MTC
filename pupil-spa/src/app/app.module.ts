@@ -21,7 +21,6 @@ import { LoginComponent } from './login/login.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
-import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { StorageService } from './services/storage/storage.service';
@@ -62,7 +61,6 @@ const appRoutes: Routes = [
     LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    PhaseBannerComponent,
     QuestionComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent
