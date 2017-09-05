@@ -2505,6 +2505,9 @@ button:focus {
       font-size: 27px;
       line-height: 1.11111; } }
 
+.preload {
+  clear: both; }
+
 .warm-up-questions-label {
   background-color: #005ea5;
   color: #fff;
