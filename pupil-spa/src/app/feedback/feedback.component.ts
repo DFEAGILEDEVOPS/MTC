@@ -35,11 +35,11 @@ export class FeedbackComponent implements OnInit {
     if (!this.componentValidate()) {
       this.router.navigate(['feedback-thanks']);
     }
-    const questions = this.storageService.getItem('questions');
-    const answers = this.storageService.getItem('answers');
-    if (!answers || !questions || questions.length !== answers.length) {
-      this.router.navigate(['check-start']);
-    }
+    // const questions = this.storageService.getItem('questions');
+    // const answers = this.storageService.getItem('answers');
+    // if (!answers || !questions || questions.length !== answers.length) {
+    //   this.router.navigate(['check-start']);
+    // }
     this.pupilData = this.storageService.getItem('pupil');
     this.inputTypes = [
       { id: 1, value: 'Touchscreen' },
