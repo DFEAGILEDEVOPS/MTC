@@ -39,5 +39,5 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn install
 
 script:
-  - if [[ "$TEST_TYPE" = admin-specs ]]; then cd admin && npm test; fi
-  - if [[ "$TEST_TYPE" = pupil-specs ]]; then cd pupil-spa && npm run test-single; fi
+  - if [[ "$TEST_TYPE" = admin-specs ]]; then cd ${TRAVIS_BUILD_DIR}/admin && npm test; fi
+  - if [[ "$TEST_TYPE" = pupil-specs ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && npm run test-single; fi
