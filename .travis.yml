@@ -35,8 +35,8 @@ before_install:
   - rvm install 2.4.0
 
 install:
-  - cd pupil-spa && yarn install
-  - cd admin && yarn install
+  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && yarn install
+  - cd ${TRAVIS_BUILD_DIR}/admin && yarn install
 
 script:
   - if [[ "$TEST_TYPE" = admin-specs ]]; then cd admin && npm test; fi
