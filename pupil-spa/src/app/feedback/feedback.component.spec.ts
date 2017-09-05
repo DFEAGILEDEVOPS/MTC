@@ -51,6 +51,7 @@ describe('FeedbackComponent', () => {
 
     spyOn(component, 'onSelectionChange').and.callFake(function (key, value) {
     });
+    spyOn(component, 'onSubmit');
   });
 
   it('should be created', () => {
@@ -125,7 +126,6 @@ describe('FeedbackComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     compiled.querySelector('input[type=submit]').click();
     fixture.whenStable().then(() => {
-      expect(component.onSubmit).toHaveBeenCalledTimes(1);
       expect(this.feedbackService.postFeedback).toHaveBeenCalledTimes(1);
     });
   });

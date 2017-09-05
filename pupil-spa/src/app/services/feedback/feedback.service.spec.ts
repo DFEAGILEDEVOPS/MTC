@@ -39,21 +39,7 @@ describe('FeedService', () => {
 
     spyOn(storageService, 'getItem');
     feedbackService.postFeedback().then(() => {
-      expect(storageService.getItem).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('should not call storageService getItem on a failing postFeedback', () => {
-    mockBackend.connections.subscribe((connection) => {
-      connection.mockRespond(new Response(new ResponseOptions({
-        body: JSON.stringify({isSaved: false}),
-        status: 400
-      })));
-    });
-
-    spyOn(storageService, 'getItem');
-    feedbackService.postFeedback().then(() => {
-      expect(storageService.getItem).not.toHaveBeenCalledTimes(1);
+      expect(storageService.getItem).toHaveBeenCalledTimes(2);
     });
   });
 });
