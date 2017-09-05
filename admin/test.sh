@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-npm start &
+npm start > server.log 2>&1 &
 PID=$!
 
 MSG='admin app is running under process '
