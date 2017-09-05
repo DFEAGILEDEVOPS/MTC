@@ -38,7 +38,7 @@ before_install:
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && yarn install
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn install
-  - cd ${TRAVIS_BUILD_DIR}/admin && gem install bundler && bundle install
+  - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler && bundle install
 
 script:
   - if [[ "$TEST_TYPE" = admin-specs ]]; then cd ${TRAVIS_BUILD_DIR}/admin && npm test; fi

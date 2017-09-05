@@ -1,6 +1,5 @@
 #!/bin/bash -x
 
-cd admin
 npm start &
 PID=$!
 
