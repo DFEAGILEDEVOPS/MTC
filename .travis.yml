@@ -9,6 +9,7 @@ cache:
 env:
   - TEST_TYPE=admin-specs
   - TEST_TYPE=pupil-specs
+  - TEST_TYPE=admin-e2e
 global:
   - STD_LOG_FILE="./build.log"
   - CXX=g++-4.8
@@ -37,7 +38,9 @@ before_install:
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && yarn install
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn install
+  - cd ${TRAVIS_BUILD_DIR}/admin && gem install bundler && bundle install
 
 script:
   - if [[ "$TEST_TYPE" = admin-specs ]]; then cd ${TRAVIS_BUILD_DIR}/admin && npm test; fi
   - if [[ "$TEST_TYPE" = pupil-specs ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && npm run test-single; fi
+  - if [[ "$TEST_TYPE" = admin-e2e ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./admin/test.sh fi
