@@ -19,7 +19,7 @@ export class FeedbackService {
       const accessToken = this.storageService.getItem('access_token');
 
       if (!storedFeedback || !accessToken) {
-        return reject('Missing data in local storage');
+        return false;
       }
 
       const inputType = storedFeedback.inputType.id;
