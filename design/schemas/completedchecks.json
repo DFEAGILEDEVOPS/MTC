@@ -1,0 +1,939 @@
+{
+  "_id" : "59a97a24be30e8001a6861a1",
+  "data" : {
+      "inputs" : [ 
+          null, 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:51.735Z",
+                  "eventType" : "mousedown",
+                  "input" : "left click"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:52.378Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:52.705Z",
+                  "eventType" : "keydown",
+                  "input" : "\\"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:53.064Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:53.064Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:55.254Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:55.464Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:55.52Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:55.608Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:55.608Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:58.057Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:58.144Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:58.168Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:16:58.168Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:03.413Z",
+                  "eventType" : "mousedown",
+                  "input" : "left click"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:04.185Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:04.187Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:04.304Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:04.544Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:04.544Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:07.192Z",
+                  "eventType" : "mousedown",
+                  "input" : "left click"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:07.737Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:07.746Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:07.778Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:08.257Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:08.257Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:10.577Z",
+                  "eventType" : "mousedown",
+                  "input" : "left click"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.211Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.219Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.258Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.259Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.441Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:11.441Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:14.003Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:14.009Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:14.107Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:14.107Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:16.61Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:16.611Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:16.672Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:16.699Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:16.699Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:19.169Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:19.176Z",
+                  "eventType" : "keydown",
+                  "input" : "7"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:19.224Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:19.224Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:21.7Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:21.705Z",
+                  "eventType" : "keydown",
+                  "input" : "1"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:21.782Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:21.782Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:24.097Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:24.107Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:24.152Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:24.152Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:26.585Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:26.593Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:26.618Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:26.619Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:28.936Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:28.945Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:28.962Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:28.962Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:31.099Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:31.099Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:31.126Z",
+                  "eventType" : "keydown",
+                  "input" : "4"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:31.153Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:31.153Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:33.769Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:33.779Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:33.832Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:33.832Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:36.883Z",
+                  "eventType" : "keydown",
+                  "input" : "2"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:36.892Z",
+                  "eventType" : "keydown",
+                  "input" : "3"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:36.923Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:36.923Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:38.968Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:39.042Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:39.36Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:39.36Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.549Z",
+                  "eventType" : "keydown",
+                  "input" : "7"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.617Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.625Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.745Z",
+                  "eventType" : "keydown",
+                  "input" : "7"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.929Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:41.929Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:44.26Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:44.266Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:44.385Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:44.385Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:46.959Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:46.984Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:47.154Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:47.154Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:49.497Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:49.499Z",
+                  "eventType" : "keydown",
+                  "input" : "6"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:49.704Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:49.704Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ], 
+          [ 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:51.938Z",
+                  "eventType" : "keydown",
+                  "input" : "5"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:52.091Z",
+                  "eventType" : "keydown",
+                  "input" : "Enter"
+              }, 
+              {
+                  "clientInputDate" : "2017-09-01T15:17:52.091Z",
+                  "eventType" : "click",
+                  "input" : "enter"
+              }
+          ]
+      ],
+      "audit" : [ 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:47.461Z",
+              "type" : "CheckStarted"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:47.472Z",
+              "type" : "WarmupIntroRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:48.991Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:50.997Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:53.064Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:53.066Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:55.071Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:55.608Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:55.61Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:57.617Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:58.168Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:16:58.171Z",
+              "type" : "WarmupCompleteRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:00.67Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:02.673Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:04.544Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:04.545Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:06.55Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:08.257Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:08.259Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:10.264Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:11.441Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:11.443Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:13.45Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:14.107Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:14.111Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:16.119Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:16.699Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:16.7Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:18.707Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:19.224Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:19.225Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:21.234Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:21.782Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:21.783Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:23.789Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:24.152Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:24.154Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:26.159Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:26.619Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:26.62Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:28.63Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:28.962Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:28.964Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:30.969Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:31.153Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:31.154Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:33.159Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:33.832Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:33.834Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:35.839Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:36.923Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:36.924Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:38.929Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:39.36Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:39.362Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:41.369Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:41.929Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:41.931Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:43.937Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:44.385Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:44.39Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:46.398Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:47.154Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:47.156Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:49.164Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:49.704Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:49.706Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:51.709Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:52.091Z",
+              "type" : "QuestionAnswered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:52.094Z",
+              "type" : "PauseRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:54.097Z",
+              "type" : "QuestionRendered"
+          }, 
+          {
+              "clientTimestamp" : "2017-09-01T15:17:54.586Z",
+              "type" : "QuestionAnswered"
+          }
+      ],
+      "answers" : [ 
+          {
+              "answer" : "234",
+              "factor2" : 5,
+              "factor1" : 2
+          }, 
+          {
+              "answer" : "234",
+              "factor2" : 2,
+              "factor1" : 11
+          }, 
+          {
+              "answer" : "2345",
+              "factor2" : 9,
+              "factor1" : 8
+          }, 
+          {
+              "answer" : "34",
+              "factor2" : 7,
+              "factor1" : 7
+          }, 
+          {
+              "answer" : "345",
+              "factor2" : 9,
+              "factor1" : 3
+          }, 
+          {
+              "answer" : "67",
+              "factor2" : 4,
+              "factor1" : 2
+          }, 
+          {
+              "answer" : "21",
+              "factor2" : 3,
+              "factor1" : 3
+          }, 
+          {
+              "answer" : "23",
+              "factor2" : 9,
+              "factor1" : 4
+          }, 
+          {
+              "answer" : "23",
+              "factor2" : 5,
+              "factor1" : 6
+          }, 
+          {
+              "answer" : "23",
+              "factor2" : 8,
+              "factor1" : 5
+          }, 
+          {
+              "answer" : "234",
+              "factor2" : 7,
+              "factor1" : 3
+          }, 
+          {
+              "answer" : "23",
+              "factor2" : 4,
+              "factor1" : 8
+          }, 
+          {
+              "answer" : "23",
+              "factor2" : 7,
+              "factor1" : 6
+          }, 
+          {
+              "answer" : "56",
+              "factor2" : 4,
+              "factor1" : 7
+          }, 
+          {
+              "answer" : "7567",
+              "factor2" : 2,
+              "factor1" : 3
+          }, 
+          {
+              "answer" : "65",
+              "factor2" : 6,
+              "factor1" : 6
+          }, 
+          {
+              "answer" : "56",
+              "factor2" : 11,
+              "factor1" : 7
+          }, 
+          {
+              "answer" : "56",
+              "factor2" : 5,
+              "factor1" : 12
+          }, 
+          {
+              "answer" : "5",
+              "factor2" : 5,
+              "factor1" : 10
+          }, 
+          {
+              "answer" : "65",
+              "factor2" : 12,
+              "factor1" : 12
+          }
+      ]
+  },
+  "__v" : 0
+}
