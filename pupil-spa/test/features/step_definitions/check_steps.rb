@@ -100,3 +100,13 @@ end
 Then(/^I should see a timer$/) do
   expect(check_page).to have_timer
 end
+
+Given(/^I am on the check loading page$/) do
+  step 'I have started the check'
+  wait_until {check_page.has_preload?}
+end
+
+
+Then(/^I should see the total number of check questions$/) do
+  expect(check_page.preload.text).to eql 'Loading question 1 out of 20'
+end
