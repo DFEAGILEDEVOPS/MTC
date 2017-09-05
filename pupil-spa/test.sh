@@ -5,7 +5,7 @@ set -e
 
 
 # start admin app
-cd ../admin && npm start > server.admin.log 2>&1
+cd ../admin && npm start > server.admin.log 2>&1 &
 
 # start pupil app
 npm start &
