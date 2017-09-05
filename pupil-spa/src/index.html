@@ -18,18 +18,6 @@
 </head>
 <body>
   <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-  <script>
-    if (googleTrackingId) {
-      var googleTrackingId = googleTrackingId
-      if (googleTrackingId) {
-        window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) };
-        ga.l = +new Date;
-        ga('create', googleTrackingId, 'auto');
-        ga('send', 'pageview');
-      }
-    }
-  </script>
-  <script async src="https://www.google-analytics.com/analytics.js"></script>
   <app-root></app-root>
   <div id="global-app-error" class="app-error hidden"></div>
   <script>
