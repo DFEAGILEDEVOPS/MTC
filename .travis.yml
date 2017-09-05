@@ -36,8 +36,8 @@ before_install:
   - rvm install 2.4.0
 
 install:
-  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && yarn install
-  - cd ${TRAVIS_BUILD_DIR}/admin && yarn install
+  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install
+  - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install
   - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler && bundle install
 
 script:
