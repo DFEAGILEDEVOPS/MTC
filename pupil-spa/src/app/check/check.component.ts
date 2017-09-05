@@ -21,6 +21,7 @@ export class CheckComponent implements OnInit {
   public state: number;
   public viewState: string;
   public allowedStates: Array<string> = [];
+  private totalNumberOfQuestions: number;
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
@@ -74,6 +75,7 @@ export class CheckComponent implements OnInit {
     this.state = 0;
     this.isWarmUp = true;
     this.viewState = 'warmup-intro';
+    this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
   }
 
   /**
@@ -114,6 +116,7 @@ export class CheckComponent implements OnInit {
         // Show the warmup complete screen
         this.isWarmUp = true;
         this.viewState = 'warmup-complete';
+        this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
         break;
       case(/^L(\d+)$/).test(stateDesc): {
         // Show the loading screen
