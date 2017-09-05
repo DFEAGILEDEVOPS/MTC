@@ -12,7 +12,7 @@
                  [question]="question.sequenceNumber"
                  [loadingTimeout]="config.loadingTime"
                  (timeoutEvent)="loadingTimeoutHandler($event)"
-                 [total]="questionService.getNumberOfQuestions()">
+                 [total]="totalNumberOfQuestions">
     </app-loading>
     <app-question *ngSwitchCase="'question'"
                   [factor1]="question.factor1"
