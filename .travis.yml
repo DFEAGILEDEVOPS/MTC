@@ -43,4 +43,4 @@ install:
 script:
   - if [[ "$TEST_TYPE" = admin-specs ]]; then cd ${TRAVIS_BUILD_DIR}/admin && npm test; fi
   - if [[ "$TEST_TYPE" = pupil-specs ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && npm run test-single; fi
-  - if [[ "$TEST_TYPE" = admin-e2e ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./admin/test.sh fi
+  - if [[ "$TEST_TYPE" = admin-e2e ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./admin/test.sh; fi
