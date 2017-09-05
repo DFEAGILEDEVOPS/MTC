@@ -12,7 +12,6 @@ import { CheckComponent } from './check/check.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 import { FeedbackService } from './services/feedback/feedback.service';
-import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
@@ -53,7 +52,6 @@ const appRoutes: Routes = [
     CheckComponent,
     FeedbackComponent,
     FeedbackThanksComponent,
-    FooterComponent,
     HeaderComponent,
     InstructionsComponent,
     LoadingComponent,
