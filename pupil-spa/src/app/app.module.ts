@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { LoggerModule } from 'ngx-logger';
+import { environment } from '../environments/environment';
 
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
@@ -75,6 +77,9 @@ const appRoutes: Routes = [
     FormsModule,
     BrowserModule,
     HttpModule,
+    LoggerModule.forRoot({
+      level: environment.production ? 'OFF' : 'DEBUG'
+    })
   ],
   providers: [
     AnswerService,
