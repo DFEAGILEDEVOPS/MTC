@@ -9,8 +9,7 @@ export class FeedbackService {
   constructor(private http: Http, private storageService: StorageService) {
   }
 
-  postFeedback(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
+  async postFeedback() {
       const headers = new Headers();
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({ headers: headers });
@@ -19,7 +18,7 @@ export class FeedbackService {
       const accessToken = this.storageService.getItem('access_token');
 
       if (!storedFeedback || !accessToken) {
-        return reject('Missing data in local storage');
+      return false;
       }
 
       const inputType = storedFeedback.inputType.id;
@@ -39,13 +38,8 @@ export class FeedbackService {
         .toPromise()
         .then((response) => {
           if (response.status !== 201) {
-            return reject(new Error('Feedback Error:' + response.status + ':' + response.statusText));
+            return new Error('Feedback Error:' + response.status + ':' + response.statusText);
           }
-          resolve();
-        },
-        (err) => {
-          reject(err);
-        }).catch(error => reject(error));
-    });
+        }).catch(error => new Error(error));
   }
 }
