@@ -23,6 +23,8 @@ describe('FeedService', () => {
     feedbackService = injector.get(FeedbackService);
     storageService = injector.get(StorageService);
     mockBackend = injector.get(XHRBackend);
+
+    spyOn(storageService, 'getItem');
   });
 
   it('should be created', inject([FeedbackService], (service: FeedbackService) => {
@@ -37,9 +39,8 @@ describe('FeedService', () => {
       })));
     });
 
-    spyOn(storageService, 'getItem');
     feedbackService.postFeedback().then(() => {
-      expect(storageService.getItem).toHaveBeenCalledTimes(1);
+      expect(storageService.getItem).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -51,7 +52,6 @@ describe('FeedService', () => {
       })));
     });
 
-    spyOn(storageService, 'getItem');
     feedbackService.postFeedback().then(() => {
       expect(storageService.getItem).not.toHaveBeenCalledTimes(1);
     });
