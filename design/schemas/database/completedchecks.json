@@ -1,0 +1,67 @@
+{
+    "_id": "59a97a24be30e8001a6861a1",
+    "data": {
+        "inputs": [
+            null,
+            [
+                {
+                    "clientInputDate": "2017-09-01T15:16:51.735Z",
+                    "eventType": "mousedown",
+                    "input": "left click"
+                },
+                {
+                    "clientInputDate": "2017-09-01T15:16:52.378Z",
+                    "eventType": "keydown",
+                    "input": "5"
+                }
+            ],
+            [
+                {
+                    "clientInputDate": "2017-09-01T15:17:07.192Z",
+                    "eventType": "mousedown",
+                    "input": "left click"
+                },
+                {
+                    "clientInputDate": "2017-09-01T15:17:07.737Z",
+                    "eventType": "keydown",
+                    "input": "2"
+                }
+            ]
+        ],
+        "audit": [
+            {
+                "clientTimestamp": "2017-09-01T15:16:47.461Z",
+                "type": "CheckStarted"
+            },
+            {
+                "clientTimestamp": "2017-09-01T15:16:47.472Z",
+                "type": "WarmupIntroRendered"
+            },
+            {
+                "clientTimestamp": "2017-09-01T15:16:48.991Z",
+                "type": "PauseRendered"
+            },
+            {
+                "clientTimestamp": "2017-09-01T15:16:50.997Z",
+                "type": "QuestionRendered"
+            },
+            {
+                "clientTimestamp": "2017-09-01T15:17:54.586Z",
+                "type": "CheckComplete"
+            }
+        ],
+        "answers": [
+            {
+                "answer": "234",
+                "factor2": 5,
+                "factor1": 2
+            },
+            {
+                "answer": "234",
+                "factor2": 2,
+                "factor1": 11
+            }
+        ]
+    },
+    "__v": 0
+}
