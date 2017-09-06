@@ -54,3 +54,13 @@ end
 Then(/^I should see a way to start the check$/) do
   expect(warm_up_complete_page).to have_start_check
 end
+
+
+Given(/^I am on the warm up loading page$/) do
+  step "I am on the warm up check page"
+  wait_until {check_page.has_preload?}
+end
+
+Then(/^I should see the total number of warm up questions$/) do
+  expect(check_page.preload.text).to eql 'Loading question 1 out of 3'
+end
