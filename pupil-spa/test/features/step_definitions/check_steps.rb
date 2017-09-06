@@ -100,3 +100,14 @@ end
 Then(/^I should see a timer$/) do
   expect(check_page).to have_timer
 end
+
+Given(/^I am on the check loading page$/) do
+  step 'I have started the check'
+  wait_until {check_page.has_preload?}
+end
+
+
+Then(/^I should see the total number of check questions$/) do
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  expect(check_page.preload.text).to eql "Loading question 1 out of #{questions.size}"
+end

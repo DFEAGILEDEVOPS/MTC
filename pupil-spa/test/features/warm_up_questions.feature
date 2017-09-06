@@ -70,3 +70,8 @@ Feature: Warm up questions
     Given I am on the warm up check page
     When the loading screen has expired
     Then I should see a timer
+
+  Scenario: Warm up loading page has total number of questions
+    Given I am on the warm up loading page
+    Then I should see the total number of warm up questions
+
