@@ -53,3 +53,7 @@ Feature: Check questions
     Given I have started the check
     And I could answer the question within the configured time
     Then I should be moved to the next question
+
+  Scenario: Check loading page has total number of questions
+    Given I am on the check loading page
+    Then I should see the total number of check questions
