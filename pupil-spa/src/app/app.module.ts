@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { LoggerModule } from 'ngx-logger';
 import { environment } from '../environments/environment';
 
@@ -12,9 +12,8 @@ import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
 import { FeedbackComponent } from './feedback/feedback.component';
-import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 import { FeedbackService } from './services/feedback/feedback.service';
-import { FooterComponent } from './footer/footer.component';
+import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
 import { HeaderComponent } from './header/header.component';
 import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
@@ -23,7 +22,6 @@ import { LoginComponent } from './login/login.component';
 import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
-import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { StorageService } from './services/storage/storage.service';
@@ -57,7 +55,6 @@ const appRoutes: Routes = [
     CheckComponent,
     FeedbackComponent,
     FeedbackThanksComponent,
-    FooterComponent,
     HeaderComponent,
     InstructionsComponent,
     LoadingComponent,
@@ -65,7 +62,6 @@ const appRoutes: Routes = [
     LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
-    PhaseBannerComponent,
     QuestionComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent
