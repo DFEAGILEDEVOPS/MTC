@@ -24,7 +24,7 @@ export class SubmissionService {
             return new Error('Submit Error:' + response.status + ':' + response.statusText);
           }
         },
-        () => {
-        }).catch(error => new Error(error));
+        (err) => { throw new Error(err); }
+        ).catch((err) => { throw new Error(err); });
   }
 }
