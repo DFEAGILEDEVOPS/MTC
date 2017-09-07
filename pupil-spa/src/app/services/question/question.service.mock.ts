@@ -18,10 +18,6 @@ export class QuestionServiceMock {
     return new Question(3, 4, 1);
   }
 
-  getNextQuestionNumber() {
-    return 2;
-  }
-
   getConfig() {
     const config = new Config();
     config.loadingTime = 2;
