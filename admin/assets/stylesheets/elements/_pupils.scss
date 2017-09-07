@@ -33,3 +33,32 @@
     width: 60%;
   }
 }
+
+/* Add/edit form */
+
+.upn-text {
+  margin-top: 20px;
+
+  a {
+    text-decoration: none;
+  }
+
+  div {
+    margin-left: 15px;
+    margin-top: 15px;
+  }
+}
+
+.triangle {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 12px 6px;
+  border-color: transparent transparent $govuk-blue transparent;
+}
+
+.triangle.down {
+  border-width: 12px 6px 0 6px;
+  border-color: $govuk-blue transparent transparent transparent;
+}
