@@ -64,3 +64,24 @@ Options available:
 `rake features OPTS='features/prototype.feature' DRIVER=XXXX`
 
 Note: if no `DRIVER` is passed in, the default driver will be used
+
+#####Run tests in parallel
+
+To run the tests with re run turned on use the following:
+
+`rake parallel`
+
+The above actually runs the scenarios sequentially, to get
+any benefit then you need to add the following:
+
+Options available:
+
+`rake parallel NODES=4 GROUP_SIZE=5`
+ 
+Set the `NODES` environment variable to how many threads / nodes you want.
+Set the `GROUP_SIZE` environment variable to how many scenarios you want in 
+group that will be executed on one of the nodes
+
+You can also pass in any other options by using the following:
+
+`rake parallel OPTS='BASE_URL=http://localhost:3002 -t @tag' NODES=4 GROUP_SIZE=6`
