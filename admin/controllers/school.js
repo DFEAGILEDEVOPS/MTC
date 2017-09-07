@@ -13,6 +13,7 @@ const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../se
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   let schoolName = ''
+  let userName = req.user.UserName
 
   try {
     const school = await School.findOne({'_id': req.user.School}).exec()
@@ -25,6 +26,7 @@ const getHome = async (req, res, next) => {
   }
   return res.render('school/school-home', {
     schoolName,
+    userName,
     breadcrumbs: [{'name': 'School Home'}]
   })
 }
@@ -132,7 +134,7 @@ const downloadResults = async (req, res, next) => {
 
 const generatePins = async (req, res, next) => {
   if (!req.body['pupil']) {
-    console.error('generatePins: no pupils selected')
+
     // TODO: inform the user via flash message?
     return res.redirect('/school/manage-pupils')
   }

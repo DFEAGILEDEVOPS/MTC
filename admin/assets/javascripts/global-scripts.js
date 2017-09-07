@@ -30,7 +30,13 @@ $(function () {
   if ($('#pupilsList').length > 0) disableCheckAll('#pupilsList')
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
-  $('input:file').on('change', function () {
+  $('.upn-text > a').on('click', function () {
+    $('.upn-text > a > span').toggleClass('down')
+    $('.upn-text > div').toggleClass('hidden')
+  })
+
+  $('input:file').on('change', function (e) {
+    e.stopPropagation()
     $('input:submit').prop('disabled', !$(this).val())
   })
 })
