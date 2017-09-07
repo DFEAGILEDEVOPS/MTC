@@ -48,7 +48,7 @@ if (formData._id) {
             </div>
 
             <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="middleNames">Middle name(s) <span class="font-xsmall">(optional)</span>
+                <label class="form-label-bold" for="middleNames">Middle name(s)
                     <% if (err.isError('middleNames')) { %>
                     <span class="error-message"><%= err.get('middleNames') %></span>
                     <% } %>
@@ -87,14 +87,6 @@ if (formData._id) {
                        name="upn"
                        value="<%= formData['upn'] %>"
                 />
-                <div class="upn-text">
-                    <a href="#"><span class="triangle"></span> What is the UPN?</a>
-                    <div class="hidden">
-                        <p>The unique pupil number (UPN) is a 13-character code that identifies each pupil in the local-authority-maintained school system.</p>
-                        <p>If your pupils does not have a UPN please go to the link below to find more detail on how to generate UPNs.</p>
-                        <a href="https://www.gov.uk/government/publications/unique-pupil-numbers">https://www.gov.uk/government/publications/unique-pupil-numbers</a>
-                    </div>
-                </div>
             </div>
 
             <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
