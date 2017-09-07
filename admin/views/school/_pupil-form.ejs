@@ -22,7 +22,7 @@ if (formData._id) {
 </div>
 <% } %>
 
-<h1 id="header" class="heading-xlarge" tabindex="0"><%- heading %></h1>
+<h1 class="heading-xlarge" tabindex="0"><%= heading %></h1>
 
 <form action="<%= createOrSave %>" method="post" novalidate>
     <input type="hidden" name="school" value="<%= school._id %>"/>
@@ -194,5 +194,5 @@ if (formData._id) {
     </div>
 </form>
 <div class="back-to-top-container">
-    <a href="#header"> Back to top </a>
+    <a href="#top"> Back to top </a>
 </div>
