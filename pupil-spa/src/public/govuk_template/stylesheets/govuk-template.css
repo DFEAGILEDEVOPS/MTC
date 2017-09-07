@@ -65,7 +65,7 @@ html {
   /* 1 */
   -ms-text-size-adjust: 100%;
   /* 1 */
-  background-color: #dee0e2; }
+  background-color: #fff; }
 
 /*
   Force the scrollbar to always display in IE10/11
@@ -320,9 +320,6 @@ button:focus {
       margin: 2px 1px 0 0;
       vertical-align: bottom;
       visibility: hidden; }
-    #global-header #logo:hover, #global-header #logo:focus {
-      text-decoration: none;
-      border-bottom-color: #fff; }
   #global-header .header-proposition {
     padding-top: 10px; }
     @media (min-width: 769px) {
