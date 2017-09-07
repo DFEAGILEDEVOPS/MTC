@@ -10,7 +10,7 @@
     "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
     "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit",
     "startn": "nodemon ./server.js",
-    "watch-jscss": "gulp watch"
+    "sasswatch": "gulp watch"
   },
   "engines": {
     "node": "8.1.2"
