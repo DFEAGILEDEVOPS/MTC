@@ -49,7 +49,7 @@ if (formData._id) {
             </div>
 
             <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="middleNames">Middle name(s)
+                <label class="form-label-bold" for="middleNames">Middle name(s)<span class="label-optional">(optional)</span>
                     <% if (err.isError('middleNames')) { %>
                     <span class="error-message"><%= err.get('middleNames') %></span>
                     <% } %>
