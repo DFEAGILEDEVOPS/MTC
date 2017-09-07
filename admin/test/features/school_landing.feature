@@ -16,6 +16,17 @@ Feature:
       | teacher3 |
       | teacher4 |
 
+  Scenario Outline: Teachers' sees their name on the school homepage
+    Given I have signed in with <teacher>
+    Then I should see <teacher>'s name
+
+    Examples:
+      | teacher  |
+      | teacher1 |
+      | teacher2 |
+      | teacher3 |
+      | teacher4 |
+
   Scenario: School landing page displays instructions
     Given I am on the school landing page
     Then I should see some instructions on what to do next
@@ -24,6 +35,7 @@ Feature:
     Given I am on the school landing page
     Then I should see an option to go to the manage pupils area
 
+  @wip
   Scenario: School landing page has option to submit attendance register
     Given I am on the school landing page
     Then I should see an option to go to the submit the attendance register area
