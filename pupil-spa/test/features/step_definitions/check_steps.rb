@@ -111,3 +111,14 @@ Then(/^I should see the total number of check questions$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   expect(check_page.preload.text).to eql "Loading question 1 out of #{questions.size}"
 end
+
+
+Then(/^I should see all the data from the check stored in the DB$/) do
+  last_check = MongoDbHelper.get_completed_checks.last
+  storage_answers = JSON.parse page.evaluate_script('window.localStorage.getItem("answers");')
+  storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
+  storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
+  storage_answers.each {|answer| expect(last_check['data']['answers']).to include answer}
+  storage_inputs.each {|input| expect(last_check['data']['inputs']).to include input}
+  storage_audit.each {|audit| expect(last_check['data']['audit']).to include audit}
+end
