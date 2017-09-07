@@ -92,6 +92,7 @@ end
 
 Then(/^my feedback should be saved$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("feedback");'))
+  wait_until {!MongoDbHelper.get_feedback(local_storage['sessionId']).empty?}
   saved_feedback = MongoDbHelper.get_feedback(local_storage['sessionId'])
   expect(saved_feedback['inputType']).to eql '3'
   expect(saved_feedback['satisfactionRating']).to eql '1'
