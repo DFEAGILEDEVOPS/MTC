@@ -16,7 +16,7 @@ MSG+=${PID}
 echo ${MSG}
 
 cd test
-rake features
+rake parallel NODES=4 GROUP_SIZE=6
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 ${PID}
