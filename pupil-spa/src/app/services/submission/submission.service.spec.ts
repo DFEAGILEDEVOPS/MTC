@@ -9,14 +9,18 @@ let mockBackend: MockBackend;
 let submissionService: SubmissionService;
 let storageService: StorageService;
 
+const shouldNotExecute = () => {
+  expect('this code').toBe('not executed');
+};
+
 describe('SubmissionService', () => {
   beforeEach(() => {
     const inject = TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
         SubmissionService,
-        StorageService,
-        { provide: XHRBackend, useClass: MockBackend }
+        { provide: XHRBackend, useClass: MockBackend },
+        StorageService
       ]
     });
     storageService = inject.get(StorageService);
@@ -41,4 +45,25 @@ describe('SubmissionService', () => {
     });
   }));
 
+  it('returns error on invalid status code', () => {
+    mockBackend.connections.subscribe((connection) => {
+      return connection.mockError((new Response(new ResponseOptions({
+        body: {
+          'error': 'Unauthorised'
+        },
+        status: 401,
+      }))));
+    });
+
+    submissionService.submitData().then(
+      () => {
+        shouldNotExecute();
+      },
+      (err) => {
+        expect(err).toBeTruthy();
+      }
+    ).catch(() => {
+      shouldNotExecute();
+    });
+  });
 });
