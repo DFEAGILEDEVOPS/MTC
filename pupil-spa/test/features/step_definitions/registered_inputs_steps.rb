@@ -2,7 +2,7 @@ Given(/^I have used all the keys on the on screen keyboard to complete the check
   step 'I have started the check'
   first= check_page.complete_question('12345', 'numpad')
   second = check_page.complete_question('67890', 'numpad')
-  remaining = check_page.complete_check_with_correct_answers(18, 'numpad')
+  remaining = check_page.complete_check_with_correct_answers(8, 'numpad')
   @answers = [(@warm_up_inputs unless @warm_up_inputs.nil?), first, second, remaining].flatten
 end
 
@@ -16,7 +16,7 @@ Given(/^I have used the physical screen keyboard to complete the check$/) do
   step 'I have started the check using the keyboard'
   first= check_page.complete_question('12345', 'keyboard')
   second = check_page.complete_question('67890', 'keyboard')
-  remaining = check_page.complete_check_with_correct_answers(18, 'keyboard')
+  remaining = check_page.complete_check_with_correct_answers(8, 'keyboard')
   @answers = [(@warm_up_inputs unless @warm_up_inputs.nil?),first, second, remaining].flatten
 end
 
