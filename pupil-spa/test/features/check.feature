@@ -57,3 +57,8 @@ Feature: Check questions
   Scenario: Check loading page has total number of questions
     Given I am on the check loading page
     Then I should see the total number of check questions
+
+  @non_parallel
+  Scenario: Complete check data is submitted to the DB
+    Given I am on the complete page
+    Then I should see all the data from the check stored in the DB

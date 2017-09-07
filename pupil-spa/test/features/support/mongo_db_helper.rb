@@ -103,5 +103,11 @@ class MongoDbHelper
                                {'$set' => {'pin' => flag}})
   end
 
+  def self.get_completed_checks
+    collection=CLIENT[:completedchecks].find({})
+    result = []
+    collection.each { |check| result << check }
+    result
+  end
 
 end
