@@ -6,8 +6,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css'],
-  providers: [ RegisterInputService ]
+  styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 

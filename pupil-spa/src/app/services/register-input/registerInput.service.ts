@@ -1,15 +1,28 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { QuestionService } from '../question/question.service';
 
 
 @Injectable()
-export class RegisterInputService implements OnDestroy {
+export class RegisterInputService {
 
-  protected questionInputs = this.storageService.getItem('inputs') || [];
-  protected currentQuestion = this.questionService.getCurrentQuestionNumber();
+  protected questionInputs;
+  protected currentQuestion;
 
   constructor(protected storageService: StorageService, protected questionService: QuestionService) {
+    // this.questionInputs = this.storageService.getItem('inputs') || [];
+    // this.currentQuestion = this.questionService.getCurrentQuestionNumber();
+    // this.questionInputs[this.currentQuestion] = this.questionInputs[this.currentQuestion] || [];
+  }
+
+  public initialise() {
+    try {
+      this.storageService.getItem('inputs');
+    } catch (err) {
+      this.storageService.setItem('inputs', []);
+    }
+    this.questionInputs = this.storageService.getItem('inputs');
+    this.currentQuestion = this.questionService.getCurrentQuestionNumber();
     this.questionInputs[ this.currentQuestion ] = this.questionInputs[ this.currentQuestion ] || [];
   }
 
@@ -23,6 +36,7 @@ export class RegisterInputService implements OnDestroy {
   }
 
   public storeEntry(eventValue, eventType) {
+    if (!this.questionInputs) { return false; }
     this.questionInputs[ this.currentQuestion ].push({
       input: eventValue,
       eventType: eventType,
@@ -40,7 +54,7 @@ export class RegisterInputService implements OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  flush() {
     this.storageService.setItem('inputs', this.questionInputs);
   }
 }

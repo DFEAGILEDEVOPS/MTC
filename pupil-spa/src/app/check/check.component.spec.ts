@@ -9,6 +9,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -36,7 +37,8 @@ describe('CheckComponent', () => {
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         AnswerService,
         StorageService,
-        SubmissionService
+        SubmissionService,
+        RegisterInputService
       ]
     })
       .compileComponents();

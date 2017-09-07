@@ -6,6 +6,10 @@ export class QuestionServiceMock {
   constructor() {
   }
 
+  getCurrentQuestionNumber() {
+    return 1;
+  }
+
   getNumberOfQuestions() {
     return 10;
   }
