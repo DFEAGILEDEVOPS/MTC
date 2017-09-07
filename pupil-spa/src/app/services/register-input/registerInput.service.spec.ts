@@ -66,7 +66,7 @@ describe('RegisterInputService', () => {
     expect(record.input).toBe('left click');
   }));
 
-  it('inputs will have to be registered to storage service on component destroy', inject([TestRegisterInputService],
+  it('inputs will have to be registered to storage service on component flush', inject([TestRegisterInputService],
     (registerService: TestRegisterInputService) => {
     const event = { type: 'mousedown', which: 1 };
     spyOn(mockStorageService, 'setItem');

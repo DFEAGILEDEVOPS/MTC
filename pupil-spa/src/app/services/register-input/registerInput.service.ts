@@ -9,11 +9,7 @@ export class RegisterInputService {
   protected questionInputs;
   protected currentQuestion;
 
-  constructor(protected storageService: StorageService, protected questionService: QuestionService) {
-    // this.questionInputs = this.storageService.getItem('inputs') || [];
-    // this.currentQuestion = this.questionService.getCurrentQuestionNumber();
-    // this.questionInputs[this.currentQuestion] = this.questionInputs[this.currentQuestion] || [];
-  }
+  constructor(protected storageService: StorageService, protected questionService: QuestionService) {}
 
   public initialise() {
     try {
