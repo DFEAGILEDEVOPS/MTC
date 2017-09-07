@@ -72,7 +72,7 @@ describe('RegisterInputService', () => {
     spyOn(mockStorageService, 'setItem');
     registerService.addEntry(event);
     registerService.addEntry(event);
-    registerService.ngOnDestroy();
+    registerService.flush();
     const records = registerService.questionInputs[registerService.currentQuestion];
     expect(records.length).toBe(2);
     // the first item of the array will be undefined since the questions are not 0-indexed

@@ -14,7 +14,6 @@ export class QuestionService {
   protected config: Config;
 
   constructor(protected storageService: StorageService) {
-    // First question shall be 0 to prevent nullification of the first array item
     this.currentQuestion = 0;
   }
 

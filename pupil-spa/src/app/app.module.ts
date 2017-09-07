@@ -29,6 +29,7 @@ import { QuestionService } from './services/question/question.service';
 import { StorageService } from './services/storage/storage.service';
 import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
+import { RegisterInputService} from './services/register-input/registerInput.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
@@ -90,7 +91,8 @@ const appRoutes: Routes = [
     StorageService,
     SubmissionService,
     UserService,
-    WarmupQuestionService
+    WarmupQuestionService,
+    RegisterInputService
   ],
   bootstrap: [AppComponent]
 })
