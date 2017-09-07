@@ -1,6 +1,7 @@
 const isAuthenticated = require('../authentication/middleware')
 
 const { getHome,
+  getPupils,
   getResults,
   downloadResults,
   generatePins,
@@ -12,6 +13,7 @@ const { getHome,
 
 const school = (router) => {
   router.get('/school-home', isAuthenticated(), (req, res, next) => getHome(req, res, next))
+  router.get('/pupil-register', isAuthenticated(), (req, res, next) => getPupils(req, res, next))
   router.get('/results', isAuthenticated(), (req, res, next) => getResults(req, res, next))
   router.get('/download-results', isAuthenticated(), (req, res, next) => downloadResults(req, res, next))
   router.post('/generate-pins', isAuthenticated(), (req, res, next) => generatePins(req, res, next))

@@ -1,0 +1,52 @@
+<%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div>
+            <h1 tabindex="0" class="heading-xlarge">Manage pupils</h1>
+            <a class="button button-secondary" href=""> Add single pupil </a>
+            <a class="button button-secondary" href=""> Add multiple pupils </a>
+        </div>
+        <table id="results" class="spacious">
+            <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th class="numeric" scope="col">Group</th>
+                <th class="numeric" scope="col">Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% pupils.forEach((p) => { %>
+            <tr>
+                <td><%= p.fullName %></td>
+                <td class="numeric"><%= p.group %></td>
+                <td class="numeric"><%= p.score %></td>
+            </tr>
+            </tbody>
+            <% }) %>
+        </table>
+    </div>
+    <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
+        <h3 class="heading-medium" tabindex="0">Before check</h3>
+        <ul class="list">
+            <li>
+                <a href="" target="_blank">Group pupils</a>
+            </li>
+            <li>
+                <a href="" target="_blank">Access arrangements</a>
+            </li>
+        </ul>
+        <h3 class="heading-medium" tabindex="0">Start check</h3>
+        <ul class="list">
+            <li>
+                <a href="" target="_blank">Pupils not taking the check</a>
+            <li>
+                <a href="" target="_blank">Generate PINs</a>
+            </li>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+

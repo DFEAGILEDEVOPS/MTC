@@ -29,6 +29,32 @@ const getHome = async (req, res, next) => {
   })
 }
 
+const getPupils = async (req, res, next) => {
+  res.locals.pageTitle = 'Pupil register'
+  const { pupils } = await fetchPupilsData(req.user.School)
+  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
+    const fullName = `${p.foreName} ${p.lastName}`
+    const answers = await fetchPupilAnswers(p._id)
+    const { score } = fetchScoreDetails(answers)
+    // TODO: Fetch pupil's group when it's implemented
+    const group = 'N/A'
+    return {
+      fullName,
+      group,
+      score
+    }
+  })).catch((error) => next(error))
+  try {
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('school/pupil-register', {
+      pupils: pupilsFormatted,
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
   const {pupils, schoolData} = await fetchPupilsData(req.user.School)
@@ -310,6 +336,7 @@ const getHDFSubmitted = async (req, res, next) => {
 
 module.exports = {
   getHome,
+  getPupils,
   getResults,
   downloadResults,
   generatePins,
