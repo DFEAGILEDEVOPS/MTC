@@ -9,12 +9,14 @@ const pupilValidationSchema = {
   'foreName': {
     notEmpty: true,
     isLength: {
-      options: [{min: 1, max: 35}]
+      options: [{min: 1, max: 35}],
+      errorMessage: addPupilErrorMessages.firstNameLength
     },
     matches: {
-      options: [ XRegExp('^[\\p{Latin}\-\'0-9]+$') ]
+      options: [ XRegExp('^[\\p{Latin}\-\'0-9]+$') ],
+      errorMessage: addPupilErrorMessages.firstNameInvalidCharacters
     },
-    errorMessage: addPupilErrorMessages.foreName
+    errorMessage: addPupilErrorMessages.firstNameRequired
   },
   'middleNames': {
     optional: true,
