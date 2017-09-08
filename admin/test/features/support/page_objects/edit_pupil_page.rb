@@ -12,7 +12,7 @@ class EditPupilPage < SitePrism::Page
   element :year, '#dob-year'
   element :female, '#gender-female'
   element :male, '#gender-male'
-  element :save_changes, 'input[value="Save changes"]'
+  element :save_changes, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
