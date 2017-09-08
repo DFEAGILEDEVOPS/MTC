@@ -8,35 +8,39 @@ const XRegExp = require('xregexp')
 const pupilValidationSchema = {
   'foreName': {
     notEmpty: true,
-    isLength: {
-      options: [{min: 1, max: 35}],
-      errorMessage: addPupilErrorMessages.firstNameLength
-    },
+    errorMessage: addPupilErrorMessages.firstNameRequired,
     matches: {
       options: [ XRegExp('^[\\p{Latin}\-\'0-9]+$') ],
       errorMessage: addPupilErrorMessages.firstNameInvalidCharacters
     },
-    errorMessage: addPupilErrorMessages.firstNameRequired
+    isLength: {
+      options: [{min: 1, max: 35}],
+      errorMessage: addPupilErrorMessages.firstNameLength
+    }
   },
   'middleNames': {
     optional: true,
+    errorMessage: addPupilErrorMessages.middleNameMaxLengthExceeded,
     isLength: {
-      options: [{max: 35}]
+      options: [{max: 35}],
+      errorMessage: addPupilErrorMessages.middleNameMaxLengthExceeded
     },
     matches: {
-      options: [ XRegExp('^[\\p{Latin}\-\' 0-9]*$') ]
-    },
-    errorMessage: addPupilErrorMessages.middleNames
+      options: [ XRegExp('^[\\p{Latin}\-\' 0-9]*$') ],
+      errorMessage: addPupilErrorMessages.middleNameInvalidCharacters
+    }
   },
   'lastName': {
-    notEmpty: true,
     isLength: {
-      options: [{min: 1, max: 35}]
+      options: [{min: 1, max: 35}],
+      errorMessage: addPupilErrorMessages.lastNameLength
     },
     matches: {
-      options: [ XRegExp('^[\\p{Latin}\-\'0-9]+$') ]
+      options: [ XRegExp('^[\\p{Latin}\-\'0-9]+$') ],
+      errorMessage: addPupilErrorMessages.lastNameInvalidCharacters
     },
-    errorMessage: addPupilErrorMessages.lastName
+    notEmpty: true,
+    errorMessage: addPupilErrorMessages.lastNameRequired
   },
   'dob-day': {
     notEmpty: true,
