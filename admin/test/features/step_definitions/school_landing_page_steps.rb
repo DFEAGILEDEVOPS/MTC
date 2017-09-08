@@ -1,7 +1,7 @@
 Then(/^I should see (.*)'s school name$/) do |teacher|
   school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
   school_name = MongoDbHelper.find_school(school_id)[0]['name']
-  expect(school_landing_page.heading.text).to eql school_name
+  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
 end
 
 Given(/^I am on the school landing page$/) do
@@ -47,4 +47,8 @@ end
 
 Then(/^I should see option to manage check forms in the before you start section$/) do
   expect(school_landing_page.before_you_start).to have_manage_check_forms
+end
+
+Then(/^I should see (.*)'s name$/) do |teacher|
+  expect(school_landing_page.teacher_name.text).to eql "Signed in as " + teacher
 end

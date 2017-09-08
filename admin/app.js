@@ -62,7 +62,7 @@ if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.lo
 const app = express()
 app.use(cors())
 
-const helpers = require('./helpers')(app)
+require('./helpers')(app)
 
 /* for Azure Linux App Service only
 logging is not yet correctly implemented, so this is a temporary workaround

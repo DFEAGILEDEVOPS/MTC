@@ -208,3 +208,15 @@ end
 Then(/^I should see only (\d+) characters are entered for last name$/) do |number|
   expect(@page.last_name.value.length).to eql number.to_i
 end
+
+Then(/^there should be a toggle that informs me what a upn is$/) do
+  expect(add_pupil_page).to have_what_is_upn
+end
+
+Then(/^there should be text in the what a upn is section$/) do
+  expect(add_pupil_page.what_is_upn).to have_explanatory_text
+end
+
+Then(/^I should see a link to more details in the what is a upn section$/) do
+  expect(add_pupil_page.what_is_upn).to have_more_details
+end
