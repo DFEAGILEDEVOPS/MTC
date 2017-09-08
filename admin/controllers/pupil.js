@@ -9,7 +9,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
 
 const getAddPupil = async (req, res, next) => {
-  res.locals.pageTitle = 'Add pupil'
+  res.locals.pageTitle = 'Add single pupil'
   // school id from session
   const schoolId = req.user.School
   let school
