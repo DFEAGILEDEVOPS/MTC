@@ -10,14 +10,16 @@ require('sinon-mongoose')
 let sandbox
 let jwtPromiseHelper
 let mockCheckData
-let goodReq
 let PupilFeedback
 let isSuccessful
 
 describe('Pupil Feedback controller', () => {
   const getResult = (isSuccessful) => {
-    if (isSuccessful) return isSuccessful
-    throw new Error('saving error')
+    if (isSuccessful) {
+      return isSuccessful
+    } else {
+      throw new Error('saving error')
+    }
   }
 
   beforeEach(() => {

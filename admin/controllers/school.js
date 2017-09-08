@@ -132,7 +132,6 @@ const downloadResults = async (req, res, next) => {
 
 const generatePins = async (req, res, next) => {
   if (!req.body['pupil']) {
-    console.error('generatePins: no pupils selected')
     // TODO: inform the user via flash message?
     return res.redirect('/school/manage-pupils')
   }

@@ -1,12 +1,19 @@
 <%
     const err = error;
     const input = (typeof formData !== 'undefined') ? formData : {};
-    const heading = 'Manually add individual pupils';
+    const heading = 'Add single pupil';
     const submitLabel = 'Add pupil';
     const headingClass = 'heading-large-no-bold';
 %>
 
-<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
 
 <%- partial('school/_pupil-form', {
         input: input,
