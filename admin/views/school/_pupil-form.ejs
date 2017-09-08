@@ -11,7 +11,6 @@ if (formData._id) {
 
 <div class="grid-row">
     <div class="column-two-thirds">
-
         <% if (err.hasError()) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
             <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
@@ -177,8 +176,13 @@ if (formData._id) {
 
             <div class="form-buttons">
                 <input type="submit" class="button" value="<%= submitLabel %>"/>
-                <a href="/school/manage-pupils" class="button button-secondary">Don’t save</a>
+                <a href="/school/manage-pupils" class="button button-secondary">Cancel</a>
             </div>
         </form>
+
+        <br />
+        <p>
+            <a href="#top">Back to top</a>
+        </p>
     </div>
 </div>

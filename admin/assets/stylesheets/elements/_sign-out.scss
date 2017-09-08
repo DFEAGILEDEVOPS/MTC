@@ -1,13 +1,17 @@
 // Sign-out
 
 #sign-out {
-  color: $white;
+  font-size: medium;
   text-decoration: none;
   float: right;
+  padding-top: 10px;
+  padding-bottom: 15px;
 }
 
-#sign-out {
-  a:visited {
-    color: $white;
-  }
+.signed-in-as {
+  font-size: medium;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  margin-right: 20px;
+  float: right;
 }
