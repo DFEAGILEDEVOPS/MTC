@@ -15,6 +15,8 @@ MSG='pupil-spa app is running under process '
 MSG+=${PID}
 echo ${MSG}
 
+sleep 30
+
 cd test
 rake parallel NODES=4 GROUP_SIZE=6
 CUCUMBER_EXIT_CODE=$?

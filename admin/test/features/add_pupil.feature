@@ -3,6 +3,18 @@ Feature:
   I want to be able to add a pupil
   So that I that they can be assigned to a check
 
+  Scenario: Add pupil page tells me what a UPN is
+    Given I am on the add pupil page
+    Then there should be a toggle that informs me what a upn is
+
+  Scenario: What upn section should explain what a upn is
+    Given I am on the add pupil page
+    Then there should be text in the what a upn is section
+
+  Scenario: What is upn section should have a link to more information
+    Given I am on the add pupil page
+    Then I should see a link to more details in the what is a upn section
+
   Scenario: Add pupil page has fields to capture pupil data
     Given I am on the add pupil page
     Then I should see fields that will allow me to capture pupil data
