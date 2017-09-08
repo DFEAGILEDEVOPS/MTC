@@ -46,7 +46,6 @@ jspm_packages
 /pupil/package-lock.json
 /MTC.iml
 
-
 # ignore test reports folder
 /test/reports/
 
@@ -57,6 +56,10 @@ jspm_packages
 /admin/out
 /electron/out
 /pupil/out
+
+# pupil
+/pupil/public/
+/pupil/public/*
 
 # pupil-spa
 /pupil-spa/test/reports/
