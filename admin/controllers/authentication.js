@@ -15,7 +15,6 @@ const home = (req, res) => {
 const getSignIn = (req, res) => {
   res.locals.pageTitle = 'Check Development - Login'
   if (req.isAuthenticated()) {
-    console.log('FOO', req.isAuthenticated);
     res.redirect('/school/school-home')
   } else {
     if (config.NCA_TOOLS_AUTH_URL) {
