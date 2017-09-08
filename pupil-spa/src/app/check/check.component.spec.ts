@@ -10,6 +10,10 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { AuditService } from '../services/audit/audit.service';
+import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { AuditEntry } from '../services/audit/auditEntry';
+import { CheckComplete } from '../services/audit/auditEntry';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -35,6 +39,7 @@ describe('CheckComponent', () => {
       providers: [
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        { provide: AuditService, useClass: AuditServiceMock },
         AnswerService,
         StorageService,
         SubmissionService,
@@ -203,6 +208,27 @@ describe('CheckComponent', () => {
     });
     it('shows the check complete screen when the state is "complete"', () => {
       testStateChange('complete', 'complete', false);
+    });
+  });
+
+  describe('check complete state', () => {
+    let auditEntryInserted: AuditEntry;
+    let auditService: AuditService;
+    beforeEach(() => {
+      auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(auditService, 'addEntry').and.callFake((entry) => {
+        auditEntryInserted = entry;
+      });
+    });
+    it('is adding an audit entry for checkComplete', () => {
+      // test setup
+      component['allowedStates'] = ['Q25', 'complete'];
+      component['state'] = 0;
+      // call changeState()
+      component['changeState']();
+
+      expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof CheckComplete).toBeTruthy();
     });
   });
 });
