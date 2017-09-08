@@ -1,5 +1,13 @@
 <% let err = (typeof error !== 'undefined') ? error : false; %>
-<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
 
 <div class="grid-row">
     <div class="column-two-thirds">
