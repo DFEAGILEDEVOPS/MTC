@@ -30,7 +30,8 @@ $(function () {
   if ($('#pupilsList').length > 0) disableCheckAll('#pupilsList')
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
-  $('input:file').on('change', function () {
+  $('input:file').on('change', function (e) {
+    e.stopPropagation()
     $('input:submit').prop('disabled', !$(this).val())
   })
 })

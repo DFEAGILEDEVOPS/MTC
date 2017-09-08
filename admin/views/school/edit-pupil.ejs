@@ -2,11 +2,18 @@
 const err = error;
 const input = (typeof formData !== 'undefined') ? formData : {};
 const heading = 'Edit pupil details';
-const submitLabel = 'Save changes';
+const submitLabel = 'Save';
 const headingClass = 'heading-xlarge';
 %>
 
-<%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
 
 <%- partial('school/_pupil-form', {
     input: input,
