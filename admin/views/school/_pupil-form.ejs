@@ -8,181 +8,191 @@ if (formData._id) {
     createOrSave = '/school/pupil/add';
 }
 %>
+<% if (err.hasError()) { %>
+<div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <% if (err.hasError()) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
+    <p>Look at the names, date of birth and other details. Maximum length fields are 35 characters.</p>
 
-            <p>Look at the names, date of birth and other details. Maximum length fields are 35 characters.</p>
+    <ul class="error-summary-list">
+        <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
+        <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
+        <% }); %>
+    </ul>
+</div>
+<% } %>
 
-            <ul class="error-summary-list">
-                <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
-                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
-                <% }); %>
-            </ul>
-        </div>
-        <% } %>
+<h1 class="heading-xlarge" tabindex="0"><%= heading %></h1>
 
-        <h1 class="heading-xlarge" tabindex="0"><%- formHeader %> pupil details</h1>
+<form action="<%= createOrSave %>" method="post" novalidate>
+    <input type="hidden" name="school" value="<%= school._id %>"/>
+    <% if (formData._id) { %>
+    <input type="hidden" name="_id" value="<%= formData._id %>">
+    <% } %>
 
-        <form action="<%= createOrSave %>" method="post" novalidate>
-            <input type="hidden" name="school" value="<%= school._id %>"/>
-            <% if (formData._id) { %>
-            <input type="hidden" name="_id" value="<%= formData._id %>">
+    <div class="form-group <%= err.isError('foreName') ? 'form-group-error' : '' %>">
+        <label class="form-label-bold" for="foreName">First name
+            <% if (err.isError('foreName')) { %>
+            <span class="error-message"><%= err.get('foreName') %></span>
             <% } %>
-
-            <div class="form-group <%= err.isError('foreName') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="foreName">First name
-                    <% if (err.isError('foreName')) { %>
-                    <span class="error-message"><%= err.get('foreName') %></span>
-                    <% } %>
-                </label>
-                <input type="text"
-                       id="foreName"
-                       maxlength="35"
-                       class="form-control <%= err.isError('foreName') ? 'form-control-error' : '' %>"
-                       name="foreName"
-                       value="<%= formData['foreName'] %>"/>
-            </div>
-
-            <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="middleNames">Middle name(s)
-                    <% if (err.isError('middleNames')) { %>
-                    <span class="error-message"><%= err.get('middleNames') %></span>
-                    <% } %>
-                </label>
-                <input type="text"
-                       id="middleNames"
-                       maxlength="35"
-                       class="form-control <%= err.isError('middleNames') ? 'form-control-error' : '' %>"
-                       name="middleNames"
-                       value="<%= formData['middleNames'] %>"/>
-            </div>
-
-            <div class="form-group <%= err.isError('lastName') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="lastName">Last name
-                    <% if (err.isError('lastName')) { %>
-                    <span class="error-message"><%= err.get('lastName') %></span>
-                    <% } %>
-                </label>
-                <input type="text"
-                       id="lastName"
-                       maxlength="35"
-                       class="form-control <%= err.isError('lastName') ? 'form-control-error' : '' %>"
-                       name="lastName"
-                       value="<%= formData['lastName'] %>"/>
-            </div>
-
-            <div class="form-group <%= err.isError('upn') ? 'form-group-error' : '' %>">
-                <label class="form-label-bold" for="upn">Unique pupil number (UPN)
-                    <% if (err.isError('upn')) { %>
-                    <span class="error-message"><%= err.get('upn') %></span>
-                    <% } %>
-                </label>
-                <input type="text"
-                       id="upn"
-                       class="form-control <%= err.isError('upn') ? 'form-control-error' : '' %>"
-                       name="upn"
-                       value="<%= formData['upn'] %>"
-                />
-            </div>
-
-            <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
-                 id="dob">
-                <fieldset tabindex="0" aria-labelledby="date-of-birth">
-                    <legend>
-                        <span class="form-label-bold" id="date-of-birth">Date of birth</span>
-                        <span class="form-hint">For example, 31 3 2006</span>
-                        <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
-                        <span class="error-message">
-                    <%= ['dob-day', 'dob-month', 'dob-year'].filter(f => {
-                        return err.isError(f);
-                    })
-                            .map(f => {
-                                return err.get(f);
-                            }).shift() %>
-                </span>
-                        <% } %>
-                    </legend>
-                    <div class="form-date">
-                        <div class="form-group form-group-day">
-                            <label class="form-label" for="dob-day">Day</label>
-                            <input class="form-control <%= err.isError('dob-day') ? 'form-control-error' : '' %>"
-                                   id="dob-day"
-                                   name="dob-day"
-                                   type="number"
-                                   min="0" max="31"
-                                   value="<%= formData['dob-day'] %>"/>
-                        </div>
-                        <div class="form-group form-group-month">
-                            <label class="form-label" for="dob-month">Month</label>
-                            <input class="form-control <%= err.isError('dob-month') ? 'form-control-error' : '' %>"
-                                   id="dob-month"
-                                   name="dob-month"
-                                   type="number"
-                                   min="0"
-                                   max="12"
-                                   value="<%= formData['dob-month'] %>"/>
-                        </div>
-                        <div class="form-group form-group-year">
-                            <label class="form-label" for="dob-year">Year</label>
-                            <input class="form-control <%= err.isError('dob-year') ? 'form-control-error' : '' %>"
-                                   id="dob-year" name="dob-year"
-                                   type="number"
-                                   min="0"
-                                   max="<%= currentYear %>"
-                                   value="<%= formData['dob-year'] %>">
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
-                <fieldset tabindex="0" role="radiogroup" >
-                    <legend class="form-label-bold">Gender
-                        <% if (err.isError('gender')) { %>
-                        <span class="error-message"><%= err.get('gender') %></span>
-                        <% } %>
-                    </legend>
-                    <div class="multiple-choice">
-                        <input id="gender-female"
-                               type="radio"
-                               role="radio"
-                               aria-checked="false"
-                               name="gender"
-                               value="F"
-                               <% if (formData['gender'] === 'F') { %>checked="checked"
-                                <% } %>
-                        />
-                        <label for="gender-female">Female</label>
-                    </div>
-
-                    <div class="multiple-choice">
-                        <input id="gender-male"
-                               type="radio"
-                               role="radio"
-                               aria-checked="false"
-                               name="gender"
-                               value="M"
-                               <% if (formData['gender'] === 'M') { %>checked="checked"
-                                <% } %>
-                        />
-                        <label for="gender-male">Male</label>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="form-buttons">
-                <input type="submit" class="button" value="<%= submitLabel %>"/>
-                <a href="/school/manage-pupils" class="button button-secondary">Cancel</a>
-            </div>
-        </form>
-
-        <br />
-        <p>
-            <a href="#top">Back to top</a>
-        </p>
+        </label>
+        <input type="text"
+               id="foreName"
+               maxlength="35"
+               class="form-control <%= err.isError('foreName') ? 'form-control-error' : '' %>"
+               name="foreName"
+               value="<%= formData['foreName'] %>"/>
     </div>
+
+    <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
+        <label class="form-label-bold" for="middleNames">Middle name(s)<span class="label-optional">(optional)</span>
+            <% if (err.isError('middleNames')) { %>
+            <span class="error-message"><%= err.get('middleNames') %></span>
+            <% } %>
+        </label>
+        <input type="text"
+               id="middleNames"
+               maxlength="35"
+               class="form-control <%= err.isError('middleNames') ? 'form-control-error' : '' %>"
+               name="middleNames"
+               value="<%= formData['middleNames'] %>"/>
+    </div>
+
+    <div class="form-group <%= err.isError('lastName') ? 'form-group-error' : '' %>">
+        <label class="form-label-bold" for="lastName">Last name
+            <% if (err.isError('lastName')) { %>
+            <span class="error-message"><%= err.get('lastName') %></span>
+            <% } %>
+        </label>
+        <input type="text"
+               id="lastName"
+               maxlength="35"
+               class="form-control <%= err.isError('lastName') ? 'form-control-error' : '' %>"
+               name="lastName"
+               value="<%= formData['lastName'] %>"/>
+    </div>
+
+    <div class="form-group <%= err.isError('upn') ? 'form-group-error' : '' %>">
+        <label class="form-label-bold" for="upn">Unique pupil number (UPN)
+            <% if (err.isError('upn')) { %>
+            <span class="error-message"><%= err.get('upn') %></span>
+            <% } %>
+        </label>
+        <input type="text"
+               id="upn"
+               class="form-control <%= err.isError('upn') ? 'form-control-error' : '' %>"
+               name="upn"
+               value="<%= formData['upn'] %>"/>
+
+        <div class="master-detail text">
+            <details>
+                <summary><span class="summary"> What is the UPN? </span></summary>
+                <div class="panel-no-border">
+                    <p>
+                        The unique pupil number (UPN) is a 13-character code that identifies each pupil in the
+                        local-authority-maintained school system.
+                    </p>
+                    <p>
+                        If your pupil does not have a UPN there is
+                        <a href="https://www.gov.uk/government/publications/unique-pupil-numbers">
+                            more detail
+                        </a> on how to generate UPNs.
+                    </p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
+         id="dob">
+        <fieldset tabindex="0" aria-labelledby="date-of-birth">
+            <legend>
+                <span class="form-label-bold" id="date-of-birth">Date of birth</span>
+                <span class="form-hint">For example, 31 6 2005</span>
+                <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
+                <span class="error-message">
+                                    <%= ['dob-day', 'dob-month', 'dob-year'].filter(f => {
+                                        return err.isError(f);
+                                    })
+                                            .map(f => {
+                                                return err.get(f);
+                                            }).shift() %>
+                                 </span>
+                <% } %>
+            </legend>
+            <div class="form-date">
+                <div class="form-group form-group-day">
+                    <label class="form-label" for="dob-day">Day</label>
+                    <input class="form-control <%= err.isError('dob-day') ? 'form-control-error' : '' %>"
+                           id="dob-day"
+                           name="dob-day"
+                           type="number"
+                           min="0" max="31"
+                           value="<%= formData['dob-day'] %>"/>
+                </div>
+                <div class="form-group form-group-month">
+                    <label class="form-label" for="dob-month">Month</label>
+                    <input class="form-control <%= err.isError('dob-month') ? 'form-control-error' : '' %>"
+                           id="dob-month"
+                           name="dob-month"
+                           type="number"
+                           min="0"
+                           max="12"
+                           value="<%= formData['dob-month'] %>"/>
+                </div>
+                <div class="form-group form-group-year">
+                    <label class="form-label" for="dob-year">Year</label>
+                    <input class="form-control <%= err.isError('dob-year') ? 'form-control-error' : '' %>"
+                           id="dob-year" name="dob-year"
+                           type="number"
+                           min="0"
+                           max="<%= currentYear %>"
+                           value="<%= formData['dob-year'] %>">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
+        <fieldset tabindex="0" role="radiogroup">
+            <legend class="form-label-bold">Gender
+                <% if (err.isError('gender')) { %>
+                <span class="error-message"><%= err.get('gender') %></span>
+                <% } %>
+            </legend>
+            <div class="multiple-choice">
+                <input id="gender-female"
+                       type="radio"
+                       role="radio"
+                       aria-checked="false"
+                       name="gender"
+                       value="F"
+                       <% if (formData['gender'] === 'F') { %>checked="checked"
+                        <% } %>
+                />
+                <label for="gender-female">Female</label>
+            </div>
+
+            <div class="multiple-choice">
+                <input id="gender-male"
+                       type="radio"
+                       role="radio"
+                       aria-checked="false"
+                       name="gender"
+                       value="M"
+                       <% if (formData['gender'] === 'M') { %>checked="checked"
+                        <% } %>
+                />
+                <label for="gender-male">Male</label>
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="form-buttons">
+        <input type="submit" class="button" value="<%= submitLabel %>"/>
+        <a href="/school/manage-pupils" class="button button-secondary">Cancel</a>
+    </div>
+</form>
+<div class="back-to-top-container">
+    <a href="#top"> Back to top </a>
 </div>

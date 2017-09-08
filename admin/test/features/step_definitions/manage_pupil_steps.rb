@@ -88,7 +88,7 @@ Given(/^I have logged in with (.*)$/) do |teacher|
 end
 
 When(/^I want to manage the pupils$/) do
-  profile_page.manage_pupil.click
+  school_landing_page.manage_pupil.click
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|
