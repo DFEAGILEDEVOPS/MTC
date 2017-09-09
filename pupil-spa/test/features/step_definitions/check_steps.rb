@@ -114,11 +114,22 @@ end
 
 
 Then(/^I should see all the data from the check stored in the DB$/) do
-  last_check = MongoDbHelper.get_completed_checks.last
   storage_answers = JSON.parse page.evaluate_script('window.localStorage.getItem("answers");')
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  storage_access_token = JSON.parse page.evaluate_script('window.localStorage.getItem("access_token");')
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  storage_config = JSON.parse page.evaluate_script('window.localStorage.getItem("config");')
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
-  storage_answers.each {|answer| expect(last_check['data']['answers']).to include answer}
-  storage_inputs.each {|input| expect(last_check['data']['inputs']).to include input}
-  storage_audit.each {|audit| expect(last_check['data']['audit']).to include audit}
+  storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  completed_checks = MongoDbHelper.get_completed_checks
+  check = completed_checks.find {|check| check['data']['pupil']['sessionId'] == storage_pupil['sessionId']}
+  storage_answers.each {|answer| expect(check['data']['answers']).to include answer}
+  storage_inputs.each {|input| expect(check['data']['inputs']).to include input}
+  storage_audit.each {|audit| expect(check['data']['audit']).to include audit}
+  expect(check['data']['access_token']).to eql storage_access_token
+  [storage_school].each {|audit| expect(check['data']['school']).to include audit}
+  [storage_config].each {|audit| expect(check['data']['config']).to include audit}
+  storage_questions.each {|audit| expect(check['data']['questions']).to include audit}
+  [storage_pupil].each {|audit| expect(check['data']['pupil']).to include audit}
 end
