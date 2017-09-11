@@ -8,12 +8,12 @@
     "start": "node ./server.js",
     "postinstall": "gulp build",
     "test": "jasmine-node spec --verbose --color --captureExceptions --forceexit",
-    "coverage": "nyc jasmine-node spec --verbose --color --captureExceptions --forceexit",
+    "coverage": "nyc -r html jasmine-node spec --verbose --color --captureExceptions --forceexit",
     "startn": "nodemon ./server.js",
     "sasswatch": "gulp watch"
   },
   "engines": {
-    "node": "8.2.1"
+    "node": "8.4.0"
   },
   "dependencies": {
     "az-bunyan": "0.0.5",
