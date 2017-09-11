@@ -4,21 +4,32 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const CheckWindow = new Schema({
-  name: {type: String, required: true, trim: true},
-  startDate: {type: Date, required: true},
-  endDate: {
-    type: Date,
+  name: {
+    type: String,
     required: true,
-    validate: function (date) { return date > this.startDate }
+    trim: true
   },
-  registrationStartDate: {type: Date, required: true},
-  registrationEndDate: {
+  adminStartDate: {
     type: Date,
     required: true,
-    validate: function (date) { return date > this.registrationStartDate }
+    validate: function (date) { return date >= Date.now }
+  },
+  checkStartDate: {
+    type: Date,
+    required: true,
+    validate: function (date) { return date >= Date.now }
+  },
+  checkEndDate: {
+    type: Date,
+    required: true,
+    validate: function (date) { return date > this.checkStartDate }
   },
   forms: {
-    type: [{ type: Number, ref: 'CheckForm', required: true }]
+    type: [{
+      type: Number,
+      ref: 'CheckForm',
+      required: true
+    }]
   }
 }, {timestamps: true})
 
