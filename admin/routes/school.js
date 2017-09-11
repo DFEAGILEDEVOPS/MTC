@@ -1,3 +1,4 @@
+const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
 
 const { getHome,
