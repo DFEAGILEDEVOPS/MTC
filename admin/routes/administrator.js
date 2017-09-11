@@ -3,8 +3,8 @@
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const { getAdministration, getUpdateTiming, setUpdateTiming } = require('../controllers/administrator')
 const config = require('../config')
+const { getAdministration, getUpdateTiming, setUpdateTiming } = require('../controllers/administrator')
 
 /* Administration page */
 router.get('/home', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
