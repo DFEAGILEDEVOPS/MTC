@@ -350,7 +350,6 @@ describe('pupil validator', function () {
       req.body['dob-month'] = '10'
       req.body['dob-year'] = '20051'
       let validationError = await pupilValidator.validate(req)
-      console.log(validationError)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('dob-day')).toBe(false)
       expect(validationError.isError('dob-month')).toBe(false)
