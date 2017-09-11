@@ -115,8 +115,25 @@ const setUpdateTiming = async (req, res, next) => {
   return res.redirect('/administrator/check-settings/updated')
 }
 
+/**
+ * View manage check windows.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getCheckWindows = async (req, res, next) => {
+  res.locals.pageTitle = 'Check settings'
+
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('administrator/check-windows', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 module.exports = {
   getAdministration,
   getUpdateTiming,
-  setUpdateTiming
+  setUpdateTiming,
+  getCheckWindows
 }
