@@ -46,6 +46,10 @@ const pupilValidationSchema = {
       options: [{min: 1, max: 31}],
       errorMessage: addPupilErrorMessages['dob-day']
     },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: addPupilErrorMessages.dobInvalidChars
+    },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.dobRequired
   },
@@ -54,6 +58,10 @@ const pupilValidationSchema = {
       options: [{min: 1, max: 12}],
       errorMessage: addPupilErrorMessages['dob-month']
     },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: addPupilErrorMessages.dobInvalidChars
+    },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.dobRequired
   },
@@ -61,6 +69,10 @@ const pupilValidationSchema = {
     isInt: {
       options: [{min: 1900, max: (new Date().getFullYear())}],
       errorMessage: addPupilErrorMessages['dob-year']
+    },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: addPupilErrorMessages.dobInvalidChars
     },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.dobRequired
@@ -89,6 +101,14 @@ module.exports.validate = async function (req) {
       validationError.addError('dob-year', addPupilErrorMessages.dobNoFuture)
     }
   } else {
+    // Invalid
+    // We need to specify a different error messages if fields have the wrong number of digits
+    if (/^\d{3,}$/.test(req.body['dob-day'])) {
+      validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
+    }
+    if (/^\d{3,}$/.test(req.body['dob-month'])) {
+      validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
+    }
     if (!(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
       validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
       validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
