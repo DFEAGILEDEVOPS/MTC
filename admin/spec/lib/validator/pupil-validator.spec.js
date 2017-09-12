@@ -54,7 +54,7 @@ describe('pupil validator', function () {
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('foreName')).toBe(true)
-      expect(validationError.get('foreName')).toBe('First name cannot be blank')
+      expect(validationError.get('foreName')).toBe('First name can\'t be blank')
       done()
     })
 
@@ -64,7 +64,7 @@ describe('pupil validator', function () {
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('foreName')).toBe(true)
-      expect(validationError.get('foreName')).toBe('First name cannot be blank')
+      expect(validationError.get('foreName')).toBe('First name can\'t be blank')
       done()
     })
 
@@ -135,7 +135,7 @@ describe('pupil validator', function () {
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('middleNames')).toBe(true)
-      expect(validationError.get('middleNames')).toBe('Middle name cannot contain more than 128 characters')
+      expect(validationError.get('middleNames')).toBe('Middle name can\'t contain more than 128 characters')
       done()
     })
 
@@ -156,7 +156,7 @@ describe('pupil validator', function () {
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('lastName')).toBe(true)
-      expect(validationError.get('lastName')).toBe('Last name cannot be blank')
+      expect(validationError.get('lastName')).toBe('Last name can\'t be blank')
       done()
     })
 
@@ -210,9 +210,9 @@ describe('pupil validator', function () {
       expect(validationError.isError('dob-day')).toBe(true)
       expect(validationError.isError('dob-month')).toBe(true)
       expect(validationError.isError('dob-year')).toBe(true)
-      expect(validationError.get('dob-day')).toBe('Date of birth cannot be in the future')
-      expect(validationError.get('dob-month')).toBe('Date of birth cannot be in the future')
-      expect(validationError.get('dob-year')).toBe('Date of birth cannot be in the future')
+      expect(validationError.get('dob-day')).toBe('Date of birth can\'t be in the future')
+      expect(validationError.get('dob-month')).toBe('Date of birth can\'t be in the future')
+      expect(validationError.get('dob-year')).toBe('Date of birth can\'t be in the future')
       done()
     })
 
@@ -226,7 +226,7 @@ describe('pupil validator', function () {
       expect(validationError.isError('dob-day')).toBe(true)
       expect(validationError.isError('dob-month')).toBe(false)
       expect(validationError.isError('dob-year')).toBe(false)
-      expect(validationError.get('dob-day')).toBe('Date of birth cannot be blank')
+      expect(validationError.get('dob-day')).toBe('Date of birth can\'t be blank')
       done()
     })
 
@@ -240,7 +240,7 @@ describe('pupil validator', function () {
       expect(validationError.isError('dob-day')).toBe(false)
       expect(validationError.isError('dob-month')).toBe(true)
       expect(validationError.isError('dob-year')).toBe(false)
-      expect(validationError.get('dob-month')).toBe('Date of birth cannot be blank')
+      expect(validationError.get('dob-month')).toBe('Date of birth can\'t be blank')
       done()
     })
 
@@ -254,7 +254,7 @@ describe('pupil validator', function () {
       expect(validationError.isError('dob-day')).toBe(false)
       expect(validationError.isError('dob-month')).toBe(false)
       expect(validationError.isError('dob-year')).toBe(true)
-      expect(validationError.get('dob-year')).toBe('Date of birth cannot be blank')
+      expect(validationError.get('dob-year')).toBe('Date of birth can\'t be blank')
       done()
     })
 
