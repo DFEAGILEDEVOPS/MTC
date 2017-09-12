@@ -54,6 +54,7 @@ def rerun_failing_scenarios(rerun_file)
   command = "bundle exec cucumber -f pretty -o #{rerun_output_file} @#{rerun_file} -r features/step_definitions -r features/support #{ENV['OPTS']}"
   sh command do
   end unless File.read(rerun_file).empty?
+  @exitcodes_array << $?.exitstatus
 end
 
 def run_non_parallel_scenarios
@@ -85,7 +86,6 @@ def run_parallel_scenarios
   re_run_files = Dir['reports/rerun_fails_*']
   re_run_files.each do |file|
     rerun_failing_scenarios(file) unless File.read(file).empty?
-    @exitcodes_array << $?.exitstatus
   end
   re_run_output_files = Dir['reports/rerun_output_*']
   puts "\n################################".light_green; puts "## Parallel execution output ##".green
