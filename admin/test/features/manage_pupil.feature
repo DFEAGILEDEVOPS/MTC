@@ -4,21 +4,25 @@ Feature:
   So that I can make sure all the pupils at the school are already present in MTC
 
   Scenario: Manage pupil page has all the pupil displayed and sorted by surname
-    Given I am on the manage pupil page
+    Given I am logged in
+    When I am on the manage pupil page
     Then I should see that all the pupils who are registered are displayed and sorted by lastname
 
   Scenario: Add pupil link on manage pupil link takes to add pupil page
-    Given I am on the manage pupil page
-    When I click the Add Pupils link
+    Given I am logged in
+    When I am on the manage pupil page
+    And I click the Add Pupils link
     Then I should be taken to the add pupil page
 
   Scenario: Adding a pupil will appear in the list
-    Given I am on the manage pupil page
+    Given I am logged in
+    When I am on the manage pupil page
     And I choose to add a pupil by clicking Add Pupils link
     Then I should see the added pupil details on the manage pupils page
 
   Scenario: Teachers have option to print pins
-    Given I am on the manage pupil page
+    Given I am logged in
+    When I am on the manage pupil page
     Then I should have the option to print pins
 
   Scenario: Expired pin is showed as pin expired
@@ -63,7 +67,6 @@ Feature:
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  @sign_in
   Scenario Outline: School password is displayed on manage pupil page
     Given I have logged in with <teacher>
     When I want to manage the pupils

@@ -11,7 +11,8 @@ const { home,
   getSignOut,
   getSignInFailure,
   getProfile,
-  postAuth } = require('../controllers/authentication')
+  postAuth,
+  getUnauthorised} = require('../controllers/authentication')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
@@ -31,10 +32,12 @@ router.post('/sign-in', (req, res, next) => {
 router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
 /* Sign in failure */
 router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
+/* Unauthorised */
+router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 /* Profile page */
 router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
 /* Administration page */
-router.get('/administrator', isAuthenticated(), (req, res) => getAdministration(req, res))
+router.get('/administrator', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
 /* Health check */
 router.get('/ping', (req, res) => res.status(200).send('OK'))
 /* NCA Tools Authentication Endpoint */
