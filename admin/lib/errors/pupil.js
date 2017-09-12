@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports.addPupil = {
-  'gender': 'Select a gender',
+  'genderRequired': 'Select a gender',
 
   'firstNameRequired': 'First name cannot be blank',
   'firstNameLength': 'Check the first name',

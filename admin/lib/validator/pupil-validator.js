@@ -16,7 +16,7 @@ const pupilValidationSchema = {
       errorMessage: addPupilErrorMessages.firstNameLength
     },
     notEmpty: true,
-    errorMessage: addPupilErrorMessages.firstNameRequired,
+    errorMessage: addPupilErrorMessages.firstNameRequired
   },
   'middleNames': {
     optional: true,
@@ -76,6 +76,12 @@ const pupilValidationSchema = {
     },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.dobRequired
+  },
+  'gender': {
+    matches: {
+      options: [/^(M|F)$/],
+      errorMessage: addPupilErrorMessages.genderRequired
+    }
   }
 }
 

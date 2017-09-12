@@ -358,4 +358,16 @@ describe('pupil validator', function () {
       done()
     })
   })
+
+  describe('gender', () => {
+    it('is required', async (done) => {
+      req.body = getBody()
+      req.body['gender'] = ''
+      const validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(true)
+      expect(validationError.isError('gender')).toBe(true)
+      expect(validationError.get('gender')).toBe('Select a gender')
+      done()
+    })
+  })
 })
