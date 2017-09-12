@@ -127,9 +127,10 @@ const getCheckWindows = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   req.breadcrumbs(res.locals.pageTitle)
 
-  let checkWindows
+  let checkWindowList
   try {
-    checkWindows = await CheckWindow.getCheckWindows()
+    checkWindowList = await CheckWindow.getCheckWindows()
+    console.log('checkWindowList', checkWindowList)
   } catch (error) {
     return next(error)
   }

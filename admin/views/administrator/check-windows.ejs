@@ -23,10 +23,10 @@
         <table class="spacious" id="pupilsList" role="listbox" aria-label="List of pupils to take check.">
             <thead>
                 <tr>
-                    <th scope="col" class="multiple-choice">Check window</th>
-                    <th scope="col" class="multiple-choice">Administration start date</th>
-                    <th scope="col" class="multiple-choice">Check period</th>
-                    <th scope="col" class="multiple-choice"> </th>
+                    <th scope="col">Check window</th>
+                    <th scope="col">Administration start date</th>
+                    <th scope="col">Check period</th>
+                    <th scope="col">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                     <td><%= checkWindow.checkWindowName %></td>
                     <td><%= checkWindow.adminStartDate %></td>
                     <td><%= checkWindow.checkStartDate + ' - ' + checkWindow.checkEndDate %></td>
-                    <td><%= checkWindow.checkEndDate %></td>
+                    <td>Remove</td>
                 </tr>
                 <% }) %>
                 <% } %>
