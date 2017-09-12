@@ -3,6 +3,9 @@ Feature:
   I want to be able to add a pupil
   So that I that they can be assigned to a check
 
+  Background:
+    Given I am logged in
+
   Scenario: Add pupil page tells me what a UPN is
     Given I am on the add pupil page
     Then there should be a toggle that informs me what a upn is

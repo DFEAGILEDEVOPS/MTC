@@ -3,6 +3,9 @@ Feature:
   I want to be able to manage check forms
   So that I can make the required changes to the check forms
 
+  Background:
+    Given I am logged in
+
   Scenario: Manage check forms page has a title
     Given I am on the manage check forms page
     Then I should see a heading
