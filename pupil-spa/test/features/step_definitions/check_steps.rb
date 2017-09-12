@@ -112,7 +112,6 @@ Then(/^I should see the total number of check questions$/) do
   expect(check_page.preload.text).to eql "Loading question 1 out of #{questions.size}"
 end
 
-
 Then(/^I should see all the data from the check stored in the DB$/) do
   last_check = MongoDbHelper.get_completed_checks.last
   storage_answers = JSON.parse page.evaluate_script('window.localStorage.getItem("answers");')
