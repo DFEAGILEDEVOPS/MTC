@@ -1,4 +1,5 @@
 const Settings = require('../models/setting')
+const CheckWindow = require('../models/check-window')
 const SettingsLog = require('../models/setting-log')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
@@ -124,10 +125,19 @@ const setUpdateTiming = async (req, res, next) => {
  */
 const getCheckWindows = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
-
   req.breadcrumbs(res.locals.pageTitle)
+
+  let checkWindows
+  try {
+    checkWindows = await CheckWindow.getCheckWindows()
+  } catch (error) {
+    return next(error)
+  }
+
+  console.log('checkWindows', checkWindows)
   res.render('administrator/check-windows', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowList: checkWindows
   })
 }
 

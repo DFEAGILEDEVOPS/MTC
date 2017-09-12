@@ -19,6 +19,29 @@
 
         <br />
         <div class="panel panel-border-wide">Check will be open for schools on weekdays between 8am to 3:30pm </div>
+
+        <table class="spacious" id="pupilsList" role="listbox" aria-label="List of pupils to take check.">
+            <thead>
+                <tr>
+                    <th scope="col" class="multiple-choice">Check window</th>
+                    <th scope="col" class="multiple-choice">Administration start date</th>
+                    <th scope="col" class="multiple-choice">Check period</th>
+                    <th scope="col" class="multiple-choice"> </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (checkWindowList.length > 1) { %>
+                <% checkWindowList.forEach( (checkWindow, index) => { %>
+                <tr>
+                    <td><%= checkWindow.checkWindowName %></td>
+                    <td><%= checkWindow.adminStartDate %></td>
+                    <td><%= checkWindow.checkStartDate + ' - ' + checkWindow.checkEndDate %></td>
+                    <td><%= checkWindow.checkEndDate %></td>
+                </tr>
+                <% }) %>
+                <% } %>
+            </tbody>
+        </table>
     </div>
 
     <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
