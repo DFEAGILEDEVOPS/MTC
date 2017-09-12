@@ -3,6 +3,9 @@ Feature:
   I want to ensure that the system displays
   the navigation path as breadcrumb
 
+  Background:
+    Given I am logged in
+
   Scenario: Verify breadcrumb on manage check forms
     Given I am on the profile page
     When I choose to manage check forms
