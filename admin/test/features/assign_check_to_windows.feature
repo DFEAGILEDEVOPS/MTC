@@ -3,6 +3,9 @@ Feature:
   I want to assign a window for a check form
   So that pupils can sit the check
 
+  Background:
+    Given I am logged in
+
   Scenario: Assign check window page has a heading
     Given I am on the assign check window page
     Then I should see a heading for the page
