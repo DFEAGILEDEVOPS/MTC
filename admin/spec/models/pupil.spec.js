@@ -107,4 +107,31 @@ describe('Pupil schema', function () {
       done(error)
     }
   })
+
+  it('truncates foreName if it\'s too long', function (done) {
+    pupil.foreName = 's'.repeat(130)
+    pupil.validate(error => {
+      expect(error).toBe(null)
+      expect(pupil.foreName.length).toBe(128)
+      done()
+    })
+  })
+
+  it('truncates middleNames if it\'s too long', function (done) {
+    pupil.middleNames = 's'.repeat(130)
+    pupil.validate(error => {
+      expect(error).toBe(null)
+      expect(pupil.middleNames.length).toBe(128)
+      done()
+    })
+  })
+
+  it('truncates lastName if it\'s too long', function (done) {
+    pupil.lastName = 's'.repeat(130)
+    pupil.validate(error => {
+      expect(error).toBe(null)
+      expect(pupil.lastName.length).toBe(128)
+      done()
+    })
+  })
 })
