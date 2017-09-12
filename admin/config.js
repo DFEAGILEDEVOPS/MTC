@@ -15,6 +15,6 @@ module.exports = {
   TIME_BETWEEN_QUESTIONS: 2,
   ROLE_TEST_DEVELOPER: 'TEST-DEVELOPER',
   ROLE_TEACHER: 'TEACHER',
-  HOME_TEST_DEVELOPER: '/administrator/home',
+  HOME_TEST_DEVELOPER: '/administrator',
   HOME_TEACHER: '/school/school-home'
 }
