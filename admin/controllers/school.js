@@ -8,7 +8,7 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, sortRecords } = require('../services/pupilService')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -31,7 +31,10 @@ const getHome = async (req, res, next) => {
 
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
-  const { pupils } = await fetchPupilsData(req.user.School)
+  const { sortOrder } = req.params
+  res.locals.sortOrder = sortOrder || 1
+  res.locals.sortClass = parseInt(res.locals.sortOrder) === -1 ? 'triangle down' : 'triangle'
+  const pupils = await sortRecords(sortOrder, req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const answers = await fetchPupilAnswers(p._id)

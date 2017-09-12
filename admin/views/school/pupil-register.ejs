@@ -7,21 +7,25 @@
             <a class="button button-secondary" href=""> Add single pupil </a>
             <a class="button button-secondary" href=""> Add multiple pupils </a>
         </div>
-        <table id="results" class="spacious">
+        <table class="spacious">
             <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th class="numeric" scope="col">Group</th>
-                <th class="numeric" scope="col">Score</th>
-            </tr>
+                <tr>
+                    <th scope="col">
+                        <a class="no-underline" href=<%= `/school/pupil-register/${-sortOrder}` %> >
+                            Name<span class="<%= sortClass %>" ></span>
+                        </a>
+                    </th>
+                    <th class="numeric" scope="col">Group</th>
+                    <th class="numeric" scope="col">Score</th>
+                </tr>
             </thead>
             <tbody>
             <% pupils.forEach((p) => { %>
-            <tr>
-                <td><%= p.fullName %></td>
-                <td class="numeric"><%= p.group %></td>
-                <td class="numeric"><%= p.score %></td>
-            </tr>
+                <tr>
+                    <td><%= p.fullName %></td>
+                    <td class="numeric"><%= p.group %></td>
+                    <td class="numeric"><%= p.score %></td>
+                </tr>
             </tbody>
             <% }) %>
         </table>
