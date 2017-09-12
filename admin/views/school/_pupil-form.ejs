@@ -36,7 +36,6 @@ if (formData._id) {
         </label>
         <input type="text"
                id="foreName"
-               maxlength="35"
                class="form-control <%= err.isError('foreName') ? 'form-control-error' : '' %>"
                name="foreName"
                value="<%= formData['foreName'] %>"/>
@@ -51,7 +50,6 @@ if (formData._id) {
         </label>
         <input type="text"
                id="middleNames"
-               maxlength="35"
                class="form-control <%= err.isError('middleNames') ? 'form-control-error' : '' %>"
                name="middleNames"
                value="<%= formData['middleNames'] %>"/>
@@ -65,7 +63,6 @@ if (formData._id) {
         </label>
         <input type="text"
                id="lastName"
-               maxlength="35"
                class="form-control <%= err.isError('lastName') ? 'form-control-error' : '' %>"
                name="lastName"
                value="<%= formData['lastName'] %>"/>

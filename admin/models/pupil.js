@@ -72,6 +72,19 @@ const Pupil = new Schema({
 })
 
 /**
+ * Validation / sanitisation
+ */
+Pupil.pre('validate', function (next) {
+  // Silently truncate the names to 128 chars
+  for (let prop of ['foreName', 'middleNames', 'lastName']) {
+    if (this[prop] && this[prop].length > 128) {
+      this[prop] = this[prop].substring(0, 128)
+    }
+  }
+  next()
+})
+
+/**
  * Retrieve pupil records by school code
  * @return {Query} || null
  */

@@ -7,10 +7,6 @@ const XRegExp = require('xregexp')
 
 const pupilValidationSchema = {
   'foreName': {
-    isLength: {
-      options: [{max: 128}],
-      errorMessage: addPupilErrorMessages.firstNameRequired
-    },
     matches: {
       options: [XRegExp('^[\\p{Latin}\-\'0-9]+$')],
       errorMessage: addPupilErrorMessages.firstNameInvalidCharacters
@@ -20,20 +16,12 @@ const pupilValidationSchema = {
   },
   'middleNames': {
     optional: true,
-    isLength: {
-      options: [{max: 128}],
-      errorMessage: addPupilErrorMessages.middleNameMaxLengthExceeded
-    },
     matches: {
       options: [XRegExp('^[\\p{Latin}\-\' 0-9]*$')],
       errorMessage: addPupilErrorMessages.middleNameInvalidCharacters
     }
   },
   'lastName': {
-    isLength: {
-      options: [{max: 128}],
-      errorMessage: addPupilErrorMessages.lastNameLength
-    },
     matches: {
       options: [XRegExp('^[\\p{Latin}\-\'0-9]+$')],
       errorMessage: addPupilErrorMessages.lastNameInvalidCharacters
