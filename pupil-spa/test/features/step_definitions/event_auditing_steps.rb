@@ -11,7 +11,7 @@ Then(/^all the events should be captured$/) do
   expect(@local_storage.find{|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupCompleteRendered'}
   @last = @local_storage.pop(1)[0]
-  expect(@last['type']).to eql 'CheckCompleteRendered'
+  expect(@last['type']).to eql 'CheckComplete'
   @local_storage.each_slice(3) do |slice|
     expect(slice[0]['type']).to eql 'PauseRendered'
     expect(slice[1]['type']).to eql 'QuestionRendered'
