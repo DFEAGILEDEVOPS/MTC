@@ -58,13 +58,13 @@ describe('pupil validator', function () {
       done()
     })
 
-    it('requires foreName to be no more than 35 chars', async function (done) {
+    it('requires foreName to be no more than 128 chars', async function (done) {
       req.body = getBody()
-      req.body.foreName = 's'.repeat(36)
+      req.body.foreName = 's'.repeat(129)
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('foreName')).toBe(true)
-      expect(validationError.get('foreName')).toBe('Check the first name')
+      expect(validationError.get('foreName')).toBe('First name cannot be blank')
       done()
     })
 
@@ -129,13 +129,13 @@ describe('pupil validator', function () {
       done()
     })
 
-    it('middlenames can be up to 35 chars long', async (done) => {
+    it('can be up to 128 chars long', async (done) => {
       req.body = getBody()
-      req.body.middleNames = 's'.repeat(36)
+      req.body.middleNames = 's'.repeat(129)
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('middleNames')).toBe(true)
-      expect(validationError.get('middleNames')).toBe('Middle name cannot contain more than 35 characters')
+      expect(validationError.get('middleNames')).toBe('Middle name cannot contain more than 128 characters')
       done()
     })
 
@@ -160,9 +160,9 @@ describe('pupil validator', function () {
       done()
     })
 
-    it('can be up to 35 chars long', async (done) => {
+    it('can be up to 128 chars long', async (done) => {
       req.body = getBody()
-      req.body.lastName = 's'.repeat(36)
+      req.body.lastName = 's'.repeat(129)
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('lastName')).toBe(true)

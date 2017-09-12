@@ -7,11 +7,11 @@ module.exports.addPupil = {
   'firstNameLength': 'Check the first name',
   'firstNameInvalidCharacters': 'Check the first name does not contain special characters',
 
-  'middleNameMaxLengthExceeded': 'Middle name cannot contain more than 35 characters',
+  'middleNameMaxLengthExceeded': 'Middle name cannot contain more than 128 characters',
   'middleNameInvalidCharacters': 'Check the middle name does not contain special characters',
 
   'lastNameRequired': 'Last name cannot be blank',
-  'lastNameLength': 'Last name cannot contain more than 35 characters',
+  'lastNameLength': 'Last name cannot contain more than 128 characters',
   'lastNameInvalidCharacters': 'Check last name for special characters',
 
   'dobNoFuture': 'Date of birth cannot be in the future',
