@@ -53,16 +53,6 @@ const pupilService = {
       score,
       percentage
     }
-  },
-
-  sortRecords: async (sortOrder, schoolId) => {
-    let sortedPupils
-    try {
-      sortedPupils = await Pupil.find({ 'school': schoolId }).sort({ 'lastName': sortOrder }).lean().exec()
-    } catch (err) {
-      throw new Error(err)
-    }
-    return sortedPupils
   }
 }
 

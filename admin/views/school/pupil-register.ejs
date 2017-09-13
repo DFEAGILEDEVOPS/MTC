@@ -4,25 +4,42 @@
     <div class="column-two-thirds">
         <div>
             <h1 tabindex="0" class="heading-xlarge">Manage pupils</h1>
-            <a class="button button-secondary" href=""> Add single pupil </a>
+            <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>
             <a class="button button-secondary" href=""> Add multiple pupils </a>
         </div>
-        <table class="spacious">
+        <table id='register-pupils' class="spacious">
             <thead>
                 <tr>
                     <th scope="col">
-                        <a class="no-underline" href=<%= `/school/pupil-register/${-sortOrder}` %> >
-                            Name<span class="<%= sortClass %>" ></span>
+                        <a class="no-underline" href=<%= `/school/pupil-register/lastName/${sortOrder}` %> >
+                            Name
+                            <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
                         </a>
                     </th>
-                    <th class="numeric" scope="col">Group</th>
-                    <th class="numeric" scope="col">Score</th>
+                    <th class="numeric" scope="col">
+                        <a class="no-underline">
+                            Group
+                        </a>
+                    </th>
+                    <th class="numeric" scope="col">
+                        <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
+                        Score
+                        <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
+                        </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td><%= p.fullName %></td>
+                    <td>
+                        <a class="bold-small">
+                            <%= `${p.lastName}, ${p.foreName}` %>
+                        </a>
+                        <div class="font-greyed-out font-xsmall">
+                            Date of birth: <%= p.dob %>
+                        </div>
+                    </td>
                     <td class="numeric"><%= p.group %></td>
                     <td class="numeric"><%= p.score %></td>
                 </tr>

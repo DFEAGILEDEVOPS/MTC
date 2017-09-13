@@ -8,7 +8,8 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, sortRecords } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -31,22 +32,28 @@ const getHome = async (req, res, next) => {
 
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
-  const { sortOrder } = req.params
-  res.locals.sortOrder = sortOrder || 1
-  res.locals.sortClass = parseInt(res.locals.sortOrder) === -1 ? 'triangle down' : 'triangle'
-  const pupils = await sortRecords(sortOrder, req.user.School)
+  const { sortColumn, sortOrder } = req.params
+  res.locals.sortColumn = sortColumn || 'lastName'
+  const order = JSON.parse(sortOrder)
+  res.locals.sortOrder = typeof order === 'boolean' ? !order : true
+  res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
+  const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const fullName = `${p.foreName} ${p.lastName}`
+    const { foreName, lastName } = p
+    const dob = moment(p.dob).format('DD/MM/YYYY')
     const answers = await fetchPupilAnswers(p._id)
     const { score } = fetchScoreDetails(answers)
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
     return {
-      fullName,
+      foreName,
+      lastName,
+      dob,
       group,
       score
     }
   })).catch((error) => next(error))
+  pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/pupil-register', {
