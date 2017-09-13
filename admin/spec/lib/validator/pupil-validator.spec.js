@@ -171,6 +171,36 @@ describe('pupil validator', function () {
   })
 
   describe('date of birth:', () => {
+    it('accepts single digit days and months', async (done) => {
+      req.body = getBody()
+      req.body['dob-day'] = '1'
+      req.body['dob-month'] = '1'
+      req.body['dob-year'] = '2005'
+      let validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      done()
+    })
+
+    it('accepts single digit day', async (done) => {
+      req.body = getBody()
+      req.body['dob-day'] = '7'
+      req.body['dob-month'] = '07'
+      req.body['dob-year'] = '2005'
+      let validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      done()
+    })
+
+    it('accepts single digit month', async (done) => {
+      req.body = getBody()
+      req.body['dob-day'] = '10'
+      req.body['dob-month'] = '7'
+      req.body['dob-year'] = '2005'
+      let validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      done()
+    })
+
     it('Can\'t be in the future', async (done) => {
       req.body = getBody()
       req.body['dob-day'] = '01'
