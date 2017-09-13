@@ -281,146 +281,146 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-year')).toBe('Date of birth can\'t be blank')
         done()
       })
+    })
 
-      describe('date of birth:', () => {
-        it('Can\'t be in the future', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '01'
-          req.body['dob-month'] = '12'
-          req.body['dob-year'] = (new Date().getFullYear() + 1)
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(true)
-          expect(validationError.isError('dob-month')).toBe(true)
-          expect(validationError.isError('dob-year')).toBe(true)
-          expect(validationError.get('dob-day')).toBe('Date of birth can\'t be in the future')
-          expect(validationError.get('dob-month')).toBe('Date of birth can\'t be in the future')
-          expect(validationError.get('dob-year')).toBe('Date of birth can\'t be in the future')
-          done()
-        })
-
-        it('month: must be numerical', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '02'
-          req.body['dob-month'] = 'a'
-          req.body['dob-year'] = '2005'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(false)
-          expect(validationError.isError('dob-month')).toBe(true)
-          expect(validationError.isError('dob-year')).toBe(false)
-          expect(validationError.get('dob-month')).toBe('Entry must be a number')
-          done()
-        })
-
-        it('year: must be numerical', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '02'
-          req.body['dob-month'] = '12'
-          req.body['dob-year'] = 'a'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(false)
-          expect(validationError.isError('dob-month')).toBe(false)
-          expect(validationError.isError('dob-year')).toBe(true)
-          expect(validationError.get('dob-year')).toBe('Entry must be a number')
-          done()
-        })
-
-        it('invalid date should be rejected', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '29'
-          req.body['dob-month'] = '02'
-          req.body['dob-year'] = '2005'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(true)
-          expect(validationError.isError('dob-month')).toBe(true)
-          expect(validationError.isError('dob-year')).toBe(true)
-          expect(validationError.get('dob-year')).toBe('Please check “Year”')
-          expect(validationError.get('dob-month')).toBe('Please check “Month”')
-          expect(validationError.get('dob-day')).toBe('Please check “Day”')
-          done()
-        })
-
-        it('day can\'t be more than 2 digits', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '022'
-          req.body['dob-month'] = '02'
-          req.body['dob-year'] = '2005'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(true)
-          expect(validationError.isError('dob-month')).toBe(false)
-          expect(validationError.isError('dob-year')).toBe(false)
-          expect(validationError.get('dob-day')).toBe('Please check “Day”')
-          done()
-        })
-
-        it('month can\'t be more than 2 digits', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '02'
-          req.body['dob-month'] = '010'
-          req.body['dob-year'] = '2005'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(false)
-          expect(validationError.isError('dob-month')).toBe(true)
-          expect(validationError.isError('dob-year')).toBe(false)
-          expect(validationError.get('dob-month')).toBe('Please check “Month”')
-          done()
-        })
-
-        it('year must be 4 digits', async (done) => {
-          req.body = getBody()
-          req.body['dob-day'] = '02'
-          req.body['dob-month'] = '10'
-          req.body['dob-year'] = '20051'
-          let validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('dob-day')).toBe(false)
-          expect(validationError.isError('dob-month')).toBe(false)
-          expect(validationError.isError('dob-year')).toBe(true)
-          expect(validationError.get('dob-year')).toBe('Please check “Year”')
-          done()
-        })
+    describe('date of birth:', () => {
+      it('Can\'t be in the future', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '01'
+        req.body['dob-month'] = '12'
+        req.body['dob-year'] = (new Date().getFullYear() + 1)
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(true)
+        expect(validationError.isError('dob-month')).toBe(true)
+        expect(validationError.isError('dob-year')).toBe(true)
+        expect(validationError.get('dob-day')).toBe('Date of birth can\'t be in the future')
+        expect(validationError.get('dob-month')).toBe('Date of birth can\'t be in the future')
+        expect(validationError.get('dob-year')).toBe('Date of birth can\'t be in the future')
+        done()
       })
 
-      describe('then gender', () => {
-        it('is required', async (done) => {
-          req.body = getBody()
-          req.body['gender'] = ''
-          const validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('gender')).toBe(true)
-          expect(validationError.get('gender')).toBe('Select a gender')
-          done()
-        })
+      it('month: must be numerical', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = 'a'
+        req.body['dob-year'] = '2005'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(false)
+        expect(validationError.isError('dob-month')).toBe(true)
+        expect(validationError.isError('dob-year')).toBe(false)
+        expect(validationError.get('dob-month')).toBe('Entry must be a number')
+        done()
       })
 
-      describe('then UPN validator:', () => {
-        it('validates the check letter', async (done) => {
-          req.body = getBody()
-          // Example UPN taken from
-          // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-          req.body.upn = 'H801200001001'
-          const validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(false)
-          expect(validationError.isError('upn')).toBe(false)
-          done()
-        })
+      it('year: must be numerical', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '12'
+        req.body['dob-year'] = 'a'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(false)
+        expect(validationError.isError('dob-month')).toBe(false)
+        expect(validationError.isError('dob-year')).toBe(true)
+        expect(validationError.get('dob-year')).toBe('Entry must be a number')
+        done()
+      })
 
-        it('provides an error message when the check letter is wrong', async (done) => {
-          req.body = getBody()
-          // Example UPN taken from
-          // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-          req.body.upn = 'Z801200001001'
-          const validationError = await pupilValidator.validate(req)
-          expect(validationError.hasError()).toBe(true)
-          expect(validationError.isError('upn')).toBe(true)
-          expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
-          done()
-        })
+      it('invalid date should be rejected', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '29'
+        req.body['dob-month'] = '02'
+        req.body['dob-year'] = '2005'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(true)
+        expect(validationError.isError('dob-month')).toBe(true)
+        expect(validationError.isError('dob-year')).toBe(true)
+        expect(validationError.get('dob-year')).toBe('Please check “Year”')
+        expect(validationError.get('dob-month')).toBe('Please check “Month”')
+        expect(validationError.get('dob-day')).toBe('Please check “Day”')
+        done()
+      })
+
+      it('day can\'t be more than 2 digits', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '022'
+        req.body['dob-month'] = '02'
+        req.body['dob-year'] = '2005'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(true)
+        expect(validationError.isError('dob-month')).toBe(false)
+        expect(validationError.isError('dob-year')).toBe(false)
+        expect(validationError.get('dob-day')).toBe('Please check “Day”')
+        done()
+      })
+
+      it('month can\'t be more than 2 digits', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '010'
+        req.body['dob-year'] = '2005'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(false)
+        expect(validationError.isError('dob-month')).toBe(true)
+        expect(validationError.isError('dob-year')).toBe(false)
+        expect(validationError.get('dob-month')).toBe('Please check “Month”')
+        done()
+      })
+
+      it('year must be 4 digits', async (done) => {
+        req.body = getBody()
+        req.body['dob-day'] = '02'
+        req.body['dob-month'] = '10'
+        req.body['dob-year'] = '20051'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('dob-day')).toBe(false)
+        expect(validationError.isError('dob-month')).toBe(false)
+        expect(validationError.isError('dob-year')).toBe(true)
+        expect(validationError.get('dob-year')).toBe('Please check “Year”')
+        done()
+      })
+    })
+
+    describe('then gender', () => {
+      it('is required', async (done) => {
+        req.body = getBody()
+        req.body['gender'] = ''
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('gender')).toBe(true)
+        expect(validationError.get('gender')).toBe('Select a gender')
+        done()
+      })
+    })
+
+    describe('then UPN validator:', () => {
+      it('validates the check letter', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H801200001001'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
+        expect(validationError.isError('upn')).toBe(false)
+        done()
+      })
+
+      it('provides an error message when the check letter is wrong', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'Z801200001001'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
+        done()
       })
     })
   })
