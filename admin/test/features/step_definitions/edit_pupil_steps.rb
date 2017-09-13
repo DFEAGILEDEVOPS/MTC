@@ -1,4 +1,5 @@
 Given(/^I want to edit a previously added pupil$/) do
+  step 'I am logged in'
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{pupil_name}"

@@ -1,8 +1,9 @@
-Before("~@sign_in") do
-  step "I am logged in"
-end
+# Before("~@sign_in") do
+#   step "I am logged in"
+# end
 
 Before("@add_a_pupil") do
+  step "I am logged in"
   @name = (0...8).map { (65 + rand(26)).chr }.join
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{@name}"
@@ -10,6 +11,7 @@ Before("@add_a_pupil") do
 end
 
 Before("@timer_reset") do
+  step "I have logged in with test-developer"
  step 'I am on the admin page'
  step 'I am on the check settings page'
  check_settings_page.update_question_time_limit(5)
@@ -17,6 +19,7 @@ Before("@timer_reset") do
 end
 
 Before("@add_5_pupils") do
+  step "I am logged in"
   5.times do
     @name = (0...8).map { (65 + rand(26)).chr }.join
     step "I am on the add pupil page"
