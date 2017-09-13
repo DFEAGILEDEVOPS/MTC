@@ -4,6 +4,7 @@ const ValidationError = require('../validation-error')
 const errorConverter = require('../error-converter')
 const addPupilErrorMessages = require('../errors/pupil').addPupil
 const XRegExp = require('xregexp')
+const Pupil = require('../../models/pupil')
 
 const pupilValidationSchema = {
   'foreName': {
@@ -116,5 +117,14 @@ module.exports.validate = async function (req) {
       validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
     }
   }
+
+  // We need to check that the UPN is unique
+  if (!(validationError.get('upn'))) {
+    const pupil = await Pupil.findOne({upn: req.body.upn}).exec()
+    if (pupil) {
+      validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
+    }
+  }
+
   return validationError
 }

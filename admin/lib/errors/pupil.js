@@ -22,5 +22,6 @@ module.exports.addPupil = {
   'dob-year': 'Please check “Year”',
 
   'upnRequired': 'UPN is missing',
-  'upnInvalidCheckDigit': 'UPN invalid (wrong check letter at character 1)'
+  'upnInvalidCheckDigit': 'UPN invalid (wrong check letter at character 1)',
+  'upnDuplicate': 'More than 1 pupil record with same UPN'
 }
