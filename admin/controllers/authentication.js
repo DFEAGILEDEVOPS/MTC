@@ -2,10 +2,12 @@ const config = require('../config')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
-    if (req.user.role === 'TEACHER' || req.user.role === 'HEADTEACHER') {
-      return res.redirect('/school/school-home')
-    } else {
-      return res.redirect('/school/school-home')
+    switch (req.user.role) {
+      case 'TEACHER':
+      case 'HEADTEACHER':
+        return res.redirect(config.HOME_TEACHER)
+      case 'TEST-DEVELOPER':
+        return res.redirect(config.HOME_TEST_DEVELOPER)
     }
   } else {
     res.redirect('/sign-in')
@@ -51,12 +53,18 @@ const getProfile = (req, res) => {
   res.locals.pageTitle = 'Check Development - Profile'
   res.render('profile')
 }
+
 const postAuth = (req, res) => {
   // Please leave this in until we are confident we have identified all the NCA Tools roles.
   console.log(req.user)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
   return res.redirect('/school/school-home')
+}
+
+const getUnauthorised = (req, res) => {
+  res.locals.pageTitle = 'Access Unauthorised'
+  res.render('unauthorised')
 }
 
 module.exports = {
@@ -66,5 +74,6 @@ module.exports = {
   getSignOut,
   getSignInFailure,
   getProfile,
-  postAuth
+  postAuth,
+  getUnauthorised
 }

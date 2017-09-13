@@ -1,4 +1,3 @@
-@sign_in
 Feature:
   As part of test development
   I want to be asked to autenticate
