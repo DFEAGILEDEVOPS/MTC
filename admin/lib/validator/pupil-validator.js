@@ -95,7 +95,7 @@ module.exports.validate = async function (req) {
   // We need to run additional tests for the date of birth
   // Use the stict flag when parsing the arguments, otherwise empty inputs could cause the current day / month to be used
   // instead.
-  const dob = moment.utc(req.body['dob-day'] + '/' + req.body['dob-month'] + '/' + req.body['dob-year'], 'DD/MM/YYYY', true)
+  const dob = moment.utc(req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0') + '/' + req.body['dob-year'], 'DD/MM/YYYY', true)
   if (dob.isValid()) {
     if (dob > moment().toDate()) {
       validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
