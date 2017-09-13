@@ -9,16 +9,18 @@ if (formData._id) {
 }
 %>
 <% if (err.hasError()) { %>
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
-
-    <p>You need to fix the errors on this page before continuing. See highlighted errors below</p>
-
-    <ul class="error-summary-list">
-        <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
-        <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
-        <% }); %>
-    </ul>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
+            <p>You need to fix the errors on this page before continuing. See highlighted errors below</p>
+            <ul class="error-summary-list">
+                <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
+                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
 </div>
 <% } %>
 
