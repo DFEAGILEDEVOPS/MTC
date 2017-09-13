@@ -3,12 +3,15 @@
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const { getUpdateTiming, setUpdateTiming, getCheckWindows } = require('../controllers/administrator')
+const config = require('../config')
+const { getAdministration, getUpdateTiming, setUpdateTiming, getCheckWindows } = require('../controllers/administrator')
 
-/* GET manage check forms page. */
+/* Administration page */
+router.get('/home', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
 router.get('/check-windows', isAuthenticated(), (req, res, next) => getCheckWindows(req, res, next))
-router.get('/check-settings', isAuthenticated(), (req, res, next) => getUpdateTiming(req, res, next))
-router.get('/check-settings/:status', isAuthenticated(), (req, res, next) => getUpdateTiming(req, res, next))
-router.post('/check-settings', isAuthenticated(), (req, res, next) => setUpdateTiming(req, res, next))
+router.get('/check-windows/:sortField/:sortDirection', isAuthenticated(), (req, res, next) => getCheckWindows(req, res, next))
+router.get('/check-settings', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => getUpdateTiming(req, res, next))
+router.get('/check-settings/:status', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => getUpdateTiming(req, res, next))
+router.post('/check-settings', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => setUpdateTiming(req, res, next))
 
 module.exports = router

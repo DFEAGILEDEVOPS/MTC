@@ -1,3 +1,4 @@
+const moment = require('moment')
 const Settings = require('../models/setting')
 const CheckWindow = require('../models/check-window')
 const SettingsLog = require('../models/setting-log')
@@ -127,18 +128,70 @@ const getCheckWindows = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   req.breadcrumbs(res.locals.pageTitle)
 
-  let checkWindowList
+  let checkWindows
+  let checkWindowsFormatted = {}
+  let htmlSortDirection = []
+  let arrowSortDirection = []
+
+  const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+
+  let sortingDirection = [
+    {
+      'key': 'checkWindowName',
+      'value': 'desc'
+    },
+    {
+      'key': 'adminStartDate',
+      'value': 'desc'
+    },
+    {
+      'key': 'checkStartDate',
+      'value': 'desc'
+    }
+  ]
+
+  sortingDirection.map((sd, index) => {
+    if (sd.key === sortField) {
+      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'up' : '')
+    } else {
+      htmlSortDirection[sd.key] = 'desc'
+      arrowSortDirection[sd.key] = ''
+    }
+  })
+
+  const formatDate = (startDate, endDate) => {
+    let startYear = ' ' + startDate.format('YYYY')
+    let endYear = ' ' + endDate.format('YYYY')
+    if (startYear === endYear) {
+      startYear = ''
+    }
+    return startDate.format('DD MMM') + startYear + ' to ' + endDate.format('DD MMM YYYY')
+  }
+
   try {
-    checkWindowList = await CheckWindow.getCheckWindows()
-    console.log('checkWindowList', checkWindowList)
+    checkWindows = await CheckWindow.getCheckWindows(sortField, sortDirection)
+    checkWindowsFormatted = checkWindows.map(cw => {
+      const adminStartDateMo = moment(cw.adminStartDate)
+      const checkStartDateMo = moment(cw.checkStartDate)
+      const checkEndDateMo = moment(cw.checkEndDate)
+
+      return {
+        checkWindowName: cw.checkWindowName,
+        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
+        checkDates: formatDate(checkStartDateMo, checkEndDateMo)
+      }
+    })
   } catch (error) {
     return next(error)
   }
 
-  console.log('checkWindows', checkWindows)
   res.render('administrator/check-windows', {
     breadcrumbs: req.breadcrumbs(),
-    checkWindowList: checkWindows
+    checkWindowList: checkWindowsFormatted,
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 

@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const CheckWindow = new Schema({
-  name: {
+  checkWindowName: {
     type: String,
     required: true,
     trim: true
@@ -33,12 +33,14 @@ const CheckWindow = new Schema({
   }
 }, {timestamps: true})
 
-
-CheckWindow.statics.getCheckWindows = function () {
+CheckWindow.statics.getCheckWindows = function (sortBy, direction) {
   return new Promise(async (resolve, reject) => {
     let checkWindows
+    const sort = {}
+    sort[sortBy] = direction
+
     try {
-      checkWindows = await this.find({}).exec()
+      checkWindows = await this.find({}).sort(sort).exec()
     } catch (error) {
       reject(error)
     }
