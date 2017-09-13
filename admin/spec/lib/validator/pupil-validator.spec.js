@@ -3,7 +3,7 @@
 /* global beforeEach, describe, it, expect */
 
 const pupilValidator = require('../../../lib/validator/pupil-validator')
-const expressValidator = require('express-validator')()
+const expressValidator = require('express-validator')(require('../../../lib/validator/express-validator.custom-validators.js'))
 
 describe('pupil validator', function () {
   let req = null
@@ -13,7 +13,7 @@ describe('pupil validator', function () {
       foreName: 'John',
       lastName: 'Smith',
       middleNames: '',
-      upn: '',
+      upn: 'A123456789012345',
       'dob-day': '01',
       'dob-month': '02',
       'dob-year': '2005',
@@ -338,6 +338,31 @@ describe('pupil validator', function () {
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('gender')).toBe(true)
       expect(validationError.get('gender')).toBe('Select a gender')
+      done()
+    })
+  })
+
+  describe('UPN validator:', () => {
+    it('validates the check letter', async (done) => {
+      req.body = getBody()
+      // Example UPN taken from
+      // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+      req.body.upn = 'H801200001001'
+      const validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      expect(validationError.isError('upn')).toBe(false)
+      done()
+    })
+
+    it('provides an error message when the check letter is wrong', async (done) => {
+      req.body = getBody()
+      // Example UPN taken from
+      // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+      req.body.upn = 'Z801200001001'
+      const validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(true)
+      expect(validationError.isError('upn')).toBe(true)
+      expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
       done()
     })
   })

@@ -70,6 +70,13 @@ const pupilValidationSchema = {
       options: [/^(M|F)$/],
       errorMessage: addPupilErrorMessages.genderRequired
     }
+  },
+  'upn': {
+    upnHasCorrectCheckLetter: {
+      errorMessage: addPupilErrorMessages.upnInvalidCheckDigit
+    },
+    notEmpty: true,
+    errorMessage: addPupilErrorMessages.upnRequired
   }
 }
 

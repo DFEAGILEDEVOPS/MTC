@@ -11,7 +11,9 @@ const Pupil = new Schema({
     ref: 'School'
   },
   upn: {
-    type: String
+    type: String,
+    required: true,
+    maxlength: 16
   },
   foreName: {
     type: String,
