@@ -3,6 +3,9 @@ Feature:
   I want to preview the check form i have upload
   So I can ensure i have not made any mistakes
 
+  Background:
+    Given I am logged in
+
   Scenario: Users can view an uploaded check
     Given I have uploaded a check form
     When I choose to preview the check form questions
