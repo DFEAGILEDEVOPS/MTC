@@ -400,6 +400,18 @@ describe('pupil validator', function () {
     })
 
     describe('then UPN validator:', () => {
+      it('detects when the UPN is in invalid format', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'BADCODE'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
+        done()
+      })
+
       it('validates the check letter', async (done) => {
         req.body = getBody()
         // Example UPN taken from
