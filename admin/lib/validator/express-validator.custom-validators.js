@@ -29,8 +29,7 @@ const remainderLookup = {
 function multiplyByCharacterPosition () {
   // Convert all the arguments back into an array as numbers and discard
   // the first position
-  console.log('arguments', [...arguments])
-  const [head, ...tail] = [...arguments].map(f => parseInt(f, 10))
+  const [, ...tail] = [...arguments].map(f => parseInt(f, 10))
   // tail now contains only the digits
   // We need to return an array contain the multiplication product
   // of the digit multiplied by the character position, remembering that
@@ -39,8 +38,6 @@ function multiplyByCharacterPosition () {
   //
   // E.g.                H 8 0 1 2 0 0 0 0 1  0  0  1
   // Character number:   1 2 3 4 5 6 7 8 9 10 11 12 13
-  console.log('head', head)
-  console.log('tail', tail)
   return tail.map((f, idx) => f * (idx + 2))
 }
 
