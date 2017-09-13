@@ -43,10 +43,6 @@ function multiplyByCharacterPosition () {
 
 module.exports = {
   customValidators: {
-    isFoo: (val, options = {}) => {
-      const checkedVal = options.caseInsensitive ? val.toLowerCase() : val
-      return checkedVal === 'foo'
-    },
     upnHasCorrectCheckLetter: (val, options = {}) => {
       if (!(/^[A-Z]\d{12}$/.test(val))) {
         return false
