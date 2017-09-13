@@ -51,6 +51,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_check-forms';
 @import 'elements/_sign-out';
 @import 'elements/_results';
+@import 'elements/_check-windows';
 
 // Global
 
@@ -331,5 +332,19 @@ table.spacious-two-column {
 
 .back-to-top-container {
   margin-top: 4.4em;
+}
+
+.sort {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 12px 6px 0 6px;
+  border-color: $govuk-blue transparent transparent transparent;
+}
+
+.sort.up {
+  border-width: 0 6px 12px 6px;
+  border-color: transparent transparent $govuk-blue transparent;
 }
 

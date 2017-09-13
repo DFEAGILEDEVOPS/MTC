@@ -20,12 +20,12 @@
         <br />
         <div class="panel panel-border-wide">Check will be open for schools on weekdays between 8am to 3:30pm </div>
 
-        <table class="spacious" id="pupilsList" role="listbox" aria-label="List of pupils to take check.">
+        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
                 <tr>
-                    <th scope="col">Check window</th>
-                    <th scope="col">Administration start date</th>
-                    <th scope="col">Check period</th>
+                    <th scope="col"><a href="/administrator/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="sort <%= arrowSortDirection.checkWindowName %>"></span></a></th>
+                    <th scope="col"><a href="/administrator/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="sort <%= arrowSortDirection.adminStartDate %>"></span></a></th>
+                    <th scope="col"><a href="/administrator/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="sort <%= arrowSortDirection.checkStartDate %>"></span></a></th>
                     <th scope="col">&nbsp;</th>
                 </tr>
             </thead>
@@ -33,10 +33,10 @@
                 <% if (checkWindowList.length > 1) { %>
                 <% checkWindowList.forEach( (checkWindow, index) => { %>
                 <tr>
-                    <td><%= checkWindow.checkWindowName %></td>
+                    <td><a href="#"><%= checkWindow.checkWindowName %></a></td>
                     <td><%= checkWindow.adminStartDate %></td>
-                    <td><%= checkWindow.checkStartDate + ' - ' + checkWindow.checkEndDate %></td>
-                    <td>Remove</td>
+                    <td><%= checkWindow.checkDates %></td>
+                    <td><a href="#">Remove</a></td>
                 </tr>
                 <% }) %>
                 <% } %>
