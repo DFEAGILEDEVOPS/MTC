@@ -87,7 +87,8 @@
       "assets/javascripts/modernizr-custom.js",
       "app.js",
       "server.js",
-      "data/migrations/"
+      "data/migrations/",
+      "spec/mocks/*"
     ],
     "all": true,
     "cache": true
