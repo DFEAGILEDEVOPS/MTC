@@ -3,6 +3,9 @@ Feature:
   I want to have a central page as a starting point
   So that I can easily get to where I need to go
 
+  Background:
+    Given I am logged in
+
   Scenario: profile page has a logo
     Given I am on the profile page
     Then I should see a logo
