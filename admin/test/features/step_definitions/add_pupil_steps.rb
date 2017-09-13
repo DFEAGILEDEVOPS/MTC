@@ -26,16 +26,13 @@ When(/^I submit the form without the completing mandatory fields$/) do
 end
 
 Then(/^I should see validation errors$/) do
-  expect(@page.errors.gender.text).to eql 'Select a gender' unless @page == edit_pupil_page
+  expect(@page.error_summary.gender.text).to eql 'Select a gender' unless @page == edit_pupil_page
   expect(@page.error_messages.map {|message| message.text}).to include 'Select a gender' unless @page == edit_pupil_page
-
-  expect(@page.errors.first_name.text).to eql "First name can't be blank"
+  expect(@page.error_summary.first_name.text).to eql "First name can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank"
-
-  expect(@page.errors.last_name.text).to eql "Last name can't be blank"
+  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank"
-
-  expect(@page.errors.year.text).to eql "Date of birth can't be blank"
+  expect(@page.error_summary.year.text).to eql "Date of birth can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "Date of birth can't be blank"
 end
 
@@ -75,7 +72,7 @@ When(/^I decide to go back$/) do
 end
 
 Then(/^I should see a validation error for first name$/) do
-  expect(@page.errors.first_name.text).to eql "First name can't be blank"
+  expect(@page.error_summary.first_name.text).to eql "First name can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank"
 end
 
@@ -95,7 +92,7 @@ When(/^I submit the form with a first name that is less than (\d+) character lon
 end
 
 Then(/^I should see a validation error for last name$/) do
-  expect(@page.errors.last_name.text).to eql "Last name can't be blank"
+  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank"
 end
 
@@ -133,7 +130,7 @@ When(/^I submit the form with a DOB that is in the future$/) do
 end
 
 Then(/^I should see a validation error$/) do
-  expect(@page.errors.year.text).to eql "Date of birth can't be in the future"
+  expect(@page.error_summary.year.text).to eql "Date of birth can't be in the future"
   expect(@page.error_messages.map {|message| message.text}).to include "Date of birth can't be in the future"
 end
 
@@ -207,7 +204,7 @@ When(/^I have submitted valid pupil details without choosing a gender$/) do
 end
 
 Then(/^I should see a error telling me gender is required$/) do
-  expect(add_pupil_page.errors.gender.text).to eql 'Select a gender'
+  expect(add_pupil_page.error_summary.gender.text).to eql 'Select a gender'
   expect(add_pupil_page.error_messages.map {|message| message.text}).to include 'Select a gender'
 end
 
@@ -221,7 +218,7 @@ When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |
 end
 
 Then(/^I should see a validation error for the day of the month$/) do
-  expect(add_pupil_page.errors.day.text).to eql "Please check “Day”"
+  expect(add_pupil_page.error_summary.day.text).to eql "Please check “Day”"
   expect(add_pupil_page.error_messages.map {|message| message.text}).to include "Please check “Day”"
 end
 
@@ -235,7 +232,7 @@ When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
 end
 
 Then(/^I should see a validation error for the month of the year$/) do
-  expect(add_pupil_page.errors.month.text).to eql "Please check “Month”"
+  expect(add_pupil_page.error_summary.month.text).to eql "Please check “Month”"
   expect(add_pupil_page.error_messages.map {|message| message.text}).to include "Please check “Month”"
 end
 
@@ -249,7 +246,7 @@ When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
 end
 
 Then(/^I should see a validation error for the year$/) do
-  expect(add_pupil_page.errors.year.text).to eql "Please check “Year”"
+  expect(add_pupil_page.error_summary.year.text).to eql "Please check “Year”"
   expect(add_pupil_page.error_messages.map {|message| message.text}).to include "Please check “Year”"
 end
 
