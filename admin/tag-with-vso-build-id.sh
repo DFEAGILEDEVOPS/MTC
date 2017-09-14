@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-touch ./public/build.txt
-echo "$BUILD_BUILDNUMBER" > ./public/build.txt
+BUILD_FILE="./public/build.txt"
+touch $BUILD_FILE
+echo "$BUILD_BUILDNUMBER" > "$BUILD_FILE"
+cat $BUILD_FILE
