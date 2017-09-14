@@ -17,17 +17,17 @@ const Pupil = new Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 35
+    maxlength: 128
   },
   lastName: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 35
+    maxlength: 128
   },
   middleNames: {
     type: String,
-    maxlength: 35,
+    maxlength: 128,
     trim: true
   },
   gender: {
@@ -69,6 +69,19 @@ const Pupil = new Schema({
   }
 }, {
   timestamps: true
+})
+
+/**
+ * Validation / sanitisation
+ */
+Pupil.pre('validate', function (next) {
+  // Silently truncate the names to 128 chars
+  for (let prop of ['foreName', 'middleNames', 'lastName']) {
+    if (this[prop] && this[prop].length > 128) {
+      this[prop] = this[prop].substring(0, 128)
+    }
+  }
+  next()
 })
 
 /**
