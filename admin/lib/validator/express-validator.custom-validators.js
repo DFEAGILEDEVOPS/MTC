@@ -231,7 +231,12 @@ function multiplyByCharacterPosition () {
   //
   // E.g.                H 8 0 1 2 0 0 0 0 1  0  0  1
   // Character number:   1 2 3 4 5 6 7 8 9 10 11 12 13
-  return tail.map((f, idx) => f * (idx + 2))
+  return tail.map((f, idx) => {
+    if (!Number.isInteger(f)) {
+      return 0
+    }
+    return f * (idx + 2)
+  })
 }
 
 module.exports = {
@@ -244,7 +249,7 @@ module.exports = {
       const rem = sum % 23
       const expected = remainderLookup[rem]
       if (expected !== val[0]) {
-        console.log(`UPN check letter validation failed: expected [${expected}] but got [${val[0]}]`)
+        console.log(`UPN check letter validation failed for [${val}]: expected [${expected}] but got [${val[0]}]`)
         return false
       }
       return true
@@ -252,6 +257,7 @@ module.exports = {
     upnHasValidLaCode: (val, options = {}) => {
       // The LA Code is characters 2-4
       if (!val && val.length > 4) {
+        console.log(`upnHasValidLaCode: val: [${val}] failed check guard`)
         return false
       }
       const laCode = val.substring(1, 4)
@@ -262,7 +268,20 @@ module.exports = {
       return true
     },
     upnHasValidChars5To12: (val, options = {}) => {
-      if (!(/^[A-Z]\d{12}$/.test(val))) {
+      if (!(/^[A-Z]\d{11}[0-9A-Z]$/.test(val))) {
+        console.log(`UPN upnHasValidChars5To12 for [${val}] failed regex check`)
+        return false
+      }
+      return true
+    },
+    upnHasValidChar13: (val, options = {}) => {
+      if (val.length !== 13) {
+        console.log(`upnHasValidChar13: val: [${val}] failed length check`)
+        return false
+      }
+      const char = val[12] // 13th char
+      if (!/^[A-Z0-9]$/.test(char)) {
+        console.log(`upnHasValidChar13: val: [${val}] failed char 13 check`)
         return false
       }
       return true

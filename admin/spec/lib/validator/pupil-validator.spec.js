@@ -408,7 +408,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
         done()
       })
 
@@ -416,7 +416,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H813E0000012'
+        req.body.upn = 'H813E00000121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -428,7 +428,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H8131-000012'
+        req.body.upn = 'H8131-0000121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -440,7 +440,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H81311 00012'
+        req.body.upn = 'H81311 000121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -452,7 +452,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H813111E0012'
+        req.body.upn = 'H813111E00121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -464,7 +464,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H8131111E012'
+        req.body.upn = 'H8131111E0121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -476,7 +476,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H81311111E12'
+        req.body.upn = 'H81311111E121'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -488,7 +488,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H813111111E2'
+        req.body.upn = 'H813111111E21'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -500,7 +500,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
-        req.body.upn = 'H8131111111E'
+        req.body.upn = 'H8131111111E1'
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
@@ -540,6 +540,16 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toBe('UPN invalid (characters 2-4 not a recognised LA code)')
+        done()
+      })
+
+      it('it validates a temporary UPN', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'G80120000101A'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
         done()
       })
     })
