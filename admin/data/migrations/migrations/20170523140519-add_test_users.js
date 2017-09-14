@@ -8,6 +8,7 @@ const School = require('../../../models/school')
 const Pupil = require('../../../models/pupil')
 const config = require('../config')
 const moment = require('moment')
+const upnService = require('../../../services/upnService')
 
 module.exports = {
   up (db, next) {
@@ -99,11 +100,15 @@ function createPupils (schools) {
   return new Promise(async function (resolve, reject) {
     try {
       const pupils = []
+      const baseUpn = '801200001'
+      let pupilIdx = 1
       const numPupils = [15, 30, 30, 60, 90]
       for (let i = 0; i < schools.length; i++) {
         let school = schools[i]
         let pupilsRequired = numPupils[i]
+
         for (let j = 0; j < pupilsRequired; j++) {
+          let serial = pupilIdx.toString().padStart(3, 0)
           const pupil = new Pupil({
             school: school._id,
             foreName: 'Pupil',
@@ -113,8 +118,10 @@ function createPupils (schools) {
             dob: randomDob(),
             pin: null,
             pinExpired: false,
-            hasAttended: false
+            hasAttended: false,
+            upn: upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
           })
+          pupilIdx += 1
           await pupil.save()
           pupils.push(pupil)
         }
