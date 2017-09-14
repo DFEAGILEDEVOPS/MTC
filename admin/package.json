@@ -13,7 +13,7 @@
     "sasswatch": "gulp watch"
   },
   "engines": {
-    "node": "8.1.2"
+    "node": "8.4.0"
   },
   "dependencies": {
     "az-bunyan": "0.0.5",
