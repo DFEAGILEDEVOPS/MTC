@@ -15,15 +15,8 @@ class EditPupilPage < SitePrism::Page
   element :save_changes, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
   section :phase_banner, PhaseBanner, '.phase-banner'
-
-  section :errors, '.error-summary' do
-    element :heading, '.error-summary-heading'
-    element :dob_required, 'a[href="#dob-year"]'
-    element :gender_required, 'a[href="#gender"]'
-    element :first_name_required, 'a[href="#foreName"]'
-    element :middle_name_required, 'a[href="#middleNames"]'
-    element :last_name_required, 'a[href="#lastName"]'
-  end
+  section :error_summary, ErrorSummary, '.error-summary'
+  elements :error_messages, '.error-message'
 
   def enter_details(hash)
     first_name.set hash.fetch(:first_name, '')
