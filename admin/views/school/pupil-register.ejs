@@ -3,7 +3,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div>
-            <h1 tabindex="0" class="heading-xlarge">Manage pupils</h1>
+            <h1 tabindex="0" class="heading-xlarge">Pupil Register</h1>
             <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>
             <a class="button button-secondary" href=""> Add multiple pupils </a>
         </div>
@@ -23,7 +23,7 @@
                     </th>
                     <th class="numeric" scope="col">
                         <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
-                        Score
+                        Result
                         <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
                         </a>
                     </th>
@@ -36,15 +36,17 @@
                         <a class="bold-small">
                             <%= `${p.lastName}, ${p.foreName}` %>
                         </a>
+                        <% if (p.showDoB) { %>
                         <div class="font-greyed-out font-xsmall">
                             Date of birth: <%= p.dob %>
                         </div>
+                        <% } %>
                     </td>
                     <td class="numeric"><%= p.group %></td>
                     <td class="numeric"><%= p.score %></td>
                 </tr>
-            </tbody>
             <% }) %>
+            </tbody>
         </table>
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>

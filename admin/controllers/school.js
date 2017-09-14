@@ -54,6 +54,14 @@ const getPupils = async (req, res, next) => {
     }
   })).catch((error) => next(error))
   pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
+  pupilsFormatted.map((p, i) => {
+    if (pupilsFormatted[i + 1] === undefined) return
+    if (pupilsFormatted[i].foreName === pupilsFormatted[i + 1].foreName &&
+      pupilsFormatted[i].lastName === pupilsFormatted[i + 1].lastName) {
+      pupilsFormatted[i].showDoB = true
+      pupilsFormatted[i + 1].showDoB = true
+    }
+  })
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/pupil-register', {
