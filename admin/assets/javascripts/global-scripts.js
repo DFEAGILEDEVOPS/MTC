@@ -11,8 +11,8 @@ $(function () {
 
   function disableCheckAll (sel, e) {
     if ($(sel)) {
-      const lengthAll = $(sel + ' > tbody div > input:checkbox').length
-      const lengthChecked = $(sel + ' > tbody div > input:checkbox:disabled').length
+      var lengthAll = $(sel + ' > tbody div > input:checkbox').length
+      var lengthChecked = $(sel + ' > tbody div > input:checkbox:disabled').length
 
       if (lengthAll === lengthChecked) {
         $('#tickAllCheckboxes').prop('disabled', true)
