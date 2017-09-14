@@ -43,7 +43,8 @@ When(/^I submit the form without completing the optional fields$/) do
                           female: true,
                           day: '18',
                           month: '02',
-                          year: '1987'
+                          year: '1987',
+                          upn: 'H801200001001' # example from Guidance docq
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -135,7 +136,7 @@ Then(/^I should see a validation error$/) do
 end
 
 When(/^I have submitted valid pupil details$/) do
-  @upn = rand(2342344234)
+  @upn = 'H801200001001' # example from Guidance doc
   @details_hash = {first_name: 'First', middle_name: 'middle', last_name: 'last', upn: @upn, female: true, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
