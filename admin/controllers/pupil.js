@@ -129,7 +129,7 @@ const getEditPupilById = async (req, res, next) => {
   }
 }
 
-const getEditPupil = async (req, res, next) => {
+const postEditPupil = async (req, res, next) => {
   let pupil
   let school
   let validationError
@@ -253,7 +253,7 @@ module.exports = {
   getAddPupil,
   postAddPupil,
   getEditPupilById,
-  getEditPupil,
+  postEditPupil,
   getManagePupils,
   getPrintPupils
 }
