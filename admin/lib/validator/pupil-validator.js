@@ -76,6 +76,9 @@ const pupilValidationSchema = {
     upnHasCorrectCheckLetter: {
       errorMessage: addPupilErrorMessages.upnInvalidCheckDigit
     },
+    upnHasValidLaCode: {
+      errorMessage: addPupilErrorMessages.upnInvalidLaCode
+    },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.upnRequired
   }

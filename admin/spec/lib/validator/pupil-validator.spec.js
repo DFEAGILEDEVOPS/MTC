@@ -408,7 +408,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 2-4 not a recognised LA code)')
         done()
       })
 
@@ -432,6 +432,18 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
         expect(validationError.get('upn')).toBe('UPN invalid (wrong check letter at character 1)')
+        done()
+      })
+
+      it('provides an error message when the LA code is wrong', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'R900400001001'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 2-4 not a recognised LA code)')
         done()
       })
     })
