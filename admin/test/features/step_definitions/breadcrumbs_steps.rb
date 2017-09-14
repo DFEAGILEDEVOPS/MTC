@@ -5,3 +5,11 @@ end
 And(/^I click the Home link on breadcrumb$/) do
   profile_page.home.click
 end
+
+Then(/^I should be taken to the admin page$/) do
+  expect(admin_page).to be_displayed
+end
+
+When(/^I am on the manage check windows page$/) do
+  admin_page.manage_check_windows.click
+end
