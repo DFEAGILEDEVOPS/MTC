@@ -44,7 +44,7 @@ When(/^I submit the form without completing the optional fields$/) do
                           day: '18',
                           month: '02',
                           year: '1987',
-                          upn: 'H801200001001' # example from Guidance docq
+                          upn: UpnGenerator.test
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -82,7 +82,7 @@ When(/^I submit the form with a first name that is less than (\d+) character lon
                           first_name: 'a' * (number.to_i - 1),
                           middle_name: 'middle',
                           last_name: 'last',
-                          upn: '123',
+                          upn: UpnGenerator.test,
                           female: true,
                           day: '18',
                           month: '02',
@@ -102,7 +102,7 @@ When(/^I submit the form with a last name that is less than (\d+) character long
                           first_name: 'First',
                           middle_name: 'middle',
                           last_name: 'l' * (number.to_i - 1),
-                          upn: '123',
+                          upn: UpnGenerator.test,
                           female: true,
                           day: '18',
                           month: '02',
@@ -120,7 +120,7 @@ When(/^I submit the form with a DOB that is in the future$/) do
                           first_name: 'First',
                           middle_name: 'middle',
                           last_name: 'last',
-                          upn: '123',
+                          upn: UpnGenerator.test,
                           female: true,
                           day: day,
                           month: month,
@@ -136,7 +136,7 @@ Then(/^I should see a validation error$/) do
 end
 
 When(/^I have submitted valid pupil details$/) do
-  @upn = 'H801200001001' # example from Guidance doc
+  @upn = UpnGenerator.test
   @details_hash = {first_name: 'First', middle_name: 'middle', last_name: 'last', upn: @upn, female: true, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -159,7 +159,7 @@ Then(/^the pupil details should be stored$/) do
 end
 
 When(/^I have submitted invalid pupil details$/) do
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', upn: @upn, female: true, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -171,7 +171,7 @@ Then(/^the pupil details should not be stored$/) do
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -196,7 +196,7 @@ Then(/^I should see a link to more details in the what is a upn section$/) do
 end
 
 When(/^I have submitted valid pupil details without choosing a gender$/) do
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valud', upn: @upn, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -210,7 +210,7 @@ Then(/^I should see a error telling me gender is required$/) do
 end
 
 When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |days, _x|
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -224,7 +224,7 @@ Then(/^I should see a validation error for the day of the month$/) do
 end
 
 When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: month, year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -238,7 +238,7 @@ Then(/^I should see a validation error for the month of the year$/) do
 end
 
 When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: year}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -252,7 +252,7 @@ Then(/^I should see a validation error for the year$/) do
 end
 
 When(/^I attempt to enter names that are more than (\d+) characters long$/) do |number|
-  @upn = rand(2342344234)
+  @upn = UpnGenerator.test
   @long_name = ('F' * (number.to_i + 1))
   @details_hash = {first_name: @long_name, middle_name: @long_name, last_name: @long_name, female: true, upn: @upn, day: '10', month: '02', year: '1990'}
   @page.enter_details(@details_hash)
