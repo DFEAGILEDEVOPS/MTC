@@ -12,7 +12,9 @@ const { home,
   getSignInFailure,
   getProfile,
   postAuth,
-  getUnauthorised} = require('../controllers/authentication')
+  getUnauthorised } = require('../controllers/authentication')
+const fs = require('fs')
+const path = require('path')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
@@ -25,7 +27,7 @@ router.post('/sign-in', (req, res, next) => {
     return res.status(404).send('Not found')
   }
   next()
-}, passport.authenticate('local', {failureRedirect: '/sign-in-failure'}),
+}, passport.authenticate('local', { failureRedirect: '/sign-in-failure' }),
   (req, res) => postSignIn(req, res)
 )
 /* Sign out */
@@ -39,7 +41,60 @@ router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
 /* Administration page */
 router.get('/administrator', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
 /* Health check */
-router.get('/ping', (req, res) => res.status(200).send('OK'))
+async function getPing (req, res) {
+  // get build number from /build.txt
+  // get git commit from /commit.txt
+  let buildNumber = 'NOT FOUND'
+  let commitId = 'NOT FOUND'
+  try {
+    buildNumber = await getBuildNumber()
+  } catch (error) {
+
+  }
+
+  try {
+    commitId = await getCommitId()
+  } catch (error) {
+
+  }
+
+  res.setHeader('Content-Type', 'application/json')
+  let obj = {
+    'Build': buildNumber,
+    'Commit': commitId,
+    'CurrentServerTime': Date.now()
+  }
+  return res.status(200).send(obj)
+}
+
+function getCommitId () {
+  return new Promise(function (resolve, reject) {
+    var commitFilePath = path.join(__dirname, '..', 'public', 'commit.txt')
+    fs.readFile(commitFilePath, 'utf8', function (err, data) {
+      if (!err) {
+        resolve(data)
+      } else {
+        reject(new Error('NOT FOUND'))
+      }
+    })
+  })
+}
+
+function getBuildNumber () {
+  // Promise wrapper function
+  return new Promise(function (resolve, reject) {
+    var buildFilePath = path.join(__dirname, '..', 'public', 'build.txt')
+    fs.readFile(buildFilePath, 'utf8', function (err, data) {
+      if (!err) {
+        resolve(data)
+      } else {
+        reject(new Error('NOT FOUND'))
+      }
+    })
+  })
+}
+
+router.get('/ping', (req, res) => getPing(req, res))
 /* NCA Tools Authentication Endpoint */
 router.post('/auth',
   function (req, res, next) {
