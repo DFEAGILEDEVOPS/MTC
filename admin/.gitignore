@@ -46,6 +46,7 @@ public/javascripts/app.js
 
 #Ignore cucumber screenshots
 test/screenshots
+test/screenshot*
 test/reports
 
 #ignore test json files
