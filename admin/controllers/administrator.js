@@ -139,24 +139,24 @@ const getCheckWindows = async (req, res, next) => {
   let sortingDirection = [
     {
       'key': 'checkWindowName',
-      'value': 'desc'
+      'value': 'asc'
     },
     {
       'key': 'adminStartDate',
-      'value': 'desc'
+      'value': 'asc'
     },
     {
       'key': 'checkStartDate',
-      'value': 'desc'
+      'value': 'asc'
     }
   ]
 
   sortingDirection.map((sd, index) => {
     if (sd.key === sortField) {
       htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'up' : '')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort ')
     } else {
-      htmlSortDirection[sd.key] = 'desc'
+      htmlSortDirection[sd.key] = 'asc'
       arrowSortDirection[sd.key] = ''
     }
   })
