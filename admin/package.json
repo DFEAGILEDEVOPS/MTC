@@ -7,8 +7,8 @@
     "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
     "start": "node ./server.js",
     "postinstall": "gulp build",
-    "test": "nyc -r html jasmine-node spec --verbose --color --captureExceptions --forceexit",
-    "coverage": "nyc -r text -r html jasmine-node spec --verbose --color --captureExceptions --forceexit",
+    "test": "nyc -r html ./run-jasmine.js",
+    "coverage": "nyc -r text -r html ./run-jasmine.js",
     "startn": "nodemon ./server.js",
     "sasswatch": "gulp watch"
   },
@@ -61,7 +61,8 @@
     "xregexp": "^3.2.0"
   },
   "devDependencies": {
-    "jasmine-node": "^1.14.5",
+    "jasmine": "^2.8.0",
+    "jasmine-console-reporter": "^2.0.1",
     "jsdoc": "^3.5.5",
     "levenshtein": "^1.0.5",
     "node-mocks-http": "^1.6.4",
