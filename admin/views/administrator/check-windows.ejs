@@ -1,0 +1,64 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge" tabindex="0">Manage check windows</h1>
+
+        <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
+
+        <p>
+            <input class="button" type="submit" value="Create new check window">
+        </p>
+
+        <br />
+        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm </div>
+
+        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+            <thead>
+            <tr>
+                <th scope="col"><a href="/administrator/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
+                <th scope="col"><a href="/administrator/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="<%= arrowSortDirection.adminStartDate %>"><span>Sort by admin start date <%= htmlSortDirection.adminStartDate %></span></span></a></th>
+                <th scope="col"><a href="/administrator/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="<%= arrowSortDirection.checkStartDate %>"><span>Sort by check date<%= htmlSortDirection.checkStartDate %></span></span></a></th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if (checkWindowList.length > 1) { %>
+            <% checkWindowList.forEach( (checkWindow, index) => { %>
+            <tr>
+                <td><a href="#"><%= checkWindow.checkWindowName %></a></td>
+                <td><%= checkWindow.adminStartDate %></td>
+                <td><%= checkWindow.checkDates %></td>
+                <td><a href="#">Remove</a></td>
+            </tr>
+            <% }) %>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
+        <h3 class="heading-medium" tabindex="0">Before you start</h3>
+        <ul class="list">
+            <li>
+                <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+            </li>
+            <li>
+                <a href="#">Adjust questions timings</a>
+            </li>
+        </ul>
+        <h3 class="heading-medium" tabindex="0">After check</h3>
+        <ul class="list">
+            <li>
+                <a href="#">Progress report</a>
+            </li>
+        </ul>
+    </div>
+</div>
