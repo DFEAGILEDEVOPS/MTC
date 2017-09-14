@@ -33,7 +33,7 @@
             <% pupils.forEach((p) => { %>
                 <tr>
                     <td>
-                        <a class="bold-small">
+                        <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                             <%= `${p.lastName}, ${p.foreName}` %>
                         </a>
                         <% if (p.showDoB) { %>

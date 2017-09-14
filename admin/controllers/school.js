@@ -39,13 +39,14 @@ const getPupils = async (req, res, next) => {
   res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
   const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const { foreName, lastName } = p
+    const { foreName, lastName, _id } = p
     const dob = moment(p.dob).format('DD/MM/YYYY')
     const answers = await fetchPupilAnswers(p._id)
     const { score } = fetchScoreDetails(answers)
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
     return {
+      _id,
       foreName,
       lastName,
       dob,
