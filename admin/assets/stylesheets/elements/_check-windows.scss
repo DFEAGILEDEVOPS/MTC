@@ -4,10 +4,15 @@ table.spacious {
 
     a {
       text-decoration: none;
-    }
 
-    .sort {
-      margin-left: 7px;
+      span {
+        margin-left: 7px;
+
+        span {
+          font-size: 12px;
+          display: none;
+        }
+      }
     }
   }
 }
