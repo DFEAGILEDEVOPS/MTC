@@ -9,20 +9,20 @@ if (formData._id) {
 }
 %>
 <% if (err.hasError()) { %>
-<div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-    <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
-
-    <p>Look at the names, date of birth and other details. Maximum length fields are 35 characters.</p>
-
-    <ul class="error-summary-list">
-        <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
-        <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
-        <% }); %>
-    </ul>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the pupil’s details</h1>
+            <p>You need to fix the errors on this page before continuing. See highlighted errors below</p>
+            <ul class="error-summary-list">
+                <% err.getUniqueFields(['foreName', 'middleNames', 'lastName', 'upn', 'dob-day', 'dob-month', 'dob-year', 'gender']).map(f => { %>
+                <li><a href="#<%= f %>"><%= err.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
 </div>
 <% } %>
-
-<h1 class="heading-xlarge" tabindex="0"><%= heading %></h1>
 
 <form action="<%= createOrSave %>" method="post" novalidate>
     <input type="hidden" name="school" value="<%= school._id %>"/>
@@ -38,21 +38,20 @@ if (formData._id) {
         </label>
         <input type="text"
                id="foreName"
-               maxlength="35"
                class="form-control <%= err.isError('foreName') ? 'form-control-error' : '' %>"
                name="foreName"
                value="<%= formData['foreName'] %>"/>
     </div>
 
     <div class="form-group <%= err.isError('middleNames') ? 'form-group-error' : '' %>">
-        <label class="form-label-bold" for="middleNames">Middle name(s)<span class="label-optional">(optional)</span>
+        <label class="form-label-bold" for="middleNames">Middle name(s)<span
+                    class="label-optional">(optional)</span>
             <% if (err.isError('middleNames')) { %>
             <span class="error-message"><%= err.get('middleNames') %></span>
             <% } %>
         </label>
         <input type="text"
                id="middleNames"
-               maxlength="35"
                class="form-control <%= err.isError('middleNames') ? 'form-control-error' : '' %>"
                name="middleNames"
                value="<%= formData['middleNames'] %>"/>
@@ -66,7 +65,6 @@ if (formData._id) {
         </label>
         <input type="text"
                id="lastName"
-               maxlength="35"
                class="form-control <%= err.isError('lastName') ? 'form-control-error' : '' %>"
                name="lastName"
                value="<%= formData['lastName'] %>"/>
