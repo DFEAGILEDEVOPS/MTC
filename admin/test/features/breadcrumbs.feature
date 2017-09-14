@@ -25,8 +25,14 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
+  Scenario: Verify breadcrumb on Pupil Register page
+    When I click Pupil Register link
+    Then I should see the breadcrumb as "Home > Pupil register"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
+
   Scenario: Verify breadcrumb on edit pupil page
-    When I click Manage pupil link
+    When I click Pupil Register link
     And I choose to edit the first pupil in the list
     Then I should see the breadcrumb as "Home > Edit pupil data"
     And I click the Home link on breadcrumb
