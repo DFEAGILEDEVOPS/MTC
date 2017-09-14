@@ -170,7 +170,6 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
   // make the flash messages available in the locals for use in view templates
   res.locals.messages = req.flash()
-  console.log(res.locals.messages)
   next()
 })
 
