@@ -14,7 +14,7 @@ export class QuestionService {
   protected config: Config;
 
   constructor(protected storageService: StorageService) {
-    this.currentQuestion = 1;
+    this.currentQuestion = 0;
   }
 
   public getNumberOfQuestions(): number {

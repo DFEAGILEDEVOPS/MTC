@@ -9,7 +9,18 @@ const { verify } = require('../services/jwt-service')
  */
 
 const postCheck = async (req, res) => {
-  const { answers, audit, inputs, access_token } = req.body
+  const {
+    answers,
+    inputs,
+    session,
+    audit,
+    questions,
+    config,
+    pupil,
+    school,
+    access_token,
+    feedback
+    } = req.body
   if (!answers || !audit || !inputs) return res.status(400).json({error: 'Bad Request'})
   // User verification
   try {
@@ -21,8 +32,15 @@ const postCheck = async (req, res) => {
   const completedData = new CompletedChecks({
     data: {
       answers,
+      inputs,
+      session,
       audit,
-      inputs
+      questions,
+      config,
+      pupil,
+      school,
+      access_token,
+      feedback
     }
   })
   try {
