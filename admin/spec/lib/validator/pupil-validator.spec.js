@@ -66,6 +66,14 @@ describe('pupil validator', function () {
       done()
     })
 
+    it('allows spaces in and around the name', async function (done) {
+      req.body = getBody()
+      req.body.foreName = ' Pup il '
+      let validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      done()
+    })
+
     it('does not allow punctuation in the forename', async function (done) {
       req.body = getBody()
       for (let char of notAllowed()) {
@@ -152,6 +160,14 @@ describe('pupil validator', function () {
     it('allows latin chars, hyphen and apostrophe', async (done) => {
       req.body = getBody()
       req.body.foreName = 'Rén-\'e'
+      let validationError = await pupilValidator.validate(req)
+      expect(validationError.hasError()).toBe(false)
+      done()
+    })
+
+    it('allows spaces in and around the name', async function (done) {
+      req.body = getBody()
+      req.body.lastName = ' Pup il '
       let validationError = await pupilValidator.validate(req)
       expect(validationError.hasError()).toBe(false)
       done()

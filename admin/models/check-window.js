@@ -4,23 +4,49 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const CheckWindow = new Schema({
-  name: {type: String, required: true, trim: true},
-  startDate: {type: Date, required: true},
-  endDate: {
-    type: Date,
+  checkWindowName: {
+    type: String,
     required: true,
-    validate: function (date) { return date > this.startDate }
+    trim: true
   },
-  registrationStartDate: {type: Date, required: true},
-  registrationEndDate: {
+  adminStartDate: {
     type: Date,
     required: true,
-    validate: function (date) { return date > this.registrationStartDate }
+    validate: function (date) { return date >= Date.now }
+  },
+  checkStartDate: {
+    type: Date,
+    required: true,
+    validate: function (date) { return date >= Date.now }
+  },
+  checkEndDate: {
+    type: Date,
+    required: true,
+    validate: function (date) { return date > this.checkStartDate }
   },
   forms: {
-    type: [{ type: Number, ref: 'CheckForm', required: true }]
+    type: [{
+      type: Number,
+      ref: 'CheckForm',
+      required: true
+    }]
   }
 }, {timestamps: true})
+
+CheckWindow.statics.getCheckWindows = function (sortBy, direction) {
+  return new Promise(async (resolve, reject) => {
+    let checkWindows
+    const sort = {}
+    sort[sortBy] = direction
+
+    try {
+      checkWindows = await this.find({}).sort(sort).exec()
+    } catch (error) {
+      reject(error)
+    }
+    resolve(checkWindows)
+  })
+}
 
 /**
  * Retrieve all (active) CheckWindows and return the list

@@ -29,6 +29,10 @@ Feature:
     When I attempt to type letters in the DOB fields
     Then they should not be entered
 
+  Scenario: Names can include a space
+    When I submit the form with the name fields set as Mary Jane
+    Then the pupil details should be stored
+
   Scenario: Users can navigate back to the profile page
     When I decide to go back
     Then I should be taken to the Manage a pupil page
