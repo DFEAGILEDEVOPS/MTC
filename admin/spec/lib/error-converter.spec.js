@@ -64,7 +64,7 @@ describe('ErrorConverter class : fromMongoose()', function () {
     expect(newValidationError instanceof ValidationError).toBe(true)
     expect(newValidationError !== validationError).toBe(true)
     expect(newValidationError.isError('dob')).toBe(true)
-    expect(newValidationError.get('dob')).toBe(pupilErrorMessages.dob)
+    expect(newValidationError.get('dob')).toBe('Path `dob` is required.')
     expect(newValidationError.isError('gender')).toBe(true)
     expect(newValidationError.isError('school')).toBe(true)
   })

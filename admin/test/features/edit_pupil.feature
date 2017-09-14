@@ -33,21 +33,13 @@ Feature:
     When I decide to go back
     Then I should be taken to the Manage a pupil page
 
-  Scenario: First names can only be a max of 35 characters long
-    When I attempt to enter a first name that is more than 35 characters long
-    Then I should see only 35 characters are entered for first name
+  Scenario: Names can only be a max of 128 characters long
+    When I attempt to enter names that are more than 128 characters long
+    Then I should see only 128 characters are saved
 
   Scenario: First names should contain at least 1 character long
     When I submit the form with a first name that is less than 1 character long
     Then I should see a validation error for first name
-
-  Scenario: Middle names can only be a max of 35 characters long
-    When I attempt to enter a middle name that is more than 35 characters long
-    Then I should see only 35 characters are entered for middle name
-
-  Scenario: Last names can only be a max of 35 characters long
-    When I attempt to enter a last name that is more than 35 characters long
-    Then I should see only 35 characters are entered for last name
 
   Scenario: Last names should contain at least 1 character long
     When I submit the form with a last name that is less than 1 character long
@@ -108,3 +100,35 @@ Feature:
       | óòôõöøōœúùûüūŵýÿŷ  |
       | ÞÐÇÑẞ              |
       | þçðñß              |
+
+  Scenario: DOB's can not be an invalid day
+    When I submit the form with a DOB that has 32 days in a month
+    Then I should see a validation error for the day of the month
+
+  Scenario: DOB's can not have a 3 digit day
+    When I submit the form with a DOB that has 320 days in a month
+    Then I should see a validation error for the day of the month
+
+  Scenario: DOB's can not be an invalid month
+    When I submit the form with a DOB that has 32 as the month
+    Then I should see a validation error for the month of the year
+
+  Scenario: DOB's can not have a 3 digit month
+    When I submit the form with a DOB that has 320 as the month
+    Then I should see a validation error for the month of the year
+
+  Scenario: DOB's can not be an invalid year
+    When I submit the form with a DOB that has 1000 years
+    Then I should see a validation error for the year
+
+  Scenario: DOB's can not have a 5 digit year
+    When I submit the form with a DOB that has 20070 years
+    Then I should see a validation error for the year
+
+  Scenario: DOB's can have a single digit day
+    When I submit the form with a DOB that has 3 days in a month
+    Then I should be taken to the Manage a pupil page
+
+  Scenario: DOB's can have a single digit month
+    When I submit the form with a DOB that has 1 as the month
+    Then I should be taken to the Manage a pupil page
