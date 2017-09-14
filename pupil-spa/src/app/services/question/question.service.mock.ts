@@ -6,16 +6,16 @@ export class QuestionServiceMock {
   constructor() {
   }
 
-  getCurrentQuestionNumber() {
-    return 1;
-  }
-
   getNumberOfQuestions() {
     return 10;
   }
 
   getQuestion() {
     return new Question(3, 4, 1);
+  }
+
+  getNextQuestionNumber() {
+    return 2;
   }
 
   getConfig() {

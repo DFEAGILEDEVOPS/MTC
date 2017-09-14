@@ -1,4 +1,4 @@
-export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckComplete' |
+export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckCompleteRendered' |
 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered';
 
 export abstract class AuditEntry {
@@ -45,8 +45,8 @@ export class PauseRendered extends AuditEntry {
   }
 }
 
-export class CheckComplete extends AuditEntry {
+export class CheckCompleteRendered extends AuditEntry {
   constructor(data?: any) {
-    super('CheckComplete', new Date(), data);
+    super('CheckCompleteRendered', new Date(), data);
   }
 }

@@ -7,7 +7,6 @@ export class StorageServiceMock {
   }
 
   getItem(key: StorageKey): any {
-    return [];
   }
 
   removeItem(key: StorageKey): void {

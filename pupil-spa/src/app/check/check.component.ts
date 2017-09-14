@@ -4,9 +4,6 @@ import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { AnswerService } from '../services/answer/answer.service';
 import { SubmissionService } from '../services/submission/submission.service';
-import { RegisterInputService} from '../services/register-input/registerInput.service';
-import { AuditService } from '../services/audit/audit.service';
-import { CheckComplete } from '../services/audit/auditEntry';
 import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
 
@@ -29,9 +26,7 @@ export class CheckComponent implements OnInit {
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
               private submissionService: SubmissionService,
-              private warmupQuestionService: WarmupQuestionService,
-              private registerInputService: RegisterInputService,
-              private auditService: AuditService) {
+              private warmupQuestionService: WarmupQuestionService) {
   }
 
   /**
@@ -135,16 +130,12 @@ export class CheckComponent implements OnInit {
         // Show the question screen
         this.isWarmUp = false;
         const matches = /^Q(\d+)$/.exec(stateDesc);
-        this.registerInputService.flush();
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
-        this.registerInputService.initialise();
         this.viewState = 'question';
         break;
       }
       case(/^complete$/).test(stateDesc):
         // Show the check complete screen
-        this.registerInputService.flush();
-        this.auditService.addEntry(new CheckComplete());
         this.submissionService.submitData().catch(error => new Error(error));
         this.isWarmUp = false;
         this.viewState = 'complete';
