@@ -1,4 +1,6 @@
+const moment = require('moment')
 const Settings = require('../models/setting')
+const CheckWindow = require('../models/check-window')
 const SettingsLog = require('../models/setting-log')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
@@ -115,8 +117,87 @@ const setUpdateTiming = async (req, res, next) => {
   return res.redirect('/administrator/check-settings/updated')
 }
 
+/**
+ * View manage check windows.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getCheckWindows = async (req, res, next) => {
+  res.locals.pageTitle = 'Check windows'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  let checkWindows
+  let checkWindowsFormatted = {}
+  let htmlSortDirection = []
+  let arrowSortDirection = []
+
+  const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+
+  let sortingDirection = [
+    {
+      'key': 'checkWindowName',
+      'value': 'asc'
+    },
+    {
+      'key': 'adminStartDate',
+      'value': 'asc'
+    },
+    {
+      'key': 'checkStartDate',
+      'value': 'asc'
+    }
+  ]
+
+  sortingDirection.map((sd, index) => {
+    if (sd.key === sortField) {
+      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort ')
+    } else {
+      htmlSortDirection[sd.key] = 'asc'
+      arrowSortDirection[sd.key] = ''
+    }
+  })
+
+  const formatDate = (startDate, endDate) => {
+    let startYear = ' ' + startDate.format('YYYY')
+    let endYear = ' ' + endDate.format('YYYY')
+    if (startYear === endYear) {
+      startYear = ''
+    }
+    return startDate.format('DD MMM') + startYear + ' to ' + endDate.format('DD MMM YYYY')
+  }
+
+  try {
+    checkWindows = await CheckWindow.getCheckWindows(sortField, sortDirection)
+    checkWindowsFormatted = checkWindows.map(cw => {
+      const adminStartDateMo = moment(cw.adminStartDate)
+      const checkStartDateMo = moment(cw.checkStartDate)
+      const checkEndDateMo = moment(cw.checkEndDate)
+
+      return {
+        checkWindowName: cw.checkWindowName,
+        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
+        checkDates: formatDate(checkStartDateMo, checkEndDateMo)
+      }
+    })
+  } catch (error) {
+    return next(error)
+  }
+
+  res.render('administrator/check-windows', {
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowList: checkWindowsFormatted,
+    htmlSortDirection,
+    arrowSortDirection
+  })
+}
+
 module.exports = {
   getAdministration,
   getUpdateTiming,
-  setUpdateTiming
+  setUpdateTiming,
+  getCheckWindows
 }
