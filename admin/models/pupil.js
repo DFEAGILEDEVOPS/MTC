@@ -13,7 +13,7 @@ const Pupil = new Schema({
   upn: {
     type: String,
     required: true,
-    maxlength: 16
+    maxlength: 13
   },
   foreName: {
     type: String,
