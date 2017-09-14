@@ -95,7 +95,7 @@ const postAddPupil = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  res.redirect('/school/manage-pupils')
+  res.redirect('/school/pupil-register/lastName/true')
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -200,7 +200,7 @@ const getEditPupil = async (req, res, next) => {
 
   // pupil saved
   // TODO: add flash message
-  res.redirect('/school/manage-pupils')
+  res.redirect('/school/pupil-register/lastName/true')
 }
 
 const getManagePupils = async (req, res) => {
