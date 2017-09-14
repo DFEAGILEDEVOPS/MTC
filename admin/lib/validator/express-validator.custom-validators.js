@@ -5,7 +5,7 @@ const upnService = require('../../services/upnService')
 module.exports = {
   customValidators: {
     upnHasCorrectCheckLetter: (val, options = {}) => {
-      const expected = upnService.calculateCheckLetter(val)
+      const expected = upnService.calculateCheckLetter(val.substring(1))
       if (expected !== val[0]) {
         console.log(`UPN check letter validation failed for [${val}]: expected [${expected}] but got [${val[0]}]`)
         return false

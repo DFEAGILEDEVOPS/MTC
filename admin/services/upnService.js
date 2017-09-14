@@ -222,13 +222,13 @@ const validLaCodes = new Set([
 ])
 
 /**
- * Takes any number of args as input
+ * Takes any number of args as input.  Do not supply char 1 of the UPN code
  * @return {Array}
  */
 function multiplyByCharacterPosition () {
   // Convert all the arguments back into an array as numbers and discard
   // the first position
-  const [, ...tail] = [...arguments].map(f => parseInt(f, 10))
+  const tail = [...arguments].map(f => parseInt(f, 10))
   // tail now contains only the digits
   // We need to return an array contain the multiplication product
   // of the digit multiplied by the character position, remembering that
@@ -249,7 +249,7 @@ const upnService = {
 
   /**
    *
-   * @param {String} val - Entire UPN string
+   * @param {String} val - Entire UPN string minus the Check Code at the start
    * @return {*}
    */
   calculateCheckLetter: (val) => {
