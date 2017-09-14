@@ -1,4 +1,5 @@
 Given(/^I want to edit a previously added pupil$/) do
+  step 'I am logged in'
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{pupil_name}"
@@ -37,8 +38,11 @@ Then(/^I should see validation errors when i submit with the following names$/) 
     @page.add_pupil.click unless @page == edit_pupil_page
     @page.save_changes.click if @page == edit_pupil_page
     @time_stored = Time.now.utc.strftime("%Y-%m-%d %H")
-    expect(@page.errors).to have_first_name_required
-    expect(@page.errors).to have_middle_name_required
-    expect(@page.errors).to have_last_name_required
+    expect(@page.error_summary.first_name.text).to eql 'Check the first name does not contain special characters'
+    expect(@page.error_messages.map{|message| message.text}).to include 'Check the first name does not contain special characters'
+    expect(@page.error_summary.middle_name.text).to eql 'Check the middle name does not contain special characters'
+    expect(@page.error_messages.map{|message| message.text}).to include 'Check the middle name does not contain special characters'
+    expect(@page.error_summary.last_name.text).to eql 'Check last name for special characters'
+    expect(@page.error_messages.map{|message| message.text}).to include 'Check last name for special characters'
   end
 end

@@ -1,0 +1,8 @@
+<% if (isAuthenticated) { %>
+<div id="sign-out">
+    <a href="/sign-out">Sign out</a>
+</div>
+<% if (typeof user != 'undefined') { %>
+<div class="signed-in-as">Signed in as <%= user.UserName %></div>
+<% } %>
+<% } %>

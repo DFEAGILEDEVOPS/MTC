@@ -6,8 +6,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
-  styleUrls: ['./question.component.css'],
-  providers: [ RegisterInputService ]
+  styleUrls: ['./question.component.css']
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
@@ -195,7 +194,12 @@ export class QuestionComponent implements OnInit, AfterViewInit {
       clearInterval(this.countdownInterval);
     }
     // console.log(`submitting answer ${this.answer}`);
-    this.registerInputService.storeEntry('enter', 'click');
+
+    // In case the user clicked on virtual key 'Enter' store the enter
+    const lastEntry = this.registerInputService.getLastEntry();
+    if (lastEntry.input === 'left click' && lastEntry.eventType === 'mousedown') {
+      this.registerInputService.storeEntry('enter', 'click');
+    }
     this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;

@@ -9,7 +9,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
 
 const getAddPupil = async (req, res, next) => {
-  res.locals.pageTitle = 'Add pupil'
+  res.locals.pageTitle = 'Add single pupil'
   // school id from session
   const schoolId = req.user.School
   let school
@@ -47,7 +47,7 @@ const postAddPupil = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  let validationError = await pupilValidator.validate(req)
+  const validationError = await pupilValidator.validate(req)
   const pupil = new Pupil({
     school: school._id,
     upn: req.body.upn,
@@ -70,7 +70,7 @@ const postAddPupil = async (req, res, next) => {
       // Mongoose error
       // At this point we have validated the schema and may or may not have anything in validationError
       // So = combine all validation errors into one
-      let combinedValidationError = errorConverter.fromMongoose(error, addPupilErrorMessages, validationError)
+      const combinedValidationError = errorConverter.fromMongoose(error, addPupilErrorMessages, validationError)
       // error fixup: if the mongoose schema bails out on the dob field - we should make sure we have some
       // actual html fields that have an error.  If we do, we can ditch the mongoose error as being superfluous.
       if (combinedValidationError.isError('dob') && (combinedValidationError.isError('dob-day') || combinedValidationError.isError('dob-month') || combinedValidationError.isError('dob-year'))) {

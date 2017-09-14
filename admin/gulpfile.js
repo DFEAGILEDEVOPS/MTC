@@ -33,9 +33,7 @@ gulp.task('bundleJs', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
     .pipe(uglify({
-      compress: {screw_ie8: false},
-      mangle: {screw_ie8: false},
-      output: {screw_ie8: false}
+      ie8: true
     }).on('error', function (e) {
       console.log(e)
     }))

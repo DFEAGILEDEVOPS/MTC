@@ -113,11 +113,11 @@ In scripts, have the following:
 
 `"startn": "nodemon ./server.js",`
 
-`"watch-jscss": "gulp watch"`
+`"sasswatch": "gulp watch"`
 
 On the console:
 
-`npm-run-all --parallel watch-jscss startn`
+`npm-run-all --parallel sasswatch startn`
 
 ## Docker setup
 

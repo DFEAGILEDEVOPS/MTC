@@ -11,8 +11,8 @@ $(function () {
 
   function disableCheckAll (sel, e) {
     if ($(sel)) {
-      const lengthAll = $(sel + ' > tbody div > input:checkbox').length
-      const lengthChecked = $(sel + ' > tbody div > input:checkbox:disabled').length
+      var lengthAll = $(sel + ' > tbody div > input:checkbox').length
+      var lengthChecked = $(sel + ' > tbody div > input:checkbox:disabled').length
 
       if (lengthAll === lengthChecked) {
         $('#tickAllCheckboxes').prop('disabled', true)
@@ -30,7 +30,8 @@ $(function () {
   if ($('#pupilsList').length > 0) disableCheckAll('#pupilsList')
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
-  $('input:file').on('change', function () {
+  $('input:file').on('change', function (e) {
+    e.stopPropagation()
     $('input:submit').prop('disabled', !$(this).val())
   })
 })

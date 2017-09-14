@@ -11,12 +11,11 @@ export class SubmissionService {
 
   async submitData() {
     const localStorageData = this.storageService.getAllItems();
-    const { audit, inputs, answers, access_token } = localStorageData;
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
     await this.http.post(`${environment.apiURL}/api/completed-check`,
-      { audit, inputs, answers, access_token },
+      { ...localStorageData },
       requestArgs)
       .toPromise()
       .then((response) => {

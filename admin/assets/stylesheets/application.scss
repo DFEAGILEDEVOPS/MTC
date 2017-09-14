@@ -51,6 +51,8 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_check-forms';
 @import 'elements/_sign-out';
 @import 'elements/_results';
+@import 'elements/_check-windows';
+@import 'elements/_sorting';
 
 // Global
 
@@ -244,6 +246,11 @@ input {
   }
 }
 
+.label-optional {
+  font-weight: 400;
+  margin-left: pem(5);
+}
+
 // Grey buttons
 
 .button-secondary {
@@ -254,6 +261,10 @@ input {
   @include media(tablet) {
     margin-top: 0;
   }
+}
+
+.back-to-top-container {
+  margin-top: 4.4em;
 }
 
 // Hide 'check all' checkboxes if JS is not enabled
@@ -310,3 +321,17 @@ table.spacious-two-column {
     width: 50%;
   }
 }
+
+.master-detail {
+  margin-top: 1.1em;
+}
+
+.panel-no-border {
+  @extend .panel;
+  border-left: 0;
+}
+
+.back-to-top-container {
+  margin-top: 4.4em;
+}
+

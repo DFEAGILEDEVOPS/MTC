@@ -3,6 +3,9 @@ Feature:
   I want to preview the check form i have upload
   So I can ensure i have not made any mistakes
 
+  Background:
+    Given I am logged in
+
   Scenario: Users can view an uploaded check
     Given I have uploaded a check form
     When I choose to preview the check form questions
@@ -28,6 +31,7 @@ Feature:
     When I choose to delete it
     Then it should be removed from the list of available checks
 
+  @wip
   Scenario: Users can not delete a assigned check form
     Given I am viewing a check form that is assigned to a check window
     Then I should not be able to delete it

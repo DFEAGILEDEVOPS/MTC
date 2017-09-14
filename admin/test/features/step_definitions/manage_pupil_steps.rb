@@ -88,7 +88,7 @@ Given(/^I have logged in with (.*)$/) do |teacher|
 end
 
 When(/^I want to manage the pupils$/) do
-  profile_page.manage_pupil.click
+  school_landing_page.manage_pupil.click
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|
@@ -107,6 +107,7 @@ Then(/^there should not be a checkbox against the pupil$/) do
 end
 
 Given(/^I have a pupil whose pin is expired$/) do
+  step "I am logged in"
   MongoDbHelper.reset_pin('Pupil', 'Fifteen', 9991001)
   step "I am on the manage pupil page"
   manage_pupil_page.generate_pin_using_name('Pupil Fifteen')
@@ -119,6 +120,7 @@ Then(/^I should see the pupil's pin as (.*)$/) do |text|
 end
 
 Given(/^I have a pupil whose pin is not generated$/) do
+  step "I am logged in"
   MongoDbHelper.reset_pin('Pupil', 'Fifteen', 9991001)
 end
 
