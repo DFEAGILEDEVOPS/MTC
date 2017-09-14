@@ -46,11 +46,13 @@ Feature:
     Given I am on the assign check window page
     Then check windows should have a end date
 
+  @wip
   Scenario: Users can attach a check form to a check window
     Given I have uploaded a check form
     When I have assigned the check form to a check window
     Then the check form should be displayed as being assigned to the check window
 
+  @wip
   Scenario: Users can attach a check form to multiple check windows
     Given I previously assigned a check form to a check window
     When I have assigned the check form to another check window
