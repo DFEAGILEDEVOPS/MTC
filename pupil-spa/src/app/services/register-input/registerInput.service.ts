@@ -40,6 +40,13 @@ export class RegisterInputService {
     });
   }
 
+  public getLastEntry() {
+    if (!this.questionInputs || !this.currentQuestion) { return false; }
+    const currentQuestionEntries = this.questionInputs[ this.currentQuestion ];
+    const lastEntryIndex = currentQuestionEntries.length - 1;
+    return currentQuestionEntries[ lastEntryIndex ];
+  }
+
   private getMouseButton(event) {
     if (!event.which) {
       /* IE case */
