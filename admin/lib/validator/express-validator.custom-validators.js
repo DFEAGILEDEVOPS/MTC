@@ -237,9 +237,6 @@ function multiplyByCharacterPosition () {
 module.exports = {
   customValidators: {
     upnHasCorrectCheckLetter: (val, options = {}) => {
-      if (!(/^[A-Z]\d{12}$/.test(val))) {
-        return false
-      }
       // step 1: multiply all digits by the 'character position'
       // spread the string out into separate args
       const s1 = multiplyByCharacterPosition(...val)
@@ -263,6 +260,12 @@ module.exports = {
         return false
       }
       return true
+    },
+    upnHasValidChars5To12: (val, options = {}) => {
+      if (!(/^[A-Z]\d{12}$/.test(val))) {
+        return false
+      }
+      return true
     }
-  }
+  } // end custom validators
 }

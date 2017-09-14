@@ -79,6 +79,9 @@ const pupilValidationSchema = {
     upnHasValidLaCode: {
       errorMessage: addPupilErrorMessages.upnInvalidLaCode
     },
+    upnHasValidChars5To12: {
+      errorMessage: addPupilErrorMessages.upnInvalidCharacters5To12
+    },
     notEmpty: true,
     errorMessage: addPupilErrorMessages.upnRequired
   }

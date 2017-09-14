@@ -24,6 +24,7 @@ module.exports.addPupil = {
   'upnRequired': 'UPN is missing',
   'upnInvalidCheckDigit': 'UPN invalid (wrong check letter at character 1)',
   'upnDuplicate': 'More than 1 pupil record with same UPN',
-  'upnInvalidLaCode': 'UPN invalid (characters 2-4 not a recognised LA code)'
+  'upnInvalidLaCode': 'UPN invalid (characters 2-4 not a recognised LA code)',
+  'upnInvalidCharacters5To12': 'UPN invalid (characters 5-12 not all numeric)'
 
 }

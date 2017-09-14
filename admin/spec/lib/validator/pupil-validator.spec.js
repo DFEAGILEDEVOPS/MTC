@@ -408,7 +408,103 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('upn')).toBe(true)
-        expect(validationError.get('upn')).toBe('UPN invalid (characters 2-4 not a recognised LA code)')
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 5', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H813E0000012'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 6', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H8131-000012'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 7', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H81311 00012'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 8', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H813111E0012'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 9', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H8131111E012'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 10', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H81311111E12'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 11', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H813111111E2'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
+        done()
+      })
+
+      it('detects when the UPN has an error in char 12', async (done) => {
+        req.body = getBody()
+        // Example UPN taken from
+        // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
+        req.body.upn = 'H8131111111E'
+        const validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (characters 5-12 not all numeric)')
         done()
       })
 
