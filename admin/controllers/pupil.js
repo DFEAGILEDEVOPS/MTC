@@ -92,10 +92,11 @@ const postAddPupil = async (req, res, next) => {
   }
   try {
     await pupil.save()
+    req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
-  res.redirect('/school/manage-pupils')
+  res.redirect(`/school/manage-pupils?hl=${pupil._id}`)
 }
 
 const getEditPupilById = async (req, res, next) => {

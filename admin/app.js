@@ -23,6 +23,7 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
+const flash = require('connect-flash')
 
 const fs = require('fs')
 const config = require('./config')
@@ -110,6 +111,7 @@ const sessionOptions = {
 app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(flash())
 app.use(expressValidator())
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -162,6 +164,13 @@ app.use(function (req, res, next) {
     res.locals.isAuthenticated = false
     res.locals.user = null
   }
+  next()
+})
+
+app.use(function (req, res, next) {
+  // make the flash messages available in the locals for use in view templates
+  res.locals.messages = req.flash()
+  console.log(res.locals.messages)
   next()
 })
 
