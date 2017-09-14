@@ -125,7 +125,7 @@ const setUpdateTiming = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const getCheckWindows = async (req, res, next) => {
-  res.locals.pageTitle = 'Check settings'
+  res.locals.pageTitle = 'Check windows'
   req.breadcrumbs(res.locals.pageTitle)
 
   let checkWindows
