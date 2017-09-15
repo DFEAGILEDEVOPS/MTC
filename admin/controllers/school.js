@@ -9,6 +9,7 @@ const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -27,6 +28,50 @@ const getHome = async (req, res, next) => {
     schoolName,
     breadcrumbs: [{'name': 'School Home'}]
   })
+}
+
+const getPupils = async (req, res, next) => {
+  res.locals.pageTitle = 'Pupil register'
+  const { sortColumn, sortOrder } = req.params
+  res.locals.sortColumn = sortColumn || 'lastName'
+  const order = JSON.parse(sortOrder)
+  res.locals.sortOrder = typeof order === 'boolean' ? !order : true
+  res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
+  const { pupils } = await fetchPupilsData(req.user.School)
+  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
+    const { foreName, lastName, _id } = p
+    const dob = moment(p.dob).format('DD/MM/YYYY')
+    const answers = await fetchPupilAnswers(p._id)
+    const { score } = fetchScoreDetails(answers)
+    // TODO: Fetch pupil's group when it's implemented
+    const group = 'N/A'
+    return {
+      _id,
+      foreName,
+      lastName,
+      dob,
+      group,
+      score
+    }
+  })).catch((error) => next(error))
+  pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
+  pupilsFormatted.map((p, i) => {
+    if (pupilsFormatted[i + 1] === undefined) return
+    if (pupilsFormatted[i].foreName === pupilsFormatted[i + 1].foreName &&
+      pupilsFormatted[i].lastName === pupilsFormatted[i + 1].lastName) {
+      pupilsFormatted[i].showDoB = true
+      pupilsFormatted[i + 1].showDoB = true
+    }
+  })
+  try {
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('school/pupil-register', {
+      pupils: pupilsFormatted,
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 const getResults = async (req, res, next) => {
@@ -309,6 +354,7 @@ const getHDFSubmitted = async (req, res, next) => {
 
 module.exports = {
   getHome,
+  getPupils,
   getResults,
   downloadResults,
   generatePins,
