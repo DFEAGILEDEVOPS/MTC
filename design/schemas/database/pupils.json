@@ -15,7 +15,7 @@
   "upn": "",
   "jwtSecret": "abckdjke489gf348hfwo8hw8howfhs4huois4t",
   "attendanceCode": {
-    "Reason": "Incorrect Registration", // or store code as in attendanceCodes.1.json
+    "Code": 1,
     "dateRecorded": "2017-08-12T00:00:000Z",
     "byUser": 123456
   }
