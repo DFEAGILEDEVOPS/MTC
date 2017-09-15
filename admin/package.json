@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "jasmine-node": "^1.14.5",
-    "jsdoc": "^3.5.3",
+    "jsdoc": "^3.5.5",
     "levenshtein": "^1.0.5",
     "node-mocks-http": "^1.6.4",
     "nodemon": "^1.12.0",

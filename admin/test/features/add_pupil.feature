@@ -121,6 +121,11 @@ Feature:
     When I submit the form with the name fields set as Mary-Jane
     Then the pupil details should be stored
 
+  Scenario: Names can include a space
+    Given I am on the add pupil page
+    When I submit the form with the name fields set as Mary Jane
+    Then the pupil details should be stored
+
   Scenario: Names can include numbers
     Given I am on the add pupil page
     When I submit the form with the name fields set as M4ry
