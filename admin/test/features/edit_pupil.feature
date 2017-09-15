@@ -136,3 +136,27 @@ Feature:
   Scenario: DOB's can have a single digit month
     When I submit the form with a DOB that has 1 as the month
     Then I should be taken to the Manage a pupil page
+
+  Scenario: UPN cannot be assigned twice
+    When I submit valid details with a already used UPN
+    Then I should see an error stating more than 1 pupil with the same UPN
+
+  Scenario: UPN has to have the correct check letter
+    When I submit valid details with a UPN that has a incorrect check letter
+    Then I should see an error stating wrong check letter at character 1
+
+  Scenario: UPN has to have a valid LA code
+    When I submit valid details with a UPN that has a invalid LA code
+    Then I should see an error stating characters between 2-4 are invalid
+
+  Scenario: UPN has to have numeric characters between characters 5-12
+    When I submit valid details with a UPN that has a alpha character between characters 5-12
+    Then I should see an error stating characters between 5-12 are invalid
+
+  Scenario: UPN has to have numeric characters at position 13
+    When I submit valid details with a UPN that has a invalid alpha character at character 13
+    Then I should see an error stating character 13 is invalid
+    
+  Scenario: UPN can have lowercase alpha characters
+    When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored

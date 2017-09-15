@@ -179,3 +179,32 @@ Feature:
       | ÞÐÇÑẞ              |
       | þçðñß              |
 
+  Scenario: UPN cannot be assigned twice
+    Given I am on the add pupil page
+    When I submit valid details with a already used UPN
+    Then I should see an error stating more than 1 pupil with the same UPN
+
+  Scenario: UPN has to have the correct check letter
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a incorrect check letter
+    Then I should see an error stating wrong check letter at character 1
+
+  Scenario: UPN has to have a valid LA code
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a invalid LA code
+    Then I should see an error stating characters between 2-4 are invalid
+
+  Scenario: UPN has to have numeric characters between characters 5-12
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a alpha character between characters 5-12
+    Then I should see an error stating characters between 5-12 are invalid
+
+  Scenario: UPN has to have a valid alhpa character at position 13
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a invalid alpha character at character 13
+    Then I should see an error stating character 13 is invalid
+
+  Scenario: UPN can have lowercase alpha characters
+    Given I am on the add pupil page
+    When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored

@@ -1,7 +1,7 @@
 require_relative 'upn_helper'
 class UpnGenerator
 
-  def self.test
+  def self.generate
     la_code = UpnHelper.collection_of_la_codes.sample
     estab = 4.times.map {rand(4)}.join
     year = 2.times.map {rand(2)}.join
