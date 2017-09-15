@@ -1,0 +1,78 @@
+<%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div>
+            <h1 tabindex="0" class="heading-xlarge">Pupil Register</h1>
+            <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>
+            <a class="button button-secondary" href=""> Add multiple pupils </a>
+        </div>
+        <table id='register-pupils' class="spacious">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <a class="no-underline" href=<%= `/school/pupil-register/lastName/${sortOrder}` %> >
+                            Name
+                            <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
+                        </a>
+                    </th>
+                    <th class="numeric" scope="col">
+                        <a class="no-underline">
+                            Group
+                        </a>
+                    </th>
+                    <th class="numeric" scope="col">
+                        <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
+                        Result
+                        <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            <% pupils.forEach((p) => { %>
+                <tr>
+                    <td>
+                        <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
+                            <%= `${p.lastName}, ${p.foreName}` %>
+                        </a>
+                        <% if (p.showDoB) { %>
+                        <div class="font-greyed-out font-xsmall">
+                            Date of birth: <%= p.dob %>
+                        </div>
+                        <% } %>
+                    </td>
+                    <td class="numeric"><%= p.group %></td>
+                    <td class="numeric"><%= p.score %></td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+    <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
+        <h3 class="heading-medium" tabindex="0">Before check</h3>
+        <ul class="list">
+            <li>
+                <a href="" >Group pupils</a>
+            </li>
+            <li>
+                <a href="" >Access arrangements</a>
+            </li>
+        </ul>
+        <h3 class="heading-medium" tabindex="0">Start check</h3>
+        <ul class="list">
+            <li>
+                <a href="" >Pupils not taking the check</a>
+            <li>
+                <a href="" >Generate PINs</a>
+            </li>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
