@@ -1,17 +1,22 @@
 {
-  "_id" : "5996e84a53833a000f7c8a0d",
-  "updatedAt" : "2017-09-01T14:07:48.251Z",
-  "createdAt" : "2017-08-18T13:14:50.877Z",
-  "school" : 122345,
-  "foreName" : "Pupil",
-  "middleNames" : "",
-  "lastName" : "One",
-  "gender" : "M",
-  "dob" : "2007-08-25T00:00:00.000Z",
-  "pin" : "dkjdk",
-  "hasAttended" : false,
-  "pinExpired" : false,
-  "__v" : 0,
-  "upn" : "",
-  "jwtSecret" : "abckdjke489gf348hfwo8hw8howfhs4huois4t"
+  "_id": "5996e84a53833a000f7c8a0d",
+  "updatedAt": "2017-09-01T14:07:48.251Z",
+  "createdAt": "2017-08-18T13:14:50.877Z",
+  "school": 122345,
+  "foreName": "Pupil",
+  "middleNames": "",
+  "lastName": "One",
+  "gender": "M",
+  "dob": "2007-08-25T00:00:00.000Z",
+  "pin": "dkjdk",
+  "hasAttended": false,
+  "pinExpired": false,
+  "__v": 0,
+  "upn": "",
+  "jwtSecret": "abckdjke489gf348hfwo8hw8howfhs4huois4t",
+  "attendanceCode": {
+    "Reason": "Incorrect Registration",
+    "dateRecorded": "2017-08-12T00:00:000Z",
+    "byUser": 123456
+  }
 }
