@@ -156,7 +156,7 @@ Feature:
   Scenario: UPN has to have numeric characters at position 13
     When I submit valid details with a UPN that has a invalid alpha character at character 13
     Then I should see an error stating character 13 is invalid
-    
+
   Scenario: UPN can have lowercase alpha characters
     When I submit valid details with a UPN has a lowercase alpha character
     Then the pupil details should be stored

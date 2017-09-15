@@ -182,7 +182,7 @@ When(/^I submit the form with the name fields set as (.*)$/) do |value|
 end
 
 Then(/^I should be taken to the add pupil page$/) do
-  expect(@page).to be_displayed
+  expect(add_pupil_page).to be_displayed
 end
 
 Then(/^there should be a toggle that informs me what a upn is$/) do
