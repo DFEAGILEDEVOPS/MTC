@@ -94,6 +94,7 @@ module.exports.validate = async function (req) {
   let validationError = new ValidationError()
   req.body.foreName = req.body.foreName.trim()
   req.body.lastName = req.body.lastName.trim()
+  req.body.upn = req.body.upn.toUpperCase().trim()
   try {
     // expressValidator
     req.checkBody(pupilValidationSchema)
@@ -132,7 +133,7 @@ module.exports.validate = async function (req) {
   // We need to check that the UPN is unique
   if (!(validationError.get('upn'))) {
     const pupil = await Pupil.findOne({upn: req.body.upn}).exec()
-    if (pupil) {
+    if (pupil && pupil._id.toString() !== req.body._id) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }

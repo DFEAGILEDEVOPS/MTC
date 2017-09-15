@@ -588,6 +588,14 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
         done()
       })
+
+      it('validates a lowercase upn, and uppercases it for the user', async function (done) {
+        req.body = getBody()
+        req.body.upn = 'g80120000101a '
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
+        done()
+      })
     })
   })
 
