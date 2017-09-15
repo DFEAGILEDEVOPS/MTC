@@ -35,5 +35,9 @@ Then(/^I should be taken to the Manage a pupil page$/) do
 end
 
 When(/^I click Manage pupil link$/) do
- school_landing_page.manage_pupil.click
+ manage_pupil_page.load
+end
+
+When /^I click Pupil Register link$/ do
+  school_landing_page.pupil_register.click
 end

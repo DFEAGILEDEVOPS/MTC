@@ -19,13 +19,13 @@ And(/^I should see the added pupil details on the manage pupils page$/) do
 end
 
 And(/^I choose to add a pupil by clicking Add Pupils link$/) do
-  manage_pupil_page.add_pupil.click
+  pupil_register_page.add_pupil.click
   step "I am on the add pupil page"
   step "I have submitted valid pupil details"
 end
 
 And(/^I choose to edit the first pupil in the list$/) do
-  manage_pupil_page.pupil_list.pupil_row.first.edit_pupil_link.click
+  pupil_register_page.pupil_list.pupil_row.first.edit_pupil_link.click
 end
 
 When(/^I have generated a pin for a pupil$/) do
@@ -88,7 +88,8 @@ Given(/^I have logged in with (.*)$/) do |teacher|
 end
 
 When(/^I want to manage the pupils$/) do
-  school_landing_page.manage_pupil.click
+  # school_landing_page.manage_pupil.click
+  manage_pupil_page.load
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|
