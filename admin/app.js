@@ -112,7 +112,7 @@ app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
-app.use(expressValidator())
+app.use(expressValidator(require('./lib/validator/express-validator.custom-validators.js')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Breadcrumbs
