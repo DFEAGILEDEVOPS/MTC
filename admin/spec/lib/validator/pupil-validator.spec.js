@@ -88,14 +88,24 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
         done()
       })
-      
-    it('allows spaces in and around the name', async function (done) {
-      req.body = getBody()
-      req.body.foreName = ' Pup il '
-      let validationError = await pupilValidator.validate(req)
-      expect(validationError.hasError()).toBe(false)
-      done()
-    })
+
+      it('allows spaces in and around the name', async function (done) {
+        req.body = getBody()
+        req.body.foreName = ' Pup il '
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
+        done()
+      })
+
+      it('rejects only spaces', async function (done) {
+        req.body = getBody()
+        req.body.foreName = ' '
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('foreName')).toBe(true)
+        expect(validationError.get('foreName')).toBe('First name can\'t be blank')
+        done()
+      })
 
       it('does not allow punctuation in the forename', async function (done) {
         req.body = getBody()
@@ -187,14 +197,24 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
         done()
       })
-      
-    it('allows spaces in and around the name', async function (done) {
-      req.body = getBody()
-      req.body.lastName = ' Pup il '
-      let validationError = await pupilValidator.validate(req)
-      expect(validationError.hasError()).toBe(false)
-      done()
-    })
+
+      it('allows spaces in and around the name', async function (done) {
+        req.body = getBody()
+        req.body.lastName = ' Pup il '
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
+        done()
+      })
+
+      it('rejects only spaces', async function (done) {
+        req.body = getBody()
+        req.body.lastName = ' '
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('lastName')).toBe(true)
+        expect(validationError.get('lastName')).toBe('Last name can\'t be blank')
+        done()
+      })
 
       it('does not allow punctuation', async (done) => {
         req.body = getBody()

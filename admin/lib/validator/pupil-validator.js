@@ -92,6 +92,8 @@ const pupilValidationSchema = {
 
 module.exports.validate = async function (req) {
   let validationError = new ValidationError()
+  req.body.foreName = req.body.foreName.trim()
+  req.body.lastName = req.body.lastName.trim()
   try {
     // expressValidator
     req.checkBody(pupilValidationSchema)
