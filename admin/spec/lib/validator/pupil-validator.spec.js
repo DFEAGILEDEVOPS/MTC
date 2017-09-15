@@ -596,6 +596,44 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
         done()
       })
+
+      it('checks for invalid character 13 letter: S', async function (done) {
+        req.body = getBody()
+        req.body.upn = 'G80120000101S'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        done()
+      })
+
+      it('checks for invalid character 13 letter: I', async function (done) {
+        req.body = getBody()
+        req.body.upn = 'G80120000101I'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        done()
+      })
+
+      it('checks for invalid character 13 letter: O', async function (done) {
+        req.body = getBody()
+        req.body.upn = 'G80120000101O'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(true)
+        expect(validationError.isError('upn')).toBe(true)
+        expect(validationError.get('upn')).toBe('UPN invalid (character 13 not a recognised value)')
+        done()
+      })
+
+      it('checks for valid character 13 letter: A', async function (done) {
+        req.body = getBody()
+        req.body.upn = 'G80120000101A'
+        let validationError = await pupilValidator.validate(req)
+        expect(validationError.hasError()).toBe(false)
+        done()
+      })
     })
   })
 

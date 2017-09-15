@@ -33,7 +33,7 @@ module.exports = {
         return false
       }
       const char = val[12] // 13th char
-      if (!/^[A-Z0-9]$/.test(char)) {
+      if (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(char)) {
         console.log(`upnHasValidChar13: val: [${val}] failed char 13 check`)
         return false
       }
