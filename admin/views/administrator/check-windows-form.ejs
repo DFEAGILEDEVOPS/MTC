@@ -16,7 +16,7 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge" tabindex="0"><%= actionName %> check window</h1>
+        <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0"><%= actionName %> check window</h1>
 
         <form action="/administrator/check-windows/<%= urlActionName %>" method="post">
             <div class="form-group">
@@ -38,7 +38,7 @@
             <hr />
 
             <div class="form-group">
-                <label for="adminStartDate" class="form-label-bold">
+                <label class="form-label-bold">
                     Administration start date
                     <span class="form-hint">For example, 28 4 2017</span>
                     <% if (typeof error !== 'undefined' && error.adminStartDay) { %>
@@ -88,7 +88,7 @@
             <hr />
 
             <div class="form-group">
-                <label for="checkStartDate" class="form-label-bold">
+                <label class="form-label-bold">
                     Check start date
                     <span class="form-hint">For example, 28 4 2017</span>
                     <% if (typeof error !== 'undefined' &&  error.checkStartDay) { %>
@@ -136,7 +136,7 @@
             </div>
 
             <div class="form-group">
-                <label for="checkEndDate" class="form-label-bold">
+                <label class="form-label-bold">
                     Check end date
                     <span class="form-hint">For example, 28 4 2017</span>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDay) { %>
