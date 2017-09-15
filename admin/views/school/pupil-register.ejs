@@ -2,6 +2,11 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+            <div class="info-message">
+                <%= messages.info %>
+            </div>
+        <% } %>
         <div>
             <h1 tabindex="0" class="heading-xlarge">Pupil Register</h1>
             <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>

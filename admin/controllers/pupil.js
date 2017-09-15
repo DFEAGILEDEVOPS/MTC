@@ -96,7 +96,7 @@ const postAddPupil = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  res.redirect(`/school/manage-pupils?hl=${pupil._id}`)
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -201,7 +201,7 @@ const postEditPupil = async (req, res, next) => {
   }
 
   // pupil saved
-  res.redirect(`/school/manage-pupils?hl=${pupil._id}`)
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
 const getManagePupils = async (req, res) => {
