@@ -25,6 +25,7 @@ Feature:
     When I am on the manage pupil page
     Then I should have the option to print pins
 
+  @wip
   Scenario: Expired pin is showed as pin expired
     Given I have a pupil whose pin is expired
     When I am on the manage pupil page
