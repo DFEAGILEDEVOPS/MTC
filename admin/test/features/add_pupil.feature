@@ -44,7 +44,7 @@ Feature:
   Scenario: No validation errors are displayed when the optional fields are not completed
     Given I am on the add pupil page
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     Given I am on the add pupil page
@@ -54,7 +54,7 @@ Feature:
   Scenario: Users can navigate back to the profile page
     Given I am on the add pupil page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: Names can only be a max of 128 characters long
     Given I am on the add pupil page
@@ -109,12 +109,12 @@ Feature:
   Scenario: DOB's can have a single digit day
     Given I am on the add pupil page
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     Given I am on the add pupil page
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: Names can include a hyphen
     Given I am on the add pupil page

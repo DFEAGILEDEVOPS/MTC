@@ -8,10 +8,12 @@ Feature:
 
   Scenario: Edit details page has fields to capture pupil data
     Then I should see fields that will allow me to capture pupil data
+    And the fields are pre populated with the data
 
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
+    And I should see the updated pupil details on the pupil register page
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
@@ -23,7 +25,7 @@ Feature:
 
   Scenario: No validation errors are displayed when the optional fields are not completed
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     When I attempt to type letters in the DOB fields
@@ -35,7 +37,7 @@ Feature:
 
   Scenario: Users can navigate back to the profile page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
@@ -131,8 +133,8 @@ Feature:
 
   Scenario: DOB's can have a single digit day
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
