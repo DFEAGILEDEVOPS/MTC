@@ -30,6 +30,7 @@ Feature:
     Given I am on the school landing page
     Then I should see some instructions on what to do next
 
+  @wip
   Scenario: School landing page has option to manage pupils
     Given I am on the school landing page
     Then I should see an option to go to the manage pupils area
