@@ -11,7 +11,8 @@ end
 
 When(/^I update with valid pupil data$/) do
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @updated_upn = rand(2342344234)
+  # @updated_upn = rand(2342344234)
+  @updated_upn = UpnGenerator.generate
   @updated_details_hash = {first_name: "#{pupil_name}", middle_name: "Jim", last_name: "#{pupil_name}", upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
@@ -34,7 +35,7 @@ end
 
 Then(/^I should see validation errors when i submit with the following names$/) do |table|
   table.raw.flatten.each do |value|
-    @upn = rand(2342344234)
+    @upn = UpnGenerator.generate
     @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
