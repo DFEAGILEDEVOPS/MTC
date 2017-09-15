@@ -6,7 +6,6 @@
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
@@ -44,7 +43,7 @@
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td>
+                    <td class="<% if (highlight.has(p._id.toString())) { %>highlight<% } %>">
                         <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                             <%= `${p.lastName}, ${p.foreName}` %>
                         </a>
