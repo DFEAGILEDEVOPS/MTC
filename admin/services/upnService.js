@@ -255,6 +255,9 @@ const upnService = {
   calculateCheckLetter: (val) => {
     // spread the string out into separate args
     const s1 = multiplyByCharacterPosition(...val)
+    if (!s1.length) {
+      return ''
+    }
     const sum = s1.reduce((a, b) => a + b)
     const rem = sum % 23
     return remainderLookup[rem]
