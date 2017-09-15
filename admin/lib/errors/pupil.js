@@ -19,5 +19,12 @@ module.exports.addPupil = {
   'dobInvalidChars': 'Entry must be a number',
   'dob-day': 'Please check “Day”',
   'dob-month': 'Please check “Month”',
-  'dob-year': 'Please check “Year”'
+  'dob-year': 'Please check “Year”',
+
+  'upnRequired': 'UPN is missing',
+  'upnInvalidCheckDigit': 'UPN invalid (wrong check letter at character 1)',
+  'upnDuplicate': 'More than 1 pupil record with same UPN',
+  'upnInvalidLaCode': 'UPN invalid (characters 2-4 not a recognised LA code)',
+  'upnInvalidCharacters5To12': 'UPN invalid (characters 5-12 not all numeric)',
+  'upnInvalidCharacter13': 'UPN invalid (character 13 not a recognised value)'
 }
