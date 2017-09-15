@@ -262,6 +262,7 @@ const checkWindowsForm = async (req, res, next) => {
 const saveCheckWindows = async (req, res, next) => {
   let actionName = 'Create'
   let urlActionName = 'add'
+  let checkWindow
   let validationError = await checkWindowValidator.validate(req)
 
   if (req.body.checkWindowId !== '') {
