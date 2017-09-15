@@ -4,6 +4,8 @@ const CheckWindow = require('../models/check-window')
 const SettingsLog = require('../models/setting-log')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
+const checkWindowValidator = require('../lib/validator/check-window-validator')
+const checkWindowErrorMessages = require('../lib/errors/check-window')
 const config = require('../config')
 
 /**
@@ -178,6 +180,7 @@ const getCheckWindows = async (req, res, next) => {
       const checkEndDateMo = moment(cw.checkEndDate)
 
       return {
+        id: cw._id,
         checkWindowName: cw.checkWindowName,
         adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
         checkDates: formatDate(checkStartDateMo, checkEndDateMo)
@@ -195,9 +198,136 @@ const getCheckWindows = async (req, res, next) => {
   })
 }
 
+/**
+ * Add window check form.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const checkWindowsForm = async (req, res, next) => {
+
+  let error = ''
+  let errorMessage = ''
+  let checkWindowData = ''
+  let successfulPost = false
+  let actionName = (req.params.action === 'add' && req.params.id === undefined) ? 'Create' : 'Edit'
+  let urlActionName = req.params.action
+  let currentYear = Date.now()
+
+  res.locals.pageTitle = actionName + ' check window'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  if (req.params.id !== undefined) {
+    try {
+      checkWindowData = await CheckWindow.getCheckWindow(req.params.id)
+      checkWindowData = {
+        checkWindowId: req.params.id,
+        checkWindowName: checkWindowData.checkWindowName,
+        adminStartDay: moment(checkWindowData.adminStartDate).format('DD'),
+        adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
+        adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
+        checkStartDay: moment(checkWindowData.checkStartDate).format('DD'),
+        checkStartMonth: moment(checkWindowData.checkStartDate).format('MM'),
+        checkStartYear: moment(checkWindowData.checkStartDate).format('YYYY'),
+        checkEndDay: moment(checkWindowData.checkEndDate).format('DD'),
+        checkEndMonth: moment(checkWindowData.checkEndDate).format('MM'),
+        checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY')
+      }
+    } catch (error) {
+      console.log('Error retrieving check window.')
+      return next()
+    }
+  }
+
+  res.render('administrator/check-windows-form', {
+    breadcrumbs: req.breadcrumbs(),
+    error,
+    errorMessage,
+    checkWindowData,
+    successfulPost,
+    actionName,
+    urlActionName,
+    currentYear
+  })
+}
+
+/**
+ * Save check windows (add/edit).
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const saveCheckWindows = async (req, res, next) => {
+  let actionName = 'Create'
+  let urlActionName = 'add'
+  let validationError = await checkWindowValidator.validate(req)
+
+  if (req.body.checkWindowId !== '') {
+    actionName = 'Edit'
+    urlActionName = 'edit'
+  }
+
+  if (validationError.hasError()) {
+    res.locals.pageTitle = actionName + ' check window'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    return res.render('administrator/check-windows-form', {
+      action: urlActionName,
+      checkWindowData: req.body,
+      error: validationError.errors,
+      errorMessage: checkWindowErrorMessages,
+      actionName,
+      urlActionName,
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
+  if (req.body.checkWindowId !== '') {
+    try {
+      checkWindow = await CheckWindow.findOne({_id: req.body.checkWindowId}).exec()
+    } catch (error) {
+      return next(error)
+    }
+  } else {
+    checkWindow = new CheckWindow()
+  }
+
+  checkWindow.checkWindowName = req.body['checkWindowName']
+  checkWindow.adminStartDate = moment.utc(
+    '' + req.body['adminStartDay'] +
+    '/' + req.body['adminStartMonth'] +
+    '/' + req.body['adminStartYear'],
+    'DD/MM/YYYY')
+  checkWindow.checkStartDate = moment.utc(
+    '' + req.body['checkStartDay'] +
+    '/' + req.body['checkStartMonth'] +
+    '/' + req.body['checkStartYear'],
+    'DD/MM/YYYY')
+  checkWindow.checkEndDate = moment.utc(
+    '' + req.body['checkEndDay'] +
+    '/' + req.body['checkEndMonth'] +
+    '/' + req.body['checkEndYear'],
+    'DD/MM/YYYY')
+
+  // Auditing? Question for BAs.
+
+  try {
+    await checkWindow.save()
+  } catch (error) {
+    console.log('Could not save check windows data.', error)
+    return next(error)
+  }
+
+  return res.redirect('/administrator/check-windows')
+}
+
 module.exports = {
   getAdministration,
   getUpdateTiming,
   setUpdateTiming,
-  getCheckWindows
+  getCheckWindows,
+  checkWindowsForm,
+  saveCheckWindows
 }
