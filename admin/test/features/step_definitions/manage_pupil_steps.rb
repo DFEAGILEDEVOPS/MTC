@@ -120,7 +120,7 @@ end
 
 
 Then(/^I should see the pupil's pin as (.*)$/) do |text|
-  expect(manage_pupil_page.find_pupil_row('Pupil Fifteen').pin.text).to eql(text)
+  expect(manage_pupil_page.find_pupil_row('Hallie Mosley').pin.text).to eql(text)
 end
 
 Given(/^I have a pupil whose pin is not generated$/) do

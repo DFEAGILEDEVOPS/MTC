@@ -14,12 +14,13 @@
         <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
 
         <p>
-            <input class="button" type="submit" value="Create new check window">
+            <a class="button button-primary" href="#">Create new check window</a>
         </p>
 
         <br />
-        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm </div>
+        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
 
+        <% if (checkWindowList.length > 0) { %>
         <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
@@ -30,7 +31,7 @@
             </tr>
             </thead>
             <tbody>
-            <% if (checkWindowList.length > 1) { %>
+            <% if (checkWindowList.length > 0) { %>
             <% checkWindowList.forEach( (checkWindow, index) => { %>
             <tr>
                 <td><a href="#"><%= checkWindow.checkWindowName %></a></td>
@@ -42,6 +43,7 @@
             <% } %>
             </tbody>
         </table>
+        <% } %>
     </div>
 
     <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
