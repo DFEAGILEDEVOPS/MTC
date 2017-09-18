@@ -12,6 +12,7 @@ Feature:
     Given I am on the manage check windows page
     Then I should see page instructions
 
+  @wip
   Scenario: Manage check window page has the option to create a new window
     Given I am on the manage check windows page
     Then I should see a option to create a new window
