@@ -47,6 +47,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_printing';
 @import 'elements/_breadcrumbs';
 @import 'elements/_electron';
+@import 'elements/_flash-messages';
 @import 'elements/_boxes';
 @import 'elements/_check-forms';
 @import 'elements/_sign-out';
@@ -351,3 +352,10 @@ table.spacious-two-column {
   border-width: 12px 6px 0 6px;
   border-color: $govuk-blue transparent transparent transparent;
 }
+
+// Pupil listing - highlight pupils
+.highlight {
+  border-left: 10px solid $green;
+  padding-bottom: 5px;
+}
+
