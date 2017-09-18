@@ -139,7 +139,8 @@ end
 
 When(/^I have submitted valid pupil details$/) do
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'First', middle_name: 'middle', last_name: 'last', upn: @upn, female: true, day: '18', month: '02', year: '1987'}
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -352,4 +353,10 @@ When(/^I submit valid details with a UPN has a lowercase alpha character$/) do
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+
+Then(/^I should see a flash message to state the pupil has been added$/) do
+  expect(pupil_register_page).to have_info_message
+  expect(pupil_register_page.edited_pupil.text).to eql("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
 end
