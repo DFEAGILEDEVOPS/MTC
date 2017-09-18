@@ -29,7 +29,7 @@ describe('JWT service', () => {
       foreName: 'TestForename'
     })
     sandbox = sinon.sandbox.create()
-    spyOn(pupil, 'save').andCallFake(() => Promise.resolve(pupil))
+    spyOn(pupil, 'save').and.callFake(() => Promise.resolve(pupil))
   })
 
   afterEach(() => {
