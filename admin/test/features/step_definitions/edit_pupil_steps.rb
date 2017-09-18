@@ -5,7 +5,7 @@ Given(/^I want to edit a previously added pupil$/) do
   step "I submit the form with the name fields set as #{pupil_name}"
   step "the pupil details should be stored"
   @page = edit_pupil_page
-  pupil_register_page.load
+  # pupil_register_page.load
   pupil_register_page.find_pupil_row(pupil_name).edit_pupil_link.click
 end
 
