@@ -3,6 +3,8 @@ class PupilRegisterPage < SitePrism::Page
 
   element :heading, '.heading-xlarge', text: 'Pupil Register'
   element :add_pupil, 'a[href="/school/pupil/add"]'
+  element :info_message, '.info-message', text: 'Changes to pupil details have been saved'
+  element :edited_pupil, '.highlight'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
   section :pupil_list_column_heading, '#register-pupils thead tr' do
@@ -19,6 +21,8 @@ class PupilRegisterPage < SitePrism::Page
       element :edit_pupil_link, 'a'
     end
   end
+
+
 
   def find_pupil_row(name)
     wait_until{!(pupil_list.pupil_row.find {|pupil| pupil.text.include? name}).nil?}
