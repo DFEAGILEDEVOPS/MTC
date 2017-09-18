@@ -92,10 +92,11 @@ const postAddPupil = async (req, res, next) => {
   }
   try {
     await pupil.save()
+    req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
-  res.redirect('/school/manage-pupils')
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -128,7 +129,7 @@ const getEditPupilById = async (req, res, next) => {
   }
 }
 
-const getEditPupil = async (req, res, next) => {
+const postEditPupil = async (req, res, next) => {
   let pupil
   let school
   let validationError
@@ -194,13 +195,13 @@ const getEditPupil = async (req, res, next) => {
 
   try {
     await pupil.save()
+    req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
 
   // pupil saved
-  // TODO: add flash message
-  res.redirect('/school/manage-pupils')
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
 const getManagePupils = async (req, res) => {
@@ -252,7 +253,7 @@ module.exports = {
   getAddPupil,
   postAddPupil,
   getEditPupilById,
-  getEditPupil,
+  postEditPupil,
   getManagePupils,
   getPrintPupils
 }

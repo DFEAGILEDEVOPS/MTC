@@ -12,6 +12,7 @@ Feature:
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
+    And I should see a flash message to state the pupil has been updated
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
@@ -23,7 +24,7 @@ Feature:
 
   Scenario: No validation errors are displayed when the optional fields are not completed
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     When I attempt to type letters in the DOB fields
@@ -35,7 +36,8 @@ Feature:
 
   Scenario: Users can navigate back to the profile page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
+    And I should see no flash message displayed
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
@@ -131,11 +133,11 @@ Feature:
 
   Scenario: DOB's can have a single digit day
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: UPN cannot be assigned twice
     When I submit valid details with a already used UPN
