@@ -3,7 +3,7 @@
 
 const AdminLogonEvent = require('../../models/admin-logon-event')
 
-describe('admin-logon-event model', function (done) {
+describe('admin-logon-event model', () => {
   let logonEvent
 
   beforeEach(function () {
