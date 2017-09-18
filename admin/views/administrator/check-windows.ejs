@@ -14,7 +14,7 @@
         <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
 
         <p>
-            <a class="button button-primary" href="#">Create new check window</a>
+            <a class="button button-primary" href="/administrator/check-windows/add">Create new check window</a>
         </p>
 
         <br />
@@ -34,7 +34,7 @@
             <% if (checkWindowList.length > 0) { %>
             <% checkWindowList.forEach( (checkWindow, index) => { %>
             <tr>
-                <td><a href="#"><%= checkWindow.checkWindowName %></a></td>
+                    <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
                 <td><%= checkWindow.adminStartDate %></td>
                 <td><%= checkWindow.checkDates %></td>
                 <td><a href="#">Remove</a></td>
