@@ -23,7 +23,7 @@ Feature:
 
   Scenario: No validation errors are displayed when the optional fields are not completed
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     When I attempt to type letters in the DOB fields
@@ -33,9 +33,10 @@ Feature:
     When I submit the form with the name fields set as Mary Jane
     Then the pupil details should be stored
 
+   @local
   Scenario: Users can navigate back to the profile page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
@@ -131,11 +132,11 @@ Feature:
 
   Scenario: DOB's can have a single digit day
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: UPN cannot be assigned twice
     When I submit valid details with a already used UPN
