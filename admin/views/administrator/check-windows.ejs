@@ -9,6 +9,17 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <div class="info-message">
+                    <%= messages.info %>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
         <h1 class="heading-xlarge" tabindex="0">Manage check windows</h1>
 
         <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
@@ -30,9 +41,9 @@
             </tr>
             </thead>
             <tbody>
-            <% if (checkWindowList.length > 1) { %>
-            <% checkWindowList.forEach( (checkWindow, index) => { %>
-            <tr>
+                <% if (checkWindowList.length > 1) { %>
+                <% checkWindowList.forEach( (checkWindow, index) => { %>
+                <tr>
                     <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
                 <td><%= checkWindow.adminStartDate %></td>
                 <td><%= checkWindow.checkDates %></td>
