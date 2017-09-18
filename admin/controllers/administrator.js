@@ -316,6 +316,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   try {
     await checkWindow.save()
+    req.flash('info', 'Check windows details saved')
   } catch (error) {
     console.log('Could not save check windows data.', error)
     return next(error)
