@@ -30,7 +30,7 @@ describe('ErrorConverter class : fromMongoose()', function () {
   it('throws an error if the mongoose param is not defined', function () {
     expect(function () {
       errorConverter.fromMongoose(null, {}, validationError)
-    }).toThrow('mongooseError is not defined')
+    }).toThrowError(TypeError, 'mongooseError is not defined')
   })
 
   it('is ok if the validatorError param is not defined', function () {
@@ -42,21 +42,21 @@ describe('ErrorConverter class : fromMongoose()', function () {
   it('throws an error if the mongoose param is not the right type', function () {
     expect(function () {
       errorConverter.fromMongoose('a truthy string', {}, validationError)
-    }).toThrow('mongooseError must be an instanceof MongooseError')
+    }).toThrowError(TypeError, 'mongooseError must be an instanceof MongooseError')
 
     expect(function () {
       errorConverter.fromMongoose({}, {}, validationError)
-    }).toThrow('mongooseError must be an instanceof MongooseError')
+    }).toThrowError(TypeError, 'mongooseError must be an instanceof MongooseError')
 
     expect(function () {
       errorConverter.fromMongoose({errors: {}}, {}, validationError)
-    }).toThrow('mongooseError must be an instanceof MongooseError')
+    }).toThrowError(TypeError, 'mongooseError must be an instanceof MongooseError')
   })
 
   it('throws an error if the validation param is not the right type', function () {
     expect(function () {
       errorConverter.fromMongoose(mongooseError, {}, 'a truthy string')
-    }).toThrow('validationError must be an instanceof ValidationError')
+    }).toThrowError(TypeError, 'validationError must be an instanceof ValidationError')
   })
 
   it('returns a new validation error object with all the mongoose errors converted to friendly errors', function () {
