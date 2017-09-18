@@ -7,6 +7,16 @@
     </div>
 </div>
 
+<% if (messages && messages.info && messages.info.length) { %>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 tabindex="0" class="heading-xlarge">Manage pupils</h1>
