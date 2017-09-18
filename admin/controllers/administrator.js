@@ -287,7 +287,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   if (req.body.checkWindowId !== '') {
     try {
-      checkWindow = await CheckWindow.findOne({_id: req.body.checkWindowId}).exec()
+      checkWindow = await CheckWindow.getCheckWindow(req.body.checkWindowId)
     } catch (error) {
       return next(error)
     }
