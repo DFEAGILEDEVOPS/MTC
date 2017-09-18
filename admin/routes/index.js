@@ -39,7 +39,6 @@ router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
 /* Administration page */
 router.get('/administrator', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
 /* Health check */
-/* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt
   // get git commit from /commit.txt
@@ -93,7 +92,8 @@ function getBuildNumber () {
   })
 }
 
-router.get('/ping', (req, res) => res.status(200).send('OK'))
+router.get('/ping', (req, res) => getPing(req, res))
+
 /* NCA Tools Authentication Endpoint */
 router.post('/auth',
   function (req, res, next) {
