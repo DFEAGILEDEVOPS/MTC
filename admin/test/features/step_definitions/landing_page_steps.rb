@@ -42,6 +42,6 @@ When(/^I click Manage pupil link$/) do
  manage_pupil_page.load
 end
 
-When /^I click Pupil Register link$/ do
+When(/^I click Pupil Register link$/) do
   school_landing_page.pupil_register.click
 end

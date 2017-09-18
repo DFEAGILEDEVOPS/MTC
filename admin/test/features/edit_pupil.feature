@@ -36,6 +36,7 @@ Feature:
     When I submit the form with the name fields set as Mary Jane
     Then the pupil details should be stored
 
+   @local
   Scenario: Users can navigate back to the profile page
     When I decide to go back
     Then I should be taken to the Pupil register page
