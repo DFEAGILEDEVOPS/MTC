@@ -22,7 +22,7 @@ describe('HDF validator', function () {
       body: {},
       params: {},
       param: (name) => {
-        this.params[name]
+        this.params[name] = name
       }
     }
 
