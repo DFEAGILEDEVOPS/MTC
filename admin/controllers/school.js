@@ -8,8 +8,8 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
-const { sortRecords } = require('../utils')
+const {fetchPupilsData, fetchPupilAnswers, fetchScoreDetails} = require('../services/pupilService')
+const {sortRecords} = require('../utils')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -32,17 +32,17 @@ const getHome = async (req, res, next) => {
 
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
-  const { sortColumn, sortOrder } = req.params
+  const {sortColumn, sortOrder} = req.params
   res.locals.sortColumn = sortColumn || 'lastName'
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
   res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
-  const { pupils } = await fetchPupilsData(req.user.School)
+  const {pupils} = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const { foreName, lastName, _id } = p
+    const {foreName, lastName, _id} = p
     const dob = moment(p.dob).format('DD/MM/YYYY')
     const answers = await fetchPupilAnswers(p._id)
-    const { score } = fetchScoreDetails(answers)
+    const {score} = fetchScoreDetails(answers)
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
     return {
@@ -81,7 +81,7 @@ const getResults = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const answers = await fetchPupilAnswers(p._id)
-    const { hasScore, score, percentage } = fetchScoreDetails(answers)
+    const {hasScore, score, percentage} = fetchScoreDetails(answers)
     return {
       fullName,
       hasScore,
@@ -206,20 +206,20 @@ const generatePins = async (req, res, next) => {
   const promises = pupils.map(p => p.save()) // returns Promise
 
   Promise.all(promises).then(results => {
-      // all pupils saved ok
+    // all pupils saved ok
     return res.redirect('/school/manage-pupils')
   },
-    error => {
-      // one or more promises were rejected
-      // TODO: add a flash message informing the user
-      console.error(error)
-      return res.redirect('/school/manage-pupils')
-    })
-    .catch(error => {
-      console.error(error)
-      // TODO: add a flash message informing the user
-      return res.redirect('/school/manage-pupils')
-    })
+  error => {
+    // one or more promises were rejected
+    // TODO: add a flash message informing the user
+    console.error(error)
+    return res.redirect('/school/manage-pupils')
+  })
+  .catch(error => {
+    console.error(error)
+    // TODO: add a flash message informing the user
+    return res.redirect('/school/manage-pupils')
+  })
 }
 
 const getSubmitAttendance = async (req, res, next) => {
@@ -234,7 +234,7 @@ const getSubmitAttendance = async (req, res, next) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const {_id: id, hasAttended} = p
     const answers = await fetchPupilAnswers(p._id)
-    const { hasScore, percentage } = fetchScoreDetails(answers)
+    const {hasScore, percentage} = fetchScoreDetails(answers)
     return {
       id,
       fullName,
@@ -261,7 +261,7 @@ const postSubmitAttendance = async (req, res, next) => {
   }
   const data = Object.values(req.body['attendee'] || null)
   let selected
-  const { pupils } = await fetchPupilsData(req.user.School)
+  const {pupils} = await fetchPupilsData(req.user.School)
   try {
     selected = await Pupil.find({_id: data}).exec()
   } catch (error) {
@@ -276,9 +276,9 @@ const postSubmitAttendance = async (req, res, next) => {
   Promise.all([selectedPromises, pupilsPromises]).then(() => {
     return res.redirect('/school/declaration-form')
   },
-    error => next(error))
-    .catch(error => next(error)
-    )
+  error => next(error))
+  .catch(error => next(error)
+  )
 }
 
 const getDeclarationForm = async (req, res, next) => {
