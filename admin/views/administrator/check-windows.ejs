@@ -18,8 +18,9 @@
         </p>
 
         <br />
-        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm </div>
+        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
 
+        <% if (checkWindowList.length > 0) { %>
         <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
@@ -42,6 +43,7 @@
             <% } %>
             </tbody>
         </table>
+        <% } %>
     </div>
 
     <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
