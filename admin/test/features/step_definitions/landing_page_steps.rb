@@ -34,6 +34,10 @@ Then(/^I should be taken to the Manage a pupil page$/) do
   expect(manage_pupil_page).to be_displayed
 end
 
+Then(/^I should be taken to the Pupil register page$/) do
+  expect(pupil_register_page).to be_displayed
+end
+
 When(/^I click Manage pupil link$/) do
  manage_pupil_page.load
 end

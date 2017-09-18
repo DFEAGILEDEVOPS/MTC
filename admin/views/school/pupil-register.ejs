@@ -1,7 +1,18 @@
-<%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
-
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+            <div class="info-message">
+                <%= messages.info %>
+            </div>
+        <% } %>
         <div>
             <h1 tabindex="0" class="heading-xlarge">Pupil Register</h1>
             <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>
@@ -32,7 +43,7 @@
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td>
+                    <td class="<% if (highlight.has(p._id.toString())) { %>highlight<% } %>">
                         <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                             <%= `${p.lastName}, ${p.foreName}` %>
                         </a>
