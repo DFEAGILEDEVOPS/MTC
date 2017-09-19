@@ -353,6 +353,14 @@ const getHDFSubmitted = async (req, res, next) => {
   })
 }
 
+const getPupilNotTakingCheck = async (req, res, next) => {
+  res.locals.pageTitle = 'Pupils not taking the check'
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/pupils-not-taking-check', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 module.exports = {
   getHome,
   getPupils,
@@ -363,5 +371,6 @@ module.exports = {
   postSubmitAttendance,
   getDeclarationForm,
   postDeclarationForm,
-  getHDFSubmitted
+  getHDFSubmitted,
+  getPupilNotTakingCheck
 }
