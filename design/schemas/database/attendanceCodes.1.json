@@ -1,0 +1,18 @@
+[
+  {
+    "Reason": "Absent",
+    "Code": 1
+  },
+  {
+    "Reason": "Left",
+    "Code": 2
+  },
+  {
+    "Reason": "Incorrect Registration",
+    "Code": 3
+  },
+  {
+    "Reason": "Withdrawn",
+    "Code": 4
+  }
+]
