@@ -21,3 +21,15 @@ end
 When(/^I click on the Name heading$/) do
   pupil_register_page.pupil_list_column_heading.name_heading.click
 end
+
+And(/^I should see the added pupil details on the pupil register page$/) do
+  pupil_register_page.load
+  pupil_list = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text}
+  expect(pupil_list).to include(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+end
+
+And(/^I should see the updated pupil details on the pupil register page$/) do
+  pupil_register_page.load
+  pupil_list = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text}
+  expect(pupil_list).to include(@updated_details_hash[:last_name] + ', ' + @updated_details_hash[:first_name])
+end
