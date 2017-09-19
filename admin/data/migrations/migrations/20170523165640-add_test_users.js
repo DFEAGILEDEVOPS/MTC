@@ -9,6 +9,7 @@ const Pupil = require('../../../models/pupil')
 const config = require('../config')
 const moment = require('moment')
 const upnService = require('../../../services/upnService')
+const pupilsData = require('./data/users.json')
 
 module.exports = {
   up (db, next) {
@@ -111,9 +112,9 @@ function createPupils (schools) {
           let serial = pupilIdx.toString().padStart(3, 0)
           const pupil = new Pupil({
             school: school._id,
-            foreName: 'Pupil',
+            foreName: pupilsData[j].foreName,
             middleNames: randomMiddleName(),
-            lastName: toTitleCase(numberToWords.toWords(j + 1)),
+            lastName: pupilsData[j].lastName,
             gender: Math.round(Math.random()) === 1 ? 'F' : 'M',
             dob: randomDob(),
             pin: null,
