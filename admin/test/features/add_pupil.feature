@@ -30,6 +30,7 @@ Feature:
     Given I am on the add pupil page
     When I have submitted valid pupil details
     Then the pupil details should be stored
+    Then I should see a flash message to state the pupil has been added
 
   Scenario: Pupil data is not stored when invalid details are entered
     Given I am on the add pupil page
@@ -51,10 +52,11 @@ Feature:
     When I attempt to type letters in the DOB fields
     Then they should not be entered
 
-  Scenario: Users can navigate back to the profile page
+  Scenario: Users can navigate back to the pupil register page
     Given I am on the add pupil page
     When I decide to go back
     Then I should be taken to the Pupil register page
+    And I should see no flash message displayed
 
   Scenario: Names can only be a max of 128 characters long
     Given I am on the add pupil page

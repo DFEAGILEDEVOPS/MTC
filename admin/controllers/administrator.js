@@ -213,7 +213,7 @@ const checkWindowsForm = async (req, res, next) => {
   let successfulPost = false
   let actionName = (req.params.action === 'add' && req.params.id === undefined) ? 'Create' : 'Edit'
   let urlActionName = req.params.action
-  let currentYear = Date.now()
+  let currentYear = moment.utc(Date.now()).format('YYYY')
 
   res.locals.pageTitle = actionName + ' check window'
   req.breadcrumbs(res.locals.pageTitle)
@@ -287,7 +287,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   if (req.body.checkWindowId !== '') {
     try {
-      checkWindow = await CheckWindow.findOne({_id: req.body.checkWindowId}).exec()
+      checkWindow = await CheckWindow.getCheckWindow(req.body.checkWindowId)
     } catch (error) {
       return next(error)
     }
