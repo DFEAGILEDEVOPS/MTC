@@ -44,7 +44,9 @@
             <% pupils.forEach((p) => { %>
                 <tr>
                     <td class="pupil-name-container">
-                        <span class="<% if (highlight.has(p._id.toString())) { %>highlight<% } %>"></span>
+                        <% if (highlight.has(p._id.toString())) { %>
+                        <span class="highlight"></span>
+                        <% } %>
                         <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                             <%= `${p.lastName}, ${p.foreName}` %>
                         </a>
