@@ -264,10 +264,13 @@ const saveCheckWindows = async (req, res, next) => {
   let urlActionName = 'add'
   let checkWindow
   let validationError = await checkWindowValidator.validate(req)
+  let currentYear = moment.utc(Date.now()).format('YYYY')
+  let flashMessage = req.body['checkWindowName'] + ' has been created'
 
   if (req.body.checkWindowId !== '') {
     actionName = 'Edit'
     urlActionName = 'edit'
+    flashMessage = 'Changes have been saved'
   }
 
   if (validationError.hasError()) {
@@ -279,6 +282,7 @@ const saveCheckWindows = async (req, res, next) => {
       checkWindowData: req.body,
       error: validationError.errors,
       errorMessage: checkWindowErrorMessages,
+      currentYear,
       actionName,
       urlActionName,
       breadcrumbs: req.breadcrumbs()
@@ -316,7 +320,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   try {
     await checkWindow.save()
-    req.flash('info', 'Check windows details saved')
+    req.flash('info', flashMessage)
   } catch (error) {
     console.log('Could not save check windows data.', error)
     return next(error)
