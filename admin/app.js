@@ -24,7 +24,7 @@ const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
 const flash = require('connect-flash')
-
+const helmet = require('helmet')
 const fs = require('fs')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
@@ -62,6 +62,14 @@ const completedCheck = require('./routes/completed-check')
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
 app.use(cors())
+app.use(helmet())
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
+    fontSrc: ["'self'", 'data:']
+  }
+}))
 
 require('./helpers')(app)
 
