@@ -37,3 +37,14 @@
 #register-pupils {
   table-layout: fixed;
 }
+
+.pupil-name-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-cell {
+  padding-left: pem(10px);
+  padding-right: pem(10px);
+}

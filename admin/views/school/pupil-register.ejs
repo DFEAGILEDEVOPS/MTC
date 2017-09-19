@@ -21,7 +21,7 @@
         <table id='register-pupils' class="spacious">
             <thead>
                 <tr>
-                    <th scope="col">
+                    <th scope="col" style="width: 66%">
                         <a class="no-underline" href=<%= `/school/pupil-register/lastName/${sortOrder}` %> >
                             Name
                             <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
@@ -43,7 +43,7 @@
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td>
+                    <td class="pupil-name-container">
                         <span class="<% if (highlight.has(p._id.toString())) { %>highlight<% } %>"></span>
                         <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                             <%= `${p.lastName}, ${p.foreName}` %>
@@ -54,8 +54,8 @@
                         </div>
                         <% } %>
                     </td>
-                    <td class="numeric"><%= p.group %></td>
-                    <td class="numeric"><%= p.score %></td>
+                    <td class="numeric table-cell"><%= p.group %></td>
+                    <td class="numeric table-cell"><%= p.score %></td>
                 </tr>
             <% }) %>
             </tbody>
