@@ -6,12 +6,14 @@ Given(/^I want to edit a previously added pupil$/) do
   step "the pupil details should be stored"
   @page = edit_pupil_page
   # pupil_register_page.load
-  pupil_register_page.find_pupil_row(pupil_name).edit_pupil_link.click
+  @pupil = pupil_register_page.find_pupil_row(pupil_name)
+  @pupil.edit_pupil_link.click
 end
 
 When(/^I update with valid pupil data$/) do
   @updated_upn = UpnGenerator.generate
-  @updated_details_hash = {first_name: "Jimmy", middle_name: "Jim", last_name: "Jarooo", upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
 end
@@ -46,4 +48,14 @@ Then(/^I should see validation errors when i submit with the following names$/) 
     expect(@page.error_summary.last_name.text).to eql 'Check last name for special characters'
     expect(@page.error_messages.map{|message| message.text}).to include 'Check last name for special characters'
   end
+end
+
+And(/^I should see a flash message to state the pupil has been updated$/) do
+  expect(pupil_register_page).to have_info_message
+  expect(pupil_register_page.edited_pupil.text).to eql("#{@updated_details_hash[:last_name]}, #{@updated_details_hash[:first_name]}")
+end
+
+And(/^I should see no flash message displayed$/) do
+  expect(pupil_register_page).to have_no_info_message
+  expect(pupil_register_page).to have_no_edited_pupil
 end
