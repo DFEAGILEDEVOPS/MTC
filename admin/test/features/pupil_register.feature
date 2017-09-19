@@ -25,5 +25,5 @@ Feature:
     Given I am logged in
     When I am on the Pupil Register page
     And I choose to add a pupil by clicking Add Pupils link
-    Then I should see the added pupil details on the manage pupils page
+    Then I should see the added pupil details on the pupil register page
 
