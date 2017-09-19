@@ -20,8 +20,11 @@ end
 
 And(/^I choose to add a pupil by clicking Add Pupils link$/) do
   pupil_register_page.add_pupil.click
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
-  step "I have submitted valid pupil details"
+  step "I submit the form with the name fields set as #{pupil_name}"
+  # step "I am on the add pupil page"
+  # step "I have submitted valid pupil details"
 end
 
 And(/^I choose to edit the first pupil in the list$/) do
@@ -117,7 +120,7 @@ end
 
 
 Then(/^I should see the pupil's pin as (.*)$/) do |text|
-  expect(manage_pupil_page.find_pupil_row('Pupil Fifteen').pin.text).to eql(text)
+  expect(manage_pupil_page.find_pupil_row('Hallie Mosley').pin.text).to eql(text)
 end
 
 Given(/^I have a pupil whose pin is not generated$/) do
