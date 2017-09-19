@@ -60,3 +60,10 @@ Feature:
     Then I should see the breadcrumb as "Home > Manage check windows"
     And I click the Home link on breadcrumb
     Then I should be taken to the admin page
+
+  Scenario: Verify breadcrumb for pupil not taking check page
+    Given I am logged in
+    When I am on the pupils not taking check page
+    Then I should see the breadcrumb as "Home > Pupils not taking the check"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
