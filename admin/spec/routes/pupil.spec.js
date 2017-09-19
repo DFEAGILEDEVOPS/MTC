@@ -67,7 +67,7 @@ describe('pupil controller:', () => {
       it('catches errors in the render() call', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        spyOn(res, 'render').andThrow('test')
+        spyOn(res, 'render').and.throwError('test')
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
@@ -131,7 +131,7 @@ describe('pupil controller:', () => {
 
       it('saves the new pupil and redirects to the manage pupils page', async (done) => {
         spyOn(pupilMock.prototype, 'save')
-        spyOn(pupilValidator, 'validate').andReturn(Promise.resolve(new ValidationError()))
+        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -141,8 +141,8 @@ describe('pupil controller:', () => {
       })
 
       it('it calls next if it can\'t save the pupil', async (done) => {
-        spyOn(pupilMock.prototype, 'save').andThrow()
-        spyOn(pupilValidator, 'validate').andReturn(Promise.resolve(new ValidationError()))
+        spyOn(pupilMock.prototype, 'save').and.throwError()
+        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -154,7 +154,7 @@ describe('pupil controller:', () => {
         spyOn(pupilMock.prototype, 'save')
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
-        spyOn(pupilValidator, 'validate').andReturn(Promise.resolve(validationError))
+        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(validationError))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -180,9 +180,9 @@ describe('pupil controller:', () => {
           mongooseError = error
         }
         // This is a little clumsy - using the mock to throw the real mongooseError
-        spyOn(pupilMock.prototype, 'validate').andThrow(mongooseError)
+        spyOn(pupilMock.prototype, 'validate').and.throwError(mongooseError)
         // A blank error object
-        spyOn(pupilValidator, 'validate').andReturn(Promise.resolve(new ValidationError()))
+        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         const res = getRes()
         const req = getReq(goodReqParams)
         req.body = {}

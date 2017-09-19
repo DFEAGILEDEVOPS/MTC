@@ -15,6 +15,7 @@ Feature:
     When I update with valid pupil data
     Then this should be saved
     And I should see the updated pupil details on the pupil register page
+    And I should see a flash message to state the pupil has been updated
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
@@ -36,10 +37,10 @@ Feature:
     When I submit the form with the name fields set as Mary Jane
     Then the pupil details should be stored
 
-   @local
   Scenario: Users can navigate back to the profile page
     When I decide to go back
     Then I should be taken to the Pupil register page
+    And I should see no flash message displayed
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
