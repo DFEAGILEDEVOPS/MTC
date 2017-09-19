@@ -258,6 +258,13 @@ input {
   @include button($grey-3);
 
   margin-top: em(20);
+  &:not(:last-child) {
+    margin-right: pem(10px);
+  }
+
+  @include ie(8) {
+    margin-right: pem(10px);
+  }
 
   @include media(tablet) {
     margin-top: 0;
