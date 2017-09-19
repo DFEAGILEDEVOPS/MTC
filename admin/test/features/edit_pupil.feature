@@ -16,7 +16,6 @@ Feature:
     And I should see a flash message to state the pupil has been updated
     And I should see the updated pupil details on the pupil register page
 
-
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
     Then the pupil details should not be stored
