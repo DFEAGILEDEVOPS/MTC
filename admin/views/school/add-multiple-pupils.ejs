@@ -1,0 +1,47 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<header class="page-header">
+    <h1 class="heading-xlarge">Add multiple pupils</h1>
+</header>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h3 class="heading-medium">Download Template</h3>
+        <ol class="list list-number">
+            <li>Download the template
+                <div class="panel panel-border-wide">
+                    <div class="icon-file-download pupils-template"></div>
+                    <a href="#">Pupil details template</a> (CSV file)
+                </div>
+            </li>
+            <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+            <li>Add pupil details using the given format</li>
+            <li>Save as a CSV file on your computer</li>
+            <li>Select 'Choose file' button and navigate to the file on your computer</li>
+            <li>Choose the file to upload</li>
+        </ol>
+    </div>
+    <div class="column-two-thirds">
+        <h3 class="heading-medium">Upload File</h3>
+        <form action="" method="post" name="upload-template">
+            <div class="form-group">
+                <input type="file" id="file-input">
+            </div>
+            <div class="form-group">
+                <input type="submit" class="button" value="Save"/>
+                <a href="#" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="back-to-top-container">
+    <a href="#top">Back to top</a>
+</div>
