@@ -98,7 +98,7 @@ const postAddPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
-const getAddMultiple = async (req, res, next) => {
+const getAddMultiplePupils = async (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
@@ -269,7 +269,7 @@ const getPrintPupils = async (req, res, next) => {
 module.exports = {
   getAddPupil,
   postAddPupil,
-  getAddMultiple,
+  getAddMultiplePupils,
   getAddMultiplePupilsCSVTemplate,
   getEditPupilById,
   postEditPupil,
