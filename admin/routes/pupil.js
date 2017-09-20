@@ -13,7 +13,7 @@ const { getAddPupil,
 const pupil = (router) => {
   router.get('/pupil/add', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getAddPupil(req, res, next))
   router.post('/pupil/add', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postAddPupil(req, res, next))
-  router.get('/pupil/add-multiples', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getAddMultiplePupils(req, res, next))
+  router.get('/pupil/add-batch-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getAddMultiplePupils(req, res, next))
   router.get('/pupil/download-multiple-template', isAuthenticated(config.ROLE_TEACHER), (req, res) => getAddMultiplePupilsCSVTemplate(req, res))
   router.get('/pupil/edit/:id', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getEditPupilById(req, res, next))
   router.post('/pupil/edit', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postEditPupil(req, res, next))
