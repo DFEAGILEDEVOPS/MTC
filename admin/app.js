@@ -85,7 +85,7 @@ var oneYearInSeconds = 31536000
 app.use(helmet.hsts({
   maxAge: oneYearInSeconds,
   includeSubDomains: true,
-  preload: true
+  preload: false
 }))
 
 // force HTTPS in production mode
