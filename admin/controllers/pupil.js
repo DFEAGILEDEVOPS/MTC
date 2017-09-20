@@ -111,7 +111,7 @@ const getAddMultiple = async (req, res, next) => {
   }
 }
 
-const getMultipleTemplate = async (req, res) => {
+const getAddMultiplePupilsCSVTemplate = async (req, res) => {
   const file = 'assets/csv/multiple_pupils_template.csv'
   res.download(file)
 }
@@ -270,7 +270,7 @@ module.exports = {
   getAddPupil,
   postAddPupil,
   getAddMultiple,
-  getMultipleTemplate,
+  getAddMultiplePupilsCSVTemplate,
   getEditPupilById,
   postEditPupil,
   getManagePupils,
