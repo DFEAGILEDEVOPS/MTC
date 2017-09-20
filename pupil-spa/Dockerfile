@@ -25,6 +25,9 @@ RUN $(npm bin)/ng build --prod
 
 FROM nginx:1.13.3-alpine
 
+# defer until SSL integrated, need to get package
+# RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+
 ## Copy our default nginx config
 COPY nginx/default.conf /etc/nginx/conf.d/
 
