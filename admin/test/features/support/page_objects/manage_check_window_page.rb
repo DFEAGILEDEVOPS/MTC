@@ -3,7 +3,6 @@ class ManageCheckWindowPage < SitePrism::Page
 
   element :heading, '.heading-xlarge', text: 'Manage check windows'
   element :page_instructions, '.lede', text: 'Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.'
-  # element :create_new_window, 'input[value="Create new check window"]'
   element :create_new_window, 'a[href="/administrator/check-windows/add"]'
   element :panel, '.panel-border-wide', text: "Check will be available for schools on weekdays from 8am to 3:30pm"
   element :guidance, "h3 + .list li a[href='/PDFs/MTC_administration_guidance_June-2017-trial.pdf']", text: 'Guidance'

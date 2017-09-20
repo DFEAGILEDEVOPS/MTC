@@ -1,11 +1,12 @@
 
 And(/^I want to edit a previously added check$/) do
+  step 'I am logged in with a test developer'
+  step 'I am on the manage check windows page'
   manage_check_window_page.create_new_window.click
   @page = add_edit_check_window_page
   step 'I create new check window with valid data'
   @chk_window = manage_check_window_page.find_check_row(@check_window_name)
   @chk_window.check_window.click
-  # @page = add_edit_check_window_page
 end
 
 And(/^I create new check window with valid data$/) do
