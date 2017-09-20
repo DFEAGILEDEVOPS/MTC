@@ -1,5 +1,4 @@
 const moment = require('moment')
-
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
@@ -110,6 +109,11 @@ const getAddMultiple = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+
+const getMultipleTemplate = async (req, res) => {
+  const file = 'assets/csv/multiple_pupils_template.csv'
+  res.download(file)
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -266,6 +270,7 @@ module.exports = {
   getAddPupil,
   postAddPupil,
   getAddMultiple,
+  getMultipleTemplate,
   getEditPupilById,
   postEditPupil,
   getManagePupils,

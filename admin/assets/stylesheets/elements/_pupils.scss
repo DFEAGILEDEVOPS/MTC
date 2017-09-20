@@ -38,7 +38,13 @@
   table-layout: fixed;
 }
 
+// Add multiple pupil
+
 .icon-file-download.pupils-template {
   display:inline-block;
   vertical-align:middle;
+}
+
+.template-link {
+  cursor: pointer;
 }
