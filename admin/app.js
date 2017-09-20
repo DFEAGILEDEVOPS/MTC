@@ -89,10 +89,13 @@ app.use(helmet.hsts({
 }))
 
 // force HTTPS in production mode
+// azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
+// if production ensure x-forwarded-proto is https OR x-arr-ssl is present
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
-    app.enable('trust proxy')
-    app.use(forceSsl())
+    if (req.header('x-forwarded-proto') !== 'https' || !req.header('x-arr-ssl')) {
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    }
   } else {
     next()
   }
