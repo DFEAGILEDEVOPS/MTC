@@ -72,7 +72,7 @@ app.use(helmet.contentSecurityPolicy({
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
     fontSrc: ["'self'", 'data:'],
     styleSrc: ["'self'"],
-    imgSrc: ["'self'"],
+    imgSrc: ["'self'", 'https://www.google-analytics.com'],
     connectSrc: ["'self'"],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],
