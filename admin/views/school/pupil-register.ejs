@@ -47,7 +47,7 @@
                         <% if (highlight.has(p._id.toString())) { %>
                         <div class="highlight"></div>
                         <% } %>
-                        <div class="pupil-name truncate <% if (highlight.has(p._id.toString())) { %>indent<% } %>%>">
+                        <div class="pupil-name <% if (highlight.has(p._id.toString())) { %>indent<% } %>%>">
                             <div class="truncate">
                                 <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                                     <%= `${p.lastName}, ${p.foreName}` %>
