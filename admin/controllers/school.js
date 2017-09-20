@@ -361,6 +361,18 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+const getSelectPupilNotTakingCheck = async (req, res, next) => {
+  res.locals.pageTitle = 'Select pupils not taking the check'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  // @TODO The code below may need refactoring if more reasons
+  // to skip the check are needed.
+
+  return res.render('school/select-pupils-not-taking-check', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 module.exports = {
   getHome,
   getPupils,
@@ -372,5 +384,6 @@ module.exports = {
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted,
-  getPupilNotTakingCheck
+  getPupilNotTakingCheck,
+  getSelectPupilNotTakingCheck
 }
