@@ -8,11 +8,13 @@ Feature:
 
   Scenario: Edit details page has fields to capture pupil data
     Then I should see fields that will allow me to capture pupil data
-
+    And the fields are pre populated with the data
+    
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
     And I should see a flash message to state the pupil has been updated
+    And I should see the updated pupil details on the pupil register page
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details

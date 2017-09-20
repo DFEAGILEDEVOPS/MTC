@@ -10,7 +10,8 @@ const { getHome,
   postSubmitAttendance,
   getDeclarationForm,
   postDeclarationForm,
-  getHDFSubmitted } = require('../controllers/school')
+  getHDFSubmitted,
+  getPupilNotTakingCheck } = require('../controllers/school')
 
 const school = (router) => {
   router.get('/school-home', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getHome(req, res, next))
@@ -23,6 +24,7 @@ const school = (router) => {
   router.get('/declaration-form', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getDeclarationForm(req, res, next))
   router.post('/submit-declaration-form', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postDeclarationForm(req, res, next))
   router.get('/declaration-form-submitted', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getHDFSubmitted(req, res, next))
+  router.get('/pupils-not-taking-check', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
 }
 
 module.exports = school

@@ -9,7 +9,7 @@ const Pupil = require('../../models/pupil')
 const pupilValidationSchema = {
   'foreName': {
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\' 0-9]+$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]+$')],
       errorMessage: addPupilErrorMessages.firstNameInvalidCharacters
     },
     notEmpty: true,
@@ -18,13 +18,13 @@ const pupilValidationSchema = {
   'middleNames': {
     optional: true,
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\' 0-9]*$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]*$')],
       errorMessage: addPupilErrorMessages.middleNameInvalidCharacters
     }
   },
   'lastName': {
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\' 0-9]+$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]+$')],
       errorMessage: addPupilErrorMessages.lastNameInvalidCharacters
     },
     notEmpty: true,
