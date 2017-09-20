@@ -23,7 +23,7 @@
                 <tr>
                     <th scope="col" style="width: 66%">
                         <a class="no-underline" href=<%= `/school/pupil-register/lastName/${sortOrder}` %> >
-                            Name
+                            Pupil
                             <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
                         </a>
                     </th>
@@ -45,16 +45,21 @@
                 <tr>
                     <td class="pupil-name-container">
                         <% if (highlight.has(p._id.toString())) { %>
-                        <span class="highlight"></span>
+                        <div class="highlight"></div>
                         <% } %>
-                        <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
-                            <%= `${p.lastName}, ${p.foreName}` %>
-                        </a>
-                        <% if (p.showDoB) { %>
-                        <div class="font-greyed-out font-xsmall">
-                            Date of birth: <%= p.dob %>
+                        <div class="pupil-name truncate <% if (highlight.has(p._id.toString())) { %>indent<% } %>%>">
+                            <div class="truncate">
+                                <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
+                                    <%= `${p.lastName}, ${p.foreName}` %>
+                                </a>
+                            </div>
+
+                            <% if (p.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= p.dob %>
+                            </div>
+                            <% } %>
                         </div>
-                        <% } %>
                     </td>
                     <td class="numeric table-cell"><%= p.group %></td>
                     <td class="numeric table-cell"><%= p.score %></td>
