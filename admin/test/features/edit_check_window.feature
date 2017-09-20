@@ -1,11 +1,7 @@
-
 Feature: Edit Check Window
 
-
   Background:
-    Given I am logged in with a test developer
-    And I am on the manage check windows page
-    And I want to edit a previously added check
+    Given I want to edit a previously added check
 
   Scenario: Edit check window displays pre populated data
     Then I would see the edit check fields prepopulated with the data
