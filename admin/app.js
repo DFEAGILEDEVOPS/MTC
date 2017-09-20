@@ -77,6 +77,14 @@ app.use(helmet.contentSecurityPolicy({
   }
 }))
 
+// Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
+var oneYearInSeconds = 31536000
+app.use(helmet.hsts({
+  maxAge: oneYearInSeconds,
+  includeSubDomains: true,
+  preload: true
+}))
+
 require('./helpers')(app)
 
 // view engine setup
