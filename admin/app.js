@@ -25,9 +25,9 @@ const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
 const flash = require('connect-flash')
 const helmet = require('helmet')
-const fs = require('fs')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
+const forceSsl = require('express-enforces-ssl')
 
 const unsetVars = []
 Object.keys(config).map((key) => {
@@ -61,6 +61,9 @@ const completedCheck = require('./routes/completed-check')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
+
+/* Security Directives */
+
 app.use(cors())
 app.use(helmet())
 app.use(helmet.contentSecurityPolicy({
@@ -84,6 +87,18 @@ app.use(helmet.hsts({
   includeSubDomains: true,
   preload: true
 }))
+
+// force HTTPS in production mode
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    app.enable('trust proxy')
+    app.use(forceSsl())
+  } else {
+    next()
+  }
+})
+
+/* END:Security Directives */
 
 require('./helpers')(app)
 
@@ -146,7 +161,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    {passReqToCallback: true},
+    { passReqToCallback: true },
     require('./authentication/local-strategy')
   )
 )
@@ -156,14 +171,6 @@ passport.use(
 if (process.env.NODE_ENV === 'production') {
   app.use(require('./lib/azure-upload'))
 }
-
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
-    res.redirect(`https://${req.header('host')}${req.url}`)
-  } else {
-    next()
-  }
-})
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates
