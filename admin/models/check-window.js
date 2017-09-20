@@ -56,7 +56,7 @@ CheckWindow.statics.getCheckWindow = function (checkWindowId) {
     try {
       checkWindow = await this.findOne({'_id': checkWindowId}).exec()
     } catch (error) {
-      reject(error)
+      return reject(error)
     }
     resolve(checkWindow)
   })
