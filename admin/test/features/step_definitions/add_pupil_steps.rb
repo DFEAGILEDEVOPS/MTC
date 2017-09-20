@@ -16,6 +16,19 @@ Then(/^I should see fields that will allow me to capture pupil data$/) do
   expect(@page).to have_male
 end
 
+And(/^the fields are pre populated with the data$/) do
+  expect(@page.first_name.value.eql?(@details_hash[:first_name])).to be_truthy, "Expected Firstname: #{@details_hash[:first_name]}... But Got Actual :#{@page.first_name.value}"
+  expect(@page.last_name.value.eql?(@details_hash[:last_name])).to be_truthy, "Expected Lastname: #{@details_hash[:last_name]}... But Got Actual :#{@page.last_name.value}"
+  expect(@page.upn.value.eql?(@details_hash[:upn]).to_s).to be_truthy, "Expected UPN: #{@details_hash[:upn]}... But Got Actual :#{@page.upn.value}"
+  expect(@page.first_name.value.eql?(@details_hash[:day]).to_s).to be_truthy, "Expected day: #{@details_hash[:day]}... But Got Actual :#{@page.day.value}"
+  expect(@page.first_name.value.eql?(@details_hash[:month]).to_s).to be_truthy, "Expected month: #{@details_hash[:month]}... But Got Actual :#{@page.month.value}"
+  expect(@page.year.value.eql?(@details_hash[:year]).to_s).to be_truthy, "Expected year: #{@details_hash[:year]}... But Got Actual :#{@page.year.value}"
+  if(@details_hash[:female] == true)
+    expect(@page.female.checked?).to be_truthy, "Expected Femail radio to be selected...But Actual : Not Selected"
+    expect(@page.male.checked?).to be_falsy, "Expected Male radio to be selected...But Actual : Not Selected"
+  end
+end
+
 When(/^I submit the form without the completing mandatory fields$/) do
   @page.enter_details({
                           middle_name: 'Middle'
