@@ -1,0 +1,89 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row" aria-describedby="heading-xlarge">
+    <div class="column-two-thirds" id="checkWindowsForm">
+        <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0">Select pupils not taking the check</h1>
+
+        <br />
+
+        <% if (attendanceCodes && attendanceCodes.length > 1) { %>
+        <form method="post">
+            <h2>1. Select reason</h2>
+
+            <ul class="list attendance-code-list">
+                <% attendanceCodes.forEach( (ac) => { %>
+                <li>
+                    <div class="multiple-choice">
+                        <input id="attendance-code-<%= ac.code %>"
+                               type="radio"
+                               role="radio"
+                               aria-checked="false"
+                               name="attendanceCode"
+                               value="<%= ac.code %>"
+                               <% if (formData && formData['attendanceCode'] === ac.code) { %>checked="checked"<% } %>
+                        />
+                        <label for="attendance-code-<%= ac.code %>"><%= ac.reason %></label>
+                    </div>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </form>
+
+        <div class="master-detail text">
+            <details>
+                <summary><span class="summary"> What do these reasons mean? </span></summary>
+                <ul class="panel-no-border attendance-reasons">
+                    <li>
+                        <div><strong>Absent</strong></div>
+                        <div>Pupil has not taken the check due to absence</div>
+                    </li>
+                    <li>
+                        <div><strong>Left school</strong></div>
+                        <div>Pupil has left the school</div>
+                    </li>
+                    <li>
+                        <div><strong>Incorrect registration</strong></div>
+                        <div>Pupil has been incorrectly added to the Pupil Register. They may have been added by the school, or incorrectly included in the pre-populated list</div>
+                    </li>
+                    <li>
+                        <div><strong>Withdrawn</strong></div>
+                        <div>Pupil has been withdrawn from the check.</div>
+                        <div>This includes pupils who:</div>
+                        <ul>
+                            <li>have just arrived and you have not had time to assess their abilities</li>
+                            <li>have no understanding of multiplication tables</li>
+                            <li>are unable to access the check</li>
+                        </ul>
+                    </li>
+                </ul>
+            </details>
+        </div>
+
+        <br class="clearfix"/>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+
+    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium" tabindex="0">Start check</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="#">Generate PINs</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
