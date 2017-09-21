@@ -41,7 +41,7 @@ module.exports = {
         }
       })
 
-      mongoose.disconnect()
+      mongoose.disconnect(() => next())
     })
   },
 
