@@ -6,7 +6,7 @@ describe 'Security API spec' do
       expect(response.code).to eql 200
       expect(response.headers['x-dns-prefetch-control']).to eql 'off'
       expect(response.headers['x-frame-options']).to eql 'SAMEORIGIN'
-      expect(response.headers['strict-transport-security']).to eql "max-age=15552000; includeSubDomains"
+      expect(response.headers['strict-transport-security']).to eql "max-age=31536000"
       expect(response.headers['x-download-options']).to eql 'noopen'
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-xss-protection']).to eql "1; mode=block"
@@ -19,11 +19,11 @@ describe 'Security API spec' do
   context 'GET request to SPA home' do
     it 'should return response header' do
       request_helper = RequestHelper.new
-      response = request_helper.admin_home
+      response = request_helper.spa_home
       expect(response.code).to eql 200
       expect(response.headers['x-dns-prefetch-control']).to eql 'off'
       expect(response.headers['x-frame-options']).to eql 'SAMEORIGIN'
-      expect(response.headers['strict-transport-security']).to eql "max-age=15552000; includeSubDomains"
+      expect(response.headers['strict-transport-security']).to eql "max-age=31536000"
       expect(response.headers['x-download-options']).to eql 'noopen'
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-xss-protection']).to eql "1; mode=block"
