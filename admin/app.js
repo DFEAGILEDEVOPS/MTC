@@ -27,7 +27,7 @@ const flash = require('connect-flash')
 const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
-const forceSsl = require('express-enforces-ssl')
+const azure = require('./azure')
 
 const unsetVars = []
 Object.keys(config).map((key) => {
@@ -88,15 +88,10 @@ app.use(helmet.hsts({
   preload: false
 }))
 
-// identify azure by specific environment variable
-function isAzure () {
-  return process.env.KUDU_APPPATH
-}
-
 // azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
 // if production ensure x-forwarded-proto is https OR x-arr-ssl is present
 app.use((req, res, next) => {
-  if (isAzure()) {
+  if (azure.isAzure()) {
     app.enable('trust proxy')
     req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
   }
@@ -105,7 +100,7 @@ app.use((req, res, next) => {
 
 // force HTTPS in azure
 app.use((req, res, next) => {
-  if (isAzure()) {
+  if (azure.isAzure()) {
     if (req.protocol !== 'https') {
       res.redirect(`https://${req.header('host')}${req.url}`)
     }
