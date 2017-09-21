@@ -45,3 +45,7 @@ end
 When(/^I click Pupil Register link$/) do
   school_landing_page.pupil_register.click
 end
+
+Then(/^I should be taken to the Manage Check Window page$/) do
+  expect(manage_check_window_page).to be_displayed
+end
