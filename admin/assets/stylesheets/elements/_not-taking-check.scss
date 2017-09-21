@@ -1,0 +1,13 @@
+.attendance-code-list {
+  overflow: hidden;
+
+  li {
+    overflow: hidden;
+    margin-top: 15px;
+
+    @include media(desktop) {
+      width: 50%;
+      float: left;
+    }
+  }
+}
