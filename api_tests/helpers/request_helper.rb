@@ -7,11 +7,11 @@ class RequestHelper
   end
 
   def admin_home()
-    self.class.get(BASE_URL)
+    self.class.get('http://admin-dev-mtc.azurewebsites.net/sign-in')
   end
 
   def spa_home()
-    self.class.get('http://localhost:3002')
+    self.class.get('https://pupil-dev-mtc.azurewebsites.net/sign-in')
   end
 
 
