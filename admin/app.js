@@ -25,6 +25,7 @@ const flash = require('connect-flash')
 const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
+const azure = require('./azure')
 
 const unsetVars = []
 Object.keys(config).map((key) => {
@@ -58,6 +59,9 @@ const completedCheck = require('./routes/completed-check')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
+
+/* Security Directives */
+
 app.use(cors())
 app.use(helmet())
 app.use(helmet.contentSecurityPolicy({
@@ -66,7 +70,7 @@ app.use(helmet.contentSecurityPolicy({
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
     fontSrc: ["'self'", 'data:'],
     styleSrc: ["'self'"],
-    imgSrc: ["'self'"],
+    imgSrc: ["'self'", 'https://www.google-analytics.com'],
     connectSrc: ["'self'"],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],
@@ -78,9 +82,32 @@ app.use(helmet.contentSecurityPolicy({
 var oneYearInSeconds = 31536000
 app.use(helmet.hsts({
   maxAge: oneYearInSeconds,
-  includeSubDomains: true,
-  preload: true
+  includeSubDomains: false,
+  preload: false
 }))
+
+// azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
+// if production ensure x-forwarded-proto is https OR x-arr-ssl is present
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    app.enable('trust proxy')
+    req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
+  }
+  next()
+})
+
+// force HTTPS in azure
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    if (req.protocol !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    }
+  } else {
+    next()
+  }
+})
+
+/* END:Security Directives */
 
 require('./helpers')(app)
 
@@ -143,7 +170,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    {passReqToCallback: true},
+    { passReqToCallback: true },
     require('./authentication/local-strategy')
   )
 )
@@ -153,14 +180,6 @@ passport.use(
 if (process.env.NODE_ENV === 'production') {
   app.use(require('./lib/azure-upload'))
 }
-
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
-    res.redirect(`https://${req.header('host')}${req.url}`)
-  } else {
-    next()
-  }
-})
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates
