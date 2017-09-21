@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
-const AttendanceCodes = new Schema({
+const AttendanceCode = new Schema({
   reason: {
     type: String,
     required: true
@@ -13,4 +13,14 @@ const AttendanceCodes = new Schema({
   }
 }, {timestamps: true})
 
-module.exports = mongoose.model('AttendanceCodes', AttendanceCodes)
+AttendanceCode.statics.getAttendanceCodes = function () {
+  let attendanceCodes
+  try {
+    attendanceCodes = this.find()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+  }
+  return attendanceCodes
+}
+
+module.exports = mongoose.model('AttendanceCode', AttendanceCode)

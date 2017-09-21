@@ -13,7 +13,31 @@
 
         <br />
 
-        <h2>1. Select reason</h2>
+        <% if (attendanceCodes && attendanceCodes.length > 1) { %>
+        <form method="post">
+            <h2>1. Select reason</h2>
+
+            <ul class="list attendance-code-list">
+                <% attendanceCodes.forEach( (ac) => { %>
+                <li>
+                    <div class="multiple-choice">
+                        <input id="attendance-code-<%= ac.code %>"
+                               type="radio"
+                               role="radio"
+                               aria-checked="false"
+                               name="attendanceCode"
+                               value="<%= ac.code %>"
+                               <% if (formData && formData['attendanceCode'] === ac.code) { %>checked="checked"<% } %>
+                        />
+                        <label for="attendance-code-<%= ac.code %>"><%= ac.reason %></label>
+                    </div>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </form>
+
+        <br class="clearfix"/>
 
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
