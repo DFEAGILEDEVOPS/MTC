@@ -11,3 +11,16 @@
     }
   }
 }
+
+.panel-no-border.attendance-reasons {
+  margin-top: 0;
+
+  li {
+    margin-bottom: 15px;
+
+    ul > li {
+      list-style-type: disc;
+      margin-bottom: 5px;
+    }
+  }
+}
