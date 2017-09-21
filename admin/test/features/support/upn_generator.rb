@@ -14,6 +14,6 @@ class UpnGenerator
       index += 1
       @array
     end
-    (UpnHelper.check_letter_hash[@array.inject(0, :+) % 23]) + upn.first
+     p (UpnHelper.check_letter_hash[@array.inject(0, :+) % 23]) + upn.first
   end
 end

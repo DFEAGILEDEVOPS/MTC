@@ -18,7 +18,7 @@ class SchoolLandingPage < SitePrism::Page
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
 
   element :before_you_start, '#content h3'
-  element :guidance, "h3 + .list li a", text: 'Guidance'
+  element :guidance, 'aside.support-column nav li a', text: 'Guidance'
 
 end
 
