@@ -64,5 +64,6 @@
         ]
     },
     "__v" : 0,
-    "checkWindow" : 123
+    "checkWindow" : 123,
+    "receivedByServerAt" : "2017-09-14T23:55:45.021Z"
 }
