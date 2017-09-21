@@ -84,7 +84,7 @@ app.use(helmet.contentSecurityPolicy({
 var oneYearInSeconds = 31536000
 app.use(helmet.hsts({
   maxAge: oneYearInSeconds,
-  includeSubDomains: true,
+  includeSubDomains: false,
   preload: false
 }))
 
