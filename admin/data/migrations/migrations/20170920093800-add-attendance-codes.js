@@ -18,7 +18,6 @@ module.exports = {
         await createAttendanceCode('Left', 2)
         await createAttendanceCode('Incorrect Registration', 3)
         await createAttendanceCode('Withdrawn', 4)
-        console.log('migration done')
         mongoose.disconnect(() => next())
       } catch (error) {
         console.log('ERROR', error)
