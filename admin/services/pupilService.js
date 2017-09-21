@@ -46,8 +46,8 @@ const pupilService = {
   fetchScoreDetails: (answers) => {
     const pupilScore = answers && answers.result
     const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
-    const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'n/a'
-    const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'n/a'
+    const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'N/A'
+    const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'N/A'
     return {
       hasScore,
       score,

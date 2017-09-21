@@ -16,6 +16,7 @@ class PupilRegisterPage < SitePrism::Page
   section :pupil_list, '#register-pupils' do
     sections :pupil_row, 'tbody tr' do
       element :names, 'td:nth-child(1)'
+      element :edited_pupil, '.highlight'
       element :group, 'td:nth-child(2)'
       element :result, 'td:nth-child(3)'
       element :edit_pupil_link, 'a'

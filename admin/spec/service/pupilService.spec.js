@@ -23,8 +23,8 @@ describe('pupil service', () => {
 
   it('fetchScoreDetails should return n/a score and percentage if answers object is undefined', (done) => {
     const { score, percentage } = pupilService.fetchScoreDetails(undefined)
-    expect(score).toBe('n/a')
-    expect(percentage).toBe('n/a')
+    expect(score).toBe('N/A')
+    expect(percentage).toBe('N/A')
     done()
   })
 

@@ -371,5 +371,6 @@ end
 
 Then(/^I should see a flash message to state the pupil has been added$/) do
   expect(pupil_register_page).to have_info_message
-  expect(pupil_register_page.edited_pupil.text).to eql("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  hightlighted_row = pupil_register_page.pupil_list.pupil_row.find{|row| row.has_edited_pupil?}
+  expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
 end
