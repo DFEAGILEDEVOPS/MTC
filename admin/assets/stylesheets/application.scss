@@ -62,13 +62,25 @@ $mainstream-brand: $department-for-education;
   white-space: nowrap;
 }
 
-.sidebar-top-border {
-  border-top: $gutter-one-third solid $link-colour;
-  margin-top: $gutter-and-a-half;
-  padding: 0;
+.add-title-margin {
+  margin-top: 40px;
+}
 
-  h3 {
-    margin-top: $gutter-two-thirds;
+.support-column {
+  border-top: 10px solid $mainstream-brand;
+  padding-top: 10px;
+
+  ul {
+    @include core-16();
+
+    list-style: none;
+  }
+
+  h2, h3, h4 {
+    @include bold-24();
+
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
   }
 }
 
