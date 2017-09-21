@@ -8,40 +8,22 @@ const AttendanceCode = require('../../../models/attendance-code')
 module.exports = {
   up (db, next) {
     mongoose.connect(config.mongodb.url, async error => {
-      const attendaceCodesToExport =
-        [
-          {
-            'reason': 'Absent',
-            'code': 1
-          },
-          {
-            'reason': 'Left',
-            'code': 2
-          },
-          {
-            'reason': 'Incorrect Registration',
-            'code': 3
-          },
-          {
-            'reason': 'Withdrawn',
-            'code': 4
-          }
-        ]
 
       if (error) {
         next(new Error('Could not connect to mongodb: ' + error.message))
       }
 
-      await attendaceCodesToExport.forEach(async (ac, i) => {
-        try {
-          await createAttendanceCode(ac.reason, ac.code)
-        } catch (error) {
-          console.log('ERROR', error)
-          next(error)
-        }
-      })
-
-      mongoose.disconnect(() => next())
+      try {
+        await createAttendanceCode('Absent', 1)
+        await createAttendanceCode('Left', 2)
+        await createAttendanceCode('Incorrect Registration', 3)
+        await createAttendanceCode('Withdrawn', 4)
+        console.log('migration done')
+        mongoose.disconnect(() => next())
+      } catch (error) {
+        console.log('ERROR', error)
+        next(error)
+      }
     })
   },
 
