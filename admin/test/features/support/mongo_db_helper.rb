@@ -87,4 +87,11 @@ class MongoDbHelper
     collection.find.each {|setting| setting}
   end
 
+  def self.check_window_details(check_name)
+    result = []
+    collection=CLIENT[:checkwindows].find({'checkWindowName': check_name})
+    collection.each {|a| result << a}
+    result.first
+  end
+
 end

@@ -24,7 +24,7 @@ const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
 const flash = require('connect-flash')
-
+const helmet = require('helmet')
 const fs = require('fs')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
@@ -62,20 +62,30 @@ const completedCheck = require('./routes/completed-check')
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
 app.use(cors())
+app.use(helmet())
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
+    fontSrc: ["'self'", 'data:'],
+    styleSrc: ["'self'"],
+    imgSrc: ["'self'"],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    mediaSrc: ["'none'"],
+    childSrc: ["'none'"]
+  }
+}))
+
+// Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
+var oneYearInSeconds = 31536000
+app.use(helmet.hsts({
+  maxAge: oneYearInSeconds,
+  includeSubDomains: true,
+  preload: true
+}))
 
 require('./helpers')(app)
-
-/* for Azure Linux App Service only
-logging is not yet correctly implemented, so this is a temporary workaround
- see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
- */
-if (config.STD_LOG_FILE) {
-  const appLog = fs.createWriteStream(config.STD_LOG_FILE)
-  process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
-  process.on('uncaughtException', function (err) {
-    console.error((err && err.stack) || err)
-  })
-}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -170,11 +180,6 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
   // make the flash messages available in the locals for use in view templates
   res.locals.messages = req.flash()
-  next()
-})
-
-app.use(function (req, res, next) {
-  res.removeHeader('X-Powered-By')
   next()
 })
 
