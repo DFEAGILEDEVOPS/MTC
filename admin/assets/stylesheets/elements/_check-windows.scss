@@ -22,4 +22,11 @@ table.spacious {
   .button.button-secondary {
     margin-left: $gutter-half;
   }
+
+  @include media(mobile) {
+    .button.button-secondary {
+      margin-top: 10px;
+      margin-left: 0;
+    }
+  }
 }
