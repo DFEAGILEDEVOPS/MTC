@@ -88,12 +88,25 @@ app.use(helmet.hsts({
   preload: false
 }))
 
-// force HTTPS in production mode
+// identify azure by specific environment variable
+function isAzure () {
+  return process.env.KUDU_APPPATH
+}
+
 // azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
 // if production ensure x-forwarded-proto is https OR x-arr-ssl is present
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production') {
-    if (req.header('x-forwarded-proto') !== 'https' || !req.header('x-arr-ssl')) {
+  if (isAzure()) {
+    app.enable('trust proxy')
+    req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
+  }
+  next()
+})
+
+// force HTTPS in azure
+app.use((req, res, next) => {
+  if (isAzure()) {
+    if (req.protocol !== 'https') {
       res.redirect(`https://${req.header('host')}${req.url}`)
     }
   } else {
