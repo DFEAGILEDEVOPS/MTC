@@ -73,3 +73,12 @@ Then(/^local storage should be cleared$/) do
   local_storage = page.evaluate_script('window.localStorage.getItem("config");')
   expect(local_storage).to be_nil
 end
+
+Given(/^I have attempted to enter a school I do not attend upon login$/) do
+  sign_in_page.load
+  MongoDbHelper.expire_pin("Automated","Account",9991999,false)
+  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
+  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
+  sign_in_page.login("stqynzcn","9999a")
+  sign_in_page.sign_in_button.click
+end
