@@ -94,4 +94,13 @@ class MongoDbHelper
     result.first
   end
 
+  def self.get_attendance_codes
+    result = []
+    collection=CLIENT[:attendancecodes]
+    collection.find.each {|a| result << a}
+    hash = {}
+    result.map{|a| hash.merge!(a['code'] => a['reason'])}
+    hash
+  end
+
 end
