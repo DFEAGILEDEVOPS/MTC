@@ -14,7 +14,6 @@ Feature:
   Scenario: Verify breadcrumb on add pupil page
     Given I am logged in
     And I am on the add pupil page
-#    Then I should see the breadcrumb as "Home > Add single pupil"
     Then I should see the breadcrumb as "Home > Pupil Register > Add single pupil"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
