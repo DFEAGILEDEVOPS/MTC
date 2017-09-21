@@ -61,13 +61,25 @@ $mainstream-brand: $department-for-education;
   white-space: nowrap;
 }
 
-.sidebar-top-border {
-  border-top: $gutter-one-third solid $link-colour;
-  margin-top: $gutter-and-a-half;
-  padding: 0;
+.add-title-margin {
+  margin-top: 40px;
+}
 
-  h3 {
-    margin-top: $gutter-two-thirds;
+.support-column {
+  border-top: 10px solid $mainstream-brand;
+  padding-top: 10px;
+
+  ul {
+    @include core-16();
+
+    list-style: none;
+  }
+
+  h2, h3, h4 {
+    @include bold-24();
+
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
   }
 }
 
@@ -258,6 +270,13 @@ input {
   @include button($grey-3);
 
   margin-top: em(20);
+  &:not(:last-child) {
+    margin-right: pem(10px);
+  }
+
+  @include ie(8) {
+    margin-right: pem(10px);
+  }
 
   @include media(tablet) {
     margin-top: 0;
@@ -352,10 +371,3 @@ table.spacious-two-column {
   border-width: 12px 6px 0 6px;
   border-color: $govuk-blue transparent transparent transparent;
 }
-
-// Pupil listing - highlight pupils
-.highlight {
-  border-left: 10px solid $green;
-  padding-bottom: 5px;
-}
-
