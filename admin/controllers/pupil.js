@@ -1,5 +1,4 @@
 const moment = require('moment')
-
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
@@ -24,8 +23,8 @@ const getAddPupil = async (req, res, next) => {
   }
 
   try {
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
-
     res.render('school/add-pupil', {
       school: school.toJSON(),
       error: new ValidationError(),
@@ -97,6 +96,24 @@ const postAddPupil = async (req, res, next) => {
     next(error)
   }
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
+}
+
+const getAddMultiplePupils = async (req, res, next) => {
+  res.locals.pageTitle = 'Add multiple pupils'
+  try {
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('school/add-multiple-pupils', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getAddMultiplePupilsCSVTemplate = async (req, res) => {
+  const file = 'assets/csv/multiple_pupils_template.csv'
+  res.download(file)
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -252,6 +269,8 @@ const getPrintPupils = async (req, res, next) => {
 module.exports = {
   getAddPupil,
   postAddPupil,
+  getAddMultiplePupils,
+  getAddMultiplePupilsCSVTemplate,
   getEditPupilById,
   postEditPupil,
   getManagePupils,
