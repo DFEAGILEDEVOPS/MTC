@@ -41,7 +41,8 @@ const postCheck = async (req, res) => {
       school,
       access_token,
       feedback
-    }
+    },
+    receivedByServerAt: Date.now()
   })
   try {
     await completedData.save()
