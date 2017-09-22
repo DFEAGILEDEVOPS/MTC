@@ -3,6 +3,7 @@ const csv = require('fast-csv')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
+const AttendanceCode = require('../models/attendance-code')
 const randomGenerator = require('../lib/random-generator')
 const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
@@ -361,6 +362,27 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+const getSelectPupilNotTakingCheck = async (req, res, next) => {
+  res.locals.pageTitle = 'Select pupils not taking the check'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  let attendanceCodes
+  let formData
+
+  try {
+    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+    return next(error)
+  }
+
+  return res.render('school/select-pupils-not-taking-check', {
+    breadcrumbs: req.breadcrumbs(),
+    attendanceCodes,
+    formData
+  })
+}
+
 module.exports = {
   getHome,
   getPupils,
@@ -372,5 +394,6 @@ module.exports = {
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted,
-  getPupilNotTakingCheck
+  getPupilNotTakingCheck,
+  getSelectPupilNotTakingCheck
 }
