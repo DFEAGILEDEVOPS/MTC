@@ -3,20 +3,12 @@
 
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
-// const CheckForm = mongoose.model('Dummy-check-form-service', new mongoose.Schema({name: {type: String}}))
 const checkFormMock = require('../mocks/checkform')
-let service, sandbox
-
-class CheckFormModelMock {
-  constructor (cb) {
-    this.done = cb
-  }
-  findOne () { return this }
-  lean () { return this }
-  exec () { return this.done() }
-}
+const CheckFormModelMock = require('../mocks/check-form-model-mock')
 
 describe('check-form.service', () => {
+  let service, sandbox
+
   afterEach(() => {
     sandbox.restore()
   })
