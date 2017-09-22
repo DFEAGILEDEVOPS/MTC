@@ -1,4 +1,4 @@
-let appInsights = require('applicationinsights')
+const appInsights = require('applicationinsights')
 
 // identify azure by specific environment variable
 function isAzure () {
