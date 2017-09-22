@@ -1,5 +1,5 @@
 const CompletedChecks = require('../models/completed-checks')
-const { verify } = require('../services/jwt-service')
+const { verify } = require('../services/jwt.service')
 
 /**
  * Posts answers, audit and pupil input data to the database

@@ -12,7 +12,7 @@ const CheckForm = mongoose.model('Dummy', new Schema({name: {type: String}}))
 const configService = require('../../services/config-service')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const jwtService = require('../../services/jwt-service')
+const jwtService = require('../../services/jwt.service')
 require('sinon-mongoose')
 let sandbox
 let jwtPromiseHelper

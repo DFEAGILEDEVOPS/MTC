@@ -6,7 +6,7 @@ const CheckForm = require('../models/check-form')
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
 const configService = require('../services/config-service')
-const jwtService = require('../services/jwt-service')
+const jwtService = require('../services/jwt.service')
 
 /**
  * Returns the set of questions, pupil details and school details in json format

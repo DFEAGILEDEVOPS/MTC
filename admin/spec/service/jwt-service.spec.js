@@ -38,7 +38,7 @@ describe('JWT service', () => {
 
   describe('creating a token', () => {
     beforeEach(() => {
-      jwtService = require('../../services/jwt-service')
+      jwtService = require('../../services/jwt.service')
     })
 
     it('creates a token', async (done) => {
