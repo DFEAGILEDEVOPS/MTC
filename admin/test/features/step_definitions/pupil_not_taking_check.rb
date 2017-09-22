@@ -45,3 +45,7 @@ end
 Then(/^I should see a option to generate pins$/) do
   expect(pupil_reason_page).to have_generate_pins
 end
+
+Then(/^I should see a section that explains the reasons$/) do
+  expect(pupils_not_taking_check_page.explanation_section).to be_all_there
+end
