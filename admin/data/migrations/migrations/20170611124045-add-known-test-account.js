@@ -5,7 +5,7 @@ const Pupil = require('../../../models/pupil')
 const School = require('../../../models/school')
 const config = require('../config')
 const moment = require('moment')
-const upnService = require('../../../services/upnService')
+const upnService = require('../../../services/upn.service')
 
 module.exports = {
 
