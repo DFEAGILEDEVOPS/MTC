@@ -8,6 +8,10 @@ const CompletedChecks = new Schema({
   data: {
     type: Object,
     required: true
+  },
+  receivedByServerAt: {
+    type: Date,
+    required: true
   }
 })
 
