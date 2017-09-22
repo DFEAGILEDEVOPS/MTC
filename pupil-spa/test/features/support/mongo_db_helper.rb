@@ -110,4 +110,12 @@ class MongoDbHelper
     result
   end
 
+  def self.get_list_of_schools
+    collection=CLIENT[:schools]
+    @array_of_schools = []
+    collection.find.each {|school| @array_of_schools << school}
+    @array_of_schools
+  end
+
+
 end
