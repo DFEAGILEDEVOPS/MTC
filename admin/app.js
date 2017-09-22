@@ -27,6 +27,8 @@ const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
 
+azure.startInsightsIfConfigured()
+
 const unsetVars = []
 Object.keys(config).map((key) => {
   if (!config[key] && !devWhitelist.includes(key)) {
