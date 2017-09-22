@@ -74,7 +74,18 @@ describe('questions controller', () => {
       await getQuestions(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
-      expect(data.error).toBe('Bad Request')
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('throws an authentication error if pupil or school details are not found', async (done) => {
+      const req = goodReq
+      const res = httpMocks.createResponse()
+      const getQuestions = mockQuestionData(true, false, true)
+      await getQuestions(req, res)
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(401)
+      expect(data.error).toBe('Unauthorised')
       done()
     })
 
@@ -96,7 +107,7 @@ describe('questions controller', () => {
       await getQuestions(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
-      expect(data.error).toBe('Question set not found for pupil')
+      expect(data.error).toBe('Server error')
       done()
     })
 
@@ -126,7 +137,7 @@ describe('questions controller', () => {
       await getQuestions(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
-      expect(data.error).toBe('Access token error')
+      expect(data.error).toBe('Server error')
       done()
     })
   })

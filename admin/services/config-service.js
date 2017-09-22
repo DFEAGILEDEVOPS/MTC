@@ -18,6 +18,7 @@ const configService = {
       }
     } catch (error) {
       console.error('There was an error retrieving custom timings: ' + error.message)
+      throw (error)
     }
 
     return {

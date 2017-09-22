@@ -1,3 +1,5 @@
+'use strict'
+
 const uuidv4 = require('uuid/v4')
 
 const CheckForm = require('../models/check-form')
@@ -15,40 +17,49 @@ const jwtService = require('../services/jwt-service')
 
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
-  if (!pupilPin || !schoolPin) return res.status(400).json({error: 'Bad Request'})
-  let checkForm, pupil, school
+  if (!pupilPin || !schoolPin) return badRequest(res)
+  let checkForm, config, pupil, school, token
+
   try {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first one
-    pupil = await Pupil.findOne({'pin': pupilPin}).exec()
-    school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
+    school = await School.findOne({schoolPin: schoolPin}).lean().exec()
+    pupil = await Pupil.findOne({pin: pupilPin, school: school ? school._id : ''}).exec()
     checkForm = await CheckForm.findOne({}).lean().exec()
   } catch (error) {
-    throw new Error(error)
+    console.error(error)
+    return serverError(res)
   }
-  if (!pupil || !school) return res.status(401).json({error: 'Unauthorised'})
-  if (!checkForm) return res.status(500).json({error: 'Question set not found for pupil'})
+
+  if (!pupil || !school) return unauthorised(res)
+  if (!checkForm) return serverError(res)
 
   let {questions} = checkForm
   questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
+
   const pupilData = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
     sessionId: uuidv4()
   }
-  school = {id: school._id, name: school.name}
-  const config = await configService.getConfig()
 
-  let token
+  school = {id: school._id, name: school.name}
+
+  try {
+    config = await configService.getConfig()
+  } catch (error) {
+    console.error(error)
+    return serverError()
+  }
+
   try {
     token = await jwtService.createToken(pupil)
   } catch (error) {
     console.error(error)
-    res.setHeader('Content-Type', 'application/json')
-    return res.status(500).json({error: 'Access token error'})
+    return serverError(res)
   }
 
-  res.setHeader('Content-Type', 'application/json')
+  setJsonHeader(res)
   return res.send(JSON.stringify({
     questions,
     pupil: pupilData,
@@ -60,4 +71,23 @@ const getQuestions = async (req, res) => {
 
 module.exports = {
   getQuestions
+}
+
+function unauthorised (res) {
+  setJsonHeader(res)
+  return res.status(401).json({error: 'Unauthorised'})
+}
+
+function badRequest (res) {
+  setJsonHeader(res)
+  return res.status(400).json({error: 'Bad request'})
+}
+
+function serverError (res) {
+  setJsonHeader(res)
+  return res.status(500).json({error: 'Server error'})
+}
+
+function setJsonHeader (res) {
+  res.setHeader('Content-Type', 'application/json')
 }
