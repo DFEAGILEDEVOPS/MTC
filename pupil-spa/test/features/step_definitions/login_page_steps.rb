@@ -79,6 +79,7 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
   MongoDbHelper.expire_pin("Automated","Account",9991999,false)
   MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
   @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
-  sign_in_page.login("stqynzcn","9999a")
+  schools = MongoDbHelper.get_list_of_schools.delete_if{|a| a['_id'] == @pupil_information['school']}
+  sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
   sign_in_page.sign_in_button.click
 end
