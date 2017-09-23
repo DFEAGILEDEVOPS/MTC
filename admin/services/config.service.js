@@ -10,15 +10,11 @@ const configService = {
     let questionTime = QUESTION_TIME_LIMIT
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
-    try {
-      const timeSettings = await Setting.findOne().exec()
-      if (timeSettings) {
-        loadingTime = timeSettings.loadingTimeLimit
-        questionTime = timeSettings.questionTimeLimit
-      }
-    } catch (error) {
-      console.error('There was an error retrieving custom timings: ' + error.message)
-      throw (error)
+    const timeSettings = await Setting.findOne().exec()
+
+    if (timeSettings) {
+      loadingTime = timeSettings.loadingTimeLimit
+      questionTime = timeSettings.questionTimeLimit
     }
 
     return {
@@ -26,7 +22,6 @@ const configService = {
       loadingTime
     }
   }
-
 }
 
 module.exports = configService
