@@ -74,21 +74,41 @@
             <table class="spacious" id="pupilsList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
-                    <th scope="col" class="multiple-choice">
+                    <th scope="col">
                         <div class="tick-all-boxes">
-                            <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
-                            <label for="tickAllCheckboxes">Pupil name</label>
+                            <a href="#">Pupil name</a>
                         </div>
-                        <div class="tick-all-boxes-nojs">Pupil name</div>
+                        <div class="tick-all-boxes-nojs">
+                            <a href="#">Pupil name</a>
+                        </div>
                     </th>
                     <th scope="col"><a href="#">Reason</a></th>
+                    <th scope="col">
+                        <div class="tick-all-checkboxes-wrapper">
+                            <label class="tick-all-checkboxes" for="tickAllCheckboxes">Select all</label>
+                            <div class="multiple-choice-mtc">
+                                <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                <div></div>
+                            </div>
+                        </div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                     <% pupilsList.forEach( (pupil, index) => { %>
                     <tr>
                         <td>
-                            <div class="multiple-choice">
+                            <label for="pupil-<%= pupil._id %>">
+                                <%= pupil.lastName %>, <%= pupil.foreName %>
+                            </label>
+                        </td>
+                        <td>
+                            <% if (pupil.attendanceCode && pupil.attendanceCode.code) { %>
+                            <%= attendanceCodes[pupil.attendanceCode.code].reason %>
+                            <% } else { %> N/A <% } %>
+                        </td>
+                        <td>
+                            <div class="multiple-choice-mtc">
                                 <input id="pupil-<%= pupil._id %>"
                                        name="pupil[<%= index %>]"
                                        type="checkbox"
@@ -96,15 +116,8 @@
                                        aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                        aria-checked="false"
                                        role="checkbox" />
-                                <label for="pupil-<%= pupil._id %>">
-                                    <%= pupil.lastName %>, <%= pupil.foreName %>
-                                </label>
+                                <div></div>
                             </div>
-                        </td>
-                        <td>
-                            <% if (pupil.attendanceCode && pupil.attendanceCode.code) { %>
-                            <%= attendanceCodes[pupil.attendanceCode.code].reason %>
-                            <% } else { %> N/A <% } %>
                         </td>
                     </tr>
                     <% }) %>
