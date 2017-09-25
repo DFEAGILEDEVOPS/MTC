@@ -40,3 +40,8 @@ Feature:
     Given I am on the pupil not taking check page
     When I want to add a reason
     Then I should see a option to generate pins
+
+  Scenario: Pupil reason page has an explanation of the reasons
+    Given I am on the pupil not taking check page
+    When I want to add a reason
+    Then I should see a section that explains the reasons
