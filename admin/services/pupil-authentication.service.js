@@ -16,7 +16,10 @@ const pupilAuthenticationService = {
     // the pupil will receive the first one
     school = await School.findOne({schoolPin: schoolPin}).lean().exec()
     pupil = await Pupil.findOne({
-      pin: pupilPin
+      pin: pupilPin,
+      school: school ? school._id : null,
+      pinExpired: false,
+      hasAttended: false
     }).populate('school').exec()
     if (!pupil || !school) {
       throw new Error('Authentication failure')
