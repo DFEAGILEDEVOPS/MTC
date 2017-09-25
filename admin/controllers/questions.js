@@ -2,14 +2,13 @@
 
 const uuidv4 = require('uuid/v4')
 
-const CheckForm = require('../models/check-form')
-const Pupil = require('../models/pupil')
-const School = require('../models/school')
+const pupilAuthenticationService = require('../services/pupil-authentication.service')
+const checkFormService = require('../services/check-form.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 
 /**
- * Returns the set of questions, pupil details and school details in json format
+ * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
  * @param req
  * @param res
  * @returns { object }
@@ -18,24 +17,19 @@ const jwtService = require('../services/jwt.service')
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
   if (!pupilPin || !schoolPin) return badRequest(res)
-  let checkForm, config, pupil, school, token
+  let config, pupil, questions, token
 
   try {
-    // Until we determine the logic behind fetching the appropriate check form
-    // the pupil will receive the first one
-    school = await School.findOne({schoolPin: schoolPin}).lean().exec()
-    pupil = await Pupil.findOne({pin: pupilPin, school: school ? school._id : ''}).exec()
-    checkForm = await CheckForm.findOne({}).lean().exec()
+    pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
-    console.error(error)
-    return serverError(res)
+    return unauthorised(res)
   }
 
-  if (!pupil || !school) return unauthorised(res)
-  if (!checkForm) return serverError(res)
-
-  let {questions} = checkForm
-  questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
+  try {
+    questions = await checkFormService.getQuestions()
+  } catch (error) {
+    return serverError(res)
+  }
 
   const pupilData = {
     firstName: pupil.foreName,
@@ -43,19 +37,20 @@ const getQuestions = async (req, res) => {
     sessionId: uuidv4()
   }
 
-  school = {id: school._id, name: school.name}
+  const schoolData = {
+    id: pupil.school._id,
+    name: pupil.school.name
+  }
 
   try {
     config = await configService.getConfig()
   } catch (error) {
-    console.error(error)
-    return serverError()
+    return serverError(res)
   }
 
   try {
     token = await jwtService.createToken(pupil)
   } catch (error) {
-    console.error(error)
     return serverError(res)
   }
 
@@ -63,7 +58,7 @@ const getQuestions = async (req, res) => {
   return res.send(JSON.stringify({
     questions,
     pupil: pupilData,
-    school,
+    school: schoolData,
     config,
     access_token: token
   }))

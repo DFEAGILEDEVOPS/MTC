@@ -1,50 +1,22 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+/* global describe, beforeEach, it, expect, jasmine */
+
+const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
+
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
-const checkFormMock = require('../mocks/checkform')
-const Pupil = require('../../models/pupil')
-const School = require('../../models/school')
-const CheckForm = mongoose.model('Dummy', new Schema({name: {type: String}}))
-const configService = require('../../services/config.service')
-const httpMocks = require('node-mocks-http')
-const sinon = require('sinon')
-const jwtService = require('../../services/jwt.service')
-require('sinon-mongoose')
-let sandbox
-let jwtPromiseHelper
-let mockQuestionData
-let goodReq
+pupilMock.school = schoolMock
+const jwtTokenMock = require('../mocks/jwtToken')
+const configMock = require('../mocks/config')
+const questionsMock = require('../mocks/check-form.service.getQuestions')
 
-describe('questions controller', () => {
+describe('Questions controller', () => {
+  let goodReq, res
+
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-    const jwtPromise = new Promise((resolve, reject) => {
-      jwtPromiseHelper = {
-        resolve,
-        reject
-      }
-    })
+    res = httpMocks.createResponse()
 
-    mockQuestionData = (hasPupil, hasSchool, hasCheckform) => {
-      sandbox.mock(Pupil).expects('findOne').chain('exec').resolves(hasPupil && pupilMock)
-      sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(hasSchool && schoolMock)
-      sandbox.mock(CheckForm).expects('findOne').chain('lean').chain('exec').resolves(hasCheckform && checkFormMock)
-      sandbox.mock(configService).expects('getConfig').resolves({questionTime: 6, loadingTime: 3})
-      sandbox.stub(jwtService, 'createToken').returns(jwtPromise)
-
-      const { getQuestions } = proxyquire('../../controllers/questions', {
-        '../models/check-form': CheckForm,
-        '../models/pupil': Pupil,
-        '../models/school': School,
-        '../services/config-service': configService,
-        '../services/jwt-service': jwtService
-      })
-      return getQuestions
-    }
     goodReq = httpMocks.createRequest({
       method: 'POST',
       url: '/api/questions',
@@ -57,65 +29,48 @@ describe('questions controller', () => {
       }
     })
   })
-  afterEach(() => { sandbox.restore() })
-  describe('access token generation succeeds', () => {
-    beforeEach(() => {
-      jwtPromiseHelper.resolve('fake-access-token')
-    })
 
-    it('throws an error if pupil pin and school pin are not provided', async(done) => {
-      const req = httpMocks.createRequest({
-        method: 'POST',
-        url: '/api/questions',
-        body: {}
-      })
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(false, false, false)
-      await getQuestions(req, res)
-      const data = JSON.parse(res._getData())
-      expect(res.statusCode).toBe(400)
-      expect(data.error).toBe('Bad request')
-      done()
-    })
+  function setupController (options = {}) {
+    if (!options['pupil-authentication.service.authenticate']) {
+      options['pupil-authentication.service.authenticate'] = function () { return Promise.resolve(pupilMock) }
+    }
+    if (!options['check-form.service.getQuestions']) {
+      options['check-form.service.getQuestions'] = function () { return Promise.resolve(questionsMock) }
+    }
+    if (!options['config.service.getConfig']) {
+      options['config.service.getConfig'] = function () { return Promise.resolve(configMock) }
+    }
+    if (!options['jwt.service.createToken']) {
+      options['jwt.service.createToken'] = function () { return Promise.resolve(jwtTokenMock) }
+    }
 
-    it('throws an authentication error if pupil or school details are not found', async (done) => {
-      const req = goodReq
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(true, false, true)
-      await getQuestions(req, res)
-      const data = JSON.parse(res._getData())
-      expect(res.statusCode).toBe(401)
-      expect(data.error).toBe('Unauthorised')
-      done()
+    return proxyquire('../../controllers/questions', {
+      '../services/pupil-authentication.service': {
+        authenticate: jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate'])
+      },
+      '../services/check-form.service': {
+        getQuestions: jasmine.createSpy().and.callFake(options['check-form.service.getQuestions'])
+      },
+      '../services/config.service': {
+        getConfig: jasmine.createSpy().and.callFake(options['config.service.getConfig'])
+      },
+      '../services/jwt.service': {
+        createToken: jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
+      }
     })
+  }
 
-    it('throws an authentication error if pupil or school details are not found', async (done) => {
-      const req = goodReq
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(true, false, true)
-      await getQuestions(req, res)
-      const data = JSON.parse(res._getData())
-      expect(res.statusCode).toBe(401)
-      expect(data.error).toBe('Unauthorised')
-      done()
-    })
-
-    it('throws question set not found for pupil when checkform object is not found', async (done) => {
-      const req = goodReq
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(true, true, false)
-      await getQuestions(req, res)
-      const data = JSON.parse(res._getData())
-      expect(res.statusCode).toBe(500)
-      expect(data.error).toBe('Server error')
-      done()
-    })
-
+  describe('happy path', () => {
     it('returns a valid response', async (done) => {
       const req = goodReq
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(true, true, true)
-      await getQuestions(req, res)
+      const controller = setupController()
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(200)
       expect(data.questions.length).toBe(20)
@@ -126,15 +81,141 @@ describe('questions controller', () => {
     })
   })
 
-  describe('access token generation failure', () => {
-    beforeEach(() => {
-      jwtPromiseHelper.reject('access token error : technical')
-    })
-    it('sends a 500 error if the token generation fails', async (done) => {
+  describe('unhappy paths', () => {
+    it('returns a bad request if the pupil pin is not entered', async (done) => {
       const req = goodReq
-      const res = httpMocks.createResponse()
-      const getQuestions = mockQuestionData(true, true, true)
-      await getQuestions(req, res)
+      req.body = { schoolPin: 'pin' }
+      const controller = setupController()
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(400)
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('returns a bad request if the school pin is not entered', async (done) => {
+      const req = goodReq
+      req.body = { schoolPin: 'pin' }
+      const controller = setupController()
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(400)
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('returns a bad request if the school pin is not entered and the pupilPin is empty', async (done) => {
+      const req = goodReq
+      req.body = { pupilPin: '' }
+      const controller = setupController()
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(400)
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('returns a bad request if the school pin and pupil pin are empty', async (done) => {
+      const req = goodReq
+      req.body = { pupilPin: '', schoolPin: '' }
+      const controller = setupController()
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(400)
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('returns unauthorised is the pupil authorisation service returns unauthorised', async (done) => {
+      const req = goodReq
+      const controller = setupController({
+        'pupil-authentication.service.authenticate': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(401)
+      expect(data.error).toBe('Unauthorised')
+      done()
+    })
+
+    it('returns server error if the check form service throws', async (done) => {
+      const req = goodReq
+      const controller = setupController({
+        'check-form.service.getQuestions': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(500)
+      expect(data.error).toBe('Server error')
+      done()
+    })
+
+    it('returns server error if the config service throws', async (done) => {
+      const req = goodReq
+      const controller = setupController({
+        'config.service.getConfig': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(500)
+      expect(data.error).toBe('Server error')
+      done()
+    })
+
+    it('returns server error if the jwt service throws', async (done) => {
+      const req = goodReq
+      const controller = setupController({
+        'jwt.service.createToken': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        console.error(error)
+        expect('questions controller not to').toBe('error')
+        done()
+      }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
