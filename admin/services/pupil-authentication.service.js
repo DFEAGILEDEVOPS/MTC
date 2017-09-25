@@ -17,7 +17,7 @@ const pupilAuthenticationService = {
     school = await School.findOne({schoolPin: schoolPin}).lean().exec()
     pupil = await Pupil.findOne({
       pin: pupilPin,
-      school: school ? school._id : null,
+      school: school && school._id,
       pinExpired: false,
       hasAttended: false
     }).populate('school').exec()
