@@ -206,7 +206,6 @@ const getCheckWindows = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const checkWindowsForm = async (req, res, next) => {
-
   let error = ''
   let errorMessage = ''
   let checkWindowData = ''
