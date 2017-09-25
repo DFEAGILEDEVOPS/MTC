@@ -38,7 +38,6 @@
             </tr>
             </thead>
             <tbody>
-                <% if (checkWindowList.length > 0) { %>
                 <% checkWindowList.forEach( (checkWindow, index) => { %>
                 <tr>
                     <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
@@ -47,7 +46,6 @@
                     <td><a href="#">Remove</a></td>
                 </tr>
                 <% }) %>
-                <% } %>
             </tbody>
         </table>
         <% } %>

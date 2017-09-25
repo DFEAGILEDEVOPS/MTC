@@ -9,7 +9,11 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const {
+  fetchPupilsData,
+  fetchPupilAnswers,
+  fetchScoreDetails,
+  fetchSortedPupilsData } = require('../services/pupilService')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -368,6 +372,9 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   let attendanceCodes
   let formData
+  let pupilsList
+  let htmlSortDirection
+  let arrowSortDirection
 
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
@@ -376,10 +383,18 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
+  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', 'asc')
+  pupilsList = await Promise.all(pupils.map(async (p) => {
+    return p
+  })).catch((error) => next(error))
+
   return res.render('school/select-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
     attendanceCodes,
-    formData
+    formData,
+    pupilsList,
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 
