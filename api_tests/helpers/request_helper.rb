@@ -6,11 +6,11 @@ class RequestHelper
     self.class.post(BASE_URL+"/api/questions", :body => {:'schoolPin' => school_pin, :'pupilPin' => pupil_pin})
   end
 
-  def admin_home()
+  def admin_home
     self.class.get(ADMIN_BASE_URL)
   end
 
-  def spa_home()
+  def spa_home
     self.class.get(SPA_BASE_URL)
   end
 
