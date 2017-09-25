@@ -7,15 +7,7 @@ const checkFormMock = require('../mocks/checkform')
 const CheckFormModelMock = require('../mocks/check-form-model-mock')
 
 describe('check-form.service', () => {
-  let service, sandbox
-
-  afterEach(() => {
-    sandbox.restore()
-  })
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-  })
+  let service
 
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
