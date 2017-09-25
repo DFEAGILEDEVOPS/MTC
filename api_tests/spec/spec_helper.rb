@@ -5,6 +5,8 @@ require 'httparty'
 Dir["../helpers/*.**"].each {|file| require file }
 
 BASE_URL = ENV['BASE_URL'] ||= 'http://localhost:3001'
+ADMIN_BASE_URL = ENV['ADMIN_BASE_URL'] ||= 'https://admin-as-dev-mtc.azurewebsites.net/'
+SPA_BASE_URL = ENV['SPA_BASE_URL'] ||= 'https://pupil-as-dev-mtc.azurewebsites.net/'
 
 RSpec.configure do |config|
   config.default_formatter = "d"
