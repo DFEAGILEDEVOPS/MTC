@@ -51,6 +51,7 @@
     "moment": "^2.18.1",
     "mongoose": "4.9.6",
     "mongoose-auto-increment": "^5.0.1",
+    "mongoose-uuid2": "^2.0.1",
     "morgan": "~1.8.1",
     "newrelic": "^1.40.0",
     "node-gyp": "^3.6.1",

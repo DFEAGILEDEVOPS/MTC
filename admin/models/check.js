@@ -2,10 +2,18 @@
 
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
+// Add the UUID type
+require('mongoose-uuid2')(mongoose)
 
 const Schema = mongoose.Schema
 
 const Check = new Schema({
+  checkCode: {
+    type: Schema.Types.UUID,
+    required: true,
+    // As of 2017-09 I don't think unique indexes are available in Cosmos DB, nevertheless this *ought* to be unique
+    unique: true
+  },
   pupilId: {
     type: Schema.Types.ObjectId,
     required: true,

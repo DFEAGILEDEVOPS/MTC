@@ -3,6 +3,7 @@
 
 const { Types } = require('mongoose')
 const Check = require('../../models/check')
+const uuidv4 = require('uuid/v4')
 
 describe('check model', () => {
   let check
@@ -10,6 +11,7 @@ describe('check model', () => {
   beforeEach(() => {
     check = new Check({
       _id: Types.ObjectId(),
+      checkCode: uuidv4(),
       pupilId: Types.ObjectId(),
       checkWindowId: Types.ObjectId(),
       checkFormId: Types.ObjectId(),
@@ -20,6 +22,36 @@ describe('check model', () => {
   it('validates a model correctly', (done) => {
     check.validate((error) => {
       expect(error).toBeNull()
+      done()
+    })
+  })
+
+  it('requires a checkCode in UUID v4 format', (done) => {
+    check.checkCode = undefined
+    check.validate((error) => {
+      expect(error).toBeDefined()
+      expect(error.errors.checkCode).toBeDefined()
+      done()
+    })
+
+    check.checkCode = 'wrong format'
+    check.validate((error) => {
+      expect(error).toBeDefined()
+      expect(error.errors.checkCode).toBeDefined()
+      done()
+    })
+
+    check.checkCode = true
+    check.validate((error) => {
+      expect(error).toBeDefined()
+      expect(error.errors.checkCode).toBeDefined()
+      done()
+    })
+
+    check.checkCode = 666
+    check.validate((error) => {
+      expect(error).toBeDefined()
+      expect(error.errors.checkCode).toBeDefined()
       done()
     })
   })
