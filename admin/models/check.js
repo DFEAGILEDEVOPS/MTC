@@ -20,6 +20,10 @@ const Check = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'CheckForm'
+  },
+  checkStartDate: {
+    type: Date,
+    required: true
   }
 }, {timestamps: true})
 

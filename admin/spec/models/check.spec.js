@@ -12,7 +12,8 @@ describe('check model', () => {
       _id: Types.ObjectId(),
       pupilId: Types.ObjectId(),
       checkWindowId: Types.ObjectId(),
-      checkFormId: Types.ObjectId()
+      checkFormId: Types.ObjectId(),
+      checkStartDate: new Date()
     })
   })
 
@@ -46,6 +47,15 @@ describe('check model', () => {
     check.validate((error) => {
       expect(error).toBeDefined()
       expect(error.errors.checkFormId).toBeDefined()
+      done()
+    })
+  })
+
+  it('requires a checkStartDate', (done) => {
+    check.checkStartDate = undefined
+    check.validate((error) => {
+      expect(error).toBeDefined()
+      expect(error.errors.checkStartDate).toBeDefined()
       done()
     })
   })
