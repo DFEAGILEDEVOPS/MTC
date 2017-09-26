@@ -30,6 +30,16 @@ $(function () {
   if ($('#pupilsList').length > 0) disableCheckAll('#pupilsList')
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
+  $('#selectAll').on('click', function (e) {
+    $(this).addClass('all-hide')
+    $('#unselectAll').removeClass('all-hide')
+  })
+
+  $('#unselectAll').on('click', function (e) {
+    $(this).addClass('all-hide')
+    $('#selectAll').removeClass('all-hide')
+  })
+
   $('input:file').on('change', function (e) {
     e.stopPropagation()
     $('input:submit').prop('disabled', !$(this).val())

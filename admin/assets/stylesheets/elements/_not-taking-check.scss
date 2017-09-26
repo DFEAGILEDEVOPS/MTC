@@ -24,3 +24,21 @@
     }
   }
 }
+
+#pupilsList {
+  th:nth-child(1),
+  th:nth-child(2) {
+    width: auto;
+  }
+  th:nth-child(3) {
+    width: 10%;
+  }
+
+  td:nth-child(1),
+  td:nth-child(2) {
+    width: auto;
+  }
+  td:nth-child(3) {
+    width: 20%;
+  }
+}

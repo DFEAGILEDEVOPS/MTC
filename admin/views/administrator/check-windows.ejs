@@ -28,7 +28,7 @@
         <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
 
         <% if (checkWindowList.length > 0) { %>
-        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+        <table class="spacious sorting" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
                 <th scope="col"><a href="/administrator/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
