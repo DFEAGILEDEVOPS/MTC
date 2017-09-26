@@ -364,23 +364,6 @@ table.spacious-two-column {
   }
 }
 
-// Sorting
-
-.triangle {
-  margin-left: 0.2em;
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 6px 12px 6px;
-  border-color: transparent transparent $govuk-blue transparent;
-}
-
-.triangle.down {
-  border-width: 12px 6px 0 6px;
-  border-color: $govuk-blue transparent transparent transparent;
-}
-
 // Radio buttons & checkboxes (new implementation uses 'div' rather than 'label')
 
 .multiple-choice-mtc {
@@ -502,8 +485,20 @@ table.spacious-two-column {
   display: flex;
   justify-content: flex-end;
 
+  .multiple-choice-mtc {
+    display: none;
+    visibility: hidden;
+  }
+
   @include media (desktop) {
-    justify-content: space-between;
+    .multiple-choice-mtc {
+      display: inline-block;
+      visibility: visible;
+
+      div {
+        padding-left: $gutter-and-a-half;
+      }
+    }
   }
 }
 
@@ -513,10 +508,9 @@ body .tick-all-checkboxes {
 }
 
 body.js-enabled .tick-all-checkboxes {
-  @include media (desktop) {
-    display: table-cell;
-    visibility: visible;
-  }
+  display: table-cell;
+  visibility: visible;
+  white-space: nowrap;
 }
 
 // To sit multiple choice inputs next to each other, use .inline on parent

@@ -71,21 +71,19 @@
 
             <h2>2. Select pupil(s)</h2>
             <% if (pupilsList && pupilsList.length > 0) { %>
-            <table class="spacious" id="pupilsList" role="listbox" aria-label="Select pupils.">
+            <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
-                        <div class="tick-all-boxes">
-                            <a href="#">Pupil name</a>
-                        </div>
-                        <div class="tick-all-boxes-nojs">
-                            <a href="#">Pupil name</a>
-                        </div>
+                        <a href="/school/pupils-not-taking-check/select-pupils/<%= htmlSortDirection.pupilName %>">Pupil name<span class="<%= arrowSortDirection.pupilName %>"><span>Sort by pupil name <%= htmlSortDirection.pupilName %></span></span></a>
                     </th>
-                    <th scope="col"><a href="#">Reason</a></th>
+                    <th scope="col">
+                        <a href="/school/pupils-not-taking-check/select-pupils/<%= htmlSortDirection.reason %>">Reason</a>
+                    </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
-                            <label class="tick-all-checkboxes" for="tickAllCheckboxes">Select all</label>
+                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                            <label class="tick-all-checkboxes all-hide" id="unselectAll" for="tickAllCheckboxes">Unselect all</label>
                             <div class="multiple-choice-mtc">
                                 <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
                                 <div></div>

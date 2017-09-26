@@ -27,6 +27,7 @@ const school = (router) => {
   router.get('/declaration-form-submitted', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getHDFSubmitted(req, res, next))
   router.get('/pupils-not-taking-check', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/select-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
+  router.get('/pupils-not-taking-check/select-pupils/:sortField/:sortOrder', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
 }
 
 module.exports = school

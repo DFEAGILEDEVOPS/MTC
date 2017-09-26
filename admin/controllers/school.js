@@ -41,7 +41,7 @@ const getPupils = async (req, res, next) => {
   res.locals.sortColumn = sortColumn || 'lastName'
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
-  res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
+  res.locals.sortClass = order === false ? 'sort up' : 'sort'
   const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
@@ -373,8 +373,32 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let attendanceCodes
   let formData
   let pupilsList
-  let htmlSortDirection
-  let arrowSortDirection
+  let htmlSortDirection = []
+  let arrowSortDirection = []
+
+  const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+
+  let sortingDirection = [
+    {
+      'key': 'pupilName',
+      'value': 'asc'
+    },
+    {
+      'key': 'reason',
+      'value': 'asc'
+    }
+  ]
+
+  sortingDirection.map((sd, index) => {
+    if (sd.key === sortField) {
+      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort ')
+    } else {
+      htmlSortDirection[sd.key] = 'asc'
+      arrowSortDirection[sd.key] = ''
+    }
+  })
 
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
