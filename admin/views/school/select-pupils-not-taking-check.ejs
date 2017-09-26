@@ -75,10 +75,10 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a href="/school/pupils-not-taking-check/select-pupils/<%= htmlSortDirection.pupilName %>">Pupil name<span class="<%= arrowSortDirection.pupilName %>"><span>Sort by pupil name <%= htmlSortDirection.pupilName %></span></span></a>
+                        <a href="/school/pupils-not-taking-check/select-pupils/name/<%= htmlSortDirection.name %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a href="/school/pupils-not-taking-check/select-pupils/<%= htmlSortDirection.reason %>">Reason</a>
+                        <a href="/school/pupils-not-taking-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
                     </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
@@ -101,9 +101,7 @@
                             </label>
                         </td>
                         <td>
-                            <% if (pupil.attendanceCode && pupil.attendanceCode.code) { %>
-                            <%= attendanceCodes[pupil.attendanceCode.code].reason %>
-                            <% } else { %> N/A <% } %>
+                            <%= pupil.reason %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">

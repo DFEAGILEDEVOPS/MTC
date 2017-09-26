@@ -1,3 +1,9 @@
+#checkWindowList {
+  :nth-child(4) {
+    text-align: right;
+  }
+}
+
 #checkWindowsForm {
   .button.button-secondary {
     margin-left: $gutter-half;
