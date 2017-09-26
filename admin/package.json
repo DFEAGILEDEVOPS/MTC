@@ -16,6 +16,7 @@
     "node": "8.4.0"
   },
   "dependencies": {
+    "applicationinsights": "^0.22.0",
     "az-bunyan": "0.0.5",
     "azure-storage": "^2.5.0",
     "bcryptjs": "^2.4.3",

@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const jwtService = require('../../services/jwt-service')
+const jwtService = require('../../services/jwt.service')
 const { feedbackData } = require('../mocks/pupil-feedback')
 
 require('sinon-mongoose')

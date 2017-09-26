@@ -1,10 +1,14 @@
 FROM node:8
 
+# install yarn
+# RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+# RUN sudo apt-get update && sudo apt-get install yarn
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN rm -rf ./node_modules
-RUN npm install
+RUN yarn install --ignore-engines
 RUN ./node_modules/.bin/gulp build
 
 # ------------------------

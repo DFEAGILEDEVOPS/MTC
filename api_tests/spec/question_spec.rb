@@ -7,7 +7,7 @@ describe 'Questions API spec' do
       expect(response.message).to eql 'OK'
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['access_token']).to_not be_nil
-      expect(parsed_response['questions'].size).to eql 20
+      expect(parsed_response['questions'].size).to eql 10
       expect(parsed_response['pupil']['firstName']).to eql 'Automated'
       expect(parsed_response['pupil']['lastName']).to eql 'Account'
       expect(parsed_response['school']['id']).to eql 9991999

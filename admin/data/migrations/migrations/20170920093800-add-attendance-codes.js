@@ -8,7 +8,6 @@ const AttendanceCode = require('../../../models/attendance-code')
 module.exports = {
   up (db, next) {
     mongoose.connect(config.mongodb.url, async error => {
-
       if (error) {
         next(new Error('Could not connect to mongodb: ' + error.message))
       }
