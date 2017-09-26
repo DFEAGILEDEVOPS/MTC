@@ -376,12 +376,13 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let htmlSortDirection = []
   let arrowSortDirection = []
 
-  const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
+  // Sorting
+  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
 
   let sortingDirection = [
     {
-      'key': 'pupilName',
+      'key': 'name',
       'value': 'asc'
     },
     {
@@ -390,16 +391,18 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     }
   ]
 
+  // Markup links and arrows
   sortingDirection.map((sd, index) => {
     if (sd.key === sortField) {
       htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort ')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
     } else {
       htmlSortDirection[sd.key] = 'asc'
-      arrowSortDirection[sd.key] = ''
+      arrowSortDirection[sd.key] = 'sort'
     }
   })
 
+  // Get attendance code index
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
@@ -407,10 +410,37 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
-  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', 'asc')
+  // Get pupils for user' school
+  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
   pupilsList = await Promise.all(pupils.map(async (p) => {
+    if (p.attendanceCode !== undefined) {
+      let num = await p.attendanceCode.code
+      try {
+        p.reason = await attendanceCodes[num].reason
+      } catch (error) {
+      }
+    } else {
+      p.reason = 'N/A'
+    }
     return p
   })).catch((error) => next(error))
+
+  // Sorting by 'reason' needs to be done using .sort
+  if (sortField === 'reason') {
+    pupilsList = await pupilsList.sort((a, b) => {
+      if (a.reason === 'N/A') {
+        return 1
+      } else if (b.reason === 'N/A') {
+        return -1
+      } else if (a.reason === b.reason) {
+        return 0
+      } else if (sortDirection === 'asc') {
+        return a.reason < b.reason ? -1 : 1
+      } else {
+        return a.reason < b.reason ? 1 : -1
+      }
+    })
+  }
 
   return res.render('school/select-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),

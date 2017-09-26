@@ -156,10 +156,10 @@ const getCheckWindows = async (req, res, next) => {
   sortingDirection.map((sd, index) => {
     if (sd.key === sortField) {
       htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort ')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
     } else {
       htmlSortDirection[sd.key] = 'asc'
-      arrowSortDirection[sd.key] = ''
+      arrowSortDirection[sd.key] = 'sort'
     }
   })
 
