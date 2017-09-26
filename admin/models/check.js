@@ -25,7 +25,7 @@ const Check = new Schema({
     ref: 'CheckWindow'
   },
   checkFormId: {
-    type: Schema.Types.ObjectId,
+    type: Number,
     required: true,
     ref: 'CheckForm'
   },

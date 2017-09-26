@@ -14,7 +14,7 @@ describe('check model', () => {
       checkCode: uuidv4(),
       pupilId: Types.ObjectId(),
       checkWindowId: Types.ObjectId(),
-      checkFormId: Types.ObjectId(),
+      checkFormId: 100,
       checkStartDate: new Date()
     })
   })
