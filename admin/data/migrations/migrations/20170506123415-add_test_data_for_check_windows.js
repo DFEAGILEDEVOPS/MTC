@@ -10,7 +10,7 @@ module.exports = {
     objs.push({
       name: 'Summer 2017',
       startDate: moment('2017-06-14 09:00:00').toDate(),
-      endDate: moment('2017-06-30 23:59:59').toDate(),
+      endDate: moment('2018-01-31 23:59:59').toDate(),
       registrationStartDate: moment('2017-06-01 00:00:01').toDate(),
       registrationEndDate: moment('2017-06-13 23:59:59').toDate(),
       createdAt: Date.now,
