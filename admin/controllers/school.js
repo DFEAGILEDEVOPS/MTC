@@ -13,7 +13,7 @@ const {
   fetchPupilsData,
   fetchPupilAnswers,
   fetchScoreDetails,
-  fetchSortedPupilsData } = require('../services/pupilService')
+  fetchSortedPupilsData } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {

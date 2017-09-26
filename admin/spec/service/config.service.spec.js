@@ -24,7 +24,7 @@ describe('config service', () => {
           loadingTimeLimit: 20,
           questionTimeLimit: 50
         })
-      configService = proxyquire('../../services/config-service', {'../models/setting': Settings})
+      configService = proxyquire('../../services/config.service', {'../models/setting': Settings})
     })
 
     afterEach(() => { sandbox.restore() })
@@ -44,7 +44,7 @@ describe('config service', () => {
         .expects('findOne')
         .chain('exec')
         .resolves(null)
-      configService = proxyquire('../../services/config-service', {'../models/setting': Settings, '../config': configMock})
+      configService = proxyquire('../../services/config.service', {'../models/setting': Settings, '../config': configMock})
     })
 
     afterEach(() => { sandbox.restore() })

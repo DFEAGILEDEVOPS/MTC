@@ -38,7 +38,7 @@ describe('JWT service', () => {
 
   describe('creating a token', () => {
     beforeEach(() => {
-      jwtService = require('../../services/jwt-service')
+      jwtService = require('../../services/jwt.service')
     })
 
     it('creates a token', async (done) => {
@@ -93,7 +93,7 @@ describe('JWT service', () => {
     describe('and the pupil is found', () => {
       beforeEach(() => {
         sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(pupil)
-        jwtService = proxyquire('../../services/jwt-service', {
+        jwtService = proxyquire('../../services/jwt.service', {
           '../models/pupil': Pupil
         })
       })
@@ -113,7 +113,7 @@ describe('JWT service', () => {
     describe('and the pupil is NOT found', () => {
       beforeEach(() => {
         sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(null)
-        jwtService = proxyquire('../../services/jwt-service', {
+        jwtService = proxyquire('../../services/jwt.service', {
           '../models/pupil': Pupil
         })
       })
@@ -134,7 +134,7 @@ describe('JWT service', () => {
         const newPupil = JSON.parse(JSON.stringify(pupil))
         newPupil.jwtSecret = undefined
         sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(newPupil)
-        jwtService = proxyquire('../../services/jwt-service', {
+        jwtService = proxyquire('../../services/jwt.service', {
           '../models/pupil': Pupil
         })
       })
@@ -158,7 +158,7 @@ describe('JWT service', () => {
         const newPupil = JSON.parse(JSON.stringify(pupil))
         newPupil.jwtSecret = 'incorrect secret'
         sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(newPupil)
-        jwtService = proxyquire('../../services/jwt-service', {
+        jwtService = proxyquire('../../services/jwt.service', {
           '../models/pupil': Pupil
         })
       })
@@ -181,7 +181,7 @@ describe('JWT service', () => {
     beforeEach(() => {
       newPupil = JSON.parse(JSON.stringify(pupil))
       sandbox.mock(Pupil).expects('findOne').chain('lean').chain('exec').resolves(newPupil)
-      jwtService = proxyquire('../../services/jwt-service', {
+      jwtService = proxyquire('../../services/jwt.service', {
         '../models/pupil': Pupil
       })
     })

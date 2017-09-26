@@ -1,13 +1,14 @@
+'use strict'
+
 const uuidv4 = require('uuid/v4')
 
-const CheckForm = require('../models/check-form')
-const Pupil = require('../models/pupil')
-const School = require('../models/school')
-const configService = require('../services/config-service')
-const jwtService = require('../services/jwt-service')
+const pupilAuthenticationService = require('../services/pupil-authentication.service')
+const checkFormService = require('../services/check-form.service')
+const configService = require('../services/config.service')
+const jwtService = require('../services/jwt.service')
 
 /**
- * Returns the set of questions, pupil details and school details in json format
+ * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
  * @param req
  * @param res
  * @returns { object }
@@ -15,44 +16,49 @@ const jwtService = require('../services/jwt-service')
 
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
-  if (!pupilPin || !schoolPin) return res.status(400).json({error: 'Bad Request'})
-  let checkForm, pupil, school
-  try {
-    // Until we determine the logic behind fetching the appropriate check form
-    // the pupil will receive the first one
-    pupil = await Pupil.findOne({'pin': pupilPin}).exec()
-    school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
-    checkForm = await CheckForm.findOne({}).lean().exec()
-  } catch (error) {
-    throw new Error(error)
-  }
-  if (!pupil || !school) return res.status(401).json({error: 'Unauthorised'})
-  if (!checkForm) return res.status(500).json({error: 'Question set not found for pupil'})
+  if (!pupilPin || !schoolPin) return badRequest(res)
+  let config, pupil, questions, token
 
-  let {questions} = checkForm
-  questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
+  try {
+    pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+  } catch (error) {
+    return unauthorised(res)
+  }
+
+  try {
+    questions = await checkFormService.getQuestions()
+  } catch (error) {
+    return serverError(res)
+  }
+
   const pupilData = {
     firstName: pupil.foreName,
     lastName: pupil.lastName,
     sessionId: uuidv4()
   }
-  school = {id: school._id, name: school.name}
-  const config = await configService.getConfig()
 
-  let token
+  const schoolData = {
+    id: pupil.school._id,
+    name: pupil.school.name
+  }
+
+  try {
+    config = await configService.getConfig()
+  } catch (error) {
+    return serverError(res)
+  }
+
   try {
     token = await jwtService.createToken(pupil)
   } catch (error) {
-    console.error(error)
-    res.setHeader('Content-Type', 'application/json')
-    return res.status(500).json({error: 'Access token error'})
+    return serverError(res)
   }
 
-  res.setHeader('Content-Type', 'application/json')
+  setJsonHeader(res)
   return res.send(JSON.stringify({
     questions,
     pupil: pupilData,
-    school,
+    school: schoolData,
     config,
     access_token: token
   }))
@@ -60,4 +66,23 @@ const getQuestions = async (req, res) => {
 
 module.exports = {
   getQuestions
+}
+
+function unauthorised (res) {
+  setJsonHeader(res)
+  return res.status(401).json({error: 'Unauthorised'})
+}
+
+function badRequest (res) {
+  setJsonHeader(res)
+  return res.status(400).json({error: 'Bad request'})
+}
+
+function serverError (res) {
+  setJsonHeader(res)
+  return res.status(500).json({error: 'Server error'})
+}
+
+function setJsonHeader (res) {
+  res.setHeader('Content-Type', 'application/json')
 }

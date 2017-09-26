@@ -1,6 +1,6 @@
 'use strict'
 
-const upnService = require('../../services/upnService')
+const upnService = require('../../services/upn.service')
 
 module.exports = {
   customValidators: {

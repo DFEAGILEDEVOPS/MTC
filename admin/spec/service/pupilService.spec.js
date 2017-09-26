@@ -1,5 +1,5 @@
 'use strict'
-const pupilService = require('../../services/pupilService')
+const pupilService = require('../../services/pupil.service')
 
 /* global beforeEach, describe, it, expect */
 

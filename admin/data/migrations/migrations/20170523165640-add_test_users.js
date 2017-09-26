@@ -8,7 +8,7 @@ const School = require('../../../models/school')
 const Pupil = require('../../../models/pupil')
 const config = require('../config')
 const moment = require('moment')
-const upnService = require('../../../services/upnService')
+const upnService = require('../../../services/upn.service')
 const pupilsData = require('./data/users.json')
 
 module.exports = {

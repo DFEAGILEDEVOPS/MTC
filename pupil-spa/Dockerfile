@@ -4,15 +4,17 @@
 FROM node:8-alpine as builder
 
 COPY package.json .
+COPY yarn.lock .
+COPY /tools /tools/
 
 ## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
-RUN npm i && mkdir /ng-app && cp -R ./node_modules ./ng-app
+RUN yarn install --ignore-engines && mkdir /ng-app && cp -R ./node_modules ./ng-app
 
 WORKDIR /ng-app
 
 COPY . .
 
-RUN npm run postinstall
+# RUN npm run postinstall
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
 RUN $(npm bin)/gulp setAppEnvironmentVariables

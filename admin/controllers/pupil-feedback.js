@@ -1,5 +1,5 @@
 const PupilFeedback = require('../models/pupil-feedback')
-const { verify } = require('../services/jwt-service')
+const { verify } = require('../services/jwt.service')
 
 const setPupilFeedback = async (req, res, next) => {
   const {
