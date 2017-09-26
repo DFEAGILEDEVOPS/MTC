@@ -5,7 +5,7 @@ const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupil.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
