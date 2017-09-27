@@ -1,5 +1,5 @@
 describe 'Security API spec' do
-  context 'GET request to admin home', :azure do
+  context 'GET request to admin home', :azure_admin do
     it 'should return response header' do
       request_helper = RequestHelper.new
       response = request_helper.admin_home
@@ -14,7 +14,7 @@ describe 'Security API spec' do
     end
   end
 
-  context 'GET request to SPA home', :azure do
+  context 'GET request to SPA home', :azure_spa do
     it 'should return response header' do
       request_helper = RequestHelper.new
       response = request_helper.spa_home
