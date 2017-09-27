@@ -1,0 +1,18 @@
+.sticky-banner-wrapper {
+  background-color: rgba(217, 236, 226, 1);
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  width: 100%;
+
+  div {
+    padding: $gutter-half;
+  }
+}
+
+.sticky-banner {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
