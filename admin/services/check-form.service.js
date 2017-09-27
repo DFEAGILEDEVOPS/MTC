@@ -29,16 +29,6 @@ const checkFormService = {
   },
 
   /**
-   * Return question data for a pupil
-   *
-   * @return {Promise.<*>}
-   */
-  getQuestions: async function () {
-    const cf = await this.allocateCheckForm()
-    return this.prepareQuestionData(cf)
-  },
-
-  /**
    * Populate a Mongoose model with data from a CSV file
    * @param {CheckForm} checkForm Mongoose model
    * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv

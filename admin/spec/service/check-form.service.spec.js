@@ -51,17 +51,6 @@ describe('check-form.service', () => {
         done()
       })
     })
-
-    describe('getQuestions()', () => {
-      it('returns a set of questions', async (done) => {
-        const allocateCheckFormSpy = spyOn(service, 'allocateCheckForm')
-        const prepareQuestionDataSpy = spyOn(service, 'prepareQuestionData')
-        await service.getQuestions()
-        expect(allocateCheckFormSpy).toHaveBeenCalledTimes(1)
-        expect(prepareQuestionDataSpy).toHaveBeenCalledTimes(1)
-        done()
-      })
-    })
   })
 
   describe('allocateCheckForm() unhappy path', () => {
