@@ -6,6 +6,18 @@ $(function () {
   function tickAllCheckboxes (sel, e) {
     $('#tickAllCheckboxes').on('change', function () {
       $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+      if ($('#selectAll')) {
+        console.log('SELECT ALL', $(this).is(':checked'))
+        if ($(this).is(':checked') === true) {
+          console.log('HIDE SELECT ALL')
+          $('#selectAll').addClass('all-hide')
+          $('#unselectAll').removeClass('all-hide')
+        } else {
+          console.log('SHOW SELECT ALL')
+          $('#unselectAll').addClass('all-hide')
+          $('#selectAll').removeClass('all-hide')
+        }
+      }
     })
   }
 
