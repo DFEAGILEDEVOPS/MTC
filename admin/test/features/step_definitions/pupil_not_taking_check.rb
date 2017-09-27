@@ -77,3 +77,14 @@ end
 Then(/^I should have a option to select all pupils$/) do
   expect(pupil_reason_page).to have_select_all_pupils
 end
+
+
+And(/^I want to sort the surnames in to desecending order$/) do
+  pupil_reason_page.pupil_coloumn.click
+end
+
+Then(/^I should see a list of pupils sorted by surname in descending order$/) do
+  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
+  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
+  expect(pupils_from_db.map{|pupil| pupil['lastName'] + ', ' + pupil['foreName'] }.sort.reverse).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+end
