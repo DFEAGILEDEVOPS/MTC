@@ -414,9 +414,9 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
   pupilsList = await Promise.all(pupils.map(async (p) => {
     if (p.attendanceCode !== undefined) {
-      let num = await p.attendanceCode.code
+      let num = p.attendanceCode.code
       try {
-        p.reason = await attendanceCodes[num].reason
+        p.reason = attendanceCodes[num].reason
       } catch (error) {
       }
     } else {
