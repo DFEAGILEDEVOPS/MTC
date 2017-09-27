@@ -6,6 +6,8 @@ class PupilReasonPage < SitePrism::Page
   elements :attendance_codes, 'input[id^=attendance-code-]'
   element :back_to_top, 'a', text: 'Back to top'
   element :generate_pins, 'a', text: 'Generate PINs'
+  element :pupil_coloumn, 'a', text: 'Pupil name'
+  element :reason_coloumn, 'a', text: 'Reason'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   section :pupil_list, 'tbody' do

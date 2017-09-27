@@ -46,10 +46,23 @@ Feature:
     When I want to add a reason
     Then I should see a section that explains the reasons
 
-  Scenario Outline: Pupils are sorted by surname by default
+  Scenario Outline: Pupils are sorted by using surname into ascending order by default
     Given I have signed in with <teacher>
     When I want to add a reason for pupils not taking a check
     Then I should see a list of pupils sorted by surname
+
+    Examples:
+      | teacher  |
+      | teacher1 |
+      | teacher2 |
+      | teacher3 |
+      | teacher4 |
+
+  Scenario Outline: Pupils can be sorted by surname into descending order
+    Given I have signed in with <teacher>
+    When I want to add a reason for pupils not taking a check
+    And I want to sort the surnames in to desecending order
+    Then I should see a list of pupils sorted by surname in descending order
 
     Examples:
       | teacher  |
