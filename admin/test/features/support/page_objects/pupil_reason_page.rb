@@ -7,4 +7,14 @@ class PupilReasonPage < SitePrism::Page
   element :back_to_top, 'a', text: 'Back to top'
   element :generate_pins, 'a', text: 'Generate PINs'
 
+  element :select_all_pupils, '#tickAllCheckboxes'
+  section :pupil_list, 'tbody' do
+    sections :rows, 'tr' do
+      element :checkbox, 'input[type="checkbox"]'
+      element :name, 'label'
+      element :reason, 'td:last-of-type'
+    end
+
+  end
+
 end
