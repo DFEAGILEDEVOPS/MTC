@@ -68,6 +68,9 @@ const Pupil = new Schema({
   },
   jwtSecret: {
     type: String
+  },
+  attendanceCode: {
+    type: Object
   }
 }, {
   timestamps: true
