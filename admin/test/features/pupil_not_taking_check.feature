@@ -79,6 +79,7 @@ Feature:
     Given I am on the pupil reason page
     Then I should have a option to select all pupils
 
+  @wip
   Scenario: Pupils can be sorted via reason
     Given I am on the pupil reason page
     Then I should be able to sort them via their reason for absence
