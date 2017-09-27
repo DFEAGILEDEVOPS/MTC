@@ -19,7 +19,7 @@
   input {
     position: absolute;
     cursor: pointer;
-    left: 0;
+    left: -15px;
     top: 0;
     width: 38px;
     height: 38px;
@@ -102,6 +102,10 @@
   &:last-of-type {
     margin-bottom: 0;
   }
+}
+
+#tickAllCheckboxes {
+  left: 15px;
 }
 
 .tick-all-boxes-nojs {
