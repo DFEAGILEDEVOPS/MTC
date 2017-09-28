@@ -7,11 +7,13 @@ class RequestHelper
   end
 
   def admin_home
-    self.class.get(ADMIN_BASE_URL)
+    fail 'Please check your URL it looks like it might be wrong for ADMIN' if BASE_URL.include? 'pupil'
+    self.class.get(BASE_URL)
   end
 
   def spa_home
-    self.class.get(SPA_BASE_URL)
+    fail 'Please check your URL it looks like it might be wrong for SPA' if BASE_URL.include? 'admin'
+    self.class.get(BASE_URL)
   end
 
 
