@@ -30,7 +30,7 @@ const Check = new Schema({
     required: true,
     ref: 'CheckForm'
   },
-  checkStartDate: {
+  pupilLoginDate: {
     type: Date,
     required: true
   }

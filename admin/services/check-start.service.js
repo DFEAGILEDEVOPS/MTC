@@ -24,6 +24,7 @@ const checkStartService = {
 
     // Ensure that the checkCode is unique - let's give a big hand to CosmosDB everyone, for not supporting
     // unique indexes
+    // TODO: move this to data-access service
     const found = await Check.findOne({checkCode}).lean().exec()
     if (found) {
       throw new Error(`Failed to generate a unique UUID for the check code.  Pupil [${pupilId}]`)
@@ -35,7 +36,7 @@ const checkStartService = {
       checkCode,
       checkWindowId: checkWindow._id,
       checkFormId: checkForm._id,
-      checkStartDate: new Date()
+      pupilLoginDate: new Date()
     })
     await check.save()
 

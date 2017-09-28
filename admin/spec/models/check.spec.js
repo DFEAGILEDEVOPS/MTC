@@ -15,7 +15,7 @@ describe('check model', () => {
       pupilId: Types.ObjectId(),
       checkWindowId: Types.ObjectId(),
       checkFormId: 100,
-      checkStartDate: new Date()
+      pupilLoginDate: new Date()
     })
   })
 
@@ -83,11 +83,11 @@ describe('check model', () => {
     })
   })
 
-  it('requires a checkStartDate', (done) => {
-    check.checkStartDate = undefined
+  it('requires a pupilLoginDate', (done) => {
+    check.pupilLoginDate = undefined
     check.validate((error) => {
       expect(error).toBeDefined()
-      expect(error.errors.checkStartDate).toBeDefined()
+      expect(error.errors.pupilLoginDate).toBeDefined()
       done()
     })
   })

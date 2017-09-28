@@ -27,7 +27,7 @@ describe('check.data.service', () => {
       })
     })
 
-    it('it calls the model', () => {
+    it('calls the model', () => {
       service.findOneByCheckCode('mock-check-code')
       expect(mock.verify()).toBe(true)
     })
