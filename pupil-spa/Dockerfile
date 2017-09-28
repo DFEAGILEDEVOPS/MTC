@@ -14,7 +14,7 @@ WORKDIR /ng-app
 
 COPY . .
 
-# RUN npm run postinstall
+RUN yarn run postinstall
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
 RUN $(npm bin)/gulp setAppEnvironmentVariables
