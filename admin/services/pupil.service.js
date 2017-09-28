@@ -48,6 +48,22 @@ const pupilService = {
     }
   },
   /**
+   * Fetch one pupil filtered by pupil id and school id
+   * @param pupilId
+   * @param schoolId
+   * @returns {Promise.<*>}
+   */
+  fetchOnePupil: async (pupilId, schoolId) => {
+    // TODO: Introduce integration tests
+    try {
+      return await Pupil
+      .findOne({'_id': pupilId, 'school': schoolId})
+      .exec()
+    } catch (error) {
+      throw new Error(error)
+    }
+  },
+  /**
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */

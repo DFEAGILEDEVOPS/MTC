@@ -68,13 +68,18 @@ const Pupil = new Schema({
   },
   jwtSecret: {
     type: String
+  },
+  attendanceCode: {
+    type: Object,
+    required: false,
+    ref: 'AttendanceCode'
   }
 }, {
   timestamps: true
 })
 
 /**
- * Validation / sanitisation
+ * Validation / sanitation
  */
 Pupil.pre('validate', function (next) {
   // Silently truncate the names to 128 chars

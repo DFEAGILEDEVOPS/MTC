@@ -17,18 +17,18 @@
   "attendanceCode": {
     "code": 1,
     "dateRecorded": "2017-08-12T00:00:000Z",
-    "byUser": 123456
+    "byUser": "user name 1"
   },
   "attendanceCodePrevious": [
     {
       "code": 2,
       "dateRecorded": "2017-08-10T00:00:000Z",
-      "byUser": 654321
+      "byUser": "user name 2"
     },
     {
       "code": 3,
       "dateRecorded": "2017-08-11T00:00:000Z",
-      "byUser": 123456
+      "byUser": "user name 1"
     }
   ]
 }
