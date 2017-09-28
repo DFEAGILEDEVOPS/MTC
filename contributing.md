@@ -75,3 +75,7 @@ For the purpose of testing the following libraries are used:
 ## Code coverage
 
 Code coverage is achieved through[Istanbul](https://istanbul.js.org/)which is an instrumentation library that tracks statement, branch, function coverage and generates a full report.
+
+## Database Migrations
+
+Migrations are incremental.  Never edit an existing one, always create a new one and perform any transformations of existing data as necessary.
