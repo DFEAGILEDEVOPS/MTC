@@ -9,10 +9,14 @@ const Schema = mongoose.Schema
 
 const Check = new Schema({
   checkCode: {
-    type: Schema.Types.UUID,
+    type: String,
     required: true,
     // As of 2017-09 I don't think unique indexes are available in Cosmos DB, nevertheless this *ought* to be unique
-    unique: true
+    unique: true,
+    validate: {
+      validator: (v) => { return /^[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?4[0-9a-fA-F]{3}-?[89abAB][0-9a-fA-F]{3}-?[0-9a-fA-F]{12}$/.test(v) },
+      message: 'checkCode {VALUE} is not a valid GUID'
+    }
   },
   pupilId: {
     type: Schema.Types.ObjectId,
