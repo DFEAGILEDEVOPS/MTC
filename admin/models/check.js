@@ -2,9 +2,6 @@
 
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
-// Add the UUID type
-require('mongoose-uuid2')(mongoose)
-
 const Schema = mongoose.Schema
 
 const Check = new Schema({
