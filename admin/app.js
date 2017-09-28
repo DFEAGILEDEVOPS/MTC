@@ -125,7 +125,7 @@ app.use(logger('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
-  allowedPath: /^\/test-developer\/manage-check-forms$/,
+  allowedPath: /^\/school\/pupil\/add-batch-pupils$/,
   mimeTypeLimit: [
     'text/csv'
   ]

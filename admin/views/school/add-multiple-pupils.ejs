@@ -7,13 +7,27 @@
     </div>
 </div>
 
+<% if (hasError) { %>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">Errors in your uploaded file</h1>
+            <p>Please download the file below with errors highlighted. Once changes<br>
+                have been made uploaded the same file with the corrections made.</p>
+            <div class="icon-file-download pupils-template"></div>
+            <a class="template-link" href="/school/pupil/download-error-csv">Pupil details file with errors</a> (CSV file)
+        </div>
+    </div>
+</div>
+<% } %>
+
 <header class="page-header">
     <h1 class="heading-xlarge">Add multiple pupils</h1>
 </header>
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h3 class="heading-medium">Download Template</h3>
+        <h3 class="heading-medium">Download template</h3>
         <ol class="list list-number">
             <li>Download the template
                 <div class="panel panel-border-wide">
@@ -29,10 +43,10 @@
         </ol>
     </div>
     <div class="column-two-thirds">
-        <h3 class="heading-medium">Upload File</h3>
-        <form action="#" method="post" name="upload-template">
+        <h3 class="heading-medium">Upload file</h3>
+        <form action="/school/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template">
             <div class="form-group">
-                <input type="file" id="file-input">
+                <input type="file" name="csvTemplateFile" id="template-upload" accept="text/csv" aria-label="Choose a file to upload">
             </div>
             <div class="form-group">
                 <input type="submit" class="button" value="Save"/>

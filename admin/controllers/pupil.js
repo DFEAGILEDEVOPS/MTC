@@ -1,11 +1,16 @@
 const moment = require('moment')
+const fs = require('fs-extra')
+const csv = require('fast-csv')
+const { promisify } = require('bluebird')
+const azure = require('azure-storage')
+const blobService = azure.createBlobService()
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupil.service')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
@@ -37,16 +42,16 @@ const getAddPupil = async (req, res, next) => {
 
 const postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
+  req.breadcrumbs(res.locals.pageTitle)
   let school
   try {
     school = await School.findOne({_id: req.body.school}).exec()
-    if (!school) {
-      throw new Error(`School [${req.body.school}] not found`)
-    }
+    // if (!school) {
+    //   throw new Error(`School [${req.body.school}] not found`)
+    // }
   } catch (error) {
     return next(error)
   }
-  const validationError = await pupilValidator.validate(req)
   const pupil = new Pupil({
     school: school._id,
     upn: req.body.upn,
@@ -59,33 +64,12 @@ const postAddPupil = async (req, res, next) => {
     pinExpired: false
   })
   try {
-    await pupil.validate()
-    if (validationError.hasError()) {
-      throw new Error('custom validation error')
-    }
+    await validatePupil(pupil, req)
   } catch (error) {
-    req.breadcrumbs(res.locals.pageTitle)
-    if (error.message !== 'custom validation error') {
-      // Mongoose error
-      // At this point we have validated the schema and may or may not have anything in validationError
-      // So = combine all validation errors into one
-      const combinedValidationError = errorConverter.fromMongoose(error, addPupilErrorMessages, validationError)
-      // error fixup: if the mongoose schema bails out on the dob field - we should make sure we have some
-      // actual html fields that have an error.  If we do, we can ditch the mongoose error as being superfluous.
-      if (combinedValidationError.isError('dob') && (combinedValidationError.isError('dob-day') || combinedValidationError.isError('dob-month') || combinedValidationError.isError('dob-year'))) {
-        combinedValidationError.removeError('dob')
-      }
-      return res.render('school/add-pupil', {
-        school: school.toJSON(),
-        formData: req.body,
-        error: combinedValidationError,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
     return res.render('school/add-pupil', {
       school: school.toJSON(),
       formData: req.body,
-      error: validationError,
+      error: error,
       breadcrumbs: req.breadcrumbs()
     })
   }
@@ -95,25 +79,133 @@ const postAddPupil = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
+  const pupilId = JSON.stringify([pupil._id])
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
-const getAddMultiplePupils = async (req, res, next) => {
+const getAddMultiplePupils = (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
+  const { hasError } = res
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      hasError
     })
   } catch (error) {
     next(error)
   }
 }
 
+const postAddMultiplePupils = async (req, res, next) => {
+  let school
+  try {
+    school = await School.findOne({_id: req.user.School}).exec()
+    if (!school) {
+      throw new Error(`School [${req.body.school}] not found`)
+    }
+  } catch (error) {
+    return next(error)
+  }
+  const uploadFile = req.files.csvTemplateFile
+  let csvData = []
+  const stream = fs.createReadStream(uploadFile.file)
+  const csvStream = csv()
+    .on('data', (data) => { csvData.push(data) })
+    .on('end', async() => {
+      // Remove headers from data object
+      const headers = csvData.shift(0)
+      const pupils = []
+      // validate each pupil
+      csvData = await Promise.all(csvData.map(async(p) => {
+        const pupil = new Pupil({
+          school: school._id,
+          upn: p[3],
+          foreName: p[0],
+          lastName: p[2],
+          middleNames: p[1],
+          gender: p[5],
+          dob: p[4],
+          pin: null,
+          pinExpired: false
+        })
+        try {
+          await pupil.validate()
+        } catch (err) {
+          p[6] = []
+          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].message))
+          p[6] = p[6].join(', ')
+        }
+        pupils.push(pupil)
+        return p
+      }))
+      // Generate csv with errors
+      if (csvData.some(p => p[6])) {
+        const errorsCsv = []
+        headers.push('Errors')
+        errorsCsv.push(headers)
+        csvData.forEach((p) => errorsCsv.push(p))
+        const writeToString = promisify(csv.writeToString)
+        const cvsStr = await writeToString(errorsCsv, { headers: true })
+        // Upload csv to Azure
+        try {
+          const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + 'error.csv'
+          const streamLength = 512 * 1000
+          const csvBlobFile = await new Promise((resolve, reject) => {
+            blobService.createBlockBlobFromText('csvuploads', remoteFilename, cvsStr, streamLength,
+              (error, result) => {
+                if (error) reject(error)
+                else return resolve(result)
+              }
+            )
+          })
+          req.session.csvErrorFile = csvBlobFile.name
+        } catch (err) {
+          return next(err)
+        }
+        // render with errors
+        res.hasError = true
+        getAddMultiplePupils(req, res, next)
+      // Save pupils if validation succeeds
+      } else {
+        let pupilIds = []
+        try {
+          const savedPupils = await Pupil.insertMany(pupils, (err) => {
+            if (err) {
+              throw new Error(err)
+            }
+          })
+          savedPupils.map((p) => pupilIds.push(p._id))
+          req.flash('info', `${pupils.length} new pupils have been added`)
+        } catch (err) {
+          return next(err)
+        }
+        pupilIds = JSON.stringify(pupilIds)
+        res.redirect(`/school/pupil-register/lastName/true?hl=${pupilIds}`)
+      }
+    })
+  stream.pipe(csvStream)
+}
+
 const getAddMultiplePupilsCSVTemplate = async (req, res) => {
   const file = 'assets/csv/multiple_pupils_template.csv'
   res.download(file)
+}
+
+const getErrorCSVFile = async (req, res) => {
+  const blobFile = await new Promise((resolve, reject) => {
+    blobService.getBlobToText('csvuploads', req.session.csvErrorFile,
+      (error, result) => {
+        if (error) reject(error)
+        else return resolve(result)
+      }
+    )
+  })
+  res.setHeader('Content-disposition', 'filename=multiple_pupils_errors.csv')
+  res.setHeader('content-type', 'text/csv')
+  res.write(blobFile)
+  res.end()
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -270,7 +362,9 @@ module.exports = {
   getAddPupil,
   postAddPupil,
   getAddMultiplePupils,
+  postAddMultiplePupils,
   getAddMultiplePupilsCSVTemplate,
+  getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
   getManagePupils,
