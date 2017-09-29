@@ -5,6 +5,7 @@ const checkStartService = require('../services/check-start.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
+const apiResponse = require('./api-response')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -15,13 +16,13 @@ const pupilAuthenticationService = require('../services/pupil-authentication.ser
 
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
-  if (!pupilPin || !schoolPin) return badRequest(res)
+  if (!pupilPin || !schoolPin) return apiResponse.badRequest(res)
   let config, checkCode, checkForm, pupil, questions, token
 
   try {
     pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
-    return unauthorised(res)
+    return apiResponse.unauthorised(res)
   }
 
   const pupilData = {
@@ -37,13 +38,13 @@ const getQuestions = async (req, res) => {
   try {
     config = await configService.getConfig()
   } catch (error) {
-    return serverError(res)
+    return apiResponse.serverError(res)
   }
 
   try {
     token = await jwtService.createToken(pupil)
   } catch (error) {
-    return serverError(res)
+    return apiResponse.serverError(res)
   }
 
   // start the check
@@ -52,7 +53,16 @@ const getQuestions = async (req, res) => {
     questions = checkFormService.prepareQuestionData(checkForm)
     pupilData.checkCode = checkCode
   } catch (error) {
-    return serverError(res)
+    return apiResponse.serverError(res)
+  }
+
+  // start the check
+  try {
+    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    questions = checkFormService.prepareQuestionData(checkForm)
+    pupilData.checkCode = checkCode
+  } catch (error) {
+    return apiResponse.serverError(res)
   }
 
   const responseData = {
@@ -62,32 +72,11 @@ const getQuestions = async (req, res) => {
     config,
     access_token: token
   }
-
   // console.log('response', responseData)
 
-  setJsonHeader(res)
-  return res.send(JSON.stringify(responseData))
+  apiResponse.sendJson(res, responseData)
 }
 
 module.exports = {
   getQuestions
-}
-
-function unauthorised (res) {
-  setJsonHeader(res)
-  return res.status(401).json({error: 'Unauthorised'})
-}
-
-function badRequest (res) {
-  setJsonHeader(res)
-  return res.status(400).json({error: 'Bad request'})
-}
-
-function serverError (res) {
-  setJsonHeader(res)
-  return res.status(500).json({error: 'Server error'})
-}
-
-function setJsonHeader (res) {
-  res.setHeader('Content-Type', 'application/json')
 }

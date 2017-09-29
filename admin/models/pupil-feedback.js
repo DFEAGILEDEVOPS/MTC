@@ -16,8 +16,10 @@ const pupilFeedback = new Schema({
   comments: {
     type: String
   },
-  sessionId: {
-    type: String
+  checkId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Check'
   }
 }, {
   timestamps: true
