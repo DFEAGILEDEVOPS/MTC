@@ -67,7 +67,7 @@ describe('completed check controller', () => {
       await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
-      expect(data.error).toBe('Bad Request')
+      expect(data.error).toBe('Bad request')
       done()
     })
 
@@ -109,7 +109,7 @@ describe('completed check controller', () => {
       await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
-      expect(data.error).toBe('Server Error')
+      expect(data.error).toBe('Server error')
       done()
     })
   })
