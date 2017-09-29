@@ -1,6 +1,8 @@
 const CompletedChecks = require('../models/completed-checks')
 const { verify } = require('../services/jwt.service')
 
+const apiResponse = require('./api-response')
+
 /**
  * Posts answers, audit and pupil input data to the database
  * @param req
@@ -21,12 +23,13 @@ const postCheck = async (req, res) => {
     access_token,
     feedback
     } = req.body
-  if (!answers || !audit || !inputs) return res.status(400).json({error: 'Bad Request'})
+  if (!answers || !audit || !inputs) return apiResponse.badRequest(res)
+
   // User verification
   try {
     await verify(access_token)
   } catch (err) {
-    return res.status(401).json({error: 'Unauthorised'})
+    return apiResponse.unauthorised(res)
   }
   // store data to db
   const completedData = new CompletedChecks({
@@ -47,9 +50,9 @@ const postCheck = async (req, res) => {
   try {
     await completedData.save()
   } catch (err) {
-    return res.status(500).json({error: 'Server Error'})
+    return apiResponse.serverError(res)
   }
-  return res.sendStatus(201)
+  return apiResponse.sendJson(res, 'OK', 201)
 }
 
 module.exports = {
