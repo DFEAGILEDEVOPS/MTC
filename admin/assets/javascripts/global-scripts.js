@@ -6,6 +6,18 @@ $(function () {
   function tickAllCheckboxes (sel, e) {
     $('#tickAllCheckboxes').on('change', function () {
       $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+      if ($('#selectAll')) {
+        console.log('SELECT ALL', $(this).is(':checked'))
+        if ($(this).is(':checked') === true) {
+          console.log('HIDE SELECT ALL')
+          $('#selectAll').addClass('all-hide')
+          $('#unselectAll').removeClass('all-hide')
+        } else {
+          console.log('SHOW SELECT ALL')
+          $('#unselectAll').addClass('all-hide')
+          $('#selectAll').removeClass('all-hide')
+        }
+      }
     })
   }
 
@@ -29,6 +41,16 @@ $(function () {
   if ($('#checkFormsList').length > 0) disableCheckAll('#checkFormsList')
   if ($('#pupilsList').length > 0) disableCheckAll('#pupilsList')
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
+
+  $('#selectAll').on('click', function (e) {
+    $(this).addClass('all-hide')
+    $('#unselectAll').removeClass('all-hide')
+  })
+
+  $('#unselectAll').on('click', function (e) {
+    $(this).addClass('all-hide')
+    $('#selectAll').removeClass('all-hide')
+  })
 
   $('input:file').on('change', function (e) {
     e.stopPropagation()

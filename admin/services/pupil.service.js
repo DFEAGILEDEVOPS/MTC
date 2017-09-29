@@ -25,6 +25,29 @@ const pupilService = {
     }
   },
   /**
+   * Returns pupils filtered by school and sorted by field and direction (asc/desc)
+   * @param schoolId
+   * @param sortingField
+   * @param sortingDirection
+   * @returns {Promise.<*>}
+   */
+  fetchSortedPupilsData: async (schoolId, sortingField, sortingDirection) => {
+    // TODO: Introduce integration tests
+    try {
+      const sort = {}
+      sort[sortingField] = sortingDirection
+      return await Pupil
+        .find({
+          'school': schoolId
+        })
+        .sort(sort)
+        .lean()
+        .exec()
+    } catch (error) {
+      throw new Error(error)
+    }
+  },
+  /**
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */

@@ -38,8 +38,9 @@ Then(/^I should be taken to the school landing page$/) do
 end
 
 Given(/^I have signed in with (.*)$/) do |teacher|
+  @teacher = teacher
   sign_in_page.load
-  sign_in_page.login(teacher,'password')
+  sign_in_page.login(@teacher,'password')
 end
 
 Given(/^I am on the sign in failure page$/) do
