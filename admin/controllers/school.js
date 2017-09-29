@@ -405,13 +405,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   // Get attendance code index
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
-    // attendanceCodesData.forEach((ac) => {
-    //   console.log('OHHHHHH', ac._id)
-    //   attendanceCodes[ac._id] = {
-    //     'id': ac._id,
-    //     'reason': ac.reason
-    //   }
-    // })
   } catch (error) {
     console.log('ERROR getting attendance codes', error)
     return next(error)
