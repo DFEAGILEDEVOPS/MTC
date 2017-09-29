@@ -6,14 +6,14 @@
 
 const path = require('path')
 const proxyquire = require('proxyquire').noCallThru()
-const CheckFormModelMock = require('../mocks/check-form-model-mock')
+const MongooseModelMock = require('../mocks/mongoose-model-mock')
 
 describe('check form service', () => {
   let checkForm, service
 
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
-      '../models/check-form': new CheckFormModelMock(cb)
+      '../models/check-form': new MongooseModelMock(cb)
     })
   }
 

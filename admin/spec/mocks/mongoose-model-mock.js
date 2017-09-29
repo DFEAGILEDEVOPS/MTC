@@ -1,4 +1,4 @@
-class CheckFormModelMock {
+class MongooseModelMock {
   constructor (cb) {
     this.done = cb
   }
@@ -7,4 +7,4 @@ class CheckFormModelMock {
   exec () { return this.done() }
 }
 
-module.exports = CheckFormModelMock
+module.exports = MongooseModelMock
