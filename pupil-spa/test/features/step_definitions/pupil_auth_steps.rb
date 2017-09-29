@@ -13,7 +13,7 @@ Then(/^I should see meta data stored in the DB$/) do
   questions_recieved = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   questions_expected = MongoDbHelper.get_form(100)['questions']
   expect(questions_expected).to eql questions_recieved.map{|b| {'f1' => b['factor1'], 'f2' =>  b['factor2']}}
-  expect(stored_check['checkStartDate'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
+  expect(stored_check['pupilLoginDate'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
 end
 
 Given(/^I have failed to login$/) do
