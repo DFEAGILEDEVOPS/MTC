@@ -419,7 +419,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get pupils for user' school
   const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
-  console.log('ATTENDANCE CODES', attendanceCodes)
   pupilsList = await Promise.all(pupils.map(async (p) => {
     p.id = null
     p.reason = 'N/A'
