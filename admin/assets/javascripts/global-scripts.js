@@ -61,17 +61,21 @@ $(function () {
   if ($('input:radio[name="attendanceCode"]').length > 0) {
     var radioTicked = 0
     var checkboxTicked = 0
+
     $('input:radio[name="attendanceCode"]').add('.multiple-choice-mtc > input:checkbox').on('click', function () {
+      $('input:radio[name="attendanceCode"]').attr('data-checked', null)
+      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
+        $($(this)).attr('data-checked', true)
         radioTicked = 1
-      } else {
-        radioTicked = 0
       }
+
       if ($('.multiple-choice-mtc > input:checkbox').is(':checked')) {
+        $($(this)).attr('data-checked', true)
         checkboxTicked = 1
-      } else {
-        checkboxTicked = 0
       }
+
       if (radioTicked > 0 && checkboxTicked > 0) {
         $('#stickyConfirm').prop('disabled', false)
       } else {
@@ -90,7 +94,6 @@ $(function () {
     })
     $(window).scroll(function () {
       var sticky = $('#stickyHeader')
-      // Use the wrapper's top
       if (sticky.parent().position().top - $(window).scrollTop() < 0) {
         if (!sticky.data('fixed')) {
           sticky.css({
