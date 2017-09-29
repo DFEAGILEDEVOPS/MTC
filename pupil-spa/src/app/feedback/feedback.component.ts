@@ -96,7 +96,7 @@ export class FeedbackComponent implements OnInit {
         'satisfactionRating': this.selectedSatisfactionRating,
         'comments': comments,
         'createdAt': new Date(),
-        'sessionId': this.pupilData['checkCode']
+        'checkCode': this.pupilData['checkCode']
       };
       this.storageService.setItem('feedback', this.feedbackData);
       this.enableSubmit = false;

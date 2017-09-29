@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spyOn */
+/* global describe beforeEach it expect */
 
 const proxyquire = require('proxyquire').noCallThru()
 const checkFormMock = require('../mocks/checkform')

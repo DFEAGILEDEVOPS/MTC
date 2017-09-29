@@ -7,7 +7,7 @@
             "id" : 124524
         },
         "pupil" : {
-            "sessionId" : "fbw4ui-hjsf-jdjd-9402-31f47944a46d",
+            "checkCode" : "fbw4ui-hjsf-jdjd-9402-31f47944a46d",
             "lastName" : "Nine",
             "firstName" : "Pupil"
         },
@@ -64,6 +64,5 @@
         ]
     },
     "__v" : 0,
-    "checkWindow" : 123,
     "receivedByServerAt" : "2017-09-14T23:55:45.021Z"
 }
