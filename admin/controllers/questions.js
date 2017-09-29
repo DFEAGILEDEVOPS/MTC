@@ -1,11 +1,10 @@
 'use strict'
 
-const uuidv4 = require('uuid/v4')
-
-const pupilAuthenticationService = require('../services/pupil-authentication.service')
 const checkFormService = require('../services/check-form.service')
+const checkStartService = require('../services/check-start.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
+const pupilAuthenticationService = require('../services/pupil-authentication.service')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -17,7 +16,7 @@ const jwtService = require('../services/jwt.service')
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
   if (!pupilPin || !schoolPin) return badRequest(res)
-  let config, pupil, questions, token
+  let config, checkCode, checkForm, pupil, questions, token
 
   try {
     pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
@@ -25,16 +24,9 @@ const getQuestions = async (req, res) => {
     return unauthorised(res)
   }
 
-  try {
-    questions = await checkFormService.getQuestions()
-  } catch (error) {
-    return serverError(res)
-  }
-
   const pupilData = {
     firstName: pupil.foreName,
-    lastName: pupil.lastName,
-    sessionId: uuidv4()
+    lastName: pupil.lastName
   }
 
   const schoolData = {
@@ -54,14 +46,27 @@ const getQuestions = async (req, res) => {
     return serverError(res)
   }
 
-  setJsonHeader(res)
-  return res.send(JSON.stringify({
+  // start the check
+  try {
+    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    questions = checkFormService.prepareQuestionData(checkForm)
+    pupilData.checkCode = checkCode
+  } catch (error) {
+    return serverError(res)
+  }
+
+  const responseData = {
     questions,
     pupil: pupilData,
     school: schoolData,
     config,
     access_token: token
-  }))
+  }
+
+  // console.log('response', responseData)
+
+  setJsonHeader(res)
+  return res.send(JSON.stringify(responseData))
 }
 
 module.exports = {
