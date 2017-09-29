@@ -8,4 +8,14 @@ class AddMultiplePupilPage < SitePrism::Page
   element :chose_file, '#file-input'
   element :save, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
+
+
+  def upload_multiple_pupil(pupil_array)
+    CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"), 'wb') do |csv_object|
+      csv_object << ["First name","Middle name(s)","Last name","UPN","Date of Birth","Gender"]
+      csv_object << pupil_array
+    end
+    page.attach_file('file-input', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"))
+  end
+
 end

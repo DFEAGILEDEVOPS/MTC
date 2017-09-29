@@ -25,3 +25,16 @@ end
 And(/^I should have the option to choose a csv file for adding multiple pupil$/) do
   expect(@page).to have_chose_file
 end
+
+When(/^I Upload a valid CSV file to add Multiple Pupil$/) do
+  @upn = UpnGenerator.generate
+  @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, @upn, "22/05/2005", "Female"]
+
+  add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array)
+  add_multiple_pupil_page.save.click
+end
+
+And(/^I delete the Add Multiple Pupil CSV file$/) do
+  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
+end
