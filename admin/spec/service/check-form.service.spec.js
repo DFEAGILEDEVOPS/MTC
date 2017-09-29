@@ -1,16 +1,16 @@
 'use strict'
-/* global describe beforeEach it expect spyOn */
+/* global describe beforeEach it expect */
 
 const proxyquire = require('proxyquire').noCallThru()
 const checkFormMock = require('../mocks/checkform')
-const CheckFormModelMock = require('../mocks/check-form-model-mock')
+const MongooseModelMock = require('../mocks/mongoose-model-mock')
 
 describe('check-form.service', () => {
   let service
 
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
-      '../models/check-form': new CheckFormModelMock(cb)
+      '../models/check-form': new MongooseModelMock(cb)
     })
   }
 
@@ -48,17 +48,6 @@ describe('check-form.service', () => {
           expect('not expected to throw').toBe(error.message)
           done()
         }
-        done()
-      })
-    })
-
-    describe('getQuestions()', () => {
-      it('returns a set of questions', async (done) => {
-        const allocateCheckFormSpy = spyOn(service, 'allocateCheckForm')
-        const prepareQuestionDataSpy = spyOn(service, 'prepareQuestionData')
-        await service.getQuestions()
-        expect(allocateCheckFormSpy).toHaveBeenCalledTimes(1)
-        expect(prepareQuestionDataSpy).toHaveBeenCalledTimes(1)
         done()
       })
     })
