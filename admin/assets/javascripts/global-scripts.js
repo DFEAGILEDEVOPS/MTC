@@ -7,13 +7,11 @@ $(function () {
     $('#tickAllCheckboxes').on('change', function () {
       $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
       if ($('#selectAll')) {
-        console.log('SELECT ALL', $(this).is(':checked'))
+        //console.log('SELECT ALL', $(this).is(':checked'))
         if ($(this).is(':checked') === true) {
-          console.log('HIDE SELECT ALL')
           $('#selectAll').addClass('all-hide')
           $('#unselectAll').removeClass('all-hide')
         } else {
-          console.log('SHOW SELECT ALL')
           $('#unselectAll').addClass('all-hide')
           $('#selectAll').removeClass('all-hide')
         }
@@ -58,7 +56,32 @@ $(function () {
   }
 
   /**
-   * Sticky confirmation banner
+   *  Enable/disable 'confirm' button based on custom validation for attendance codes.
+   */
+  if ($('input:radio[name="attendanceCode"]').length > 0) {
+    var radioTicked = 0
+    var checkboxTicked = 0
+    $('input:radio[name="attendanceCode"]').add('.multiple-choice-mtc > input:checkbox').on('click', function () {
+      if ($('input:radio[name="attendanceCode"]').is(':checked')) {
+        radioTicked = 1
+      } else {
+        radioTicked = 0
+      }
+      if ($('.multiple-choice-mtc > input:checkbox').is(':checked')) {
+        checkboxTicked = 1
+      } else {
+        checkboxTicked = 0
+      }
+      if (radioTicked > 0 && checkboxTicked > 0) {
+        $('#stickyConfirm').prop('disabled', false)
+      } else {
+        $('#stickyConfirm').prop('disabled', true)
+      }
+    })
+  }
+
+  /**
+   * Sticky confirmation banner.
    */
   if ($('#stickyHeader').length > 0) {
     $(function () {
