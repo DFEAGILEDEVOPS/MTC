@@ -190,7 +190,7 @@ function mapRole (ncaUserType) {
     return mapping[ncaUserType]
   }
 
-  console.log('No mapping found, defaulting to TEACHER')
+  // console.log('No mapping found, defaulting to TEACHER')
   return 'TEACHER'
 }
 
