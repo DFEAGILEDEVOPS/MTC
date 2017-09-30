@@ -18,20 +18,20 @@ export class FeedbackService {
       const accessToken = this.storageService.getItem('access_token');
 
       if (!storedFeedback || !accessToken) {
-      return false;
+        return false;
       }
 
       const inputType = storedFeedback.inputType.id;
       const satisfactionRating = storedFeedback.satisfactionRating.id;
       const comments = storedFeedback.comments;
-      const sessionId = storedFeedback.sessionId;
+      const checkCode = storedFeedback.checkCode;
 
       await this.http.post(`${environment.apiURL}/api/pupil-feedback`,
         {
           inputType,
           satisfactionRating,
           comments,
-          sessionId,
+          checkCode,
           accessToken
         },
         requestArgs)
