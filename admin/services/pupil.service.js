@@ -58,8 +58,8 @@ const pupilService = {
     }
   },
 
-  validatePupil: async (pupil, req) => {
-    const validationError = await pupilValidator.validate(req)
+  validatePupil: async (pupil, req, pupilData) => {
+    const validationError = await pupilValidator.validate(req, pupilData)
     try {
       await pupil.validate()
       if (validationError.hasError()) {
@@ -76,11 +76,9 @@ const pupilService = {
         if (combinedValidationError.isError('dob') && (combinedValidationError.isError('dob-day') || combinedValidationError.isError('dob-month') || combinedValidationError.isError('dob-year'))) {
           combinedValidationError.removeError('dob')
         }
-        console.log('it is combined validation')
         throw combinedValidationError
       }
       if (validationError.hasError()) {
-        console.log('it is validation')
         throw validationError
       }
     }

@@ -90,11 +90,17 @@ const pupilValidationSchema = {
   }
 }
 
-module.exports.validate = async function (req) {
+module.exports.validate = async function (req, pupilData) {
   let validationError = new ValidationError()
-  req.body.foreName = req.body.foreName.trim()
-  req.body.lastName = req.body.lastName.trim()
-  req.body.upn = req.body.upn.toUpperCase().trim()
+  // TODO: Construct the req body until we decouple express request from the validation
+  req.body._id = pupilData._id
+  req.body.foreName = pupilData.foreName.trim()
+  req.body.lastName = pupilData.lastName.trim()
+  req.body.upn = pupilData.upn.toUpperCase().trim()
+  req.body['dob-day'] = pupilData['dob-day']
+  req.body['dob-month'] = pupilData['dob-month']
+  req.body['dob-year'] = parseInt(pupilData['dob-year'])
+  req.body.gender = pupilData.gender
   try {
     // expressValidator
     req.checkBody(pupilValidationSchema)
@@ -103,11 +109,11 @@ module.exports.validate = async function (req) {
   } catch (error) {
     throw new Error('Failed validation: ' + error.message)
   }
-
   // We need to run additional tests for the date of birth
   // Use the stict flag when parsing the arguments, otherwise empty inputs could cause the current day / month to be used
   // instead.
-  const dob = moment.utc(req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0') + '/' + req.body['dob-year'], 'DD/MM/YYYY', true)
+  const dobData = req.body['dob-day'].padStart(2, '0') + '/' + req.body['dob-month'].padStart(2, '0') + '/' + req.body['dob-year']
+  const dob = moment.utc(dobData, 'DD/MM/YYYY', true)
   if (dob.isValid()) {
     if (dob > moment().toDate()) {
       validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
@@ -137,6 +143,5 @@ module.exports.validate = async function (req) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }
-
   return validationError
 }

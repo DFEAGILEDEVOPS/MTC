@@ -17,9 +17,9 @@ module.exports.addPupil = {
   'dobNoFuture': 'Date of birth can\'t be in the future',
   'dobRequired': 'Date of birth can\'t be blank',
   'dobInvalidChars': 'Entry must be a number',
-  'dob-day': 'Please check “Day”',
-  'dob-month': 'Please check “Month”',
-  'dob-year': 'Please check “Year”',
+  'dob-day': 'Please check \\"Day\\"',
+  'dob-month': 'Please check \\"Month\\"',
+  'dob-year': 'Please check \\" Year \\"',
 
   'upnRequired': 'UPN is missing',
   'upnInvalidCheckDigit': 'UPN invalid (wrong check letter at character 1)',

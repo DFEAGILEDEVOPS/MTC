@@ -46,9 +46,6 @@ const postAddPupil = async (req, res, next) => {
   let school
   try {
     school = await School.findOne({_id: req.body.school}).exec()
-    // if (!school) {
-    //   throw new Error(`School [${req.body.school}] not found`)
-    // }
   } catch (error) {
     return next(error)
   }
@@ -64,8 +61,10 @@ const postAddPupil = async (req, res, next) => {
     pinExpired: false
   })
   try {
-    await validatePupil(pupil, req)
+    const pupilData = req.body
+    await validatePupil(pupil, req, pupilData)
   } catch (error) {
+    Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e].replace(/\\/g, '') })
     return res.render('school/add-pupil', {
       school: school.toJSON(),
       formData: req.body,
@@ -114,10 +113,11 @@ const postAddMultiplePupils = async (req, res, next) => {
   const csvStream = csv()
     .on('data', (data) => { csvData.push(data) })
     .on('end', async() => {
-      // Remove headers from data object
-      const headers = csvData.shift(0)
-      const pupils = []
+      // Remove error column and headers from data
+      if (csvData.some(p => p[6])) csvData.map((r) => r.splice(6, 1))
+      let headers = csvData.shift(0)
       // validate each pupil
+      const pupils = []
       csvData = await Promise.all(csvData.map(async(p) => {
         const pupil = new Pupil({
           school: school._id,
@@ -131,10 +131,16 @@ const postAddMultiplePupils = async (req, res, next) => {
           pinExpired: false
         })
         try {
-          await pupil.validate()
+          const dob = p[4].split('/')
+          const pupilData = Object.assign({
+            'dob-day': dob[1],
+            'dob-month': dob[0],
+            'dob-year': dob[2]
+          }, pupil._doc)
+          await validatePupil(pupil, req, pupilData)
         } catch (err) {
           p[6] = []
-          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].message))
+          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].replace(/\\"/g, '')))
           p[6] = p[6].join(', ')
         }
         pupils.push(pupil)
