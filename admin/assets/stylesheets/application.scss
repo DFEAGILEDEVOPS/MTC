@@ -55,6 +55,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_check-windows';
 @import 'elements/_sorting';
 @import 'elements/_not-taking-check';
+@import 'elements/_mtc-checkboxes';
 
 // Global
 
@@ -134,7 +135,8 @@ hr.divider {
   padding-left: $gutter;
 }
 
-.padding-first-item {
+.padding-first-item,
+.padding-top {
   margin-top: $gutter-and-a-half;
 }
 
@@ -284,10 +286,6 @@ input {
   }
 }
 
-.back-to-top-container {
-  margin-top: 4.4em;
-}
-
 // Hide 'check all' checkboxes if JS is not enabled
 
 .tick-all-boxes {
@@ -300,6 +298,8 @@ input {
   display: table-cell;
 }
 
+// 'tick-all-boxes' classes should be removed once
+// the new implementation of checkboxes is in place
 .tick-all-boxes-nojs {
   display: table-cell;
   visibility: visible;
@@ -327,6 +327,12 @@ table.spacious {
 
   th {
     text-align: left;
+    padding-bottom: 10px;
+
+    a {
+      color: $black;
+      text-decoration: none;
+    }
   }
 
   td {
@@ -353,22 +359,9 @@ table.spacious-two-column {
 }
 
 .back-to-top-container {
-  margin-top: 4.4em;
-}
+  margin-top: 0;
 
-// Sorting
-
-.triangle {
-  margin-left: 0.2em;
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 6px 12px 6px;
-  border-color: transparent transparent $govuk-blue transparent;
-}
-
-.triangle.down {
-  border-width: 12px 6px 0 6px;
-  border-color: $govuk-blue transparent transparent transparent;
+  @include media(desktop) {
+    margin-top: 4.4em;
+  }
 }

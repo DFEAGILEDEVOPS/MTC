@@ -29,6 +29,13 @@ class MongoDbHelper
     @array_of_schools
   end
 
+  def self.list_of_pupils_from_school(school_id)
+    collection=CLIENT[:pupils].find({'school': school_id})
+    @array_of_pupils = []
+    collection.each {|pupil| @array_of_pupils << pupil}
+    @array_of_pupils
+  end
+
   def self.get_id(forename, lastname, school_id)
     result = []
     collection=CLIENT[:pupils].find({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i})
