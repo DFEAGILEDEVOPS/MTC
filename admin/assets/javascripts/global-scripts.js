@@ -64,7 +64,6 @@ $(function () {
 
     $('input:radio[name="attendanceCode"]').add('.multiple-choice-mtc > input:checkbox').on('click', function () {
       $('input:radio[name="attendanceCode"]').attr('data-checked', null)
-      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
 
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
         $($(this)).attr('data-checked', true)
