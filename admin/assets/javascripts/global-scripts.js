@@ -73,6 +73,8 @@ $(function () {
       if ($('.multiple-choice-mtc > input:checkbox').is(':checked')) {
         $($(this)).attr('data-checked', true)
         checkboxTicked = 1
+      } else {
+        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
       }
 
       if (radioTicked > 0 && checkboxTicked > 0) {
