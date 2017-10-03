@@ -463,18 +463,20 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   let pupils = req.body.pupil
+  let pupilsProcessed
 
   pupils.forEach(async (id) => {
-    let pupil = await fetchOnePupil(id, req.user.School)
+    let pupil = fetchOnePupil(id, req.user.School)
     if (pupil) {
       pupil.attendanceCode = {
         _id: req.body.attendanceCode,
         dateRecorded: new Date(todayDate),
         byUser: req.user.UserName
       }
-      await pupil.save()
+      pupilsProcessed.push(pupil)
     }
   })
+  await pupilsProcessed.insertMany()
 
   // @TODO: list of pupils with reasons
   let pupilsList = []
