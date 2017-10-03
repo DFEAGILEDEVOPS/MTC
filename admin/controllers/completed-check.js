@@ -1,6 +1,5 @@
-const CompletedChecks = require('../models/completed-checks')
 const { verify } = require('../services/jwt.service')
-
+const checkCompleteService = require('../services/check-complete.service')
 const apiResponse = require('./api-response')
 
 /**
@@ -22,36 +21,35 @@ const postCheck = async (req, res) => {
     school,
     access_token,
     feedback
-    } = req.body
+  } = req.body
   if (!answers || !audit || !inputs) return apiResponse.badRequest(res)
 
   // User verification
   try {
     await verify(access_token)
-  } catch (err) {
+  } catch (error) {
     return apiResponse.unauthorised(res)
   }
-  // store data to db
-  const completedData = new CompletedChecks({
-    data: {
-      answers,
-      inputs,
-      session,
-      audit,
-      questions,
-      config,
-      pupil,
-      school,
-      access_token,
-      feedback
-    },
-    receivedByServerAt: Date.now()
-  })
+
   try {
-    await completedData.save()
-  } catch (err) {
+    await checkCompleteService.completeCheck({
+      data: {
+        access_token,
+        answers,
+        audit,
+        config,
+        feedback,
+        inputs,
+        pupil,
+        questions,
+        school,
+        session
+      }
+    })
+  } catch (error) {
     return apiResponse.serverError(res)
   }
+
   return apiResponse.sendJson(res, 'OK', 201)
 }
 
