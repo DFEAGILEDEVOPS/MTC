@@ -33,8 +33,8 @@ const pupilService = {
    */
   fetchSortedPupilsData: async (schoolId, sortingField, sortingDirection) => {
     // TODO: Introduce integration tests
+    const sort = {}
     try {
-      const sort = {}
       sort[sortingField] = sortingDirection
       return await Pupil
         .find({
