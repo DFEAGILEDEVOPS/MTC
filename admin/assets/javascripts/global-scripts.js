@@ -76,7 +76,7 @@ $(function () {
         $('#stickyConfirm').prop('disabled', true)
       }
     })
-    
+
     // Select/Unselect all
     $('#selectAll').on('click', function (e) {
       $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
@@ -102,6 +102,12 @@ $(function () {
         checkboxTicked = 1
       } else {
         $($(this)).attr('data-checked', null)
+      }
+
+      if (radioTicked > 0 && checkboxTicked > 0) {
+        $('#stickyConfirm').prop('disabled', false)
+      } else {
+        $('#stickyConfirm').prop('disabled', true)
       }
     })
   }
