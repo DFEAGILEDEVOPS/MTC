@@ -62,25 +62,46 @@ $(function () {
     var radioTicked = 0
     var checkboxTicked = 0
 
-    $('input:radio[name="attendanceCode"]').add('.multiple-choice-mtc > input:checkbox').on('click', function () {
+    // Radios
+    $('input:radio[name="attendanceCode"]').on('click', function () {
       $('input:radio[name="attendanceCode"]').attr('data-checked', null)
-
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
         $($(this)).attr('data-checked', true)
         radioTicked = 1
-      }
-
-      if ($('.multiple-choice-mtc > input:checkbox').is(':checked')) {
-        $($(this)).attr('data-checked', true)
-        checkboxTicked = 1
-      } else {
-        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
       }
 
       if (radioTicked > 0 && checkboxTicked > 0) {
         $('#stickyConfirm').prop('disabled', false)
       } else {
         $('#stickyConfirm').prop('disabled', true)
+      }
+    })
+    
+    // Select/Unselect all
+    $('#selectAll').on('click', function (e) {
+      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+    })
+
+    $('#unselectAll').on('click', function (e) {
+      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+    })
+
+    // Check all checkbox
+    $('#tickAllCheckboxes').on('change', function () {
+      if ($(this).is(':checked') === true) {
+        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+      } else {
+        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+      }
+    })
+
+    // Checkboxes
+    $('.multiple-choice-mtc > input:checkbox').on('click', function () {
+      if ($(this).is(':checked')) {
+        $($(this)).attr('data-checked', true)
+        checkboxTicked = 1
+      } else {
+        $($(this)).attr('data-checked', null)
       }
     })
   }
