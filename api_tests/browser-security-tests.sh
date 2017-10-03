@@ -1,4 +1,5 @@
-#!/bin/bash -x
+#!/bin/bash -x --login
+
 export PATH="$PATH:$HOME/.rvm/bin"
 rvm use 2.4.0
 echo "running browser security tests with tag $2 against site $1"
