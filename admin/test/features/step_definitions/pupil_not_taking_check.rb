@@ -154,3 +154,7 @@ Then(/^I should be able to unselect all pupils$/) do
   pupil_reason_page.unselect_all_pupils.click
   pupil_reason_page.pupil_list.rows.each {|row| expect(row).to have_no_selected}
 end
+
+Then(/^I should be taken to the pupil not taking check page$/) do
+  expect(pupils_not_taking_check_page).to be_displayed
+end
