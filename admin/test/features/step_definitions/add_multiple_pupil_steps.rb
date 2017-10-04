@@ -14,7 +14,7 @@ And(/^I can see sub heading '(.*)' on Add Multiple Pupil Page$/) do|sub_heading|
 end
 
 And(/^I can see the Info message on adding Multiple Pupils$/) do
-  expect(@page.info_message.map {|message| message.text}).to include "Download the template Pupil details template (CSV file)"
+  expect(@page.info_message.map {|message| message.text}).to include "Download the example Pupil details template (CSV file)"
   expect(@page.info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
   expect(@page.info_message.map {|message| message.text}).to include "Add pupil details using the given format"
   expect(@page.info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
