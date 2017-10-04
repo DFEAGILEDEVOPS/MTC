@@ -3,11 +3,15 @@
  */
 /* global $ */
 $(function () {
+  /**
+   * Tick all checkboxes. Common functionality.
+   * @param sel
+   * @param e
+   */
   function tickAllCheckboxes (sel, e) {
     $('#tickAllCheckboxes').on('change', function () {
       $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
       if ($('#selectAll')) {
-        //console.log('SELECT ALL', $(this).is(':checked'))
         if ($(this).is(':checked') === true) {
           $('#selectAll').addClass('all-hide')
           $('#unselectAll').removeClass('all-hide')
@@ -19,6 +23,11 @@ $(function () {
     })
   }
 
+  /**
+   * Radio, checkboxes and link interaction for page 'pupils not taking check'.
+   * @param sel
+   * @param e
+   */
   function disableCheckAll (sel, e) {
     if ($(sel)) {
       var lengthAll = $(sel + ' > tbody div > input:checkbox').length
@@ -41,78 +50,92 @@ $(function () {
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
   /**
-   * 'Select all' / 'Unselect all' checkboxes
+   * Pupils not taking the check.
    */
-  if ($('#selectAll').length > 0) {
+  var pupilsNotTakingCheck = function () {
+    /**
+     * Is radio button checked?
+     */
+    var isRadioChecked = function () {
+      var el = $('input:radio[name="attendanceCode"]:checked')
+      if (el.length > 0) {
+        $('#stickyConfirm').prop('disabled', false)
+      } else {
+        $('#stickyConfirm').prop('disabled', true)
+      }
+    }
+
+    /**
+     * Is there at least one checkbox checked?
+     */
+    var isCheckboxChecked = function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      if (el.length > 0) {
+        $('#stickyConfirm').prop('disabled', false)
+      } else {
+        $('#stickyConfirm').prop('disabled', true)
+      }
+    }
+
+    /**
+     * 'Select all' checkboxes link.
+     */
     $('#selectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#unselectAll').removeClass('all-hide')
-      $('#stickyConfirm').prop('disabled', true)
+      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+      isRadioChecked()
     })
 
+    /**
+     * 'Unselect all' checkboxes link.
+     */
     $('#unselectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#selectAll').removeClass('all-hide')
-      $('#stickyConfirm').prop('disabled', false)
+      $('#stickyConfirm').prop('disabled', true)
+      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
     })
-  }
 
-  /**
-   *  Enable/disable 'confirm' button based on custom validation for attendance codes.
-   */
-  if ($('input:radio[name="attendanceCode"]').length > 0) {
-    var radioTicked = 0
-    var checkboxTicked = 0
+    /**
+     * Check all checkbox.
+     */
+    $('#tickAllCheckboxes').on('change', function () {
+      if ($(this).is(':checked') === true) {
+        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+        isRadioChecked()
+      } else {
+        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+        $('#stickyConfirm').prop('disabled', true)
+      }
+    })
 
-    // Radios
+    /**
+     * Radios buttons.
+     */
     $('input:radio[name="attendanceCode"]').on('click', function () {
       $('input:radio[name="attendanceCode"]').attr('data-checked', null)
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
         $($(this)).attr('data-checked', true)
-        radioTicked = 1
-      }
-
-      if (radioTicked > 0 && $('.multiple-choice-mtc > input:checkbox:checked').length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
-      } else {
-        $('#stickyConfirm').prop('disabled', true)
+        isCheckboxChecked()
       }
     })
 
-    // Select/Unselect all
-    $('#selectAll').on('click', function (e) {
-      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-    })
-
-    $('#unselectAll').on('click', function (e) {
-      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-    })
-
-    // Check all checkbox
-    $('#tickAllCheckboxes').on('change', function () {
-      if ($(this).is(':checked') === true) {
-        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-      } else {
-        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-      }
-    })
-
-    // Checkboxes
+    /**
+     * Checkboxes.
+     */
     $('.multiple-choice-mtc > input:checkbox').on('click', function () {
       if ($(this).is(':checked')) {
         $($(this)).attr('data-checked', true)
-        checkboxTicked = 1
+        isRadioChecked()
       } else {
         $($(this)).attr('data-checked', null)
-      }
-
-      if ($('input:radio[name="attendanceCode"]:checked').length > 0 && $('.multiple-choice-mtc > input:checkbox:checked').length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
-      } else {
         $('#stickyConfirm').prop('disabled', true)
       }
     })
   }
+
+  pupilsNotTakingCheck()
 
   /**
    * Sticky confirmation banner.
@@ -142,16 +165,6 @@ $(function () {
       }
     })
   }
-  
-  $('#selectAll').on('click', function (e) {
-    $(this).addClass('all-hide')
-    $('#unselectAll').removeClass('all-hide')
-  })
-
-  $('#unselectAll').on('click', function (e) {
-    $(this).addClass('all-hide')
-    $('#selectAll').removeClass('all-hide')
-  })
 
   $('input:file').on('change', function (e) {
     e.stopPropagation()
