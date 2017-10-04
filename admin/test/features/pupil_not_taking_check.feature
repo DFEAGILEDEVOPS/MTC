@@ -79,17 +79,46 @@ Feature:
     Given I am on the pupil reason page
     Then I should have a option to select all pupils
 
-  @wip
+  Scenario: Sticky banner is displayed on pupil reason page
+    Given I am on the pupil reason page
+    Then I should see a sticky banner
+
+  Scenario: Confirmation is disabled if a reason and at least 1 pupil are not selected
+    Given I am on the pupil reason page
+    Then I should see the confirm button disabled
+
+  Scenario: Confirmation is enabled if a reason and at least 1 pupil are selected
+    Given I am on the pupil reason page
+    And I select a reason
+    When I select a pupil
+    Then I should see the confirm button enabled
+
+  Scenario: Cancel clears any selected pupils
+    Given I have selected some pupils
+    When I choose to cancel
+    Then my selections are cleared
+
+  Scenario Outline: Teachers can add a reason for pupils not taking a check
+    Given I am on the pupil reason page
+    When I add <reason> as a reason for a particular pupil
+    Then the <reason> reason should be stored against the pupils
+
+    Examples:
+      | reason                 |
+      | Absent                 |
+      | Left                   |
+      | Incorrect Registration |
+      | Withdrawn              |
+
+  @manual
   Scenario: Pupils can be sorted via reason
     Given I am on the pupil reason page
     Then I should be able to sort them via their reason for absence
 
-  @manual
   Scenario: Clicking on pupil name selects the pupil
     Given I am on the pupil reason page
     Then I should be able to select the pupils name to check the check box
 
-  @manual
   Scenario: Teachers can select all pupils
     Given I am on the pupil reason page
     Then I should be able to select all pupils
