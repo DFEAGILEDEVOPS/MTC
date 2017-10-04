@@ -7,7 +7,6 @@ require('sinon-mongoose')
 
 // const pupilValidator = require('../../../lib/validator/pupil-validator')
 const Pupil = require('../../../models/pupil')
-const expressValidator = require('express-validator')(require('../../../lib/validator/express-validator.custom-validators.js'))
 
 let sandbox
 let pupilValidator
@@ -44,10 +43,6 @@ describe('pupil validator', function () {
 
     // Mock the call to check uniqueness on the pupil
     sandbox = sinon.sandbox.create()
-
-    return expressValidator(req, {}, function () {
-      done()
-    })
   })
 
   afterEach(() => {
