@@ -14,7 +14,7 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.foreName)) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.foreName)) {
+  if (isEmpty(pupilData.foreName.trim())) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameRequired)
   }
   // Middlenames validation
@@ -25,7 +25,7 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.lastName)) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.lastName)) {
+  if (isEmpty(pupilData.lastName.trim())) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameRequired)
   }
   // DoB Day Validation
@@ -35,7 +35,7 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-day'])) {
     validationError.addError('dob-day', addPupilErrorMessages.dobInvalidChars)
   }
-  if (isEmpty(pupilData['dob-day'])) {
+  if (isEmpty(pupilData['dob-day'].trim())) {
     validationError.addError('dob-day', addPupilErrorMessages.dobRequired)
   }
   // DoB Month Validation
@@ -45,7 +45,7 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-month'])) {
     validationError.addError('dob-month', addPupilErrorMessages.dobInvalidChars)
   }
-  if (isEmpty(pupilData['dob-month'])) {
+  if (isEmpty(pupilData['dob-month'].trim())) {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
@@ -55,7 +55,7 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
     validationError.addError('dob-year', addPupilErrorMessages.dobInvalidChars)
   }
-  if (isEmpty(pupilData['dob-year'])) {
+  if (isEmpty(pupilData['dob-year'].trim())) {
     validationError.addError('dob-year', addPupilErrorMessages.dobRequired)
   }
   // We need to run additional tests for the date of birth
@@ -89,7 +89,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('gender', addPupilErrorMessages.genderRequired)
   }
   // UPN Validation
-  const upn = pupilData['upn']
+  const upn = pupilData['upn'].trim().toUpperCase()
   const expected = upnService.calculateCheckLetter(upn.substring(1))
   if (expected !== upn[0]) {
     console.log(`UPN check letter validation failed for [${upn}]: expected [${expected}] but got [${upn[0]}]`)
