@@ -463,7 +463,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   }
 
   const todayDate = moment(moment.now()).format()
-  const pupilsData = await fetchMultiplePupils(req.body.pupil)
+  const pupilsData = await fetchMultiplePupils(Object.values(req.body.pupil))
   let pupilsToSave = []
 
   await pupilsData.map(async (pupil) => {
