@@ -49,7 +49,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
-  if (!isInt(pupilData['dob-year'], { min: 1900, max: (new Date().getFullYear()) })) {x
+  if (!isInt(pupilData['dob-year'], { min: 1900, max: (new Date().getFullYear()) })) {
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
@@ -63,8 +63,6 @@ module.exports.validate = async (pupilData) => {
   // instead.
   const dobData = pupilData['dob-day'].padStart(2, '0') + '/' + pupilData['dob-month'].padStart(2, '0') + '/' + pupilData['dob-year']
   const dob = moment.utc(dobData, 'DD/MM/YYYY', true)
-  console.log(dob.isValid())
-  console.log('---')
   if (dob.isValid()) {
     if (dob > moment().toDate()) {
       validationError.addError('dob-day', addPupilErrorMessages.dobNoFuture)
@@ -81,7 +79,6 @@ module.exports.validate = async (pupilData) => {
       validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
     }
     if (!(validationError.isError('dob-day') || validationError.isError('dob-month') || validationError.isError('dob-year'))) {
-      console.log(validationError)
       validationError.addError('dob-day', addPupilErrorMessages['dob-day'])
       validationError.addError('dob-month', addPupilErrorMessages['dob-month'])
       validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
