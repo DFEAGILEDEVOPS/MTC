@@ -93,10 +93,10 @@ Feature:
     When I select a pupil
     Then I should see the confirm button enabled
 
-  Scenario: Cancel clears any selected pupils
+  Scenario: Cancel returns user to pupil not taking check page
     Given I have selected some pupils
     When I choose to cancel
-    Then my selections are cleared
+    Then I should be taken to the pupil not taking check page
 
   Scenario Outline: Teachers can add a reason for pupils not taking a check
     Given I am on the pupil reason page
