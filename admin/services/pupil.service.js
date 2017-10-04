@@ -37,11 +37,18 @@ const pupilService = {
     try {
       sort[sortingField] = sortingDirection
       return await Pupil
-        .find({
-          'school': schoolId
-        })
+        .find({'school': schoolId})
         .sort(sort)
         .lean()
+        .exec()
+    } catch (error) {
+      throw new Error(error)
+    }
+  },
+  fetchMultiplePupils: async (pupilIds) => {
+    try {
+      return await Pupil
+        .find({'_id': { $in: pupilIds }})
         .exec()
     } catch (error) {
       throw new Error(error)
