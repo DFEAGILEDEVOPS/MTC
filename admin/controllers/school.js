@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment')
 const csv = require('fast-csv')
 
@@ -191,11 +192,15 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  let pupils
+  const pupils = []
 
   // fetch pupils
   try {
-    pupils = await Pupil.find({ _id: data }).exec()
+    for (let id of data) {
+      // This is suboptimal precisely because CosmosDB can't fetch multiple
+      // pupils.  This is a temp fix until the real fix is determined.
+      pupils.push(await Pupil.findOne({ _id: id }).exec())
+    }
   } catch (error) {
     console.error('Failed to find pupils: ' + error.message)
     return next(error)
