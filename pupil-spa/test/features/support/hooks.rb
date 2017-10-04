@@ -9,11 +9,11 @@ end
 Before('@non_browserstack_compliant') do
   skip_this_scenario if Capybara.current_driver.to_s.include? 'bs'
 end
-#
-# After do |scenario|
-#   if (scenario.failed?)
-#     image_name = "screenshots/#{scenario.__id__}.png"
-#     save_screenshot(image_name, :full => true)
-#     embed(image_name, "image/png", "SCREENSHOT")
-#   end
-# end
+
+After('@window_date_time_reset') do
+  original = MongoDbHelper.get_check_window_via_name('Summer 2017')
+  updated = original.each{ |key,str| original[@original_date_time.keys.first.to_s] = @original_date_time.values.first}
+  collection=CLIENT[:checkwindows]
+  collection.update_one({'_id' => original['_id']}, updated)
+  p "Returned #{@original_date_time.keys.first.to_s} to #{@original_date_time.values.first}"
+end

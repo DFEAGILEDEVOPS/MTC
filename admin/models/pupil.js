@@ -54,20 +54,11 @@ const Pupil = new Schema({
     type: Boolean,
     default: false
   },
-  warmUpStartDate: {
-    type: Date
-  },
-  warmUpEndDate: {
-    type: Date
-  },
-  checkStartDate: {
-    type: Date
-  },
-  checkEndDate: {
-    type: Date
-  },
   jwtSecret: {
     type: String
+  },
+  attendanceCode: {
+    type: Object
   }
 }, {
   timestamps: true

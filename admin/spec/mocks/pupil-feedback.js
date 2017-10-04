@@ -4,6 +4,7 @@ module.exports = {
     inputType: 3,
     satisfactionRating: 2,
     comments: 'Test',
-    sessionId: '6795661f-9646-422d-b3ac-a660c6812dd3'
+    checkCode: '6795661f-9646-422d-b3ac-a660c6812dd3',
+    accessToken: require('./jwtToken')
   }
 }

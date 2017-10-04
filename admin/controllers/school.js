@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment')
 const csv = require('fast-csv')
 
@@ -9,7 +10,11 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupil.service')
+const {
+  fetchPupilsData,
+  fetchPupilAnswers,
+  fetchScoreDetails,
+  fetchSortedPupilsData } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -37,7 +42,7 @@ const getPupils = async (req, res, next) => {
   res.locals.sortColumn = sortColumn || 'lastName'
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
-  res.locals.sortClass = order === false ? 'triangle down' : 'triangle'
+  res.locals.sortClass = order === false ? 'sort up' : 'sort'
   const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
@@ -186,11 +191,15 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  let pupils
+  const pupils = []
 
   // fetch pupils
   try {
-    pupils = await Pupil.find({ _id: data }).exec()
+    for (let id of data) {
+      // This is suboptimal precisely because CosmosDB can't fetch multiple
+      // pupils.  This is a temp fix until the real fix is determined.
+      pupils.push(await Pupil.findOne({ _id: id }).exec())
+    }
   } catch (error) {
     console.error('Failed to find pupils: ' + error.message)
     return next(error)
@@ -369,7 +378,37 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   let attendanceCodes
   let formData
+  let pupilsList
+  let htmlSortDirection = []
+  let arrowSortDirection = []
 
+  // Sorting
+  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+
+  let sortingDirection = [
+    {
+      'key': 'name',
+      'value': 'asc'
+    },
+    {
+      'key': 'reason',
+      'value': 'asc'
+    }
+  ]
+
+  // Markup links and arrows
+  sortingDirection.map((sd, index) => {
+    if (sd.key === sortField) {
+      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
+      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
+    } else {
+      htmlSortDirection[sd.key] = 'asc'
+      arrowSortDirection[sd.key] = 'sort'
+    }
+  })
+
+  // Get attendance code index
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
@@ -377,10 +416,45 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
+  // Get pupils for user' school
+  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
+  pupilsList = await Promise.all(pupils.map(async (p) => {
+    if (p.attendanceCode !== undefined) {
+      let num = p.attendanceCode.code
+      try {
+        p.reason = attendanceCodes[num].reason
+      } catch (error) {
+      }
+    } else {
+      p.reason = 'N/A'
+    }
+    return p
+  })).catch((error) => next(error))
+
+  // Sorting by 'reason' needs to be done using .sort
+  if (sortField === 'reason') {
+    pupilsList = await pupilsList.sort((a, b) => {
+      if (a.reason === 'N/A') {
+        return 1
+      } else if (b.reason === 'N/A') {
+        return -1
+      } else if (a.reason === b.reason) {
+        return 0
+      } else if (sortDirection === 'asc') {
+        return a.reason < b.reason ? -1 : 1
+      } else {
+        return a.reason < b.reason ? 1 : -1
+      }
+    })
+  }
+
   return res.render('school/select-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
     attendanceCodes,
-    formData
+    formData,
+    pupilsList,
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 
