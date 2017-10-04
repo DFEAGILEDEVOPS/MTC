@@ -62,7 +62,7 @@ const postAddPupil = async (req, res, next) => {
   })
   try {
     const pupilData = req.body
-    await validatePupil(pupil, req, pupilData)
+    await validatePupil(pupil, pupilData)
   } catch (error) {
     Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e].replace(/\\/g, '') })
     return res.render('school/add-pupil', {
@@ -137,10 +137,10 @@ const postAddMultiplePupils = async (req, res, next) => {
             'dob-month': dob[0],
             'dob-year': dob[2]
           }, pupil._doc)
-          await validatePupil(pupil, req, pupilData)
+          await validatePupil(pupil, pupilData)
         } catch (err) {
           p[6] = []
-          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].replace(/\\"/g, '')))
+          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].replace(/ \\"/g, '')))
           p[6] = p[6].join(', ')
         }
         pupils.push(pupil)
@@ -260,7 +260,7 @@ const postEditPupil = async (req, res, next) => {
     if (!school) {
       return next(new Error(`School ${pupil.school} not found`))
     }
-    validationError = await pupilValidator.validate(req)
+    validationError = await pupilValidator.validate(req.body)
   } catch (error) {
     return next(error)
   }
@@ -316,7 +316,8 @@ const postEditPupil = async (req, res, next) => {
   }
 
   // pupil saved
-  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
+  const pupilId = JSON.stringify([pupil._id])
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
 const getManagePupils = async (req, res) => {
