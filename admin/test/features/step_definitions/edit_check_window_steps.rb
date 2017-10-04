@@ -10,17 +10,17 @@ And(/^I want to edit a previously added check$/) do
 end
 
 And(/^I create new check window with valid data$/) do
-  @today_date = Time.now
+  @today_date = Date.today
   @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: @check_window_name,
                          admin_start_day: @today_date.day,
                         admin_start_mon: @today_date.month,
                         admin_start_year: @today_date.year,
                         check_start_day: @today_date.day,
-                        check_start_mon: @today_date.month + 1,
+                        check_start_mon: @today_date.next_month.month,
                         check_start_year: @today_date.year,
                         check_end_day: @today_date.day,
-                        check_end_mon: @today_date.month + 2,
+                        check_end_mon: @today_date.next_month.next_month.month,
                         check_end_year: @today_date.year
   }
   @page.enter_details(@check_window_hash)
@@ -30,13 +30,13 @@ end
 When(/^I update the check window with valid data$/) do
   @updated_check_window_hash = {check_name: @check_window_name,
                         admin_start_day: @today_date.day,
-                        admin_start_mon: @today_date.month + 1,
+                        admin_start_mon: @today_date.next_month.month,
                         admin_start_year: @today_date.year,
                         check_start_day: @today_date.day,
-                        check_start_mon: @today_date.month + 2,
+                        check_start_mon: @today_date.next_month.next_month.month,
                         check_start_year: @today_date.year,
                         check_end_day: @today_date.day,
-                        check_end_mon: @today_date.month + 3,
+                        check_end_mon: @today_date.next_month.next_month.month,
                         check_end_year: @today_date.year
   }
   @page.enter_details(@updated_check_window_hash)
