@@ -58,8 +58,8 @@ const pupilService = {
     }
   },
 
-  validatePupil: async (pupil, req, pupilData) => {
-    const validationError = await pupilValidator.validate(req, pupilData)
+  validatePupil: async (pupil, pupilData) => {
+    const validationError = await pupilValidator.validate(pupilData)
     try {
       await pupil.validate()
       if (validationError.hasError()) {
