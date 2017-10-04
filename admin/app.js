@@ -229,7 +229,8 @@ app.use(function (err, req, res, next) {
   // render the error page
   // TODO provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  // res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.error = err
   res.locals.errorId = errorId
   res.locals.errorCode = ''
   res.status(err.status || 500)

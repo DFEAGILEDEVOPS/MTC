@@ -218,12 +218,14 @@ const generatePins = async (req, res, next) => {
     // one or more promises were rejected
     // TODO: add a flash message informing the user
     console.error(error)
-    return res.redirect('/school/manage-pupils')
+    next(error)
+    // return res.redirect('/school/manage-pupils')
   })
   .catch(error => {
     console.error(error)
+    next(error)
     // TODO: add a flash message informing the user
-    return res.redirect('/school/manage-pupils')
+    // return res.redirect('/school/manage-pupils')
   })
 }
 
