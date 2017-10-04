@@ -45,14 +45,10 @@ const pupilService = {
       throw new Error(error)
     }
   },
-  fetchMultiplePupils: async (pupilIds) => {
-    try {
-      return await Pupil
-        .find({'_id': { $in: pupilIds }})
-        .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+  fetchMultiplePupils: (pupilIds) => {
+    return Pupil
+      .find({'_id': { $in: pupilIds }})
+      .exec()
   },
   /**
    * Fetch one pupil filtered by pupil id and school id
