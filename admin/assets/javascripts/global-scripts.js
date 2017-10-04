@@ -47,11 +47,13 @@ $(function () {
     $('#selectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#unselectAll').removeClass('all-hide')
+      $('#stickyConfirm').prop('disabled', true)
     })
 
     $('#unselectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#selectAll').removeClass('all-hide')
+      $('#stickyConfirm').prop('disabled', false)
     })
   }
 
@@ -70,7 +72,7 @@ $(function () {
         radioTicked = 1
       }
 
-      if (radioTicked > 0 && checkboxTicked > 0) {
+      if (radioTicked > 0 && $('.multiple-choice-mtc > input:checkbox:checked').length > 0) {
         $('#stickyConfirm').prop('disabled', false)
       } else {
         $('#stickyConfirm').prop('disabled', true)
@@ -104,7 +106,7 @@ $(function () {
         $($(this)).attr('data-checked', null)
       }
 
-      if (radioTicked > 0 && checkboxTicked > 0) {
+      if ($('input:radio[name="attendanceCode"]:checked').length > 0 && $('.multiple-choice-mtc > input:checkbox:checked').length > 0) {
         $('#stickyConfirm').prop('disabled', false)
       } else {
         $('#stickyConfirm').prop('disabled', true)

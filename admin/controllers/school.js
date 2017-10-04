@@ -14,7 +14,8 @@ const {
   fetchPupilAnswers,
   fetchScoreDetails,
   fetchSortedPupilsData,
-  fetchOnePupil } = require('../services/pupil.service')
+  fetchOnePupil,
+  fetchMultiplePupils } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -462,21 +463,27 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   }
 
   const todayDate = moment(moment.now()).format()
-  let pupils = req.body.pupil
-  let pupilsProcessed
+  const pupilsData = await fetchMultiplePupils(req.body.pupil)
+  let pupilsToSave = []
 
-  pupils.forEach(async (id) => {
-    let pupil = fetchOnePupil(id, req.user.School)
+  await pupilsData.map(async (pupil) => {
     if (pupil) {
       pupil.attendanceCode = {
         _id: req.body.attendanceCode,
         dateRecorded: new Date(todayDate),
         byUser: req.user.UserName
       }
-      pupilsProcessed.push(pupil)
+      await pupilsToSave.push(pupil)
     }
   })
-  await pupilsProcessed.insertMany()
+
+  await Pupil.create(pupilsToSave, function (err, pupil) {
+    if (err) {
+      return next(new Error('Cannot save pupils'))
+    } else {
+      // @TODO: Auditing (to be discussed)
+    }
+  })
 
   // @TODO: list of pupils with reasons
   let pupilsList = []
