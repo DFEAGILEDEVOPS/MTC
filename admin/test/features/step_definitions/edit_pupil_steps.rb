@@ -5,12 +5,15 @@ Given(/^I want to edit a previously added pupil$/) do
   step "I submit the form with the name fields set as #{pupil_name}"
   step "the pupil details should be stored"
   @page = edit_pupil_page
-  manage_pupil_page.find_pupil_row(pupil_name).edit_pupil_link.click
+  # pupil_register_page.load
+  @pupil = pupil_register_page.find_pupil_row(pupil_name)
+  @pupil.edit_pupil_link.click
 end
 
 When(/^I update with valid pupil data$/) do
-  @updated_upn = rand(2342344234)
-  @updated_details_hash = {first_name: "Jimmy", middle_name: "Jim", last_name: "Jarooo", upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
+  @updated_upn = UpnGenerator.generate
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
 end
@@ -32,7 +35,7 @@ end
 
 Then(/^I should see validation errors when i submit with the following names$/) do |table|
   table.raw.flatten.each do |value|
-    @upn = rand(2342344234)
+    @upn = UpnGenerator.generate
     @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
@@ -45,4 +48,15 @@ Then(/^I should see validation errors when i submit with the following names$/) 
     expect(@page.error_summary.last_name.text).to eql 'Check last name for special characters'
     expect(@page.error_messages.map{|message| message.text}).to include 'Check last name for special characters'
   end
+end
+
+And(/^I should see a flash message to state the pupil has been updated$/) do
+  expect(pupil_register_page).to have_info_message
+  hightlighted_row = pupil_register_page.pupil_list.pupil_row.find{|row| row.has_edited_pupil?}
+  expect(hightlighted_row.text).to include("#{@updated_details_hash[:last_name]}, #{@updated_details_hash[:first_name]}")
+end
+
+And(/^I should see no flash message displayed$/) do
+  expect(pupil_register_page).to have_no_info_message
+  expect(pupil_register_page).to have_no_edited_pupil
 end

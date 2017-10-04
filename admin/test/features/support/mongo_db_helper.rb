@@ -29,6 +29,13 @@ class MongoDbHelper
     @array_of_schools
   end
 
+  def self.list_of_pupils_from_school(school_id)
+    collection=CLIENT[:pupils].find({'school': school_id})
+    @array_of_pupils = []
+    collection.each {|pupil| @array_of_pupils << pupil}
+    @array_of_pupils
+  end
+
   def self.get_id(forename, lastname, school_id)
     result = []
     collection=CLIENT[:pupils].find({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i})
@@ -85,6 +92,22 @@ class MongoDbHelper
   def self.latest_setting_log
     collection = CLIENT[:settinglogs].find().sort({createdAt:-1})
     collection.find.each {|setting| setting}
+  end
+
+  def self.check_window_details(check_name)
+    result = []
+    collection=CLIENT[:checkwindows].find({'checkWindowName': check_name})
+    collection.each {|a| result << a}
+    result.first
+  end
+
+  def self.get_attendance_codes
+    result = []
+    collection=CLIENT[:attendancecodes]
+    collection.find.each {|a| result << a}
+    hash = {}
+    result.map{|a| hash.merge!(a['code'] => a['reason'])}
+    hash
   end
 
 end

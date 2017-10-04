@@ -1,37 +1,50 @@
 const PupilFeedback = require('../models/pupil-feedback')
-const { verify } = require('../services/jwt-service')
+const { verify } = require('../services/jwt.service')
+const checkDataService = require('../services/data-access/check.data.service')
+const apiResponse = require('./api-response')
+
+// TODO: add logging for all error paths
 
 const setPupilFeedback = async (req, res, next) => {
+  let check
   const {
     inputType,
     satisfactionRating,
     comments,
-    sessionId,
+    checkCode,
     accessToken } = req.body
 
-  if (!inputType || !satisfactionRating || !sessionId) {
-    return res.status(400).json({error: 'Bad Request'})
+  if (!inputType || !satisfactionRating || !checkCode || !accessToken) {
+    return apiResponse.badRequest(res)
   }
 
   try {
     await verify(accessToken)
   } catch (err) {
-    return res.status(401).json({error: 'Unauthorised'})
+    return apiResponse.unauthorised(res)
+  }
+
+  try {
+    check = await checkDataService.findOneByCheckCode(checkCode)
+    if (!check) {
+      return apiResponse.badRequest(res)
+    }
+  } catch (error) {
+    return apiResponse.serverError(res)
   }
 
   const pupilFeedback = new PupilFeedback({
     inputType: inputType,
     satisfactionRating: satisfactionRating,
     comments: comments,
-    sessionId: sessionId
+    checkId: check._id
   })
 
   try {
     await pupilFeedback.save()
-    res.status(201).json('Pupil feedback saved')
+    apiResponse.sendJson(res, 'Pupil feedback saved', 201)
   } catch (error) {
-    console.log('Error saving pupil feedback', error)
-    res.status(500).json({error: 'Server Error'})
+    apiResponse.serverError(res)
   }
 }
 

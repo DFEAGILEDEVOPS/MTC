@@ -1,67 +1,68 @@
 {
-    "_id": "59a97a24be30e8001a6861a1",
-    "data": {
-        "inputs": [
-            null,
-            [
-                {
-                    "clientInputDate": "2017-09-01T15:16:51.735Z",
-                    "eventType": "mousedown",
-                    "input": "left click"
-                },
-                {
-                    "clientInputDate": "2017-09-01T15:16:52.378Z",
-                    "eventType": "keydown",
-                    "input": "5"
-                }
-            ],
-            [
-                {
-                    "clientInputDate": "2017-09-01T15:17:07.192Z",
-                    "eventType": "mousedown",
-                    "input": "left click"
-                },
-                {
-                    "clientInputDate": "2017-09-01T15:17:07.737Z",
-                    "eventType": "keydown",
-                    "input": "2"
-                }
-            ]
-        ],
-        "audit": [
+    "_id" : "gdfjk4e9gjisgr894wj8sg",
+    "data" : {
+        "access_token" : "84wfnseuthwu4gb.hw438suiegbs.ioh3489ghweuisg4uihgse",
+        "school" : {
+            "name" : "Example School One",
+            "id" : 124524
+        },
+        "pupil" : {
+            "checkCode" : "fbw4ui-hjsf-jdjd-9402-31f47944a46d",
+            "lastName" : "Nine",
+            "firstName" : "Pupil"
+        },
+        "config" : {
+            "loadingTime" : 2,
+            "questionTime" : 5
+        },
+        "questions" : [ 
             {
-                "clientTimestamp": "2017-09-01T15:16:47.461Z",
-                "type": "CheckStarted"
-            },
+                "factor2" : 5,
+                "factor1" : 2,
+                "order" : 1
+            }, 
             {
-                "clientTimestamp": "2017-09-01T15:16:47.472Z",
-                "type": "WarmupIntroRendered"
-            },
-            {
-                "clientTimestamp": "2017-09-01T15:16:48.991Z",
-                "type": "PauseRendered"
-            },
-            {
-                "clientTimestamp": "2017-09-01T15:16:50.997Z",
-                "type": "QuestionRendered"
-            },
-            {
-                "clientTimestamp": "2017-09-01T15:17:54.586Z",
-                "type": "CheckComplete"
+                "factor2" : 2,
+                "factor1" : 11,
+                "order" : 2
             }
         ],
-        "answers": [
+        "audit" : [ 
             {
-                "answer": "234",
-                "factor2": 5,
-                "factor1": 2
-            },
+                "clientTimestamp" : "2017-09-14T23:52:29.894Z",
+                "type" : "CheckStarted"
+            }, 
             {
-                "answer": "234",
-                "factor2": 2,
-                "factor1": 11
+                "clientTimestamp" : "2017-09-14T23:52:29.907Z",
+                "type" : "WarmupIntroRendered"
+            }, 
+            {
+                "clientTimestamp" : "2017-09-14T23:52:30.684Z",
+                "type" : "PauseRendered"
+            }, 
+            {
+                "clientTimestamp" : "2017-09-14T23:55:45.021Z",
+                "type" : "CheckComplete"
+            }
+        ],
+        "inputs" : [ 
+            null, 
+            [5,4,6],
+            ["enter", 2, 1]
+        ],
+        "answers" : [ 
+            {
+                "answer" : "",
+                "factor2" : 5,
+                "factor1" : 2
+            }, 
+            {
+                "answer" : "",
+                "factor2" : 2,
+                "factor1" : 11
             }
         ]
     },
-    "__v": 0
+    "__v" : 0,
+    "receivedByServerAt" : "2017-09-14T23:55:45.021Z"
 }

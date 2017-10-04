@@ -110,4 +110,44 @@ class MongoDbHelper
     result
   end
 
+  def self.get_list_of_schools
+    collection=CLIENT[:schools]
+    @array_of_schools = []
+    collection.find.each {|school| @array_of_schools << school}
+    @array_of_schools
+  end
+
+  def self.get_pupil_check_metadata(check_code)
+    collection=CLIENT[:checks].find({'checkCode': check_code})
+    result = []
+    collection.find.each { |check| result << check }
+    result.first
+  end
+
+  def self.get_check_window(check_window_id)
+    collection=CLIENT[:checkwindows].find({'_id': BSON::ObjectId(check_window_id)})
+    result = []
+    collection.find.each { |window| result << window }
+    result.first
+  end
+
+  def self.get_check_window_via_name(name)
+    collection=CLIENT[:checkwindows].find({'name': name})
+    result = []
+    collection.find.each { |window| result << window }
+    result.first
+  end
+
+  def self.get_form(form_id)
+    collection=CLIENT[:checkforms].find({'_id': form_id})
+    result = []
+    collection.find.each { |form| result << form }
+    result.first
+  end
+
+  def self.number_of_checks
+    collection = CLIENT[:checks]
+    collection.find.count
+  end
+
 end

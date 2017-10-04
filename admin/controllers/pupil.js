@@ -1,12 +1,11 @@
 const moment = require('moment')
-
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupilService')
+const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails } = require('../services/pupil.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
@@ -24,8 +23,8 @@ const getAddPupil = async (req, res, next) => {
   }
 
   try {
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
-
     res.render('school/add-pupil', {
       school: school.toJSON(),
       error: new ValidationError(),
@@ -92,10 +91,29 @@ const postAddPupil = async (req, res, next) => {
   }
   try {
     await pupil.save()
+    req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
-  res.redirect('/school/manage-pupils')
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
+}
+
+const getAddMultiplePupils = async (req, res, next) => {
+  res.locals.pageTitle = 'Add multiple pupils'
+  try {
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('school/add-multiple-pupils', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getAddMultiplePupilsCSVTemplate = async (req, res) => {
+  const file = 'assets/csv/multiple_pupils_template.csv'
+  res.download(file)
 }
 
 const getEditPupilById = async (req, res, next) => {
@@ -128,7 +146,7 @@ const getEditPupilById = async (req, res, next) => {
   }
 }
 
-const getEditPupil = async (req, res, next) => {
+const postEditPupil = async (req, res, next) => {
   let pupil
   let school
   let validationError
@@ -194,13 +212,13 @@ const getEditPupil = async (req, res, next) => {
 
   try {
     await pupil.save()
+    req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     next(error)
   }
 
   // pupil saved
-  // TODO: add flash message
-  res.redirect('/school/manage-pupils')
+  res.redirect(`/school/pupil-register/lastName/true?hl=${pupil._id}`)
 }
 
 const getManagePupils = async (req, res) => {
@@ -251,8 +269,10 @@ const getPrintPupils = async (req, res, next) => {
 module.exports = {
   getAddPupil,
   postAddPupil,
+  getAddMultiplePupils,
+  getAddMultiplePupilsCSVTemplate,
   getEditPupilById,
-  getEditPupil,
+  postEditPupil,
   getManagePupils,
   getPrintPupils
 }

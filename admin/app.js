@@ -7,9 +7,7 @@ if (process.env.NODE_ENV === 'production') {
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
-// const favicon = require('serve-favicon')
 const logger = require('morgan')
-// const cookieParser = require('cookie-parser')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const mongoose = require('mongoose')
@@ -23,10 +21,13 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
-
-const fs = require('fs')
+const flash = require('connect-flash')
+const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
+const azure = require('./azure')
+
+azure.startInsightsIfConfigured()
 
 const unsetVars = []
 Object.keys(config).map((key) => {
@@ -60,21 +61,57 @@ const completedCheck = require('./routes/completed-check')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
 const app = express()
+
+/* Security Directives */
+
 app.use(cors())
+app.use(helmet())
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
+    fontSrc: ["'self'", 'data:'],
+    styleSrc: ["'self'"],
+    imgSrc: ["'self'", 'https://www.google-analytics.com'],
+    connectSrc: ["'self'"],
+    objectSrc: ["'none'"],
+    mediaSrc: ["'none'"],
+    childSrc: ["'none'"]
+  }
+}))
+
+// Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
+var oneYearInSeconds = 31536000
+app.use(helmet.hsts({
+  maxAge: oneYearInSeconds,
+  includeSubDomains: false,
+  preload: false
+}))
+
+// azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
+// if production ensure x-forwarded-proto is https OR x-arr-ssl is present
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    app.enable('trust proxy')
+    req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
+  }
+  next()
+})
+
+// force HTTPS in azure
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    if (req.protocol !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    }
+  } else {
+    next()
+  }
+})
+
+/* END:Security Directives */
 
 require('./helpers')(app)
-
-/* for Azure Linux App Service only
-logging is not yet correctly implemented, so this is a temporary workaround
- see: https://stackoverflow.com/questions/44419932/capturing-stdout-in-azure-linux-app-service-via-nodejs
- */
-if (config.STD_LOG_FILE) {
-  const appLog = fs.createWriteStream(config.STD_LOG_FILE)
-  process.stdout.write = process.stderr.write = appLog.write.bind(appLog)
-  process.on('uncaughtException', function (err) {
-    console.error((err && err.stack) || err)
-  })
-}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -110,7 +147,8 @@ const sessionOptions = {
 app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(expressValidator())
+app.use(flash())
+app.use(expressValidator(require('./lib/validator/express-validator.custom-validators.js')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Breadcrumbs
@@ -134,7 +172,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    {passReqToCallback: true},
+    { passReqToCallback: true },
     require('./authentication/local-strategy')
   )
 )
@@ -144,14 +182,6 @@ passport.use(
 if (process.env.NODE_ENV === 'production') {
   app.use(require('./lib/azure-upload'))
 }
-
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
-    res.redirect(`https://${req.header('host')}${req.url}`)
-  } else {
-    next()
-  }
-})
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates
@@ -166,7 +196,8 @@ app.use(function (req, res, next) {
 })
 
 app.use(function (req, res, next) {
-  res.removeHeader('X-Powered-By')
+  // make the flash messages available in the locals for use in view templates
+  res.locals.messages = req.flash()
   next()
 })
 

@@ -1,13 +1,14 @@
-const uuidv4 = require('uuid/v4')
+'use strict'
 
-const CheckForm = require('../models/check-form')
-const Pupil = require('../models/pupil')
-const School = require('../models/school')
-const configService = require('../services/config-service')
-const jwtService = require('../services/jwt-service')
+const checkFormService = require('../services/check-form.service')
+const checkStartService = require('../services/check-start.service')
+const configService = require('../services/config.service')
+const jwtService = require('../services/jwt.service')
+const pupilAuthenticationService = require('../services/pupil-authentication.service')
+const apiResponse = require('./api-response')
 
 /**
- * Returns the set of questions, pupil details and school details in json format
+ * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
  * @param req
  * @param res
  * @returns { object }
@@ -15,47 +16,65 @@ const jwtService = require('../services/jwt-service')
 
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
-  if (!pupilPin || !schoolPin) return res.status(400).json({error: 'Bad Request'})
-  let checkForm, pupil, school
-  try {
-    // Until we determine the logic behind fetching the appropriate check form
-    // the pupil will receive the first one
-    pupil = await Pupil.findOne({'pin': pupilPin}).exec()
-    school = await School.findOne({'schoolPin': schoolPin}).lean().exec()
-    checkForm = await CheckForm.findOne({}).lean().exec()
-  } catch (error) {
-    throw new Error(error)
-  }
-  if (!pupil || !school) return res.status(401).json({error: 'Unauthorised'})
-  if (!checkForm) return res.status(500).json({error: 'Question set not found for pupil'})
+  if (!pupilPin || !schoolPin) return apiResponse.badRequest(res)
+  let config, checkCode, checkForm, pupil, questions, token
 
-  let {questions} = checkForm
-  questions = questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
+  try {
+    pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+  } catch (error) {
+    return apiResponse.unauthorised(res)
+  }
+
   const pupilData = {
     firstName: pupil.foreName,
-    lastName: pupil.lastName,
-    sessionId: uuidv4()
+    lastName: pupil.lastName
   }
-  school = {id: school._id, name: school.name}
-  const config = await configService.getConfig()
 
-  let token
+  const schoolData = {
+    id: pupil.school._id,
+    name: pupil.school.name
+  }
+
+  try {
+    config = await configService.getConfig()
+  } catch (error) {
+    return apiResponse.serverError(res)
+  }
+
   try {
     token = await jwtService.createToken(pupil)
   } catch (error) {
-    console.error(error)
-    res.setHeader('Content-Type', 'application/json')
-    return res.status(500).json({error: 'Access token error'})
+    return apiResponse.serverError(res)
   }
 
-  res.setHeader('Content-Type', 'application/json')
-  return res.send(JSON.stringify({
+  // start the check
+  try {
+    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    questions = checkFormService.prepareQuestionData(checkForm)
+    pupilData.checkCode = checkCode
+  } catch (error) {
+    return apiResponse.serverError(res)
+  }
+
+  // start the check
+  try {
+    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    questions = checkFormService.prepareQuestionData(checkForm)
+    pupilData.checkCode = checkCode
+  } catch (error) {
+    return apiResponse.serverError(res)
+  }
+
+  const responseData = {
     questions,
     pupil: pupilData,
-    school,
+    school: schoolData,
     config,
     access_token: token
-  }))
+  }
+  // console.log('response', responseData)
+
+  apiResponse.sendJson(res, responseData)
 }
 
 module.exports = {

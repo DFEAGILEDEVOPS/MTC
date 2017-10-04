@@ -47,12 +47,15 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_printing';
 @import 'elements/_breadcrumbs';
 @import 'elements/_electron';
+@import 'elements/_flash-messages';
 @import 'elements/_boxes';
 @import 'elements/_check-forms';
 @import 'elements/_sign-out';
 @import 'elements/_results';
 @import 'elements/_check-windows';
 @import 'elements/_sorting';
+@import 'elements/_not-taking-check';
+@import 'elements/_mtc-checkboxes';
 
 // Global
 
@@ -60,13 +63,25 @@ $mainstream-brand: $department-for-education;
   white-space: nowrap;
 }
 
-.sidebar-top-border {
-  border-top: $gutter-one-third solid $link-colour;
-  margin-top: $gutter-and-a-half;
-  padding: 0;
+.add-title-margin {
+  margin-top: 40px;
+}
 
-  h3 {
-    margin-top: $gutter-two-thirds;
+.support-column {
+  border-top: 10px solid $mainstream-brand;
+  padding-top: 10px;
+
+  ul {
+    @include core-16();
+
+    list-style: none;
+  }
+
+  h2, h3, h4 {
+    @include bold-24();
+
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
   }
 }
 
@@ -120,7 +135,8 @@ hr.divider {
   padding-left: $gutter;
 }
 
-.padding-first-item {
+.padding-first-item,
+.padding-top {
   margin-top: $gutter-and-a-half;
 }
 
@@ -257,14 +273,17 @@ input {
   @include button($grey-3);
 
   margin-top: em(20);
+  &:not(:last-child) {
+    margin-right: pem(10px);
+  }
+
+  @include ie(8) {
+    margin-right: pem(10px);
+  }
 
   @include media(tablet) {
     margin-top: 0;
   }
-}
-
-.back-to-top-container {
-  margin-top: 4.4em;
 }
 
 // Hide 'check all' checkboxes if JS is not enabled
@@ -279,6 +298,8 @@ input {
   display: table-cell;
 }
 
+// 'tick-all-boxes' classes should be removed once
+// the new implementation of checkboxes is in place
 .tick-all-boxes-nojs {
   display: table-cell;
   visibility: visible;
@@ -306,6 +327,12 @@ table.spacious {
 
   th {
     text-align: left;
+    padding-bottom: 10px;
+
+    a {
+      color: $black;
+      text-decoration: none;
+    }
   }
 
   td {
@@ -332,6 +359,9 @@ table.spacious-two-column {
 }
 
 .back-to-top-container {
-  margin-top: 4.4em;
-}
+  margin-top: 0;
 
+  @include media(desktop) {
+    margin-top: 4.4em;
+  }
+}

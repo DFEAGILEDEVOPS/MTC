@@ -5,6 +5,7 @@ const Pupil = require('../../../models/pupil')
 const School = require('../../../models/school')
 const config = require('../config')
 const moment = require('moment')
+const upnService = require('../../../services/upn.service')
 
 module.exports = {
 
@@ -41,7 +42,8 @@ function createTestPupil () {
       dob: moment.utc('20000101', 'YYYYMMDD'),
       pin: '9999a',
       pinExpired: false,
-      hasAttended: false
+      hasAttended: false,
+      upn: upnService.calculateCheckLetter('999199900001') + '999199900001'
     })
 
     try {

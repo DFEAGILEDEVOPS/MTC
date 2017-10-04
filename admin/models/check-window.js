@@ -11,28 +11,30 @@ const CheckWindow = new Schema({
   },
   adminStartDate: {
     type: Date,
-    required: true,
-    validate: function (date) { return date >= Date.now }
+    required: true
   },
   checkStartDate: {
     type: Date,
-    required: true,
-    validate: function (date) { return date >= Date.now }
+    required: true
   },
   checkEndDate: {
     type: Date,
-    required: true,
-    validate: function (date) { return date > this.checkStartDate }
+    required: true
   },
   forms: {
     type: [{
       type: Number,
-      ref: 'CheckForm',
-      required: true
+      ref: 'CheckForm'
     }]
   }
 }, {timestamps: true})
 
+/**
+ * Retrieve all check windows and sort by arguments passed.
+ * @param sortBy
+ * @param direction
+ * @returns {Promise}
+ */
 CheckWindow.statics.getCheckWindows = function (sortBy, direction) {
   return new Promise(async (resolve, reject) => {
     let checkWindows
@@ -45,6 +47,18 @@ CheckWindow.statics.getCheckWindows = function (sortBy, direction) {
       reject(error)
     }
     resolve(checkWindows)
+  })
+}
+
+CheckWindow.statics.getCheckWindow = function (checkWindowId) {
+  return new Promise(async (resolve, reject) => {
+    let checkWindow
+    try {
+      checkWindow = await this.findOne({'_id': checkWindowId}).exec()
+    } catch (error) {
+      return reject(error)
+    }
+    resolve(checkWindow)
   })
 }
 

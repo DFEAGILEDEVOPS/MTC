@@ -3,8 +3,10 @@
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-const jwtService = require('../../services/jwt-service')
+const jwtService = require('../../services/jwt.service')
 const { feedbackData } = require('../mocks/pupil-feedback')
+const checkDataService = require('../../services/data-access/check.data.service')
+const checkMock = require('../mocks/check')
 
 require('sinon-mongoose')
 let sandbox
@@ -12,6 +14,7 @@ let jwtPromiseHelper
 let mockCheckData
 let PupilFeedback
 let isSuccessful
+let findOneByCheckCodePromiseHelper
 
 describe('Pupil Feedback controller', () => {
   const getResult = (isSuccessful) => {
@@ -35,11 +38,20 @@ describe('Pupil Feedback controller', () => {
       }
     })
 
+    const findOneByCheckCodePromise = new Promise((resolve, reject) => {
+      findOneByCheckCodePromiseHelper = {
+        resolve,
+        reject
+      }
+    })
+
     mockCheckData = async() => {
       sandbox.stub(jwtService, 'verify').returns(jwtPromise)
+      sandbox.stub(checkDataService, 'findOneByCheckCode').returns(findOneByCheckCodePromise)
       const { setPupilFeedback } = proxyquire('../../controllers/pupil-feedback', {
         '../services/jwt-service': jwtService,
-        '../models/pupil-feedback': PupilFeedback
+        '../models/pupil-feedback': PupilFeedback,
+        '../services/data-access/check.data.service': checkDataService
       })
       return setPupilFeedback
     }
@@ -51,6 +63,7 @@ describe('Pupil Feedback controller', () => {
     beforeEach(() => {
       isSuccessful = true
       jwtPromiseHelper.resolve(true)
+      findOneByCheckCodePromiseHelper.resolve(checkMock)
     })
 
     it('returns bad request if request payload is not provided', async(done) => {
@@ -64,11 +77,11 @@ describe('Pupil Feedback controller', () => {
       await setPupilFeedback(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
-      expect(data.error).toBe('Bad Request')
+      expect(data.error).toBe('Bad request')
       done()
     })
 
-    it('returns a successful response validation passes', async(done) => {
+    it('returns a successful response when validation passes', async(done) => {
       const req = httpMocks.createRequest({
         method: 'POST',
         url: '/api/pupil-feedback',
@@ -109,6 +122,7 @@ describe('Pupil Feedback controller', () => {
     beforeEach(() => {
       isSuccessful = false
       jwtPromiseHelper.resolve(true)
+      findOneByCheckCodePromiseHelper.resolve(checkMock)
     })
 
     it('returns a server error', async (done) => {
@@ -122,7 +136,40 @@ describe('Pupil Feedback controller', () => {
       await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
-      expect(data.error).toBe('Server Error')
+      expect(data.error).toBe('Server error')
+      done()
+    })
+  })
+
+  describe('checkDataService error path', () => {
+    let req, res
+    beforeEach(() => {
+      isSuccessful = true
+      jwtPromiseHelper.resolve(true)
+      req = httpMocks.createRequest({
+        method: 'POST',
+        url: '/api/pupil-feedback',
+        body: feedbackData
+      })
+      res = httpMocks.createResponse()
+    })
+    it('returns a bad request when the checkCode is not found', async (done) => {
+      findOneByCheckCodePromiseHelper.resolve(null)
+      const setPupilFeedback = await mockCheckData()
+      await setPupilFeedback(req, res)
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(400)
+      expect(data.error).toBe('Bad request')
+      done()
+    })
+
+    it('returns server error if the checkCodeDatasService throws an error', async (done) => {
+      findOneByCheckCodePromiseHelper.reject(new Error('mock'))
+      const setPupilFeedback = await mockCheckData()
+      await setPupilFeedback(req, res)
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(500)
+      expect(data.error).toBe('Server error')
       done()
     })
   })

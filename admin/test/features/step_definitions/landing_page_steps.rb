@@ -34,6 +34,18 @@ Then(/^I should be taken to the Manage a pupil page$/) do
   expect(manage_pupil_page).to be_displayed
 end
 
+Then(/^I should be taken to the Pupil register page$/) do
+  expect(pupil_register_page).to be_displayed
+end
+
 When(/^I click Manage pupil link$/) do
- school_landing_page.manage_pupil.click
+ manage_pupil_page.load
+end
+
+When(/^I click Pupil Register link$/) do
+  school_landing_page.pupil_register.click
+end
+
+Then(/^I should be taken to the Manage Check Window page$/) do
+  expect(manage_check_window_page).to be_displayed
 end

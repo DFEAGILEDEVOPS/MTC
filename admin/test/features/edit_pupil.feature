@@ -8,10 +8,13 @@ Feature:
 
   Scenario: Edit details page has fields to capture pupil data
     Then I should see fields that will allow me to capture pupil data
-
+    And the fields are pre populated with the data
+    
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
+    And I should see a flash message to state the pupil has been updated
+    And I should see the updated pupil details on the pupil register page
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
@@ -23,15 +26,20 @@ Feature:
 
   Scenario: No validation errors are displayed when the optional fields are not completed
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     When I attempt to type letters in the DOB fields
     Then they should not be entered
 
+  Scenario: Names can include a space
+    When I submit the form with the name fields set as Mary Jane
+    Then the pupil details should be stored
+
   Scenario: Users can navigate back to the profile page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
+    And I should see no flash message displayed
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
@@ -127,8 +135,32 @@ Feature:
 
   Scenario: DOB's can have a single digit day
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
+
+  Scenario: UPN cannot be assigned twice
+    When I submit valid details with a already used UPN
+    Then I should see an error stating more than 1 pupil with the same UPN
+
+  Scenario: UPN has to have the correct check letter
+    When I submit valid details with a UPN that has a incorrect check letter
+    Then I should see an error stating wrong check letter at character 1
+
+  Scenario: UPN has to have a valid LA code
+    When I submit valid details with a UPN that has a invalid LA code
+    Then I should see an error stating characters between 2-4 are invalid
+
+  Scenario: UPN has to have numeric characters between characters 5-12
+    When I submit valid details with a UPN that has a alpha character between characters 5-12
+    Then I should see an error stating characters between 5-12 are invalid
+
+  Scenario: UPN has to have numeric characters at position 13
+    When I submit valid details with a UPN that has a invalid alpha character at character 13
+    Then I should see an error stating character 13 is invalid
+
+  Scenario: UPN can have lowercase alpha characters
+    When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored

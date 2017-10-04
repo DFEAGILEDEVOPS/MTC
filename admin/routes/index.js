@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const path = require('path')
+const fs = require('fs')
 
 const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
@@ -13,8 +15,6 @@ const { home,
   getProfile,
   postAuth,
   getUnauthorised } = require('../controllers/authentication')
-const fs = require('fs')
-const path = require('path')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
@@ -95,6 +95,7 @@ function getBuildNumber () {
 }
 
 router.get('/ping', (req, res) => getPing(req, res))
+
 /* NCA Tools Authentication Endpoint */
 router.post('/auth',
   function (req, res, next) {

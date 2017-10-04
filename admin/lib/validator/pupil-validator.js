@@ -4,11 +4,12 @@ const ValidationError = require('../validation-error')
 const errorConverter = require('../error-converter')
 const addPupilErrorMessages = require('../errors/pupil').addPupil
 const XRegExp = require('xregexp')
+const Pupil = require('../../models/pupil')
 
 const pupilValidationSchema = {
   'foreName': {
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\'0-9]+$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]+$')],
       errorMessage: addPupilErrorMessages.firstNameInvalidCharacters
     },
     notEmpty: true,
@@ -17,13 +18,13 @@ const pupilValidationSchema = {
   'middleNames': {
     optional: true,
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\' 0-9]*$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]*$')],
       errorMessage: addPupilErrorMessages.middleNameInvalidCharacters
     }
   },
   'lastName': {
     matches: {
-      options: [XRegExp('^[\\p{Latin}\-\'0-9]+$')],
+      options: [XRegExp('^[\\p{Latin}-\' 0-9]+$')],
       errorMessage: addPupilErrorMessages.lastNameInvalidCharacters
     },
     notEmpty: true,
@@ -70,11 +71,30 @@ const pupilValidationSchema = {
       options: [/^(M|F)$/],
       errorMessage: addPupilErrorMessages.genderRequired
     }
+  },
+  'upn': {
+    upnHasCorrectCheckLetter: {
+      errorMessage: addPupilErrorMessages.upnInvalidCheckDigit
+    },
+    upnHasValidLaCode: {
+      errorMessage: addPupilErrorMessages.upnInvalidLaCode
+    },
+    upnHasValidChars5To12: {
+      errorMessage: addPupilErrorMessages.upnInvalidCharacters5To12
+    },
+    upnHasValidChar13: {
+      errorMessage: addPupilErrorMessages.upnInvalidCharacter13
+    },
+    notEmpty: true,
+    errorMessage: addPupilErrorMessages.upnRequired
   }
 }
 
 module.exports.validate = async function (req) {
   let validationError = new ValidationError()
+  req.body.foreName = req.body.foreName.trim()
+  req.body.lastName = req.body.lastName.trim()
+  req.body.upn = req.body.upn.toUpperCase().trim()
   try {
     // expressValidator
     req.checkBody(pupilValidationSchema)
@@ -109,5 +129,14 @@ module.exports.validate = async function (req) {
       validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
     }
   }
+
+  // We need to check that the UPN is unique
+  if (!(validationError.get('upn'))) {
+    const pupil = await Pupil.findOne({upn: req.body.upn}).exec()
+    if (pupil && pupil._id.toString() !== req.body._id) {
+      validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
+    }
+  }
+
   return validationError
 }

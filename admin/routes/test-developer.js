@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
-const checkFormService = require('../lib/check-form-service')
+const checkFormService = require('../services/check-form.service')
 const isAuthenticated = require('../authentication/middleware')
 
 /* GET manage check forms page. */

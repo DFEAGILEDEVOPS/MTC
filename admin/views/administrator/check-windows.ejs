@@ -9,18 +9,26 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+        <% } %>
+
         <h1 class="heading-xlarge" tabindex="0">Manage check windows</h1>
 
         <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
 
         <p>
-            <input class="button" type="submit" value="Create new check window">
+            <a class="button button-primary" href="/administrator/check-windows/add">Create new check window</a>
         </p>
 
         <br />
-        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm </div>
+        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
 
-        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+        <% if (checkWindowList.length > 0) { %>
+        <table class="spacious sorting" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
                 <th scope="col"><a href="/administrator/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
@@ -30,35 +38,41 @@
             </tr>
             </thead>
             <tbody>
-            <% if (checkWindowList.length > 1) { %>
-            <% checkWindowList.forEach( (checkWindow, index) => { %>
-            <tr>
-                <td><a href="#"><%= checkWindow.checkWindowName %></a></td>
-                <td><%= checkWindow.adminStartDate %></td>
-                <td><%= checkWindow.checkDates %></td>
-                <td><a href="#">Remove</a></td>
-            </tr>
-            <% }) %>
-            <% } %>
+                <% checkWindowList.forEach( (checkWindow, index) => { %>
+                <tr>
+                    <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
+                    <td><%= checkWindow.adminStartDate %></td>
+                    <td><%= checkWindow.checkDates %></td>
+                    <td><a href="#">Remove</a></td>
+                </tr>
+                <% }) %>
             </tbody>
         </table>
+        <% } %>
     </div>
 
-    <div class="column-one-third sidebar-top-border" tabindex="0" role="group" aria-label="sidebar">
-        <h3 class="heading-medium" tabindex="0">Before you start</h3>
-        <ul class="list">
-            <li>
-                <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
-            </li>
-            <li>
-                <a href="#">Adjust questions timings</a>
-            </li>
-        </ul>
-        <h3 class="heading-medium" tabindex="0">After check</h3>
-        <ul class="list">
-            <li>
-                <a href="#">Progress report</a>
-            </li>
-        </ul>
+    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium" tabindex="0">Before you start</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="#">Adjust questions timings</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <h3 class="heading-medium" tabindex="0">After check</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="#">Progress report</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
     </div>
 </div>

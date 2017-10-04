@@ -30,6 +30,7 @@ Feature:
     Given I am on the add pupil page
     When I have submitted valid pupil details
     Then the pupil details should be stored
+    Then I should see a flash message to state the pupil has been added
 
   Scenario: Pupil data is not stored when invalid details are entered
     Given I am on the add pupil page
@@ -44,17 +45,18 @@ Feature:
   Scenario: No validation errors are displayed when the optional fields are not completed
     Given I am on the add pupil page
     When I submit the form without completing the optional fields
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB fields should not allow letters to be entered
     Given I am on the add pupil page
     When I attempt to type letters in the DOB fields
     Then they should not be entered
 
-  Scenario: Users can navigate back to the profile page
+  Scenario: Users can navigate back to the pupil register page
     Given I am on the add pupil page
     When I decide to go back
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
+    And I should see no flash message displayed
 
   Scenario: Names can only be a max of 128 characters long
     Given I am on the add pupil page
@@ -109,16 +111,21 @@ Feature:
   Scenario: DOB's can have a single digit day
     Given I am on the add pupil page
     When I submit the form with a DOB that has 3 days in a month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month
     Given I am on the add pupil page
     When I submit the form with a DOB that has 1 as the month
-    Then I should be taken to the Manage a pupil page
+    Then I should be taken to the Pupil register page
 
   Scenario: Names can include a hyphen
     Given I am on the add pupil page
     When I submit the form with the name fields set as Mary-Jane
+    Then the pupil details should be stored
+
+  Scenario: Names can include a space
+    Given I am on the add pupil page
+    When I submit the form with the name fields set as Mary Jane
     Then the pupil details should be stored
 
   Scenario: Names can include numbers
@@ -173,3 +180,33 @@ Feature:
       | óòôõöøōœúùûüūŵýÿŷ  |
       | ÞÐÇÑẞ              |
       | þçðñß              |
+
+  Scenario: UPN cannot be assigned twice
+    Given I am on the add pupil page
+    When I submit valid details with a already used UPN
+    Then I should see an error stating more than 1 pupil with the same UPN
+
+  Scenario: UPN has to have the correct check letter
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a incorrect check letter
+    Then I should see an error stating wrong check letter at character 1
+
+  Scenario: UPN has to have a valid LA code
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a invalid LA code
+    Then I should see an error stating characters between 2-4 are invalid
+
+  Scenario: UPN has to have numeric characters between characters 5-12
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a alpha character between characters 5-12
+    Then I should see an error stating characters between 5-12 are invalid
+
+  Scenario: UPN has to have a valid alhpa character at position 13
+    Given I am on the add pupil page
+    When I submit valid details with a UPN that has a invalid alpha character at character 13
+    Then I should see an error stating character 13 is invalid
+
+  Scenario: UPN can have lowercase alpha characters
+    Given I am on the add pupil page
+    When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored

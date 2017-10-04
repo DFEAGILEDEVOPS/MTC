@@ -56,3 +56,7 @@ Feature: Login page
     Given I have logged in
     But I have chosen that the details are not correct
     Then local storage should be cleared
+
+  Scenario: Pupil cannot login from a different school
+    Given I have attempted to enter a school I do not attend upon login
+    Then I should be taken to the sign in failure page
