@@ -468,11 +468,12 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   const postedPupils = req.body.pupil
-  const pupilsData = await fetchMultiplePupils(postedPupils)
+  const pupilsData = await fetchMultiplePupils(Object.values(postedPupils))
 
   let pupilsToSave = []
   let pupilsList
   let attendanceCodes
+  let flashMessage = 'Reasons updated'
 
   pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
@@ -490,6 +491,8 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     if (!savedPupils) {
       return next(new Error('Cannot save pupils'))
     }
+    flashMessage = `${savedPupils.length} pupil reasons updated`
+    req.flash('info', flashMessage)
   } catch (error) {
     return next(error)
   }
@@ -514,7 +517,8 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   return res.render('school/save-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
-    pupilsList
+    pupilsList,
+    messages: req.flash('info')
   })
 }
 
