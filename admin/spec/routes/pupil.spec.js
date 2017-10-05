@@ -201,7 +201,7 @@ describe('pupil controller:', () => {
         }).postAddPupil
       })
 
-      xit('throws an error and calls next()', async (done) => {
+      it('throws an error and calls next()', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)

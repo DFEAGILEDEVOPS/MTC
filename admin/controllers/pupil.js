@@ -46,6 +46,9 @@ const postAddPupil = async (req, res, next) => {
   let school
   try {
     school = await School.findOne({_id: req.body.school}).exec()
+    if (!school) {
+      throw new Error(`School [${req.body.school}] not found`)
+    }
   } catch (error) {
     return next(error)
   }
