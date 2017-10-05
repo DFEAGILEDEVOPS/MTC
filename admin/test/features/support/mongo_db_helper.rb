@@ -110,4 +110,18 @@ class MongoDbHelper
     hash
   end
 
+  def self.find_pupil_from_school(first_name, school_id)
+    collection=CLIENT[:pupils].find({foreName: first_name, school: school_id.to_i})
+    result = []
+    collection.each {|pupil| result << pupil}
+    result.first
+  end
+
+  def self.check_attendance_code(id)
+    result = []
+    collection=CLIENT[:attendancecodes].find({'_id': BSON::ObjectId(id)})
+    collection.each {|a| result << a}
+    result.first
+  end
+
 end

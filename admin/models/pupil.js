@@ -67,7 +67,7 @@ const Pupil = new Schema({
 })
 
 /**
- * Validation / sanitation
+ * Validation / sanitisation
  */
 Pupil.pre('validate', function (next) {
   // Silently truncate the names to 128 chars
