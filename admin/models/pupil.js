@@ -58,7 +58,9 @@ const Pupil = new Schema({
     type: String
   },
   attendanceCode: {
-    type: Object
+    type: Object,
+    required: false,
+    ref: 'AttendanceCode'
   }
 }, {
   timestamps: true
