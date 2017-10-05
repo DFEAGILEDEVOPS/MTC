@@ -16,7 +16,6 @@ const {
   fetchPupilAnswers,
   fetchScoreDetails,
   fetchSortedPupilsData,
-  fetchOnePupil,
   fetchMultiplePupils } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
@@ -471,21 +470,19 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupilsToSave = []
 
   await pupilsData.map(async (pupil) => {
-    if (pupil) {
-      pupil.attendanceCode = {
-        _id: req.body.attendanceCode,
-        dateRecorded: new Date(todayDate),
-        byUser: req.user.UserName
-      }
-      await pupilsToSave.push(pupil)
+    pupil.attendanceCode = {
+      _id: req.body.attendanceCode,
+      dateRecorded: new Date(todayDate),
+      byUserName: req.user.UserName,
+      byUserEmail: req.user.EmailAddress
     }
+    pupilsToSave.push(pupil)
   })
 
-  await Pupil.create(pupilsToSave, function (err, pupil) {
+  Pupil.create(pupilsToSave, function (err, pupil) {
+    // @TODO: Auditing (to be discussed)
     if (err) {
       return next(new Error('Cannot save pupils'))
-    } else {
-      // @TODO: Auditing (to be discussed)
     }
   })
 
