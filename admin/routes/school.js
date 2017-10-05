@@ -29,6 +29,7 @@ const school = (router) => {
   router.get('/pupils-not-taking-check', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/select-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/select-pupils/:sortField/:sortDirection', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
+  router.get('/pupils-not-taking-check/save-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.post('/pupils-not-taking-check/save-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => savePupilNotTakingCheck(req, res, next))
 }
 

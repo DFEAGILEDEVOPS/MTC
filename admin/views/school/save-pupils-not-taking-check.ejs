@@ -28,13 +28,16 @@
             <tbody>
                 <% pupilsList.forEach( (pupil, index) => { %>
                 <tr>
-                    <td>
+                    <td<% if (pupil.highlight === true) { %> class="highlight-table-cell"<% } %>>
                         <label for="pupil-<%= pupil._id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %>
                         </label>
                     </td>
                     <td>
                         <%= pupil.reason %>
+                    </td>
+                    <td>
+                        <a href="#">Remove</a>
                     </td>
                 </tr>
                 <% }) %>

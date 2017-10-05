@@ -51,22 +51,6 @@ const pupilService = {
       .exec()
   },
   /**
-   * Fetch one pupil filtered by pupil id and school id
-   * @param pupilId
-   * @param schoolId
-   * @returns {Promise.<*>}
-   */
-  fetchOnePupil: async (pupilId, schoolId) => {
-    // TODO: Introduce integration tests
-    try {
-      return await Pupil
-      .findOne({'_id': pupilId, 'school': schoolId})
-      .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
-  },
-  /**
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */
@@ -79,6 +63,14 @@ const pupilService = {
       }).sort({createdAt: -1}).exec()
     } catch (error) {
       throw new Error(error)
+    }
+  },
+  fetchPupilsWithReasons: async (schoolId) => {
+    const pupilsWithReasons = await Pupil
+      .find({'attendanceCode': {$exists: true}, 'school': schoolId})
+      .sort('lastName')
+    if (pupilsWithReasons.length > 0) {
+      return pupilsWithReasons
     }
   },
   /**
