@@ -484,12 +484,15 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     pupilsToSave.push(pupil)
   })
 
-  await Pupil.create(pupilsToSave, function (err, pupil) {
-    // @TODO: Auditing (to be discussed)
-    if (err) {
+  // @TODO: Auditing (to be discussed)
+  try {
+    const savedPupils = await Pupil.create(pupilsToSave)
+    if (!savedPupils) {
       return next(new Error('Cannot save pupils'))
     }
-  })
+  } catch (error) {
+    return next(error)
+  }
 
   // Get attendance code index
   try {
