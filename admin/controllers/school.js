@@ -1,6 +1,7 @@
 'use strict'
 const moment = require('moment')
 const csv = require('fast-csv')
+const mongoose = require('mongoose')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
@@ -191,15 +192,12 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  const pupils = []
+  let pupils
 
   // fetch pupils
   try {
-    for (let id of data) {
-      // This is suboptimal precisely because CosmosDB can't fetch multiple
-      // pupils.  This is a temp fix until the real fix is determined.
-      pupils.push(await Pupil.findOne({ _id: id }).exec())
-    }
+    let ids = data.map(id => mongoose.Types.ObjectId(id))
+    pupils = await Pupil.find({ _id: { $in: ids } }).exec()
   } catch (error) {
     console.error('Failed to find pupils: ' + error.message)
     return next(error)
@@ -274,7 +272,8 @@ const postSubmitAttendance = async (req, res, next) => {
   let selected
   const { pupils } = await fetchPupilsData(req.user.School)
   try {
-    selected = await Pupil.find({ _id: data }).exec()
+    let ids = data.map(id => mongoose.Types.ObjectId(id))
+    selected = await Pupil.find({ _id: { $in: ids } }).exec()
   } catch (error) {
     return next(error)
   }
@@ -284,7 +283,7 @@ const postSubmitAttendance = async (req, res, next) => {
   // Expire all pins for school pupils
   pupils.forEach(p => (p.pinExpired = true))
   const pupilsPromises = pupils.map(p => p.save())
-  Promise.all([ selectedPromises, pupilsPromises ]).then(() => {
+  Promise.all(selectedPromises.concat(pupilsPromises)).then(() => {
     return res.redirect('/school/declaration-form')
   },
   error => next(error))
