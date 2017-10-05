@@ -15,8 +15,8 @@ const {
   fetchPupilAnswers,
   fetchScoreDetails,
   fetchSortedPupilsData,
-  fetchOnePupil,
-  fetchMultiplePupils } = require('../services/pupil.service')
+  fetchMultiplePupils,
+  fetchPupilsWithReasons } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -464,34 +464,54 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   if (req.body.attendanceCode === undefined || req.body.pupil === undefined) {
+    console.log('REDIRECT')
     return res.redirect('/school/pupils-not-taking-check/select-pupils')
   }
 
   const todayDate = moment(moment.now()).format()
-  const pupilsData = await fetchMultiplePupils(Object.values(req.body.pupil))
+  const postedPupils = req.body.pupil
+  const pupilsData = await fetchMultiplePupils(postedPupils)
+
   let pupilsToSave = []
+  let pupilsList
+  let attendanceCodes
 
   await pupilsData.map(async (pupil) => {
     if (pupil) {
       pupil.attendanceCode = {
         _id: req.body.attendanceCode,
         dateRecorded: new Date(todayDate),
-        byUser: req.user.UserName
+        byUser: req.user.UserName,
+        byEmail: req.user.EmailAddress
       }
-      await pupilsToSave.push(pupil)
+      pupilsToSave.push(pupil)
     }
   })
 
-  await Pupil.create(pupilsToSave, function (err, pupil) {
+  Pupil.create(pupilsToSave, function (err, pupil) {
+    // @TODO: Auditing (to be discussed)
     if (err) {
       return next(new Error('Cannot save pupils'))
-    } else {
-      // @TODO: Auditing (to be discussed)
     }
   })
 
-  // @TODO: list of pupils with reasons
-  let pupilsList = []
+  // Get attendance code index
+  try {
+    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+    return next(error)
+  }
+
+  let pupils = await fetchPupilsWithReasons(req.user.School)
+  pupilsList = await Promise.all(pupils.map(async (p) => {
+    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
+      p.reason = accCode[0].reason
+      p.highlight = (postedPupils.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
+    }
+    return p
+  }))
 
   return res.render('school/save-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
