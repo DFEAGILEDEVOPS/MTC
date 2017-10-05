@@ -469,7 +469,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   const pupilsData = await fetchMultiplePupils(Object.values(req.body.pupil))
   let pupilsToSave = []
 
-  await pupilsData.map(async (pupil) => {
+  pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
       _id: req.body.attendanceCode,
       dateRecorded: new Date(todayDate),
@@ -479,12 +479,15 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     pupilsToSave.push(pupil)
   })
 
-  await Pupil.create(pupilsToSave, function (err, pupil) {
-    // @TODO: Auditing (to be discussed)
-    if (err) {
+  // @TODO: Auditing (to be discussed)
+  try {
+    const savedPupils = await Pupil.create(pupilsToSave)
+    if (!savedPupils) {
       return next(new Error('Cannot save pupils'))
     }
-  })
+  } catch (error) {
+    return next(error)
+  }
 
   // @TODO: list of pupils with reasons
   let pupilsList = []
