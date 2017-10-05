@@ -1,4 +1,5 @@
 const moment = require('moment')
+const uuidv4 = require('uuid/v4')
 const fs = require('fs-extra')
 const csv = require('fast-csv')
 const { promisify } = require('bluebird')
@@ -159,7 +160,7 @@ const postAddMultiplePupils = async (req, res, next) => {
         const cvsStr = await writeToString(errorsCsv, { headers: true })
         // Upload csv to Azure
         try {
-          const remoteFilename = `${school._id}-${moment().format('YYYYMMDDHHmmss')}-error.csv`
+          const remoteFilename = `${school._id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
           const streamLength = 512 * 1000
           const csvBlobFile = await new Promise((resolve, reject) => {
             blobService.createBlockBlobFromText('csvuploads', remoteFilename, cvsStr, streamLength,
