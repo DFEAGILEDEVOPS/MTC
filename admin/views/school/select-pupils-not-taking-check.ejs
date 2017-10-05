@@ -7,33 +7,37 @@
     </div>
 </div>
 
-<div class="grid-row" aria-describedby="heading-xlarge">
-    <div class="column-two-thirds" id="checkWindowsForm">
-        <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0">Select pupils not taking the check</h1>
+<form method="post" action="/school/pupils-not-taking-check/save-pupils">
 
-        <br />
+    <%- partial('partials/_sticky_confirmation_banner', { cancelLink: '/school/pupils-not-taking-check' }) %>
 
-        <% if (attendanceCodes && attendanceCodes.length > 1) { %>
-        <form method="post">
+    <div class="grid-row" id="pupils-not-taking-checks" aria-describedby="heading-xlarge">
+
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0">Select pupils not taking the check</h1>
+
+            <br />
+
+            <% if (attendanceCodes && attendanceCodes.length > 1) { %>
             <h2>1. Select reason</h2>
 
             <ul class="list attendance-code-list">
-                <% attendanceCodes.forEach( (ac) => { %>
+            <% attendanceCodes.forEach( (aValues) => { %>
                 <li>
                     <div class="multiple-choice">
-                        <input id="attendance-code-<%= ac.code %>"
+                        <input id="attendance-code-<%= aValues.id %>"
                                type="radio"
                                role="radio"
                                aria-checked="false"
                                name="attendanceCode"
-                               value="<%= ac.code %>"
-                               <% if (formData && formData['attendanceCode'] === ac.code) { %>checked="checked"<% } %>
-                        />
-                        <label for="attendance-code-<%= ac.code %>"><%= ac.reason %></label>
+                               value="<%= aValues.id %>">
+                        <label for="attendance-code-<%= aValues.id %>"><%= aValues.reason %></label>
                     </div>
                 </li>
                 <% }) %>
             </ul>
+            <input type="hidden" name="sortField" value="<%= sortField %>">
+            <input type="hidden" name="sortDirection" value="<%= sortDirection %>">
             <% } %>
 
             <div class="master-detail text">
@@ -98,7 +102,9 @@
                             </label>
                         </td>
                         <td>
+                            <% if (pupil.reason) { %>
                             <%= pupil.reason %>
+                            <% } %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">
@@ -108,7 +114,7 @@
                                        value="<%= pupil._id %>"
                                        aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                        aria-checked="false"
-                                       role="checkbox" />
+                                       role="checkbox" <%= pupil.disabledCheckbox %> />
                                 <div></div>
                             </div>
                         </td>
@@ -120,25 +126,26 @@
             <br class="clearfix"/>
             <p>No pupils found.</p>
             <% } %>
-        </form>
 
-        <br class="clearfix"/>
+            <br class="clearfix"/>
 
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
+        </div>
+
+        <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+            <aside role="complementary" class="support-column">
+                <h3 class="heading-medium" tabindex="0">Start check</h3>
+                <nav role="navigation">
+                    <ul class="list">
+                        <li>
+                            <a href="#">Generate PINs</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
         </div>
     </div>
+</form>
 
-    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Start check</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="#">Generate PINs</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
