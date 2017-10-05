@@ -285,7 +285,7 @@ const postSubmitAttendance = async (req, res, next) => {
   // Expire all pins for school pupils
   pupils.forEach(p => (p.pinExpired = true))
   const pupilsPromises = pupils.map(p => p.save())
-  Promise.all([ selectedPromises, pupilsPromises ]).then(() => {
+  Promise.all(selectedPromises.concat(pupilsPromises)).then(() => {
     return res.redirect('/school/declaration-form')
   },
   error => next(error))
