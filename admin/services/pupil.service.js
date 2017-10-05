@@ -34,16 +34,13 @@ const pupilService = {
   fetchSortedPupilsData: async (schoolId, sortingField, sortingDirection) => {
     // TODO: Introduce integration tests
     const sort = {}
-    try {
-      sort[sortingField] = sortingDirection
-      return await Pupil
-        .find({'school': schoolId})
-        .sort(sort)
-        .lean()
-        .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    sort[sortingField] = sortingDirection
+    const pupils = await Pupil
+      .find({'school': schoolId})
+      .sort(sort)
+      .lean()
+      .exec()
+    return pupils
   },
   fetchMultiplePupils: (pupilIds) => {
     return Pupil
@@ -51,35 +48,16 @@ const pupilService = {
       .exec()
   },
   /**
-   * Fetch one pupil filtered by pupil id and school id
-   * @param pupilId
-   * @param schoolId
-   * @returns {Promise.<*>}
-   */
-  fetchOnePupil: async (pupilId, schoolId) => {
-    // TODO: Introduce integration tests
-    try {
-      return await Pupil
-      .findOne({'_id': pupilId, 'school': schoolId})
-      .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
-  },
-  /**
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */
   fetchPupilAnswers: async (id) => {
     // TODO: Introduce integration tests
-    try {
-      return await Answer.findOne({
-        pupil: mongoose.Types.ObjectId(id),
-        result: {$exists: true}
-      }).sort({createdAt: -1}).exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    const answers = await Answer.findOne({
+      pupil: mongoose.Types.ObjectId(id),
+      result: {$exists: true}
+    }).sort({createdAt: -1}).exec()
+    return answers
   },
   /**
    * Fetches score details for pupils who have taken the check.
