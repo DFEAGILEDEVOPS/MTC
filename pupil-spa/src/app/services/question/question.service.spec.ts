@@ -16,7 +16,14 @@ describe('QuestionService', () => {
     };
     const questions = responseMock['questions'];
     const config = responseMock['config'];
-    spyOn(mockStorageService, 'getItem').and.returnValues(questions, config);
+    spyOn(mockStorageService, 'getItem').and.callFake((arg) => {
+      switch (arg) {
+        case 'config':
+          return config;
+        case 'questions':
+          return questions;
+      }
+    })
     TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
@@ -82,5 +89,9 @@ describe('QuestionService', () => {
     service.reset();
     expect(service['questions']).toBeNull();
     expect(service.getConfig()).toBeNull();
+  }));
+
+  it('getCurrentQuestionNumber() returns the current question number',  inject([QuestionService], (service: QuestionService) => {
+    expect(service.getCurrentQuestionNumber()).toBe(0);
   }));
 });
