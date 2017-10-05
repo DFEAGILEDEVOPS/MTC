@@ -36,19 +36,19 @@ const pupilService = {
    */
   fetchSortedPupilsData: async (schoolId, sortingField, sortingDirection) => {
     // TODO: Introduce integration tests
-    try {
-      const sort = {}
-      sort[sortingField] = sortingDirection
-      return await Pupil
-        .find({
-          'school': schoolId
-        })
-        .sort(sort)
-        .lean()
-        .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    const sort = {}
+    sort[sortingField] = sortingDirection
+    const pupils = await Pupil
+      .find({'school': schoolId})
+      .sort(sort)
+      .lean()
+      .exec()
+    return pupils
+  },
+  fetchMultiplePupils: (pupilIds) => {
+    return Pupil
+      .find({'_id': { $in: pupilIds }})
+      .exec()
   },
   /**
    * Fetches latest set of pupils answers who have completed the check.
@@ -56,14 +56,11 @@ const pupilService = {
    */
   fetchPupilAnswers: async (id) => {
     // TODO: Introduce integration tests
-    try {
-      return await Answer.findOne({
-        pupil: mongoose.Types.ObjectId(id),
-        result: {$exists: true}
-      }).sort({createdAt: -1}).exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    const answers = await Answer.findOne({
+      pupil: mongoose.Types.ObjectId(id),
+      result: {$exists: true}
+    }).sort({createdAt: -1}).exec()
+    return answers
   },
   /**
    * Fetches score details for pupils who have taken the check.

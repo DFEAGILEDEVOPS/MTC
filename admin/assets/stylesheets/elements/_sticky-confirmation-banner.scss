@@ -1,0 +1,42 @@
+.sticky-banner-wrapper {
+  background-color: rgba(217, 236, 226, 1);
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  width: 100%;
+  z-index: 999;
+
+  @include media(mobile) {
+    overflow: hidden;
+    padding: 0 0 15px 0;
+
+    .button {
+      float: right;
+      width: 49%;
+    }
+
+    .button-secondary:not(:last-child) {
+      margin-right: 0;
+    }
+
+    .button-secondary {
+      float: left;
+      margin-top: 0;
+      padding-left: 0;
+      padding-right: 0;
+      text-align: center;
+      width: 49%;
+    }
+  }
+
+  div {
+    padding: $gutter-half;
+  }
+}
+
+.sticky-banner {
+  position: fixed;
+  left: 0;
+  top: 0;
+}

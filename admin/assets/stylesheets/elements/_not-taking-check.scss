@@ -21,6 +21,15 @@
   }
 }
 
+#pupils-not-taking-checks {
+  .column-full {
+    z-index: 1
+  }
+  .column-two-thirds {
+    z-index: 2
+  }
+}
+
 .panel-no-border.attendance-reasons {
   margin-top: 0;
 

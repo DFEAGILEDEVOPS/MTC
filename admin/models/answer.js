@@ -17,7 +17,11 @@ mongoose.Promise = global.Promise
 const Answer = new Schema({
   sessionId: {type: String, required: true},
   testId: {type: String, required: true},
-  logonEvent: {type: Schema.Types.ObjectId, ref: 'LogonEvent', required: true},
+  logonEvent: {
+    type: Schema.Types.ObjectId,
+    ref: 'LogonEvent',
+    required: true
+  },
   pupil: {type: Schema.Types.ObjectId, ref: 'Pupil', required: true},
   school: {type: Number, ref: 'School', required: true},
   isElectron: {type: Boolean, default: false},

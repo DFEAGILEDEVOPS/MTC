@@ -15,7 +15,8 @@ const {
   fetchPupilsData,
   fetchPupilAnswers,
   fetchScoreDetails,
-  fetchSortedPupilsData } = require('../services/pupil.service')
+  fetchSortedPupilsData,
+  fetchMultiplePupils } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -376,7 +377,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
-  let formData
   let pupilsList
   let htmlSortDirection = []
   let arrowSortDirection = []
@@ -418,14 +418,14 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   // Get pupils for user' school
   const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
   pupilsList = await Promise.all(pupils.map(async (p) => {
-    if (p.attendanceCode !== undefined) {
-      let num = p.attendanceCode.code
-      try {
-        p.reason = attendanceCodes[num].reason
-      } catch (error) {
-      }
-    } else {
-      p.reason = 'N/A'
+    p.id = null
+    p.reason = 'N/A'
+    p.disabledCheckbox = ''
+
+    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+      let accCode = attendanceCodes.filter(ac => ac._id == p.attendanceCode._id)
+      p.reason = accCode[0].reason
+      p.disabledCheckbox = ' disabled="disabled"'
     }
     return p
   })).catch((error) => next(error))
@@ -449,11 +449,53 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   return res.render('school/select-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
+    sortField,
+    sortDirection,
     attendanceCodes,
-    formData,
     pupilsList,
     htmlSortDirection,
     arrowSortDirection
+  })
+}
+
+const savePupilNotTakingCheck = async (req, res, next) => {
+  res.locals.pageTitle = 'Save pupils not taking the check'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  if (req.body.attendanceCode === undefined || req.body.pupil === undefined) {
+    return res.redirect('/school/pupils-not-taking-check/select-pupils')
+  }
+
+  const todayDate = moment(moment.now()).format()
+  const pupilsData = await fetchMultiplePupils(Object.values(req.body.pupil))
+  let pupilsToSave = []
+
+  pupilsData.map(async (pupil) => {
+    pupil.attendanceCode = {
+      _id: req.body.attendanceCode,
+      dateRecorded: new Date(todayDate),
+      byUserName: req.user.UserName,
+      byUserEmail: req.user.EmailAddress
+    }
+    pupilsToSave.push(pupil)
+  })
+
+  // @TODO: Auditing (to be discussed)
+  try {
+    const savedPupils = await Pupil.create(pupilsToSave)
+    if (!savedPupils) {
+      return next(new Error('Cannot save pupils'))
+    }
+  } catch (error) {
+    return next(error)
+  }
+
+  // @TODO: list of pupils with reasons
+  let pupilsList = []
+
+  return res.render('school/save-pupils-not-taking-check', {
+    breadcrumbs: req.breadcrumbs(),
+    pupilsList
   })
 }
 
@@ -469,5 +511,6 @@ module.exports = {
   postDeclarationForm,
   getHDFSubmitted,
   getPupilNotTakingCheck,
-  getSelectPupilNotTakingCheck
+  getSelectPupilNotTakingCheck,
+  savePupilNotTakingCheck
 }
