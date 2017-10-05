@@ -1,6 +1,7 @@
 'use strict'
 const moment = require('moment')
 const csv = require('fast-csv')
+const mongoose = require('mongoose')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
@@ -273,7 +274,8 @@ const postSubmitAttendance = async (req, res, next) => {
   let selected
   const { pupils } = await fetchPupilsData(req.user.School)
   try {
-    selected = await Pupil.find({ _id: data }).exec()
+    let ids = data.map(id => mongoose.Types.ObjectId(id))
+    selected = await Pupil.find({ _id: { $in: ids } }).exec()
   } catch (error) {
     return next(error)
   }
