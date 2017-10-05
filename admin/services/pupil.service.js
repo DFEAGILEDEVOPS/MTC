@@ -34,16 +34,13 @@ const pupilService = {
   fetchSortedPupilsData: async (schoolId, sortingField, sortingDirection) => {
     // TODO: Introduce integration tests
     const sort = {}
-    try {
-      sort[sortingField] = sortingDirection
-      return await Pupil
-        .find({'school': schoolId})
-        .sort(sort)
-        .lean()
-        .exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    sort[sortingField] = sortingDirection
+    const pupils = await Pupil
+      .find({'school': schoolId})
+      .sort(sort)
+      .lean()
+      .exec()
+    return pupils
   },
   fetchMultiplePupils: (pupilIds) => {
     return Pupil
@@ -56,14 +53,11 @@ const pupilService = {
    */
   fetchPupilAnswers: async (id) => {
     // TODO: Introduce integration tests
-    try {
-      return await Answer.findOne({
-        pupil: mongoose.Types.ObjectId(id),
-        result: {$exists: true}
-      }).sort({createdAt: -1}).exec()
-    } catch (error) {
-      throw new Error(error)
-    }
+    const answers = await Answer.findOne({
+      pupil: mongoose.Types.ObjectId(id),
+      result: {$exists: true}
+    }).sort({createdAt: -1}).exec()
+    return answers
   },
   fetchPupilsWithReasons: async (schoolId) => {
     const pupilsWithReasons = await Pupil

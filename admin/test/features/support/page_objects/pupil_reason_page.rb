@@ -9,12 +9,19 @@ class PupilReasonPage < SitePrism::Page
   element :pupil_coloumn, 'a', text: 'Pupil name'
   element :reason_coloumn, 'a', text: 'Reason'
 
-  element :select_all_pupils, '#tickAllCheckboxes'
+  section :sticky_banner, '.sticky-banner-wrapper' do
+    element :cancel, 'a[href="/school/pupils-not-taking-check"]'
+    element :confirm, 'input[value="Confirm"]'
+  end
+
+  element :select_all_pupils, '#selectAll'
+  element :unselect_all_pupils, '#selectAll'
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do
       element :checkbox, 'input[type="checkbox"]'
+      element :selected, 'input[data-checked="true"]'
       element :name, 'label'
-      element :reason, 'td:last-of-type'
+      element :reason, 'td:nth-of-type(2)'
     end
 
   end
