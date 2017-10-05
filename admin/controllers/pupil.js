@@ -159,7 +159,7 @@ const postAddMultiplePupils = async (req, res, next) => {
         const cvsStr = await writeToString(errorsCsv, { headers: true })
         // Upload csv to Azure
         try {
-          const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + 'error.csv'
+          const remoteFilename = `${school._id}-${moment().format('YYYYMMDDHHmmss')}-error.csv`
           const streamLength = 512 * 1000
           const csvBlobFile = await new Promise((resolve, reject) => {
             blobService.createBlockBlobFromText('csvuploads', remoteFilename, cvsStr, streamLength,
