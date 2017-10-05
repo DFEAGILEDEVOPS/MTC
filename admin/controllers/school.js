@@ -271,7 +271,8 @@ const postSubmitAttendance = async (req, res, next) => {
   let selected
   const { pupils } = await fetchPupilsData(req.user.School)
   try {
-    selected = await Pupil.find({ _id: data }).exec()
+    let ids = data.map(id => mongoose.Types.ObjectId(id))
+    selected = await Pupil.find({ _id: { $in: ids } }).exec()
   } catch (error) {
     return next(error)
   }
@@ -281,7 +282,7 @@ const postSubmitAttendance = async (req, res, next) => {
   // Expire all pins for school pupils
   pupils.forEach(p => (p.pinExpired = true))
   const pupilsPromises = pupils.map(p => p.save())
-  Promise.all([ selectedPromises, pupilsPromises ]).then(() => {
+  Promise.all(selectedPromises.concat(pupilsPromises)).then(() => {
     return res.redirect('/school/declaration-form')
   },
   error => next(error))
