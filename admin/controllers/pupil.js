@@ -107,6 +107,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     school = await School.findOne({_id: req.user.School}).exec()
     if (!school) {
       throw new Error(`School [${req.body.school}] not found`)
+      throw new Error(`School [${req.user.school}] not found`)
     }
   } catch (error) {
     return next(error)
