@@ -359,7 +359,7 @@ describe('pupil validator', function () {
         done()
       })
 
-      xit('invalid date should be rejected', async (done) => {
+      it('invalid date should be rejected', async (done) => {
         req.body = getBody()
         req.body['dob-day'] = '29'
         req.body['dob-month'] = '02'
@@ -369,9 +369,9 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year').replace(/\\/g, '')).toBe('Please check “Year”')
-        expect(validationError.get('dob-month').replace(/\\/g, '')).toBe('Please check “Month”')
-        expect(validationError.get('dob-day').replace(/\\/g, '')).toBe('Please check “Day”')
+        expect(validationError.get('dob-year')).toBe('Please check "Year"')
+        expect(validationError.get('dob-month')).toBe('Please check "Month"')
+        expect(validationError.get('dob-day')).toBe('Please check "Day"')
         done()
       })
 
@@ -385,7 +385,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-day').replace(/\\/g, '')).toBe('Please check “Day”')
+        expect(validationError.get('dob-day')).toBe('Please check "Day"')
         done()
       })
 
@@ -399,7 +399,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-month').replace(/\\/g, '')).toBe('Please check “Month”')
+        expect(validationError.get('dob-month')).toBe('Please check "Month"')
         done()
       })
 
@@ -413,7 +413,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year').replace(/\\/g, '')).toBe('Please check “Year”')
+        expect(validationError.get('dob-year')).toBe('Please check "Year"')
         done()
       })
     })

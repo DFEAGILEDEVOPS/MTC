@@ -68,7 +68,7 @@ const postAddPupil = async (req, res, next) => {
     const pupilData = req.body
     await validatePupil(pupil, pupilData)
   } catch (error) {
-    Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e].replace(/\\/g, '') })
+    Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e] })
     return res.render('school/add-pupil', {
       school: school.toJSON(),
       formData: req.body,
@@ -106,7 +106,6 @@ const postAddMultiplePupils = async (req, res, next) => {
   try {
     school = await School.findOne({_id: req.user.School}).exec()
     if (!school) {
-      throw new Error(`School [${req.body.school}] not found`)
       throw new Error(`School [${req.user.school}] not found`)
     }
   } catch (error) {
@@ -145,7 +144,7 @@ const postAddMultiplePupils = async (req, res, next) => {
           await validatePupil(pupil, pupilData)
         } catch (err) {
           p[6] = []
-          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e].replace(/ \\"/g, '')))
+          Object.keys(err.errors).forEach((e) => p[6].push(err.errors[e]))
           p[6] = p[6].join(', ')
         }
         pupils.push(pupil)
