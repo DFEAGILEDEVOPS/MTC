@@ -11,6 +11,7 @@ const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
+const fileValidator = require('../lib/validator/file-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
 
 const getAddPupil = async (req, res, next) => {
@@ -88,13 +89,14 @@ const postAddPupil = async (req, res, next) => {
 
 const getAddMultiplePupils = (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
-  const { hasError } = res
+  const { hasError, fileErrors } = res
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
-      hasError
+      hasError,
+      fileErrors
     })
   } catch (error) {
     next(error)
@@ -111,7 +113,13 @@ const postAddMultiplePupils = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const uploadFile = req.files.csvTemplateFile
+  const uploadFile = req.files && req.files.csvTemplateFile
+  const fileErrors = await fileValidator.validate(uploadFile)
+  if (fileErrors.hasError()) {
+    res.hasError = true
+    res.fileErrors = fileErrors
+    return getAddMultiplePupils(req, res, next)
+  }
   let csvData = []
   const stream = fs.createReadStream(uploadFile.file)
   const csvStream = csv()
@@ -157,13 +165,13 @@ const postAddMultiplePupils = async (req, res, next) => {
         errorsCsv.push(headers)
         csvData.forEach((p) => errorsCsv.push(p))
         const writeToString = promisify(csv.writeToString)
-        const cvsStr = await writeToString(errorsCsv, { headers: true })
+        const csvStr = await writeToString(errorsCsv, { headers: true })
         // Upload csv to Azure
         try {
           const remoteFilename = `${school._id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
           const streamLength = 512 * 1000
           const csvBlobFile = await new Promise((resolve, reject) => {
-            blobService.createBlockBlobFromText('csvuploads', remoteFilename, cvsStr, streamLength,
+            blobService.createBlockBlobFromText('csvuploads', remoteFilename, csvStr, streamLength,
               (error, result) => {
                 if (error) reject(error)
                 else return resolve(result)

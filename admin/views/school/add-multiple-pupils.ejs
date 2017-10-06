@@ -13,11 +13,27 @@
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
             <h2 class="error-heading" id="error-summary-heading-1">Errors in your uploaded file</h2>
             <br>
+            <% if (fileErrors && fileErrors.hasError()) { %>
+            <p class="error-message">You need to fix the errors on this page before continuing. See highlighted errors below
+            </p>
+            <ul class="error-summary-list">
+                <% fileErrors.getUniqueFields(['template-upload']).map(f => { %>
+                <% const errors = fileErrors.get(f) %>
+                <% if (Array.isArray(errors)) { %>
+                <%  errors.map(e => { %>
+                <li><a href="#<%= f %>"><%= e %></a></li>
+                <% }) } else { %>
+                <li><a href="#<%= f %>"><%= errors %></a></li>
+                <% } %>
+                <% }) %>
+            </ul>
+            <% } else { %>
             <p class="error-message">Please download the file below which highlights the errors.<br>
                 Correct the errors and upload the updated file.
             </p>
             <div class="icon-file-download pupils-template"></div>
             <a class="template-link" href="/school/pupil/download-error-csv">Pupil details file with errors</a> (CSV file)
+            <% } %>
         </div>
     </div>
 </div>
