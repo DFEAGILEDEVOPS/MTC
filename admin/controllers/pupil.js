@@ -55,7 +55,7 @@ const postAddPupil = async (req, res, next) => {
   }
   const pupil = new Pupil({
     school: school._id,
-    upn: req.body.upn,
+    upn: req.body.upn.toUpperCase(),
     foreName: req.body.foreName,
     lastName: req.body.lastName,
     middleNames: req.body.middleNames,
@@ -125,7 +125,7 @@ const postAddMultiplePupils = async (req, res, next) => {
       csvData = await Promise.all(csvData.map(async(p) => {
         const pupil = new Pupil({
           school: school._id,
-          upn: p[3],
+          upn: p[3].toUpperCase(),
           foreName: p[0],
           lastName: p[2],
           middleNames: p[1],
@@ -272,7 +272,7 @@ const postEditPupil = async (req, res, next) => {
   pupil.foreName = req.body.foreName
   pupil.middleNames = req.body.middleNames
   pupil.lastName = req.body.lastName
-  pupil.upn = req.body.upn
+  pupil.upn = req.body.upn.toUpperCase()
   pupil.gender = req.body.gender
   pupil.pin = pupil.pin || null
   pupil.pinExpired = pupil.pinExpired || false
