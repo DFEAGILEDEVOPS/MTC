@@ -26,9 +26,6 @@ describe('WarmupQuestionService', () => {
   }));
 
   it('should initialise correctly', inject([ WarmupQuestionService ], (service: WarmupQuestionService) => {
-    expect(service[ 'questions' ]).toBeFalsy();
-    expect(service[ 'config' ]).toBeFalsy();
-    service.initialise();
     expect(service[ 'questions' ]).toBeDefined();
     expect(service[ 'config' ]).toBeDefined();
   }));
