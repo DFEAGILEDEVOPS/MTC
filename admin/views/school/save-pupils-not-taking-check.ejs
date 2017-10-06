@@ -34,7 +34,7 @@
             <tbody>
                 <% pupilsList.forEach( (pupil, index) => { %>
                 <tr>
-                    <td<% if (pupil.highlight === true) { %> class="highlight-table-cell"<% } %>>
+                    <td<% if (pupil.highlight === true) { %> class="highlight-item"<% } %>>
                         <label for="pupil-<%= pupil._id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %>
                         </label>
