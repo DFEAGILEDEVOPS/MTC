@@ -3,7 +3,6 @@ import { environment } from '../../../environments/environment';
 import 'rxjs/add/operator/toPromise';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
-const sessionDataKey = 'session';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';
 const pupilDataKey = 'pupil';
@@ -16,7 +15,7 @@ export class UserService {
   data: any = {};
 
   constructor(private http: Http, private storageService: StorageService) {
-    this.loggedIn = !!this.storageService.getItem(sessionDataKey);
+    this.loggedIn = !!this.storageService.getItem(accessTokenKey);
   }
 
   login(schoolPin, pupilPin): Promise<any> {
@@ -36,8 +35,6 @@ export class UserService {
           const data = response.json();
           this.loggedIn = true;
           this.storageService.clear();
-          // TODO: fetch session object when it's implemented in the API(?)
-          // this.storageService.setItem(sessionDataKey, data[sessionDataKey]);
           this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);

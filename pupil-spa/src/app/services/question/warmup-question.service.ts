@@ -3,6 +3,7 @@ import { QuestionService } from './question.service';
 
 import { StorageService } from '../storage/storage.service';
 import { Config } from '../../config.model';
+const configKey = 'config'
 
 @Injectable()
 export class WarmupQuestionService extends QuestionService {
@@ -27,11 +28,15 @@ export class WarmupQuestionService extends QuestionService {
 
   constructor(protected storageService: StorageService) {
     super(storageService);
+    // re-initialise on page refresh
+    if (this.storageService.getItem(configKey)) {
+      this.initialise();
+    }
   }
 
   initialise() {
     this.questions = this.questionData;
-    const configData = this.storageService.getItem('config');
+    const configData = this.storageService.getItem(configKey);
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
