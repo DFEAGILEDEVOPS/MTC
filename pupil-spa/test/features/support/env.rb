@@ -27,7 +27,7 @@ Capybara.configure do |config|
   config.visible_text_only = true
 end
 
-Capybara.register_driver(:selenium_chrome) do |app|
+Capybara.register_driver(:chrome) do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
 
