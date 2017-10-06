@@ -19,6 +19,7 @@ import { StorageServiceMock } from '../services/storage/storage.service.mock';
 describe('CheckComponent', () => {
   let component: CheckComponent;
   let fixture: ComponentFixture<CheckComponent>;
+  let storageService;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -29,6 +30,7 @@ describe('CheckComponent', () => {
     }
     const afterState = component[ 'state' ];
     expect(beforeState + 1).toBe(afterState);
+    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   }
 
   beforeEach(async(() => {
@@ -52,6 +54,8 @@ describe('CheckComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
+    storageService = fixture.debugElement.injector.get(StorageService);
+    spyOn(storageService, 'setItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
