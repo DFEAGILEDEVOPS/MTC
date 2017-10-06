@@ -5,7 +5,7 @@ const fs = require('fs-extra')
 
 module.exports.validate = async (uploadedFile) => {
   let validationError = new ValidationError()
-  // No
+  // No File
   if (!uploadedFile) {
     validationError.addError('template-upload', addBatchFileErrorMessages.noFile)
     return validationError
