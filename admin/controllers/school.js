@@ -193,7 +193,7 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  const pupils = []
+  let pupils = []
 
   // fetch pupils
   try {
@@ -364,6 +364,13 @@ const getHDFSubmitted = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: initial page.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -372,6 +379,13 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: render and sorting.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -420,12 +434,10 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   pupilsList = await Promise.all(pupils.map(async (p) => {
     p.id = null
     p.reason = 'N/A'
-    p.disabledCheckbox = ''
 
     if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
       let accCode = attendanceCodes.filter(ac => ac._id == p.attendanceCode._id)
       p.reason = accCode[0].reason
-      p.disabledCheckbox = ' disabled="disabled"'
     }
     return p
   })).catch((error) => next(error))
@@ -458,6 +470,13 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: save reason.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const savePupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Save pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -522,6 +541,21 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+const removePupilNotTakingCheck = async (req, res, next) => {
+  if (req.params.pupilId === undefined) {
+    return res.redirect('/pupils-not-taking-check/select-pupils')
+  }
+
+  const pupilId = req.params.pupilId
+  try {
+    await Pupil.remove({ '_id': pupilId }).exec()
+  } catch (error) {
+    next(error)
+  }
+
+  return res.redirect('/pupils-not-taking-check/select-pupils')
+}
+
 module.exports = {
   getHome,
   getPupils,
@@ -535,5 +569,6 @@ module.exports = {
   getHDFSubmitted,
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
-  savePupilNotTakingCheck
+  savePupilNotTakingCheck,
+  removePupilNotTakingCheck
 }

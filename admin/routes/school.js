@@ -13,7 +13,8 @@ const { getHome,
   getHDFSubmitted,
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
-  savePupilNotTakingCheck } = require('../controllers/school')
+  savePupilNotTakingCheck,
+  removePupilNotTakingCheck } = require('../controllers/school')
 
 const school = (router) => {
   router.get('/school-home', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getHome(req, res, next))
@@ -31,6 +32,7 @@ const school = (router) => {
   router.get('/pupils-not-taking-check/select-pupils/:sortField/:sortDirection', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/save-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.post('/pupils-not-taking-check/save-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => savePupilNotTakingCheck(req, res, next))
+  router.get('/pupils-not-taking-check/remove/:pupilId', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => removePupilNotTakingCheck(req, res, next))
 }
 
 module.exports = school
