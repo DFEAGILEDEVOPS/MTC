@@ -125,11 +125,14 @@ app.use(logger('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
-  allowedPath: /^\/school\/pupil\/add-batch-pupils$/,
+  allowedPath: (url) => allowedPath(url),
   mimeTypeLimit: [
     'text/csv'
   ]
 })
+
+const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
+    (/^\/test-developer\/manage-check-forms$/).test(url)
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
