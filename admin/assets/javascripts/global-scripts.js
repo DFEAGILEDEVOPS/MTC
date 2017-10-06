@@ -130,7 +130,7 @@ $(function () {
         isRadioChecked()
       } else {
         $($(this)).attr('data-checked', null)
-        $('#stickyConfirm').prop('disabled', true)
+        isCheckboxChecked()
       }
     })
   }
