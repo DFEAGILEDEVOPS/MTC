@@ -13,6 +13,7 @@ const partials = require('express-partials')
 const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-auto-increment')
 const uuidV4 = require('uuid/v4')
+const expressValidator = require('express-validator')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
@@ -147,6 +148,7 @@ app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(expressValidator())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Breadcrumbs
