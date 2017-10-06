@@ -3,8 +3,6 @@ const uuidv4 = require('uuid/v4')
 const fs = require('fs-extra')
 const csv = require('fast-csv')
 const { promisify } = require('bluebird')
-const azure = require('azure-storage')
-const blobService = azure.createBlobService()
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
@@ -13,6 +11,7 @@ const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const fileValidator = require('../lib/validator/file-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+const { azureUploadFile, azureDownloadFile } = require('../services/data-access/azure.file.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
@@ -56,7 +55,7 @@ const postAddPupil = async (req, res, next) => {
   }
   const pupil = new Pupil({
     school: school._id,
-    upn: req.body.upn,
+    upn: req.body.upn.trim().toUpperCase(),
     foreName: req.body.foreName,
     lastName: req.body.lastName,
     middleNames: req.body.middleNames,
@@ -133,7 +132,7 @@ const postAddMultiplePupils = async (req, res, next) => {
       csvData = await Promise.all(csvData.map(async(p) => {
         const pupil = new Pupil({
           school: school._id,
-          upn: p[3],
+          upn: p[3].trim().toUpperCase(),
           foreName: p[0],
           lastName: p[2],
           middleNames: p[1],
@@ -170,14 +169,7 @@ const postAddMultiplePupils = async (req, res, next) => {
         try {
           const remoteFilename = `${school._id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
           const streamLength = 512 * 1000
-          const csvBlobFile = await new Promise((resolve, reject) => {
-            blobService.createBlockBlobFromText('csvuploads', remoteFilename, csvStr, streamLength,
-              (error, result) => {
-                if (error) reject(error)
-                else return resolve(result)
-              }
-            )
-          })
+          const csvBlobFile = await azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
           req.session.csvErrorFile = csvBlobFile.name
         } catch (err) {
           return next(err)
@@ -212,14 +204,7 @@ const getAddMultiplePupilsCSVTemplate = async (req, res) => {
 }
 
 const getErrorCSVFile = async (req, res) => {
-  const blobFile = await new Promise((resolve, reject) => {
-    blobService.getBlobToText('csvuploads', req.session.csvErrorFile,
-      (error, result) => {
-        if (error) reject(error)
-        else return resolve(result)
-      }
-    )
-  })
+  const blobFile = await azureDownloadFile('csvuploads', req.session.csvErrorFile)
   res.setHeader('Content-disposition', 'filename=multiple_pupils_errors.csv')
   res.setHeader('content-type', 'text/csv')
   res.write(blobFile)
@@ -280,7 +265,7 @@ const postEditPupil = async (req, res, next) => {
   pupil.foreName = req.body.foreName
   pupil.middleNames = req.body.middleNames
   pupil.lastName = req.body.lastName
-  pupil.upn = req.body.upn
+  pupil.upn = req.body.upn.trim().toUpperCase()
   pupil.gender = req.body.gender
   pupil.pin = pupil.pin || null
   pupil.pinExpired = pupil.pinExpired || false
