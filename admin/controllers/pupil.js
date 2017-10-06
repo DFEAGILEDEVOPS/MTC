@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const csv = require('fast-csv')
 const { promisify } = require('bluebird')
 const azure = require('azure-storage')
-const blobService = azure.createBlobService()
+const config = require('../config')
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
@@ -12,6 +12,11 @@ const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+
+const blobService = config.AZURE_STORAGE_CONNECTION_STRING ? azure.createBlobService() : {
+  createBlockBlobFromText: () => {},
+  getBlobToText: () => {}
+}
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
