@@ -102,6 +102,7 @@ Feature:
     Given I am on the pupil reason page
     When I add <reason> as a reason for a particular pupil
     Then the <reason> reason should be stored against the pupils
+    And I should see the updated pupil on the hub page
 
     Examples:
       | reason                 |
@@ -109,6 +110,12 @@ Feature:
       | Left                   |
       | Incorrect Registration |
       | Withdrawn              |
+
+  Scenario: Teachers can add multiple pupils
+    Given I am on the pupil reason page
+    When I add Absent as a reason for multiple pupils
+    Then the reason should be stored against the pupils
+    And I should see the updated pupils on the hub page
 
   @manual
   Scenario: Pupils can be sorted via reason
@@ -122,3 +129,8 @@ Feature:
   Scenario: Teachers can select all pupils
     Given I am on the pupil reason page
     Then I should be able to select all pupils
+
+  Scenario: Teachers can update the reason if they have made a mistake
+    Given I have previously added a reason for a pupil
+    But I decide to change it
+    Then the updated reason should be stored
