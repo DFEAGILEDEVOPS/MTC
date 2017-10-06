@@ -47,7 +47,7 @@ Then(/^I should see a option to generate pins$/) do
 end
 
 Then(/^I should see a section that explains the reasons$/) do
-  expect(pupils_not_taking_check_page.explanation_section).to be_all_there
+  expect(pupil_reason_page.explanation_section).to be_all_there
 end
 
 When(/^I want to add a reason for pupils not taking a check$/) do
@@ -126,16 +126,19 @@ end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == reason}.click
-  pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
-  @pupil_forename = pupil.name.text.split(',')[1].strip
-  pupil.checkbox.click
+  @pupil_row = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupil_forename = @pupil_row.name.text.split(',')[1].strip
+  @pupil_row.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
 end
 
 Then(/^the (.+) reason should be stored against the pupils$/) do |reason|
-  pupil_attendance_code = MongoDbHelper.find_pupil_from_school(@pupil_forename,MongoDbHelper.find_teacher('teacher1').first['school'])['attendanceCode']
-  attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
-  expect(attendance_code['reason']).to eql reason
+  teacher = pupils_not_taking_check_page.signed_in_as.text
+  teacher.slice! 'Signed in as'
+  @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename,MongoDbHelper.find_teacher(teacher.strip).first['school'])
+  pupil_attendance_code = @pupil['attendanceCode']
+  @attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+  expect(@attendance_code['reason']).to eql reason
 end
 
 Then(/^I should be able to select the pupils name to check the check box$/) do
@@ -157,4 +160,64 @@ end
 
 Then(/^I should be taken to the pupil not taking check page$/) do
   expect(pupils_not_taking_check_page).to be_displayed
+end
+
+And(/^I should see the updated pupil on the hub page$/) do
+  expect(pupils_not_taking_check_page).to have_flash_message
+  expect(pupils_not_taking_check_page.flash_message.text).to eql '1 pupil reasons updated'
+  hightlighted_row = pupils_not_taking_check_page.pupil_list.rows.find{|row| row.has_highlight?}
+  expect(hightlighted_row.text).to include("#{@pupil['lastName']}, #{@pupil[:foreName]}")
+  expect(hightlighted_row.text).to include(@attendance_code['reason'])
+end
+
+When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
+  @reason = reason
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == @reason}.click
+  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupils[0..3].each{|pupil| pupil.checkbox.click}
+  @pupil_names = @pupils[0..3].map{|pupil| pupil.name.text}
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+Then(/^the reason should be stored against the pupils$/) do
+  teacher = pupils_not_taking_check_page.signed_in_as.text
+  teacher.slice! 'Signed in as'
+  @pupil_names.each do |name|
+    pupil = MongoDbHelper.find_pupil_from_school(name.split(',')[1].strip,MongoDbHelper.find_teacher(teacher.strip).first['school'])
+    pupil_attendance_code = pupil['attendanceCode']
+    attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+    expect(attendance_code['reason']).to eql @reason
+  end
+end
+
+And(/^I should see the updated pupils on the hub page$/) do
+  expect(pupils_not_taking_check_page).to have_flash_message
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} pupil reasons updated"
+  hightlighted_rows = pupils_not_taking_check_page.pupil_list.rows.select{|row| row.has_highlight?}
+  updated_names = hightlighted_rows.map {|row| row.text.split[0] + ' ' + row.text.split[1]}
+  expect(updated_names).to eql @pupil_names
+end
+
+Given(/^I have previously added a reason for a pupil$/) do
+  step 'I am on the pupil reason page'
+  step 'I add Absent as a reason for a particular pupil'
+  step 'the Absent reason should be stored against the pupils'
+  step 'I should see the updated pupil on the hub page'
+end
+
+But(/^I decide to change it$/) do
+  pupils_not_taking_check_page.add_reason.click
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Withdrawn'}.click
+  pupil = pupil_reason_page.pupil_list.rows.find{|row| row.name.text.include? @pupil_forename}
+  pupil.checkbox.click
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+Then(/^the updated reason should be stored$/) do
+  teacher = pupils_not_taking_check_page.signed_in_as.text
+  teacher.slice! 'Signed in as'
+  @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename,MongoDbHelper.find_teacher(teacher.strip).first['school'])
+  pupil_attendance_code = @pupil['attendanceCode']
+  @attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+  expect(@attendance_code['reason']).to eql 'Withdrawn'
 end
