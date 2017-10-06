@@ -193,7 +193,7 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  const pupils = []
+  let pupils = []
 
   // fetch pupils
   try {
