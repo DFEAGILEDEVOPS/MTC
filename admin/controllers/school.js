@@ -17,7 +17,8 @@ const {
   fetchScoreDetails,
   fetchSortedPupilsData,
   fetchMultiplePupils,
-  fetchPupilsWithReasons } = require('../services/pupil.service')
+  fetchPupilsWithReasons,
+  fetchOnePupil } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -542,18 +543,21 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 }
 
 const removePupilNotTakingCheck = async (req, res, next) => {
-  if (req.params.pupilId === undefined) {
-    return res.redirect('/pupils-not-taking-check/select-pupils')
+  if (req.params.pupilId === undefined || req.user.School === undefined) {
+    return res.redirect('/school/pupils-not-taking-check/select-pupils')
   }
-
   const pupilId = req.params.pupilId
   try {
-    await Pupil.remove({ '_id': pupilId }).exec()
+    let pupil = await fetchOnePupil(pupilId, req.user.School)
+    if (!pupil) {
+      return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
+    }
+    pupil.attendanceCode = undefined
+    await pupil.save()
   } catch (error) {
     next(error)
   }
-
-  return res.redirect('/pupils-not-taking-check/select-pupils')
+  return res.redirect('/school/pupils-not-taking-check/select-pupils')
 }
 
 module.exports = {

@@ -2,22 +2,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
-import { CheckComponent } from './check.component';
-import { QuestionService } from '../services/question/question.service';
 import { AnswerService } from '../services/answer/answer.service';
-import { StorageService } from '../services/storage/storage.service';
-import { SubmissionService } from '../services/submission/submission.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { AuditEntry } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { AuditEntry } from '../services/audit/auditEntry';
 import { CheckComplete } from '../services/audit/auditEntry';
+import { CheckComponent } from './check.component';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { StorageService } from '../services/storage/storage.service';
+import { SubmissionService } from '../services/submission/submission.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
   let fixture: ComponentFixture<CheckComponent>;
+  let storageService;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -28,6 +30,7 @@ describe('CheckComponent', () => {
     }
     const afterState = component[ 'state' ];
     expect(beforeState + 1).toBe(afterState);
+    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   }
 
   beforeEach(async(() => {
@@ -37,13 +40,13 @@ describe('CheckComponent', () => {
       declarations: [ CheckComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
       providers: [
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        { provide: AuditService, useClass: AuditServiceMock },
         AnswerService,
-        StorageService,
+        RegisterInputService,
         SubmissionService,
-        RegisterInputService
+        { provide: AuditService, useClass: AuditServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
       ]
     })
       .compileComponents();
@@ -51,6 +54,8 @@ describe('CheckComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
+    storageService = fixture.debugElement.injector.get(StorageService);
+    spyOn(storageService, 'setItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
