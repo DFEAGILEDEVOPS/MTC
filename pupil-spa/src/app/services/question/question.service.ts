@@ -3,6 +3,8 @@ import { Question } from './question.model';
 
 import { StorageService } from '../storage/storage.service';
 import { Config } from '../../config.model';
+const questionKey = 'questions'
+const configKey = 'config'
 
 
 @Injectable()
@@ -15,6 +17,11 @@ export class QuestionService {
 
   constructor(protected storageService: StorageService) {
     this.currentQuestion = 0;
+
+    // Re-read the stored questions on page refresh
+    if (this.storageService.getItem(questionKey) && this.storageService.getItem(configKey)) {
+      this.initialise()
+    }
   }
 
   public getNumberOfQuestions(): number {
@@ -61,8 +68,8 @@ export class QuestionService {
   }
 
   initialise() {
-    const questionData = this.storageService.getItem('questions');
-    const configData = this.storageService.getItem('config');
+    const questionData = this.storageService.getItem(questionKey);
+    const configData = this.storageService.getItem(configKey);
     this.questions = questionData;
     const config = new Config();
     config.loadingTime = configData['loadingTime'];
