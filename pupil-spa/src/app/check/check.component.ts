@@ -9,6 +9,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { CheckComplete } from '../services/audit/auditEntry';
 import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-check',
@@ -25,13 +26,15 @@ export class CheckComponent implements OnInit {
   public viewState: string;
   public allowedStates: Array<string> = [];
   private totalNumberOfQuestions: number;
+  public static readonly checkStateKey = 'checkstate';
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
               private submissionService: SubmissionService,
               private warmupQuestionService: WarmupQuestionService,
               private registerInputService: RegisterInputService,
-              private auditService: AuditService) {
+              private auditService: AuditService,
+              private storageService: StorageService) {
   }
 
   /**
@@ -92,6 +95,8 @@ export class CheckComponent implements OnInit {
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
 
     this.state += 1; // increment state to next level - it's defined by an array
+    this.storageService.setItem(CheckComponent.checkStateKey, this.state);
+
     const stateDesc = this.allowedStates[ this.state ];
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
