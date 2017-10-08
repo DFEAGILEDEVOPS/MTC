@@ -30,6 +30,6 @@ config.AZURE_STORAGE_CONNECTION_STRING ? module.exports = {
   azureUploadFile,
   azureDownloadFile
 } : module.exports = {
-  azureUploadFile: () => {},
+  azureUploadFile: () => { return { name: 'test_error.csv' } },
   azureDownloadFile: () => {}
 }
