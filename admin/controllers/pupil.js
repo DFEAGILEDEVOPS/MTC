@@ -13,9 +13,12 @@ const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
 
+// Temporary
 const blobService = config.AZURE_STORAGE_CONNECTION_STRING ? azure.createBlobService() : {
-  createBlockBlobFromText: () => {},
-  getBlobToText: () => {}
+  createBlockBlobFromText: (container, remoteFileName, file, streamLength, callback) => {
+    callback(null, { name: 'test_error.csv' })
+  },
+  getBlobToText: (container, remoteFileName, callback) => { callback(null, {}) }
 }
 
 const getAddPupil = async (req, res, next) => {
