@@ -129,7 +129,7 @@ const postAddMultiplePupils = async (req, res, next) => {
       let headers = csvData.shift(0)
       // validate each pupil
       const pupils = []
-      csvData = await Promise.all(csvData.map( async (p) => {
+      csvData = await Promise.all(csvData.map(async (p) => {
         const pupil = new Pupil({
           school: school._id,
           upn: p[3].trim().toUpperCase(),
