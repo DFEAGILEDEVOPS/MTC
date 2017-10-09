@@ -399,13 +399,15 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   }
 
   let pupils = await fetchPupilsWithReasons(req.user.School)
-  pupilsList = await Promise.all(pupils.map(async (p) => {
-    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-      p.reason = accCode[0].reason
-    }
-    return p
-  }))
+  if (pupils) {
+    pupilsList = await Promise.all(pupils.map(async (p) => {
+      if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+        let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
+        p.reason = accCode[0].reason
+      }
+      return p
+    }))
+  }
 
   return res.render('school/pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
