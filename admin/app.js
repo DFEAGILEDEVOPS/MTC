@@ -125,11 +125,14 @@ app.use(logger('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
-  allowedPath: /^\/test-developer\/manage-check-forms$/,
+  allowedPath: (url) => allowedPath(url),
   mimeTypeLimit: [
     'text/csv'
   ]
 })
+
+const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
+    (/^\/test-developer\/manage-check-forms$/).test(url)
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
@@ -148,7 +151,7 @@ app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
-app.use(expressValidator(require('./lib/validator/express-validator.custom-validators.js')))
+app.use(expressValidator())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Breadcrumbs
