@@ -6,7 +6,7 @@ import { AnswerService } from '../services/answer/answer.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { RegisterInputService} from '../services/register-input/registerInput.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckComplete } from '../services/audit/auditEntry';
+import { CheckComplete, RefreshDetected } from '../services/audit/auditEntry';
 import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
 import { StorageService } from '../services/storage/storage.service';
@@ -80,10 +80,21 @@ export class CheckComponent implements OnInit {
       history.go(1);
     };
 
-    this.state = 0;
-    this.isWarmUp = true;
-    this.viewState = 'warmup-intro';
-    this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
+    // set up the state
+    if (this.storageService.getItem(CheckComponent.checkStateKey)) {
+      // existing check state detected
+      // assume we are reloading during a check
+      this.state = this.storageService.getItem(CheckComponent.checkStateKey)
+      this.isWarmUp = this.isWarmUpState();
+      this.totalNumberOfQuestions = this.isWarmUp ? this.warmupQuestionService.getNumberOfQuestions() : this.questionService.getNumberOfQuestions();
+      this.refreshDetected()
+    } else {
+      this.state = 0;
+      this.isWarmUp = true;
+      this.viewState = 'warmup-intro';
+      this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
+    }
+
   }
 
   /**
@@ -97,7 +108,7 @@ export class CheckComponent implements OnInit {
     this.state += 1; // increment state to next level - it's defined by an array
     this.storageService.setItem(CheckComponent.checkStateKey, this.state);
 
-    const stateDesc = this.allowedStates[ this.state ];
+    const stateDesc = this.getStateDescription()
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
       case(/^warmup-intro$/).test(stateDesc):
@@ -233,5 +244,54 @@ export class CheckComponent implements OnInit {
     // Set up the final page
     this.allowedStates.push('complete');
     // console.log('check.component: initStates(): states set to: ', this.allowedStates);
+  }
+
+  refreshDetected() {
+    const stateDesc = this.getStateDescription()
+    console.log(`Refresh detected during state ${this.state} ${stateDesc}`)
+    this.auditService.addEntry(new RefreshDetected())
+
+    // Lets say that handling reloads during the check should always show the current screen
+    // in which case handling the reload whilst a question was being shown is a special case.
+    if (/^Q(\d+)$/.test(stateDesc)) {
+      // the page was reloaded when a question was shown
+      console.log('Reload happened during a question')
+      // make sure we store an answer
+      this.changeState()
+    } else if (/^W(\d+)$/.test(stateDesc)) {
+      console.log('Reload happened during a warmup question')
+      this.changeState()
+    } else {
+      // trigger stateChange to move to the same state again
+      this.state = this.getPreviousState()
+      this.changeState()
+    }
+  }
+
+  getStateDescription() {
+    return this.allowedStates[ this.state ]
+  }
+
+  getPreviousState() {
+    let newState = this.state - 1;
+    if (newState < 0) {
+      newState = 0;
+    }
+    return newState;
+  }
+
+  isWarmUpState() {
+    const stateDesc = this.getStateDescription();
+    let isWarmUp = false;
+    switch (true) {
+      case /^W(\d+)$/.test(stateDesc):
+      case /^LW(\d+)$/.test(stateDesc):
+      case /^warmup-intro$/.test(stateDesc):
+      case /^warmup-complete$/.test(stateDesc):
+        isWarmUp = true;
+      default:
+        isWarmUp = false;
+    }
+    return isWarmUp;
   }
 }
