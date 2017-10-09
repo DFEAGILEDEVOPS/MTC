@@ -62,6 +62,7 @@
     "piping": "^1.0.0-rc.4",
     "serve-favicon": "^2.4.5",
     "uuid": "^3.1.0",
+    "validator": "^9.0.0",
     "xregexp": "^3.2.0"
   },
   "devDependencies": {
