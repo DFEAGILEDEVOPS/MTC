@@ -36,6 +36,10 @@ Before("~@poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
+After("@multiple_pupil_upload") do
+  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
+end
+
 After do |scenario|
   visit ENV['BASE_URL'] + '/sign-out'
   if (scenario.failed?)
