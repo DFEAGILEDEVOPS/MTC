@@ -15,6 +15,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
+import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -43,10 +44,10 @@ describe('CheckComponent', () => {
       providers: [
         AnswerService,
         RegisterInputService,
-        SubmissionService,
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
+        { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock }
       ]
     })
