@@ -56,7 +56,7 @@ const postAddPupil = async (req, res, next) => {
   const validationError = await pupilValidator.validate(req)
   const pupil = new Pupil({
     school: school._id,
-    upn: req.body.upn.trim().toUpperCase(),
+    upn: req.body.upn && req.body.upn.trim().toUpperCase(),
     foreName: req.body.foreName,
     lastName: req.body.lastName,
     middleNames: req.body.middleNames,
@@ -124,13 +124,13 @@ const postAddMultiplePupils = async (req, res, next) => {
   const stream = fs.createReadStream(uploadFile.file)
   const csvStream = csv()
     .on('data', (data) => { csvData.push(data) })
-    .on('end', async() => {
+    .on('end', async () => {
       // Remove error column and headers from data
       if (csvData.some(p => p[6])) csvData.map((r) => r.splice(6, 1))
       let headers = csvData.shift(0)
       // validate each pupil
       const pupils = []
-      csvData = await Promise.all(csvData.map(async(p) => {
+      csvData = await Promise.all(csvData.map( async (p) => {
         const pupil = new Pupil({
           school: school._id,
           upn: p[3].trim().toUpperCase(),

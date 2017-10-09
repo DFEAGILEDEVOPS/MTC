@@ -12,7 +12,7 @@ const Pupil = require('../../models/pupil')
 const pupilValidator = require('../../lib/validator/pupil-validator')
 const ValidationError = require('../../lib/validation-error')
 
-xdescribe('pupil controller:', () => {
+describe('pupil controller:', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
