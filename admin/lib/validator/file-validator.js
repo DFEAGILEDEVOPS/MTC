@@ -23,13 +23,14 @@ module.exports.validate = async (uploadedFile) => {
   }
   const errorArr = []
   // Only 1 file row
-  const fileLines = fileContent.split('\n')
+  const fileLines = fileContent.split('\n').filter((p) => !!p)
+  console.log(fileLines)
   if (fileLines.length < 3) {
     errorArr.push(addBatchFileErrorMessages.hasOneRow)
   }
   // File columns are not as expected
   const commaCount = []
-  fileLines.map((l) => commaCount.push(l.match(/,/g).length))
+  fileLines.map((l) => commaCount.push(l.match(/,/g) ? l.match(/,/g).length : 0))
   // Columns can be either 6 or 7 in case of error column being uploaded
   if (commaCount.some(c => c !== 5 && c !== 6)) {
     errorArr.push(addBatchFileErrorMessages.not5Columns)
