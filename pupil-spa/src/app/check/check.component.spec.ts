@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
+import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditEntry, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
@@ -12,10 +13,10 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { StorageService } from '../services/storage/storage.service';
-import { SubmissionService } from '../services/submission/submission.service';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
+import { SubmissionService } from '../services/submission/submission.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -252,6 +253,8 @@ describe('CheckComponent', () => {
   describe('page refresh', () => {
     let auditEntryInserted: AuditEntry;
     let auditService: AuditService;
+    let answerService: AnswerService;
+    let answerInserted: Answer;
 
     beforeEach(() => {
       // find the state for the first warmup question
@@ -266,6 +269,11 @@ describe('CheckComponent', () => {
       auditService = fixture.debugElement.injector.get(AuditService);
       spyOn(auditService, 'addEntry').and.callFake((entry) => {
         auditEntryInserted = entry;
+      });
+
+      answerService = fixture.debugElement.injector.get(AnswerService);
+      spyOn(answerService, 'setAnswer').and.callFake((ans) => {
+        answerInserted = ans;
       });
     })
 
@@ -298,7 +306,7 @@ describe('CheckComponent', () => {
     })
 
     it('state stays the same if a page refresh happens on a warmup loading screen', () => {
-      // find the state for the first warmup question
+      // find the state for the first warmup loading screen
       let state = component['allowedStates'].indexOf('LW1');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
@@ -327,7 +335,7 @@ describe('CheckComponent', () => {
       expect(component['state']).toBe(state + 1)
     })
     it('state stays the same if a page refresh happens on the warm-up intro', () => {
-      // find the state for the first warmup question
+      // find the state for the warmup intro
       let state = component['allowedStates'].indexOf('warmup-intro');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
@@ -341,7 +349,7 @@ describe('CheckComponent', () => {
       expect(component['state']).toBe(state)
     })
     it('state stays the same if a page refresh happens on the warm-up complete', () => {
-      // find the state for the first warmup question
+      // find the state for warmup-complete
       let state = component['allowedStates'].indexOf('warmup-complete');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
@@ -355,7 +363,7 @@ describe('CheckComponent', () => {
       expect(component['state']).toBe(state)
     })
     it('state stays the same if a page refresh happens on a loading screen', () => {
-      // find the state for the first warmup question
+      // find the state for the loading question 2
       let state = component['allowedStates'].indexOf('L2');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
@@ -369,7 +377,7 @@ describe('CheckComponent', () => {
       expect(component['state']).toBe(state)
     })
     it('state stays the same if a page refresh happens on the check complete screen', () => {
-      // find the state for the first warmup question
+      // find the state for complete
       let state = component['allowedStates'].indexOf('complete');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
@@ -382,6 +390,21 @@ describe('CheckComponent', () => {
       // test
       expect(component['state']).toBe(state)
     })
+    it('the answer is recorded as blank when refreshing during on a question', () => {
+      const state = component['allowedStates'].indexOf('Q3');
+
+      // test setup: state returned from localstorage on init. Usually, on a clean
+      // app startup this would be null.
+      checkStateMock = state;
+
+      // exercise the code
+      component.ngOnInit()
+
+      // test
+      expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
+      expect(answerInserted.answer).toBe('');
+    })
+
 
   })
 });

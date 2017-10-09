@@ -1,15 +1,16 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
-import { QuestionService } from '../services/question/question.service';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
-import { SubmissionService } from '../services/submission/submission.service';
-import { RegisterInputService} from '../services/register-input/registerInput.service';
 import { AuditService } from '../services/audit/audit.service';
 import { CheckComplete, RefreshDetected } from '../services/audit/auditEntry';
-import { Question } from '../services/question/question.model';
 import { Config } from '../config.model';
+import { Question } from '../services/question/question.model';
+import { QuestionService } from '../services/question/question.service';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { StorageService } from '../services/storage/storage.service';
+import { SubmissionService } from '../services/submission/submission.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 @Component({
   selector: 'app-check',
@@ -78,8 +79,6 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.question = this.warmupQuestionService.getQuestion(1);
-    this.config = this.warmupQuestionService.getConfig();
     this.initStates();
 
     // Prevent the user going back a page
@@ -94,9 +93,12 @@ export class CheckComponent implements OnInit {
       // assume we are reloading during a check
       this.state = this.storageService.getItem(CheckComponent.checkStateKey)
       this.isWarmUp = this.isWarmUpState();
-      this.totalNumberOfQuestions = this.isWarmUp ? this.warmupQuestionService.getNumberOfQuestions() : this.questionService.getNumberOfQuestions();
+      this.config = this.warmupQuestionService.getConfig()
+      this.totalNumberOfQuestions = this.isWarmUp ? this.warmupQuestionService.getNumberOfQuestions() : this.questionService.getNumberOfQuestions()
       this.refreshDetected()
     } else {
+      this.question = this.warmupQuestionService.getQuestion(1);
+      this.config = this.warmupQuestionService.getConfig();
       this.state = 0;
       this.isWarmUp = true;
       this.viewState = 'warmup-intro';
@@ -267,7 +269,13 @@ export class CheckComponent implements OnInit {
     if (CheckComponent.questionRe.test(stateDesc)) {
       // the page was reloaded when a question was shown
       console.log('Reload happened during a question')
-      // make sure we store an answer
+      // Store the answer as the empty string (as there was no input)
+      // we need to initialise the current question, with the one from the current state
+      const matches = CheckComponent.questionRe.exec(stateDesc);
+      const questionNum = parseInt(matches[1], 10);
+      this.question = this.questionService.getQuestion(questionNum);
+      const answer = new Answer(this.question.factor1, this.question.factor2, '');
+      this.answerService.setAnswer(answer);
       this.changeState()
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc)) {
       console.log('Reload happened during a warmup question')
