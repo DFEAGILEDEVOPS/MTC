@@ -27,6 +27,14 @@ export class CheckComponent implements OnInit {
   public allowedStates: Array<string> = [];
   private totalNumberOfQuestions: number;
   public static readonly checkStateKey = 'checkstate';
+  private static warmupIntroRe = /^warmup-intro$/;
+  private static warmupLoadingRe = /^LW(\d+)$/;
+  private static warmupQuestionRe = /^W(\d+)$/;
+  private static warmupCompleteRe = /^warmup-complete$/;
+  private static questionRe = /^Q(\d+)$/;
+  private static loadingRe = /^L(\d+)$/;
+  private static completeRe = /^complete$/;
+
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
@@ -111,12 +119,12 @@ export class CheckComponent implements OnInit {
     const stateDesc = this.getStateDescription()
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
-      case(/^warmup-intro$/).test(stateDesc):
+      case CheckComponent.warmupIntroRe.test(stateDesc):
         // Show the warmup-intro screen
         this.isWarmUp = true;
         this.viewState = 'warmup-intro';
         break;
-      case(/^LW(\d+)$/).test(stateDesc): {
+      case CheckComponent.warmupLoadingRe.test(stateDesc): {
         // Show the warmup-loading screen
         const matches = /^LW(\d+)$/.exec(stateDesc);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
@@ -124,7 +132,7 @@ export class CheckComponent implements OnInit {
         this.viewState = 'preload';
         break;
       }
-      case(/^W(\d+)$/).test(stateDesc): {
+      case CheckComponent.warmupQuestionRe.test(stateDesc): {
         // Show the warmup question screen
         const matches = /^W(\d+)$/.exec(stateDesc);
         this.isWarmUp = true;
@@ -133,13 +141,13 @@ export class CheckComponent implements OnInit {
         this.viewState = 'question';
         break;
       }
-      case(/^warmup-complete$/).test(stateDesc):
+      case CheckComponent.warmupCompleteRe.test(stateDesc):
         // Show the warmup complete screen
         this.isWarmUp = true;
         this.viewState = 'warmup-complete';
         this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
         break;
-      case(/^L(\d+)$/).test(stateDesc): {
+      case CheckComponent.loadingRe.test(stateDesc): {
         // Show the loading screen
         this.isWarmUp = false;
         const matches = /^L(\d+)$/.exec(stateDesc);
@@ -147,17 +155,17 @@ export class CheckComponent implements OnInit {
         this.viewState = 'preload';
         break;
       }
-      case(/^Q(\d+)$/).test(stateDesc): {
+      case CheckComponent.questionRe.test(stateDesc): {
         // Show the question screen
         this.isWarmUp = false;
-        const matches = /^Q(\d+)$/.exec(stateDesc);
+        const matches = CheckComponent.questionRe.exec(stateDesc);
         this.registerInputService.flush();
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.registerInputService.initialise();
         this.viewState = 'question';
         break;
       }
-      case(/^complete$/).test(stateDesc):
+      case CheckComponent.completeRe.test(stateDesc):
         // Show the check complete screen
         this.registerInputService.flush();
         this.auditService.addEntry(new CheckComplete());
@@ -253,12 +261,12 @@ export class CheckComponent implements OnInit {
 
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case.
-    if (/^Q(\d+)$/.test(stateDesc)) {
+    if (CheckComponent.questionRe.test(stateDesc)) {
       // the page was reloaded when a question was shown
       console.log('Reload happened during a question')
       // make sure we store an answer
       this.changeState()
-    } else if (/^W(\d+)$/.test(stateDesc)) {
+    } else if (CheckComponent.warmupQuestionRe.test(stateDesc)) {
       console.log('Reload happened during a warmup question')
       this.changeState()
     } else {
@@ -284,10 +292,10 @@ export class CheckComponent implements OnInit {
     const stateDesc = this.getStateDescription();
     let isWarmUp = false;
     switch (true) {
-      case /^W(\d+)$/.test(stateDesc):
-      case /^LW(\d+)$/.test(stateDesc):
-      case /^warmup-intro$/.test(stateDesc):
-      case /^warmup-complete$/.test(stateDesc):
+      case CheckComponent.warmupQuestionRe.test(stateDesc):
+      case CheckComponent.warmupLoadingRe.test(stateDesc):
+      case CheckComponent.warmupIntroRe.test(stateDesc):
+      case CheckComponent.warmupCompleteRe.test(stateDesc):
         isWarmUp = true;
       default:
         isWarmUp = false;
