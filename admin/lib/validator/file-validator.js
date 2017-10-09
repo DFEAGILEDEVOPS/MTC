@@ -24,7 +24,6 @@ module.exports.validate = async (uploadedFile) => {
   const errorArr = []
   // Only 1 file row
   const fileLines = fileContent.split('\n').filter((p) => !!p)
-  console.log(fileLines)
   if (fileLines.length < 3) {
     errorArr.push(addBatchFileErrorMessages.hasOneRow)
   }
