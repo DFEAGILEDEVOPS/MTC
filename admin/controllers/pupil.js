@@ -53,7 +53,6 @@ const postAddPupil = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const validationError = await pupilValidator.validate(req)
   const pupil = new Pupil({
     school: school._id,
     upn: req.body.upn && req.body.upn.trim().toUpperCase(),
