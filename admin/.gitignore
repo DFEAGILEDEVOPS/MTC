@@ -52,3 +52,6 @@ test/reports
 
 #ignore test json files
 test/*.json
+
+#ignore data files
+data/files/*

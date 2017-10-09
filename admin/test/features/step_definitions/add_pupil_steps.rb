@@ -235,8 +235,8 @@ When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |
 end
 
 Then(/^I should see a validation error for the day of the month$/) do
-  expect(@page.error_summary.day.text).to eql "Please check “Day”"
-  expect(@page.error_messages.map {|message| message.text}).to include "Please check “Day”"
+  expect(@page.error_summary.day.text).to eql 'Please check "Day"'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Day"'
 end
 
 When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
@@ -249,8 +249,8 @@ When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
 end
 
 Then(/^I should see a validation error for the month of the year$/) do
-  expect(@page.error_summary.month.text).to eql "Please check “Month”"
-  expect(@page.error_messages.map {|message| message.text}).to include "Please check “Month”"
+  expect(@page.error_summary.month.text).to eql 'Please check "Month"'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Month"'
 end
 
 When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
@@ -263,8 +263,8 @@ When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
 end
 
 Then(/^I should see a validation error for the year$/) do
-  expect(@page.error_summary.year.text).to eql "Please check “Year”"
-  expect(@page.error_messages.map {|message| message.text}).to include "Please check “Year”"
+  expect(@page.error_summary.year.text).to eql 'Please check "Year"'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Year"'
 end
 
 When(/^I attempt to enter names that are more than (\d+) characters long$/) do |number|
