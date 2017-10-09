@@ -50,10 +50,6 @@ When(/^I Upload a CSV file with errors to add Multiple Pupil$/) do
   add_multiple_pupil_page.save.click
 end
 
-And(/^I delete the Add Multiple Pupil CSV file$/) do
-  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
-end
-
 And(/^I should see a flash message for the multiple pupil upload$/) do
   expect(pupil_register_page.add_multiple_pupil_info_message.text.include?('2 new pupils have been added')).to be_truthy, "Got the message: '#{pupil_register_page.add_multiple_pupil_info_message.text}'"
 end
