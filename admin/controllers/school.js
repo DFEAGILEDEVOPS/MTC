@@ -492,7 +492,6 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupilsToSave = []
   let pupilsList
   let attendanceCodes
-  let flashMessage = 'Reasons updated'
 
   pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
@@ -510,8 +509,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     if (!savedPupils) {
       return next(new Error('Cannot save pupils'))
     }
-    flashMessage = `${savedPupils.length} pupil reasons updated`
-    req.flash('info', flashMessage)
+    req.flash('info', `${savedPupils.length} pupil reasons updated`)
   } catch (error) {
     return next(error)
   }
@@ -524,7 +522,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
-  let pupils = await fetchPupilsWithReasons(req.user.School)
+  const pupils = await fetchPupilsWithReasons(req.user.School)
   pupilsList = await Promise.all(pupils.map(async (p) => {
     if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
       let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
@@ -542,7 +540,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 }
 
 const removePupilNotTakingCheck = async (req, res, next) => {
-  if (req.params.pupilId === undefined) {
+  if (!req.params.pupilId) {
     return res.redirect('/pupils-not-taking-check/select-pupils')
   }
 
