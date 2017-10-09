@@ -254,6 +254,9 @@ export class CheckComponent implements OnInit {
     // console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 
+  /**
+   * Handle a page refresh
+   */
   refreshDetected() {
     const stateDesc = this.getStateDescription()
     console.log(`Refresh detected during state ${this.state} ${stateDesc}`)
@@ -276,10 +279,18 @@ export class CheckComponent implements OnInit {
     }
   }
 
+  /**
+   * Return a description of the current state
+   * @return {string}
+   */
   getStateDescription() {
     return this.allowedStates[ this.state ]
   }
 
+  /**
+   * Return the previous state to the current state
+   * @return {number}
+   */
   getPreviousState() {
     let newState = this.state - 1;
     if (newState < 0) {
@@ -288,6 +299,10 @@ export class CheckComponent implements OnInit {
     return newState;
   }
 
+  /**
+   * Return true if the current state is in the warmup, false otherwise
+   * @return {boolean}
+   */
   isWarmUpState() {
     const stateDesc = this.getStateDescription();
     let isWarmUp = false;
