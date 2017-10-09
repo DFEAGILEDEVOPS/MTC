@@ -375,8 +375,41 @@ const getHDFSubmitted = async (req, res, next) => {
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
+
+  let pupilsList
+  let attendanceCodes
+
+  // Flash message after removing a reason
+  if (req.params.removed) {
+    let flashMessage = 'Reason removed'
+    let pupil = await fetchOnePupil(req.params.removed, req.user.School)
+    if (pupil) {
+      flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
+    }
+    req.flash('info', flashMessage)
+  }
+
+  // Get attendance code index
+  try {
+    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+    return next(error)
+  }
+
+  let pupils = await fetchPupilsWithReasons(req.user.School)
+  pupilsList = await Promise.all(pupils.map(async (p) => {
+    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
+      p.reason = accCode[0].reason
+    }
+    return p
+  }))
+
   return res.render('school/pupils-not-taking-check', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    pupilsList,
+    messages: req.flash('info')
   })
 }
 
@@ -535,7 +568,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     return p
   }))
 
-  return res.render('school/save-pupils-not-taking-check', {
+  return res.render('school/pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
     pupilsList,
     messages: req.flash('info')
@@ -557,7 +590,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-  return res.redirect('/school/pupils-not-taking-check/select-pupils')
+  return res.redirect(`/school/pupils-not-taking-check/${pupilId}`)
 }
 
 module.exports = {
