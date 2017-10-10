@@ -8,6 +8,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :generate_pins, 'a', text: "Generate PINs"
   element :flash_message, '.info-message'
   element :signed_in_as, '.signed-in-as'
+  element :no_pupils_listed_message, '.padding-top', text: 'No pupils with reason for not taking the check.'
   element :home, '#content .breadcrumbs a', text: 'Home'
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
 
