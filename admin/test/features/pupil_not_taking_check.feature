@@ -98,6 +98,7 @@ Feature:
     When I choose to cancel
     Then I should be taken to the pupil not taking check page
 
+  @pupil_not_taking_check
   Scenario Outline: Teachers can add a reason for pupils not taking a check
     Given I am on the pupil reason page
     When I add <reason> as a reason for a particular pupil
@@ -111,6 +112,7 @@ Feature:
       | Incorrect Registration |
       | Withdrawn              |
 
+  @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
     Given I am on the pupil reason page
     When I add Absent as a reason for multiple pupils
@@ -130,7 +132,27 @@ Feature:
     Given I am on the pupil reason page
     Then I should be able to select all pupils
 
+  @pupil_not_taking_check
   Scenario: Teachers can update the reason if they have made a mistake
     Given I have previously added a reason for a pupil
     But I decide to change it
     Then the updated reason should be stored
+
+  @pupil_not_taking_check
+  Scenario: List of pupils not taking check is displayed on the hub page
+    Given I have previously added a reason for a pupil
+    When I have navigated away and then return to the pupil not taking check page
+    Then I should see a list of pupils
+
+  @pupil_not_taking_check
+  Scenario: Pupil reasons for not taking the check can be removed
+    Given I have previously added a reason for a pupil
+    When I have navigated away and then return to the pupil not taking check page
+    And I remove a pupil from the list of pupils not taking a check
+    Then the pupil should be removed and any attendance code cleared from the db against the pupil
+
+  @pupil_not_taking_check
+  Scenario: Message displayed when there are no pupils that are not taking the check
+    Given I am on the pupil not taking check page
+    Then I should see a message stating there are no pupils not taking the check
+

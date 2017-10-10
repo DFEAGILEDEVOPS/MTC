@@ -17,7 +17,8 @@ const {
   fetchScoreDetails,
   fetchSortedPupilsData,
   fetchMultiplePupils,
-  fetchPupilsWithReasons } = require('../services/pupil.service')
+  fetchPupilsWithReasons,
+  fetchOnePupil } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -375,8 +376,43 @@ const getHDFSubmitted = async (req, res, next) => {
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
+
+  let pupilsList
+  let attendanceCodes
+
+  // Flash message after removing a reason
+  if (req.params.removed) {
+    let flashMessage = 'Reason removed'
+    let pupil = await fetchOnePupil(req.params.removed, req.user.School)
+    if (pupil) {
+      flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
+    }
+    req.flash('info', flashMessage)
+  }
+
+  // Get attendance code index
+  try {
+    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+    return next(error)
+  }
+
+  let pupils = await fetchPupilsWithReasons(req.user.School)
+  if (pupils) {
+    pupilsList = await Promise.all(pupils.map(async (p) => {
+      if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+        let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
+        p.reason = accCode[0].reason
+      }
+      return p
+    }))
+  }
+
   return res.render('school/pupils-not-taking-check', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    pupilsList,
+    messages: req.flash('info')
   })
 }
 
@@ -533,7 +569,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     return p
   }))
 
-  return res.render('school/save-pupils-not-taking-check', {
+  return res.render('school/pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
     pupilsList,
     messages: req.flash('info')
@@ -541,18 +577,21 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 }
 
 const removePupilNotTakingCheck = async (req, res, next) => {
-  if (!req.params.pupilId) {
-    return res.redirect('/pupils-not-taking-check/select-pupils')
+  if (!req.params.pupilId || !req.user.School) {
+    return res.redirect('/school/pupils-not-taking-check/select-pupils')
   }
-
   const pupilId = req.params.pupilId
   try {
-    await Pupil.remove({ '_id': pupilId }).exec()
+    let pupil = await fetchOnePupil(pupilId, req.user.School)
+    if (!pupil) {
+      return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
+    }
+    pupil.attendanceCode = undefined
+    await pupil.save()
   } catch (error) {
     next(error)
   }
-
-  return res.redirect('/pupils-not-taking-check/select-pupils/select-pupils')
+  return res.redirect(`/school/pupils-not-taking-check/${pupilId}`)
 }
 
 module.exports = {
