@@ -8,6 +8,8 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :generate_pins, 'a', text: "Generate PINs"
   element :flash_message, '.info-message'
   element :signed_in_as, '.signed-in-as'
+  element :home, '#content .breadcrumbs a', text: 'Home'
+  element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
 
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do
