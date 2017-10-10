@@ -41,10 +41,7 @@ const appRoutes: Routes = [
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent},
-  {path: 'warm-up-intro', component: WarmupIntroComponent, canActivate: [LoggedInGuard]},
-  {path: 'warm-up-start', component: LoadingComponent, canActivate: [LoggedInGuard]},
-  {path: 'warm-up-question', component: QuestionComponent, canActivate: [LoggedInGuard]},
+  {path: 'sign-in-failure', component: LoginFailureComponent}
   // { path: '**', component: NotFoundComponent }
 ];
 
