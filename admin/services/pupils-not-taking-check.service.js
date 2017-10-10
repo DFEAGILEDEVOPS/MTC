@@ -1,24 +1,9 @@
-//const School = require('../models/school')
 const Pupil = require('../models/pupil')
-const AttendanceCode = require('../models/attendance-code')
 
 /** @namespace */
 
 const pupilsNotTakingCheckService = {
 
-  /**
-   * Fetch attendance codes from database.
-   * @returns {Promise.<*>}
-   */
-  fetchAttendanceCodes: async () => {
-    let attendanceCodes
-    try {
-      attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
-    } catch (error) {
-      throw new Error(error)
-    }
-    return attendanceCodes
-  },
   /**
    * Fetch pupils with reasons to not take the test.
    * @param schoolId
