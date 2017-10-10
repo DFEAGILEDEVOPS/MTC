@@ -5,7 +5,7 @@ const Pupil = require('../models/pupil')
 const pupilsNotTakingCheckService = {
 
   /**
-   * Fetch pupils with reasons to not take the test.
+   * Fetch pupils with reasons to not take the check.
    * @param schoolId
    * @returns {Promise.<*>}
    */
@@ -23,7 +23,7 @@ const pupilsNotTakingCheckService = {
    * @param sortDirection
    * @returns {Promise.<{htmlSortDirection: Array, arrowSortDirection: Array}>}
    */
-  sortPupilsByLastName: async (sortField, sortDirection) => {
+  sortPupilsByLastName: (sortField, sortDirection) => {
     let htmlSortDirection = []
     let arrowSortDirection = []
     let sortingDirection = [
