@@ -4,8 +4,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
-    "sass": "node-sass -wr src/assets/shared-styles/ -o src/public/styles/",
-    "sasswatch": "npm run sass && npm node-sass src/assets/shared-styles -wro src/public/styles/",
+    "sass": "node-sass -r src/assets/shared-styles/ -o src/public/styles/",
+    "sasswatch": "npm run sass && node-sass src/assets/shared-styles -wro src/public/styles/",
     "start": "concurrently \"ng serve\" \"npm run sasswatch\" ",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "ng build",
