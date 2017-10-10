@@ -151,3 +151,8 @@ Feature:
     And I remove a pupil from the list of pupils not taking a check
     Then the pupil should be removed and any attendance code cleared from the db against the pupil
 
+  @pupil_not_taking_check
+  Scenario: Message displayed when there are no pupils that are not taking the check
+    Given I am on the pupil not taking check page
+    Then I should see a message stating there are no pupils not taking the check
+

@@ -243,3 +243,7 @@ Then(/^the pupil should be removed and any attendance code cleared from the db a
   @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
   expect(@pupil['attendanceCode']).to be_nil
 end
+
+Then(/^I should see a message stating there are no pupils not taking the check$/) do
+  expect(pupils_not_taking_check_page).to have_no_pupils_listed_message
+end
