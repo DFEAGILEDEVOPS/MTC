@@ -98,7 +98,6 @@ const pupilService = {
       percentage
     }
   },
-
   validatePupil: async (pupil, pupilData) => {
     const validationError = await pupilValidator.validate(pupilData)
     try {
