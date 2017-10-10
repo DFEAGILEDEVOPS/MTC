@@ -28,6 +28,19 @@ const pupilService = {
     }
   },
   /**
+   * Fetch one pupil filtered by pupil id and school id
+   * @param pupilId
+   * @param schoolId
+   * @returns {Promise.<*>}
+   */
+  fetchOnePupil: async (pupilId, schoolId) => {
+    // TODO: Introduce integration tests
+    const pupil = await Pupil
+      .findOne({'_id': pupilId, 'school': schoolId})
+      .exec()
+    return pupil
+  },
+  /**
    * Returns pupils filtered by school and sorted by field and direction (asc/desc)
    * @param schoolId
    * @param sortingField
