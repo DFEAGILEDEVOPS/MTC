@@ -7,13 +7,10 @@
   "author": "Guy Harwood",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run watch",
+    "start": "npm run serve",
     "build": "standard",
     "serve": "nodemon ./index.js",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch\" \"npm run serve\"",
-    "test": "jasmine --forceExit",
-    "debug": "npm run build && npm run watch-debug",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch\" \"npm run serve-debug\""
+    "test": "jasmine --forceExit"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
