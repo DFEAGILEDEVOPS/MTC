@@ -19,6 +19,7 @@ const {
   fetchMultiplePupils,
   fetchPupilsWithReasons,
   fetchOnePupil } = require('../services/pupil.service')
+const { fetchListPupilsWithReasons } = require('../services/pupils-not-taking-check.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -428,6 +429,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
+  let pupils
   let pupilsList
   let htmlSortDirection = []
   let arrowSortDirection = []
@@ -467,17 +469,16 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   }
 
   // Get pupils for user' school
-  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
-  pupilsList = await Promise.all(pupils.map(async (p) => {
-    p.id = null
-    p.reason = 'N/A'
-
-    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-      let accCode = attendanceCodes.filter(ac => ac._id == p.attendanceCode._id)
-      p.reason = accCode[0].reason
-    }
-    return p
-  })).catch((error) => next(error))
+  try {
+    pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
+  } catch (error) {
+    console.log(`ERROR getting pupils for school ${req.user.School}`, error)
+    return next(error)
+  }
+  
+  if (attendanceCodes && pupils) {
+    pupilsList = await fetchListPupilsWithReasons(attendanceCodes, pupils)
+  }
 
   // Sorting by 'reason' needs to be done using .sort
   if (sortField === 'reason') {
