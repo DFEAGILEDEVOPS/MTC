@@ -19,14 +19,6 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
 })
 
 export class CheckComponent implements OnInit {
-
-  public config: Config;
-  public isWarmUp: boolean;
-  public question: Question;
-  public state: number;
-  public viewState: string;
-  public allowedStates: Array<string> = [];
-  private totalNumberOfQuestions: number;
   public static readonly checkStateKey = 'checkstate';
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
@@ -36,6 +28,13 @@ export class CheckComponent implements OnInit {
   private static loadingRe = /^L(\d+)$/;
   private static completeRe = /^complete$/;
 
+  public config: Config;
+  public isWarmUp: boolean;
+  public question: Question;
+  public state: number;
+  public viewState: string;
+  public allowedStates: Array<string> = [];
+  private totalNumberOfQuestions: number;
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
@@ -68,7 +67,7 @@ export class CheckComponent implements OnInit {
   }
 
   /**
-   * Prevent double-tap on ipads from zooming in.
+   * Prevent double-tap on iPads from zooming in.
    * @return {boolean}
    */
   @HostListener('document:touchend', [ '$event' ])
@@ -91,11 +90,17 @@ export class CheckComponent implements OnInit {
     if (this.storageService.getItem(CheckComponent.checkStateKey)) {
       // existing check state detected
       // assume we are reloading during a check
-      this.state = this.storageService.getItem(CheckComponent.checkStateKey)
+      const existingState = this.storageService.getItem(CheckComponent.checkStateKey);
+      if (!this.isValidState(existingState)) {
+        throw new Error(`Invalid state '${existingState}'`);
+      }
+      this.state = existingState;
       this.isWarmUp = this.isWarmUpState();
-      this.config = this.warmupQuestionService.getConfig()
-      this.totalNumberOfQuestions = this.isWarmUp ? this.warmupQuestionService.getNumberOfQuestions() : this.questionService.getNumberOfQuestions()
-      this.refreshDetected()
+      this.config = this.warmupQuestionService.getConfig();
+      this.totalNumberOfQuestions = this.isWarmUp ?
+        this.warmupQuestionService.getNumberOfQuestions() :
+        this.questionService.getNumberOfQuestions();
+      this.refreshDetected();
     } else {
       this.question = this.warmupQuestionService.getQuestion(1);
       this.config = this.warmupQuestionService.getConfig();
@@ -104,7 +109,6 @@ export class CheckComponent implements OnInit {
       this.viewState = 'warmup-intro';
       this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
     }
-
   }
 
   /**
@@ -118,7 +122,7 @@ export class CheckComponent implements OnInit {
     this.state += 1; // increment state to next level - it's defined by an array
     this.storageService.setItem(CheckComponent.checkStateKey, this.state);
 
-    const stateDesc = this.getStateDescription()
+    const stateDesc = this.getStateDescription();
     // console.log(`check.component: changeState(): new state ${stateDesc}`);
     switch (true) {
       case CheckComponent.warmupIntroRe.test(stateDesc):
@@ -237,6 +241,8 @@ export class CheckComponent implements OnInit {
    * is the next state.
    */
   initStates(): void {
+    this.allowedStates = [];
+
     // Setup the Warmup
     this.allowedStates.push('warmup-intro');
     for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
@@ -260,30 +266,30 @@ export class CheckComponent implements OnInit {
    * Handle a page refresh
    */
   refreshDetected() {
-    const stateDesc = this.getStateDescription()
-    console.log(`Refresh detected during state ${this.state} ${stateDesc}`)
-    this.auditService.addEntry(new RefreshDetected())
+    const stateDesc = this.getStateDescription();
+    console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
+    this.auditService.addEntry(new RefreshDetected());
 
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case.
     if (CheckComponent.questionRe.test(stateDesc)) {
       // the page was reloaded when a question was shown
-      console.log('Reload happened during a question')
+      console.log('Reload happened during a question');
       // Store the answer as the empty string (as there was no input)
       // we need to initialise the current question, with the one from the current state
       const matches = CheckComponent.questionRe.exec(stateDesc);
-      const questionNum = parseInt(matches[1], 10);
+      const questionNum = parseInt(matches[ 1 ], 10);
       this.question = this.questionService.getQuestion(questionNum);
       const answer = new Answer(this.question.factor1, this.question.factor2, '');
       this.answerService.setAnswer(answer);
-      this.changeState()
+      this.changeState();
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc)) {
-      console.log('Reload happened during a warmup question')
-      this.changeState()
+      console.log('Reload happened during a warmup question');
+      this.changeState();
     } else {
       // trigger stateChange to move to the same state again
-      this.state = this.getPreviousState()
-      this.changeState()
+      this.state = this.getPreviousState();
+      this.changeState();
     }
   }
 
@@ -292,7 +298,7 @@ export class CheckComponent implements OnInit {
    * @return {string}
    */
   getStateDescription() {
-    return this.allowedStates[ this.state ]
+    return this.allowedStates[ this.state ];
   }
 
   /**
@@ -320,9 +326,21 @@ export class CheckComponent implements OnInit {
       case CheckComponent.warmupIntroRe.test(stateDesc):
       case CheckComponent.warmupCompleteRe.test(stateDesc):
         isWarmUp = true;
+        break;
+
       default:
         isWarmUp = false;
     }
     return isWarmUp;
+  }
+
+  isValidState(state) {
+    console.log('allowedStates ', this.allowedStates);
+    if (!this.allowedStates[ state ]) {
+      console.log(`state not allowed: ${state}`);
+      return false;
+    }
+    console.log(`state is allowed: ${state}`);
+    return true;
   }
 }
