@@ -1,49 +1,50 @@
 'use strict'
+/* global describe beforeEach afterEach it expect */
 
-const proxyquire = require('proxyquire').noCallThru()
+const sinon = require('sinon')
+require('sinon-mongoose')
+const proxyquire = require('proxyquire')
+const Pupil = require('../../models/pupil')
+const AttendanceCode = require('../../models/attendance-code')
+
 const attendanceCodesMock = require('../mocks/attendance-codes')
-const MongooseModelMock = require('../mocks/mongoose-model-mock')
+const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
 
 /* global beforeEach, describe, it, expect */
 
 describe('Pupils are not taking the check. Service', () => {
   let service
+  let sandbox
 
-  function setupService (cb) {
-    return proxyquire('../../services/pupils-not-taking-check.service', {
-      '../models/attendance-code': new MongooseModelMock(cb)
+  function setupService (pupilsWithReasonsMock) {
+    return proxyquire('../../services/pupils-not-taking-check.service.js', {
+      '../models/pupil': sandbox.mock(Pupil)
+      .expects('find')
+      .chain('sort')
+      .resolves(pupilsWithReasonsMock)
     })
   }
 
-  describe('fetchAttendanceCodes successfully finds documents', () => {
-    beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(attendanceCodesMock) })
-    })
-
-    it('returns an object when called', async (done) => {
-      try {
-        const attendanceCodes = await service.fetchAttendanceCodes()
-        expect(attendanceCodes).toEqual(attendanceCodesMock)
-        done()
-      } catch (error) {
-        done('Error found while testing fetchAttendanceCodes')
-      }
-    })
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create()
   })
 
-  describe('fetchAttendanceCodes does not find documents', () => {
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  describe('fetchPupilsWithReasons successfully finds pupils', () => {
     beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(null) })
+      service = setupService(pupilsWithReasonsMock)
     })
 
-    it('returns an error', async (done) => {
+    it('returns a list of pupils with reasons', async (done) => {
       try {
-        const attendanceCodes = await service.fetchAttendanceCodes()
-        console.log('UT', attendanceCodes)
-        expect(attendanceCodes).toEqual(null)
+        const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
+        expect(pupilsWithReasons).toEqual(pupilsWithReasonsMock)
         done()
       } catch (error) {
-        done('Error found while testing fetchAttendanceCodes')
+        done('Error found while testing fetchPupilsWithReasons')
       }
     })
   })

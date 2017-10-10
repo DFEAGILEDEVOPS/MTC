@@ -444,7 +444,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
@@ -452,7 +451,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   try {
     pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
   } catch (error) {
-    console.log(`ERROR getting pupils for school ${req.user.School}`, error)
     return next(error)
   }
 
@@ -460,7 +458,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
-  // Sorting by 'reason' needs to be done using . sort
+  // Sorting by 'reason' needs to be done using .sort
   if (sortField === 'reason') {
     pupilsList = sortPupilsByReason(pupilsList, sortDirection)
   }
