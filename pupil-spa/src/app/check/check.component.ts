@@ -267,14 +267,13 @@ export class CheckComponent implements OnInit {
    */
   refreshDetected() {
     const stateDesc = this.getStateDescription();
-    console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
+    // console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
     this.auditService.addEntry(new RefreshDetected());
 
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case.
     if (CheckComponent.questionRe.test(stateDesc)) {
       // the page was reloaded when a question was shown
-      console.log('Reload happened during a question');
       // Store the answer as the empty string (as there was no input)
       // we need to initialise the current question, with the one from the current state
       const matches = CheckComponent.questionRe.exec(stateDesc);
@@ -284,7 +283,6 @@ export class CheckComponent implements OnInit {
       this.answerService.setAnswer(answer);
       this.changeState();
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc)) {
-      console.log('Reload happened during a warmup question');
       this.changeState();
     } else {
       // trigger stateChange to move to the same state again
@@ -335,12 +333,9 @@ export class CheckComponent implements OnInit {
   }
 
   isValidState(state) {
-    console.log('allowedStates ', this.allowedStates);
     if (!this.allowedStates[ state ]) {
-      console.log(`state not allowed: ${state}`);
       return false;
     }
-    console.log(`state is allowed: ${state}`);
     return true;
   }
 }
