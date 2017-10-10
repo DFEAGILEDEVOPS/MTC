@@ -29,7 +29,6 @@
     "@angular/router": "^4.3.6",
     "core-js": "^2.5.1",
     "fs-extra": "^4.0.1",
-    "google-spreadsheet": "^2.0.4",
     "govuk-elements-sass": "^3.1.1",
     "gulp": "^3.9.1",
     "gulp-string-replace": "^0.4.0",
