@@ -7,31 +7,62 @@
     </div>
 </div>
 
-<div class="grid-row" aria-describedby="heading-xlarge">
-    <div class="column-two-thirds" id="checkWindowsForm">
-        <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0">Pupils not taking the check</h1>
+<div class="grid-row" id="pupils-not-taking-checks" aria-describedby="heading-xlarge">
 
-        <p class="lede">Click on the button below to add reasons for pupils who are not taking the check</p>
+    <div class="column-two-thirds">
+        <% if (messages && messages.length > 0) { %>
+        <div class="info-message">
+            <%= messages %>
+        </div>
+        <% } %>
 
-        <p>
-            <a class="button button-primary" href="/school/pupils-not-taking-check/select-pupils">Add reason for pupil</a>
-        </p>
+        <h1 class="heading-xlarge" id="heading-xlarge">Pupils not taking the check</h1>
 
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
+        <p class="lede">All pupils should be considered for the multiplication tables check at the end of year 4. If the headteacher decides a pupil should not take the check, they must provide a reason.</p>
+
+        <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason for pupil</a>
+
+        <% if (pupilsList && pupilsList.length > 0) { %>
+        <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
+            <thead>
+                <tr>
+                    <th scope="col">Pupil name</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% pupilsList.forEach( (pupil, index) => { %>
+                <tr>
+                    <td<% if (pupil.highlight === true) { %> class="highlight-item"<% } %>>
+                        <label for="pupil-<%= pupil._id %>">
+                            <%= pupil.lastName %>, <%= pupil.foreName %>
+                        </label>
+                    </td>
+                    <td>
+                        <%= pupil.reason %>
+                    </td>
+                    <td>
+                        <a href="/school/pupils-not-taking-check/remove/<%= pupil._id %>">Remove</a>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <p class="padding-top">No pupils with reason for not taking the check.</p>
+        <% } %>
+
+        <br class="clearfix"/>
 
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
         </div>
     </div>
 
-    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+    <div class="column-one-third add-title-margin" aria-label="sidebar">
         <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Start check</h3>
+            <h3 class="heading-medium">Start check</h3>
             <nav role="navigation">
                 <ul class="list">
                     <li>
