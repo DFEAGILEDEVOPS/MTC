@@ -6,4 +6,12 @@ module Helpers
     end
   end
 
+  def create_question_strings(questions)
+    array_of_question_strings = []
+    questions.each do |question|
+      array_of_question_strings << question['factor1'].to_s + ' × ' + question['factor2'].to_s + ' ='
+    end
+    array_of_question_strings
+  end
+
 end
