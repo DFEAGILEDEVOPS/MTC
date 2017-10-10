@@ -5,9 +5,9 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire')
 const Pupil = require('../../models/pupil')
-const AttendanceCode = require('../../models/attendance-code')
+//const AttendanceCode = require('../../models/attendance-code')
 
-const attendanceCodesMock = require('../mocks/attendance-codes')
+//const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
 
 /* global beforeEach, describe, it, expect */
