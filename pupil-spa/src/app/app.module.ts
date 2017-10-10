@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger/dist';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -70,11 +69,7 @@ const appRoutes: Routes = [
     ),
     FormsModule,
     BrowserModule,
-    HttpModule,
-    LoggerModule.forRoot({
-      level: environment.production ? NgxLoggerLevel.ERROR : NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.OFF
-    })
+    HttpModule
   ],
   providers: [
     AnswerService,
