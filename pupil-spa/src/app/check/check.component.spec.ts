@@ -67,10 +67,14 @@ describe('CheckComponent', () => {
       } else {
         return [];
       }
-    })
+    });
     spyOn(storageService, 'setItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    checkStateMock = null;
   });
 
   it('should be created', () => {
@@ -258,7 +262,7 @@ describe('CheckComponent', () => {
 
     beforeEach(() => {
       // find the state for the first warmup question
-      let w1 = component['allowedStates'].indexOf('W1');
+      const w1 = component['allowedStates'].indexOf('W1');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
       // app startup this would be null.
@@ -275,136 +279,115 @@ describe('CheckComponent', () => {
       spyOn(answerService, 'setAnswer').and.callFake((ans) => {
         answerInserted = ans;
       });
-    })
+    });
 
     it('calls refreshDetected during init when the checkstate is found', () => {
       component.ngOnInit();
       expect(component.refreshDetected).toHaveBeenCalledTimes(1);
-    })
+    });
 
     it('logs an audit entry to say the page was refreshed', () => {
       // set up test spy on Audit Service
-      component.refreshDetected()
+      component.refreshDetected();
       // check the spy was called
-      expect(auditService.addEntry).toHaveBeenCalledTimes(1)
-      expect(auditEntryInserted instanceof RefreshDetected).toBeTruthy()
-    })
+      expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof RefreshDetected).toBeTruthy();
+    });
 
     it('moves to the next state if a real test question was asked', () => {
       // find the state for the first warmup question
-      let q1 = component['allowedStates'].indexOf('Q1');
+      const q1 = component['allowedStates'].indexOf('Q1');
 
       // test setup: state returned from localstorage on init. Usually, on a clean
       // app startup this would be null.
       checkStateMock = q1;
 
       // exercise the code
-      component.ngOnInit()
+      component.ngOnInit();
 
       // test
-      expect(component['state']).toBe(q1 + 1)
-    })
+      expect(component['state']).toBe(q1 + 1);
+    });
 
     it('state stays the same if a page refresh happens on a warmup loading screen', () => {
       // find the state for the first warmup loading screen
-      let state = component['allowedStates'].indexOf('LW1');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('LW1');
       checkStateMock = state;
-
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state)
-    })
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
 
     it('state moves on if a page refresh happens on a warmup question', () => {
       // find the state for the first warmup question
-      let state = component['allowedStates'].indexOf('W1');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('W1');
       checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state + 1);
+    });
 
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state + 1)
-    })
     it('state stays the same if a page refresh happens on the warm-up intro', () => {
       // find the state for the warmup intro
-      let state = component['allowedStates'].indexOf('warmup-intro');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('warmup-intro');
       checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
 
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state)
-    })
     it('state stays the same if a page refresh happens on the warm-up complete', () => {
       // find the state for warmup-complete
-      let state = component['allowedStates'].indexOf('warmup-complete');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('warmup-complete');
       checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
 
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state)
-    })
     it('state stays the same if a page refresh happens on a loading screen', () => {
       // find the state for the loading question 2
-      let state = component['allowedStates'].indexOf('L2');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('L2');
       checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
 
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state)
-    })
     it('state stays the same if a page refresh happens on the check complete screen', () => {
       // find the state for complete
-      let state = component['allowedStates'].indexOf('complete');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
+      const state = component['allowedStates'].indexOf('complete');
       checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
 
-      // exercise the code
-      component.ngOnInit()
-
-      // test
-      expect(component['state']).toBe(state)
-    })
     it('the answer is recorded as blank when refreshing during on a question', () => {
       const state = component['allowedStates'].indexOf('Q3');
-
-      // test setup: state returned from localstorage on init. Usually, on a clean
-      // app startup this would be null.
       checkStateMock = state;
-
-      // exercise the code
-      component.ngOnInit()
-
-      // test
+      component.ngOnInit();
       expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
       expect(answerInserted.answer).toBe('');
-    })
+    });
 
+    it('throws an error when the existing state is an out of range number', () => {
+      const state = 100;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
 
-  })
+    it('throws an error when the existing state is a negative number', () => {
+      const state = -1;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+    it('throws an error when the existing state is a string', () => {
+      const state = 'test';
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+    it('throws an error when the existing state is a bool', () => {
+      const state = true;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+  });
 });
