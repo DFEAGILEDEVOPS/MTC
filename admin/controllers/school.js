@@ -17,9 +17,12 @@ const {
   fetchScoreDetails,
   fetchSortedPupilsData,
   fetchMultiplePupils,
-  fetchPupilsWithReasons,
   fetchOnePupil } = require('../services/pupil.service')
-const { fetchListPupilsWithReasons } = require('../services/pupils-not-taking-check.service')
+const {
+  fetchPupilsWithReasons,
+  formatPupilsWithReasons,
+  sortPupilsByLastName,
+  sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -431,34 +434,11 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let attendanceCodes
   let pupils
   let pupilsList
-  let htmlSortDirection = []
-  let arrowSortDirection = []
 
   // Sorting
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-
-  let sortingDirection = [
-    {
-      'key': 'name',
-      'value': 'asc'
-    },
-    {
-      'key': 'reason',
-      'value': 'asc'
-    }
-  ]
-
-  // Markup links and arrows
-  sortingDirection.map((sd, index) => {
-    if (sd.key === sortField) {
-      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
-    } else {
-      htmlSortDirection[sd.key] = 'asc'
-      arrowSortDirection[sd.key] = 'sort'
-    }
-  })
+  const { htmlSortDirection, arrowSortDirection } = await sortPupilsByLastName(sortField, sortDirection)
 
   // Get attendance code index
   try {
@@ -468,33 +448,21 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
-  // Get pupils for user' school
+  // Get pupils for active school
   try {
     pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
   } catch (error) {
     console.log(`ERROR getting pupils for school ${req.user.School}`, error)
     return next(error)
   }
-  
+
   if (attendanceCodes && pupils) {
-    pupilsList = await fetchListPupilsWithReasons(attendanceCodes, pupils)
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
-  // Sorting by 'reason' needs to be done using .sort
+  // Sorting by 'reason' needs to be done using . sort
   if (sortField === 'reason') {
-    pupilsList = await pupilsList.sort((a, b) => {
-      if (a.reason === 'N/A') {
-        return 1
-      } else if (b.reason === 'N/A') {
-        return -1
-      } else if (a.reason === b.reason) {
-        return 0
-      } else if (sortDirection === 'asc') {
-        return a.reason < b.reason ? -1 : 1
-      } else {
-        return a.reason < b.reason ? 1 : -1
-      }
-    })
+    pupilsList = sortPupilsByReason(pupilsList, sortDirection)
   }
 
   return res.render('school/select-pupils-not-taking-check', {
