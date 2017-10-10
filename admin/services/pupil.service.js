@@ -28,6 +28,19 @@ const pupilService = {
     }
   },
   /**
+   * Fetch one pupil filtered by pupil id and school id
+   * @param pupilId
+   * @param schoolId
+   * @returns {Promise.<*>}
+   */
+  fetchOnePupil: async (pupilId, schoolId) => {
+    // TODO: Introduce integration tests
+    const pupil = await Pupil
+      .findOne({'_id': pupilId, 'school': schoolId})
+      .exec()
+    return pupil
+  },
+  /**
    * Returns pupils filtered by school and sorted by field and direction (asc/desc)
    * @param schoolId
    * @param sortingField
@@ -61,6 +74,14 @@ const pupilService = {
       result: {$exists: true}
     }).sort({createdAt: -1}).exec()
     return answers
+  },
+  fetchPupilsWithReasons: async (schoolId) => {
+    const pupilsWithReasons = await Pupil
+      .find({'attendanceCode': {$exists: true}, 'school': schoolId})
+      .sort('lastName')
+    if (pupilsWithReasons.length > 0) {
+      return pupilsWithReasons
+    }
   },
   /**
    * Fetches score details for pupils who have taken the check.
