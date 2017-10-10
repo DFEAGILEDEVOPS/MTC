@@ -11,7 +11,6 @@ import { CheckComplete } from '../services/audit/auditEntry';
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
@@ -44,7 +43,6 @@ describe('CheckComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
       providers: [
         AnswerService,
-        RegisterInputService,
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
