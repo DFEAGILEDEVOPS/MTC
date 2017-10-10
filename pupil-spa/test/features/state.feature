@@ -43,3 +43,8 @@ Feature:
       | 8      |
       | 9      |
       | 10     |
+
+  Scenario: Refresh keeps user on complete page
+    Given I am on the complete page
+    When I attempt to refresh the page
+    Then I should remain on the complete page

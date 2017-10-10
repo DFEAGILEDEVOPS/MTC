@@ -70,3 +70,9 @@ Then(/^the audit and inputs recorded should reflect this$/) do
   expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))[audit_location_index]['type']).to eql 'RefreshDetected'
   expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))[question_index]).to be_nil
 end
+
+
+Then(/^I should remain on the complete page$/) do
+  step 'I should see a complete page heading'
+  step 'I should see some text stating i have completed the check'
+end
