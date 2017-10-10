@@ -1,6 +1,3 @@
-# Before("~@sign_in") do
-#   step "I am logged in"
-# end
 
 Before("@add_a_pupil") do
   step "I am logged in"
@@ -30,6 +27,19 @@ end
 
 Before("@poltergeist") do
   Capybara.current_driver = :poltergeist
+end
+
+Before("@pupil_not_taking_check") do
+  step "I am logged in"
+  pupils_not_taking_check_page.load
+  expect(pupils_not_taking_check_page).to be_displayed
+  rows = all('a', text: 'Remove').count
+  rows.to_i.times do |row|
+    all('a', text: 'Remove').first.click
+    pupils_not_taking_check_page.load
+  end if pupils_not_taking_check_page.has_pupil_list?
+  pupils_not_taking_check_page.sign_out.click
+  visit current_url
 end
 
 Before("~@poltergeist") do
