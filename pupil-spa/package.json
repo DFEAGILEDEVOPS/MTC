@@ -46,8 +46,8 @@
     "@types/node": "^8.0.33",
     "codelyzer": "~3.2.1",
     "concurrently": "^3.5.0",
-    "jasmine-core": "~2.6.2",
-    "jasmine-spec-reporter": "~4.1.0",
+    "jasmine-core": "~2.8.0",
+    "jasmine-spec-reporter": "~4.2.1",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "~2.2.0",
     "karma-cli": "~1.0.1",
@@ -59,7 +59,7 @@
     "replace-in-file": "^2.6.4",
     "sass-loader": "^6.0.6",
     "ts-node": "~3.3.0",
-    "tslint": "~5.3.2",
+    "tslint": "~5.7.0",
     "typescript": "~2.3.3"
   }
 }
