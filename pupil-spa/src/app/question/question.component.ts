@@ -172,6 +172,14 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Called when the user clicks the enter button on the virtual keypad
+   */
+  onClickSubmit() {
+    this.registerInputService.storeEntry('enter', 'click');
+    this.onSubmit();
+  }
+
+  /**
    * Called from pressing Enter on the virtual Keypad or pressing the enter key on the keyboard
    * @return {boolean}
    */
@@ -195,11 +203,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     }
     // console.log(`submitting answer ${this.answer}`);
 
-    // In case the user clicked on virtual key 'Enter' store the enter
-    const lastEntry = this.registerInputService.getLastEntry();
-    if (lastEntry.input === 'left click' && lastEntry.eventType === 'mousedown') {
-      this.registerInputService.storeEntry('enter', 'click');
-    }
     this.auditService.addEntry(new QuestionAnswered());
     this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
