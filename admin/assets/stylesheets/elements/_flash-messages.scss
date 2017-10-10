@@ -1,7 +1,17 @@
+// Flash message
 .info-message {
   border: 5px solid $green;
   padding: 1em;
-  margin-top: 45px;
+  margin-top: 40px;
   color: $green;
   font-weight: bold;
+}
+
+// Green border to highlight table cell content
+.highlight-item:first-child:before {
+  content: '';
+  border-left: 7px solid $green;
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }

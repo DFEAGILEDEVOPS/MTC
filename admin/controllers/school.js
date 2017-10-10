@@ -16,7 +16,8 @@ const {
   fetchPupilAnswers,
   fetchScoreDetails,
   fetchSortedPupilsData,
-  fetchMultiplePupils } = require('../services/pupil.service')
+  fetchMultiplePupils,
+  fetchPupilsWithReasons } = require('../services/pupil.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -193,7 +194,7 @@ const generatePins = async (req, res, next) => {
   const data = Object.values(req.body[ 'pupil' ] || null)
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   const length = 5
-  let pupils
+  let pupils = []
 
   // fetch pupils
   try {
@@ -364,6 +365,13 @@ const getHDFSubmitted = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: initial page.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
 const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -372,6 +380,13 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: render and sorting.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -420,12 +435,10 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   pupilsList = await Promise.all(pupils.map(async (p) => {
     p.id = null
     p.reason = 'N/A'
-    p.disabledCheckbox = ''
 
     if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
       let accCode = attendanceCodes.filter(ac => ac._id == p.attendanceCode._id)
       p.reason = accCode[0].reason
-      p.disabledCheckbox = ' disabled="disabled"'
     }
     return p
   })).catch((error) => next(error))
@@ -458,6 +471,13 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Pupils not taking the check: save reason.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const savePupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Save pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
@@ -467,8 +487,12 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   }
 
   const todayDate = moment(moment.now()).format()
-  const pupilsData = await fetchMultiplePupils(Object.values(req.body.pupil))
+  const postedPupils = req.body.pupil
+  const pupilsData = await fetchMultiplePupils(Object.values(postedPupils))
+
   let pupilsToSave = []
+  let pupilsList
+  let attendanceCodes
 
   pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
@@ -486,17 +510,49 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     if (!savedPupils) {
       return next(new Error('Cannot save pupils'))
     }
+    req.flash('info', `${savedPupils.length} pupil reasons updated`)
   } catch (error) {
     return next(error)
   }
 
-  // @TODO: list of pupils with reasons
-  let pupilsList = []
+  // Get attendance code index
+  try {
+    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+  } catch (error) {
+    console.log('ERROR getting attendance codes', error)
+    return next(error)
+  }
+
+  const pupils = await fetchPupilsWithReasons(req.user.School)
+  pupilsList = await Promise.all(pupils.map(async (p) => {
+    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
+      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
+      p.reason = accCode[0].reason
+      p.highlight = (postedPupils.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
+    }
+    return p
+  }))
 
   return res.render('school/save-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
-    pupilsList
+    pupilsList,
+    messages: req.flash('info')
   })
+}
+
+const removePupilNotTakingCheck = async (req, res, next) => {
+  if (!req.params.pupilId) {
+    return res.redirect('/pupils-not-taking-check/select-pupils')
+  }
+
+  const pupilId = req.params.pupilId
+  try {
+    await Pupil.remove({ '_id': pupilId }).exec()
+  } catch (error) {
+    next(error)
+  }
+
+  return res.redirect('/pupils-not-taking-check/select-pupils/select-pupils')
 }
 
 module.exports = {
@@ -512,5 +568,6 @@ module.exports = {
   getHDFSubmitted,
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
-  savePupilNotTakingCheck
+  savePupilNotTakingCheck,
+  removePupilNotTakingCheck
 }
