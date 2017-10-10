@@ -1,0 +1,32 @@
+{
+  "name": "checkapi",
+  "version": "1.0.0",
+  "description": "API endpoints for pupil check SPA",
+  "main": "index.js",
+  "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
+  "author": "Guy Harwood",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run build && npm run watch",
+    "build": "standard",
+    "serve": "nodemon ./index.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch\" \"npm run serve\"",
+    "test": "jasmine --forceExit",
+    "debug": "npm run build && npm run watch-debug",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch\" \"npm run serve-debug\""
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "dotenv": "^4.0.0",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.2",
+    "helmet": "^3.8.2",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0",
+    "jasmine": "^2.8.0",
+    "standard": "^10.0.3"
+  }
+}
