@@ -179,7 +179,7 @@
   version "2.5.54"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.5.54.tgz#a6b5f2ae2afb6e0307774e8c7c608e037d491c63"
 
-"@types/jasmine@^2.5.54":
+"@types/jasmine@^2.6.0":
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.6.0.tgz#997b41a27752b4850af2683bc4a8d8222c25bd02"
 
@@ -3822,8 +3822,8 @@ negotiator@0.6.1:
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
 ngx-logger@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-0.2.6.tgz#98b83b42f20733b81e063ae07f2a20d80a44495e"
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-0.2.9.tgz#5fd5cc5d1ca13763e166271654a71fb350f4f6b8"
 
 no-case@^2.2.0:
   version "2.3.1"
