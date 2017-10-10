@@ -1,16 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger/dist';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoggerModule } from 'ngx-logger';
-import { environment } from '../environments/environment';
 
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
+import { environment } from '../environments/environment';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -24,10 +24,10 @@ import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
+import { RegisterInputService} from './services/register-input/registerInput.service';
 import { StorageService } from './services/storage/storage.service';
 import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
-import { RegisterInputService} from './services/register-input/registerInput.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
@@ -75,7 +75,8 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     LoggerModule.forRoot({
-      level: environment.production ? 'OFF' : 'DEBUG'
+      level: environment.production ? NgxLoggerLevel.ERROR : NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.OFF
     })
   ],
   providers: [

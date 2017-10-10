@@ -32,7 +32,7 @@
     "govuk-elements-sass": "^3.1.1",
     "gulp": "^3.9.1",
     "gulp-string-replace": "^0.4.0",
-    "ngx-logger": "^0.1.15",
+    "ngx-logger": "^0.2.6",
     "node-sass-utils": "^1.1.2",
     "rxjs": "^5.4.3",
     "zone.js": "^0.8.17"
