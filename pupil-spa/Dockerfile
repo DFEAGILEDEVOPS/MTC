@@ -14,14 +14,15 @@ WORKDIR /ng-app
 
 COPY . .
 
-RUN yarn run postinstall
+RUN yarn run sass
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
 RUN $(npm bin)/gulp setAppEnvironmentVariables
 
 ## Build the angular app in production mode and store the artifacts in dist folder
+RUN yarn remove @angular/cli
+RUN yarn add @angular/cli
 RUN $(npm bin)/ng build --prod
-#RUN $(npm bin)/ng build
 
 ### STAGE 2: Setup ###
 
