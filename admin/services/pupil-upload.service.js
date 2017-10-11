@@ -5,13 +5,15 @@ const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
 
 const onCSVReadComplete = async (csvDataArray, school, resolve) => {
-  const { pupils, csvData, headers } = await validateCSVService.process(csvDataArray, school, resolve)
+  const { pupils, csvData, headers, validationErrors, hasValidationError } = await validateCSVService.process(csvDataArray, school)
+  if (hasValidationError) resolve({ fileErrors: validationErrors, hasValidationError })
   // Generate csv with errors
   const csvHasErrors = csvData.some(p => p[6])
   if (csvHasErrors) {
-    const csvBlobFile = await generateErrorCSVService.generate(school, headers, csvData, resolve)
+    const csvBlob = await generateErrorCSVService.generate(school, headers, csvData)
+    if (csvBlob.hasError) resolve(csvBlob.error)
     return resolve({
-      csvErrorFile: csvBlobFile.name,
+      csvErrorFile: csvBlob.file.name,
       hasValidationError: true
     })
   } else {

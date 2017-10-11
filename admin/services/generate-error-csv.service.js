@@ -4,7 +4,7 @@ const { promisify } = require('bluebird')
 const csv = require('fast-csv')
 const { azureUploadFile } = require('./data-access/azure-file.data.service')
 
-module.exports.generate = async (school, headers, csvData, resolve) => {
+module.exports.generate = async (school, headers, csvData) => {
   const errorsCsv = []
   headers.push('Errors')
   errorsCsv.push(headers)
@@ -12,13 +12,13 @@ module.exports.generate = async (school, headers, csvData, resolve) => {
   const writeToString = promisify(csv.writeToString)
   const csvStr = await writeToString(errorsCsv, { headers: true })
 // Upload csv to Azure
-  let csvBlobFile
+  let file
   try {
     const remoteFilename = `${school._id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
     const streamLength = 512 * 1000
-    csvBlobFile = await azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
+    file = await azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
   } catch (error) {
-    return resolve({ error })
+    return { hasError: true, error }
   }
-  return csvBlobFile
+  return { file }
 }
