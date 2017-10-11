@@ -85,20 +85,8 @@ export class CheckComponent implements OnInit {
     };
 
     // set up the state
-    if (this.storageService.getItem(CheckComponent.checkStateKey)) {
-      // existing check state detected
-      // assume we are reloading during a check
-      const existingState = this.storageService.getItem(CheckComponent.checkStateKey);
-      if (!this.isValidState(existingState)) {
-        throw new Error(`Invalid state '${existingState}'`);
-      }
-      this.state = existingState;
-      this.isWarmUp = this.isWarmUpState();
-      this.config = this.warmupQuestionService.getConfig();
-      this.totalNumberOfQuestions = this.isWarmUp ?
-        this.warmupQuestionService.getNumberOfQuestions() :
-        this.questionService.getNumberOfQuestions();
-      this.refreshDetected();
+    if (this.hasExistingState()) {
+      this.loadExistingState();
     } else {
       this.question = this.warmupQuestionService.getQuestion(1);
       this.config = this.warmupQuestionService.getConfig();
@@ -107,6 +95,25 @@ export class CheckComponent implements OnInit {
       this.viewState = 'warmup-intro';
       this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
     }
+  }
+
+  private loadExistingState() {
+    // assume we are reloading during a check
+    const existingState = this.storageService.getItem(CheckComponent.checkStateKey);
+    if (!this.isValidState(existingState)) {
+      throw new Error(`Invalid state '${existingState}'`);
+    }
+    this.state = existingState;
+    this.isWarmUp = this.isWarmUpState();
+    this.config = this.warmupQuestionService.getConfig();
+    this.totalNumberOfQuestions = this.isWarmUp ?
+      this.warmupQuestionService.getNumberOfQuestions() :
+      this.questionService.getNumberOfQuestions();
+    this.refreshDetected();
+  }
+
+  private hasExistingState() {
+    return this.storageService.getItem(CheckComponent.checkStateKey);
   }
 
   /**
