@@ -1,13 +1,11 @@
 const Pupil = require('../../models/pupil')
 
-const createPupilEntity = (pupil) => new Pupil(pupil)
-
 const insertMany = async (pupils) => {
-  const savedPupils = await Pupil.insertMany(pupils)
+  const mongoosePupils = pupils.map(p => new Pupil(p))
+  const savedPupils = await Pupil.insertMany(mongoosePupils)
   return savedPupils
 }
 
 module.exports = {
-  createPupilEntity,
   insertMany
 }
