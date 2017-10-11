@@ -1,23 +1,23 @@
 'use strict'
-/* global describe beforeEach it expect */
+/* global describe it xit expect */
 
-const sut = require('../controllers/auth')
+const sut = require('../../controllers/complete-check')
 const httpMock = require('node-mocks-http')
 
 describe('completeCheck controller', () => {
-  describe('POST /completeCheck', () => {
+  describe('POST /complete-check', () => {
     const req = httpMock.createRequest({
       method: 'POST',
-      url: '/completeCheck'
+      url: '/complete-check'
     })
 
     it('returns 200 OK when request processed successfully', () => {
       const res = httpMock.createResponse()
-      sut.auth(req, res)
+      sut.completeCheck(req, res)
       expect(res.statusCode).toBe(200)
     })
 
-    it('submits valid request to completeCheck service', () => {
+    xit('submits valid request to completeCheck service', () => {
 
     })
   })
