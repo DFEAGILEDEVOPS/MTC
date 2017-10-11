@@ -80,9 +80,8 @@ const pupilsNotTakingCheckService = {
    * @param pupils
    * @returns {Promise.<Promise.<T>|Promise|Promise<any>|*>}
    */
-  formatPupilsWithReasons: (attendanceCodes, pupils) => {
+  formatPupilsWithReasons: async (attendanceCodes, pupils) => {
     return Promise.all(pupils.map(async (p) => {
-      p.id = null
       p.reason = 'N/A'
       if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
         let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))

@@ -2,7 +2,7 @@ const moment = require('moment')
 
 module.exports = [
   {
-    _id: '59d02aad9b865f35a3f5193e',
+    _id: '595cd5416e5ca13e48ed2518',
     updatedAt: moment('2017-10-10 11:43:49').toDate(),
     createdAt: moment('2017-09-30 23:37:17').toDate(),
     school: 9991001,
@@ -12,11 +12,16 @@ module.exports = [
     middleNames: 'Aaron',
     gender: 'M',
     dob: moment('1987-02-18 00:00:00').toDate(),
-    pin: 'rv8fh',
+    pin: 'd55sg',
     hasAttended: false,
     pinExpired: false,
     __v: 0,
-    id: null,
+    attendanceCode: {
+      byUserEmail: 'teacher1',
+      byUserName: 'teacher1',
+      dateRecorded: moment('2017-10-09 15:24:05').toDate(),
+      _id: '59c39fe72186e6748a58bbc7'
+    },
     reason: 'Absent'
   },
   {
@@ -30,15 +35,20 @@ module.exports = [
     middleNames: 'Richard',
     gender: 'M',
     dob: moment('1987-03-13 00:00:00').toDate(),
-    pin: '6rog4',
+    pin: '437bu',
     hasAttended: false,
     pinExpired: false,
     __v: 0,
-    id: null,
+    attendanceCode: {
+      byUserEmail: 'teacher2',
+      byUserName: 'teacher2',
+      dateRecorded: moment('2017-10-09 15:29:55').toDate(),
+      _id: '59c39fe72186e6748a58bbc4'
+    },
     reason: 'Left school'
   },
   {
-    _id: '59d02aad9b865f35a3f5127v',
+    _id: '595cd5416e5cv88e48ed2512',
     updatedAt: moment('2017-10-10 11:43:49').toDate(),
     createdAt: moment('2017-09-30 23:37:17').toDate(),
     school: 9991001,
@@ -48,11 +58,16 @@ module.exports = [
     middleNames: '',
     gender: 'F',
     dob: moment('1987-04-20 00:00:00').toDate(),
-    pin: 'hf7r2',
+    pin: 's34sy',
     hasAttended: false,
     pinExpired: false,
     __v: 0,
-    id: null,
-    reason: 'Incorrect Registration'
+    attendanceCode: {
+      byUserEmail: 'teacher2',
+      byUserName: 'teacher2',
+      dateRecorded: moment('2017-10-09 15:28:15').toDate(),
+      _id: '59c39fe72186e6748a58bbc6'
+    },
+    reason: 'Incorrect registration'
   }
 ]

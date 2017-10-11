@@ -531,7 +531,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
       let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
       p.reason = accCode[0].reason
-      p.highlight = (postedPupils.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
+      p.highlight = (Object.values(postedPupils).filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
     }
     return p
   }))

@@ -4,8 +4,8 @@ module.exports = [
   {
     _id: '595cd5416e5ca13e48ed2518',
     school: 9991001,
-    foreName: 'Pupil',
-    lastName: 'One',
+    foreName: 'John',
+    lastName: 'Smith',
     pin: 'd55sg',
     attendanceCode: {
       byUserEmail: 'teacher1',
@@ -17,8 +17,8 @@ module.exports = [
   {
     _id: '595cd5416e5cv88e69ed2632',
     school: 9991001,
-    foreName: 'Pupil',
-    lastName: 'Three',
+    foreName: 'Tom',
+    lastName: 'Miller',
     pin: '437bu',
     attendanceCode: {
       byUserEmail: 'teacher2',
@@ -30,8 +30,8 @@ module.exports = [
   {
     _id: '595cd5416e5cv88e48ed2512',
     school: 9991001,
-    foreName: 'Pupil',
-    lastName: 'Two',
+    foreName: 'Sarah',
+    lastName: 'Connor',
     pin: 's34sy',
     attendanceCode: {
       byUserEmail: 'teacher2',

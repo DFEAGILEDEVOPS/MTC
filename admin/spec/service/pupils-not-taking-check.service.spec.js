@@ -8,7 +8,7 @@ const Pupil = require('../../models/pupil')
 const pupilNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 //const AttendanceCode = require('../../models/attendance-code')
 
-//const attendanceCodesMock = require('../mocks/attendance-codes')
+const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 
@@ -40,7 +40,7 @@ describe('Pupils are not taking the check. Service', () => {
       service = setupService(pupilsWithReasonsMock)
     })
 
-    it('returns a list of pupils with reasons (happy path)', async (done) => {
+    it('should return a list of pupils with reasons (happy path)', async (done) => {
       try {
         const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
         expect(pupilsWithReasons).toEqual(pupilsWithReasonsMock)
@@ -56,7 +56,7 @@ describe('Pupils are not taking the check. Service', () => {
       service = setupService({})
     })
 
-    it('returns a empty (unhappy path)', async (done) => {
+    it('should return undefined (unhappy path)', async (done) => {
       try {
         const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
         expect(pupilsWithReasons).toEqual(undefined)
@@ -68,7 +68,7 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('sortPupilsByLastName', () => {
-    it('returns expected values (1)', (done) => {
+    it('should return expected values (1)', (done) => {
       const sorting = pupilNotTakingCheckService.sortPupilsByLastName('name', 'asc')
       expect(sorting.htmlSortDirection.name).toEqual('desc')
       expect(sorting.htmlSortDirection.reason).toEqual('asc')
@@ -77,7 +77,7 @@ describe('Pupils are not taking the check. Service', () => {
       done()
     })
 
-    it('returns expected values (2)', (done) => {
+    it('should return expected values (2)', (done) => {
       const sorting = pupilNotTakingCheckService.sortPupilsByLastName('reason', 'desc')
       expect(sorting.htmlSortDirection.name).toEqual('asc')
       expect(sorting.htmlSortDirection.reason).toEqual('asc')
@@ -88,7 +88,7 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('sortPupilsByReason', () => {
-    it('returns list ordered by reason not equal to the original (as per mock order)', (done) => {
+    it('should return a list ordered by reason not equal to the original (as per mock order)', (done) => {
       const beforeSorting = Object.assign({}, pupilsWithReasonsFormattedMock)
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(beforeSorting).not.toEqual(afterSorting)
@@ -98,8 +98,21 @@ describe('Pupils are not taking the check. Service', () => {
     it('returns list ordered by reason asc', (done) => {
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(afterSorting[0].reason).toEqual('Absent')
-      expect(afterSorting[1].reason).toEqual('Incorrect Registration')
+      expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Left school')
+      done()
+    })
+  })
+
+  describe('formatPupilsWithReasons', () => {
+    it('should return a list of pupils that includes new field reason', async (done) => {
+      const afterFormatting = await pupilNotTakingCheckService.formatPupilsWithReasons(attendanceCodesMock, pupilsWithReasonsMock)
+        .then(result => {
+          return result
+        })
+      expect(afterFormatting[0].reason).toEqual('Absent')
+      expect(afterFormatting[1].reason).toEqual('Left school')
+      expect(afterFormatting[1].reason).toEqual('Incorrect registration')
       done()
     })
   })
