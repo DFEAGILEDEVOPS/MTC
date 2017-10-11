@@ -39,5 +39,12 @@ module.exports = [
       dateRecorded: moment('2017-10-09 15:28:15').toDate(),
       _id: '59c39fe72186e6748a58bbc6'
     }
+  },
+  {
+    _id: '595cd5416e5cv88e48edc451',
+    school: 9991001,
+    foreName: 'Bronislaw',
+    lastName: 'Malinowsky',
+    pin: 'a67lp'
   }
 ]

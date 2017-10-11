@@ -69,5 +69,22 @@ module.exports = [
       _id: '59c39fe72186e6748a58bbc6'
     },
     reason: 'Incorrect registration'
+  },
+  {
+    _id: '595cd5416e5cv88e48edc451',
+    updatedAt: moment('2017-10-10 11:43:49').toDate(),
+    createdAt: moment('2017-09-30 23:37:17').toDate(),
+    school: 9991001,
+    upn: 'M789090205681',
+    foreName: 'Bronislaw',
+    lastName: 'Malinowsky',
+    middleNames: '',
+    gender: 'F',
+    dob: moment('1987-04-20 00:00:00').toDate(),
+    pin: 't78sq',
+    hasAttended: false,
+    pinExpired: false,
+    __v: 0,
+    reason: 'N/A'
   }
 ]
