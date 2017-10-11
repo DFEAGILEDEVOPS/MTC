@@ -1,4 +1,5 @@
 'use strict'
+/* global describe beforeEach it expect */
 
 const sut = require('../controllers/auth')
 const httpMock = require('node-mocks-http')
