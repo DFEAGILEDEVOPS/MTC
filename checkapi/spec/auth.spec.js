@@ -5,7 +5,7 @@ const httpMock = require('node-mocks-http')
 
 describe('auth controller', () => {
   describe('POST /auth', () => {
-    it('should return 200 OK when valid request', () => {
+    it('returns 200 OK when valid request', () => {
       const req = httpMock.createRequest({
         method: 'POST',
         url: '/auth'

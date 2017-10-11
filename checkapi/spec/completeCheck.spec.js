@@ -5,14 +5,19 @@ const httpMock = require('node-mocks-http')
 
 describe('completeCheck controller', () => {
   describe('POST /completeCheck', () => {
-    it('should return 200 OK when valid request', () => {
-      const req = httpMock.createRequest({
-        method: 'POST',
-        url: '/completeCheck'
-      })
+    const req = httpMock.createRequest({
+      method: 'POST',
+      url: '/completeCheck'
+    })
+
+    it('returns 200 OK when request processed successfully', () => {
       const res = httpMock.createResponse()
       sut.auth(req, res)
       expect(res.statusCode).toBe(200)
+    })
+
+    it('submits valid request to completeCheck service', () => {
+
     })
   })
 })
