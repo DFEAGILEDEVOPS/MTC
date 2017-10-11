@@ -9,8 +9,18 @@ const helmet = require('helmet')
 const errorHandler = require('errorhandler')
 const { completeCheck } = require('./controllers/completeCheck')
 const { auth } = require('./controllers/auth')
+const mongoose = require('mongoose')
 
 dotenv.config()
+
+mongoose.promise = global.Promise
+const connectionString = process.env.MONGO_CONNECTION_STRING
+mongoose.connect(connectionString, function (err) {
+  if (err) {
+    throw new Error('Could not connect to mongodb: ' + err.message)
+  }
+})
+
 const app = express()
 
 // configure express defaults
@@ -27,7 +37,7 @@ app.use(helmet.contentSecurityPolicy({
 }))
 
 // routes
-app.post('/completeCheck', completeCheck)
+app.post('/complete-check', completeCheck)
 app.post('/auth', auth)
 app.get('/', function (req, res) {
   // TODO implement values during build, and change route to '/ping'
