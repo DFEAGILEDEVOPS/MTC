@@ -8,7 +8,6 @@ require 'site_prism'
 require 'pry'
 require 'capybara/poltergeist'
 require 'numbers_in_words'
-require 'capybara-screenshot/cucumber'
 require 'mongo'
 require 'waitutil'
 require 'show_me_the_cookies'
@@ -43,10 +42,6 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
                                  desired_capabilities: capabilities
-end
-
-Capybara::Screenshot.register_filename_prefix_formatter(ENV['DRIVER'].to_sym) do |scenario|
-  "/screenshots/screenshot_#{scenario.title.tr(' ', '-').gsub(%r{/^.*\/cucumber\//}, '')}"
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
