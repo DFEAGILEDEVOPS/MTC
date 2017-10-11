@@ -116,7 +116,12 @@ const postAddMultiplePupils = async (req, res, next) => {
     res.fileErrors = fileErrors
     return getAddMultiplePupils(req, res, next)
   }
-  const csvUploadResult = await pupilUploadService.upload(school, uploadFile)
+  let csvUploadResult
+  try {
+    csvUploadResult = await pupilUploadService.upload(school, uploadFile)
+  } catch (error) {
+    return next(error)
+  }
   // upload error
   if (csvUploadResult.error) next(csvUploadResult.error)
   // render with errors
@@ -124,7 +129,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     req.session.csvErrorFile = csvUploadResult.csvErrorFile
     res.hasError = csvUploadResult.hasValidationError
     res.fileErrors = csvUploadResult.fileErrors
-    getAddMultiplePupils(req, res, next)
+    return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${csvUploadResult.pupils && csvUploadResult.pupils.length} new pupils have been added`)
     const ids = JSON.stringify(csvUploadResult.pupilIds)
