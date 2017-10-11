@@ -45,10 +45,47 @@
                 "type" : "CheckComplete"
             }
         ],
-        "inputs" : [ 
-            null, 
-            [5,4,6],
-            ["enter", 2, 1]
+        "inputs" : [
+            [
+                {
+                    "question" : 1,
+                    "clientInputDate" : "2017-10-10T15:01:20.767Z",
+                    "eventType" : "keydown",
+                    "input" : "1"
+                },
+                {
+                    "question" : 1,
+                    "clientInputDate" : "2017-10-10T15:01:20.789Z",
+                    "eventType" : "keydown",
+                    "input" : "0"
+                },
+                {
+                    "question" : 1,
+                    "clientInputDate" : "2017-10-10T15:01:21.054Z",
+                    "eventType" : "keydown",
+                    "input" : "Enter"
+                }
+            ],
+            [
+                {
+                    "question" : 2,
+                    "clientInputDate" : "2017-10-10T15:01:23.955Z",
+                    "eventType" : "keydown",
+                    "input" : "2"
+                },
+                {
+                    "question" : 2,
+                    "clientInputDate" : "2017-10-10T15:01:24.075Z",
+                    "eventType" : "keydown",
+                    "input" : "2"
+                },
+                {
+                    "question" : 2,
+                    "clientInputDate" : "2017-10-10T15:01:24.219Z",
+                    "eventType" : "keydown",
+                    "input" : "Enter"
+                }
+            ]
         ],
         "answers" : [ 
             {
