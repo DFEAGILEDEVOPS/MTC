@@ -10,6 +10,7 @@ const pupilNotTakingCheckService = require('../../services/pupils-not-taking-che
 
 //const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
+const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 
 /* global beforeEach, describe, it, expect */
 
@@ -67,12 +68,38 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('sortPupilsByLastName', () => {
-    it('returns expected values', (done) => {
+    it('returns expected values (1)', (done) => {
       const sorting = pupilNotTakingCheckService.sortPupilsByLastName('name', 'asc')
       expect(sorting.htmlSortDirection.name).toEqual('desc')
       expect(sorting.htmlSortDirection.reason).toEqual('asc')
       expect(sorting.arrowSortDirection.name).toEqual('sort')
       expect(sorting.arrowSortDirection.reason).toEqual('sort')
+      done()
+    })
+
+    it('returns expected values (2)', (done) => {
+      const sorting = pupilNotTakingCheckService.sortPupilsByLastName('reason', 'desc')
+      expect(sorting.htmlSortDirection.name).toEqual('asc')
+      expect(sorting.htmlSortDirection.reason).toEqual('asc')
+      expect(sorting.arrowSortDirection.name).toEqual('sort')
+      expect(sorting.arrowSortDirection.reason).toEqual('sort up')
+      done()
+    })
+  })
+
+  describe('sortPupilsByReason', () => {
+    it('returns list ordered by reason not equal to the original (as per mock order)', (done) => {
+      const beforeSorting = Object.assign({}, pupilsWithReasonsFormattedMock)
+      const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
+      expect(beforeSorting).not.toEqual(afterSorting)
+      done()
+    })
+
+    it('returns list ordered by reason asc', (done) => {
+      const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
+      expect(afterSorting[0].reason).toEqual('Absent')
+      expect(afterSorting[1].reason).toEqual('Incorrect Registration')
+      expect(afterSorting[2].reason).toEqual('Left school')
       done()
     })
   })
