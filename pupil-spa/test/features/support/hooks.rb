@@ -17,3 +17,9 @@ After('@window_date_time_reset') do
   collection.update_one({'_id' => original['_id']}, updated)
   p "Returned #{@original_date_time.keys.first.to_s} to #{@original_date_time.values.first}"
 end
+
+After do |scenario|
+  if scenario.failed?
+    page.save_screenshot("screenshots/#{Time.now.strftime("%H_%M_%S")}.png")
+  end
+end
