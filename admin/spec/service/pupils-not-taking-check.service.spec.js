@@ -115,7 +115,7 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('formatPupilsWithReasons', () => {
-    it('should return a list of pupils that includes new field reason', async (done) => {
+    it('should return a list of pupils that includes new field "reason"', async (done) => {
       const afterFormatting = await pupilNotTakingCheckService.formatPupilsWithReasons(attendanceCodesMock, pupilsWithReasonsMock)
         .then(result => {
           return result
@@ -124,6 +124,26 @@ describe('Pupils are not taking the check. Service', () => {
       expect(afterFormatting[1].reason).toEqual('Left school')
       expect(afterFormatting[2].reason).toEqual('Incorrect registration')
       expect(afterFormatting[3].reason).toEqual('N/A')
+      done()
+    })
+
+    it('should return 1 record with field "highlight" equal true ', async (done) => {
+      const afterFormatting = await pupilNotTakingCheckService.formatPupilsWithReasons(attendanceCodesMock, pupilsWithReasonsMock, ['595cd5416e5cv88e69ed2632'])
+      .then(result => {
+        return result
+      })
+      expect(afterFormatting[1].highlight).toEqual(true)
+      done()
+    })
+
+    it('should return 3 records with "highlight" equal false ', async (done) => {
+      const afterFormatting = await pupilNotTakingCheckService.formatPupilsWithReasons(attendanceCodesMock, pupilsWithReasonsMock, ['595cd5416e5cv88e69ed2632'])
+      .then(result => {
+        return result
+      })
+      expect(afterFormatting[0].highlight).toEqual(false)
+      expect(afterFormatting[2].highlight).toEqual(false)
+      expect(afterFormatting[3].highlight).toEqual(false)
       done()
     })
   })

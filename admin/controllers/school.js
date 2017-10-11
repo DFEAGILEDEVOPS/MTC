@@ -496,6 +496,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupilsToSave = []
   let pupilsList
   let attendanceCodes
+  let pupils
 
   pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
@@ -522,19 +523,19 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
-  const pupils = await fetchPupilsWithReasons(req.user.School)
-  pupilsList = await Promise.all(pupils.map(async (p) => {
-    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-      p.reason = accCode[0].reason
-      p.highlight = (Object.values(postedPupils).filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
-    }
-    return p
-  }))
+  // Get pupils for active school
+  try {
+    pupils = await fetchPupilsWithReasons(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
+  if (attendanceCodes && pupils) {
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils, Object.values(postedPupils))
+  }
 
   return res.render('school/pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
