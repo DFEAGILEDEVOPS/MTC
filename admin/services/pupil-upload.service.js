@@ -6,7 +6,7 @@ const { promisify } = require('bluebird')
 const { azureUploadFile } = require('./data-access/azure-file.data.service')
 const csvValidator = require('../lib/validator/csv-validator')
 const singlePupilValidation = require('./single-pupil-validation.service')
-const { insertMany } = require('./data-access/insert-pupils.data.service')
+const pupilDataService = require('./data-access/pupil.data.service')
 
 module.exports.upload = async (school, uploadFile) => {
   let stream
@@ -57,7 +57,7 @@ module.exports.upload = async (school, uploadFile) => {
           let pupilIds = []
           let savedPupils
           try {
-            savedPupils = await insertMany(pupils)
+            savedPupils = await pupilDataService.insertMany(pupils)
           } catch (error) {
             return resolve({ error })
           }

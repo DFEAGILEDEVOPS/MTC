@@ -1,8 +1,8 @@
 const { validate } = require('../lib/validator/pupil-validator')
-const { createPupilEntity } = require('../services/data-access/create-pupil.data.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 
 module.exports.validate = async (single, school) => {
-  const pupil = createPupilEntity({
+  const pupil = pupilDataService.createPupilEntity({
     school: school._id,
     upn: single[ 3 ].trim().toUpperCase(),
     foreName: single[ 0 ],
