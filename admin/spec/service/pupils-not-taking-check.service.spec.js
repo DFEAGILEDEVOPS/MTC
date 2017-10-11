@@ -112,7 +112,7 @@ describe('Pupils are not taking the check. Service', () => {
         })
       expect(afterFormatting[0].reason).toEqual('Absent')
       expect(afterFormatting[1].reason).toEqual('Left school')
-      expect(afterFormatting[1].reason).toEqual('Incorrect registration')
+      expect(afterFormatting[2].reason).toEqual('Incorrect registration')
       done()
     })
   })
