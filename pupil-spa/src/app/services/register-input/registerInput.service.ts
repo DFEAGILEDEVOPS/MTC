@@ -5,22 +5,9 @@ import { QuestionService } from '../question/question.service';
 
 @Injectable()
 export class RegisterInputService {
-
-  protected questionInputs;
-  protected currentQuestion;
+  public static readonly inputKey = 'inputs';
 
   constructor(protected storageService: StorageService, protected questionService: QuestionService) {}
-
-  public initialise() {
-    try {
-      this.storageService.getItem('inputs');
-    } catch (err) {
-      this.storageService.setItem('inputs', []);
-    }
-    this.questionInputs = this.storageService.getItem('inputs');
-    this.currentQuestion = this.questionService.getCurrentQuestionNumber();
-    this.questionInputs[ this.currentQuestion ] = this.questionInputs[ this.currentQuestion ] || [];
-  }
 
   public addEntry(event) {
     let eventValue;
@@ -32,19 +19,30 @@ export class RegisterInputService {
   }
 
   public storeEntry(eventValue, eventType) {
-    if (!this.questionInputs) { return false; }
-    this.questionInputs[ this.currentQuestion ].push({
+    const currentQuestion = this.questionService.getCurrentQuestionNumber();
+
+    let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
+    if (!Array.isArray(questionInputs)) {
+      questionInputs = [];
+    }
+
+    // Generate the array index from the current question.  Q1 is stored in index 0, and so on.
+    const idx = currentQuestion - 1;
+
+    // Check we have an array to place the new object into
+    if (!Array.isArray(questionInputs[idx])) {
+      questionInputs[idx] = [];
+    }
+
+    // Store the input
+    questionInputs[ currentQuestion - 1 ].push({
       input: eventValue,
       eventType: eventType,
-      clientInputDate: new Date()
+      clientInputDate: new Date(),
+      question: currentQuestion
     });
-  }
 
-  public getLastEntry() {
-    if (!this.questionInputs || !this.currentQuestion) { return false; }
-    const currentQuestionEntries = this.questionInputs[ this.currentQuestion ];
-    const lastEntryIndex = currentQuestionEntries.length - 1;
-    return currentQuestionEntries[ lastEntryIndex ];
+    this.storageService.setItem(RegisterInputService.inputKey, questionInputs);
   }
 
   private getMouseButton(event) {
@@ -55,9 +53,5 @@ export class RegisterInputService {
       /* All others */
       return (event.which < 2) ? 'left click' : ((event.which === 2) ? 'middle click' : 'right click');
     }
-  }
-
-  flush() {
-    this.storageService.setItem('inputs', this.questionInputs);
   }
 }

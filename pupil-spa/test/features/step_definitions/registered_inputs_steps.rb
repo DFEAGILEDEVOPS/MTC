@@ -39,8 +39,8 @@ end
 Then(/^I should see backspace numpad event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
-  expected = [{"input" => "left click", "eventType" => "mousedown"}, {"input" => "1", "eventType" => "click"}, {"input" => "left click", "eventType" => "mousedown"}, {"input" => "backspace", "eventType" => "click"}]
-  expect([inputs[0],inputs[1],inputs[2],inputs[3]]).to eql expected
+  expected = [{"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "1", "eventType" => "click", "question" => 1}, {"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "backspace", "eventType" => "click", "question" => 1}]
+  expect([inputs[0], inputs[1], inputs[2], inputs[3]]).to eql expected
 end
 
 Given(/^I have used backspace to correct my answer using the physical keyboard$/) do
@@ -52,10 +52,9 @@ Given(/^I have used backspace to correct my answer using the physical keyboard$/
   check_page.complete_check_with_correct_answers(8, 'numpad')
 end
 
-
 Then(/^I should see backspace keyboard event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
-  expected = [{"input" => "1", "eventType" => "keydown"}, {"input" => "Backspace", "eventType" => "keydown"}]
-  expect([inputs[0],inputs[1]]).to eql expected
+  expected = [{"input" => "1", "eventType" => "keydown", "question" => 1}, {"input" => "Backspace", "eventType" => "keydown", "question" => 1}]
+  expect([inputs[0], inputs[1]]).to eql expected
 end

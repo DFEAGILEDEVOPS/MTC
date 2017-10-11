@@ -2,24 +2,26 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
+import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
-import { AuditEntry } from '../services/audit/auditEntry';
+import { AuditEntry, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { CheckComplete } from '../services/audit/auditEntry';
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { StorageService } from '../services/storage/storage.service';
-import { SubmissionService } from '../services/submission/submission.service';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
+import { SubmissionService } from '../services/submission/submission.service';
+import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
   let fixture: ComponentFixture<CheckComponent>;
   let storageService;
+  let checkStateMock = null;
 
   function detectStateChange(object, method, arg?) {
     const beforeState = component[ 'state' ];
@@ -41,11 +43,10 @@ describe('CheckComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
       providers: [
         AnswerService,
-        RegisterInputService,
-        SubmissionService,
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
+        { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock }
       ]
     })
@@ -55,9 +56,23 @@ describe('CheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckComponent);
     storageService = fixture.debugElement.injector.get(StorageService);
+    spyOn(storageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'checkstate') {
+        // By default assume that there is no previous checkstate
+        // we can change this to a valid state number to simulate
+        // a page refresh.
+        return checkStateMock;
+      } else {
+        return [];
+      }
+    });
     spyOn(storageService, 'setItem').and.callThrough();
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    checkStateMock = null;
   });
 
   it('should be created', () => {
@@ -235,5 +250,142 @@ describe('CheckComponent', () => {
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof CheckComplete).toBeTruthy();
     });
+  });
+
+  describe('page refresh', () => {
+    let auditEntryInserted: AuditEntry;
+    let auditService: AuditService;
+    let answerService: AnswerService;
+    let answerInserted: Answer;
+
+    beforeEach(() => {
+      // find the state for the first warmup question
+      const w1 = component['allowedStates'].indexOf('W1');
+
+      // test setup: state returned from localstorage on init. Usually, on a clean
+      // app startup this would be null.
+      checkStateMock = w1;
+
+      spyOn(component, 'refreshDetected').and.callThrough();
+
+      auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(auditService, 'addEntry').and.callFake((entry) => {
+        auditEntryInserted = entry;
+      });
+
+      answerService = fixture.debugElement.injector.get(AnswerService);
+      spyOn(answerService, 'setAnswer').and.callFake((ans) => {
+        answerInserted = ans;
+      });
+    });
+
+    it('calls refreshDetected during init when the checkstate is found', () => {
+      component.ngOnInit();
+      expect(component.refreshDetected).toHaveBeenCalledTimes(1);
+    });
+
+    it('logs an audit entry to say the page was refreshed', () => {
+      // set up test spy on Audit Service
+      component.refreshDetected();
+      // check the spy was called
+      expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(auditEntryInserted instanceof RefreshDetected).toBeTruthy();
+    });
+
+    it('moves to the next state if a real test question was asked', () => {
+      // find the state for the first warmup question
+      const q1 = component['allowedStates'].indexOf('Q1');
+
+      // test setup: state returned from localstorage on init. Usually, on a clean
+      // app startup this would be null.
+      checkStateMock = q1;
+
+      // exercise the code
+      component.ngOnInit();
+
+      // test
+      expect(component['state']).toBe(q1 + 1);
+    });
+
+    it('state stays the same if a page refresh happens on a warmup loading screen', () => {
+      // find the state for the first warmup loading screen
+      const state = component['allowedStates'].indexOf('LW1');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
+
+    it('state moves on if a page refresh happens on a warmup question', () => {
+      // find the state for the first warmup question
+      const state = component['allowedStates'].indexOf('W1');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state + 1);
+    });
+
+    it('state stays the same if a page refresh happens on the warm-up intro', () => {
+      // find the state for the warmup intro
+      const state = component['allowedStates'].indexOf('warmup-intro');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
+
+    it('state stays the same if a page refresh happens on the warm-up complete', () => {
+      // find the state for warmup-complete
+      const state = component['allowedStates'].indexOf('warmup-complete');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
+
+    it('state stays the same if a page refresh happens on a loading screen', () => {
+      // find the state for the loading question 2
+      const state = component['allowedStates'].indexOf('L2');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
+
+    it('state stays the same if a page refresh happens on the check complete screen', () => {
+      // find the state for complete
+      const state = component['allowedStates'].indexOf('complete');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(component['state']).toBe(state);
+    });
+
+    it('the answer is recorded as blank when refreshing during on a question', () => {
+      const state = component['allowedStates'].indexOf('Q3');
+      checkStateMock = state;
+      component.ngOnInit();
+      expect(answerService.setAnswer).toHaveBeenCalledTimes(1);
+      expect(answerInserted.answer).toBe('');
+    });
+
+    it('throws an error when the existing state is an out of range number', () => {
+      const state = 100;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+    it('throws an error when the existing state is a negative number', () => {
+      const state = -1;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+    it('throws an error when the existing state is a string', () => {
+      const state = 'test';
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
+    it('throws an error when the existing state is a bool', () => {
+      const state = true;
+      checkStateMock = state;
+      expect(function() { component.ngOnInit(); }).toThrowError(/^Invalid state/);
+    });
+
   });
 });
