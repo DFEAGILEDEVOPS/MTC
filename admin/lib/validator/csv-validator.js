@@ -11,11 +11,16 @@ module.exports.validate = (dataSet, header) => {
   if (!isHeaderValid) {
     errorArr.push(addBatchFileErrorMessages.invalidHeader)
   }
+  const upnList = []
   dataSet.map(r => {
     if (r.length !== 6) {
       errorArr.push(addBatchFileErrorMessages.not6Columns)
     }
+    upnList.push(r[3])
   })
+  if (upnList.some((val, i) => upnList.indexOf(val) !== i)) {
+    errorArr.push(addBatchFileErrorMessages.duplicateUPN)
+  }
   if (dataSet.length < 2) errorArr.push(addBatchFileErrorMessages.hasOneRow)
   if (errorArr.length > 0) {
     validationError.addError('template-upload', errorArr)
