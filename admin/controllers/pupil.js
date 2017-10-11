@@ -116,7 +116,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     res.fileErrors = fileErrors
     return getAddMultiplePupils(req, res, next)
   }
-  const csvUploadResult = await pupilUploadService.upload(school, uploadFile, req, res, next)
+  const csvUploadResult = await pupilUploadService.upload(school, uploadFile)
   // upload error
   if (csvUploadResult.error) next(csvUploadResult.error)
   // render with errors
