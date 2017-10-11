@@ -12,7 +12,8 @@ export class AuditService {
     AuditTypes.CheckStarted |
     AuditTypes.QuestionRendered |
     AuditTypes.PauseRendered |
-    AuditTypes.QuestionAnswered): void {
+    AuditTypes.QuestionAnswered |
+    AuditTypes.RefreshDetected): void {
     let existingEntries = this.storageService.getItem('audit') as Array<AuditTypes.AuditEntry>;
     if (!existingEntries) {
       existingEntries = new Array<AuditTypes.AuditEntry>();
