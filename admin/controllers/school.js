@@ -543,6 +543,13 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Removing reason for pupil.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const removePupilNotTakingCheck = async (req, res, next) => {
   if (!req.params.pupilId || !req.user.School) {
     return res.redirect('/school/pupils-not-taking-check/select-pupils')
