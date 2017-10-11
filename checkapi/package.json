@@ -5,12 +5,12 @@
   "main": "index.js",
   "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
   "author": "Guy Harwood",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "scripts": {
     "start": "npm run serve",
     "build": "standard",
     "serve": "nodemon ./index.js",
-    "test": "jasmine --forceExit"
+    "test": "nyc -r html ./run-jasmine.js"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -19,10 +19,15 @@
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "helmet": "^3.8.2",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "piping": "^1.0.0-rc.4"
   },
   "devDependencies": {
     "jasmine": "^2.8.0",
+    "jasmine-console-reporter": "^2.0.1",
+    "jsdoc": "^3.5.5",
+    "node-mocks-http": "^1.6.5",
+    "nyc": "^11.2.1",
     "standard": "^10.0.3"
   }
 }

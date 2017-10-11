@@ -1,3 +1,5 @@
+'use strict'
+
 const auth = (req, res, next) => {
   // TODO parse request body
   // TODO authenticate
