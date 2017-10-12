@@ -9,8 +9,7 @@ require('sinon-mongoose')
 const Pupil = require('../../../models/pupil')
 const pupilMock = require('../../mocks/pupil')
 
-describe('check-unique-upn.data.service.spec', () => {
-
+describe('check-unique-upn.data.service', () => {
   let sandbox
 
   beforeEach(() => {

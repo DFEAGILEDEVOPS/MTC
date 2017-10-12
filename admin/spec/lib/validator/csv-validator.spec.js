@@ -36,7 +36,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0]).toBe('Ensure columns have the same headings and order as the template')
-      expect(validationError.get('template-upload')[1]).toBe('File rejected. The file must contain exactly 5 columns')
+      expect(validationError.get('template-upload')[1]).toBe('File rejected. The file must contain exactly 6 columns')
       done()
     })
     it('detected duplicate UPN on the input data', async function (done) {

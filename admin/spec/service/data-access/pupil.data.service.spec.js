@@ -27,7 +27,7 @@ describe('pupil.data.service.spec', () => {
       pupil2.id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'f55sg'
       sandbox.mock(Pupil).expects('insertMany').resolves([pupil1, pupil2])
-      proxyquire('../../../services/data-access/completed-check.data.service', {
+      proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
     })
