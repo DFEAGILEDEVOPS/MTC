@@ -53,6 +53,7 @@ app.use(helmet.contentSecurityPolicy({
   }
 }))
 
+app.use(express.static('public'))
 // routes
 app.post('/complete-check', completeCheck)
 app.post('/auth', auth)
