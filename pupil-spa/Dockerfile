@@ -14,6 +14,7 @@ WORKDIR /ng-app
 
 COPY . .
 
+RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
@@ -40,6 +41,10 @@ RUN rm -rf /usr/share/nginx/html/*
 ## From 'builder' stage copy over the artifacts in dist folder to default nginx public folder
 COPY --from=builder /ng-app/dist /usr/share/nginx/html
 
-## copy htaccess into webroot of container
+## Revove the 'assets' folder that got copied
+# Can't yet: `assets` is referenced in 2 places:
+#  * header.component.ts:13
+#  * app.component.ts:9
+#RUN rm -rf /usr/share/nginx/html/assets
 
 CMD ["nginx", "-g", "daemon off;"]
