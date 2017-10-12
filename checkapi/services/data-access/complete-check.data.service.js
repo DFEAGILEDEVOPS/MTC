@@ -1,6 +1,7 @@
 'use strict'
 
 const completedCheckDataService = {}
+const CompletedCheck = require('./completed-check-dto')
 
 /**
  * Create a new Check
@@ -12,21 +13,5 @@ completedCheckDataService.create = async function (data) {
   await completedCheck.save()
   return completedCheck
 }
-
-// model
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-const Schema = mongoose.Schema
-
-const CompletedCheck = new Schema({
-  data: {
-    type: Object,
-    required: true
-  },
-  receivedByServerAt: {
-    type: Date,
-    required: true
-  }
-})
 
 module.exports = completedCheckDataService

@@ -1,13 +1,13 @@
 'use strict'
 
+const asyncMiddleware = require('./asyncMiddleware')
 const completeCheckService = require('../services/complete-check.service')
 
-const completeCheck = (req, res, next) => {
+const completeCheck = asyncMiddleware(async (req, res, next) => {
   // TODO: JWT token authentication
-  // TODO: submit to backend
-  completeCheckService.submitCheck(req.body)
+  await completeCheckService.submitCheck(req.body)
   res.sendStatus(200)
-}
+})
 
 module.exports = {
   completeCheck
