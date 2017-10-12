@@ -19,10 +19,10 @@ const {
   fetchMultiplePupils,
   fetchOnePupil } = require('../services/pupil.service')
 const {
-  fetchPupilsWithReasons,
   formatPupilsWithReasons,
   sortPupilsByLastName,
   sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
+const { fetchPupilsWithReasons } = require('../services/data-access/pupils-not-taking-check.data.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
