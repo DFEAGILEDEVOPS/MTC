@@ -6,7 +6,7 @@ class WarmUpPage < SitePrism::Page
   element :timer,'.remaining-time-warmup'
   element :question, '.question'
   element :start_warm_up_questions, '#start-now-button'
-  element :welcome_message, '.lede', text: "Press 'Start now' to see 3 practise questions. Use them to familiarise yourself with what the questions will look like and how to enter your answers."
+  element :welcome_message, '.lede', text: "Now there will be 3 practice questions"
   element :start_now, '#start-now-button'
   element :warm_up_label, '.warm-up-questions-label'
 
