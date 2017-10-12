@@ -8,7 +8,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const errorHandler = require('errorhandler')
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 const config = require('./config')
 // controllers
 const ping = require('./controllers/ping')
@@ -24,7 +24,7 @@ if (config.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.start()
 }
 
-mongoose.promise = global.Promise
+/* mongoose.promise = global.Promise
 const connectionString = config.MONGO_CONNECTION_STRING
 // TODO: why is config not using process.env value?
 console.log('config.mongo_connection:', connectionString)
@@ -33,7 +33,10 @@ mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
   }
-})
+}) */
+const mongoService = require('./services/data-access/mongo.service')
+
+mongoService.connect()
 
 const app = express()
 
