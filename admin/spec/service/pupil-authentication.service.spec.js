@@ -46,6 +46,14 @@ describe('pupil authentication service', () => {
       expect(pupil).toEqual(pupilMock)
       done()
     })
+
+    it('prepares the pupil data', () => {
+      const pupil = new Pupil(pupilMock)
+      const pupilData = service.getPupilDataForSpa(pupil)
+      expect(pupilData.firstName).toBe(pupil.foreName)
+      expect(pupilData.lastName).toBe(pupil.lastName)
+      expect(pupilData.dob).toBe('31 December 2000')
+    })
   })
 
   describe('school not found', () => {
