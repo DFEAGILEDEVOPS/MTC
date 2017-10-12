@@ -3,12 +3,12 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 module.exports.validate = async (single, school) => {
   const pupil = ({
     school: school._id,
-    upn: single[ 3 ].trim().toUpperCase(),
-    foreName: single[ 0 ],
-    lastName: single[ 2 ],
-    middleNames: single[ 1 ],
-    gender: single[ 5 ],
-    dob: single[ 4 ],
+    upn: single[ 5 ].trim().toUpperCase(),
+    foreName: single[ 1 ],
+    lastName: single[ 0 ],
+    middleNames: single[ 2 ],
+    gender: single[ 4 ],
+    dob: single[ 3 ],
     pin: null,
     pinExpired: false
   })

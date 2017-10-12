@@ -1,8 +1,8 @@
 const ValidationError = require('../validation-error')
 const addBatchFileErrorMessages = require('../errors/csv-pupil-upload')
 
-const validateHeader = (header) => header[0] === 'First name' && header[1] === 'Middle name(s)' && header[2] === 'Last name' &&
-  header[3] === 'UPN' && header[4] === 'Date of Birth' && header[5] === 'Gender'
+const validateHeader = (header) => header[0] === 'Last name' && header[1] === 'First name' && header[2] === 'Middle name(s)' &&
+  header[3] === 'Date of Birth' && header[4] === 'Gender' && header[5] === 'UPN'
 
 module.exports.validate = (dataSet, header, element) => {
   const validationError = new ValidationError()
@@ -14,7 +14,7 @@ module.exports.validate = (dataSet, header, element) => {
     errorArr.push(addBatchFileErrorMessages.not6Columns)
   }
   const upnList = []
-  dataSet.map(r => upnList.push(r[3]))
+  dataSet.map(r => upnList.push(r[5]))
   if (upnList.some((val, i) => upnList.indexOf(val) !== i)) {
     errorArr.push(addBatchFileErrorMessages.duplicateUPN)
   }
