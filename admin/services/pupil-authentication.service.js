@@ -1,7 +1,7 @@
 'use strict'
-
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
+const dateService = require('../services/date.service')
 
 const pupilAuthenticationService = {
   /**
@@ -25,6 +25,15 @@ const pupilAuthenticationService = {
       throw new Error('Authentication failure')
     }
     return pupil
+  },
+
+  getPupilDataForSpa: (pupil) => {
+    const pupilData = {
+      firstName: pupil.foreName,
+      lastName: pupil.lastName,
+      dob: dateService.formatFullGdsDate(pupil.dob)
+    }
+    return pupilData
   }
 }
 

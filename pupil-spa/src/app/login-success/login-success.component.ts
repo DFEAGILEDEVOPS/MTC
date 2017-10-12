@@ -20,6 +20,7 @@ export class LoginSuccessComponent implements OnInit {
     this.pupil = new Pupil;
     this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;
+    this.pupil.dob = pupilData.dob;
     this.school = new School;
     this.school.name = schoolData.name;
   }

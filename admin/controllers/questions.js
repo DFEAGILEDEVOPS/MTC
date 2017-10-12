@@ -25,10 +25,7 @@ const getQuestions = async (req, res) => {
     return apiResponse.unauthorised(res)
   }
 
-  const pupilData = {
-    firstName: pupil.foreName,
-    lastName: pupil.lastName
-  }
+  const pupilData = pupilAuthenticationService.getPupilDataForSpa(pupil)
 
   const schoolData = {
     id: pupil.school._id,
