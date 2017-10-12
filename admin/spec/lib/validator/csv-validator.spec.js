@@ -36,7 +36,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0]).toBe('Ensure columns have the same headings and order as the template')
-      expect(validationError.get('template-upload')[1]).toBe('File rejected. The file must contain exactly 6 columns')
+      expect(validationError.get('template-upload')[1]).toBe('Rows must contain exactly 5 commas / 6 columns')
       done()
     })
     it('detected duplicate UPN on the input data', async function (done) {
@@ -57,7 +57,20 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0])
-        .toBe('File rejected. If adding only 1 pupil please add pupil individually')
+        .toBe('You must contain at least two rows of data')
+      done()
+    })
+    it('detected a dataset which exceeds allowed max rows', async function (done) {
+      headers = [ 'First name', 'Middle name(s)', 'Last name', 'UPN', 'Date of Birth',
+        'Gender' ]
+      dataSet = [ [ 'John', 'Lawrence', 'Smith', 'X822200014001', '5/22/1005', 'M' ] ]
+      for (let i = 0; i <= 301; i++) {
+        dataSet.push(dataSet[0])
+      }
+      const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
+      expect(validationError.hasError()).toBe(true)
+      expect(validationError.get('template-upload')[0])
+        .toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.')
       done()
     })
   })
