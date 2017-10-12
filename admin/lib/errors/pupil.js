@@ -3,15 +3,13 @@
 module.exports.addPupil = {
   'genderRequired': 'Gender must be M or F',
 
-  'firstNameRequired': 'First name can\'t be blank',
-  'firstNameLength': 'First name can\'t be blank',
+  'firstNameRequired': 'First name can\'t be blank and can\'t contain more than 128 characters',
   'firstNameInvalidCharacters': 'First name can\'t contain special character',
 
   'middleNameMaxLengthExceeded': 'Middle name can\'t contain more than 128 characters',
   'middleNameInvalidCharacters': 'Check the middle name does not contain special characters',
 
   'lastNameRequired': 'Last name can\'t be blank and can\'t contain more than 128 characters',
-  'lastNameLength': 'Last name can\'t be blank and can\'t contain more than 128 characters',
   'lastNameInvalidCharacters': 'Last name can\'t contain special characters',
 
   'dobNoFuture': 'Date of birth can\'t be in the future',

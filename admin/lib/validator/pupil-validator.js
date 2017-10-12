@@ -14,18 +14,21 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.foreName)) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.foreName.trim())) {
+  if (isEmpty(pupilData.foreName.trim()) || pupilData.foreName.length > 128) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameRequired)
   }
   // Middlenames validation
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.middleNames) && !isEmpty(pupilData.middleNames)) {
     validationError.addError('middleNames', addPupilErrorMessages.middleNameInvalidCharacters)
   }
+  if (pupilData.middleNames.length >= 128) {
+    validationError.addError('middleNames', addPupilErrorMessages.middleNameMaxLengthExceeded)
+  }
   // Lastname validation
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.lastName)) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.lastName.trim())) {
+  if (isEmpty(pupilData.lastName.trim()) || pupilData.lastName.length > 128) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameRequired)
   }
   // DoB Day Validation
@@ -49,7 +52,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
-  if (!isInt(pupilData['dob-year'], { min: 1900, max: (new Date().getFullYear()) })) {
+  if (!isInt(pupilData['dob-year'], { min: (new Date().getFullYear() - 20), max: (new Date().getFullYear()) })) {
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
@@ -122,5 +125,6 @@ module.exports.validate = async (pupilData) => {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }
+  console.log(validationError)
   return validationError
 }
