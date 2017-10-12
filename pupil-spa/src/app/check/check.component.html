@@ -5,6 +5,12 @@
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
                       (clickEvent)="warmupIntroClickHandler()">
     </app-warmup-intro>
+    <app-warmup-loading *ngSwitchCase="'warmup-preload'"
+                 [question]="question.sequenceNumber"
+                 [loadingTimeout]="config.loadingTime"
+                 (timeoutEvent)="loadingTimeoutHandler($event)"
+                 [total]="totalNumberOfQuestions">
+    </app-warmup-loading>
     <app-warmup-complete *ngSwitchCase="'warmup-complete'"
                        (clickEvent)="warmupCompleteClickHandler()">
     </app-warmup-complete>
