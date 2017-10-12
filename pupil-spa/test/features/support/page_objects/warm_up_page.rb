@@ -1,12 +1,12 @@
 class WarmUpPage < SitePrism::Page
   set_url '/check'
 
-  element :heading, '.heading-xlarge', text: "Warm-up questions"
+  element :heading, '.heading-xlarge', text: "Practise questions"
   element :preload, '.preload'
   element :timer,'.remaining-time-warmup'
   element :question, '.question'
   element :start_warm_up_questions, '#start-now-button'
-  element :welcome_message, '.lede', text: "Press 'Start now' to see 3 warm-up questions. Use them to familiarise yourself with what the questions will look like and how to enter your answers."
+  element :welcome_message, '.lede', text: "Press 'Start now' to see 3 practise questions. Use them to familiarise yourself with what the questions will look like and how to enter your answers."
   element :start_now, '#start-now-button'
   element :warm_up_label, '.warm-up-questions-label'
 
