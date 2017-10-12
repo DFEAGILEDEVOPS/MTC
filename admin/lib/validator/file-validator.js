@@ -3,11 +3,11 @@ const fileErrorMessages = require('../errors/file-csv')
 const { isEmpty } = require('validator')
 const fs = require('fs-extra')
 
-module.exports.validate = async (uploadedFile) => {
+module.exports.validate = async (uploadedFile, element) => {
   let validationError = new ValidationError()
   // No File
   if (!uploadedFile) {
-    validationError.addError('template-upload', fileErrorMessages.noFile)
+    validationError.addError(element, fileErrorMessages.noFile)
     return validationError
   }
   // File not readable
@@ -18,7 +18,7 @@ module.exports.validate = async (uploadedFile) => {
     unreadable = true
   }
   if (isEmpty(fileContent) || unreadable) {
-    validationError.addError('template-upload', fileErrorMessages.isNotReadable)
+    validationError.addError(element, fileErrorMessages.isNotReadable)
   }
   return validationError
 }

@@ -110,7 +110,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     return next(error)
   }
   const uploadFile = req.files && req.files.csvTemplateFile
-  const fileErrors = await fileValidator.validate(uploadFile)
+  const fileErrors = await fileValidator.validate(uploadFile, 'template-upload')
   if (fileErrors.hasError()) {
     res.hasError = true
     res.fileErrors = fileErrors
