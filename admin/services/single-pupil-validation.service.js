@@ -12,7 +12,7 @@ module.exports.validate = async (single, school) => {
     pin: null,
     pinExpired: false
   })
-  const dob = single[ 4 ].split('/')
+  const dob = single[ 3 ].split('/')
   const pupilData = Object.assign({
     'dob-day': dob[ 0 ],
     'dob-month': dob[ 1 ],
