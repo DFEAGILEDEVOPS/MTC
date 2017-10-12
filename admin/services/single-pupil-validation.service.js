@@ -1,4 +1,4 @@
-const { validate } = require('../lib/validator/pupil-validator')
+const pupilValidator = require('../lib/validator/pupil-validator')
 
 module.exports.validate = async (single, school) => {
   const pupil = ({
@@ -18,7 +18,7 @@ module.exports.validate = async (single, school) => {
     'dob-month': dob[ 1 ],
     'dob-year': dob[ 2 ]
   }, pupil)
-  const validationError = await validate(pupilData)
+  const validationError = await pupilValidator.validate(pupilData)
   if (validationError.hasError()) {
     single[ 6 ] = []
     Object.keys(validationError.errors).forEach((e) => single[ 6 ].push(validationError.errors[ e ]))
