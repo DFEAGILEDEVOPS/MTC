@@ -7,15 +7,21 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const errorHandler = require('errorhandler')
-const { completeCheck } = require('./controllers/complete-check')
-const { auth } = require('./controllers/auth')
 const mongoose = require('mongoose')
 const config = require('./config')
+
+// controllers
+const ping = require('./controllers/ping')
+const { completeCheck } = require('./controllers/complete-check')
+const { auth } = require('./controllers/auth')
 
 dotenv.config()
 
 mongoose.promise = global.Promise
 const connectionString = config.MONGO_CONNECTION_STRING
+// TODO: why is config not using process.env value?
+console.log('config.mongo_connection:', connectionString)
+console.log('MONGO_CONNECTION_STRING', process.env.MONGO_CONNECTION_STRING)
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
@@ -27,7 +33,7 @@ const app = express()
 // configure express defaults
 app.set('port', process.env.PORT || 3003)
 app.use(compression())
-app.use(morgan())
+app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.disable('x-powered-by')
 app.use(helmet())
@@ -40,15 +46,7 @@ app.use(helmet.contentSecurityPolicy({
 // routes
 app.post('/complete-check', completeCheck)
 app.post('/auth', auth)
-app.get('/', function (req, res) {
-  // TODO implement values during build, and change route to '/ping'
-  res.header('content-type', 'application/json')
-  res.send({
-    'Build': 'YYYYMMDD.x',
-    'Commit': 'Git.Commit.Hash',
-    'CurrentServerTime': new Date().toTimeString()
-  })
-})
+app.get('/ping', ping.get)
 
 if (process.env.NODE_ENV === 'development') {
   app.use(errorHandler())

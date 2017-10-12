@@ -6,8 +6,7 @@ const completeCheckService = {}
 completeCheckService.submitCheck = async function (data) {
   // Timestamp the request
   data.receivedByServerAt = Date.now()
-
-  // store to data store
+  // persist to data store
   await completeCheckDataService.create(data)
 }
 
