@@ -2059,12 +2059,27 @@ mongodb-core@2.1.10:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
+mongodb-core@2.1.17:
+  version "2.1.17"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.17.tgz#a418b337a14a14990fb510b923dee6a813173df8"
+  dependencies:
+    bson "~1.0.4"
+    require_optional "~1.0.0"
+
 mongodb@2.2.26:
   version "2.2.26"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.26.tgz#1bd50c557c277c98e1a05da38c9839c4922b034a"
   dependencies:
     es6-promise "3.2.1"
     mongodb-core "2.1.10"
+    readable-stream "2.2.7"
+
+mongodb@^2.2.33:
+  version "2.2.33"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.33.tgz#b537c471d34a6651b48f36fdbf29750340e08b50"
+  dependencies:
+    es6-promise "3.2.1"
+    mongodb-core "2.1.17"
     readable-stream "2.2.7"
 
 mongoose@4.9.6:
