@@ -7,5 +7,5 @@ cat $BUILD_FILE
 
 COMMIT_FILE="./commit.txt"
 touch $COMMIT_FILE
-echo "$BUILD_SOURCEVERSION" tr '\n' ' ' > $COMMIT_FILE
+echo "$BUILD_SOURCEVERSION" | tr '\n' ' ' > $COMMIT_FILE
 cat $COMMIT_FILE
