@@ -13,14 +13,15 @@ module.exports = {
       }
 
       try {
-        db.collection('attendancecodes').drop()
-        await createAttendanceCode('Incorrect registration', 1, 0)
-        await createAttendanceCode('Absent', 2, 1)
-        await createAttendanceCode('Left school', 3, 2)
-        await createAttendanceCode('Unable to access', 4, 3)
-        await createAttendanceCode('Working below the overall standard of the check', 5, 4)
-        await createAttendanceCode('Just arrived', 6, 5)
-        mongoose.disconnect(() => next())
+        db.collection('attendancecodes').drop(async () => {
+          await createAttendanceCode('Incorrect registration', 1, 0)
+          await createAttendanceCode('Absent', 2, 1)
+          await createAttendanceCode('Left school', 3, 2)
+          await createAttendanceCode('Unable to access', 4, 3)
+          await createAttendanceCode('Working below the overall standard of the check', 5, 4)
+          await createAttendanceCode('Just arrived', 6, 5)
+          mongoose.disconnect(() => next())
+        })
       } catch (error) {
         console.log('ERROR', error)
         next(error)
