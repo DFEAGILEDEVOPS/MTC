@@ -383,6 +383,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   let pupilsList
   let attendanceCodes
+  let pupils
 
   // Flash message after removing a reason
   if (req.params.removed) {
@@ -398,19 +399,18 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
-  let pupils = await fetchPupilsWithReasons(req.user.School)
-  if (pupils) {
-    pupilsList = await Promise.all(pupils.map(async (p) => {
-      if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-        let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-        p.reason = accCode[0].reason
-      }
-      return p
-    }))
+  // Get pupils for active school
+  try {
+    pupils = await fetchPupilsWithReasons(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
+  if (attendanceCodes && pupils) {
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
   return res.render('school/pupils-not-taking-check', {

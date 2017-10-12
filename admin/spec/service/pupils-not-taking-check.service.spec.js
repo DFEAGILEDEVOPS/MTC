@@ -43,7 +43,7 @@ describe('Pupils are not taking the check. Service', () => {
     it('should return a list of pupils with reasons (happy path)', async (done) => {
       try {
         const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
-        expect(pupilsWithReasons).toEqual(pupilsWithReasonsMock)
+        expect(pupilsWithReasons).toBe(pupilsWithReasonsMock)
         done()
       } catch (error) {
         done('Error found while testing fetchPupilsWithReasons')
@@ -59,7 +59,7 @@ describe('Pupils are not taking the check. Service', () => {
     it('should return undefined (unhappy path)', async (done) => {
       try {
         const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
-        expect(pupilsWithReasons).toEqual(undefined)
+        expect(pupilsWithReasons).toBe(undefined)
         done()
       } catch (error) {
         done('Error found while testing fetchPupilsWithReasons')
