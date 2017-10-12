@@ -9,13 +9,17 @@ const helmet = require('helmet')
 const errorHandler = require('errorhandler')
 const mongoose = require('mongoose')
 const config = require('./config')
-
+const appInsights = require('applicationinsights')
 // controllers
 const ping = require('./controllers/ping')
 const { completeCheck } = require('./controllers/complete-check')
 const { auth } = require('./controllers/auth')
 
+// initialise .env file variables
 dotenv.config()
+
+// initialise monitoring
+if (config.APPINSIGHTS_INSTRUMENTATIONKEY) { appInsights.setup() }
 
 mongoose.promise = global.Promise
 const connectionString = config.MONGO_CONNECTION_STRING
