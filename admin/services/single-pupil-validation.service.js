@@ -14,9 +14,9 @@ module.exports.validate = async (single, school) => {
   })
   const dob = single[ 3 ].split('/')
   const pupilData = Object.assign({
-    'dob-day': dob[ 0 ],
-    'dob-month': dob[ 1 ],
-    'dob-year': dob[ 2 ]
+    'dob-day': dob[ 0 ] || '',
+    'dob-month': dob[ 1 ] || '',
+    'dob-year': dob[ 2 ] || ''
   }, pupil)
   const validationError = await pupilValidator.validate(pupilData)
   if (validationError.hasError()) {
