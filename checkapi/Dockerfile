@@ -13,7 +13,7 @@ RUN yarn global add pm2
 # RUN ./node_modules/.bin/gulp build
 
 # Show current folder structure in logs
-RUN ls -al -R
+RUN ls -al
 
 EXPOSE 3003
 CMD [ "pm2-docker", "./index.js" ]
