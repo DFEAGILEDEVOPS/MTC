@@ -6,7 +6,6 @@ require('sinon-mongoose')
 const proxyquire = require('proxyquire')
 const Pupil = require('../../models/pupil')
 const pupilNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
-//const AttendanceCode = require('../../models/attendance-code')
 
 const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
@@ -33,38 +32,6 @@ describe('Pupils are not taking the check. Service', () => {
 
   afterEach(() => {
     sandbox.restore()
-  })
-
-  describe('fetchPupilsWithReasons successfully finds pupils', () => {
-    beforeEach(() => {
-      service = setupService(pupilsWithReasonsMock)
-    })
-
-    it('should return a list of pupils with reasons (happy path)', async (done) => {
-      try {
-        const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
-        expect(pupilsWithReasons).toBe(pupilsWithReasonsMock)
-        done()
-      } catch (error) {
-        done('Error found while testing fetchPupilsWithReasons')
-      }
-    })
-  })
-
-  describe('fetchPupilsWithReasons finds no pupils with reasons', () => {
-    beforeEach(() => {
-      service = setupService({})
-    })
-
-    it('should return undefined (unhappy path)', async (done) => {
-      try {
-        const pupilsWithReasons = await service.fetchPupilsWithReasons(9991001)
-        expect(pupilsWithReasons).toBe(undefined)
-        done()
-      } catch (error) {
-        done('Error found while testing fetchPupilsWithReasons')
-      }
-    })
   })
 
   describe('sortPupilsByLastName', () => {

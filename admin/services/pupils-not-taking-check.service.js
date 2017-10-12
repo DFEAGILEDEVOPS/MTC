@@ -1,27 +1,12 @@
-const Pupil = require('../models/pupil')
-
 /** @namespace */
 
 const pupilsNotTakingCheckService = {
 
   /**
-   * Fetch pupils with reasons to not take the check.
-   * @param schoolId
-   * @returns {Promise.<*>}
-   */
-  fetchPupilsWithReasons: async (schoolId) => {
-    const pupilsWithReasons = await Pupil
-    .find({'attendanceCode': {$exists: true}, 'school': schoolId})
-    .sort('lastName')
-    if (pupilsWithReasons.length > 0) {
-      return pupilsWithReasons
-    }
-  },
-  /**
    * Sort columns by last name asc/desc.
    * @param sortField
    * @param sortDirection
-   * @returns {Promise.<{htmlSortDirection: Array, arrowSortDirection: Array}>}
+   * @returns {{htmlSortDirection: Array, arrowSortDirection: Array}}
    */
   sortPupilsByLastName: (sortField, sortDirection) => {
     let htmlSortDirection = []
