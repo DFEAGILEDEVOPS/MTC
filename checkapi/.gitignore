@@ -28,5 +28,6 @@ bower_components
 .DS_Store
 Thumbs.db
 
-# nyc test coverage
+# test output
 .nyc_output
+coverage

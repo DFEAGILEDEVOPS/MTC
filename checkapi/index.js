@@ -7,14 +7,15 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const errorHandler = require('errorhandler')
-const { completeCheck } = require('./controllers/completeCheck')
+const { completeCheck } = require('./controllers/complete-check')
 const { auth } = require('./controllers/auth')
 const mongoose = require('mongoose')
+const config = require('./config')
 
 dotenv.config()
 
 mongoose.promise = global.Promise
-const connectionString = process.env.MONGO_CONNECTION_STRING
+const connectionString = config.MONGO_CONNECTION_STRING
 mongoose.connect(connectionString, function (err) {
   if (err) {
     throw new Error('Could not connect to mongodb: ' + err.message)
@@ -26,7 +27,7 @@ const app = express()
 // configure express defaults
 app.set('port', process.env.PORT || 3003)
 app.use(compression())
-app.use(morgan('dev'))
+app.use(morgan())
 app.use(bodyParser.json())
 app.disable('x-powered-by')
 app.use(helmet())
