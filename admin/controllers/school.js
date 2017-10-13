@@ -78,10 +78,10 @@ const getPupils = async (req, res, next) => {
     let { hl } = req.query
     if (hl) {
       hl = JSON.parse(hl)
-      hl = typeof hl === 'string' && JSON.parse(hl)
+      hl = typeof hl === 'string' ? JSON.parse(hl) : hl
     }
     res.render('school/pupil-register', {
-      highlight: new Set(hl),
+      highlight: hl && new Set(hl),
       pupils: pupilsFormatted,
       breadcrumbs: req.breadcrumbs()
     })
