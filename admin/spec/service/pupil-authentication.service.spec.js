@@ -4,9 +4,8 @@
 const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire')
-const School = require('../../models/school')
-const Pupil = require('../../models/pupil')
-
+const schoolDataService = require('../../services/data-access/school.data.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolMock = require('../mocks/school')
 const pupilMock = require('../mocks/pupil')
 pupilMock.school = schoolMock
@@ -16,14 +15,11 @@ describe('pupil authentication service', () => {
 
   function setupService (schoolMock, pupilMock) {
     return proxyquire('../../services/pupil-authentication.service', {
-      '../models/school': sandbox.mock(School)
+      '../services/data-access/school.data.service': sandbox.mock(schoolDataService)
         .expects('findOne')
-        .chain('exec')
         .resolves(schoolMock),
-      '../models/pupil': sandbox.mock(Pupil)
+      '../models/pupil': sandbox.mock(pupilDataService)
         .expects('findOne')
-        .chain('populate')
-        .chain('exec')
         .resolves(pupilMock)
     })
   }
@@ -46,6 +42,13 @@ describe('pupil authentication service', () => {
       expect(pupil).toEqual(pupilMock)
       done()
     })
+
+    it('prepares the pupil data', () => {
+      const pupilData = service.getPupilDataForSpa(pupilMock)
+      expect(pupilData.firstName).toBe(pupilMock.foreName)
+      expect(pupilData.lastName).toBe(pupilMock.lastName)
+      expect(pupilData.dob).toBe('31 December 2000')
+    })
   })
 
   describe('school not found', () => {
@@ -56,7 +59,7 @@ describe('pupil authentication service', () => {
     it('throws when the school is not found', async (done) => {
       try {
         await service.authenticate('pupilPin', 'badPin')
-        done(new Error('expected to throw'))
+        expect('this').toBe('thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
@@ -73,7 +76,7 @@ describe('pupil authentication service', () => {
     it('throws when pupil is not found', async (done) => {
       try {
         await service.authenticate('badPin', 'schoolPin')
-        done(new Error('expected to throw'))
+        expect('this').toBe('thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
@@ -90,7 +93,7 @@ describe('pupil authentication service', () => {
     it('throws when both pupil and school are not found', async (done) => {
       try {
         await service.authenticate('badPin', 'badPin')
-        done(new Error('expected to throw'))
+        expect('this').toBe('thrown')
       } catch (error) {
         expect(error).toBeDefined()
         expect(error.message).toBe('Authentication failure')
