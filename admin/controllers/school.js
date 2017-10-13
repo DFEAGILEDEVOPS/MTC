@@ -75,9 +75,13 @@ const getPupils = async (req, res, next) => {
   })
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    if (req.query.hl) req.query.hl = JSON.parse(req.query.hl)
+    let { hl } = req.query
+    if (hl) {
+      hl = JSON.parse(hl)
+      hl = typeof hl === 'string' && JSON.parse(hl)
+    }
     res.render('school/pupil-register', {
-      highlight: new Set(req.query.hl),
+      highlight: new Set(hl),
       pupils: pupilsFormatted,
       breadcrumbs: req.breadcrumbs()
     })

@@ -1,3 +1,5 @@
+<% console.log(highlight) %>
+
 <div class="grid-row">
     <div class="column-one-half">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
@@ -15,7 +17,7 @@
         <% } %>
         <div>
             <h1 tabindex="0" class="heading-xlarge">Pupil register</h1>
-            <a class="button button-secondary" href="/school/pupil/add"> Add single pupil </a>
+            <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
             <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
         </div>
         <table id='register-pupils' class="spacious">

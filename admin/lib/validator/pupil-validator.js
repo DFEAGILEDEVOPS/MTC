@@ -52,7 +52,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
-  if (!isInt(pupilData['dob-year'], { min: (new Date().getFullYear() - 20), max: (new Date().getFullYear()) })) {
+  if (!isInt(pupilData['dob-year'], { min: (new Date().getFullYear() - 10), max: (new Date().getFullYear()) })) {
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
