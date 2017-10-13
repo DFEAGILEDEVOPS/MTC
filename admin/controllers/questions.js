@@ -67,7 +67,7 @@ const getQuestions = async (req, res) => {
     pupil: pupilData,
     school: schoolData,
     config,
-    access_token: token
+    access_token: token.token
   }
   // console.log('response', responseData)
 

@@ -5,7 +5,7 @@ const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 const ObjectId = require('mongoose').Types.ObjectId
 
-const Pupil = require('../models/pupil')
+const pupilDataService = require('./data-access/pupil.data.service')
 
 /** @namespace */
 
@@ -20,8 +20,8 @@ const jwtService = {
       throw new Error('Pupil is required')
     }
     const jwtId = uuidv4()
-    pupil.jwtSecret = await crypto.randomBytes(32).toString('hex')
-    await pupil.save()
+    const jwtSecret = await crypto.randomBytes(32).toString('hex')
+    await pupilDataService.update(pupil._id, {jwtSecret: jwtSecret})
 
     // TODO: for additional security add in a device Id
     const payload = {
@@ -33,8 +33,8 @@ const jwtService = {
     }
 
     // Construct a JWT token
-    const token = await jwt.sign(payload, pupil.jwtSecret)
-    return token
+    const token = await jwt.sign(payload, jwtSecret)
+    return {token, jwtSecret}
   },
   /**
    * Verify a token
@@ -50,7 +50,8 @@ const jwtService = {
     const decoded = jwt.decode(token)
 
     // Find the pupil in the subject to retrieve the secret
-    const pupil = await Pupil.findOne(ObjectId(decoded.sub)).lean().exec()
+    // const pupil = await Pupil.findOne(ObjectId(decoded.sub)).lean().exec()
+    const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
 
     if (!pupil) {
       throw new Error('Subject not found')
