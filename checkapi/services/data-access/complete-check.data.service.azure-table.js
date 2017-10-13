@@ -19,6 +19,7 @@ completedCheckDataService.create = (data) => new Promise((resolve, reject) => {
   }
   // TODO - can we optimise this by newing up only once in service?
   const tableService = azureStorage.createTableService()
+  console.log('inserting to azure table storage')
   tableService.insertEntity('completedchecks', item, function (error, result, response) {
     if (error) {
       return reject(error)

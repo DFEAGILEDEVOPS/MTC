@@ -1,8 +1,8 @@
 'use strict'
 
+require('dotenv').config()
 const appInsights = require('applicationinsights')
 const express = require('express')
-const dotenv = require('dotenv')
 const compression = require('compression')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
@@ -12,13 +12,7 @@ const errorHandler = require('errorhandler')
 const ping = require('./controllers/ping')
 const { completeCheck } = require('./controllers/complete-check')
 const { auth } = require('./controllers/auth')
-// data services
-const mongoService = require('./services/data-access/mongo.service')
-const mongoose = require('mongoose')
-const azureService = require('./services/data-access/azure-storage.service')
-
-// initialise .env file variables
-dotenv.config()
+const storageService = require('./services/data-access/storage.service')
 const config = require('./config')
 
 // initialise monitoring
@@ -27,38 +21,7 @@ if (config.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.start()
 }
 
-// data service initialisation
-function initMongoose () {
-  mongoose.promise = global.Promise
-  const connectionString = config.MONGO_CONNECTION_STRING
-  mongoose.connect(connectionString, function (err) {
-    if (err) {
-      throw new Error('Could not connect to mongodb: ' + err.message)
-    }
-  })
-}
-
-function initTableStorage () {
-  azureService.init()
-}
-
-function initMongoOfficial () {
-  mongoService.connect()
-}
-
-switch (config.CheckStorage) {
-  case 'TableStorage':
-    initTableStorage()
-    break
-  case 'MongoOfficial':
-    initMongoOfficial()
-    break
-  case 'Mongoose':
-    initMongoose()
-    break
-  default:
-    initMongoOfficial()
-}
+storageService.init()
 
 const app = express()
 
