@@ -46,10 +46,10 @@
             <% pupils.forEach((p) => { %>
                 <tr>
                     <td class="pupil-name-container">
-                        <% if (highlight.has(p._id.toString())) { %>
+                        <% if (highlight && highlight.has(p._id.toString())) { %>
                         <div class="highlight"></div>
                         <% } %>
-                        <div class="pupil-name <% if (highlight.has(p._id.toString())) { %>indent<% } %>%>">
+                        <div class="pupil-name <% if (highlight && highlight.has(p._id.toString())) { %>indent<% } %>%>">
                             <div class="truncate">
                                 <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
                                     <%= `${p.lastName}, ${p.foreName}` %>
