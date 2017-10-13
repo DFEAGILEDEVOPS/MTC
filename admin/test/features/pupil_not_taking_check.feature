@@ -106,11 +106,13 @@ Feature:
     And I should see the updated pupil on the hub page
 
     Examples:
-      | reason                 |
-      | Absent                 |
-      | Left                   |
-      | Incorrect Registration |
-      | Withdrawn              |
+      | reason                                          |
+      | Incorrect registration                          |
+      | Absent                                          |
+      | Left school                                     |
+      | Unable to access                                |
+      | Working below the overall standard of the check |
+      | Just arrived                                    |
 
   @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
