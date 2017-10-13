@@ -4,6 +4,7 @@ class MongooseModelMock {
   }
   findOne () { return this }
   lean () { return this }
+  updateOne () { return this.done() }
   exec () { return this.done() }
 }
 
