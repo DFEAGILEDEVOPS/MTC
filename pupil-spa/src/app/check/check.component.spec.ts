@@ -212,7 +212,7 @@ describe('CheckComponent', () => {
       testStateChange('warmup-intro', 'warmup-intro', true);
     });
     it('shows the warmup loading screen when the state is "LW<digit>"', () => {
-      testStateChange('LW1', 'preload', true);
+      testStateChange('LW1', 'warmup-preload', true);
     });
     it('shows the warmup question when the state is "W<digit>"', () => {
       testStateChange('W1', 'question', true);

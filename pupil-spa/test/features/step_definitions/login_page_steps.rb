@@ -83,3 +83,12 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
   sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
   sign_in_page.sign_in_button.click
 end
+
+
+Then(/^I should all the correct pupil details$/) do
+  school = MongoDbHelper.find_school(9991999)['name']
+  expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
+  expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
+  expect(confirmation_page.school_name.text).to  eql "School: #{school}"
+  expect(confirmation_page.dob.text).to  eql "Date of Birth: #{@pupil_information['dob'].strftime("%-d %B %Y")}"
+end
