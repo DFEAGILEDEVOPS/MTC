@@ -125,6 +125,5 @@ module.exports.validate = async (pupilData) => {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }
-  console.log(validationError)
   return validationError
 }

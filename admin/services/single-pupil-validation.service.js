@@ -1,4 +1,5 @@
 const pupilValidator = require('../lib/validator/pupil-validator')
+const moment = require('moment')
 
 module.exports.validate = async (single, school) => {
   const pupil = ({
@@ -8,7 +9,7 @@ module.exports.validate = async (single, school) => {
     lastName: single[ 0 ],
     middleNames: single[ 2 ],
     gender: single[ 4 ],
-    dob: single[ 3 ],
+    dob: moment(single[ 3 ], 'DD/MM/YYYY').toDate(),
     pin: null,
     pinExpired: false
   })

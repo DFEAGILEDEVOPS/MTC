@@ -50,7 +50,7 @@ const getPupils = async (req, res, next) => {
   const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
-    const dob = moment(p.dob).format('DD/MM/YYYY')
+    const dob = moment(p.dob).format('DD MMM YYYY')
     const answers = await fetchPupilAnswers(p._id)
     const { score } = fetchScoreDetails(answers)
     // TODO: Fetch pupil's group when it's implemented
