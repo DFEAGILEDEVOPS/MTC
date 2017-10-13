@@ -21,7 +21,7 @@ describe('pupil validator', function () {
       upn: 'H801200001001',
       'dob-day': '01',
       'dob-month': '02',
-      'dob-year': '2005',
+      'dob-year': '2010',
       gender: 'M'
     }
   }
@@ -229,7 +229,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '1'
         req.body['dob-month'] = '1'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -239,7 +239,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '7'
         req.body['dob-month'] = '07'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -249,7 +249,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '10'
         req.body['dob-month'] = '7'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -275,7 +275,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = ''
         req.body['dob-month'] = '12'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
@@ -289,7 +289,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '21'
         req.body['dob-month'] = ''
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
@@ -335,7 +335,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = 'a'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
@@ -363,7 +363,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '29'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
@@ -379,7 +379,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '022'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
@@ -393,7 +393,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '010'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
@@ -407,7 +407,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '10'
-        req.body['dob-year'] = '20051'
+        req.body['dob-year'] = '20101'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)

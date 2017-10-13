@@ -45,7 +45,7 @@ describe('File validator', function () {
       const validationError = await fileValidator.validate(uploadedFile, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('template-upload')).toBe(true)
-      expect(validationError.get('template-upload')).toBe('Please select a file to save')
+      expect(validationError.get('template-upload')).toBe('Please select a .csv file to save')
       done()
     })
     it('detects empty file', async function (done) {
