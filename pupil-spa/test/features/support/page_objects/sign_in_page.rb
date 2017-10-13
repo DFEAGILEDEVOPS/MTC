@@ -6,7 +6,7 @@ class SignInPage < SitePrism::Page
   element :footer_link, '.footer-wrapper .footer-meta .copyright a'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 
-  element :welcome_message, '.lede', text: "To start your multiplication tables check, enter the school password and pupil PIN provided by your teacher, then click ‘Sign in’."
+  element :welcome_message, '.lede', text: "Enter your school password and pupil PIN, then click ‘Sign in’"
 
   element :logo, '.organisation-logo'
   element :first_letter, '#last-name'

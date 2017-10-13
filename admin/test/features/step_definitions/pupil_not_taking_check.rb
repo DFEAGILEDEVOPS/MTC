@@ -207,7 +207,7 @@ end
 
 But(/^I decide to change it$/) do
   pupils_not_taking_check_page.add_reason.click
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Withdrawn'}.click
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Just arrived'}.click
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
@@ -219,7 +219,7 @@ Then(/^the updated reason should be stored$/) do
   @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
   pupil_attendance_code = @pupil['attendanceCode']
   @attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
-  expect(@attendance_code['reason']).to eql 'Withdrawn'
+  expect(@attendance_code['reason']).to eql 'Just arrived'
 end
 
 When(/^I have navigated away and then return to the pupil not taking check page$/) do
