@@ -62,5 +62,5 @@ Given(/^I am on the warm up loading page$/) do
 end
 
 Then(/^I should see the total number of warm up questions$/) do
-  expect(check_page.preload.text).to eql 'Practise question 1 out of 3'
+  expect(check_page.preload.text).to eql 'Practice question 1 out of 3'
 end

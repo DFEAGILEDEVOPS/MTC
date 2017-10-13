@@ -1,7 +1,7 @@
 class WarmUpPage < SitePrism::Page
   set_url '/check'
 
-  element :heading, '.heading-xlarge', text: "Practise questions"
+  element :heading, '.heading-xlarge', text: "Practice questions"
   element :preload, '.preload'
   element :timer,'.remaining-time-warmup'
   element :question, '.question'
