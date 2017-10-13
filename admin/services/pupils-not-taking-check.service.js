@@ -72,7 +72,9 @@ const pupilsNotTakingCheckService = {
       p.highlight = false
       if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
         let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-        p.reason = accCode[0].reason
+        if (accCode.length > 0) {
+          p.reason = accCode[0].reason
+        }
         if (highlight) {
           p.highlight = (highlight.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
         }
