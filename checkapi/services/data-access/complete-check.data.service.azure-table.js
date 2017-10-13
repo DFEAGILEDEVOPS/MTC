@@ -15,7 +15,7 @@ completedCheckDataService.create = (data) => new Promise((resolve, reject) => {
   var item = {
     PartitionKey: entityGenerator.String('completedchecks'),
     RowKey: entityGenerator.String(uuid().toString()),
-    check: entityGenerator.Binary(encodedData)
+    check: entityGenerator.String(encodedData)
   }
   // TODO - can we optimise this by newing up only once in service?
   const tableService = azureStorage.createTableService()
