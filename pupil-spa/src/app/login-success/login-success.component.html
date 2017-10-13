@@ -4,14 +4,15 @@
       <h1 class="heading-xlarge">Welcome, {{pupil.firstName}}</h1>
     </header>
     <p class="lede">
-      Check your details below. Begin the multiplication tables check by clicking on ‘Read instructions’.
+      Check your details are correct. Begin by clicking ‘Read instructions’.
     </p>
     <br />
     <p id="first-name" class="lede">First name: <strong class="bold-medium">{{pupil.firstName}}</strong></p>
     <p id="last-name" class="lede">Last name: <strong class="bold-medium">{{pupil.lastName}}</strong></p>
     <p id="school" class="lede">School: <strong class="bold-medium">{{school.name}}</strong></p>
+    <p id="dob" class="lede">Date of Birth: <strong class="bold-medium">{{pupil.dob}}</strong></p>
     <p class="lede">
-      <a routerLink="/sign-out" >This is not me, I will enter my details again</a>
+      <a routerLink="/sign-out" >This is not me, I will try again</a>
     </p>
     <button class="button" (click)="onClick()">Read Instructions</button>
   </div>
