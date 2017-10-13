@@ -72,7 +72,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank')
+        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 
@@ -98,7 +98,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank')
+        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 

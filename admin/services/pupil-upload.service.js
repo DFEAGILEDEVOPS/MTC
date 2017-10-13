@@ -4,15 +4,15 @@ const pupilDataService = require('./data-access/pupil.data.service')
 const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
 
-const onCSVReadComplete = async (csvDataArray, school, resolve) => {
+const onCSVReadComplete = async (csvDataArray, school) => {
   const { pupils, csvData, headers, validationErrors, hasValidationError } = await validateCSVService.process(csvDataArray, school)
-  if (hasValidationError) resolve({ fileErrors: validationErrors, hasValidationError })
+  if (hasValidationError) return ({ fileErrors: validationErrors, hasValidationError })
   // Generate csv with errors
   const csvHasErrors = csvData.some(p => p[6])
   if (csvHasErrors) {
     const csvBlob = await generateErrorCSVService.generate(school, headers, csvData)
-    if (csvBlob.hasError) resolve(csvBlob.error)
-    return resolve({
+    if (csvBlob.hasError) return (csvBlob.error)
+    return ({
       csvErrorFile: csvBlob.file.name,
       hasValidationError: true
     })
@@ -23,11 +23,11 @@ const onCSVReadComplete = async (csvDataArray, school, resolve) => {
     try {
       savedPupils = await pupilDataService.insertMany(pupils)
     } catch (error) {
-      return resolve({ error })
+      return (error)
     }
     savedPupils.map((p) => pupilIds.push(p._id))
     pupilIds = JSON.stringify(pupilIds)
-    resolve({ pupils: savedPupils, pupilIds })
+    return ({ pupils: savedPupils, pupilIds })
   }
 }
 
@@ -41,7 +41,8 @@ module.exports.upload = async (school, uploadFile) => {
         csvDataArray.push(data)
       })
       .on('end', async () => {
-        await onCSVReadComplete(csvDataArray, school, resolve)
+        const response = await onCSVReadComplete(csvDataArray, school)
+        return resolve(response)
       })
   })
   return pr
