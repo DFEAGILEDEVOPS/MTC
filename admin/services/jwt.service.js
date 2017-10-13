@@ -50,7 +50,6 @@ const jwtService = {
     const decoded = jwt.decode(token)
 
     // Find the pupil in the subject to retrieve the secret
-    // const pupil = await Pupil.findOne(ObjectId(decoded.sub)).lean().exec()
     const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
 
     if (!pupil) {
