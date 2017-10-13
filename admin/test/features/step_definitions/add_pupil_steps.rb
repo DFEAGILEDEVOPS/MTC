@@ -38,12 +38,12 @@ When(/^I submit the form without the completing mandatory fields$/) do
 end
 
 Then(/^I should see validation errors$/) do
-  expect(@page.error_summary.gender.text).to eql 'Select a gender' unless @page == edit_pupil_page
-  expect(@page.error_messages.map {|message| message.text}).to include 'Select a gender' unless @page == edit_pupil_page
-  expect(@page.error_summary.first_name.text).to eql "First name can't be blank"
-  expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank"
-  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank"
-  expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank"
+  expect(@page.error_summary.gender.text).to eql 'Gender must be M or F' unless @page == edit_pupil_page
+  expect(@page.error_messages.map {|message| message.text}).to include 'Gender must be M or F' unless @page == edit_pupil_page
+  expect(@page.error_summary.first_name.text).to eql "First name can't be blank and can't contain more than 128 characters"
+  expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank and can't contain more than 128 characters"
+  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank and can't contain more than 128 characters"
+  expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank and can't contain more than 128 characters"
   expect(@page.error_summary.year.text).to eql "Date of birth can't be blank"
   expect(@page.error_messages.map {|message| message.text}).to include "Date of birth can't be blank"
   expect(@page.error_summary.upn.text).to eql "UPN is missing"
@@ -58,7 +58,7 @@ When(/^I submit the form without completing the optional fields$/) do
                           female: true,
                           day: '18',
                           month: '02',
-                          year: '1987',
+                          year: '2010',
                           upn: UpnGenerator.generate
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
@@ -88,8 +88,8 @@ When(/^I decide to go back$/) do
 end
 
 Then(/^I should see a validation error for first name$/) do
-  expect(@page.error_summary.first_name.text).to eql "First name can't be blank"
-  expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank"
+  expect(@page.error_summary.first_name.text).to eql "First name can't be blank and can't contain more than 128 characters"
+  expect(@page.error_messages.map {|message| message.text}).to include "First name can't be blank and can't contain more than 128 characters"
 end
 
 When(/^I submit the form with a first name that is less than (\d+) character long$/) do |number|
@@ -101,15 +101,15 @@ When(/^I submit the form with a first name that is less than (\d+) character lon
                           female: true,
                           day: '18',
                           month: '02',
-                          year: '1987'
+                          year: '2010'
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
 end
 
 Then(/^I should see a validation error for last name$/) do
-  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank"
-  expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank"
+  expect(@page.error_summary.last_name.text).to eql "Last name can't be blank and can't contain more than 128 characters"
+  expect(@page.error_messages.map {|message| message.text}).to include "Last name can't be blank and can't contain more than 128 characters"
 end
 
 When(/^I submit the form with a last name that is less than (\d+) character long$/) do |number|
@@ -121,7 +121,7 @@ When(/^I submit the form with a last name that is less than (\d+) character long
                           female: true,
                           day: '18',
                           month: '02',
-                          year: '1987'
+                          year: '2010'
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -153,7 +153,7 @@ end
 When(/^I have submitted valid pupil details$/) do
   @upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
+  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -176,7 +176,7 @@ end
 
 When(/^I have submitted invalid pupil details$/) do
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', upn: @upn, female: true, day: '18', month: '02', year: '1987'}
+  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', upn: @upn, female: true, day: '18', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -188,7 +188,7 @@ end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
+  @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -213,7 +213,7 @@ end
 
 When(/^I have submitted valid pupil details without choosing a gender$/) do
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valud', upn: @upn, day: '18', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valud', upn: @upn, day: '18', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -227,7 +227,7 @@ end
 
 When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |days, _x|
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -235,13 +235,13 @@ When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |
 end
 
 Then(/^I should see a validation error for the day of the month$/) do
-  expect(@page.error_summary.day.text).to eql 'Please check "Day"'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Day"'
+  expect(@page.error_summary.day.text).to eql 'Enter a valid day for date of birth'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid day for date of birth'
 end
 
 When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: month, year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: month, year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -249,8 +249,8 @@ When(/^I submit the form with a DOB that has (\d+) as the month$/) do |month|
 end
 
 Then(/^I should see a validation error for the month of the year$/) do
-  expect(@page.error_summary.month.text).to eql 'Please check "Month"'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Month"'
+  expect(@page.error_summary.month.text).to eql 'Enter a valid month for date of birth'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid month for date of birth'
 end
 
 When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
@@ -263,8 +263,8 @@ When(/^I submit the form with a DOB that has (\d+) years$/) do |year|
 end
 
 Then(/^I should see a validation error for the year$/) do
-  expect(@page.error_summary.year.text).to eql 'Please check "Year"'
-  expect(@page.error_messages.map {|message| message.text}).to include 'Please check "Year"'
+  expect(@page.error_summary.year.text).to eql 'Enter a valid year for date of birth'
+  expect(@page.error_messages.map {|message| message.text}).to include 'Enter a valid year for date of birth'
 end
 
 When(/^I attempt to enter names that are more than (\d+) characters long$/) do |number|
@@ -287,7 +287,7 @@ end
 
 When(/^I submit valid details with a already used UPN$/) do
   @upn = 'H801200001001'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -295,14 +295,14 @@ When(/^I submit valid details with a already used UPN$/) do
 end
 
 Then(/^I should see an error stating more than (\d+) pupil with the same UPN$/) do |arg|
-  expect(@page.error_summary.upn.text).to eql "More than 1 pupil record with same UPN"
-  expect(@page.error_messages.map {|message| message.text}).to include "More than 1 pupil record with same UPN"
+  expect(@page.error_summary.upn.text).to eql "UPN is a duplicate of a pupil already in your register"
+  expect(@page.error_messages.map {|message| message.text}).to include "UPN is a duplicate of a pupil already in your register"
 end
 
 When(/^I submit valid details with a UPN that has a incorrect check letter$/) do
   @upn = UpnGenerator.generate
   @upn[0]= 'O'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -317,7 +317,7 @@ end
 When(/^I submit valid details with a UPN that has a invalid LA code$/) do
   @upn = UpnGenerator.generate
   @upn[1..3]= '000'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -332,7 +332,7 @@ end
 When(/^I submit valid details with a UPN that has a alpha character between characters 5\-12$/) do
   @upn = UpnGenerator.generate
   @upn[6]= 'A'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -347,7 +347,7 @@ end
 When(/^I submit valid details with a UPN that has a invalid alpha character at character 13$/) do
   @upn = UpnGenerator.generate
   @upn[12]= 'S'
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -361,7 +361,7 @@ end
 
 When(/^I submit valid details with a UPN has a lowercase alpha character$/) do
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: '10', month: '02', year: '1987'}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: '10', month: '02', year: '2010'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
