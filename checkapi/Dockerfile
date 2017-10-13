@@ -8,12 +8,13 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN rm -rf ./node_modules
-RUN yarn install --ignore-engines
-RUN yarn global add pm2
+RUN yarn install --production --ignore-engines
+# RUN yarn global add pm2
 # RUN ./node_modules/.bin/gulp build
 
 # Show current folder structure in logs
 RUN ls -al
 
 EXPOSE 3003
-CMD [ "pm2-docker", "./index.js" ]
+# CMD [ "pm2-docker", "./index.js" ]
+CMD [ "npm", "start" ]

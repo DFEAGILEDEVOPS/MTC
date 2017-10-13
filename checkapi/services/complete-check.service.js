@@ -3,7 +3,7 @@
 let completeCheckDataService = null
 const config = require('../config')
 
-switch (config.CheckStorage) {
+switch (config.StorageProvider) {
   case 'TableStorage':
     completeCheckDataService = require('./data-access/complete-check.data.service.azure-table')
     break
