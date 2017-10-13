@@ -8,10 +8,10 @@ module.exports.connect = (option) => new Promise((resolve, reject) => {
   MongoClient.connect(config.MONGO_CONNECTION_STRING, option, function (err, db) {
     if (err) {
       console.log('error connecting to MongoDB: ', err.message)
-      reject(err)
+      return reject(err)
     }
-    resolve(db)
     connection = db
+    return resolve(db)
   })
 })
 

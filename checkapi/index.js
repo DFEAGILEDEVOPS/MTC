@@ -8,15 +8,18 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
 const errorHandler = require('errorhandler')
-// const mongoose = require('mongoose')
-const config = require('./config')
 // controllers
 const ping = require('./controllers/ping')
 const { completeCheck } = require('./controllers/complete-check')
 const { auth } = require('./controllers/auth')
+// data services
+const mongoService = require('./services/data-access/mongo.service')
+const mongoose = require('mongoose')
+const azureService = require('./services/data-access/azure-storage.service')
 
 // initialise .env file variables
 dotenv.config()
+const config = require('./config')
 
 // initialise monitoring
 if (config.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -24,19 +27,38 @@ if (config.APPINSIGHTS_INSTRUMENTATIONKEY) {
   appInsights.start()
 }
 
-/* mongoose.promise = global.Promise
-const connectionString = config.MONGO_CONNECTION_STRING
-// TODO: why is config not using process.env value?
-console.log('config.mongo_connection:', connectionString)
-console.log('MONGO_CONNECTION_STRING', process.env.MONGO_CONNECTION_STRING)
-mongoose.connect(connectionString, function (err) {
-  if (err) {
-    throw new Error('Could not connect to mongodb: ' + err.message)
-  }
-}) */
-const mongoService = require('./services/data-access/mongo.service')
+// data service initialisation
+function initMongoose () {
+  mongoose.promise = global.Promise
+  const connectionString = config.MONGO_CONNECTION_STRING
+  mongoose.connect(connectionString, function (err) {
+    if (err) {
+      throw new Error('Could not connect to mongodb: ' + err.message)
+    }
+  })
+}
 
-mongoService.connect()
+function initTableStorage () {
+  azureService.init()
+}
+
+function initMongoOfficial () {
+  mongoService.connect()
+}
+
+switch (config.CheckStorage) {
+  case 'TableStorage':
+    initTableStorage()
+    break
+  case 'MongoOfficial':
+    initMongoOfficial()
+    break
+  case 'Mongoose':
+    initMongoose()
+    break
+  default:
+    initMongoOfficial()
+}
 
 const app = express()
 
