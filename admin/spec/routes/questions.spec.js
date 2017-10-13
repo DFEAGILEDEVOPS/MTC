@@ -16,6 +16,12 @@ const checkStartResponseMock = {
   checkForm: require('../mocks/checkform')
 }
 
+const getPupilDataFoSpaMock = {
+  firstName: 'Test',
+  lastName: 'User',
+  dob: '1 January 2000'
+}
+
 describe('Questions controller', () => {
   let goodReq, res
 
@@ -51,9 +57,13 @@ describe('Questions controller', () => {
     if (!options['check-start.service.startCheck']) {
       options['check-start.service.startCheck'] = function () { return Promise.resolve(checkStartResponseMock) }
     }
+    if (!options['pupil-authentication.service.getPupilDataForSpa']) {
+      options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataFoSpaMock }
+    }
     return proxyquire('../../controllers/questions', {
       '../services/pupil-authentication.service': {
-        authenticate: jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate'])
+        authenticate: jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate']),
+        getPupilDataForSpa: jasmine.createSpy().and.callFake(options['pupil-authentication.service.getPupilDataForSpa'])
       },
       '../services/config.service': {
         getConfig: jasmine.createSpy().and.callFake(options['config.service.getConfig'])
@@ -84,7 +94,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(200)
       expect(data.questions.length).toBe(20)
-      expect(data.pupil.firstName).toBe('Pupil')
+      expect(data.pupil.firstName).toBe('Test')
       expect(data.school.name).toBe('Example School One')
       expect(data.config.questionTime).toBe(6)
       done()

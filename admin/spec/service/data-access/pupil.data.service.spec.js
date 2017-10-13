@@ -9,8 +9,8 @@ require('sinon-mongoose')
 const Pupil = require('../../../models/pupil')
 const pupilMock = require('../../mocks/pupil')
 
-describe('pupil.data.service.spec', () => {
-  let sandbox
+describe('pupil.data.service', () => {
+  let service, sandbox
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create()
@@ -35,6 +35,35 @@ describe('pupil.data.service.spec', () => {
     it('returns a list of inserted pupils', async () => {
       const savedPupils = await pupilDataService.insertMany([pupil1, pupil2])
       expect(savedPupils.length).toBe(2)
+    })
+  })
+
+  describe('#findOne', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sinon.mock(Pupil).expects('findOne').chain('populate').chain('lean').chain('exec').resolves(pupilMock)
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil
+      })
+    })
+
+    it('calls the model', () => {
+      service.findOne({_id: 'some-id'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#update', () => {
+    beforeEach(() => {
+      sinon.mock(Pupil).expects('updateOne').returns(pupilMock)
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil
+      })
+    })
+
+    it('has an update method', () => {
+      expect(typeof service.update).toBe('function')
     })
   })
 })
