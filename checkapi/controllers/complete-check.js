@@ -9,6 +9,12 @@ const completeCheck = asyncMiddleware(async (req, res, next) => {
   res.sendStatus(200)
 })
 
+const readCheck = asyncMiddleware(async (req, res, next) => {
+  const check = await completeCheckService.get('uuid')
+  res.send(check)
+})
+
 module.exports = {
-  completeCheck
+  completeCheck,
+  readCheck
 }
