@@ -6,7 +6,9 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 let pupilValidator = require('../../../lib/validator/pupil-validator')
+// TODO: Remove Pupil mongoose model mocking from tests and replace it with corresponding service mock
 const Pupil = require('../../../models/pupil')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 
 let sandbox
 
@@ -634,15 +636,14 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check fails', () => {
     beforeEach(() => {
-      sandbox.mock(Pupil).expects('findOne').chain('exec').resolves(new Pupil())
+      sandbox.mock(pupilDataService).expects('findOne').resolves(true)
       proxyquire('../../../lib/validator/pupil-validator', {
-        '../models/pupil': Pupil
+        '../../../services/data-access/pupil.data.service': pupilDataService
       })
     })
 
     it('it ensures the UPN is unique', async (done) => {
       req.body = getBody()
-      req.body.upn = 'H801200001001'
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
