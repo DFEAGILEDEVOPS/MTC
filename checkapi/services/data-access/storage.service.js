@@ -38,6 +38,6 @@ module.exports.init = () => {
       initMongoose()
       break
     default:
-      initMongoOfficial()
+      initTableStorage()
   }
 }

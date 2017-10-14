@@ -13,6 +13,9 @@
     "test": "nyc -r html ./run-jasmine.js",
     "pm2": "pm2 start ./index.js"
   },
+  "engines": {
+    "node": "8.4.0"
+  },
   "dependencies": {
     "applicationinsights": "^1.0.0",
     "azure-storage": "^2.6.0",
