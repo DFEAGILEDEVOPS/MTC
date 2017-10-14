@@ -112,14 +112,14 @@ describe('pupil-upload service', () => {
     })
     describe('and returns an object with an error if save fails', () => {
       beforeEach(() => {
-        sandbox.mock(pupilDataService).expects('insertMany').rejects({ error: 'error' })
+        sandbox.mock(pupilDataService).expects('insertMany').returns(null)
         proxyquire('../../services/pupil-upload.service', {
           '../../services/data-access/pupil.data.service': pupilDataService
         })
       })
       it('when saved successfully', async (done) => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
-        expect(pr.error).toBe('error')
+        expect(pr.message).toBe('No pupils were saved')
         done()
       })
     })

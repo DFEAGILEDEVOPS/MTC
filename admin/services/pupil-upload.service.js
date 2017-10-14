@@ -19,12 +19,8 @@ const onCSVReadComplete = async (csvDataArray, school) => {
   } else {
     // Save pupils if validation is successful
     let pupilIds = []
-    let savedPupils
-    try {
-      savedPupils = await pupilDataService.insertMany(pupils)
-    } catch (error) {
-      return (error)
-    }
+    let savedPupils = await pupilDataService.insertMany(pupils)
+    if (!savedPupils) return (new Error('No pupils were saved'))
     savedPupils.map((p) => pupilIds.push(p._id))
     pupilIds = JSON.stringify(pupilIds)
     return ({ pupils: savedPupils, pupilIds })
