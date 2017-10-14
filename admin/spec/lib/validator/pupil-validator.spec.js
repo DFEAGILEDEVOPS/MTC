@@ -9,6 +9,7 @@ let pupilValidator = require('../../../lib/validator/pupil-validator')
 // TODO: Remove Pupil mongoose model mocking from tests and replace it with corresponding service mock
 const Pupil = require('../../../models/pupil')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const dataMock = require('../../mocks/pupil')
 
 let sandbox
 
@@ -636,7 +637,7 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check fails', () => {
     beforeEach(() => {
-      sandbox.mock(pupilDataService).expects('findOne').resolves(true)
+      sandbox.mock(pupilDataService).expects('findOne').resolves(dataMock)
       proxyquire('../../../lib/validator/pupil-validator', {
         '../../../services/data-access/pupil.data.service': pupilDataService
       })
