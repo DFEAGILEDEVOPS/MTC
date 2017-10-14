@@ -5,7 +5,7 @@ const addPupilErrorMessages = require('../errors/pupil').addPupil
 const XRegExp = require('xregexp')
 const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
-const uniqueUpnService = require('../../services/data-access/check-unique-upn.data.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 
 module.exports.validate = async (pupilData) => {
   // TODO: Move to reusable validation service
@@ -120,8 +120,8 @@ module.exports.validate = async (pupilData) => {
   }
   // We need to check that the UPN is unique
   if (!(validationError.get('upn'))) {
-    const isUPNUnique = await uniqueUpnService.isUnique(pupilData.upn, pupilData._id)
-    if (isUPNUnique) {
+    const existingPupil = await pupilDataService.findOne({ upn: pupilData.upn })
+    if (existingPupil && existingPupil._id.toString() === pupilData.id) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }
