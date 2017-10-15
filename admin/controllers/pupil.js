@@ -7,7 +7,7 @@ const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const fileValidator = require('../lib/validator/file-validator')
 const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
-const { azureDownloadFile } = require('../services/data-access/azure-file.data.service')
+const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 
 const getAddPupil = async (req, res, next) => {
@@ -123,7 +123,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     return next(error)
   }
   // upload error
-  if (csvUploadResult.error) next(csvUploadResult.error)
+  if (csvUploadResult.error) return next(csvUploadResult.error)
   // render with errors
   if (csvUploadResult.hasValidationError) {
     req.session.csvErrorFile = csvUploadResult.csvErrorFile
@@ -143,7 +143,7 @@ const getAddMultiplePupilsCSVTemplate = async (req, res) => {
 }
 
 const getErrorCSVFile = async (req, res) => {
-  const blobFile = await azureDownloadFile('csvuploads', req.session.csvErrorFile)
+  const blobFile = await azureFileDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
   res.setHeader('Content-disposition', 'filename=multiple_pupils_errors.csv')
   res.setHeader('content-type', 'text/csv')
   res.write(blobFile)
