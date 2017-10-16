@@ -177,3 +177,7 @@ legend {
 /* General */
 /* Prevent anything on the screen being selectable */
 body { user-select: none; }
+
+.nowrap {
+  white-space: nowrap;
+}

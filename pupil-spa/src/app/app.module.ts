@@ -30,6 +30,7 @@ import { UserService } from './services/user/user.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
+import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -60,7 +61,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     QuestionComponent,
     WarmupCompleteComponent,
-    WarmupIntroComponent
+    WarmupIntroComponent,
+    WarmupLoadingComponent
   ],
   imports: [
     RouterModule.forRoot(

@@ -137,15 +137,15 @@ export class CheckComponent implements OnInit {
         break;
       case CheckComponent.warmupLoadingRe.test(stateDesc): {
         // Show the warmup-loading screen
-        const matches = /^LW(\d+)$/.exec(stateDesc);
+        const matches = CheckComponent.warmupLoadingRe.exec(stateDesc);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.isWarmUp = true;
-        this.viewState = 'preload';
+        this.viewState = 'warmup-preload';
         break;
       }
       case CheckComponent.warmupQuestionRe.test(stateDesc): {
         // Show the warmup question screen
-        const matches = /^W(\d+)$/.exec(stateDesc);
+        const matches = CheckComponent.warmupQuestionRe.exec(stateDesc);
         this.isWarmUp = true;
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
@@ -161,7 +161,7 @@ export class CheckComponent implements OnInit {
       case CheckComponent.loadingRe.test(stateDesc): {
         // Show the loading screen
         this.isWarmUp = false;
-        const matches = /^L(\d+)$/.exec(stateDesc);
+        const matches = CheckComponent.loadingRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
         break;

@@ -75,14 +75,6 @@ const pupilService = {
     }).sort({createdAt: -1}).exec()
     return answers
   },
-  fetchPupilsWithReasons: async (schoolId) => {
-    const pupilsWithReasons = await Pupil
-      .find({'attendanceCode': {$exists: true}, 'school': schoolId})
-      .sort('lastName')
-    if (pupilsWithReasons.length > 0) {
-      return pupilsWithReasons
-    }
-  },
   /**
    * Fetches score details for pupils who have taken the check.
    * @param {object} answers - Pupil's answers set.
@@ -98,7 +90,6 @@ const pupilService = {
       percentage
     }
   },
-
   validatePupil: async (pupil, pupilData) => {
     const validationError = await pupilValidator.validate(pupilData)
     try {
