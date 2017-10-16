@@ -61,7 +61,7 @@ Feature:
   Scenario: Names can only be a max of 128 characters long
     Given I am on the add pupil page
     When I attempt to enter names that are more than 128 characters long
-    Then I should see only 128 characters are saved
+    Then I should see a validation error for first name
 
   Scenario: First names should contain at least 1 character long
     Given I am on the add pupil page
