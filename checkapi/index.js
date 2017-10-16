@@ -28,7 +28,10 @@ const app = express()
 // configure express defaults
 app.set('port', process.env.PORT || 3003)
 app.use(compression())
-app.use(morgan('dev'))
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'))
+  app.use(errorHandler())
+}
 app.use(bodyParser.json())
 app.disable('x-powered-by')
 app.use(helmet())
@@ -44,12 +47,8 @@ app.post('/complete-check', completeCheck)
 app.post('/auth', auth)
 app.get('/ping', ping.get)
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(errorHandler())
-}
-
 app.listen(app.get('port'), () => {
-  console.log(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'))
+  console.log(('  App is running on port %d in %s mode'), app.get('port'), app.get('env'))
   console.log('  Press CTRL-C to stop\n')
 })
 
