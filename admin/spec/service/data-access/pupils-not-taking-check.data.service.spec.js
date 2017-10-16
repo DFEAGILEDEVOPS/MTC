@@ -9,7 +9,7 @@ const Pupil = require('../../../models/pupil')
 const pupilsWithReasonsMock = require('../../mocks/pupils-with-reason')
 
 describe('pupils-not-taking-check.data.service', () => {
-  let service, service2, sandbox
+  let service, sandbox
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create()
@@ -29,7 +29,6 @@ describe('pupils-not-taking-check.data.service', () => {
 
     it('should return a list of pupils with reasons', () => {
       service.fetchPupilsWithReasons(9991001)
-      console.log('FOO', mock.verify())
       expect(mock.verify()).toBe(true)
     })
   })
