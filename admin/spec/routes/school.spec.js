@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine */
+/* global describe beforeEach afterEach it expect jasmine, spyOn */
 
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -40,8 +40,10 @@ describe('school controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/school').getGeneratePinsOverview
+      spyOn(res, 'render').and.returnValue(null)
       await controller(req, res)
       expect(res.locals.pageTitle).toBe('Generate pupil PINs')
+      expect(res.render).toHaveBeenCalled()
       done()
     })
   })
@@ -68,8 +70,10 @@ describe('school controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/school').getGeneratePinsList
+      spyOn(res, 'render').and.returnValue(null)
       await controller(req, res)
       expect(res.locals.pageTitle).toBe('Select pupils')
+      expect(res.render).toHaveBeenCalled()
       done()
     })
   })
