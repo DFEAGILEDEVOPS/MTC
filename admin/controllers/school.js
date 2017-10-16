@@ -204,6 +204,15 @@ const getGeneratePinsOverview = async (req, res) => {
   })
 }
 
+const getGeneratePinsList = async (req, res) => {
+  res.locals.pageTitle = 'Select pupils'
+  req.breadcrumbs('Generate pupil PINs', '/school/generate-pins-overview')
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/generate-pins-list', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 const getSubmitAttendance = async (req, res, next) => {
   res.locals.pageTitle = 'Attendance register'
   req.breadcrumbs(res.locals.pageTitle)
@@ -541,6 +550,7 @@ module.exports = {
   getResults,
   downloadResults,
   getGeneratePinsOverview,
+  getGeneratePinsList,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,

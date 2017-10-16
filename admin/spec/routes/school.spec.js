@@ -46,4 +46,32 @@ describe('school controller:', () => {
       done()
     })
   })
+
+  describe('getGeneratePinsList() route', () => {
+    let sandbox
+    let goodReqParams = {
+      method: 'GET',
+      url: '/school/generate-pins-list',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      }
+    }
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    it('displays the generate pins list page', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school').getGeneratePinsList
+      await controller(req, res)
+      expect(res.locals.pageTitle).toBe('Select pupils')
+      done()
+    })
+  })
 })
