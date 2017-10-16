@@ -13,8 +13,11 @@ switch (config.StorageProvider) {
   case 'Mongoose':
     completeCheckDataService = require('./data-access/complete-check.data.service.mongoose')
     break
+  case 'QueueService':
+    completeCheckDataService = require('./data-access/complete-check.data.service.azure-queue')
+    break
   default:
-    completeCheckDataService = require('./data-access/complete-check.data.service.mongoose')
+    throw new Error('Storage Provider not configured')
 }
 
 const completeCheckService = {}

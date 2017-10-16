@@ -5,6 +5,7 @@ const mongoService = require('./mongo.service')
 const mongoose = require('mongoose')
 const azureService = require('./azure-storage.service')
 const config = require('../../config')
+const queueService = require('./azure-queue.service')
 
 // data service initialisation
 function initMongoose () {
@@ -25,6 +26,10 @@ function initMongoOfficial () {
   mongoService.connect()
 }
 
+function initQueueService () {
+  queueService.init()
+}
+
 module.exports.init = () => {
   console.log('  Storage Provider:', process.env.STORAGE_PROVIDER)
   switch (config.StorageProvider) {
@@ -36,6 +41,9 @@ module.exports.init = () => {
       break
     case 'Mongoose':
       initMongoose()
+      break
+    case 'QueueService':
+      initQueueService()
       break
     default:
       initTableStorage()
