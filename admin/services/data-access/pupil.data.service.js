@@ -4,6 +4,17 @@ const Pupil = require('../../models/pupil')
 const pupilDataService = {}
 
 /**
+ * Insert a list of pupils in the db
+ * @param pupils
+ * @return {Array}
+ */
+pupilDataService.insertMany = async (pupils) => {
+  const mongoosePupils = pupils.map(p => new Pupil(p))
+  const savedPupils = await Pupil.insertMany(mongoosePupils)
+  return savedPupils
+}
+
+/**
  * Find a single pupil by criteria in `options`
  * @param options
  * @return {Promise.<{Object}>}

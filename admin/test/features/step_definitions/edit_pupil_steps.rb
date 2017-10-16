@@ -13,7 +13,7 @@ end
 When(/^I update with valid pupil data$/) do
   @updated_upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '1981'}
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '2010'}
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
 end
@@ -36,17 +36,17 @@ end
 Then(/^I should see validation errors when i submit with the following names$/) do |table|
   table.raw.flatten.each do |value|
     @upn = UpnGenerator.generate
-    @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '1987'}
+    @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
     @page.save_changes.click if @page == edit_pupil_page
     @time_stored = Time.now.utc.strftime("%Y-%m-%d %H")
-    expect(@page.error_summary.first_name.text).to eql 'Check the first name does not contain special characters'
-    expect(@page.error_messages.map{|message| message.text}).to include 'Check the first name does not contain special characters'
+    expect(@page.error_summary.first_name.text).to eql "First name can't contain special character"
+    expect(@page.error_messages.map{|message| message.text}).to include "First name can't contain special character"
     expect(@page.error_summary.middle_name.text).to eql 'Check the middle name does not contain special characters'
     expect(@page.error_messages.map{|message| message.text}).to include 'Check the middle name does not contain special characters'
-    expect(@page.error_summary.last_name.text).to eql 'Check last name for special characters'
-    expect(@page.error_messages.map{|message| message.text}).to include 'Check last name for special characters'
+    expect(@page.error_summary.last_name.text).to eql "Last name can't contain special characters"
+    expect(@page.error_messages.map{|message| message.text}).to include "Last name can't contain special characters"
   end
 end
 
