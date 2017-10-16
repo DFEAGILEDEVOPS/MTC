@@ -13,7 +13,7 @@ completedCheckDataService.create = (data) => new Promise((resolve, reject) => {
   var encodedData = Buffer.from(JSON.stringify(data)).toString('base64')
   const entityGenerator = azureStorage.TableUtilities.entityGenerator
   var item = {
-    PartitionKey: entityGenerator.String('completedchecks'),
+    PartitionKey: entityGenerator.String('completedchecks' + new Date().getSeconds()),
     RowKey: entityGenerator.String(uuid().toString()),
     check: entityGenerator.String(encodedData)
   }
