@@ -14,17 +14,7 @@ const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-form
 /* global beforeEach, describe, it, expect */
 
 describe('Pupils are not taking the check. Service', () => {
-  let service
   let sandbox
-
-  function setupService (mock) {
-    return proxyquire('../../services/pupils-not-taking-check.service.js', {
-      '../models/pupil': sandbox.mock(Pupil)
-      .expects('find')
-      .chain('sort')
-      .resolves(mock)
-    })
-  }
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create()

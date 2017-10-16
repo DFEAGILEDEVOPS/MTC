@@ -16,14 +16,14 @@ const AttendanceCode = new Schema({
   }
 }, {timestamps: true})
 
-AttendanceCode.statics.getAttendanceCodes = function () {
-  let attendanceCodes
-  try {
-    attendanceCodes = this.find()
-  } catch (error) {
-    console.log('ERROR getting attendance codes', error)
-  }
-  return attendanceCodes
-}
+// AttendanceCode.statics.getAttendanceCodes = function () {
+//   let attendanceCodes
+//   try {
+//     attendanceCodes = this.find()
+//   } catch (error) {
+//     console.log('ERROR getting attendance codes', error)
+//   }
+//   return attendanceCodes
+// }
 
 module.exports = mongoose.model('AttendanceCode', AttendanceCode)
