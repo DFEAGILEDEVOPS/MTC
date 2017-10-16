@@ -15,7 +15,6 @@ completedCheckDataService.create = (data) => new Promise((resolve, reject) => {
   const queueService = azureStorage.createQueueService()
   queueService.createMessage(queueName, message, function (error, result, response) {
     if (error) {
-      console.log('queue submission error:', error)
       return reject(error)
     }
     return resolve({ result, response })

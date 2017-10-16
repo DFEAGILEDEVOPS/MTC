@@ -46,6 +46,6 @@ module.exports.init = () => {
       initQueueService()
       break
     default:
-      initTableStorage()
+      throw new Error('Unsupported Storage Provider:', config.StorageProvider)
   }
 }

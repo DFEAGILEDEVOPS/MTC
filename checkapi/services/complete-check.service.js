@@ -17,7 +17,7 @@ switch (config.StorageProvider) {
     completeCheckDataService = require('./data-access/complete-check.data.service.azure-queue')
     break
   default:
-    throw new Error('Storage Provider not configured')
+    throw new Error('Unsupported Storage Provider:', config.StorageProvider)
 }
 
 const completeCheckService = {}
