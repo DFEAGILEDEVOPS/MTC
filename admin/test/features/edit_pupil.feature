@@ -9,7 +9,7 @@ Feature:
   Scenario: Edit details page has fields to capture pupil data
     Then I should see fields that will allow me to capture pupil data
     And the fields are pre populated with the data
-    
+
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
@@ -43,7 +43,8 @@ Feature:
 
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
-    Then I should see only 128 characters are saved
+     Then I should see a validation error for first name
+
 
   Scenario: First names should contain at least 1 character long
     When I submit the form with a first name that is less than 1 character long
