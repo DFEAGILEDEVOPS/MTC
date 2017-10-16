@@ -10,6 +10,9 @@ const AttendanceCode = new Schema({
   code: {
     type: Number,
     required: true
+  },
+  order: {
+    type: Number
   }
 }, {timestamps: true})
 

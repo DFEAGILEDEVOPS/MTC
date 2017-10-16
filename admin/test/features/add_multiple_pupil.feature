@@ -6,7 +6,7 @@ Feature: Add Multiple Pupil
 
   Scenario: Add Multiple Pupil Landing page displays heading and sub heading section
     Then I should see a heading for the Add Multiple pupils
-    And I can see sub heading 'Download example' on Add Multiple Pupil Page
+    And I can see sub heading 'Download template' on Add Multiple Pupil Page
     And I can see sub heading 'Upload file' on Add Multiple Pupil Page
 
   Scenario: Add Multiple Pupil Landing page displays info for adding multiple pupil
