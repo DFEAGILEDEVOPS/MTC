@@ -4,8 +4,8 @@ const ValidationError = require('../validation-error')
 const addPupilErrorMessages = require('../errors/pupil').addPupil
 const XRegExp = require('xregexp')
 const { isEmpty, isInt } = require('validator')
-const Pupil = require('../../models/pupil')
 const upnService = require('../../services/upn.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 
 module.exports.validate = async (pupilData) => {
   // TODO: Move to reusable validation service
@@ -14,18 +14,21 @@ module.exports.validate = async (pupilData) => {
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.foreName)) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.foreName.trim())) {
+  if (isEmpty(pupilData.foreName.trim()) || pupilData.foreName.length > 128) {
     validationError.addError('foreName', addPupilErrorMessages.firstNameRequired)
   }
   // Middlenames validation
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.middleNames) && !isEmpty(pupilData.middleNames)) {
     validationError.addError('middleNames', addPupilErrorMessages.middleNameInvalidCharacters)
   }
+  if (pupilData.middleNames.length >= 128) {
+    validationError.addError('middleNames', addPupilErrorMessages.middleNameMaxLengthExceeded)
+  }
   // Lastname validation
   if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(pupilData.lastName)) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameInvalidCharacters)
   }
-  if (isEmpty(pupilData.lastName.trim())) {
+  if (isEmpty(pupilData.lastName.trim()) || pupilData.lastName.length > 128) {
     validationError.addError('lastName', addPupilErrorMessages.lastNameRequired)
   }
   // DoB Day Validation
@@ -49,7 +52,7 @@ module.exports.validate = async (pupilData) => {
     validationError.addError('dob-month', addPupilErrorMessages.dobRequired)
   }
   // DoB year Validation
-  if (!isInt(pupilData['dob-year'], { min: 1900, max: (new Date().getFullYear()) })) {
+  if (!isInt(pupilData['dob-year'], { min: (new Date().getFullYear() - 10), max: (new Date().getFullYear()) })) {
     validationError.addError('dob-year', addPupilErrorMessages['dob-year'])
   }
   if (!XRegExp('^[0-9]+$').test(pupilData['dob-year'])) {
@@ -117,8 +120,8 @@ module.exports.validate = async (pupilData) => {
   }
   // We need to check that the UPN is unique
   if (!(validationError.get('upn'))) {
-    const pupil = await Pupil.findOne({upn: pupilData.upn}).exec()
-    if (pupil && pupil._id.toString() !== pupilData._id) {
+    const existingPupil = await pupilDataService.findOne({ upn: pupilData.upn })
+    if (existingPupil) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }

@@ -29,6 +29,7 @@ Feature: Login page
   Scenario: Users can login with valid credentials
     Given I have logged in
     Then I should be taken to the confirmation page
+    Then I should all the correct pupil details
 
   Scenario: Error is displayed when no details are entered
     Given I am on the sign in page
