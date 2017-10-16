@@ -224,10 +224,6 @@ And(/^I can see the validation error for duplicate UPN from attendance register 
   expect(@hashed_data[0][:errors].to_s.include?('UPN is a duplicate of a pupil already in your register')).to be_truthy, "Expected: 'UPN is a duplicate of a pupil already in your register'... But Got: #{@hashed_data[0][:errors].to_s}"
 end
 
-# And(/^I can see the validation error for duplicate UPN from within the file for multiple pupil upload$/) do
-#   expect(@hashed_data[0][:errors].to_s.include?('More than 1 pupil record with same UPN')).to be_truthy, "Expected: 'More than 1 pupil record with same UPN'... But Got: #{@hashed_data[0][:errors].to_s}"
-# end
-
 And(/^I can see the validation error for empty UPN for multiple pupil upload$/) do
   expect(@hashed_data[0][:errors].to_s.include?('UPN is missing')).to be_truthy, "Expected: 'UPN is missing'... But Got: #{@hashed_data[0][:errors].to_s}"
 end
