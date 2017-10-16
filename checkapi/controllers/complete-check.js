@@ -7,6 +7,7 @@ const completeCheck = asyncMiddleware(async (req, res, next) => {
   // TODO: JWT token authentication
   await completeCheckService.submitCheck(req.body)
   res.sendStatus(200)
+  res.set("Connection", "close")
 })
 
 const readCheck = asyncMiddleware(async (req, res, next) => {
