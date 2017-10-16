@@ -1,9 +1,8 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach afterEach it expect jasmine */
 
 const sinon = require('sinon')
 require('sinon-mongoose')
-const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 
 describe('school controller:', () => {
