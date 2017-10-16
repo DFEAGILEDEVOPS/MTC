@@ -3,7 +3,7 @@
 require('dotenv').config()
 const appInsights = require('applicationinsights')
 const express = require('express')
-const compression = require('compression')
+// const compression = require('compression')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
@@ -27,7 +27,7 @@ const app = express()
 
 // configure express defaults
 app.set('port', process.env.PORT || 3003)
-app.use(compression())
+// app.use(compression())
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'))
   app.use(errorHandler())
