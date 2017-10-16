@@ -23,6 +23,7 @@ const {
   sortPupilsByLastName,
   sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
 const { fetchPupilsWithReasons } = require('../services/data-access/pupils-not-taking-check.data.service')
+const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -54,7 +55,7 @@ const getPupils = async (req, res, next) => {
   const { pupils } = await fetchPupilsData(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
-    const dob = moment(p.dob).format('DD/MM/YYYY')
+    const dob = dateService.formatShortGdsDate(p.dob)
     const answers = await fetchPupilAnswers(p._id)
     const { score } = fetchScoreDetails(answers)
     // TODO: Fetch pupil's group when it's implemented
@@ -79,9 +80,13 @@ const getPupils = async (req, res, next) => {
   })
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    if (req.query.hl) req.query.hl = JSON.parse(req.query.hl)
+    let { hl } = req.query
+    if (hl) {
+      hl = JSON.parse(hl)
+      hl = typeof hl === 'string' ? JSON.parse(hl) : hl
+    }
     res.render('school/pupil-register', {
-      highlight: new Set(req.query.hl),
+      highlight: hl && new Set(hl),
       pupils: pupilsFormatted,
       breadcrumbs: req.breadcrumbs()
     })
