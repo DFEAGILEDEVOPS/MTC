@@ -3,5 +3,6 @@ module.exports = {
   school: 9991001,
   foreName: 'Pupil',
   lastName: 'One',
-  pin: 'd55sg'
+  pin: 'd55sg',
+  dob: '2000-12-31 00:00:00'
 }

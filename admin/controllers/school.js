@@ -17,8 +17,12 @@ const {
   fetchScoreDetails,
   fetchSortedPupilsData,
   fetchMultiplePupils,
-  fetchPupilsWithReasons,
   fetchOnePupil } = require('../services/pupil.service')
+const {
+  formatPupilsWithReasons,
+  sortPupilsByLastName,
+  sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
+const { fetchPupilsWithReasons } = require('../services/data-access/pupils-not-taking-check.data.service')
 const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
@@ -379,6 +383,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   let pupilsList
   let attendanceCodes
+  let pupils
 
   // Flash message after removing a reason
   if (req.params.removed) {
@@ -394,19 +399,18 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
-  let pupils = await fetchPupilsWithReasons(req.user.School)
-  if (pupils) {
-    pupilsList = await Promise.all(pupils.map(async (p) => {
-      if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-        let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-        p.reason = accCode[0].reason
-      }
-      return p
-    }))
+  // Get pupils for active school
+  try {
+    pupils = await fetchPupilsWithReasons(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
+  if (attendanceCodes && pupils) {
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
   return res.render('school/pupils-not-taking-check', {
@@ -428,72 +432,35 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
+  let pupils
   let pupilsList
-  let htmlSortDirection = []
-  let arrowSortDirection = []
 
   // Sorting
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-
-  let sortingDirection = [
-    {
-      'key': 'name',
-      'value': 'asc'
-    },
-    {
-      'key': 'reason',
-      'value': 'asc'
-    }
-  ]
-
-  // Markup links and arrows
-  sortingDirection.map((sd, index) => {
-    if (sd.key === sortField) {
-      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
-    } else {
-      htmlSortDirection[sd.key] = 'asc'
-      arrowSortDirection[sd.key] = 'sort'
-    }
-  })
+  const { htmlSortDirection, arrowSortDirection } = await sortPupilsByLastName(sortField, sortDirection)
 
   // Get attendance code index
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
-  // Get pupils for user' school
-  const pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
-  pupilsList = await Promise.all(pupils.map(async (p) => {
-    p.id = null
-    p.reason = 'N/A'
+  // Get pupils for active school
+  try {
+    pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
+  } catch (error) {
+    return next(error)
+  }
 
-    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-      let accCode = attendanceCodes.filter(ac => ac._id == p.attendanceCode._id)
-      p.reason = accCode[0].reason
-    }
-    return p
-  })).catch((error) => next(error))
+  if (attendanceCodes && pupils) {
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
+  }
 
   // Sorting by 'reason' needs to be done using .sort
   if (sortField === 'reason') {
-    pupilsList = await pupilsList.sort((a, b) => {
-      if (a.reason === 'N/A') {
-        return 1
-      } else if (b.reason === 'N/A') {
-        return -1
-      } else if (a.reason === b.reason) {
-        return 0
-      } else if (sortDirection === 'asc') {
-        return a.reason < b.reason ? -1 : 1
-      } else {
-        return a.reason < b.reason ? 1 : -1
-      }
-    })
+    pupilsList = sortPupilsByReason(pupilsList, sortDirection)
   }
 
   return res.render('school/select-pupils-not-taking-check', {
@@ -529,6 +496,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupilsToSave = []
   let pupilsList
   let attendanceCodes
+  let pupils
 
   pupilsData.map(async (pupil) => {
     pupil.attendanceCode = {
@@ -555,19 +523,19 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
   } catch (error) {
-    console.log('ERROR getting attendance codes', error)
     return next(error)
   }
 
-  const pupils = await fetchPupilsWithReasons(req.user.School)
-  pupilsList = await Promise.all(pupils.map(async (p) => {
-    if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-      let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-      p.reason = accCode[0].reason
-      p.highlight = (postedPupils.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
-    }
-    return p
-  }))
+  // Get pupils for active school
+  try {
+    pupils = await fetchPupilsWithReasons(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+
+  if (attendanceCodes && pupils) {
+    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils, Object.values(postedPupils))
+  }
 
   return res.render('school/pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
@@ -576,6 +544,13 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   })
 }
 
+/**
+ * Removing reason for pupil.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const removePupilNotTakingCheck = async (req, res, next) => {
   if (!req.params.pupilId || !req.user.School) {
     return res.redirect('/school/pupils-not-taking-check/select-pupils')

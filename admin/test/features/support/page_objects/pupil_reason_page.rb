@@ -30,15 +30,12 @@ class PupilReasonPage < SitePrism::Page
     element :absent, 'strong', text: 'Absent'
     element :absent_explanation, 'div', text: 'Pupil has not taken the check due to absence'
     element :left_school, 'strong', text: 'Left school'
-    element :left_school_explanation, 'div', text: 'Pupil has left the school'
-    element :incorrect_reg, 'strong', text: 'Incorrect registration'
-    element :incorrect_reg_explanation, 'div', text: 'Pupil has been incorrectly added to the Pupil Register. They may have been added by the school, or incorrectly included in the pre-populated list'
-    element :withdrawn, 'strong', text: 'Withdrawn'
-    element :withdrawn_explanation, 'div', text: 'Pupil has been withdrawn from the check.'
-    element :withdrawn_explanation_bullet, 'div', text: 'This includes pupils who:'
-    element :withdrawn_explanation_bullet_one, 'li', text: 'have just arrived and you have not had time to assess their abilities'
-    element :withdrawn_explanation_bullet_two, 'li', text: 'have no understanding of multiplication tables'
-    element :withdrawn_explanation_bullet_three, 'li', text: 'are unable to access the check'
+    element :left_school_explanation, 'div', text: 'Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.'
+    element :unable_to_access, 'strong', text: 'Unable to access'
+    element :unable_to_access_explanation, 'div', text: 'Pupil is unable to access the check.'
+    element :below_standard, 'strong', text: 'Working below the overall standard of the check'
+    element :below_standard_explanation, 'div', text: 'Pupil has shown no understanding of the multiplication tables and is considered unable to answer the easiest questions.'
+    element :just_arrived, 'strong', text: 'Just arrived'
+    element :just_arrived_explanation, 'div', text: 'Pupils has arrived in school during the check window and there isn’t enough time to establish their abilities.'
   end
-
 end
