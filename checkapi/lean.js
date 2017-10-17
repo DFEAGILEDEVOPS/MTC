@@ -2,7 +2,7 @@
 
 require('dotenv').config()
 const http = require('http')
-const timer = require('simple-timer')
+// const timer = require('simple-timer')
 const azure = require('azure-storage')
 const queueService = azure.createQueueService()
 const queueName = 'completedchecks'
@@ -38,10 +38,10 @@ http.createServer((request, response) => {
     })
 
     // TODO validation of request, authentication
-    timer.start('request')
+    // timer.start('request')
     queueService.createMessage(queueName, body, function (error, result, queueResponse) {
-      timer.stop('request')
-      console.log(`queue call took ${timer.get('request').delta}ms`)
+      // timer.stop('request')
+      // console.log(`queue call took ${timer.get('request').delta}ms`)
       if (error) {
         console.error(error)
         response.writeHead(500)
