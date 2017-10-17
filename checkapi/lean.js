@@ -3,6 +3,8 @@
 require('dotenv').config()
 const http = require('http')
 // const timer = require('simple-timer')
+const fs = require('fs')
+const path = require('path')
 const azure = require('azure-storage')
 const queueService = azure.createQueueService()
 const queueName = 'completedchecks'
@@ -20,6 +22,11 @@ http.createServer((request, response) => {
     response.write('Raw')
     response.statusCode = 200
     response.end()
+  }
+
+  if (request.method === 'GET' && request.url === '/loaderio-99a9565f58325293e217a36aa3ae695d.txt') {
+    response.writeHead(200)
+    response.end(fs.readFileSync(path.join(__dirname, 'public', 'loaderio-99a9565f58325293e217a36aa3ae695d.txt')))
   }
 
   if (request.method !== 'POST' || request.url !== '/complete-check') {
