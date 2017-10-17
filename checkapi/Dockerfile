@@ -15,4 +15,4 @@ RUN yarn global add pm2
 RUN ls -al
 
 EXPOSE 3003
-CMD [ "pm2-docker", "./lean.js" ]
+CMD [ "pm2-docker", "./index.js" ]
