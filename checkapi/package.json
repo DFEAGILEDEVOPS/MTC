@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node ./index.js",
     "build": "standard",
-    "debug": "nodemon ./index.js",
+    "debug": "nodemon ./lean.js",
     "test": "nyc -r html ./run-jasmine.js",
     "pm2": "pm2 start ./index.js"
   },

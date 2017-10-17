@@ -16,6 +16,12 @@ queueService.createQueueIfNotExists(queueName, function (error, result, response
 
 http.createServer((request, response) => {
   // const { headers, method, url } = request
+  if (request.method === 'GET' && request.url === '/') {
+    response.write('Raw')
+    response.statusCode = 200
+    response.end()
+  }
+
   if (request.method !== 'POST' || request.url !== '/complete-check') {
     response.statusCode = 404
     response.end()
