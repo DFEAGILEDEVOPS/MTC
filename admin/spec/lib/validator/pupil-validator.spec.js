@@ -6,7 +6,10 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 let pupilValidator = require('../../../lib/validator/pupil-validator')
+// TODO: Remove Pupil mongoose model mocking from tests and replace it with corresponding service mock
 const Pupil = require('../../../models/pupil')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const dataMock = require('../../mocks/pupil')
 
 let sandbox
 
@@ -21,7 +24,7 @@ describe('pupil validator', function () {
       upn: 'H801200001001',
       'dob-day': '01',
       'dob-month': '02',
-      'dob-year': '2005',
+      'dob-year': '2010',
       gender: 'M'
     }
   }
@@ -72,7 +75,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank')
+        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 
@@ -98,7 +101,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('foreName')).toBe(true)
-        expect(validationError.get('foreName')).toBe('First name can\'t be blank')
+        expect(validationError.get('foreName')).toBe('First name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 
@@ -109,7 +112,7 @@ describe('pupil validator', function () {
           let validationError = await pupilValidator.validate(req.body)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('foreName')).toBe(true)
-          expect(validationError.get('foreName')).toBe('Check the first name does not contain special characters')
+          expect(validationError.get('foreName')).toBe('First name can\'t contain special character')
         }
         done()
       })
@@ -172,7 +175,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
-        expect(validationError.get('lastName')).toBe('Last name can\'t be blank')
+        expect(validationError.get('lastName')).toBe('Last name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 
@@ -207,7 +210,7 @@ describe('pupil validator', function () {
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('lastName')).toBe(true)
-        expect(validationError.get('lastName')).toBe('Last name can\'t be blank')
+        expect(validationError.get('lastName')).toBe('Last name can\'t be blank and can\'t contain more than 128 characters')
         done()
       })
 
@@ -218,7 +221,7 @@ describe('pupil validator', function () {
           let validationError = await pupilValidator.validate(req.body)
           expect(validationError.hasError()).toBe(true)
           expect(validationError.isError('lastName')).toBe(true)
-          expect(validationError.get('lastName')).toBe('Check last name for special characters')
+          expect(validationError.get('lastName')).toBe('Last name can\'t contain special characters')
         }
         done()
       })
@@ -229,7 +232,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '1'
         req.body['dob-month'] = '1'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -239,7 +242,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '7'
         req.body['dob-month'] = '07'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -249,7 +252,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '10'
         req.body['dob-month'] = '7'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(false)
         done()
@@ -275,7 +278,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = ''
         req.body['dob-month'] = '12'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
@@ -289,7 +292,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '21'
         req.body['dob-month'] = ''
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
@@ -335,7 +338,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = 'a'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
@@ -363,15 +366,15 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '29'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Please check "Year"')
-        expect(validationError.get('dob-month')).toBe('Please check "Month"')
-        expect(validationError.get('dob-day')).toBe('Please check "Day"')
+        expect(validationError.get('dob-year')).toBe('Enter a valid year for date of birth')
+        expect(validationError.get('dob-month')).toBe('Enter a valid month for date of birth')
+        expect(validationError.get('dob-day')).toBe('Enter a valid day for date of birth')
         done()
       })
 
@@ -379,13 +382,13 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '022'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(true)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-day')).toBe('Please check "Day"')
+        expect(validationError.get('dob-day')).toBe('Enter a valid day for date of birth')
         done()
       })
 
@@ -393,13 +396,13 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '010'
-        req.body['dob-year'] = '2005'
+        req.body['dob-year'] = '2010'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(true)
         expect(validationError.isError('dob-year')).toBe(false)
-        expect(validationError.get('dob-month')).toBe('Please check "Month"')
+        expect(validationError.get('dob-month')).toBe('Enter a valid month for date of birth')
         done()
       })
 
@@ -407,13 +410,13 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '10'
-        req.body['dob-year'] = '20051'
+        req.body['dob-year'] = '20101'
         let validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('dob-day')).toBe(false)
         expect(validationError.isError('dob-month')).toBe(false)
         expect(validationError.isError('dob-year')).toBe(true)
-        expect(validationError.get('dob-year')).toBe('Please check "Year"')
+        expect(validationError.get('dob-year')).toBe('Enter a valid year for date of birth')
         done()
       })
     })
@@ -425,7 +428,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body)
         expect(validationError.hasError()).toBe(true)
         expect(validationError.isError('gender')).toBe(true)
-        expect(validationError.get('gender')).toBe('Select a gender')
+        expect(validationError.get('gender')).toBe('Gender must be M or F')
         done()
       })
     })
@@ -634,19 +637,18 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check fails', () => {
     beforeEach(() => {
-      sandbox.mock(Pupil).expects('findOne').chain('exec').resolves(new Pupil())
+      sandbox.mock(pupilDataService).expects('findOne').resolves(dataMock)
       proxyquire('../../../lib/validator/pupil-validator', {
-        '../models/pupil': Pupil
+        '../../../services/data-access/pupil.data.service': pupilDataService
       })
     })
 
     it('it ensures the UPN is unique', async (done) => {
       req.body = getBody()
-      req.body.upn = 'H801200001001'
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
-      expect(validationError.get('upn')).toBe('More than 1 pupil record with same UPN')
+      expect(validationError.get('upn')).toBe('UPN is a duplicate of a pupil already in your register')
       done()
     })
   })

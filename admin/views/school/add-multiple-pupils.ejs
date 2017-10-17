@@ -11,13 +11,29 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-            <h2 class="error-heading" id="error-summary-heading-1">Errors in your uploaded file</h2>
+            <h2 id="error-summary-heading-1">Errors in your uploaded file</h2>
             <br>
-            <p class="error-message">Please download the file below which highlights the errors.<br>
+            <% if (fileErrors && fileErrors.hasError()) { %>
+            <p>You need to fix the errors on this page before continuing. See highlighted errors below
+            </p>
+            <ul class="error-summary-list">
+                <% fileErrors.getUniqueFields(['template-upload']).map(f => { %>
+                <% const errors = fileErrors.get(f) %>
+                <% if (Array.isArray(errors)) { %>
+                <%  errors.map(e => { %>
+                <li><a href="#<%= f %>"><%= e %></a></li>
+                <% }) } else { %>
+                <li><a href="#<%= f %>"><%= errors %></a></li>
+                <% } %>
+                <% }) %>
+            </ul>
+            <% } else { %>
+            <p>Please download the file below which highlights the errors.<br>
                 Correct the errors and upload the updated file.
             </p>
             <div class="icon-file-download pupils-template"></div>
-            <a class="template-link" href="/school/pupil/download-error-csv">Pupil details file with errors</a> (CSV file)
+            <b><a class="template-link" href="/school/pupil/download-error-csv">Pupil details file with errors</a></b> (CSV file)
+            <% } %>
         </div>
     </div>
 </div>
@@ -29,12 +45,12 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h3 class="heading-medium">Download example</h3>
+        <h3 class="heading-medium">Download template</h3>
         <ol class="list list-number">
-            <li>Download the example
+            <li>Download the template
                 <div class="panel panel-border-wide">
                     <div class="icon-file-download pupils-template"></div>
-                    <a class="template-link" href="/school/pupil/download-multiple-template">Pupil details template</a> (CSV file)
+                    <b><a class="template-link" href="/school/pupil/download-multiple-template">Pupil details template</a></b> (CSV file)
                 </div>
             </li>
             <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
@@ -42,7 +58,7 @@
             <li>Save as a CSV file on your computer</li>
             <li>Select 'Choose file' button and navigate to the file on your computer</li>
             <li>Choose the file to upload</li>
-            <li>Click 'Save'</li>
+            <li>Click 'Upload'</li>
         </ol>
     </div>
     <div class="column-two-thirds">
@@ -51,8 +67,8 @@
             <div class="form-group">
                 <input type="file" name="csvTemplateFile" id="template-upload" accept="text/csv" aria-label="Choose a file to upload">
             </div>
-            <div class="form-group">
-                <input type="submit" class="button" value="Save"/>
+            <div class="form-buttons">
+                <input type="submit" class="button" value="Upload"/>
                 <a href="/school/pupil-register/lastName/true" class="button button-secondary">Cancel</a>
             </div>
         </form>
@@ -60,5 +76,5 @@
 </div>
 
 <div class="back-to-top-container">
-    <a href="#top">Back to top</a>
+    <b><a href="#top">Back to top</a></b>
 </div>
