@@ -29,6 +29,7 @@
     "mongoose": "4.9.6",
     "morgan": "^1.9.0",
     "piping": "^1.0.0-rc.4",
+    "simple-timer": "0.0.5",
     "uuidv4": "^0.5.0"
   },
   "devDependencies": {
