@@ -7,11 +7,11 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "scripts": {
-    "start": "node ./lean.js",
+    "start": "node ./index.js",
     "build": "standard",
-    "debug": "nodemon ./lean.js",
+    "debug": "nodemon ./index.js",
     "test": "nyc -r html ./run-jasmine.js",
-    "pm2": "pm2 start ./lean.js"
+    "pm2": "pm2 start ./index.js"
   },
   "engines": {
     "node": "8.4.0"
