@@ -3,8 +3,6 @@
 
 const sinon = require('sinon')
 require('sinon-mongoose')
-const proxyquire = require('proxyquire')
-const Pupil = require('../../models/pupil')
 const pupilNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 
 const attendanceCodesMock = require('../mocks/attendance-codes')
