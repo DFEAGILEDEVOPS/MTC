@@ -1,8 +1,9 @@
 {
   "apps": [{
-    "name": "MTC Check API",
+    "name": "checkapi",
     "instances": 0,
-    "script": "./index.js",
+    "script": "index.js",
+    "exec_mode": "cluster",
     "env": {
       "production": true
     }
