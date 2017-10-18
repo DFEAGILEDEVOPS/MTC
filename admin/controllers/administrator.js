@@ -6,6 +6,11 @@ const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
+const {
+  fetchCheckWindow,
+  deleteCheckWindow } = require('../services/data-access/check-window.data.service')
+const {
+  addForwardSlashToUrl } = require('../services/check-window.service')
 const config = require('../config')
 
 /**
@@ -135,6 +140,20 @@ const getCheckWindows = async (req, res, next) => {
   let htmlSortDirection = []
   let arrowSortDirection = []
 
+  // Errors and messages
+  switch (req.params.status) {
+    case 'validationError':
+      req.flash('error', 'Cannot delete check windows with a start date in the past.')
+      break
+    case 'deleteError':
+      req.flash('error', 'Error deleting check windows. Try again.')
+      break
+    case 'success':
+      req.flash('info', 'Check window deleted.')
+      break
+  }
+
+  // Sorting
   const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
 
@@ -163,6 +182,7 @@ const getCheckWindows = async (req, res, next) => {
     }
   })
 
+  // Format dates
   const formatDate = (startDate, endDate) => {
     let startYear = ' ' + startDate.format('YYYY')
     let endYear = ' ' + endDate.format('YYYY')
@@ -194,7 +214,11 @@ const getCheckWindows = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     checkWindowList: checkWindowsFormatted,
     htmlSortDirection,
-    arrowSortDirection
+    arrowSortDirection,
+    messages: {
+      error: req.flash('error'),
+      info: req.flash('info')
+    }
   })
 }
 
@@ -219,7 +243,7 @@ const checkWindowsForm = async (req, res, next) => {
 
   if (req.params.id !== undefined) {
     try {
-      checkWindowData = await CheckWindow.getCheckWindow(req.params.id)
+      checkWindowData = await fetchCheckWindow(req.params.id)
       checkWindowData = {
         checkWindowId: req.params.id,
         checkWindowName: checkWindowData.checkWindowName,
@@ -290,7 +314,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   if (req.body.checkWindowId !== '') {
     try {
-      checkWindow = await CheckWindow.getCheckWindow(req.body.checkWindowId)
+      checkWindow = await fetchCheckWindow(req.body.checkWindowId)
     } catch (error) {
       return next(error)
     }
@@ -328,11 +352,39 @@ const saveCheckWindows = async (req, res, next) => {
   return res.redirect('/administrator/check-windows')
 }
 
+const removeCheckWindow = async (req, res, next) => {
+  let checkWindow
+
+  if (!req.params.checkWindowId) {
+    return res.redirect('/administrator/check-windows')
+  }
+
+  try {
+    checkWindow = await fetchCheckWindow(req.params.checkWindowId)
+  } catch (err) {
+    return next(err)
+  }
+
+  if (checkWindow) {
+    if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
+      return res.redirect('/administrator/check-windows/status/validationError')
+    } else {
+      try {
+        await deleteCheckWindow(req.params.checkWindowId)
+        return res.redirect('/administrator/check-windows/status/success')
+      } catch (error) {
+        return res.redirect('/administrator/check-windows/status/deleteError')
+      }
+    }
+  }
+}
+
 module.exports = {
   getAdministration,
   getUpdateTiming,
   setUpdateTiming,
   getCheckWindows,
   checkWindowsForm,
-  saveCheckWindows
+  saveCheckWindows,
+  removeCheckWindow
 }
