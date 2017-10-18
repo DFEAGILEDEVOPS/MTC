@@ -91,15 +91,18 @@
             {
                 "answer" : "",
                 "factor2" : 5,
-                "factor1" : 2
+                "factor1" : 2,
+                "isCorrect": true
             }, 
             {
                 "answer" : "",
                 "factor2" : 2,
-                "factor1" : 11
+                "factor1" : 11,
+                "isCorrect": false
             }
         ]
     },
     "__v" : 0,
-    "receivedByServerAt" : "2017-09-14T23:55:45.021Z"
+    "receivedByServerAt" : "2017-09-14T23:55:45.021Z",
+    "marked": true
 }
