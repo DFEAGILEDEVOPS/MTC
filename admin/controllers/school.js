@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
-const AttendanceCode = require('../models/attendance-code')
 const randomGenerator = require('../lib/random-generator')
 const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
@@ -22,7 +21,9 @@ const {
   formatPupilsWithReasons,
   sortPupilsByLastName,
   sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
-const { fetchPupilsWithReasons } = require('../services/data-access/pupils-not-taking-check.data.service')
+const {
+  fetchPupilsWithReasons,
+  getAttendanceCodes } = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
 
@@ -372,7 +373,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -417,7 +418,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -496,7 +497,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
