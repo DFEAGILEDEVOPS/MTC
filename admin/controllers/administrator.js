@@ -6,11 +6,10 @@ const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
-const {
-  fetchCheckWindow,
-  deleteCheckWindow } = require('../services/data-access/check-window.data.service')
-const {
-  addForwardSlashToUrl } = require('../services/check-window.service')
+const checkWindowDataService = require('../services/data-access/check-window.data.service')
+// const {
+//   fetchCheckWindow,
+//   deleteCheckWindow } = require('../services/data-access/check-window.data.service')
 const config = require('../config')
 
 /**
@@ -243,7 +242,7 @@ const checkWindowsForm = async (req, res, next) => {
 
   if (req.params.id !== undefined) {
     try {
-      checkWindowData = await fetchCheckWindow(req.params.id)
+      checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
       checkWindowData = {
         checkWindowId: req.params.id,
         checkWindowName: checkWindowData.checkWindowName,
@@ -314,7 +313,7 @@ const saveCheckWindows = async (req, res, next) => {
 
   if (req.body.checkWindowId !== '') {
     try {
-      checkWindow = await fetchCheckWindow(req.body.checkWindowId)
+      checkWindow = await checkWindowDataService.fetchCheckWindow(req.body.checkWindowId)
     } catch (error) {
       return next(error)
     }
@@ -360,7 +359,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   try {
-    checkWindow = await fetchCheckWindow(req.params.checkWindowId)
+    checkWindow = await checkWindowDataService.fetchCheckWindow(req.params.checkWindowId)
   } catch (err) {
     return next(err)
   }
@@ -370,7 +369,7 @@ const removeCheckWindow = async (req, res, next) => {
       return res.redirect('/administrator/check-windows/status/validationError')
     } else {
       try {
-        await deleteCheckWindow(req.params.checkWindowId)
+        await checkWindowDataService.deleteCheckWindow(req.params.checkWindowId)
         return res.redirect('/administrator/check-windows/status/success')
       } catch (error) {
         return res.redirect('/administrator/check-windows/status/deleteError')
