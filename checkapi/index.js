@@ -5,6 +5,8 @@ const http = require('http')
 // const timer = require('simple-timer')
 const fs = require('fs')
 const path = require('path')
+var os = require('os')
+
 const azure = require('azure-storage')
 const queueService = azure.createQueueService()
 const queueName = 'completedchecks'
@@ -15,6 +17,8 @@ queueService.createQueueIfNotExists(queueName, function (error, result, response
   }
   console.log('connected to azure queue service')
 })
+
+console.log('Cores available to docker:', os.cpus().length)
 
 http.createServer((request, response) => {
   // const { headers, method, url } = request
