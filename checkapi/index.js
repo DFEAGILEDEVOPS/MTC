@@ -11,7 +11,7 @@ const processId = process.pid
 
 const azure = require('azure-storage')
 const storageService = azure.createTableService()
-const storageTargetName = 'completedchecks'
+const storageTargetName = 'completechecks'
 const entityGenerator = azure.TableUtilities.entityGenerator
 const uuid = require('uuidv4')
 const debug = process.env.NODE_ENV !== 'production'
@@ -23,7 +23,7 @@ storageService.createTableIfNotExists(storageTargetName, function (error, result
   if (debug) console.log('connected to azure storage service')
 })
 
-console.log('Cores available to docker:', os.cpus().length)
+console.log(`running on ${machineName} (${os.cpus().length} cores) under process ${processId}.`)
 
 http.createServer((request, response) => {
   // const { headers, method, url } = request
@@ -54,18 +54,18 @@ http.createServer((request, response) => {
     body = Buffer.concat(body).toString()
     // add specific host info
     var obj = JSON.parse(body)
-    obj.machine = machineName
-    obj.processId = processId
     var encodedData = Buffer.from(JSON.stringify(obj)).toString('base64')
     var tableEntry = {
-      PartitionKey: entityGenerator.String('completedchecks' + new Date().getSeconds()),
+      PartitionKey: entityGenerator.String(storageTargetName + new Date().getSeconds()),
       RowKey: entityGenerator.String(uuid().toString()),
-      check: entityGenerator.String(encodedData)
+      check: entityGenerator.String(encodedData),
+      machine: entityGenerator.String(machineName),
+      processId: entityGenerator.Int64(processId)
     }
 
     // TODO validation of request, authentication
     // timer.start('request')
-    storageService.createMessage(storageTargetName, tableEntry, function (error, result, queueResponse) {
+    storageService.insertEntity(storageTargetName, tableEntry, function (error, result, queueResponse) {
       // timer.stop('request')
       // console.log(`queue call took ${timer.get('request').delta}ms`)
       if (error) {
