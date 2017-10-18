@@ -20,9 +20,9 @@ module.exports = [
       byUserEmail: 'teacher1',
       byUserName: 'teacher1',
       dateRecorded: moment('2017-10-09 15:24:05').toDate(),
-      _id: '59c39fe72186e6748a58bbc7'
+      _id: '59df7e1c283960b43172ac6b'
     },
-    reason: 'Absent'
+    reason: 'Incorrect registration'
   },
   {
     _id: '59d02aad9b865f35a3f5176b',
@@ -43,9 +43,9 @@ module.exports = [
       byUserEmail: 'teacher2',
       byUserName: 'teacher2',
       dateRecorded: moment('2017-10-09 15:29:55').toDate(),
-      _id: '59c39fe72186e6748a58bbc4'
+      _id: '59df7e1c283960b43172ac6c'
     },
-    reason: 'Left school'
+    reason: 'Absent'
   },
   {
     _id: '595cd5416e5cv88e48ed2512',
@@ -66,9 +66,9 @@ module.exports = [
       byUserEmail: 'teacher2',
       byUserName: 'teacher2',
       dateRecorded: moment('2017-10-09 15:28:15').toDate(),
-      _id: '59c39fe72186e6748a58bbc6'
+      _id: '59df7e1c283960b43172ac6d'
     },
-    reason: 'Incorrect registration'
+    reason: 'Left school'
   },
   {
     _id: '595cd5416e5cv88e48edc451',
