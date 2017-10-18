@@ -6,16 +6,21 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 var os = require('os')
+const machineName = os.hostname()
+const processId = process.pid
 
 const azure = require('azure-storage')
-const queueService = azure.createQueueService()
-const queueName = 'completedchecks'
+const storageService = azure.createTableService()
+const storageTargetName = 'completedchecks'
+const entityGenerator = azure.TableUtilities.entityGenerator
+const uuid = require('uuidv4')
+const debug = process.env.NODE_ENV !== 'production'
 
-queueService.createQueueIfNotExists(queueName, function (error, result, response) {
+storageService.createTableIfNotExists(storageTargetName, function (error, result, response) {
   if (error) {
     throw new Error('unable to connect to azure storage:' + error.message)
   }
-  console.log('connected to azure queue service')
+  if (debug) console.log('connected to azure storage service')
 })
 
 console.log('Cores available to docker:', os.cpus().length)
@@ -43,18 +48,28 @@ http.createServer((request, response) => {
   }).on('data', (chunk) => {
     body.push(chunk)
   }).on('end', () => {
-    body = Buffer.concat(body).toString()
     response.on('error', (err) => {
-      console.error(err)
+      if (debug) console.error(err)
     })
+    body = Buffer.concat(body).toString()
+    // add specific host info
+    var obj = JSON.parse(body)
+    obj.machine = machineName
+    obj.processId = processId
+    var encodedData = Buffer.from(JSON.stringify(obj)).toString('base64')
+    var tableEntry = {
+      PartitionKey: entityGenerator.String('completedchecks' + new Date().getSeconds()),
+      RowKey: entityGenerator.String(uuid().toString()),
+      check: entityGenerator.String(encodedData)
+    }
 
     // TODO validation of request, authentication
     // timer.start('request')
-    queueService.createMessage(queueName, body, function (error, result, queueResponse) {
+    storageService.createMessage(storageTargetName, tableEntry, function (error, result, queueResponse) {
       // timer.stop('request')
       // console.log(`queue call took ${timer.get('request').delta}ms`)
       if (error) {
-        console.error(error)
+        if (debug) console.error(error)
         response.writeHead(500)
         response.end()
       }
