@@ -7,5 +7,5 @@
   "checkWindowId": "59cd18a631cb2f71e0bcc561",
   "checkFormId": 100,
   "pupilLoginDate": "2017-09-28T15:44:00.548Z",
-  "results": { "marks": 9, "totalQuestions": 10, "processedAt": "2017-09-28T15:51:00.550Z"}
+  "results": { "marks": 9, "maxMarks": 10, "processedAt": "2017-09-28T15:51:00.550Z"}
 }

@@ -104,5 +104,6 @@
     },
     "__v" : 0,
     "receivedByServerAt" : "2017-09-14T23:55:45.021Z",
-    "marked": true
+    "isMarked": true,
+    "markedAt": "2017-09-14T23:56:41.029Z"
 }
