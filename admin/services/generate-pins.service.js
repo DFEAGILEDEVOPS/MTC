@@ -8,7 +8,10 @@ const generatePinService = {
    */
   getPupils: async (schoolId) => {
     let { pupils } = await pupilDataService.getPupils(schoolId)
-    pupils = pupils.map(({_id, pin, foreName, middleNames, lastName}) => ({ _id, pin, foreName, middleNames, lastName }))
+    pupils = pupils
+      .filter(p => !p.pin && !p.attendanceCode && !p.result)
+      .map(({_id, pin, foreName, middleNames, lastName}) => ({ _id, pin, foreName, middleNames, lastName }))
+      .sort((a, b) => a.lastName.localeCompare(b.lastName))
     return pupils
   }
 }

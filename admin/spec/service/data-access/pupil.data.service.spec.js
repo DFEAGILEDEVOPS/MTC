@@ -73,8 +73,6 @@ describe('pupil.data.service', () => {
     beforeEach(() => {
       const pupil1 = pupilMock
       const pupil2 = pupilMock
-      pupil2.id = '595cd5416e5ca13e48ed2520'
-      pupil2.pin = 'f55sg'
       sandbox.mock(School).expects('findOne').chain('lean').chain('exec').returns(schoolMock)
       sandbox.mock(Pupil).expects('getPupils').chain('exec').returns([ pupil1, pupil2 ])
       service = proxyquire('../../../services/data-access/pupil.data.service', {

@@ -19,23 +19,43 @@ describe('generate-pins.service', () => {
   afterEach(() => sandbox.restore())
 
   describe('getPupils', () => {
-    let pupil1
-    let pupil2
-    beforeEach(() => {
-      pupil1 = pupilMock
-      pupil2 = pupilMock
-      pupil2.id = '595cd5416e5ca13e48ed2520'
-      pupil2.pin = 'f55sg'
-      sandbox.mock(pupilDataService).expects('getPupils').resolves({ pupils: [pupil1, pupil2] })
-      proxyquire('../../services/generate-pins.service', {
-        '../../services/data-access/pupil.data.service': pupilDataService
+
+    describe('returns pupils', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = ''
+        sandbox.mock(pupilDataService).expects('getPupils').resolves({ pupils: [ pupil1, pupil2 ] })
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService
+        })
+      })
+      it('with specific properties', async (done) => {
+        const pupils = await generatePinsService.getPupils(schoolMock._id)
+        expect(pupils.length).toBe(2)
+        expect(Object.keys(pupils[ 0 ]).length).toBe(5)
+        done()
       })
     })
-    it('returns pupils with specific properties', async (done) => {
-      const pupils = await generatePinsService.getPupils(schoolMock._id)
-      expect(pupils.length).toBe(2)
-      expect(Object.keys(pupils[0]).length).toBe(5)
-      done()
+    describe('filter and returns pupils', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = 'f55sg'
+        sandbox.mock(pupilDataService).expects('getPupils').resolves({ pupils: [ pupil1, pupil2 ] })
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService
+        })
+      })
+      it('without pre existing pins', async (done) => {
+        const pupils = await generatePinsService.getPupils(schoolMock._id)
+        expect(pupils.length).toBe(1)
+        done()
+      })
     })
   })
 })
