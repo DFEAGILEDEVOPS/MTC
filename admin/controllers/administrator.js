@@ -388,15 +388,15 @@ const removeCheckWindow = async (req, res, next) => {
   if (checkWindow) {
     if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
       req.flash('error', 'Deleting an active check window is not allowed.')
-      return res.redirect('/administrator/check-windows/status/validationError')
+      return res.redirect('/administrator/check-windows')
     } else {
       try {
         await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
-        return res.redirect('/administrator/check-windows/status/success')
+        return res.redirect('/administrator/check-windows')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')
-        return res.redirect('/administrator/check-windows/status/deleteError')
+        return res.redirect('/administrator/check-windows')
       }
     }
   }
