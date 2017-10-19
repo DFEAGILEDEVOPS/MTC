@@ -3,8 +3,6 @@
 
 const sinon = require('sinon')
 require('sinon-mongoose')
-const proxyquire = require('proxyquire')
-const Pupil = require('../../models/pupil')
 const pupilNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 
 const attendanceCodesMock = require('../mocks/attendance-codes')
@@ -14,17 +12,7 @@ const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-form
 /* global beforeEach, describe, it, expect */
 
 describe('Pupils are not taking the check. Service', () => {
-  let service
   let sandbox
-
-  function setupService (mock) {
-    return proxyquire('../../services/pupils-not-taking-check.service.js', {
-      '../models/pupil': sandbox.mock(Pupil)
-      .expects('find')
-      .chain('sort')
-      .resolves(mock)
-    })
-  }
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create()
@@ -87,9 +75,9 @@ describe('Pupils are not taking the check. Service', () => {
         .then(result => {
           return result
         })
-      expect(afterFormatting[0].reason).toEqual('Absent')
-      expect(afterFormatting[1].reason).toEqual('Left school')
-      expect(afterFormatting[2].reason).toEqual('Incorrect registration')
+      expect(afterFormatting[0].reason).toEqual('Incorrect registration')
+      expect(afterFormatting[1].reason).toEqual('Absent')
+      expect(afterFormatting[2].reason).toEqual('Left school')
       expect(afterFormatting[3].reason).toEqual('N/A')
       done()
     })

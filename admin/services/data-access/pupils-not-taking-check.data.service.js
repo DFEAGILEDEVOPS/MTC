@@ -1,6 +1,7 @@
 'use strict'
 
 const Pupil = require('../../models/pupil')
+const AttendanceCode = require('../../models/attendance-code')
 const pupilsNotTakingCheckDataService = {}
 
 /**
@@ -14,6 +15,14 @@ pupilsNotTakingCheckDataService.fetchPupilsWithReasons = async (schoolId) => {
     .find({'attendanceCode': {$exists: true}, 'school': schoolId})
     .sort('lastName')
   return pupilsWithReasons
+}
+
+pupilsNotTakingCheckDataService.getAttendanceCodes = async () => {
+  let attendanceCodes
+  attendanceCodes = await AttendanceCode
+    .find()
+    .sort('order')
+  return attendanceCodes
 }
 
 module.exports = pupilsNotTakingCheckDataService
