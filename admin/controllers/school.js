@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
-const AttendanceCode = require('../models/attendance-code')
 const randomGenerator = require('../lib/random-generator')
 const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
@@ -22,7 +21,9 @@ const {
   formatPupilsWithReasons,
   sortPupilsByLastName,
   sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
-const { fetchPupilsWithReasons } = require('../services/data-access/pupils-not-taking-check.data.service')
+const {
+  fetchPupilsWithReasons,
+  getAttendanceCodes } = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
 
@@ -196,50 +197,20 @@ const downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-const generatePins = async (req, res, next) => {
-  if (!req.body[ 'pupil' ]) {
-    // TODO: inform the user via flash message?
-    return res.redirect('/school/manage-pupils')
-  }
-  const data = Object.values(req.body[ 'pupil' ] || null)
-  const chars = '23456789bcdfghjkmnpqrstvwxyz'
-  const length = 5
-  let pupils = []
-
-  // fetch pupils
-  try {
-    let ids = data.map(id => mongoose.Types.ObjectId(id))
-    pupils = await Pupil.find({ _id: { $in: ids } }).exec()
-  } catch (error) {
-    console.error('Failed to find pupils: ' + error.message)
-    return next(error)
-  }
-
-  // Apply the updates to the pupil object(s)
-  pupils.forEach(pupil => {
-    if (!pupil.pin) {
-      pupil.pin = randomGenerator.getRandom(length, chars)
-      pupil.expired = false
-    }
+const getGeneratePinsOverview = async (req, res) => {
+  res.locals.pageTitle = 'Generate pupil PINs'
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/generate-pins-overview', {
+    breadcrumbs: req.breadcrumbs()
   })
+}
 
-  // Save our pupils, in parallel
-  const promises = pupils.map(p => p.save()) // returns Promise
-
-  Promise.all(promises).then(results => {
-    // all pupils saved ok
-    return res.redirect('/school/manage-pupils')
-  },
-  error => {
-    // one or more promises were rejected
-    // TODO: add a flash message informing the user
-    console.error(error)
-    return res.redirect('/school/manage-pupils')
-  })
-  .catch(error => {
-    console.error(error)
-    // TODO: add a flash message informing the user
-    return res.redirect('/school/manage-pupils')
+const getGeneratePinsList = async (req, res) => {
+  res.locals.pageTitle = 'Select pupils'
+  req.breadcrumbs('Generate pupil PINs', '/school/generate-pins-overview')
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/generate-pins-list', {
+    breadcrumbs: req.breadcrumbs()
   })
 }
 
@@ -402,7 +373,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -447,7 +418,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -526,7 +497,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await AttendanceCode.getAttendanceCodes().exec()
+    attendanceCodes = await getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -579,7 +550,8 @@ module.exports = {
   getPupils,
   getResults,
   downloadResults,
-  generatePins,
+  getGeneratePinsOverview,
+  getGeneratePinsList,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,
