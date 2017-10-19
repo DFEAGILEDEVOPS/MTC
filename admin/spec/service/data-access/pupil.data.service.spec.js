@@ -7,7 +7,9 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 require('sinon-mongoose')
 
 const Pupil = require('../../../models/pupil')
+const School = require('../../../models/school')
 const pupilMock = require('../../mocks/pupil')
+const schoolMock = require('../../mocks/school')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -64,6 +66,31 @@ describe('pupil.data.service', () => {
 
     it('has an update method', () => {
       expect(typeof service.update).toBe('function')
+    })
+  })
+
+  describe('#getPupils', () => {
+    beforeEach(() => {
+      const pupil1 = pupilMock
+      const pupil2 = pupilMock
+      pupil2.id = '595cd5416e5ca13e48ed2520'
+      pupil2.pin = 'f55sg'
+      sandbox.mock(School).expects('findOne').chain('lean').chain('exec').returns(schoolMock)
+      sandbox.mock(Pupil).expects('getPupils').chain('exec').returns([ pupil1, pupil2 ])
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil,
+        '../../models/school': School
+      })
+    })
+
+    it('has a get Pupils method', () => {
+      expect(typeof service.getPupils).toBe('function')
+    })
+
+    it('returns a school data object and a list of pupils', async () => {
+      const data = await pupilDataService.getPupils(schoolMock._id)
+      expect(data.schoolData._id).toBe(9991001)
+      expect(data.pupils.length).toBe(2)
     })
   })
 })

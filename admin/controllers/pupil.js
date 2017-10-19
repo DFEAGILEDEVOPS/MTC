@@ -6,7 +6,8 @@ const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const fileValidator = require('../lib/validator/file-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+const { fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 
@@ -258,7 +259,7 @@ const postEditPupil = async (req, res, next) => {
 
 const getManagePupils = async (req, res) => {
   res.locals.pageTitle = 'Manage pupils'
-  const {pupils, schoolData} = await fetchPupilsData(req.user.School)
+  const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
   let pupilsData = pupils.map(e => e.toJSON())
 
   // Format DOB
@@ -284,7 +285,7 @@ const getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
   try {
-    const {pupils, schoolData} = await fetchPupilsData(req.user.School)
+    const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
     const pupilsData = pupils.map(e => e.toJSON()).filter(p => !!p.pin && !p.pinExpired)
     pupilsFormatted = pupilsData.map(p => {
       return {

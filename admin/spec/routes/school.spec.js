@@ -4,6 +4,9 @@
 const sinon = require('sinon')
 require('sinon-mongoose')
 const httpMocks = require('node-mocks-http')
+const proxyquire = require('proxyquire').noCallThru()
+const School = require('../../models/school')
+const generatePinsService = require('../../services/generate-pins.service')
 
 describe('school controller:', () => {
   function getRes () {
@@ -14,6 +17,7 @@ describe('school controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
+    req.user = { School: 9991999 }
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     return req
   }
@@ -50,6 +54,8 @@ describe('school controller:', () => {
 
   describe('getGeneratePinsList() route', () => {
     let sandbox
+    let next
+    let controller
     let goodReqParams = {
       method: 'GET',
       url: '/school/generate-pins-list',
@@ -60,21 +66,48 @@ describe('school controller:', () => {
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
+      next = jasmine.createSpy('next')
     })
 
     afterEach(() => {
       sandbox.restore()
     })
 
-    it('displays the generate pins list page', async (done) => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      const controller = require('../../controllers/school').getGeneratePinsList
-      spyOn(res, 'render').and.returnValue(null)
-      await controller(req, res)
-      expect(res.locals.pageTitle).toBe('Select pupils')
-      expect(res.render).toHaveBeenCalled()
-      done()
+    describe('when the school is found in the database', () => {
+      beforeEach(() => {
+        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({ name: 'Test School' }))
+        controller = proxyquire('../../controllers/school.js', {
+          '../models/school': School
+        }).getGeneratePinsList
+      })
+
+      it('displays the generate pins list page', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(generatePinsService, 'getPupils').and.returnValue(Promise.resolve({}))
+        spyOn(res, 'render').and.returnValue(null)
+        await controller(req, res, next)
+        expect(res.locals.pageTitle).toBe('Select pupils')
+        expect(res.render).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    describe('when the school is not found in the database', () => {
+      beforeEach(() => {
+        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        controller = proxyquire('../../controllers/school.js', {
+          '../models/school': School
+        }).getGeneratePinsList
+      })
+      it('it throws an error', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await controller(req, res, next)
+        expect(next).toHaveBeenCalled()
+        expect(res.statusCode).toBe(200)
+        done()
+      })
     })
   })
 })
