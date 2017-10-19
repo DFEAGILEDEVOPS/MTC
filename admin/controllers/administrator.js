@@ -393,11 +393,10 @@ const removeCheckWindow = async (req, res, next) => {
       try {
         await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
-        return res.redirect('/administrator/check-windows')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')
-        return res.redirect('/administrator/check-windows')
       }
+      return res.redirect('/administrator/check-windows')
     }
   }
 }
