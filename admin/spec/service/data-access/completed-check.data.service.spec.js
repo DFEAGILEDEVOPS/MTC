@@ -143,7 +143,7 @@ describe('completed-checks.data.service', () => {
       }
     })
 
-    it('makes the correct calls', async (done) => {
+    it('makes the expected calls', async (done) => {
       service.findUnmarked(100)
       expect(mock.verify()).toBe(true)
       done()
