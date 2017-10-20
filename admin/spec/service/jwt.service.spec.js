@@ -1,5 +1,5 @@
 'use strict'
-/* global beforeEach, afterEach, describe, it, expect, jasmine */
+/* global beforeEach, describe, it, expect, jasmine */
 
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
