@@ -12,7 +12,13 @@ const CompletedChecks = new Schema({
   receivedByServerAt: {
     type: Date,
     required: true
+  },
+  isMarked: {
+    type: Boolean
+  },
+  markedAt: {
+    type: Date
   }
-})
+}, {timestamps: true})
 
 module.exports = mongoose.model('completedChecks', CompletedChecks)

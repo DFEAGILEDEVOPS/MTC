@@ -44,7 +44,7 @@ describe('pupil.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(Pupil).expects('findOne').chain('populate').chain('lean').chain('exec').resolves(pupilMock)
+      mock = sandbox.mock(Pupil).expects('findOne').chain('populate').chain('lean').chain('exec').resolves(pupilMock)
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
@@ -57,15 +57,17 @@ describe('pupil.data.service', () => {
   })
 
   describe('#update', () => {
+    let mock
     beforeEach(() => {
-      sinon.mock(Pupil).expects('updateOne').returns(pupilMock)
+      mock = sandbox.mock(Pupil).expects('updateOne').returns(pupilMock)
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
     })
 
-    it('has an update method', () => {
-      expect(typeof service.update).toBe('function')
+    it('makes the expected calls', () => {
+      service.update(1, {$set: {'some': 'criteria'}})
+      expect(mock.verify()).toBe(true)
     })
   })
 
