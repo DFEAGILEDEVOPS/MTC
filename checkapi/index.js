@@ -23,6 +23,7 @@ try {
   buildId = 'unknown'
 }
 
+console.log('reading file')
 const loaderid = fs.readFileSync(path.join(__dirname, 'public', 'loaderio-99a9565f58325293e217a36aa3ae695d.txt'))
 
 storageService.createTableIfNotExists(storageTargetName, function (error, result, response) {
@@ -68,6 +69,7 @@ http.createServer((request, response) => {
     response.on('error', (err) => {
       if (debug) console.error(err)
     })
+
     body = Buffer.concat(body).toString()
     // add specific host info
     var obj = JSON.parse(body)
@@ -79,7 +81,6 @@ http.createServer((request, response) => {
       machine: entityGenerator.String(machineName),
       processId: entityGenerator.Int64(processId)
     }
-
     // TODO validation of request, authentication
     storageService.insertEntity(storageTargetName, tableEntry, function (error, result, queueResponse) {
       if (error) {
