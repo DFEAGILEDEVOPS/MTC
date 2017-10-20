@@ -45,6 +45,7 @@ http.createServer((request, response) => {
       case '/ping':
         response.end(buildId)
         break
+      // load testing domain validation
       case '/loaderio-99a9565f58325293e217a36aa3ae695d.txt':
         response.end(loaderid)
         break
