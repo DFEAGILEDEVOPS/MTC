@@ -2,7 +2,6 @@
 
 require('dotenv').config()
 const http = require('http')
-// const timer = require('simple-timer')
 const fs = require('fs')
 const path = require('path')
 var os = require('os')
@@ -82,10 +81,7 @@ http.createServer((request, response) => {
     }
 
     // TODO validation of request, authentication
-    // timer.start('request')
     storageService.insertEntity(storageTargetName, tableEntry, function (error, result, queueResponse) {
-      // timer.stop('request')
-      // console.log(`queue call took ${timer.get('request').delta}ms`)
       if (error) {
         if (debug) console.error(error)
         response.writeHead(500)
