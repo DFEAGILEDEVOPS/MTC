@@ -16,12 +16,8 @@ const {
   fetchSortedPupilsData,
   fetchMultiplePupils,
   fetchOnePupil } = require('../services/pupil.service')
-const {
-  formatPupilsWithReasons,
-  sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
-const {
-  fetchPupilsWithReasons,
-  getAttendanceCodes } = require('../services/data-access/pupils-not-taking-check.data.service')
+const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
+const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
 const sortingService = require('../services/sorting.service')
@@ -372,14 +368,14 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await getAttendanceCodes()
+    attendanceCodes = await pupilsNotTackingCheckDataService.getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTackingCheckDataService.fetchPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -421,7 +417,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await getAttendanceCodes()
+    attendanceCodes = await pupilsNotTackingCheckDataService.getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -434,12 +430,12 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   }
 
   if (attendanceCodes && pupils) {
-    pupilsList = pupilsNotTackingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
+    pupilsList = await pupilsNotTackingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
   // Sorting by 'reason' needs to be done using .sort
   if (sortField === 'reason') {
-    pupilsList = sortPupilsByReason(pupilsList, sortDirection)
+    pupilsList = pupilsNotTackingCheckService.sortPupilsByReason(pupilsList, sortDirection)
   }
 
   return res.render('school/select-pupils-not-taking-check', {
@@ -500,20 +496,20 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await getAttendanceCodes()
+    attendanceCodes = await pupilsNotTackingCheckDataService.getAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTackingCheckDataService.fetchPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
 
   if (attendanceCodes && pupils) {
-    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils, Object.values(postedPupils))
+    pupilsList = await pupilsNotTackingCheckService.formatPupilsWithReasons(attendanceCodes, pupils, Object.values(postedPupils))
   }
 
   return res.render('school/pupils-not-taking-check', {
