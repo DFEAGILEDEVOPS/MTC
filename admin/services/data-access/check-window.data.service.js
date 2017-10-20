@@ -13,7 +13,7 @@ const checkWindowDataService = {
    */
   fetchCheckWindow: async (id) => {
     let checkWindow
-    checkWindow = await CheckWindow.findOne({'_id': id, 'deleted': false}).exec()
+    checkWindow = await CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
     return checkWindow
   },
   /**
@@ -23,18 +23,18 @@ const checkWindowDataService = {
    */
   setDeletedCheckWindow: async (id) => {
     let checkWindow
-    checkWindow = await CheckWindow.updateOne({'_id': id}, {$set: {'deleted': true}}).exec()
+    checkWindow = await CheckWindow.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
     return checkWindow
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
-   * @param deleted
+   * @param isDeleted
    * @param sortBy
    * @param sortDirection
    * @param current
    * @returns {Promise.<void>}
    */
-  fetchCheckWindows: async (sortBy, sortDirection, deleted, current) => {
+  fetchCheckWindows: async (sortBy, sortDirection, isDeleted, current) => {
     let checkWindows
     let sort = {}
     let query = {}
@@ -42,7 +42,7 @@ const checkWindowDataService = {
     const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS')
 
     sort[sortBy] = sortDirection
-    query.deleted = !deleted ? false : deleted
+    query.isDeleted = !isDeleted ? false : isDeleted
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
     } else {
