@@ -352,7 +352,7 @@ module.exports = {
     ],
     'answers': [
       {
-        'answer': '1',
+        'answer': '10',
         'factor2': 5,
         'factor1': 2
       },
@@ -363,6 +363,21 @@ module.exports = {
       },
       {
         'answer': '1',
+        'factor2': 9,
+        'factor1': 8
+      },
+      {
+        'answer': '',
+        'factor2': 5,
+        'factor1': 3
+      },
+      {
+        'answer': '9',
+        'factor2': 3,
+        'factor1': 3
+      },
+      {
+        'answer': '72',
         'factor2': 9,
         'factor1': 8
       }
