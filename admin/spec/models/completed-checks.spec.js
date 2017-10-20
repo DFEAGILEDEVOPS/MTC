@@ -29,4 +29,13 @@ describe('CompletedChecks model', () => {
       done()
     })
   })
+
+  it('allows the answers to be marked', (done) => {
+    check.isMarked = true
+    check.markedAt = new Date()
+    check.validate(err => {
+      expect(err).toBeFalsy()
+      done()
+    })
+  })
 })
