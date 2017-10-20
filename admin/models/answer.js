@@ -40,4 +40,4 @@ const Answer = new Schema({
   }
 }, {timestamps: true})
 
-module.exports = mongoose.model('Answer', Answer, 'answers-' + date.getFullYear())
+module.exports = mongoose.model('Answer', Answer, 'answers')
