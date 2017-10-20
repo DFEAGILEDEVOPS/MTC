@@ -1,3 +1,4 @@
+@pupil_pin
 Feature: Generate Pupil PINs
 
 
