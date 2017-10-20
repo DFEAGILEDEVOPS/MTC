@@ -26,6 +26,7 @@ const {
   getAttendanceCodes } = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
+const sortingService = require('../services/sorting.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -412,9 +413,13 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let pupilsList
 
   // Sorting
+  const sortingOptions = [
+    { 'key': 'name', 'value': 'asc' },
+    { 'key': 'reason', 'value': 'asc' }
+  ]
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = await sortPupilsByLastName(sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingService(sortingOptions, sortField, sortDirection)
 
   // Get attendance code index
   try {

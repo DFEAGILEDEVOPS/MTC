@@ -6,7 +6,9 @@ const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
+const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
+const sortingService = require('../services/sorting.service')
 const config = require('../config')
 
 /**
@@ -135,65 +137,21 @@ const getCheckWindows = async (req, res, next) => {
   let checkWindowsFormatted = []
   let checkWindowsCurrent
   let checkWindowsPast
-  let htmlSortDirection = []
-  let arrowSortDirection = []
 
   // Sorting
+  const sortingOptions = [
+    { 'key': 'checkWindowName', 'value': 'asc' },
+    { 'key': 'adminStartDate', 'value': 'asc' },
+    { 'key': 'checkStartDate', 'value': 'asc' }
+  ]
   const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-
-  let sortingDirection = [
-    {
-      'key': 'checkWindowName',
-      'value': 'asc'
-    },
-    {
-      'key': 'adminStartDate',
-      'value': 'asc'
-    },
-    {
-      'key': 'checkStartDate',
-      'value': 'asc'
-    }
-  ]
-
-  sortingDirection.map((sd, index) => {
-    if (sd.key === sortField) {
-      htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-      arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
-    } else {
-      htmlSortDirection[sd.key] = 'asc'
-      arrowSortDirection[sd.key] = 'sort'
-    }
-  })
-
-  // Format dates
-  const formatDate = (startDate, endDate) => {
-    let startYear = ' ' + startDate.format('YYYY')
-    let endYear = ' ' + endDate.format('YYYY')
-    if (startYear === endYear) {
-      startYear = ''
-    }
-    return startDate.format('DD MMM') + startYear + ' to ' + endDate.format('DD MMM YYYY')
-  }
+  const { htmlSortDirection, arrowSortDirection } = sortingService(sortingOptions, sortField, sortDirection)
 
   // Get current check windows
   try {
     checkWindows = await checkWindowDataService.fetchCurrentCheckWindows(sortField, sortDirection)
-    checkWindowsCurrent = checkWindows.map(cw => {
-      const adminStartDateMo = moment(cw.adminStartDate)
-      const checkStartDateMo = moment(cw.checkStartDate)
-      const checkEndDateMo = moment(cw.checkEndDate)
-
-      return {
-        id: cw._id,
-        checkWindowName: cw.checkWindowName,
-        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
-        checkDates: formatDate(checkStartDateMo, checkEndDateMo),
-        canRemove: (Date.parse(cw.checkStartDate) >= Date.now()),
-        isCurrent: true
-      }
-    })
+    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true)
   } catch (error) {
     return next(error)
   }
@@ -201,31 +159,22 @@ const getCheckWindows = async (req, res, next) => {
   // Get past check windows
   try {
     checkWindows = await checkWindowDataService.fetchPastCheckWindows(sortField, sortDirection)
-    checkWindowsPast = checkWindows.map(cw => {
-      const adminStartDateMo = moment(cw.adminStartDate)
-      const checkStartDateMo = moment(cw.checkStartDate)
-      const checkEndDateMo = moment(cw.checkEndDate)
-
-      return {
-        id: cw._id,
-        checkWindowName: cw.checkWindowName,
-        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
-        checkDates: formatDate(checkStartDateMo, checkEndDateMo),
-        canRemove: false,
-        isCurrent: false
-      }
-    })
+    checkWindowsPast = checkWindowService.formatCheckWindowDocuments(checkWindows, false, false)
   } catch (error) {
     return next(error)
   }
 
   // @TODO: Better merge? Object.assign overrides elements.
-  checkWindowsCurrent.forEach((chc, index) => {
-    checkWindowsFormatted.push(chc)
-  })
-  checkWindowsPast.forEach((chp, index) => {
-    checkWindowsFormatted.push(chp)
-  })
+  if (checkWindowsCurrent) {
+    checkWindowsCurrent.forEach((chc, index) => {
+      checkWindowsFormatted.push(chc)
+    })
+  }
+  if (checkWindowsPast) {
+    checkWindowsPast.forEach((chp, index) => {
+      checkWindowsFormatted.push(chp)
+    })
+  }
 
   res.render('administrator/check-windows', {
     breadcrumbs: req.breadcrumbs(),
@@ -336,21 +285,9 @@ const saveCheckWindows = async (req, res, next) => {
   }
 
   checkWindow.checkWindowName = req.body['checkWindowName']
-  checkWindow.adminStartDate = moment.utc(
-    '' + req.body['adminStartDay'] +
-    '/' + req.body['adminStartMonth'] +
-    '/' + req.body['adminStartYear'],
-    'DD/MM/YYYY')
-  checkWindow.checkStartDate = moment.utc(
-    '' + req.body['checkStartDay'] +
-    '/' + req.body['checkStartMonth'] +
-    '/' + req.body['checkStartYear'],
-    'DD/MM/YYYY')
-  checkWindow.checkEndDate = moment.utc(
-    '' + req.body['checkEndDay'] +
-    '/' + req.body['checkEndMonth'] +
-    '/' + req.body['checkEndYear'],
-    'DD/MM/YYYY')
+  checkWindow.adminStartDate = checkWindowService.formatCheckWindowDate(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
+  checkWindow.checkStartDate = checkWindowService.formatCheckWindowDate(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+  checkWindow.checkEndDate = checkWindowService.formatCheckWindowDate(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
 
   // Auditing? Question for BAs.
 
@@ -393,11 +330,10 @@ const removeCheckWindow = async (req, res, next) => {
       try {
         await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
-        return res.redirect('/administrator/check-windows')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')
-        return res.redirect('/administrator/check-windows')
       }
+      return res.redirect('/administrator/check-windows')
     }
   }
 }
