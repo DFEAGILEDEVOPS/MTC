@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 
 const Pupil = require('../models/pupil')
 const School = require('../models/school')
-const randomGenerator = require('../lib/random-generator')
 const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
@@ -19,7 +18,6 @@ const {
   fetchOnePupil } = require('../services/pupil.service')
 const {
   formatPupilsWithReasons,
-  sortPupilsByLastName,
   sortPupilsByReason } = require('../services/pupils-not-taking-check.service')
 const {
   fetchPupilsWithReasons,
@@ -387,7 +385,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   }
 
   if (attendanceCodes && pupils) {
-    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
+    pupilsList = await pupilsNotTackingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
   return res.render('school/pupils-not-taking-check', {
@@ -436,7 +434,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   }
 
   if (attendanceCodes && pupils) {
-    pupilsList = await formatPupilsWithReasons(attendanceCodes, pupils)
+    pupilsList = pupilsNotTackingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
   }
 
   // Sorting by 'reason' needs to be done using .sort
