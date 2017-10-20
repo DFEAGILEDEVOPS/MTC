@@ -33,6 +33,16 @@ const Check = new Schema({
   pupilLoginDate: {
     type: Date,
     required: true
+  },
+  results: {
+    type: {
+      _id: false,
+      marks: { type: Number, min: 0, required: true },
+      maxMarks: { type: Number, min: 0, required: true },
+      processedAt: { type: Date, required: true }
+    },
+    default: undefined,
+    required: false
   }
 }, {timestamps: true})
 
