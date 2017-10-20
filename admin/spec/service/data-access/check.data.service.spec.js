@@ -21,14 +21,62 @@ describe('check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(Check).expects('findOne').chain('lean').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(Check).expects('findOne').chain('lean').chain('exec').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
         '../../models/check': Check
       })
     })
 
-    it('calls the model', () => {
+    it('makes the expected calls', () => {
       service.findOneByCheckCode('mock-check-code')
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check).expects('find').chain('lean').chain('exec').resolves(checkMock)
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.find({'testCriteria': 'someValue'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#count', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check).expects('count').chain('exec').resolves(checkMock)
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.count({'testCriteria': 'someValue'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#update', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check).expects('updateOne')
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.update({'testCriteria': 'someValue'}, {'$set': {'someKey': 'someValue'}})
       expect(mock.verify()).toBe(true)
     })
   })
