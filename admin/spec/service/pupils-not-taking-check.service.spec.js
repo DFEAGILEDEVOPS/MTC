@@ -22,26 +22,6 @@ describe('Pupils are not taking the check. Service', () => {
     sandbox.restore()
   })
 
-  describe('sortPupilsByLastName', () => {
-    it('should return expected values (1)', (done) => {
-      const sorting = pupilNotTakingCheckService.sortPupilsByLastName('name', 'asc')
-      expect(sorting.htmlSortDirection.name).toEqual('desc')
-      expect(sorting.htmlSortDirection.reason).toEqual('asc')
-      expect(sorting.arrowSortDirection.name).toEqual('sort')
-      expect(sorting.arrowSortDirection.reason).toEqual('sort')
-      done()
-    })
-
-    it('should return expected values (2)', (done) => {
-      const sorting = pupilNotTakingCheckService.sortPupilsByLastName('reason', 'desc')
-      expect(sorting.htmlSortDirection.name).toEqual('asc')
-      expect(sorting.htmlSortDirection.reason).toEqual('asc')
-      expect(sorting.arrowSortDirection.name).toEqual('sort')
-      expect(sorting.arrowSortDirection.reason).toEqual('sort up')
-      done()
-    })
-  })
-
   describe('sortPupilsByReason', () => {
     it('should return a list ordered by reason not equal to the original (as per mock order)', (done) => {
       const beforeSorting = Object.assign({}, pupilsWithReasonsFormattedMock)

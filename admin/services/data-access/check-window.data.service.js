@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-
 const CheckWindow = require('../../models/check-window')
 
 const checkWindowDataService = {
