@@ -17,7 +17,6 @@ const {
 router.get('/home', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
 router.get('/check-windows', isAuthenticated(), (req, res, next) => getCheckWindows(req, res, next))
 router.get('/check-windows/remove/:checkWindowId', isAuthenticated(), (req, res, next) => removeCheckWindow(req, res, next))
-router.get('/check-windows/status/:status', isAuthenticated(), (req, res, next) => getCheckWindows(req, res, next))
 router.get('/check-windows/:action', isAuthenticated(), (req, res, next) => checkWindowsForm(req, res, next))
 router.get('/check-windows/:action/:id', isAuthenticated(), (req, res, next) => checkWindowsForm(req, res, next))
 router.get('/check-windows/:sortField/:sortDirection', isAuthenticated(), (req, res, next) => getCheckWindows(req, res, next))

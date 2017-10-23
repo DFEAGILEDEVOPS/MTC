@@ -91,4 +91,12 @@ describe('check model', () => {
       done()
     })
   })
+
+  it('stores the results of the marking', (done) => {
+    check.results = { marks: 7, maxMarks: 10, processedAt: new Date() }
+    check.validate(err => {
+      expect(err).toBeFalsy()
+      done()
+    })
+  })
 })

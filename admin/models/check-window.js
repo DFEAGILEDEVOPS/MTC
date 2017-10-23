@@ -21,6 +21,11 @@ const CheckWindow = new Schema({
     type: Date,
     required: true
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
   forms: {
     type: [{
       type: Number,
@@ -28,27 +33,6 @@ const CheckWindow = new Schema({
     }]
   }
 }, {timestamps: true})
-
-/**
- * Retrieve all check windows and sort by arguments passed.
- * @param sortBy
- * @param direction
- * @returns {Promise}
- */
-CheckWindow.statics.getCheckWindows = function (sortBy, direction) {
-  return new Promise(async (resolve, reject) => {
-    let checkWindows
-    const sort = {}
-    sort[sortBy] = direction
-
-    try {
-      checkWindows = await this.find({}).sort(sort).exec()
-    } catch (error) {
-      reject(error)
-    }
-    resolve(checkWindows)
-  })
-}
 
 CheckWindow.statics.getCheckWindow = function (checkWindowId) {
   return new Promise(async (resolve, reject) => {
