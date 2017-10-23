@@ -137,35 +137,6 @@ $(function () {
 
   pupilsNotTakingCheck()
 
-  /**
-   * Sticky confirmation banner.
-   */
-  if ($('#stickyHeader').length > 0) {
-    $(function () {
-      // Set the wrapper's height
-      $('#stickyHeader').parent().css('min-height', $('#stickyHeader').outerHeight())
-    })
-    $(window).scroll(function () {
-      var sticky = $('#stickyHeader')
-      if (sticky.parent().position().top - $(window).scrollTop() < 0) {
-        if (!sticky.data('fixed')) {
-          sticky.css({
-            'position': 'fixed',
-            'top': '0',
-            'width': sticky.width()
-          })
-          sticky.data('fixed', true)
-        }
-      } else if (sticky.data('fixed')) {
-        sticky.css({
-          'position': 'static',
-          'top': 'auto'
-        })
-        sticky.data('fixed', false)
-      }
-    })
-  }
-
   $('input:file').on('change', function (e) {
     e.stopPropagation()
     $('input:submit').prop('disabled', !$(this).val())

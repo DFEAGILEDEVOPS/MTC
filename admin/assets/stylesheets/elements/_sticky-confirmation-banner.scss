@@ -6,10 +6,29 @@
   text-align: right;
   width: 100%;
   z-index: 999;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  #content {
+    padding: 0;
+  }
+
+  .grid-row {
+    margin: 0 -7px;
+  }
+
+  .first-half {
+    text-align: left;
+  }
 
   @include media(mobile) {
     overflow: hidden;
     padding: 0 0 15px 0;
+
+    .grid-row {
+      margin: 0 -5px;
+    }
 
     .button {
       float: right;
@@ -31,7 +50,13 @@
   }
 
   div {
-    padding: $gutter-half;
+    padding: 5px;
+  }
+}
+
+@include media(mobile) {
+  .sticky-banner-wrapper {
+    padding-bottom: 5px;
   }
 }
 

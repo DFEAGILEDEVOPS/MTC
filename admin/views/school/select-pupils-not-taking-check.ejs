@@ -9,8 +9,6 @@
 
 <form method="post" action="/school/pupils-not-taking-check/save-pupils">
 
-    <%- partial('partials/_sticky_confirmation_banner', { cancelLink: '/school/pupils-not-taking-check' }) %>
-
     <div class="grid-row" id="pupils-not-taking-checks" aria-describedby="heading-xlarge">
 
         <div class="column-two-thirds">
@@ -151,3 +149,11 @@
     </div>
 </form>
 
+<%- partial('partials/_sticky_confirmation_banner',
+    {
+        cancelLabel: 'Cancel',
+        cancelLink: '/school/pupils-not-taking-check',
+        submitLabel: 'Confirm',
+        isSubmitDisabled: true,
+        stickyData: null
+    }) %>
