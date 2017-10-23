@@ -1,5 +1,9 @@
 
 And(/^I am on the generate pupil pins page$/) do
+  generate_pupil_pins_page.load
+end
+
+And(/^I navigate to generate pupil pins page$/) do
   school_landing_page.generate_pupil_pin.click
 end
 
@@ -18,10 +22,6 @@ And(/^I click Generate PINs button$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname on Generate Pins List Page$/) do
-  # school_id = MongoDbHelper.find_teacher(@teacher).first['school']
-  # pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
-  # expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort).to eql generate_pupil_pins_page.pupil_list.rows.map {|t| t.name.text}
-
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}
   sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}.sort
   expect(sorted_pupils_from_page).to match_array(pupils_from_page)
@@ -32,7 +32,8 @@ Given(/^I have a pupil with active pin$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  MongoDbHelper.set_pin(@details_hash['first_name'], @details_hash['last_name'], 9991001, "abc12345")
+  @pupil_forename = @details_hash[:first_name]
+  MongoDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001, "abc12345")
 end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -42,5 +43,6 @@ Given(/^I have a pupil not taking the check$/) do
 end
 
 Then(/^I CANNOT see this pupil in the list of Pupil on Generate Pin list page$/) do
-
+  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}
+  expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
