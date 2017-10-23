@@ -19,6 +19,7 @@
   "dependencies": {
     "azure-storage": "^2.6.0",
     "dotenv": "^4.0.0",
+    "logzio-nodejs": "^0.4.4",
     "simple-timer": "^0.0.5",
     "uuidv4": "^0.5.0"
   },
