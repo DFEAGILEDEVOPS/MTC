@@ -2,6 +2,7 @@
 
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const markingService = require('./marking.service')
+const psychometricianReportService = require('./psychometrician-report.service')
 
 const completedCheckProcessingService = {}
 const batchSize = 100
@@ -33,6 +34,7 @@ completedCheckProcessingService.markAndProcess = async function (batchSize) {
     return false
   }
   await markingService.batchMark(batchIds)
+  await psychometricianReportService.batchProduceCacheData(batchIds)
   console.log('Processed %d completed checks', batchIds.length)
   return true
 }
