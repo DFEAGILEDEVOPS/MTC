@@ -25,6 +25,7 @@ const {
   getAttendanceCodes } = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
 
@@ -212,7 +213,7 @@ const getGeneratePinsList = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let school
   try {
-    school = await School.findOne({_id: req.user.School}).exec()
+    school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
       throw new Error(`School [${req.user.school}] not found`)
     }
