@@ -22,6 +22,20 @@ checkDataService.find = async function (criteria) {
 }
 
 /**
+ * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
+ * @param criteria
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.findFullyPopulated = async function (criteria) {
+  return Check.find(criteria)
+    .populate('pupilId')
+    .populate('checkWindowId')
+    .populate('checkFormId')
+    .lean()
+    .exec()
+}
+
+/**
  * Find the count
  * @param query
  * @return {Promise.<*>}
