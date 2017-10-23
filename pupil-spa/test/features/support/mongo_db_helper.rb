@@ -103,11 +103,6 @@ class MongoDbHelper
                                {'$set' => {'pin' => flag}})
   end
 
-  def self.set_pin(forename,lastname,school_id,flag=nil)
-    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
-                               {'$set' => {'pin' => flag}})
-  end
-
   def self.get_completed_checks
     collection=CLIENT[:completedchecks].find({})
     result = []
