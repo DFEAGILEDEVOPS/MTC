@@ -14,6 +14,21 @@ const storageTargetName = 'completechecks'
 const entityGenerator = azure.TableUtilities.entityGenerator
 const uuid = require('uuidv4')
 const debug = process.env.NODE_ENV !== 'production'
+let logger
+if (process.env.LOGZ_KEY) {
+  console.log('intialising logger')
+  logger = require('logzio-nodejs').createLogger({
+    token: process.env.LOGZ_KEY,
+    host: 'listener.logz.io',
+    type: 'wac-spike-mtc'
+  })
+}
+
+const log = (data) => {
+  if (logger) {
+    logger.log(data)
+  }
+}
 
 // grab disk data...
 let buildId
@@ -32,9 +47,7 @@ storageService.createTableIfNotExists(storageTargetName, function (error, result
   if (debug) console.log('storage table initialised')
 })
 
-console.log(`running on ${machineName} (${os.cpus().length} cores) under process ${processId}.`)
-
-http.createServer((request, response) => {
+const validateRoute = (request, response) => {
   if (request.method === 'GET') {
     response.statusCode = 200
     switch (request.url) {
@@ -51,22 +64,49 @@ http.createServer((request, response) => {
       default:
         response.statusCode = 404
         response.end()
+        log({
+          url: request.url,
+          error: 404
+        })
+        return false
     }
-    return
   }
-  // fail if not posting complete check
-  if (request.method !== 'POST' || request.url !== '/complete-check') {
-    response.statusCode = 404
-    response.end()
+
+  if (request.method === 'POST' && request.url === '/complete-check') {
+    return true
   }
+  // catch all fails
+  response.statusCode = 404
+  response.end()
+  log({
+    url: request.url,
+    error: 404
+  })
+  return false
+}
+
+console.log(`running on ${machineName} (${os.cpus().length} cores) under process ${processId}.`)
+
+http.createServer((request, response) => {
   let body = []
   request.on('error', (err) => {
-    console.error(err)
+    log({
+      type: 'request error',
+      error: err
+    })
   }).on('data', (chunk) => {
     body.push(chunk)
   }).on('end', () => {
+    if (!validateRoute(request, response)) {
+      return
+    }
+
     response.on('error', (err) => {
-      if (debug) console.error(err)
+      if (debug) { console.error(err) }
+      log({
+        type: 'response error',
+        error: err
+      })
     })
 
     const check = Buffer.concat(body).toString()
@@ -83,8 +123,13 @@ http.createServer((request, response) => {
     storageService.insertEntity(storageTargetName, tableEntry, function (error, result, queueResponse) {
       if (error) {
         if (debug) console.error(error)
+        log({
+          type: 'azure storage error',
+          error: error
+        })
         response.writeHead(500)
         response.end()
+        return
       }
       response.writeHead(200, { 'Content-Type': 'application/json' })
       response.end()
