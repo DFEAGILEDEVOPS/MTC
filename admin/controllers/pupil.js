@@ -6,7 +6,7 @@ const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const fileValidator = require('../lib/validator/file-validator')
-const { fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
@@ -64,7 +64,7 @@ const postAddPupil = async (req, res, next) => {
   })
   try {
     const pupilData = req.body
-    await validatePupil(pupil, pupilData)
+    await pupilService.validatePupil(pupil, pupilData)
   } catch (error) {
     Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e] })
     return res.render('school/add-pupil', {
@@ -266,8 +266,8 @@ const getManagePupils = async (req, res) => {
   pupilsData = await Promise.all(pupilsData.map(async (item) => {
     const dob = new Date(item.dob)
     item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
-    const answers = await fetchPupilAnswers(item._id)
-    const { hasScore, percentage } = fetchScoreDetails(answers)
+    const answers = await pupilService.fetchAnswers(item._id)
+    const { hasScore, percentage } = pupilService.fetchScoreDetails(answers)
     item.hasScore = hasScore
     item.percentage = percentage
     return item

@@ -50,7 +50,7 @@ const pupilService = {
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */
-  fetchPupilAnswers: async (id) => {
+  fetchAnswers: async (id) => {
     // TODO: Introduce integration tests
     const answers = await Answer.findOne({
       pupil: mongoose.Types.ObjectId(id),
