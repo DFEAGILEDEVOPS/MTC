@@ -23,14 +23,13 @@ try {
   buildId = 'unknown'
 }
 
-console.log('reading file')
 const loaderid = fs.readFileSync(path.join(__dirname, 'public', 'loaderio-99a9565f58325293e217a36aa3ae695d.txt'))
 
 storageService.createTableIfNotExists(storageTargetName, function (error, result, response) {
   if (error) {
     throw new Error('unable to connect to azure storage:' + error.message)
   }
-  if (debug) console.log('connected to azure storage service')
+  if (debug) console.log('storage table initialised')
 })
 
 console.log(`running on ${machineName} (${os.cpus().length} cores) under process ${processId}.`)
@@ -55,7 +54,7 @@ http.createServer((request, response) => {
     }
     return
   }
-
+  // fail if not posting complete check
   if (request.method !== 'POST' || request.url !== '/complete-check') {
     response.statusCode = 404
     response.end()
@@ -70,14 +69,13 @@ http.createServer((request, response) => {
       if (debug) console.error(err)
     })
 
-    body = Buffer.concat(body).toString()
-    // add specific host info
-    var obj = JSON.parse(body)
-    var encodedData = Buffer.from(JSON.stringify(obj)).toString('base64')
+    const check = Buffer.concat(body).toString()
+    var encodedCheck = Buffer.from(check).toString('base64')
     var tableEntry = {
+      // at most, 60 partitions
       PartitionKey: entityGenerator.String(storageTargetName + new Date().getSeconds()),
       RowKey: entityGenerator.String(uuid().toString()),
-      check: entityGenerator.String(encodedData),
+      check: entityGenerator.String(encodedCheck),
       machine: entityGenerator.String(machineName),
       processId: entityGenerator.Int64(processId)
     }
