@@ -5,6 +5,7 @@ const proxyquire = require('proxyquire').noCallThru()
 
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
+const psychometricianReportService = require('../../services/psychometrician-report.service')
 
 describe('completedCheckProcessingService', () => {
   let service, sandbox
@@ -14,9 +15,10 @@ describe('completedCheckProcessingService', () => {
   afterEach(() => sandbox.restore())
 
   describe('#markAndProcess', () => {
-    let completedCheckDataServiceStub, markingServiceStub
+    let completedCheckDataServiceStub, markingServiceStub, psychometricianReportServiceStub
     beforeEach(() => {
       completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'findUnmarked')
+      psychometricianReportServiceStub = sandbox.stub(psychometricianReportService, 'batchProduceCacheData')
       markingServiceStub = sandbox.stub(markingService, 'batchMark')
       service = proxyquire('../../services/completed-check-processing.service', {
         './data-access/completed-check.data.service': completedCheckDataService,
@@ -36,6 +38,13 @@ describe('completedCheckProcessingService', () => {
       completedCheckDataServiceStub.resolves([1, 2, 3])
       await service.markAndProcess(10)
       expect(markingServiceStub.called).toBeTruthy()
+      done()
+    })
+
+    it('it calls the psychometrician report service', async (done) => {
+      completedCheckDataServiceStub.resolves([1, 2, 3])
+      await service.markAndProcess(10)
+      expect(psychometricianReportServiceStub.callCount).toBe(1)
       done()
     })
 
