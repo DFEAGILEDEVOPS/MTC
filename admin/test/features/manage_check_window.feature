@@ -12,7 +12,6 @@ Feature:
     Given I am on the manage check windows page
     Then I should see page instructions
 
-  @wip
   Scenario: Manage check window page has the option to create a new window
     Given I am on the manage check windows page
     Then I should see a option to create a new window
@@ -36,3 +35,19 @@ Feature:
   Scenario: Manage check window page has option to view progress report
     Given I am on the manage check windows page
     Then I should see a option to view the progress report
+
+  Scenario: Windows that are in the past do not have a remove button
+    Given I am on the manage check windows page
+    Then windows in the past cannot be removed
+
+  Scenario: Windows that have a remove button can be removed
+    Given I am on the manage check windows page
+    When I decide to remove a window
+    Then it should be removed from the list of check windows
+    And it should be removed from the database
+
+  Scenario: Removal of check window can be cancelled
+    Given I am on the manage check windows page
+    When I want to remove a window
+    But decide to cancel
+    Then the window should not be removed
