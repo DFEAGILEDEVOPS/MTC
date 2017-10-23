@@ -45,11 +45,21 @@
             </thead>
             <tbody>
                 <% checkWindowList.forEach( (checkWindow, index) => { %>
-                <tr>
-                    <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
+                <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
+                    <td>
+                        <% if (checkWindow.isCurrent) { %>
+                        <a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a>
+                        <% } else { %>
+                        <%= checkWindow.checkWindowName %>
+                        <% } %>
+                    </td>
                     <td><%= checkWindow.adminStartDate %></td>
                     <td><%= checkWindow.checkDates %></td>
-                    <td><a href="/administrator/check-windows/remove/<%= checkWindow.id %>">Remove</a></td>
+                    <td>
+                        <% if (checkWindow.canRemove) { %>
+                        <a href="/administrator/check-windows/remove/<%= checkWindow.id %>">Remove</a>
+                        <% } %>
+                    </td>
                 </tr>
                 <% }) %>
             </tbody>
