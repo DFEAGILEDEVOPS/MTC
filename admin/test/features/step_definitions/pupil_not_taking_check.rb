@@ -25,6 +25,7 @@ end
 
 When(/^I want to add a reason$/) do
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
 end
 
 Then(/^I should see a heading on the page$/) do
@@ -53,6 +54,7 @@ end
 When(/^I want to add a reason for pupils not taking a check$/) do
   pupils_not_taking_check_page.load
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
