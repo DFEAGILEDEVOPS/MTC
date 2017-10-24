@@ -163,9 +163,7 @@ $(function () {
    * 'Generate pins' methods.
    */
   var generatePins = function () {
-    console.log('GENERATE PINS METHODS')
     $('#generatePins .multiple-choice-mtc > input:checkbox').on('click', function () {
-      console.log('GENERATE PINS CLICK')
       var el = $('#generatePins .multiple-choice-mtc > input:checkbox:checked')
       if (el.length > 0) {
         $('#stickyBanner').addClass('show')
