@@ -1,3 +1,6 @@
+Before do
+  page.current_window.resize_to(1270,768)
+end
 
 Before("@add_a_pupil") do
   step "I am logged in"

@@ -18,6 +18,7 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
+  @wip
   Scenario: Verify breadcrumb on Manage pupil page
     Given I am logged in
     And I click Manage pupil link
