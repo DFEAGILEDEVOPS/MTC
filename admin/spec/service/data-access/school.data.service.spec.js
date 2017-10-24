@@ -32,4 +32,20 @@ describe('school.data.service', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sinon.mock(School).expects('find').chain('lean').chain('exec').resolves(schoolMock)
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        '../../models/school': School
+      })
+    })
+
+    it('calls the model', () => {
+      service.find({_id: 'some-id'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })
