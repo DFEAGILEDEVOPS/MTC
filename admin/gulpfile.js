@@ -11,7 +11,8 @@ const standard = require('gulp-standard')
 const jsBundleFiles = [
   './assets/javascripts/jquery-1.12.4.js',
   './assets/javascripts/details.polyfill.js',
-  './assets/javascripts/global-scripts.js'
+  './assets/javascripts/global-scripts.js',
+  './assets/javascripts/jquery-modal.js'
 ]
 
 const jsFilesForStandard = [

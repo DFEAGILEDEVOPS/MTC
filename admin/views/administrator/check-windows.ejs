@@ -78,6 +78,9 @@
                     <li>
                         <a href="#">Adjust questions timings</a>
                     </li>
+                    <li>
+                        <%- partial('partials/_modal_link', { modalLinkLabel: 'Are you sure?' }) %>
+                    </li>
                 </ul>
             </nav>
 
@@ -92,3 +95,12 @@
         </aside>
     </div>
 </div>
+
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Please confirm',
+    modalText: 'Blah blah blah blah. Do you wish to continue?',
+    modalConfirmationLabel: 'Confirm',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'Cancel',
+    modalCancelUrl: '#'
+}) %>
