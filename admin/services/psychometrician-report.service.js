@@ -4,6 +4,7 @@ const psCachedReportDataService = require('./data-access/ps-report-cache.data.se
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const dateService = require('./date.service')
+const schoolDataService = require('./data-access/school.data.service')
 
 const psychometricianReportService = {}
 
@@ -20,6 +21,9 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   }
 
   const completedChecks = await completedCheckDataService.find({_id: {'$in': batchIds}})
+
+  // Address some deficiencies in the data model by adding in data required for the report
+  // additional data is added as a side-effect to the completedChecks objects
   await this.populateWithCheck(completedChecks)
 
   for (let check of completedChecks) {
@@ -39,7 +43,7 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
   const psData = {
     'AttemptId': completedCheck.check.checkCode,
     'DOB': dateService.formatUKDate(completedCheck.check.pupilId.dob),
-    // 'estab': answer.school.estabCode,
+    'estab': completedCheck.check.pupilId.school.estabCode,
     // 'FakeForename': 'Pupil',
     // 'FormMark': answer.result ? answer.result.correct : 'n/a',
     // 'FakeGender': answer.pupil.gender,
@@ -71,13 +75,13 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
 psychometricianReportService.populateWithCheck = async function (completedChecks) {
   const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
   const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
+  // console.log('checks > pupil > school', checks[0].pupilId.school)
   const checksByCheckCode = new Map()
   // populate the map
   checks.map(c => checksByCheckCode.set(c.checkCode, c))
   // splice it in
   for (const cc of completedChecks) {
     cc.check = checksByCheckCode.get(cc.data.pupil.checkCode)
-    console.log('CC Check', cc.check)
   }
 }
 

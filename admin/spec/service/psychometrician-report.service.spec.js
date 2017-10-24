@@ -2,7 +2,8 @@
 /* global describe, expect, it, beforeEach, afterEach */
 
 const sinon = require('sinon')
-const proxyquire = require('proxyquire')
+require('sinon-mongoose')
+const proxyquire = require('proxyquire').noCallThru()
 
 const psCachedReportDataService = require('../../services/data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
@@ -35,9 +36,9 @@ describe('psychometricians-report.service', () => {
         './data-access/completed-check.data.service': completedCheckDataService
       })
 
-      // We don't actually want to call this method as is not under test for this describe block
-      serviceProduceCacheStub = sinon.stub(service, 'produceCacheData')
-      servicePopulateWithCheck = sinon.stub(service, 'populateWithCheck')
+      // We don't actually want to call these internal methods as is not under test for this describe block
+      serviceProduceCacheStub = sandbox.stub(service, 'produceCacheData')
+      servicePopulateWithCheck = sandbox.stub(service, 'populateWithCheck')
     })
 
     it('throws an error if not provided with an argument', async (done) => {
@@ -66,11 +67,6 @@ describe('psychometricians-report.service', () => {
         {mock: 'object'},
         {mock: 'object'}
       ])
-      servicePopulateWithCheck.resolves([
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'}
-      ])
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataServiceStub.callCount).toBe(1)
@@ -87,11 +83,6 @@ describe('psychometricians-report.service', () => {
         {mock: 'object'},
         {mock: 'object'}
       ])
-      servicePopulateWithCheck.resolves([
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'}
-      ])
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(servicePopulateWithCheck.callCount).toBe(1)
@@ -102,16 +93,10 @@ describe('psychometricians-report.service', () => {
     })
 
     it('calls produceCacheData for each check', async (done) => {
-
       completedCheckDataServiceStub.resolves([
         {mock: 'object'},
         {mock: 'object'},
         {mock: 'object'}
-      ])
-      servicePopulateWithCheck.resolves([
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'},
-        {mock: 'object', check: 'object'}
       ])
       try {
         await service.batchProduceCacheData([1, 2, 3])
@@ -127,10 +112,7 @@ describe('psychometricians-report.service', () => {
     let completedCheckDataServiceStub
 
     beforeEach(() => {
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/completed-check.data.service': completedCheckDataService,
-        './data-access/ps-report-cache.data.service': psCachedReportDataService
-      })
+      service = require('../../services/psychometrician-report.service')
     })
 
     it('throws an error if not called with an argument', async (done) => {

@@ -2,6 +2,7 @@
 'use strict'
 
 const mongoose = require('mongoose')
+// mongoose.set('debug', true)
 const autoIncrement = require('mongoose-auto-increment')
 
 // const psychometricianReportService = require('../services/psychometrician-report.service')
