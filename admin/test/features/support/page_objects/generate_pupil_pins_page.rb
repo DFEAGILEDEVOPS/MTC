@@ -6,5 +6,15 @@ class GeneratePupilPinsPage < SitePrism::Page
   elements :info_message, '.list-number li'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
 
+  element :select_all_pupils, '#selectAll'
+  element :unselect_all_pupils, '#selectAll'
+  section :pupil_list, '#pupilsList tbody' do
+    sections :rows, 'tr' do
+      element :checkbox, 'input[type="checkbox"]'
+      element :selected, 'input[data-checked="true"]'
+      element :name, 'label'
+    end
+  end
+
 
 end
