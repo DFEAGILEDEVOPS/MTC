@@ -34,7 +34,7 @@ describe('generate-pins.service', () => {
       it('with specific properties', async (done) => {
         const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
-        expect(Object.keys(pupils[ 0 ]).length).toBe(5)
+        expect(Object.keys(pupils[ 0 ]).length).toBe(6)
         done()
       })
     })

@@ -1,3 +1,4 @@
+const moment = require('moment')
 const pupilService = require('../services/pupil.service')
 
 const generatePinService = {
@@ -12,7 +13,7 @@ const generatePinService = {
     let pupils = await pupilService.fetchSortedPupilsData(schoolId, sortField, sortDirection)
     pupils = pupils
       .filter(p => !p.pin && !p.attendanceCode && !p.result)
-      .map(({_id, pin, foreName, middleNames, lastName}) => ({ _id, pin, foreName, middleNames, lastName }))
+      .map(({_id, pin, dob, foreName, middleNames, lastName}) => ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
     return pupils
   }
 }
