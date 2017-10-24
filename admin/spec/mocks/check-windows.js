@@ -18,7 +18,7 @@ module.exports = [
     _id: ObjectId('59e88622d38a9f2d1fcebbb3'),
     updatedAt: moment('2017-10-19 11:01:54').toDate(),
     createdAt: moment('2017-10-19 11:01:54').toDate(),
-    checkEndDate: moment('2017-10-28 00:00:00').toDate(),
+    checkEndDate: moment('2017-11-28 00:00:00').toDate(),
     checkStartDate: moment('2017-10-25 00:00:00').toDate(),
     adminStartDate: moment('2017-10-19 00:00:00').toDate(),
     checkWindowName: 'Window Test 1',

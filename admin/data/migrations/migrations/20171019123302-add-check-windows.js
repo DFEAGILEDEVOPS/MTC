@@ -19,7 +19,7 @@ module.exports = {
         checkStartDate: '2017-09-10 12:00:00',
         checkEndDate: '2017-09-20 12:00:00',
         adminStartDate: '2017-09-09 11:33:00',
-        deleted: false
+        isDeleted: false
       })
 
       ch.push({
@@ -27,7 +27,7 @@ module.exports = {
         checkStartDate: '2017-10-22 12:00:00',
         checkEndDate: '2017-10-28 12:00:00',
         adminStartDate: '2017-10-19 11:44:00',
-        deleted: false
+        isDeleted: false
       })
 
       ch.push({
@@ -35,7 +35,7 @@ module.exports = {
         checkStartDate: '2017-10-18 12:00:00',
         checkEndDate: '2017-10-21 12:00:00',
         adminStartDate: '2017-10-15 11:22:00',
-        deleted: false
+        isDeleted: false
       })
 
       try {

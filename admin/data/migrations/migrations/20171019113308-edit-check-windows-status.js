@@ -11,7 +11,7 @@ module.exports = {
         next(new Error('Could not connect to mongodb: ' + error.message))
       }
       try {
-        await db.collection('checkwindows').update({}, {$set: {'deleted': false}}, {multi: true})
+        await db.collection('checkwindows').update({}, {$set: {'isDeleted': false}}, {multi: true})
         mongoose.disconnect(() => next())
       } catch (error) {
         console.log('ERROR', error)
@@ -26,7 +26,7 @@ module.exports = {
         next(new Error('Could not connect to mongodb: ' + error.message))
       }
       try {
-        db.collection('checkwindows').update({}, {$unset: {'deleted': 1}}, {multi: true})
+        db.collection('checkwindows').update({}, {$unset: {'isDeleted': 1}}, {multi: true})
         mongoose.disconnect(() => next())
       } catch (error) {
         console.log('ERROR', error)

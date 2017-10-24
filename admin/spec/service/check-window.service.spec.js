@@ -67,7 +67,7 @@ describe('check-window.service', () => {
 
       expect(result[0].checkWindowName).toBe('Test window 3')
       expect(result[0].adminStartDate).toBe('18 Oct 2017')
-      expect(result[0].checkDates).toBe('10 Jan to 20 Jan 2018')
+      expect(result[0].checkDates).toBe('10 to 20 Jan 2018')
       expect(result[0].isCurrent).toBe(isCurrent)
       expect(result[0].canRemove).toBe(canRemove)
     })
@@ -79,7 +79,7 @@ describe('check-window.service', () => {
 
       expect(result[1].checkWindowName).toBe('Window Test 1')
       expect(result[1].adminStartDate).toBe('19 Oct 2017')
-      expect(result[1].checkDates).toBe('25 Oct to 28 Oct 2017')
+      expect(result[1].checkDates).toBe('25 Oct to 28 Nov 2017')
       expect(result[1].isCurrent).toBe(isCurrent)
       expect(result[1].canRemove).toBe(canRemove)
     })

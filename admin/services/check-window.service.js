@@ -25,10 +25,16 @@ const checkWindowService = {
   formatCheckPeriod: (startDate, endDate) => {
     let startYear = ' ' + startDate.format('YYYY')
     let endYear = ' ' + endDate.format('YYYY')
+    let startMonth = ' ' + startDate.format('MMM')
+    let endMonth = ' ' + endDate.format('MMM')
+
     if (startYear === endYear) {
       startYear = ''
     }
-    return startDate.format('DD MMM') + startYear + ' to ' + endDate.format('DD MMM YYYY')
+    if (startMonth === endMonth) {
+      startMonth = ''
+    }
+    return startDate.format('DD') + startMonth + startYear + ' to ' + endDate.format('DD MMM YYYY')
   },
   /**
    * Format check windows document, prepare to parse in view.
