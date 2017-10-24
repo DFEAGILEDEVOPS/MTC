@@ -6,6 +6,7 @@ const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
+const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const config = require('../config')
 
@@ -202,14 +203,13 @@ const getCheckWindows = async (req, res, next) => {
   try {
     checkWindows = await checkWindowDataService.fetchPastCheckWindows(sortField, sortDirection)
     checkWindowsPast = checkWindows.map(cw => {
-      const adminStartDateMo = moment(cw.adminStartDate)
       const checkStartDateMo = moment(cw.checkStartDate)
       const checkEndDateMo = moment(cw.checkEndDate)
 
       return {
         id: cw._id,
         checkWindowName: cw.checkWindowName,
-        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
+        adminStartDate: dateService.formatLongGdsDate(cw.adminStartDate),
         checkDates: formatDate(checkStartDateMo, checkEndDateMo),
         canRemove: false,
         isCurrent: false
