@@ -17,6 +17,8 @@ const pupilService = require('../../services/pupil.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
+// This is temporary until common service is merged
+const peopleNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 
@@ -213,6 +215,10 @@ describe('school controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(generatePinsService, 'getPupils').and.returnValue(Promise.resolve({}))
+        // This is temporary until common service is merged
+        spyOn(peopleNotTakingCheckService, 'sortPupilsByLastName')
+          .and.returnValue({ htmlSortDirection: { name: 'desc' },
+            arrowSortDirection: { name: 'sort' } })
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.locals.pageTitle).toBe('Select pupils')

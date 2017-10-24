@@ -220,10 +220,17 @@ const getGeneratePinsList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const pupils = await generatePinsService.getPupils(school._id)
+  // Temporary sorting approach until #236 is merged
+  let sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+  const { htmlSortDirection, arrowSortDirection } = sortPupilsByLastName(sortField, sortDirection)
+  sortField = sortField === 'name' ? 'lastName' : sortField
+  const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
   return res.render('school/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
-    pupils
+    pupils,
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 
