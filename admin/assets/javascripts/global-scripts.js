@@ -184,7 +184,6 @@ $(function () {
    * 'Generate pins' page,
    */
   if ($('#generatePins')) {
-    console.log('GENERATE PINS PAGE')
     generatePins()
   }
 
