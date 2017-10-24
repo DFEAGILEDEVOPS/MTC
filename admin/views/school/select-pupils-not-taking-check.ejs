@@ -147,13 +147,13 @@
             </aside>
         </div>
     </div>
+    <%- partial('partials/_sticky_confirmation_banner',
+            {
+                cancelLabel: 'Cancel',
+                cancelLink: '/school/pupils-not-taking-check',
+                submitLabel: 'Confirm',
+                isSubmitDisabled: true,
+                stickyData: null
+            }) %>
 </form>
 
-<%- partial('partials/_sticky_confirmation_banner',
-    {
-        cancelLabel: 'Cancel',
-        cancelLink: '/school/pupils-not-taking-check',
-        submitLabel: 'Confirm',
-        isSubmitDisabled: true,
-        stickyData: null
-    }) %>
