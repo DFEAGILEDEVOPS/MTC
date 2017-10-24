@@ -42,7 +42,7 @@ Given(/^I have a pupil not taking the check$/) do
   step 'the Absent reason should be stored against the pupils'
 end
 
-Then(/^I CANNOT see this pupil in the list of Pupil on Generate Pin list page$/) do
+Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/) do
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
