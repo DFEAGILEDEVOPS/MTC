@@ -1,16 +1,12 @@
-<div class="sticky-banner-wrapper" id="stickyHeader">
+<div class="sticky-banner-wrapper" id="stickyBanner">
     <div id="content">
         <div class="grid-row">
-            <div class="grid-row">
-                <% if (stickyData) { %>
-                <div class="column-half first-half">
-                    (Pupil's data)
-                </div>
-                <% } %>
-                <div class="<% if (stickyData) { %>column-half><% } else { %>column-full<% } %>">
-                    <a href="<%= cancelLink %>" class="button-secondary" id="stickyCancel"><%= cancelLabel %></a>
-                    <input type="submit" class="button" value="<%= submitLabel %>" id="stickyConfirm" <% if(isSubmitDisabled) { %>disabled="disabled"<% } %>>
-                </div>
+            <div class="column-half first-half">
+                Pupil(s) selected: <span id="totalPupilsSelected"></span>
+            </div>
+            <div class="column-half">
+                <a href="<%= cancelLink %>" class="button-secondary" id="stickyCancel"><%= cancelLabel %></a>
+                <input type="submit" class="button" value="<%= submitLabel %>" id="stickyConfirm" <% if(isSubmitDisabled) { %>disabled="disabled"<% } %>>
             </div>
         </div>
     </div>
