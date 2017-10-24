@@ -20,7 +20,7 @@ const pupilsNotTackingCheckService = require('../services/pupils-not-taking-chec
 const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const { sortRecords } = require('../utils')
-const sortingService = require('../services/sorting.service')
+const sortingService = require('../services/sorting-ui.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
