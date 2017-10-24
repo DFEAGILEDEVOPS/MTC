@@ -13,8 +13,8 @@ end
 
 And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pupil_pins_page).to have_generate_pin_message
-  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Generate pupil Personal Identification Numbers (PINs) and a school password."
-  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Distribute the PINs and password to your pupils."
+  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Generate pupil PINs and school password."
+  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Distribute pupil PINs and school password to your pupils."
 end
 
 And(/^I click Generate PINs button$/) do
