@@ -209,6 +209,7 @@ end
 
 But(/^I decide to change it$/) do
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Just arrived'}.click
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
