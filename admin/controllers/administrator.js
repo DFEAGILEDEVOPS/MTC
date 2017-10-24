@@ -7,6 +7,7 @@ const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
+const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingService = require('../services/sorting-ui.service')
 const config = require('../config')
@@ -332,8 +333,8 @@ const removeCheckWindow = async (req, res, next) => {
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')
       }
-      return res.redirect('/administrator/check-windows')
     }
+    return res.redirect('/administrator/check-windows')
   }
 }
 

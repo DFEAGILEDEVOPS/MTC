@@ -2,7 +2,6 @@
 
 const moment = require('moment')
 const CheckWindow = require('../../models/check-window')
-
 const checkWindowDataService = {
 
   /**
@@ -11,7 +10,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*>}
    */
   fetchCheckWindow: async (id) => {
-    return CheckWindow.findOne({'_id': id, 'deleted': false}).exec()
+    return CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
   },
   /**
    * Set check window as deleted.

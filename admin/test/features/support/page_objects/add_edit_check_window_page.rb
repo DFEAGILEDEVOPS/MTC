@@ -1,4 +1,5 @@
 class AddEditCheckWindowPage < SitePrism::Page
+  set_url '/choose-check-window{/add_or_edit}'
 
   element :check_name, '#checkWindowName'
   element :admin_start_day, '#adminStartDay'
@@ -12,7 +13,7 @@ class AddEditCheckWindowPage < SitePrism::Page
   element :check_end_year, '#checkEndYear'
   element :save_changes, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
-
+  elements :error_message, '.error-message'
 
   def enter_details(hash)
     check_name.set hash.fetch(:check_name, '')
@@ -26,6 +27,4 @@ class AddEditCheckWindowPage < SitePrism::Page
     check_end_month.set hash.fetch(:check_end_mon, '')
     check_end_year.set hash.fetch(:check_end_year, '')
   end
-
-
 end
