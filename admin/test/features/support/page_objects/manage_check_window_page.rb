@@ -16,11 +16,21 @@ class ManageCheckWindowPage < SitePrism::Page
       element :check_name, 'td:nth-of-type(1)'
       element :admin_start_date, 'td:nth-of-type(2)'
       element :check_period, 'td:nth-of-type(3)'
-      element :remove, 'td:nth-of-type(4)'
+      element :remove, 'td:nth-of-type(4)', text: 'Remove'
+    end
+    sections :expired_rows, 'tbody tr.font-greyed-out' do
+      element :check_name, 'td:nth-of-type(1)'
+      element :admin_start_date, 'td:nth-of-type(2)'
+      element :check_period, 'td:nth-of-type(3)'
     end
   end
 
   def find_check_row(check_name)
+    wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
+    windows_table.rows.find {|chk| chk.text.include? check_name}
+  end
+
+  def find_expired_check_row(check_name)
     wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
     windows_table.rows.find {|chk| chk.text.include? check_name}
   end
