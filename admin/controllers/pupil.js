@@ -6,7 +6,8 @@ const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilValidator = require('../lib/validator/pupil-validator')
 const fileValidator = require('../lib/validator/file-validator')
-const { fetchPupilsData, fetchPupilAnswers, fetchScoreDetails, validatePupil } = require('../services/pupil.service')
+const pupilService = require('../services/pupil.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 
@@ -63,7 +64,7 @@ const postAddPupil = async (req, res, next) => {
   })
   try {
     const pupilData = req.body
-    await validatePupil(pupil, pupilData)
+    await pupilService.validatePupil(pupil, pupilData)
   } catch (error) {
     Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e] })
     return res.render('school/add-pupil', {
@@ -256,35 +257,11 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
-const getManagePupils = async (req, res) => {
-  res.locals.pageTitle = 'Manage pupils'
-  const {pupils, schoolData} = await fetchPupilsData(req.user.School)
-  let pupilsData = pupils.map(e => e.toJSON())
-
-  // Format DOB
-  pupilsData = await Promise.all(pupilsData.map(async (item) => {
-    const dob = new Date(item.dob)
-    item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
-    const answers = await fetchPupilAnswers(item._id)
-    const { hasScore, percentage } = fetchScoreDetails(answers)
-    item.hasScore = hasScore
-    item.percentage = percentage
-    return item
-  }))
-  req.breadcrumbs(res.locals.pageTitle)
-  return res.render('school/manage-pupils', {
-    pupils: pupilsData,
-    schoolPin: schoolData.schoolPin,
-    todayDate: new Date(),
-    breadcrumbs: req.breadcrumbs()
-  })
-}
-
 const getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
   try {
-    const {pupils, schoolData} = await fetchPupilsData(req.user.School)
+    const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
     const pupilsData = pupils.map(e => e.toJSON()).filter(p => !!p.pin && !p.pinExpired)
     pupilsFormatted = pupilsData.map(p => {
       return {
@@ -310,6 +287,5 @@ module.exports = {
   getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
-  getManagePupils,
   getPrintPupils
 }
