@@ -16,7 +16,6 @@ const uuid = require('uuidv4')
 const debug = process.env.NODE_ENV !== 'production'
 let logger
 if (process.env.LOGZ_KEY) {
-  console.log('intialising logger')
   logger = require('logzio-nodejs').createLogger({
     token: process.env.LOGZ_KEY,
     host: 'listener.logz.io',
