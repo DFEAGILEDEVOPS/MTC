@@ -2,13 +2,13 @@
 Feature: Generate Pupil PINs
 
 
-  Scenario: Generate Pupil Landing page displays heading and info section
+  Scenario: Generate Pins Landing page displays heading and info section
     Given I am logged in
     When I navigate to generate pupil pins page
     Then I should see a heading for the Generate Pupil Pins
     And I can see the info message for generating the pupil pin
 
-  Scenario Outline: Generate Pupil List Page displays lists of Pupils
+  Scenario Outline: Generate Pins Pupil List Page displays lists of Pupils
     Given I have signed in with <teacher>
     And I navigate to generate pupil pins page
     When I click Generate PINs button
@@ -21,15 +21,15 @@ Feature: Generate Pupil PINs
   | teacher3 |
   | teacher4 |
 
-  Scenario: Generate Pupil List Page do not display pupil with active pin
+  Scenario: Generate Pins Pupil List page do not display pupil with active pin
     Given I am logged in
     And I have a pupil with active pin
     And I am on the generate pupil pins page
     When I click Generate PINs button
-    Then I CANNOT see this pupil in the list of Pupil on Generate Pin list page
+    Then I cannot see this pupil in the list of Pupil on Generate Pin list page
 
-  Scenario: Generate Pupil List Page do not display pupil not taking check
+  Scenario: Generate Pins Pupil List Page do not display pupil not taking check
     Given I have a pupil not taking the check
     And I am on the generate pupil pins page
     When I click Generate PINs button
-    Then I CANNOT see this pupil in the list of Pupil on Generate Pin list page
+    Then I cannot see this pupil in the list of Pupil on Generate Pin list page
