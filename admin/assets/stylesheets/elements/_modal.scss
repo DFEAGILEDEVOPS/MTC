@@ -28,13 +28,17 @@ dialog.modal-box {
   h1 {
     background-color: $govuk-blue;
     color: $white;
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 10px;
-    padding: 12px;
+    padding: 12px 12px 10px 12px;
 
-    //&:before {
-    //  content: "Alert";
-    //}
+    &:before {
+      background-image: url('/images/icon-warning-white.png');
+      background-repeat: no-repeat;
+      background-size: 25px 25px;
+      content: " ";
+      padding-left: 35px;
+    }
   }
 
   .modal-content {
