@@ -7,8 +7,6 @@
     </div>
 </div>
 
-<%- partial('partials/_sticky_confirmation_banner', { cancelLink: '/school/generate-pins-overview' }) %>
-
 <div class="grid-row">
     <div class="column-two-thirds">
         <header class="page-header">
@@ -21,7 +19,7 @@
     <div class="column-one-half">
         <form method="post" action="#" autocomplete="off">
             <% if (pupils && pupils.length > 0) { %>
-            <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
+            <table class="spacious sorting" id="generatePins" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
@@ -67,6 +65,13 @@
             <br class="clearfix"/>
             <p>No pupils found.</p>
             <% } %>
+
+            <%- partial('partials/_sticky_confirmation_banner', {
+                cancelLabel: 'Cancel',
+                cancelLink: '/school/generate-pins-overview',
+                submitLabel: 'Confirm'
+            }) %>
+
         </form>
     </div>
 </div>
