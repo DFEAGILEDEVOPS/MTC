@@ -21,7 +21,7 @@ describe('school.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
+      mock = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
       service = proxyquire('../../../services/data-access/school.data.service', {
         '../../models/school': School
       })
@@ -37,7 +37,7 @@ describe('school.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(School).expects('find').chain('lean').chain('exec').resolves(schoolMock)
+      mock = sandbox.mock(School).expects('find').chain('lean').chain('exec').resolves(schoolMock)
       service = proxyquire('../../../services/data-access/school.data.service', {
         '../../models/school': School
       })
