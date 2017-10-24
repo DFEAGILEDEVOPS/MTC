@@ -9,7 +9,7 @@ const pupilMockOrig = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 const pupilMock = {}
 // prevent node caching the school under the pupil for every test
-Object.assign((pupilMock, pupilMockOrig))
+Object.assign(pupilMock, pupilMockOrig)
 pupilMock.school = schoolMock
 const jwtTokenMock = require('../mocks/jwtToken')
 const configMock = require('../mocks/config')
