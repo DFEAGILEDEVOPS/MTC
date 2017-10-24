@@ -390,7 +390,6 @@ describe('pupil controller:', () => {
       sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
       controller = require('../../controllers/pupil.js').getAddMultiplePupilsCSVTemplate
-
     })
 
     afterEach(() => {
