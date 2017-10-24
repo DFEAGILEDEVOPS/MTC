@@ -53,16 +53,39 @@ $(function () {
    * Pupils not taking the check.
    */
   var pupilsNotTakingCheck = function () {
+
+    /**
+     * Enable/disable confirmation button from sticky banner.
+     * @param status
+     */
+    var enableButtonStatus = function (status) {
+      if (status === true) {
+        $('#stickyBanner').addClass('show')
+        $('#stickyConfirm').prop('disabled', false)
+      } else {
+        $('#stickyBanner').removeClass('show')
+        $('#stickyConfirm').prop('disabled', true)
+      }
+    }
+
     /**
      * Is radio button checked?
      */
     var isRadioChecked = function () {
       var el = $('input:radio[name="attendanceCode"]:checked')
       if (el.length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
+        enableButtonStatus(true)
       } else {
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(false)
       }
+    }
+
+    /**
+     * Count checkboxes, populate sticky <span>.
+     */
+    var countCheckboxes = function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      $('#totalPupilsSelected').text(el.length)
     }
 
     /**
@@ -71,9 +94,9 @@ $(function () {
     var isCheckboxChecked = function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked')
       if (el.length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
+        enableButtonStatus(true)
       } else {
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(false)
       }
     }
 
@@ -85,6 +108,7 @@ $(function () {
       $('#unselectAll').removeClass('all-hide')
       $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
       isRadioChecked()
+      countCheckboxes()
     })
 
     /**
@@ -93,7 +117,7 @@ $(function () {
     $('#unselectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#selectAll').removeClass('all-hide')
-      $('#stickyConfirm').prop('disabled', true)
+      enableButtonStatus(false)
       $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
     })
 
@@ -106,8 +130,9 @@ $(function () {
         isRadioChecked()
       } else {
         $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(true)
       }
+      countCheckboxes()
     })
 
     /**
@@ -118,6 +143,7 @@ $(function () {
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
         $($(this)).attr('data-checked', true)
         isCheckboxChecked()
+        countCheckboxes()
       }
     })
 
@@ -132,10 +158,13 @@ $(function () {
         $($(this)).attr('data-checked', null)
         isCheckboxChecked()
       }
+      countCheckboxes()
     })
   }
 
-  pupilsNotTakingCheck()
+  if ($('#pupils-not-taking-checks .list.attendance-code-list')) {
+    pupilsNotTakingCheck()
+  }
 
   $('input:file').on('change', function (e) {
     e.stopPropagation()
