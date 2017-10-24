@@ -22,8 +22,8 @@ And(/^I click Generate PINs button$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname on Generate Pins List Page$/) do
-  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}
-  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}.sort
+  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
+  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort
   expect(sorted_pupils_from_page).to match_array(pupils_from_page)
 end
 
@@ -43,6 +43,6 @@ Given(/^I have a pupil not taking the check$/) do
 end
 
 Then(/^I CANNOT see this pupil in the list of Pupil on Generate Pin list page$/) do
-  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.names.text}
+  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
