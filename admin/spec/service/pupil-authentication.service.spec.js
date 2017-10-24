@@ -7,7 +7,10 @@ const proxyquire = require('proxyquire')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolMock = require('../mocks/school')
-const pupilMock = require('../mocks/pupil')
+const pupilMockOrig = require('../mocks/pupil')
+const pupilMock = {}
+// Prevent node require caching the school under the pupil mock
+Object.assign(pupilMock, pupilMockOrig)
 pupilMock.school = schoolMock
 
 describe('pupil authentication service', () => {

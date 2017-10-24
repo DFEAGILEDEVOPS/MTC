@@ -5,8 +5,11 @@ const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
 
-const pupilMock = require('../mocks/pupil')
+const pupilMockOrig = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
+const pupilMock = {}
+// prevent node caching the school under the pupil for every test
+Object.assign((pupilMock, pupilMockOrig))
 pupilMock.school = schoolMock
 const jwtTokenMock = require('../mocks/jwtToken')
 const configMock = require('../mocks/config')
