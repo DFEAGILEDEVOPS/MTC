@@ -42,6 +42,14 @@ Before("@pupil_not_taking_check") do
   visit current_url
 end
 
+Before("@create_new_window") do
+  step "I am on the create a check window page"
+  step "I submit details for a valid check window"
+  step "I should see it added to the list of windows"
+  step "stored correctly in the database"
+  visit Capybara.app_host + '/sign-out'
+end
+
 Before("~@poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end

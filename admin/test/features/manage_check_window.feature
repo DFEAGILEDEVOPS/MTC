@@ -40,12 +40,14 @@ Feature:
     Given I am on the manage check windows page
     Then windows in the past cannot be removed
 
+  @create_new_window
   Scenario: Windows that have a remove button can be removed
     Given I am on the manage check windows page
     When I decide to remove a window
     Then it should be removed from the list of check windows
     And it should be removed from the database
 
+  @wip
   Scenario: Removal of check window can be cancelled
     Given I am on the manage check windows page
     When I want to remove a window
