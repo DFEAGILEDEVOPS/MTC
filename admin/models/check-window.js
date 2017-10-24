@@ -21,7 +21,7 @@ const CheckWindow = new Schema({
     type: Date,
     required: true
   },
-  deleted: {
+  isDeleted: {
     type: Boolean,
     default: false,
     required: true

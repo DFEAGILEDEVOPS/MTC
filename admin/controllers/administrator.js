@@ -8,7 +8,7 @@ const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
-const sortingService = require('../services/sorting.service')
+const sortingService = require('../services/sorting-ui.service')
 const config = require('../config')
 
 /**
@@ -325,7 +325,6 @@ const removeCheckWindow = async (req, res, next) => {
   if (checkWindow) {
     if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
       req.flash('error', 'Deleting an active check window is not allowed.')
-      return res.redirect('/administrator/check-windows')
     } else {
       try {
         await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
