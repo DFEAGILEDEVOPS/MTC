@@ -1,3 +1,7 @@
+Before do
+  page.current_window.resize_to(1270,768)
+end
+
 Before('@4_digit') do
   skip_this_scenario if AUTH == '5'
 end
