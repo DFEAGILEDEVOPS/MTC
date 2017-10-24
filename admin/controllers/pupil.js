@@ -257,6 +257,30 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
+const getManagePupils = async (req, res) => {
+  res.locals.pageTitle = 'Manage pupils'
+  const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
+  let pupilsData = pupils.map(e => e.toJSON())
+
+  // Format DOB
+  pupilsData = await Promise.all(pupilsData.map(async (item) => {
+    const dob = new Date(item.dob)
+    item['dob'] = dob.getDate() + '/' + (dob.getMonth() + 1) + '/' + dob.getFullYear()
+    const answers = await pupilService.fetchAnswers(item._id)
+    const { hasScore, percentage } = pupilService.fetchScoreDetails(answers)
+    item.hasScore = hasScore
+    item.percentage = percentage
+    return item
+  }))
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/manage-pupils', {
+    pupils: pupilsData,
+    schoolPin: schoolData.schoolPin,
+    todayDate: new Date(),
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 const getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
@@ -287,5 +311,6 @@ module.exports = {
   getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
+  getManagePupils,
   getPrintPupils
 }

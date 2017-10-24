@@ -227,6 +227,53 @@ const getGeneratePinsList = async (req, res, next) => {
   })
 }
 
+const generatePins = async (req, res, next) => {
+  if (!req.body[ 'pupil' ]) {
+    // TODO: inform the user via flash message?
+    return res.redirect('/school/manage-pupils')
+  }
+  const data = Object.values(req.body[ 'pupil' ] || null)
+  const chars = '23456789bcdfghjkmnpqrstvwxyz'
+  const length = 5
+  let pupils = []
+
+  // fetch pupils
+  try {
+    let ids = data.map(id => mongoose.Types.ObjectId(id))
+    pupils = await Pupil.find({ _id: { $in: ids } }).exec()
+  } catch (error) {
+    console.error('Failed to find pupils: ' + error.message)
+    return next(error)
+  }
+
+  // Apply the updates to the pupil object(s)
+  pupils.forEach(pupil => {
+    if (!pupil.pin) {
+      pupil.pin = randomGenerator.getRandom(length, chars)
+      pupil.expired = false
+    }
+  })
+
+  // Save our pupils, in parallel
+  const promises = pupils.map(p => p.save()) // returns Promise
+
+  Promise.all(promises).then(results => {
+      // all pupils saved ok
+      return res.redirect('/school/manage-pupils')
+    },
+    error => {
+      // one or more promises were rejected
+      // TODO: add a flash message informing the user
+      console.error(error)
+      return res.redirect('/school/manage-pupils')
+    })
+    .catch(error => {
+      console.error(error)
+      // TODO: add a flash message informing the user
+      return res.redirect('/school/manage-pupils')
+    })
+}
+
 const getSubmitAttendance = async (req, res, next) => {
   res.locals.pageTitle = 'Attendance register'
   req.breadcrumbs(res.locals.pageTitle)
@@ -565,6 +612,7 @@ module.exports = {
   downloadResults,
   getGeneratePinsOverview,
   getGeneratePinsList,
+  generatePins,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,

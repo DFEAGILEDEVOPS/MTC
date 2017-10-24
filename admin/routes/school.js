@@ -7,6 +7,7 @@ const { getHome,
   downloadResults,
   getGeneratePinsOverview,
   getGeneratePinsList,
+  generatePins,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,
@@ -24,6 +25,7 @@ const school = (router) => {
   router.get('/download-results', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => downloadResults(req, res, next))
   router.get('/generate-pins-overview', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratePinsOverview(req, res))
   router.get('/generate-pins-list', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratePinsList(req, res, next))
+  router.post('/generate-pins', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => generatePins(req, res, next))
   router.get('/submit-attendance', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSubmitAttendance(req, res, next))
   router.post('/submit-attendance-form', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postSubmitAttendance(req, res, next))
   router.get('/declaration-form', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getDeclarationForm(req, res, next))
