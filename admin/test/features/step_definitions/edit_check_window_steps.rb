@@ -5,8 +5,8 @@ And(/^I want to edit a previously added check$/) do
   manage_check_window_page.create_new_window.click
   @page = add_edit_check_window_page
   step 'I create new check window with valid data'
-  @chk_window = manage_check_window_page.find_check_row(@check_window_name)
-  @chk_window.check_window.click
+  check_window = manage_check_window_page.find_check_row(@check_window_name)
+  check_window.check_name.click
 end
 
 And(/^I create new check window with valid data$/) do
