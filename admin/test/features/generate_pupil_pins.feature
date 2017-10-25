@@ -33,3 +33,10 @@ Feature: Generate Pupil PINs
     And I am on the generate pupil pins page
     When I click Generate PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
+
+  Scenario: Sorting Pupil list on Generate Pins page
+    Given I am logged in
+    And I navigate to generate pupil pins page
+    And I click Generate PINs button
+    When I click on the Pupil heading
+    Then I should see on the Generate Pin Pupil List page that all pupils are displayed in descending order of lastname

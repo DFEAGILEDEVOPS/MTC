@@ -46,3 +46,13 @@ Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/)
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
+
+When(/^I click on the Pupil heading$/) do
+  generate_pupil_pins_page.pupil_column_heading.click
+end
+
+Then(/^I should see on the Generate Pin Pupil List page that all pupils are displayed in descending order of lastname$/) do
+  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
+  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
+  expect(sorted_pupils_from_page).to match(pupils_from_page)
+end

@@ -8,6 +8,7 @@ class GeneratePupilPinsPage < SitePrism::Page
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'
+  element :pupil_column_heading, '#pupilsList thead tr a'
   section :pupil_list, '#pupilsList tbody' do
     sections :rows, 'tr' do
       element :checkbox, 'input[type="checkbox"]'
