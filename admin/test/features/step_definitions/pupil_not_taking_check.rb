@@ -25,6 +25,7 @@ end
 
 When(/^I want to add a reason$/) do
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
 end
 
 Then(/^I should see a heading on the page$/) do
@@ -53,6 +54,7 @@ end
 When(/^I want to add a reason for pupils not taking a check$/) do
   pupils_not_taking_check_page.load
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
@@ -90,6 +92,7 @@ Then(/^I should see a list of pupils sorted by surname in descending order$/) do
 end
 
 Then(/^I should see a sticky banner$/) do
+  expect(pupil_reason_page.sticky_banner).to be_visible
   expect(pupil_reason_page.sticky_banner).to be_all_there
 end
 
@@ -207,6 +210,7 @@ end
 
 But(/^I decide to change it$/) do
   pupils_not_taking_check_page.add_reason.click
+  page.execute_script "window.scrollBy(0,500)"
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Just arrived'}.click
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
@@ -246,4 +250,20 @@ end
 
 Then(/^I should see a message stating there are no pupils not taking the check$/) do
   expect(pupils_not_taking_check_page).to have_no_pupils_listed_message
+end
+
+Then(/^I should not see a sticky banner$/) do
+  expect(pupil_reason_page.sticky_banner).to_not be_visible
+end
+
+When(/^I select multiple pupils with the (.+) reason$/) do |reason|
+  @reason = reason
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == @reason}.click
+  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupils[0..3].each {|pupil| pupil.checkbox.click}
+  @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
+end
+
+Then(/^the sticky banner should display the pupil count$/) do
+  expect(pupil_reason_page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
 end
