@@ -1,6 +1,7 @@
 function isAuthenticated (role) {
   return function (req, res, next) {
     if (req.isAuthenticated()) {
+      console.log('REQ.USER', req.user)
       const userRole = ((req.user).role || {})
       if (role === undefined || (role !== undefined && userRole && role === userRole)) {
         return next()
