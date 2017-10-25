@@ -6,7 +6,11 @@
 /* global $ */
 $(function () {
   function startModal (e) {
-    $('#js-modal-link').add('#js-modal-cancel-button').on('click', function (e) {
+    $('#js-modal-link').on('click', function (e) {
+      $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
+      toggleShowHideModal(e)
+    })
+    $('#js-modal-cancel-button').on('click', function (e) {
       toggleShowHideModal(e)
     })
     $('#js-modal-overlay').on('click', function (e) {
@@ -19,10 +23,10 @@ $(function () {
       }
       // space or enter
       if (e.keyCode === 13 || e.keyCode === 32) {
-        confirmModal(e)
+        confirmModal(e, e.target.href)
       }
-      // tab or maj+tab
-      if (e.keyCode === 9 && $('#js-modal-box').hasClass('show')) {
+      // tab or maj+tab, left arrow, right arrow
+      if ((e.keyCode === 9 || e.keyCode === 37 || e.keyCode === 39) && $('#js-modal-box').hasClass('show')) {
         toggleOnModal(e)
         e.preventDefault(e)
       }
@@ -37,9 +41,9 @@ $(function () {
     }
   }
 
-  function confirmModal (e) {
-    console.log('CONFIRM')
+  function confirmModal (e, url) {
     toggleShowHideModal(e)
+    window.location.replace(e.target.href)
   }
 
   function toggleShowHideModal (e) {

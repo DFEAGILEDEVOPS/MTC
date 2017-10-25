@@ -57,7 +57,7 @@
                     <td><%= checkWindow.checkDates %></td>
                     <td>
                         <% if (checkWindow.canRemove) { %>
-                        <a href="/administrator/check-windows/remove/<%= checkWindow.id %>">Remove</a>
+                        <a href="/administrator/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link">Remove</a>
                         <% } %>
                     </td>
                 </tr>
@@ -77,9 +77,6 @@
                     </li>
                     <li>
                         <a href="#">Adjust questions timings</a>
-                    </li>
-                    <li>
-                        <%- partial('partials/_modal_link', { modalLinkLabel: 'Are you sure?' }) %>
                     </li>
                 </ul>
             </nav>
