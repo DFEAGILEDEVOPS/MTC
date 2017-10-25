@@ -1,6 +1,14 @@
 #checkWindowList {
-  :nth-child(4) {
-    text-align: right;
+  td {
+    text-align: left;
+
+    &:first-child {
+      white-space: nowrap;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
   }
 }
 
