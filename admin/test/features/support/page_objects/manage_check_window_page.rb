@@ -25,6 +25,14 @@ class ManageCheckWindowPage < SitePrism::Page
     end
   end
 
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :content, '.modal-content p'
+    element :cancel, '.modal-cancel'
+    element :confirm, '.modal-confirm'
+
+  end
+
   def find_check_row(check_name)
     wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
     windows_table.rows.find {|chk| chk.text.include? check_name}
