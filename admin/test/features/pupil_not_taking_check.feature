@@ -79,14 +79,21 @@ Feature:
     Given I am on the pupil reason page
     Then I should have a option to select all pupils
 
-  Scenario: Sticky banner is displayed on pupil reason page
+  Scenario: Sticky banner is not displayed on pupil reason page if no reason or a pupil are selected
     Given I am on the pupil reason page
+    Then I should not see a sticky banner
+
+  Scenario: Sticky banner is displayed on pupil reason page when a reason and a pupil are selected
+    Given I am on the pupil reason page
+    And I select a reason
+    When I select a pupil
     Then I should see a sticky banner
 
-  @wip
-  Scenario: Confirmation is disabled if a reason and at least 1 pupil are not selected
+  @pupil_not_taking_check
+  Scenario: Sticky banner displays pupil count
     Given I am on the pupil reason page
-    Then I should see the confirm button disabled
+    When I select multiple pupils with the Absent reason
+    Then the sticky banner should display the pupil count
 
   Scenario: Confirmation is enabled if a reason and at least 1 pupil are selected
     Given I am on the pupil reason page
