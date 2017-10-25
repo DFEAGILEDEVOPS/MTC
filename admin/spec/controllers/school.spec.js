@@ -14,6 +14,7 @@ const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
 
 const pupilService = require('../../services/pupil.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
@@ -81,7 +82,7 @@ describe('school controller:', () => {
     describe('Select reason for pupils', () => {
       beforeEach(() => {
         spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilService, 'fetchSortedPupilsData').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(pupilDataService, 'getSortedPupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         spyOn(pupilsNotTakingCheckService, 'sortPupilsByReason').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         controller = proxyquire('../../controllers/school', {}).getSelectPupilNotTakingCheck

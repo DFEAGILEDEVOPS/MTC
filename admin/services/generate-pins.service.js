@@ -1,5 +1,5 @@
 const moment = require('moment')
-const pupilService = require('../services/pupil.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 
 const generatePinService = {
   /**
@@ -10,7 +10,7 @@ const generatePinService = {
    * @returns {Array}
    */
   getPupils: async (schoolId, sortField, sortDirection) => {
-    let pupils = await pupilService.fetchSortedPupilsData(schoolId, sortField, sortDirection)
+    let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
     // filter pupils
     pupils = pupils
       .filter(p => !p.pin && !p.attendanceCode && !p.result)

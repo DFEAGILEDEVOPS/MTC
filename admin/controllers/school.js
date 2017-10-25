@@ -13,7 +13,6 @@ const hdfValidator = require('../lib/validator/hdf-validator')
 const {
   fetchAnswers,
   fetchScoreDetails,
-  fetchSortedPupilsData,
   fetchMultiplePupils,
   fetchOnePupil } = require('../services/pupil.service')
 const {
@@ -445,7 +444,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get pupils for active school
   try {
-    pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
+    pupils = await pupilDataService.getSortedPupils(req.user.School, 'lastName', sortDirection)
   } catch (error) {
     return next(error)
   }

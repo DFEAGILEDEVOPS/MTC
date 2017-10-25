@@ -59,4 +59,23 @@ pupilDataService.update = async function (id, doc) {
   })
 }
 
+/**
+ * Returns pupils filtered by school and sorted by field and direction (asc/desc)
+ * @param schoolId
+ * @param sortingField
+ * @param sortingDirection
+ * @returns {Array}
+ */
+pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
+  // TODO: Introduce integration tests
+  const sort = {}
+  sort[sortingField] = sortingDirection
+  const pupils = await Pupil
+    .find({'school': schoolId})
+    .sort(sort)
+    .lean()
+    .exec()
+  return pupils
+}
+
 module.exports = pupilDataService

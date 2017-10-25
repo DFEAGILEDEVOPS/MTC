@@ -3,7 +3,7 @@
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
-const pupilService = require('../../services/pupil.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
 
 const pupilMock = require('../mocks/pupil')
@@ -28,9 +28,9 @@ describe('generate-pins.service', () => {
         pupil2.pin = ''
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
-        sandbox.mock(pupilService).expects('fetchSortedPupilsData').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
-          '../../services/pupil.service': pupilService
+          '../../services/pupil.service': pupilDataService
         })
       })
       it('with specific properties', async (done) => {
@@ -47,9 +47,9 @@ describe('generate-pins.service', () => {
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
-        sandbox.mock(pupilService).expects('fetchSortedPupilsData').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
-          '../../services/pupil.service': pupilService
+          '../../services/pupil.service': pupilDataService
         })
       })
       it('without pre existing pins', async (done) => {
@@ -67,9 +67,9 @@ describe('generate-pins.service', () => {
         pupil2.pin = ''
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
-        sandbox.mock(pupilService).expects('fetchSortedPupilsData').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
-          '../../services/pupil.service': pupilService
+          '../../services/pupil.service': pupilDataService
         })
       })
       it('should display DoB as well', async (done) => {
