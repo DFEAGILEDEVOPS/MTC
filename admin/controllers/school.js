@@ -22,7 +22,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
-const sortingService = require('../services/sorting-ui.service')
+const sortingUiService = require('../services/sorting-ui.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -426,7 +426,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   ]
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingService(sortingOptions, sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingUiService(sortingOptions, sortField, sortDirection)
 
   // Get attendance code index
   try {
