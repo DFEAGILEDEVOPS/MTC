@@ -30,6 +30,7 @@ Feature:
     Given I am on the assign check window page
     Then I should see check windows
 
+  @wip
   Scenario: Check windows have a title
     Given I am on the assign check window page
     Then check windows should have a title

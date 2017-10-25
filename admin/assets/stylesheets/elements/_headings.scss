@@ -21,4 +21,8 @@
 
 h1 {
   padding-bottom: $gutter-one-third;
+
+  &.error-summary-heading {
+    font-size: 24px;
+  }
 }
