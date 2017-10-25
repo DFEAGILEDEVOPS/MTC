@@ -1,9 +1,7 @@
 'use strict'
 
 const moment = require('moment')
-
 const CheckWindow = require('../../models/check-window')
-
 const checkWindowDataService = {
 
   /**
@@ -12,9 +10,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*>}
    */
   fetchCheckWindow: async (id) => {
-    let checkWindow
-    checkWindow = await CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
-    return checkWindow
+    return CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
   },
   /**
    * Set check window as deleted.
@@ -22,39 +18,34 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   setDeletedCheckWindow: async (id) => {
-    let checkWindow
-    checkWindow = await CheckWindow.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
-    return checkWindow
+    return CheckWindow.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
-   * @param isDeleted
+   * @param deleted
    * @param sortBy
    * @param sortDirection
    * @param current
    * @returns {Promise.<void>}
    */
-  fetchCheckWindows: async (sortBy, sortDirection, isDeleted, current) => {
-    let checkWindows
+  fetchCheckWindows: async (sortBy, sortDirection, deleted, current) => {
     let sort = {}
     let query = {}
 
     const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss.SSS')
 
     sort[sortBy] = sortDirection
-    query.isDeleted = !isDeleted ? false : isDeleted
+    query.isDeleted = !deleted ? false : deleted
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
     } else {
       query.checkEndDate = {$lt: currentTimestamp}
     }
 
-    checkWindows = await CheckWindow
+    return CheckWindow
       .find(query)
       .sort(sort)
       .exec()
-
-    return checkWindows
   },
   /**
    * Fetch (non-deleted) current check windows by sort by, sort direction

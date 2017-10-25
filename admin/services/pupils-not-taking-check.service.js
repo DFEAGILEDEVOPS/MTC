@@ -3,40 +3,6 @@
 const pupilsNotTakingCheckService = {
 
   /**
-   * Sort columns by last name asc/desc.
-   * @param sortField
-   * @param sortDirection
-   * @returns {{htmlSortDirection: Array, arrowSortDirection: Array}}
-   */
-  sortPupilsByLastName: (sortField, sortDirection) => {
-    let htmlSortDirection = []
-    let arrowSortDirection = []
-    let sortingDirection = [
-      {
-        'key': 'name',
-        'value': 'asc'
-      },
-      {
-        'key': 'reason',
-        'value': 'asc'
-      }
-    ]
-    // Markup links and arrows
-    sortingDirection.map((sd, index) => {
-      if (sd.key === sortField) {
-        htmlSortDirection[sd.key] = (sortDirection === 'asc' ? 'desc' : 'asc')
-        arrowSortDirection[sd.key] = (htmlSortDirection[sd.key] === 'asc' ? 'sort up' : 'sort')
-      } else {
-        htmlSortDirection[sd.key] = 'asc'
-        arrowSortDirection[sd.key] = 'sort'
-      }
-    })
-    return {
-      htmlSortDirection,
-      arrowSortDirection
-    }
-  },
-  /**
    * Sort columns by reason asc/desc.
    * @param pupilsList
    * @param sortDirection
