@@ -1,0 +1,51 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <header class="page-header">
+            <h1 class="heading-xlarge">Generate pupil PINs</h1>
+        </header>
+        <br />
+        Pupils will need a Personal Identification Number (PIN) and school password in order to start the check. These expire daily.
+    </div>
+    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium" tabindex="0">Next steps</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="" >Guidance</a>
+                    </li>
+                    <li>
+                        <a href="" >Request Restart</a>
+                    </li>
+                    <li>
+                        <a href="" >Headteacher's declaration form</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <ol class="list list-number">
+            <li>Generate pupil Personal Identification Numbers (PINs) and a school password.</li>
+            <li>Distribute the PINs and password to your pupils.</li>
+        </ol>
+        <form action="/school/generate-pins-list" name="generate-pins-list">
+            <div class="form-group">
+                <div class="form-buttons">
+                    <input type="submit" class="button" value="Generate PINs"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
