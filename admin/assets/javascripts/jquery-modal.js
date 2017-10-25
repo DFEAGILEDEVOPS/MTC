@@ -59,7 +59,8 @@ $(function () {
     }
   }
 
-  if ($('#js-modal-link').length > 0 && $('#js-modal-box').length > 0) {
+  if ($('#js-modal-box').length > 0) {
+    console.log('MODAL TRIGGERED')
     startModal()
   }
 })
