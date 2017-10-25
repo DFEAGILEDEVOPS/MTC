@@ -48,9 +48,11 @@
                         <label for="pupil-<%= pupil._id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.middleNames %>
                         </label>
+                        <% if (pupil.showDoB) { %>
                         <div class="font-greyed-out font-xsmall">
                             Date of birth: <%= pupil.dob %>
                         </div>
+                        <% } %>
                     </td>
                     <td>
                         <div class="multiple-choice-mtc">

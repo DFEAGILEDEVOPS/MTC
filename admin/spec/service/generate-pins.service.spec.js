@@ -26,6 +26,8 @@ describe('generate-pins.service', () => {
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
+        pupil1.foreName = 'foreName'
+        pupil1.lastName = 'lastName'
         sandbox.mock(pupilService).expects('fetchSortedPupilsData').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
           '../../services/pupil.service': pupilService
@@ -53,6 +55,28 @@ describe('generate-pins.service', () => {
       it('without pre existing pins', async (done) => {
         const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(1)
+        done()
+      })
+    })
+    describe('pupils with same fullname', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = ''
+        pupil2.foreName = pupil1.foreName
+        pupil2.lastName = pupil1.lastName
+        sandbox.mock(pupilService).expects('fetchSortedPupilsData').resolves([ pupil1, pupil2 ])
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/pupil.service': pupilService
+        })
+      })
+      it('should display DoB as well', async (done) => {
+        const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
+        expect(pupils.length).toBe(2)
+        expect(pupils[0].showDoB).toBeTruthy()
+        expect(pupils[1].showDoB).toBeTruthy()
         done()
       })
     })
