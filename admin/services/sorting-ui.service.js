@@ -7,7 +7,7 @@
  * @param sortDirection
  * @returns {*}
  */
-const sortingService = (sortingOptions, sortField, sortDirection) => {
+const sortingUiService = (sortingOptions, sortField, sortDirection) => {
   if (!sortingOptions) {
     return false
   }
@@ -30,4 +30,4 @@ const sortingService = (sortingOptions, sortField, sortDirection) => {
   }
 }
 
-module.exports = sortingService
+module.exports = sortingUiService
