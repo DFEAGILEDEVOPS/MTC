@@ -3,51 +3,41 @@
 
 const dateService = require('../../services/date.service')
 
+function invalidInputTests (method) {
+  it('returns an empty string if the parameter is an empty string', () => {
+    expect(dateService[method]('')).toBe('')
+  })
+
+  it('returns an empty string if the parameter is missing', () => {
+    expect(dateService[method]()).toBe('')
+  })
+
+  it('returns an empty string if the parameter is null', () => {
+    expect(dateService[method](null)).toBe('')
+  })
+
+  it('returns an empty string if the date is invalid', () => {
+    expect(dateService[method]('rotten-input')).toBe('')
+  })
+}
+
 describe('date service', () => {
-  describe('#formatFullGDSdate', () => {
+  describe('#formatFullGdsDate', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatFullGdsDate(date)).toBe('31 December 2010')
     })
 
-    it('returns an empty string if the parameter is an empty string', () => {
-      expect(dateService.formatFullGdsDate('')).toBe('')
-    })
-
-    it('returns an empty string if the parameter is missing', () => {
-      expect(dateService.formatFullGdsDate()).toBe('')
-    })
-
-    it('returns an empty string if the parameter is null', () => {
-      expect(dateService.formatFullGdsDate(null)).toBe('')
-    })
-
-    it('returns an empty string if the date is invalid', () => {
-      expect(dateService.formatFullGdsDate('rotten-input')).toBe('')
-    })
+    invalidInputTests('formatFullGdsDate')
   })
 
-  describe('#formatShortGDSdate', () => {
+  describe('#formatShortGdsdate', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatShortGdsDate(date)).toBe('31 Dec 2010')
     })
 
-    it('returns an empty string if the parameter is an empty string', () => {
-      expect(dateService.formatShortGdsDate('')).toBe('')
-    })
-
-    it('returns an empty string if the parameter is missing', () => {
-      expect(dateService.formatShortGdsDate()).toBe('')
-    })
-
-    it('returns an empty string if the parameter is null', () => {
-      expect(dateService.formatShortGdsDate(null)).toBe('')
-    })
-
-    it('returns an empty string if the date is invalid', () => {
-      expect(dateService.formatShortGdsDate('rotten-input')).toBe('')
-    })
+    invalidInputTests('formatShortGdsDate')
   })
 
   describe('#formatUKDate', () => {
@@ -56,20 +46,29 @@ describe('date service', () => {
       expect(dateService.formatUKDate(date)).toBe('31/12/2010')
     })
 
-    it('returns an empty string if the parameter is an empty string', () => {
-      expect(dateService.formatUKDate('')).toBe('')
+    invalidInputTests('formatUKDate')
+  })
+
+  describe('#reverseFormatNoSeparator', () => {
+    it('correctly formats a date', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 0, 0)
+      expect(dateService.reverseFormatNoSeparator(date)).toBe('20101231')
     })
 
-    it('returns an empty string if the parameter is missing', () => {
-      expect(dateService.formatUKDate()).toBe('')
+    invalidInputTests('reverseFormatNoSeparator')
+  })
+
+  describe('#formatTimeWithSeconds', () => {
+    it('formats the time correctly, with single digits', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 29, 59)
+      expect(dateService.formatTimeWithSeconds(date)).toBe('2:10:29 pm')
     })
 
-    it('returns an empty string if the parameter is null', () => {
-      expect(dateService.formatUKDate(null)).toBe('')
+    it('formats the time correctly, with double digits', () => {
+      const date = new Date(2010, 11, 31, 22, 10, 59, 30)
+      expect(dateService.formatTimeWithSeconds(date)).toBe('10:10:59 pm')
     })
 
-    it('returns an empty string if the date is invalid', () => {
-      expect(dateService.formatUKDate('rotten-input')).toBe('')
-    })
+    invalidInputTests('formatTimeWithSeconds')
   })
 })
