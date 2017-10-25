@@ -41,7 +41,7 @@ $(function () {
     }
   }
 
-  function confirmModal (e, url) {
+  function confirmModal (e) {
     toggleShowHideModal(e)
     window.location.replace(e.target.href)
   }
@@ -60,7 +60,6 @@ $(function () {
   }
 
   if ($('#js-modal-box').length > 0) {
-    console.log('MODAL TRIGGERED')
     startModal()
   }
 })
