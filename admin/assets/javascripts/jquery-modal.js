@@ -59,7 +59,7 @@ $(function () {
     }
   }
 
-  if ($('#js-modal-link') && $('#js-modal-box')) {
+  if ($('#js-modal-link').length > 0 && $('#js-modal-box').length > 0) {
     startModal()
   }
 })
