@@ -83,6 +83,7 @@ Feature:
     Given I am on the pupil reason page
     Then I should see a sticky banner
 
+  @wip
   Scenario: Confirmation is disabled if a reason and at least 1 pupil are not selected
     Given I am on the pupil reason page
     Then I should see the confirm button disabled
@@ -95,6 +96,7 @@ Feature:
 
   Scenario: Cancel returns user to pupil not taking check page
     Given I have selected some pupils
+    And I select a reason
     When I choose to cancel
     Then I should be taken to the pupil not taking check page
 
