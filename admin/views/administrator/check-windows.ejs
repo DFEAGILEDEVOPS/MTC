@@ -10,13 +10,19 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h1 class="error-summary-heading" id="error-summary-heading-1"><%= messages.error %></h1>
+        </div>
+        <% } %>
+
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
             <%= messages.info %>
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge" tabindex="0">Manage check windows</h1>
+        <h1 class="heading-xlarge">Manage check windows</h1>
 
         <p class="lede">Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.</p>
 
@@ -39,11 +45,21 @@
             </thead>
             <tbody>
                 <% checkWindowList.forEach( (checkWindow, index) => { %>
-                <tr>
-                    <td><a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a></td>
+                <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
+                    <td>
+                        <% if (checkWindow.isCurrent) { %>
+                        <a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a>
+                        <% } else { %>
+                        <%= checkWindow.checkWindowName %>
+                        <% } %>
+                    </td>
                     <td><%= checkWindow.adminStartDate %></td>
                     <td><%= checkWindow.checkDates %></td>
-                    <td><a href="#">Remove</a></td>
+                    <td>
+                        <% if (checkWindow.canRemove) { %>
+                        <a href="/administrator/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link">Remove</a>
+                        <% } %>
+                    </td>
                 </tr>
                 <% }) %>
             </tbody>
@@ -51,9 +67,9 @@
         <% } %>
     </div>
 
-    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+    <div class="column-one-third add-title-margin" aria-label="sidebar">
         <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Before you start</h3>
+            <h3 class="heading-medium">Before you start</h3>
             <nav role="navigation">
                 <ul class="list">
                     <li>
@@ -65,7 +81,7 @@
                 </ul>
             </nav>
 
-            <h3 class="heading-medium" tabindex="0">After check</h3>
+            <h3 class="heading-medium">After check</h3>
             <nav role="navigation">
                 <ul class="list">
                     <li>
@@ -76,3 +92,12 @@
         </aside>
     </div>
 </div>
+
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Please confirm',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Confirm',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'Cancel',
+    modalCancelUrl: '#'
+}) %>

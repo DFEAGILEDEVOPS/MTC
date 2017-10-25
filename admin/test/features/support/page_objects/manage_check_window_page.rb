@@ -13,15 +13,47 @@ class ManageCheckWindowPage < SitePrism::Page
   section :windows_table, '#checkWindowList' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
-      elements :values, 'td'
-      element :check_window, 'td:nth-child(1)'
+      element :check_name, 'td:nth-of-type(1)'
+      element :admin_start_date, 'td:nth-of-type(2)'
+      element :check_period, 'td:nth-of-type(3)'
+      element :remove, 'td:nth-of-type(4)', text: 'Remove'
+    end
+    sections :expired_rows, 'tbody tr.font-greyed-out' do
+      element :check_name, 'td:nth-of-type(1)'
+      element :admin_start_date, 'td:nth-of-type(2)'
+      element :check_period, 'td:nth-of-type(3)'
     end
   end
 
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :content, '.modal-content p'
+    element :cancel, '.modal-cancel'
+    element :confirm, '.modal-confirm'
+
+  end
 
   def find_check_row(check_name)
-    wait_until{!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
+    wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
     windows_table.rows.find {|chk| chk.text.include? check_name}
+  end
+
+  def find_expired_check_row(check_name)
+    wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
+    windows_table.rows.find {|chk| chk.text.include? check_name}
+  end
+
+  def format_admin_date(day, month, year)
+    parsed_admin_date = DateTime.parse("#{day} #{month} #{year}")
+    parsed_admin_date.strftime("%-d %b %Y")
+  end
+
+  def format_check_period(start_day, start_month, start_year, end_day, end_month, end_year)
+    parsed_check_start = DateTime.parse("#{start_day} #{start_month} #{start_year}")
+    formatted_start_date = start_year == end_year ? parsed_check_start.strftime("%d %b") : parsed_check_start.strftime("%d %b %Y")
+    parsed_check_end = DateTime.parse("#{end_day} #{end_month} #{end_year}")
+    formatted_end_date = parsed_check_end.strftime("%d %b %Y")
+    formatted_start_date + " to " + formatted_end_date
   end
 
 

@@ -1,7 +1,27 @@
 'use strict'
 
 const Pupil = require('../../models/pupil')
+const School = require('../../models/school')
 const pupilDataService = {}
+
+/**
+ * Returns an object that consists of a plain JS school data and pupils.
+ * @param {number} schoolId - School unique Id.
+ * @return {Object}
+ */
+
+pupilDataService.getPupils = async (schoolId) => {
+  const [ schoolData, pupils ] = await Promise.all([
+    School.findOne({'_id': schoolId}).lean().exec(),
+    Pupil.getPupils(schoolId).exec()
+  ]).catch((error) => {
+    throw new Error(error)
+  })
+  return {
+    schoolData,
+    pupils
+  }
+}
 
 /**
  * Insert a list of pupils in the db

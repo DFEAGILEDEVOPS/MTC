@@ -84,6 +84,12 @@ class MongoDbHelper
                                {'$set' => {'pin' => NIL}})
   end
 
+
+  def self.set_pupil_pin(forename,lastname,school_id,newPin)
+    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+                               {'$set' => {'pin' => newPin}})
+  end
+
   def self.get_settings
     collection = CLIENT[:settings].find()
     collection.find.each {|setting| setting}

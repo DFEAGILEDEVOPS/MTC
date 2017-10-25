@@ -11,23 +11,6 @@ const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 
 const pupilService = {
   /**
-   * Returns an object that consists of a plain JS school data and pupils.
-   * @param {number} schoolId - School unique Id.
-   */
-  fetchPupilsData: async (schoolId) => {
-    // TODO: Introduce integration tests
-    const [ schoolData, pupils ] = await Promise.all([
-      School.findOne({'_id': schoolId}).lean().exec(),
-      Pupil.getPupils(schoolId).exec()
-    ]).catch((error) => {
-      throw new Error(error)
-    })
-    return {
-      schoolData,
-      pupils
-    }
-  },
-  /**
    * Fetch one pupil filtered by pupil id and school id
    * @param pupilId
    * @param schoolId
@@ -67,7 +50,7 @@ const pupilService = {
    * Fetches latest set of pupils answers who have completed the check.
    * @param {string} id - Pupil Id.
    */
-  fetchPupilAnswers: async (id) => {
+  fetchAnswers: async (id) => {
     // TODO: Introduce integration tests
     const answers = await Answer.findOne({
       pupil: mongoose.Types.ObjectId(id),
