@@ -1,0 +1,82 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<%- partial('partials/_sticky_confirmation_banner', { cancelLink: '/school/generate-pins-overview' }) %>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <header class="page-header">
+            <h1 class="heading-xlarge">Select pupils to generate pupil PINs</h1>
+        </header>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-one-half">
+        <form method="post" action="#" autocomplete="off">
+            <% if (pupils && pupils.length > 0) { %>
+            <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <a href="#">Pupil</a>
+                    </th>
+                    <th scope="col">
+                        <div class="tick-all-checkboxes-wrapper">
+                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                            <label class="tick-all-checkboxes all-hide" id="unselectAll" for="tickAllCheckboxes">Unselect all</label>
+                            <div class="multiple-choice-mtc">
+                                <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                <div></div>
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <% pupils.forEach( (pupil, index) => { %>
+                <tr>
+                    <td>
+                        <label for="pupil-<%= pupil._id %>">
+                            <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.middleNames %>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="multiple-choice-mtc">
+                            <input id="pupil-<%= pupil._id %>"
+                                   name="pupil[<%= index %>]"
+                                   type="checkbox"
+                                   value="<%= pupil._id %>"
+                                   aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                   aria-checked="false"
+                                   role="checkbox">
+                            <div></div>
+                        </div>
+                    </td>
+                </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <br class="clearfix"/>
+            <p>No pupils found.</p>
+            <% } %>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+

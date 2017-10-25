@@ -7,7 +7,9 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 require('sinon-mongoose')
 
 const Pupil = require('../../../models/pupil')
+const School = require('../../../models/school')
 const pupilMock = require('../../mocks/pupil')
+const schoolMock = require('../../mocks/school')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -42,7 +44,7 @@ describe('pupil.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(Pupil).expects('findOne').chain('populate').chain('lean').chain('exec').resolves(pupilMock)
+      mock = sandbox.mock(Pupil).expects('findOne').chain('populate').chain('lean').chain('exec').resolves(pupilMock)
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
@@ -55,15 +57,44 @@ describe('pupil.data.service', () => {
   })
 
   describe('#update', () => {
+    let mock
     beforeEach(() => {
-      sinon.mock(Pupil).expects('updateOne').returns(pupilMock)
+      mock = sandbox.mock(Pupil).expects('updateOne').returns(pupilMock)
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
     })
 
-    it('has an update method', () => {
-      expect(typeof service.update).toBe('function')
+    it('makes the expected calls', () => {
+      service.update(1, {$set: {'some': 'criteria'}})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#getPupils', () => {
+    let mockPupil
+    let mockSchool
+    beforeEach(() => {
+      const pupil1 = pupilMock
+      const pupil2 = pupilMock
+      mockPupil = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').returns(schoolMock)
+      mockSchool = sandbox.mock(Pupil).expects('getPupils').chain('exec').returns([ pupil1, pupil2 ])
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil,
+        '../../models/school': School
+      })
+    })
+
+    it('has a get Pupils method', () => {
+      expect(typeof service.getPupils).toBe('function')
+    })
+
+    it('returns a school data object and a list of pupils', async () => {
+      const data = await pupilDataService.getPupils(schoolMock._id)
+      expect(data.schoolData._id).toBe(9991001)
+      expect(data.pupils.length).toBe(2)
+      expect(mockPupil.verify()).toBe(true)
+      expect(mockSchool.verify()).toBe(true)
     })
   })
 })

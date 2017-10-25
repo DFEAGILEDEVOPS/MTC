@@ -54,9 +54,9 @@ Feature: Check questions
     And I could answer the question within the configured time
     Then I should be moved to the next question
 
-  Scenario: Check loading page has total number of questions
+  Scenario: Check loading page states the question number
     Given I am on the check loading page
-    Then I should see the total number of check questions
+    Then I should see the number of the next questions
 
   @non_parallel
   Scenario: Complete check data is submitted to the DB

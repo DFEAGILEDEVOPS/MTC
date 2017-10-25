@@ -107,9 +107,8 @@ Given(/^I am on the check loading page$/) do
 end
 
 
-Then(/^I should see the total number of check questions$/) do
-  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  expect(check_page.preload.text).to eql "Question 1 out of #{questions.size}"
+Then(/^I should see the number of the next questions$/) do
+  expect(check_page.preload.text).to eql "Question 1…"
 end
 
 Then(/^I should see all the data from the check stored in the DB$/) do

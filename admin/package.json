@@ -44,7 +44,7 @@
     "gulp-sass": "^3.1.0",
     "gulp-standard": "^10.1.1",
     "gulp-uglify": "^3.0.0",
-    "helmet": "^3.8.2",
+    "helmet": "^3.9.0",
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^7.4.3",
     "migrate-mongo": "^2.2.1",
