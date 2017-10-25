@@ -9,7 +9,7 @@ const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
 const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
-const sortingService = require('../services/sorting-ui.service')
+const sortingUiService = require('../services/sorting-ui.service')
 const config = require('../config')
 
 /**
@@ -147,7 +147,7 @@ const getCheckWindows = async (req, res, next) => {
   ]
   const sortField = req.params.sortField === undefined ? 'checkWindowName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingService(sortingOptions, sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingUiService(sortingOptions, sortField, sortDirection)
 
   // Get current check windows
   try {
