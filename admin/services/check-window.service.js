@@ -2,7 +2,12 @@
 const CheckWindow = require('../models/check-window')
 
 const checkWindowService = {
-  getCurrentCheckWindow: async function () {
+
+  /**
+   * Get check window for the current time.
+   * @returns {Promise.<*>}
+   */
+  getCurrentCheckWindow: async () => {
     const now = new Date()
     const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
     if (!checkWindow) {
