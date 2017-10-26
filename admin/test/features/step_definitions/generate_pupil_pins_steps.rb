@@ -21,12 +21,6 @@ And(/^I click Generate PINs button$/) do
   generate_pupil_pins_page.generate_pin_btn.click
 end
 
-Then(/^I should see a list of pupils sorted by surname on Generate Pins List Page$/) do
-  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
-  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort
-  expect(sorted_pupils_from_page).to match_array(pupils_from_page)
-end
-
 Given(/^I have a pupil with active pin$/) do
   name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
@@ -51,8 +45,18 @@ When(/^I click on the Pupil heading$/) do
   generate_pupil_pins_page.pupil_column_heading.click
 end
 
-Then(/^I should see on the Generate Pin Pupil List page that all pupils are displayed in descending order of lastname$/) do
+Then(/^I should see a list of pupils sorted by surname in '(.*)' order on Generate Pins List Page$/) do |sort_order|
+  if sort_order.eql?('descending')
+    sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
+  else
+    sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort
+  end
+
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
-  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
   expect(sorted_pupils_from_page).to match(pupils_from_page)
+end
+
+And(/^I am on Generate pins Pupil List page$/) do
+  step 'I navigate to generate pupil pins page'
+  step 'I click Generate PINs button'
 end
