@@ -16,19 +16,21 @@
 </div>
 
 <div class="grid-row">
-    <div class="column-one-half">
+    <div class="column-two-thirds">
         <form method="post" action="#" autocomplete="off">
             <% if (pupils && pupils.length > 0) { %>
             <table class="spacious sorting" id="generatePins" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a href="#">Pupil</a>
+                        <a href="/school/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>">
+                            Pupil <span class="<%= arrowSortDirection.lastName %>"></span>
+                        </a>
                     </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
                             <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
-                            <label class="tick-all-checkboxes all-hide" id="unselectAll" for="tickAllCheckboxes">Unselect all</label>
+                            <label class="tick-all-checkboxes all-hide" id="unselectAll" for="tickAllCheckboxes">Deselect all</label>
                             <div class="multiple-choice-mtc">
                                 <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
                                 <div></div>
@@ -44,6 +46,11 @@
                         <label for="pupil-<%= pupil._id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.middleNames %>
                         </label>
+                        <% if (pupil.showDoB) { %>
+                        <div class="font-greyed-out font-xsmall">
+                            Date of birth: <%= pupil.dob %>
+                        </div>
+                        <% } %>
                     </td>
                     <td>
                         <div class="multiple-choice-mtc">
@@ -61,6 +68,9 @@
                 <% }) %>
                 </tbody>
             </table>
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
             <% } else { %>
             <br class="clearfix"/>
             <p>No pupils found.</p>

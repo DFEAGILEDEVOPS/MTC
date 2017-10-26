@@ -13,10 +13,13 @@ const httpMocks = require('node-mocks-http')
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
 
+const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilService = require('../../services/pupil.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
+const sortingAttributesService = require('../../services/sorting-attributes.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 
@@ -79,7 +82,7 @@ describe('school controller:', () => {
     describe('Select reason for pupils', () => {
       beforeEach(() => {
         spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilService, 'fetchSortedPupilsData').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(pupilDataService, 'getSortedPupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         spyOn(pupilsNotTakingCheckService, 'sortPupilsByReason').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         controller = proxyquire('../../controllers/school', {}).getSelectPupilNotTakingCheck
@@ -203,9 +206,9 @@ describe('school controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({ name: 'Test School' }))
+        sandbox.mock(schoolDataService).expects('findOne').resolves(new School({ name: 'Test School' }))
         controller = proxyquire('../../controllers/school.js', {
-          '../models/school': School
+          '../../services/data-access/school.data.service': schoolDataService
         }).getGeneratePinsList
       })
 
@@ -213,6 +216,9 @@ describe('school controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(generatePinsService, 'getPupils').and.returnValue(Promise.resolve({}))
+        spyOn(sortingAttributesService, 'getAttributes')
+          .and.returnValue({ htmlSortDirection: { lastName: 'asc' },
+            arrowSortDirection: { lastName: 'sort' } })
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.locals.pageTitle).toBe('Select pupils')
@@ -223,9 +229,9 @@ describe('school controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        sandbox.mock(schoolDataService).expects('findOne').resolves(null)
         controller = proxyquire('../../controllers/school.js', {
-          '../models/school': School
+          '../../services/data-access/school.data.service': schoolDataService
         }).getGeneratePinsList
       })
       it('it throws an error', async (done) => {

@@ -9,7 +9,6 @@ const { getAddPupil,
   getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
-  getManagePupils,
   getPrintPupils } = require('../controllers/pupil')
 
 const pupil = (router) => {
