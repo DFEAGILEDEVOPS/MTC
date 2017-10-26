@@ -16,7 +16,7 @@ describe('PsReportCacheDataService', () => {
 
   afterEach(() => sandbox.restore())
 
-  describe('#create', () => {
+  describe('#save', () => {
     let mock
 
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe('PsReportCacheDataService', () => {
     })
 
     it('validates the mock', async (done) => {
-      await service.create({ mock: 'object' })
+      await service.save({ mock: 'object' })
       expect(mock.verify()).toBe(true)
       done()
     })
