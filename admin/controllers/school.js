@@ -218,7 +218,6 @@ const getGeneratePinsList = async (req, res, next) => {
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingUIService.getAttributes(sortingOptions, sortField, sortDirection)
-  console.log(htmlSortDirection, arrowSortDirection)
   const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
   return res.render('school/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),

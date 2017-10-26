@@ -70,12 +70,11 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
   // TODO: Introduce integration tests
   const sort = {}
   sort[sortingField] = sortingDirection
-  const pupils = await Pupil
+  return Pupil
     .find({'school': schoolId})
     .sort(sort)
     .lean()
     .exec()
-  return pupils
 }
 
 module.exports = pupilDataService
