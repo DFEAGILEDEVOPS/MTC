@@ -227,6 +227,29 @@ const getGeneratePinsList = async (req, res, next) => {
   })
 }
 
+const postGeneratePins = async (req, res, next) => {
+  const { pupil: pupilsList } = req.body
+  if (!pupilsList) {
+    return res.redirect('/school/generate-pins-list')
+  }
+  let submittedPupils
+  try {
+    submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
+    await pupilDataService.saveMultiple(submittedPupils)
+  } catch (error) {
+    return next(error)
+  }
+  return res.redirect('/school/generated-pins-list')
+}
+
+const getGeneratedPinsList =  async (req, res) => {
+  res.locals.pageTitle = 'Generate pupil PINs'
+  req.breadcrumbs(res.locals.pageTitle)
+  return res.render('school/generated-pins-list', {
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 const getSubmitAttendance = async (req, res, next) => {
   res.locals.pageTitle = 'Attendance register'
   req.breadcrumbs(res.locals.pageTitle)
@@ -569,6 +592,8 @@ module.exports = {
   downloadResults,
   getGeneratePinsOverview,
   getGeneratePinsList,
+  postGeneratePins,
+  getGeneratedPinsList,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,

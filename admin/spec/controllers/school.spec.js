@@ -243,4 +243,51 @@ describe('school controller:', () => {
       })
     })
   })
+
+  describe('postGeneratePins route', () => {
+    let sandbox
+    let next
+    let controller
+    let goodReqParams = {
+      method: 'POST',
+      url: '/school/generate-pins-list',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      body: {
+        pupil: ['595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520']
+      }
+    }
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      next = jasmine.createSpy('next')
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+    it('displays the generated pins list page after successful saving', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school.js').postGeneratePins
+      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
+      spyOn(res, 'redirect').and.returnValue(null)
+      await controller(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/school/generated-pins-list')
+      done()
+    })
+    it('displays the generate pins list page if no pupil list is provided', async (done) => {
+      const res = getRes()
+      const req = { body: {} }
+      const controller = require('../../controllers/school.js').postGeneratePins
+      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
+      spyOn(res, 'redirect').and.returnValue(null)
+      await controller(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/school/generate-pins-list')
+      done()
+    })
+  })
 })
