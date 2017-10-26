@@ -3,6 +3,6 @@
 # exit on error
 set -e
 
-echo $MongoConnectionString
+echo "con string is $1"
 
-MONGO_CONNECTION_STRING=$MongoConnectionString ./bin/psychometricians-report-v2.js
+MONGO_CONNECTION_STRING=$1 ./bin/psychometricians-report-v2.js
