@@ -146,6 +146,12 @@ function trim (string, length) {
  */
 function getUserInput (inputs) {
   const output = []
+  if (!inputs) {
+    return ''
+  }
+  if (!Array.isArray(inputs)) {
+    return ''
+  }
   inputs.forEach(inp => {
     let ident = ''
 
@@ -162,6 +168,7 @@ function getUserInput (inputs) {
         break
       case 'touch click':
       case 'touch mousedown':
+      case 'touchstart':
         // Mouse or fingers on a screen
         ident = 't'
         break
@@ -180,11 +187,21 @@ function getResponseTime (input) {
   if (!input) {
     return ''
   }
-  if (!Array.isArray(input)) {
+  if (!(Array.isArray(input) && input.length > 0)) {
     return ''
   }
-  const first = moment(input[0].clientInputDate)
-  const last = moment(input[input.length - 1].clientInputDate)
+  
+  // In some older tests the first input may be null
+  const firstLogEntry = input[0] ? input[0] : input[1]
+  if (!firstLogEntry.clientInputDate) {
+    console.log('First log Entry missing client input date: ', firstLogEntry)
+  }
+  const first = moment(firstLogEntry.clientInputDate)
+  const lastLogEntry = input[input.length - 1]
+  if (!lastLogEntry.clientInputDate) {
+    console.log('First log Entry missing client input date: ', lastLogEntry)
+  }
+  const last = moment(lastLogEntry.clientInputDate)
   return moment(moment(last).diff(moment(first))).format('s.SSS')
 }
 
