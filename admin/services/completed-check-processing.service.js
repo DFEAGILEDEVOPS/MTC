@@ -16,7 +16,7 @@ completedCheckProcessingService.process = async function () {
   try {
     let hasWorkToDo = await completedCheckDataService.hasUnmarked()
     if (!hasWorkToDo) {
-      console.log('Nothing to do')
+      console.log('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await this.markAndProcess(batchSize)

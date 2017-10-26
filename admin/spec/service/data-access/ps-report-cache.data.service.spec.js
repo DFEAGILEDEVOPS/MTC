@@ -20,7 +20,7 @@ describe('PsReportCacheDataService', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(PsReportCache.prototype).expects('save').resolves({})
+      mock = sandbox.mock(PsReportCache).expects('update').chain('exec').resolves({})
       service = proxyquire('../../../services/data-access/ps-report-cache.data.service', {
         '../../models/ps-report-cache': PsReportCache
       })

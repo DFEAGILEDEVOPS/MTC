@@ -5,7 +5,7 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 
-const psCachedReportDataService = require('../../services/data-access/ps-report-cache.data.service')
+const psReportCacheDataService = require('../../services/data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const checkDataService = require('../../services/data-access/check.data.service')
 
@@ -33,7 +33,8 @@ describe('psychometricians-report.service', () => {
       completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'find')
 
       service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/completed-check.data.service': completedCheckDataService
+        './data-access/completed-check.data.service': completedCheckDataService,
+        './data-access/ps-report-cache.data.service': psReportCacheDataService
       })
 
       // We don't actually want to call these internal methods as is not under test for this describe block
@@ -109,10 +110,13 @@ describe('psychometricians-report.service', () => {
   })
 
   describe('#produceCacheData', () => {
-    let completedCheckDataServiceStub
+    let psReportCacheDataServiceStub
 
     beforeEach(() => {
-      service = require('../../services/psychometrician-report.service')
+      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'save')
+      service = proxyquire('../../services/psychometrician-report.service', {
+        './data-access/ps-report-cache.data.service': psReportCacheDataService
+      })
     })
 
     it('throws an error if not called with an argument', async (done) => {
@@ -134,6 +138,17 @@ describe('psychometricians-report.service', () => {
       }
       done()
     })
+
+    // it('saves the data in the db', async (done) => {
+    //   try {
+    //     await service.produceCacheData(123)
+    //     expect(psReportCacheDataServiceStub.callCount).toBe(1)
+    //   } catch (error) {
+    //     expect(error).toBeUndefined()
+    //     expect('this').toBe('NOT to be thrown')
+    //   }
+    //   done()
+    // })
   })
 
   describe('#populateWithCheck', () => {

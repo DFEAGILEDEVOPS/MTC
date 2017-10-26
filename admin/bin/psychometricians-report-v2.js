@@ -4,8 +4,9 @@
 const mongoose = require('mongoose')
 // mongoose.set('debug', true)
 const autoIncrement = require('mongoose-auto-increment')
+const fs = require('fs')
 
-// const psychometricianReportService = require('../services/psychometrician-report.service')
+const psychometricianReportService = require('../services/psychometrician-report.service')
 const completedCheckProcessingService = require('../services/completed-check-processing.service')
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
@@ -23,7 +24,11 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
     // Make sure all completed checks are marked and ps-report data cached
     await completedCheckProcessingService.process()
 
-    // const data = await psychometricianReportService.generateReport()
+    const report = await psychometricianReportService.generateReport()
+    const db = mongoose.connection
+    const filename = 'mtc-check-' + db.name + '.csv'
+    fs.writeFileSync(filename, report)
+    console.log('Generated report: ' + filename)
   } catch (error) {
     console.error(error)
   }

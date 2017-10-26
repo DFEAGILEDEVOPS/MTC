@@ -1,5 +1,6 @@
 'use strict'
 const moment = require('moment')
+const csv = require('fast-csv')
 
 const psCachedReportDataService = require('./data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
@@ -8,7 +9,28 @@ const dateService = require('./date.service')
 
 const psychometricianReportService = {}
 
+/**
+ * Return the CSV file as a string
+ * @return {Promise<void>}
+ */
 psychometricianReportService.generateReport = async function () {
+  // Read data from the cache
+  const data = await psCachedReportDataService.find({})
+  const output = []
+  for (const obj of data) {
+    output.push(filter(obj.data))
+  }
+
+  return new Promise((resolve, reject) => {
+    csv.writeToString(
+      output,
+      {headers: true},
+      function (err, data) {
+        if (err) { reject(err) }
+        resolve(data)
+      }
+    )
+  })
 }
 
 psychometricianReportService.batchProduceCacheData = async function (batchIds) {
@@ -88,7 +110,17 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
     // psData[p(idx) + 'TimeComplete'] =
     // psData[p(idx) + 'TimeTaken'] =
   })
-  console.log(psData)
+
+  // Save the data.  We need the psreportcache.check to be unique - so that each check has only one entry in `psereportcache`
+  // so we re-use the check._id as the psreportcache._id.  If Cosmos ever supports secondary unique indexes
+  // we can just use those instead.  This allows us to use replaceOne (as we already know the _id) and overwrite
+  // an existing record if it exists.
+
+  await psCachedReportDataService.save({
+    _id: completedCheck.check._id,
+    data: psData,
+    check: completedCheck.check._id
+  })
 }
 
 /**
@@ -111,7 +143,7 @@ psychometricianReportService.populateWithCheck = async function (completedChecks
 }
 
 function getMark (completedCheck) {
-  if (completedCheck.check && completedCheck.check.results && completedCheck.check.results.marks) {
+  if (completedCheck.check && completedCheck.check.results && completedCheck.check.results.hasOwnProperty('marks')) {
     return completedCheck.check.results.marks
   }
   return 'n/a'
@@ -190,7 +222,7 @@ function getResponseTime (input) {
   if (!(Array.isArray(input) && input.length > 0)) {
     return ''
   }
-  
+
   // In some older tests the first input may be null
   const firstLogEntry = input[0] ? input[0] : input[1]
   if (!firstLogEntry.clientInputDate) {
@@ -227,6 +259,41 @@ function hasTimeoutWithNoResponseFlag (inputs, answer) {
     timeout = 1
   }
   return timeout
+}
+
+/**
+ * Copy an object and reverse the enumerable properties
+ * @param obj
+ */
+function reverseObject (obj) {
+  const newObj = {}
+  Object.keys(obj).reverse().forEach(k => {
+    newObj[k] = obj[k]
+  })
+  return newObj
+}
+
+function filter (obj) {
+  // Filter the incoming object for Allen's report
+  const newObj = {}
+  const outputs = [
+    'Surname',
+    'Forename',
+    'FormMark',
+    'Form ID',
+    'TestDate'
+  ]
+  for (let i = 1; i < 11; i++) {
+    outputs.push(`Q${i}ID`)
+    outputs.push(`Q${i}Response`)
+    outputs.push(`Q${i}Sco`)
+  }
+  Object.keys(obj).forEach(k => {
+    if (outputs.indexOf(k) !== -1) {
+      newObj[k] = obj[k]
+    }
+  })
+  return newObj
 }
 
 module.exports = psychometricianReportService
