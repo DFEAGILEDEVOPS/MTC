@@ -12,7 +12,7 @@ Feature: Generate Pupil PINs
     Given I have signed in with <teacher>
     And I navigate to generate pupil pins page
     When I click Generate PINs button
-    Then I should see a list of pupils sorted by surname on Generate Pins List Page
+    Then I should see a list of pupils sorted by surname in 'ascending' order on Generate Pins List Page
 
   Examples:
   | teacher  |
@@ -33,3 +33,9 @@ Feature: Generate Pupil PINs
     And I am on the generate pupil pins page
     When I click Generate PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
+
+  Scenario: Sorting Pupil list on Generate Pins page
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I click on the Pupil heading
+    Then I should see a list of pupils sorted by surname in 'descending' order on Generate Pins List Page
