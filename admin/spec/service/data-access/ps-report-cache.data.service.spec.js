@@ -32,4 +32,21 @@ describe('PsReportCacheDataService', () => {
       done()
     })
   })
+
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(PsReportCache).expects('find').chain('lean').chain('exec').resolves({})
+      service = proxyquire('../../../services/data-access/ps-report-cache.data.service', {
+        '../../models/ps-report-cache': PsReportCache
+      })
+    })
+
+    it('validates the mock', async (done) => {
+      await service.find({ mock: 'object' })
+      expect(mock.verify()).toBe(true)
+      done()
+    })
+  })
 })
