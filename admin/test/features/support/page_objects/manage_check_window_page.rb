@@ -25,6 +25,14 @@ class ManageCheckWindowPage < SitePrism::Page
     end
   end
 
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :content, '.modal-content p'
+    element :cancel, '.modal-cancel'
+    element :confirm, '.modal-confirm'
+
+  end
+
   def find_check_row(check_name)
     wait_until {!(windows_table.rows.find {|chk| chk.text.include? check_name}).nil?}
     windows_table.rows.find {|chk| chk.text.include? check_name}
@@ -45,7 +53,7 @@ class ManageCheckWindowPage < SitePrism::Page
     formatted_start_date = start_year == end_year ? parsed_check_start.strftime("%d %b") : parsed_check_start.strftime("%d %b %Y")
     parsed_check_end = DateTime.parse("#{end_day} #{end_month} #{end_year}")
     formatted_end_date = parsed_check_end.strftime("%d %b %Y")
-    formatted_start_date + " to " + formatted_end_date
+    formatted_start_date.split(' ')[1] == formatted_end_date.split(' ')[1] ?  formatted_start_date.split(' ')[0] + " to " + formatted_end_date : formatted_start_date + " to " + formatted_end_date
   end
 
 

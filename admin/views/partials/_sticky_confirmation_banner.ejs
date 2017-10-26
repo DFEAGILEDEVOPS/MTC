@@ -1,9 +1,12 @@
-<div class="grid-row">
-    <div class="column-full">
-        <div class="sticky-banner-wrapper" id="stickyHeader">
-            <div>
-                <a href="<%= cancelLink %>" class="button-secondary" id="stickyCancel">Cancel</a>
-                <input type="submit" class="button" value="Confirm" id="stickyConfirm" disabled="disabled">
+<div class="sticky-banner-wrapper" id="stickyBanner">
+    <div id="content">
+        <div class="grid-row">
+            <div class="column-half first-half">
+                Pupil(s) selected: <span id="totalPupilsSelected"></span>
+            </div>
+            <div class="column-half">
+                <a href="<%= cancelLink %>" class="button-secondary" id="stickyCancel"><%= cancelLabel %></a>
+                <input type="submit" class="button" value="<%= submitLabel %>" id="stickyConfirm">
             </div>
         </div>
     </div>
