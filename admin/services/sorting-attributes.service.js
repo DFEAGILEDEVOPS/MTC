@@ -1,6 +1,6 @@
 'use strict'
 
-const sortingUIService = {
+const sortingAttributesService = {
   /**
    * Flexible sorting service.
    * @param sortingOptions
@@ -32,4 +32,4 @@ const sortingUIService = {
   }
 }
 
-module.exports = sortingUIService
+module.exports = sortingAttributesService

@@ -21,7 +21,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
-const sortingUIService = require('../services/sorting-ui.service')
+const sortingAttributesService = require('../services/sorting-attributes.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -217,7 +217,7 @@ const getGeneratePinsList = async (req, res, next) => {
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingUIService.getAttributes(sortingOptions, sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
   const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
   return res.render('school/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
@@ -431,7 +431,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   ]
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingUIService.getAttributes(sortingOptions, sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
 
   // Get attendance code index
   try {

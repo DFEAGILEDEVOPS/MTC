@@ -19,7 +19,7 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
-const sortingUIService = require('../../services/sorting-ui.service')
+const sortingAttributesService = require('../../services/sorting-attributes.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 
@@ -216,7 +216,7 @@ describe('school controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(generatePinsService, 'getPupils').and.returnValue(Promise.resolve({}))
-        spyOn(sortingUIService, 'getAttributes')
+        spyOn(sortingAttributesService, 'getAttributes')
           .and.returnValue({ htmlSortDirection: { lastName: 'asc' },
             arrowSortDirection: { lastName: 'sort' } })
         spyOn(res, 'render').and.returnValue(null)
