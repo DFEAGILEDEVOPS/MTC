@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
     require('../models/pupil')
     require('../models/check-window')
     require('../models/check-form')
+    require('../models/school')
 
     console.log('Processing the completed checks')
     // Make sure all completed checks are marked and ps-report data cached
