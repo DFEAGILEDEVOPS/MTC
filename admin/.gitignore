@@ -55,3 +55,6 @@ test/*.json
 
 #ignore data files
 data/files/*
+
+# dotenv files
+.env
