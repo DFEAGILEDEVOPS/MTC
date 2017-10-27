@@ -193,6 +193,10 @@ dl dd {
 }
 
 // Forms
+input:disabled {
+  border: 2px solid $grey-2;
+  color: $grey-2;
+}
 
 // Show an input as if it was a link
 

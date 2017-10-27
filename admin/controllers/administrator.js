@@ -200,6 +200,8 @@ const checkWindowsForm = async (req, res, next) => {
   let actionName = (req.params.action === 'add' && req.params.id === undefined) ? 'Create' : 'Edit'
   let urlActionName = req.params.action
   let currentYear = moment.utc(Date.now()).format('YYYY')
+  let adminIsDisabled = false
+  let checkStartIsDisabled = false
 
   res.locals.pageTitle = actionName + ' check window'
   req.breadcrumbs(res.locals.pageTitle)
@@ -207,6 +209,10 @@ const checkWindowsForm = async (req, res, next) => {
   if (req.params.id !== undefined) {
     try {
       checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
+
+      const adminStartDate = moment(checkWindowData.adminStartDate, 'DD MM YYYY').format('DD MMM YYYY')
+      const checkStartDate = moment(checkWindowData.checkStartDate, 'DD MM YYYY').format('DD MMM YYYY')
+
       checkWindowData = {
         checkWindowId: req.params.id,
         checkWindowName: checkWindowData.checkWindowName,
@@ -220,8 +226,15 @@ const checkWindowsForm = async (req, res, next) => {
         checkEndMonth: moment(checkWindowData.checkEndDate).format('MM'),
         checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY')
       }
+
+      const currentDate = moment(Date.now()).format('DD MMM YYYY')
+      if (moment(currentDate).isAfter(adminStartDate)) {
+        adminIsDisabled = true
+      }
+      if (moment(currentDate).isAfter(checkStartDate)) {
+        checkStartIsDisabled = true
+      }
     } catch (error) {
-      console.log('Error retrieving check window.')
       return next()
     }
   }
@@ -234,7 +247,9 @@ const checkWindowsForm = async (req, res, next) => {
     successfulPost,
     actionName,
     urlActionName,
-    currentYear
+    currentYear,
+    adminIsDisabled,
+    checkStartIsDisabled
   })
 }
 
@@ -252,6 +267,8 @@ const saveCheckWindows = async (req, res, next) => {
   let validationError = await checkWindowValidator.validate(req)
   let currentYear = moment.utc(Date.now()).format('YYYY')
   let flashMessage = req.body['checkWindowName'] + ' has been created'
+  let adminIsDisabled = false
+  let checkStartIsDisable = false
 
   if (req.body.checkWindowId !== '') {
     actionName = 'Edit'
@@ -271,7 +288,9 @@ const saveCheckWindows = async (req, res, next) => {
       currentYear,
       actionName,
       urlActionName,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      adminIsDisabled,
+      checkStartIsDisable
     })
   }
 

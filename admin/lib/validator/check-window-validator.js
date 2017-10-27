@@ -10,7 +10,11 @@ const currentYear = moment.utc(Date.now()).format('YYYY')
 const checkWindowValidationSchema = {
   'checkWindowName': {
     notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkWindowName
+    errorMessage: checkWindowErrorMessages.checkWindowName,
+    isLength: {
+      options: [{min: 2, max: 35}],
+      errorMessage: checkWindowErrorMessages.checkWindowNameLength
+    }
   },
   'adminStartDay': {
     isInt: {
@@ -129,6 +133,18 @@ module.exports.validate = function (req) {
       req.checkBody(checkWindowValidationSchema)
       const result = await req.getValidationResult()
       validationError = errorConverter.fromExpressValidator(result.mapped())
+
+      // Custom error handling.
+      // Validate: admin date is in the past
+      const currentDate = moment(Date.now()).format('DD MMM YYYY')
+      const adminStartDate = moment(req.body['adminStartDay'] + '-' + req.body['adminStartMonth'] + '-' + req.body['adminStartYear'], 'DD MM YYYY').format('DD MMM YYYY')
+      const checkStartDate = moment(req.body['checkStartDay'] + '-' + req.body['checkStartMonth'] + '-' + req.body['checkStartYear'], 'DD MM YYYY').format('DD MMM YYYY')
+      const checkEndDate = moment(req.body['checkEndDay'] + '-' + req.body['checkEndMonth'] + '-' + req.body['checkEndYear'], 'DD MM YYYY').format('DD MMM YYYY')
+      validationError.addError('adminDateInThePast', moment(currentDate).isAfter(adminStartDate))
+      validationError.addError('checkDateBeforeAdminDate', moment(adminStartDate).isAfter(checkStartDate))
+      validationError.addError('checkStartDateAfterEndDate', moment(checkStartDate).isAfter(checkEndDate))
+      validationError.addError('checkStartDateInThePast', moment(currentDate).isAfter(checkStartDate))
+      validationError.addError('checkEndDateInThePast', moment(currentDate).isAfter(checkEndDate))
     } catch (error) {
       return reject(error)
     }

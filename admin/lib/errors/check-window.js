@@ -1,41 +1,48 @@
 'use strict'
 
 module.exports = {
-  checkWindowName: 'Error in Name of check window',
+  checkWindowName: '"Name of check window" is required',
+  checkWindowNameLength: '"Name of check window" can\'t be less than 2 characters',
 
-  adminStartDayWrongDay: 'Wrong admin start day',
-  adminStartDayInvalidChars: 'Invalid characters in admin start day',
-  adminStartDayRequired: 'Admin start day is required',
+  adminStartDayWrongDay: 'Please check "Day"',
+  adminStartDayInvalidChars: 'Entry must be numerical',
+  adminStartDayRequired: '"Administration start date" can\'t be blank',
 
-  adminStartMonthWrongDay: 'Wrong admin start month',
-  adminStartMonthInvalidChars: 'Invalid characters in admin start month',
+  adminStartMonthWrongDay: 'Please check "Month"',
+  adminStartMonthInvalidChars: 'Entry must be numerical',
   adminStartMonthRequired: 'Admin start month is required',
 
-  adminStartYearWrongDay: 'Wrong admin start year',
+  adminStartYearWrongDay: 'Please check "Year"',
   adminStartYearInvalidChars: 'Invalid characters in admin start year',
   adminStartYearRequired: 'Admin start year is required',
 
-  checkStartDayWrongDay: 'Wrong check start day',
-  checkStartDayInvalidChars: 'Invalid characters in check start day',
+  checkStartDayWrongDay: 'Please check "Day"',
+  checkStartDayInvalidChars: 'Entry must be numericaly',
   checkStartDayRequired: 'Check start day is required',
 
-  checkStartMonthWrongDay: 'Wrong check start month',
-  checkStartMonthInvalidChars: 'Invalid characters in check start month',
+  checkStartMonthWrongDay: 'Please check "Month"',
+  checkStartMonthInvalidChars: 'Entry must be numerical',
   checkStartMonthRequired: 'Check start month is required',
 
-  checkStartYearWrongDay: 'Wrong check start year',
-  checkStartYearInvalidChars: 'Invalid characters in check start year',
+  checkStartYearWrongDay: 'Please check "Year"',
+  checkStartYearInvalidChars: 'Entry must be numerical',
   checkStartYearRequired: 'Check start year is required',
 
-  checkEndDayWrongDay: 'Wrong check end day',
-  checkEndDayInvalidChars: 'Invalid characters in check end day',
+  checkEndDayWrongDay: 'Please check "Day"',
+  checkEndDayInvalidChars: 'Entry must be numerical',
   checkEndDayRequired: 'Check end day is required',
 
-  checkEndMonthWrongDay: 'Wrong check end month',
-  checkEndMonthInvalidChars: 'Invalid characters in check end month',
+  checkEndMonthWrongDay: 'Please check "Month"',
+  checkEndMonthInvalidChars: 'Entry must be numerical',
   checkEndMonthRequired: 'Check end month is required',
 
-  checkEndYearWrongDay: 'Wrong check end year',
-  checkEndYearInvalidChars: 'Invalid characters in check end year',
-  checkEndYearRequired: 'Check end year is required'
+  checkEndYearWrongDay: 'Please check "Year"',
+  checkEndYearInvalidChars: 'Entry must be numerical',
+  checkEndYearRequired: 'Check end year is required',
+
+  adminDateInThePast: 'Enter a start date in the future',
+  checkDateBeforeAdminDate: '"Administration start date" must be before the "Check start date"',
+  checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
+  checkStartDateInThePast: '"Check start date" must be in the future',
+  checkEndDateInThePast: '"Check end date" must be in the future'
 }
