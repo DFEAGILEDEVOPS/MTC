@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 
+require('dotenv').config()
 const mongoose = require('mongoose')
 
 // const psychometricianReportService = require('../services/psychometrician-report.service')

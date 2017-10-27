@@ -50,19 +50,39 @@ $(function () {
   if ($('#attendanceList').length > 0) disableCheckAll('#attendanceList')
 
   /**
-   * Pupils not taking the check.
+   * Pupils not taking the check methods.
    */
   var pupilsNotTakingCheck = function () {
+    /**
+     * Enable/disable confirmation button from sticky banner.
+     * @param status
+     */
+    var enableButtonStatus = function (status) {
+      if (status === true) {
+        $('#stickyBanner').addClass('show')
+      } else {
+        $('#stickyBanner').removeClass('show')
+      }
+    }
+
     /**
      * Is radio button checked?
      */
     var isRadioChecked = function () {
       var el = $('input:radio[name="attendanceCode"]:checked')
       if (el.length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
+        enableButtonStatus(true)
       } else {
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(false)
       }
+    }
+
+    /**
+     * Count checkboxes, populate sticky <span>.
+     */
+    var countCheckboxes = function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      $('#totalPupilsSelected').text(el.length)
     }
 
     /**
@@ -71,9 +91,9 @@ $(function () {
     var isCheckboxChecked = function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked')
       if (el.length > 0) {
-        $('#stickyConfirm').prop('disabled', false)
+        enableButtonStatus(true)
       } else {
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(false)
       }
     }
 
@@ -85,6 +105,7 @@ $(function () {
       $('#unselectAll').removeClass('all-hide')
       $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
       isRadioChecked()
+      countCheckboxes()
     })
 
     /**
@@ -93,7 +114,7 @@ $(function () {
     $('#unselectAll').on('click', function (e) {
       $(this).addClass('all-hide')
       $('#selectAll').removeClass('all-hide')
-      $('#stickyConfirm').prop('disabled', true)
+      enableButtonStatus(false)
       $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
     })
 
@@ -106,8 +127,9 @@ $(function () {
         isRadioChecked()
       } else {
         $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-        $('#stickyConfirm').prop('disabled', true)
+        enableButtonStatus(true)
       }
+      countCheckboxes()
     })
 
     /**
@@ -118,6 +140,7 @@ $(function () {
       if ($('input:radio[name="attendanceCode"]').is(':checked')) {
         $($(this)).attr('data-checked', true)
         isCheckboxChecked()
+        countCheckboxes()
       }
     })
 
@@ -132,38 +155,36 @@ $(function () {
         $($(this)).attr('data-checked', null)
         isCheckboxChecked()
       }
+      countCheckboxes()
     })
   }
 
-  pupilsNotTakingCheck()
-
   /**
-   * Sticky confirmation banner.
+   * 'Generate pins' methods.
    */
-  if ($('#stickyHeader').length > 0) {
-    $(function () {
-      // Set the wrapper's height
-      $('#stickyHeader').parent().css('min-height', $('#stickyHeader').outerHeight())
-    })
-    $(window).scroll(function () {
-      var sticky = $('#stickyHeader')
-      if (sticky.parent().position().top - $(window).scrollTop() < 0) {
-        if (!sticky.data('fixed')) {
-          sticky.css({
-            'position': 'fixed',
-            'top': '0',
-            'width': sticky.width()
-          })
-          sticky.data('fixed', true)
-        }
-      } else if (sticky.data('fixed')) {
-        sticky.css({
-          'position': 'static',
-          'top': 'auto'
-        })
-        sticky.data('fixed', false)
+  var generatePins = function () {
+    $('#generatePins .multiple-choice-mtc > input:checkbox').on('click', function () {
+      var el = $('#generatePins .multiple-choice-mtc > input:checkbox:checked')
+      if (el.length > 0) {
+        $('#stickyBanner').addClass('show')
+      } else {
+        $('#stickyBanner').removeClass('show')
       }
     })
+  }
+
+  /**
+   * 'Pupils not taking the check' page.
+   */
+  if ($('#pupils-not-taking-checks .list.attendance-code-list')) {
+    pupilsNotTakingCheck()
+  }
+
+  /**
+   * 'Generate pins' page,
+   */
+  if ($('#generatePins')) {
+    generatePins()
   }
 
   $('input:file').on('change', function (e) {

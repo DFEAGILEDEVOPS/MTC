@@ -12,7 +12,6 @@ const hdfValidator = require('../lib/validator/hdf-validator')
 const {
   fetchAnswers,
   fetchScoreDetails,
-  fetchSortedPupilsData,
   fetchMultiplePupils,
   fetchOnePupil } = require('../services/pupil.service')
 const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
@@ -22,7 +21,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
-const sortingUiService = require('../services/sorting-ui.service')
+const sortingAttributesService = require('../services/sorting-attributes.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -215,10 +214,16 @@ const getGeneratePinsList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const pupils = await generatePinsService.getPupils(school._id)
+  const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
+  let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
+  const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
   return res.render('school/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
-    pupils
+    pupils,
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 
@@ -426,7 +431,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   ]
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingUiService(sortingOptions, sortField, sortDirection)
+  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
 
   // Get attendance code index
   try {
@@ -437,7 +442,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get pupils for active school
   try {
-    pupils = await fetchSortedPupilsData(req.user.School, 'lastName', sortDirection)
+    pupils = await pupilDataService.getSortedPupils(req.user.School, 'lastName', sortDirection)
   } catch (error) {
     return next(error)
   }

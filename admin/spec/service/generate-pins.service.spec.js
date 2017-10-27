@@ -19,7 +19,6 @@ describe('generate-pins.service', () => {
   afterEach(() => sandbox.restore())
 
   describe('getPupils', () => {
-
     describe('returns pupils', () => {
       beforeEach(() => {
         const pupil1 = Object.assign({}, pupilMock)
@@ -27,33 +26,57 @@ describe('generate-pins.service', () => {
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
-        sandbox.mock(pupilDataService).expects('getPupils').resolves({ pupils: [ pupil1, pupil2 ] })
+        pupil1.foreName = 'foreName'
+        pupil1.lastName = 'lastName'
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
-          '../../services/data-access/pupil.data.service': pupilDataService
+          '../../services/pupil.service': pupilDataService
         })
       })
       it('with specific properties', async (done) => {
-        const pupils = await generatePinsService.getPupils(schoolMock._id)
+        const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
-        expect(Object.keys(pupils[ 0 ]).length).toBe(5)
+        expect(Object.keys(pupils[ 0 ]).length).toBe(6)
         done()
       })
     })
-    describe('filter and returns pupils', () => {
+    describe('filter and returns sorted pupils', () => {
       beforeEach(() => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
-        sandbox.mock(pupilDataService).expects('getPupils').resolves({ pupils: [ pupil1, pupil2 ] })
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
-          '../../services/data-access/pupil.data.service': pupilDataService
+          '../../services/pupil.service': pupilDataService
         })
       })
       it('without pre existing pins', async (done) => {
-        const pupils = await generatePinsService.getPupils(schoolMock._id)
+        const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(1)
+        done()
+      })
+    })
+    describe('pupils with same fullname', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = ''
+        pupil2.foreName = pupil1.foreName
+        pupil2.lastName = pupil1.lastName
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/pupil.service': pupilDataService
+        })
+      })
+      it('should display DoB as well', async (done) => {
+        const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
+        expect(pupils.length).toBe(2)
+        expect(pupils[0].showDoB).toBeTruthy()
+        expect(pupils[1].showDoB).toBeTruthy()
         done()
       })
     })

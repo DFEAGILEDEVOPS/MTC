@@ -13,18 +13,12 @@ end
 
 And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pupil_pins_page).to have_generate_pin_message
-  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Generate pupil Personal Identification Numbers (PINs) and a school password."
-  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Distribute the PINs and password to your pupils."
+  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Generate pupil PINs and school password."
+  expect(generate_pupil_pins_page.info_message.map {|message| message.text}).to include "Distribute pupil PINs and school password to your pupils."
 end
 
 And(/^I click Generate PINs button$/) do
   generate_pupil_pins_page.generate_pin_btn.click
-end
-
-Then(/^I should see a list of pupils sorted by surname on Generate Pins List Page$/) do
-  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
-  sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort
-  expect(sorted_pupils_from_page).to match_array(pupils_from_page)
 end
 
 Given(/^I have a pupil with active pin$/) do
@@ -45,4 +39,24 @@ end
 Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/) do
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
+end
+
+When(/^I click on the Pupil heading$/) do
+  generate_pupil_pins_page.pupil_column_heading.click
+end
+
+Then(/^I should see a list of pupils sorted by surname in '(.*)' order on Generate Pins List Page$/) do |sort_order|
+  if sort_order.eql?('descending')
+    sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
+  else
+    sorted_pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}.sort
+  end
+
+  pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
+  expect(sorted_pupils_from_page).to match(pupils_from_page)
+end
+
+And(/^I am on Generate pins Pupil List page$/) do
+  step 'I navigate to generate pupil pins page'
+  step 'I click Generate PINs button'
 end
