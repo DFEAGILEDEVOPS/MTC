@@ -113,4 +113,24 @@ describe('pupil.data.service', () => {
       expect(mockSchool.verify()).toBe(true)
     })
   })
+
+  describe('#getSortedPupils', () => {
+    let mockPupil
+    beforeEach(() => {
+      const pupil1 = pupilMock
+      const pupil2 = pupilMock
+      mockPupil = sandbox.mock(Pupil).expects('find').chain('sort').chain('lean').chain('exec').returns([ pupil1, pupil2 ])
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil,
+        '../../models/school': School
+      })
+    })
+    it('returns sorted pupils', async () => {
+      const sortField = 'lastName'
+      const sortDirection = 'asc'
+      const pupils = await pupilDataService.getSortedPupils(schoolMock._id, sortField, sortDirection)
+      expect(pupils.length).toBe(2)
+      expect(mockPupil.verify()).toBe(true)
+    })
+  })
 })

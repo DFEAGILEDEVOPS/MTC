@@ -65,4 +65,3 @@ else
 end
 
 Capybara.visit Capybara.app_host
-
