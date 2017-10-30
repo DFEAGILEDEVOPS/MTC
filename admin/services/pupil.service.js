@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 
-const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const Answer = require('../models/answer')
 const errorConverter = require('../lib/error-converter')
