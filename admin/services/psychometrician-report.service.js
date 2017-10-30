@@ -186,6 +186,7 @@ function getClientDateFromAuditEvent (auditEventType, completedCheck) {
  */
 function trim (string, length) {
   if (typeof string !== 'string') {
+    console.log('Not a string: ', string)
     return ''
   }
   return string.substring(0, length)
