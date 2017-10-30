@@ -10,10 +10,20 @@ const completedCheckDataService = require('../../services/data-access/completed-
 const checkDataService = require('../../services/data-access/check.data.service')
 
 // Get a marked check mock
-const checkMock = require('../mocks/check-with-results')
+const checkMockOrig = require('../mocks/check-with-results')
 
 // and a completedCheck that has been marked
-const completedCheckMock = require('../mocks/completed-check-with-results')
+const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+const pupilMockOrig = require('../mocks/pupil')
+const schoolMockOrig = require('../mocks/school')
+
+const completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
+const checkMock = Object.assign({}, checkMockOrig)
+const pupilMock = Object.assign({}, pupilMockOrig)
+const schoolMock = Object.assign({}, schoolMockOrig)
+completedCheckMock.check = checkMock
+pupilMock.school = schoolMock
+completedCheckMock.check.pupilId = pupilMock
 
 describe('psychometricians-report.service', () => {
   let sandbox, service
@@ -110,13 +120,15 @@ describe('psychometricians-report.service', () => {
   })
 
   describe('#produceCacheData', () => {
-    let psReportCacheDataServiceStub
+    let psReportCacheDataServiceStub, serviceProduceReportDataStub
 
     beforeEach(() => {
       psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'save')
       service = proxyquire('../../services/psychometrician-report.service', {
         './data-access/ps-report-cache.data.service': psReportCacheDataService
       })
+      // stub out the produceReportData method
+      serviceProduceReportDataStub = sandbox.stub(service, 'produceReportData')
     })
 
     it('throws an error if not called with an argument', async (done) => {
@@ -139,16 +151,27 @@ describe('psychometricians-report.service', () => {
       done()
     })
 
-    // it('saves the data in the db', async (done) => {
-    //   try {
-    //     await service.produceCacheData(123)
-    //     expect(psReportCacheDataServiceStub.callCount).toBe(1)
-    //   } catch (error) {
-    //     expect(error).toBeUndefined()
-    //     expect('this').toBe('NOT to be thrown')
-    //   }
-    //   done()
-    // })
+    it('generates the report data', async (done) => {
+      try {
+        await service.produceCacheData(completedCheckMock)
+        expect(serviceProduceReportDataStub.callCount).toBe(1)
+      } catch (error) {
+        expect(error).toBeUndefined()
+        expect('this').toBe('NOT to be thrown')
+      }
+      done()
+    })
+
+    it('saves the data in the db', async (done) => {
+      try {
+        await service.produceCacheData(completedCheckMock)
+        expect(psReportCacheDataServiceStub.callCount).toBe(1)
+      } catch (error) {
+        expect(error).toBeUndefined()
+        expect('this').toBe('NOT to be thrown')
+      }
+      done()
+    })
   })
 
   describe('#populateWithCheck', () => {
@@ -163,7 +186,7 @@ describe('psychometricians-report.service', () => {
 
     it('calls the checkDataService to retrieve the checks', async (done) => {
       try {
-        checkDataServiceStub.resolves([checkMock])
+        checkDataServiceStub.resolves([checkMockOrig])
         await service.populateWithCheck([completedCheckMock])
         expect(checkDataServiceStub.callCount).toBe(1)
       } catch (error) {
@@ -175,7 +198,7 @@ describe('psychometricians-report.service', () => {
 
     it('splices the check into the completedCheck object', async (done) => {
       try {
-        checkDataServiceStub.resolves([checkMock])
+        checkDataServiceStub.resolves([checkMockOrig])
         const completedChecks = [completedCheckMock]
         await service.populateWithCheck(completedChecks)
         expect(completedChecks[0].check).toBeDefined()

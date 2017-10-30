@@ -18,7 +18,7 @@ psychometricianReportService.generateReport = async function () {
   const data = await psCachedReportDataService.find({})
   const output = []
   for (const obj of data) {
-    output.push(filter(obj.data))
+    output.push(obj.data)
   }
 
   return new Promise((resolve, reject) => {
@@ -62,6 +62,52 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
     throw new Error('Invalid argument: completedCheck')
   }
 
+  // Handle null's in older data sets.  This can be removed once
+  // all of the older data is analysed.
+  fixup(completedCheck)
+
+  // Generate one line of the report
+  const psData = this.produceReportData(completedCheck)
+
+  // Save the data.  We need the psreportcache.check to be unique - so that each check has only one entry in `psereportcache`
+  // so we re-use the check._id as the psreportcache._id.  If Cosmos ever supports secondary unique indexes
+  // we can just use those instead.  This allows us to use replaceOne (as we already know the _id) and overwrite
+  // an existing record if it exists.
+
+  await psCachedReportDataService.save({
+    _id: completedCheck.check._id,
+    data: psData,
+    check: completedCheck.check._id
+  })
+}
+
+/**
+ * Add the Check collection information to the completedChecks by modifying the object directly
+ * TODO: refactor the db to make completedChecks.check a 'ref' and remove this code
+ * @param completedChecks
+ * @return {Promise.<void>}
+ */
+psychometricianReportService.populateWithCheck = async function (completedChecks) {
+  const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
+  const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
+  // console.log('checks > pupil > school', checks[0].pupilId.school)
+  const checksByCheckCode = new Map()
+  // populate the map
+  checks.map(c => checksByCheckCode.set(c.checkCode, c))
+  // splice it in
+  for (const cc of completedChecks) {
+    cc.check = checksByCheckCode.get(cc.data.pupil.checkCode)
+  }
+}
+
+/**
+ * Generate the ps report from the populated completedCheck object
+ * CompletedCheck: completedCheck + the Check object fully populated with pupil (+ school), checkWindow
+ * and checkForm
+ * @param completedCheck
+ * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
+ */
+psychometricianReportService.produceReportData = function (completedCheck) {
   const psData = {
     'Surname': trim(completedCheck.check.pupilId.lastName, 35),
     'Forename': trim(completedCheck.check.pupilId.foreName, 35),
@@ -98,63 +144,37 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
     psData[p(idx) + 'K'] = getUserInput(completedCheck.data.inputs[idx])
     psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
     psData[p(idx) + 'ResponseTime'] = getResponseTime(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut'] = hasTimeoutFlag(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut0'] = hasTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
-    // psData[p(idx) + 'TimeOut1'] =
-    // psData[p(idx) + 'tLoad'] =
-    // psData[p(idx) + 'tFirstKey'] =
-    // psData[p(idx) + 'tLastKey'] =
-    // psData[p(idx) + 'OverallTime'] =
-    // psData[p(idx) + 'RecallTime'] =
-    // psData[p(idx) + 'TimeStart'] =
-    // psData[p(idx) + 'TimeComplete'] =
-    // psData[p(idx) + 'TimeTaken'] =
+    psData[p(idx) + 'TimeOut'] = getTimeoutFlag(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'TimeOut0'] = getTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
+    psData[p(idx) + 'TimeOut1'] = getTimeoutWithCorrectAnswer(completedCheck.data.inputs[idx], ans)
+    psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
+    psData[p(idx) + 'tFirstKey'] = getTimeOfFirstUserInput(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'tLastKey'] = getTimeOfLastUserInput(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
+    psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
+    psData[p(idx) + 'TimeComplete'] = getLastAnswerInputTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
   })
 
-  // Save the data.  We need the psreportcache.check to be unique - so that each check has only one entry in `psereportcache`
-  // so we re-use the check._id as the psreportcache._id.  If Cosmos ever supports secondary unique indexes
-  // we can just use those instead.  This allows us to use replaceOne (as we already know the _id) and overwrite
-  // an existing record if it exists.
-
-  await psCachedReportDataService.save({
-    _id: completedCheck.check._id,
-    data: psData,
-    check: completedCheck.check._id
-  })
-}
-
-/**
- * Add the Check collection information to the completedChecks by modifying the object directly
- * TODO: refactor the db to make completedChecks.check a 'ref' and remove this code
- * @param completedChecks
- * @return {Promise.<void>}
- */
-psychometricianReportService.populateWithCheck = async function (completedChecks) {
-  const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
-  const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
-  // console.log('checks > pupil > school', checks[0].pupilId.school)
-  const checksByCheckCode = new Map()
-  // populate the map
-  checks.map(c => checksByCheckCode.set(c.checkCode, c))
-  // splice it in
-  for (const cc of completedChecks) {
-    cc.check = checksByCheckCode.get(cc.data.pupil.checkCode)
-  }
+  return psData
 }
 
 function getMark (completedCheck) {
   if (completedCheck.check && completedCheck.check.results && completedCheck.check.results.hasOwnProperty('marks')) {
     return completedCheck.check.results.marks
   }
-  return 'n/a'
+  return 'error'
 }
 
 function getClientDateFromAuditEvent (auditEventType, completedCheck) {
   const logEntries = completedCheck.data.audit.filter(logEntry => logEntry.type === auditEventType)
   if (!logEntries.length) {
-    return ''
+    return 'error'
   }
   const logEntry = logEntries[0]
+  if (!logEntry.hasOwnProperty('clientTimestamp')) {
+    return 'error'
+  }
   return logEntry.clientTimestamp
 }
 
@@ -216,15 +236,15 @@ function getUserInput (inputs) {
 }
 
 function getResponseTime (input) {
-  if (!input) {
+  if (!(input && Array.isArray(input))) {
+    console.log('Invalid input ', input)
+    return 'error'
+  }
+  if (input.length === 0) {
+    // no input was provided, so there isn't a 'time' component to show
     return ''
   }
-  if (!(Array.isArray(input) && input.length > 0)) {
-    return ''
-  }
-
-  // In some older tests the first input may be null
-  const firstLogEntry = input[0] ? input[0] : input[1]
+  const firstLogEntry = input[0]
   if (!firstLogEntry.clientInputDate) {
     console.log('First log Entry missing client input date: ', firstLogEntry)
   }
@@ -234,7 +254,7 @@ function getResponseTime (input) {
     console.log('First log Entry missing client input date: ', lastLogEntry)
   }
   const last = moment(lastLogEntry.clientInputDate)
-  return moment(moment(last).diff(moment(first))).format('s.SSS')
+  return (last.format('x') - first.format('x')) / 1000
 }
 
 /**
@@ -243,22 +263,56 @@ function getResponseTime (input) {
  * @return {number}
  */
 function hasTimeoutFlag (inputs) {
-  let timeout = 1
-  if (inputs && inputs.length) {
+  let timeout = true
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('invalid input: ', inputs)
+    throw new Error('Input not provided')
+  }
+  if (inputs.length) {
     const last = inputs[inputs.length - 1]
     if (last.input && last.input.toUpperCase() === 'ENTER') {
-      timeout = 0
+      timeout = false
     }
   }
   return timeout
 }
 
+/**
+ * A report helper for the hasTimeoutFlag
+ * @param inputs
+ * @return {*}
+ */
+function getTimeoutFlag (inputs) {
+  try {
+    return toInt(hasTimeoutFlag(inputs))
+  } catch (error) {
+    console.error(error)
+    return 'error'
+  }
+}
+
 function hasTimeoutWithNoResponseFlag (inputs, answer) {
-  let timeout = 0
+  let timeout = false
+  if (!(inputs && Array.isArray(inputs))) {
+    throw new Error('Invalid params inputs')
+  }
+  if (!(answer && answer.hasOwnProperty('answer'))) {
+    console.log('invalid answer: ', answer)
+    throw new Error('Invalid param answer')
+  }
   if (answer.input === '' && inputs.length === 0) {
-    timeout = 1
+    timeout = true
   }
   return timeout
+}
+
+function getTimeoutWithNoResponseFlag (inputs, ans) {
+  try {
+    return toInt(hasTimeoutWithNoResponseFlag(inputs, ans))
+  } catch (error) {
+    console.error(error)
+    return 'error'
+  }
 }
 
 /**
@@ -296,4 +350,115 @@ function filter (obj) {
   return newObj
 }
 
+function hasTimeoutWithCorrectAnswer (inputs, ans) {
+  if (!(hasTimeoutFlag(inputs) && hasCorrectAnswer(ans))) {
+    return false
+  }
+  return true
+}
+
+function getTimeoutWithCorrectAnswer (inputs, ans) {
+  try {
+    return toInt(hasTimeoutWithCorrectAnswer(inputs, ans))
+  } catch (error) {
+    console.error(error)
+    return 'error'
+  }
+}
+
+function hasCorrectAnswer (ans) {
+  if (!ans) {
+    throw new Error('Answer not provided')
+  }
+  if (!ans.hasOwnProperty('isCorrect')) {
+    throw new Error('Answer is not marked')
+  }
+  return ans.isCorrect
+}
+
+/**
+ * A report helper to convert booleans to 1 or 0
+ * @param bool
+ * @return {number}
+ */
+function toInt (bool) {
+  if (typeof bool !== 'boolean') {
+    throw new Error(`param is not a boolean: [${bool}]`)
+  }
+  return bool ? 1 : 0
+}
+
+function fixup (completedCheck) {
+  const inputs = completedCheck.data.inputs
+  if (inputs[0] === null) {
+    inputs.shift()
+  }
+}
+
+function getTimeOfFirstUserInput (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  const first = inputs[0]
+  return getTimeOfInputEvent(first)
+}
+
+function getTimeOfLastUserInput (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  const last = inputs[inputs.length - 1]
+  return getTimeOfInputEvent(last)
+}
+
+function getTimeOfInputEvent (input) {
+  if (!(input && input.hasOwnProperty('clientInputDate'))) {
+    console.log('getTimeOfInputEvent(): Invalid param input: ', input)
+    return 'error'
+  }
+
+  const time = moment(input.clientInputDate)
+  if (!time.isValid()) {
+    console.log('Date error: not a date ' + input.clientInputDate)
+    return 'error'
+  }
+  return time.toISOString()
+}
+
+/**
+ * Get the time of the user's last input that is not enter
+ * @param {Array} inputs
+ */
+function getLastAnswerInputTime (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  for (let i = inputs.length - 1; i >= 0; i--) {
+    const inputEntry = inputs[i]
+    if (!(inputEntry && inputEntry.hasOwnProperty('input') && inputEntry.clientInputDate)) {
+      console.log('getLastAnswerInputTime invalid input: ', inputEntry)
+      return 'error'
+    }
+    if (inputEntry.input.toUpperCase() !== 'ENTER') {
+      const m1 = moment(inputEntry.clientInputDate)
+      if (!m1.isValid()) {
+        console.log('Date error: ' + inputEntry.clientInputDate)
+        return 'error'
+      }
+      return m1.toISOString()
+    }
+  }
+}
 module.exports = psychometricianReportService
