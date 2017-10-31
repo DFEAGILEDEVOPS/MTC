@@ -28,14 +28,14 @@ describe('pupil.data.service', () => {
       const pupil2 = pupilMock
       pupil2.id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'f55sg'
-      sandbox.mock(Pupil).expects('insertMany').resolves([pupil1, pupil2])
+      sandbox.mock(Pupil).expects('insertMany').resolves([ pupil1, pupil2 ])
       proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })
     })
 
     it('returns a list of inserted pupils', async () => {
-      const savedPupils = await pupilDataService.insertMany([pupil1, pupil2])
+      const savedPupils = await pupilDataService.insertMany([ pupil1, pupil2 ])
       expect(savedPupils.length).toBe(2)
     })
   })
@@ -51,7 +51,7 @@ describe('pupil.data.service', () => {
     })
 
     it('calls the model', () => {
-      service.findOne({_id: 'some-id'})
+      service.findOne({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
     })
   })
@@ -66,7 +66,7 @@ describe('pupil.data.service', () => {
     })
 
     it('makes the expected calls', () => {
-      service.update(1, {$set: {'some': 'criteria'}})
+      service.update(1, { $set: { 'some': 'criteria' } })
       expect(mock.verify()).toBe(true)
     })
   })
@@ -115,6 +115,23 @@ describe('pupil.data.service', () => {
       const pupils = await pupilDataService.getSortedPupils(schoolMock._id, sortField, sortDirection)
       expect(pupils.length).toBe(2)
       expect(mockPupil.verify()).toBe(true)
+    })
+  })
+  describe('#saveMultiple', () => {
+    let pupil1
+    let pupil2
+    beforeEach(() => {
+      pupil1 = pupilMock
+      pupil1.pin = 'ggd4d'
+      pupil2 = Object.assign({}, pupilMock)
+      pupil2._id = '595cd5416e5ca13e48ed2520'
+      pupil2.pin = 'gfd4d'
+      pupil1.save = () => pupil1
+      pupil2.save = () => pupil2
+    })
+    it('returns saved pupils list', async () => {
+      const savedPupils = await pupilDataService.saveMultiple([ pupil1, pupil2 ])
+      expect(savedPupils.length).toBe(2)
     })
   })
 })
