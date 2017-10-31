@@ -6,12 +6,13 @@
 /* global $ */
 $(function () {
   function startModal (e) {
-    $('#js-modal-link').on('click', function (e) {
+    $('.modal-link').on('click', function (e) {
       $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
       toggleShowHideModal(e)
     })
     $('#js-modal-cancel-button').on('click', function (e) {
       toggleShowHideModal(e)
+      $('#js-modal-confirmation-button').attr('href', '')
     })
     $('#js-modal-overlay').on('click', function (e) {
       toggleShowHideModal(e)
@@ -36,6 +37,7 @@ $(function () {
   function toggleOnModal (e) {
     if (e.target.id === 'js-modal-cancel-button') {
       $('#js-modal-confirmation-button').focus().select()
+      console.log('UNSET HREF')
     } else {
       $('#js-modal-cancel-button').focus().select()
     }
