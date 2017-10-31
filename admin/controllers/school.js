@@ -51,13 +51,14 @@ const getPupils = async (req, res, next) => {
     const { foreName, lastName, _id } = p
     const dob = dateService.formatShortGdsDate(p.dob)
     // find the score, if they have one
-    const latestCheck = checkDataService.findLatestCheckByPupilId({ pupilId: _id })
+    const latestCheck = await checkDataService.findLatestCheckByPupilId(_id)
+    console.log('latestCheck:', latestCheck)
     let score
-    if (latestCheck.results) {
-      //calculate percentage
-      
+    if (latestCheck && latestCheck.results) {
+      // calculate percentage
+      score = pupilService.calculateScorePercentage(latestCheck.results) + '%'
     } else {
-      score = 'No Results'
+      score = 'N/A'
     }
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
