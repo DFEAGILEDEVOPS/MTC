@@ -18,7 +18,7 @@ const generatePinService = {
     let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
     // filter pupils
     pupils = pupils
-      .filter(p => !generatePinService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result)
+      .filter(p => generatePinService.removeInvalidPupils(p))
       .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
         ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
     // determine if more than one pupil has same full name
@@ -32,6 +32,9 @@ const generatePinService = {
     })
     return pupils
   },
+
+  removeInvalidPupils: (p) =>
+    !generatePinService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result,
 
   generatePupilPins: async (pupilsList) => {
     const data = Object.values(pupilsList || null)
