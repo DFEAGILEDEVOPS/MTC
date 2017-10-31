@@ -17,18 +17,19 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-    <% if (!!school) { %>
-           <b><%= school.name %>'s password for the day:</b>
+        <% if (!!school) { %>
+        <b><%= school.name %>'s password for the day:</b>
         <br>
         <%= school.schoolPin %>
-    <% } else { %>
+        <% } else { %>
         No active password
-    <% } %>
+        <% } %>
     </div>
 </div>
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (pupils && pupils.length > 0) { %>
         <table class="spacious sorting" id="generatePins" role="listbox" aria-label="Select pupils.">
             <thead>
             <tr>
@@ -60,5 +61,6 @@
             <% }) %>
             </tbody>
         </table>
+        <% } %>
     </div>
 </div>
