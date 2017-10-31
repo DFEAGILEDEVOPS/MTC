@@ -180,20 +180,6 @@ function getClientDateFromAuditEvent (auditEventType, completedCheck) {
 }
 
 /**
- *
- * @param {string} string
- * @param {number} length
- * @return {string}
- */
-function trim (string, length) {
-  if (typeof string !== 'string') {
-    console.log('Not a string: ', string)
-    return ''
-  }
-  return string.substring(0, length)
-}
-
-/**
  * Return all key/mouse/touch inputs as a string for the report
  * @param {Object} answer
  * @return {string}
