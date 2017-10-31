@@ -2,6 +2,10 @@ const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const randomGenerator = require('../lib/random-generator')
 
+const fourPMToday = () => {
+  return moment().startOf('day').add(16, 'hours')
+}
+
 const generatePinService = {
   /**
    * Fetch pupils and filter required only pupil attributes
@@ -14,7 +18,7 @@ const generatePinService = {
     let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
     // filter pupils
     pupils = pupils
-      .filter(p => !p.pin && !p.attendanceCode && !p.result)
+      .filter(p => !generatePinService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result)
       .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
         ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
     // determine if more than one pupil has same full name
@@ -37,10 +41,10 @@ const generatePinService = {
     pupils = await pupilDataService.find({ _id: { $in: ids } })
     // Apply the updates to the pupil object(s)
     pupils.forEach(pupil => {
-      if (!pupil.pin || !generatePinService.isValidPin(pupil.pinExpiresAt)) {
+      if (!generatePinService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
         const length = 5
         pupil.pin = generatePinService.generateRandomPin(length)
-        pupil.pinExpiresAt = moment.now()
+        pupil.pinExpiresAt = fourPMToday()
       }
     })
     return pupils
@@ -48,17 +52,17 @@ const generatePinService = {
 
   generateSchoolPassword: (school) => {
     let { schoolPin, pinExpiresAt } = school
-    if (!schoolPin || !generatePinService.isValidPin(pinExpiresAt)) {
+    if (!generatePinService.isValidPin(schoolPin, pinExpiresAt)) {
       const length = 8
       school.schoolPin = generatePinService.generateRandomPin(length)
-      school.pinExpiresAt = moment.now()
+      school.pinExpiresAt = fourPMToday()
     }
     return school
   },
 
-  isValidPin: (pinExpiresAt) => {
-    if (!pinExpiresAt) return false
-    return moment(pinExpiresAt).isBefore(moment().startOf('day').add(16, 'hours'))
+  isValidPin: (pin, pinExpiresAt) => {
+    if (!pinExpiresAt || !pin) return false
+    return moment(pinExpiresAt).isAfter(moment.utc())
   },
 
   generateRandomPin: (length) => {
