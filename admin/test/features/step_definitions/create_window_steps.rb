@@ -30,7 +30,7 @@ When(/^I submit details for a valid check window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
+                        admin_start_day: (today_date + 30).day,
                         admin_start_mon: today_date.next_month.month,
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
@@ -75,7 +75,7 @@ When(/^I enter details for a valid check window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
+                        admin_start_day: (today_date + 30).day,
                         admin_start_mon: today_date.next_month.month,
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
@@ -99,7 +99,7 @@ end
 When(/^I try to submit without a name for the window$/) do
   today_date = Date.today
   @check_window_hash = {check_name: '',
-                        admin_start_day: today_date.day,
+                        admin_start_day: (today_date + 30).day,
                         admin_start_mon: today_date.next_month.month,
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
