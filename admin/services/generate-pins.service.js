@@ -1,5 +1,7 @@
 const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const mongoose = require('mongoose')
+const randomGenerator = require('../lib/random-generator')
 
 const generatePinService = {
   /**
@@ -23,6 +25,24 @@ const generatePinService = {
         pupils[ i ].lastName === pupils[ i + 1 ].lastName) {
         pupils[ i ].showDoB = true
         pupils[ i + 1 ].showDoB = true
+      }
+    })
+    return pupils
+  },
+
+  generatePupilPins: async (pupilsList) => {
+    const data = Object.values(pupilsList || null)
+    const chars = '23456789bcdfghjkmnpqrstvwxyz'
+    const length = 5
+    let pupils = []
+    // fetch pupils
+    const ids = data.map(id => id)
+    pupils = await pupilDataService.find({ _id: { $in: ids } })
+    // Apply the updates to the pupil object(s)
+    pupils.forEach(pupil => {
+      if (!pupil.pin) {
+        pupil.pin = randomGenerator.getRandom(length, chars)
+        pupil.expired = false
       }
     })
     return pupils

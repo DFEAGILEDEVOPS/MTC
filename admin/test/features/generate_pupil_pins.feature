@@ -39,3 +39,37 @@ Feature: Generate Pupil PINs
     And I am on Generate pins Pupil List page
     When I click on the Pupil heading
     Then I should see a list of pupils sorted by surname in 'descending' order on Generate Pins List Page
+
+  Scenario: Pupils can be selected by a checkbox on Generate Pin page
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    Then I should be able to select them via a checkbox on Generate Pin page
+
+  Scenario: Teachers can select all pupils on Generate Pin page
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    Then I should have a option to select all pupils on Generate Pin page
+
+  Scenario: Sticky banner is not displayed on on Generate Pin page if no pupil are selected
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    Then I should not see a sticky banner
+
+  Scenario: Sticky banner is displayed on on Generate Pin page when a pupil is selected
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I select a Pupil from Generate Pin page
+    Then I should see a sticky banner
+
+  Scenario: Sticky banner displays pupil count on Generate Pin page
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I select multiple pupils from Generate Pin Page
+    Then the sticky banner should display the pupil count
+
+  Scenario: Cancel returns user to Generate Pin Landing page
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    And I select a Pupil from Generate Pin page
+    When I choose to cancel
+    Then I should be taken to Generate Pins Page
