@@ -44,7 +44,7 @@ function createTestPupil () {
       pinExpired: false,
       hasAttended: false,
       upn: upnService.calculateCheckLetter('999199900001') + '999199900001',
-      pinExpiresAt: moment().startOf('day').add(10, 'years').toISOString(),
+      pinExpiresAt: moment().startOf('day').add(10, 'years').toISOString()
     })
 
     try {
