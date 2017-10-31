@@ -37,7 +37,6 @@ $(function () {
   function toggleOnModal (e) {
     if (e.target.id === 'js-modal-cancel-button') {
       $('#js-modal-confirmation-button').focus().select()
-      console.log('UNSET HREF')
     } else {
       $('#js-modal-cancel-button').focus().select()
     }
