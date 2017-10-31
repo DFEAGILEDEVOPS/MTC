@@ -273,6 +273,9 @@ describe('school controller:', () => {
       const controller = require('../../controllers/school.js').postGeneratePins
       spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
+      spyOn(schoolDataService, 'findOne').and.returnValue(new School({ name: 'Test School' }))
+      spyOn(generatePinsService, 'generateSchoolPassword').and.returnValue(null)
+      spyOn(schoolDataService, 'save').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/school/generated-pins-list')
@@ -284,9 +287,21 @@ describe('school controller:', () => {
       const controller = require('../../controllers/school.js').postGeneratePins
       spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
+      spyOn(generatePinsService, 'generateSchoolPassword').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/school/generate-pins-list')
+      done()
+    })
+    it('calls next with an error if school is not found', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school.js').postGeneratePins
+      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
+      spyOn(schoolDataService, 'findOne').and.returnValue(null)
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
       done()
     })
   })
