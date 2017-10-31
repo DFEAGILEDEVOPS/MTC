@@ -33,6 +33,10 @@ const School = new Schema({
     type: String,
     trim: true
   },
+  pinExpiresAt: {
+    type: Date,
+    trim: true
+  },
   hdf: {
     _id: false,
     signedDate: {type: Date},
