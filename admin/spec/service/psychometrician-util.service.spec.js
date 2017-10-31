@@ -90,4 +90,25 @@ describe('psychometrician-util.service', () => {
       expect(service.getSchoolURN(completedCheckMock)).toBe('n/a')
     })
   })
+
+  describe('#getClientTimestamp from AuditEvent', () => {
+    it('returns the clientTimestamp from an audit event', () => {
+      const ts = service.getClientTimestampFromAuditEvent('CheckComplete', completedCheckMock)
+      expect(ts).toBe('2017-10-17T18:21:29.297Z')
+    })
+
+    it('returns "error" if the clientTimestamp is missing', () => {
+      completedCheckMock.data.audit.push({
+        'type': 'CheckCompleteMissingTS'
+      })
+      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheckMock)
+      expect(ts).toBe('error')
+    })
+
+    it('returns "error" if there arent any logEntries', () => {
+      completedCheckMock.data.audit = []
+      const ts = service.getClientTimestampFromAuditEvent('AnyEvent', completedCheckMock)
+      expect(ts).toBe('error')
+    })
+  })
 })

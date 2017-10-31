@@ -132,7 +132,9 @@ psychometricianReportService.produceReportData = function (completedCheck) {
     'TimeStart': '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
-    'TimeComplete': dateService.formatTimeWithSeconds(getClientDateFromAuditEvent('CheckComplete', completedCheck)),
+    'TimeComplete': dateService.formatTimeWithSeconds(
+      psUtilService.getClientTimestampFromAuditEvent('CheckComplete', completedCheck)
+    ),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
     'TimeTaken': 'n/a'
   }
@@ -158,18 +160,6 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   })
 
   return psData
-}
-
-function getClientDateFromAuditEvent (auditEventType, completedCheck) {
-  const logEntries = completedCheck.data.audit.filter(logEntry => logEntry.type === auditEventType)
-  if (!logEntries.length) {
-    return 'error'
-  }
-  const logEntry = logEntries[0]
-  if (!logEntry.hasOwnProperty('clientTimestamp')) {
-    return 'error'
-  }
-  return logEntry.clientTimestamp
 }
 
 /**
