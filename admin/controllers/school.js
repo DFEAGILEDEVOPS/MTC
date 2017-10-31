@@ -39,6 +39,19 @@ const getHome = async (req, res, next) => {
   })
 }
 
+const getScorePercentage = async (pupilId) => {
+  // find the score, if they have one
+  const latestCheck = await checkDataService.findLatestCheckByPupilId(pupilId)
+  let score
+  if (latestCheck && latestCheck.results) {
+    // calculate percentage
+    score = pupilService.calculateScorePercentage(latestCheck.results) + '%'
+  } else {
+    score = 'N/A'
+  }
+  return score
+}
+
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
   const { sortColumn, sortOrder } = req.params
@@ -50,16 +63,7 @@ const getPupils = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
     const dob = dateService.formatShortGdsDate(p.dob)
-    // find the score, if they have one
-    const latestCheck = await checkDataService.findLatestCheckByPupilId(_id)
-    console.log('latestCheck:', latestCheck)
-    let score
-    if (latestCheck && latestCheck.results) {
-      // calculate percentage
-      score = pupilService.calculateScorePercentage(latestCheck.results) + '%'
-    } else {
-      score = 'N/A'
-    }
+    let score = await getScorePercentage(_id)
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
     return {
@@ -102,13 +106,12 @@ const getResults = async (req, res, next) => {
   const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const answers = await pupilService.fetchAnswers(p._id)
-    const { hasScore, score, percentage } = pupilService.fetchScoreDetails(answers)
+    let score = await getScorePercentage(p._id)
+    const hasScore = (score !== undefined)
     return {
       fullName,
       hasScore,
-      score,
-      percentage
+      score
     }
   })).catch((error) => next(error))
   req.breadcrumbs(res.locals.pageTitle)
@@ -273,14 +276,15 @@ const getSubmitAttendance = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const { _id: id, hasAttended } = p
-    const answers = await pupilService.fetchAnswers(p._id)
-    const { hasScore, percentage } = pupilService.fetchScoreDetails(answers)
+    let score = await getScorePercentage(p._id)
+    const hasScore = (score !== undefined)
+
     return {
       id,
       fullName,
       hasAttended,
       hasScore,
-      percentage
+      score
     }
   })).catch((error) => next(error))
   pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
