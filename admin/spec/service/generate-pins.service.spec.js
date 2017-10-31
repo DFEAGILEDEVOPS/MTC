@@ -81,4 +81,25 @@ describe('generate-pins.service', () => {
       })
     })
   })
+  describe('generatePupilPins', () => {
+    describe('returns pupils with pins', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = ''
+        sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/pupil.service': pupilDataService
+        })
+      })
+      it('should have pin set and expiry set to false', async (done) => {
+        const pupils = await generatePinsService.generatePupilPins(schoolMock._id, 'lastName', 'asc')
+        expect(pupils[0].pin.length).toBe(5)
+        expect(pupils[0].expired).toBeFalsy()
+        done()
+      })
+    })
+  })
 })
