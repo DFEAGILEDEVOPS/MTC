@@ -14,9 +14,7 @@ const pupilAuthenticationService = {
     const school = await schoolDataService.findOne({schoolPin: schoolPin})
     const pupil = await pupilDataService.findOne({
       pin: pupilPin,
-      school: school && school._id,
-      pinExpired: false,
-      hasAttended: false
+      school: school && school._id
     })
     if (!pupil || !school) {
       throw new Error('Authentication failure')
