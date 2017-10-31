@@ -2,6 +2,7 @@
 /* global describe, beforeEach, afterEach, it, expect */
 
 const proxyquire = require('proxyquire').noCallThru()
+const moment = require('moment')
 const sinon = require('sinon')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
@@ -40,6 +41,7 @@ describe('generate-pins.service', () => {
         done()
       })
     })
+
     describe('filter and returns sorted pupils', () => {
       beforeEach(() => {
         const pupil1 = Object.assign({}, pupilMock)
@@ -58,6 +60,7 @@ describe('generate-pins.service', () => {
         done()
       })
     })
+
     describe('pupils with same fullname', () => {
       beforeEach(() => {
         const pupil1 = Object.assign({}, pupilMock)
@@ -81,8 +84,9 @@ describe('generate-pins.service', () => {
       })
     })
   })
+
   describe('generatePupilPins', () => {
-    describe('returns pupils with pins', () => {
+    describe('should generate pin and expire timestamp', () => {
       beforeEach(() => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
@@ -94,12 +98,58 @@ describe('generate-pins.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('should have pin set and expiry set to false', async (done) => {
+      it('when pin in empty', async (done) => {
         const pupils = await generatePinsService.generatePupilPins(schoolMock._id, 'lastName', 'asc')
         expect(pupils[0].pin.length).toBe(5)
-        expect(pupils[0].expired).toBeFalsy()
+        expect(pupils[0].pinExpiresAt).toBeDefined()
         done()
       })
+    })
+
+    describe('does not return generate pin and timestamp', () => {
+      let pupil1
+      beforeEach(() => {
+        pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = 'fdsgs'
+        pupil1.pinExpiresAt = moment().startOf('day').add(10, 'hours')
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = 'fdsgs'
+        pupil2.pinExpiresAt = moment().startOf('day').add(10, 'hours')
+        sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
+        proxyquire('../../services/generate-pins.service', {
+          '../../services/pupil.service': pupilDataService
+        })
+      })
+      it('when existing expiration date is before same day 4pm', async (done) => {
+        const pin = pupil1.pin
+        const pupils = await generatePinsService.generatePupilPins(schoolMock._id, 'lastName', 'asc')
+        expect(pupils[0].pin).toBe(pin)
+        done()
+      })
+    })
+  })
+
+  describe('generateSchoolPassword', () => {
+    it('should generate school password if schoolPin is not valid', () => {
+      const school = Object.assign({}, schoolMock)
+      const result = generatePinsService.generateSchoolPassword(school)
+      expect(result.pinExpiresAt).toBeDefined()
+      expect(result.schoolPin.length).toBe(8)
+    })
+    it('should generate school password if the pin expiration date is after same day 4pm', () => {
+      const school = Object.assign({}, schoolMock)
+      const password = school.schoolPin
+      school.pinExpiresAt = moment().startOf('day').add(17, 'hours')
+      const result = generatePinsService.generateSchoolPassword(school)
+      expect(result.schoolPin === password).toBeFalsy()
+    })
+    it('should not generate school password if the pin expiration date is before same day 4pm', () => {
+      const school = Object.assign({}, schoolMock)
+      const password = school.schoolPin
+      school.pinExpiresAt = moment().startOf('day').add(10, 'hours')
+      const result = generatePinsService.generateSchoolPassword(school)
+      expect(result.schoolPin).toBe(password)
     })
   })
 })
