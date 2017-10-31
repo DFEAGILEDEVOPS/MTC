@@ -317,41 +317,6 @@ function getTimeoutWithNoResponseFlag (inputs, ans) {
   }
 }
 
-// /**
-//  * Copy an object and reverse the enumerable properties
-//  * @param obj
-//  */
-// function reverseObject (obj) {
-//   const newObj = {}
-//   Object.keys(obj).reverse().forEach(k => {
-//     newObj[k] = obj[k]
-//   })
-//   return newObj
-// }
-
-// function filter (obj) {
-//   // Filter the incoming object for Allen's report
-//   const newObj = {}
-//   const outputs = [
-//     'Surname',
-//     'Forename',
-//     'FormMark',
-//     'Form ID',
-//     'TestDate'
-//   ]
-//   for (let i = 1; i < 11; i++) {
-//     outputs.push(`Q${i}ID`)
-//     outputs.push(`Q${i}Response`)
-//     outputs.push(`Q${i}Sco`)
-//   }
-//   Object.keys(obj).forEach(k => {
-//     if (outputs.indexOf(k) !== -1) {
-//       newObj[k] = obj[k]
-//     }
-//   })
-//   return newObj
-// }
-
 function hasTimeoutWithCorrectAnswer (inputs, ans) {
   if (!(hasTimeoutFlag(inputs) && hasCorrectAnswer(ans))) {
     return false
