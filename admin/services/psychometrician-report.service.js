@@ -117,11 +117,11 @@ psychometricianReportService.produceReportData = function (completedCheck) {
     'Gender': completedCheck.check.pupilId.gender,
     'PupilId': completedCheck.check.pupilId.upn,
 
-    'FormMark': getMark(completedCheck),
+    'FormMark': psUtilService.getMark(completedCheck),
 
     'School Name': completedCheck.check.pupilId.school.name,
     'Estab': completedCheck.check.pupilId.school.estabCode,
-    'School URN': completedCheck.check.pupilId.school.urn || 'n/a',
+    'School URN': psUtilService.getSchoolURN(completedCheck),
     'LA Num': completedCheck.check.pupilId.school.leaCode,
 
     'AttemptId': completedCheck.check.checkCode,
@@ -158,13 +158,6 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   })
 
   return psData
-}
-
-function getMark (completedCheck) {
-  if (completedCheck.check && completedCheck.check.results && completedCheck.check.results.hasOwnProperty('marks')) {
-    return completedCheck.check.results.marks
-  }
-  return 'error'
 }
 
 function getClientDateFromAuditEvent (auditEventType, completedCheck) {

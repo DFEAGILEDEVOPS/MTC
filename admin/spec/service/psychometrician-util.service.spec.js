@@ -61,4 +61,33 @@ describe('psychometrician-util.service', () => {
       expect(service.getMiddleNames(completedCheckMock)).toBe('')
     })
   })
+
+  describe('#getMark', () => {
+    it('returns the number of mark applied to the check', () => {
+      completedCheckMock.check.results.marks = 42
+      expect(service.getMark(completedCheckMock)).toBe(42)
+    })
+
+    it('returns "error" if the check has not been marked', () => {
+      delete completedCheckMock.check.results
+      expect(service.getMark(completedCheckMock)).toBe('error')
+    })
+  })
+
+  describe('#getSchoolURN', () => {
+    it('returns the school URN when it exists', () => {
+      completedCheckMock.check.pupilId.school.urn = 'SCH999'
+      expect(service.getSchoolURN(completedCheckMock)).toBe('SCH999')
+    })
+
+    it('returns "error" if the check has not been marked', () => {
+      delete completedCheckMock.check.results
+      expect(service.getMark(completedCheckMock)).toBe('error')
+    })
+
+    it('returns "n/a" if the school URN is not present', () => {
+      completedCheckMock.check.pupilId.school.urn = undefined
+      expect(service.getSchoolURN(completedCheckMock)).toBe('n/a')
+    })
+  })
 })
