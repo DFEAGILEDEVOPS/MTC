@@ -247,7 +247,6 @@ describe('school controller:', () => {
   describe('postGeneratePins route', () => {
     let sandbox
     let next
-    let controller
     let goodReqParams = {
       method: 'POST',
       url: '/school/generate-pins-list',
@@ -300,6 +299,47 @@ describe('school controller:', () => {
       spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'saveMultiple').and.returnValue(true)
       spyOn(schoolDataService, 'findOne').and.returnValue(null)
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
+      done()
+    })
+  })
+
+  describe('getGeneratePins route', () => {
+    let sandbox
+    let next
+    let goodReqParams = {
+      method: 'POST',
+      url: '/school/generate-pins-list',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      }
+    }
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      next = jasmine.createSpy('next')
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+    it('displays the generated pupils list and password', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school.js').getGeneratedPinsList
+      spyOn(generatePinsService, 'getPupilsWithActivePins').and.returnValue(null)
+      spyOn(generatePinsService, 'getActiveSchool').and.returnValue(null)
+      spyOn(res, 'render').and.returnValue(null)
+      await controller(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('calls next if error occurs', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school.js').getGeneratedPinsList
+      spyOn(generatePinsService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
       done()

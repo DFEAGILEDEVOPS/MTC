@@ -14,3 +14,51 @@
         </header>
     </div>
 </div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+    <% if (!!school) { %>
+           <b><%= school.name %>'s password for the day:</b>
+        <br>
+        <%= school.schoolPin %>
+    <% } else { %>
+        No active password
+    <% } %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <table class="spacious sorting" id="generatePins" role="listbox" aria-label="Select pupils.">
+            <thead>
+            <tr>
+                <th scope="col">
+                    Pupil
+                </th>
+                <th scope="col">
+                    Pupil PIN
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <% pupils.forEach( (pupil) => { %>
+            <td>
+                <label for="pupil-<%= pupil._id %>">
+                    <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.middleNames %>
+                </label>
+                <% if (pupil.showDoB) { %>
+                <div class="font-greyed-out font-xsmall">
+                    Date of birth: <%= pupil.dob %>
+                </div>
+                <% } %>
+            </td>
+            <td>
+                <label for="pupil-<%= pupil._id %>">
+                    <%= pupil.pin %>
+                </label>
+            </td>
+            <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
