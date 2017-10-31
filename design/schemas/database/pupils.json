@@ -10,7 +10,7 @@
   "dob": "2007-08-25T00:00:00.000Z",
   "pin": "dkjdk",
   "hasAttended": false,
-  "pinExpired": false,
+  "pinExpiresAt": "2007-08-25T00:00:00.000Z",
   "__v": 0,
   "upn": "",
   "jwtSecret": "abckdjke489gf348hfwo8hw8howfhs4huois4t",
