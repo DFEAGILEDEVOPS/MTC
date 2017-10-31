@@ -6,6 +6,7 @@ const psCachedReportDataService = require('./data-access/ps-report-cache.data.se
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const dateService = require('./date.service')
+const psUtilService = require('./psychometrician-util.service')
 
 const psychometricianReportService = {}
 
@@ -109,9 +110,9 @@ psychometricianReportService.populateWithCheck = async function (completedChecks
  */
 psychometricianReportService.produceReportData = function (completedCheck) {
   const psData = {
-    'Surname': trim(completedCheck.check.pupilId.lastName, 35),
-    'Forename': trim(completedCheck.check.pupilId.foreName, 35),
-    'MiddleNames': trim(completedCheck.check.pupilId.middleNames, 35),
+    'Surname': psUtilService.getSurname(completedCheck),
+    'Forename': psUtilService.getForename(completedCheck),
+    'MiddleNames': psUtilService.getMiddleNames(completedCheck),
     'DOB': dateService.formatUKDate(completedCheck.check.pupilId.dob),
     'Gender': completedCheck.check.pupilId.gender,
     'PupilId': completedCheck.check.pupilId.upn,
