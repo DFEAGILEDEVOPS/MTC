@@ -209,7 +209,7 @@ const getGeneratePinsList = async (req, res, next) => {
   try {
     school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
-      throw new Error(`School [${req.user.school}] not found`)
+      return next(Error(`School [${req.user.school}] not found`))
     }
   } catch (error) {
     return next(error)
@@ -233,16 +233,23 @@ const postGeneratePins = async (req, res, next) => {
     return res.redirect('/school/generate-pins-list')
   }
   let submittedPupils
+  let school
   try {
     submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
     await pupilDataService.saveMultiple(submittedPupils)
+    school = await schoolDataService.findOne({_id: req.user.School})
+    if (!school) {
+      return next(Error(`School [${req.user.school}] not found`))
+    }
+    school = generatePinsService.generateSchoolPassword(school)
+    await schoolDataService.save(school)
   } catch (error) {
     return next(error)
   }
   return res.redirect('/school/generated-pins-list')
 }
 
-const getGeneratedPinsList =  async (req, res) => {
+const getGeneratedPinsList = async (req, res) => {
   res.locals.pageTitle = 'Generate pupil PINs'
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('school/generated-pins-list', {
