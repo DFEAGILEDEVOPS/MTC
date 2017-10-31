@@ -17,5 +17,10 @@ class GeneratePupilPinsPage < SitePrism::Page
     end
   end
 
+  section :sticky_banner, '.sticky-banner-wrapper' do
+    element :count, '.grid-row .column-half.first-half'
+    element :cancel, '#stickyCancel'
+    element :confirm, '#stickyConfirm'
+  end
 
 end

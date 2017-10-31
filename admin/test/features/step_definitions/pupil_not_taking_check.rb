@@ -66,6 +66,7 @@ end
 Given(/^I am on the pupil reason page$/) do
   step 'I am on the pupil not taking check page'
   step 'I want to add a reason'
+  @page = pupil_reason_page
 end
 
 Then(/^I should be able to select them via a checkbox$/) do
@@ -92,8 +93,8 @@ Then(/^I should see a list of pupils sorted by surname in descending order$/) do
 end
 
 Then(/^I should see a sticky banner$/) do
-  expect(pupil_reason_page.sticky_banner).to be_visible
-  expect(pupil_reason_page.sticky_banner).to be_all_there
+  expect(@page.sticky_banner).to be_visible
+  expect(@page.sticky_banner).to be_all_there
 end
 
 Given(/^I have selected some pupils$/) do
@@ -120,7 +121,7 @@ Then(/^I should see the confirm button enabled$/) do
 end
 
 When(/^I choose to cancel$/) do
-  pupil_reason_page.sticky_banner.cancel.click
+  @page.sticky_banner.cancel.click
 end
 
 Then(/^my selections are cleared$/) do
@@ -265,5 +266,5 @@ When(/^I select multiple pupils with the (.+) reason$/) do |reason|
 end
 
 Then(/^the sticky banner should display the pupil count$/) do
-  expect(pupil_reason_page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
+  expect(@page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
 end
