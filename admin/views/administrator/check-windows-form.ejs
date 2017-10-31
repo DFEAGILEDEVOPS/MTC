@@ -18,7 +18,7 @@
 
         <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0"><%= actionName %> check window</h1>
 
-        <form action="/administrator/check-windows/<%= urlActionName %>" method="post">
+        <form action="/administrator/check-windows/<%= urlActionName %>/<%= %>" method="post">
             <div class="form-group">
                 <label for="checkWindowName" class="form-label-bold">
                     Name of check window
@@ -64,7 +64,7 @@
                                value="<%= checkWindowData.adminStartDay %>"
                                aria-required="true"
                                aria-label="Administration start day."
-                               <% if (adminIsDisabled) { %>
+                               <% if (adminIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -77,7 +77,7 @@
                                value="<%= checkWindowData.adminStartMonth %>"
                                aria-required="true"
                                aria-label="Administration start month."
-                               <% if (adminIsDisabled) { %>
+                               <% if (adminIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -90,7 +90,7 @@
                                value="<%= checkWindowData.adminStartYear %>"
                                aria-required="true"
                                aria-label="Administration start year."
-                               <% if (adminIsDisabled) { %>
+                               <% if (adminIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -129,7 +129,7 @@
                                value="<%= checkWindowData.checkStartDay %>"
                                aria-required="true"
                                aria-label="Check start day."
-                               <% if (checkStartIsDisabled) { %>
+                               <% if (checkStartIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -142,7 +142,7 @@
                                value="<%= checkWindowData.checkStartMonth %>"
                                aria-required="true"
                                aria-label="Check start month."
-                               <% if (checkStartIsDisabled) { %>
+                               <% if (checkStartIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -155,7 +155,7 @@
                                value="<%= checkWindowData.checkStartYear %>"
                                aria-required="true"
                                aria-label="Check start year."
-                               <% if (checkStartIsDisabled) { %>
+                               <% if (checkStartIsDisabled > 0) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -165,10 +165,10 @@
             <div class="form-group">
                 <label class="form-label-bold">
                     Check end date
-                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
-                    <% if (typeof error !== 'undefined' &&  error.checkStartDateAfterEndDate) { %>
-                    <span class="error-message"><%= errorMessage.checkStartDateAfterEndDate %></span>
+                    <% if (typeof error !== 'undefined' &&  error.checkEndDateBeforeStartDate) { %>
+                    <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>
+                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDateInThePast) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateInThePast %></span>
                     <% } %>
@@ -218,7 +218,11 @@
 
             <div class="form-group">
                 <p>
+                    <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
+                    <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
                     <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
+                    <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
+                    <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
                     <input class="button" type="submit" value="Save">
                     <a href="/administrator/check-windows" class="button button-secondary">Cancel</a>
                 </p>
