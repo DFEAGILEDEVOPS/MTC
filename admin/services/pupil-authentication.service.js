@@ -2,6 +2,7 @@
 const dateService = require('../services/date.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const generatePinService = require('../services/generate-pins.service')
 
 const pupilAuthenticationService = {
   /**
@@ -16,7 +17,7 @@ const pupilAuthenticationService = {
       pin: pupilPin,
       school: school && school._id
     })
-    if (!pupil || !school) {
+    if (!pupil || !school || !generatePinService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
       throw new Error('Authentication failure')
     }
     return pupil
