@@ -23,7 +23,7 @@
                 <label for="checkWindowName" class="form-label-bold">
                     Name of check window
                     <% if (typeof error !== 'undefined' && error.checkWindowName) { %>
-                    <span class="error-message"><%= errorMessage.checkWindowName %></span>
+                    <span class="error-message"><%= error.checkWindowName %></span>
                     <% } %>
                 </label>
                 <input class="form-control"
