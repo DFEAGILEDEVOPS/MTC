@@ -23,6 +23,10 @@
     }
   }
 
+  .first-half {
+    font-size: 16px;
+  }
+
   .grid-row {
     margin: 0 -7px;
   }
@@ -73,4 +77,8 @@
   position: fixed;
   left: 0;
   top: 0;
+}
+
+#totalPupilsSelected {
+  font-weight: bold;
 }
