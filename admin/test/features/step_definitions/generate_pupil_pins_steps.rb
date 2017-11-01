@@ -19,6 +19,9 @@ end
 
 And(/^I click Generate PINs button$/) do
   generate_pupil_pins_page.generate_pin_btn.click
+  if !(generate_pupil_pins_page.to_have_select_all_pupils)
+    generate_pupil_pins_page.generate_more_pin_btn.click
+  end
 end
 
 Given(/^I have a pupil with active pin$/) do
@@ -83,4 +86,44 @@ When(/^I select multiple pupils from Generate Pin Page$/) do
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected?}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
+end
+
+When(/^I have generated a pin for a pupil$/) do
+  name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{name}"
+  step "the pupil details should be stored"
+  step "I am on Generate pins Pupil List page"
+  @pupil_name = generate_pupil_pins_page.generate_pin_using_name(name)
+end
+
+Given(/^I have generated pin for all pupil$/) do
+  generate_pupil_pins_page.select_all_pupils.click
+  generate_pupil_pins_page.sticky_banner.confirm.click
+end
+
+Then(/^the pin should consist of (\d+) characters$/) do |size|
+  generate_pupil_pins_page.find_pupil_row(@pupil_name)
+  expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+end
+
+Then(/^all pupil pins should be generated from the specified pool of characters$/) do
+  pins_array = generate_pupil_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array.each {|pin| pin.split('').each {|char| expect("23456789bcdfghjkmnpqrstvwxyz").to include char}}
+end
+
+Given(/^I have generated pins for multiple pupils$/) do
+  step "I am logged in"
+  step "I am on Generate pins Pupil List page"
+  step "I select multiple pupils from Generate Pin Page"
+  generate_pupil_pins_page.sticky_banner.confirm.click
+end
+
+Then(/^each pin should be displayed next to the pupil its assigned to$/) do
+  @pupil_names.each {|name| expect(generate_pupil_pins_page.find_pupil_row(name)).to have_pin}
+end
+
+Then(/^the pupil pin should be unique$/) do
+  pins_before = MongoDbHelper.pupil_pins
+  expect(MongoDbHelper.pupil_pins.uniq).to eql pins_before
 end

@@ -43,17 +43,17 @@ class ManagePupilPage < SitePrism::Page
     pupil_names
   end
 
-  def generate_pin_using_name(name)
-    pupil = find_pupil_row(name)
-    name = pupil.names.text
-    pupil.checkbox.click
-    generate_pins.click
-    name
-  end
-
-  def find_pupil_row(name)
-    wait_until{!(pupil_list.pupil_row.find {|pupil| pupil.text.include? name}).nil?}
-    pupil_list.pupil_row.find {|pupil| pupil.text.include? name}
-  end
+  # def generate_pin_using_name(name)
+  #   pupil = find_pupil_row(name)
+  #   name = pupil.names.text
+  #   pupil.checkbox.click
+  #   generate_pins.click
+  #   name
+  # end
+  #
+  # def find_pupil_row(name)
+  #   wait_until{!(pupil_list.pupil_row.find {|pupil| pupil.text.include? name}).nil?}
+  #   pupil_list.pupil_row.find {|pupil| pupil.text.include? name}
+  # end
 
 end

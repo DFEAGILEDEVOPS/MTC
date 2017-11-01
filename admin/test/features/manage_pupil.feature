@@ -32,43 +32,43 @@ Feature:
     When I am on the manage pupil page
     Then I should see the pupil's pin as PIN expired
 
-  @wip @new_work
-  Scenario: Pupil whose pin is not generated will show as n/a
-    Given I have a pupil whose pin is not generated
-    When I am on the manage pupil page
-    Then I should see the pupil's pin as n/a
-
-  @add_a_pupil @wip @new_work
-  Scenario: Pupil pins should consist of 5 characters
-    Given I have generated a pin for a pupil
-    Then the pin should consist of 5 characters
-
-  @add_a_pupil @wip @new_work
-  Scenario: Generated pupil pins are stored in the DB alongside the pupil
-    Given I have generated a pin for a pupil
-    Then the pin should be stored against the pupil
-
-  @add_a_pupil @wip @new_work
-  Scenario: Pin generated pupil dont have check box next to them
-    Given I have generated a pin for a pupil
-    Then there should not be a checkbox against the pupil
-
-  @add_a_pupil @wip @new_work
-  Scenario: Pupil pins must be generated from the specified pool of characters
-    Given I am on the manage pupil page
-    When I choose to generate pupil pins for all pupils
-    Then all pupil pins should be generated from the specified pool of characters
-
-  @add_5_pupils @wip @new_work
-  Scenario: Multiple pins can be generated simultaneously
-    Given I am on the manage pupil page
-    When I have generated pins for multiple pupils
-    Then each pin should be displayed next to the pupil its assigned to
-
-  @add_a_pupil
-  Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
-    Given I have generated a pin for a pupil
-    Then the pupil pin should be unique
+#  @wip @new_work
+#  Scenario: Pupil whose pin is not generated will show as n/a
+#    Given I have a pupil whose pin is not generated
+#    When I am on the manage pupil page
+#    Then I should see the pupil's pin as n/a
+#
+#  @add_a_pupil @wip @new_work
+#  Scenario: Pupil pins should consist of 5 characters
+#    Given I have generated a pin for a pupil
+#    Then the pin should consist of 5 characters
+#
+#  @add_a_pupil @wip @new_work
+#  Scenario: Generated pupil pins are stored in the DB alongside the pupil
+#    Given I have generated a pin for a pupil
+#    Then the pin should be stored against the pupil
+#
+#  @add_a_pupil @wip @new_work
+#  Scenario: Pin generated pupil dont have check box next to them
+#    Given I have generated a pin for a pupil
+#    Then there should not be a checkbox against the pupil
+#
+#  @add_a_pupil @wip @new_work
+#  Scenario: Pupil pins must be generated from the specified pool of characters
+#    Given I am on the manage pupil page
+#    When I choose to generate pupil pins for all pupils
+#    Then all pupil pins should be generated from the specified pool of characters
+#
+#  @add_5_pupils @wip @new_work
+#  Scenario: Multiple pins can be generated simultaneously
+#    Given I am on the manage pupil page
+#    When I have generated pins for multiple pupils
+#    Then each pin should be displayed next to the pupil its assigned to
+#
+#  @add_a_pupil
+#  Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
+#    Given I have generated a pin for a pupil
+#    Then the pupil pin should be unique
 
   Scenario Outline: School password is displayed on manage pupil page
     Given I have logged in with <teacher>

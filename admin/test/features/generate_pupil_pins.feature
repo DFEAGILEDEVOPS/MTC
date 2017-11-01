@@ -73,3 +73,30 @@ Feature: Generate Pupil PINs
     And I select a Pupil from Generate Pin page
     When I choose to cancel
     Then I should be taken to Generate Pins Page
+
+
+  @new_work @local
+  Scenario: Pupil pins should consist of 5 characters
+    Given I have generated a pin for a pupil
+    Then the pin should consist of 5 characters
+
+  @new_work @local
+  Scenario: Generated pupil pins are stored in the DB alongside the pupil
+    Given I have generated a pin for a pupil
+    Then the pin should be stored against the pupil
+
+  @new_work @local
+  Scenario: Pupil pins must be generated from the specified pool of characters
+    Given I have generated a pin for a pupil
+#    Given I have generated pin for all pupil
+    Then all pupil pins should be generated from the specified pool of characters
+
+  @new_work @local
+  Scenario: Multiple pins can be generated simultaneously
+    Given I have generated pins for multiple pupils
+    Then each pin should be displayed next to the pupil its assigned to
+
+  @new_work @local
+  Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
+    Given I have generated a pin for a pupil
+    Then the pupil pin should be unique
