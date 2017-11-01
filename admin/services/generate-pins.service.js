@@ -107,9 +107,10 @@ const generatePinService = {
    */
   getActiveSchool: async (schoolId) => {
     const school = await schoolDataService.findOne({_id: schoolId})
-    if (generatePinService.isValidPin(school.schoolPin, school.pinExpiresAt)) {
-      return school
-    } else return null
+    if (!generatePinService.isValidPin(school.schoolPin, school.pinExpiresAt)) {
+      return null
+    }
+    return school
   },
 
   /**
