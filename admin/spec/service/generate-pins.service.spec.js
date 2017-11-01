@@ -78,7 +78,7 @@ describe('generate-pins.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('should display DoB as well', async (done) => {
+      it('should display DoB', async (done) => {
         const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
         expect(pupils[ 0 ].showDoB).toBeTruthy()
