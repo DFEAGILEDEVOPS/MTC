@@ -21,14 +21,30 @@ describe('school.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
+      mock = sandbox.mock(School).expects('findOne').chain('exec').resolves(schoolMock)
       service = proxyquire('../../../services/data-access/school.data.service', {
         '../../models/school': School
       })
     })
 
     it('calls the model', () => {
-      service.findOne({_id: 'some-id'})
+      service.findOne({ _id: 'some-id' })
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#save', () => {
+    let school
+    let mock
+    beforeEach(() => {
+      school = Object.assign({}, schoolMock)
+      school.save = () => {}
+      mock = sandbox.mock(school).expects('save').resolves(schoolMock)
+      service = require('../../../services/data-access/school.data.service')
+    })
+
+    it('calls the model', () => {
+      service.save(school)
       expect(mock.verify()).toBe(true)
     })
   })
@@ -44,7 +60,7 @@ describe('school.data.service', () => {
     })
 
     it('calls the model', () => {
-      service.find({_id: 'some-id'})
+      service.find({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
     })
   })

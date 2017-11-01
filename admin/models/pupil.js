@@ -46,9 +46,9 @@ const Pupil = new Schema({
     maxlength: 5,
     trim: true
   },
-  pinExpired: {
-    type: Boolean,
-    default: false
+  pinExpiresAt: {
+    type: Date,
+    trim: true
   },
   hasAttended: {
     type: Boolean,

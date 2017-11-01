@@ -1,11 +1,11 @@
-'ust strict'
+'use strict'
 
 const School = require('../../models/school')
 
 const schoolDataService = {}
 
 schoolDataService.findOne = async function (options) {
-  const s = await School.findOne(options).lean().exec()
+  const s = await School.findOne(options).exec()
   return s
 }
 
@@ -18,4 +18,9 @@ schoolDataService.find = async function (criteria) {
   return School.find(criteria).lean().exec()
 }
 
+schoolDataService.save = function (school) {
+  return school.save()
+}
+
 module.exports = schoolDataService
+

@@ -6,6 +6,7 @@ require('sinon-mongoose')
 const proxyquire = require('proxyquire')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const generatePinsService = require('../../services/generate-pins.service')
 const schoolMock = require('../mocks/school')
 const pupilMockOrig = require('../mocks/pupil')
 const pupilMock = {}
@@ -38,6 +39,10 @@ describe('pupil authentication service', () => {
   describe('happy path', () => {
     beforeEach(() => {
       service = setupService(schoolMock, pupilMock)
+      sandbox.mock(generatePinsService).expects('isValidPin').resolves(true)
+      proxyquire('../../services/generate-pins.service', {
+        '../../services/generate-pins.service': generatePinsService
+      })
     })
 
     it('authenticates a pupil', async (done) => {

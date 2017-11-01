@@ -24,6 +24,24 @@ pupilDataService.getPupils = async (schoolId) => {
 }
 
 /**
+ * Returns pupils filtered by school and sorted by field and direction (asc/desc)
+ * @param schoolId
+ * @param sortingField
+ * @param sortingDirection
+ * @returns {Array}
+ */
+pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
+  // TODO: Introduce integration tests
+  const sort = {}
+  sort[sortingField] = sortingDirection
+  return Pupil
+    .find({'school': schoolId})
+    .sort(sort)
+    .lean()
+    .exec()
+}
+
+/**
  * Insert a list of pupils in the db
  * @param pupils
  * @return {Array}
@@ -53,6 +71,16 @@ pupilDataService.find = async function (options) {
 }
 
 /**
+ * Find and return non-lean pupils by criteria in `options`
+ * @param options
+ * @return {Promise.<{Object}>}
+ */
+pupilDataService.find = async function (options) {
+  const p = await Pupil.find(options).exec()
+  return p
+}
+
+/**
  * Update a single object with the new fields from `doc`
  * @param {string} id Object._id
  * @param {Object} doc Document to pass to mongo
@@ -67,22 +95,15 @@ pupilDataService.update = async function (id, doc) {
   })
 }
 
-/**
- * Returns pupils filtered by school and sorted by field and direction (asc/desc)
- * @param schoolId
- * @param sortingField
- * @param sortingDirection
- * @returns {Array}
- */
-pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
-  // TODO: Introduce integration tests
-  const sort = {}
-  sort[sortingField] = sortingDirection
-  return Pupil
-    .find({'school': schoolId})
-    .sort(sort)
-    .lean()
-    .exec()
+pupilDataService.saveMultiple = async function (pupils) {
+  // returns Promise
+  let savedPupils = []
+  await Promise.all(pupils.map(p => p.save())).then(results => {
+    // all pupils saved ok
+    savedPupils = results
+  }, error => { throw new Error(error) }
+  )
+  return savedPupils
 }
 
 module.exports = pupilDataService

@@ -59,4 +59,28 @@ end
 And(/^I am on Generate pins Pupil List page$/) do
   step 'I navigate to generate pupil pins page'
   step 'I click Generate PINs button'
+  @page = generate_pupil_pins_page
+end
+
+Then(/^I should be able to select them via a checkbox on Generate Pin page$/) do
+  generate_pupil_pins_page.pupil_list.rows.each {|pupil| expect(pupil).to have_checkbox}
+end
+
+Then(/^I should have a option to select all pupils on Generate Pin page$/) do
+  expect(generate_pupil_pins_page).to have_select_all_pupils
+end
+
+Then(/^I should be taken to Generate Pins Page$/) do
+  expect(generate_pupil_pins_page).to be_displayed
+end
+
+When(/^I select a Pupil from Generate Pin page$/) do
+  pupil = generate_pupil_pins_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  pupil.checkbox.click
+end
+
+When(/^I select multiple pupils from Generate Pin Page$/) do
+  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected?}
+  @pupils[0..3].each {|pupil| pupil.checkbox.click}
+  @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
