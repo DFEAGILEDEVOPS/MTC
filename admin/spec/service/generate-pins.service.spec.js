@@ -103,7 +103,7 @@ describe('generate-pins.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('when pin in empty', async (done) => {
+      it('when pin has not been generated', async (done) => {
         const pupils = await generatePinsService.generatePupilPins([ pupil1, pupil2 ])
         expect(pupils[ 0 ].pin.length).toBe(5)
         expect(pupils[ 0 ].pinExpiresAt).toBeDefined()
