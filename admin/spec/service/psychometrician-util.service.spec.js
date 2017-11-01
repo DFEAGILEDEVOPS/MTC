@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach */
+/* global describe it expect beforeEach spyOn */
 
 const service = require('../../services/psychometrician-util.service')
 
@@ -109,6 +109,119 @@ describe('psychometrician-util.service', () => {
       completedCheckMock.data.audit = []
       const ts = service.getClientTimestampFromAuditEvent('AnyEvent', completedCheckMock)
       expect(ts).toBe('error')
+    })
+  })
+
+  describe('#getUserInput', () => {
+    it('returns a string showing all the user input for key events', () => {
+      const input = [
+        {
+          'question': 1,
+          'clientInputDate': '2017-10-17T18:20:44.447Z',
+          'eventType': 'keydown',
+          'input': '1'
+        },
+        {
+          'question': 1,
+          'clientInputDate': '2017-10-17T18:20:44.558Z',
+          'eventType': 'keydown',
+          'input': '0'
+        },
+        {
+          'question': 1,
+          'clientInputDate': '2017-10-17T18:20:44.678Z',
+          'eventType': 'keydown',
+          'input': 'Enter'
+        }
+      ]
+      const ks1 = service.getUserInput(input)
+      expect(ks1).toBe('k[1], k[0], k[Enter]')
+    })
+
+    it('returns a string showing all the user input for mouse events', () => {
+      const input = [
+        {
+          'clientInputDate': '2017-10-13T09:06:53.692Z',
+          'eventType': 'mousedown',
+          'input': 'left click'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:53.817Z',
+          'eventType': 'click',
+          'input': '2'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:54.197Z',
+          'eventType': 'mousedown',
+          'input': 'left click'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:54.298Z',
+          'eventType': 'click',
+          'input': '5'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:55.234Z',
+          'eventType': 'mousedown',
+          'input': 'left click'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:55.334Z',
+          'eventType': 'click',
+          'input': 'backspace'
+        },
+        {
+          'clientInputDate': '2017-10-13T09:06:55.663Z',
+          'eventType': 'mousedown',
+          'input': 'left click'
+        }
+      ]
+      const m = service.getUserInput(input)
+      expect(m).toBe('m[2], m[5], m[backspace]')
+    })
+
+    it('returns a string showing all the user input for touch events', () => {
+      const input = [
+        {
+          'clientInputDate': '2017-10-09T09:50:06.6Z',
+          'eventType': 'touchstart',
+          'input': ''
+        },
+        {
+          'clientInputDate': '2017-10-09T09:50:06.675Z',
+          'eventType': 'click',
+          'input': '1'
+        },
+        {
+          'clientInputDate': '2017-10-09T09:50:07.099Z',
+          'eventType': 'touchstart',
+          'input': ''
+        },
+        {
+          'clientInputDate': '2017-10-09T09:50:07.17Z',
+          'eventType': 'click',
+          'input': '0'
+        },
+        {
+          'clientInputDate': '2017-10-09T09:50:07.708Z',
+          'eventType': 'touchstart',
+          'input': ''
+        }
+      ]
+      const t = service.getUserInput(input)
+      expect(t).toBe('t[1], t[0]')
+    })
+
+    it('returns shows "U" for any unknown event types', () => {
+      spyOn(console, 'log')
+      const input = [
+        {
+          eventType: 'FuturisticEvent',
+          input: 'Y'
+        }
+      ]
+      const t = service.getUserInput(input)
+      expect(t).toBe('u[Y]')
     })
   })
 })

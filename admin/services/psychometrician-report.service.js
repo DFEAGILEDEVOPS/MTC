@@ -144,7 +144,7 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   completedCheck.data.answers.forEach((ans, idx) => {
     psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     psData[p(idx) + 'Response'] = ans.answer
-    psData[p(idx) + 'K'] = getUserInput(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'K'] = psUtilService.getUserInput(completedCheck.data.inputs[idx])
     psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
     psData[p(idx) + 'ResponseTime'] = getResponseTime(completedCheck.data.inputs[idx])
     psData[p(idx) + 'TimeOut'] = getTimeoutFlag(completedCheck.data.inputs[idx])
@@ -160,50 +160,6 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   })
 
   return psData
-}
-
-/**
- * Return all key/mouse/touch inputs as a string for the report
- * @param {Object} answer
- * @return {string}
- */
-function getUserInput (inputs) {
-  const output = []
-  if (!inputs) {
-    return ''
-  }
-  if (!Array.isArray(inputs)) {
-    return ''
-  }
-  inputs.forEach(inp => {
-    let ident = ''
-
-    switch (inp.eventType) {
-      case 'keydown':
-      case 'touch keydown':
-        // hardware keyboard was pressed
-        ident = 'k'
-        break
-      case 'click':
-      case 'mousedown':
-        // Mouse was pressed
-        ident = 'm'
-        break
-      case 'touch click':
-      case 'touch mousedown':
-      case 'touchstart':
-        // Mouse or fingers on a screen
-        ident = 't'
-        break
-      default:
-        console.log('Unknown input type: ' + inp.eventType)
-        console.log('inp ', inp)
-        ident = 'u'
-        break
-    }
-    output.push(`${ident}[${inp.input}]`)
-  })
-  return output.join(', ')
 }
 
 function getResponseTime (input) {
