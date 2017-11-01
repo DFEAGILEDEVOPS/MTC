@@ -106,7 +106,7 @@ const getResults = async (req, res, next) => {
   const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    let score = await getScorePercentage(p._id)
+    const score = await getScorePercentage(p._id)
     const hasScore = (score !== undefined)
     return {
       fullName,
@@ -276,7 +276,7 @@ const getSubmitAttendance = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const { _id: id, hasAttended } = p
-    let score = await getScorePercentage(p._id)
+    const score = await getScorePercentage(p._id)
     const hasScore = (score !== undefined)
 
     return {
@@ -416,7 +416,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   // Flash message after removing a reason
   if (req.params.removed) {
     let flashMessage = 'Reason removed'
-    let pupil = await pupilService.fetchOnePupil(req.params.removed, req.user.School)
+    const pupil = await pupilService.fetchOnePupil(req.params.removed, req.user.School)
     if (pupil) {
       flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
     }
