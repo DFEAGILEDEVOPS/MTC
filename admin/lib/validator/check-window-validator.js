@@ -137,24 +137,24 @@ module.exports.validate = function (req) {
     let validationError = new ValidationError()
     let adminStartDate
     let checkStartDate
-    const currentDate = moment.utc(moment.now()).format('YYYY-MM-DD')
+    const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
 
     if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
       adminStartDate = moment.utc(
         req.body['adminStartDay'] + ' ' +
         req.body['adminStartMonth'] + ' ' +
-        req.body['adminStartYear'], 'DD MM YYYY').format('YYYY-MM-DD')
+        req.body['adminStartYear'], 'D MM YYYY').format('YYYY-MM-D')
     }
     if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
       checkStartDate = moment.utc(
         req.body['checkStartDay'] + ' ' +
         req.body['checkStartMonth'] + ' ' +
-        req.body['checkStartYear'], 'DD MM YYYY').format('YYYY-MM-DD')
+        req.body['checkStartYear'], 'D MM YYYY').format('YYYY-MM-D')
     }
     const checkEndDate = moment.utc(
       req.body['checkEndDay'] + ' ' +
       req.body['checkEndMonth'] + ' ' +
-      req.body['checkEndYear'], 'DD MM YYYY').format('YYYY-MM-DD')
+      req.body['checkEndYear'], 'D MM YYYY').format('YYYY-MM-D')
 
     try {
       if (!req.body.checkWindowId) { // Adding

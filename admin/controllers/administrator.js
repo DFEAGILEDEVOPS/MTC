@@ -210,26 +210,26 @@ const checkWindowsForm = async (req, res, next) => {
     try {
       checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
 
-      const adminStartDate = moment(checkWindowData.adminStartDate, 'DD MM YYYY').format('YYYY-MM-DD')
-      const checkStartDate = moment(checkWindowData.checkStartDate, 'DD MM YYYY').format('YYYY-MM-DD')
+      const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
+      const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
 
       checkWindowData = {
         checkWindowId: req.params.id,
         checkWindowName: checkWindowData.checkWindowName,
-        adminStartDay: moment(checkWindowData.adminStartDate).format('DD'),
+        adminStartDay: moment(checkWindowData.adminStartDate).format('D'),
         adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
         adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
-        checkStartDay: moment(checkWindowData.checkStartDate).format('DD'),
+        checkStartDay: moment(checkWindowData.checkStartDate).format('D'),
         checkStartMonth: moment(checkWindowData.checkStartDate).format('MM'),
         checkStartYear: moment(checkWindowData.checkStartDate).format('YYYY'),
-        checkEndDay: moment(checkWindowData.checkEndDate).format('DD'),
+        checkEndDay: moment(checkWindowData.checkEndDate).format('D'),
         checkEndMonth: moment(checkWindowData.checkEndDate).format('MM'),
         checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY'),
         existingAdminStartDate: adminStartDate,
         existingCheckStartDate: checkStartDate
       }
 
-      const currentDate = moment.utc(moment.now()).format('YYYY-MM-DD')
+      const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
       if (moment(currentDate).isAfter(adminStartDate)) {
         adminIsDisabled = 1
       }
@@ -285,13 +285,13 @@ const saveCheckWindows = async (req, res, next) => {
     req.breadcrumbs(res.locals.pageTitle)
 
     if (!req.body['adminStartDay'] && !req.body['adminStartMonth'] && !req.body['adminStartYear'] && req.body['existingAdminStartDate']) {
-      req.body.adminStartDay = moment(req.body['existingAdminStartDate']).format('DD')
+      req.body.adminStartDay = moment(req.body['existingAdminStartDate']).format('D')
       req.body.adminStartMonth = moment(req.body['existingAdminStartDate']).format('MM')
       req.body.adminStartYear = moment(req.body['existingAdminStartDate']).format('YYYY')
     }
 
     if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate']) {
-      req.body.checkStartDay = moment(req.body['existingCheckStartDate']).format('DD')
+      req.body.checkStartDay = moment(req.body['existingCheckStartDate']).format('D')
       req.body.checkStartMonth = moment(req.body['existingCheckStartDate']).format('MM')
       req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
     }

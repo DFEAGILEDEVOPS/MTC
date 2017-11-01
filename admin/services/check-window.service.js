@@ -46,7 +46,7 @@ const checkWindowService = {
       return {
         id: cw._id,
         checkWindowName: cw.checkWindowName,
-        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
+        adminStartDate: adminStartDateMo.format('D MMM YYYY'),
         checkDates: checkWindowService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
         canRemove: typeof canRemove === 'boolean' ? canRemove : (Date.parse(cw.checkStartDate) >= Date.now()),
         isCurrent: isCurrent
@@ -58,7 +58,7 @@ const checkWindowService = {
       '' + dateItem[keyDay] +
       '/' + dateItem[keyMonth] +
       '/' + dateItem[keyYear],
-      'DD/MM/YYYY').toDate()
+      'D/MM/YYYY').toDate()
   }
 }
 
