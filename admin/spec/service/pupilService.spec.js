@@ -1,43 +1,68 @@
 'use strict'
 const pupilService = require('../../services/pupil.service')
 
-/* global beforeEach, describe, it, expect */
+/* global describe, it, expect */
 
 describe('pupil service', () => {
-  let answers
-  beforeEach(function () {
-    answers = require('../mocks/answers')
-  })
+  describe('calculateScore', () => {
+    it('returns undefined if results undefined', () => {
+      const actual = pupilService.calculateScorePercentage(undefined)
+      expect(actual).toBe(undefined)
+    })
 
-  it('fetchScoreDetails should return hasScore false if answers object is undefined', (done) => {
-    const { hasScore } = pupilService.fetchScoreDetails(undefined)
-    expect(hasScore).toBeFalsy()
-    done()
-  })
+    it('returns error message if results do not contain marks', () => {
+      const actual = pupilService.calculateScorePercentage({maxMarks: 10})
+      expect(actual).toBe('Error Calculating Score')
+    })
 
-  it('fetchScoreDetails should return hasScore true if answers object is defined', (done) => {
-    const { hasScore } = pupilService.fetchScoreDetails(answers)
-    expect(hasScore).toBeTruthy()
-    done()
-  })
+    it('returns error message if results do not contain maxMarks', () => {
+      const actual = pupilService.calculateScorePercentage({marks: 5})
+      expect(actual).toBe('Error Calculating Score')
+    })
 
-  it('fetchScoreDetails should return n/a score and percentage if answers object is undefined', (done) => {
-    const { score, percentage } = pupilService.fetchScoreDetails(undefined)
-    expect(score).toBe('N/A')
-    expect(percentage).toBe('N/A')
-    done()
-  })
+    it('returns error message if score out of range', () => {
+      const results = {
+        marks: 20,
+        maxMarks: 10
+      }
+      const actual = pupilService.calculateScorePercentage(results)
+      expect(actual).toBe('Error Calculating Score')
+    })
 
-  it('fetchScoreDetails should return score as a fraction', (done) => {
-    const { score } = pupilService.fetchScoreDetails(answers)
-    expect(typeof score).toBe('string')
-    expect((score).match(/((\d*)\/(\d*))/g).length).toBeGreaterThan(0)
-    done()
-  })
-  it('fetchScoreDetails should return percentage in a appropriate format', (done) => {
-    const { percentage } = pupilService.fetchScoreDetails(answers)
-    expect(typeof percentage).toBe('string')
-    expect((percentage).match(/[0-9]*\.?[0-9]+%/).length).toBeGreaterThan(0)
-    done()
+    it('returns 100% when all answers are correct', () => {
+      const results = {
+        marks: 10,
+        maxMarks: 10
+      }
+      const actual = pupilService.calculateScorePercentage(results)
+      expect(actual).toBe(100)
+    })
+
+    it('returns 50% when half the answers are correct', () => {
+      const results = {
+        marks: 5,
+        maxMarks: 10
+      }
+      const actual = pupilService.calculateScorePercentage(results)
+      expect(actual).toBe(50)
+    })
+
+    it('returns 0% when no answers are correct', () => {
+      const results = {
+        marks: 0,
+        maxMarks: 10
+      }
+      const actual = pupilService.calculateScorePercentage(results)
+      expect(actual).toBe(0)
+    })
+
+    it('rounds to the nearest 1 decimal point when necessary', () => {
+      const results = {
+        marks: 7,
+        maxMarks: 30
+      }
+      const actual = pupilService.calculateScorePercentage(results)
+      expect(actual).toBe(23.3)
+    })
   })
 })

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const Pupil = require('../models/pupil')
 const Answer = require('../models/answer')
 const errorConverter = require('../lib/error-converter')
@@ -40,19 +39,24 @@ const pupilService = {
     return answers
   },
   /**
-   * Fetches score details for pupils who have taken the check.
-   * @param {object} answers - Pupil's answers set.
+   * Calculates the score of a check that the pupil has taken.
+   * @param {object} results - The check results.
    */
-  fetchScoreDetails: (answers) => {
-    const pupilScore = answers && answers.result
-    const hasScore = !!pupilScore && typeof pupilScore.correct === 'number' && pupilScore.correct >= 0
-    const score = pupilScore ? `${pupilScore.correct}/${answers.answers.length}` : 'N/A'
-    const percentage = pupilScore ? `${Math.round((pupilScore.correct / answers.answers.length) * 100)}%` : 'N/A'
-    return {
-      hasScore,
-      score,
-      percentage
+  calculateScorePercentage: (results) => {
+    const errorMessage = 'Error Calculating Score'
+    if (!results) return undefined
+
+    if (results.marks === undefined || results.maxMarks === undefined) {
+      return errorMessage
     }
+
+    if (results.marks > results.maxMarks) {
+      return errorMessage
+    }
+
+    let percentage = (results.marks / results.maxMarks) * 100
+    var rounded = Math.round(percentage * 10) / 10
+    return rounded
   },
   validatePupil: async (pupil, pupilData) => {
     const validationError = await pupilValidator.validate(pupilData)

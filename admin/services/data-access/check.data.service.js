@@ -24,6 +24,15 @@ checkDataService.find = async function (criteria) {
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.findLatestCheckByPupilId = async function (pupilId) {
+  return Check.findOne({ pupilId: pupilId }).sort({ field: 'asc', _id: -1 }).lean().exec()
+}
+
+/**
+ * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
+ * @param criteria
  * @return {Promise.<void>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
  * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
