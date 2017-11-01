@@ -193,9 +193,18 @@ const downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-const getGeneratePinsOverview = async (req, res) => {
+const getGeneratePinsOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
   req.breadcrumbs(res.locals.pageTitle)
+  let pupils
+  try {
+    pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
+  } catch (err) {
+    return next(err)
+  }
+  if (pupils && pupils.length > 0) {
+    return res.redirect('/school/generated-pins-list')
+  }
   return res.render('school/generate-pins-overview', {
     breadcrumbs: req.breadcrumbs()
   })
@@ -249,11 +258,21 @@ const postGeneratePins = async (req, res, next) => {
   return res.redirect('/school/generated-pins-list')
 }
 
-const getGeneratedPinsList = async (req, res) => {
+const getGeneratedPinsList = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
   req.breadcrumbs(res.locals.pageTitle)
+  let pupils
+  let school
+  try {
+    pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
+    school = await generatePinsService.getActiveSchool(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
   return res.render('school/generated-pins-list', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    school,
+    pupils
   })
 }
 
