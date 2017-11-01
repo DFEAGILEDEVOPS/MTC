@@ -5,6 +5,7 @@ const proxyquire = require('proxyquire').noCallThru()
 const moment = require('moment')
 const sinon = require('sinon')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const schoolDataService = require('../../services/data-access/school.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
 
 const pupilMock = require('../mocks/pupil')
@@ -77,11 +78,11 @@ describe('generate-pins.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('should display DoB as well', async (done) => {
+      it('should display DoB', async (done) => {
         const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
-        expect(pupils[0].showDoB).toBeTruthy()
-        expect(pupils[1].showDoB).toBeTruthy()
+        expect(pupils[ 0 ].showDoB).toBeTruthy()
+        expect(pupils[ 1 ].showDoB).toBeTruthy()
         done()
       })
     })
@@ -89,10 +90,12 @@ describe('generate-pins.service', () => {
 
   describe('generatePupilPins', () => {
     describe('should generate pin and expire timestamp', () => {
+      let pupil1
+      let pupil2
       beforeEach(() => {
-        const pupil1 = Object.assign({}, pupilMock)
+        pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
-        const pupil2 = Object.assign({}, pupilMock)
+        pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
         sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
@@ -100,21 +103,22 @@ describe('generate-pins.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('when pin in empty', async (done) => {
-        const pupils = await generatePinsService.generatePupilPins(schoolMock._id, 'lastName', 'asc')
-        expect(pupils[0].pin.length).toBe(5)
-        expect(pupils[0].pinExpiresAt).toBeDefined()
+      it('when pin has not been generated', async (done) => {
+        const pupils = await generatePinsService.generatePupilPins([ pupil1, pupil2 ])
+        expect(pupils[ 0 ].pin.length).toBe(5)
+        expect(pupils[ 0 ].pinExpiresAt).toBeDefined()
         done()
       })
     })
 
     describe('does not return generate pin and timestamp', () => {
       let pupil1
+      let pupil2
       beforeEach(() => {
         pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = 'fdsgs'
         pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        const pupil2 = Object.assign({}, pupilMock)
+        pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'fdsgs'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
@@ -126,8 +130,8 @@ describe('generate-pins.service', () => {
       })
       it('when existing expiration date is before same day 4pm', async (done) => {
         const pin = pupil1.pin
-        const pupils = await generatePinsService.generatePupilPins(schoolMock._id, 'lastName', 'asc')
-        expect(pupils[0].pin).toBe(pin)
+        const pupils = await generatePinsService.generatePupilPins([ pupil1, pupil2 ])
+        expect(pupils[ 0 ].pin).toBe(pin)
         done()
       })
     })
@@ -165,6 +169,67 @@ describe('generate-pins.service', () => {
         const password = school.schoolPin
         const result = generatePinsService.generateSchoolPassword(school)
         expect(result.schoolPin === password).toBeFalsy()
+      })
+    })
+  })
+  describe('getActiveSchool', () => {
+    beforeEach(() => {
+      let school = Object.assign({}, schoolMock)
+      school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+      sandbox.mock(schoolDataService).expects('findOne').resolves(school)
+      proxyquire('../../services/generate-pins.service', {
+        '../../services/data-access/school.data.service': schoolDataService
+      })
+      describe('if pin is valid', () => {
+        beforeEach(() => {
+          sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
+        })
+        it('it should return school object', () => {
+          const result = generatePinsService.getActiveSchool(school.id)
+          expect(result.pinExpiresAt).toBeDefined()
+          expect(result.schoolPin).toBeDefined()
+        })
+      })
+      describe('if pin is invalid', () => {
+        beforeEach(() => {
+          sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
+        })
+        it('it should return null', () => {
+          const result = generatePinsService.getActiveSchool(school.id)
+          expect(result).toBeUndefined()
+        })
+      })
+    })
+  })
+  describe('getPupilsWithActivePins', () => {
+    beforeEach(() => {
+      const pupil1 = Object.assign({}, pupilMock)
+      pupil1.pin = 'f55sg'
+      pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+      const pupil2 = Object.assign({}, pupilMock)
+      pupil2._id = '595cd5416e5ca13e48ed2520'
+      pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+      sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+      proxyquire('../../services/generate-pins.service', {
+        '../../services/data-access/pupil.data.service': pupilDataService
+      })
+    })
+    describe('if pins are valid', () => {
+      beforeEach(() => {
+        sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
+      })
+      it('it should return a list of active pupils', async () => {
+        const pupils = await generatePinsService.getPupilsWithActivePins(schoolMock._id)
+        expect(pupils.length).toBe(2)
+      })
+    })
+    describe('if pins are invalid', () => {
+      beforeEach(() => {
+        sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
+      })
+      it('it should return a list of active pupils', async () => {
+        const pupils = await generatePinsService.getPupilsWithActivePins(schoolMock._id)
+        expect(pupils.length).toBe(0)
       })
     })
   })
