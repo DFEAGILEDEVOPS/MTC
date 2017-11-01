@@ -1,8 +1,7 @@
 'use strict'
-const moment = require('moment')
 const csv = require('fast-csv')
 
-const psCachedReportDataService = require('./data-access/ps-report-cache.data.service')
+const psReportCacheDataService = require('./data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const dateService = require('./date.service')
@@ -16,7 +15,7 @@ const psychometricianReportService = {}
  */
 psychometricianReportService.generateReport = async function () {
   // Read data from the cache
-  const data = await psCachedReportDataService.find({})
+  const data = await psReportCacheDataService.find({})
   const output = []
   for (const obj of data) {
     output.push(obj.data)
@@ -75,7 +74,7 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
   // we can just use those instead.  This allows us to use replaceOne (as we already know the _id) and overwrite
   // an existing record if it exists.
 
-  await psCachedReportDataService.save({
+  await psReportCacheDataService.save({
     _id: completedCheck.check._id,
     data: psData,
     check: completedCheck.check._id

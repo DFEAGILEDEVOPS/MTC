@@ -174,6 +174,20 @@ describe('psychometricians-report.service', () => {
     })
   })
 
+  describe('#produceReportData', () => {
+    let service
+    beforeEach(() => {
+      service = require('../../services/psychometrician-report.service')
+    })
+    it('returns the data', () => {
+      sandbox.stub(console, 'log')
+      const data = service.produceReportData(completedCheckMock)
+      expect(data).toBeTruthy()
+      expect(data.Surname).toBeTruthy()
+      expect(data.Forename).toBeTruthy()
+    })
+  })
+
   describe('#populateWithCheck', () => {
     let checkDataServiceStub
 
@@ -207,6 +221,29 @@ describe('psychometricians-report.service', () => {
         expect('this').toBe('NOT to be thrown')
         console.error(error)
       }
+      done()
+    })
+  })
+
+  describe('#generateReport', () => {
+    let service, psReportCacheDataServiceStub
+
+    beforeEach(() => {
+      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'find').resolves([
+        {data: {propOne: 'valOne', propTwo: 1}},
+        {data: {propOne: 'ValTwo', propTwo: 2}},
+        {data: {propOne: 'valThree', propTwo: null}}
+      ])
+      service = proxyquire('../../services/psychometrician-report.service', {
+        './data-access/ps-report-cache.data.service': psReportCacheDataService
+      })
+    })
+
+    it('returns a csv string', async (done) => {
+      const res = await service.generateReport()
+      expect(res).toBeTruthy()
+      expect(res.substr(0, 7)).toBe('propOne')
+      expect(psReportCacheDataServiceStub.callCount).toBe(1)
       done()
     })
   })
