@@ -297,4 +297,93 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe(0.111)
     })
   })
+
+  describe('#getTimeOutFlag', () => {
+    it('throws an error if not passed an Array', () => {
+      spyOn(console, 'log')
+      const res = service.getTimeoutFlag(null)
+      expect(res).toBe('error')
+    })
+
+    it('returns 1 (indicating a timeout) when passed an empty array', () => {
+      const res = service.getTimeoutFlag([])
+      expect(res).toBe(1)
+    })
+
+    it('returns 0 (indicating NO timeout) when passed an array with Enter as the last keyboard entry', () => {
+      const res = service.getTimeoutFlag(keyboardInput)
+      expect(res).toBe(0)
+    })
+
+    it('returns 0 (indicating NO timeout) when passed an array with Enter as the last mouse-click entry', () => {
+      const input = [...mouseInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      const res = service.getTimeoutFlag(input)
+      expect(res).toBe(0)
+    })
+
+    it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry', () => {
+      const input = [...touchStartInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      const res = service.getTimeoutFlag(input)
+      expect(res).toBe(0)
+    })
+  })
+
+  describe('#getTimeoutWithNoResponseFlag', () => {
+    it('returns "error" when the arg isnt an array', () => {
+      const res = service.getTimeoutWithNoResponseFlag(-1)
+      expect(res).toBe('error')
+    })
+
+    it('returns 1 (timeout with no response) when there isnt any input and there isnt an answer', () => {
+      const res = service.getTimeoutWithNoResponseFlag([], {answer: ''})
+      expect(res).toBe(1)
+    })
+
+    it('returns 0 (timeout with no response) when there is input and there isnt an answer', () => {
+      const res = service.getTimeoutWithNoResponseFlag([{
+        'clientInputDate': '2017-10-13T09:06:53.692Z',
+        'eventType': 'mousedown',
+        'input': 'left click'
+      }], {answer: ''})
+      expect(res).toBe(0)
+    })
+
+    it('returns 0 (timeout with no response) when there isnt any input and there is an answer', () => {
+      // this would be a bug of some sort..., as any answer must have a corresponding input
+      const res = service.getTimeoutWithNoResponseFlag([], {answer: '1'})
+      expect(res).toBe(0)
+    })
+  })
+
+  describe('#getTimeoutWithCorrectAnser', () => {
+    it('returns 1 if there was a timeout and the answer is correct', () => {
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: true})
+      expect(res).toBe(1)
+    })
+
+    it('returns 0 if there was NOT a timeout and the answer is correct', () => {
+      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true})
+      expect(res).toBe(0)
+    })
+
+    it('returns 0 if there was a timeout and the answer is incorrect', () => {
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: false})
+      expect(res).toBe(0)
+    })
+
+    it('returns 0 if there was NOT a timeout and the answer is incorrect', () => {
+      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: false})
+      expect(res).toBe(0)
+    })
+  })
 })

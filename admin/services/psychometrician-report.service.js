@@ -147,12 +147,12 @@ psychometricianReportService.produceReportData = function (completedCheck) {
     psData[p(idx) + 'K'] = psUtilService.getUserInput(completedCheck.data.inputs[idx])
     psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
     psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut'] = getTimeoutFlag(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut0'] = getTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
-    psData[p(idx) + 'TimeOut1'] = getTimeoutWithCorrectAnswer(completedCheck.data.inputs[idx], ans)
+    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
+    psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(completedCheck.data.inputs[idx], ans)
     psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
-    psData[p(idx) + 'tFirstKey'] = getTimeOfFirstUserInput(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'tLastKey'] = getTimeOfLastUserInput(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(completedCheck.data.inputs[idx])
     psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
     psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
     psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(completedCheck.data.inputs[idx])
@@ -162,146 +162,11 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   return psData
 }
 
-/**
- * A flag to determine if the question timed out (rather than the user pressing Enter)
- * @param inputs
- * @return {number}
- */
-function hasTimeoutFlag (inputs) {
-  let timeout = true
-  if (!(inputs && Array.isArray(inputs))) {
-    console.log('invalid input: ', inputs)
-    throw new Error('Input not provided')
-  }
-  if (inputs.length) {
-    const last = inputs[inputs.length - 1]
-    if (last.input && last.input.toUpperCase() === 'ENTER') {
-      timeout = false
-    }
-  }
-  return timeout
-}
-
-/**
- * A report helper for the hasTimeoutFlag
- * @param inputs
- * @return {*}
- */
-function getTimeoutFlag (inputs) {
-  try {
-    return toInt(hasTimeoutFlag(inputs))
-  } catch (error) {
-    console.error(error)
-    return 'error'
-  }
-}
-
-function hasTimeoutWithNoResponseFlag (inputs, answer) {
-  let timeout = false
-  if (!(inputs && Array.isArray(inputs))) {
-    throw new Error('Invalid params inputs')
-  }
-  if (!(answer && answer.hasOwnProperty('answer'))) {
-    console.log('invalid answer: ', answer)
-    throw new Error('Invalid param answer')
-  }
-  if (answer.input === '' && inputs.length === 0) {
-    timeout = true
-  }
-  return timeout
-}
-
-function getTimeoutWithNoResponseFlag (inputs, ans) {
-  try {
-    return toInt(hasTimeoutWithNoResponseFlag(inputs, ans))
-  } catch (error) {
-    console.error(error)
-    return 'error'
-  }
-}
-
-function hasTimeoutWithCorrectAnswer (inputs, ans) {
-  if (!(hasTimeoutFlag(inputs) && hasCorrectAnswer(ans))) {
-    return false
-  }
-  return true
-}
-
-function getTimeoutWithCorrectAnswer (inputs, ans) {
-  try {
-    return toInt(hasTimeoutWithCorrectAnswer(inputs, ans))
-  } catch (error) {
-    console.error(error)
-    return 'error'
-  }
-}
-
-function hasCorrectAnswer (ans) {
-  if (!ans) {
-    throw new Error('Answer not provided')
-  }
-  if (!ans.hasOwnProperty('isCorrect')) {
-    throw new Error('Answer is not marked')
-  }
-  return ans.isCorrect
-}
-
-/**
- * A report helper to convert booleans to 1 or 0
- * @param bool
- * @return {number}
- */
-function toInt (bool) {
-  if (typeof bool !== 'boolean') {
-    throw new Error(`param is not a boolean: [${bool}]`)
-  }
-  return bool ? 1 : 0
-}
-
 function fixup (completedCheck) {
   const inputs = completedCheck.data.inputs
   if (inputs[0] === null) {
     inputs.shift()
   }
 }
-
-function getTimeOfFirstUserInput (inputs) {
-  if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
-    return 'error'
-  }
-  if (inputs.length === 0) {
-    return ''
-  }
-  const first = inputs[0]
-  return getTimeOfInputEvent(first)
-}
-
-function getTimeOfLastUserInput (inputs) {
-  if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
-    return 'error'
-  }
-  if (inputs.length === 0) {
-    return ''
-  }
-  const last = inputs[inputs.length - 1]
-  return getTimeOfInputEvent(last)
-}
-
-function getTimeOfInputEvent (input) {
-  if (!(input && input.hasOwnProperty('clientInputDate'))) {
-    console.log('getTimeOfInputEvent(): Invalid param input: ', input)
-    return 'error'
-  }
-
-  const time = moment(input.clientInputDate)
-  if (!time.isValid()) {
-    console.log('Date error: not a date ' + input.clientInputDate)
-    return 'error'
-  }
-  return time.toISOString()
-}
-
 
 module.exports = psychometricianReportService

@@ -164,4 +164,51 @@ psUtilService.getResponseTime = function (inputs) {
   return (last.format('x') - first.format('x')) / 1000
 }
 
+/**
+ * A flag to determine if the question timed out (rather than the user pressing Enter)
+ * @param inputs
+ * @return {string|number}
+ */
+psUtilService.getTimeoutFlag = function (inputs) {
+  let timeout = 1
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('invalid input: ', inputs)
+    return 'error'
+  }
+  if (R.pathOr('', ['input'], R.last(inputs)).toUpperCase() === 'ENTER') {
+    timeout = 0
+  }
+  return timeout
+}
+
+/**
+ * Return a flag indicating if the question timed out, without any response
+ * @param inputs
+ * @param answer
+ * @return {*}
+ */
+psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
+  let timeout = 0
+  if (!(inputs && Array.isArray(inputs))) {
+    return 'error'
+  }
+  if (inputs.length === 0 && answer.answer === '') {
+    timeout = 1
+  }
+  return timeout
+}
+
+/**
+ * Return 1 if the question timed out, and the correct answer was given. 0 otherwise.
+ * @param inputs
+ * @param ans
+ * @return {number}
+ */
+psUtilService.getTimeoutWithCorrectAnswer = function (inputs, ans) {
+  if (this.getTimeoutFlag(inputs) === 1 && ans.isCorrect) {
+    return 1
+  }
+  return 0
+}
+
 module.exports = psUtilService
