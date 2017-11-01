@@ -18,10 +18,8 @@ And(/^I can see the info message for generating the pupil pin$/) do
 end
 
 And(/^I click Generate PINs button$/) do
-  generate_pupil_pins_page.generate_pin_btn.click
-  if !(generate_pupil_pins_page.to_have_select_all_pupils)
-    generate_pupil_pins_page.generate_more_pin_btn.click
-  end
+  generate_pupil_pins_page.generate_pin_btn.click if generate_pupil_pins_page.has_generate_pin_btn?
+  generate_pupil_pins_page.generate_more_pin_btn.click if generate_pupil_pins_page.has_generate_more_pin_btn?
 end
 
 Given(/^I have a pupil with active pin$/) do
@@ -90,10 +88,12 @@ end
 
 When(/^I have generated a pin for a pupil$/) do
   name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am logged in"
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  step "I am on Generate pins Pupil List page"
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
   @pupil_name = generate_pupil_pins_page.generate_pin_using_name(name)
 end
 
@@ -126,4 +126,11 @@ end
 Then(/^the pupil pin should be unique$/) do
   pins_before = MongoDbHelper.pupil_pins
   expect(MongoDbHelper.pupil_pins.uniq).to eql pins_before
+end
+
+Then(/^the pin should be stored against the pupil$/) do
+  pupil_upn = @stored_pupil_details['upn'].to_s
+  wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
+  pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
+  expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
 end

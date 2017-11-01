@@ -78,12 +78,12 @@ Then(/^I should have the option to print pins$/) do
   expect(manage_pupil_page).to have_print_pins
 end
 
-Then(/^the pin should be stored against the pupil$/) do
-  pupil_upn = @stored_pupil_details['upn'].to_s
-  wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
-  pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
-  expect(manage_pupil_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
-end
+# Then(/^the pin should be stored against the pupil$/) do
+#   pupil_upn = @stored_pupil_details['upn'].to_s
+#   wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
+#   pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
+#   expect(manage_pupil_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
+# end
 
 Given(/^I have logged in with (.*)$/) do |teacher|
   sign_in_page.load

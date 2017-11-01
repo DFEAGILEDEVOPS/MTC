@@ -27,7 +27,7 @@ class GeneratePupilPinsPage < SitePrism::Page
 
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)
-    name = pupil.names.text
+    name = pupil.name.text
     pupil.checkbox.click
     sticky_banner.confirm.click
     name
