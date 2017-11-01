@@ -171,14 +171,25 @@ describe('school controller:', () => {
       sandbox.restore()
     })
 
-    it('displays the generate pins overview page', async (done) => {
+    it('displays the generate pins overview page if no active pins are present', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/school').getGeneratePinsOverview
       spyOn(res, 'render').and.returnValue(null)
+      spyOn(generatePinsService, 'getPupilsWithActivePins').and.returnValue([])
       await controller(req, res)
       expect(res.locals.pageTitle).toBe('Generate pupil PINs')
       expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('displays the generated pins list page if active pins are present', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/school').getGeneratePinsOverview
+      spyOn(res, 'redirect').and.returnValue(null)
+      spyOn(generatePinsService, 'getPupilsWithActivePins').and.returnValue(['1', '2'])
+      await controller(req, res)
+      expect(res.redirect).toHaveBeenCalled()
       done()
     })
   })

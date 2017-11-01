@@ -24,7 +24,7 @@ const school = (router) => {
   router.get('/pupil-register/:sortColumn/:sortOrder', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPupils(req, res, next))
   router.get('/results', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getResults(req, res, next))
   router.get('/download-results', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => downloadResults(req, res, next))
-  router.get('/generate-pins-overview', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratePinsOverview(req, res))
+  router.get('/generate-pins-overview', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratePinsOverview(req, res, next))
   router.get('/generate-pins-list/:sortField/:sortDirection', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratePinsList(req, res, next))
   router.post('/generate-pins', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postGeneratePins(req, res, next))
   router.get('/generated-pins-list', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getGeneratedPinsList(req, res, next))
