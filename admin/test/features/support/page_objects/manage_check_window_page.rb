@@ -45,7 +45,7 @@ class ManageCheckWindowPage < SitePrism::Page
 
   def format_admin_date(day, month, year)
     parsed_admin_date = DateTime.parse("#{day} #{month} #{year}")
-    parsed_admin_date.strftime("%-d %b %Y")
+    parsed_admin_date.strftime("%d %b %Y")
   end
 
   def format_check_period(start_day, start_month, start_year, end_day, end_month, end_year)
