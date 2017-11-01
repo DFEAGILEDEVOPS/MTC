@@ -70,3 +70,7 @@ jspm_packages
 /pupil-spa/test/*.html
 /pupil-spa/src/public/styles/styles.css
 /pupil-spa/src/public/styles/helpers/helpers.css
+
+*.log
+
+.env
