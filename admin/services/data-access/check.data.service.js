@@ -22,6 +22,15 @@ checkDataService.find = async function (criteria) {
 }
 
 /**
+ * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
+ * @param criteria
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.findLatestCheckByPupilId = async function (pupilId) {
+  return Check.findOne({ pupilId: pupilId }).sort({ field: 'asc', _id: -1 }).lean().exec()
+}
+
+/**
  * Find the count
  * @param query
  * @return {Promise.<*>}
