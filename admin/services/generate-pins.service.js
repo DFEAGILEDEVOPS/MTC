@@ -118,7 +118,7 @@ const generatePinService = {
    * @returns {Array}
    */
   getPupilsWithActivePins: async (schoolId) => {
-    let { pupils } = await pupilDataService.getPupils(schoolId)
+    let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
     pupils = pupils.filter(p => generatePinService.isValidPin(p.pin, p.pinExpiresAt))
     return pupils
   }
