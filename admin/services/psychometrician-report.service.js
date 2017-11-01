@@ -146,7 +146,7 @@ psychometricianReportService.produceReportData = function (completedCheck) {
     psData[p(idx) + 'Response'] = ans.answer
     psData[p(idx) + 'K'] = psUtilService.getUserInput(completedCheck.data.inputs[idx])
     psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
-    psData[p(idx) + 'ResponseTime'] = getResponseTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(completedCheck.data.inputs[idx])
     psData[p(idx) + 'TimeOut'] = getTimeoutFlag(completedCheck.data.inputs[idx])
     psData[p(idx) + 'TimeOut0'] = getTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
     psData[p(idx) + 'TimeOut1'] = getTimeoutWithCorrectAnswer(completedCheck.data.inputs[idx], ans)
@@ -155,33 +155,11 @@ psychometricianReportService.produceReportData = function (completedCheck) {
     psData[p(idx) + 'tLastKey'] = getTimeOfLastUserInput(completedCheck.data.inputs[idx])
     psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
     psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'TimeComplete'] = getLastAnswerInputTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(completedCheck.data.inputs[idx])
     psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
   })
 
   return psData
-}
-
-function getResponseTime (input) {
-  if (!(input && Array.isArray(input))) {
-    console.log('Invalid input ', input)
-    return 'error'
-  }
-  if (input.length === 0) {
-    // no input was provided, so there isn't a 'time' component to show
-    return ''
-  }
-  const firstLogEntry = input[0]
-  if (!firstLogEntry.clientInputDate) {
-    console.log('First log Entry missing client input date: ', firstLogEntry)
-  }
-  const first = moment(firstLogEntry.clientInputDate)
-  const lastLogEntry = input[input.length - 1]
-  if (!lastLogEntry.clientInputDate) {
-    console.log('First log Entry missing client input date: ', lastLogEntry)
-  }
-  const last = moment(lastLogEntry.clientInputDate)
-  return (last.format('x') - first.format('x')) / 1000
 }
 
 /**
@@ -325,32 +303,5 @@ function getTimeOfInputEvent (input) {
   return time.toISOString()
 }
 
-/**
- * Get the time of the user's last input that is not enter
- * @param {Array} inputs
- */
-function getLastAnswerInputTime (inputs) {
-  if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
-    return 'error'
-  }
-  if (inputs.length === 0) {
-    return ''
-  }
-  for (let i = inputs.length - 1; i >= 0; i--) {
-    const inputEntry = inputs[i]
-    if (!(inputEntry && inputEntry.hasOwnProperty('input') && inputEntry.clientInputDate)) {
-      console.log('getLastAnswerInputTime invalid input: ', inputEntry)
-      return 'error'
-    }
-    if (inputEntry.input.toUpperCase() !== 'ENTER') {
-      const m1 = moment(inputEntry.clientInputDate)
-      if (!m1.isValid()) {
-        console.log('Date error: ' + inputEntry.clientInputDate)
-        return 'error'
-      }
-      return m1.toISOString()
-    }
-  }
-}
+
 module.exports = psychometricianReportService

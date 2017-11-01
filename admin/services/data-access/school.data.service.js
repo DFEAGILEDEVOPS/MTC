@@ -23,4 +23,3 @@ schoolDataService.save = function (school) {
 }
 
 module.exports = schoolDataService
-

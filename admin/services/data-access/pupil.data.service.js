@@ -75,7 +75,7 @@ pupilDataService.find = async function (options) {
  * @param options
  * @return {Promise.<{Object}>}
  */
-pupilDataService.find = async function (options) {
+pupilDataService.findXXX = async function (options) {
   const p = await Pupil.find(options).exec()
   return p
 }

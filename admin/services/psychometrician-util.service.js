@@ -1,6 +1,7 @@
 'use strict'
 
 const R = require('ramda')
+const moment = require('moment')
 const psUtilService = {}
 
 psUtilService.getSurname = function (completedCheck) {
@@ -103,6 +104,64 @@ psUtilService.getUserInput = function getUserInput (inputs) {
       output.push(`${ident}[${inp.input}]`)
     })
   return output.join(', ')
+}
+
+/**
+ * Get the time of the user's last input that is not enter
+ * @param {Array} inputs
+ * @return {String}
+ */
+psUtilService.getLastAnswerInputTime = function (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  for (let i = inputs.length - 1; i >= 0; i--) {
+    const input = R.pathOr('', [i, 'input'], inputs)
+    if (input.toUpperCase() !== 'ENTER') {
+      return R.pathOr('error', [i, 'clientInputDate'], inputs)
+    }
+  }
+}
+
+/**
+ * Returns the timerstamp as a string of the first input from the user
+ * @param inputs
+ * @return {String}
+ */
+psUtilService.getFirstInputTime = function (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  return R.pathOr('error', [0, 'clientInputDate'], inputs)
+}
+
+/**
+ * Calculate the response time for the question: time between the first key being pressed and the last key being pressed
+ * @param {Array} input
+ * @return {*}
+ */
+psUtilService.getResponseTime = function (inputs) {
+  if (!(inputs && Array.isArray(inputs))) {
+    console.log('Invalid param inputs')
+    return 'error'
+  }
+  if (inputs.length === 0) {
+    return ''
+  }
+  const first = moment(this.getFirstInputTime(inputs))
+  const last = moment(this.getLastAnswerInputTime(inputs))
+  if (!(first.isValid() && last.isValid())) {
+    return ''
+  }
+  return (last.format('x') - first.format('x')) / 1000
 }
 
 module.exports = psUtilService

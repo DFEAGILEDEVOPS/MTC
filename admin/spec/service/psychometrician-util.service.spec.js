@@ -13,6 +13,94 @@ const schoolMockOrig = require('../mocks/school')
 
 describe('psychometrician-util.service', () => {
   let completedCheckMock
+
+  const keyboardInput = [
+    {
+      'question': 1,
+      'clientInputDate': '2017-10-17T18:20:44.447Z',
+      'eventType': 'keydown',
+      'input': '1'
+    },
+    {
+      'question': 1,
+      'clientInputDate': '2017-10-17T18:20:44.558Z',
+      'eventType': 'keydown',
+      'input': '0'
+    },
+    {
+      'question': 1,
+      'clientInputDate': '2017-10-17T18:20:44.678Z',
+      'eventType': 'keydown',
+      'input': 'Enter'
+    }
+  ]
+
+  const touchStartInput = [
+    {
+      'clientInputDate': '2017-10-09T09:50:06.6Z',
+      'eventType': 'touchstart',
+      'input': ''
+    },
+    {
+      'clientInputDate': '2017-10-09T09:50:06.675Z',
+      'eventType': 'click',
+      'input': '1'
+    },
+    {
+      'clientInputDate': '2017-10-09T09:50:07.099Z',
+      'eventType': 'touchstart',
+      'input': ''
+    },
+    {
+      'clientInputDate': '2017-10-09T09:50:07.17Z',
+      'eventType': 'click',
+      'input': '0'
+    },
+    {
+      'clientInputDate': '2017-10-09T09:50:07.708Z',
+      'eventType': 'touchstart',
+      'input': ''
+    }
+  ]
+
+  const mouseInput = [
+    {
+      'clientInputDate': '2017-10-13T09:06:53.692Z',
+      'eventType': 'mousedown',
+      'input': 'left click'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:53.817Z',
+      'eventType': 'click',
+      'input': '2'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:54.197Z',
+      'eventType': 'mousedown',
+      'input': 'left click'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:54.298Z',
+      'eventType': 'click',
+      'input': '5'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:55.234Z',
+      'eventType': 'mousedown',
+      'input': 'left click'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:55.334Z',
+      'eventType': 'click',
+      'input': 'backspace'
+    },
+    {
+      'clientInputDate': '2017-10-13T09:06:55.663Z',
+      'eventType': 'mousedown',
+      'input': 'left click'
+    }
+  ]
+
   beforeEach(() => {
     completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
     const checkMock = Object.assign({}, checkMockOrig)
@@ -114,101 +202,17 @@ describe('psychometrician-util.service', () => {
 
   describe('#getUserInput', () => {
     it('returns a string showing all the user input for key events', () => {
-      const input = [
-        {
-          'question': 1,
-          'clientInputDate': '2017-10-17T18:20:44.447Z',
-          'eventType': 'keydown',
-          'input': '1'
-        },
-        {
-          'question': 1,
-          'clientInputDate': '2017-10-17T18:20:44.558Z',
-          'eventType': 'keydown',
-          'input': '0'
-        },
-        {
-          'question': 1,
-          'clientInputDate': '2017-10-17T18:20:44.678Z',
-          'eventType': 'keydown',
-          'input': 'Enter'
-        }
-      ]
-      const ks1 = service.getUserInput(input)
+      const ks1 = service.getUserInput(keyboardInput)
       expect(ks1).toBe('k[1], k[0], k[Enter]')
     })
 
     it('returns a string showing all the user input for mouse events', () => {
-      const input = [
-        {
-          'clientInputDate': '2017-10-13T09:06:53.692Z',
-          'eventType': 'mousedown',
-          'input': 'left click'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:53.817Z',
-          'eventType': 'click',
-          'input': '2'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:54.197Z',
-          'eventType': 'mousedown',
-          'input': 'left click'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:54.298Z',
-          'eventType': 'click',
-          'input': '5'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:55.234Z',
-          'eventType': 'mousedown',
-          'input': 'left click'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:55.334Z',
-          'eventType': 'click',
-          'input': 'backspace'
-        },
-        {
-          'clientInputDate': '2017-10-13T09:06:55.663Z',
-          'eventType': 'mousedown',
-          'input': 'left click'
-        }
-      ]
-      const m = service.getUserInput(input)
+      const m = service.getUserInput(mouseInput)
       expect(m).toBe('m[2], m[5], m[backspace]')
     })
 
     it('returns a string showing all the user input for touch events', () => {
-      const input = [
-        {
-          'clientInputDate': '2017-10-09T09:50:06.6Z',
-          'eventType': 'touchstart',
-          'input': ''
-        },
-        {
-          'clientInputDate': '2017-10-09T09:50:06.675Z',
-          'eventType': 'click',
-          'input': '1'
-        },
-        {
-          'clientInputDate': '2017-10-09T09:50:07.099Z',
-          'eventType': 'touchstart',
-          'input': ''
-        },
-        {
-          'clientInputDate': '2017-10-09T09:50:07.17Z',
-          'eventType': 'click',
-          'input': '0'
-        },
-        {
-          'clientInputDate': '2017-10-09T09:50:07.708Z',
-          'eventType': 'touchstart',
-          'input': ''
-        }
-      ]
-      const t = service.getUserInput(input)
+      const t = service.getUserInput(touchStartInput)
       expect(t).toBe('t[1], t[0]')
     })
 
@@ -222,6 +226,75 @@ describe('psychometrician-util.service', () => {
       ]
       const t = service.getUserInput(input)
       expect(t).toBe('u[Y]')
+    })
+  })
+
+  describe('#getLastAnswerInputTime', () => {
+    it('returns "error" if not passed an array', () => {
+      spyOn(console, 'log')
+      const res = service.getLastAnswerInputTime(null)
+      expect(res).toBe('error')
+    })
+
+    it('returns empty string if there arent any inputs', () => {
+      const res = service.getLastAnswerInputTime([])
+      expect(res).toBe('')
+    })
+
+    it('returns the timestamp as a string from the last input', () => {
+      const res = service.getLastAnswerInputTime(touchStartInput)
+      expect(res).toBe('2017-10-09T09:50:07.708Z')
+    })
+
+    it('it ignores the last input if the last input is the user pressing enter on the virtual keypad', () => {
+      const input = [...mouseInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      const res = service.getLastAnswerInputTime(mouseInput)
+      expect(res).toBe('2017-10-13T09:06:55.663Z')
+    })
+  })
+
+  describe('#getFirstInputTime', () => {
+    it('returns "error" if not passed an array', () => {
+      spyOn(console, 'log')
+      const res = service.getLastAnswerInputTime(null)
+      expect(res).toBe('error')
+    })
+
+    it('returns empty string if there arent any inputs', () => {
+      const res = service.getLastAnswerInputTime([])
+      expect(res).toBe('')
+    })
+
+    it('returns the first timestamp', () => {
+      const res = service.getFirstInputTime(keyboardInput)
+      expect(res).toBe('2017-10-17T18:20:44.447Z')
+    })
+
+    it('returns "error" if the log is unparseable', () => {
+      const res = service.getFirstInputTime([{foo: 1, bar: 2, baz: 3}])
+      expect(res).toBe('error')
+    })
+  })
+
+  describe('#getResponseTime', () => {
+    it('returns "error" if the arg is not an array', () => {
+      spyOn(console, 'log')
+      const res = service.getResponseTime(999)
+      expect(res).toBe('error')
+    })
+
+    it('returns "" if there isnt any input', () => {
+      expect(service.getResponseTime([])).toBe('')
+    })
+
+    it('calculates the response time in seconds and thousandths of a second', () => {
+      const res = service.getResponseTime(keyboardInput)
+      expect(res).toBe(0.111)
     })
   })
 })
