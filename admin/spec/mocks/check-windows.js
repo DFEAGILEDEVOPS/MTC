@@ -12,7 +12,7 @@ module.exports = [
     checkWindowName: 'Test window 3',
     __v: 0,
     forms: [],
-    deleted: false
+    isDeleted: false
   },
   {
     _id: ObjectId('59e88622d38a9f2d1fcebbb3'),
@@ -24,7 +24,7 @@ module.exports = [
     checkWindowName: 'Window Test 1',
     __v: 0,
     forms: [],
-    deleted: false
+    isDeleted: false
   },
   {
     _id: ObjectId('59e886778f28f92d312c3870'),
@@ -36,6 +36,6 @@ module.exports = [
     checkWindowName: 'Window Test 2',
     __v: 0,
     forms: [],
-    deleted: false
+    isDeleted: true
   }
 ]
