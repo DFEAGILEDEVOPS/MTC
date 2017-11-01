@@ -6,13 +6,17 @@ const proxyquire = require('proxyquire').noCallThru()
 describe('check-complete.service', () => {
   let service
   let spy
+  let markingSpy
 
   function setupService (cb) {
     spy = jasmine.createSpy('create').and.callFake(cb)
-
+    markingSpy = jasmine.createSpy('mark').and.callFake(cb)
     return proxyquire('../../services/check-complete.service', {
       './data-access/completed-check.data.service': {
         create: spy
+      },
+      './marking.service': {
+        mark: markingSpy
       }
     })
   }
@@ -25,6 +29,7 @@ describe('check-complete.service', () => {
     it('calls the data service', async (done) => {
       await service.completeCheck({})
       expect(spy).toHaveBeenCalledTimes(1)
+      expect(markingSpy).toHaveBeenCalledTimes(1)
       done()
     })
 

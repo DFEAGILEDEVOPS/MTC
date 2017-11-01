@@ -32,13 +32,13 @@ When(/^I submit details for a valid check window$/) do
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: (today_date + 30).day,
                         admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
+                        admin_start_year: today_date.next_year.year,
                         check_start_day: today_date.day,
                         check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.year,
+                        check_start_year: today_date.next_year.year,
                         check_end_day: today_date.day,
                         check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        check_end_year: today_date.next_year.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -63,11 +63,11 @@ end
 
 And(/^stored correctly in the database$/) do
   window_in_db = MongoDbHelper.check_window_details(@check_window_hash[:check_name])
-  expect(window_in_db['checkStartDate'].strftime('%d %m %Y')).to eql @check_window_hash[:check_start_day].to_s + ' ' + @check_window_hash[:check_start_mon].to_s +
+  expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_start_day].to_s + ' ' + @check_window_hash[:check_start_mon].to_s +
                                                        ' ' + @check_window_hash[:admin_start_year].to_s
-  expect(window_in_db['checkEndDate'].strftime('%d %m %Y')).to eql @check_window_hash[:check_end_day].to_s + ' ' + @check_window_hash[:check_end_mon].to_s +
+  expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_end_day].to_s + ' ' + @check_window_hash[:check_end_mon].to_s +
                                                                          ' ' + @check_window_hash[:check_end_year].to_s
-  expect(window_in_db['adminStartDate'].strftime('%d %m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_mon].to_s +
+  expect(window_in_db['adminStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_mon].to_s +
                                                        ' ' + @check_window_hash[:admin_start_year].to_s
 end
 
