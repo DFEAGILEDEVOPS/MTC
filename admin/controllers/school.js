@@ -9,11 +9,7 @@ const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
 const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
-const {
-  fetchAnswers,
-  fetchScoreDetails,
-  fetchMultiplePupils,
-  fetchOnePupil } = require('../services/pupil.service')
+const pupilService = require('../services/pupil.service')
 const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
@@ -22,6 +18,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const checkDataService = require('../services/data-access/check.data.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -42,6 +39,19 @@ const getHome = async (req, res, next) => {
   })
 }
 
+const getScorePercentage = async (pupilId) => {
+  // find the score, if they have one
+  const latestCheck = await checkDataService.findLatestCheckByPupilId(pupilId)
+  let score
+  if (latestCheck && latestCheck.results) {
+    // calculate percentage
+    score = pupilService.calculateScorePercentage(latestCheck.results) + '%'
+  } else {
+    score = 'N/A'
+  }
+  return score
+}
+
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
   const { sortColumn, sortOrder } = req.params
@@ -53,8 +63,7 @@ const getPupils = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const { foreName, lastName, _id } = p
     const dob = dateService.formatShortGdsDate(p.dob)
-    const answers = await fetchAnswers(p._id)
-    const { score } = fetchScoreDetails(answers)
+    let score = await getScorePercentage(_id)
     // TODO: Fetch pupil's group when it's implemented
     const group = 'N/A'
     return {
@@ -97,13 +106,12 @@ const getResults = async (req, res, next) => {
   const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const answers = await fetchAnswers(p._id)
-    const { hasScore, score, percentage } = fetchScoreDetails(answers)
+    const score = await getScorePercentage(p._id)
+    const hasScore = (score !== undefined)
     return {
       fullName,
       hasScore,
-      score,
-      percentage
+      score
     }
   })).catch((error) => next(error))
   req.breadcrumbs(res.locals.pageTitle)
@@ -130,7 +138,7 @@ const downloadResults = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const dob = moment(p.dob).format('DD/MM/YYYY')
-    const answersSet = await fetchAnswers(p._id)
+    const answersSet = await pupilService.fetchAnswers(p._id)
     if (!answersSet) return
     let answers = answersSet.answers && answersSet.answers.sort((a1, a2) => {
       const f1 = a1.factor1 - a2.factor1
@@ -287,14 +295,15 @@ const getSubmitAttendance = async (req, res, next) => {
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
     const { _id: id, hasAttended } = p
-    const answers = await fetchAnswers(p._id)
-    const { hasScore, percentage } = fetchScoreDetails(answers)
+    const score = await getScorePercentage(p._id)
+    const hasScore = (score !== undefined)
+
     return {
       id,
       fullName,
       hasAttended,
       hasScore,
-      percentage
+      score
     }
   })).catch((error) => next(error))
   pupilsFormatted = pupilsFormatted.filter((p) => p.percentage !== 'n/a')
@@ -426,7 +435,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   // Flash message after removing a reason
   if (req.params.removed) {
     let flashMessage = 'Reason removed'
-    let pupil = await fetchOnePupil(req.params.removed, req.user.School)
+    const pupil = await pupilService.fetchOnePupil(req.params.removed, req.user.School)
     if (pupil) {
       flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
     }
@@ -533,7 +542,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   const postedPupils = req.body.pupil
-  const pupilsData = await fetchMultiplePupils(Object.values(postedPupils))
+  const pupilsData = await pupilService.fetchMultiplePupils(Object.values(postedPupils))
 
   let pupilsToSave = []
   let pupilsList
@@ -599,7 +608,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   }
   const pupilId = req.params.pupilId
   try {
-    let pupil = await fetchOnePupil(pupilId, req.user.School)
+    let pupil = await pupilService.fetchOnePupil(pupilId, req.user.School)
     if (!pupil) {
       return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
     }
