@@ -247,7 +247,6 @@ describe('school controller:', () => {
   describe('postGeneratePins route', () => {
     let sandbox
     let next
-    let controller
     let goodReqParams = {
       method: 'POST',
       url: '/school/generate-pins-list',
