@@ -49,12 +49,14 @@ describe('generate-pins.service', () => {
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
+        pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../services/generate-pins.service', {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('without pre existing pins', async (done) => {
+      it('without expired pins', async (done) => {
         const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(1)
         done()
@@ -111,11 +113,12 @@ describe('generate-pins.service', () => {
       beforeEach(() => {
         pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = 'fdsgs'
-        pupil1.pinExpiresAt = moment().startOf('day').add(10, 'hours')
+        pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         const pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'fdsgs'
-        pupil2.pinExpiresAt = moment().startOf('day').add(10, 'hours')
+        pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+        sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'months').valueOf())
         sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/generate-pins.service', {
           '../../services/pupil.service': pupilDataService
@@ -137,19 +140,32 @@ describe('generate-pins.service', () => {
       expect(result.pinExpiresAt).toBeDefined()
       expect(result.schoolPin.length).toBe(8)
     })
-    it('should generate school password if the pin expiration date is after same day 4pm', () => {
-      const school = Object.assign({}, schoolMock)
-      const password = school.schoolPin
-      school.pinExpiresAt = moment().startOf('day').add(17, 'hours')
-      const result = generatePinsService.generateSchoolPassword(school)
-      expect(result.schoolPin === password).toBeFalsy()
+
+    describe('if the pin expiration date is before same day 4pm', () => {
+      beforeEach(() => {
+        sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
+      })
+      it('should not generate school password', () => {
+        const school = Object.assign({}, schoolMock)
+        const password = school.schoolPin
+        school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+        const result = generatePinsService.generateSchoolPassword(school)
+        expect(result.schoolPin).toBe(password)
+      })
     })
-    it('should not generate school password if the pin expiration date is before same day 4pm', () => {
-      const school = Object.assign({}, schoolMock)
-      const password = school.schoolPin
-      school.pinExpiresAt = moment().startOf('day').add(10, 'hours')
-      const result = generatePinsService.generateSchoolPassword(school)
-      expect(result.schoolPin).toBe(password)
+
+    describe('if the pin expiration date is after same day 4pm', () => {
+      let school
+      beforeEach(() => {
+        school = Object.assign({}, schoolMock)
+        school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+        sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
+      })
+      it('it should generate school password ', () => {
+        const password = school.schoolPin
+        const result = generatePinsService.generateSchoolPassword(school)
+        expect(result.schoolPin === password).toBeFalsy()
+      })
     })
   })
 })
