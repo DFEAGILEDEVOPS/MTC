@@ -30,9 +30,9 @@ When(/^I submit details for a valid check window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: (today_date + 30).day,
+                        admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.next_year.year,
+                        admin_start_year: today_date.year,
                         check_start_day: today_date.day,
                         check_start_mon: today_date.next_month.next_month.month,
                         check_start_year: today_date.next_year.year,
@@ -64,7 +64,7 @@ end
 And(/^stored correctly in the database$/) do
   window_in_db = MongoDbHelper.check_window_details(@check_window_hash[:check_name])
   expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_start_day].to_s + ' ' + @check_window_hash[:check_start_mon].to_s +
-                                                       ' ' + @check_window_hash[:admin_start_year].to_s
+                                                       ' ' + @check_window_hash[:check_start_year].to_s
   expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_end_day].to_s + ' ' + @check_window_hash[:check_end_mon].to_s +
                                                                          ' ' + @check_window_hash[:check_end_year].to_s
   expect(window_in_db['adminStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_mon].to_s +
@@ -150,10 +150,10 @@ When(/^I try to submit with a invalid admin start date for the window$/) do
                         admin_start_mon: '13',
                         admin_start_year: '1000',
                         check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
+                        check_start_mon: today_date.next_month.month,
                         check_start_year: today_date.year,
                         check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_mon: today_date.next_month.month,
                         check_end_year: today_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
@@ -161,9 +161,9 @@ When(/^I try to submit with a invalid admin start date for the window$/) do
 end
 
 Then(/^I should see errors for the admin start day month and year$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Wrong admin start day",
-                                                                                    "Wrong admin start month",
-                                                                                    "Wrong admin start year"]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
+                                                                                    'Please check "Month"',
+                                                                                    'Please check "Year"']
 end
 
 When(/^I try to submit without a check start date for the window$/) do
@@ -178,14 +178,15 @@ When(/^I try to submit without a check start date for the window$/) do
                         check_start_year: '',
                         check_end_day: today_date.day,
                         check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        check_end_year: today_date.next_year.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
 end
 
 Then(/^I should see a error message for the check start date field$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Check start day is required",
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Administration start date" must be before the "Check start date"',
+                                                                                    "Check start day is required",
                                                                                     "Check start month is required",
                                                                                     "Check start year is required"]
 end
@@ -199,19 +200,19 @@ When(/^I try to submit with a invalid check start date for the window$/) do
                         admin_start_year: today_date.year,
                         check_start_day: '32',
                         check_start_mon: '13',
-                        check_start_year: '2010',
+                        check_start_year: '010',
                         check_end_day: today_date.day,
                         check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        check_end_year: today_date.next_year.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
 end
 
 Then(/^I should see errors for the start day month and year$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Wrong check start day",
-                                                                                    "Wrong check start month",
-                                                                                    "Wrong check start year"]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
+                                                                                    'Please check "Month"',
+                                                                                    'Please check "Year"']
 end
 
 When(/^I try to submit without a check end date for the window$/) do
@@ -223,7 +224,7 @@ When(/^I try to submit without a check end date for the window$/) do
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
                         check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.year,
+                        check_start_year: today_date.next_year.year,
                         check_end_day: '',
                         check_end_mon: '',
                         check_end_year: ''
@@ -247,7 +248,7 @@ When(/^I try to submit with a invalid check end date for the window$/) do
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
                         check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.year,
+                        check_start_year: today_date.next_year.year,
                         check_end_day: '63',
                         check_end_mon: '49',
                         check_end_year: '100'
@@ -257,7 +258,7 @@ When(/^I try to submit with a invalid check end date for the window$/) do
 end
 
 Then(/^I should see errors for the end day month and year$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Wrong check end day",
-                                                                                    "Wrong check end month",
-                                                                                    "Wrong check end year"]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
+                                                                                    'Please check "Month"',
+                                                                                    'Please check "Year"']
 end

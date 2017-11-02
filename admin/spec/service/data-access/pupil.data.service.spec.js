@@ -117,21 +117,27 @@ describe('pupil.data.service', () => {
       expect(mockPupil.verify()).toBe(true)
     })
   })
-  describe('#saveMultiple', () => {
+  describe('#updateMultiple', () => {
     let pupil1
     let pupil2
+    let mockPupil
     beforeEach(() => {
       pupil1 = pupilMock
       pupil1.pin = 'ggd4d'
       pupil2 = Object.assign({}, pupilMock)
       pupil2._id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'gfd4d'
-      pupil1.save = () => pupil1
-      pupil2.save = () => pupil2
+      mockPupil = sandbox.mock(Pupil).expects('updateOne').twice()
+        .returns({ n: 1, nModified: 1, ok: 1 })
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil,
+        '../../models/school': School
+      })
     })
     it('returns saved pupils list', async () => {
-      const savedPupils = await pupilDataService.saveMultiple([ pupil1, pupil2 ])
+      const savedPupils = await pupilDataService.updateMultiple([ pupil1, pupil2 ])
       expect(savedPupils.length).toBe(2)
+      expect(mockPupil.verify()).toBe(true)
     })
   })
 })

@@ -19,8 +19,8 @@ And(/^I create new check window with valid data$/) do
                         check_start_day: @today_date.next_month.day,
                         check_start_mon: @today_date.next_month.month,
                         check_start_year: @today_date.next_year.year,
-                        check_end_day: @today_date.day,
-                        check_end_mon: @today_date.next_month.next_month.month,
+                        check_end_day: @today_date.next_day.day,
+                        check_end_mon: @today_date.next_month.month,
                         check_end_year: @today_date.next_year.year
   }
   @page.enter_details(@check_window_hash)
@@ -37,7 +37,7 @@ When(/^I update the check window with valid data$/) do
                         check_start_year: @today_date.year,
                         check_end_day: @today_date.day,
                         check_end_mon: @today_date.next_month.next_month.month,
-                        check_end_year: @today_date.year
+                        check_end_year: @today_date.next_year.year
   }
   @page.enter_details(@updated_check_window_hash)
   @page.save_changes.click
