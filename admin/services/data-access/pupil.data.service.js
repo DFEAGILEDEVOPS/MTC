@@ -90,7 +90,7 @@ pupilDataService.update = async function (id, doc) {
 pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
-  await Promise.all(pupils.map(p => Pupil.updateOne({'_id': { $eq: p._id }}, p))).then(results => {
+  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p))).then(results => {
     // all pupils saved ok
     savedPupils = results
   }, error => { throw new Error(error) }
