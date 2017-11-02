@@ -3,199 +3,238 @@
  */
 /* global $ */
 $(function () {
-  var checkboxesStatus = {
+  /**
+   * Select / Deselect links and checkbox.
+   * @type {{toggleAllCheckboxes: toggleAllCheckboxes, selectAll: selectAll, deselectAll: deselectAll}}
+   */
+  var selectStatus = {
     /**
      * Check/uncheck all checkboxes (text links)
      * @param sel
-     * @param e
+     * @param validation
      */
-    toggleAllCheckboxes: function (sel, e) {
-      $('#tickAllCheckboxes').on('change', function () {
-        $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+    toggleAllCheckboxes: function (sel, validation) {
+      $('#tickAllCheckboxes').on('change', function (e) {
+        var validationStatus = true
         var selectAll = $('#selectAll')
-        var unselectAll = $('#unselectAll')
+        var deselectAll = $('#deselectAll')
+
+        if (validation) {
+          validationStatus = validation()
+        }
+
+        $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+
         if (selectAll) {
           if ($(this).is(':checked') === true) {
             selectAll.addClass('all-hide')
-            unselectAll.removeClass('all-hide')
+            deselectAll.removeClass('all-hide')
+            $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+            toggleStickyBanner(validationStatus)
           } else {
-            unselectAll.addClass('all-hide')
+            deselectAll.addClass('all-hide')
             selectAll.removeClass('all-hide')
+            $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+            toggleStickyBanner(false)
           }
         }
       })
     },
     /**
-     * Radio, checkboxes and link interaction for page 'pupils not taking check'.
+     * 'Select all' checkbox link.
      * @param sel
-     * @param e
+     * @param validation
      */
-    checkboxCheckAll: function (sel, e) {
-      if ($(sel)) {
-        var lengthAll = $(sel + ' > tbody div > input:checkbox').length
-        var lengthChecked = $(sel + ' > tbody div > input:checkbox:disabled').length
-
-        if (lengthAll === lengthChecked) {
-          $('#tickAllCheckboxes').prop('disabled', true)
-        } else {
-          $('#tickAllCheckboxes').prop('disabled', false)
+    selectAll: function (sel, validation) {
+      $('#selectAll').on('click', function (e) {
+        var validationStatus
+        if (validation) {
+          validationStatus = validation()
         }
-      }
+        console.log('SELECT ALL')
+        $(this).addClass('all-hide')
+        $('#deselectAll').removeClass('all-hide')
+        $(sel + ' > input:checkbox').attr('data-checked', true)
+        toggleStickyBanner(validationStatus || true)
+      })
+    },
+    /**
+     * 'Deselect all' checkbox link.
+     * @param sel
+     * @param validation
+     */
+    deselectAll: function (sel, validation) {
+      $('#deselectAll').on('click', function (e) {
+        var validationStatus
+        if (validation) {
+          validationStatus = validation()
+        }
+        console.log('DESELECT ALL')
+        $(this).addClass('all-hide')
+        $('#selectAll').removeClass('all-hide')
+        toggleStickyBanner(validationStatus || false)
+        $(sel + ' > input:checkbox').attr('data-checked', null)
+      })
+    },
+    checkboxStatus: function (sel, validation) {
+      console.log('CHECKBOX')
+      $(sel + ' > input:checkbox').on('click', function () {
+        console.log('CHECKBOX TICKED')
+        var validationStatus = true
+        if (validation) {
+          validationStatus = validation()
+        }
+        if ($(this).is(':checked')) {
+          $($(this)).attr('data-checked', true)
+          toggleStickyBanner(validationStatus)
+        } else {
+          $($(this)).attr('data-checked', null)
+          toggleStickyBanner(validationStatus)
+        }
+        //countCheckboxes()
+      })
     }
   }
 
-  if ($('#checkFormsList').length > 0) checkboxesStatus.toggleAllCheckboxes('#checkFormsList')
-  if ($('#pupilsList').length > 0) checkboxesStatus.toggleAllCheckboxes('#pupilsList')
-  if ($('#attendanceList').length > 0) checkboxesStatus.toggleAllCheckboxes('#attendanceList')
-  if ($('#generatePins').length > 0) checkboxesStatus.toggleAllCheckboxes('#generatePins')
+  /**
+   * Enable/disable confirmation button from sticky banner.
+   * @param status
+   */
+  var toggleStickyBanner = function (status) {
+    console.log('STICKY BANNER STATUS', status)
+    if (status === true) {
+      $('#stickyBanner').addClass('show')
+    } else {
+      $('#stickyBanner').removeClass('show')
+    }
+  }
 
-  if ($('#checkFormsList').length > 0) checkboxesStatus.checkboxCheckAll('#checkFormsList')
-  if ($('#pupilsList').length > 0) checkboxesStatus.checkboxCheckAll('#pupilsList')
-  if ($('#attendanceList').length > 0) checkboxesStatus.checkboxCheckAll('#attendanceList')
-  if ($('#generatePins').length > 0) checkboxesStatus.checkboxCheckAll('#generatePins')
+  /**
+   * Count checkboxes, populate sticky <span>.
+   */
+  // var countCheckboxes = function () {
+  //   var el = $('.multiple-choice-mtc > input:checkbox:checked')
+  //   $('#totalPupilsSelected').text(el.length)
+  // }
 
   /**
    * Pupils not taking the check methods.
    */
-  var pupilsNotTakingCheck = function () {
-    /**
-     * Enable/disable confirmation button from sticky banner.
-     * @param status
-     */
-    var enableButtonStatus = function (status) {
-      if (status === true) {
-        $('#stickyBanner').addClass('show')
-      } else {
-        $('#stickyBanner').removeClass('show')
-      }
-    }
-
+  var pupilsNotTakingCheck = {
     /**
      * Is radio button checked?
      */
-    var isRadioChecked = function () {
+    isRadioChecked: function () {
       var el = $('input:radio[name="attendanceCode"]:checked')
-      if (el.length > 0) {
-        enableButtonStatus(true)
-      } else {
-        enableButtonStatus(false)
-      }
-    }
-
-    /**
-     * Count checkboxes, populate sticky <span>.
-     */
-    var countCheckboxes = function () {
-      var el = $('.multiple-choice-mtc > input:checkbox:checked')
-      $('#totalPupilsSelected').text(el.length)
-    }
-
+      return (el.length > 0)
+    },
     /**
      * Is there at least one checkbox checked?
      */
-    var isCheckboxChecked = function () {
+    isCheckboxChecked: function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked')
-      if (el.length > 0) {
-        enableButtonStatus(true)
-      } else {
-        enableButtonStatus(false)
-      }
+      return (el.length > 0)
+    },
+    validateForm: function () {
+      return (pupilsNotTakingCheck.isRadioChecked() && pupilsNotTakingCheck.isCheckboxChecked())
     }
 
     /**
      * 'Select all' checkboxes link.
      */
-    $('#selectAll').on('click', function (e) {
-      console.log('SELECT ALL')
-      $(this).addClass('all-hide')
-      $('#unselectAll').removeClass('all-hide')
-      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-      isRadioChecked()
-      countCheckboxes()
-      enableButtonStatus(true)
-    })
+    // $('#selectAll').on('click', function (e) {
+    //   console.log('SELECT ALL')
+    //   $(this).addClass('all-hide')
+    //   $('#deselectAll').removeClass('all-hide')
+    //   $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+    //   isRadioChecked()
+    //   countCheckboxes()
+    //   toggleStickyBanner(true)
+    // })
 
     /**
-     * 'Unselect all' checkboxes link.
+     * 'Deselect all' checkboxes link.
      */
-    $('#unselectAll').on('click', function (e) {
-      console.log('UNSELECT ALL')
-      $(this).addClass('all-hide')
-      $('#selectAll').removeClass('all-hide')
-      enableButtonStatus(false)
-      $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-    })
+    // $('#deselectAll').on('click', function (e) {
+    //   console.log('DESELECT ALL')
+    //   $(this).addClass('all-hide')
+    //   $('#selectAll').removeClass('all-hide')
+    //   toggleStickyBanner(false)
+    //   $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+    // })
 
     /**
      * Check all checkbox.
      */
-    $('#tickAllCheckboxes').on('change', function () {
-      if ($(this).is(':checked') === true) {
-        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-        isRadioChecked()
-      } else {
-        $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
-        enableButtonStatus(false)
-      }
-      countCheckboxes()
-    })
+    // $('#tickAllCheckboxes').on('change', function () {
+    //   if ($(this).is(':checked') === true) {
+    //     //$('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
+    //     isRadioChecked()
+    //   } else {
+    //     //$('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
+    //     toggleStickyBanner(false)
+    //   }
+    //   countCheckboxes()
+    // })
 
     /**
      * Radios buttons.
      */
-    $('input:radio[name="attendanceCode"]').on('click', function () {
-      $('input:radio[name="attendanceCode"]').attr('data-checked', null)
-      if ($('input:radio[name="attendanceCode"]').is(':checked')) {
-        $($(this)).attr('data-checked', true)
-        isCheckboxChecked()
-        countCheckboxes()
-      }
-    })
+    // $('input:radio[name="attendanceCode"]').on('click', function () {
+    //   $('input:radio[name="attendanceCode"]').attr('data-checked', null)
+    //   if ($('input:radio[name="attendanceCode"]').is(':checked')) {
+    //     $($(this)).attr('data-checked', true)
+    //     isCheckboxChecked()
+    //     countCheckboxes()
+    //   }
+    // })
 
     /**
      * Checkboxes.
      */
-    $('.multiple-choice-mtc > input:checkbox').on('click', function () {
-      if ($(this).is(':checked')) {
-        $($(this)).attr('data-checked', true)
-        isRadioChecked()
-      } else {
-        $($(this)).attr('data-checked', null)
-        isCheckboxChecked()
-      }
-      countCheckboxes()
-    })
+    // $('.multiple-choice-mtc > input:checkbox').on('click', function () {
+    //   if ($(this).is(':checked')) {
+    //     $($(this)).attr('data-checked', true)
+    //     isRadioChecked()
+    //   } else {
+    //     $($(this)).attr('data-checked', null)
+    //     isCheckboxChecked()
+    //   }
+    //   countCheckboxes()
+    // })
   }
 
   /**
-   * 'Generate pins' methods.
+   * Pupils not taking the check methods.
    */
-  var generatePins = function () {
-    $('#generatePins .multiple-choice-mtc > input:checkbox').on('click', function () {
-      console.log('GENERATE PINS CLICK')
-      var el = $('#generatePins .multiple-choice-mtc > input:checkbox:checked')
-      if (el.length > 0 || ($('#selectAll').hasClass('all-hide'))) {
-        console.log('SHOW STICKY BANNER (2)')
-        $('#stickyBanner').addClass('show')
-      } else {
-        console.log('HIDE STICKY BANNER')
-        $('#stickyBanner').removeClass('show')
-      }
-    })
+  var generatePins = {
+    /**
+     * Is there at least one checkbox checked?
+     */
+    isCheckboxChecked: function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      return (el.length > 0)
+    }
   }
 
   /**
-   * 'Pupils not taking the check' page.
+   * Page based implementations.
    */
-  if ($('#pupils-not-taking-checks .list.attendance-code-list')) {
-    pupilsNotTakingCheck()
+  if ($('#checkFormsList').length > 0) selectStatus.toggleAllCheckboxes('#checkFormsList')
+  if ($('#attendanceList').length > 0) selectStatus.toggleAllCheckboxes('#attendanceList')
+
+  if ($('#pupilsList').length > 0) {
+    selectStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
+    selectStatus.selectAll('.multiple-choice-mtc')
+    selectStatus.deselectAll('.multiple-choice-mtc')
+    selectStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
   }
 
-  /**
-   * 'Generate pins' page,
-   */
-  if ($('#generatePins')) {
-    generatePins()
+  if ($('#generatePins').length > 0) {
+    selectStatus.toggleAllCheckboxes('#generatePins')
+    selectStatus.selectAll('.multiple-choice-mtc')
+    selectStatus.deselectAll('.multiple-choice-mtc')
+    selectStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
   }
 
   $('input:file').on('change', function (e) {
