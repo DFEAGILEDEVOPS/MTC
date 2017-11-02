@@ -4,6 +4,7 @@ const moment = require('moment')
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
 const gdsLongFormat = 'DD MMM YYYY'
+const customFormat = 'dddd DD MMMM'
 
 const dateService = {
   formatFullGdsDate: (date) => {
@@ -16,6 +17,10 @@ const dateService = {
 
   formatLongGdsDate: (date) => {
     return moment(date).format(gdsLongFormat)
+  },
+
+  formatCustomDate: (date) => {
+    return moment(date).format(customFormat)
   }
 }
 
