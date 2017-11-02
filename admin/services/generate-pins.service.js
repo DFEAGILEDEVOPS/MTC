@@ -53,15 +53,12 @@ const generatePinService = {
     let pupils = []
     // fetch pupils
     const ids = data.map(id => mongoose.Types.ObjectId(id))
-    console.log('the checked ids are..', ids)
-    for (var index = 0; index < ids.length; index++) {
-      var id = ids[index]
+    for (let index = 0; index < ids.length; index++) {
+      const id = ids[index]
       const pupil = await pupilDataService.findOne(id)
       pupils.push(pupil)
     }
     // pupils = await pupilDataService.find({ _id: { $in: ids } })
-    console.log('the returned pupils are...')
-    console.dir(pupils)
     // Apply the updates to the pupil object(s)
     pupils.forEach(pupil => {
       if (!generatePinService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
