@@ -2,6 +2,7 @@ const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const randomGenerator = require('../lib/random-generator')
+const mongoose = require('mongoose')
 
 const fourPMToday = () => {
   return moment().startOf('day').add(16, 'hours')
@@ -51,8 +52,16 @@ const generatePinService = {
     const data = Object.values(pupilsList || null)
     let pupils = []
     // fetch pupils
-    const ids = data.map(id => id)
-    pupils = await pupilDataService.find({ _id: { $in: ids } })
+    const ids = data.map(id => mongoose.Types.ObjectId(id))
+    console.log('the checked ids are..', ids)
+    for (var index = 0; index < ids.length; index++) {
+      var id = ids[index]
+      const pupil = await pupilDataService.findOne(id)
+      pupils.push(pupil)
+    }
+    // pupils = await pupilDataService.find({ _id: { $in: ids } })
+    console.log('the returned pupils are...')
+    console.dir(pupils)
     // Apply the updates to the pupil object(s)
     pupils.forEach(pupil => {
       if (!generatePinService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {

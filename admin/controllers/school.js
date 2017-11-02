@@ -542,30 +542,31 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   const postedPupils = req.body.pupil
+  console.log('checked pupils:', postedPupils.length)
   const pupilsData = await pupilService.fetchMultiplePupils(Object.values(postedPupils))
+  console.log('pupilsData:', pupilsData.length)
 
-  let pupilsToSave = []
   let pupilsList
   let attendanceCodes
   let pupils
 
-  pupilsData.map(async (pupil) => {
+  for (let index = 0; index < pupilsData.length; index++) {
+    var pupil = pupilsData[index]
     pupil.attendanceCode = {
       _id: req.body.attendanceCode,
       dateRecorded: new Date(todayDate),
       byUserName: req.user.UserName,
       byUserEmail: req.user.EmailAddress
     }
-    pupilsToSave.push(pupil)
-  })
+  }
 
   // @TODO: Auditing (to be discussed)
   try {
-    const savedPupils = await Pupil.create(pupilsToSave)
-    if (!savedPupils) {
-      return next(new Error('Cannot save pupils'))
+    for (var index = 0; index < pupilsData.length; index++) {
+      const pupil = pupilsData[index]
+      await pupil.save()
     }
-    req.flash('info', `${savedPupils.length} pupil reasons updated`)
+    req.flash('info', `${pupilsData.length} pupil reasons updated`)
   } catch (error) {
     return next(error)
   }
