@@ -42,8 +42,12 @@ let checkWindowValidationSchema = {
   },
   'checkEndYear': {
     isInt: {
-      options: [{min: currentYear}],
+      options: [{min: currentYear, max: (currentYear * 1 + 10)}],
       errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
+    },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
     },
     matches: {
       options: [XRegExp('^[0-9]+$')],
@@ -88,6 +92,10 @@ const checkWindowValidationSchemaAdminDate = {
       options: [XRegExp('^[0-9]+$')],
       errorMessage: checkWindowErrorMessages.adminStartYearInvalidChars
     },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
+    },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.adminStartYearRequired
   }
@@ -122,6 +130,10 @@ const checkWindowValidationSchemaCheckStart = {
     isInt: {
       options: [{min: currentYear}],
       errorMessage: checkWindowErrorMessages.checkStartYearWrongDay
+    },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
     },
     matches: {
       options: [XRegExp('^[0-9]+$')],

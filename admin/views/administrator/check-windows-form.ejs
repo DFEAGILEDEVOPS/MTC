@@ -165,10 +165,10 @@
             <div class="form-group">
                 <label class="form-label-bold">
                     Check end date
+                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDateBeforeStartDate) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>
-                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDateInThePast) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateInThePast %></span>
                     <% } %>
