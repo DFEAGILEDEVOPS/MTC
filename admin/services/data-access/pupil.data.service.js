@@ -95,7 +95,6 @@ pupilDataService.updateMultiple = async function (pupils) {
     savedPupils = results
   }, error => { throw new Error(error) }
   )
-  console.log(savedPupils)
   return savedPupils
 }
 

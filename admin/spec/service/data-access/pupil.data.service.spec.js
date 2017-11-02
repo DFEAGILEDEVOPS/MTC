@@ -128,7 +128,7 @@ describe('pupil.data.service', () => {
       pupil2._id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'gfd4d'
       mockPupil = sandbox.mock(Pupil).expects('updateOne').twice()
-        .returns([ { n: 1, nModified: 1, ok: 1 }, { n: 1, nModified: 1, ok: 1 } ])
+        .returns({ n: 1, nModified: 1, ok: 1 })
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil,
         '../../models/school': School
