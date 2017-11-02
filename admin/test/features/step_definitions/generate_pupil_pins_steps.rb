@@ -54,7 +54,7 @@ Then(/^I should see a list of pupils sorted by surname in '(.*)' order on Genera
   end
 
   pupils_from_page = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
-  expect(sorted_pupils_from_page).to match(pupils_from_page)
+  expect(sorted_pupils_from_page).to match_array(pupils_from_page)
 end
 
 And(/^I am on Generate pins Pupil List page$/) do
@@ -81,7 +81,7 @@ When(/^I select a Pupil from Generate Pin page$/) do
 end
 
 When(/^I select multiple pupils from Generate Pin Page$/) do
-  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected?}
+  @pupils = generate_pupil_pins_page.pupil_list.rows.select {|row| row.has_no_selected?}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
@@ -95,6 +95,11 @@ When(/^I have generated a pin for a pupil$/) do
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
   @pupil_name = generate_pupil_pins_page.generate_pin_using_name(name)
+
+  ct = Time.now
+  newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  MongoDbHelper.set_school_pin_expiry('1001', newTime)
 end
 
 Given(/^I have generated pin for all pupil$/) do
@@ -115,12 +120,20 @@ end
 Given(/^I have generated pins for multiple pupils$/) do
   step "I am logged in"
   step "I am on Generate pins Pupil List page"
-  step "I select multiple pupils from Generate Pin Page"
-  generate_pupil_pins_page.sticky_banner.confirm.click
+  @pupil_names_arr = generate_pupil_pins_page.generate_pin_for_multiple_pupils(2)
+
+  ct = Time.now
+  newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  @pupil_names_arr.each do|pupil|
+    pupil_lastname = pupil.split(',')[0]
+    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+    MongoDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
+  end
+  MongoDbHelper.set_school_pin_expiry('1001', newTime)
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  @pupil_names.each {|name| expect(generate_pupil_pins_page.find_pupil_row(name)).to have_pin}
+  @pupil_names_arr.each {|name| expect(generate_pupil_pins_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
