@@ -329,7 +329,6 @@ const saveCheckWindows = async (req, res, next) => {
     await checkWindow.save()
     req.flash('info', flashMessage)
   } catch (error) {
-    console.log('Could not save check windows data.', error)
     return next(error)
   }
 
@@ -357,7 +356,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   if (checkWindow) {
-    if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
+    if (Date.parse(checkWindow.checkStartDate) < moment.now()) {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {

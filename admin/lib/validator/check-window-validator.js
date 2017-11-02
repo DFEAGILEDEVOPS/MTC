@@ -5,7 +5,7 @@ const errorConverter = require('../error-converter')
 const checkWindowErrorMessages = require('../errors/check-window')
 const XRegExp = require('xregexp')
 const moment = require('moment')
-const currentYear = moment.utc(Date.now()).format('YYYY')
+const currentYear = moment.utc(moment.now()).format('YYYY')
 
 let checkWindowValidationSchema = {
   'checkWindowName': {
@@ -201,7 +201,7 @@ module.exports.validate = function (req) {
         const result = await req.getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
-        if (adminStartDate !== undefined) {
+        if (adminStartDate !== undefined && moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', moment(currentDate).isAfter(adminStartDate))
         }
 
