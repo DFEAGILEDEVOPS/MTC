@@ -101,7 +101,9 @@ describe('school controller:', () => {
 
     describe('Save reason for pupil', () => {
       beforeEach(() => {
-        spyOn(pupilService, 'fetchMultiplePupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        const pupil = Object.assign({}, pupilsWithReasonsMock)
+        pupil.save = () => {}
+        spyOn(pupilService, 'fetchMultiplePupils').and.returnValue(Promise.resolve(pupil))
         spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
         spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
         spyOn(pupilsNotTakingCheckDataService, 'fetchPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
