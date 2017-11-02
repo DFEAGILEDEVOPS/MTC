@@ -253,13 +253,13 @@ const postGeneratePins = async (req, res, next) => {
   let school
   try {
     submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
-    await pupilDataService.saveMultiple(submittedPupils)
+    await pupilDataService.updateMultiple(submittedPupils)
     school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    school = generatePinsService.generateSchoolPassword(school)
-    await schoolDataService.save(school)
+    const { schoolPin, pinExpiresAt } = generatePinsService.generateSchoolPassword(school)
+    await schoolDataService.update(school._id, {schoolPin, pinExpiresAt})
   } catch (error) {
     return next(error)
   }

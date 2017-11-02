@@ -68,7 +68,7 @@ pupilDataService.findOne = async function (options) {
  * @return {Promise.<{Object}>}
  */
 pupilDataService.find = async function (options) {
-  const p = await Pupil.find(options).exec()
+  const p = await Pupil.find(options).lean().exec()
   return p
 }
 
@@ -87,14 +87,15 @@ pupilDataService.update = async function (id, doc) {
   })
 }
 
-pupilDataService.saveMultiple = async function (pupils) {
+pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
-  await Promise.all(pupils.map(p => p.save())).then(results => {
+  await Promise.all(pupils.map(p => Pupil.updateOne({'_id': { $eq: p._id }}, p))).then(results => {
     // all pupils saved ok
     savedPupils = results
   }, error => { throw new Error(error) }
   )
+  console.log(savedPupils)
   return savedPupils
 }
 
