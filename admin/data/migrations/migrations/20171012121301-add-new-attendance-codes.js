@@ -51,4 +51,3 @@ function createAttendanceCode (reason, code, order) {
     }
   })
 }
-

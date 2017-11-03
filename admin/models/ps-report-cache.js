@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
 const PsReportCache = new Schema({
-  checkId: {
+  check: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Check'
@@ -18,4 +18,4 @@ const PsReportCache = new Schema({
   timestamps: true
 })
 
-module.exports = mongoose.model('PsReportCache', PsReportCache)
+module.exports = mongoose.model('PsReportCache', PsReportCache, 'psreportcache')
