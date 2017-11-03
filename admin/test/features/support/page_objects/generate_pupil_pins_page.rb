@@ -6,7 +6,7 @@ class GeneratePupilPinsPage < SitePrism::Page
   elements :info_message, '.list-number li'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :generate_more_pin_btn, 'input[value="Generate more PINs"]'
-  element :school_password, '.column-two-thirds'
+  element :school_password, '.column-two-thirds br'
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'
