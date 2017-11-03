@@ -63,7 +63,7 @@
         <% if (!!school) { %>
         <b><%= school.name %>'s password for the day:</b>
         <br>
-        <%= school.schoolPin %>
+        <span id="school-pin"><%= school.schoolPin %></span>
         <% } else { %>
         No active password
         <% } %>

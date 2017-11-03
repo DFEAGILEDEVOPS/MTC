@@ -19,7 +19,7 @@ const dateService = {
     return moment(date).format(gdsLongFormat)
   },
 
-  formatCustomDate: (date) => {
+  formatDayAndDate: (date) => {
     return moment(date).format(customFormat)
   }
 }
