@@ -253,13 +253,13 @@ const postGeneratePins = async (req, res, next) => {
   let school
   try {
     submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
-    await pupilDataService.saveMultiple(submittedPupils)
+    await pupilDataService.updateMultiple(submittedPupils)
     school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    school = generatePinsService.generateSchoolPassword(school)
-    await schoolDataService.save(school)
+    const { schoolPin, pinExpiresAt } = generatePinsService.generateSchoolPassword(school)
+    await schoolDataService.update(school._id, {schoolPin, pinExpiresAt})
   } catch (error) {
     return next(error)
   }
@@ -543,30 +543,31 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   const postedPupils = req.body.pupil
+  console.log('checked pupils:', postedPupils.length)
   const pupilsData = await pupilService.fetchMultiplePupils(Object.values(postedPupils))
+  console.log('pupilsData:', pupilsData.length)
 
-  let pupilsToSave = []
   let pupilsList
   let attendanceCodes
   let pupils
 
-  pupilsData.map(async (pupil) => {
+  for (let index = 0; index < pupilsData.length; index++) {
+    var pupil = pupilsData[index]
     pupil.attendanceCode = {
       _id: req.body.attendanceCode,
       dateRecorded: new Date(todayDate),
       byUserName: req.user.UserName,
       byUserEmail: req.user.EmailAddress
     }
-    pupilsToSave.push(pupil)
-  })
+  }
 
   // @TODO: Auditing (to be discussed)
   try {
-    const savedPupils = await Pupil.create(pupilsToSave)
-    if (!savedPupils) {
-      return next(new Error('Cannot save pupils'))
+    for (var index = 0; index < pupilsData.length; index++) {
+      const pupil = pupilsData[index]
+      await pupil.save()
     }
-    req.flash('info', `${savedPupils.length} pupil reasons updated`)
+    req.flash('info', `${pupilsData.length} pupil reasons updated`)
   } catch (error) {
     return next(error)
   }
