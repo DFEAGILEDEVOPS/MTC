@@ -12,6 +12,15 @@
         <header class="page-header">
             <h1 class="heading-xlarge">Generate pupil PINs</h1>
         </header>
+        <div class="govuk-box-highlight">
+            <div class="font-small">
+                <strong class="bold">
+                    Pupil PINs and school password generated
+                </strong>
+                <br>
+                Valid only until 4pm, <%= date %>
+            </div>
+        </div>
     </div>
     <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
         <aside role="complementary" class="support-column">
@@ -35,15 +44,7 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div class="govuk-box-highlight">
-            <div class="font-small">
-                <strong class="bold">
-                    Pupil PINs and school password generated
-                </strong>
-                <br>
-                Valid only until 4pm, <%= date %>
-            </div>
-        </div>
+
     </div>
 </div>
 
@@ -58,7 +59,7 @@
     <div class="column-two-thirds">
         <div>
             <div class="icon-file-download pupils-template"></div>
-                <b><a class="template-link" href="#">Download all pupil PINs and school password</a></b>
+                <b><a class="template-link" href="/school/print-pins">Download all pupil PINs and school password</a></b>
         </div>
         <br>
         <div>
