@@ -56,6 +56,22 @@ describe('pupil.data.service', () => {
     })
   })
 
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Pupil).expects('find').chain('lean').chain('exec').resolves(pupilMock)
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil
+      })
+    })
+
+    it('calls the model', () => {
+      service.find({_id: 'some-id'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
   describe('#update', () => {
     let mock
     beforeEach(() => {
