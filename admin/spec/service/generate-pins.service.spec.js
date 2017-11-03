@@ -98,13 +98,13 @@ describe('generate-pins.service', () => {
         pupil2 = Object.assign({}, pupilMock)
         pupil2._id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
-        sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('findOne').twice().resolves(pupil1)
         proxyquire('../../services/generate-pins.service', {
           '../../services/pupil.service': pupilDataService
         })
       })
       it('when pin has not been generated', async (done) => {
-        const pupils = await generatePinsService.generatePupilPins([ pupil1, pupil2 ])
+        const pupils = await generatePinsService.generatePupilPins([ pupil1._id, pupil2._id ])
         expect(pupils[ 0 ].pin.length).toBe(5)
         expect(pupils[ 0 ].pinExpiresAt).toBeDefined()
         done()
@@ -123,14 +123,14 @@ describe('generate-pins.service', () => {
         pupil2.pin = 'fdsgs'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'months').valueOf())
-        sandbox.mock(pupilDataService).expects('find').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('findOne').twice().resolves(pupil1)
         proxyquire('../../services/generate-pins.service', {
           '../../services/pupil.service': pupilDataService
         })
       })
       it('when existing expiration date is before same day 4pm', async (done) => {
         const pin = pupil1.pin
-        const pupils = await generatePinsService.generatePupilPins([ pupil1, pupil2 ])
+        const pupils = await generatePinsService.generatePupilPins([ pupil1._id, pupil2._id ])
         expect(pupils[ 0 ].pin).toBe(pin)
         done()
       })
