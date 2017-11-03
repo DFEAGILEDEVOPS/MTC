@@ -33,3 +33,14 @@ And(/^I should see the updated pupil details on the pupil register page$/) do
   pupil_list = pupil_register_page.pupil_list.pupil_row.map {|x| x.names.text}
   expect(pupil_list).to include(@updated_details_hash[:last_name] + ', ' + @updated_details_hash[:first_name])
 end
+
+And(/^I choose to add a pupil by clicking Add Pupils link$/) do
+  pupil_register_page.add_pupil.click
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{pupil_name}"
+end
+
+And(/^I choose to edit the first pupil in the list$/) do
+  pupil_register_page.pupil_list.pupil_row.first.edit_pupil_link.click
+end

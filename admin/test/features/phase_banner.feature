@@ -21,7 +21,7 @@ Feature:
 
   Scenario: Development phase and the feedback link are displayed at the top of the Pupil Register page
     Given I am logged in
-    When I am on the manage pupil page
+    When I am on the Pupil Register page
     Then I should see that we are in the beta development phase on the pupil_register page
     And I should see a new tab open when i want to provide feedback link from the pupil_register page
 
