@@ -41,7 +41,7 @@ module.exports = {
   checkEndYearRequired: 'Check end year is required',
 
   adminDateInThePast: 'Enter a start date in the future',
-  checkDateBeforeAdminDate: '"Administration start date" must be before the "Check start date"',
+  checkDateBeforeAdminDate: '"Check start date" must be before the "Administration start date"',
   checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
   checkStartDateInThePast: '"Check start date" must be in the future',
   checkEndDateInThePast: '"Check end date" must be in the future',
