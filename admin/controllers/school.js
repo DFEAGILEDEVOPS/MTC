@@ -271,7 +271,7 @@ const getGeneratedPinsList = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let school
-  const date = dateService.formatDayAndDate()
+  const date = dateService.formatDayAndDate(new Date())
   try {
     pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
     school = await generatePinsService.getActiveSchool(req.user.School)
