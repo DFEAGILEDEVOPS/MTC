@@ -16,18 +16,35 @@ describe('PsReportCacheDataService', () => {
 
   afterEach(() => sandbox.restore())
 
-  describe('#create', () => {
+  describe('#save', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(PsReportCache.prototype).expects('save').resolves({})
+      mock = sandbox.mock(PsReportCache).expects('update').chain('exec').resolves({})
       service = proxyquire('../../../services/data-access/ps-report-cache.data.service', {
         '../../models/ps-report-cache': PsReportCache
       })
     })
 
     it('validates the mock', async (done) => {
-      await service.create({ mock: 'object' })
+      await service.save({ mock: 'object' })
+      expect(mock.verify()).toBe(true)
+      done()
+    })
+  })
+
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(PsReportCache).expects('find').chain('lean').chain('exec').resolves({})
+      service = proxyquire('../../../services/data-access/ps-report-cache.data.service', {
+        '../../models/ps-report-cache': PsReportCache
+      })
+    })
+
+    it('validates the mock', async (done) => {
+      await service.find({ mock: 'object' })
       expect(mock.verify()).toBe(true)
       done()
     })

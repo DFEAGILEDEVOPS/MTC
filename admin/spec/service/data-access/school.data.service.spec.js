@@ -21,14 +21,14 @@ describe('school.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sinon.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
+      mock = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
       service = proxyquire('../../../services/data-access/school.data.service', {
         '../../models/school': School
       })
     })
 
     it('calls the model', () => {
-      service.findOne({_id: 'some-id'})
+      service.findOne({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
     })
   })
@@ -39,12 +39,28 @@ describe('school.data.service', () => {
     beforeEach(() => {
       school = Object.assign({}, schoolMock)
       School.updateOne = () => {}
-      mock = sinon.mock(School).expects('updateOne').resolves({})
+      mock = sandbox.mock(School).expects('updateOne').resolves({})
       service = require('../../../services/data-access/school.data.service')
     })
 
     it('calls the model', () => {
       service.update(school._id, { name: school.name })
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#find', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(School).expects('find').chain('lean').chain('exec').resolves(schoolMock)
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        '../../models/school': School
+      })
+    })
+
+    it('calls the model', () => {
+      service.find({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
     })
   })
