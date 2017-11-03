@@ -49,6 +49,22 @@ describe('check.data.service', () => {
     })
   })
 
+  describe('#findFullyPopulated', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check).expects('find').chain('populate').chain('lean').chain('exec').resolves(checkMock)
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.findFullyPopulated({'testCriteria': 'someValue'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
   describe('#count', () => {
     let mock
 

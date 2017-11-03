@@ -80,4 +80,14 @@ completedCheckDataService.findUnmarked = async function (batchSize) {
   return batchIds.map(b => b._id)
 }
 
+/**
+ * Generalised update function - use with care
+ * @param query
+ * @param criteria
+ * @return {Promise}
+ */
+completedCheckDataService.update = async function (query, criteria, options = {}) {
+  return CompletedChecks.update(query, criteria, options).exec()
+}
+
 module.exports = completedCheckDataService
