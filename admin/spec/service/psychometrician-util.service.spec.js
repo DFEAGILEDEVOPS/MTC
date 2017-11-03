@@ -11,95 +11,12 @@ const completedCheckMockOrig = require('../mocks/completed-check-with-results')
 const pupilMockOrig = require('../mocks/pupil')
 const schoolMockOrig = require('../mocks/school')
 
+const keyboardInput = require('../mocks/keyboard-input')
+const touchInput = require('../mocks/touch-input')
+const mouseInput = require('../mocks/mouse-input')
+
 describe('psychometrician-util.service', () => {
   let completedCheckMock
-
-  const keyboardInput = [
-    {
-      'question': 1,
-      'clientInputDate': '2017-10-17T18:20:44.447Z',
-      'eventType': 'keydown',
-      'input': '1'
-    },
-    {
-      'question': 1,
-      'clientInputDate': '2017-10-17T18:20:44.558Z',
-      'eventType': 'keydown',
-      'input': '0'
-    },
-    {
-      'question': 1,
-      'clientInputDate': '2017-10-17T18:20:44.678Z',
-      'eventType': 'keydown',
-      'input': 'Enter'
-    }
-  ]
-
-  const touchStartInput = [
-    {
-      'clientInputDate': '2017-10-09T09:50:06.6Z',
-      'eventType': 'touchstart',
-      'input': ''
-    },
-    {
-      'clientInputDate': '2017-10-09T09:50:06.675Z',
-      'eventType': 'click',
-      'input': '1'
-    },
-    {
-      'clientInputDate': '2017-10-09T09:50:07.099Z',
-      'eventType': 'touchstart',
-      'input': ''
-    },
-    {
-      'clientInputDate': '2017-10-09T09:50:07.17Z',
-      'eventType': 'click',
-      'input': '0'
-    },
-    {
-      'clientInputDate': '2017-10-09T09:50:07.708Z',
-      'eventType': 'touchstart',
-      'input': ''
-    }
-  ]
-
-  const mouseInput = [
-    {
-      'clientInputDate': '2017-10-13T09:06:53.692Z',
-      'eventType': 'mousedown',
-      'input': 'left click'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:53.817Z',
-      'eventType': 'click',
-      'input': '2'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:54.197Z',
-      'eventType': 'mousedown',
-      'input': 'left click'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:54.298Z',
-      'eventType': 'click',
-      'input': '5'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:55.234Z',
-      'eventType': 'mousedown',
-      'input': 'left click'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:55.334Z',
-      'eventType': 'click',
-      'input': 'backspace'
-    },
-    {
-      'clientInputDate': '2017-10-13T09:06:55.663Z',
-      'eventType': 'mousedown',
-      'input': 'left click'
-    }
-  ]
 
   beforeEach(() => {
     completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
@@ -212,7 +129,7 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns a string showing all the user input for touch events', () => {
-      const t = service.getUserInput(touchStartInput)
+      const t = service.getUserInput(touchInput)
       expect(t).toBe('t[1], t[0]')
     })
 
@@ -242,7 +159,7 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns the timestamp as a string from the last input', () => {
-      const res = service.getLastAnswerInputTime(touchStartInput)
+      const res = service.getLastAnswerInputTime(touchInput)
       expect(res).toBe('2017-10-09T09:50:07.708Z')
     })
 
@@ -327,7 +244,7 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry', () => {
-      const input = [...touchStartInput]
+      const input = [...touchInput]
       input.push({
         'clientInputDate': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
