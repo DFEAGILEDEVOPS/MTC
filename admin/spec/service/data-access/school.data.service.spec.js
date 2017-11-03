@@ -21,7 +21,7 @@ describe('school.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(School).expects('findOne').chain('exec').resolves(schoolMock)
+      mock = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').resolves(schoolMock)
       service = proxyquire('../../../services/data-access/school.data.service', {
         '../../models/school': School
       })
@@ -33,18 +33,18 @@ describe('school.data.service', () => {
     })
   })
 
-  describe('#save', () => {
+  describe('#update', () => {
     let school
     let mock
     beforeEach(() => {
       school = Object.assign({}, schoolMock)
-      school.save = () => {}
-      mock = sandbox.mock(school).expects('save').resolves(schoolMock)
+      School.updateOne = () => {}
+      mock = sandbox.mock(School).expects('updateOne').resolves({})
       service = require('../../../services/data-access/school.data.service')
     })
 
     it('calls the model', () => {
-      service.save(school)
+      service.update(school._id, { name: school.name })
       expect(mock.verify()).toBe(true)
     })
   })

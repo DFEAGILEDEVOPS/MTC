@@ -58,16 +58,8 @@ pupilDataService.insertMany = async (pupils) => {
  * @return {Promise.<{Object}>}
  */
 pupilDataService.findOne = async function (options) {
-  return Pupil.findOne(options).populate('school').lean().exec()
-}
-
-/**
- * Find pupils by criteria in `options`
- * @param options
- * @return {Promise.<{Object}>}
- */
-pupilDataService.find = async function (options) {
-  return Pupil.find(options).lean().exec()
+  const p = await Pupil.findOne(options).populate('school').lean().exec()
+  return p
 }
 
 /**
@@ -75,8 +67,8 @@ pupilDataService.find = async function (options) {
  * @param options
  * @return {Promise.<{Object}>}
  */
-pupilDataService.findXXX = async function (options) {
-  const p = await Pupil.find(options).exec()
+pupilDataService.find = async function (options) {
+  const p = await Pupil.find(options).lean().exec()
   return p
 }
 
@@ -95,10 +87,10 @@ pupilDataService.update = async function (id, doc) {
   })
 }
 
-pupilDataService.saveMultiple = async function (pupils) {
+pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
-  await Promise.all(pupils.map(p => p.save())).then(results => {
+  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p))).then(results => {
     // all pupils saved ok
     savedPupils = results
   }, error => { throw new Error(error) }
