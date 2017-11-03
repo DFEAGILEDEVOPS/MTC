@@ -147,7 +147,7 @@ $(function () {
      */
     isRadioChecked: function () {
       var el = $('input:radio[name="attendanceCode"]:checked')
-      return (el.length > 0)
+      return el.length > 0
     },
     /**
      * Is there at least one checkbox checked?
@@ -155,10 +155,10 @@ $(function () {
      */
     isCheckboxChecked: function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked')
-      return (el.length > 0)
+      return el.length > 0
     },
     validateForm: function () {
-      return (pupilsNotTakingCheck.isRadioChecked() && pupilsNotTakingCheck.isCheckboxChecked())
+      return pupilsNotTakingCheck.isRadioChecked() && pupilsNotTakingCheck.isCheckboxChecked()
     }
   }
 
@@ -169,7 +169,7 @@ $(function () {
   var generatePins = {
     isCheckboxChecked: function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked')
-      return (el.length > 0)
+      return el.length > 0
     }
   }
 
