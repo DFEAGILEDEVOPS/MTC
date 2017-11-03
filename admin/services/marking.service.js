@@ -16,7 +16,7 @@ markingService.batchMark = async function (batchIds) {
 
   for (let cc of completedChecks) {
     try {
-      this.mark(cc)
+      await this.mark(cc)
     } catch (error) {
       console.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
