@@ -8,7 +8,10 @@ const schoolDataService = require('../../services/data-access/school.data.servic
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const generatePinsService = require('../../services/generate-pins.service')
 const schoolMock = require('../mocks/school')
-const pupilMock = require('../mocks/pupil')
+const pupilMockOrig = require('../mocks/pupil')
+const pupilMock = {}
+// Prevent node require caching the school under the pupil mock
+Object.assign(pupilMock, pupilMockOrig)
 pupilMock.school = schoolMock
 
 describe('pupil authentication service', () => {
