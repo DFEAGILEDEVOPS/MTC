@@ -90,6 +90,16 @@ class MongoDbHelper
                                {'$set' => {'pin' => newPin}})
   end
 
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,newTime)
+    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+                               {'$set' => {'pinExpiresAt' => newTime}})
+  end
+
+  def self.set_school_pin_expiry(estab_code,newTime)
+    CLIENT[:schools].update_one({'estabCode': estab_code},
+                               {'$set' => {'pinExpiresAt' => newTime}})
+  end
+
   def self.get_settings
     collection = CLIENT[:settings].find()
     collection.find.each {|setting| setting}
