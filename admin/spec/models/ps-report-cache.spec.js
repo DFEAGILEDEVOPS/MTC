@@ -10,7 +10,7 @@ describe('PsReportCache schema', () => {
 
   beforeEach(() => {
     model = new PsReportCache({
-      checkId: Types.ObjectId(),
+      check: Types.ObjectId(),
       data: {a: 'Col A', b: 'Col B'}
     })
   })
@@ -25,12 +25,12 @@ describe('PsReportCache schema', () => {
     })
   })
 
-  it('requires the checkId field', async (done) => {
-    model.checkId = undefined
+  it('requires the check field', async (done) => {
+    model.check = undefined
 
     model.validate(err => {
       expect(err).toBeDefined()
-      expect(err.errors.checkId).toBeTruthy()
+      expect(err.errors.check).toBeTruthy()
       done()
     })
   })

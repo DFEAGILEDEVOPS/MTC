@@ -1,7 +1,5 @@
 'use strict'
-const moment = require('moment')
-
-/* global describe expect it */
+/* global describe expect it beforeEach */
 
 const proxyquire = require('proxyquire').noCallThru()
 

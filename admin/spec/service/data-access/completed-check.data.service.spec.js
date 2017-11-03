@@ -149,4 +149,24 @@ describe('completed-checks.data.service', () => {
       done()
     })
   })
+
+  describe('#update', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(CompletedChecks)
+        .expects('update')
+        .chain('exec')
+        .resolves(mongoResponseMock)
+      service = proxyquire('../../../services/data-access/completed-check.data.service', {
+        '../../models/completed-checks': CompletedChecks
+      })
+    })
+
+    it('makes the expected calls', async (done) => {
+      await service.update({}, {$set: {isMock: true}})
+      expect(mock.verify()).toBe(true)
+      done()
+    })
+  })
 })

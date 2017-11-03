@@ -150,7 +150,7 @@ describe('markingService', () => {
 
     it('ignores errors from mark() and carries on processing', async (done) => {
       serviceMarkStub.onSecondCall().throws('mock error')
-      sinon.stub(global.console, 'error')
+      sandbox.stub(global.console, 'error')
       await service.batchMark([1, 2, 3])
       expect(serviceMarkStub.callCount).toBe(3)
       done()
