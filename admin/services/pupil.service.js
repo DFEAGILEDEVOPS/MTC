@@ -21,10 +21,14 @@ const pupilService = {
       .exec()
     return pupil
   },
-  fetchMultiplePupils: (pupilIds) => {
-    return Pupil
-      .find({'_id': { $in: pupilIds }})
-      .exec()
+  fetchMultiplePupils: async (pupilIds) => {
+    const pupils = []
+    for (var index = 0; index < pupilIds.length; index++) {
+      let pupilId = pupilIds[index]
+      const pupil = await Pupil.findOne({'_id': pupilId}).exec()
+      pupils.push(pupil)
+    }
+    return pupils
   },
   /**
    * Fetches latest set of pupils answers who have completed the check.
