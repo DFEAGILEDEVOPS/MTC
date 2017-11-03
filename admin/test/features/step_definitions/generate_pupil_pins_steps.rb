@@ -100,6 +100,8 @@ When(/^I have generated a pin for a pupil$/) do
   newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
   MongoDbHelper.set_school_pin_expiry('1001', newTime)
+
+  step "I am on the generate pupil pins page"
 end
 
 Given(/^I have generated pin for all pupil$/) do
@@ -130,6 +132,7 @@ Given(/^I have generated pins for multiple pupils$/) do
     MongoDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
   end
   MongoDbHelper.set_school_pin_expiry('1001', newTime)
+  step "I am on the generate pupil pins page"
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
@@ -146,4 +149,10 @@ Then(/^the pin should be stored against the pupil$/) do
   wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
   pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
   expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
+end
+
+Then(/^I should see the school password for (.*)$/) do |teacher|
+  school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
+  school_password = MongoDbHelper.find_school(school_id)[0]['schoolPin']
+  expect(generate_pupil_pins_page.school_password.text).to eql school_password
 end

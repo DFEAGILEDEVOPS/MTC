@@ -17,12 +17,6 @@ When(/^I want to manage the pupils$/) do
   manage_pupil_page.load
 end
 
-Then(/^I should see the school password for (.*)$/) do |teacher|
-  school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
-  school_password = MongoDbHelper.find_school(school_id)[0]['schoolPin']
-  expect(manage_pupil_page.school_password_information.password.text).to eql school_password
-end
-
 And(/^I should see the date for the password$/) do
   t = Time.now
   expect(manage_pupil_page.school_password_information.password_date.text).to eql "School password for " + t.strftime("%-d %B %Y")
