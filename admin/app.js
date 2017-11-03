@@ -45,6 +45,9 @@ if (unsetVars.length > 0) {
 }
 
 mongoose.promise = global.Promise
+if (process.env.NODE_ENV !== 'production') {
+  mongoose.set('debug', true)
+}
 const connectionString = config.MONGO_CONNECTION_STRING
 mongoose.connect(connectionString, function (err) {
   if (err) {
