@@ -62,10 +62,6 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
     throw new Error('Invalid argument: completedCheck')
   }
 
-  // Handle null's in older data sets.  This can be removed once
-  // all of the older data is analysed.
-  fixup(completedCheck)
-
   // Generate one line of the report
   const psData = this.produceReportData(completedCheck)
 
@@ -161,11 +157,5 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   return psData
 }
 
-function fixup (completedCheck) {
-  const inputs = completedCheck.data.inputs
-  if (inputs[0] === null) {
-    inputs.shift()
-  }
-}
 
 module.exports = psychometricianReportService
