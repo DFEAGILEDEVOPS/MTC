@@ -137,25 +137,25 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   // Add information for each question asked
   const p = (idx) => 'Q' + (idx + 1).toString()
   completedCheck.data.answers.forEach((ans, idx) => {
+    const qInputs = completedCheck.data.inputs[idx] || []
     psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     psData[p(idx) + 'Response'] = ans.answer
-    psData[p(idx) + 'K'] = psUtilService.getUserInput(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
     psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
-    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(completedCheck.data.inputs[idx], ans)
-    psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(completedCheck.data.inputs[idx], ans)
+    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
+    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
+    psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
+    psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, ans)
     psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
-    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(completedCheck.data.inputs[idx])
-    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
+    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
     psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
     psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(completedCheck.data.inputs[idx])
+    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
     psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
   })
 
   return psData
 }
-
 
 module.exports = psychometricianReportService
