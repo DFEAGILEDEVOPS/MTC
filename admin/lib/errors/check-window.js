@@ -22,26 +22,26 @@ module.exports = {
 
   checkStartMonthWrongDay: 'Please check "Month"',
   checkStartMonthInvalidChars: 'Entry must be numerical',
-  checkStartMonthRequired: 'Check start month is required',
+  checkStartMonthRequired: '"Check start month" is required',
 
   checkStartYearWrongDay: 'Please check "Year"',
   checkStartYearInvalidChars: 'Entry must be numerical',
-  checkStartYearRequired: 'Check start year is required',
+  checkStartYearRequired: '"Check start year" is required',
 
   checkEndDayWrongDay: 'Please check "Day"',
   checkEndDayInvalidChars: 'Entry must be numerical',
-  checkEndDayRequired: 'Check end day is required',
+  checkEndDayRequired: '"Check end day" is required',
 
   checkEndMonthWrongDay: 'Please check "Month"',
   checkEndMonthInvalidChars: 'Entry must be numerical',
-  checkEndMonthRequired: 'Check end month is required',
+  checkEndMonthRequired: '"Check end month" is required',
 
   checkEndYearWrongDay: 'Please check "Year"',
   checkEndYearInvalidChars: 'Entry must be numerical',
-  checkEndYearRequired: 'Check end year is required',
+  checkEndYearRequired: '"Check end year" is required',
 
   adminDateInThePast: 'Enter a start date in the future',
-  checkDateBeforeAdminDate: '"Check start date" must be before the "Administration start date"',
+  checkDateBeforeAdminDate: '"Check start date" must occur after the "Administration start date"',
   checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
   checkStartDateInThePast: '"Check start date" must be in the future',
   checkEndDateInThePast: '"Check end date" must be in the future',

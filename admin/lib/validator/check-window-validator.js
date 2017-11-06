@@ -182,16 +182,16 @@ module.exports.validate = function (req) {
         if (moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', true)
         }
-        if (moment(adminStartDate).isAfter(checkStartDate)) {
+        if (adminStartDate && checkStartDate && moment(adminStartDate).isAfter(checkStartDate)) {
           validationError.addError('checkDateBeforeAdminDate', true)
         }
-        if (moment(checkStartDate).isAfter(checkEndDate)) {
+        if (checkStartDate && checkEndDate && moment(checkStartDate).isAfter(checkEndDate)) {
           validationError.addError('checkStartDateAfterEndDate', true)
         }
-        if (moment(currentDate).isAfter(checkStartDate)) {
+        if (checkStartDate && moment(currentDate).isAfter(checkStartDate)) {
           validationError.addError('checkStartDateInThePast', true)
         }
-        if (moment(currentDate).isAfter(checkEndDate)) {
+        if (checkEndDate && moment(currentDate).isAfter(checkEndDate)) {
           validationError.addError('checkEndDateInThePast', moment(currentDate).isAfter(checkEndDate))
         }
       } else { // Editing
