@@ -477,7 +477,8 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Select pupils not taking the check'
+  res.locals.pageTitle = 'Add reason'
+  req.breadcrumbs('Pupils not taking the check', '/school/pupils-not-taking-check')
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
