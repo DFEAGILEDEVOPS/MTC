@@ -88,7 +88,11 @@ const pupilService = {
     }
     return true
   },
-
+  /**
+   * Adds show Date of Birth flag for pupils with equal full names
+   * @param {Array} pupils
+   * @returns {Array}
+   */
   displayDoB: (pupils) => {
     pupils.forEach((p, i) => {
       if (pupils[ i + 1 ] === undefined) return
