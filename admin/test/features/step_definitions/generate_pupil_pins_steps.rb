@@ -84,6 +84,12 @@ When(/^I select a Pupil from Generate Pin page$/) do
   pupil.checkbox.click
 end
 
+When(/^I deselect all pupils from Generate Pin Page$/) do
+  generate_pupil_pins_page.select_all_pupils.click
+  expect(@page).to have_sticky_banner
+  generate_pupil_pins_page.select_all_pupils.click
+end
+
 When(/^I select a Pupil to Generate more pins$/) do
   generated_pins_page.generate_more_pin_btn.click
   pupil = generate_pupil_pins_page.pupil_list.rows.find {|row| row.has_no_selected?}

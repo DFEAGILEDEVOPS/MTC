@@ -60,6 +60,12 @@ Feature: Generate Pupil PINs
     When I select a Pupil from Generate Pin page
     Then I should see a sticky banner
 
+  Scenario: Sticky banner is not displayed if I deselect all pupil
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I deselect all pupils from Generate Pin Page
+    Then I should not see a sticky banner
+
   Scenario: Sticky banner displays pupil count on Generate Pin page
     Given I am logged in
     And I am on Generate pins Pupil List page
