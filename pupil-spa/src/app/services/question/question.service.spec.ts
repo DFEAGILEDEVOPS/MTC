@@ -23,7 +23,7 @@ describe('QuestionService', () => {
         case 'questions':
           return questions;
       }
-    })
+    });
     TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [

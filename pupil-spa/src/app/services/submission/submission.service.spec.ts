@@ -15,7 +15,7 @@ const shouldNotExecute = () => {
 
 describe('SubmissionService', () => {
   beforeEach(() => {
-    const inject = TestBed.configureTestingModule({
+    const injector = TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
         SubmissionService,
@@ -23,9 +23,9 @@ describe('SubmissionService', () => {
         StorageService
       ]
     });
-    storageService = inject.get(StorageService);
-    submissionService = inject.get(SubmissionService);
-    mockBackend = inject.get(XHRBackend);
+    storageService = injector.get(StorageService);
+    submissionService = injector.get(SubmissionService);
+    mockBackend = injector.get(XHRBackend);
   });
 
   it('should be created', inject([SubmissionService], (service: SubmissionService) => {

@@ -3,8 +3,8 @@ import { Question } from './question.model';
 
 import { StorageService } from '../storage/storage.service';
 import { Config } from '../../config.model';
-const questionKey = 'questions'
-const configKey = 'config'
+const questionKey = 'questions';
+const configKey = 'config';
 
 
 @Injectable()
@@ -20,7 +20,7 @@ export class QuestionService {
 
     // Re-read the stored questions on page refresh
     if (this.storageService.getItem(questionKey) && this.storageService.getItem(configKey)) {
-      this.initialise()
+      this.initialise();
     }
   }
 

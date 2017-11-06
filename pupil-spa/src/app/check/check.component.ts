@@ -33,7 +33,7 @@ export class CheckComponent implements OnInit {
   public state: number;
   public viewState: string;
   public allowedStates: Array<string> = [];
-  private totalNumberOfQuestions: number;
+  public totalNumberOfQuestions: number;
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
