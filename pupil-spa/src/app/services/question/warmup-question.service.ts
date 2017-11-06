@@ -3,7 +3,7 @@ import { QuestionService } from './question.service';
 
 import { StorageService } from '../storage/storage.service';
 import { Config } from '../../config.model';
-const configKey = 'config'
+const configKey = 'config';
 
 @Injectable()
 export class WarmupQuestionService extends QuestionService {
