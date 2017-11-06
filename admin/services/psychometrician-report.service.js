@@ -1,5 +1,6 @@
 'use strict'
 const csv = require('fast-csv')
+const R = require('ramda')
 
 const psReportCacheDataService = require('./data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
@@ -137,7 +138,7 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   // Add information for each question asked
   const p = (idx) => 'Q' + (idx + 1).toString()
   completedCheck.data.answers.forEach((ans, idx) => {
-    const qInputs = completedCheck.data.inputs[idx] || []
+    const qInputs = R.pathOr([], ['data', 'inputs', idx], completedCheck)
     psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     psData[p(idx) + 'Response'] = ans.answer
     psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
