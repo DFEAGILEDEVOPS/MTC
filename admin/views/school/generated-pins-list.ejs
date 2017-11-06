@@ -12,9 +12,64 @@
         <header class="page-header">
             <h1 class="heading-xlarge">Generate pupil PINs</h1>
         </header>
+        <div class="govuk-box-highlight">
+            <div class="font-small">
+                <strong class="bold-medium">
+                    Pupil PINs and school password generated
+                </strong>
+                <br>
+                Valid only until 4pm, <%= date %>
+            </div>
+        </div>
+    </div>
+    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium" tabindex="0">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="" >Guidance</a>
+                    </li>
+                    <li>
+                        <a href="" >Group pupils</a>
+                    </li>
+                    <li>
+                        <a href="" >Restarts</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
     </div>
 </div>
 
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        Please distribute pupil Personal Identification Numbers (PINs) and school password to your pupils.
+    </div>
+</div>
+<br />
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div>
+            <div class="icon-file-download pupils-template"></div>
+                <b><a class="template-link" href="/school/print-pins">Download all pupil PINs and school password</a></b>
+        </div>
+        <br>
+        <div>
+            <div class="icon-custom-download">
+                <b><a class="template-link" href="#">Create custom download</a></b>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
 
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -28,7 +83,7 @@
         <% if (!!school) { %>
         <b><%= school.name %>'s password for the day:</b>
         <br>
-        <%= school.schoolPin %>
+        <span id="school-pin"><%= school.schoolPin %></span>
         <% } else { %>
         No active password
         <% } %>
