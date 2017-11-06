@@ -7,6 +7,7 @@ class GeneratePupilPinsPage < SitePrism::Page
   element :generate_pin_btn, 'input[value="Generate PINs"]'
 
   element :select_all_pupils, '#tickAllCheckboxes'
+  element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
   element :pupil_column_heading, '#generatePins thead tr a'
   section :pupil_list, '#generatePins tbody' do
     sections :rows, 'tr' do
