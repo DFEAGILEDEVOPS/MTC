@@ -116,6 +116,8 @@ When(/^I have generated a pin for a pupil$/) do
 end
 
 Given(/^I have generated pin for all pupil$/) do
+  step "I am logged in"
+  step "I am on Generate pins Pupil List page"
   generate_pupil_pins_page.select_all_pupils.click
   generate_pupil_pins_page.sticky_banner.confirm.click
 end

@@ -91,10 +91,10 @@ Feature: Generate Pupil PINs
     Then the pin should be stored against the pupil
 
   Scenario: Pupil pins must be generated from the specified pool of characters
-    Given I have generated a pin for a pupil
-#    Given I have generated pin for all pupil
+    Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
 
+  @no_pin
   Scenario: Multiple pins can be generated simultaneously
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
