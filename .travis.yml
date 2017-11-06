@@ -50,7 +50,7 @@ before_install:
   # Setup your application stack. You may need to tweak these commands if you
   # doing out-of-the-ordinary docker-compose builds.
   - docker-compose build
-  - docker-compose up
+  - docker-compose start
 
   # You will want this for logging. If one of your containers does not build for
   # whatever reason it's best to report that now before your tests start
