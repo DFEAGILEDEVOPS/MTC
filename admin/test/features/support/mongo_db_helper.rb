@@ -79,10 +79,15 @@ class MongoDbHelper
                                {'$set' => {'pinExpired' => flag}})
   end
 
-  def self.reset_pin(forename, lastname, school_id)
+  def self.reset_pin(forename,lastname,school_id,flag=nil)
     CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
-                               {'$set' => {'pin' => NIL}})
+                               {'$set' => {'pin' => flag}})
   end
+
+  # def self.reset_pin(forename, lastname, school_id)
+  #   CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+  #                              {'$set' => {'pin' => NIL}})
+  # end
 
 
   def self.set_pupil_pin(forename,lastname,school_id,newPin)
