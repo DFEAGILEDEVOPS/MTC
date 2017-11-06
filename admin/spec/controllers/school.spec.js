@@ -93,7 +93,7 @@ describe('school controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Select pupils not taking the check')
+        expect(res.locals.pageTitle).toBe('Add reason')
         expect(next).not.toHaveBeenCalled()
         done()
       })
