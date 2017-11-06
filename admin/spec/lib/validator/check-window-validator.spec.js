@@ -1,4 +1,5 @@
 'use strict'
+const moment = require('moment')
 
 /* global beforeEach, describe, it, expect */
 
@@ -7,19 +8,23 @@ const expressValidator = require('express-validator')()
 
 describe('Check window validator', function () {
   let req = null
+  const nowInTheFuture = moment().add(1, 'years')
+  const adminStartDate = moment().add(2, 'days').add(1, 'years')
+  const checkStartDate = moment().add(5, 'days').add(1, 'years')
+  const checkEndDate = moment().add(10, 'days').add(1, 'years')
 
   function getBody () {
     return {
       checkWindowName: 'Test Check Window 1',
-      adminStartDay: '1',
-      adminStartMonth: '11',
-      adminStartYear: '2017',
-      checkStartDay: '5',
-      checkStartMonth: '11',
-      checkStartYear: '2017',
-      checkEndDay: '10',
-      checkEndMonth: '11',
-      checkEndYear: '2017',
+      adminStartDay: adminStartDate.format('D'),
+      adminStartMonth: adminStartDate.format('MM'),
+      adminStartYear: adminStartDate.format('YYYY'),
+      checkStartDay: checkStartDate.format('D'),
+      checkStartMonth: checkStartDate.format('MM'),
+      checkStartYear: checkStartDate.format('YYYY'),
+      checkEndDay: checkEndDate.format('D'),
+      checkEndMonth: checkEndDate.format('MM'),
+      checkEndYear: checkEndDate.format('YYYY'),
       checkWindowId: ''
     }
   }
