@@ -57,6 +57,20 @@ Before("~@poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
+Before("@no_pin") do
+  step "I am logged in"
+  step "I navigate to generate pupil pins page"
+  if (generated_pins_page.has_school_password_info?)
+    pupil_with_pin = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
+    pupil_with_pin.each do|pupil|
+      pupil_lastname = pupil.split(',')[0]
+      pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+      MongoDbHelper.reset_pin(pupil_firstname, pupil_lastname, 9991001)
+    end
+  end
+  visit Capybara.app_host + '/sign-out'
+end
+
 After("@multiple_pupil_upload") do
   FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
