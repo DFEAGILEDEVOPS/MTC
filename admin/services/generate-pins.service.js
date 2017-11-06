@@ -1,5 +1,6 @@
 const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
@@ -24,14 +25,7 @@ const generatePinService = {
       .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
         ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
     // determine if more than one pupil has same full name
-    pupils.map((p, i) => {
-      if (pupils[ i + 1 ] === undefined) return
-      if (pupils[ i ].foreName === pupils[ i + 1 ].foreName &&
-        pupils[ i ].lastName === pupils[ i + 1 ].lastName) {
-        pupils[ i ].showDoB = true
-        pupils[ i + 1 ].showDoB = true
-      }
-    })
+    pupils = pupilService.displayDoB(pupils)
     return pupils
   },
 
@@ -126,7 +120,11 @@ const generatePinService = {
    */
   getPupilsWithActivePins: async (schoolId) => {
     let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
-    pupils = pupils.filter(p => generatePinService.isValidPin(p.pin, p.pinExpiresAt))
+    pupils = pupils
+      .filter(p => generatePinService.isValidPin(p.pin, p.pinExpiresAt))
+      .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
+        ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
+    pupils = pupilService.displayDoB(pupils)
     return pupils
   }
 }

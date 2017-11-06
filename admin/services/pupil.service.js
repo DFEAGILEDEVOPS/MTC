@@ -87,6 +87,18 @@ const pupilService = {
       }
     }
     return true
+  },
+
+  displayDoB: (pupils) => {
+    pupils.forEach((p, i) => {
+      if (pupils[ i + 1 ] === undefined) return
+      if (pupils[ i ].foreName === pupils[ i + 1 ].foreName &&
+        pupils[ i ].lastName === pupils[ i + 1 ].lastName) {
+        pupils[ i ].showDoB = true
+        pupils[ i + 1 ].showDoB = true
+      }
+    })
+    return pupils
   }
 }
 

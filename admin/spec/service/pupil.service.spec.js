@@ -1,5 +1,6 @@
 'use strict'
 const pupilService = require('../../services/pupil.service')
+const pupilMock = require('../mocks/pupil')
 
 /* global describe, it, expect */
 
@@ -63,6 +64,21 @@ describe('pupil service', () => {
       }
       const actual = pupilService.calculateScorePercentage(results)
       expect(actual).toBe(23.3)
+    })
+  })
+  describe('displayDoB', () => {
+    it('has showDoB property as true for pupils with same fullname', () => {
+      const pupil1 = Object.assign({}, pupilMock)
+      const pupil2 = Object.assign({}, pupilMock)
+      const pupils = pupilService.displayDoB([pupil1, pupil2])
+      expect(pupils[0].showDoB && pupils[1].showDoB).toBeTruthy()
+    })
+    it('has showDoB property as fa;se for pupils with different fullname', () => {
+      const pupil1 = Object.assign({}, pupilMock)
+      const pupil2 = Object.assign({}, pupilMock)
+      pupil1.foreName = 'test'
+      const pupils = pupilService.displayDoB([pupil1, pupil2])
+      expect(pupils[0].showDoB && pupils[1].showDoB).toBeFalsy()
     })
   })
 })
