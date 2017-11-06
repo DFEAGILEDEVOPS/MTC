@@ -29,10 +29,9 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   /**
-   * The user's answer made up of recorded numbers.  This is a string as the user may have leading zeros
-   * which we want to store.
+   * The users answer made up of recorded numbers.
+   * This is a string as the user may have leading zeros which we want to store.
    * Used in the template.
-   * @type {string}
    */
   public answer = '';
 
@@ -50,7 +49,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   /**
    * Flag to indicate that the answer has been submitted (either manually or on timeout)
-   * @type {boolean}
    */
   private submitted = false;
 
@@ -60,7 +58,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   private timeout: number;
 
-
   /**
    * Store the return value of setInterval - so it can be cancelled
    */
@@ -68,7 +65,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   /**
    * Track all mouse click activity
-   * @param {MouseEvent} event
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
@@ -91,7 +87,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log('question.component: handleKeyboardEvent(): event: ', event);
+    console.log('question.component: handleKeyboardEvent(): event: ', event);
     const key = event.key;
     // register inputs
     this.registerInputService.addEntry(event);
