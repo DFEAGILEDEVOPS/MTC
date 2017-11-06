@@ -202,6 +202,7 @@ const checkWindowsForm = async (req, res, next) => {
   let adminIsDisabled = 0
   let checkStartIsDisabled = 0
 
+  req.breadcrumbs('Manage check windows', '/administrator/check-windows')
   res.locals.pageTitle = actionName + ' check window'
   req.breadcrumbs(res.locals.pageTitle)
 

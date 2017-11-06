@@ -22,7 +22,7 @@ module.exports = {
 
   checkStartMonthWrongDay: 'Please check "Month"',
   checkStartMonthInvalidChars: 'Entry must be numerical',
-  checkStartMonthRequired: ':,Check start month is required',
+  checkStartMonthRequired: 'Check start month is required',
 
   checkStartYearWrongDay: 'Please check "Year"',
   checkStartYearInvalidChars: 'Entry must be numerical',
