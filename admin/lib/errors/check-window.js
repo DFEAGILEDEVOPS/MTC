@@ -6,23 +6,23 @@ module.exports = {
 
   adminStartDayWrongDay: 'Please check "Day"',
   adminStartDayInvalidChars: 'Entry must be numerical',
-  adminStartDayRequired: '"Administration start date" can\'t be blank',
+  adminStartDayRequired: '"Administration start day" is required',
 
   adminStartMonthWrongDay: 'Please check "Month"',
   adminStartMonthInvalidChars: 'Entry must be numerical',
-  adminStartMonthRequired: 'Admin start month is required',
+  adminStartMonthRequired: '"Admin start month" is required',
 
   adminStartYearWrongDay: 'Please check "Year"',
   adminStartYearInvalidChars: 'Entry must be numerical',
-  adminStartYearRequired: 'Admin start year is required',
+  adminStartYearRequired: '"Admin start year" is required',
 
   checkStartDayWrongDay: 'Please check "Day"',
   checkStartDayInvalidChars: 'Entry must be numericaly',
-  checkStartDayRequired: 'Check start day is required',
+  checkStartDayRequired: '"Check start day" is required',
 
   checkStartMonthWrongDay: 'Please check "Month"',
   checkStartMonthInvalidChars: 'Entry must be numerical',
-  checkStartMonthRequired: 'Check start month is required',
+  checkStartMonthRequired: ':,Check start month is required',
 
   checkStartYearWrongDay: 'Please check "Year"',
   checkStartYearInvalidChars: 'Entry must be numerical',
