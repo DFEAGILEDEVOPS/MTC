@@ -17,11 +17,9 @@
   },
   "dependencies": {
     "applicationinsights": "^0.22.0",
-    "az-bunyan": "0.0.5",
     "azure-storage": "^2.6.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
-    "bunyan": "^1.8.10",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^1.3.2",
     "cookie-parser": "~1.4.3",
