@@ -1,7 +1,6 @@
-@pupil_pin
 Feature: Generate Pupil PINs
 
-
+  @no_pin @local
   Scenario: Generate Pins Landing page displays heading and info section
     Given I am logged in
     When I navigate to generate pupil pins page
@@ -61,18 +60,31 @@ Feature: Generate Pupil PINs
     When I select a Pupil from Generate Pin page
     Then I should see a sticky banner
 
+  Scenario: Sticky banner is not displayed if I deselect all pupil
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I deselect all pupils from Generate Pin Page
+    Then I should not see a sticky banner
+
   Scenario: Sticky banner displays pupil count on Generate Pin page
     Given I am logged in
     And I am on Generate pins Pupil List page
     When I select multiple pupils from Generate Pin Page
     Then the sticky banner should display the pupil count
 
-  Scenario: Cancel returns user to Generate Pin Landing page
+  @no_pin
+  Scenario: Cancel returns user to Generate Pupil Pin Landing page if there are no pupil with pins
     Given I am logged in
     And I am on Generate pins Pupil List page
     And I select a Pupil from Generate Pin page
     When I choose to cancel
-    Then I should be taken to Generate Pins Page
+    Then I should be taken to Generate Pupil Pins Page
+
+  Scenario: Cancel returns user to Generated Pin page if there are pupils with activepins
+    Given I have generated a pin for a pupil
+    And I select a Pupil to Generate more pins
+    When I choose to cancel
+    Then I should be taken to Generated Pins Page
 
   Scenario: Pupil pins should consist of 5 characters
     Given I have generated a pin for a pupil
@@ -83,10 +95,10 @@ Feature: Generate Pupil PINs
     Then the pin should be stored against the pupil
 
   Scenario: Pupil pins must be generated from the specified pool of characters
-    Given I have generated a pin for a pupil
-#    Given I have generated pin for all pupil
+    Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
 
+  @no_pin
   Scenario: Multiple pins can be generated simultaneously
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
@@ -95,7 +107,18 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  @wip
-  Scenario: School Password is displayed on Generate Pin Page
+  Scenario: School Password is displayed on Generated Pin Page
     Given I have generated a pin for a pupil
     Then I should see the school password for teacher1
+
+  Scenario: School Password info is displayed on Generated Pin Page
+    Given I have generated a pin for a pupil
+    Then I should see information for Pupil pin and School password
+
+  Scenario: Download Pin option is displayed on Generated Pin Page
+    Given I have generated a pin for a pupil
+    Then I should see link to download all pupil pins
+
+  Scenario: Create Custom download link is displayed on Generated Pin Page
+    Given I have generated a pin for a pupil
+    Then I should see link to create custom download
