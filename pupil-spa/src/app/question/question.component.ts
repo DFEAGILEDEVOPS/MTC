@@ -87,7 +87,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log('question.component: handleKeyboardEvent(): event: ', event);
+    // console.log('question.component: handleKeyboardEvent(): event: ', event);
     const key = event.key;
     // register inputs
     this.registerInputService.addEntry(event);
