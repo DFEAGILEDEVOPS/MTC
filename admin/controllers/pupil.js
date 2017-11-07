@@ -274,6 +274,7 @@ const getPrintPins = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+  res.setHeader('Content-Security-Policy', "img-src 'self' data:;")
   res.render('school/pin-print', {
     pupils,
     school,

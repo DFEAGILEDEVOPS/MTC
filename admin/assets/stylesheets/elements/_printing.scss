@@ -32,12 +32,6 @@
       font-size: medium;
     }
   }
-  td, tr {
-    min-height: 180px;
-    min-width: 200px;
-    max-height: 180px;
-    max-width: 200px;
-  }
   .pupil-content {
     text-align: left;
     line-height: 2em;
@@ -47,13 +41,14 @@
     width: 5em;
     height: 5em;
     float: right;
-    position: relative;
-    top: -6em;
+    position: static;
+    margin-top: -7em;
   }
   .url {
     float: right;
     margin-left: 6em;
     font-size: .8em;
-    margin-top: -6em;
+    position: static;
+    margin-top: -2em;
   }
 }
