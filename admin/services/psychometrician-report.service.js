@@ -34,6 +34,30 @@ psychometricianReportService.generateReport = async function () {
   })
 }
 
+/**
+ * Return a minimal report as a string
+ * @return {Promise<void>}
+ */
+psychometricianReportService.generateScoreReport = async function () {
+  // Read data from the cache
+  const data = await psReportCacheDataService.find({})
+  const output = []
+  for (const obj of data) {
+    output.push(scoreFilter(obj.data))
+  }
+
+  return new Promise((resolve, reject) => {
+    csv.writeToString(
+      output,
+      {headers: true},
+      function (err, data) {
+        if (err) { reject(err) }
+        resolve(data)
+      }
+    )
+  })
+}
+
 psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   if (!batchIds) {
     throw new Error('Missing argument: batchIds')
@@ -157,6 +181,16 @@ psychometricianReportService.produceReportData = function (completedCheck) {
   })
 
   return psData
+}
+
+/**
+ * Filter an Array of psreportcache object to a minimal set
+ */
+function scoreFilter (obj) {
+  const props = ['Surname', 'Forename', 'MiddleNames', 'FormMark', 'TestDate']
+  const matchesScoreProp = (key) => /(ID|Response|Sco)+$/.test(key)
+  const scoreProps = R.filter(matchesScoreProp, R.keys(obj))
+  return R.pick(R.concat(props, scoreProps), obj)
 }
 
 module.exports = psychometricianReportService
