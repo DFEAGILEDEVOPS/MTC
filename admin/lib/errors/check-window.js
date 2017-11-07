@@ -40,7 +40,7 @@ module.exports = {
   checkEndYearInvalidChars: 'Entry must be numerical',
   checkEndYearRequired: '"Check end year" is required',
 
-  adminDateInThePast: 'Enter a start date in the future',
+  adminDateInThePast: 'Start date must be in the future',
   checkDateBeforeAdminDate: '"Check start date" must occur after the "Administration start date"',
   checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
   checkStartDateInThePast: '"Check start date" must be in the future',
