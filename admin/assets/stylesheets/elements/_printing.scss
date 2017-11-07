@@ -43,8 +43,17 @@
     line-height: 2em;
     font-size: .8em;
   }
+  .qr {
+    width: 5em;
+    height: 5em;
+    float: right;
+    position: relative;
+    top: -6em;
+  }
   .url {
-    text-align: right;
+    float: right;
+    margin-left: 6em;
     font-size: .8em;
+    margin-top: -6em;
   }
 }

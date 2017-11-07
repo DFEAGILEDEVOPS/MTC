@@ -37,7 +37,7 @@
                         </div>
                         <div class="pupil-content">School Password:<br><b><%= school.schoolPin %></b></div>
                         <div class="pupil-content">Pupil PIN:<br><b><%= pupils[i].pin %></b></div>
-                        <img src="<%= qrDataURL %>" />
+                        <img class="qr" src="<%= qrDataURL %>" />
                         <div class="url"><%= url %></div>
                     </td>
                     <% if (pupils[i + 1]) { %>
@@ -47,7 +47,7 @@
                             </b>
                         </div>                        <div class="pupil-content">School Password:<br><b><%= school.schoolPin %></b></div>
                         <div class="pupil-content">Pupil PIN:<br><b><%= pupils[i + 1].pin %></b></div>
-                        <img src="<%= qrDataURL %>" />
+                        <img class="qr" src="<%= qrDataURL %>" />
                         <div class="url"><%= url %></div>
                     </td>
                     <% } else { %>
