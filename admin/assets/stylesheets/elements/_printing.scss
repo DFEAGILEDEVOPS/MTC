@@ -39,7 +39,12 @@
     max-width: 200px;
   }
   .pupil-content {
+    text-align: left;
     line-height: 2em;
+    font-size: .8em;
+  }
+  .url {
+    text-align: right;
     font-size: .8em;
   }
 }

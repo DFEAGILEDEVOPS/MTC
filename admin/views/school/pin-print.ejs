@@ -1,0 +1,67 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="heading-block">
+            <header class="page-header">
+                <div class="organisation-container">
+                    <div class="organisation-logo home">
+                        <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+                    </div>
+                </div>            </header>
+
+            <br/>
+
+            <form action="/school/generate-pins-overview">
+                <div class="form-group">
+                    <input id="back" class="button no-print" type="submit" value="Back">
+                </div>
+            </form>
+        </div>
+
+        <div class="heading-large">Multiplication Table Check</div>
+        <ul class="list list-bullet font-xsmall" role="listbox" tabindex="0">
+            <li role="listitem">Please cut out and distribute to pupils</li>
+            <li role="listitem">The school passwords and pupil PINs will expire 4pm on <%= date %></li>
+            <li role="listitem">New PINs will need to be generated if not used by 4pm on <%= date %></li>
+        </ul>
+        <div class='pupil-print-table'>
+            <% if (typeof pupils !== 'object' || Object.keys(pupils).length < 1) { %>
+            <p>No pupils found</p>
+            <% } else { %>
+            <table>
+                <% for(let i = 0; i < pupils.length; i += 2) { %>
+                <tr class="page">
+                    <td>
+                        <div class="pupil-content">
+                            <b><%= `${pupils[i].foreName} ${pupils[i].middleNames} ${pupils[i].lastName}`%>
+                            </b>
+                        </div>
+                        <div class="pupil-content">School Password:<br><b><%= school.schoolPin %></b></div>
+                        <div class="pupil-content">Pupil PIN:<br><b><%= pupils[i].pin %></b></div>
+                        <img src="<%= qrDataURL %>" />
+                        <div class="url"><%= url %></div>
+                    </td>
+                    <% if (pupils[i + 1]) { %>
+                    <td>
+                        <div class="pupil-content">
+                            <b><%= `${pupils[i].foreName} ${pupils[i].middleNames} ${pupils[i].lastName}`%>
+                            </b>
+                        </div>                        <div class="pupil-content">School Password:<br><b><%= school.schoolPin %></b></div>
+                        <div class="pupil-content">Pupil PIN:<br><b><%= pupils[i + 1].pin %></b></div>
+                        <img src="<%= qrDataURL %>" />
+                        <div class="url"><%= url %></div>
+                    </td>
+                    <% } else { %>
+                    <td></td>
+                    <% } %>
+                </tr>
+                <% }} %>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    window.print();
+  });
+</script>

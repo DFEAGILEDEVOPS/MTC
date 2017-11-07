@@ -7,6 +7,7 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
+const config = require('../../config')
 const School = require('../../models/school')
 const Pupil = require('../../models/pupil')
 const pupilValidator = require('../../lib/validator/pupil-validator')
@@ -14,6 +15,9 @@ const fileValidator = require('../../lib/validator/file-validator')
 const pupilUploadService = require('../../services/pupil-upload.service')
 const ValidationError = require('../../lib/validation-error')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
+const dateService = require('../../services/date.service')
+const generatePinsService = require('../../services/generate-pins.service')
+const qrService = require('../../services/qr.service')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -442,6 +446,49 @@ describe('pupil controller:', () => {
       expect(res.statusCode).toBe(200)
       expect(res.write).toHaveBeenCalledWith('text')
       expect(res.end).toHaveBeenCalled()
+      done()
+    })
+  })
+
+  describe('getPrintPins route', () => {
+    let controller
+    let sandbox
+    let next
+    let goodReqParams = {
+      method: 'GET',
+      url: '/pupil/download-error-csv',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      }
+    }
+
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      next = jasmine.createSpy('next')
+      controller = require('../../controllers/pupil.js').getPrintPins
+    })
+
+    afterEach(() => {
+      sandbox.restore()
+    })
+
+    it('returns data for the print page', async (done) => {
+      spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+      spyOn(generatePinsService, 'getPupilsWithActivePins').and.returnValue([])
+      spyOn(generatePinsService, 'getActiveSchool').and.returnValue({})
+      spyOn(qrService, 'getDataURL').and.returnValue('')
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'render').and.returnValue(null)
+      await controller(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalledWith('school/pin-print', {
+        pupils: [],
+        school: {},
+        date: '',
+        qrDataURL: '',
+        url: config.PUPIL_APP_URL
+      })
       done()
     })
   })
