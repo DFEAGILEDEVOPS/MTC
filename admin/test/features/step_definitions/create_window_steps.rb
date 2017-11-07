@@ -136,12 +136,6 @@ When(/^I try to submit without a admin start date for the window$/) do
   add_edit_check_window_page.save_changes.click
 end
 
-Then(/^I should see a error message for the admin start date field$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Admin start day is required",
-                                                                                    "Admin start month is required",
-                                                                                    "Admin start year is required"]
-end
-
 When(/^I try to submit with a invalid admin start date for the window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
@@ -323,9 +317,8 @@ When(/^I try to submit admin start date that is in the past$/) do
 end
 
 Then(/^I should see an error stating the admin start date has to be in the future$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Enter a start date in the future']
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Start date must be in the future']
 end
-
 
 When(/^I try to submit a admin start date with more digits for day month year than specified$/) do
   today_date = Date.today
