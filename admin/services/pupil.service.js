@@ -93,13 +93,19 @@ const pupilService = {
    * @param {Array} pupils
    * @returns {Array}
    */
-  displayDoB: (pupils) => {
+  requiresExtraFields: (pupils) => {
     pupils.forEach((p, i) => {
-      if (pupils[ i + 1 ] === undefined) return
-      if (pupils[ i ].foreName === pupils[ i + 1 ].foreName &&
-        pupils[ i ].lastName === pupils[ i + 1 ].lastName) {
-        pupils[ i ].showDoB = true
-        pupils[ i + 1 ].showDoB = true
+      const currentPupil = pupils[ i ]
+      const nextPupil = pupils[ i + 1 ]
+      if (nextPupil === undefined) return
+      if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName &&
+        currentPupil.dob === nextPupil.dob) {
+        currentPupil.showMiddleNames = true
+        nextPupil.showMiddleNames = true
+      }
+      if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName) {
+        currentPupil.showDoB = true
+        nextPupil.showDoB = true
       }
     })
     return pupils
