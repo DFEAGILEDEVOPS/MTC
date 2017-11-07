@@ -64,18 +64,18 @@ end
 And(/^stored correctly in the database$/) do
   window_in_db = MongoDbHelper.check_window_details(@check_window_hash[:check_name])
   expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_start_day].to_s + ' ' + @check_window_hash[:check_start_mon].to_s +
-                                                       ' ' + @check_window_hash[:check_start_year].to_s
+                                                                           ' ' + @check_window_hash[:check_start_year].to_s
   expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_end_day].to_s + ' ' + @check_window_hash[:check_end_mon].to_s +
                                                                          ' ' + @check_window_hash[:check_end_year].to_s
   expect(window_in_db['adminStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_mon].to_s +
-                                                       ' ' + @check_window_hash[:admin_start_year].to_s
+                                                                           ' ' + @check_window_hash[:admin_start_year].to_s
 end
 
 When(/^I enter details for a valid check window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: (today_date + 30).day,
+                        admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
                         admin_start_year: today_date.year,
                         check_start_day: today_date.day,
@@ -99,15 +99,15 @@ end
 When(/^I try to submit without a name for the window$/) do
   today_date = Date.today
   @check_window_hash = {check_name: '',
-                        admin_start_day: (today_date + 30).day,
+                        admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
                         admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: today_date.next_month.month,
                         check_start_year: today_date.year,
-                        check_end_day: today_date.day,
+                        check_end_day: today_date.next_month.next_month.day,
                         check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        check_end_year: today_date.next_year.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -122,15 +122,15 @@ When(/^I try to submit without a admin start date for the window$/) do
   today_date = Date.today
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: '',
-                        admin_start_mon: '',
-                        admin_start_year: '',
+                        admin_start_day: nil,
+                        admin_start_mon: nil,
+                        admin_start_year: nil,
                         check_start_day: today_date.day,
                         check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.year,
+                        check_start_year: today_date.next_year.year,
                         check_end_day: today_date.day,
                         check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        check_end_year: today_date.next_year.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -185,10 +185,9 @@ When(/^I try to submit without a check start date for the window$/) do
 end
 
 Then(/^I should see a error message for the check start date field$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Administration start date" must be before the "Check start date"',
-                                                                                    "Check start day is required",
-                                                                                    "Check start month is required",
-                                                                                    "Check start year is required"]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check start day" is required',
+                                                                                    '"Check start month" is required',
+                                                                                    '"Check start year" is required']
 end
 
 When(/^I try to submit with a invalid check start date for the window$/) do
@@ -234,14 +233,14 @@ When(/^I try to submit without a check end date for the window$/) do
 end
 
 Then(/^I should see a error message for the end date field$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Check end day is required",
-                                                                                    "Check end month is required",
-                                                                                    "Check end year is required"]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check end day" is required',
+                                                                                    '"Check end month" is required',
+                                                                                    '"Check end year" is required']
 end
 
 When(/^I try to submit with a invalid check end date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..1000000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: today_date.next_month.month,
@@ -261,4 +260,276 @@ Then(/^I should see errors for the end day month and year$/) do
   expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
                                                                                     'Please check "Month"',
                                                                                     'Please check "Year"']
+end
+
+Then(/^I should see an error stating the name cannot be less than (\d+) characters long$/) do |arg|
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Name of check window" can\'t be less than 2 characters']
+end
+
+When(/^I try to submit a name that is less than (\d+) characters long$/) do |arg|
+  today_date = Date.today
+  @check_window_hash = {check_name: 'W',
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: today_date.next_month.month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.next_month.next_month.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+When(/^I try to submit a name that is (\d+) characters long$/) do |arg|
+  today_date = Date.today
+  @check_window_hash = {check_name: 'Win',
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: today_date.next_month.month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.next_month.next_month.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should not see an error message for the check name$/) do
+  expect(manage_check_window_page).to be_displayed
+end
+
+When(/^I try to submit admin start date that is in the past$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.day,
+                        admin_start_mon: (today_date - 30).month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: today_date.next_month.month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.next_month.next_month.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the admin start date has to be in the future$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Enter a start date in the future']
+end
+
+
+When(/^I try to submit a admin start date with more digits for day month year than specified$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: 101,
+                        admin_start_mon: 101,
+                        admin_start_year: 20178,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: today_date.next_month.month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.next_month.next_month.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see errors for the admin start day month and year being invalid$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Enter a start date in the future", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
+end
+
+When(/^I try to submit an admin start date that is after the check start date$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.day,
+                        admin_start_mon: today_date.month,
+                        admin_start_year: today_date.next_year.year,
+                        check_start_day: today_date.next_month.day,
+                        check_start_mon: (today_date - 30).month,
+                        check_start_year: today_date.next_year.year,
+                        check_end_day: today_date.next_month.next_month.day,
+                        check_end_mon: (today_date - 30).month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the admin start date has to be before the check start date$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check start date" must occur after the "Administration start date"']
+end
+
+When(/^I try to submit a start date that is in the past$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: (today_date - 30).month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the start date must be in the future$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check start date" must occur after the "Administration start date"',
+                                                                                    '"Check start date" must be in the future']
+end
+
+When(/^I try to submit a check start date with more digits for day month year than specified$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: 101,
+                        check_start_mon: 101,
+                        check_start_year: 20172,
+                        check_end_day: today_date.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see errors for the check start day month and year being invalid$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check start date" must occur after the "Administration start date"',
+                                                                                    "\"Check start date\" must be in the future",
+                                                                                    "Please check \"Day\"",
+                                                                                    "Please check \"Month\"",
+                                                                                    "Please check \"Year\""]
+end
+
+When(/^I try to submit an check start date that is before the admin start date$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: today_date.month,
+                        check_start_year: today_date.year,
+                        check_end_day: today_date.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+When(/^I try to submit an check start date that is after the check end date$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: today_date.next_month.next_month.next_month.month,
+                        check_start_year: today_date.next_year.year,
+                        check_end_day: today_date.day,
+                        check_end_mon: today_date.next_month.next_month.month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the check start date has to be before the check end date$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check end date" must occur after "Check start date"']
+end
+
+When(/^I try to submit check end date that is in the past$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: today_date.next_month.next_month.next_month.month,
+                        check_start_year: today_date.next_year.year,
+                        check_end_day: today_date.day,
+                        check_end_mon: (today_date - 60).month,
+                        check_end_year: today_date.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the check end date has to be in the future$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check end date" must occur after "Check start date"', '"Check end date" must be in the future']
+end
+
+Then(/^I should see an error stating the admin start date cant be blank$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["\"Administration start day\" is required", "\"Administration start month\" is required", "\"Administration start year\" is required"]
+end
+
+When(/^I try to submit a check end date with more digits for day month year than specified$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: today_date.next_month.next_month.month,
+                        check_start_year: today_date.next_year.year,
+                        check_end_day: 101,
+                        check_end_mon: 101,
+                        check_end_year: 20178
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see errors for the check end day month and year being invalid$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["\"Check end date\" must occur after \"Check start date\"",
+                                                                                    "\"Check end date\" must be in the future",
+                                                                                    "Please check \"Day\"",
+                                                                                    "Please check \"Month\"",
+                                                                                    "Please check \"Year\""]
+end
+
+When(/^I try to submit an check end date that is before the check start date$/) do
+  today_date = Date.today
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  @check_window_hash = {check_name: check_window_name,
+                        admin_start_day: today_date.next_month.day,
+                        admin_start_mon: today_date.next_month.month,
+                        admin_start_year: today_date.year,
+                        check_start_day: today_date.day,
+                        check_start_mon: today_date.month,
+                        check_start_year: today_date.next_year.year,
+                        check_end_day: today_date.day,
+                        check_end_mon: (today_date - 30).month,
+                        check_end_year: today_date.next_year.year
+  }
+  add_edit_check_window_page.enter_details(@check_window_hash)
+  add_edit_check_window_page.save_changes.click
+end
+
+Then(/^I should see an error stating the check end date has to be after the check start date$/) do
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["\"Check end date\" must occur after \"Check start date\""]
 end
