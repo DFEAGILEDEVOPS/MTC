@@ -295,7 +295,7 @@ const saveCheckWindows = async (req, res, next) => {
       req.body.checkStartMonth = moment(req.body['existingCheckStartDate']).format('MM')
       req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
     }
-    
+
     return res.render('administrator/check-windows-form', {
       action: urlActionName,
       checkWindowData: req.body,
