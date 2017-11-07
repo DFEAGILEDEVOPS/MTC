@@ -290,12 +290,12 @@ const saveCheckWindows = async (req, res, next) => {
       req.body.adminStartYear = moment(req.body['existingAdminStartDate']).format('YYYY')
     }
 
-    if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate']&& req.body['checkStartIsDisabled'] === '1') {
+    if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate'] && req.body['checkStartIsDisabled'] === '1') {
       req.body.checkStartDay = moment(req.body['existingCheckStartDate']).format('D')
       req.body.checkStartMonth = moment(req.body['existingCheckStartDate']).format('MM')
       req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
     }
-
+    
     return res.render('administrator/check-windows-form', {
       action: urlActionName,
       checkWindowData: req.body,
