@@ -1,4 +1,3 @@
-
 And(/^I want to edit a previously added check$/) do
   step 'I am logged in with a test developer'
   step 'I am on the manage check windows page'
@@ -11,9 +10,9 @@ end
 
 And(/^I create new check window with valid data$/) do
   @today_date = Date.today
-  @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..100)}"
+  @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: @check_window_name,
-                         admin_start_day: @today_date.next_month.day,
+                        admin_start_day: @today_date.next_month.day,
                         admin_start_mon: @today_date.month,
                         admin_start_year: @today_date.next_year.year,
                         check_start_day: @today_date.next_month.day,
@@ -29,15 +28,15 @@ end
 
 When(/^I update the check window with valid data$/) do
   @updated_check_window_hash = {check_name: @check_window_name,
-                        admin_start_day: @today_date.next_month.day,
-                        admin_start_mon: @today_date.next_month.month,
-                        admin_start_year: @today_date.year,
-                        check_start_day: @today_date.next_month.day,
-                        check_start_mon: @today_date.next_month.month,
-                        check_start_year: @today_date.year,
-                        check_end_day: @today_date.day,
-                        check_end_mon: @today_date.next_month.next_month.month,
-                        check_end_year: @today_date.next_year.year
+                                admin_start_day: @today_date.next_month.day,
+                                admin_start_mon: @today_date.next_month.month,
+                                admin_start_year: @today_date.year,
+                                check_start_day: @today_date.next_month.day,
+                                check_start_mon: @today_date.next_month.month,
+                                check_start_year: @today_date.year,
+                                check_end_day: @today_date.day,
+                                check_end_mon: @today_date.next_month.next_month.month,
+                                check_end_year: @today_date.next_year.year
   }
   @page.enter_details(@updated_check_window_hash)
   @page.save_changes.click
@@ -65,7 +64,25 @@ And(/^I should see no flash message to update check window is displayed$/) do
 end
 
 And(/^the updated Check Window Detail is Saved$/) do
-  wait_until{!(MongoDbHelper.check_window_details(@check_window_name.to_s)).nil?}
+  wait_until {!(MongoDbHelper.check_window_details(@check_window_name.to_s)).nil?}
   @stored_pupil_details = MongoDbHelper.check_window_details @check_window_name.to_s
   expect(@updated_check_window_hash[:check_name]).to eql @stored_pupil_details['checkWindowName']
+end
+
+But(/^decide against editing it$/) do
+  add_edit_check_window_page.back.click
+end
+
+When(/^I try to update without a admin start date for the window$/) do
+  add_edit_check_window_page.admin_start_day.set ''
+  add_edit_check_window_page.admin_start_month.set ''
+  add_edit_check_window_page.admin_start_year.set ''
+  add_edit_check_window_page.save_changes.click
+end
+
+When(/^I try to update without a check start date for the window$/) do
+  add_edit_check_window_page.check_start_day.set ''
+  add_edit_check_window_page.check_start_month.set ''
+  add_edit_check_window_page.check_start_year.set ''
+  add_edit_check_window_page.save_changes.click
 end

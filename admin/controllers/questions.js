@@ -53,15 +53,6 @@ const getQuestions = async (req, res) => {
     return apiResponse.serverError(res)
   }
 
-  // start the check
-  try {
-    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
-    questions = checkFormService.prepareQuestionData(checkForm)
-    pupilData.checkCode = checkCode
-  } catch (error) {
-    return apiResponse.serverError(res)
-  }
-
   const responseData = {
     questions,
     pupil: pupilData,
