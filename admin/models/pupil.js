@@ -4,6 +4,15 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
+const checkOptionsSchema = new Schema({
+  _id: false,
+  speechSynthesis: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
+})
+
 const Pupil = new Schema({
   school: {
     type: Number,
@@ -61,6 +70,10 @@ const Pupil = new Schema({
     type: Object,
     required: false,
     ref: 'AttendanceCode'
+  },
+  checkOptions: {
+    type: checkOptionsSchema,
+    required: true
   }
 }, {
   timestamps: true
