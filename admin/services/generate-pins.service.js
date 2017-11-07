@@ -25,7 +25,7 @@ const generatePinService = {
       .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
         ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
     // determine if more than one pupil has same full name
-    pupils = pupilService.requiresExtraFields(pupils)
+    pupils = pupilService.addIdentificationFlags(pupils)
     return pupils
   },
 
@@ -124,7 +124,7 @@ const generatePinService = {
       .filter(p => generatePinService.isValidPin(p.pin, p.pinExpiresAt))
       .map(({_id, pin, dob, foreName, middleNames, lastName}) =>
         ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
-    pupils = pupilService.requiresExtraFields(pupils)
+    pupils = pupilService.addIdentificationFlags(pupils)
     return pupils
   }
 }

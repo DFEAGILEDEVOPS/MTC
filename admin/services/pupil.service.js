@@ -89,11 +89,11 @@ const pupilService = {
     return true
   },
   /**
-   * Adds show Date of Birth flag for pupils with equal full names
+   * Adds show Date of Birth flag for pupils that have been alphabetically sorted by last name and have equal full names
    * @param {Array} pupils
    * @returns {Array}
    */
-  requiresExtraFields: (pupils) => {
+  addIdentificationFlags: (pupils) => {
     pupils.forEach((p, i) => {
       const currentPupil = pupils[ i ]
       const nextPupil = pupils[ i + 1 ]
