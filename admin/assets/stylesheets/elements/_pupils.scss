@@ -108,3 +108,16 @@
 .panel, .warning-panel, .panel-no-border {
   margin-bottom: 0;
 }
+
+// Generated Pins list
+
+.icon-custom-download {
+  white-space: nowrap;
+  &:before {
+    background-image: url('/images/custom-download.png');
+    background-repeat: no-repeat;
+    background-size: 25px 25px;
+    content: " ";
+    padding-left: 28px;
+  }
+}
