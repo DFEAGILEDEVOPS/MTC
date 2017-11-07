@@ -73,7 +73,7 @@ describe('pupil service', () => {
       const pupils = pupilService.displayDoB([pupil1, pupil2])
       expect(pupils[0].showDoB && pupils[1].showDoB).toBeTruthy()
     })
-    it('has showDoB property as fa;se for pupils with different fullname', () => {
+    it('has showDoB property as false for pupils with different fullname', () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       pupil1.foreName = 'test'
