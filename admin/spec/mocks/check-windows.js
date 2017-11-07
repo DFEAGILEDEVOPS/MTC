@@ -11,7 +11,7 @@ module.exports = [
     adminStartDate: moment('2017-10-18 00:00:00').toDate(),
     checkWindowName: 'Test window 3',
     __v: 0,
-    forms: [],
+    forms: [1, 5],
     isDeleted: false
   },
   {
@@ -23,7 +23,7 @@ module.exports = [
     adminStartDate: moment('2017-10-19 00:00:00').toDate(),
     checkWindowName: 'Window Test 1',
     __v: 0,
-    forms: [],
+    forms: [8],
     isDeleted: false
   },
   {
