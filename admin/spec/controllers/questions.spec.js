@@ -26,7 +26,7 @@ const getPupilDataFoSpaMock = {
 }
 
 describe('Questions controller', () => {
-  let goodReq, res
+  let goodReq, res, startCheckSpy, authenticateSpy, getPupilDataForSpaSpy, getConfigSpy, jwtSpy, prepareQuestionDataSpy
 
   beforeEach(() => {
     res = httpMocks.createResponse()
@@ -63,22 +63,31 @@ describe('Questions controller', () => {
     if (!options['pupil-authentication.service.getPupilDataForSpa']) {
       options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataFoSpaMock }
     }
+
+    // Spy setup
+    startCheckSpy = jasmine.createSpy().and.callFake(options['check-start.service.startCheck'])
+    authenticateSpy = jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate'])
+    getPupilDataForSpaSpy = jasmine.createSpy().and.callFake(options['pupil-authentication.service.getPupilDataForSpa'])
+    getConfigSpy = jasmine.createSpy().and.callFake(options['config.service.getConfig'])
+    jwtSpy = jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
+    prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
+
     return proxyquire('../../controllers/questions', {
       '../services/pupil-authentication.service': {
-        authenticate: jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate']),
-        getPupilDataForSpa: jasmine.createSpy().and.callFake(options['pupil-authentication.service.getPupilDataForSpa'])
+        authenticate: authenticateSpy,
+        getPupilDataForSpa: getPupilDataForSpaSpy
       },
       '../services/config.service': {
-        getConfig: jasmine.createSpy().and.callFake(options['config.service.getConfig'])
+        getConfig: getConfigSpy
       },
       '../services/jwt.service': {
-        createToken: jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
+        createToken: jwtSpy
       },
       '../services/check-start.service': {
-        startCheck: jasmine.createSpy().and.callFake(options['check-start.service.startCheck'])
+        startCheck: startCheckSpy
       },
       '../services/check-form.service': {
-        prepareQuestionData: jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
+        prepareQuestionData: prepareQuestionDataSpy
       }
     })
   }
@@ -100,6 +109,12 @@ describe('Questions controller', () => {
       expect(data.pupil.firstName).toBe('Test')
       expect(data.school.name).toBe('Example School One')
       expect(data.config.questionTime).toBe(6)
+      expect(startCheckSpy).toHaveBeenCalledTimes(1)
+      expect(authenticateSpy).toHaveBeenCalledTimes(1)
+      expect(getPupilDataForSpaSpy).toHaveBeenCalledTimes(1)
+      expect(getConfigSpy).toHaveBeenCalledTimes(1)
+      expect(jwtSpy).toHaveBeenCalledTimes(1)
+      expect(prepareQuestionDataSpy).toHaveBeenCalledTimes(1)
       done()
     })
   })
