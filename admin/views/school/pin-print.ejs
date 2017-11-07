@@ -43,7 +43,7 @@
                     <% if (pupils[i + 1]) { %>
                     <td>
                         <div class="pupil-content">
-                            <b><%= `${pupils[i].foreName} ${pupils[i].middleNames} ${pupils[i].lastName}`%>
+                            <b><%= `${pupils[i+1].foreName} ${pupils[i+1].middleNames} ${pupils[i+1].lastName}`%>
                             </b>
                         </div>                        <div class="pupil-content">School Password:<br><b><%= school.schoolPin %></b></div>
                         <div class="pupil-content">Pupil PIN:<br><b><%= pupils[i + 1].pin %></b></div>
