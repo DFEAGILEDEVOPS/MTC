@@ -28,7 +28,7 @@ end
 
 When(/^I submit details for a valid check window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -73,7 +73,7 @@ end
 
 When(/^I enter details for a valid check window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -120,7 +120,7 @@ end
 
 When(/^I try to submit without a admin start date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: nil,
                         admin_start_mon: nil,
@@ -144,7 +144,7 @@ end
 
 When(/^I try to submit with a invalid admin start date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '32',
                         admin_start_mon: '13',
@@ -168,7 +168,7 @@ end
 
 When(/^I try to submit without a check start date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: today_date.next_month.month,
@@ -192,7 +192,7 @@ end
 
 When(/^I try to submit with a invalid check start date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: today_date.next_month.month,
@@ -216,7 +216,7 @@ end
 
 When(/^I try to submit without a check end date for the window$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: today_date.next_month.month,
@@ -306,7 +306,7 @@ end
 
 When(/^I try to submit admin start date that is in the past$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: (today_date - 30).month,
@@ -329,7 +329,7 @@ end
 
 When(/^I try to submit a admin start date with more digits for day month year than specified$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: 101,
                         admin_start_mon: 101,
@@ -351,7 +351,7 @@ end
 
 When(/^I try to submit an admin start date that is after the check start date$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.day,
                         admin_start_mon: today_date.month,
@@ -373,7 +373,7 @@ end
 
 When(/^I try to submit a start date that is in the past$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -396,7 +396,7 @@ end
 
 When(/^I try to submit a check start date with more digits for day month year than specified$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -422,7 +422,7 @@ end
 
 When(/^I try to submit an check start date that is before the admin start date$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -440,7 +440,7 @@ end
 
 When(/^I try to submit an check start date that is after the check end date$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -462,7 +462,7 @@ end
 
 When(/^I try to submit check end date that is in the past$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -488,7 +488,7 @@ end
 
 When(/^I try to submit a check end date with more digits for day month year than specified$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,
@@ -514,7 +514,7 @@ end
 
 When(/^I try to submit an check end date that is before the check start date$/) do
   today_date = Date.today
-  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..100)}"
+  check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: today_date.next_month.day,
                         admin_start_mon: today_date.next_month.month,

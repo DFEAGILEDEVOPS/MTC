@@ -10,7 +10,7 @@ end
 
 And(/^I create new check window with valid data$/) do
   @today_date = Date.today
-  @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..100)}"
+  @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: @check_window_name,
                         admin_start_day: @today_date.next_month.day,
                         admin_start_mon: @today_date.month,
