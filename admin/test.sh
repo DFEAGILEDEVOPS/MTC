@@ -12,4 +12,10 @@ rake features
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
+
+echo "************"
+echo " SERVER LOG "
+echo "*************"
+cat server.log
+
 exit $CUCUMBER_EXIT_CODE
