@@ -339,7 +339,7 @@ When(/^I try to submit a admin start date with more digits for day month year th
 end
 
 Then(/^I should see errors for the admin start day month and year being invalid$/) do
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Enter a start date in the future", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Start date must be in the future", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
 end
 
 When(/^I try to submit an admin start date that is after the check start date$/) do
