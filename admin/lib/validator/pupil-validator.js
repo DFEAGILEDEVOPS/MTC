@@ -121,7 +121,8 @@ module.exports.validate = async (pupilData) => {
   // We need to check that the UPN is unique
   if (!(validationError.get('upn'))) {
     const existingPupil = await pupilDataService.findOne({ upn: pupilData.upn })
-    if (existingPupil) {
+    // if pupil is not stored already under the same id and UPN
+    if (existingPupil && pupilData._id && existingPupil._id.toString() !== pupilData._id) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }
   }
