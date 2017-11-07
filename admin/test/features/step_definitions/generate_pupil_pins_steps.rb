@@ -177,8 +177,10 @@ Then(/^I should see the school password for (.*)$/) do |teacher|
 end
 
 Then(/^I should see information for Pupil pin and School password$/) do
+  cd = Time.now
+  str1 = "#{cd.strftime('%A')} #{cd.strftime('%-d')} #{cd.strftime('%B')}"
   expect(generated_pins_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy,  "Expected:'Pupil PINs and school password generated' -- not found"
-  expect(generated_pins_page.school_password_info.text.include?('Valid only until 4pm, Monday 6 November')).to be_truthy,  "Expected:'Valid only until 4pm, Monday 6 November' -- not found"
+  expect(generated_pins_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy,  "Expected: 'Valid only until 4pm, #{str1}' -- not found"
 end
 
 Then(/^I should see link to download all pupil pins$/) do
