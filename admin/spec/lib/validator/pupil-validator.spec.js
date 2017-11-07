@@ -639,6 +639,7 @@ describe('pupil validator', function () {
     beforeEach(() => {
       const pupil = Object.assign({}, dataMock)
       pupil._id = '12345'
+      pupil.upn = 'H801200001001'
       sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
       proxyquire('../../../lib/validator/pupil-validator', {
         '../../../services/data-access/pupil.data.service': pupilDataService
