@@ -13,6 +13,8 @@ CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
 
+ls -al 
+
 echo "************"
 echo " SERVER LOG "
 echo "*************"
