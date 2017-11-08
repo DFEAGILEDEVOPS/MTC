@@ -6,7 +6,7 @@ class ManageCheckWindowPage < SitePrism::Page
   element :create_new_window, 'a[href="/administrator/check-windows/add"]'
   element :panel, '.panel-border-wide', text: 'Check will be available for schools on weekdays from 8am to 3:30pm'
   element :guidance, 'aside.support-column nav li a[href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf"]', text: 'Guidance'
-  element :adjust_timings, 'aside.support-column nav li a', text: 'Adjust questions timings'
+  element :adjust_timings, 'aside.support-column nav li a', text: 'Settings on pupil check'
   element :progress_report, 'aside.support-column nav li a', text: 'Progress report'
   element :info_message, '.info-message', text: 'Changes have been saved'
 
@@ -45,15 +45,15 @@ class ManageCheckWindowPage < SitePrism::Page
 
   def format_admin_date(day, month, year)
     parsed_admin_date = DateTime.parse("#{day} #{month} #{year}")
-    parsed_admin_date.strftime("%d %b %Y")
+    parsed_admin_date.strftime("%-d %b %Y")
   end
 
   def format_check_period(start_day, start_month, start_year, end_day, end_month, end_year)
     parsed_check_start = DateTime.parse("#{start_day} #{start_month} #{start_year}")
-    formatted_start_date = start_year == end_year ? parsed_check_start.strftime("%d %b") : parsed_check_start.strftime("%d %b %Y")
+    formatted_start_date = start_year == end_year ? parsed_check_start.strftime("%-d %b") : parsed_check_start.strftime("%-d %b %Y")
     parsed_check_end = DateTime.parse("#{end_day} #{end_month} #{end_year}")
-    formatted_end_date = parsed_check_end.strftime("%d %b %Y")
-    formatted_start_date.split(' ')[1] == formatted_end_date.split(' ')[1] ?  formatted_start_date.split(' ')[0] + " to " + formatted_end_date : formatted_start_date + " to " + formatted_end_date
+    formatted_end_date = parsed_check_end.strftime("%-d %b %Y")
+    formatted_start_date + " to " + formatted_end_date
   end
 
 
