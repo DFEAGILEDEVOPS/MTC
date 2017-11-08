@@ -128,15 +128,16 @@ describe('Pupil schema', function () {
     })
   })
 
-  it('requires a checkOptions element', (done) => {
+  it('requires a adds in a checkOptions doc if not provided', (done) => {
     pupil.checkOptions = undefined
     pupil.validate(error => {
-      expect(error.errors.checkOptions).toBeDefined()
+      expect(pupil.checkOptions.speechSynthesis).toBeFalsy()
+      expect(error).toBeFalsy()
       done()
     })
   })
 
-  it('checkOptions autopopulates a speechSynthesis property', (done) => {
+  it('checkOptions auto-populates a speechSynthesis property', (done) => {
     pupil.checkOptions = undefined
     pupil.checkOptions = { randomProp: true }
     pupil.validate(error => {

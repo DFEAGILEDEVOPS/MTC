@@ -13,6 +13,10 @@ const checkOptionsSchema = new Schema({
   }
 })
 
+const defaultCheckOptions = {
+  speechSynthesis: false
+}
+
 const Pupil = new Schema({
   school: {
     type: Number,
@@ -73,7 +77,8 @@ const Pupil = new Schema({
   },
   checkOptions: {
     type: checkOptionsSchema,
-    required: true
+    required: false,
+    default: defaultCheckOptions
   }
 }, {
   timestamps: true
@@ -88,6 +93,11 @@ Pupil.pre('validate', function (next) {
     if (this[prop] && this[prop].length > 128) {
       this[prop] = this[prop].substring(0, 128)
     }
+  }
+
+  // If checkOptions is missing, add it in here on validate
+  if (!this.hasOwnProperty('checkOptions')) {
+    this.checkOptions = defaultCheckOptions
   }
   next()
 })
