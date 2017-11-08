@@ -44,7 +44,8 @@ check-development-app.iml
 public/stylesheets/application*.css
 public/javascripts/app.js
 public/PDFs
-public/images/icon-warning-white.png
+public/images
+public/images/*
 
 #Ignore cucumber screenshots
 test/screenshots
