@@ -10,13 +10,20 @@
 <div class="grid-row" aria-describedby="heading-xlarge">
     <div class="column-two-thirds" id="checkWindowsForm">
 
+        <% if (typeof error === 'object' && error) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h1>
+            <p>See highlighted errors below</p>
+        </div>
+        <% } %>
+
         <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
         <div class="box-successful padding-first-item">
             <h2 class="heading-large">Changes have been saved</h2>
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0"><%= actionName %> check window</h1>
+        <h1 class="heading-xlarge" id="heading-xlarge"><%= actionName %> check window</h1>
 
         <form action="/administrator/check-windows/<%= urlActionName %>/<%= %>" method="post">
             <div class="form-group">
@@ -169,9 +176,6 @@
                     <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
-                    <% if (typeof error !== 'undefined' &&  error.checkEndDateInThePast) { %>
-                    <span class="error-message"><%= errorMessage.checkEndDateInThePast %></span>
-                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDay) { %>
                     <span class="error-message"><%= error.checkEndDay %></span>
                     <% } %>

@@ -15,6 +15,11 @@ class AddEditCheckWindowPage < SitePrism::Page
   element :back, 'a.button.button-secondary'
   elements :error_message, '.error-message'
 
+  section :error_summary, '.error-summary' do
+    element :error_heading, 'h1', text: 'You need to fix the errors on this page before continuing.'
+    element :error_text, 'p', text: 'See highlighted errors below'
+  end
+
   def enter_details(hash)
     check_name.set hash.fetch(:check_name, '')
     admin_start_day.set hash.fetch(:admin_start_day, '')

@@ -8,6 +8,7 @@ const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
 // this is neither GDS nor Long.  @pris54 to review
 const gdsLongFormat = 'DD MMM YYYY'
+const dayAndDateFormat = 'dddd D MMMM'
 
 const dateService = {
   formatFullGdsDate: function (date) {
@@ -21,6 +22,10 @@ const dateService = {
 
   formatShortGdsDate: function (date) {
     return this.checkAndFormat(date, gdsShortFormat)
+  },
+
+  formatDayAndDate: (date) => {
+    return moment(date).format(dayAndDateFormat)
   },
 
   formatUKDate: function (date) {

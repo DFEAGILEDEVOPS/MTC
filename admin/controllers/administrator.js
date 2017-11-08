@@ -202,6 +202,7 @@ const checkWindowsForm = async (req, res, next) => {
   let adminIsDisabled = 0
   let checkStartIsDisabled = 0
 
+  req.breadcrumbs('Manage check windows', '/administrator/check-windows')
   res.locals.pageTitle = actionName + ' check window'
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -283,13 +284,13 @@ const saveCheckWindows = async (req, res, next) => {
     res.locals.pageTitle = actionName + ' check window'
     req.breadcrumbs(res.locals.pageTitle)
 
-    if (!req.body['adminStartDay'] && !req.body['adminStartMonth'] && !req.body['adminStartYear'] && req.body['existingAdminStartDate']) {
+    if (!req.body['adminStartDay'] && !req.body['adminStartMonth'] && !req.body['adminStartYear'] && req.body['existingAdminStartDate'] && req.body['adminIsDisabled'] === '1') {
       req.body.adminStartDay = moment(req.body['existingAdminStartDate']).format('D')
       req.body.adminStartMonth = moment(req.body['existingAdminStartDate']).format('MM')
       req.body.adminStartYear = moment(req.body['existingAdminStartDate']).format('YYYY')
     }
 
-    if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate']) {
+    if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate'] && req.body['checkStartIsDisabled'] === '1') {
       req.body.checkStartDay = moment(req.body['existingCheckStartDate']).format('D')
       req.body.checkStartMonth = moment(req.body['existingCheckStartDate']).format('MM')
       req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
@@ -328,7 +329,6 @@ const saveCheckWindows = async (req, res, next) => {
     await checkWindow.save()
     req.flash('info', flashMessage)
   } catch (error) {
-    console.log('Could not save check windows data.', error)
     return next(error)
   }
 
@@ -356,7 +356,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   if (checkWindow) {
-    if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
+    if (Date.parse(checkWindow.checkStartDate) < moment.now()) {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {

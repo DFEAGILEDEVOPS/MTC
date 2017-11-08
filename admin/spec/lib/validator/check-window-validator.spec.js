@@ -7,12 +7,12 @@ const expressValidator = require('express-validator')()
 
 describe('Check window validator', function () {
   let req = null
-  function getBody (
-    checkWindowName,
-    adminStartDate,
-    checkStartDate,
-    checkEndDate,
-    checkWindowId) {
+
+  function getBody (checkWindowName,
+                    adminStartDate,
+                    checkStartDate,
+                    checkEndDate,
+                    checkWindowId) {
     return {
       checkWindowName: checkWindowName,
       adminStartDay: adminStartDate.format('D'),
@@ -149,7 +149,7 @@ describe('Check window validator', function () {
 
   describe('When editing a check window', function () {
     it('should require a check window name when editing', async function (done) {
-      req.body.adminCheckWindowName = ''
+      req.body.checkWindowName = ''
       req.body.checkWindowId = 'abc123'
       const validationError = await checkWindowValidator.validate(req)
       expect(validationError.hasError()).toBe(true)

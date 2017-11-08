@@ -5,7 +5,7 @@ const errorConverter = require('../error-converter')
 const checkWindowErrorMessages = require('../errors/check-window')
 const XRegExp = require('xregexp')
 const moment = require('moment')
-const currentYear = moment.utc(Date.now()).format('YYYY')
+const currentYear = moment.utc(moment.now()).format('YYYY')
 
 let checkWindowValidationSchema = {
   'checkWindowName': {
@@ -42,8 +42,12 @@ let checkWindowValidationSchema = {
   },
   'checkEndYear': {
     isInt: {
-      options: [{min: currentYear}],
+      options: [{min: currentYear, max: (currentYear * 1 + 10)}],
       errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
+    },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
     },
     matches: {
       options: [XRegExp('^[0-9]+$')],
@@ -88,6 +92,10 @@ const checkWindowValidationSchemaAdminDate = {
       options: [XRegExp('^[0-9]+$')],
       errorMessage: checkWindowErrorMessages.adminStartYearInvalidChars
     },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
+    },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.adminStartYearRequired
   }
@@ -123,12 +131,52 @@ const checkWindowValidationSchemaCheckStart = {
       options: [{min: currentYear}],
       errorMessage: checkWindowErrorMessages.checkStartYearWrongDay
     },
+    isLength: {
+      options: [{min: 4, max: 4}],
+      errorMessage: checkWindowErrorMessages.enterValidYear
+    },
     matches: {
       options: [XRegExp('^[0-9]+$')],
       errorMessage: checkWindowErrorMessages.checkStartYearInvalidChars
     },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.checkStartYearRequired
+  },
+  'checkEndDay': {
+    isInt: {
+      options: [{min: 1, max: 31}],
+      errorMessage: checkWindowErrorMessages.checkEndDayWrongDay
+    },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: checkWindowErrorMessages.checkEndDayInvalidChars
+    },
+    notEmpty: true,
+    errorMessage: checkWindowErrorMessages.checkEndDayRequired
+  },
+  'checkEndMonth': {
+    isInt: {
+      options: [{min: 1, max: 12}],
+      errorMessage: checkWindowErrorMessages.checkEndMonthWrongDay
+    },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: checkWindowErrorMessages.checkEndMonthInvalidChars
+    },
+    notEmpty: true,
+    errorMessage: checkWindowErrorMessages.checkEndMonthRequired
+  },
+  'checkEndYear': {
+    isInt: {
+      options: [{min: currentYear}],
+      errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
+    },
+    matches: {
+      options: [XRegExp('^[0-9]+$')],
+      errorMessage: checkWindowErrorMessages.checkEndYearInvalidChars
+    },
+    notEmpty: true,
+    errorMessage: checkWindowErrorMessages.checkEndYearRequired
   }
 }
 
@@ -170,16 +218,16 @@ module.exports.validate = function (req) {
         if (moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', true)
         }
-        if (moment(adminStartDate).isAfter(checkStartDate)) {
+        if (adminStartDate && checkStartDate && moment(adminStartDate).isAfter(checkStartDate)) {
           validationError.addError('checkDateBeforeAdminDate', true)
         }
-        if (moment(checkStartDate).isAfter(checkEndDate)) {
+        if (checkStartDate && checkEndDate && moment(checkStartDate).isAfter(checkEndDate)) {
           validationError.addError('checkStartDateAfterEndDate', true)
         }
-        if (moment(currentDate).isAfter(checkStartDate)) {
+        if (checkStartDate && moment(currentDate).isAfter(checkStartDate)) {
           validationError.addError('checkStartDateInThePast', true)
         }
-        if (moment(currentDate).isAfter(checkEndDate)) {
+        if (checkEndDate && moment(currentDate).isAfter(checkEndDate)) {
           validationError.addError('checkEndDateInThePast', moment(currentDate).isAfter(checkEndDate))
         }
       } else { // Editing
@@ -201,7 +249,7 @@ module.exports.validate = function (req) {
         const result = await req.getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
-        if (adminStartDate !== undefined) {
+        if (adminStartDate !== undefined && moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', moment(currentDate).isAfter(adminStartDate))
         }
 

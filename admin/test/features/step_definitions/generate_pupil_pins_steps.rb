@@ -19,7 +19,7 @@ end
 
 And(/^I click Generate PINs button$/) do
   generate_pupil_pins_page.generate_pin_btn.click if generate_pupil_pins_page.has_generate_pin_btn?
-  generate_pupil_pins_page.generate_more_pin_btn.click if generate_pupil_pins_page.has_generate_more_pin_btn?
+  generated_pins_page.generate_more_pin_btn.click if generated_pins_page.has_generate_more_pin_btn?
 end
 
 Given(/^I have a pupil with active pin$/) do
@@ -71,11 +71,27 @@ Then(/^I should have a option to select all pupils on Generate Pin page$/) do
   expect(generate_pupil_pins_page).to have_select_all_pupils
 end
 
-Then(/^I should be taken to Generate Pins Page$/) do
+Then(/^I should be taken to Generate Pupil Pins Page$/) do
   expect(generate_pupil_pins_page).to be_displayed
 end
 
+Then(/^I should be taken to Generated Pins Page$/) do
+  expect(generated_pins_page).to be_displayed
+end
+
 When(/^I select a Pupil from Generate Pin page$/) do
+  pupil = generate_pupil_pins_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  pupil.checkbox.click
+end
+
+When(/^I deselect all pupils from Generate Pin Page$/) do
+  generate_pupil_pins_page.select_all_pupils.click
+  expect(@page).to have_sticky_banner
+  generate_pupil_pins_page.select_all_pupils.click
+end
+
+When(/^I select a Pupil to Generate more pins$/) do
+  generated_pins_page.generate_more_pin_btn.click
   pupil = generate_pupil_pins_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
@@ -94,6 +110,7 @@ When(/^I have generated a pin for a pupil$/) do
   step "the pupil details should be stored"
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
+  @page = generate_pupil_pins_page
   @pupil_name = generate_pupil_pins_page.generate_pin_using_name(name)
 
   ct = Time.now
@@ -105,6 +122,8 @@ When(/^I have generated a pin for a pupil$/) do
 end
 
 Given(/^I have generated pin for all pupil$/) do
+  step "I am logged in"
+  step "I am on Generate pins Pupil List page"
   generate_pupil_pins_page.select_all_pupils.click
   generate_pupil_pins_page.sticky_banner.confirm.click
 end
@@ -154,5 +173,20 @@ end
 Then(/^I should see the school password for (.*)$/) do |teacher|
   school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
   school_password = MongoDbHelper.find_school(school_id)[0]['schoolPin']
-  expect(generate_pupil_pins_page.school_password.text).to eql school_password
+  expect(generated_pins_page.school_password.text).to eql school_password
+end
+
+Then(/^I should see information for Pupil pin and School password$/) do
+  cd = Time.now
+  str1 = "#{cd.strftime('%A')} #{cd.strftime('%-d')} #{cd.strftime('%B')}"
+  expect(generated_pins_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy,  "Expected:'Pupil PINs and school password generated' -- not found"
+  expect(generated_pins_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy,  "Expected: 'Valid only until 4pm, #{str1}' -- not found"
+end
+
+Then(/^I should see link to download all pupil pins$/) do
+  expect(generated_pins_page).to have_download_pin_link
+end
+
+Then(/^I should see link to create custom download$/) do
+  expect(generated_pins_page).to have_custom_download_link
 end
