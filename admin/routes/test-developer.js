@@ -8,9 +8,15 @@ const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
 const checkFormService = require('../services/check-form.service')
 const isAuthenticated = require('../authentication/middleware')
+const config = require('../config')
+const testDeveloperController = require('../controllers/test-developer')
 
+router.get('/', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
+router.get('/home', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
+
+/* @TODO: The code below is meant to be refactored */
 /* GET manage check forms page. */
-router.get('/manage-check-forms', isAuthenticated(), async function (req, res, next) {
+router.get('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Manage check forms'
   try {
     const forms = await CheckForm.getActiveForms().sort({createdAt: -1}).exec()
@@ -27,7 +33,7 @@ router.get('/manage-check-forms', isAuthenticated(), async function (req, res, n
     })
 
     req.breadcrumbs(res.locals.pageTitle)
-    return res.render('test-developer/manage-check-forms', {
+    return res.render('service-manager/manage-check-forms', {
       forms: formData,
       breadcrumbs: req.breadcrumbs()
     })
@@ -37,7 +43,7 @@ router.get('/manage-check-forms', isAuthenticated(), async function (req, res, n
 })
 
 /* POST the new questions for the form */
-router.post('/manage-check-forms', isAuthenticated(), async function (req, res, next) {
+router.post('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   let uploadError = {}
   let uploadFile = req.files.csvFile
   let checkForm = new CheckForm()
@@ -79,7 +85,7 @@ router.post('/manage-check-forms', isAuthenticated(), async function (req, res, 
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
 
-    return res.render('test-developer/manage-check-forms', {
+    return res.render('service-manager/manage-check-forms', {
       forms: formData,
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
@@ -110,7 +116,7 @@ router.post('/manage-check-forms', isAuthenticated(), async function (req, res, 
       if (err) console.error(err)
     })
     console.error(error)
-    return res.render('test-developer/manage-check-forms', {
+    return res.render('service-manager/manage-check-forms', {
       forms: formData,
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
@@ -126,7 +132,7 @@ router.post('/manage-check-forms', isAuthenticated(), async function (req, res, 
     await checkForm.validate()
   } catch (error) {
     console.error(error)
-    return res.render('test-developer/manage-check-forms', {
+    return res.render('service-manager/manage-check-forms', {
       forms: formData,
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
@@ -140,11 +146,11 @@ router.post('/manage-check-forms', isAuthenticated(), async function (req, res, 
   }
 
   // Form saved successfully
-  res.redirect('/test-developer/manage-check-forms')
+  res.redirect('/service-manager/manage-check-forms')
 })
 
 /* GET - choose the check window page */
-router.get('/choose-check-window', isAuthenticated(), async function (req, res, next) {
+router.get('/choose-check-window', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Choose check window'
   // the formIds to assign are passed in the query string
   let formIds = []
@@ -179,7 +185,7 @@ router.get('/choose-check-window', isAuthenticated(), async function (req, res, 
   }
 
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('test-developer/choose-check-window', {
+  res.render('service-manager/choose-check-window', {
     forms: formData,
     checkWindows: checkWindowData,
     breadcrumbs: req.breadcrumbs()
@@ -187,7 +193,7 @@ router.get('/choose-check-window', isAuthenticated(), async function (req, res, 
 })
 
 /* GET - view a form */
-router.get('/view-form/:id', isAuthenticated(), async function (req, res, next) {
+router.get('/view-form/:id', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'View form'
   let formData
   let canDelete = true
@@ -212,7 +218,7 @@ router.get('/view-form/:id', isAuthenticated(), async function (req, res, next) 
     }
 
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('test-developer/view-form', {
+    res.render('service-manager/view-form', {
       form: formData,
       canDelete: canDelete,
       breadcrumbs: req.breadcrumbs()
@@ -223,7 +229,7 @@ router.get('/view-form/:id', isAuthenticated(), async function (req, res, next) 
 })
 
 /** Assign forms to check windows */
-router.post('/assign-forms-to-check-windows', isAuthenticated(), async function (req, res, next) {
+router.post('/assign-forms-to-check-windows', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   const formIds = req.body['check-form'] // could be scalar
   const checkWindowIds = req.body['check-window'] // could be scalar
   let checkWindows
@@ -256,7 +262,7 @@ router.post('/assign-forms-to-check-windows', isAuthenticated(), async function 
   res.redirect('manage-check-forms')
 })
 
-router.post('/delete-form/:formId', isAuthenticated(), async function (req, res, next) {
+router.post('/delete-form/:formId', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   const id = req.params.formId
   try {
     const form = await CheckForm.getActiveForm(id).exec()
@@ -285,7 +291,7 @@ router.post('/delete-form/:formId', isAuthenticated(), async function (req, res,
     return next(error)
   }
 
-  res.redirect('/test-developer/manage-check-forms')
+  res.redirect('/service-manager/manage-check-forms')
 })
 
 module.exports = router

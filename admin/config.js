@@ -13,8 +13,10 @@ module.exports = {
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
   QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
+  ROLE_SERVICE_MANAGER: 'SERVICE-MANAGER',
   ROLE_TEST_DEVELOPER: 'TEST-DEVELOPER',
   ROLE_TEACHER: 'TEACHER',
-  HOME_TEST_DEVELOPER: '/administrator',
-  HOME_TEACHER: '/school/school-home'
+  HOME_TEACHER: '/school/school-home',
+  HOME_TEST_DEVELOPER: '/test-developer/home',
+  HOME_SERVICE_MANAGER: '/service-manager/home'
 }

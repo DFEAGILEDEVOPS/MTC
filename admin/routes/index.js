@@ -6,13 +6,12 @@ const fs = require('fs')
 
 const config = require('../config')
 const isAuthenticated = require('../authentication/middleware')
-const { getAdministration } = require('../controllers/administrator')
+const { getServiceManagerHome } = require('../controllers/service-manager')
 const { home,
   getSignIn,
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getProfile,
   postAuth,
   getUnauthorised } = require('../controllers/authentication')
 
@@ -36,10 +35,10 @@ router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
 router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */
 router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
-/* Profile page */
-router.get('/profile', isAuthenticated(), (req, res) => getProfile(req, res))
-/* Administration page */
-router.get('/administrator', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res) => getAdministration(req, res))
+/* Test developer routing */
+router.get('/test-developer', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => getServiceManagerHome(req, res, next))
+/* Service manager routing */
+router.get('/service-manager', isAuthenticated(config.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt

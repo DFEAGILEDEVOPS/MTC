@@ -18,7 +18,7 @@
 
         <h1 class="heading-xlarge" id="heading-xlarge" tabindex="0"><%= actionName %> check window</h1>
 
-        <form action="/administrator/check-windows/<%= urlActionName %>" method="post">
+        <form action="/service-manager/check-windows/<%= urlActionName %>" method="post">
             <div class="form-group">
                 <label for="checkWindowName" class="form-label-bold">
                     Name of check window
@@ -187,7 +187,7 @@
                 <p>
                     <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
                     <input class="button" type="submit" value="Save">
-                    <a href="/administrator/check-windows" class="button button-secondary">Cancel</a>
+                    <a href="/service-manager/check-windows" class="button button-secondary">Cancel</a>
                 </p>
             </div>
         </form>
