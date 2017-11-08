@@ -184,7 +184,8 @@ psychometricianReportService.produceReportData = function (completedCheck) {
 }
 
 /**
- * Filter an Array of psreportcache object to a minimal set
+ * Filter a psreportcache object to a minimal set of properties. Returns a new object.
+ * @return {Object}
  */
 function scoreFilter (obj) {
   const props = ['Surname', 'Forename', 'MiddleNames', 'FormMark', 'TestDate']
