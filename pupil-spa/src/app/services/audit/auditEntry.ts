@@ -1,5 +1,6 @@
 export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckComplete' |
-'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected';
+'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |
+  'UtteranceStarted' | 'UtteranceEnded';
 
 export abstract class AuditEntry {
 
@@ -54,5 +55,17 @@ export class CheckComplete extends AuditEntry {
 export class RefreshDetected extends AuditEntry {
   constructor(data?: any) {
     super('RefreshDetected', new Date(), data);
+  }
+}
+
+export class UtteranceStarted extends AuditEntry {
+  constructor(data?: any) {
+    super('UtteranceStarted', new Date(), data);
+  }
+}
+
+export class UtteranceEnded extends AuditEntry {
+  constructor(data?: any) {
+    super('UtteranceStarted', new Date(), data);
   }
 }
