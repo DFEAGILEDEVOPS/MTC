@@ -16,8 +16,8 @@ class AddEditCheckWindowPage < SitePrism::Page
   elements :error_message, '.error-message'
 
   section :error_summary, '.error-summary' do
-    element :error_heading, 'h1', text: 'Check windows’s details'
-    element :error_text, 'p', text: 'You need to fix the errors on this page before continuing. See highlighted errors below'
+    element :error_heading, 'h1', text: 'You need to fix the errors on this page before continuing.'
+    element :error_text, 'p', text: 'See highlighted errors below'
   end
 
   def enter_details(hash)
