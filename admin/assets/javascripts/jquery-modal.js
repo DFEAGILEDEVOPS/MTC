@@ -6,12 +6,13 @@
 /* global $ */
 $(function () {
   function startModal (e) {
-    $('#js-modal-link').on('click', function (e) {
+    $('.modal-link').on('click', function (e) {
       $('#js-modal-confirmation-button').attr('href', $(this)[0].href)
       toggleShowHideModal(e)
     })
     $('#js-modal-cancel-button').on('click', function (e) {
       toggleShowHideModal(e)
+      $('#js-modal-confirmation-button').attr('href', '')
     })
     $('#js-modal-overlay').on('click', function (e) {
       toggleShowHideModal(e)
@@ -41,7 +42,7 @@ $(function () {
     }
   }
 
-  function confirmModal (e, url) {
+  function confirmModal (e) {
     toggleShowHideModal(e)
     window.location.replace(e.target.href)
   }
@@ -60,7 +61,6 @@ $(function () {
   }
 
   if ($('#js-modal-box').length > 0) {
-    console.log('MODAL TRIGGERED')
     startModal()
   }
 })
