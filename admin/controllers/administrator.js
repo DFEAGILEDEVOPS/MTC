@@ -199,28 +199,44 @@ const checkWindowsForm = async (req, res, next) => {
   let actionName = (req.params.action === 'add' && req.params.id === undefined) ? 'Create' : 'Edit'
   let urlActionName = req.params.action
   let currentYear = moment.utc(Date.now()).format('YYYY')
+  let adminIsDisabled = 0
+  let checkStartIsDisabled = 0
 
+  req.breadcrumbs('Manage check windows', '/administrator/check-windows')
   res.locals.pageTitle = actionName + ' check window'
   req.breadcrumbs(res.locals.pageTitle)
 
   if (req.params.id !== undefined) {
     try {
       checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
+
+      const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
+      const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
+
       checkWindowData = {
         checkWindowId: req.params.id,
         checkWindowName: checkWindowData.checkWindowName,
-        adminStartDay: moment(checkWindowData.adminStartDate).format('DD'),
+        adminStartDay: moment(checkWindowData.adminStartDate).format('D'),
         adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
         adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
-        checkStartDay: moment(checkWindowData.checkStartDate).format('DD'),
+        checkStartDay: moment(checkWindowData.checkStartDate).format('D'),
         checkStartMonth: moment(checkWindowData.checkStartDate).format('MM'),
         checkStartYear: moment(checkWindowData.checkStartDate).format('YYYY'),
-        checkEndDay: moment(checkWindowData.checkEndDate).format('DD'),
+        checkEndDay: moment(checkWindowData.checkEndDate).format('D'),
         checkEndMonth: moment(checkWindowData.checkEndDate).format('MM'),
-        checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY')
+        checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY'),
+        existingAdminStartDate: adminStartDate,
+        existingCheckStartDate: checkStartDate
+      }
+
+      const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
+      if (moment(currentDate).isAfter(adminStartDate)) {
+        adminIsDisabled = 1
+      }
+      if (moment(currentDate).isAfter(checkStartDate)) {
+        checkStartIsDisabled = 1
       }
     } catch (error) {
-      console.log('Error retrieving check window.')
       return next()
     }
   }
@@ -233,7 +249,9 @@ const checkWindowsForm = async (req, res, next) => {
     successfulPost,
     actionName,
     urlActionName,
-    currentYear
+    currentYear,
+    adminIsDisabled,
+    checkStartIsDisabled
   })
 }
 
@@ -249,18 +267,34 @@ const saveCheckWindows = async (req, res, next) => {
   let urlActionName = 'add'
   let checkWindow
   let validationError = await checkWindowValidator.validate(req)
-  let currentYear = moment.utc(Date.now()).format('YYYY')
+  let currentYear = moment.utc(moment.now()).format('YYYY')
   let flashMessage = req.body['checkWindowName'] + ' has been created'
+  let adminIsDisabled = req.body.adminIsDisabled
+  let checkStartIsDisabled = req.body.checkStartIsDisabled
 
   if (req.body.checkWindowId !== '') {
     actionName = 'Edit'
     urlActionName = 'edit'
     flashMessage = 'Changes have been saved'
+
+    checkWindow = await checkWindowDataService.fetchCheckWindow(req.body.checkWindowId)
   }
 
   if (validationError.hasError()) {
     res.locals.pageTitle = actionName + ' check window'
     req.breadcrumbs(res.locals.pageTitle)
+
+    if (!req.body['adminStartDay'] && !req.body['adminStartMonth'] && !req.body['adminStartYear'] && req.body['existingAdminStartDate'] && req.body['adminIsDisabled'] === '1') {
+      req.body.adminStartDay = moment(req.body['existingAdminStartDate']).format('D')
+      req.body.adminStartMonth = moment(req.body['existingAdminStartDate']).format('MM')
+      req.body.adminStartYear = moment(req.body['existingAdminStartDate']).format('YYYY')
+    }
+
+    if (!req.body['checkStartDay'] && !req.body['checkStartMonth'] && !req.body['checkStartYear'] && req.body['existingCheckStartDate'] && req.body['checkStartIsDisabled'] === '1') {
+      req.body.checkStartDay = moment(req.body['existingCheckStartDate']).format('D')
+      req.body.checkStartMonth = moment(req.body['existingCheckStartDate']).format('MM')
+      req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
+    }
 
     return res.render('administrator/check-windows-form', {
       action: urlActionName,
@@ -270,23 +304,23 @@ const saveCheckWindows = async (req, res, next) => {
       currentYear,
       actionName,
       urlActionName,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      adminIsDisabled,
+      checkStartIsDisabled
     })
   }
 
-  if (req.body.checkWindowId !== '') {
-    try {
-      checkWindow = await checkWindowDataService.fetchCheckWindow(req.body.checkWindowId)
-    } catch (error) {
-      return next(error)
-    }
-  } else {
+  if (typeof checkWindow === 'undefined') {
     checkWindow = new CheckWindow()
   }
 
   checkWindow.checkWindowName = req.body['checkWindowName']
-  checkWindow.adminStartDate = checkWindowService.formatCheckWindowDate(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
-  checkWindow.checkStartDate = checkWindowService.formatCheckWindowDate(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+  if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
+    checkWindow.adminStartDate = checkWindowService.formatCheckWindowDate(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
+  }
+  if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
+    checkWindow.checkStartDate = checkWindowService.formatCheckWindowDate(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+  }
   checkWindow.checkEndDate = checkWindowService.formatCheckWindowDate(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
 
   // Auditing? Question for BAs.
@@ -295,7 +329,6 @@ const saveCheckWindows = async (req, res, next) => {
     await checkWindow.save()
     req.flash('info', flashMessage)
   } catch (error) {
-    console.log('Could not save check windows data.', error)
     return next(error)
   }
 
@@ -323,7 +356,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   if (checkWindow) {
-    if (Date.parse(checkWindow.checkStartDate) < Date.now()) {
+    if (Date.parse(checkWindow.checkStartDate) < moment.now()) {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {
