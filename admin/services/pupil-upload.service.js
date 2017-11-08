@@ -29,7 +29,7 @@ const onCSVReadComplete = async (csvDataArray, school) => {
 
 module.exports.upload = async (school, uploadFile) => {
   let stream
-  const pr = await new Promise((resolve) => {
+  const pr = new Promise((resolve, reject) => {
     let csvDataArray = []
     stream = fs.createReadStream(uploadFile.file)
     csv.fromStream(stream)
@@ -37,8 +37,12 @@ module.exports.upload = async (school, uploadFile) => {
         csvDataArray.push(data)
       })
       .on('end', async () => {
-        const response = await onCSVReadComplete(csvDataArray, school)
-        return resolve(response)
+        try {
+          const response = await onCSVReadComplete(csvDataArray, school)
+          return resolve(response)
+        } catch (error) {
+          reject(error)
+        }
       })
   })
   return pr
