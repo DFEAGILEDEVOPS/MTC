@@ -637,18 +637,30 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check fails', () => {
     beforeEach(() => {
-      sandbox.mock(pupilDataService).expects('findOne').resolves(dataMock)
+      const pupil = Object.assign({}, dataMock)
+      pupil._id = '12345'
+      pupil.upn = 'H801200001001'
+      sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
       proxyquire('../../../lib/validator/pupil-validator', {
         '../../../services/data-access/pupil.data.service': pupilDataService
       })
     })
-
-    it('it ensures the UPN is unique', async (done) => {
+    it('it ensures the UPN is unique when adding new pupil', async (done) => {
       req.body = getBody()
+      req.body._id = '123456'
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
       expect(validationError.get('upn')).toBe('UPN is a duplicate of a pupil already in your register')
+      done()
+    })
+    it('it ensures the UPN is unique when editing pupil', async (done) => {
+      req.body = getBody()
+      req.body._id = '12345'
+      const validationError = await pupilValidator.validate(req.body)
+      expect(validationError.hasError()).toBe(false)
+      expect(validationError.isError('upn')).toBe(false)
+      expect(validationError.get('upn')).toBe('')
       done()
     })
   })
