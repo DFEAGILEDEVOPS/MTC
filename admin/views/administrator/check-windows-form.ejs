@@ -12,7 +12,7 @@
 
         <% if (typeof error === 'object' && error) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h1>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
             <p>See highlighted errors below</p>
         </div>
         <% } %>
@@ -33,7 +33,7 @@
                     <span class="error-message"><%= error.checkWindowName %></span>
                     <% } %>
                 </label>
-                <input class="form-control"
+                <input class="form-control <%= error.checkWindowName ? 'form-control-error' : '' %>"
                        id="checkWindowName"
                        name="checkWindowName"
                        type="text"

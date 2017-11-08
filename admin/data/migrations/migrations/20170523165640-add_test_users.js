@@ -120,7 +120,8 @@ function createPupils (schools) {
             pin: null,
             pinExpired: false,
             hasAttended: false,
-            upn: upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
+            upn: upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial,
+            checkOptions: { speechSynthesis: false }
           })
           pupilIdx += 1
           await pupil.save()
