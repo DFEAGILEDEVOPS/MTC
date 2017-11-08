@@ -25,16 +25,11 @@ const checkWindowService = {
   formatCheckPeriod: (startDate, endDate) => {
     let startYear = ' ' + startDate.format('YYYY')
     let endYear = ' ' + endDate.format('YYYY')
-    let startMonth = ' ' + startDate.format('MMM')
-    let endMonth = ' ' + endDate.format('MMM')
 
     if (startYear === endYear) {
       startYear = ''
     }
-    if (startMonth === endMonth) {
-      startMonth = ''
-    }
-    return startDate.format('DD') + startMonth + startYear + ' to ' + endDate.format('DD MMM YYYY')
+    return startDate.format('D MMM') + startYear + ' to ' + endDate.format('D MMM YYYY')
   },
   /**
    * Format check windows document, prepare to parse in view.
@@ -51,7 +46,7 @@ const checkWindowService = {
       return {
         id: cw._id,
         checkWindowName: cw.checkWindowName,
-        adminStartDate: adminStartDateMo.format('DD MMM YYYY'),
+        adminStartDate: adminStartDateMo.format('D MMM YYYY'),
         checkDates: checkWindowService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
         canRemove: typeof canRemove === 'boolean' ? canRemove : (Date.parse(cw.checkStartDate) >= Date.now()),
         isCurrent: isCurrent
@@ -63,7 +58,7 @@ const checkWindowService = {
       '' + dateItem[keyDay] +
       '/' + dateItem[keyMonth] +
       '/' + dateItem[keyYear],
-      'DD/MM/YYYY').toDate()
+      'D/MM/YYYY').toDate()
   }
 }
 
