@@ -14,6 +14,8 @@ When(/^I update with valid pupil data$/) do
   @updated_upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @updated_upn, male: true, day: '16', month: '01', year: '2010'}
+  @updated_details_hash[:upn]=@upn if @page == edit_pupil_page
+  @updated_upn = @upn if @page == edit_pupil_page
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
 end
@@ -35,7 +37,7 @@ end
 
 Then(/^I should see validation errors when i submit with the following names$/) do |table|
   table.raw.flatten.each do |value|
-    @upn = UpnGenerator.generate
+    @upn = UpnGenerator.generate unless @page == edit_pupil_page
     @details_hash = {first_name: value, middle_name: value, last_name: value, upn: @upn, female: true, day: '18', month: '02', year: '2010'}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
@@ -59,4 +61,14 @@ end
 And(/^I should see no flash message displayed$/) do
   expect(pupil_register_page).to have_no_info_message
   expect(pupil_register_page).to have_no_edited_pupil
+end
+
+
+Then(/^the pupil details should not be updated$/) do
+  wait_until {(MongoDbHelper.pupil_details @upn.to_s)}
+  stored_details = MongoDbHelper.pupil_details @upn.to_s
+  expect(stored_details['foreName']).to_not eql @details_hash[:first_name]
+  expect(stored_details['middleName']).to_not eql @details_hash[:middle_name]
+  expect(stored_details['lastName']).to_not eql @details_hash[:last_name]
+  expect(stored_details['upn']).to eql @details_hash[:upn]
 end

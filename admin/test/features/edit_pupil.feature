@@ -18,7 +18,7 @@ Feature:
 
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
-    Then the pupil details should not be stored
+    Then the pupil details should not be updated
 
   Scenario: Validation errors are displayed when mandatory fields are not completed
     When I submit the form without the completing mandatory fields
@@ -44,7 +44,6 @@ Feature:
   Scenario: Names can only be a max of 128 characters long
     When I attempt to enter names that are more than 128 characters long
      Then I should see a validation error for first name
-
 
   Scenario: First names should contain at least 1 character long
     When I submit the form with a first name that is less than 1 character long

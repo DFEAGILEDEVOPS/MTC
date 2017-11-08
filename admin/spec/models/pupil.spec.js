@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect, xit */
+/* global beforeEach, describe, it, expect */
 
 const Pupil = require('../../models/pupil')
 const moment = require('moment')
@@ -17,7 +17,10 @@ describe('Pupil schema', function () {
       middleNames: 'Giles',
       gender: 'M',
       // use utc for dob...and ignore the time component
-      dob: moment.utc(20060810, 'YYYYMMDD')
+      dob: moment.utc(20060810, 'YYYYMMDD'),
+      checkOptions: {
+        speechSynthesis: false
+      }
     })
   })
 
@@ -98,16 +101,6 @@ describe('Pupil schema', function () {
     done()
   })
 
-  xit('method getPupils returns an object', async function (done) {
-    try {
-      const pupils = await Pupil.getPupils().limit(1).exec()
-      expect(typeof pupils).toEqual('object')
-      done()
-    } catch (error) {
-      done(error)
-    }
-  })
-
   it('truncates foreName if it\'s too long', function (done) {
     pupil.foreName = 's'.repeat(130)
     pupil.validate(error => {
@@ -131,6 +124,25 @@ describe('Pupil schema', function () {
     pupil.validate(error => {
       expect(error).toBe(null)
       expect(pupil.lastName.length).toBe(128)
+      done()
+    })
+  })
+
+  it('requires a adds in a checkOptions doc if not provided', (done) => {
+    pupil.checkOptions = undefined
+    pupil.validate(error => {
+      expect(pupil.checkOptions.speechSynthesis).toBeFalsy()
+      expect(error).toBeFalsy()
+      done()
+    })
+  })
+
+  it('checkOptions auto-populates a speechSynthesis property', (done) => {
+    pupil.checkOptions = undefined
+    pupil.checkOptions = { randomProp: true }
+    pupil.validate(error => {
+      expect(error).toBeFalsy()
+      expect(pupil.checkOptions.speechSynthesis).toBe(false)
       done()
     })
   })
