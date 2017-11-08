@@ -1,15 +1,15 @@
-const config = require('../config')
+const rolesConfig = require('../roles-config')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
     switch (req.user.role) {
       case 'TEACHER':
       case 'HEADTEACHER':
-        return res.redirect(config.HOME_TEACHER)
+        return res.redirect(rolesConfig.HOME_TEACHER)
       case 'TEST-DEVELOPER':
-        return res.redirect(config.HOME_TEST_DEVELOPER)
+        return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
       case 'SERVICE-MANAGER':
-        return res.redirect(config.HOME_SERVICE_MANAGER)
+        return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
     }
   } else {
     res.redirect('/sign-in')
@@ -21,8 +21,8 @@ const getSignIn = (req, res) => {
   if (req.isAuthenticated()) {
     res.redirect('/school/school-home')
   } else {
-    if (config.NCA_TOOLS_AUTH_URL) {
-      res.redirect(config.NCA_TOOLS_AUTH_URL)
+    if (rolesConfig.NCA_TOOLS_AUTH_URL) {
+      res.redirect(rolesConfig.NCA_TOOLS_AUTH_URL)
     } else {
       res.render('sign-in')
     }
@@ -33,13 +33,13 @@ const postSignIn = (req, res) => {
   switch (req.user.role) {
     case 'TEACHER':
     case 'HEADTEACHER':
-      return res.redirect(config.HOME_TEACHER)
+      return res.redirect(rolesConfig.HOME_TEACHER)
     case 'TEST-DEVELOPER':
-      return res.redirect(res.redirect(config.HOME_TEST_DEVELOPER))
+      return res.redirect(res.redirect(rolesConfig.HOME_TEST_DEVELOPER))
     case 'SERVICE-MANAGER':
-      return res.redirect(res.redirect(config.HOME_SERVICE_MANAGER))
+      return res.redirect(res.redirect(rolesConfig.HOME_SERVICE_MANAGER))
     default:
-      return res.redirect(config.HOME_TEACHER)
+      return res.redirect(rolesConfig.HOME_TEACHER)
   }
 }
 
@@ -61,7 +61,7 @@ const postAuth = (req, res) => {
   console.log(req.user)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
-  return res.redirect(config.HOME_TEACHER)
+  return res.redirect(rolesConfig.HOME_TEACHER)
 }
 
 const getUnauthorised = (req, res) => {

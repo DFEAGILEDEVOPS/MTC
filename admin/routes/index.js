@@ -5,6 +5,7 @@ const path = require('path')
 const fs = require('fs')
 
 const config = require('../config')
+const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const { home,
@@ -36,9 +37,9 @@ router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */
 router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 /* Test developer routing */
-router.get('/test-developer', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => getServiceManagerHome(req, res, next))
+router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Service manager routing */
-router.get('/service-manager', isAuthenticated(config.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
+router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt
