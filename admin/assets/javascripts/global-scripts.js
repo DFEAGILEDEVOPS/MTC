@@ -177,7 +177,7 @@ $(function () {
    * Page based implementations.
    */
   // @TODO: check forms are to be refactored next.
-  //if ($('#checkFormsList').length > 0) inputStatus.toggleAllCheckboxes('#checkFormsList')
+  // if ($('#checkFormsList').length > 0) inputStatus.toggleAllCheckboxes('#checkFormsList')
 
   // @TODO: No sticky on this page. Feature needs further work and will change radically.
   if ($('#attendanceList').length > 0) {
