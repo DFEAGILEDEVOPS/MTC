@@ -85,6 +85,13 @@ describe('generate-pins.service', () => {
         expect(pupils[ 1 ].showDoB).toBeTruthy()
         done()
       })
+      it('should display middle names', async (done) => {
+        const pupils = await generatePinsService.getPupils(schoolMock._id, 'lastName', 'asc')
+        expect(pupils.length).toBe(2)
+        expect(pupils[ 0 ].showMiddleNames).toBeTruthy()
+        expect(pupils[ 1 ].showMiddleNames).toBeTruthy()
+        done()
+      })
     })
   })
 
