@@ -27,7 +27,7 @@ generatePinsService.getPupils = async (schoolId, sortField, sortDirection) => {
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
   // determine if more than one pupil has same full name
-  pupils = await pupilService.addIdentificationFlags(pupils)
+  pupils = pupilService.addIdentificationFlags(pupils)
   return pupils
 }
 
