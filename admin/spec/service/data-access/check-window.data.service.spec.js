@@ -29,8 +29,24 @@ describe('check.data.service', () => {
       })
     })
 
-    it('should make the expected calls', async () => {
-      await service.fetchCheckWindow('5964fb80b42c79b8849b33f0')
+    it('should fetch a check window document', async () => {
+      await service.fetchCheckWindow()
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#setDeletedCheckWindow', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(CheckWindow).expects('updateOne').chain('exec').resolves(checkWindowDeletedMock)
+      service = proxyquire('../../../services/data-access/check-window.data.service', {
+        '../../models/check': CheckWindow
+      })
+    })
+
+    it('should update a check window with specific id to be deleted', async () => {
+      await service.setDeletedCheckWindow()
       expect(mock.verify()).toBe(true)
     })
   })
@@ -45,7 +61,7 @@ describe('check.data.service', () => {
       })
     })
 
-    it('should make the expected calls', async () => {
+    it('should fetch check windows documents', async () => {
       await service.fetchCheckWindows('name', 'asc', false)
       expect(mock.verify()).toBe(true)
     })

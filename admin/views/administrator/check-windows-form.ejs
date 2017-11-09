@@ -48,6 +48,9 @@
                 <label class="form-label-bold">
                     Administration start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.adminDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.adminDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' && error.adminDateInThePast) { %>
                     <span class="error-message"><%= errorMessage.adminDateInThePast %></span>
                     <% } %>
@@ -110,6 +113,9 @@
                 <label class="form-label-bold">
                     Check start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.checkStartDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.checkStartDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkDateBeforeAdminDate) { %>
                     <span class="error-message"><%= errorMessage.checkDateBeforeAdminDate %></span>
                     <% } %>
@@ -172,10 +178,16 @@
             <div class="form-group">
                 <label class="form-label-bold">
                     Check end date
+                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.checkEndDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.checkEndDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDateBeforeStartDate) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>
-                    <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' &&  error.checkEndDateInThePast) { %>
+                    <span class="error-message"><%= errorMessage.checkEndDateInThePast %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDay) { %>
                     <span class="error-message"><%= error.checkEndDay %></span>
                     <% } %>
