@@ -1,5 +1,5 @@
 const schoolDataService = require('../services/data-access/school.data.service')
-const generatePinService = require('../services/generate-pins.service')
+const generatePinsValidationService = require('../services/generate-pins-validation.service')
 
 const schoolService = {
   /**
@@ -9,7 +9,7 @@ const schoolService = {
    */
   getActiveSchool: async (schoolId) => {
     const school = await schoolDataService.findOne({_id: schoolId})
-    if (!generatePinService.isValidPin(school.schoolPin, school.pinExpiresAt)) {
+    if (!generatePinsValidationService.isValidPin(school.schoolPin, school.pinExpiresAt)) {
       return null
     }
     return school

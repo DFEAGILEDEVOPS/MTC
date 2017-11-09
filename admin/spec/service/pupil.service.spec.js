@@ -4,7 +4,6 @@ const sinon = require('sinon')
 const moment = require('moment')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilService = require('../../services/pupil.service')
-const generatePinsService = require('../../services/generate-pins.service')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 
@@ -118,10 +117,8 @@ describe('pupil service', () => {
       beforeEach(() => {
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(generatePinsService).expects('isValidPin').resolves(true)
         proxyquire('../../services/pupil.service', {
           '../../services/data-access/pupil.data.service': pupilDataService,
-          '../../services/generate-pins.service': generatePinsService
         })
       })
       it('it should return a list of active pupils', async () => {
@@ -133,10 +130,8 @@ describe('pupil service', () => {
       beforeEach(() => {
         sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(generatePinsService).expects('isValidPin').resolves(false)
         proxyquire('../../services/pupil.service', {
           '../../services/data-access/pupil.data.service': pupilDataService,
-          '../../services/generate-pins.service': generatePinsService
         })
       })
       it('it should return a list of active pupils', async () => {

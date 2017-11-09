@@ -144,11 +144,13 @@ describe('generate-pins.service', () => {
   })
 
   describe('generateSchoolPassword', () => {
-    it('should generate school password if schoolPin is not valid', () => {
-      const school = Object.assign({}, schoolMock)
-      const result = generatePinsService.generateSchoolPassword(school)
-      expect(result.pinExpiresAt).toBeDefined()
-      expect(result.schoolPin.length).toBe(8)
+    describe('if schoolPin is not valid', () => {
+      it('should generate school password', () => {
+        const school = Object.assign({}, schoolMock)
+        const result = generatePinsService.generateSchoolPassword(school)
+        expect(result.pinExpiresAt).toBeDefined()
+        expect(result.schoolPin.length).toBe(8)
+      })
     })
 
     describe('if the pin expiration date is before same day 4pm', () => {

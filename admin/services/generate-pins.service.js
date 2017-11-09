@@ -1,8 +1,9 @@
 const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
 const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
+const pupilService = require('../services/pupil.service')
+const generatePinsValidationService = require('../services/generate-pins-validation.service')
 
 const fourPMToday = () => {
   return moment().startOf('day').add(16, 'hours')
@@ -10,8 +11,6 @@ const fourPMToday = () => {
 
 const generatePinsService = {}
 
-console.log(pupilDataService)
-console.log(pupilService)
 /**
  * Fetch pupils and filter required only pupil attributes
  * @param schoolId
@@ -36,7 +35,7 @@ generatePinsService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @param p
  * @returns {Boolean}
  */
-generatePinsService.removeInvalidPupils = (p) => !generatePinsService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
+generatePinsService.removeInvalidPupils = (p) => !generatePinsValidationService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
 
 /**
  * Generate pupils pins
@@ -56,7 +55,7 @@ generatePinsService.generatePupilPins = async (pupilsList) => {
   // pupils = await pupilDataService.find({ _id: { $in: ids } })
   // Apply the updates to the pupil object(s)
   pupils.forEach(pupil => {
-    if (!generatePinsService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
+    if (!generatePinsValidationService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
       const length = 5
       pupil.pin = generatePinsService.generateRandomPin(length)
       pupil.pinExpiresAt = fourPMToday()
@@ -72,23 +71,12 @@ generatePinsService.generatePupilPins = async (pupilsList) => {
  */
 generatePinsService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
-  if (generatePinsService.isValidPin(schoolPin, pinExpiresAt)) {
+  if (!generatePinsValidationService.isValidPin(schoolPin, pinExpiresAt)) {
     const length = 8
     school.schoolPin = generatePinsService.generateRandomPin(length)
     school.pinExpiresAt = fourPMToday()
   }
   return school
-}
-
-/**
- * Validate pin
- * @param pin
- * @param pinExpiresAt
- * @returns {Boolean}
- */
-generatePinsService.isValidPin = (pin, pinExpiresAt) => {
-  if (!pinExpiresAt || !pin) return false
-  return moment(pinExpiresAt).isAfter(moment.utc())
 }
 
 /**
