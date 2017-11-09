@@ -34,17 +34,17 @@
     "gulp-string-replace": "^0.4.0",
     "ngx-logger": "^0.2.6",
     "node-sass-utils": "^1.1.2",
-    "rxjs": "^5.4.3",
+    "rxjs": "^5.5.2",
     "zone.js": "^0.8.17"
   },
   "devDependencies": {
     "@angular/cli": "^1.4.3",
     "@angular/compiler-cli": "^4.3.6",
     "@angular/language-service": "^4.3.6",
-    "@types/jasmine": "^2.6.0",
+    "@types/jasmine": "^2.6.3",
     "@types/jasminewd2": "^2.0.3",
-    "@types/node": "^8.0.33",
-    "codelyzer": "~3.2.1",
+    "@types/node": "^8.0.50",
+    "codelyzer": "~4.0.1",
     "concurrently": "^3.5.0",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -54,12 +54,12 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "node-sass": "^4.5.3",
-    "protractor": "~5.1.2",
-    "replace-in-file": "^2.6.4",
+    "node-sass": "^4.6.0",
+    "protractor": "~5.2.0",
+    "replace-in-file": "^3.0.0",
     "sass-loader": "^6.0.6",
     "ts-node": "~3.3.0",
-    "tslint": "~5.7.0",
+    "tslint": "~5.8.0",
     "typescript": "~2.3.3"
   }
 }

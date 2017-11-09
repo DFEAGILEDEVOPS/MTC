@@ -247,4 +247,27 @@ describe('psychometricians-report.service', () => {
       done()
     })
   })
+
+  describe('#generateScoreReport', () => {
+    let service, psReportCacheDataServiceStub
+
+    beforeEach(() => {
+      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'find').resolves([
+        {data: {Surname: 'valOne', propTwo: 1}},
+        {data: {Forename: 'ValTwo', propTwo: 2}},
+        {data: {MiddleNames: 'valThree', propTwo: null}}
+      ])
+      service = proxyquire('../../services/psychometrician-report.service', {
+        './data-access/ps-report-cache.data.service': psReportCacheDataService
+      })
+    })
+
+    it('returns a csv string', async (done) => {
+      const res = await service.generateReport()
+      expect(res).toBeTruthy()
+      expect(res.substr(0, 7)).toBe('Surname')
+      expect(psReportCacheDataServiceStub.callCount).toBe(1)
+      done()
+    })
+  })
 })
