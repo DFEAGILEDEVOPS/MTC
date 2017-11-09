@@ -2,8 +2,8 @@ const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
-const pupilService = require('../services/pupil.service')
 const generatePinsValidationService = require('../services/generate-pins-validation.service')
+const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const fourPMToday = () => {
   return moment().startOf('day').add(16, 'hours')
@@ -26,7 +26,7 @@ generatePinsService.getPupils = async (schoolId, sortField, sortDirection) => {
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
   // determine if more than one pupil has same full name
-  pupils = pupilService.addIdentificationFlags(pupils)
+  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
 }
 

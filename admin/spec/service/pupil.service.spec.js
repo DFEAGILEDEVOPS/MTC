@@ -71,34 +71,6 @@ describe('pupil service', () => {
       expect(actual).toBe(23.3)
     })
   })
-  describe('addIdentificationFlags', () => {
-    it('returns showDoB property as true for pupils with same fullname', () => {
-      const pupil1 = Object.assign({}, pupilMock)
-      const pupil2 = Object.assign({}, pupilMock)
-      const pupils = pupilService.addIdentificationFlags([pupil1, pupil2])
-      expect(pupils[0].showDoB && pupils[1].showDoB).toBeTruthy()
-    })
-    it('returns showDoB property as false for pupils with different fullname', () => {
-      const pupil1 = Object.assign({}, pupilMock)
-      const pupil2 = Object.assign({}, pupilMock)
-      pupil1.foreName = 'test'
-      const pupils = pupilService.addIdentificationFlags([pupil1, pupil2])
-      expect(pupils[0].showDoB && pupils[1].showDoB).toBeFalsy()
-    })
-    it('returns showMiddleNames property as true for pupils with same fullname and DoB', () => {
-      const pupil1 = Object.assign({}, pupilMock)
-      const pupil2 = Object.assign({}, pupilMock)
-      const pupils = pupilService.addIdentificationFlags([pupil1, pupil2])
-      expect(pupils[0].showDoB && pupils[1].showMiddleNames).toBeTruthy()
-    })
-    it('returns showMiddleNames property as false for pupils with different fullname and Dob', () => {
-      const pupil1 = Object.assign({}, pupilMock)
-      const pupil2 = Object.assign({}, pupilMock)
-      pupil1.foreName = 'test'
-      const pupils = pupilService.addIdentificationFlags([pupil1, pupil2])
-      expect(pupils[0].showDoB && pupils[1].showMiddleNames).toBeFalsy()
-    })
-  })
   describe('getPupilsWithActivePins', () => {
     let sandbox
     let pupil1
@@ -118,7 +90,7 @@ describe('pupil service', () => {
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/pupil.service', {
-          '../../services/data-access/pupil.data.service': pupilDataService,
+          '../../services/data-access/pupil.data.service': pupilDataService
         })
       })
       it('it should return a list of active pupils', async () => {

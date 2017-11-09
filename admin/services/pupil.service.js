@@ -7,6 +7,7 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const generatePinsValidationService = require('../services/generate-pins-validation.service')
+const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const pupilService = {}
 /**
@@ -102,30 +103,7 @@ pupilService.getPupilsWithActivePins = async (schoolId) => {
     .filter(p => generatePinsValidationService.isValidPin(p.pin, p.pinExpiresAt))
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
-  pupils = pupilService.addIdentificationFlags(pupils)
-  return pupils
-}
-
-/**
- * Adds show Date of Birth flag for pupils that have been alphabetically sorted by last name and have equal full names
- * @param {Array} pupils
- * @returns {Array}
- */
-pupilService.addIdentificationFlags = (pupils) => {
-  pupils.forEach((p, i) => {
-    const currentPupil = pupils[ i ]
-    const nextPupil = pupils[ i + 1 ]
-    if (nextPupil === undefined) return
-    if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName &&
-      currentPupil.dob === nextPupil.dob) {
-      currentPupil.showMiddleNames = true
-      nextPupil.showMiddleNames = true
-    }
-    if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName) {
-      currentPupil.showDoB = true
-      nextPupil.showDoB = true
-    }
-  })
+  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
 }
 
