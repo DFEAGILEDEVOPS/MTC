@@ -1,12 +1,14 @@
+'use strict'
+
 const mongoose = require('mongoose')
 const moment = require('moment')
-const Pupil = require('../models/pupil')
-const Answer = require('../models/answer')
-const errorConverter = require('../lib/error-converter')
-const pupilValidator = require('../lib/validator/pupil-validator')
-const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const generatePinsService = require('../services/generate-pins.service')
+const Pupil = require('../../models/pupil')
+const Answer = require('../../models/answer')
+const errorConverter = require('../../lib/error-converter')
+const pupilValidator = require('../../lib/validator/pupil-validator')
+const addPupilErrorMessages = require('../../lib/errors/pupil').addPupil
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const generatePinsService = require('../../services/generate-pins.service')
 
 const pupilService = {}
 /**

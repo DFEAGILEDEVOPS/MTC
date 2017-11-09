@@ -14,8 +14,6 @@ const pupilsNotTackingCheckService = require('../services/pupils-not-taking-chec
 const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const schoolDataService = require('../services/data-access/school.data.service')
-const generatePinsService = require('../services/generate-pins.service')
 const { sortRecords } = require('../utils')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -199,91 +197,6 @@ const downloadResults = async (req, res, next) => {
   csvContent.forEach((row) => csvStream.write(row))
   csvStream.pipe(res)
   csvStream.end()
-}
-
-const getGeneratePinsOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Generate pupil PINs'
-  req.breadcrumbs(res.locals.pageTitle)
-  let pupils
-  try {
-    pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
-  } catch (err) {
-    return next(err)
-  }
-  if (pupils && pupils.length > 0) {
-    return res.redirect('/school/generated-pins-list')
-  }
-  return res.render('school/generate-pins-overview', {
-    breadcrumbs: req.breadcrumbs()
-  })
-}
-
-const getGeneratePinsList = async (req, res, next) => {
-  res.locals.pageTitle = 'Select pupils'
-  req.breadcrumbs('Generate pupil PINs', '/school/generate-pins-overview')
-  req.breadcrumbs(res.locals.pageTitle)
-  let school
-  try {
-    school = await schoolDataService.findOne({_id: req.user.School})
-    if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-  } catch (error) {
-    return next(error)
-  }
-  const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
-  let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
-  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-  const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
-  return res.render('school/generate-pins-list', {
-    breadcrumbs: req.breadcrumbs(),
-    pupils,
-    htmlSortDirection,
-    arrowSortDirection
-  })
-}
-
-const postGeneratePins = async (req, res, next) => {
-  const { pupil: pupilsList } = req.body
-  if (!pupilsList) {
-    return res.redirect('/school/generate-pins-list')
-  }
-  let submittedPupils
-  let school
-  try {
-    submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
-    await pupilDataService.updateMultiple(submittedPupils)
-    school = await schoolDataService.findOne({_id: req.user.School})
-    if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-    const { schoolPin, pinExpiresAt } = generatePinsService.generateSchoolPassword(school)
-    await schoolDataService.update(school._id, {schoolPin, pinExpiresAt})
-  } catch (error) {
-    return next(error)
-  }
-  return res.redirect('/school/generated-pins-list')
-}
-
-const getGeneratedPinsList = async (req, res, next) => {
-  res.locals.pageTitle = 'Generate pupil PINs'
-  req.breadcrumbs(res.locals.pageTitle)
-  let pupils
-  let school
-  const date = dateService.formatDayAndDate(new Date())
-  try {
-    pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
-    school = await generatePinsService.getActiveSchool(req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-  return res.render('school/generated-pins-list', {
-    breadcrumbs: req.breadcrumbs(),
-    school,
-    pupils,
-    date
-  })
 }
 
 const getSubmitAttendance = async (req, res, next) => {
@@ -629,10 +542,6 @@ module.exports = {
   getPupils,
   getResults,
   downloadResults,
-  getGeneratePinsOverview,
-  getGeneratePinsList,
-  postGeneratePins,
-  getGeneratedPinsList,
   getSubmitAttendance,
   postSubmitAttendance,
   getDeclarationForm,

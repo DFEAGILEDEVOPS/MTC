@@ -9,7 +9,6 @@ const { getAddPupil,
   getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
-  getPrintPins,
   getPrintPupils } = require('../controllers/pupil')
 
 const pupil = (router) => {
@@ -21,7 +20,6 @@ const pupil = (router) => {
   router.get('/pupil/download-error-csv', isAuthenticated(config.ROLE_TEACHER), (req, res) => getErrorCSVFile(req, res))
   router.get('/pupil/edit/:id', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getEditPupilById(req, res, next))
   router.post('/pupil/edit', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => postEditPupil(req, res, next))
-  router.get('/print-pins', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPrintPins(req, res, next))
   router.get('/print-pupils', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getPrintPupils(req, res, next))
 }
 

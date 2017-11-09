@@ -63,8 +63,9 @@ const admin = require('./routes/admin')
 const questions = require('./routes/questions')
 const pupilFeedback = require('./routes/pupil-feedback')
 const completedCheck = require('./routes/completed-check')
+const pupilPin = require('./routes/pupil-pin')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/, '/coverage/'] })
 const app = express()
 
 /* Security Directives */
@@ -213,6 +214,7 @@ app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/administrator', administrator)
 app.use('/school', admin)
+app.use('/pupil-pin', pupilPin)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)
 app.use('/api/completed-check', completedCheck)

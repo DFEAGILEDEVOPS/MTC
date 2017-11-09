@@ -1,5 +1,4 @@
 const moment = require('moment')
-const config = require('../config')
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
@@ -11,9 +10,6 @@ const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
-const generatePinsService = require('../services/generate-pins.service')
-const dateService = require('../services/date.service')
-const qrService = require('../services/qr.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
@@ -261,28 +257,6 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
-const getPrintPins = async (req, res, next) => {
-  res.locals.pageTitle = 'Print pupils'
-  let pupils
-  let school
-  let qrDataURL
-  const date = dateService.formatDayAndDate(new Date())
-  try {
-    pupils = await generatePinsService.getPupilsWithActivePins(req.user.School)
-    school = await generatePinsService.getActiveSchool(req.user.School)
-    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
-  } catch (error) {
-    return next(error)
-  }
-  res.render('school/pin-print', {
-    pupils,
-    school,
-    date,
-    qrDataURL,
-    url: config.PUPIL_APP_URL
-  })
-}
-
 const getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
@@ -313,6 +287,5 @@ module.exports = {
   getErrorCSVFile,
   getEditPupilById,
   postEditPupil,
-  getPrintPins,
   getPrintPupils
 }

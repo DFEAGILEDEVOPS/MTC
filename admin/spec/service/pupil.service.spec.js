@@ -1,8 +1,14 @@
 'use strict'
+const proxyquire = require('proxyquire').noCallThru()
+const sinon = require('sinon')
+const moment = require('moment')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilService = require('../../services/pupil.service')
+const generatePinsService = require('../../services/generate-pins.service')
 const pupilMock = require('../mocks/pupil')
+const schoolMock = require('../mocks/school')
 
-/* global describe, it, expect */
+/* global describe, it, expect, beforeEach, afterEach */
 
 describe('pupil service', () => {
   describe('calculateScore', () => {
@@ -92,6 +98,51 @@ describe('pupil service', () => {
       pupil1.foreName = 'test'
       const pupils = pupilService.addIdentificationFlags([pupil1, pupil2])
       expect(pupils[0].showDoB && pupils[1].showMiddleNames).toBeFalsy()
+    })
+  })
+  describe('getPupilsWithActivePins', () => {
+    let sandbox
+    let pupil1
+    let pupil2
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create()
+      pupil1 = Object.assign({}, pupilMock)
+      pupil1.pin = 'f55sg'
+      pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+      pupil2 = Object.assign({}, pupilMock)
+      pupil2._id = '595cd5416e5ca13e48ed2520'
+      pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+    })
+    afterEach(() => sandbox.restore())
+    describe('if pins are valid', () => {
+      beforeEach(() => {
+        sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(generatePinsService).expects('isValidPin').resolves(true)
+        proxyquire('../../services/pupil.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService,
+          '../../services/generate-pins.service': generatePinsService
+        })
+      })
+      it('it should return a list of active pupils', async () => {
+        const pupils = await pupilService.getPupilsWithActivePins(schoolMock._id)
+        expect(pupils.length).toBe(2)
+      })
+    })
+    describe('if pins are invalid', () => {
+      beforeEach(() => {
+        sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(generatePinsService).expects('isValidPin').resolves(false)
+        proxyquire('../../services/pupil.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService,
+          '../../services/generate-pins.service': generatePinsService
+        })
+      })
+      it('it should return a list of active pupils', async () => {
+        const pupils = await pupilService.getPupilsWithActivePins(schoolMock._id)
+        expect(pupils.length).toBe(0)
+      })
     })
   })
 })
