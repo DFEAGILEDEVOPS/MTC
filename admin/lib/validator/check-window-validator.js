@@ -224,6 +224,16 @@ module.exports.validate = function (req) {
         const result = await req.getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
+        if (adminStartDate !== undefined && adminStartDate.isValid() === false) {
+          validationError.addError('adminDateInvalid', true)
+        }
+        if (checkStartDate !== undefined && checkStartDate.isValid() === false) {
+          validationError.addError('checkStartDateInvalid', true)
+        }
+        if (checkEndDate !== undefined && checkEndDate.isValid() === false) {
+          validationError.addError('checkEndDateInvalid', true)
+        }
+        
         if (adminStartDate !== undefined && moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', moment(currentDate).isAfter(adminStartDate))
         }
