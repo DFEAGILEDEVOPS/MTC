@@ -164,10 +164,12 @@ module.exports.validate = function (req) {
         req.body['checkStartMonth'] + '-' +
         req.body['checkStartDay'])
     }
-    checkEndDate = moment.utc(
-      req.body['checkEndYear'] + '-' +
-      req.body['checkEndMonth'] + '-' +
-      req.body['checkEndDay'])
+    if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear']) {
+      checkEndDate = moment.utc(
+        req.body['checkEndYear'] + '-' +
+        req.body['checkEndMonth'] + '-' +
+        req.body['checkEndDay'])
+    }
     try {
       if (!req.body.checkWindowId) { // Adding
         checkWindowValidationSchema = Object.assign(
@@ -246,18 +248,19 @@ module.exports.validate = function (req) {
             validationError.addError('checkStartDateInThePast', true)
           }
         }
-
-        if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear'] && checkEndDate.isValid() === false) {
+        if (checkEndDate !== undefined && checkEndDate.isValid() === false) {
           validationError.addError('checkEndDateInvalid', true)
         }
       }
 
-      checkStartDate = checkStartDate || req.body['existingCheckStartDate']
-      if (moment(checkEndDate).isBefore(checkStartDate)) {
-        validationError.addError('checkEndDateBeforeStartDate', true)
-      }
-      if (moment(currentDate).isAfter(checkEndDate)) {
-        validationError.addError('checkEndDateInThePast', true)
+      if (checkEndDate !== undefined) {
+        checkStartDate = checkStartDate || req.body['existingCheckStartDate']
+        if (moment(checkEndDate).isBefore(checkStartDate)) {
+          validationError.addError('checkEndDateBeforeStartDate', true)
+        }
+        if (moment(currentDate).isAfter(checkEndDate)) {
+          validationError.addError('checkEndDateInThePast', true)
+        }
       }
     } catch (error) {
       return reject(error)
