@@ -7,13 +7,14 @@ export class AuditService {
 
   constructor(private storageService: StorageService) { }
 
-  addEntry(auditEntry:
-    AuditTypes.WarmupIntroRendered |
+  addEntry(auditEntry: AuditTypes.WarmupIntroRendered |
     AuditTypes.CheckStarted |
     AuditTypes.QuestionRendered |
     AuditTypes.PauseRendered |
     AuditTypes.QuestionAnswered |
-    AuditTypes.RefreshDetected): void {
+    AuditTypes.RefreshDetected |
+    AuditTypes.UtteranceStarted |
+    AuditTypes.UtteranceEnded): void {
     let existingEntries = this.storageService.getItem('audit') as Array<AuditTypes.AuditEntry>;
     if (!existingEntries) {
       existingEntries = new Array<AuditTypes.AuditEntry>();
