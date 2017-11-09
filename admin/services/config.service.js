@@ -1,5 +1,6 @@
 'use strict'
-const Setting = require('../models/setting')
+
+const settingDataService = require('./data-access/setting.data.service')
 const {QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS} = require('../config')
 
 /** @namespace */
@@ -10,7 +11,7 @@ const configService = {
     let questionTime = QUESTION_TIME_LIMIT
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
-    const timeSettings = await Setting.findOne().exec()
+    const timeSettings = await settingDataService.findOne({})
 
     if (timeSettings) {
       loadingTime = timeSettings.loadingTimeLimit
