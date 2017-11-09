@@ -153,20 +153,20 @@ module.exports.validate = function (req) {
 
     if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
       adminStartDate = moment.utc(
-        req.body['adminStartDay'] + ' ' +
-        req.body['adminStartMonth'] + ' ' +
-        req.body['adminStartYear'], 'D MM YYYY').format('YYYY-MM-D')
+        req.body['adminStartYear'] + '-' +
+        req.body['adminStartMonth'] + '-' +
+        req.body['adminStartDay'])
     }
     if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
       checkStartDate = moment.utc(
-        req.body['checkStartDay'] + ' ' +
-        req.body['checkStartMonth'] + ' ' +
-        req.body['checkStartYear'], 'D MM YYYY').format('YYYY-MM-D')
+        req.body['checkStartYear'] + '-' +
+        req.body['checkStartMonth'] + '-' +
+        req.body['checkStartDay'])
     }
     const checkEndDate = moment.utc(
-      req.body['checkEndDay'] + ' ' +
-      req.body['checkEndMonth'] + ' ' +
-      req.body['checkEndYear'], 'D MM YYYY').format('YYYY-MM-D')
+      req.body['checkEndYear'] + '-' +
+      req.body['checkEndMonth'] + '-' +
+      req.body['checkEndDay'])
 
     try {
       if (!req.body.checkWindowId) { // Adding
@@ -179,6 +179,15 @@ module.exports.validate = function (req) {
         const result = await req.getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
+        if (adminStartDate !== undefined && adminStartDate.isValid() === false) {
+          validationError.addError('adminDateInvalid', true)
+        }
+        if (checkStartDate !== undefined && checkStartDate.isValid() === false) {
+          validationError.addError('checkStartDateInvalid', true)
+        }
+        if (checkEndDate !== undefined && checkEndDate.isValid() === false) {
+          validationError.addError('checkEndDateInvalid', true)
+        }
         if (moment(currentDate).isAfter(adminStartDate)) {
           validationError.addError('adminDateInThePast', true)
         }
