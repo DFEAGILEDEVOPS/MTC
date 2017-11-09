@@ -149,6 +149,7 @@ module.exports.validate = function (req) {
     let validationError = new ValidationError()
     let adminStartDate
     let checkStartDate
+    let checkEndDate
     const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
 
     if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
@@ -163,11 +164,12 @@ module.exports.validate = function (req) {
         req.body['checkStartMonth'] + '-' +
         req.body['checkStartDay'])
     }
-    const checkEndDate = moment.utc(
-      req.body['checkEndYear'] + '-' +
-      req.body['checkEndMonth'] + '-' +
-      req.body['checkEndDay'])
-
+    if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear']) {
+      checkEndDate = moment.utc(
+        req.body['checkEndYear'] + '-' +
+        req.body['checkEndMonth'] + '-' +
+        req.body['checkEndDay'])
+    }
     try {
       if (!req.body.checkWindowId) { // Adding
         checkWindowValidationSchema = Object.assign(
