@@ -247,7 +247,7 @@ module.exports.validate = function (req) {
           }
         }
 
-        if (checkEndDate !== undefined && checkEndDate.isValid() === false) {
+        if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear'] && checkEndDate.isValid() === false) {
           validationError.addError('checkEndDateInvalid', true)
         }
       }
