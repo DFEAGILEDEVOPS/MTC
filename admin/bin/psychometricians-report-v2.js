@@ -38,7 +38,13 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
     const db = mongoose.connection
     const filename = 'mtc-check-' + db.name + '.csv'
     fs.writeFileSync(filename, report)
-    console.log('Generated report: ' + filename)
+    console.log('Generated psych report: ' + filename)
+
+    // Also generate a filtered version of the report, suitable for our customers
+    const scoreReport = await psychometricianReportService.generateScoreReport()
+    const filename2 = 'mtc-scores-' + db.name + '.csv'
+    fs.writeFileSync(filename2, scoreReport)
+    console.log('Generated score report: ' + filename2)
   } catch (error) {
     console.error(error)
   }
