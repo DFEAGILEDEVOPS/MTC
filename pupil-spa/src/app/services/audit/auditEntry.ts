@@ -66,6 +66,6 @@ export class UtteranceStarted extends AuditEntry {
 
 export class UtteranceEnded extends AuditEntry {
   constructor(data?: any) {
-    super('UtteranceStarted', new Date(), data);
+    super('UtteranceEnded', new Date(), data);
   }
 }
