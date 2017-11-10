@@ -1,6 +1,6 @@
 Feature: Generate Pupil PINs
 
-  @no_pin @local
+  @no_pin
   Scenario: Generate Pins Landing page displays heading and info section
     Given I am logged in
     When I navigate to generate pupil pins page

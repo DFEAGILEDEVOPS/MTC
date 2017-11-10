@@ -22,6 +22,7 @@ Feature:
     Given I am on the manage check forms page
     Then I should have the option to upload a csv file
 
+  @wip @fix-in-17402
   Scenario: Users can upload a csv file
     Given I am on the manage check forms page
     When I upload a csv file
@@ -64,10 +65,12 @@ Feature:
     Given I attempt to upload a csv containing quotes around the row
     Then I should see error messages stating why the csv has failed to upload
 
+  @wip @fix-in-17402
   Scenario: Users are able to upload a csv that has quotes around the values
     Given I attempt to upload a csv containing quotes around the column values
     Then it should be added to the list of forms
 
+  @wip @fix-in-17402
   Scenario: Users are able to upload a csv that has spaces around the values
     Given I attempt to upload a csv containing spaces around the column values
     Then it should be added to the list of forms
