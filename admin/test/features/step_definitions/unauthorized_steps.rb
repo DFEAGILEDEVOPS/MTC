@@ -23,6 +23,6 @@ When(/^I decide to return to the homepage$/) do
 end
 
 Given(/^I am on the unauthorized access page as a service manager$/) do
-  step "I have logged in with test-developer"
+  step "I have signed in with service-manager"
   school_landing_page.load
 end

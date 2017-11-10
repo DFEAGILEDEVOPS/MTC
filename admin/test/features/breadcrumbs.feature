@@ -3,6 +3,7 @@ Feature:
   I want to ensure that the system displays
   the navigation path as breadcrumb
 
+  @wip @fix-in-17402
   Scenario: Verify breadcrumb on manage check forms
     Given I am logged in
     And I am on the profile page
@@ -49,14 +50,14 @@ Feature:
     Then I should be taken to the school landing page
 
   Scenario: Verify breadcrumb for check settings page
-    Given I am logged in with a test developer
+    Given I am logged in with a service manager
     When I am on the check settings page
     Then I should see the breadcrumb as "Home > Check settings"
     And I click the Home link on breadcrumb
     Then I should be taken to the admin page
 
   Scenario: Verify breadcrumb for manage check windows page
-    Given I am logged in with a test developer
+    Given I am logged in with a service manager
     When I am on the manage check windows page
     Then I should see the breadcrumb as "Home > Manage check windows"
     And I click the Home link on breadcrumb

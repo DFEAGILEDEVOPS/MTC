@@ -1,13 +1,15 @@
-const config = require('../config')
+const rolesConfig = require('../roles-config')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
     switch (req.user.role) {
       case 'TEACHER':
       case 'HEADTEACHER':
-        return res.redirect(config.HOME_TEACHER)
+        return res.redirect(rolesConfig.HOME_TEACHER)
       case 'TEST-DEVELOPER':
-        return res.redirect(config.HOME_TEST_DEVELOPER)
+        return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
+      case 'SERVICE-MANAGER':
+        return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
     }
   } else {
     res.redirect('/sign-in')
@@ -19,8 +21,8 @@ const getSignIn = (req, res) => {
   if (req.isAuthenticated()) {
     res.redirect('/school/school-home')
   } else {
-    if (config.NCA_TOOLS_AUTH_URL) {
-      res.redirect(config.NCA_TOOLS_AUTH_URL)
+    if (rolesConfig.NCA_TOOLS_AUTH_URL) {
+      res.redirect(rolesConfig.NCA_TOOLS_AUTH_URL)
     } else {
       res.render('sign-in')
     }
@@ -28,12 +30,17 @@ const getSignIn = (req, res) => {
 }
 
 const postSignIn = (req, res) => {
-  if (req.user.role === 'TEACHER' || req.user.role === 'HEADTEACHER') {
-    return res.redirect('/school/school-home')
-  } else if (req.user.role === 'TEST-DEVELOPER') {
-    return res.redirect('/administrator')
+  switch (req.user.role) {
+    case 'TEACHER':
+    case 'HEADTEACHER':
+      return res.redirect(rolesConfig.HOME_TEACHER)
+    case 'TEST-DEVELOPER':
+      return res.redirect(res.redirect(rolesConfig.HOME_TEST_DEVELOPER))
+    case 'SERVICE-MANAGER':
+      return res.redirect(res.redirect(rolesConfig.HOME_SERVICE_MANAGER))
+    default:
+      return res.redirect(rolesConfig.HOME_TEACHER)
   }
-  res.redirect('/school/school-home')
 }
 
 const getSignOut = (req, res) => {
@@ -49,17 +56,12 @@ const getSignInFailure = (req, res) => {
   res.render('sign-in-failure')
 }
 
-const getProfile = (req, res) => {
-  res.locals.pageTitle = 'Check Development - Profile'
-  res.render('profile')
-}
-
 const postAuth = (req, res) => {
   // Please leave this in until we are confident we have identified all the NCA Tools roles.
   console.log(req.user)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
-  return res.redirect('/school/school-home')
+  return res.redirect(rolesConfig.HOME_TEACHER)
 }
 
 const getUnauthorised = (req, res) => {
@@ -73,7 +75,6 @@ module.exports = {
   postSignIn,
   getSignOut,
   getSignInFailure,
-  getProfile,
   postAuth,
   getUnauthorised
 }

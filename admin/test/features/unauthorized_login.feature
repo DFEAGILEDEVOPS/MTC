@@ -11,6 +11,7 @@ Feature:
     When I try to view the school landing page
     Then I should be shown the access unauthorized page
 
+  @wip @fix-in-17402
   Scenario: Access unauthorized page offers link to return to the school landing page
     Given I am on the unauthorized access page as a teacher
     When I decide to return to the homepage
