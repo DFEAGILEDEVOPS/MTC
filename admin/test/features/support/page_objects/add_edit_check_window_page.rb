@@ -16,7 +16,7 @@ class AddEditCheckWindowPage < SitePrism::Page
   elements :error_message, '.error-message'
 
   section :error_summary, '.error-summary' do
-    element :error_heading, 'h1', text: 'You need to fix the errors on this page before continuing.'
+    element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
     element :error_text, 'p', text: 'See highlighted errors below'
   end
 

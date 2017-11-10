@@ -12,7 +12,7 @@
 
         <% if (typeof error === 'object' && error) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h1>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
             <p>See highlighted errors below</p>
         </div>
         <% } %>
@@ -33,7 +33,7 @@
                     <span class="error-message"><%= error.checkWindowName %></span>
                     <% } %>
                 </label>
-                <input class="form-control"
+                <input class="form-control <%= error.checkWindowName ? 'form-control-error' : '' %>"
                        id="checkWindowName"
                        name="checkWindowName"
                        type="text"
@@ -48,6 +48,9 @@
                 <label class="form-label-bold">
                     Administration start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.adminDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.adminDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' && error.adminDateInThePast) { %>
                     <span class="error-message"><%= errorMessage.adminDateInThePast %></span>
                     <% } %>
@@ -110,6 +113,9 @@
                 <label class="form-label-bold">
                     Check start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.checkStartDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.checkStartDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkDateBeforeAdminDate) { %>
                     <span class="error-message"><%= errorMessage.checkDateBeforeAdminDate %></span>
                     <% } %>
@@ -173,6 +179,9 @@
                 <label class="form-label-bold">
                     Check end date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
+                    <% if (typeof error !== 'undefined' && error.checkEndDateInvalid) { %>
+                    <span class="error-message"><%= errorMessage.checkEndDateInvalid %></span>
+                    <% } %>
                     <% if (typeof error !== 'undefined' &&  error.checkEndDateBeforeStartDate) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>

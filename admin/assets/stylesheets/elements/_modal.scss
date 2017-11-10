@@ -14,13 +14,15 @@
 }
 
 dialog.modal-box {
+  background-color: $white;
   border-width: 0;
+  display: none;
+  margin: 0;
   position: fixed;
   padding: 12px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin: 0;
 
   &.show {
     display: block;
