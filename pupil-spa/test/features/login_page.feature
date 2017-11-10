@@ -61,3 +61,12 @@ Feature: Login page
   Scenario: Pupil cannot login from a different school
     Given I have attempted to enter a school I do not attend upon login
     Then I should be taken to the sign in failure page
+
+  Scenario: Speech synthesis is set to true when a pupil requiring it logs in
+    Given I am logged in with a user who needs speech synthesis
+    Then I should see speech synthesis set to true in the local storage
+
+  Scenario: Speech synthesis is set to false when a pupil who doesn't require it logs in
+    Given I am logged in with a user who does not need speech synthesis
+    Then I should see speech synthesis set to false in the local storage
+
