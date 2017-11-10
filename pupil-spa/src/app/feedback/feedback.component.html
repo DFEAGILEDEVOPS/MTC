@@ -26,7 +26,6 @@
                    name="inputType"
                    id="input-type-{{inputType.id}}"
                    [value]="inputType.id"
-                   [checked]="idx === 0"
                    (change)="onSelectionChange('inputType', inputType)">
             <label for="input-type-{{inputType.id}}">{{inputType.value}}</label>
           </div>
@@ -46,7 +45,6 @@
                    name="satisfactionRating"
                    id="satisfaction-rating-{{satisfactionRating.id}}"
                    [value]="satisfactionRating.id"
-                   [checked]="idx === 0"
                    (change)="onSelectionChange('satisfactionRating', satisfactionRating)">
             <label for="satisfaction-rating-{{satisfactionRating.id}}">{{satisfactionRating.value}}</label>
           </div>

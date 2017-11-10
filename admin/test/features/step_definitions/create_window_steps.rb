@@ -157,7 +157,8 @@ end
 
 Then(/^I should see errors for the admin start day month and year$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Date"',
+                                                                                    'Please check "Day"',
                                                                                     'Please check "Month"',
                                                                                     'Please check "Year"']
 end
@@ -196,7 +197,7 @@ When(/^I try to submit with a invalid check start date for the window$/) do
                         admin_start_year: today_date.year,
                         check_start_day: '32',
                         check_start_mon: '13',
-                        check_start_year: '010',
+                        check_start_year: '20181',
                         check_end_day: today_date.day,
                         check_end_mon: today_date.next_month.next_month.month,
                         check_end_year: today_date.next_year.year
@@ -207,7 +208,8 @@ end
 
 Then(/^I should see errors for the start day month and year$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Please check \"Date\"",
+                                                                                    'Please check "Day"',
                                                                                     'Please check "Month"',
                                                                                     'Please check "Year"']
 end
@@ -257,9 +259,7 @@ end
 
 Then(/^I should see errors for the end day month and year$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Day"',
-                                                                                    'Please check "Month"',
-                                                                                    'Please check "Year"']
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Please check \"Date\"", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
 end
 
 Then(/^I should see an error stating the name cannot be less than (\d+) characters long$/) do |arg|
@@ -348,7 +348,10 @@ end
 
 Then(/^I should see errors for the admin start day month and year being invalid$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Start date must be in the future", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Please check \"Date\"",
+                                                                                    "Please check \"Day\"",
+                                                                                    "Please check \"Month\"",
+                                                                                    "Please check \"Year\""]
 end
 
 When(/^I try to submit an admin start date that is after the check start date$/) do
@@ -418,8 +421,7 @@ end
 
 Then(/^I should see errors for the check start day month and year being invalid$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['"Check start date" must occur after the "Administration start date"',
-                                                                                    "\"Check start date\" must be in the future",
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ['Please check "Date"',
                                                                                     "Please check \"Day\"",
                                                                                     "Please check \"Month\"",
                                                                                     "Please check \"Year\""]
@@ -514,11 +516,7 @@ end
 
 Then(/^I should see errors for the check end day month and year being invalid$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
-  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["\"Check end date\" must occur after \"Check start date\"",
-                                                                                    "\"Check end date\" must be in the future",
-                                                                                    "Please check \"Day\"",
-                                                                                    "Please check \"Month\"",
-                                                                                    "Please check \"Year\""]
+  expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["Please check \"Date\"", "Please check \"Day\"", "Please check \"Month\"", "Please check \"Year\""]
 end
 
 When(/^I try to submit an check end date that is before the check start date$/) do

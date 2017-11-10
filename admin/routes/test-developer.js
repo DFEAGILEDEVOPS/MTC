@@ -8,15 +8,15 @@ const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
 const checkFormService = require('../services/check-form.service')
 const isAuthenticated = require('../authentication/middleware')
-const config = require('../config')
+const rolesConfig = require('../roles-config')
 const testDeveloperController = require('../controllers/test-developer')
 
-router.get('/', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
-router.get('/home', isAuthenticated(config.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
+router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
+router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
 
 /* @TODO: The code below is meant to be refactored */
 /* GET manage check forms page. */
-router.get('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.get('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Manage check forms'
   try {
     const forms = await CheckForm.getActiveForms().sort({createdAt: -1}).exec()
@@ -43,7 +43,7 @@ router.get('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), a
 })
 
 /* POST the new questions for the form */
-router.post('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   let uploadError = {}
   let uploadFile = req.files.csvFile
   let checkForm = new CheckForm()
@@ -150,7 +150,7 @@ router.post('/manage-check-forms', isAuthenticated(config.ROLE_TEST_DEVELOPER), 
 })
 
 /* GET - choose the check window page */
-router.get('/choose-check-window', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Choose check window'
   // the formIds to assign are passed in the query string
   let formIds = []
@@ -193,7 +193,7 @@ router.get('/choose-check-window', isAuthenticated(config.ROLE_TEST_DEVELOPER), 
 })
 
 /* GET - view a form */
-router.get('/view-form/:id', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.get('/view-form/:id', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'View form'
   let formData
   let canDelete = true
@@ -229,7 +229,7 @@ router.get('/view-form/:id', isAuthenticated(config.ROLE_TEST_DEVELOPER), async 
 })
 
 /** Assign forms to check windows */
-router.post('/assign-forms-to-check-windows', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.post('/assign-forms-to-check-windows', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   const formIds = req.body['check-form'] // could be scalar
   const checkWindowIds = req.body['check-window'] // could be scalar
   let checkWindows
@@ -262,7 +262,7 @@ router.post('/assign-forms-to-check-windows', isAuthenticated(config.ROLE_TEST_D
   res.redirect('manage-check-forms')
 })
 
-router.post('/delete-form/:formId', isAuthenticated(config.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.post('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   const id = req.params.formId
   try {
     const form = await CheckForm.getActiveForm(id).exec()
