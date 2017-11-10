@@ -3,6 +3,7 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
+const R = require('ramda')
 
 const checkOptionsSchema = new Schema({
   _id: false,
@@ -96,7 +97,7 @@ Pupil.pre('validate', function (next) {
   }
 
   // If checkOptions is missing, add it in here on validate
-  if (!this.hasOwnProperty('checkOptions')) {
+  if (R.path(['checkOptions', 'speechSynthesis'], this) === undefined) {
     this.checkOptions = defaultCheckOptions
   }
   next()
