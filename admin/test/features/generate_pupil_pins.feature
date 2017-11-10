@@ -2,7 +2,7 @@ Feature: Generate Pupil PINs
 
   @no_pin @local
   Scenario: Generate Pins Landing page displays heading and info section
-    Given I am logged in
+    Given I have signed in with teacher2
     When I navigate to generate pupil pins page
     Then I should see a heading for the Generate Pupil Pins
     And I can see the info message for generating the pupil pin
