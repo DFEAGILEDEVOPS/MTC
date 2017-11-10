@@ -63,7 +63,6 @@ Then(/^local storage should be populated with questions and pupil metadata$/) do
   expect(JSON.parse page.evaluate_script('window.localStorage.getItem("school");')).to_not be_nil
   expect(JSON.parse page.evaluate_script('window.localStorage.getItem("config");')).to_not be_nil
   expect(JSON.parse page.evaluate_script('window.localStorage.getItem("access_token");')).to_not be_nil
-  binding.pry
 end
 
 When(/^I have chosen that the details are not correct$/) do
