@@ -12,7 +12,7 @@ const configService = {
   /**
    * Fetch the config for a particular pupil for a test
    * @param {Object} pupil - plain pupil object
-   * @return {Promise.<{questionTime: *, loadingTime: *}>}
+   * @return {Promise.<{questionTime: *, loadingTime: *, speechSynthesis: boolean}>}
    */
   getConfig: async (pupil) => {
     let questionTime = QUESTION_TIME_LIMIT
