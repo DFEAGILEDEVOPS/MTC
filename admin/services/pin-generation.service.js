@@ -2,14 +2,14 @@ const moment = require('moment')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
-const generatePinsValidationService = require('../services/generate-pins-validation.service')
+const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const fourPMToday = () => {
-  return moment().startOf('day').add(16, 'hours')
+  return moment().startOf('day').add(22, 'hours')
 }
 
-const generatePinsService = {}
+const pinGenerationService = {}
 
 /**
  * Fetch pupils and filter required only pupil attributes
@@ -18,11 +18,11 @@ const generatePinsService = {}
  * @param sortDirection
  * @returns {Array}
  */
-generatePinsService.getPupils = async (schoolId, sortField, sortDirection) => {
+pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
   let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
   // filter pupils
   pupils = pupils
-    .filter(p => generatePinsService.removeInvalidPupils(p))
+    .filter(p => pinGenerationService.removeInvalidPupils(p))
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
   // determine if more than one pupil has same full name
@@ -35,14 +35,14 @@ generatePinsService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @param p
  * @returns {Boolean}
  */
-generatePinsService.removeInvalidPupils = (p) => !generatePinsValidationService.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
+pinGenerationService.removeInvalidPupils = (p) => !pinValidator.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
 
 /**
  * Generate pupils pins
  * @param pupilsList
  * @returns {Array}
  */
-generatePinsService.generatePupilPins = async (pupilsList) => {
+pinGenerationService.generatePupilPins = async (pupilsList) => {
   const data = Object.values(pupilsList || null)
   let pupils = []
   // fetch pupils
@@ -55,9 +55,9 @@ generatePinsService.generatePupilPins = async (pupilsList) => {
   // pupils = await pupilDataService.find({ _id: { $in: ids } })
   // Apply the updates to the pupil object(s)
   pupils.forEach(pupil => {
-    if (!generatePinsValidationService.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
+    if (!pinValidator.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
       const length = 5
-      pupil.pin = generatePinsService.generateRandomPin(length)
+      pupil.pin = pinGenerationService.generateRandomPin(length)
       pupil.pinExpiresAt = fourPMToday()
     }
   })
@@ -69,11 +69,11 @@ generatePinsService.generatePupilPins = async (pupilsList) => {
  * @param school
  * @returns {Object}
  */
-generatePinsService.generateSchoolPassword = (school) => {
+pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
-  if (!generatePinsValidationService.isValidPin(schoolPin, pinExpiresAt)) {
+  if (!pinValidator.isValidPin(schoolPin, pinExpiresAt)) {
     const length = 8
-    school.schoolPin = generatePinsService.generateRandomPin(length)
+    school.schoolPin = pinGenerationService.generateRandomPin(length)
     school.pinExpiresAt = fourPMToday()
   }
   return school
@@ -84,9 +84,9 @@ generatePinsService.generateSchoolPassword = (school) => {
  * @param length
  * @returns {String}
  */
-generatePinsService.generateRandomPin = (length) => {
+pinGenerationService.generateRandomPin = (length) => {
   const chars = '23456789bcdfghjkmnpqrstvwxyz'
   return randomGenerator.getRandom(length, chars)
 }
 
-module.exports = generatePinsService
+module.exports = pinGenerationService

@@ -9,9 +9,8 @@ const config = require('../../config')
 const School = require('../../models/school')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
-const schoolService = require('../../services/school.service')
-const pupilService = require('../../services/pupil.service')
-const generatePinsService = require('../../services/generate-pins.service')
+const pinService = require('../../services/pin.service')
+const pinGenerationService = require('../../services/pin-generation.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
 const dateService = require('../../services/date.service')
 const qrService = require('../../services/qr.service')
@@ -54,7 +53,7 @@ describe('pupilPin controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin').getGeneratePinsOverview
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(pupilService, 'getPupilsWithActivePins').and.returnValue([])
+      spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
       await controller(req, res)
       expect(res.locals.pageTitle).toBe('Generate pupil PINs')
       expect(res.render).toHaveBeenCalled()
@@ -65,7 +64,7 @@ describe('pupilPin controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin').getGeneratePinsOverview
       spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(pupilService, 'getPupilsWithActivePins').and.returnValue([ '1', '2' ])
+      spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([ '1', '2' ])
       await controller(req, res)
       expect(res.redirect).toHaveBeenCalled()
       done()
@@ -104,7 +103,7 @@ describe('pupilPin controller:', () => {
       it('displays the generate pins list page', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        spyOn(generatePinsService, 'getPupils').and.returnValue(Promise.resolve({}))
+        spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
         spyOn(sortingAttributesService, 'getAttributes')
           .and.returnValue({
             htmlSortDirection: { lastName: 'asc' },
@@ -161,10 +160,10 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
       spyOn(schoolDataService, 'findOne').and.returnValue(new School({ _id: 1, name: 'Test School' }))
-      spyOn(generatePinsService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
+      spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
       spyOn(schoolDataService, 'update').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
@@ -175,9 +174,9 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = { body: {} }
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
-      spyOn(generatePinsService, 'generateSchoolPassword').and.returnValue(null)
+      spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generate-pins-list')
@@ -187,7 +186,7 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(generatePinsService, 'generatePupilPins').and.returnValue(null)
+      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
       spyOn(schoolDataService, 'findOne').and.returnValue(null)
       await controller(req, res, next)
@@ -219,8 +218,8 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').getGeneratedPinsList
-      spyOn(pupilService, 'getPupilsWithActivePins').and.returnValue(null)
-      spyOn(schoolService, 'getActiveSchool').and.returnValue(null)
+      spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(null)
+      spyOn(pinService, 'getActiveSchool').and.returnValue(null)
       spyOn(res, 'render').and.returnValue(null)
       await controller(req, res, next)
       expect(res.render).toHaveBeenCalled()
@@ -230,7 +229,7 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').getGeneratedPinsList
-      spyOn(pupilService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
       done()
@@ -261,8 +260,8 @@ describe('pupilPin controller:', () => {
 
     it('returns data for the print page', async (done) => {
       spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-      spyOn(pupilService, 'getPupilsWithActivePins').and.returnValue([])
-      spyOn(schoolService, 'getActiveSchool').and.returnValue({})
+      spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+      spyOn(pinService, 'getActiveSchool').and.returnValue({})
       spyOn(qrService, 'getDataURL').and.returnValue('')
       const res = getRes()
       const req = getReq(goodReqParams)

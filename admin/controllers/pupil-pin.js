@@ -1,10 +1,9 @@
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const schoolService = require('../services/school.service')
-const pupilService = require('../services/pupil.service')
+const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
-const generatePinsService = require('../services/generate-pins.service')
+const pinGenerationService = require('../services/pin-generation.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 
@@ -13,7 +12,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   try {
-    pupils = await pupilService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School)
   } catch (err) {
     return next(err)
   }
@@ -42,7 +41,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-  const pupils = await generatePinsService.getPupils(school._id, sortField, sortDirection)
+  const pupils = await pinGenerationService.getPupils(school._id, sortField, sortDirection)
   return res.render('pupil-pin/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
     pupils,
@@ -59,13 +58,13 @@ const postGeneratePins = async (req, res, next) => {
   let submittedPupils
   let school
   try {
-    submittedPupils = await generatePinsService.generatePupilPins(pupilsList)
+    submittedPupils = await pinGenerationService.generatePupilPins(pupilsList)
     await pupilDataService.updateMultiple(submittedPupils)
     school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    const { schoolPin, pinExpiresAt } = generatePinsService.generateSchoolPassword(school)
+    const { schoolPin, pinExpiresAt } = pinGenerationService.generateSchoolPassword(school)
     await schoolDataService.update(school._id, {schoolPin, pinExpiresAt})
   } catch (error) {
     return next(error)
@@ -80,8 +79,8 @@ const getGeneratedPinsList = async (req, res, next) => {
   let school
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pupilService.getPupilsWithActivePins(req.user.School)
-    school = await schoolService.getActiveSchool(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    school = await pinService.getActiveSchool(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -100,8 +99,8 @@ const getPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pupilService.getPupilsWithActivePins(req.user.School)
-    school = await schoolService.getActiveSchool(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    school = await pinService.getActiveSchool(req.user.School)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)

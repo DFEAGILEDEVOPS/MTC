@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
-const moment = require('moment')
 const Pupil = require('../models/pupil')
 const Answer = require('../models/answer')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const generatePinsValidationService = require('../services/generate-pins-validation.service')
-const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const pupilService = {}
 /**
@@ -90,21 +86,6 @@ pupilService.validatePupil = async (pupil, pupilData) => {
     }
   }
   return true
-}
-
-/**
- * Get pupils with active pins
- * @param schoolId
- * @returns {Array}
- */
-pupilService.getPupilsWithActivePins = async (schoolId) => {
-  let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
-  pupils = pupils
-    .filter(p => generatePinsValidationService.isValidPin(p.pin, p.pinExpiresAt))
-    .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-      ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  return pupils
 }
 
 module.exports = pupilService

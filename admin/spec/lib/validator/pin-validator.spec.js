@@ -2,9 +2,9 @@
 /* global describe, it, expect, beforeEach, afterEach */
 const sinon = require('sinon')
 const moment = require('moment')
-const generatePinsValidationService = require('../../services/generate-pins-validation.service')
+const pinValidator = require('../../../lib/validator/pin-validator')
 
-describe('generate-pins-validation.service', () => {
+describe('pin-validator', () => {
   let pinExpiredAt
   describe('isValidPin', () => {
     let sandbox
@@ -15,8 +15,8 @@ describe('generate-pins-validation.service', () => {
         pinExpiredAt = moment().startOf('day')
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
       })
-      it('returns true if pinExpiredAt date field is later than current time', async () => {
-        const result = await generatePinsValidationService.isValidPin('abc1f', pinExpiredAt)
+      it('if pinExpiredAt date field is later than current time', async () => {
+        const result = await pinValidator.isValidPin('abc1f', pinExpiredAt)
         expect(result).toBeTruthy()
       })
     })
@@ -26,7 +26,7 @@ describe('generate-pins-validation.service', () => {
         sandbox.useFakeTimers(moment().startOf('day').add(1, 'years').valueOf())
       })
       it('if pinExpiredAt date field is earlier than current time', async () => {
-        const result = await generatePinsValidationService.isValidPin('abc1f', pinExpiredAt)
+        const result = await pinValidator.isValidPin('abc1f', pinExpiredAt)
         expect(result).toBeFalsy()
       })
     })

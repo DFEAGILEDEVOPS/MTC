@@ -1,6 +1,6 @@
 const moment = require('moment')
 
-const generatePinsValidationService = {}
+const pinValidator = {}
 
 /**
  * Validate pin
@@ -8,9 +8,9 @@ const generatePinsValidationService = {}
  * @param pinExpiresAt
  * @returns {Boolean}
  */
-generatePinsValidationService.isValidPin = (pin, pinExpiresAt) => {
+pinValidator.isValidPin = (pin, pinExpiresAt) => {
   if (!pinExpiresAt || !pin) return false
   return moment(pinExpiresAt).isAfter(moment.utc())
 }
 
-module.exports = generatePinsValidationService
+module.exports = pinValidator
