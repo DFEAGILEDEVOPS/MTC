@@ -58,7 +58,7 @@ autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
-const administrator = require('./routes/administrator')
+const serviceManager = require('./routes/service-manager')
 const admin = require('./routes/admin')
 const questions = require('./routes/questions')
 const pupilFeedback = require('./routes/pupil-feedback')
@@ -211,7 +211,7 @@ app.use(function (req, res, next) {
 
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
-app.use('/administrator', administrator)
+app.use('/service-manager', serviceManager)
 app.use('/school', admin)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)

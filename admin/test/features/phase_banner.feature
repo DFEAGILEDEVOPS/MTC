@@ -42,6 +42,7 @@ Feature:
     Then I should see that we are in the beta development phase on the manage_check_forms page
     And I should see a new tab open when i want to provide feedback link from the manage_check_forms page
 
+  @wip @fix-in-17402
   Scenario: Development phase and the feedback link are displayed at the top of the view form page
     Given I am logged in
     When I have uploaded a check form
@@ -49,6 +50,7 @@ Feature:
     Then I should see that we are in the beta development phase on the view_form page
     And I should see a new tab open when i want to provide feedback link from the view_form page
 
+  @wip @fix-in-17402
   Scenario: Development phase and the feedback link are displayed at the top of the choose check window page
     Given I am logged in
     When I am on the assign check window page
