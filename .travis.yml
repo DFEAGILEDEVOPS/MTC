@@ -1,44 +1,63 @@
-language: node_js
+sudo: enabled
 
-dist: trusty
-
-cache:
-  - bundler
-  - yarn
-
-env:
-  - TEST_TYPE=admin-specs
-  - TEST_TYPE=pupil-specs
-  - TEST_TYPE=admin-e2e
-  - TEST_TYPE=pupil-e2e
-global:
-  - STD_LOG_FILE="./build.log"
-  - CXX=g++-4.8
-  - secure: R6g72N+8NN5/gXe4g8PmlEw0IsmaCB4cBBgWjA944IwmoAChIGOOO9p6nhX99UcY9X3kFhzQM2TvT8T3WGCDiy9+r4AF1D80qFyMrTxIT2NEIuZZi+UerDugVAdN0/557DykG5mVUmtxT4z+b/qi1tLKRKCBE4HZ9lf8I5uzUIobTLaC0+rfFtFe34wxoICW6Q1X9TMCUo2gEa0T+TXecjWWvv+PUl4+PwTZvVGQaFg+BIOofXvn9jAk7PBnJi/FPBLsBrDXt75HTyAjCHnM2WsjQLtGbUs5kKI8nkydwbvu3p/u3XRHhxazH+79w9yDqyFEZ5S86op4NyjqYAP/LK86oUt1qPgj0lGphgxcscEm6znFCiB0UdNVgoFbPGBDcwC7B4g9HvNuRB4VxOHRFbIwDJWMBxCp1EDKgm5lk1/aZqK6fKcID8cvSY6zQ2KRXH5Ztdf+TeNbvdJFFtNATMyZ7+CQfcdNwlp25LTpzd+H5pKzhUl8oGeoEGiCWsU2ZMESKrrcs6/Vv2XCOi9MjHRuJ72iZ8xLIsNnam+R4j/asvtOg5gIrA/4SjLLIfqRFwHX56HfggGrtdQeKc2NtSmyqYo5AKnwe73Rb18vPchoj/2XVMH5kAGgXSe7v9dywS0nvxaD0xzLNNZmLNjthvCwuq+o9jhObhsBWXTDuXo=
-  - secure: fXLqXS0ziuJxyIf5rCtBJ+3/YFdyVYu8sgSmFecCs4wATN8w6PSgP2t36JOlAPbm96LiDTNGlyIh8eQvu2FcKDp0S0R1thrTfjH/EVvA/Gq46w1MdTv/21R1KoeJhzIuNkLnRLG3EdYN/PSWdmLALJADeG7aAtDpfdV7HUN658ur9Rr5vvWoR9R7rK/iOqk34k4tF7ZRIe2ilKNj4HzsqlolQfNzIiwWMibUNRBzrHEEO+jW3u+ByF7TAEar6evolfC8luZfPjlIhRTHkmSkbXFjxKmr6ZzU/1UqCNye939POzwGQ7CFI2+danmsRBZhfBzXHuhRkcBhYpR2F0+UuxXA8exA/d820dMN0WApXHvau6IvnccSdZtE15TeOEAVqQKyumIIQClWZvL1RusZMAGtDOFEUzg2o4yGzbDQS7cSzROutdsHuMg6GwL6im4QgeZQHW9Cw3GazDWycpqe42+NSJ3g9NbdV8/9vlbARsNUDtcXm6VfWdQi+/qtmkM9SCFb3OWIg3Nmnt1DKtiEJfib/o4eaUwDQJ29toTTmq4zX9fNPi3nL6vDFtUVGQozGBV4fuLxNH8TsbKSa/8/Hjd1C80TO9uOZJHuNuunmZyjXxvS6/9D+CU/mzXUdC6Be6sSpppWQQsIQjgIILYLxyC2yNOl5X1imgGtqXwFnvQ=
+language: nodejs
 
 node_js:
   - 8
 
 addons:
   chrome: stable
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 
-services: mongodb
+services:
+  - docker
 
-sudo: false
+env:
+  # You may want to update this to whatever the latest version is, or keep it
+  # the same as your local machines. However, I have only tested it with 1.8.0+.
+  # There should be a time in the future when this is not necessary - it is
+  # explained in more detail below.
+  DOCKER_COMPOSE_VERSION: 1.17.0
 
 before_install:
-#  - "$CXX --version"
   - rvm install 2.4.0
+  # docker compose manual upgrade (default is 1.8)
+  # update is required to update the repositories to see the new packages for
+  # Docker.
+  - sudo apt-get update
+
+  # Now we can install the newer docker-engine which is required for the newer
+  # docker-composer we will install next. The messy options are to force it to
+  # be non-interactive (normally it asks you a bunch of config questions).
+  - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y docker-engine
+
+  # Print out the current docker-compose version. Once this reports 1.6+ then we
+  # do not need the following steps.
+  - docker-compose --version
+
+  # As of the writing of this script Travis has docker-compose v1.4.2, we need
+  # to update it to 1.8+. $DOCKER_COMPOSE_VERSION is provide from the `env`
+  # above.
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+  # Check that docker-compose is now running the latest version (or at least the
+  # one we specified). This is not to be confused with the version we printed
+  # before doing the update.
+  - docker-compose --version
+
+  # Setup your application stack. You may need to tweak these commands if you
+  # doing out-of-the-ordinary docker-compose builds.
+  - docker-compose build
+  - docker-compose start
+
+  # You will want this for logging. If one of your containers does not build for
+  # whatever reason it's best to report that now before your tests start
+  # otherwise it can be really tricky to debug why tests are failing sometimes.
+  - docker ps
 
 install:
-  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install
-  - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install
   - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler && bundle install
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler && bundle install
 
