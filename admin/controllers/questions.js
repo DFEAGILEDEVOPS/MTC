@@ -33,7 +33,7 @@ const getQuestions = async (req, res) => {
   }
 
   try {
-    config = await configService.getConfig()
+    config = await configService.getConfig(pupil)
   } catch (error) {
     return apiResponse.serverError(res)
   }

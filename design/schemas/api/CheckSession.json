@@ -6,7 +6,8 @@
   },
   "config": {
     "loadingTime": 2,
-    "questionTime": 5
+    "questionTime": 5,
+    "speechSynthesis": false
   },
   "questions": [],
   "answers": [

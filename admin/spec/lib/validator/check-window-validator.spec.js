@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect */
+/* global beforeEach, describe, it, expect, xit */
 
 const checkWindowValidator = require('../../../lib/validator/check-window-validator')
 const expressValidator = require('express-validator')()

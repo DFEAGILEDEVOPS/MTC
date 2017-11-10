@@ -58,8 +58,7 @@ pupilDataService.insertMany = async (pupils) => {
  * @return {Promise.<{Object}>}
  */
 pupilDataService.findOne = async function (options) {
-  const p = await Pupil.findOne(options).populate('school').lean().exec()
-  return p
+  return Pupil.findOne(options).populate('school').lean().exec()
 }
 
 /**
@@ -68,8 +67,7 @@ pupilDataService.findOne = async function (options) {
  * @return {Promise.<{Object}>}
  */
 pupilDataService.find = async function (options) {
-  const p = await Pupil.find(options).lean().exec()
-  return p
+  return Pupil.find(options).lean().exec()
 }
 
 /**
