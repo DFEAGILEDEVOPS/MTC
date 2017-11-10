@@ -4,5 +4,8 @@ module.exports = {
   foreName: 'Pupil',
   lastName: 'One',
   pin: 'd55sg',
-  dob: new Date('2000-12-31 00:00:00')
+  dob: new Date('2000-12-31 00:00:00'),
+  checkOptions: {
+    speechSynthesis: false
+  }
 }

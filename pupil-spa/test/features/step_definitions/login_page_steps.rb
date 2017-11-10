@@ -92,3 +92,22 @@ Then(/^I should all the correct pupil details$/) do
   expect(confirmation_page.school_name.text).to  eql "School: #{school}"
   expect(confirmation_page.dob.text).to  eql "Date of Birth: #{@pupil_information['dob'].strftime("%-d %B %Y")}"
 end
+
+
+Given(/^I am logged in with a user who needs speech synthesis$/) do
+  sign_in_page.load
+  sign_in_page.login("abc12345","8888a")
+  sign_in_page.sign_in_button.click
+end
+
+
+Then(/^I should see speech synthesis set to (.+) in the local storage$/) do |boolean|
+  expect(confirmation_page).to be_displayed
+  boolean = boolean == 'true' ? 'truthy' : 'falsey'
+  expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("config");'))['speechSynthesis']).to send("be_#{boolean}")
+end
+
+
+Given(/^I am logged in with a user who does not need speech synthesis$/) do
+  step 'I have logged in'
+end
