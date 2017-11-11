@@ -13,9 +13,5 @@ module.exports = {
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
   QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
-  ROLE_TEST_DEVELOPER: 'TEST-DEVELOPER',
-  ROLE_TEACHER: 'TEACHER',
-  HOME_TEST_DEVELOPER: '/administrator',
-  HOME_TEACHER: '/school/school-home',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL
 }

@@ -21,18 +21,18 @@ describe('SpeechService', () => {
   it('should be created', inject([SpeechService], (service: SpeechService) => {
     expect(service).toBeTruthy();
   }));
-  
+
   describe('#isSupported', () => {
     it('returns true if the api is supported', inject([SpeechService], (service: SpeechService) => {
       // Assumes the browser can handle it
       expect(service.isSupported()).toBe(true);
     }));
-    
+
     it('returns false if the api is NOT supported', inject([SpeechService], (service: SpeechService) => {
       service['synth'] = undefined;
       expect(service.isSupported()).toBe(false);
     }));
-  })
+  });
 
   describe ('#speak', () => {
     it('should have a speak method', inject([SpeechService], (service: SpeechService) => {
