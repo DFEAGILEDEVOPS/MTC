@@ -1,7 +1,10 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener, NgZone} from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { StorageService } from '../services/storage/storage.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-question',
@@ -10,8 +13,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
-  constructor(private auditService: AuditService, private registerInputService: RegisterInputService) {
-  }
+  public static readonly configAccessKey = 'config';
 
   @Input()
   public factor1 = 0;
@@ -62,6 +64,27 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * Store the return value of setInterval - so it can be cancelled
    */
   private countdownInterval: number;
+
+  /**
+   * Experimental: Flag to indicate whether we want speech synthesis
+   */
+  private hasSpeechSynthesis = false;
+
+  /**
+   * Reference to global window object
+   */
+  private window: any;
+
+
+  constructor(private auditService: AuditService,
+              private registerInputService: RegisterInputService,
+              private speechService: SpeechService,
+              private storageService: StorageService,
+              private windowRefService: WindowRefService,
+              private zone: NgZone) {
+    this.window = windowRefService.nativeWindow;
+  }
+
 
   /**
    * Track all mouse click activity
@@ -117,8 +140,22 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
     this.remainingTime = this.questionTimeoutSecs;
+    const config = this.storageService.getItem(QuestionComponent.configAccessKey);
+    this.hasSpeechSynthesis = !!config.speechSynthesis;
+
+    if (this.hasSpeechSynthesis) {
+      this.speechService.speechStatus$.subscribe(speechStatus => {
+        this.zone.run(() => {
+          console.log('Subscribing to speechStatus: status is: ', speechStatus);
+          if (speechStatus === SpeechService.speechEnded) {
+            this.startTimer();
+          }
+        });
+      });
+    } else {
+      this.startTimer();
+    }
   }
 
   /**
@@ -126,17 +163,30 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered());
-    this.timeout = window.setTimeout(() => {
+
+    // Start Speaking, if configured
+    if (this.hasSpeechSynthesis) {
+      this.speechService.speak(`${this.factor1} times ${this.factor2}?`);
+    }
+  }
+
+  private startTimer() {
+    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+
+    // Set the amount of time the user can have on the question
+    this.timeout = this.window.setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
-    this.countdownInterval = window.setInterval(() => {
+
+    // Set the countdown timer on the page
+    this.countdownInterval = this.window.setInterval(() => {
       let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
-      if (timeLeft < 0 ) {
+      if (timeLeft < 0) {
         clearInterval(this.countdownInterval);
         timeLeft = 0;
       }
       this.remainingTime = Math.ceil(timeLeft);
-    }, 250);
+    }, 100);
   }
 
   /**
@@ -144,10 +194,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @return {boolean}
    */
   answerIsLongEnoughToManuallySubmit() {
-    if (this.answer.length > 0) {
-      return true;
-    }
-    return false;
+    return this.answer.length > 0;
   }
 
   /**
@@ -197,6 +244,11 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
+    // Stop any speech
+    if (this.hasSpeechSynthesis) {
+      this.speechService.cancel();
+    }
+
     // console.log(`submitting answer ${this.answer}`);
 
     this.auditService.addEntry(new QuestionAnswered());
@@ -211,6 +263,7 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @return {boolean}
    */
   sendTimeoutEvent() {
+    // console.log('sending timeout event');
     if (this.submitted) {
       // console.log('sendTimeout(): answer already submitted');
       return false;

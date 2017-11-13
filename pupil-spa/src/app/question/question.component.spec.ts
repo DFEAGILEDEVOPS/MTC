@@ -8,13 +8,17 @@ import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audi
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
+import
 import { SubmissionService } from '../services/submission/submission.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
   let fixture: ComponentFixture<QuestionComponent>;
   const auditServiceMock = new AuditServiceMock();
   let registerInputService: RegisterInputService;
+  let speechService: SpeechService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -25,7 +29,9 @@ describe('QuestionComponent', () => {
         RegisterInputService,
         QuestionService,
         StorageService,
-        SubmissionService
+        SubmissionService,
+        SpeechService,
+        WindowRefService,
       ]
     }).compileComponents();
   }));
@@ -40,6 +46,11 @@ describe('QuestionComponent', () => {
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry');
+
+    // Stub out the SpeechService API
+    speechService = fixture.debugElement.injector.get(SpeechService);
+    spyOn(speechService, 'speak');
+    spyOn(speechService, 'cancel');
   });
 
   it('should be created', () => {

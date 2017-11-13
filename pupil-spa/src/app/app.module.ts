@@ -32,6 +32,7 @@ import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.compo
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
+import { WindowRefService } from './services/window-ref/window-ref.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -80,12 +81,13 @@ const appRoutes: Routes = [
     FeedbackService,
     LoggedInGuard,
     QuestionService,
+    RegisterInputService,
     SpeechService,
     StorageService,
     SubmissionService,
     UserService,
     WarmupQuestionService,
-    RegisterInputService
+    WindowRefService
   ],
   bootstrap: [AppComponent]
 })
