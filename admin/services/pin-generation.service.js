@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
-const fourPMToday = () => {
+const fourPmToday = () => {
   return moment().startOf('day').add(22, 'hours')
 }
 
@@ -58,7 +58,7 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
     if (!pinValidator.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
       const length = 5
       pupil.pin = pinGenerationService.generateRandomPin(length)
-      pupil.pinExpiresAt = fourPMToday()
+      pupil.pinExpiresAt = fourPmToday()
     }
   })
   return pupils
@@ -74,7 +74,7 @@ pinGenerationService.generateSchoolPassword = (school) => {
   if (!pinValidator.isValidPin(schoolPin, pinExpiresAt)) {
     const length = 8
     school.schoolPin = pinGenerationService.generateRandomPin(length)
-    school.pinExpiresAt = fourPMToday()
+    school.pinExpiresAt = fourPmToday()
   }
   return school
 }
