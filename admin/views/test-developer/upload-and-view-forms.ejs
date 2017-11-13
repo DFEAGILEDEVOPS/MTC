@@ -1,0 +1,64 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Upload and view forms</h1>
+        <p class="lede" id="lead-paragraph">
+            View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
+        </p>
+        <p>
+            <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
+        </p>
+        <br class="clearfix">
+        <div class="">
+            <a href="#" class="heading-small icon-download ">Download form usage report (CSV)</a>
+        </div>
+
+        <% if (Array.isArray(forms)) { %>
+        <div class="group">
+            <table class="spacious" id="checkFormsList" role="group">
+                <thead>
+                    <tr>
+                        <th scope="col">Form</th>
+                        <th scope="col">Assigned to</th>
+                        <th scope="col">Uploaded on</th>
+                        <td> </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% forms.forEach( form => { %>
+                    <tr>
+                        <td><a href="#"><%= form.name %></a></td>
+                        <td><%= form.checkWindows.map( cw => cw.name ).join(', ') || '(Pending)'; %></td>
+                        <td><%= formatGdsDate(form.createdAt) %></td>
+                        <td><a href="#">Remove</a></td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </div>
+    <div class="column-one-third add-title-margin">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="#">Assign forms to check window</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>

@@ -1,4 +1,3 @@
-const config = require('../config')
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 

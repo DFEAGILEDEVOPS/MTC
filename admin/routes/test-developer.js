@@ -13,37 +13,14 @@ const testDeveloperController = require('../controllers/test-developer')
 
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
 router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
+router.get('/upload-and-view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.uploadAndViewForms(req, res, next))
+router.post('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.removeForm(req, res, next))
 
 /* @TODO: The code below is meant to be refactored */
 /* GET manage check forms page. */
-router.get('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
-  res.locals.pageTitle = 'Manage check forms'
-  try {
-    const forms = await CheckForm.getActiveForms().sort({createdAt: -1}).exec()
-    let formData = forms.map(e => { return e.toJSON() })
-    const checkWindows = await CheckWindow.getCheckWindowsAssignedToForms()
-
-    formData.forEach(f => {
-      if (checkWindows[f._id]) {
-        // this form is assigned to some check windows
-        f.checkWindows = checkWindows[f._id].map(cw => { return cw.toJSON() })
-      } else {
-        f.checkWindows = []
-      }
-    })
-
-    req.breadcrumbs(res.locals.pageTitle)
-    return res.render('service-manager/manage-check-forms', {
-      forms: formData,
-      breadcrumbs: req.breadcrumbs()
-    })
-  } catch (error) {
-    return next(error)
-  }
-})
 
 /* POST the new questions for the form */
-router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
+router.post('/upload-and-view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   let uploadError = {}
   let uploadFile = req.files.csvFile
   let checkForm = new CheckForm()
@@ -85,7 +62,7 @@ router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
 
-    return res.render('service-manager/manage-check-forms', {
+    return res.render('test-developer/upload-and-view-forms', {
       forms: formData,
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
@@ -116,7 +93,7 @@ router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
       if (err) console.error(err)
     })
     console.error(error)
-    return res.render('service-manager/manage-check-forms', {
+    return res.render('test-developer/upload-and-view-forms', {
       forms: formData,
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
@@ -132,7 +109,7 @@ router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
     await checkForm.validate()
   } catch (error) {
     console.error(error)
-    return res.render('service-manager/manage-check-forms', {
+    return res.render('test-developer/upload-and-view-forms', {
       forms: formData,
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
@@ -146,7 +123,7 @@ router.post('/manage-check-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
   }
 
   // Form saved successfully
-  res.redirect('/service-manager/manage-check-forms')
+  res.redirect('/test-developer/upload-and-view-forms')
 })
 
 /* GET - choose the check window page */
@@ -166,7 +143,7 @@ router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
       formIds.push(req.query['check-form'])
     } else {
       console.error(new Error('No formIds selected'))
-      return res.redirect('manage-check-forms')
+      return res.redirect('upload-and-view-forms')
     }
   }
 
@@ -185,7 +162,7 @@ router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
   }
 
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('service-manager/choose-check-window', {
+  res.render('test-developer/choose-check-window', {
     forms: formData,
     checkWindows: checkWindowData,
     breadcrumbs: req.breadcrumbs()
@@ -218,7 +195,7 @@ router.get('/view-form/:id', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), a
     }
 
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('service-manager/view-form', {
+    res.render('test-developer/view-form', {
       form: formData,
       canDelete: canDelete,
       breadcrumbs: req.breadcrumbs()
@@ -259,39 +236,7 @@ router.post('/assign-forms-to-check-windows', isAuthenticated(rolesConfig.ROLE_T
     return next(error)
   }
 
-  res.redirect('manage-check-forms')
-})
-
-router.post('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
-  const id = req.params.formId
-  try {
-    const form = await CheckForm.getActiveForm(id).exec()
-    if (!form) {
-      return next(new Error(`Unable to find form.id [${id}]`))
-    }
-    // Unassign checkform from any checkwindows
-    // TODO: move into model
-    const checkWindowsByForm = await CheckWindow.getCheckWindowsAssignedToForms()
-    if (checkWindowsByForm[form._id]) {
-      // Array of CheckWindows models, each with a forms array
-      let modifiedCheckWindows = []
-      checkWindowsByForm[form._id].forEach(cw => {
-        const index = cw.forms.indexOf(form._id)
-        if (index > -1) {
-          cw.forms.splice(index, 1)
-          modifiedCheckWindows.push(cw)
-        }
-      })
-      // Update any changed check windows
-      const promises = modifiedCheckWindows.map(cw => { cw.save() })
-      await Promise.all(promises)
-    }
-    await form.markAsDeleted(CheckWindow)
-  } catch (error) {
-    return next(error)
-  }
-
-  res.redirect('/service-manager/manage-check-forms')
+  res.redirect('upload-and-view-forms')
 })
 
 module.exports = router

@@ -1,5 +1,19 @@
 // Check forms
 
+.icon-download {
+  &:before {
+    content: " ";
+    background-image: url(/govuk_template/stylesheets/images/icon-file-download.png);
+    background-size: 24px 30px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 30px;
+    width: 34px;
+    top: 8px;
+    position: relative;
+  }
+}
+
 dl.inline-definition-list {
   @include core-36;
 
