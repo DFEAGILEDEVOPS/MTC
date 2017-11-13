@@ -1,5 +1,5 @@
 And(/^I want to edit a previously added check$/) do
-  step 'I am logged in with a test developer'
+  step 'I am logged in with a service manager'
   step 'I am on the manage check windows page'
   manage_check_window_page.create_new_window.click
   @page = add_edit_check_window_page
