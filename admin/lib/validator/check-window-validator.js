@@ -141,42 +141,6 @@ const checkWindowValidationSchemaCheckStart = {
     },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.checkStartYearRequired
-  },
-  'checkEndDay': {
-    isInt: {
-      options: [{min: 1, max: 31}],
-      errorMessage: checkWindowErrorMessages.checkEndDayWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndDayInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndDayRequired
-  },
-  'checkEndMonth': {
-    isInt: {
-      options: [{min: 1, max: 12}],
-      errorMessage: checkWindowErrorMessages.checkEndMonthWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndMonthInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndMonthRequired
-  },
-  'checkEndYear': {
-    isInt: {
-      options: [{min: currentYear}],
-      errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndYearInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndYearRequired
   }
 }
 
