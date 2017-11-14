@@ -12,18 +12,18 @@ const sortingAttributesService = require('../services/sorting-attributes.service
 const config = require('../config')
 
 /**
- * Returns the administrator (role) landing page
+ * Returns the service-manager (role) landing page
  * @param req
  * @param res
  * @param next
  * @returns {Promise.<void>}
  */
-const getAdministration = async (req, res, next) => {
+const getServiceManagerHome = async (req, res, next) => {
   res.locals.pageTitle = 'MTC Administration Homepage'
 
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('administrator/administration-home', {
+    res.render('service-manager/service-manager-home', {
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
@@ -59,7 +59,7 @@ const getUpdateTiming = async (req, res, next) => {
 
   try {
     req.breadcrumbs(res.locals.pageTitle)
-    res.render('administrator/check-settings', {
+    res.render('service-manager/check-settings', {
       settings,
       successfulPost,
       breadcrumbs: req.breadcrumbs()
@@ -93,7 +93,7 @@ const setUpdateTiming = async (req, res, next) => {
   if (validationError.hasError()) {
     res.locals.pageTitle = 'Check settings'
     req.breadcrumbs(res.locals.pageTitle)
-    return res.render('administrator/check-settings', {
+    return res.render('service-manager/check-settings', {
       settings: req.body,
       error: validationError.errors,
       errorMessage: settingsErrorMessages,
@@ -119,7 +119,7 @@ const setUpdateTiming = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  return res.redirect('/administrator/check-settings/updated')
+  return res.redirect('/service-manager/check-settings/updated')
 }
 
 /**
@@ -176,7 +176,7 @@ const getCheckWindows = async (req, res, next) => {
     })
   }
 
-  res.render('administrator/check-windows', {
+  res.render('service-manager/check-windows', {
     breadcrumbs: req.breadcrumbs(),
     checkWindowList: checkWindowsFormatted,
     htmlSortDirection,
@@ -241,7 +241,7 @@ const checkWindowsForm = async (req, res, next) => {
     }
   }
 
-  res.render('administrator/check-windows-form', {
+  res.render('service-manager/check-windows-form', {
     breadcrumbs: req.breadcrumbs(),
     error,
     errorMessage,
@@ -296,7 +296,7 @@ const saveCheckWindows = async (req, res, next) => {
       req.body.checkStartYear = moment(req.body['existingCheckStartDate']).format('YYYY')
     }
 
-    return res.render('administrator/check-windows-form', {
+    return res.render('service-manager/check-windows-form', {
       action: urlActionName,
       checkWindowData: req.body,
       error: validationError.errors,
@@ -329,10 +329,11 @@ const saveCheckWindows = async (req, res, next) => {
     await checkWindow.save()
     req.flash('info', flashMessage)
   } catch (error) {
+    console.log('Could not save check windows data.', error)
     return next(error)
   }
 
-  return res.redirect('/administrator/check-windows')
+  return res.redirect('/service-manager/check-windows')
 }
 
 /**
@@ -346,7 +347,7 @@ const removeCheckWindow = async (req, res, next) => {
   let checkWindow
 
   if (!req.params.checkWindowId) {
-    return res.redirect('/administrator/check-windows')
+    return res.redirect('/service-manager/check-windows')
   }
 
   try {
@@ -366,12 +367,12 @@ const removeCheckWindow = async (req, res, next) => {
         req.flash('error', 'Error trying to delete check window.')
       }
     }
-    return res.redirect('/administrator/check-windows')
+    return res.redirect('/service-manager/check-windows')
   }
 }
 
 module.exports = {
-  getAdministration,
+  getServiceManagerHome,
   getUpdateTiming,
   setUpdateTiming,
   getCheckWindows,

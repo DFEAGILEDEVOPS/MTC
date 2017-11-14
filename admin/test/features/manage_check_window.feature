@@ -2,7 +2,7 @@ Feature:
   Manage check windows
 
   Background:
-    Given I am logged in with a test developer
+    Given I am logged in with a service manager
 
   Scenario: Manage check window page has a heading
     Given I am on the manage check windows page
