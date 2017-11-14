@@ -6,7 +6,7 @@
  * @returns {Promise.<void>}
  */
 const getTestDeveloperHome = async (req, res, next) => {
-  res.locals.pageTitle = null
+  res.locals.pageTitle = 'MTC for test development'
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {
