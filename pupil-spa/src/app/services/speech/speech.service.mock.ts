@@ -11,7 +11,6 @@ export class SpeechServiceMock {
   }
 
   speak (arg) {
-    console.log('speech service mock called: ', arg);
     this.speechStatusSource.next('end');
   }
 }
