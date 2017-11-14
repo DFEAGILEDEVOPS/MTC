@@ -19,7 +19,7 @@ declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "ch
 
 # create database
 az cosmosdb database create \
-	--name $databaseName \
+	--name $cosmosInstanceName \
 	--db-name $databaseName \
 	--resource-group $resourceGroupName
 
