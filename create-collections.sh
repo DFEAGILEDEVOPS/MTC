@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # exit on error
 set -e
@@ -20,8 +20,8 @@ declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "ch
 ## now loop through the above array
 for i in "${collections[@]}"
 do
-   echo "$i"
-   # createCollection $i
+   echo "creating collection $i with throughput of $highThroughput RUs"
+   createCollection $i
 done
 
 # You can access them using echo "${arr[0]}", "${arr[1]}" also
@@ -34,14 +34,3 @@ function createCollection() {
 	--resource-group $resourceGroupName \
 	--throughput $highThrougput
 }
-
-# Create a collection
-
-
-# Scale throughput
-az cosmosdb collection update \
-	--collection-name $collectionName \
-	--name $name \
-	--db-name $databaseName \
-	--resource-group $resourceGroupName \
-	--throughput $newThroughput
