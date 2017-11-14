@@ -1,6 +1,13 @@
 const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
 
+/**
+ * Display landing page for 'test developer' role.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
 const getTestDeveloperHome = async (req, res, next) => {
   res.locals.pageTitle = 'MTC for test development'
   try {
@@ -13,6 +20,13 @@ const getTestDeveloperHome = async (req, res, next) => {
   }
 }
 
+/**
+ * Display initial 'upload and view' check forms page.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
 const uploadAndViewForms = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   try {
@@ -38,8 +52,16 @@ const uploadAndViewForms = async (req, res, next) => {
   }
 }
 
-const removeForm = async (req, res, next) => {
+/**
+ * Remove check form.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<*>}
+ */
+const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
+  console.log('FORM ID', id)
   try {
     const form = await CheckForm.getActiveForm(id).exec()
     if (!form) {
@@ -70,8 +92,21 @@ const removeForm = async (req, res, next) => {
   res.redirect('/test-developer/upload-and-view-forms')
 }
 
+const uploadCheckForm = async (req, res, next) => {
+  res.locals.pageTitle = 'Upload form'
+  try {
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('test-developer/upload-check-form', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getTestDeveloperHome,
   uploadAndViewForms,
-  removeForm
+  removeCheckForm,
+  uploadCheckForm
 }

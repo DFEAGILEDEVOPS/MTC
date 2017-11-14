@@ -1,0 +1,70 @@
+<% let err = (typeof error !== 'undefined') ? error : false; %>
+
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        <% if (err) { %>
+            <% if (err.hasOwnProperty('message')) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                    <%= err.message %>
+                </h2>
+
+                <p>The form upload spreadsheet:</p>
+
+                <ul class="list list-bullet">
+                    <li> must be in CSV format</li>
+                    <li> must only contain 2 columns</li>
+                    <li> must not have a header row</li>
+                    <li> must only contain numbers between 1 and 12</li>
+                </ul>
+
+                <ul class="error-summary-list">
+                    <li><a href="#file-upload">Please try uploading a file again</a></li>
+                </ul>
+            </div>
+            <% } %>
+        <% } %>
+
+        <h1 class="heading-xlarge" tabindex="0">Upload and view forms</h1>
+
+        <p class="lede" tabindex="0" id="lead-paragraph" aria-labelledby="lead-paragraph">
+            View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
+        </p>
+
+        <form id="upload-form" action="/test-developer/upload-check-form" method="post" enctype="multipart/form-data">
+            <div class="form-group <% if (err) { %>form-group-error<% } %>" style="margin-bottom: 15px">
+                <% if (err) { %>
+                <label class="error-message"><%= err.message %></label>
+                <% } %>
+                <p class="font-xsmall">
+                    <input type="file" name="csvFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <input type="reset" value="Remove" class="link" aria-label="Remove uploaded file." /> <br>
+                <input id="upload-form-submit" type="submit" class="button" value="Upload file" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+      $('#upload-form').submit(function() {
+        $('#upload-form-submit').attr('disabled', 'disabled');
+        $('#upload-form-submit').val("Sending...");
+        $(this).attr('disabled', 'disabled');
+      });
+    });
+</script>

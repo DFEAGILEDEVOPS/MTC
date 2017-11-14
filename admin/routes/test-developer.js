@@ -14,7 +14,8 @@ const testDeveloperController = require('../controllers/test-developer')
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
 router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.getTestDeveloperHome(req, res, next))
 router.get('/upload-and-view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.uploadAndViewForms(req, res, next))
-router.post('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.removeForm(req, res, next))
+router.get('/upload-check-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.uploadCheckForm(req, res, next))
+router.get('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => testDeveloperController.removeCheckForm(req, res, next))
 
 /* @TODO: The code below is meant to be refactored */
 /* GET manage check forms page. */

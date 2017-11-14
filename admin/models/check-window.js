@@ -34,18 +34,6 @@ const CheckWindow = new Schema({
   }
 }, {timestamps: true})
 
-CheckWindow.statics.getCheckWindow = function (checkWindowId) {
-  return new Promise(async (resolve, reject) => {
-    let checkWindow
-    try {
-      checkWindow = await this.findOne({'_id': checkWindowId}).exec()
-    } catch (error) {
-      return reject(error)
-    }
-    resolve(checkWindow)
-  })
-}
-
 /**
  * Retrieve all (active) CheckWindows and return the list
  * indexed by form.id, so we can easily list the check windows

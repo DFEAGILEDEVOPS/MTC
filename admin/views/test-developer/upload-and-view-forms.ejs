@@ -14,7 +14,7 @@
             View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
         </p>
         <p>
-            <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
+            <a class="button button-primary" href="/test-developer/upload-check-form">Upload new form</a>
         </p>
         <br class="clearfix">
         <div class="">
@@ -38,7 +38,7 @@
                         <td><a href="#"><%= form.name %></a></td>
                         <td><%= form.checkWindows.map( cw => cw.name ).join(', ') || '(Pending)'; %></td>
                         <td><%= formatGdsDate(form.createdAt) %></td>
-                        <td><a href="#">Remove</a></td>
+                        <td><a href="/test-developer/delete-form/<%= form._id %>">Remove</a></td>
                     </tr>
                     <% }) %>
                 </tbody>
