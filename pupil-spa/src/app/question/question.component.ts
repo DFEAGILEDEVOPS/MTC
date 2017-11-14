@@ -11,6 +11,13 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 })
 export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
+  constructor(protected auditService: AuditService,
+              protected windowRefService: WindowRefService,
+              protected registerInputService: RegisterInputService) {
+    super(auditService, windowRefService);
+    this.window = windowRefService.nativeWindow;
+  }
+
   /**
    * Track all mouse click activity
    */
@@ -64,10 +71,30 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     return false;
   }
 
-  constructor(protected auditService: AuditService,
-              protected windowRefService: WindowRefService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService);
-    this.window = windowRefService.nativeWindow;
+
+
+  /**
+   * Called from clicking a number button on the virtual keypad
+   * @param {number} number
+   */
+  onClickAnswer(number: number) {
+    this.registerInputService.storeEntry(number.toString(), 'click');
+    this.addChar(number.toString());
+  }
+
+  /**
+   * Called from clicking the backspace button on the virtual keyboard
+   */
+  onClickBackspace() {
+    this.registerInputService.storeEntry('backspace', 'click');
+    this.deleteChar();
+  }
+
+  /**
+   * Called when the user clicks the enter button on the virtual keypad
+   */
+  onClickSubmit() {
+    this.registerInputService.storeEntry('enter', 'click');
+    this.onSubmit();
   }
 }
