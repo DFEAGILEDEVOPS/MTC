@@ -34,8 +34,34 @@
   }
   .pupil-content {
     text-align: left;
-    line-height: 32px;
     font-size: 12px;
+    margin-bottom: 25px
+  }
+  .fullname {
+    font-size: 22px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .dob {
+    color: $grey-1
+  }
+  .information {
+    font-size: 26px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .label {
+    font-size: 16px;
+  }
+  .pin-content {
+    text-align: left;
+    line-height: 5px;
+    font-size: 12px;
+    margin-bottom: 12px;
   }
   .qr {
     width: 80px;
