@@ -1,4 +1,4 @@
-// needs to be refactored for re-usability
+  // needs to be refactored for re-usability
 @media print {
   #content {
     padding-bottom: 0;
@@ -34,21 +34,21 @@
   }
   .pupil-content {
     text-align: left;
-    line-height: 2em;
-    font-size: .8em;
+    line-height: 32px;
+    font-size: 12px;
   }
   .qr {
-    width: 5em;
-    height: 5em;
+    width: 80px;
+    height: 80px;
     float: right;
     position: static;
-    margin-top: -7em;
+    margin-top: -112px;
   }
   .url {
     float: right;
-    margin-left: 6em;
-    font-size: .8em;
+    margin-left: 96px;
+    font-size: 12px;
     position: static;
-    margin-top: -2em;
+    margin-top: -32px;
   }
 }
