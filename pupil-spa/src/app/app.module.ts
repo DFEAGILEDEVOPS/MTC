@@ -33,6 +33,7 @@ import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 import { WindowRefService } from './services/window-ref/window-ref.service';
+import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -61,6 +62,7 @@ const appRoutes: Routes = [
     LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
+    PracticeQuestionComponent,
     QuestionComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent,

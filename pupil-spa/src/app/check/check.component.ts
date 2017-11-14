@@ -149,7 +149,7 @@ export class CheckComponent implements OnInit {
         this.isWarmUp = true;
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
-        this.viewState = 'question';
+        this.viewState = 'practice-question';
         break;
       }
       case CheckComponent.warmupCompleteRe.test(stateDesc):

@@ -281,7 +281,7 @@ describe('QuestionComponent', () => {
     });
   });
 
-  describe('speech synthesis', () => {
+  xdescribe('speech synthesis', () => {
     it('flag is setup during init', () => {
       expect(component['hasSpeechSynthesis']).toBeFalsy();
       config.speechSynthesis = true;
