@@ -17,6 +17,7 @@ highThroughput=4000
 ## declare an array variable
 declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "changelog" "checkforms" "checks" "checkwindows" "identitycounters" "pupils" "schools" "users")
 
+echo "adding collections to $databaseName database in cosmos instance @cosmosInstanceName under resource group $resourceGroupName"
 ## now loop through the above array
 for i in "${collections[@]}"
 do
