@@ -23,7 +23,7 @@ az cosmosdb database create \
 	--resource-group $resourceGroupName
 
 cd design/schemas/database
-collections =$(ls -1 | sed -e 's/\..*$//')
+declare collections =$(ls -1 | sed -e 's/\..*$//')
 
 ## now loop through the above array
 for i in "${collections[@]}"
