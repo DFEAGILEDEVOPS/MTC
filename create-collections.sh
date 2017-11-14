@@ -21,10 +21,5 @@ declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "ch
 for i in "${collections[@]}"
 do
    echo "creating collection $i with throughput of $highThroughput RUs"
-   az cosmosdb collection create \
-	--collection-name $collectionName \
-	--name $name \
-	--db-name $databaseName \
-	--resource-group $resourceGroupName \
-	--throughput $highThrougput
+   az cosmosdb collection create --collection-name $collectionName --name $name --db-name $databaseName --resource-group $resourceGroupName --throughput $highThrougput
 done
