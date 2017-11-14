@@ -11,8 +11,7 @@ set -e
 resourceGroupName=$1
 cosmosInstanceName=$2
 databaseName='mtc'
-lowThroughput=400 
-highThroughput=4000
+collectionThroughput=4000
 
 ## declare an array of the collections
 declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "changelog" "checkforms" "checks" "checkwindows" "identitycounters" "pupils" "schools" "users")
@@ -32,5 +31,5 @@ do
 	--name $cosmosInstanceName \
 	--db-name $databaseName \
 	--resource-group $resourceGroupName \
-	--throughput $highThroughput
+	--throughput $collectionThroughput
 done
