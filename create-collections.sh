@@ -14,7 +14,7 @@ databaseName='mtc'
 collectionThroughput=4000
 
 ## declare an array of the collections
-declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "changelog" "checkforms" "checks" "checkwindows" "identitycounters" "pupils" "schools" "users")
+# declare -a collections=("adminlogonevents" "adminsessions" "attendancecodes" "changelog" "checkforms" "checks" "checkwindows" "completedchecks" "identitycounters" "pupils" "schools" "users")
 
 # create database
 az cosmosdb database create \
@@ -22,11 +22,14 @@ az cosmosdb database create \
 	--db-name $databaseName \
 	--resource-group $resourceGroupName
 
+cd design/schemas/database
+collections =$(ls -1 | sed -e 's/\..*$//')
+
 ## now loop through the above array
 for i in "${collections[@]}"
 do
    echo "creating collection $i with throughput of $highThroughput RUs"
-     az cosmosdb collection create \
+    az cosmosdb collection create \
 	--collection-name $i \
 	--name $cosmosInstanceName \
 	--db-name $databaseName \
