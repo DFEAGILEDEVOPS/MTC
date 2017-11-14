@@ -68,24 +68,25 @@ CheckWindow.statics.getCheckWindowsAssignedToForms = function () {
     //    { checkwindow model }, ...
     //   ]
     // }
-    checkWindows.forEach(cw => {
-      cw.forms.forEach(formId => {
-        if (!data.hasOwnProperty(formId)) {
-          data[formId] = []
-        }
-        data[formId].push(cw)
+    if (checkWindows) {
+      checkWindows.forEach(cw => {
+        cw.forms.forEach(formId => {
+          if (!data.hasOwnProperty(formId)) {
+            data[formId] = []
+          }
+          data[formId].push(cw)
+        })
       })
-    })
 
-    // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
-    // before summer.
-    Object.getOwnPropertyNames(data).forEach(d => {
-      data[d].sort((cw1, cw2) => {
-        if (cw1.startDate === cw2.startDate) { return 0 }
-        return cw1.startDate < cw2.startDate ? -1 : 1
+      // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
+      // before summer.
+      Object.getOwnPropertyNames(data).forEach(d => {
+        data[d].sort((cw1, cw2) => {
+          if (cw1.startDate === cw2.startDate) { return 0 }
+          return cw1.startDate < cw2.startDate ? -1 : 1
+        })
       })
-    })
-
+    }
     resolve(data)
   })
 }

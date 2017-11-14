@@ -11,8 +11,8 @@ module.exports = [
     adminStartDate: moment('2017-10-18 00:00:00').toDate(),
     checkWindowName: 'Test window 3',
     __v: 0,
-    forms: [],
-    deleted: false
+    forms: [1, 5],
+    isDeleted: false
   },
   {
     _id: ObjectId('59e88622d38a9f2d1fcebbb3'),
@@ -23,8 +23,8 @@ module.exports = [
     adminStartDate: moment('2017-10-19 00:00:00').toDate(),
     checkWindowName: 'Window Test 1',
     __v: 0,
-    forms: [],
-    deleted: false
+    forms: [8],
+    isDeleted: false
   },
   {
     _id: ObjectId('59e886778f28f92d312c3870'),
@@ -36,6 +36,6 @@ module.exports = [
     checkWindowName: 'Window Test 2',
     __v: 0,
     forms: [],
-    deleted: false
+    isDeleted: true
   }
 ]
