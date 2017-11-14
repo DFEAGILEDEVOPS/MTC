@@ -25,7 +25,7 @@ declare collections=$(ls -1 *.json | sed -e 's/\..*$//')
 ## now loop through the above array
 for i in $collections
 do
-   echo "creating collection $i with throughput of $highThroughput RUs"
+   echo "creating collection $i with throughput of $collectionThroughput RUs"
     az cosmosdb collection create \
 	--collection-name $i \
 	--name $cosmosInstanceName \
