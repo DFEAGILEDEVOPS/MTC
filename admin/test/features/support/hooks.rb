@@ -11,7 +11,7 @@ Before("@add_a_pupil") do
 end
 
 Before("@timer_reset") do
-  step "I have logged in with test-developer"
+  step "I am logged in with a service manager"
  step 'I am on the admin page'
  step 'I am on the check settings page'
  check_settings_page.update_question_time_limit(5)

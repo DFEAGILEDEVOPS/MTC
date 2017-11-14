@@ -30,16 +30,16 @@
         <br />
 
         <p>
-            <a class="button button-primary" href="/administrator/check-windows/add">Create new check window</a>
+            <a class="button button-primary" href="/service-manager/check-windows/add">Create new check window</a>
         </p>
 
         <% if (checkWindowList.length > 0) { %>
         <table class="spacious sorting" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
-                <th scope="col"><a href="/administrator/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
-                <th scope="col"><a href="/administrator/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="<%= arrowSortDirection.adminStartDate %>"><span>Sort by admin start date <%= htmlSortDirection.adminStartDate %></span></span></a></th>
-                <th scope="col"><a href="/administrator/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="<%= arrowSortDirection.checkStartDate %>"><span>Sort by check date<%= htmlSortDirection.checkStartDate %></span></span></a></th>
+                <th scope="col"><a href="/service-manager/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
+                <th scope="col"><a href="/service-manager/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="<%= arrowSortDirection.adminStartDate %>"><span>Sort by admin start date <%= htmlSortDirection.adminStartDate %></span></span></a></th>
+                <th scope="col"><a href="/service-manager/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="<%= arrowSortDirection.checkStartDate %>"><span>Sort by check date<%= htmlSortDirection.checkStartDate %></span></span></a></th>
                 <th scope="col">&nbsp;</th>
             </tr>
             </thead>
@@ -48,7 +48,7 @@
                 <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
                     <td>
                         <% if (checkWindow.isCurrent) { %>
-                        <a href="/administrator/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a>
+                        <a href="/service-manager/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a>
                         <% } else { %>
                         <%= checkWindow.checkWindowName %>
                         <% } %>
@@ -57,7 +57,7 @@
                     <td><%= checkWindow.checkDates %></td>
                     <td>
                         <% if (checkWindow.canRemove) { %>
-                        <a href="/administrator/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link">Remove</a>
+                        <a href="/service-manager/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link">Remove</a>
                         <% } %>
                     </td>
                 </tr>

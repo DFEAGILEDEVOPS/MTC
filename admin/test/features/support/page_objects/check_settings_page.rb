@@ -1,5 +1,5 @@
 class CheckSettingsPage < SitePrism::Page
-  set_url '/administrator/check-settings'
+  set_url '/service-manager/check-settings'
 
   element :question_time_limit, "#questionTimeLimit"
   element :loading_time_limit, "#loadingTimeLimit"
