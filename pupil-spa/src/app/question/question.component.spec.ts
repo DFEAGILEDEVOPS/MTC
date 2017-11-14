@@ -6,12 +6,17 @@ import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
-import
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
+import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -19,6 +24,8 @@ describe('QuestionComponent', () => {
   const auditServiceMock = new AuditServiceMock();
   let registerInputService: RegisterInputService;
   let speechService: SpeechService;
+  let storageService: StorageService;
+  let config;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,14 +33,14 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        RegisterInputService,
-        QuestionService,
-        StorageService,
-        SubmissionService,
-        SpeechService,
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: SubmissionService, useClass: SubmissionServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
         WindowRefService,
       ]
-    }).compileComponents();
+    }).compileComponents().catch(error => { console.error(error); });
   }));
 
   beforeEach(() => {
@@ -41,16 +48,33 @@ describe('QuestionComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'handleTouchEvent').and.callThrough();
     spyOn(component, 'handleMouseEvent').and.callThrough();
-    fixture.detectChanges();
+
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry');
 
+    storageService = fixture.debugElement.injector.get(StorageService);
+    spyOn(storageService, 'getItem').and.callFake( arg => {
+      if (arg === 'config') {
+        return config;
+      } else {
+        return {};
+      }
+    });
+
     // Stub out the SpeechService API
     speechService = fixture.debugElement.injector.get(SpeechService);
-    spyOn(speechService, 'speak');
-    spyOn(speechService, 'cancel');
+    spyOn(speechService, 'speak').and.callThrough(); // mock
+
+    config = {
+      'loadingTimeLimit': 2.6,
+      'questionTimeLimit': 5.2,
+      'speechSynthesis': false
+    };
+
+    // Place this last so the spies above are registered.
+    fixture.detectChanges();
   });
 
   it('should be created', () => {
@@ -254,6 +278,23 @@ describe('QuestionComponent', () => {
       component.onSubmit();
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof QuestionAnswered).toBeTruthy();
+    });
+  });
+
+  describe('speech synthesis', () => {
+    it('flag is setup during init', () => {
+      expect(component['hasSpeechSynthesis']).toBeFalsy();
+      config.speechSynthesis = true;
+      component.ngOnInit();
+      expect(component['hasSpeechSynthesis']).toBeTruthy();
+    });
+
+    it('starts the countdown timer when the speech has finished', () => {
+      config.speechSynthesis = true;
+      spyOn(component, 'startTimer').and.callThrough();
+      component.ngOnInit();
+      component.ngAfterViewInit();
+      expect(component.startTimer).toHaveBeenCalledTimes(1);
     });
   });
 

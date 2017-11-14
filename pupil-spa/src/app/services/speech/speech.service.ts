@@ -14,7 +14,7 @@ export class SpeechService implements OnDestroy {
   protected synth;
 
   // Observable string stream
-  speechStatus$ = this.speechStatusSource.asObservable();
+  speechStatus = this.speechStatusSource.asObservable();
 
   constructor(protected audit: AuditService, protected windowRefService: WindowRefService) {
     const _window = windowRefService.nativeWindow;

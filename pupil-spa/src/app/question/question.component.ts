@@ -5,6 +5,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { StorageKey } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-question',
@@ -13,7 +14,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 })
 export class QuestionComponent implements OnInit, AfterViewInit {
 
-  public static readonly configAccessKey = 'config';
+  configAccessKey: StorageKey = 'config';
 
   @Input()
   public factor1 = 0;
@@ -141,20 +142,17 @@ export class QuestionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-    const config = this.storageService.getItem(QuestionComponent.configAccessKey);
-    this.hasSpeechSynthesis = !!config.speechSynthesis;
+    const config = this.storageService.getItem(this.configAccessKey);
+    this.hasSpeechSynthesis = !!(config && config.speechSynthesis);
 
     if (this.hasSpeechSynthesis) {
-      this.speechService.speechStatus$.subscribe(speechStatus => {
+      this.speechService.speechStatus.subscribe(speechStatus => {
         this.zone.run(() => {
-          console.log('Subscribing to speechStatus: status is: ', speechStatus);
           if (speechStatus === SpeechService.speechEnded) {
             this.startTimer();
           }
         });
       });
-    } else {
-      this.startTimer();
     }
   }
 
@@ -164,13 +162,16 @@ export class QuestionComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered());
 
-    // Start Speaking, if configured
     if (this.hasSpeechSynthesis) {
+      // For speech synth users the countdown starts after the question has been asked
       this.speechService.speak(`${this.factor1} times ${this.factor2}?`);
+    } else {
+      // Start the countdown when not using speech
+      this.startTimer();
     }
   }
 
-  private startTimer() {
+  startTimer() {
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
     // Set the amount of time the user can have on the question
