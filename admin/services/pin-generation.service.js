@@ -6,7 +6,7 @@ const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const fourPmToday = () => {
-  return moment().startOf('day').add(22, 'hours')
+  return moment().startOf('day').add(16, 'hours')
 }
 
 const pinGenerationService = {}
