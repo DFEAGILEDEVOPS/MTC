@@ -26,5 +26,5 @@ do
 	--name $cosmosInstanceName \
 	--db-name $databaseName \
 	--resource-group $resourceGroupName \
-	--throughput $highThrougput
+	--throughput $highThroughput
 done
