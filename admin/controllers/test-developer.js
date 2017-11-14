@@ -1,8 +1,12 @@
-const moment = require('moment')
-const config = require('../config')
-
+/**
+ * Landing page for role 'test-developer'.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
 const getTestDeveloperHome = async (req, res, next) => {
-  res.locals.pageTitle = 'Multiplication tables check for test development'
+  res.locals.pageTitle = 'MTC for test development'
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {

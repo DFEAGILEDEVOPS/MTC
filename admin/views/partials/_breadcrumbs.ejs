@@ -1,5 +1,5 @@
 <div class="breadcrumbs">
-    <% if (Array.isArray(breadcrumbs)) { %>
+    <% if (breadcrumbs && Array.isArray(breadcrumbs)) { %>
         <% const totalBreadcrumb = (breadcrumbs.length - 1) %>
         <% breadcrumbs.forEach( (b, index) => { %>
             <% if (b) { %>
