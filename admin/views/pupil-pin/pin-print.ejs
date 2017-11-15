@@ -30,7 +30,7 @@
                         <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.schoolPin %></span></div>
                         <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i].pin %></span></div>
                         <% if (qrDataURL) { %>
-                        <img class="qr" src="<%= qrDataURL %>" />
+                        <div class="qr"><img src="<%= qrDataURL %>" /></div>
                         <% } %>
                         <div class="url"><%= url %></div>
                     </td>
@@ -46,7 +46,7 @@
                         <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.schoolPin %></span></div>
                         <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i + 1].pin %></span></div>
                         <% if (qrDataURL) { %>
-                        <img class="qr" src="<%= qrDataURL %>" />
+                        <div class="qr"><img src="<%= qrDataURL %>" /></div>
                         <% } %>
                         <div class="url"><%= url %></div>
                     </td>

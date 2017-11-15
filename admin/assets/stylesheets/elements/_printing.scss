@@ -35,7 +35,7 @@
   .pupil-content {
     text-align: left;
     font-size: 12px;
-    margin-bottom: 25px
+    margin-bottom: 50px
   }
   .fullname {
     font-size: 22px;
@@ -45,7 +45,8 @@
     margin: 0;
   }
   .dob {
-    color: $grey-1
+    color: $grey-1;
+    margin-bottom: -14px
   }
   .information {
     font-size: 26px;
@@ -61,20 +62,25 @@
     text-align: left;
     line-height: 5px;
     font-size: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 13px;
+    min-width:250px;
   }
   .qr {
-    width: 80px;
-    height: 80px;
-    float: right;
-    position: static;
-    margin-top: -112px;
+    position: relative;
+    margin-left: 120px;
+    img {
+      width: 100px;
+      height: 100px;
+      float: right;
+      position: static;
+      margin-top: -135px;
+    }
   }
   .url {
+    font-size: 16px;
     float: right;
     margin-left: 96px;
-    font-size: 12px;
     position: static;
-    margin-top: -32px;
+    margin-top: -38px;
   }
 }
