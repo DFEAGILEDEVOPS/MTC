@@ -545,9 +545,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   const todayDate = moment(moment.now()).format()
   const postedPupils = req.body.pupil
-  console.log('checked pupils:', postedPupils.length)
   const pupilsData = await pupilService.fetchMultiplePupils(Object.values(postedPupils))
-  console.log('pupilsData:', pupilsData.length)
 
   let pupilsList
   let attendanceCodes

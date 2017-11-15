@@ -185,6 +185,16 @@ hr.divider {
 
 // Lists
 
+ol.numeric-list {
+  list-style-type: decimal;
+  list-style-position: outside;
+  padding-left: 22px;
+
+  li {
+    margin-bottom: 10px;
+  }
+}
+
 dl dd {
   margin-left: 0;
 }
@@ -195,8 +205,11 @@ dl dd {
 
 // Forms
 input:disabled {
-  border: 2px solid $grey-2;
-  color: $grey-2;
+  border: 0;
+}
+
+#removeUploadedFile {
+  visibility: hidden;
 }
 
 // Show an input as if it was a link

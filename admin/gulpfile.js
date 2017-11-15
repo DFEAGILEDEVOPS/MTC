@@ -12,7 +12,8 @@ const jsBundleFiles = [
   './assets/javascripts/jquery-1.12.4.js',
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/global-scripts.js',
-  './assets/javascripts/jquery-modal.js'
+  './assets/javascripts/jquery-modal.js',
+  './assets/javascripts/custom-file-upload.js'
 ]
 
 const jsFilesForStandard = [
