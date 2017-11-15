@@ -27,6 +27,7 @@
     page-break-inside: avoid;
   }
   td {
+    min-width:250px;
     padding: 1em;
     strong {
       font-size: medium;
@@ -63,7 +64,6 @@
     line-height: 5px;
     font-size: 12px;
     margin-bottom: 13px;
-    min-width:250px;
   }
   .qr {
     position: relative;
