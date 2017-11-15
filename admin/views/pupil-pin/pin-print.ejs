@@ -37,7 +37,7 @@
                     <% if (pupils[i + 1]) { %>
                     <td>
                         <div class="pupil-content">
-                            <span class="fullname"><%= `${pupils[i].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} ${pupils[i+1].lastName}`%>
+                            <span class="fullname"><%= `${pupils[i+1].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} ${pupils[i+1].lastName}`%>
                             </span>
                             <% if (pupils[i+1].showDoB) { %>
                             <div class="dob">Date of birth: <%= pupils[i+1].dob %></div>
