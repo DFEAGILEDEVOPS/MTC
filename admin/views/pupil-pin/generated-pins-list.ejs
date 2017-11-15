@@ -117,8 +117,7 @@
             <tr>
                 <td>
                     <label for="pupil-<%= pupil._id %>">
-                        <%= pupil.lastName %>
-                        , <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
+                        <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                     </label>
                     <% if (pupil.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
