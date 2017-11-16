@@ -1,4 +1,4 @@
-  // needs to be refactored for re-usability
+// needs to be refactored for re-usability
 @media print {
   #content {
     padding-bottom: 0;
@@ -27,7 +27,7 @@
     page-break-inside: avoid;
   }
   td {
-    min-width:309px;
+    min-width:pem(310px);
     padding: 1em;
     strong {
       font-size: medium;
@@ -36,8 +36,8 @@
   .pupil-content {
     text-align: left;
     font-size: 12px;
-    margin-bottom: 50px;
-    margin-top:19px;
+    margin-bottom: pem(50px);
+    margin-top: pem(20px);
   }
   .fullname {
     font-size: 22px;
@@ -48,7 +48,7 @@
   }
   .dob {
     color: $grey-1;
-    margin-bottom: -14px
+    margin-bottom: pem(-15px);
   }
   .information {
     font-size: 26px;
@@ -62,16 +62,16 @@
   }
   .pin-content {
     text-align: left;
-    line-height: 5px;
+    line-height: pem(5px);
     font-size: 12px;
-    margin-bottom: 13px;
+    margin-bottom: pem(15px);
   }
   .qr {
     position: relative;
     left:12px;
     img {
-      width: 100px;
-      height: 100px;
+      width: pem(100px);
+      height: pem(100px);
       float: right;
       position: static;
       margin-top: -135px;
@@ -80,8 +80,8 @@
   .url {
     font-size: 16px;
     float: right;
-    margin-left: 151px;
+    margin-left: pem(150px);
     position: static;
-    margin-top: -38px;
+    margin-top: pem(-35px);
   }
 }
