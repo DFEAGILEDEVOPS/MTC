@@ -10,8 +10,6 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const CheckWindow = require('../../models/check-window')
-const CheckWindowMock = require('../mocks/check-window')
-const CheckWindowMocks = require('../mocks/check-windows')
 
 describe('check-window schema', function () {
   let sandbox

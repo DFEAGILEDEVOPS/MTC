@@ -55,7 +55,7 @@ const checkWindowDataService = {
     const now = new Date()
     const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
     if (!checkWindow) {
-      throw new Error('No checkwindow is currently available')
+      throw new Error('No check-window is currently available')
     }
     return checkWindow
   },

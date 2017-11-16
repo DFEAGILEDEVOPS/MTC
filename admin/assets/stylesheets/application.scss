@@ -101,6 +101,18 @@ hr.divider {
   border: 1px solid $grey-2;
 }
 
+.strong-no-underline {
+  font-weight: bold;
+  text-decoration: none;
+
+  &:link,
+  &:active,
+  &:visited,
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 // GDS customisation
 
 .information {

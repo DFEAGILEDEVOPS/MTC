@@ -1,6 +1,7 @@
 'use strict'
 /* global describe, beforeEach, afterEach, it, expect */
 
+const moment = require('moment')
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -63,6 +64,26 @@ describe('check.data.service', () => {
 
     it('should fetch check windows documents', async () => {
       await service.fetchCheckWindows('name', 'asc', false)
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#fetchCurrentCheckWindow', () => {
+    let mock
+
+    beforeEach(() => {
+      const currentCheckWindowsMock = checkWindowsMock[0]
+      const now = moment.utc(moment.now())
+      currentCheckWindowsMock.checkStartDate = moment.utc(now).toDate()
+      currentCheckWindowsMock.checkEndDate = moment.utc(now).toDate()
+      mock = sandbox.mock(CheckWindow).expects('findOne').chain('exec').resolves(currentCheckWindowsMock)
+      service = proxyquire('../../../services/data-access/check-window.data.service', {
+        '../../models/check': CheckWindow
+      })
+    })
+
+    it('should fetch one check window document that is current', async () => {
+      service.fetchCurrentCheckWindow()
       expect(mock.verify()).toBe(true)
     })
   })

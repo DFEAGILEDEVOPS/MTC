@@ -1,20 +1,8 @@
 'use strict'
 const moment = require('moment')
 const CheckWindow = require('../models/check-window')
-const checkWindowDataService = require('../services/data-access/check-window.data.service')
 
 const checkWindowService = {
-  /**
-   * Get check window for the current time.
-   * @returns {Promise.<*>}
-   */
-  getCurrentCheckWindow: async () => {
-    const checkWindow = await checkWindowDataService.fetchCurrentCheckWindow()
-    if (!checkWindow) {
-      throw new Error('No check-window is currently available')
-    }
-    return checkWindow
-  },
   /**
    * Format check period (start and end dates).
    * @param startDate
@@ -116,7 +104,6 @@ const checkWindowService = {
    */
   markAsDeleted: (thisCheckWindow) => {
     return new Promise(async (resolve, reject) => {
-      console.log('CW', thisCheckWindow, thisCheckWindow._id)
       if (!thisCheckWindow || !thisCheckWindow._id) {
         return reject(new Error('This form does not have an id'))
       }

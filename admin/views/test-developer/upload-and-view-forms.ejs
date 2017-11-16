@@ -18,7 +18,7 @@
         </p>
         <br class="clearfix">
         <div class="">
-            <a href="#" class="heading-small icon-download ">Download form usage report (CSV)</a>
+            <a href="#" class="heading-small icon-download strong-no-underline">Download form usage report (CSV)</a>
         </div>
 
         <% if (Array.isArray(forms)) { %>
@@ -35,10 +35,10 @@
                 <tbody>
                     <% forms.forEach( form => { %>
                     <tr>
-                        <td><a href="/test-developer/view-form/<%= form._id %>"><%= form.name %></a></td>
+                        <td><a href="/test-developer/view-form/<%= form._id %>" class="strong-no-underline"><%= form.name %></a></td>
                         <td><%= form.checkWindows.map( cw => cw.name ).join(', ') || '(Pending)'; %></td>
                         <td><%= formatGdsDate(form.createdAt) %></td>
-                        <td><a href="/test-developer/delete-form/<%= form._id %>">Remove</a></td>
+                        <td class="align-right"><a href="/test-developer/delete-form/<%= form._id %>">Remove</a></td>
                     </tr>
                     <% }) %>
                 </tbody>
