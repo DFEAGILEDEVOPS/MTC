@@ -59,6 +59,7 @@
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "piping": "^1.0.0-rc.4",
+    "qrcode": "^0.9.0",
     "ramda": "^0.25.0",
     "serve-favicon": "^2.4.5",
     "uuid": "^3.1.0",
