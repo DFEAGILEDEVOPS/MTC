@@ -11,7 +11,8 @@ const whitelist = [
   'NCA_TOOLS_AUTH_URL',
   'NEW_RELIC_LICENSE_KEY',
   'STD_LOG_FILE',
-  'TSO_AUTH_PUBLIC_KEY'
+  'TSO_AUTH_PUBLIC_KEY',
+  'PUPIL_APP_URL'
 ]
 
 module.exports = process.env.NODE_ENV !== 'production' ? whitelist : []

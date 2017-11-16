@@ -46,7 +46,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_organization-logo';
 @import 'elements/_pupils';
 @import 'elements/_printing';
-@import 'elements/_breadcrumbs';
+@import 'elements/_top_navigation';
 @import 'elements/_electron';
 @import 'elements/_flash-messages';
 @import 'elements/_boxes';
@@ -117,6 +117,15 @@ hr.divider {
   p {
     display: table-cell;
     vertical-align: middle;
+  }
+}
+
+.sta-horizontal-logo {
+  width: 250px;
+  margin-top: $gutter;
+
+  @include media(mobile) {
+    margin-top: $gutter-half;
   }
 }
 

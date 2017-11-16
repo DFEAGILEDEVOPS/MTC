@@ -63,8 +63,9 @@ const admin = require('./routes/admin')
 const questions = require('./routes/questions')
 const pupilFeedback = require('./routes/pupil-feedback')
 const completedCheck = require('./routes/completed-check')
+const pupilPin = require('./routes/pupil-pin')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/] })
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/, '/coverage/'] })
 const app = express()
 
 /* Security Directives */
@@ -77,7 +78,7 @@ app.use(helmet.contentSecurityPolicy({
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
     fontSrc: ["'self'", 'data:'],
     styleSrc: ["'self'"],
-    imgSrc: ["'self'", 'https://www.google-analytics.com'],
+    imgSrc: ["'self'", 'https://www.google-analytics.com', 'data:'],
     connectSrc: ["'self'"],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],
@@ -213,6 +214,7 @@ app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
 app.use('/school', admin)
+app.use('/pupil-pin', pupilPin)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)
 app.use('/api/completed-check', completedCheck)

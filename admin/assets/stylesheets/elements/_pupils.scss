@@ -99,6 +99,7 @@
 .icon-file-download.pupils-template {
   display:inline-block;
   vertical-align:middle;
+  margin-right: 6px;
 }
 
 .template-link {
@@ -112,6 +113,7 @@
 // Generated Pins list
 
 .icon-custom-download {
+  display:inline-block;
   white-space: nowrap;
   &:before {
     background-image: url('/images/custom-download.png');

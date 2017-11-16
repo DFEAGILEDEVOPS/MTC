@@ -1,4 +1,4 @@
-// needs to be refactored for re-usability
+  // needs to be refactored for re-usability
 @media print {
   #content {
     padding-bottom: 0;
@@ -27,19 +27,61 @@
     page-break-inside: avoid;
   }
   td {
+    min-width:250px;
     padding: 1em;
     strong {
       font-size: medium;
     }
   }
-  td, tr {
-    min-height: 180px;
-    min-width: 200px;
-    max-height: 180px;
-    max-width: 200px;
-  }
   .pupil-content {
-    line-height: 2em;
-    font-size: .8em;
+    text-align: left;
+    font-size: 12px;
+    margin-bottom: 50px;
+    margin-top:19px;
+  }
+  .fullname {
+    font-size: 22px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .dob {
+    color: $grey-1;
+    margin-bottom: -14px
+  }
+  .information {
+    font-size: 26px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .label {
+    font-size: 16px;
+  }
+  .pin-content {
+    text-align: left;
+    line-height: 5px;
+    font-size: 12px;
+    margin-bottom: 13px;
+  }
+  .qr {
+    position: relative;
+    left:12px;
+    img {
+      width: 100px;
+      height: 100px;
+      float: right;
+      position: static;
+      margin-top: -135px;
+    }
+  }
+  .url {
+    font-size: 16px;
+    float: right;
+    margin-left: 96px;
+    position: static;
+    margin-top: -38px;
   }
 }
