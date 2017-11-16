@@ -27,19 +27,61 @@
     page-break-inside: avoid;
   }
   td {
+    min-width:pem(310px);
     padding: 1em;
     strong {
       font-size: medium;
     }
   }
-  td, tr {
-    min-height: 180px;
-    min-width: 200px;
-    max-height: 180px;
-    max-width: 200px;
-  }
   .pupil-content {
-    line-height: 2em;
-    font-size: .8em;
+    text-align: left;
+    font-size: 12px;
+    margin-bottom: pem(50px);
+    margin-top: pem(20px);
+  }
+  .fullname {
+    font-size: 22px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .dob {
+    color: $grey-1;
+    margin-bottom: pem(-15px);
+  }
+  .information {
+    font-size: 26px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .label {
+    font-size: 16px;
+  }
+  .pin-content {
+    text-align: left;
+    line-height: pem(5px);
+    font-size: 12px;
+    margin-bottom: pem(15px);
+  }
+  .qr {
+    position: relative;
+    left:12px;
+    img {
+      width: pem(100px);
+      height: pem(100px);
+      float: right;
+      position: static;
+      margin-top: -135px;
+    }
+  }
+  .url {
+    font-size: 16px;
+    float: right;
+    margin-left: pem(150px);
+    position: static;
+    margin-top: pem(-35px);
   }
 }
