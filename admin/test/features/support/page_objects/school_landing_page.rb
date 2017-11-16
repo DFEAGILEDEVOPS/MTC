@@ -7,7 +7,7 @@ class SchoolLandingPage < SitePrism::Page
   element :instructions, 'p.lede', text: 'To start the check you will need to generate PINs for each individual pupil.'
   element :pupil_register, 'a[href="/school/pupil-register/lastName/true"]'
   element :pupils_not_taking_check, 'a[href="/school/pupils-not-taking-check"]'
-  element :generate_pupil_pin, 'a[href="/school/generate-pins-overview"]'
+  element :generate_pupil_pin, 'a[href="/pupil-pin/generate-pins-overview"]'
   element :manage_pupil_instructions, 'p', text: 'Generate and print pupil Personal Identification Numbers (PINs) and view existing PINs'
   element :submit_attendance_register, 'a', text: 'Submit attendance register'
   element :teacher_name, '.signed-in-as'

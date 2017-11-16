@@ -72,7 +72,8 @@ Then(/^I should have a option to select all pupils on Generate Pin page$/) do
 end
 
 Then(/^I should be taken to Generate Pupil Pins Page$/) do
-  expect(generate_pupil_pins_page).to be_displayed
+  pins_page = generate_pupil_pins_page.displayed? ? generate_pupil_pins_page : generated_pins_page
+  expect(pins_page).to be_displayed
 end
 
 Then(/^I should be taken to Generated Pins Page$/) do
