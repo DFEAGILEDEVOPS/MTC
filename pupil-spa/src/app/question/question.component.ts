@@ -40,7 +40,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
     this.registerInputService.addEntry(event);
@@ -70,8 +70,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
     return false;
   }
-
-
 
   /**
    * Called from clicking a number button on the virtual keypad

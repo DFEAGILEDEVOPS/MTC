@@ -83,6 +83,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.startTimer();
   }
 
+  /**
+   * Start the countdown timer on the page and set the time-out counter
+   */
   startTimer() {
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
@@ -168,12 +171,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * @return {boolean}
    */
   sendTimeoutEvent() {
-    // console.log('sending timeout event');
+    // console.log('sendTimeoutEvent() called');
     if (this.submitted) {
       // console.log('sendTimeout(): answer already submitted');
       return false;
     }
-    // console.log(`question.component: sendTimeoutEvent(): ${this.answer}`);
+    // console.log(`practice-question.component: sendTimeoutEvent(): ${this.answer}`);
     this.timeoutEvent.emit(this.answer);
     this.submitted = true;
   }

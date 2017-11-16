@@ -40,7 +40,7 @@ export class WarmupQuestionService extends QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
+    config.speechSynthesis = configData['speechSynthesis'];
     this.config = config;
   }
-
 }

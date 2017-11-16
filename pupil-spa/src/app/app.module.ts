@@ -34,6 +34,8 @@ import { WarmupQuestionService } from './services/question/warmup-question.servi
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
+import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
+import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -66,7 +68,9 @@ const appRoutes: Routes = [
     QuestionComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent,
-    WarmupLoadingComponent
+    WarmupLoadingComponent,
+    SpokenQuestionComponent,
+    SpokenPracticeQuestionComponent
   ],
   imports: [
     RouterModule.forRoot(

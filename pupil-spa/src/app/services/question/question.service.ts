@@ -6,9 +6,7 @@ import { Config } from '../../config.model';
 const questionKey = 'questions';
 const configKey = 'config';
 
-
 @Injectable()
-
 export class QuestionService {
 
   protected currentQuestion;
@@ -72,8 +70,9 @@ export class QuestionService {
     const configData = this.storageService.getItem(configKey);
     this.questions = questionData;
     const config = new Config();
-    config.loadingTime = configData['loadingTime'];
-    config.questionTime = configData['questionTime'];
+    config.loadingTime = configData[ 'loadingTime' ];
+    config.questionTime = configData[ 'questionTime' ];
+    config.speechSynthesis = configData['speechSynthesis'];
     this.config = config;
   }
 }

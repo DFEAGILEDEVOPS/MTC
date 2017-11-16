@@ -22,8 +22,10 @@ export class CheckComponent implements OnInit {
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
+  private static spokenWarmupQuestionRe = /^SW(\d+)$/;
   private static warmupCompleteRe = /^warmup-complete$/;
   private static questionRe = /^Q(\d+)$/;
+  private static spokenQuestionRe = /^SQ(\d+)$/;
   private static loadingRe = /^L(\d+)$/;
   private static completeRe = /^complete$/;
 
@@ -76,6 +78,8 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.config = this.warmupQuestionService.getConfig();
+
     this.initStates();
 
     // Prevent the user going back a page
@@ -89,12 +93,12 @@ export class CheckComponent implements OnInit {
       this.loadExistingState();
     } else {
       this.question = this.warmupQuestionService.getQuestion(1);
-      this.config = this.warmupQuestionService.getConfig();
       this.state = 0;
       this.isWarmUp = true;
       this.viewState = 'warmup-intro';
       this.totalNumberOfQuestions = this.warmupQuestionService.getNumberOfQuestions();
     }
+
   }
 
   private loadExistingState() {
@@ -105,7 +109,7 @@ export class CheckComponent implements OnInit {
     }
     this.state = existingState;
     this.isWarmUp = this.isWarmUpState();
-    this.config = this.warmupQuestionService.getConfig();
+
     this.totalNumberOfQuestions = this.isWarmUp ?
       this.warmupQuestionService.getNumberOfQuestions() :
       this.questionService.getNumberOfQuestions();
@@ -152,6 +156,15 @@ export class CheckComponent implements OnInit {
         this.viewState = 'practice-question';
         break;
       }
+      case CheckComponent.spokenWarmupQuestionRe.test(stateDesc): {
+        // Show the warmup question screen
+        const matches = CheckComponent.spokenWarmupQuestionRe.exec(stateDesc);
+        this.isWarmUp = true;
+        // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
+        this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'spoken-practice-question';
+        break;
+      }
       case CheckComponent.warmupCompleteRe.test(stateDesc):
         // Show the warmup complete screen
         this.isWarmUp = true;
@@ -172,6 +185,14 @@ export class CheckComponent implements OnInit {
         const matches = CheckComponent.questionRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
+        break;
+      }
+      case CheckComponent.spokenQuestionRe.test(stateDesc): {
+        // Show the question screen
+        this.isWarmUp = false;
+        const matches = CheckComponent.spokenQuestionRe.exec(stateDesc);
+        this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'spoken-question';
         break;
       }
       case CheckComponent.completeRe.test(stateDesc):
@@ -249,14 +270,22 @@ export class CheckComponent implements OnInit {
     this.allowedStates.push('warmup-intro');
     for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`LW${i + 1}`);
-      this.allowedStates.push(`W${i + 1}`);
+      if (this.config.speechSynthesis) {
+        this.allowedStates.push(`SW${i + 1}`);
+      } else {
+        this.allowedStates.push(`W${i + 1}`);
+      }
     }
     this.allowedStates.push('warmup-complete');
 
     // Setup the Questions
     for (let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`L${i + 1}`);
-      this.allowedStates.push(`Q${i + 1}`);
+      if (this.config.speechSynthesis) {
+        this.allowedStates.push(`SQ${i + 1}`);
+      } else {
+        this.allowedStates.push(`Q${i + 1}`);
+      }
     }
 
     // Set up the final page
@@ -325,6 +354,7 @@ export class CheckComponent implements OnInit {
       case CheckComponent.warmupLoadingRe.test(stateDesc):
       case CheckComponent.warmupIntroRe.test(stateDesc):
       case CheckComponent.warmupCompleteRe.test(stateDesc):
+      case CheckComponent.spokenWarmupQuestionRe.test(stateDesc):
         isWarmUp = true;
         break;
 
