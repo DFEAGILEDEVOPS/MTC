@@ -29,7 +29,7 @@ describe('WarmupCompleteComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     submissionService = fixture.debugElement.injector.get(SubmissionService);
-    spyOn(submissionService, 'submitCheckStartData').and.returnValue({ catch: () => {} });
+    spyOn(submissionService, 'submitCheckStartData').and.returnValue(Promise.resolve());
   });
 
   it('should be created', () => {
