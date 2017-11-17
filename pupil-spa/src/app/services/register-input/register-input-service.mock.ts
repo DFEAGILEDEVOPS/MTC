@@ -7,4 +7,7 @@ export class RegisterInputServiceMock {
 
   storeEntry(eventValue, eventType) {
   }
+
+  initialise() {
+  }
 }
