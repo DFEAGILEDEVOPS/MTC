@@ -1,4 +1,6 @@
-import { Component, NgZone, OnInit, AfterViewInit } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -10,7 +12,8 @@ import { QuestionRendered } from '../services/audit/auditEntry';
   templateUrl: '../question/question.component.html',
   styleUrls: ['../question/question.component.css'],
 })
-export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
+export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
+  private subscription: Subscription;
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -21,7 +24,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-    this.speechService.speechStatus.subscribe(speechStatus => {
+    this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
         if (speechStatus === SpeechService.speechEnded) {
           this.startTimer();
@@ -36,5 +39,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered());
     this.speechService.speak(`${this.factor1} times ${this.factor2}?`);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }
