@@ -1,6 +1,4 @@
-const mongoose = require('mongoose')
 const Pupil = require('../models/pupil')
-const Answer = require('../models/answer')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
@@ -29,18 +27,7 @@ pupilService.fetchMultiplePupils = async (pupilIds) => {
   }
   return pupils
 }
-/**
- * Fetches latest set of pupils answers who have completed the check.
- * @param {string} id - Pupil Id.
- */
-pupilService.fetchAnswers = async (id) => {
-  // TODO: Introduce integration tests
-  const answers = await Answer.findOne({
-    pupil: mongoose.Types.ObjectId(id),
-    result: { $exists: true }
-  }).sort({ createdAt: -1 }).exec()
-  return answers
-}
+
 /**
  * Calculates the score of a check that the pupil has taken.
  * @param {object} results - The check results.

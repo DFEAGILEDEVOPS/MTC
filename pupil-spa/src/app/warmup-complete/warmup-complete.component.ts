@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular
 
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered } from '../services/audit/auditEntry';
+import { SubmissionService } from '../services/submission/submission.service';
 
 @Component({
   selector: 'app-warmup-complete',
@@ -17,7 +18,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private auditService: AuditService) { }
+  constructor(
+    private auditService: AuditService,
+    private submissionService: SubmissionService
+  ) { }
 
   ngOnInit() {
   }
@@ -28,6 +32,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
 
   onClick() {
     // console.log(`warmup-complete(): onClick called()`);
+    this.submissionService.submitCheckStartData().catch(error => new Error(error));
     this.clickEvent.emit(null);
   }
 

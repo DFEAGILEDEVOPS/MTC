@@ -32,6 +32,20 @@ describe('SubmissionService', () => {
     expect(service).toBeTruthy();
   }));
 
+  it('submitCheckStartData function should call storageService getItem', inject([SubmissionService], (service: SubmissionService) => {
+    mockBackend.connections.subscribe((connection) => {
+      connection.mockRespond(new Response(new ResponseOptions({
+        body: JSON.stringify({isSaved: true}),
+        status: 200
+      })));
+    });
+    spyOn(storageService , 'getItem').and.returnValues({});
+    submissionService.submitCheckStartData().then(() => {
+      expect(storageService.getItem).toHaveBeenCalledWith('pupil');
+      expect(storageService.getItem).toHaveBeenCalledWith('access_token');
+    });
+  }));
+
   it('submitData function should call storageService getAllItems', inject([SubmissionService], (service: SubmissionService) => {
     mockBackend.connections.subscribe((connection) => {
       connection.mockRespond(new Response(new ResponseOptions({

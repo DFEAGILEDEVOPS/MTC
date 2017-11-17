@@ -29,14 +29,14 @@ const checkStartService = {
     if (found) {
       throw new Error(`Failed to generate a unique UUID for the check code.  Pupil [${pupilId}]`)
     }
-
     // Save the details to the `Check` collection
     const check = new Check({
       pupilId,
       checkCode,
       checkWindowId: checkWindow._id,
       checkFormId: checkForm._id,
-      pupilLoginDate: new Date()
+      pupilLoginDate: new Date(),
+      checkStartedAt: null
     })
     await check.save()
 

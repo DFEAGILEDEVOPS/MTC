@@ -3,17 +3,23 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WarmupCompleteComponent } from './warmup-complete.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
+import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
 
 
 describe('WarmupCompleteComponent', () => {
   let component: WarmupCompleteComponent;
   let fixture: ComponentFixture<WarmupCompleteComponent>;
+  let submissionService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WarmupCompleteComponent ],
-      providers: [ { provide: AuditService, useClass: AuditServiceMock} ]
+      providers: [
+        { provide: AuditService, useClass: AuditServiceMock},
+        { provide: SubmissionService, useClass: SubmissionServiceMock }
+      ]
     })
     .compileComponents();
   }));
@@ -22,6 +28,8 @@ describe('WarmupCompleteComponent', () => {
     fixture = TestBed.createComponent(WarmupCompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    submissionService = fixture.debugElement.injector.get(SubmissionService);
+    spyOn(submissionService, 'submitCheckStartData').and.returnValue({ catch: () => {} });
   });
 
   it('should be created', () => {
@@ -33,6 +41,7 @@ describe('WarmupCompleteComponent', () => {
       expect(g).toBe(null);
     });
     component.onClick();
+    expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
   }));
 
   describe('audit entry', () => {
