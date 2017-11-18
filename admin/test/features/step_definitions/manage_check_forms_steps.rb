@@ -1,10 +1,3 @@
-Given(/^I am on the manage check forms page$/) do
-  manage_check_forms_page.load
-end
-
-Then(/^I should see a heading$/) do
-  expect(manage_check_forms_page).to have_heading
-end
 
 Then(/^I should have the option to choose a csv file$/) do
   expect(manage_check_forms_page).to have_choose_file
