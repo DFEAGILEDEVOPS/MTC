@@ -22,8 +22,8 @@ describe('check-start.service', () => {
       pupilId = ObjectId()
 
       return proxyquire('../../services/check-start.service', {
-        '../services/check-window.service': {
-          getCurrentCheckWindow: jasmine.createSpy().and.callFake(
+        '../services/data-access/check-window.data.service': {
+          fetchCurrentCheckWindow: jasmine.createSpy().and.callFake(
             function () { return Promise.resolve(checkWindowMock) }
           )
         },

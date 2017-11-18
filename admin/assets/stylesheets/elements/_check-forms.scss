@@ -1,5 +1,27 @@
 // Check forms
 
+.check-forms {
+  .panel-border-wide {
+    padding: 5px 0 10px 15px;
+    margin-top: 5px;
+  }
+}
+
+/* @TODO: Icons to be moved to there own file */
+.icon-download {
+  &:before {
+    content: " ";
+    background-image: url(/govuk_template/stylesheets/images/icon-file-download.png);
+    background-size: 21px 26px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 26px;
+    width: 30px;
+    top: 6px;
+    position: relative;
+  }
+}
+
 dl.inline-definition-list {
   @include core-36;
 

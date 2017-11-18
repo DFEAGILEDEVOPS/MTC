@@ -138,7 +138,7 @@ busboy.extend(app, {
 })
 
 const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
-    (/^\/test-developer\/manage-check-forms$/).test(url)
+    (/^\/test-developer\/upload-new-form$/).test(url)
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,

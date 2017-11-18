@@ -2,8 +2,8 @@
 
 const moment = require('moment')
 const CheckWindow = require('../../models/check-window')
-const checkWindowDataService = {
 
+const checkWindowDataService = {
   /**
    * Fetch check window document by id.
    * @param id
@@ -46,6 +46,18 @@ const checkWindowDataService = {
       .find(query)
       .sort(sort)
       .exec()
+  },
+  /**
+   * Fetch (one) check window for present date.
+   * @returns {Promise.<*>}
+   */
+  fetchCurrentCheckWindow: async () => {
+    const now = new Date()
+    const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
+    if (!checkWindow) {
+      throw new Error('No checkwindow is currently available')
+    }
+    return checkWindow
   },
   /**
    * Fetch (non-deleted) current check windows by sort by, sort direction

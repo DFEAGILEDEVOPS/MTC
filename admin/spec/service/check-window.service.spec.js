@@ -16,43 +16,6 @@ describe('check-window.service', () => {
     })
   }
 
-  describe('#getCurrentCheckWindow', () => {
-    it('should return a current check window', async (done) => {
-      service = setupService(function () { return Promise.resolve(checkWindowMock) })
-      let win
-      try {
-        win = await service.getCurrentCheckWindow()
-      } catch (error) {
-        expect('not expect to throw').toBe('error')
-      }
-      expect(win).toBeDefined()
-      done()
-    })
-
-    it('throws an error when the check window find throws an error', async (done) => {
-      service = setupService(function () { return Promise.reject(new Error('mock error')) })
-      try {
-        await service.getCurrentCheckWindow()
-        expect('expected to throw').toBe('error')
-      } catch (error) {
-        expect(error).toBeDefined()
-      }
-      done()
-    })
-
-    it('throws an error when it doesn\'t find anything', async (done) => {
-      service = setupService(function () { return Promise.resolve(null) })
-      try {
-        await service.getCurrentCheckWindow()
-        expect('expected to throw').toBe('error')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('No checkwindow is currently available')
-      }
-      done()
-    })
-  })
-
   describe('formatCheckWindowDocuments', () => {
     beforeEach(() => {
       service = setupService(function () { return Promise.resolve(checkWindowMock) })
@@ -82,6 +45,4 @@ describe('check-window.service', () => {
       expect(result[1].canRemove).toBe(canRemove)
     })
   })
-
-  // @TODO: To be finished
 })

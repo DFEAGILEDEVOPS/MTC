@@ -1,0 +1,74 @@
+<% let err = (typeof error !== 'undefined') ? error : false; %>
+
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds check-forms">
+
+        <% if (err) { %>
+            <% if (err.hasOwnProperty('message')) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                    <%= err.message %>
+                </h2>
+
+                <p>The form upload spreadsheet:</p>
+
+                <ul class="list list-bullet">
+                    <li> must be in CSV format</li>
+                    <li> must only contain 2 columns</li>
+                    <li> must not have a header row</li>
+                    <li> must only contain numbers between 1 and 12</li>
+                </ul>
+
+                <ul class="error-summary-list">
+                    <li><a href="#file-upload">Please try uploading a file again</a></li>
+                </ul>
+            </div>
+            <% } %>
+        <% } %>
+
+        <h1 class="heading-xlarge">Upload new form</h1>
+        <h2 class="heading-medium">Download example</h2>
+
+        <ol class="numeric-list">
+            <li>
+                Download the example
+                <div class="panel panel-border-wide">
+                    <a href="#" class="heading-small icon-download">Download form example (CSV)</a>
+                </div>
+            </li>
+            <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
+            <li>Add check questions using the given format</li>
+            <li>Save as a CSV file on your computer</li>
+            <li>Select 'Choose file' button and navigate to the file on your computer</li>
+            <li>Choose the file(s) to upload</li>
+        </ol>
+
+        <h2 class="heading-medium">Upload file(s)</h2>
+
+        <form action="/test-developer/upload-new-form" method="post" enctype="multipart/form-data" id="upload-form">
+            <div class="form-group <% if (err) { %>form-group-error<% } %>">
+                <% if (err) { %>
+                <label class="error-message"><%= err.message %></label>
+                <% } %>
+                <p class="font-xsmall">
+                    <input type="file" name="csvFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload">
+                </p>
+            </div>
+
+            <div class="form-group">
+                <input type="reset" class="link" id="removeUploadedFile" value="Remove" aria-label="Remove uploaded file." /> <br>
+                <input type="submit" class="button" id="upload-form-submit" value="Upload" disabled="disabled" />
+                <a href="#" class="button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
