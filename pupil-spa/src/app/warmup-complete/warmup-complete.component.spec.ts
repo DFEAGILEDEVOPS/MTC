@@ -54,7 +54,7 @@ describe('WarmupCompleteComponent', () => {
         component.onClick();
         fixture.whenStable().then(() => {
           fixture.detectChanges();
-          expect(auditService.addEntry).toHaveBeenCalledTimes(3);
+          expect(auditService.addEntry).toHaveBeenCalledTimes(4);
           expect(auditService.addEntry).toHaveBeenCalledWith(new CheckStartedAPICallSucceeded());
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);

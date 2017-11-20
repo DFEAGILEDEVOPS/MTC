@@ -1,7 +1,11 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupCompleteRendered, CheckStartedAPICallSucceeded, CheckStartedAPICallFailed, CheckStarted } from '../services/audit/auditEntry';
+import { WarmupCompleteRendered,
+  CheckStartedApiCalled,
+  CheckStartedAPICallSucceeded,
+  CheckStartedAPICallFailed,
+  CheckStarted } from '../services/audit/auditEntry';
 import { SubmissionService } from '../services/submission/submission.service';
 
 @Component({
@@ -34,9 +38,11 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
     // console.log(`warmup-complete(): onClick called()`);
     this.submissionService.submitCheckStartData()
       .then(() => {
+        this.auditService.addEntry(new CheckStartedApiCalled());
         this.auditService.addEntry(new CheckStartedAPICallSucceeded());
       })
       .catch(error => {
+        this.auditService.addEntry(new CheckStartedApiCalled());
         this.auditService.addEntry(new CheckStartedAPICallFailed());
         return new Error(error);
       });
