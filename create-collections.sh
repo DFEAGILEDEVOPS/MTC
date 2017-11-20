@@ -11,7 +11,7 @@ set -e
 resourceGroupName=$1
 cosmosInstanceName=$2
 databaseName='mtc'
-collectionThroughput=4000
+collectionThroughput=$3
 
 # create database
 az cosmosdb database create \
