@@ -1,7 +1,7 @@
 'use strict'
 
 const uuidv4 = require('uuid/v4')
-
+const moment = require('moment')
 const Check = require('../models/check')
 const checkFormService = require('../services/check-form.service')
 const checkWindowService = require('../services/check-window.service')
@@ -35,7 +35,7 @@ const checkStartService = {
       checkCode,
       checkWindowId: checkWindow._id,
       checkFormId: checkForm._id,
-      pupilLoginDate: new Date(),
+      pupilLoginDate: moment.utc(),
       checkStartedAt: null
     })
     await check.save()
