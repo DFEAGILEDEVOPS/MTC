@@ -41,14 +41,14 @@ describe('PractiseQuestionComponent', () => {
     expect(component['countdownInterval']).toBeTruthy();
   });
 
-  describe('answerIsLongEnoughToManuallySubmit', () => {
+  describe('hasAnswer', () => {
     it('returns true for a proper answer', () => {
       component.answer = 'test';
-      expect(component.answerIsLongEnoughToManuallySubmit()).toBeTruthy();
+      expect(component.hasAnswer()).toBeTruthy();
     });
     it('returns false for an empty answer', () => {
       component.answer = '';
-      expect(component.answerIsLongEnoughToManuallySubmit()).toBeFalsy();
+      expect(component.hasAnswer()).toBeFalsy();
     });
   });
 

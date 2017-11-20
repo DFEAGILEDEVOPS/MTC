@@ -109,7 +109,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Check a manual submission to see if it is allowed.
    * @return {boolean}
    */
-  answerIsLongEnoughToManuallySubmit() {
+  hasAnswer() {
     return this.answer.length > 0;
   }
 
@@ -144,7 +144,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       // console.log('answer already submitted');
       return false;
     }
-    if (!this.answerIsLongEnoughToManuallySubmit()) {
+    if (!this.hasAnswer()) {
       // console.log('answer not provided');
       return false;
     }
