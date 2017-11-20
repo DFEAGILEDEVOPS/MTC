@@ -41,6 +41,7 @@
     "@types/node": "^8.0.50",
     "codelyzer": "~4.0.1",
     "concurrently": "^3.5.0",
+    "fs-extra": "^4.0.2",
     "govuk-elements-sass": "^3.1.1",
     "gulp": "^3.9.1",
     "gulp-string-replace": "^0.4.0",
