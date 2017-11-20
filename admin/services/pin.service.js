@@ -37,7 +37,7 @@ pinService.getActiveSchool = async (schoolId) => {
 }
 
 /**
- * Expire pupil's pin
+ * Expire pupil's pin and set started check timestamp
  * @param token
  * @param checkCode
  */
@@ -46,7 +46,9 @@ pinService.expirePupilPin = async (token, checkCode) => {
   const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
   const currentTimeStamp = moment.utc()
   await checkDataService.update({checkCode: checkCode}, { '$set': { checkStartedAt: currentTimeStamp } })
-  await pupilDataService.update(pupil._id, { pinExpiresAt: currentTimeStamp })
+  if (!pupil.isTestAccount) {
+    await pupilDataService.update(pupil._id, { pinExpiresAt: currentTimeStamp, pin: null })
+  }
 }
 
 module.exports = pinService

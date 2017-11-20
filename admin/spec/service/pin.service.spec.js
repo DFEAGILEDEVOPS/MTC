@@ -15,17 +15,14 @@ const schoolMock = require('../mocks/school')
 describe('pin.service', () => {
   let sandbox
 
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-  })
+  beforeEach(() => { sandbox = sinon.sandbox.create() })
 
   afterEach(() => sandbox.restore())
+
   describe('getPupilsWithActivePins', () => {
-    let sandbox
     let pupil1
     let pupil2
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       pupil1 = Object.assign({}, pupilMock)
       pupil1.pin = 'f55sg'
       pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
@@ -33,7 +30,6 @@ describe('pin.service', () => {
       pupil2._id = '595cd5416e5ca13e48ed2520'
       pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
     })
-    afterEach(() => sandbox.restore())
     describe('if pins are valid', () => {
       beforeEach(() => {
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
@@ -96,21 +92,42 @@ describe('pin.service', () => {
     })
   })
   describe('expirePupilPin', () => {
-    beforeEach(() => {
-      let pupil = Object.assign({}, pupilMock)
-      sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
-      sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
-      proxyquire('../../services/pin.service', {
-        '../../services/data-access/pupil.data.service': pupilDataService,
-        '../../services/jwt.service': jwtService
+    describe('for actual users', () => {
+      beforeEach(() => {
+        let pupil = Object.assign({}, pupilMock)
+        sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
+        sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
+        proxyquire('../../services/pin.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService,
+          '../../services/jwt.service': jwtService
+        })
+      })
+      it('it expire pin and set check start time ', async () => {
+        spyOn(pupilDataService, 'update').and.returnValue(null)
+        spyOn(checkDataService, 'update').and.returnValue(null)
+        await pinService.expirePupilPin('token', 'checkCode')
+        expect(pupilDataService.update).toHaveBeenCalled()
+        expect(checkDataService.update).toHaveBeenCalled()
       })
     })
-    it('it expire pin and set check start time ', async () => {
-      spyOn(pupilDataService, 'update').and.returnValue(null)
-      spyOn(checkDataService, 'update').and.returnValue(null)
-      await pinService.expirePupilPin('token', 'checkCode')
-      expect(pupilDataService.update).toHaveBeenCalled()
-      expect(checkDataService.update).toHaveBeenCalled()
+    describe('for test developer users', () => {
+      beforeEach(() => {
+        let pupil = Object.assign({}, pupilMock)
+        pupil.isTestAccount = true
+        sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
+        sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
+        proxyquire('../../services/pin.service', {
+          '../../services/data-access/pupil.data.service': pupilDataService,
+          '../../services/jwt.service': jwtService
+        })
+      })
+      it('it should not expire pin for developer test account', async () => {
+        spyOn(pupilDataService, 'update').and.returnValue(null)
+        spyOn(checkDataService, 'update').and.returnValue(null)
+        await pinService.expirePupilPin('token', 'checkCode')
+        expect(pupilDataService.update).toHaveBeenCalledTimes(0)
+        expect(checkDataService.update).toHaveBeenCalled()
+      })
     })
   })
 })
