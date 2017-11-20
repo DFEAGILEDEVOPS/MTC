@@ -4,13 +4,14 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
-    "start": "node ./server.js",
-    "postinstall": "gulp build",
-    "test": "nyc -r html ./run-jasmine.js",
     "coverage": "nyc -r text -r html ./run-jasmine.js",
+    "lint": "standard",
+    "postinstall": "gulp build",
+    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
+    "sasswatch": "gulp watch",
+    "start": "node ./server.js",
     "startn": "nodemon ./server.js",
-    "sasswatch": "gulp watch"
+    "test": "nyc -r html ./run-jasmine.js"
   },
   "engines": {
     "node": ">= 8.4"
