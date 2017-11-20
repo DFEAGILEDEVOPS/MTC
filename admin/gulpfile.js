@@ -5,7 +5,6 @@ const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
-const standard = require('gulp-standard')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
@@ -13,16 +12,6 @@ const jsBundleFiles = [
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js'
-]
-
-const jsFilesForStandard = [
-  '!node_modules/**/*',
-  '!assets/javascripts/details.polyfill.js',
-  '!assets/javascripts/jquery-1.12.4.js',
-  '!public/govuk_template/javascripts/ie.js',
-  '!public/govuk_template/javascripts/govuk-template.js',
-  '!public/javascripts/app.js',
-  './**/*.js'
 ]
 
 gulp.task('watch', function () {
@@ -60,15 +49,6 @@ gulp.task('copyPDFs', function () {
   gulp
     .src(['./assets/PDFs/*'])
     .pipe(gulp.dest('public/PDFs'))
-})
-
-gulp.task('standard', function () {
-  return gulp.src(jsFilesForStandard)
-    .pipe(standard())
-    .pipe(standard.reporter('default', {
-      breakOnError: true,
-      quiet: true
-    }))
 })
 
 gulp.task('realclean', ['clean'], function () {
