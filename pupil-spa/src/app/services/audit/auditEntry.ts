@@ -1,6 +1,6 @@
-export type AuditEntryType = 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckStartedAPICallSucceed' |
-'CheckStartedAPICallFailed' | 'CheckComplete' |'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
-'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded';
+export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered' | 'CheckStartedAPICallSucceeded' |
+'CheckStartedAPICallFailed' | 'CheckComplete' |'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' |
+'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded';
 
 export abstract class AuditEntry {
 
@@ -8,6 +8,12 @@ export abstract class AuditEntry {
     public type: AuditEntryType,
     public clientTimestamp: Date,
     public data?: object) { }
+}
+
+export class WarmupStarted extends AuditEntry {
+  constructor(data?: any) {
+    super('WarmupStarted', new Date(), data);
+  }
 }
 
 export class WarmupIntroRendered extends AuditEntry {
@@ -22,9 +28,9 @@ export class WarmupCompleteRendered extends AuditEntry {
   }
 }
 
-export class CheckStartedAPICallSucceed extends AuditEntry {
+export class CheckStartedAPICallSucceeded extends AuditEntry {
   constructor(data?: any) {
-    super('CheckStartedAPICallSucceed', new Date(), data);
+    super('CheckStartedAPICallSucceeded', new Date(), data);
   }
 }
 

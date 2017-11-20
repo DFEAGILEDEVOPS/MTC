@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WarmupCompleteComponent } from './warmup-complete.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { CheckStartedAPICallSucceed, CheckStartedAPICallFailed } from '../services/audit/auditEntry';
+import { CheckStartedAPICallSucceeded, CheckStartedAPICallFailed } from '../services/audit/auditEntry';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
@@ -54,8 +54,8 @@ describe('WarmupCompleteComponent', () => {
         component.onClick();
         fixture.whenStable().then(() => {
           fixture.detectChanges();
-          expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(auditService.addEntry).toHaveBeenCalledWith(new CheckStartedAPICallSucceed());
+          expect(auditService.addEntry).toHaveBeenCalledTimes(3);
+          expect(auditService.addEntry).toHaveBeenCalledWith(new CheckStartedAPICallSucceeded());
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));

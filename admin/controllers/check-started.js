@@ -9,7 +9,7 @@ const apiResponse = require('./api-response')
  * @returns { object }
  */
 
-const preCheck = async (req, res) => {
+const checkStarted = async (req, res) => {
   const { checkCode, accessToken } = req.body
   if (!checkCode) return apiResponse.badRequest(res)
   // User verification
@@ -29,5 +29,5 @@ const preCheck = async (req, res) => {
 }
 
 module.exports = {
-  preCheck
+  checkStarted
 }

@@ -22,7 +22,7 @@ describe('check started controller', () => {
     return req
   }
 
-  describe('preCheck route', () => {
+  describe('checkStarted route', () => {
     let sandbox
     let goodReqParams = {
       method: 'GET',
@@ -42,7 +42,7 @@ describe('check started controller', () => {
     it('returns bad request if checkCode is undefined', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      const controller = require('../../controllers/check-started').preCheck
+      const controller = require('../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.reject(new Error('error'))))
       await controller(req, res)
       const data = JSON.parse(res._getData())
@@ -54,7 +54,7 @@ describe('check started controller', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body.checkCode = 'checkCode'
-      const controller = require('../../controllers/check-started').preCheck
+      const controller = require('../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.reject(new Error('error'))))
       await controller(req, res)
       const data = JSON.parse(res._getData())
@@ -66,7 +66,7 @@ describe('check started controller', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body.checkCode = 'checkCode'
-      const controller = require('../../controllers/check-started').preCheck
+      const controller = require('../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.resolve('ok')))
       spyOn(pinService, 'expirePupilPin').and.returnValue((Promise.reject(new Error('error'))))
       await controller(req, res)
@@ -79,7 +79,7 @@ describe('check started controller', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body.checkCode = 'checkCode'
-      const controller = require('../../controllers/check-started').preCheck
+      const controller = require('../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.resolve('ok')))
       spyOn(pinService, 'expirePupilPin').and.returnValue((Promise.resolve('ok')))
       await controller(req, res)
