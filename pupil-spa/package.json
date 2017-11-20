@@ -28,7 +28,6 @@
     "@angular/platform-browser-dynamic": "^4.3.6",
     "@angular/router": "^4.3.6",
     "core-js": "^2.5.1",
-    "fs-extra": "^4.0.1",
     "ngx-logger": "^0.2.6",
     "node-sass-utils": "^1.1.2",
     "rxjs": "^5.5.2",
