@@ -50,7 +50,7 @@ describe('check started controller', () => {
       expect(data.error).toBe('Bad request')
       done()
     })
-    it('verifies a pupil as unauthorized ', async (done) => {
+    it('verifies a pupil as unauthorized if jwt verification fails', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body.checkCode = 'checkCode'
