@@ -2,8 +2,8 @@
 
 const moment = require('moment')
 const CheckWindow = require('../../models/check-window')
-const checkWindowDataService = {
 
+const checkWindowDataService = {
   /**
    * Fetch check window document by id.
    * @param id
@@ -29,12 +29,11 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   fetchCheckWindows: async (sortBy, sortDirection, deleted, current) => {
-    let sort = {}
+    let sorting = {}
     let query = {}
 
     const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D HH:mm:ss.SSS')
 
-    sort[sortBy] = sortDirection
     query.isDeleted = !deleted ? false : deleted
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
@@ -42,10 +41,26 @@ const checkWindowDataService = {
       query.checkEndDate = {$lt: currentTimestamp}
     }
 
+    if (sortBy && sortDirection) {
+      sorting[sortBy] = sortDirection
+    }
+
     return CheckWindow
       .find(query)
-      .sort(sort)
+      .sort(sorting)
       .exec()
+  },
+  /**
+   * Fetch (one) check window for present date.
+   * @returns {Promise.<*>}
+   */
+  fetchCurrentCheckWindow: async () => {
+    const now = new Date()
+    const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
+    if (!checkWindow) {
+      throw new Error('No check-window is currently available')
+    }
+    return checkWindow
   },
   /**
    * Fetch (non-deleted) current check windows by sort by, sort direction

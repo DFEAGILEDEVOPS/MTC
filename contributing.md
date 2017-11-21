@@ -7,6 +7,25 @@ The MTC team is following a set of patterns and practices throughout the develop
 - Feature branches are created under the feature branch folder. The naming convention is `feature/(ticket number)-(description)`
 - Bug branch naming onventions are similar to feature branches: `bug/(ticket number)-(description)`
 
+## Workflow expectations
+
+All work has to be done TDD style - tests first.  Create a PR once you have written a few tests, and invite team members to review.  This gives a clear indiciation of what the feature is expected to do, and shows you are practising TDD.  This is easy for new features, but a little more involved when refactoring existing work that has no coverage.
+
+### Refactoring approach
+
+As an example, lets say you are refactoring an existing controller and the services it depends on.
+1.  Create a new spec for the controller and write some tests that assert the expectation of the controller (returns 200 OK, has x,y in the body etc), building out the controller as you complete each test and it passes.
+2.  Once you reach a point where there is enough definition to create a commit, do so, and then create a PR and invite the team in to review your WIP
+3.  Repeat this process for dependent services
+
+Any code from the old/legacy controller that you feel is useful should be introduced to the new controller after the tests are written and you the SUT starts to emerge.  That way your new controller tests only pass if the code works in the expected way.  
+
+Once the new controller and services are complete, update the routes to point to the new controller, and now you can delete the old controller/components.
+
+## Useful tools
+
+It may be useful to use madge for existing modules to view the dependency graph. This may help in quickly identifying older code, that should be reviewed to see if needs to be refactored.
+
 ## Commits - Pull requests
 
 The process for developing new features is as follows...
