@@ -45,7 +45,6 @@
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-uuid2": "^2.0.1",
     "morgan": "~1.9.0",
-    "newrelic": "^1.40.0",
     "node-gyp": "^3.6.1",
     "number-to-words": "^1.2.3",
     "passport": "^0.4.0",

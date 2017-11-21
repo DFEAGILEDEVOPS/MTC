@@ -2,10 +2,6 @@
 
 require('dotenv').config()
 
-if (process.env.NODE_ENV === 'production') {
-  require('newrelic')
-}
-
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
@@ -74,7 +70,7 @@ const pupilFeedback = require('./routes/pupil-feedback')
 const completedCheck = require('./routes/completed-check')
 const pupilPin = require('./routes/pupil-pin')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/newrelic_agent.log/, /test/, '/coverage/'] })
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 const app = express()
 
 /* Security Directives */
