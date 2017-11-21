@@ -57,10 +57,6 @@ mongoose.connect(connectionString, {
 
 autoIncrement.initialize(mongoose.connection)
 
-if (process.env.NODE_ENV !== 'production') {
-  mongoose.set('debug', true)
-}
-
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const serviceManager = require('./routes/service-manager')
