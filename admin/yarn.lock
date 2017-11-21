@@ -135,9 +135,9 @@ append-transform@^0.4.0:
   dependencies:
     default-require-extensions "^1.0.0"
 
-applicationinsights@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-0.22.0.tgz#b96e7926d0e311b3fdc68dbcd35d7232616d138e"
+applicationinsights@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-1.0.0.tgz#f5942e53f861da6881f242460689c344f8358473"
   dependencies:
     diagnostic-channel "0.2.0"
     diagnostic-channel-publishers "0.2.1"
