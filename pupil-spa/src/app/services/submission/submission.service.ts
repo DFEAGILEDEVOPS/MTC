@@ -9,7 +9,7 @@ export class SubmissionService {
   constructor(private http: Http, private storageService: StorageService) {
   }
 
-  async submitCheckStartData() {
+  async submitCheckStartData(numTries = 100) {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
@@ -25,7 +25,13 @@ export class SubmissionService {
           }
         },
         (err) => { throw new Error(err); }
-      ).catch((err) => { throw new Error(err); });
+      ).catch((err) => {
+        if (numTries <= 0) {
+          // return error to finally log it and continue
+          throw new Error(err);
+        }
+        return this.submitCheckStartData(numTries - 1);
+      });
   }
 
   async submitData() {
