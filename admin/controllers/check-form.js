@@ -4,6 +4,7 @@ const CheckForm = require('../models/check-form')
 const checkFormService = require('../services/check-form.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
+const sortingAttributesService = require('../services/sorting-attributes.service')
 
 /**
  * Display landing page for 'test developer' role.
@@ -33,22 +34,23 @@ const getTestDeveloperHome = async (req, res, next) => {
  */
 const uploadAndViewForms = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
+  req.breadcrumbs(res.locals.pageTitle)
+
   try {
-    const forms = await checkFormDataService.getActiveForms().sort({createdAt: -1}).exec()
-    let formData = forms.map(e => { return e.toJSON() })
-    const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+    let formData
 
-    formData.forEach(f => {
-      if (checkWindows[f._id]) {
-        f.checkWindows = checkWindows[f._id].map(cw => { return cw.toJSON() })
-      } else {
-        f.checkWindows = []
-      }
-    })
+    // Sorting
+    const sortingOptions = [{ 'key': 'name', 'value': 'asc' }]
+    const sortField = 'name'
+    const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+    const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
 
-    req.breadcrumbs(res.locals.pageTitle)
+    formData = await checkFormService.formatCheckFormsAndWindows(sortField, sortDirection)
+
     return res.render('test-developer/upload-and-view-forms', {
       forms: formData,
+      htmlSortDirection,
+      arrowSortDirection,
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
@@ -66,26 +68,14 @@ const uploadAndViewForms = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const CheckWindow = await checkFormDataService.getActiveForm(id).exec()
+    const CheckWindow = await checkFormDataService.getActiveForm(id)
     if (!CheckWindow) {
       return next(new Error(`Unable to find form.id [${id}]`))
     }
+
     // Un-assign check-form from any check-windows
-    const checkWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
-    if (checkWindowsByForm[CheckWindow._id]) {
-      // Array of CheckWindows models, each with a forms array
-      let modifiedCheckWindows = []
-      checkWindowsByForm[CheckWindow._id].forEach(cw => {
-        const index = cw.forms.indexOf(CheckWindow._id)
-        if (index > -1) {
-          cw.forms.splice(index, 1)
-          modifiedCheckWindows.push(cw)
-        }
-      })
-      // Update any changed check windows
-      const promises = modifiedCheckWindows.map(cw => { cw.save() })
-      await Promise.all(promises)
-    }
+    const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
+    await checkFormService.unassignedCheckFormsFromCheckWindows(CheckWindow, CheckWindowsByForm)
     await checkWindowService.markAsDeleted(CheckWindow)
   } catch (error) {
     return next(error)
@@ -104,9 +94,12 @@ const removeCheckForm = async (req, res, next) => {
 const uploadCheckForm = async (req, res, next) => {
   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
   res.locals.pageTitle = 'Upload new form'
+  let error
+
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/upload-new-form', {
+      error,
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
@@ -122,48 +115,26 @@ const uploadCheckForm = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const saveCheckForm = async (req, res, next) => {
+  res.locals.pageTitle = 'Upload check form'
+  req.breadcrumbs(res.locals.pageTitle)
+
   let uploadError = {}
   let uploadFile = req.files.csvFile
   let checkForm = new CheckForm()
   let absFile
   let deleteDir
-  let forms
-  let formData
 
   // Various errors cause a page to be rendered instead, and it *needs* a title
-  res.locals.pageTitle = 'Upload check form'
-  req.breadcrumbs(res.locals.pageTitle)
-
-  // Pick up the list of forms in case we have an error and need to re-render the page
-  try {
-    forms = await checkFormDataService.getActiveForms().sort({createdAt: -1}).exec()
-    formData = forms.map(e => { return e.toJSON() })
-    const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-    formData.forEach(f => {
-      if (checkWindows[f._id]) {
-        // this form is assigned to some check windows
-        f.checkWindows = checkWindows[f._id].map(cw => {
-          return cw.toJSON()
-        })
-      } else {
-        f.checkWindows = []
-      }
-    })
-  } catch (error) {
-    return next(error)
-  }
-
   if (!uploadFile) {
     // Either it actually wasn't uploaded, or it failed one the busboy checks: e.g.
-    // * mimetype needs to be text/csv (.csv)
+    // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
     // * file size exceeded?
     uploadError.message = 'A valid CSV file was not uploaded'
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
 
-    return res.render('test-developer/upload-and-view-forms', {
-      forms: formData,
+    return res.render('test-developer/upload-new-form', {
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
     })
@@ -192,14 +163,12 @@ const saveCheckForm = async (req, res, next) => {
     fs.remove(deleteDir, err => {
       if (err) console.error(err)
     })
-    return res.render('test-developer/upload-and-view-forms', {
-      forms: formData,
+    return res.render('test-developer/upload-new-form', {
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
     })
   }
 
-  // Remove the uploaded file
   fs.remove(deleteDir, err => {
     if (err) console.error(err)
   })
@@ -208,7 +177,6 @@ const saveCheckForm = async (req, res, next) => {
     await checkForm.validate()
   } catch (error) {
     return res.render('test-developer/upload-and-view-forms', {
-      forms: formData,
       error: new Error('There is a problem with the form content'),
       breadcrumbs: req.breadcrumbs()
     })
@@ -216,6 +184,8 @@ const saveCheckForm = async (req, res, next) => {
 
   try {
     await checkForm.save()
+    req.flash('info', `File ${uploadFile.filename} (${checkForm.name}) was uploaded`)
+    req.flash('formName', checkForm.name)
   } catch (error) {
     return next(error)
   }
@@ -223,21 +193,21 @@ const saveCheckForm = async (req, res, next) => {
   res.redirect('/test-developer/upload-and-view-forms')
 }
 
+/* @TODO: The code below will be refactored in the next PR as part of PBI 17604 */
 const displayCheckForm = async (req, res, next) => {
   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
   res.locals.pageTitle = 'View form'
-  let formData
   let canDelete = true
+  let formData
 
   try {
-    const checkWin = await checkFormDataService.getActiveForm(req.params.formId).exec()
-    formData = checkWin.toJSON()
+    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
     formData.checkWindows = []
     const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
 
-    if (checkWindows[checkWin.id]) {
+    if (checkWindows[formData.id]) {
       // Form is assigned to one or more check windows
-      formData.checkWindows = checkWindows[checkWin.id].map(cw => { return cw.toJSON() })
+      formData.checkWindows = checkWindows[formData.id].map(cw => { return cw.toJSON() })
       formData.checkWindows.forEach(cw => {
         if (cw.startDate <= Date.now()) {
           // we can't delete a form whose check window has started.

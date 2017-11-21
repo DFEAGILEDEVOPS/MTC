@@ -201,12 +201,4 @@ $(function () {
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
   }
-
-  /**
-   * Disable upload button until file has been uploaded.
-   */
-  $('input:file').on('change', function (e) {
-    e.stopPropagation()
-    $('input:submit').prop('disabled', !$(this).val())
-  })
 })

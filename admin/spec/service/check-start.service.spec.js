@@ -8,7 +8,7 @@ const { ObjectId } = require('mongoose').Types
 require('sinon-mongoose')
 
 const checkWindowMock = require('../mocks/check-window')
-const checkFormMock = require('../mocks/checkform')
+const checkFormMock = require('../mocks/check-form')
 const Check = require('../../models/check')
 
 describe('check-start.service', () => {

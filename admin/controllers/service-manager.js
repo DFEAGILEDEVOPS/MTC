@@ -7,6 +7,7 @@ const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
+const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const config = require('../config')
@@ -316,12 +317,12 @@ const saveCheckWindows = async (req, res, next) => {
 
   checkWindow.checkWindowName = req.body['checkWindowName']
   if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
-    checkWindow.adminStartDate = checkWindowService.formatCheckWindowDate(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
+    checkWindow.adminStartDate = dateService.formatDateFromRequest(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
   }
   if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
-    checkWindow.checkStartDate = checkWindowService.formatCheckWindowDate(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+    checkWindow.checkStartDate = dateService.formatDateFromRequest(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
   }
-  checkWindow.checkEndDate = checkWindowService.formatCheckWindowDate(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
+  checkWindow.checkEndDate = dateService.formatDateFromRequest(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
 
   // Auditing? Question for BAs.
 

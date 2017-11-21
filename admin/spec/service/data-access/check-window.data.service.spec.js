@@ -11,7 +11,7 @@ const checkWindowMock = require('../../mocks/check-window')
 const checkWindowDeletedMock = require('../../mocks/check-window-isDeleted')
 const checkWindowsMock = require('../../mocks/check-windows')
 
-describe('check.data.service', () => {
+describe('checkWindowDataService', () => {
   let service, sandbox
 
   beforeEach(() => {
@@ -26,7 +26,7 @@ describe('check.data.service', () => {
     beforeEach(() => {
       mock = sandbox.mock(CheckWindow).expects('findOne').chain('exec').resolves(checkWindowMock)
       service = proxyquire('../../../services/data-access/check-window.data.service', {
-        '../../models/check': CheckWindow
+        '../../models/check-window': CheckWindow
       })
     })
 

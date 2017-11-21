@@ -4,22 +4,48 @@ const CheckForm = require('../../models/check-form')
 
 const checkFormDataService = {
   /**
-   * Get form by id, when isDeleted is false.
+   * Get form by id (if passed), when isDeleted is false.
+   * Return Mongoose object.
    * @param id
    */
   getActiveForm: (id) => {
-    return CheckForm.findOne({_id: id, isDeleted: false})
-  },
-  /**
-   * Get all forms, when isDeleted is false.
-   * @param q
-   */
-  getActiveForms: (q) => {
-    if (!q) {
-      q = {}
+    let query = {'isDeleted': false}
+    if (id) {
+      query = Object.assign(query, {'_id': id})
     }
-    q.isDeleted = false
-    return CheckForm.find(q)
+    return CheckForm.findOne(query).exec()
+  },
+
+  /**
+   * Get check form when isDeleted is false.
+   * Return plain javascript object.
+   * @returns {Promise}
+   */
+  getActiveFormPlain: (id) => {
+    let query = {'isDeleted': false}
+    if (id) {
+      query = Object.assign(query, {'_id': id})
+    }
+    return CheckForm.findOne(query).lean().exec()
+  },
+
+  /**
+   * Fetch active forms (forms not soft-deleted)
+   * @param query
+   * @param sortField
+   * @param sortDirection
+   * @returns {Promise.<void>}
+   */
+  fetchSortedActiveForms: async (query, sortField, sortDirection) => {
+    let sort = {}
+    let q = query
+
+    if (sortField && sortDirection) {
+      sort[sortField] = sortDirection
+    }
+    query.isDeleted = false
+
+    return CheckForm.find(q).sort(sort).exec()
   }
 }
 

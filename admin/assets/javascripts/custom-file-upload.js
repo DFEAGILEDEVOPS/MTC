@@ -1,21 +1,29 @@
+/**
+ * File upload customisation.
+ */
 /* global $ */
 $(function () {
-  function customFileUpload (e) {
-    var formEl = $('#upload-form')
-    var removeEl = $('#removeUploadedFile')
+  'use strict'
 
-    removeEl.on('click', function (e) {
-      removeEl.css('visibility', 'hidden')
+  function customFileUpload (e) {
+    var $formElement = $('#upload-form')
+    var $removeElement = $('#removeUploadedFile')
+    var $uploadButton = $('#upload-form-submit')
+
+    $removeElement.on('click', function (e) {
+      $removeElement.css('visibility', 'hidden')
+      $uploadButton.attr('disabled', 'disabled')
     })
 
     $('input:file').change(function (e) {
-      removeEl.css('visibility', 'visible')
-      var fileName = $(this).val()
-      $('.filename').html(fileName)
+      $removeElement.css('visibility', 'visible')
+      $uploadButton.attr('disabled', false)
+      var $fileName = $(this).val()
+      $('.filename').html($fileName)
     })
 
-    formEl.submit(function () {
-      formEl.val('Sending...')
+    $formElement.submit(function () {
+      $formElement.val('Sending...')
       $(this).attr('disabled', 'disabled')
     })
   }

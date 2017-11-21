@@ -7,6 +7,20 @@
   }
 }
 
+#checkWindowList {
+  td {
+    text-align: left;
+
+    &:first-child {
+      white-space: nowrap;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
+  }
+}
+
 /* @TODO: Icons to be moved to there own file */
 .icon-download {
   &:before {

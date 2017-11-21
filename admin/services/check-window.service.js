@@ -1,23 +1,10 @@
 'use strict'
 const moment = require('moment')
 const CheckWindow = require('../models/check-window')
+const checkWindowDataService = require('../services/data-access/check-window.data.service')
+const dateService = require('../services/date.service')
 
 const checkWindowService = {
-  /**
-   * Format check period (start and end dates).
-   * @param startDate
-   * @param endDate
-   * @returns {string}
-   */
-  formatCheckPeriod: (startDate, endDate) => {
-    let startYear = ' ' + startDate.format('YYYY')
-    let endYear = ' ' + endDate.format('YYYY')
-
-    if (startYear === endYear) {
-      startYear = ''
-    }
-    return startDate.format('D MMM') + startYear + ' to ' + endDate.format('D MMM YYYY')
-  },
   /**
    * Format check windows document, prepare to parse in view.
    * @param checkWindows
@@ -34,26 +21,11 @@ const checkWindowService = {
         id: cw._id,
         checkWindowName: cw.checkWindowName,
         adminStartDate: adminStartDateMo.format('D MMM YYYY'),
-        checkDates: checkWindowService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
+        checkDates: dateService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
         canRemove: typeof canRemove === 'boolean' ? canRemove : (Date.parse(cw.checkStartDate) >= Date.now()),
         isCurrent: isCurrent
       }
     })
-  },
-  /**
-   * Format check windows dates.
-   * @param dateItem
-   * @param keyDay
-   * @param keyMonth
-   * @param keyYear
-   * @returns {Date}
-   */
-  formatCheckWindowDate: (dateItem, keyDay, keyMonth, keyYear) => {
-    return moment.utc(
-      '' + dateItem[keyDay] +
-      '/' + dateItem[keyMonth] +
-      '/' + dateItem[keyYear],
-      'D/MM/YYYY').toDate()
   },
   /**
    * Retrieve all (active) CheckWindows and return the list
@@ -67,7 +39,7 @@ const checkWindowService = {
       let data = {}
 
       try {
-        checkWindows = await CheckWindow.find({}).exec()
+        checkWindows = await checkWindowDataService.fetchCheckWindows()
       } catch (error) {
         reject(error)
       }
@@ -109,8 +81,9 @@ const checkWindowService = {
       }
 
       try {
-        // Only mark as deleted if there is no check window assigned,
-        // or the check window has not yet started.
+        // Only mark as deleted if:
+        // 1. there is no check window assigned or
+        // 2. the check window has not yet started.
         const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
         if (checkWindows[thisCheckWindow._id]) {
           let now = new Date()
@@ -125,7 +98,6 @@ const checkWindowService = {
       }
 
       thisCheckWindow.isDeleted = true
-
       try {
         await thisCheckWindow.save()
       } catch (error) {

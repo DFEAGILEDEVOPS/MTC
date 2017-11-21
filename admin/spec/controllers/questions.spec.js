@@ -16,7 +16,7 @@ const configMock = require('../mocks/config')
 const questionsMock = require('../mocks/check-form.service.getQuestions')
 const checkStartResponseMock = {
   checkCode: uuidv4(),
-  checkForm: require('../mocks/checkform')
+  checkForm: require('../mocks/check-form')
 }
 
 const getPupilDataFoSpaMock = {

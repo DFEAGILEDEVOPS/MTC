@@ -2,6 +2,8 @@
 /* global describe it expect */
 
 const dateService = require('../../services/date.service')
+const requestMock = require('../mocks/dates-req-mock')
+const moment = require('moment')
 
 function invalidInputTests (method) {
   it('returns an empty string if the parameter is an empty string', () => {
@@ -76,6 +78,24 @@ describe('date service', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatDayAndDate(date)).toBe('Friday 31 December')
+    })
+  })
+
+  describe('#formatDateFromRequest', () => {
+    it('should return a date correctly formatted', () => {
+      const result1 = dateService.formatDateFromRequest(requestMock, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
+      const result2 = dateService.formatDateFromRequest(requestMock, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+      const result3 = dateService.formatDateFromRequest(requestMock, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
+      expect(result1.toString()).toBe('Sat Nov 10 2018 00:00:00 GMT+0000 (GMT)')
+      expect(result2.toString()).toBe('Sun Dec 09 2018 00:00:00 GMT+0000 (GMT)')
+      expect(result3.toString()).toBe('Mon Dec 10 2018 00:00:00 GMT+0000 (GMT)')
+    })
+  })
+
+  describe('#formatCheckPeriod', () => {
+    it('should return a date correctly formatted', () => {
+      const result = dateService.formatCheckPeriod(moment('2017-11-01'), moment('2017-11-20'))
+      expect(result).toBe('1 Nov to 20 Nov 2017')
     })
   })
 })

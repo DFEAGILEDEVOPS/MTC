@@ -2,7 +2,6 @@
 
 const express = require('express')
 const router = express.Router()
-const CheckForm = require('../models/check-form')
 const CheckWindow = require('../models/check-window')
 const isAuthenticated = require('../authentication/middleware')
 const rolesConfig = require('../roles-config')
@@ -11,14 +10,14 @@ const checkFormController = require('../controllers/check-form')
 
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHome(req, res, next))
 router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHome(req, res, next))
-router.get('/view-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.displayCheckForm(req, res, next))
+router.get('/upload-and-view-forms/:sortDirection', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.uploadAndViewForms(req, res, next))
 router.get('/upload-and-view-forms', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.uploadAndViewForms(req, res, next))
+router.get('/view-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.displayCheckForm(req, res, next))
 router.get('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.removeCheckForm(req, res, next))
 router.get('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.uploadCheckForm(req, res, next))
 router.post('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.saveCheckForm(req, res, next))
 
-/* @TODO: The code below will be refactored (next PR) */
-
+/* @TODO: The code below will be refactored in the next PR (PBI 17403) */
 /* GET - choose the check window page */
 router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Choose check window'
@@ -41,7 +40,7 @@ router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOP
   }
 
   try {
-    forms = await checkFormService.getActiveForms({_id: formIds}).sort({_id: 1}).exec()
+    forms = await checkFormService.fetchSortedActiveForms({_id: formIds}, '_id', 'asc')
     formData = forms.map(e => { return e.toJSON() })
   } catch (error) {
     return next(error)
@@ -70,7 +69,7 @@ router.post('/assign-forms-to-check-windows', isAuthenticated(rolesConfig.ROLE_T
   let forms
 
   try {
-    forms = await checkFormService.getActiveForms({_id: formIds}).exec()
+    forms = await checkFormService.fetchSortedActiveForms({_id: formIds})
     checkWindows = await CheckWindow.find({_id: checkWindowIds})
   } catch (error) {
     return next(error)

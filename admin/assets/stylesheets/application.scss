@@ -71,8 +71,8 @@ $mainstream-brand: $department-for-education;
 }
 
 .support-column {
-  border-top: 10px solid $mainstream-brand;
-  padding-top: 10px;
+  border-top: pem(10px) solid $mainstream-brand;
+  padding-top: pem(10px);
 
   ul {
     @include core-16();
@@ -91,7 +91,7 @@ $mainstream-brand: $department-for-education;
 hr.divider {
   clear: both;
   border: 0;
-  height: 1px;
+  height: pem(1px);
   color: $grey-2; /* old IE */
   background-color: $grey-2;
   padding: 0;
@@ -174,15 +174,15 @@ hr.divider {
   position: absolute;
   left: -10000px;
   top: auto;
-  width: 1px;
-  height: 1px;
+  width: pem(1px);
+  height: pem(1px);
   overflow:hidden;
 }
 
 // Footer
 
 #footer {
-  border-top: 10px solid $mainstream-brand;
+  border-top: pem(10px) solid $mainstream-brand;
 }
 
 // Fonts
@@ -200,10 +200,10 @@ hr.divider {
 ol.numeric-list {
   list-style-type: decimal;
   list-style-position: outside;
-  padding-left: 22px;
+  padding-left: pem(22px);
 
   li {
-    margin-bottom: 10px;
+    margin-bottom: pem(10px);
   }
 }
 
@@ -212,7 +212,7 @@ dl dd {
 }
 
 .list-nested {
-  margin-left: 35px;
+  margin-left: pem(35px);
 }
 
 // Forms
@@ -233,9 +233,14 @@ input.link {
   color: $link-colour;
   background: none;
   margin: 0;
-  padding: 0 0 0 0;
+  padding: 0;
   border: none;
   cursor: pointer;
+
+  &.remove-file {
+    padding-top: pem(10px);
+    font-size: medium;
+  }
 }
 
 .textarea {
@@ -246,7 +251,7 @@ input.link {
 }
 
 .narrow-width {
-  width: 60px;
+  width: pem(60px);
 }
 
 legend {
@@ -255,13 +260,13 @@ legend {
 
 .form-horizontal {
   select {
-    height: 36px;
+    height: pem(36px);
   }
 
   input[type=submit] {
     padding-top: .4em;
     padding-bottom: .2em;
-    height: 35px;
+    height: pem(35px);
   }
 
   @include media(tablet) {
@@ -305,6 +310,8 @@ input {
   @include button($grey-3);
 
   margin-top: em(20);
+  margin-left: pem(10px);
+
   &:not(:last-child) {
     margin-right: pem(10px);
   }
