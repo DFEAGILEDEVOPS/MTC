@@ -106,7 +106,7 @@ if (formData._id) {
         <fieldset tabindex="0" aria-labelledby="date-of-birth">
             <legend>
                 <span class="form-label-bold" id="date-of-birth">Date of birth</span>
-                <span class="form-hint">For example, 31 6 2005</span>
+                <span class="form-hint">For example, 30 6 2005</span>
                 <% if (err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year')) { %>
                 <span class="error-message">
                                     <%= ['dob-day', 'dob-month', 'dob-year'].filter(f => {
