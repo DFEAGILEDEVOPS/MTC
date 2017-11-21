@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../storage/storage.service';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/retryWhen';
 
 @Injectable()
 export class SubmissionService {
-
   constructor(private http: Http, private storageService: StorageService) {
   }
 
   async submitCheckStartData() {
+    const { apiErrorDelay, apiErrorMaxAttempts } = environment;
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
@@ -18,6 +21,7 @@ export class SubmissionService {
     await this.http.post(`${environment.apiURL}/api/check-started`,
       { checkCode, accessToken },
       requestArgs)
+      .retryWhen(errors => errors.delay(apiErrorDelay).take(apiErrorMaxAttempts))
       .toPromise()
       .then((response) => {
           if (response.status !== 201) {
@@ -25,7 +29,7 @@ export class SubmissionService {
           }
         },
         (err) => { throw new Error(err); }
-      ).catch((err) => { throw new Error(err); });
+      );
   }
 
   async submitData() {
