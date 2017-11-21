@@ -86,9 +86,9 @@ describe('date service', () => {
       const result1 = dateService.formatDateFromRequest(requestMock, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
       const result2 = dateService.formatDateFromRequest(requestMock, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
       const result3 = dateService.formatDateFromRequest(requestMock, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
-      expect(result1.toString()).toBe('Sat Nov 10 2018 00:00:00 GMT+0000 (GMT)')
-      expect(result2.toString()).toBe('Sun Dec 09 2018 00:00:00 GMT+0000 (GMT)')
-      expect(result3.toString()).toBe('Mon Dec 10 2018 00:00:00 GMT+0000 (GMT)')
+      expect(result1.toISOString()).toBe('2018-11-10T00:00:00.000Z')
+      expect(result2.toISOString()).toBe('2018-12-09T00:00:00.000Z')
+      expect(result3.toISOString()).toBe('2018-12-10T00:00:00.000Z')
     })
   })
 

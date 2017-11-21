@@ -88,13 +88,9 @@ const checkFormService = {
    */
   formatCheckFormsAndWindows: async (sortField, sortDirection) => {
     let formData
-    let forms
-
-    forms = await checkFormDataService.fetchSortedActiveForms({}, sortField, sortDirection)
-    if (forms) {
-      formData = forms.map(e => { return e.toJSON() })
+    formData = await checkFormDataService.fetchSortedActiveForms({}, sortField, sortDirection)
+    if (formData.length > 0) {
       const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-
       formData.forEach(f => {
         f.removeLink = true
         if (checkWindows[f._id]) {

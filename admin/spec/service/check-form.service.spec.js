@@ -11,7 +11,9 @@ const CheckForm = require('../../models/check-form')
 const checkFormMock = require('../mocks/check-form')
 const checkFormsMock = require('../mocks/check-forms')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
+const checkWindowMock = require('../mocks/check-window-2')
 const checkWindowsMock = require('../mocks/check-windows')
+const checkWindowByForm = require('../mocks/check-window-by-form')
 
 describe('check-form.service', () => {
   let service
@@ -85,41 +87,52 @@ describe('check-form.service', () => {
     })
   })
 
-  describe('#formatCheckFormsAndWindows() - Happy path', () => {
+  describe('#formatCheckFormsAndWindows()', () => {
     let checkFormDataServiceStub
     let checkWindowServiceStub
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       checkFormDataServiceStub = sandbox.stub(checkFormDataService, 'fetchSortedActiveForms')
       checkWindowServiceStub = sandbox.stub(checkWindowService, 'getCheckWindowsAssignedToForms')
       sandbox.mock(checkFormService).expects('formatCheckFormsAndWindows').resolves(checkFormsFormattedMock)
       service = proxyquire('../../services/check-form.service', {
-        '../services/check-form.service': checkFormService,
-        '../services/data-access/check-form.data.service': checkFormDataService,
-        '../services/check-window.service': checkWindowService
+        '../../services/check-form.service': checkFormService,
+        '../../services/data-access/check-form.data.service': checkFormDataService,
+        '../../services/check-window.service': checkWindowService
       })
     })
 
-    afterEach(() => sandbox.restore())
-
-    xit('should return a formatted list of check forms and windows', async (done) => {
-      checkFormDataServiceStub.resolves(checkFormsMock).resolves(checkFormsMock)
-      checkWindowServiceStub.resolves(checkWindowsMock).resolves(checkWindowsMock)
-      try {
-        const results = await service.formatCheckFormsAndWindows('name', 'asc')
-        console.log('RESULTS', results)
-        // const results = await service.formatCheckFormsAndWindows()
-        // expect('not expected to throw').toBe('error')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('CheckForm not found')
-      }
+    it('should return a formatted list of check forms and windows', async (done) => {
+      checkFormDataServiceStub.resolves(checkFormsMock)
+      checkWindowServiceStub.resolves(checkWindowsMock)
+      const results = await service.formatCheckFormsAndWindows('name', 'asc')
+      expect(results[0].name).toBe('MTC0100')
+      expect(results[0].isDeleted).toBe(false)
+      expect(results[0].questions.length).toBe(3)
+      expect(results[0].removeLink).toBe(true)
+      expect(results[0].checkWindows.length).toBe(0)
       done()
     })
   })
 
-  describe('#unassignedCheckFormsFromCheckWindows() - Happy path', () => {
+  describe('#unassignedCheckFormsFromCheckWindows()', () => {
+    let checkFormServiceStub
 
+    beforeEach(() => {
+      checkFormServiceStub = sandbox.stub(checkFormService, 'unassignedCheckFormsFromCheckWindows')
+      service = proxyquire('../../services/check-form.service', {
+        '../../services/check-form.service': checkFormService
+      })
+    })
+
+    xit('should return a formatted list of check forms and windows', async (done) => {
+      checkFormServiceStub.resolves([])
+      const results = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
+      console.log('checkWindowMock', checkWindowMock)
+      console.log('checkWindowByForm', checkWindowByForm)
+      console.log('RESULTS', results)
+      expect(checkFormServiceStub.called).toBeTruthy()
+      done()
+    })
   })
 })

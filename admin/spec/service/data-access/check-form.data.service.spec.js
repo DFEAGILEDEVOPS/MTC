@@ -64,7 +64,7 @@ describe('checkWindowDataService', () => {
 
     it('should fetch check form documents', async () => {
       const results = await service.fetchSortedActiveForms({}, 'name', 'asc')
-      console.log('RESULTS', results)
+      //console.log('RESULTS', results)
       expect(mock.verify()).toBe(true)
     })
   })
