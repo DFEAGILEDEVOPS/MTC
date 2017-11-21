@@ -8,7 +8,7 @@ const { ObjectId } = require('mongoose').Types
 require('sinon-mongoose')
 
 const checkWindowMock = require('../mocks/check-window')
-const checkFormMock = require('../mocks/checkform')
+const checkFormMock = require('../mocks/check-form')
 const Check = require('../../models/check')
 
 describe('check-start.service', () => {
@@ -22,8 +22,8 @@ describe('check-start.service', () => {
       pupilId = ObjectId()
 
       return proxyquire('../../services/check-start.service', {
-        '../services/check-window.service': {
-          getCurrentCheckWindow: jasmine.createSpy().and.callFake(
+        '../services/data-access/check-window.data.service': {
+          fetchCurrentCheckWindow: jasmine.createSpy().and.callFake(
             function () { return Promise.resolve(checkWindowMock) }
           )
         },
