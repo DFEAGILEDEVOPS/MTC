@@ -49,6 +49,22 @@ describe('check.data.service', () => {
     })
   })
 
+  describe('#findLatestCheckByPupilId', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check).expects('findOne').chain('sort').chain('lean').chain('exec').resolves(checkMock)
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('should makes the expecte call', () => {
+      service.findLatestCheckByPupilId({'_id': '01234'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
   describe('#findFullyPopulated', () => {
     let mock
 

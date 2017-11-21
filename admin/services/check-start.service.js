@@ -4,7 +4,7 @@ const uuidv4 = require('uuid/v4')
 const moment = require('moment')
 const Check = require('../models/check')
 const checkFormService = require('../services/check-form.service')
-const checkWindowService = require('../services/check-window.service')
+const checkWindowDataService = require('../services/data-access/check-window.data.service')
 
 const checkStartService = {
   /**
@@ -14,7 +14,7 @@ const checkStartService = {
    */
   startCheck: async function (pupilId) {
     // Get the current checkWindow, throw an error if there is no window available
-    const checkWindow = await checkWindowService.getCurrentCheckWindow()
+    const checkWindow = await checkWindowDataService.fetchCurrentCheckWindow()
 
     // Allocate a checkForm to a pupil, or will throw an error
     const checkForm = await checkFormService.allocateCheckForm()
@@ -27,7 +27,7 @@ const checkStartService = {
     // TODO: move this to data-access service
     const found = await Check.findOne({checkCode}).lean().exec()
     if (found) {
-      throw new Error(`Failed to generate a unique UUID for the check code.  Pupil [${pupilId}]`)
+      throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
     }
     // Save the details to the `Check` collection
     const check = new Check({
