@@ -45,16 +45,25 @@ if (unsetVars.length > 0) {
 }
 
 mongoose.promise = global.Promise
+
 if (process.env.NODE_ENV !== 'production') {
   mongoose.set('debug', true)
 }
+
 const connectionString = config.MONGO_CONNECTION_STRING
-mongoose.connect(connectionString, function (err) {
-  if (err) {
-    throw new Error('Could not connect to mongodb: ' + err.message)
-  }
+mongoose.connect(connectionString, {
+  keepAlive: true,
+  reconnectTries: 120,
+  // set the delay between every retry (milliseconds)
+  reconnectInterval: 1000,
+  useMongoClient: true
 })
+
 autoIncrement.initialize(mongoose.connection)
+
+if (process.env.NODE_ENV !== 'production') {
+  mongoose.set('debug', true)
+}
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
