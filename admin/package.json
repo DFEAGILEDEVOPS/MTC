@@ -4,13 +4,14 @@
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
-    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
-    "start": "node ./server.js",
-    "postinstall": "gulp build",
-    "test": "nyc -r html ./run-jasmine.js",
     "coverage": "nyc -r text -r html ./run-jasmine.js",
+    "lint": "standard",
+    "postinstall": "gulp build",
+    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
+    "sasswatch": "gulp watch",
+    "start": "node ./server.js",
     "startn": "nodemon ./server.js",
-    "sasswatch": "gulp watch"
+    "test": "nyc -r html ./run-jasmine.js"
   },
   "engines": {
     "node": ">= 8.4"
@@ -35,14 +36,6 @@
     "express-validator": "^3.2.0",
     "fast-csv": "^2.4.1",
     "fs-extra": "^4.0.2",
-    "govuk-elements-sass": "^3.1.2",
-    "govuk_template_ejs": "^0.19.2",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-sass": "^3.1.0",
-    "gulp-standard": "^10.1.1",
-    "gulp-uglify": "^3.0.0",
     "helmet": "^3.9.0",
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^7.4.3",
@@ -59,6 +52,7 @@
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "piping": "^1.0.0-rc.4",
+    "qrcode": "^0.9.0",
     "ramda": "^0.25.0",
     "serve-favicon": "^2.4.5",
     "uuid": "^3.1.0",
@@ -66,6 +60,13 @@
     "xregexp": "^3.2.0"
   },
   "devDependencies": {
+    "govuk-elements-sass": "^3.1.2",
+    "govuk_template_ejs": "^0.19.2",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^3.0.0",
     "jasmine": "^2.8.0",
     "jasmine-console-reporter": "^2.0.1",
     "jsdoc": "^3.5.5",
