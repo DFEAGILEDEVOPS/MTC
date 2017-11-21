@@ -95,29 +95,4 @@ describe('check-form schema', function () {
       done()
     })
   })
-
-  it('has a method to mark a form as deleted', function (done) {
-    expect(typeof checkForm.markAsDeleted).toBe('function')
-    done()
-  })
-
-  it('marking the form as deleted returns a promise', function (done) {
-    checkForm.markAsDeleted()
-      .then(res => {
-        done()
-      },
-      error => {
-        done(error)
-      })
-  })
-
-  it('marking the form as deleted rejects the promise if it doesnt get a CheckWindow model in arg1', function (done) {
-    checkForm.markAsDeleted()
-      .then(data => {
-        done(new Error('Promise resolved when it was expected to fail'))
-      },
-      () => {
-        done() // success
-      })
-  })
 })
