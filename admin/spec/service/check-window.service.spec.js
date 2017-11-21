@@ -2,56 +2,18 @@
 /* global describe expect it beforeEach */
 
 const proxyquire = require('proxyquire').noCallThru()
-
-const MongooseModelMock = require('../mocks/mongoose-model-mock')
 const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
+const checkWindowsService = require('../../services/check-window.service')
 
 describe('check-window.service', () => {
   let service = require('../../services/check-window.service')
 
-  function setupService (cb) {
+  function setupService () {
     return proxyquire('../../services/check-window.service', {
-      '../models/check-window': new MongooseModelMock(cb)
+      '../../services/check-window.service': checkWindowsService
     })
   }
-
-  describe('#getCurrentCheckWindow', () => {
-    it('should return a current check window', async (done) => {
-      service = setupService(function () { return Promise.resolve(checkWindowMock) })
-      let win
-      try {
-        win = await service.getCurrentCheckWindow()
-      } catch (error) {
-        expect('not expect to throw').toBe('error')
-      }
-      expect(win).toBeDefined()
-      done()
-    })
-
-    it('throws an error when the check window find throws an error', async (done) => {
-      service = setupService(function () { return Promise.reject(new Error('mock error')) })
-      try {
-        await service.getCurrentCheckWindow()
-        expect('expected to throw').toBe('error')
-      } catch (error) {
-        expect(error).toBeDefined()
-      }
-      done()
-    })
-
-    it('throws an error when it doesn\'t find anything', async (done) => {
-      service = setupService(function () { return Promise.resolve(null) })
-      try {
-        await service.getCurrentCheckWindow()
-        expect('expected to throw').toBe('error')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('No checkwindow is currently available')
-      }
-      done()
-    })
-  })
 
   describe('formatCheckWindowDocuments', () => {
     beforeEach(() => {
@@ -83,5 +45,15 @@ describe('check-window.service', () => {
     })
   })
 
-  // @TODO: To be finished
+  describe('getCheckWindowsAssignedToForms', () => {
+    xit('should return check windows assigned to passed form', () => {
+      console.log('To be done after refactoring the service method')
+    })
+  })
+
+  describe('markAsDeleted', () => {
+    xit('should mark form as soft deleted if no check window was assigned or has not started', () => {
+      console.log('To be done after refactoring the service method')
+    })
+  })
 })

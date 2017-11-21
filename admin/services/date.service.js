@@ -49,6 +49,36 @@ const dateService = {
       return ''
     }
     return m.format(format)
+  },
+  /**
+   * Format check windows dates.
+   * @param dateItem
+   * @param keyDay
+   * @param keyMonth
+   * @param keyYear
+   * @returns {Date}
+   */
+  formatDateFromRequest: (dateItem, keyDay, keyMonth, keyYear) => {
+    return moment.utc(
+      '' + dateItem[keyDay] +
+      '/' + dateItem[keyMonth] +
+      '/' + dateItem[keyYear],
+      'D/MM/YYYY').toDate()
+  },
+  /**
+   * Format check period (start and end dates).
+   * @param startDate
+   * @param endDate
+   * @returns {string}
+   */
+  formatCheckPeriod: (startDate, endDate) => {
+    let startYear = ' ' + startDate.format('YYYY')
+    let endYear = ' ' + endDate.format('YYYY')
+
+    if (startYear === endYear) {
+      startYear = ''
+    }
+    return startDate.format('D MMM') + startYear + ' to ' + endDate.format('D MMM YYYY')
   }
 }
 
