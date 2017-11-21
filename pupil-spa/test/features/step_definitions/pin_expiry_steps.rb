@@ -86,3 +86,14 @@ When(/^I completed the check anyway$/) do
   check_page.complete_check_with_correct_answers(@questions.size, 'numpad')
   expect(complete_page).to have_completion_text
 end
+
+When(/^I start the check$/) do
+  warm_up_page.start_now.click
+  @time = Time.now
+end
+
+Then(/^I should see the check start time is recorded$/) do
+  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  check_start_time = Time.parse(local_storage.select {|a| a['type'] == 'CheckStarted'}.first['clientTimestamp'])
+  expect((check_start_time - @time).to_i).to eql 0
+end

@@ -18,3 +18,8 @@ Feature:
     Given I have lost my local storage
     When I completed the check anyway
     Then I should see a check start failure event recorded in the audit log
+
+  Scenario: Check start time is recorded
+    Given I am on the warm up complete page using a real pupil
+    When I start the check
+    Then I should see the check start time is recorded
