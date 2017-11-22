@@ -10,27 +10,22 @@ const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 
 const getAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add single pupil'
   // school id from session
   const schoolId = req.user.School
-  let school
-
-  try {
-    school = await School.findOne({_id: schoolId}).exec()
-    if (!school) {
-      throw new Error(`School [${schoolId}] not found`)
-    }
-  } catch (error) {
-    return next(error)
+  const school = await schoolDataService.findOne({_id: schoolId})
+  if (!school) {
+    throw new Error(`School [${schoolId}] not found`)
   }
 
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
-      school: school.toJSON(),
+      school: school,
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs()
     })

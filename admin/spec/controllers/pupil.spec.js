@@ -14,6 +14,8 @@ const fileValidator = require('../../lib/validator/file-validator')
 const pupilUploadService = require('../../services/pupil-upload.service')
 const ValidationError = require('../../lib/validation-error')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
+const schoolDataService = require('../../services/data-access/school.data.service')
+const schoolMock = require('../mocks/school');
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -33,6 +35,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
+    let schoolDataServiceSpy
     let goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add',
@@ -51,10 +54,11 @@ describe('pupil controller:', () => {
     })
 
     describe('when the school is found in the database', () => {
+
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({name: 'Test School'}))
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
       })
 
@@ -64,6 +68,7 @@ describe('pupil controller:', () => {
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
+        expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
       })
 
@@ -80,17 +85,21 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(null)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
       })
 
       it('it throws an error', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
-        expect(next).toHaveBeenCalled()
+        try {
+          await controller(req, res, next)
+          expect('this').toBe('thrown')
+        } catch (error) {
+          expect(error.message).toBe('School [9991999] not found')
+        }
         expect(res.statusCode).toBe(200)
         done()
       })
