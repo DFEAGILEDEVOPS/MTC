@@ -4,6 +4,7 @@ import { MockBackend } from '@angular/http/testing';
 
 import { SubmissionService } from './submission.service';
 import { StorageService } from '../storage/storage.service';
+import { AuditService } from '../audit/audit.service';
 
 let mockBackend: MockBackend;
 let submissionService: SubmissionService;
@@ -20,7 +21,8 @@ describe('SubmissionService', () => {
       providers: [
         SubmissionService,
         { provide: XHRBackend, useClass: MockBackend },
-        StorageService
+        StorageService,
+        AuditService
       ]
     });
     storageService = injector.get(StorageService);

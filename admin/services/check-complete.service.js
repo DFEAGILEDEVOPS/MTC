@@ -16,7 +16,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   const decoded = jwtService.decode(completedCheck.data['access_token'])
   const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
   // If pin expiration request failed previously ensure it is updated now
-  if (pupil && pupil.pin) {
+  if (pupil && pupil.pin && !pupil.isTestAccount) {
     await pupilDataService.update(pupil._id, { pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request

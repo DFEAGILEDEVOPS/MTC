@@ -38,12 +38,12 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
     // console.log(`warmup-complete(): onClick called()`);
     this.submissionService.submitCheckStartData()
       .then(() => {
-        this.auditService.addEntry(new CheckStartedApiCalled());
         this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-      })
-      .catch(() => {
         this.auditService.addEntry(new CheckStartedApiCalled());
-        this.auditService.addEntry(new CheckStartedAPICallFailed());
+      })
+      .catch((error) => {
+        this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText, }));
+        this.auditService.addEntry(new CheckStartedApiCalled());
       });
     this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
