@@ -116,22 +116,20 @@ describe('check-form.service', () => {
   })
 
   describe('#unassignedCheckFormsFromCheckWindows()', () => {
-    let checkFormServiceStub
-
+    let mock
     beforeEach(() => {
-      checkFormServiceStub = sandbox.stub(checkFormService, 'unassignedCheckFormsFromCheckWindows')
+      mock = sandbox.mock(checkFormService).expects('unassignedCheckFormsFromCheckWindows').returns(checkFormsFormattedMock)
       service = proxyquire('../../services/check-form.service', {
         '../../services/check-form.service': checkFormService
       })
     })
 
-    xit('should return a formatted list of check forms and windows', async (done) => {
-      checkFormServiceStub.resolves([])
+    it('should return a formatted list of check forms and windows', async (done) => {
       const results = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
       console.log('checkWindowMock', checkWindowMock)
       console.log('checkWindowByForm', checkWindowByForm)
       console.log('RESULTS', results)
-      expect(checkFormServiceStub.called).toBeTruthy()
+      expect(mock.verify()).toBe(true)
       done()
     })
   })
