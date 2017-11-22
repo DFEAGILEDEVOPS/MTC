@@ -2,12 +2,9 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../storage/storage.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/retryWhen';
-import 'rxjs/add/operator/mergeMap';
 
 @Injectable()
 export class SubmissionService {
@@ -24,11 +21,7 @@ export class SubmissionService {
     await this.http.post(`${environment.apiURL}/api/check-started`,
       { checkCode, accessToken },
       requestArgs)
-      .retryWhen((errors) => {
-        return errors.mergeMap((error) =>
-          (error.status !== 503 && error.status !== 504) ? Observable.throw(error) : Observable.of(error))
-          .delay(apiErrorDelay).take(apiErrorMaxAttempts);
-      })
+      .retryWhen(errors => errors.delay(apiErrorDelay).take(apiErrorMaxAttempts))
       .toPromise()
       .then((response) => {
           if (response.status !== 201) {
