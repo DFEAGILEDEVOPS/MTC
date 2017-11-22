@@ -42,7 +42,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
         this.auditService.addEntry(new CheckStartedApiCalled());
       })
       .catch((error) => {
-        this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText, }));
+        this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText }));
         this.auditService.addEntry(new CheckStartedApiCalled());
       });
     this.auditService.addEntry(new CheckStarted());
