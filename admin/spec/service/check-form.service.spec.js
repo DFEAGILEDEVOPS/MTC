@@ -116,20 +116,16 @@ describe('check-form.service', () => {
   })
 
   describe('#unassignedCheckFormsFromCheckWindows()', () => {
-    let mock
     beforeEach(() => {
-      mock = sandbox.mock(checkFormService).expects('unassignedCheckFormsFromCheckWindows').returns(checkFormsFormattedMock)
       service = proxyquire('../../services/check-form.service', {
         '../../services/check-form.service': checkFormService
       })
     })
 
-    it('should return a formatted list of check forms and windows', async (done) => {
-      const results = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
-      console.log('checkWindowMock', checkWindowMock)
-      console.log('checkWindowByForm', checkWindowByForm)
-      console.log('RESULTS', results)
-      expect(mock.verify()).toBe(true)
+    it('should return a promise', async (done) => {
+      const result = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
+      expect(checkWindowByForm[checkWindowMock._id].length).toBe(1)
+      expect(result).toBeTruthy()
       done()
     })
   })

@@ -123,7 +123,7 @@ const checkFormService = {
       })
       // Update any changed check windows
       const promises = modifiedCheckWindows.map(cw => { cw.save() })
-      await Promise.all(promises)
+      return Promise.all(promises)
     }
   }
 }
