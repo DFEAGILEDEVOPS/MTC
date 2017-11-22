@@ -65,11 +65,12 @@ const dateService = {
       '/' + dateItem[keyYear],
       'D/MM/YYYY')
   },
+
   /**
-   * Format check period (start and end dates).
+   * Format period (start and end dates)
    * @param startDate
    * @param endDate
-   * @returns {string}
+   * @returns {string} E.g. "1 Nov to 20 Nov 2017" or "1 Dec 2016 to 1 Jan 2017"
    */
   formatCheckPeriod: (startDate, endDate) => {
     let startYear = ' ' + startDate.format('YYYY')
