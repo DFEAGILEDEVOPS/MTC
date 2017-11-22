@@ -4,6 +4,7 @@ Index: 0
 Author: Guy Harwood
 Date: 22/11/2017 12:32
 */
+
 CREATE DATABASE [mtc]
 GO
 
@@ -380,8 +381,4 @@ ALTER TABLE [dbo].[user]  WITH CHECK ADD  CONSTRAINT [user_role_id_fk] FOREIGN K
 REFERENCES [dbo].[role] ([id])
 GO
 ALTER TABLE [dbo].[user] CHECK CONSTRAINT [user_role_id_fk]
-GO
-USE [master]
-GO
-ALTER DATABASE [mtc] SET READ_WRITE 
 GO
