@@ -63,7 +63,7 @@ const dateService = {
       '' + dateItem[keyDay] +
       '/' + dateItem[keyMonth] +
       '/' + dateItem[keyYear],
-      'D/MM/YYYY').toDate()
+      'D/MM/YYYY')
   },
   /**
    * Format check period (start and end dates).
