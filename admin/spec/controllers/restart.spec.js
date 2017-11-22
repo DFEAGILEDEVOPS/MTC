@@ -37,7 +37,7 @@ describe('restart controller:', () => {
       sandbox.restore()
     })
 
-    it('displays the restart overview page when redirected from home page', async (done) => {
+    it('displays the restart overview page', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getRestartOverview
@@ -67,7 +67,7 @@ describe('restart controller:', () => {
       sandbox.restore()
     })
 
-    it('displays the restart overview page when redirected from home page', async (done) => {
+    it('displays the restart pupils list page', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
