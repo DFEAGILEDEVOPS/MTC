@@ -96,4 +96,14 @@ pupilDataService.updateMultiple = async function (pupils) {
   return savedPupils
 }
 
+/**
+ * Create a new Pupil
+ * @param data
+ * @return {Promise}
+ */
+pupilDataService.save = async function (data) {
+  const pupil = new Pupil(data)
+  return pupil.save()
+}
+
 module.exports = pupilDataService
