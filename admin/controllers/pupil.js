@@ -76,7 +76,7 @@ const postAddPupil = async (req, res, next) => {
   }
   try {
     await pupil.save()
-    req.flash('info', 'Changes to pupil details have been saved')
+    req.flash('info', '1 new pupil has been added')
   } catch (error) {
     next(error)
   }
