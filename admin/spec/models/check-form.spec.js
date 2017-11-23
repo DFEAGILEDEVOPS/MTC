@@ -94,22 +94,4 @@ describe('check-form schema', function () {
       done()
     })
   })
-
-  describe('check-form schema', function () {
-    let sandbox
-    let mock
-    let next
-
-    beforeEach(function () {
-      next = jasmine.createSpy('next')
-      spyOn(CheckForm, 'buildCheckFormName').and.returnValue(Promise.resolve({}))
-    })
-
-    xit('should create a name following the rules during \'save\' pre-hook', async function (done) {
-      buildCheckFormName(saveSpy)
-      expect(buildCheckFormName).toHaveBeenCalled()
-      expect(next).toHaveBeenCalled()
-      done()
-    })
-  })
 })
