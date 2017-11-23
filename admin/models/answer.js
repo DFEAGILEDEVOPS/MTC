@@ -18,7 +18,7 @@ const Answer = new Schema({
   pupil: {type: Schema.Types.ObjectId, ref: 'Pupil', required: true},
   school: {type: Number, ref: 'School', required: true},
   isElectron: {type: Boolean, default: false},
-  creationDate: {type: Date, default: Date.now},
+  creationDate: { type: Date },
   answers: [{
     _id: false,
     pageLoadDate: {type: Date, required: false},

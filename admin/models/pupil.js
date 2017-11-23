@@ -76,6 +76,10 @@ const Pupil = new Schema({
     required: false,
     ref: 'AttendanceCode'
   },
+  isTestAccount: {
+    type: Boolean,
+    default: false
+  },
   checkOptions: {
     type: checkOptionsSchema,
     required: false,
