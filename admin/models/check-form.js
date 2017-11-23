@@ -10,7 +10,7 @@ const PREFIX = 'MTC'
  * NB: name will be overwritten
  */
 const CheckForm = new Schema({
-  _id: String,
+  _id: Number,
   name: {type: String},
   questions: {
     type: [{
