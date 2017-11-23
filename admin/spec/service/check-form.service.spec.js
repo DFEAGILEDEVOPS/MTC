@@ -20,7 +20,7 @@ describe('check-form.service', () => {
   let sandbox
 
   beforeEach(() => { sandbox = sinon.sandbox.create() })
-  afterEach(() => sandbox.restore())
+  afterEach(() => { sandbox.restore() })
 
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {

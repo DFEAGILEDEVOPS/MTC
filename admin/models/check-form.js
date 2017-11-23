@@ -2,7 +2,6 @@
 
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const autoIncrement = require('mongoose-auto-increment')
 
 mongoose.Promise = global.Promise
 const PREFIX = 'MTC'
@@ -11,6 +10,7 @@ const PREFIX = 'MTC'
  * NB: name will be overwritten
  */
 const CheckForm = new Schema({
+  _id: String,
   name: {type: String},
   questions: {
     type: [{
@@ -37,21 +37,16 @@ const CheckForm = new Schema({
   }
 }, {timestamps: true})
 
-// Make the `id` an incrementing number
-CheckForm.plugin(autoIncrement.plugin, { model: 'CheckForm', startAt: 1 })
-
-CheckForm.pre('save', function (next) {
+CheckForm.pre('save', async function (next) {
   if (!this._id) {
-    throw new Error('Missing _id field')
+    // @TODO: There may be a more efficient way to solve the auto-increment.
+    const latestDocument = await this.constructor.findOne({}).sort({ '_id': 'desc' }).exec()
+    const latestId = latestDocument._id || 0
+    this._id = parseInt(latestId) + 1
   }
-  let paddedId = pad(4, this._id)
-  this.name = PREFIX + paddedId
+  let id = this._id.toString()
+  this.name = PREFIX + id.padStart(4, '0')
   next()
 })
 
 module.exports = mongoose.model('CheckForm', CheckForm)
-
-function pad (paddingLen, id) {
-  let padding = '0'.repeat(paddingLen - 1)
-  return ('' + padding + id).slice(-1 * Math.max(paddingLen, id.toString().length))
-}
