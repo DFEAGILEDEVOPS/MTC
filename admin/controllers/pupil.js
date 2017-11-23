@@ -31,6 +31,7 @@ controller.getAddPupil = async (req, res, next, error = null) => {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
       school: school,
+      formData: req.body,
       error: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
     })
@@ -94,7 +95,9 @@ controller.postAddPupil2 = async (req, res, next) => {
     lastName: req.body.lastName,
     middleNames: req.body.middleNames,
     gender: req.body.gender,
-    dob: moment.utc('' + req.body[ 'dob-day' ] + '/' + req.body[ 'dob-month' ] + '/' + req.body[ 'dob-year' ], 'DD/MM/YYYY'),
+    'dob-month': req.body['dob-month'],
+    'dob-day': req.body['dob-day'],
+    'dob-year': req.body['dob-year'],
     pin: null,
     pinExpired: false
   }
