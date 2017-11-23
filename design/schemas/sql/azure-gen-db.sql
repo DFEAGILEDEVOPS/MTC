@@ -82,10 +82,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[checkForm](
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [nvarchar](max) NOT NULL,
-	[isDeleted] [bit] NOT NULL,
 	[createdAt] [datetime2](7) NOT NULL,
 	[updatedAt] [datetime2](7) NULL,
+	[name] [nvarchar](max) NOT NULL,
+	[isDeleted] [bit] NOT NULL,
 	[checkWindow_id] [int] NULL,
  CONSTRAINT [PK_checkForm] PRIMARY KEY CLUSTERED 
 (
@@ -298,10 +298,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[settings](
 	[id] [tinyint] NOT NULL,
+		[createdAt] [datetime2](7) NOT NULL,
+	[updatedAt] [datetime2](7) NULL,
 	[loadingTimeLimit] [tinyint] NOT NULL,
 	[questionTimeLimit] [tinyint] NOT NULL,
-	[createdAt] [datetime2](7) NOT NULL,
-	[lastUpdatedAt] [datetime2](7) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
