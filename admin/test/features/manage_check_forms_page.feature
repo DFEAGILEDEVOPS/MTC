@@ -7,26 +7,6 @@ Feature:
   Background:
     Given I am logged in
 
-  Scenario: Manage check forms page has a title
-    Given I am on the manage check forms page
-    Then I should see a heading
-
-  Scenario: Manage check forms page has a option to choose a csv file
-    Given I am on the manage check forms page
-    Then I should have the option to choose a csv file
-
-  Scenario: Manage check forms page has a option to remove a csv file
-    Given I am on the manage check forms page
-    Then I should have the option to remove a csv file
-
-  Scenario: Manage check forms page has a option to upload a csv file
-    Given I am on the manage check forms page
-    Then I should have the option to upload a csv file
-
-  Scenario: Users can upload a csv file
-    Given I am on the manage check forms page
-    When I upload a csv file
-    Then it should be added to the list of forms
 
   Scenario: Users can remove a csv file that is ready to be uploaded
     Given I am ready to upload a csv file

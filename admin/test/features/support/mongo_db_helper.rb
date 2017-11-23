@@ -116,6 +116,13 @@ class MongoDbHelper
     result.first
   end
 
+  def self.check_form_details(check_form_name)
+    result = []
+    collection=CLIENT[:checkforms].find({'name': check_form_name})
+    collection.each {|a| result << a}
+    result.first
+  end
+
   def self.get_attendance_codes
     result = []
     collection=CLIENT[:attendancecodes]

@@ -11,21 +11,6 @@ Then(/^I should have the option to upload a csv file$/) do
   expect(manage_check_forms_page).to have_upload
 end
 
-When(/^I upload a csv file$/) do
-  @current_form_count = manage_check_forms_page.available_checks.rows.count
-  driver = page.driver.browser
-  driver.file_detector = lambda do |args|
-    str = args.first.to_s
-    str if File.exist?(str)
-  end if Capybara.current_driver.to_s.include? 'bs_'
-  page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Then(/^it should be added to the list of forms$/) do
-  wait_until{(manage_check_forms_page.available_checks.rows.count).eql?(@current_form_count + 1)}
-end
-
 Given(/^I am ready to upload a csv file$/) do
   step "I am on the manage check forms page"
   page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))

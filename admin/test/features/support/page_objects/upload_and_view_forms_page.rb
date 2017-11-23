@@ -8,12 +8,15 @@ class UploadAndViewFormsPage < SitePrism::Page
   elements :new_form_info_message, '.numeric-list li'
   element :download_form_example_template, '.numeric-list a', text: 'Download the example'
   element :chose_file, '#file-upload'
-  element :save, 'input[value="Upload"]'
+  element :upload, 'input[value="Upload"]'
   element :back, 'a.button-secondary'
+  element :check_form_title_column_heading, '#checkFormsList thead tr th:nth-child(1) a'
 
   element :upload_form_message, '#lead-paragraph'
   element :upload_new_form, 'a', text: 'Upload new form'
   section :phase_banner, PhaseBanner, '.phase-banner'
+
+  element :info_message, '.info-message'
 
   section :available_checks, '#checkFormsList' do
     sections :rows, 'tbody tr' do
@@ -21,7 +24,16 @@ class UploadAndViewFormsPage < SitePrism::Page
       element :assigned_to, 'td:nth-of-type(2)'
       element :uploaded_date, 'td:nth-of-type(3)'
       element :remove_form, 'a', text: 'Remove'
+      element :highlighted_row, '.highlight-item'
     end
+  end
+
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :content, '.modal-content p'
+    element :cancel, '.modal-cancel'
+    element :confirm, '.modal-confirm'
+
   end
 
 end
