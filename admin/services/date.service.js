@@ -80,7 +80,24 @@ const dateService = {
       startYear = ''
     }
     return startDate.format('D MMM') + startYear + ' to ' + endDate.format('D MMM YYYY')
+  },
+
+  /**
+   * Return a moment object from the a day, month and year. The time component will be zeroed out. Returns null if invalid.
+   * @param {number|string} day
+   * @param {number|string} month
+   * @param {number|string} year
+   * @return {Moment}
+   */
+  createFromDayMonthYear: (day, month, year) => {
+    const data = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year.toString()
+    const date = moment.utc(data, 'DD/MM/YYYY', true)
+    if (!date.isValid()) {
+      return null
+    }
+    return date
   }
+
 }
 
 module.exports = dateService
