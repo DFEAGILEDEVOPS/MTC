@@ -24,7 +24,6 @@ describe('CompletedChecks model', () => {
     check.receivedByServerAt = undefined
     check.validate(err => {
       expect(err).toBeDefined()
-      expect(err.message).toBe('completedChecks validation failed')
       expect(err.errors.receivedByServerAt).toBeDefined()
       done()
     })
