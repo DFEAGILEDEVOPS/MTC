@@ -71,7 +71,7 @@ class MongoDbHelper
     collection=CLIENT[:pupils].find({})
     result = []
     collection.each { |pupil| result << pupil }
-    result.select{|pupil| pupil['pinExpired'] == false && pupil['pin'] != nil}.first
+    result.select{|pupil| pupil['pin'] == nil}.first
   end
 
   def self.find_school(school_id)
@@ -150,4 +150,21 @@ class MongoDbHelper
     collection.find.count
   end
 
+
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,newTime)
+    CLIENT[:pupils].update_one({'foreName': forename, 'lastName': lastname, 'school': school_id.to_i},
+                               {'$set' => {'pinExpiresAt' => newTime}})
+  end
+
+  def self.set_school_pin_expiry(estab_code,newTime)
+    CLIENT[:schools].update_one({'estabCode': estab_code},
+                                {'$set' => {'pinExpiresAt' => newTime}})
+  end
+
+  def self.find_pupil_from_school(first_name, school_id)
+    collection=CLIENT[:pupils].find({foreName: first_name, school: school_id.to_i})
+    result = []
+    collection.each {|pupil| result << pupil}
+    result.first
+  end
 end

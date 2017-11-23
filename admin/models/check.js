@@ -34,6 +34,9 @@ const Check = new Schema({
     type: Date,
     required: true
   },
+  checkStartedAt: {
+    type: Date
+  },
   results: {
     type: {
       _id: false,
