@@ -48,7 +48,6 @@ Feature: Upload and View Forms
     When I click on the check form title heading
     Then I should see on the check forms are displayed in descending order of form name
 
-  @local
   Scenario: Users can remove a csv file that is ready to be uploaded
     Given I am ready to upload a csv file
     But I have removed it
