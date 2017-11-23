@@ -1,7 +1,6 @@
 Feature:
   Pin expiry after check has started
 
-
   Scenario: Pin is not expired when pupil is on the practice complete page
     Given I am on the warm up complete page using a real pupil
     Then I should still have a valid pin
