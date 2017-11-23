@@ -1,8 +1,9 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
-const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
+const restartService = require('../../services/restart.service')
+
 require('sinon-mongoose')
 
 describe('restart controller:', () => {
@@ -12,7 +13,7 @@ describe('restart controller:', () => {
     return res
   }
 
-  function getReq(params) {
+  function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
@@ -51,16 +52,21 @@ describe('restart controller:', () => {
 
   describe('getSelectRestartList route', () => {
     let sandbox
+    let next
     let goodReqParams = {
       method: 'GET',
       url: '/restart/select-restart-list',
       session: {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      user: {
+        School: 9991001
       }
     }
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
+      next = jasmine.createSpy('next')
     })
 
     afterEach(() => {
@@ -72,9 +78,20 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      await controller(req, res)
+      spyOn(restartService, 'getPupils').and.returnValue(null)
+      await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('calls next if an error occurs within restart service', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/restart').getSelectRestartList
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(restartService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
       done()
     })
   })

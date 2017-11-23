@@ -174,6 +174,32 @@ $(function () {
   }
 
   /**
+   * Methods for 'Restarts'.
+   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}
+   */
+  var restarts = {
+    /**
+     * Is radio button checked?
+     * @returns {boolean}
+     */
+    isRadioChecked: function () {
+      var el = $('input:radio[name="restartReason"]:checked')
+      return el.length > 0
+    },
+    /**
+     * Is there at least one checkbox checked?
+     * @returns {boolean}
+     */
+    isCheckboxChecked: function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      return el.length > 0
+    },
+    validateForm: function () {
+      return restarts.isRadioChecked() && restarts.isCheckboxChecked()
+    }
+  }
+
+  /**
    * Page based implementations.
    */
   // @TODO: check forms are to be refactored next.
@@ -189,10 +215,13 @@ $(function () {
 
   if ($('#pupilsList').length > 0) {
     inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
+    inputStatus.toggleAllCheckboxes('#pupilsList', restarts.validateForm)
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
+    inputStatus.checkboxStatus('.multiple-choice-mtc', restarts.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
+    inputStatus.radioStatus('attendanceCode', restarts.validateForm)
   }
 
   if ($('#generatePins').length > 0) {
