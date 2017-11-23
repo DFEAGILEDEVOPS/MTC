@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckStarted } from '../services/audit/auditEntry';
+import { WarmupStarted } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-instructions',
@@ -29,7 +29,7 @@ export class InstructionsComponent implements OnInit {
   }
 
   onClick() {
-    this.auditService.addEntry(new CheckStarted());
+    this.auditService.addEntry(new WarmupStarted());
     this.router.navigate(['check']);
   }
 

@@ -1,4 +1,3 @@
-@local
 Feature: Test Developer Landing page
 
 
