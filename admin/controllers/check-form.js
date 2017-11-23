@@ -68,15 +68,15 @@ const uploadAndViewForms = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const CheckWindow = await checkFormDataService.getActiveForm(id)
-    if (!CheckWindow) {
+    const checkForm = await checkFormDataService.getActiveForm(id)
+    if (!checkForm) {
       return next(new Error(`Unable to find form.id [${id}]`))
     }
 
     // Un-assign check-form from any check-windows
     const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
-    await checkFormService.unassignedCheckFormsFromCheckWindows(CheckWindow, CheckWindowsByForm)
-    await checkWindowService.markAsDeleted(CheckWindow)
+    await checkFormService.unassignedCheckFormsFromCheckWindows(checkForm, CheckWindowsByForm)
+    await checkWindowService.markAsDeleted(checkForm)
   } catch (error) {
     return next(error)
   }
