@@ -39,7 +39,7 @@ const CheckForm = new Schema({
 
 CheckForm.pre('save', async function (next) {
   if (!this._id) {
-    // @TODO: There may be a more efficient way to solve the auto-increment.
+    // @TODO: Auto-increment will have a better solution once we move to SQL.
     const latestDocument = await this.constructor.findOne({}).sort({ '_id': 'desc' }).exec()
     const latestId = latestDocument._id || 0
     this._id = parseInt(latestId) + 1

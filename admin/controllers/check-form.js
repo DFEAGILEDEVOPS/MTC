@@ -70,7 +70,7 @@ const removeCheckForm = async (req, res, next) => {
   try {
     const checkForm = await checkFormDataService.getActiveForm(id)
     if (!checkForm) {
-      return next(new Error(`Unable to find form.id [${id}]`))
+      return next(new Error(`Unable to find check form with id [${id}]`))
     }
 
     // Un-assign check-form from any check-windows
