@@ -1,30 +1,3 @@
-
-Then(/^I should have the option to choose a csv file$/) do
-  expect(manage_check_forms_page).to have_choose_file
-end
-
-Then(/^I should have the option to remove a csv file$/) do
-  expect(manage_check_forms_page).to have_remove_upload
-end
-
-Then(/^I should have the option to upload a csv file$/) do
-  expect(manage_check_forms_page).to have_upload
-end
-
-Given(/^I am ready to upload a csv file$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
-end
-
-But(/^I have removed it$/) do
-  manage_check_forms_page.remove_upload.click
-  manage_check_forms_page.upload.click
-end
-
-Then(/^it should not be available to be uploaded$/) do
-  expect(manage_check_forms_page).to have_errors
-end
-
 Given(/^I have uploaded a check form$/) do
   step "I am on the manage check forms page"
   step "I upload a csv file"
@@ -114,72 +87,6 @@ end
 
 Then(/^check windows should have a end date$/) do
   choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.end_date.text).to_not be_empty}
-end
-
-Given(/^I attempt to upload a csv containing minus characters$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/minus-chars.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Then(/^I should see error messages stating why the csv has failed to upload$/) do
-  expect(manage_check_forms_page.errors).to be_all_there
-end
-
-Given(/^I attempt to upload a csv containing letters$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/letters.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing a header row$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/header-row.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing more than (\d+) columns$/) do |arg|
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/3-columns.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing numbers greater than 12$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/greater-than-12.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a file that is not a csv format$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/format.txt'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing decimal numbers$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/decimals.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing quotes around the row$/) do
-  step "I am on the manage check forms page"
-  page.attach_file('csvFile', File.expand_path('data/quotes-around-row.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing quotes around the column values$/) do
-  step "I am on the manage check forms page"
-  @current_form_count = manage_check_forms_page.available_checks.rows.count
-  page.attach_file('csvFile', File.expand_path('data/quotes-around-values.csv'))
-  manage_check_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing spaces around the column values$/) do
-  step "I am on the manage check forms page"
-  @current_form_count = manage_check_forms_page.available_checks.rows.count
-  page.attach_file('csvFile', File.expand_path('data/spaces.csv'))
-  manage_check_forms_page.upload.click
 end
 
 Then(/^I should be given the option to delete the form$/) do

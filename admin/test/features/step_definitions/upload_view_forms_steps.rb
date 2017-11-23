@@ -90,3 +90,82 @@ end
 When(/^I click on the check form title heading$/) do
   upload_and_view_forms_page.check_form_title_column_heading.click
 end
+
+Given(/^I attempt to upload a csv containing minus characters$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/minus-chars.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Then(/^I should see error messages stating why the csv has failed to upload$/) do
+  expect(upload_and_view_forms_page.errors).to be_all_there
+end
+
+Given(/^I attempt to upload a csv containing letters$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/letters.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing a header row$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/header-row.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing more than (\d+) columns$/) do |arg|
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/3-columns.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing numbers greater than 12$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/greater-than-12.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a file that is not a csv format$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/format.txt'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing decimal numbers$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/decimals.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing quotes around the row$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/quotes-around-row.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing quotes around the column values$/) do
+  @current_form_count = upload_and_view_forms_page.available_checks.rows.count
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/quotes-around-values.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I attempt to upload a csv containing spaces around the column values$/) do
+  @current_form_count = upload_and_view_forms_page.available_checks.rows.count
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('data/spaces.csv'))
+  upload_and_view_forms_page.upload.click
+end
+
+Given(/^I am ready to upload a csv file$/) do
+  step "I am on the Upload new forms page"
+  page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
+end
+
+But(/^I have removed it$/) do
+  upload_and_view_forms_page.remove_upload.click
+end
+
+Then(/^it should not be available to be uploaded$/) do
+  expect(upload_and_view_forms_page.upload.disabled?).to be_truthy, "File is not removed Or Upload button is not disabled"
+end

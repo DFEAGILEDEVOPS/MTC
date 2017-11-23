@@ -4,12 +4,13 @@ class UploadAndViewFormsPage < SitePrism::Page
   element :heading, '.heading-xlarge', text: 'Upload and view forms'
   element :new_form_heading, '.heading-xlarge', text: 'Upload new form'
   elements :new_form_sub_heading, '.heading-medium'
-
   elements :new_form_info_message, '.numeric-list li'
   element :download_form_example_template, '.numeric-list a', text: 'Download the example'
   element :chose_file, '#file-upload'
   element :upload, 'input[value="Upload"]'
   element :back, 'a.button-secondary'
+  element :remove_upload, 'input[value="Remove file"]'
+  element :error_message, '.error-message', text: 'A valid CSV file was not uploaded'
   element :check_form_title_column_heading, '#checkFormsList thead tr th:nth-child(1) a'
 
   element :upload_form_message, '#lead-paragraph'
@@ -34,6 +35,16 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :cancel, '.modal-cancel'
     element :confirm, '.modal-confirm'
 
+  end
+
+  section :errors, '.error-summary' do
+    element :title, 'h2.error-summary-heading'
+    element :criteria_intro, 'p', text: 'The form upload spreadsheet:'
+    element :csv_format_error, 'li', text: 'must be in CSV format'
+    element :two_column_error, 'li', text: 'must only contain 2 columns'
+    element :no_header_error, 'li', text: 'must not have a header row'
+    element :number_range_error, 'li', text: 'must only contain numbers between 1 and 12'
+    element :retry_upload, 'a[href="#file-upload"]', text: 'Please try uploading a file again'
   end
 
 end

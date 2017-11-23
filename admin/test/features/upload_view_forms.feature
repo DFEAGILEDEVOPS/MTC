@@ -48,4 +48,50 @@ Feature: Upload and View Forms
     When I click on the check form title heading
     Then I should see on the check forms are displayed in descending order of form name
 
+  @local
+  Scenario: Users can remove a csv file that is ready to be uploaded
+    Given I am ready to upload a csv file
+    But I have removed it
+    Then it should not be available to be uploaded
+
+  Scenario: Users are shown the errors if they try to upload a csv containing minus characters
+    Given I attempt to upload a csv containing minus characters
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing letters
+    Given I attempt to upload a csv containing letters
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing a header row
+    Given I attempt to upload a csv containing a header row
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing more than 2 columns
+    Given I attempt to upload a csv containing more than 2 columns
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing numbers greater than 12
+    Given I attempt to upload a csv containing numbers greater than 12
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a file that is not a csv format
+    Given I attempt to upload a file that is not a csv format
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing decimal numbers
+    Given I attempt to upload a csv containing decimal numbers
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are shown the errors if they try to upload a csv containing quotes around the row
+    Given I attempt to upload a csv containing quotes around the row
+    Then I should see error messages stating why the csv has failed to upload
+
+  Scenario: Users are able to upload a csv that has quotes around the values
+    Given I attempt to upload a csv containing quotes around the column values
+    Then I should see a flash message to state that new form is uploaded
+
+  Scenario: Users are able to upload a csv that has spaces around the values
+    Given I attempt to upload a csv containing spaces around the column values
+    Then I should see a flash message to state that new form is uploaded
+
 
