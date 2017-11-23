@@ -47,7 +47,7 @@ const jwtService = {
     }
 
     // This does not verify the signature is valid
-    const decoded = jwt.decode(token)
+    const decoded = jwtService.decode(token)
 
     // Find the pupil in the subject to retrieve the secret
     const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
@@ -67,7 +67,13 @@ const jwtService = {
     }
 
     return true
-  }
+  },
+  /**
+   * Decodes a token
+   * @param {String} token
+   * @return {Object}
+   */
+  decode: (token) => jwt.decode(token)
 }
 
 module.exports = jwtService
