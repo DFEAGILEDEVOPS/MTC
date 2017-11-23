@@ -1,7 +1,7 @@
 'use strict'
 
 const uuidv4 = require('uuid/v4')
-
+const moment = require('moment')
 const Check = require('../models/check')
 const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
@@ -29,14 +29,14 @@ const checkStartService = {
     if (found) {
       throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
     }
-
     // Save the details to the `Check` collection
     const check = new Check({
       pupilId,
       checkCode,
       checkWindowId: checkWindow._id,
       checkFormId: checkForm._id,
-      pupilLoginDate: new Date()
+      pupilLoginDate: moment.utc(),
+      checkStartedAt: null
     })
     await check.save()
 
