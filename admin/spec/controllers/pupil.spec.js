@@ -15,7 +15,9 @@ const pupilUploadService = require('../../services/pupil-upload.service')
 const ValidationError = require('../../lib/validation-error')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
-const schoolMock = require('../mocks/school');
+const schoolMock = require('../mocks/school')
+const pupilAddService = require('../../services/pupil-add-service')
+const pupilMock = require('../mocks/pupil')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -28,6 +30,7 @@ describe('pupil controller:', () => {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991999 }
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+    req.flash = jasmine.createSpy('flash')
     return req
   }
 
@@ -54,7 +57,6 @@ describe('pupil controller:', () => {
     })
 
     describe('when the school is found in the database', () => {
-
       beforeEach(() => {
         schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
@@ -452,6 +454,70 @@ describe('pupil controller:', () => {
       expect(res.write).toHaveBeenCalledWith('text')
       expect(res.end).toHaveBeenCalled()
       done()
+    })
+  })
+
+  describe('#postAddPupil2 refactor', () => {
+    let sandbox, controller, nextSpy, pupilAddServiceSpy, req, res
+    let goodReqParams = {
+      method: 'POST',
+      url: '/school/pupil/add',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      }
+    }
+
+    beforeEach(() => {
+      sandbox = sinon.createSandbox()
+      res = getRes()
+      req = getReq(goodReqParams)
+      nextSpy = sandbox.spy()
+    })
+
+    afterEach(() => { sandbox.restore() })
+
+    describe('the pupilData is saved', () => {
+      beforeEach(() => {
+        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
+        controller = proxyquire('../../controllers/pupil.js', {
+          '../services/pupil-add-service': pupilAddService
+        }).postAddPupil2
+      })
+
+      it('calls pupilAddService to add a new pupil to the database', async (done) => {
+        await controller(req, res, nextSpy)
+        expect(pupilAddServiceSpy.callCount).toBe(1)
+        done()
+      })
+
+      it('redirects to the pupil register page', async (done) => {
+        await controller(req, res, nextSpy)
+        expect(res.statusCode).toBe(302)
+        done()
+      })
+    })
+
+    describe('the pupilData is not saved', () => {
+      beforeEach(() => {
+        const validationError = new ValidationError()
+        validationError.addError('upn', 'Mock error')
+        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').throws(validationError)
+        controller = proxyquire('../../controllers/pupil.js', {
+          '../services/pupil-add-service': pupilAddService
+        })
+      })
+
+      it('then it shows the page again', async (done) => {
+        sandbox.stub(controller, 'getAddPupil').callsFake((req, res, next, error) => {
+          res.end('mock doc')
+          return Promise.resolve()
+        })
+        // console.log('controller', controller)
+        await controller.postAddPupil2(req, res, nextSpy)
+        expect(controller.getAddPupil.called).toBeTruthy()
+        expect(res.statusCode).toBe(200)
+        done()
+      })
     })
   })
 })

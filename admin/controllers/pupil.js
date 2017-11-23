@@ -1,3 +1,5 @@
+'use strict'
+
 const moment = require('moment')
 const School = require('../models/school')
 const Pupil = require('../models/pupil')
@@ -11,8 +13,11 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const schoolDataService = require('../services/data-access/school.data.service')
+const pupilAddService = require('../services/pupil-add-service')
 
-const getAddPupil = async (req, res, next) => {
+const controller = {}
+
+controller.getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add single pupil'
   // school id from session
   const schoolId = req.user.School
@@ -26,7 +31,7 @@ const getAddPupil = async (req, res, next) => {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
       school: school,
-      error: new ValidationError(),
+      error: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
     })
   } catch (error) {
@@ -34,7 +39,7 @@ const getAddPupil = async (req, res, next) => {
   }
 }
 
-const postAddPupil = async (req, res, next) => {
+controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   req.breadcrumbs(res.locals.pageTitle)
   let school
@@ -79,7 +84,34 @@ const postAddPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
-const getAddMultiplePupils = (req, res, next) => {
+controller.postAddPupil2 = async (req, res, next) => {
+  res.locals.pageTitle = 'Add pupil'
+  req.breadcrumbs(res.locals.pageTitle)
+  const pupilData = {
+    school: req.body.school,
+    upn: req.body.upn && req.body.upn.trim().toUpperCase(),
+    foreName: req.body.foreName,
+    lastName: req.body.lastName,
+    middleNames: req.body.middleNames,
+    gender: req.body.gender,
+    dob: moment.utc('' + req.body[ 'dob-day' ] + '/' + req.body[ 'dob-month' ] + '/' + req.body[ 'dob-year' ], 'DD/MM/YYYY'),
+    pin: null,
+    pinExpired: false
+  }
+  try {
+    const pupil = await pupilAddService.addPupil(pupilData)
+    req.flash('info', '1 new pupil has been added')
+    const json = JSON.stringify([pupil._id])
+    res.redirect(`/school/pupil-register/lastName/true?hl=${json}`)
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return controller.getAddPupil(req, res, next, error)
+    }
+    next(error)
+  }
+}
+
+controller.getAddMultiplePupils = (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
   try {
@@ -95,7 +127,7 @@ const getAddMultiplePupils = (req, res, next) => {
   }
 }
 
-const postAddMultiplePupils = async (req, res, next) => {
+controller.postAddMultiplePupils = async (req, res, next) => {
   let school
   try {
     school = await School.findOne({_id: req.user.School}).exec()
@@ -110,7 +142,7 @@ const postAddMultiplePupils = async (req, res, next) => {
   if (fileErrors.hasError()) {
     res.hasError = true
     res.fileErrors = fileErrors
-    return getAddMultiplePupils(req, res, next)
+    return controller.getAddMultiplePupils(req, res, next)
   }
   let csvUploadResult
   try {
@@ -125,7 +157,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     req.session.csvErrorFile = csvUploadResult.csvErrorFile
     res.hasError = csvUploadResult.hasValidationError
     res.fileErrors = csvUploadResult.fileErrors
-    return getAddMultiplePupils(req, res, next)
+    return controller.getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${csvUploadResult.pupils && csvUploadResult.pupils.length} new pupils have been added`)
     const ids = JSON.stringify(csvUploadResult.pupilIds)
@@ -133,12 +165,12 @@ const postAddMultiplePupils = async (req, res, next) => {
   }
 }
 
-const getAddMultiplePupilsCSVTemplate = async (req, res) => {
+controller.getAddMultiplePupilsCSVTemplate = async (req, res) => {
   const file = 'assets/csv/MTC-Pupil-details-template-Sheet-1.csv'
   res.download(file)
 }
 
-const getErrorCSVFile = async (req, res) => {
+controller.getErrorCSVFile = async (req, res) => {
   const blobFile = await azureFileDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
   res.setHeader('Content-disposition', 'filename=multiple_pupils_errors.csv')
   res.setHeader('content-type', 'text/csv')
@@ -146,7 +178,7 @@ const getErrorCSVFile = async (req, res) => {
   res.end()
 }
 
-const getEditPupilById = async (req, res, next) => {
+controller.getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   try {
     const pupil = await Pupil.findOne({_id: req.params.id}).exec()
@@ -176,7 +208,7 @@ const getEditPupilById = async (req, res, next) => {
   }
 }
 
-const postEditPupil = async (req, res, next) => {
+controller.postEditPupil = async (req, res, next) => {
   let pupil
   let school
   let validationError
@@ -252,7 +284,7 @@ const postEditPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }
 
-const getPrintPupils = async (req, res, next) => {
+controller.getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
   try {
@@ -273,14 +305,4 @@ const getPrintPupils = async (req, res, next) => {
   })
 }
 
-module.exports = {
-  getAddPupil,
-  postAddPupil,
-  getAddMultiplePupils,
-  postAddMultiplePupils,
-  getAddMultiplePupilsCSVTemplate,
-  getErrorCSVFile,
-  getEditPupilById,
-  postEditPupil,
-  getPrintPupils
-}
+module.exports = controller
