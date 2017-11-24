@@ -221,7 +221,7 @@ $(function () {
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
     inputStatus.checkboxStatus('.multiple-choice-mtc', restarts.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
-    inputStatus.radioStatus('attendanceCode', restarts.validateForm)
+    inputStatus.radioStatus('restartReason', restarts.validateForm)
   }
 
   if ($('#generatePins').length > 0) {
