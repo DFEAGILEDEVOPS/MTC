@@ -1,13 +1,12 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe it expect jasmine spyOn */
 const httpMocks = require('node-mocks-http')
-const sinon = require('sinon')
 const restartService = require('../../services/restart.service')
 
 require('sinon-mongoose')
 
 describe('restart controller:', () => {
-  function getRes() {
+  function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
     return res
@@ -21,7 +20,6 @@ describe('restart controller:', () => {
   }
 
   describe('getRestartOverview route', () => {
-    let sandbox
     let goodReqParams = {
       method: 'GET',
       url: '/restart/overview',
@@ -29,14 +27,6 @@ describe('restart controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-    })
-
-    afterEach(() => {
-      sandbox.restore()
-    })
 
     it('displays the restart overview page', async (done) => {
       const res = getRes()
@@ -51,7 +41,6 @@ describe('restart controller:', () => {
   })
 
   describe('getSelectRestartList route', () => {
-    let sandbox
     let next
     let goodReqParams = {
       method: 'GET',
@@ -63,15 +52,6 @@ describe('restart controller:', () => {
         School: 9991001
       }
     }
-
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-      next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
-    })
 
     it('displays the restart pupils list page', async (done) => {
       const res = getRes()
