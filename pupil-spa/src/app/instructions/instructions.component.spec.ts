@@ -6,7 +6,9 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { QuestionService } from '../services/question/question.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { AuditEntry, CheckStarted } from '../services/audit/auditEntry';
+import { AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 
 describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
@@ -23,7 +25,8 @@ describe('InstructionsComponent', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: AuditService, useValue: auditServiceMock }
+        { provide: AuditService, useValue: auditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     })
       .compileComponents();
@@ -56,7 +59,7 @@ describe('InstructionsComponent', () => {
     it('adds audit entry onClick for check started', () => {
       component.onClick();
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-      expect(auditEntryInserted instanceof CheckStarted).toBeTruthy();
+      expect(auditEntryInserted instanceof WarmupStarted).toBeTruthy();
     });
   });
 
