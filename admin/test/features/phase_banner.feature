@@ -36,11 +36,11 @@ Feature:
     Then I should see that we are in the beta development phase on the edit_pupil page
     And I should see a new tab open when i want to provide feedback link from the edit_pupil page
 
-  Scenario: Development phase and the feedback link are displayed at the top of the manage check forms page
+  Scenario: Development phase and the feedback link are displayed at the top of the Upload and view form page
     Given I am logged in
-    When I am on the manage check forms page
-    Then I should see that we are in the beta development phase on the manage_check_forms page
-    And I should see a new tab open when i want to provide feedback link from the manage_check_forms page
+    When I am on the Upload and View forms page
+    Then I should see that we are in the beta development phase on the upload_and_view_forms page
+    And I should see a new tab open when i want to provide feedback link from the upload_and_view_forms page
 
   @wip @fix-in-17402
   Scenario: Development phase and the feedback link are displayed at the top of the view form page
