@@ -19,7 +19,10 @@ class CheckPage < SitePrism::Page
   end
 
   def wait_for_question(time=4)
-    wait_until(time + 0.5, 0.1) {has_question?}
+    wait_until(time + 0.5, 0.1) {question.visible?}
+  end
+  def wait_for_answer(time=4)
+    wait_until(time + 0.5, 0.1) {answer.visible?}
   end
 
   def answer_question_via(input_type, answer)
