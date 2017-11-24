@@ -1,6 +1,6 @@
 'use strict'
+
 const moment = require('moment')
-const CheckWindow = require('../models/check-window')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const dateService = require('../services/date.service')
 
@@ -33,7 +33,7 @@ const checkWindowService = {
    *  each form is assigned to.
    * @return {Promise}
    */
-  getCheckWindowsAssignedToForms: () => {
+  getCheckWindowsAssignedToForms: async () => {
     return new Promise(async (resolve, reject) => {
       let checkWindows
       let data = {}
@@ -45,10 +45,6 @@ const checkWindowService = {
       }
 
       // Create a data structure:
-      // { 101: [
-      //    { checkwindow model }, ...
-      //   ]
-      // }
       if (checkWindows) {
         checkWindows.forEach(cw => {
           cw.forms.forEach(formId => {
@@ -74,9 +70,9 @@ const checkWindowService = {
   /**
    * Soft delete check window.
    */
-  markAsDeleted: (thisCheckWindow) => {
+  markAsDeleted: async (checkForm) => {
     return new Promise(async (resolve, reject) => {
-      if (!thisCheckWindow || !thisCheckWindow._id) {
+      if (!checkForm || !checkForm._id) {
         return reject(new Error('This form does not have an id'))
       }
 
@@ -85,9 +81,9 @@ const checkWindowService = {
         // 1. there is no check window assigned or
         // 2. the check window has not yet started.
         const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-        if (checkWindows[thisCheckWindow._id]) {
+        if (checkWindows[checkForm._id]) {
           let now = new Date()
-          checkWindows[thisCheckWindow._id].forEach(cw => {
+          checkWindows[checkForm._id].forEach(cw => {
             if (cw.startDate <= now) {
               return reject(new Error(`Unable to delete check-form ${cw._id} as it is assigned to CheckWindow ${cw.name} which has a start date in the past`))
             }
@@ -97,14 +93,14 @@ const checkWindowService = {
         return reject(error)
       }
 
-      thisCheckWindow.isDeleted = true
+      checkForm.isDeleted = true
       try {
-        await thisCheckWindow.save()
+        await checkForm.save()
       } catch (error) {
         return reject(error)
       }
 
-      resolve(CheckWindow)
+      resolve(checkForm)
     })
   }
 }
