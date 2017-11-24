@@ -215,12 +215,17 @@ $(function () {
 
   if ($('#pupilsList').length > 0) {
     inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
-    inputStatus.toggleAllCheckboxes('#pupilsList', restarts.validateForm)
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
-    inputStatus.checkboxStatus('.multiple-choice-mtc', restarts.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
+  }
+
+  if ($('#pupilsRestartList').length > 0) {
+    inputStatus.toggleAllCheckboxes('#pupilsRestartList', restarts.validateForm)
+    inputStatus.selectAll('.multiple-choice-mtc')
+    inputStatus.deselectAll('.multiple-choice-mtc')
+    inputStatus.checkboxStatus('.multiple-choice-mtc', restarts.validateForm)
     inputStatus.radioStatus('restartReason', restarts.validateForm)
   }
 
