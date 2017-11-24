@@ -45,7 +45,7 @@ const checkFormDataService = {
     }
     query.isDeleted = false
 
-    return CheckForm.find(q).sort(sort).exec()
+    return CheckForm.find(q).sort(sort).lean().exec()
   }
 }
 
