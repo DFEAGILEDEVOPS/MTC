@@ -2,18 +2,30 @@
 /* global describe expect it beforeEach */
 
 const proxyquire = require('proxyquire').noCallThru()
+const sinon = require('sinon')
+require('sinon-mongoose')
+const CheckForm = require('../../models/check-form')
+const checkFormMock = require('../mocks/check-form')
 const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
-const checkWindowsService = require('../../services/check-window.service')
+const checkWindowsByFormMock = require('../mocks/check-window-by-form')
+const checkWindowService = require('../../services/check-window.service')
+const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 
 describe('check-window.service', () => {
   let service = require('../../services/check-window.service')
+  let sandbox
 
   function setupService () {
     return proxyquire('../../services/check-window.service', {
-      '../../services/check-window.service': checkWindowsService
+      '../../services/check-window.service': checkWindowService,
+      '../../services/data-access/check-window.data.service': checkWindowDataService,
+      '../../models/check-form': CheckForm
     })
   }
+
+  beforeEach(() => { sandbox = sinon.sandbox.create() })
+  afterEach(() => sandbox.restore())
 
   describe('formatCheckWindowDocuments', () => {
     beforeEach(() => {
@@ -46,14 +58,92 @@ describe('check-window.service', () => {
   })
 
   describe('getCheckWindowsAssignedToForms', () => {
-    xit('should return check windows assigned to passed form', () => {
-      console.log('To be done after refactoring the service method')
+    let fetchCheckWindowsStub
+
+    describe('Happy path', () => {
+      beforeEach(() => {
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCheckWindows').resolves(checkWindowsMock)
+        service = setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
+      })
+
+      it('should return check windows grouped by form id', () => {
+        const result = service.getCheckWindowsAssignedToForms()
+        expect(result).toBeTruthy()
+        expect(fetchCheckWindowsStub.callCount).toBe(1)
+      })
+    })
+
+    describe('Unhappy path', () => {
+      beforeEach(() => {
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCheckWindows').rejects(new Error('ERROR retrieving check windows'))
+        service = setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
+      })
+
+      it('should return an error', async (done) => {
+        try {
+          const result = await service.getCheckWindowsAssignedToForms()
+          expect(result).toBeTruthy()
+          expect(fetchCheckWindowsStub.callCount).toBe(1)
+          done()
+        } catch (error) {
+          expect(error.toString()).toBe('Error: ERROR retrieving check windows')
+          done()
+        }
+      })
     })
   })
 
-  describe('markAsDeleted', () => {
-    xit('should mark form as soft deleted if no check window was assigned or has not started', () => {
-      console.log('To be done after refactoring the service method')
+  describe('markAsDeleted - happy path', () => {
+    beforeEach(() => {
+      service = setupService(function () { return Promise.resolve(checkWindowMock) })
+    })
+
+    it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', () => {
+      const result = service.markAsDeleted(checkFormMock)
+      expect(result).toBeTruthy()
+    })
+  })
+
+  describe('markAsDeleted - unhappy path', () => {
+    describe('If the argument has no data', () => {
+      beforeEach(() => {
+        service = setupService()
+      })
+
+      it('should return an error if the argument does not contain an _id', async (done) => {
+        checkFormMock._id = null
+        try {
+          const result = await service.markAsDeleted(checkFormMock)
+          expect(result).toBeTruthy()
+          done()
+        } catch (error) {
+          expect(error.toString()).toBe('Error: This form does not have an id')
+          done()
+        }
+      })
+    })
+
+    describe('If saving documents fails', () => {
+      let checkFormMockStub
+
+      beforeEach(() => {
+        service = setupService(function () { return Promise.reject(new Error('ERROR SAVING')) })
+      })
+
+      xit('should return an error', async (done) => {
+        checkFormMock._id = 100
+        checkFormMockStub = sandbox.stub(CheckForm, 'save').resolves(checkFormMock)
+
+        try {
+          const result = await service.markAsDeleted(checkFormMock)
+          expect(result).toBeTruthy()
+          done()
+        } catch (error) {
+          console.log('ERROR!', error)
+          expect(error.toString()).toBe('ERROR SAVING')
+          done()
+        }
+      })
     })
   })
 })
