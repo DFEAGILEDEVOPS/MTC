@@ -5,6 +5,14 @@
   margin-top: 40px;
   color: $green;
   font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: $green;
+  }
 }
 
 // Green border to highlight table cell content
