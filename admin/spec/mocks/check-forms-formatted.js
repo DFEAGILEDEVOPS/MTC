@@ -21,7 +21,7 @@ module.exports = [
     ],
     __v: 0,
     removeLink: true,
-    checkWindows: []
+    checkWindows: ['Test window 3']
   },
   {
     _id: 101,
@@ -44,8 +44,8 @@ module.exports = [
       }
     ],
     __v: 0,
-    removeLink: true,
-    checkWindows: []
+    removeLink: false,
+    checkWindows: ['Test Check Window 1', 'Test Check Window 2']
   },
   {
     _id: 102,
@@ -69,6 +69,6 @@ module.exports = [
     ],
     __v: 0,
     removeLink: true,
-    checkWindows: []
+    checkWindows: ['Test Check Window 3']
   }
 ]

@@ -1,7 +1,12 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupCompleteRendered } from '../services/audit/auditEntry';
+import { WarmupCompleteRendered,
+  CheckStartedApiCalled,
+  CheckStartedAPICallSucceeded,
+  CheckStartedAPICallFailed,
+  CheckStarted } from '../services/audit/auditEntry';
+import { SubmissionService } from '../services/submission/submission.service';
 
 @Component({
   selector: 'app-warmup-complete',
@@ -17,7 +22,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private auditService: AuditService) { }
+  constructor(
+    private auditService: AuditService,
+    private submissionService: SubmissionService
+  ) { }
 
   ngOnInit() {
   }
@@ -28,6 +36,16 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
 
   onClick() {
     // console.log(`warmup-complete(): onClick called()`);
+    this.submissionService.submitCheckStartData()
+      .then(() => {
+        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      })
+      .catch((error) => {
+        this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText }));
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      });
+    this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
   }
 

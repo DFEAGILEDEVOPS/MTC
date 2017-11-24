@@ -2,14 +2,13 @@
 
 /* global beforeEach, describe, it, expect */
 
-const proxyquire = require('proxyquire').noCallThru()
-
-const CheckForm = proxyquire('../../models/check-form', {
-  'mongoose-auto-increment': {
-    initialize: () => {},
-    plugin: () => {}
-  }
-})
+const sinon = require('sinon')
+require('sinon-mongoose')
+const proxyquire = require('proxyquire')
+const httpMocks = require('node-mocks-http')
+const CheckForm = require('../../models/check-form')
+const checkFormMock = require('../mocks/check-form')
+const buildCheckFormName = require('../../models/check-form').buildCheckFormName
 
 describe('check-form schema', function () {
   let checkForm
