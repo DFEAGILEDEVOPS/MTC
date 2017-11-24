@@ -20,7 +20,7 @@ class AddPupilPage < SitePrism::Page
 
   section :what_is_upn, "details[role='group']" do
     element :toggle, "summary .summary"
-    element :explanatory_text, "div.panel-no-border", text: "The unique pupil number (UPN) is a 13-character code that identifies each pupil in the local-authority-maintained school system. If your pupil does not have a UPN there is more detail on how to generate UPNs."
+    element :explanatory_text, "div.panel-no-border", text: "The unique pupil number (UPN) is a 13-character code that identifies each pupil in the local authority maintained school system. If your pupil does not have a UPN please follow the guidance on how to generate UPNs (link opens in a new window)."
     element :more_details, "a[href='https://www.gov.uk/government/publications/unique-pupil-numbers']"
   end
 
