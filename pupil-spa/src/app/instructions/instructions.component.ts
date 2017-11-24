@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
 import { CheckStarted } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
 
 @Component({
   selector: 'app-instructions',
@@ -18,7 +19,8 @@ export class InstructionsComponent implements OnInit {
   constructor(
     private router: Router,
     private questionService: QuestionService,
-    private auditService: AuditService) {
+    private auditService: AuditService,
+    private speechService: SpeechService) {
     this.count = this.questionService.getNumberOfQuestions();
     const config = this.questionService.getConfig();
     this.loadingTime = config.loadingTime;
@@ -30,6 +32,9 @@ export class InstructionsComponent implements OnInit {
 
   onClick() {
     this.auditService.addEntry(new CheckStarted());
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speak('Speech output is on.');
+    }
     this.router.navigate(['check']);
   }
 
