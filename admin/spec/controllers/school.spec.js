@@ -17,7 +17,6 @@ const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-ch
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
-
 const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
