@@ -1,7 +1,6 @@
 'use strict'
 /* global describe it expect jasmine spyOn */
 const httpMocks = require('node-mocks-http')
-require('sinon-mongoose')
 
 describe('restart controller:', () => {
   function getRes () {
