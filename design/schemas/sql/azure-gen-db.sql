@@ -8,7 +8,9 @@ Date: 23/11/2017 12:32
 CREATE DATABASE [mtc]
 GO
 
-/****** Object:  Table [dbo].[adminLogonEvent]    Script Date: 23/11/2017 15:14:03 ******/
+USE [mtc]
+GO
+/****** Object:  Table [dbo].[adminLogonEvent]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -29,11 +31,11 @@ CREATE TABLE [dbo].[adminLogonEvent](
  CONSTRAINT [PK_adminLogonEvent] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[attendanceCode]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[attendanceCode]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -44,14 +46,15 @@ CREATE TABLE [dbo].[attendanceCode](
 	[updatedAt] [datetime2](7) NULL,
 	[reason] [nvarchar](50) NOT NULL,
 	[order] [tinyint] NOT NULL,
+	[code] [char](5) NOT NULL,
  CONSTRAINT [PK_attendanceCode] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[check]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[check]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -71,11 +74,11 @@ CREATE TABLE [dbo].[check](
  CONSTRAINT [PK_check] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[checkForm]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[checkForm]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -90,11 +93,11 @@ CREATE TABLE [dbo].[checkForm](
  CONSTRAINT [PK_checkForm] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[checkWindow]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[checkWindow]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -109,11 +112,11 @@ CREATE TABLE [dbo].[checkWindow](
  CONSTRAINT [PK_checkWindow] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[dbMigrationLog]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[dbMigrationLog]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -125,11 +128,11 @@ CREATE TABLE [dbo].[dbMigrationLog](
  CONSTRAINT [PK_dbMigrationLog] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[hdf]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[hdf]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -142,14 +145,15 @@ CREATE TABLE [dbo].[hdf](
 	[fullName] [nvarchar](max) NOT NULL,
 	[school_id] [int] NOT NULL,
 	[user_id] [int] NOT NULL,
+	[checkWindow_id] [int] NOT NULL,
  CONSTRAINT [PK_hdf] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[pupil]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[pupil]    Script Date: 23/11/2017 17:14:08 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -170,14 +174,15 @@ CREATE TABLE [dbo].[pupil](
 	[speechSynthesis] [bit] NOT NULL,
 	[isTestAccount] [bit] NOT NULL,
 	[urlSlug] [uniqueidentifier] NOT NULL,
+	[token] [nvarchar](max) NULL,
  CONSTRAINT [PK_pupil] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[pupilAttendance]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[pupilAttendance]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -186,17 +191,17 @@ CREATE TABLE [dbo].[pupilAttendance](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetime2](7) NOT NULL,
 	[updatedAt] [datetime2](7) NULL,
-	[recordedByUser_id] [int] NOT NULL,
+	[recordedBy_user_id] [int] NOT NULL,
 	[attendanceCode_id] [int] NOT NULL,
 	[pupil_id] [int] NOT NULL,
  CONSTRAINT [PK_pupilAttendance] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[pupilFeedback]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[pupilFeedback]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -211,11 +216,11 @@ CREATE TABLE [dbo].[pupilFeedback](
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[pupilLogonEvent]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[pupilLogonEvent]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -232,11 +237,11 @@ CREATE TABLE [dbo].[pupilLogonEvent](
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[question]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[question]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -250,11 +255,11 @@ CREATE TABLE [dbo].[question](
  CONSTRAINT [PK_question] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[role]    Script Date: 23/11/2017 15:14:04 ******/
+/****** Object:  Table [dbo].[role]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -265,11 +270,11 @@ CREATE TABLE [dbo].[role](
  CONSTRAINT [PK_role] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[school]    Script Date: 23/11/2017 15:14:05 ******/
+/****** Object:  Table [dbo].[school]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -287,29 +292,29 @@ CREATE TABLE [dbo].[school](
  CONSTRAINT [PK_school] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[settings]    Script Date: 23/11/2017 15:14:05 ******/
+/****** Object:  Table [dbo].[settings]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[settings](
 	[id] [tinyint] NOT NULL,
-		[createdAt] [datetime2](7) NOT NULL,
+	[createdAt] [datetime2](7) NOT NULL,
 	[updatedAt] [datetime2](7) NULL,
 	[loadingTimeLimit] [tinyint] NOT NULL,
 	[questionTimeLimit] [tinyint] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[settingsLog]    Script Date: 23/11/2017 15:14:05 ******/
+/****** Object:  Table [dbo].[settingsLog]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -323,11 +328,11 @@ CREATE TABLE [dbo].[settingsLog](
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
 GO
-/****** Object:  Table [dbo].[user]    Script Date: 23/11/2017 15:14:05 ******/
+/****** Object:  Table [dbo].[user]    Script Date: 23/11/2017 17:14:09 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -336,16 +341,37 @@ CREATE TABLE [dbo].[user](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetime2](7) NOT NULL,
 	[updatedAt] [datetime2](7) NULL,
-	[externalId] [nvarchar](max) NOT NULL,
+	[identifier] [nvarchar](max) NOT NULL,
 	[passwordHash] [nvarchar](max) NULL,
 	[school_id] [int] NOT NULL,
 	[role_id] [int] NOT NULL,
  CONSTRAINT [PK_user] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF)
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
+GO
+SET ANSI_PADDING ON
+
+GO
+
+-- Indexes
+
+/****** Object:  Index [attendanceCode_code_uindex]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE UNIQUE NONCLUSTERED INDEX [attendanceCode_code_uindex] ON [dbo].[attendanceCode]
+(
+	[code] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO
+SET ANSI_PADDING ON
+
+GO
+/****** Object:  Index [pupil_upn_uindex]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_uindex] ON [dbo].[pupil]
+(
+	[upn] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO
 
 -- Defaults
@@ -358,11 +384,11 @@ ALTER TABLE [dbo].[check] ADD  CONSTRAINT [DF_check_createdAt_default]  DEFAULT 
 GO
 ALTER TABLE [dbo].[check] ADD  CONSTRAINT [DF_check_checkCode_default]  DEFAULT (newid()) FOR [checkCode]
 GO
-ALTER TABLE [dbo].[checkForm] ADD  CONSTRAINT [DF_checkForm_isDeleted_default]  DEFAULT ((0)) FOR [isDeleted]
-GO
 ALTER TABLE [dbo].[checkForm] ADD  CONSTRAINT [DF_checkForm_createdAt_default]  DEFAULT (getdate()) FOR [createdAt]
 GO
-ALTER TABLE [dbo].[checkWindow] ADD DEFAULT ((0)) FOR [isDeleted]
+ALTER TABLE [dbo].[checkForm] ADD  CONSTRAINT [DF_checkForm_isDeleted_default]  DEFAULT ((0)) FOR [isDeleted]
+GO
+ALTER TABLE [dbo].[checkWindow] ADD  DEFAULT ((0)) FOR [isDeleted]
 GO
 ALTER TABLE [dbo].[dbMigrationLog] ADD  CONSTRAINT [DF_dbMigrationLog_appliedAt_default]  DEFAULT (getdate()) FOR [appliedAt]
 GO
@@ -422,6 +448,11 @@ REFERENCES [dbo].[checkWindow] ([id])
 GO
 ALTER TABLE [dbo].[checkForm] CHECK CONSTRAINT [FK_checkForm_checkWindow_id]
 GO
+ALTER TABLE [dbo].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_checkWindow_id] FOREIGN KEY([checkWindow_id])
+REFERENCES [dbo].[checkWindow] ([id])
+GO
+ALTER TABLE [dbo].[hdf] CHECK CONSTRAINT [FK_hdf_checkWindow_id]
+GO
 ALTER TABLE [dbo].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_school_id] FOREIGN KEY([school_id])
 REFERENCES [dbo].[school] ([id])
 GO
@@ -447,7 +478,7 @@ REFERENCES [dbo].[pupil] ([id])
 GO
 ALTER TABLE [dbo].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_pupil_id]
 GO
-ALTER TABLE [dbo].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_user_id] FOREIGN KEY([recordedByUser_id])
+ALTER TABLE [dbo].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_user_id] FOREIGN KEY([recordedBy_user_id])
 REFERENCES [dbo].[user] ([id])
 GO
 ALTER TABLE [dbo].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_user_id]
