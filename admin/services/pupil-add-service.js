@@ -1,6 +1,6 @@
 'use strict'
 
-// const ValidationError = require('../lib/validation-error')
+const R = require('ramda')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
@@ -15,13 +15,11 @@ pupilAddService.addPupil = async function (pupilData) {
   }
 
   // Create the date of birth
-  pupilData.dob = dateService.createFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
-  delete pupilData['dob-day']
-  delete pupilData['dob-month']
-  delete pupilData['dob-year']
+  const saveData = R.omit(['dob-day', 'dob-month', 'dob-year'], pupilData)
+  saveData.dob = dateService.createFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
 
   // Save and return the pupil
-  return pupilDataService.save(pupilData)
+  return pupilDataService.save(saveData)
 }
 
 module.exports = pupilAddService

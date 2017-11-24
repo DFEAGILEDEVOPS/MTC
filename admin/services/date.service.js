@@ -90,7 +90,9 @@ const dateService = {
    * @return {Moment}
    */
   createFromDayMonthYear: (day, month, year) => {
-    const data = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year.toString()
+    const paddedDay = (+day).toString().padStart(2, '0')
+    const paddedMonth = (+month).toString().padStart(2, '0')
+    const data = paddedDay + '/' + paddedMonth + '/' + (+year).toString()
     const date = moment.utc(data, 'DD/MM/YYYY', true)
     if (!date.isValid()) {
       return null

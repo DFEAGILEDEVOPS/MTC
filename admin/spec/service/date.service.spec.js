@@ -142,5 +142,13 @@ describe('date service', () => {
       // console.log('is valid: ', res1.isValid())
       expect(res1).toBeNull()
     })
+    it('returns null when arguments are missing', () => {
+      const res1 = dateService.createFromDayMonthYear(undefined, undefined, undefined)
+      expect(res1).toBeNull()
+    })
+    it('returns null when an argument are null', () => {
+      const res1 = dateService.createFromDayMonthYear(null, null, null)
+      expect(res1).toBeNull()
+    })
   })
 })
