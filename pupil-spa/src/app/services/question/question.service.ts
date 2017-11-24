@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Question } from './question.model';
 
 import { StorageService } from '../storage/storage.service';
+import { SpeechService } from '../speech/speech.service';
+
 import { Config } from '../../config.model';
 const questionKey = 'questions';
 const configKey = 'config';
@@ -13,7 +15,8 @@ export class QuestionService {
   protected questions;
   protected config: Config;
 
-  constructor(protected storageService: StorageService) {
+  constructor(protected storageService: StorageService,
+              protected speechService: SpeechService) {
     this.currentQuestion = 0;
 
     // Re-read the stored questions on page refresh
@@ -72,7 +75,7 @@ export class QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
-    config.speechSynthesis = configData['speechSynthesis'];
+    config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
     this.config = config;
   }
 }

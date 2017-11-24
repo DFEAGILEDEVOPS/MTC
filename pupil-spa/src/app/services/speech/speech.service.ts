@@ -48,6 +48,9 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    */
   speak(utterance: string): void {
+    if (!this.isSupported()) {
+      return;
+    }
     this.cancel();
     const sayThis = new SpeechSynthesisUtterance(utterance);
     sayThis.onstart = (event) => {

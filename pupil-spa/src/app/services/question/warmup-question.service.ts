@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QuestionService } from './question.service';
 
 import { StorageService } from '../storage/storage.service';
+import { SpeechService } from '../speech/speech.service';
 import { Config } from '../../config.model';
 const configKey = 'config';
 
@@ -26,8 +27,9 @@ export class WarmupQuestionService extends QuestionService {
     }
   ];
 
-  constructor(protected storageService: StorageService) {
-    super(storageService);
+  constructor(protected storageService: StorageService,
+              protected speechService: SpeechService) {
+    super(storageService, speechService);
     // re-initialise on page refresh
     if (this.storageService.getItem(configKey)) {
       this.initialise();
@@ -40,7 +42,7 @@ export class WarmupQuestionService extends QuestionService {
     const config = new Config();
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
-    config.speechSynthesis = configData['speechSynthesis'];
+    config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
     this.config = config;
   }
 }
