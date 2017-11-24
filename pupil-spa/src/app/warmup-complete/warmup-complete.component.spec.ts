@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WarmupCompleteComponent } from './warmup-complete.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { CheckStartedAPICallSucceeded, CheckStartedAPICallFailed } from '../services/audit/auditEntry';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
@@ -56,7 +55,7 @@ describe('WarmupCompleteComponent', () => {
         fixture.whenStable().then(() => {
           fixture.detectChanges();
           expect(auditService.addEntry).toHaveBeenCalledTimes(4);
-          expect(addEntrySpy.calls.all()[2].args[0]).toEqual(new CheckStartedAPICallSucceeded());
+          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallSucceeded');
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
@@ -75,7 +74,7 @@ describe('WarmupCompleteComponent', () => {
         fixture.whenStable().catch(() => {
           fixture.detectChanges();
           expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(addEntrySpy.calls.all()[2].args[0]).toEqual(new CheckStartedAPICallFailed());
+          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallFailed');
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
