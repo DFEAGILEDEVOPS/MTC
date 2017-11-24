@@ -184,7 +184,7 @@ const saveCheckForm = async (req, res, next) => {
 
   try {
     await checkForm.save()
-    req.flash('info', `File ${uploadFile.filename} (${checkForm.name}) was uploaded`)
+    req.flash('info', 'New form uploaded')
     req.flash('formName', checkForm.name)
   } catch (error) {
     return next(error)
