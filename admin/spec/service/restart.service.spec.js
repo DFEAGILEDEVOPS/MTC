@@ -1,4 +1,5 @@
 const sinon = require('sinon')
+const moment = require('moment')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const restartService = require('../../services/restart.service')
@@ -57,7 +58,8 @@ describe('restart.service', () => {
     })
     it('it should return true if pupil does not have an active pin', () => {
       const pupil = Object.assign({}, pupilMock)
-      spyOn(pinValidator, 'isValidPin').and.returnValue(false)
+      pupil.pinExpiresAt = moment.utc()
+      spyOn(pinValidator, 'isActivePin').and.returnValue(false)
       const result = restartService.isEligiblePupil(pupil)
       expect(result).toBeTruthy()
     })

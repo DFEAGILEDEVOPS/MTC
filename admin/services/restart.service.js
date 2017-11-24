@@ -31,7 +31,8 @@ restartService.getPupils = async (schoolId) => {
 restartService.isEligiblePupil = (p) => {
   let restartCount = p.restartCount || 0
   if (restartCount >= 2 || p.attendanceCode) return false
-  return !pinValidator.isValidPin(p.pin, p.pinExpiresAt)
+  const hasExpiredToday = p.pinExpiresAt && moment(p.pinExpiresAt).isSame(moment.now(), 'day')
+  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && hasExpiredToday
 }
 
 module.exports = restartService
