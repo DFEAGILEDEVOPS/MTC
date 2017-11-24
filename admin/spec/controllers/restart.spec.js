@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect jasmine spyOn */
+/* global describe it expect beforeEach jasmine spyOn */
 const httpMocks = require('node-mocks-http')
 const restartService = require('../../services/restart.service')
 
@@ -52,6 +52,10 @@ describe('restart controller:', () => {
         School: 9991001
       }
     }
+
+    beforeEach(() => {
+      next = jasmine.createSpy('next')
+    })
 
     it('displays the restart pupils list page', async (done) => {
       const res = getRes()
