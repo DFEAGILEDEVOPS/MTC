@@ -1,7 +1,10 @@
 const moment = require('moment')
+const ObjectId = require('mongoose').Types.ObjectId
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const jwtService = require('../services/jwt.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
 
@@ -31,6 +34,21 @@ pinService.getActiveSchool = async (schoolId) => {
     return null
   }
   return school
+}
+
+/**
+ * Expire pupil's pin and set started check timestamp
+ * @param token
+ * @param checkCode
+ */
+pinService.expirePupilPin = async (token, checkCode) => {
+  const decoded = jwtService.decode(token)
+  const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
+  const currentTimeStamp = moment.utc()
+  await checkDataService.update({checkCode: checkCode}, { '$set': { checkStartedAt: currentTimeStamp } })
+  if (!pupil.isTestAccount) {
+    await pupilDataService.update(pupil._id, { pinExpiresAt: currentTimeStamp, pin: null })
+  }
 }
 
 module.exports = pinService

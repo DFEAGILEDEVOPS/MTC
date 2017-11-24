@@ -63,8 +63,10 @@ const serviceManager = require('./routes/service-manager')
 const admin = require('./routes/admin')
 const questions = require('./routes/questions')
 const pupilFeedback = require('./routes/pupil-feedback')
+const checkStarted = require('./routes/check-started')
 const completedCheck = require('./routes/completed-check')
 const pupilPin = require('./routes/pupil-pin')
+const restart = require('./routes/restart')
 
 if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 const app = express()
@@ -216,9 +218,11 @@ app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
 app.use('/school', admin)
 app.use('/pupil-pin', pupilPin)
+app.use('/restart', restart)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)
 app.use('/api/completed-check', completedCheck)
+app.use('/api/check-started', checkStarted)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

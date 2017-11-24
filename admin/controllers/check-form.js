@@ -68,15 +68,15 @@ const uploadAndViewForms = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const CheckWindow = await checkFormDataService.getActiveForm(id)
-    if (!CheckWindow) {
-      return next(new Error(`Unable to find form.id [${id}]`))
+    const checkForm = await checkFormDataService.getActiveForm(id)
+    if (!checkForm) {
+      return next(new Error(`Unable to find check form with id [${id}]`))
     }
 
     // Un-assign check-form from any check-windows
     const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
-    await checkFormService.unassignedCheckFormsFromCheckWindows(CheckWindow, CheckWindowsByForm)
-    await checkWindowService.markAsDeleted(CheckWindow)
+    await checkFormService.unassignedCheckFormsFromCheckWindows(checkForm, CheckWindowsByForm)
+    await checkWindowService.markAsDeleted(checkForm)
   } catch (error) {
     return next(error)
   }
@@ -130,6 +130,7 @@ const saveCheckForm = async (req, res, next) => {
     // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
     // * file size exceeded?
+    res.locals.pageTitle = 'ERROR: Upload check form'
     uploadError.message = 'A valid CSV file was not uploaded'
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
@@ -184,7 +185,7 @@ const saveCheckForm = async (req, res, next) => {
 
   try {
     await checkForm.save()
-    req.flash('info', `File ${uploadFile.filename} (${checkForm.name}) was uploaded`)
+    req.flash('info', 'New form uploaded')
     req.flash('formName', checkForm.name)
   } catch (error) {
     return next(error)
@@ -194,46 +195,46 @@ const saveCheckForm = async (req, res, next) => {
 }
 
 /* @TODO: The code below will be refactored in the next PR as part of PBI 17604 */
-const displayCheckForm = async (req, res, next) => {
-  req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
-  res.locals.pageTitle = 'View form'
-  let canDelete = true
-  let formData
-
-  try {
-    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
-    formData.checkWindows = []
-    const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-
-    if (checkWindows[formData.id]) {
-      // Form is assigned to one or more check windows
-      formData.checkWindows = checkWindows[formData.id].map(cw => { return cw.toJSON() })
-      formData.checkWindows.forEach(cw => {
-        if (cw.startDate <= Date.now()) {
-          // we can't delete a form whose check window has started.
-          canDelete = false
-        }
-      })
-    } else {
-      formData.checkWindows = []
-    }
-
-    req.breadcrumbs(res.locals.pageTitle)
-    res.render('test-developer/view-check-form', {
-      form: formData,
-      canDelete: canDelete,
-      breadcrumbs: req.breadcrumbs()
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+// const displayCheckForm = async (req, res, next) => {
+//   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
+//   res.locals.pageTitle = 'View form'
+//   let canDelete = true
+//   let formData
+//
+//   try {
+//     formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
+//     formData.checkWindows = []
+//     const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+//
+//     if (checkWindows[formData.id]) {
+//       // Form is assigned to one or more check windows
+//       formData.checkWindows = checkWindows[formData.id].map(cw => { return cw.toJSON() })
+//       formData.checkWindows.forEach(cw => {
+//         if (cw.startDate <= Date.now()) {
+//           // we can't delete a form whose check window has started.
+//           canDelete = false
+//         }
+//       })
+//     } else {
+//       formData.checkWindows = []
+//     }
+//
+//     req.breadcrumbs(res.locals.pageTitle)
+//     res.render('test-developer/view-check-form', {
+//       form: formData,
+//       canDelete: canDelete,
+//       breadcrumbs: req.breadcrumbs()
+//     })
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 
 module.exports = {
   getTestDeveloperHome,
   uploadAndViewForms,
   removeCheckForm,
   uploadCheckForm,
-  saveCheckForm,
-  displayCheckForm
+  saveCheckForm
+  //, displayCheckForm
 }
