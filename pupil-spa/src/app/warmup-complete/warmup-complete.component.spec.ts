@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WarmupCompleteComponent } from './warmup-complete.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { CheckStartedAPICallSucceeded, CheckStartedAPICallFailed } from '../services/audit/auditEntry';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
@@ -15,6 +14,7 @@ describe('WarmupCompleteComponent', () => {
   let submissionService;
   let auditEntryInserted: AuditEntry;
   let auditService;
+  let addEntrySpy
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('WarmupCompleteComponent', () => {
     fixture = TestBed.createComponent(WarmupCompleteComponent);
     component = fixture.componentInstance;
     auditService = fixture.debugElement.injector.get(AuditService);
-    spyOn(auditService, 'addEntry').and.callFake((entry) => {
+    addEntrySpy = spyOn(auditService, 'addEntry').and.callFake((entry) => {
       auditEntryInserted = entry;
     });
     fixture.detectChanges();
@@ -55,7 +55,7 @@ describe('WarmupCompleteComponent', () => {
         fixture.whenStable().then(() => {
           fixture.detectChanges();
           expect(auditService.addEntry).toHaveBeenCalledTimes(4);
-          expect(auditService.addEntry).toHaveBeenCalledWith(new CheckStartedAPICallSucceeded());
+          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallSucceeded');
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
@@ -74,7 +74,7 @@ describe('WarmupCompleteComponent', () => {
         fixture.whenStable().catch(() => {
           fixture.detectChanges();
           expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(auditService.addEntry).toHaveBeenCalledWith(new CheckStartedAPICallFailed());
+          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallFailed');
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
