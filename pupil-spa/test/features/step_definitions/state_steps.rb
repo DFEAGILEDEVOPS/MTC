@@ -50,7 +50,6 @@ Given(/^I am on question (.*) of the check$/) do |number|
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
   check_page.wait_for_question
-  check_page.wait_for_answer
   check_page.complete_check_with_correct_answers((@number-1), 'numpad') until check_page.question.text == @question_strings[@number -1]
 end
 
