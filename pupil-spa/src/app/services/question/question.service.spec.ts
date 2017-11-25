@@ -3,6 +3,8 @@ import { HttpModule } from '@angular/http';
 
 import { QuestionService } from './question.service';
 import { StorageService } from '../storage/storage.service';
+import { SpeechService } from '../speech/speech.service';
+import { SpeechServiceMock } from '../speech/speech.service.mock';
 import * as responseMock from '../../login.response.mock.json';
 
 describe('QuestionService', () => {
@@ -25,10 +27,11 @@ describe('QuestionService', () => {
       }
     });
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [ HttpModule ],
       providers: [
         QuestionService,
-        {provide: StorageService, useValue: mockStorageService}
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     });
   });
