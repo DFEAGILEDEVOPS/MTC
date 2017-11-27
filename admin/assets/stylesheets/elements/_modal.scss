@@ -19,7 +19,7 @@ dialog.modal-box {
   display: none;
   margin: 0;
   position: fixed;
-  padding: 12px;
+  padding: 8px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -54,5 +54,7 @@ dialog.modal-box {
 }
 
 .modal-confirm {
-  padding-left: 10px;
+  .button-secondary {
+    margin-left: 0;
+  }
 }
