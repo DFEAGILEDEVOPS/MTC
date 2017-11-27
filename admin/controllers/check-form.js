@@ -18,7 +18,7 @@ const getTestDeveloperHome = async (req, res, next) => {
   try {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('test-developer/test-developer-home', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: ''
     })
   } catch (error) {
     next(error)
