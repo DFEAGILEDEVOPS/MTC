@@ -52,12 +52,18 @@ gulp.task('copyPDFs', function () {
     .pipe(gulp.dest('public/PDFs'))
 })
 
+gulp.task('copyCsvFiles', function () {
+  gulp
+    .src(['./assets/CSVs/*'])
+    .pipe(gulp.dest('public/CSVs'))
+})
+
 gulp.task('realclean', ['clean'], function () {
   return gulp.src('./node_modules', {read: false})
     .pipe(clean())
 })
 
-gulp.task('build', ['sass', 'bundleJs', 'copyImages', 'copyPDFs'])
+gulp.task('build', ['sass', 'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'])
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')

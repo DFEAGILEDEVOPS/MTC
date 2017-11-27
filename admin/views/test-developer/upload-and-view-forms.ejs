@@ -11,7 +11,7 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <%= messages.info %>
+            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
         </div>
         <% } %>
 
@@ -42,6 +42,7 @@
                     <% forms.forEach( form => { %>
                     <tr>
                         <td<% if (messages.formName == form.name) { %> class="highlight-item"<% } %>>
+                            <a name="anchor-<%= form.name %>"></a>
                             <a href="/test-developer/view-form/<%= form._id %>" class="strong-no-underline"><%= form.name %></a>
                         </td>
                         <td>
@@ -81,7 +82,7 @@
     </div>
 </div>
 <%- partial('partials/_modal_box', {
-    modalTitle: 'Please confirm',
+    modalTitle: 'Remove form',
     modalText: 'Are you sure you want to remove this?',
     modalConfirmationLabel: 'Yes',
     modalConfirmationUrl: '#',

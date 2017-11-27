@@ -46,6 +46,8 @@ public/javascripts/app.js
 public/PDFs
 public/images
 public/images/*
+public/CSVs
+public/CSVs/*
 
 #Ignore cucumber screenshots
 test/screenshots
