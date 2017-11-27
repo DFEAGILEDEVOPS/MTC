@@ -231,6 +231,7 @@ input:disabled {
 
 #removeUploadedFile {
   visibility: hidden;
+  display: none;
 }
 
 // Show an input as if it was a link
@@ -332,6 +333,12 @@ input {
   @include media(tablet) {
     margin-top: 0;
   }
+}
+
+// Errors
+
+.error-summary {
+  padding: 20px 15px 5px 15px;
 }
 
 // Hide 'check all' checkboxes if JS is not enabled
