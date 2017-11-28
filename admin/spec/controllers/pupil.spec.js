@@ -8,12 +8,14 @@ require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const School = require('../../models/school')
-const Pupil = require('../../models/pupil')
-const pupilValidator = require('../../lib/validator/pupil-validator')
 const fileValidator = require('../../lib/validator/file-validator')
 const pupilUploadService = require('../../services/pupil-upload.service')
 const ValidationError = require('../../lib/validation-error')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
+const schoolDataService = require('../../services/data-access/school.data.service')
+const schoolMock = require('../mocks/school')
+const pupilAddService = require('../../services/pupil-add-service')
+const pupilMock = require('../mocks/pupil')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -26,6 +28,7 @@ describe('pupil controller:', () => {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991999 }
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+    req.flash = jasmine.createSpy('flash')
     return req
   }
 
@@ -33,6 +36,7 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
+    let schoolDataServiceSpy
     let goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add',
@@ -52,9 +56,9 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({name: 'Test School'}))
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
       })
 
@@ -64,6 +68,7 @@ describe('pupil controller:', () => {
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
+        expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
       })
 
@@ -80,32 +85,29 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(null)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
       })
 
       it('it throws an error', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
-        expect(next).toHaveBeenCalled()
+        try {
+          await controller(req, res, next)
+          expect('this').toBe('thrown')
+        } catch (error) {
+          expect(error.message).toBe('School [9991999] not found')
+        }
         expect(res.statusCode).toBe(200)
         done()
       })
     })
   })
 
-  describe('postAddPupil() route', () => {
-    let controller
-    let sandbox
-    let next
-    // Mock the pupil model
-    class pupilMock {
-      save () {}
-      validate () {}
-    }
+  describe('#postAddPupil route', () => {
+    let sandbox, controller, nextSpy, pupilAddServiceSpy, req, res
     let goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
@@ -115,100 +117,54 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-      next = jasmine.createSpy('next')
+      sandbox = sinon.createSandbox()
+      res = getRes()
+      req = getReq(goodReqParams)
+      nextSpy = sandbox.spy()
     })
 
-    afterEach(() => {
-      sandbox.restore()
-    })
+    afterEach(() => { sandbox.restore() })
 
-    describe('when the school is found in the database', () => {
+    describe('the pupilData is saved', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({name: 'Test School'}))
+        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School,
-          '../models/pupil': pupilMock
+          '../services/pupil-add-service': pupilAddService
         }).postAddPupil
       })
 
-      it('saves the new pupil and redirects to the manage pupils page', async (done) => {
-        spyOn(pupilMock.prototype, 'save')
-        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await controller(req, res, next)
+      it('calls pupilAddService to add a new pupil to the database', async (done) => {
+        await controller(req, res, nextSpy)
+        expect(pupilAddServiceSpy.callCount).toBe(1)
+        done()
+      })
+
+      it('redirects to the pupil register page', async (done) => {
+        await controller(req, res, nextSpy)
         expect(res.statusCode).toBe(302)
-        expect(pupilMock.prototype.save).toHaveBeenCalled()
-        done()
-      })
-
-      it('it calls next if it can\'t save the pupil', async (done) => {
-        spyOn(pupilMock.prototype, 'save').and.throwError()
-        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await controller(req, res, next)
-        expect(next).toHaveBeenCalled()
-        done()
-      })
-
-      it('it re-displays the add pupil page if the pupilValidator fails', async (done) => {
-        spyOn(pupilMock.prototype, 'save')
-        const validationError = new ValidationError()
-        validationError.addError('test-field', 'test error message')
-        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(validationError))
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        done()
-      })
-
-      it('it re-displays the add pupil page if the mongoose validator fails', async (done) => {
-        spyOn(pupilMock.prototype, 'save')
-        const pupil = new Pupil({
-          school: 9999999,
-          upn: 'A999999999999',
-          // Blank first name - will throw an error
-          foreName: '',
-          lastName: 'Pupil',
-          gender: 'M',
-          dob: ''
-        })
-        let mongooseError
-        try {
-          await pupil.validate()
-        } catch (error) {
-          mongooseError = error
-        }
-        // This is a little clumsy - using the mock to throw the real mongooseError
-        spyOn(pupilMock.prototype, 'validate').and.throwError(mongooseError)
-        // A blank error object
-        spyOn(pupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        req.body = {}
-        req.body.foreName = ''
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
         done()
       })
     })
 
-    describe('when the school is NOT found in the database', () => {
+    describe('the pupilData is not saved', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        const validationError = new ValidationError()
+        validationError.addError('upn', 'Mock error')
+        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').throws(validationError)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
-        }).postAddPupil
+          '../services/pupil-add-service': pupilAddService
+        })
       })
 
-      it('throws an error and calls next()', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await controller(req, res, next)
-        expect(next).toHaveBeenCalledWith(new Error(`School [${req.body.school}] not found`))
+      it('then it shows the page again', async (done) => {
+        sandbox.stub(controller, 'getAddPupil').callsFake((req, res, next, error) => {
+          res.end('mock doc')
+          return Promise.resolve()
+        })
+        // console.log('controller', controller)
+        await controller.postAddPupil(req, res, nextSpy)
+        expect(controller.getAddPupil.called).toBeTruthy()
+        expect(res.statusCode).toBe(200)
         done()
       })
     })
