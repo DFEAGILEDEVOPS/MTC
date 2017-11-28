@@ -8,6 +8,7 @@ module.exports = class ValidationError {
    */
   constructor (field, message) {
     this.errors = {}
+    this.name = 'ValidationError'
     if (field && message) {
       this.errors[field] = message
     }

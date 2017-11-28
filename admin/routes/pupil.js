@@ -1,5 +1,4 @@
 const isAuthenticated = require('../authentication/middleware')
-const config = require('../config')
 const rolesConfig = require('../roles-config')
 
 const { getAddPupil,
