@@ -6,7 +6,9 @@ source /home/mtc-test/.rvm/scripts/rvm
 
 RUBY_LOC="$(which ruby)"
 VER="$(ruby -v)"
-echo "ruby is $RUBY_LOC version $VER"
+echo "ruby location: $RUBY_LOC"
+echo "ruby version: $VER"
+echo "user: $USER"
 
 gem install bundler
 bundle install
