@@ -98,4 +98,57 @@ describe('date service', () => {
       expect(result).toBe('1 Nov to 20 Nov 2017')
     })
   })
+
+  describe('createFromDayMonthYear', () => {
+    it('creates a moment date object', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1).toBeTruthy()
+    })
+    it('sets the date of month', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.date()).toBe(30)
+    })
+    it('sets the month', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.format('M')).toBe('6')
+      // expect(res1.month()).toBe(6)
+    })
+    it('sets the year', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.year()).toBe(2007)
+    })
+    it('sets the hours to zero', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.hour()).toBe(0)
+    })
+    it('sets the minutes to zero', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.minutes()).toBe(0)
+    })
+    it('sets the seconds to zero', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.seconds()).toBe(0)
+    })
+    it('sets the milliseconds to zero', () => {
+      const res1 = dateService.createFromDayMonthYear(30, 6, 2007)
+      expect(res1.milliseconds()).toBe(0)
+    })
+    it('creates a moment date object from strings', () => {
+      const res1 = dateService.createFromDayMonthYear('31', '7', '2008')
+      expect(res1.toISOString()).toBe('2008-07-31T00:00:00.000Z')
+    })
+    it('returns null if given an invalid date', () => {
+      const res1 = dateService.createFromDayMonthYear(31, 6, 1999)
+      // console.log('is valid: ', res1.isValid())
+      expect(res1).toBeNull()
+    })
+    it('returns null when arguments are missing', () => {
+      const res1 = dateService.createFromDayMonthYear(undefined, undefined, undefined)
+      expect(res1).toBeNull()
+    })
+    it('returns null when an argument are null', () => {
+      const res1 = dateService.createFromDayMonthYear(null, null, null)
+      expect(res1).toBeNull()
+    })
+  })
 })
