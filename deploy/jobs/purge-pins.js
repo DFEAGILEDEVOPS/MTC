@@ -1,14 +1,19 @@
 'use strict'
 
 try {
-  db.pupils.updateMany(
-     { pin: {$ne: null} },
-     { $set: { pin: null, pinExpiresAt: null } }
-  );
-  db.schools.updateMany(
+  print('erasing pupil pins...')
+  printjson(db.pupils.updateMany(
+    { pin: {$ne: null} },
+    { $set: { pin: null, pinExpiresAt: null } }
+  ))
+
+  print('erasing school pins...')
+  printjson(db.schools.updateMany(
     { schoolPin: {$ne: null} },
     { $set: { schoolPin: null, pinExpiresAt: null } }
- );
+  ))
 } catch (e) {
-  print(e);
+  print('ERROR...')
+  print(e)
+  throw e
 }
