@@ -43,7 +43,6 @@ describe('check started controller', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/check-started').checkStarted
-      spyOn(jwtService, 'verify').and.returnValue((Promise.reject(new Error('error'))))
       await controller(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
