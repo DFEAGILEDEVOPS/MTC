@@ -1,8 +1,8 @@
 #!/bin/bash -x
 
-source /home/mtc-test/.rvm/scripts/rvm
-
 cd ./../../admin/test
+
+source /home/mtc-test/.rvm/scripts/rvm
 
 RUBY_LOC="$(which ruby)"
 VER="$(ruby -v)"
