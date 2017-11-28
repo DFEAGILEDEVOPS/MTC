@@ -43,51 +43,6 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   req.breadcrumbs(res.locals.pageTitle)
-  let school
-  try {
-    school = await School.findOne({_id: req.body.school}).exec()
-    if (!school) {
-      throw new Error(`School [${req.body.school}] not found`)
-    }
-  } catch (error) {
-    return next(error)
-  }
-  const pupil = new Pupil({
-    school: school._id,
-    upn: req.body.upn && req.body.upn.trim().toUpperCase(),
-    foreName: req.body.foreName,
-    lastName: req.body.lastName,
-    middleNames: req.body.middleNames,
-    gender: req.body.gender,
-    dob: moment.utc('' + req.body['dob-day'] + '/' + req.body['dob-month'] + '/' + req.body['dob-year'], 'DD/MM/YYYY'),
-    pin: null,
-    pinExpired: false
-  })
-  try {
-    const pupilData = req.body
-    await pupilService.validatePupil(pupil, pupilData)
-  } catch (error) {
-    Object.keys(error.errors).forEach((e) => { error.errors[e] = error.errors[e] })
-    return res.render('school/add-pupil', {
-      school: school.toJSON(),
-      formData: req.body,
-      error: error,
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
-  try {
-    await pupil.save()
-    req.flash('info', '1 new pupil has been added')
-  } catch (error) {
-    next(error)
-  }
-  const pupilId = JSON.stringify([pupil._id])
-  res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
-}
-
-controller.postAddPupil2 = async (req, res, next) => {
-  res.locals.pageTitle = 'Add pupil'
-  req.breadcrumbs(res.locals.pageTitle)
   const pupilData = {
     school: req.body.school,
     upn: req.body.upn && req.body.upn.trim().toUpperCase(),

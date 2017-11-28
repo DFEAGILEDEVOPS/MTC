@@ -1,10 +1,8 @@
 const isAuthenticated = require('../authentication/middleware')
-const config = require('../config')
 const rolesConfig = require('../roles-config')
 
 const { getAddPupil,
   postAddPupil,
-  postAddPupil2,
   getAddMultiplePupils,
   postAddMultiplePupils,
   getAddMultiplePupilsCSVTemplate,
@@ -15,7 +13,7 @@ const { getAddPupil,
 
 const pupil = (router) => {
   router.get('/pupil/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getAddPupil(req, res, next))
-  router.post('/pupil/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => postAddPupil2(req, res, next))
+  router.post('/pupil/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => postAddPupil(req, res, next))
   router.get('/pupil/add-batch-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getAddMultiplePupils(req, res, next))
   router.post('/pupil/add-batch-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => postAddMultiplePupils(req, res, next))
   router.get('/pupil/download-multiple-template', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res) => getAddMultiplePupilsCSVTemplate(req, res))
