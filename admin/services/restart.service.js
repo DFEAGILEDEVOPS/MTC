@@ -30,9 +30,8 @@ restartService.getPupils = async (schoolId) => {
  * @returns {Boolean}
  */
 restartService.isPupilEligible = (p) => {
-  // This is undergoing changes as the count won't be attached to the pupil collection
-  let restartCount = p.restartCount || 0
-  if (restartCount >= 2 || p.attendanceCode) return false
+  // TODO: As part of the next PR pupil restart collection is introduced which will determine the number of restarts per pupil
+  if (p.attendanceCode) return false
   const hasExpiredToday = p.pinExpiresAt && moment(p.pinExpiresAt).isSame(moment.now(), 'day')
   return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && hasExpiredToday
 }
