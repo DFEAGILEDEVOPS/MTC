@@ -80,10 +80,6 @@ const Pupil = new Schema({
     type: Boolean,
     default: false
   },
-  restartCount: {
-    type: Number,
-    default: false
-  },
   checkOptions: {
     type: checkOptionsSchema,
     required: false,
