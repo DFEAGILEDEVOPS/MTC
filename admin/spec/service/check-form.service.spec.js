@@ -129,4 +129,24 @@ describe('check-form.service', () => {
       done()
     })
   })
+
+  describe('#checkWindowNames()', () => {
+    it('should return a string value', (done) => {
+      const formData = checkWindowByForm[29]
+      const result = service.checkWindowNames(formData)
+      expect(result.toString()).toBe(' Window Test 1')
+      expect(result).toBeTruthy()
+      done()
+    })
+  })
+
+  describe('#canDelete()', () => {
+    it('should return a boolean', (done) => {
+      const formData = checkWindowByForm[29]
+      const result = service.canDelete(formData)
+      expect(result.toString()).toBe('false')
+      expect(result).toBeFalsy()
+      done()
+    })
+  })
 })

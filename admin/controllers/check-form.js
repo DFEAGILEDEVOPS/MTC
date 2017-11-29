@@ -194,47 +194,48 @@ const saveCheckForm = async (req, res, next) => {
   res.redirect('/test-developer/upload-and-view-forms')
 }
 
-/* @TODO: The code below will be refactored in the next PR as part of PBI 17604 */
-// const displayCheckForm = async (req, res, next) => {
-//   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
-//   res.locals.pageTitle = 'View form'
-//   let canDelete = true
-//   let formData
-//
-//   try {
-//     formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
-//     formData.checkWindows = []
-//     const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-//
-//     if (checkWindows[formData.id]) {
-//       // Form is assigned to one or more check windows
-//       formData.checkWindows = checkWindows[formData.id].map(cw => { return cw.toJSON() })
-//       formData.checkWindows.forEach(cw => {
-//         if (cw.startDate <= Date.now()) {
-//           // we can't delete a form whose check window has started.
-//           canDelete = false
-//         }
-//       })
-//     } else {
-//       formData.checkWindows = []
-//     }
-//
-//     req.breadcrumbs(res.locals.pageTitle)
-//     res.render('test-developer/view-check-form', {
-//       form: formData,
-//       canDelete: canDelete,
-//       breadcrumbs: req.breadcrumbs()
-//     })
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+const displayCheckForm = async (req, res, next) => {
+  req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
+  res.locals.pageTitle = 'View form'
+
+  let formData
+  let checkWindows
+
+  try {
+    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
+    formData.checkWindowsName = []
+    formData.canDelete = false
+  } catch (error) {
+    const errorMsg = `Unable to find check form details for form id ${req.params.formId}`
+    console.log(`${errorMsg} - ${error}`)
+    req.flash('error', errorMsg)
+    res.redirect('/test-developer/upload-and-view-forms')
+  }
+
+  try {
+    checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+  } catch (error) {
+    console.log(`Unable to find check window(s) for active check form: ${error.message}`)
+  }
+
+  if (checkWindows[req.params.formId]) {
+    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows[req.params.formId])
+    formData.canDelete = checkFormService.canDelete(checkWindows[req.params.formId])
+  }
+
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('test-developer/view-check-form', {
+    form: formData,
+    num: 1,
+    breadcrumbs: req.breadcrumbs()
+  })
+}
 
 module.exports = {
   getTestDeveloperHome,
   uploadAndViewForms,
   removeCheckForm,
   uploadCheckForm,
-  saveCheckForm
-  //, displayCheckForm
+  saveCheckForm,
+  displayCheckForm
 }

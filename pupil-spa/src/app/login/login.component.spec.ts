@@ -6,6 +6,8 @@ import { LoginComponent } from './login.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
+import { RegisterInputService } from '../services/register-input/registerInput.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -15,6 +17,7 @@ describe('LoginComponent', () => {
   let promiseHelper;
   let mockQuestionService;
   let mockWarmupQuestionService;
+  let mockRegisterInputService;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -42,14 +45,17 @@ describe('LoginComponent', () => {
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]
     });
     mockQuestionService = injector.get(QuestionService);
     mockWarmupQuestionService = injector.get(WarmupQuestionService);
+    mockRegisterInputService = injector.get(RegisterInputService);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
+    spyOn(mockRegisterInputService, 'initialise');
   }));
 
   beforeEach(() => {
@@ -79,6 +85,7 @@ describe('LoginComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
         expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1);
+        expect(mockRegisterInputService.initialise).toHaveBeenCalledTimes(1);
       });
     });
 
