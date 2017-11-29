@@ -145,10 +145,10 @@ const checkFormService = {
    * @returns {*}
    */
   canDelete: (checkWindows) => {
-    let canDelete = true
+    let canDelete = false
     checkWindows.forEach(cw => {
-      if (cw.checkStartDate <= moment.utc()) {
-        canDelete = false
+      if (cw.checkStartDate > moment.utc()) {
+        canDelete = true
       }
     })
     return canDelete

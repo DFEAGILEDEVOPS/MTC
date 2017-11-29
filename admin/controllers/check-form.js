@@ -204,7 +204,7 @@ const displayCheckForm = async (req, res, next) => {
   try {
     formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
     formData.checkWindowsName = []
-    formData.canDelete = true
+    formData.canDelete = false
   } catch (error) {
     const errorMsg = `Unable to find check form details for form id ${req.params.formId}`
     console.log(`${errorMsg} - ${error}`)
