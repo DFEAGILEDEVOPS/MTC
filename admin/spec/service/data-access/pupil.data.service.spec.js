@@ -156,4 +156,20 @@ describe('pupil.data.service', () => {
       expect(mockPupil.verify()).toBe(true)
     })
   })
+
+  describe('#save', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Pupil.prototype).expects('save').resolves(pupilMock)
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil': Pupil
+      })
+    })
+
+    it('calls the model', () => {
+      service.save({ _id: 'some-id' })
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })
