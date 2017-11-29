@@ -27,7 +27,7 @@ restartService.getPupils = async (schoolId) => {
 /**
  * Determine if pupil is eligible for restart
  * @param p
- * @returns {Boolean}
+ * @returns {boolean}
  */
 restartService.isPupilEligible = (p) => {
   // TODO: As part of the next PR pupil restart collection is introduced which will determine the number of restarts per pupil
