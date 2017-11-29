@@ -39,11 +39,11 @@ const checkFormService = {
    */
   populateFromFile: function (checkForm, absCsvFile) {
     if (!checkForm) {
-      throw new Error('Checkform arg missing')
+      throw new Error('Check form arguments missing')
     }
 
     if (!absCsvFile) {
-      throw new Error('CSV file arg missing')
+      throw new Error('CSV file arguments missing')
     }
 
     if (!checkForm.questions) {
@@ -126,6 +126,24 @@ const checkFormService = {
       const promises = modifiedCheckWindows.map(cw => { cw.save() })
       return Promise.all(promises)
     }
+  },
+  /**
+   * Append check windows name(s) and canDelete to check form object.
+   * @param checkWindows
+   * @returns {Promise.<void>}
+   */
+  objectFormattingForSinglePage: async (checkWindows) => {
+    let data = {
+      checkWindowsName: [],
+      canDelete: true
+    }
+    checkWindows.forEach(cw => {
+      data.checkWindowsName.push(' ' + cw.checkWindowName)
+      if (cw.checkStartDate <= Date.now()) {
+        data.canDelete = false
+      }
+    })
+    return data
   }
 }
 

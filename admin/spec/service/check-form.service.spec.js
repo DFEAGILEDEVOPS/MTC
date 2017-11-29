@@ -129,4 +129,21 @@ describe('check-form.service', () => {
       done()
     })
   })
+
+  describe('#unassignedCheckFormsFromCheckWindows()', () => {
+    beforeEach(() => {
+      service = proxyquire('../../services/check-form.service', {
+        '../../services/check-form.service': checkFormService
+      })
+    })
+
+    it('should return a promise', async (done) => {
+      const formData = checkWindowByForm[29]
+      const result = await service.objectFormattingForSinglePage(formData)
+      expect(result.canDelete).toBe(false)
+      expect(result.checkWindowsName.toString()).toBe(' Window Test 1')
+      expect(result).toBeTruthy()
+      done()
+    })
+  })
 })
