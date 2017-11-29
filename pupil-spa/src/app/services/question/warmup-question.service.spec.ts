@@ -2,6 +2,8 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { WarmupQuestionService } from './warmup-question.service';
 import { StorageService } from '../storage/storage.service';
+import { SpeechService } from '../speech/speech.service';
+import { SpeechServiceMock } from '../speech/speech.service.mock';
 
 let storageService;
 const config = {
@@ -14,7 +16,8 @@ describe('WarmupQuestionService', () => {
     const injector = TestBed.configureTestingModule({
       providers: [
         StorageService,
-        WarmupQuestionService
+        WarmupQuestionService,
+        { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     });
     storageService = injector.get(StorageService);

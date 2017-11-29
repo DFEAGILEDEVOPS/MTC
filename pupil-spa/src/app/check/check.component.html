@@ -20,6 +20,23 @@
                  (timeoutEvent)="loadingTimeoutHandler($event)"
                  [total]="totalNumberOfQuestions">
     </app-loading>
+    <app-practice-question
+            *ngSwitchCase="'practice-question'"
+            [factor1]="question.factor1"
+            [factor2]="question.factor2"
+            [questionTimeoutSecs]="config.questionTime"
+            (timeoutEvent)="questionTimeoutHandler($event)"
+            (manualSubmitEvent)="manualSubmitHandler($event)">
+    </app-practice-question>
+    <app-spoken-practice-question
+            *ngSwitchCase="'spoken-practice-question'"
+            [factor1]="question.factor1"
+            [factor2]="question.factor2"
+            [questionTimeoutSecs]="config.questionTime"
+            (timeoutEvent)="questionTimeoutHandler($event)"
+            (manualSubmitEvent)="manualSubmitHandler($event)">
+    </app-spoken-practice-question>
+
     <app-question *ngSwitchCase="'question'"
                   [factor1]="question.factor1"
                   [factor2]="question.factor2"
@@ -27,5 +44,12 @@
                   (timeoutEvent)="questionTimeoutHandler($event)"
                   (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-question>
+    <app-spoken-question *ngSwitchCase="'spoken-question'"
+                  [factor1]="question.factor1"
+                  [factor2]="question.factor2"
+                  [questionTimeoutSecs]="config.questionTime"
+                  (timeoutEvent)="questionTimeoutHandler($event)"
+                  (manualSubmitEvent)="manualSubmitHandler($event)">
+    </app-spoken-question>
     <app-check-complete *ngSwitchCase="'complete'"></app-check-complete>
 </div>

@@ -24,6 +24,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { RegisterInputService} from './services/register-input/registerInput.service';
+import { SpeechService } from './services/speech/speech.service';
 import { StorageService } from './services/storage/storage.service';
 import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
@@ -31,6 +32,10 @@ import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.compo
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
+import { WindowRefService } from './services/window-ref/window-ref.service';
+import { PracticeQuestionComponent } from './practice-question/practice-question.component';
+import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
+import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -59,10 +64,13 @@ const appRoutes: Routes = [
     LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
+    PracticeQuestionComponent,
     QuestionComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent,
-    WarmupLoadingComponent
+    WarmupLoadingComponent,
+    SpokenQuestionComponent,
+    SpokenPracticeQuestionComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -79,11 +87,13 @@ const appRoutes: Routes = [
     FeedbackService,
     LoggedInGuard,
     QuestionService,
+    RegisterInputService,
+    SpeechService,
     StorageService,
     SubmissionService,
     UserService,
     WarmupQuestionService,
-    RegisterInputService
+    WindowRefService
   ],
   bootstrap: [AppComponent]
 })

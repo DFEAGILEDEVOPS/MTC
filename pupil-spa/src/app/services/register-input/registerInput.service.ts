@@ -9,6 +9,10 @@ export class RegisterInputService {
 
   constructor(protected storageService: StorageService, protected questionService: QuestionService) {}
 
+  public initialise() {
+    this.storageService.setItem(RegisterInputService.inputKey, []);
+  }
+
   public addEntry(event) {
     let eventValue;
     if (event.type === 'mousedown') {
