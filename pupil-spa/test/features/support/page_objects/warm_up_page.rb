@@ -24,7 +24,7 @@ class WarmUpPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
 
-  def wait_for_question(time=4)
+  def wait_for_question(time=15)
     wait_until(time + 0.5, 0.1) {has_question?}
   end
 

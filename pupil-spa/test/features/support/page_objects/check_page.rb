@@ -18,10 +18,10 @@ class CheckPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
 
-  def wait_for_question(time=8)
+  def wait_for_question(time=15)
     wait_until(time + 0.5, 0.1) {question.visible?}
   end
-  def wait_for_answer(time=8)
+  def wait_for_answer(time=15)
     wait_until(time + 0.5, 0.1) {answer.visible?}
   end
 
@@ -53,7 +53,7 @@ class CheckPage < SitePrism::Page
     @array_of_answers = []
     number_of_questions.to_i.times do
       wait_for_preload
-      wait_for_question(8)
+      wait_for_question(15)
       wait_until {check_page.question.visible?}
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
