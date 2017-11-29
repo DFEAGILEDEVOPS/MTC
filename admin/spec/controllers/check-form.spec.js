@@ -139,10 +139,6 @@ describe('check-form controller:', () => {
 
     describe('Saving a form', () => {
       beforeEach(() => {
-        const checkForm = new CheckForm
-        checkForm.validate = () => {}
-        checkForm.save = () => {}
-
         spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
         spyOn(CheckForm, 'create').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(fs, 'remove').and.returnValue(checkFormMock)
@@ -150,6 +146,10 @@ describe('check-form controller:', () => {
       })
 
       it('should save the form and redirect the user', async (done) => {
+        let checkForm = {}
+        checkForm.validate = () => {}
+        checkForm.save = () => {}
+
         const res = getRes()
         const req = getReq(goodReqParams)
         req.method = 'POST'
@@ -167,9 +167,7 @@ describe('check-form controller:', () => {
         }
 
         try {
-          const result = await controller(req, res, next)
-          console.log('RESULT', result)
-
+          await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Upload check form')
           expect(checkFormService.populateFromFile).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
@@ -180,17 +178,34 @@ describe('check-form controller:', () => {
         }
 
         try {
-          await CheckForm.validate()
+          await checkForm.save()
+          expect(req.flash).toBeTruthy()
         } catch (error) {
           console.log('ERROR (2)', error)
         }
+      })
+    })
 
-        try {
-          await CheckForm.save()
-          console.log('REQ.FLASH', req.flash)
-        } catch (error) {
-          console.log('ERROR (3)', error)
-        }
+    describe('Clicking a form', () => {
+      beforeEach(() => {
+        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(checkFormMock)
+        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
+        spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
+        spyOn(checkFormService, 'canDelete').and.returnValue(false)
+        controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+      })
+
+      it('should take me to the form page detail', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        req.url = '/test-developer/view-form/29'
+        await controller(req, res, next)
+        expect(res.statusCode).toBe(200)
+        expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
+        expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
+        expect(res.locals.pageTitle).toBe('View form')
+        expect(next).not.toHaveBeenCalled()
+        done()
       })
     })
   })

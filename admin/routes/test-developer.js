@@ -21,6 +21,7 @@ router.post('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER)
 /* GET - choose the check window page */
 router.get('/choose-check-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), async function (req, res, next) {
   res.locals.pageTitle = 'Choose check window'
+
   // the formIds to assign are passed in the query string
   let formIds = []
   let forms

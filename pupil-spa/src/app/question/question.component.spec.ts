@@ -6,9 +6,17 @@ import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
+import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
+
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -22,12 +30,10 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        RegisterInputService,
-        QuestionService,
-        StorageService,
-        SubmissionService
+        WindowRefService,
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]
-    }).compileComponents();
+    }).compileComponents().catch(error => { console.error(error); });
   }));
 
   beforeEach(() => {
@@ -35,84 +41,52 @@ describe('QuestionComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'handleTouchEvent').and.callThrough();
     spyOn(component, 'handleMouseEvent').and.callThrough();
-    fixture.detectChanges();
+
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     spyOn(registerInputService, 'addEntry');
+
+    // Place this last so the spies above are registered.
+    fixture.detectChanges();
   });
 
   it('should be created', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('answerIsLongEnoughToManuallySubmit', () => {
-    it('returns true for a proper answer', () => {
-      component.answer = 'test';
-      expect(component.answerIsLongEnoughToManuallySubmit()).toBeTruthy();
-    });
-    it('returns false for an empty answer', () => {
-      component.answer = '';
-      expect(component.answerIsLongEnoughToManuallySubmit()).toBeFalsy();
-    });
-  });
-
-  describe('onClickAnswer', () => {
-    it('adds the input to the answer if there is room', () => {
-      component.answer = '12';
-      component.onClickAnswer(4);
-      expect(component.answer).toBe('124');
-    });
-    it('does not add the input to the answer if the answer is 5 chars long', () => {
-      component.answer = '12345';
-      component.onClickAnswer(6);
-      expect(component.answer).toBe('12345');
-    });
-  });
-
-  describe('onClickBackspace', () => {
-    it('deletes the end character from the answer', () => {
-      component.answer = '12345';
-      component.onClickBackspace();
-      expect(component.answer).toBe('1234');
-    });
-    it('behaves when the answer is empty', () => {
-      component.answer = '';
-      component.onClickBackspace();
-      expect(component.answer).toBe('');
-    });
-  });
-
-  describe('onSubmit', () => {
-    it('emits the answer', async(() => {
-      component.answer = '123';
-      component.manualSubmitEvent.subscribe(g => {
-        expect(g).toEqual('123');
+  describe('handleMouseEvent', () => {
+    function dispatchMouseEvent() {
+      const event = new MouseEvent('mousedown', {
+        bubbles: true,
+        cancelable: true,
+        view: window
       });
-    }));
-    it('only allows submit to happen once', async(() => {
-      component.answer = '124';
-      component.onSubmit(); // burn the submit
-      expect(component.onSubmit()).toBeFalsy();  // test repeat submission fails
-    }));
-    it('returns false if the answer is too short', async(() => {
-      component.answer = '';
-      expect(component.onSubmit()).toBeFalsy();
-    }));
+      document.dispatchEvent(event);
+    }
+
+    it('tracks mousedown events', () => {
+      dispatchMouseEvent();
+      expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    });
   });
 
-  describe('sendTimeoutEvent', () => {
-    it('emits the answer', async(() => {
-      component.answer = '125';
-      component.timeoutEvent.subscribe(g => {
-        expect(g).toEqual('125');
+  describe('handleTouchEvent', () => {
+    function dispatchTouchEvent() {
+      const event = new TouchEvent('touchstart', {
+        bubbles: true,
+        cancelable: true,
+        view: window
       });
-      expect(component[ 'submitted' ]).toBe(false);
-      component.sendTimeoutEvent();
-      // A duplicate timeout should return false;
-      const retVal = component.sendTimeoutEvent();
-      expect(retVal).toBe(false);
-    }));
+      document.dispatchEvent(event);
+    }
+
+    it('tracks touch events', () => {
+      dispatchTouchEvent();
+      expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handleKeyboardEvent', () => {
@@ -129,16 +103,6 @@ describe('QuestionComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
       expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
       expect(component.answer).toBe('1');
-    });
-
-    it('calls register input service for each keypress', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      dispatchKeyEvent({ key: '5' });
-      dispatchKeyEvent({ key: 'f' });
-      dispatchKeyEvent({ key: 'Enter' });
-      dispatchKeyEvent({ key: ' ' }); // space bar
-      dispatchKeyEvent({ key: 'Control' });
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(5);
     });
 
     it('keyboard calls deleteChar when pressing Backspace or Delete', () => {
@@ -188,39 +152,15 @@ describe('QuestionComponent', () => {
       dispatchKeyEvent({ key: '9' });
       expect(component.answer).toBe('56789');
     });
-  });
 
-  describe('handleMouseEvent', () => {
-    function dispatchMouseEvent() {
-      const event = new MouseEvent('mousedown', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      document.dispatchEvent(event);
-    }
-
-    it('tracks mousedown events', () => {
-      dispatchMouseEvent();
-      expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('handleTouchEvent', () => {
-    function dispatchTouchEvent() {
-      const event = new TouchEvent('touchstart', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      document.dispatchEvent(event);
-    }
-
-    it('tracks touch events', () => {
-      dispatchTouchEvent();
-      expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
+    it('calls register input service for each keypress', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      dispatchKeyEvent({ key: '5' });
+      dispatchKeyEvent({ key: 'f' });
+      dispatchKeyEvent({ key: 'Enter' });
+      dispatchKeyEvent({ key: ' ' }); // space bar
+      dispatchKeyEvent({ key: 'Control' });
+      expect(registerInputService.addEntry).toHaveBeenCalledTimes(5);
     });
   });
 
@@ -246,4 +186,46 @@ describe('QuestionComponent', () => {
     });
   });
 
+  describe('#onClickAnswer', () => {
+    it('calls registerInputService', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickAnswer(42);
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
+    });
+
+    it('adds the number to the answer', () => {
+      component.onClickAnswer(9);
+      expect(component['answer']).toBe('9');
+    });
+  });
+
+  describe('#onClickBackspace', () => {
+    it('calls registerInputService', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickBackspace();
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('backspace', 'click');
+    });
+
+    it('deletes a char from the answer', () => {
+      component['answer'] = '1444';
+      component.onClickBackspace();
+      expect(component['answer']).toBe('144');
+    });
+  });
+
+  describe('#onClickSubnmit', () => {
+    it('calls registerInputService', () => {
+      spyOn(registerInputService, 'storeEntry');
+      component.onClickSubmit();
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('enter', 'click');
+    });
+
+    it('calls onSubmit()', () => {
+      spyOn(component, 'onSubmit');
+      component.onClickSubmit();
+      expect(component.onSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
 });
