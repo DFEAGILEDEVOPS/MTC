@@ -81,32 +81,36 @@ dl.inline-definition-list {
   }
 }
 
-.fixed-factors {
-
-  // mobile
+.first-factor {
   display: inline-block;
+  margin-left: pem(40px);
+  margin-right: pem(6px);
   text-align: right;
-  width: 3.5em;
-  word-spacing: inherit;
+  width: pem(17px);
 
   @include media(tablet) {
-    word-spacing: 0.1em;
-    width: 3.1em;
+    margin-left: pem(10px);
   }
 
-  @include media(desktop) {
-    word-spacing: 0.5em;
-    width: 4.5em;
+  @include media(mobile) {
+    margin-left: pem(15px);
   }
 }
 
+.second-factor {
+  display: inline-block;
+  margin-left: pem(6px);
+  text-align: left;
+  width: pem(15px);
+}
+
 .equals-sign {
-  padding-left: 0.42em;
-  padding-right: 0.42em;
+  margin-left: pem(5px);
+  margin-right: pem(5px);
 
   @include media(tablet) {
-    padding-left: 0.22em;
-    padding-right: 0.22em;
+    margin-left: pem(5px);
+    margin-right: pem(5px);
   }
 }
 

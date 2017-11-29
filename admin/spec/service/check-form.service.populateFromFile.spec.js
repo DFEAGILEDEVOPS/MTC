@@ -32,7 +32,7 @@ describe('check form service', () => {
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toBe('Checkform arg missing')
+      expect(error.message).toBe('Check form arguments missing')
     }
     done()
   })
@@ -43,7 +43,7 @@ describe('check form service', () => {
       expect('expected to throw').toBe('error')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toBe('CSV file arg missing')
+      expect(error.message).toBe('CSV file arguments missing')
     }
     done()
   })

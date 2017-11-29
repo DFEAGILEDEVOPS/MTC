@@ -1,14 +1,3 @@
-<%
-let halfLength = Math.ceil(form.questions.length / 2);
-let col1 = form.questions.filter(function(el, index) {
-      return index < halfLength;
-});
-let col2 = form.questions.filter(function(el, index) {
-    return index >= halfLength;
-});
-let num = 1;
- %>
-
 <div class="grid-row">
     <div class="column-one-half">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
@@ -18,51 +7,61 @@ let num = 1;
     </div>
 </div>
 
-<div class="information">
-    <p tabindex="0">
-        <% if (form.checkWindows.length > 0) { %>
-        This form is assigned to: <%= form.checkWindows.map( cw => { return cw.name; }).join(', '); %>
-        <% } else { %>
-        This form is unassigned
-        <% } %>
-    </p>
-</div>
-
-<h1 class="heading-xlarge-no-top-space" tabindex="0"><%= form.name %></h1>
-<br />
-
 <div class="grid-row">
-    <div class="column-half">
-        <dl class="inline-definition-list" tabindex="0" role="list">
-            <% col1.forEach((q) => { %>
-            <dt class="inline-definition-list" tabindex="0" role="listitem">Q<%= num++ %></dt>
-            <dd class="inline-definition-list">
-                <span class="fixed-factors" tabindex="0" role="listitem"><%= q.f1 %> &times; <%= q.f2 %></span>
-                <span class="equals-sign" tabindex="0" role="listitem">=</span>
-                <span class="fixed-result" tabindex="0" role="listitem"><%= (q.f1 * q.f2) %></span>
-            </dd>
-            <% }); %>
-        </dl>
-    </div>
-    <div class="column-half">
-        <dl class="inline-definition-list">
-            <% col2.forEach((q) => { %>
-            <dt class="inline-definition-list">Q<%= num++ %></dt>
-            <dd class="inline-definition-list">
-                <span class="fixed-factors"><%= q.f1 %> &times; <%= q.f2 %></span>
-                <span class="equals-sign">=</span>
-                <span class="fixed-result"><%= (q.f1 * q.f2) %></span>
-            </dd>
-            <% }); %>
-        </dl>
-    </div>
-</div>
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Form <%= form.name %></h1>
 
-<div class="form-group">
-    <a href="/test-developer/manage-check-forms" class="button button-secondary">Go back to manage check forms</a>
-    <% if (canDelete) { %>
-    <form action="/test-developer/delete-form/<%= form._id %>" method="post" style="display: inline">
-        <input type="submit" class="button-secondary" value="Delete form" />
-    </form>
-    <% } %>
+        <div class="panel panel-border-wide">
+            <% if (form.checkWindowNames.length > 0) { %>
+            This form is assigned to: <%= form.checkWindowNames %>
+            <% } else { %>
+            This form is unassigned
+            <% } %>
+        </div>
+
+        <div class="padding-top">
+            <dl class="inline-definition-list" role="list">
+                <% form.questions.forEach((q) => { %>
+                <dt class="inline-definition-list" role="listitem">Q<%= num++ %></dt>
+                <dd class="inline-definition-list">
+                    <span class="first-factor" role="listitem"><%= q.f1 %></span>
+                    <span class="times-sign" role="listitem">&times;</span>
+                    <span class="second-factor" role="listitem"><%= q.f2 %></span>
+                    <span class="equals-sign" role="listitem">=</span>
+                    <span class="fixed-result" role="listitem"><%= (q.f1 * q.f2) %></span>
+                </dd>
+                <% }); %>
+            </dl>
+            <% if (form.canDelete === true) { %>
+            <br />
+            <a href="/test-developer/delete-form/<%= form._id %>" class="modal-link" id="js-modal-link">Remove form</a>
+            <% } %>
+        </div>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+    <div class="column-one-third add-title-margin">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" rel="noopener noreferrer" target="_blank">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="#">Assign forms to check window</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
 </div>
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Please confirm',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
+}) %>
