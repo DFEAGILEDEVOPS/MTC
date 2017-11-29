@@ -207,7 +207,7 @@ const displayCheckForm = async (req, res, next) => {
     formData.canDelete = true
   } catch (error) {
     const errorMsg = `Unable to find check form details for form id ${req.params.formId}`
-    console.log(errorMsg)
+    console.log(`${errorMsg} - ${error}`)
     req.flash('error', errorMsg)
     res.redirect('/test-developer/upload-and-view-forms')
   }

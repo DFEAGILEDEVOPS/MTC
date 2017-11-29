@@ -128,9 +128,9 @@ const checkFormService = {
     }
   },
   /**
-   * Append check windows name(s) and canDelete to check form object.
+   * Return check windows name(s).
    * @param checkWindows
-   * @returns {Promise.<void>}
+   * @returns {Array}
    */
   checkWindowNames: (checkWindows) => {
     let checkWindowsName = []
@@ -140,12 +140,12 @@ const checkFormService = {
     return checkWindowsName
   },
   /**
-   * Append check windows name(s) and canDelete to check form object.
+   * Return canDelete.
    * @param checkWindows
-   * @returns {Promise.<void>}
+   * @returns {*}
    */
   canDelete: (checkWindows) => {
-    let canDelete
+    let canDelete = true
     checkWindows.forEach(cw => {
       if (cw.checkStartDate <= moment.utc()) {
         canDelete = false
