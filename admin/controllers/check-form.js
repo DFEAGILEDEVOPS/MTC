@@ -219,7 +219,7 @@ const displayCheckForm = async (req, res, next) => {
   }
 
   if (checkWindows[req.params.formId]) {
-    formData.checkWindowsName = checkFormService.checkWindowNames(checkWindows[req.params.formId])
+    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows[req.params.formId])
     formData.canDelete = checkFormService.canDelete(checkWindows[req.params.formId])
   }
 
