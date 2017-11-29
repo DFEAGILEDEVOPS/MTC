@@ -3,8 +3,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { SpeechService } from './speech.service';
 import { AuditService } from '../audit/audit.service';
 import { AuditServiceMock } from '../audit/audit.service.mock';
-
-
+import { WindowRefService } from '../window-ref/window-ref.service';
 
 describe('SpeechService', () => {
   const auditServiceMock = new AuditServiceMock();
@@ -13,7 +12,8 @@ describe('SpeechService', () => {
     TestBed.configureTestingModule({
       providers: [
         SpeechService,
-        { provide: AuditService, useValue: auditServiceMock }
+        { provide: AuditService, useValue: auditServiceMock },
+        WindowRefService
       ]
     });
   });
@@ -53,6 +53,7 @@ describe('SpeechService', () => {
       });
       service.speak('9 times 9');
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
+      expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
   });
 });

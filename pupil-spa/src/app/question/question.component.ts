@@ -1,67 +1,22 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
-import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-question',
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
 })
-export class QuestionComponent implements OnInit, AfterViewInit {
+export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
-  constructor(private auditService: AuditService, private registerInputService: RegisterInputService) {
+  constructor(protected auditService: AuditService,
+              protected windowRefService: WindowRefService,
+              protected registerInputService: RegisterInputService) {
+    super(auditService, windowRefService);
+    this.window = windowRefService.nativeWindow;
   }
-
-  @Input()
-  public factor1 = 0;
-
-  @Input()
-  public factor2 = 0;
-
-  @Input()
-  public questionTimeoutSecs;
-
-  @Output()
-  manualSubmitEvent: EventEmitter<any> = new EventEmitter();
-
-  @Output()
-  timeoutEvent: EventEmitter<any> = new EventEmitter();
-
-  /**
-   * The users answer made up of recorded numbers.
-   * This is a string as the user may have leading zeros which we want to store.
-   * Used in the template.
-   */
-  public answer = '';
-
-  /**
-   * The remaining time in seconds until the answer is automatically submitted
-   * Used in the template.
-   */
-  public remainingTime: number;
-
-  /**
-   * The time in ms since the epoch when the answer will be automatically submitted.
-   * Used to calculate the remaining time counter.
-   */
-  private stopTime: number;
-
-  /**
-   * Flag to indicate that the answer has been submitted (either manually or on timeout)
-   */
-  private submitted = false;
-
-  /**
-   * Store the return value of setTimeout used to submit the answer.  The setTimeout() is cancelled
-   * if the user manually submits the answer.
-   */
-  private timeout: number;
-
-  /**
-   * Store the return value of setInterval - so it can be cancelled
-   */
-  private countdownInterval: number;
 
   /**
    * Track all mouse click activity
@@ -85,12 +40,12 @@ export class QuestionComponent implements OnInit, AfterViewInit {
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log('question.component: handleKeyboardEvent(): event: ', event);
+    // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
+    this.registerInputService.addEntry(event);
     const key = event.key;
     // register inputs
-    this.registerInputService.addEntry(event);
     switch (key) {
       case 'Backspace':
       case 'Delete':
@@ -113,40 +68,6 @@ export class QuestionComponent implements OnInit, AfterViewInit {
         break;
     }
     // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
-    return false;
-  }
-
-  ngOnInit() {
-    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
-    this.remainingTime = this.questionTimeoutSecs;
-  }
-
-  /**
-   * Start the timer when the view is ready.
-   */
-  ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionRendered());
-    this.timeout = window.setTimeout(() => {
-      this.sendTimeoutEvent();
-    }, this.questionTimeoutSecs * 1000);
-    this.countdownInterval = window.setInterval(() => {
-      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
-      if (timeLeft < 0 ) {
-        clearInterval(this.countdownInterval);
-        timeLeft = 0;
-      }
-      this.remainingTime = Math.ceil(timeLeft);
-    }, 250);
-  }
-
-  /**
-   * Check a manual submission to see if it is allowed.
-   * @return {boolean}
-   */
-  answerIsLongEnoughToManuallySubmit() {
-    if (this.answer.length > 0) {
-      return true;
-    }
     return false;
   }
 
@@ -174,70 +95,4 @@ export class QuestionComponent implements OnInit, AfterViewInit {
     this.registerInputService.storeEntry('enter', 'click');
     this.onSubmit();
   }
-
-  /**
-   * Called from pressing Enter on the virtual Keypad or pressing the enter key on the keyboard
-   * @return {boolean}
-   */
-  onSubmit() {
-    if (this.submitted) {
-      // console.log('answer already submitted');
-      return false;
-    }
-    if (!this.answerIsLongEnoughToManuallySubmit()) {
-      // console.log('answer not provided');
-      return false;
-    }
-    // Prevent the default timeout from firing later
-    if (this.timeout) {
-      // console.log(`Clearing timeout: ${this.timeout}`);
-      clearTimeout(this.timeout);
-    }
-    // Clear the interval timer
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-    }
-    // console.log(`submitting answer ${this.answer}`);
-
-    this.auditService.addEntry(new QuestionAnswered());
-    this.manualSubmitEvent.emit(this.answer);
-    this.submitted = true;
-    return true;
-  }
-
-  /**
-   * Send the collected answer back to the parent component when the timer has
-   * timed out.  Send whatever answer has been collected so far.
-   * @return {boolean}
-   */
-  sendTimeoutEvent() {
-    if (this.submitted) {
-      // console.log('sendTimeout(): answer already submitted');
-      return false;
-    }
-    // console.log(`question.component: sendTimeoutEvent(): ${this.answer}`);
-    this.timeoutEvent.emit(this.answer);
-    this.submitted = true;
-  }
-
-  /**
-   * Add a character to the answer - up to a max of 5 which is all we can show
-   * @param {string} char
-   */
-  addChar(char: string) {
-    // console.log(`addChar() called with ${char}`);
-    if (this.answer.length < 5) {
-      this.answer = this.answer.concat(char);
-    }
-  }
-
-  /**
-   * Delete a character from the end of the answer if there is one
-   */
-  deleteChar() {
-    if (this.answer.length > 0) {
-      this.answer = this.answer.substr(0, this.answer.length - 1);
-    }
-  }
-
 }

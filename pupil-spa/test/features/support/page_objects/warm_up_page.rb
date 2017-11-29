@@ -4,7 +4,7 @@ class WarmUpPage < SitePrism::Page
   element :heading, '.heading-xlarge', text: "Practice questions"
   element :preload, '.preload'
   element :timer,'.remaining-time-warmup'
-  element :question, '.question'
+  element :question, 'span.question'
   element :start_warm_up_questions, '#start-now-button'
   element :welcome_message, '.lede', text: "Now there will be 3 practice questions"
   element :start_now, '#start-now-button'
@@ -24,8 +24,13 @@ class WarmUpPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
 
-  def wait_for_question(time=4)
-    wait_until(time + 0.5, 0.1) {has_question?}
+  def wait_for_question(time=15)
+    sleep 1
+    Timeout.timeout(time){sleep 0.5 until question.visible?}
+  end
+
+  def wait_for_answer(time=15)
+    Timeout.timeout(time){sleep 1 until answer.visible?}
   end
 
   def answer_question_via(input_type, answer)
