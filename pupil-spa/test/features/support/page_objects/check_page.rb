@@ -3,7 +3,7 @@ class CheckPage < SitePrism::Page
 
   element :preload, '.preload'
   element :timer, '.remaining-time'
-  element :question, '.question'
+  element :question, 'span.question'
   element :answer, '#js-answer'
 
   section :number_pad, NumberPadSection, '.numpad'
@@ -19,10 +19,12 @@ class CheckPage < SitePrism::Page
   end
 
   def wait_for_question(time=15)
-    wait_until(time + 0.5, 0.1) {question.visible?}
+    sleep 1
+    Timeout.timeout(time){sleep 0.5 until question.visible?}
   end
+
   def wait_for_answer(time=15)
-    wait_until(time + 0.5, 0.1) {answer.visible?}
+    Timeout.timeout(time){sleep 1 until answer.visible?}
   end
 
   def answer_question_via(input_type, answer)
