@@ -23,7 +23,7 @@ And(/^I can see sub heading '(.*)' on Upload new form Page$/) do|sub_heading|
 end
 
 And(/^I can see the Info message on Upload new form Page$/) do
-  expect(upload_and_view_forms_page.new_form_info_message.map {|message| message.text}).to include "Download the example Check form example (CSV)"
+  expect(upload_and_view_forms_page.new_form_info_message.map {|message| message.text}).to include "Download the example Check form example (CSV file)"
   expect(upload_and_view_forms_page.new_form_info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
   expect(upload_and_view_forms_page.new_form_info_message.map {|message| message.text}).to include "Add check questions using the given format"
   expect(upload_and_view_forms_page.new_form_info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
