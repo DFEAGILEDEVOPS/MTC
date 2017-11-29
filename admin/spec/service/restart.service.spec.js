@@ -32,7 +32,7 @@ describe('restart.service', () => {
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(schoolDataService, 'findOne').and.returnValue(schoolMock)
       spyOn(pupilDataService, 'getSortedPupils').and.returnValue([pupil1, pupil2])
-      spyOn(restartService, 'isEligiblePupil').and.returnValue(true)
+      spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
       try {
         result = await restartService.getPupils(schoolMock._id)
@@ -43,24 +43,24 @@ describe('restart.service', () => {
     })
   })
 
-  describe('isEligiblePupil', () => {
+  describe('isPupilEligible', () => {
     it('it should return false if pupil has been restarted exactly 2 times', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.restartCount = 2
-      const result = restartService.isEligiblePupil(pupil)
+      const result = restartService.isPupilEligible(pupil)
       expect(result).toBeFalsy()
     })
     it('it should return false if pupil has an attendance code', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.attendanceCode = { code: 2 }
-      const result = restartService.isEligiblePupil(pupil)
+      const result = restartService.isPupilEligible(pupil)
       expect(result).toBeFalsy()
     })
     it('it should return true if pupil does not have an active pin', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.pinExpiresAt = moment.utc()
       spyOn(pinValidator, 'isActivePin').and.returnValue(false)
-      const result = restartService.isEligiblePupil(pupil)
+      const result = restartService.isPupilEligible(pupil)
       expect(result).toBeTruthy()
     })
   })

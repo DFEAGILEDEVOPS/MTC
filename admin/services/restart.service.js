@@ -3,6 +3,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pinValidator = require('../lib/validator/pin-validator')
+const dateService = require('../services/date.service')
 
 const restartService = {}
 
@@ -16,9 +17,9 @@ restartService.getPupils = async (schoolId) => {
   if (!school) throw new Error(`School [${schoolId}] not found`)
   let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
   pupils = pupils
-    .filter(p => restartService.isEligiblePupil(p))
+    .filter(p => restartService.isPupilEligible(p))
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-      ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
+      ({ _id, pin, dob: () => dateService.formatLongGdsDate(dob), foreName, middleNames, lastName }))
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
 }
@@ -28,7 +29,7 @@ restartService.getPupils = async (schoolId) => {
  * @param p
  * @returns {Boolean}
  */
-restartService.isEligiblePupil = (p) => {
+restartService.isPupilEligible = (p) => {
   // This is undergoing changes as the count won't be attached to the pupil collection
   let restartCount = p.restartCount || 0
   if (restartCount >= 2 || p.attendanceCode) return false
