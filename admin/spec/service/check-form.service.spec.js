@@ -130,19 +130,22 @@ describe('check-form.service', () => {
     })
   })
 
-  describe('#unassignedCheckFormsFromCheckWindows()', () => {
-    beforeEach(() => {
-      service = proxyquire('../../services/check-form.service', {
-        '../../services/check-form.service': checkFormService
-      })
-    })
-
-    it('should return a promise', async (done) => {
+  describe('#checkWindowNames()', () => {
+    it('should return a string value', (done) => {
       const formData = checkWindowByForm[29]
-      const result = await service.objectFormattingForSinglePage(formData)
-      expect(result.canDelete).toBe(false)
-      expect(result.checkWindowsName.toString()).toBe(' Window Test 1')
+      const result = service.checkWindowNames(formData)
+      expect(result.toString()).toBe(' Window Test 1')
       expect(result).toBeTruthy()
+      done()
+    })
+  })
+
+  describe('#canDelete()', () => {
+    it('should return a boolean', (done) => {
+      const formData = checkWindowByForm[29]
+      const result = service.canDelete(formData)
+      expect(result.toString()).toBe('false')
+      expect(result).toBeFalsy()
       done()
     })
   })

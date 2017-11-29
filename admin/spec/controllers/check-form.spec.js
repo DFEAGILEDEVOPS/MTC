@@ -146,7 +146,7 @@ describe('check-form controller:', () => {
       })
 
       it('should save the form and redirect the user', async (done) => {
-        const checkForm = new CheckForm()
+        let checkForm = {}
         checkForm.validate = () => {}
         checkForm.save = () => {}
 
@@ -190,10 +190,8 @@ describe('check-form controller:', () => {
       beforeEach(() => {
         spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(checkFormMock)
         spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
-        spyOn(checkFormService, 'objectFormattingForSinglePage').and.returnValue({
-          checkWindowsName: 'Check Window 1',
-          canDelete: false
-        })
+        spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
+        spyOn(checkFormService, 'canDelete').and.returnValue(false)
         controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
       })
 

@@ -15,6 +15,14 @@
         </div>
         <% } %>
 
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
         <h1 class="heading-xlarge">Upload and view forms</h1>
         <p class="lede" id="lead-paragraph">
             View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.

@@ -199,16 +199,28 @@ const displayCheckForm = async (req, res, next) => {
   res.locals.pageTitle = 'View form'
 
   let formData
+  let checkWindows
 
-  formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
-  formData.checkWindowsName = []
-  formData.canDelete = true
-  const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+  try {
+    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
+    formData.checkWindowsName = []
+    formData.canDelete = true
+  } catch (error) {
+    const errorMsg = `Unable to find check form details for form id ${req.params.formId}`
+    console.log(errorMsg)
+    req.flash('error', errorMsg)
+    res.redirect('/test-developer/upload-and-view-forms')
+  }
+
+  try {
+    checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+  } catch (error) {
+    console.log(`Unable to find check window(s) for active check form: ${error.message}`)
+  }
 
   if (checkWindows[req.params.formId]) {
-    const formDataExtras = await checkFormService.objectFormattingForSinglePage(checkWindows[req.params.formId])
-    formData.checkWindowsName = formDataExtras.checkWindowsName
-    formData.canDelete = formDataExtras.canDelete
+    formData.checkWindowsName = checkFormService.checkWindowNames(checkWindows[req.params.formId])
+    formData.canDelete = checkFormService.canDelete(checkWindows[req.params.formId])
   }
 
   req.breadcrumbs(res.locals.pageTitle)

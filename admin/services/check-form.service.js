@@ -132,18 +132,26 @@ const checkFormService = {
    * @param checkWindows
    * @returns {Promise.<void>}
    */
-  objectFormattingForSinglePage: async (checkWindows) => {
-    let data = {
-      checkWindowsName: [],
-      canDelete: true
-    }
+  checkWindowNames: (checkWindows) => {
+    let checkWindowsName = []
     checkWindows.forEach(cw => {
-      data.checkWindowsName.push(' ' + cw.checkWindowName)
-      if (cw.checkStartDate <= Date.now()) {
-        data.canDelete = false
+      checkWindowsName.push(' ' + cw.checkWindowName)
+    })
+    return checkWindowsName
+  },
+  /**
+   * Append check windows name(s) and canDelete to check form object.
+   * @param checkWindows
+   * @returns {Promise.<void>}
+   */
+  canDelete: (checkWindows) => {
+    let canDelete
+    checkWindows.forEach(cw => {
+      if (cw.checkStartDate <= moment.utc()) {
+        canDelete = false
       }
     })
-    return data
+    return canDelete
   }
 }
 
