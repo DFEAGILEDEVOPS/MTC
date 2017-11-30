@@ -19,6 +19,10 @@ jobs:
     steps:
       - checkout
 
+      # what does the structure look like?
+      - run: ls -lah
+
+
       # Download and cache dependencies
       - restore_cache:
           keys:
