@@ -22,8 +22,10 @@ export class CheckComponent implements OnInit {
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
   private static warmupQuestionRe = /^W(\d+)$/;
+  private static spokenWarmupQuestionRe = /^SW(\d+)$/;
   private static warmupCompleteRe = /^warmup-complete$/;
   private static questionRe = /^Q(\d+)$/;
+  private static spokenQuestionRe = /^SQ(\d+)$/;
   private static loadingRe = /^L(\d+)$/;
   private static completeRe = /^complete$/;
 
@@ -76,6 +78,9 @@ export class CheckComponent implements OnInit {
   }
 
   ngOnInit() {
+    // console.log('check.component: ngOnInit() called');
+    this.config = this.warmupQuestionService.getConfig();
+
     this.initStates();
 
     // Prevent the user going back a page
@@ -86,10 +91,10 @@ export class CheckComponent implements OnInit {
 
     // set up the state
     if (this.hasExistingState()) {
+      // console.log('Existing state detected: loading state')
       this.loadExistingState();
     } else {
       this.question = this.warmupQuestionService.getQuestion(1);
-      this.config = this.warmupQuestionService.getConfig();
       this.state = 0;
       this.isWarmUp = true;
       this.viewState = 'warmup-intro';
@@ -100,12 +105,14 @@ export class CheckComponent implements OnInit {
   private loadExistingState() {
     // assume we are reloading during a check
     const existingState = this.storageService.getItem(CheckComponent.checkStateKey);
+    // console.log(`loadExistingState: state is ${existingState}`)
     if (!this.isValidState(existingState)) {
       throw new Error(`Invalid state '${existingState}'`);
     }
     this.state = existingState;
+    // console.log(`loadExistingState: state is ${this.state}`)
     this.isWarmUp = this.isWarmUpState();
-    this.config = this.warmupQuestionService.getConfig();
+
     this.totalNumberOfQuestions = this.isWarmUp ?
       this.warmupQuestionService.getNumberOfQuestions() :
       this.questionService.getNumberOfQuestions();
@@ -123,8 +130,8 @@ export class CheckComponent implements OnInit {
    */
   private changeState() {
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
-
     this.state += 1; // increment state to next level - it's defined by an array
+    // console.log(`changeState(): state is now set to ${this.state}`);
     this.storageService.setItem(CheckComponent.checkStateKey, this.state);
 
     const stateDesc = this.getStateDescription();
@@ -149,7 +156,16 @@ export class CheckComponent implements OnInit {
         this.isWarmUp = true;
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
-        this.viewState = 'question';
+        this.viewState = 'practice-question';
+        break;
+      }
+      case CheckComponent.spokenWarmupQuestionRe.test(stateDesc): {
+        // Show the warmup question screen
+        const matches = CheckComponent.spokenWarmupQuestionRe.exec(stateDesc);
+        this.isWarmUp = true;
+        // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
+        this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'spoken-practice-question';
         break;
       }
       case CheckComponent.warmupCompleteRe.test(stateDesc):
@@ -172,6 +188,14 @@ export class CheckComponent implements OnInit {
         const matches = CheckComponent.questionRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
+        break;
+      }
+      case CheckComponent.spokenQuestionRe.test(stateDesc): {
+        // Show the question screen
+        this.isWarmUp = false;
+        const matches = CheckComponent.spokenQuestionRe.exec(stateDesc);
+        this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
+        this.viewState = 'spoken-question';
         break;
       }
       case CheckComponent.completeRe.test(stateDesc):
@@ -249,14 +273,22 @@ export class CheckComponent implements OnInit {
     this.allowedStates.push('warmup-intro');
     for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`LW${i + 1}`);
-      this.allowedStates.push(`W${i + 1}`);
+      if (this.config.speechSynthesis) {
+        this.allowedStates.push(`SW${i + 1}`);
+      } else {
+        this.allowedStates.push(`W${i + 1}`);
+      }
     }
     this.allowedStates.push('warmup-complete');
 
     // Setup the Questions
     for (let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`L${i + 1}`);
-      this.allowedStates.push(`Q${i + 1}`);
+      if (this.config.speechSynthesis) {
+        this.allowedStates.push(`SQ${i + 1}`);
+      } else {
+        this.allowedStates.push(`Q${i + 1}`);
+      }
     }
 
     // Set up the final page
@@ -269,11 +301,12 @@ export class CheckComponent implements OnInit {
    */
   refreshDetected() {
     const stateDesc = this.getStateDescription();
-    // console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
+    console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
     this.auditService.addEntry(new RefreshDetected());
 
     // Lets say that handling reloads during the check should always show the current screen
-    // in which case handling the reload whilst a question was being shown is a special case.
+    // in which case handling the reload whilst a question was being shown is a special case
+    // where the state is incremented.
     if (CheckComponent.questionRe.test(stateDesc)) {
       // the page was reloaded when a question was shown
       // Store the answer as the empty string (as there was no input)
@@ -283,8 +316,20 @@ export class CheckComponent implements OnInit {
       this.question = this.questionService.getQuestion(questionNum);
       const answer = new Answer(this.question.factor1, this.question.factor2, '');
       this.answerService.setAnswer(answer);
+      // console.log('refreshDetected(): calling changeState()');
       this.changeState();
-    } else if (CheckComponent.warmupQuestionRe.test(stateDesc)) {
+    } else if (CheckComponent.spokenQuestionRe.test(stateDesc)) {
+      // the page was reloaded when a question was shown
+      // Store the answer as the empty string (as there was no input)
+      // we need to initialise the current question, with the one from the current state
+      const matches = CheckComponent.spokenQuestionRe.exec(stateDesc);
+      const questionNum = parseInt(matches[ 1 ], 10);
+      this.question = this.questionService.getQuestion(questionNum);
+      const answer = new Answer(this.question.factor1, this.question.factor2, '');
+      this.answerService.setAnswer(answer);
+      // console.log('refreshDetected(): calling changeState()');
+      this.changeState();
+    } else if (CheckComponent.warmupQuestionRe.test(stateDesc) || CheckComponent.spokenWarmupQuestionRe.test(stateDesc)) {
       this.changeState();
     } else {
       // trigger stateChange to move to the same state again
@@ -325,6 +370,7 @@ export class CheckComponent implements OnInit {
       case CheckComponent.warmupLoadingRe.test(stateDesc):
       case CheckComponent.warmupIntroRe.test(stateDesc):
       case CheckComponent.warmupCompleteRe.test(stateDesc):
+      case CheckComponent.spokenWarmupQuestionRe.test(stateDesc):
         isWarmUp = true;
         break;
 
