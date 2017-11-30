@@ -9,6 +9,7 @@ const restartService = require('../../services/restart.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
+
 /* global describe, it, expect, beforeEach, afterEach, spyOn */
 
 describe('restart.service', () => {
