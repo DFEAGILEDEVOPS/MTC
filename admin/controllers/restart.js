@@ -60,9 +60,10 @@ controller.postSubmitRestartList = async (req, res, next) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
   req.flash('info', `${submittedPupils.length} new pupils have been submitted for restart`)
-  return res.render('restart/overview', {
+  return res.render('restart/restart-overview', {
     breadcrumbs: req.breadcrumbs(),
-    submittedPupils
+    submittedPupils,
+    messages: req.flash('info')
   })
 }
 

@@ -11,8 +11,7 @@ const PupilRestart = new Schema({
     ref: 'Pupil'
   },
   recordedByUser: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: String
   },
   reason: {
     type: String
@@ -32,8 +31,7 @@ const PupilRestart = new Schema({
     required: true
   },
   deletedBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: String
   },
   deletedAt: {
     type: Date

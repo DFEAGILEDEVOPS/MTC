@@ -60,7 +60,7 @@ pinService.expireMultiplePins = async (pupilIds) => {
   let pupils = []
   for (let index = 0; index < pupilIds.length; index++) {
     const id = pupilIds[ index ]
-    const pupil = await pupilDataService.findOne(id)
+    const pupil = await pupilDataService.findOne({_id: ObjectId(id)})
     if (pupil.pin || pupil.pinExpiresAt) pupils.push(pupil)
   }
   if (pupils.length === 0) return

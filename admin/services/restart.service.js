@@ -1,4 +1,5 @@
 const moment = require('moment')
+const Promise = require('bluebird')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -23,9 +24,12 @@ restartService.getPupils = async (schoolId) => {
   const school = await schoolDataService.findOne({_id: schoolId})
   if (!school) throw new Error(`School [${schoolId}] not found`)
   let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
-  pupils = pupils
-    .filter(async p => restartService.isPupilEligible(p))
-    .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
+  pupils = await Promise.filter(pupils.map(async p => {
+    const isPupilEligible = await restartService.isPupilEligible(p)
+    if (isPupilEligible) return p
+  }), p => !!p)
+  if (pupils.length === 0) return []
+  pupils = pupils.map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: () => dateService.formatLongGdsDate(dob), foreName, middleNames, lastName }))
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
