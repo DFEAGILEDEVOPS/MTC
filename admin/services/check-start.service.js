@@ -2,9 +2,9 @@
 
 const uuidv4 = require('uuid/v4')
 const moment = require('moment')
-const Check = require('../models/check')
 const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
+const checkDataService = require('../services/data-access/check.data.service')
 
 const checkStartService = {
   /**
@@ -23,22 +23,23 @@ const checkStartService = {
     const checkCode = uuidv4()
 
     // Ensure that the checkCode is unique - let's give a big hand to CosmosDB everyone, for not supporting
-    // unique indexes
-    // TODO: move this to data-access service
-    const found = await Check.findOne({checkCode}).lean().exec()
+    // secondary unique indexes.
+    const found = await checkDataService.findOneByCheckCode(checkCode)
     if (found) {
       throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
     }
-    // Save the details to the `Check` collection
-    const check = new Check({
+
+    const checkData = {
       pupilId,
       checkCode,
       checkWindowId: checkWindow._id,
       checkFormId: checkForm._id,
       pupilLoginDate: moment.utc(),
       checkStartedAt: null
-    })
-    await check.save()
+    }
+
+    // Save the details to the `Check` collection
+    await checkDataService.create(checkData)
 
     return {
       checkCode,
