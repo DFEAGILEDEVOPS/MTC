@@ -1,6 +1,6 @@
 'use strict'
 
-const PupilRestart = require('../../models/pupil-restarts')
+const PupilRestart = require('../../models/pupil-restart')
 const pupilRestartDataService = {}
 
 /**

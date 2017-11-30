@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
-const pupilRestarts = new Schema({
+const PupilRestart = new Schema({
   pupilId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -40,4 +40,4 @@ const pupilRestarts = new Schema({
   }
 }, {timestamps: true})
 
-module.exports = mongoose.model('pupilRestarts', pupilRestarts)
+module.exports = mongoose.model('PupilRestart', PupilRestart)

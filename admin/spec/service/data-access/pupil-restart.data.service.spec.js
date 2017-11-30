@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 require('sinon-mongoose')
 
-const PupilRestarts = require('../../../models/pupil-restarts')
+const PupilRestart = require('../../../models/pupil-restart')
 const pupilRestartMocks = require('../../mocks/pupil-restarts')
 
 describe('pupil-restart.data.service', () => {
@@ -21,9 +21,9 @@ describe('pupil-restart.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestarts.prototype).expects('save').resolves(pupilRestartMocks)
+      mock = sandbox.mock(PupilRestart.prototype).expects('save').resolves(pupilRestartMocks)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
-        '../../models/pupil-restarts': PupilRestarts
+        '../../models/pupil-restarts': PupilRestart
       })
     })
 
@@ -36,9 +36,9 @@ describe('pupil-restart.data.service', () => {
   describe('#count', () => {
     let mock
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestarts).expects('count').chain('exec').resolves(1)
+      mock = sandbox.mock(PupilRestart).expects('count').chain('exec').resolves(1)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
-        '../../models/pupil-restarts': PupilRestarts
+        '../../models/pupil-restarts': PupilRestart
       })
     })
 
