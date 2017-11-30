@@ -35,9 +35,5 @@ jobs:
         
       # run tests!
       - run: cd admin;yarn test
-  
-  build-spa:
-    docker:
-      - image: 
 
 
