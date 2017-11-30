@@ -7,7 +7,7 @@ cache:
   - yarn
 
 env:
-  - TEST_TYPE=admin-specs
+#  - TEST_TYPE=admin-specs
   - TEST_TYPE=pupil-specs
   - TEST_TYPE=admin-e2e
   - TEST_TYPE=pupil-e2e
@@ -30,11 +30,13 @@ addons:
 
 services: mongodb
 
-sudo: false
+sudo: required
 
 before_install:
 #  - "$CXX --version"
-  - rvm install 2.4.0
+  - sudo apt-get update
+  - rvm use 2.4.1
+  - sudo apt-get install google-chrome-stable
 
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install
