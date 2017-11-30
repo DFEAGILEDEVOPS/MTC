@@ -19,7 +19,7 @@ az cosmosdb database create \
 	--db-name $databaseName \
 	--resource-group $resourceGroupName
 
-cd design/schemas/database
+cd ./../../design/schemas/database
 declare collections=$(ls -1 *.json | sed -e 's/\..*$//')
 
 ## now loop through the above array
