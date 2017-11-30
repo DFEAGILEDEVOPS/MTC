@@ -6,7 +6,7 @@ const pinValidator = require('../../../lib/validator/pin-validator')
 
 describe('pin-validator', () => {
   let pinExpiredAt
-  describe('isValidPin', () => {
+  describe('isActivePin', () => {
     let sandbox
     beforeEach(() => { sandbox = sinon.sandbox.create() })
     afterEach(() => sandbox.restore())
@@ -16,7 +16,7 @@ describe('pin-validator', () => {
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
       })
       it('if pinExpiredAt date field is later than current time', async () => {
-        const result = await pinValidator.isValidPin('abc1f', pinExpiredAt)
+        const result = await pinValidator.isActivePin('abc1f', pinExpiredAt)
         expect(result).toBeTruthy()
       })
     })
@@ -26,7 +26,7 @@ describe('pin-validator', () => {
         sandbox.useFakeTimers(moment().startOf('day').add(1, 'years').valueOf())
       })
       it('if pinExpiredAt date field is earlier than current time', async () => {
-        const result = await pinValidator.isValidPin('abc1f', pinExpiredAt)
+        const result = await pinValidator.isActivePin('abc1f', pinExpiredAt)
         expect(result).toBeFalsy()
       })
     })

@@ -64,7 +64,7 @@ describe('pin.service', () => {
     describe('if pin is valid', () => {
       beforeEach(() => {
         sandbox.mock(schoolDataService).expects('findOne').resolves(school)
-        sandbox.mock(pinValidator).expects('isValidPin').returns(true)
+        sandbox.mock(pinValidator).expects('isActivePin').returns(true)
         service = proxyquire('../../services/pin.service', {
           '../../services/data-access/school.data.service': schoolDataService,
           '../../lib/validator/pin-validator': pinValidator
@@ -79,7 +79,7 @@ describe('pin.service', () => {
     describe('if pin is invalid', () => {
       beforeEach(() => {
         sandbox.mock(schoolDataService).expects('findOne').resolves(school)
-        sandbox.mock(pinValidator).expects('isValidPin').returns(false)
+        sandbox.mock(pinValidator).expects('isActivePin').returns(false)
         service = proxyquire('../../services/pin.service', {
           '../../services/data-access/school.data.service': schoolDataService,
           '../../lib/validator/pin-validator': pinValidator
