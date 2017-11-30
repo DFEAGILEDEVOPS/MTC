@@ -69,3 +69,10 @@ Feature:
     Then I should see the breadcrumb as "Home > Pupils not taking the check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
+
+  Scenario: Verify breadcrumb on restarts page
+    Given I am logged in
+    And I navigate to Restarts page
+    Then I should see the breadcrumb as "Home > Restarts"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
