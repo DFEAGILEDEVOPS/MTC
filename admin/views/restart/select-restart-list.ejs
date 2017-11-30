@@ -6,11 +6,162 @@
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
+<form method="post" action="#">
 
-<div class="grid-row">
+<div class="grid-row" id="select-pupils-restart" aria-describedby="heading-xlarge">
     <div class="column-two-thirds">
-        <header class="page-header">
-            <h1 class="heading-xlarge">Select pupils for restart</h1>
-        </header>
+        <h1 class="heading-xlarge" id="heading-xlarge">Select pupils for restart</h1>
+        <br />
+        <h2>1. Select reason for restart</h2>
+        <ul class="list restart-list">
+            <li>
+                <div class="multiple-choice">
+                    <input id="restart-reason-1"
+                           type="radio"
+                           role="radio"
+                           aria-checked="false"
+                           name="restartReason"
+                           value="Loss of internet">
+                    <label for="restart-code-1">Loss of internet</label>
+                </div>
+            </li>
+            <li>
+                <div class="multiple-choice">
+                    <input id="restart-reason-2"
+                           type="radio"
+                           role="radio"
+                           aria-checked="false"
+                           name="restartReason"
+                           value="Loss of internet">
+                    <label for="restart-reason-2">IT issues</label>
+                </div>
+            </li>
+            <li>
+                <div class="multiple-choice">
+                    <input id="restart-reason-3"
+                           type="radio"
+                           role="radio"
+                           aria-checked="false"
+                           name="restartReason"
+                           value="Loss of internet">
+                    <label for="restart-reason-3">Classroom disruption</label>
+                </div>
+            </li>
+            <li>
+                <div class="multiple-choice">
+                    <input id="restart-reason-4"
+                           type="radio"
+                           role="radio"
+                           aria-checked="false"
+                           name="restartReason"
+                           value="Loss of internet">
+                    <label for="restart-reason-4">Did not complete</label>
+                    <div class="hide">
+                        <div class="panel panel-border-wide">
+                            Please specify:
+                            <textarea class="form-control form-control-3-4" name="did-not-complete-textarea" id="did-not-complete-textarea" rows="1" maxlength="100"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <label class="form-label" for="textarea">
+            If necessary, please provide further information:
+        </label>
+        <textarea class="form-control form-control-3-4" name="restart-further-textarea" id="restart-further-textarea" rows="5" maxlength="1000"></textarea>
+
+
+        <div class="master-detail text">
+            <details>
+                <summary><span class="summary"> What do these reasons mean? </span></summary>
+                <ul class="panel-no-border attendance-reasons">
+                    <li>
+                        <div><strong>Loss of internet</strong></div>
+                        <div>Internet connections failed during the check and the data couldn't be recovered.</div>
+                    </li>
+                    <li>
+                        <div><strong>IT Issues</strong></div>
+                        <div>There was an issue with the device the pupil was using. For example faulty equipment or power loss.</div>
+                    </li>
+                    <li>
+                        <div><strong>Classroom disruption</strong></div>
+                        <div>Pupil(s) were unable to continue the check due to disruptions. For example, fire alarm, illness during the check or high level behavioural disruption.</div>
+                    </li>
+                    <li>
+                        <div><strong>Did not complete</strong></div>
+                        <div>Pupil did not complete the check. For example pupil accidentally closed the check window.</div>
+                    </li>
+                </ul>
+            </details>
+        </div>
+
+        <h2 class="padding-top">2. Select pupil(s)</h2>
+        <% if (pupils && pupils.length > 0) { %>
+        <table class="spacious sorting" id="pupilsRestartList" role="listbox" aria-label="Select pupils.">
+            <thead>
+            <tr>
+                <th scope="col">
+                    <a>Pupil</a>
+                </th>
+                <th scope="col">
+                    <div class="tick-all-checkboxes-wrapper">
+                        <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                        <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                        <div class="multiple-choice-mtc">
+                            <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                            <div></div>
+                        </div>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <% pupils.forEach( (pupil, index) => { %>
+            <tr>
+                <td>
+                    <label for="pupil-<%= pupil._id %>">
+                        <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
+                    </label>
+                    <% if (pupil.showDoB) { %>
+                    <div class="font-greyed-out font-xsmall">
+                        Date of birth: <%= pupil.dob %>
+                    </div>
+                    <% } %>
+                </td>
+                <td>
+                    <div class="multiple-choice-mtc">
+                        <input id="pupil-<%= pupil._id %>"
+                               name="pupil[<%= index %>]"
+                               type="checkbox"
+                               value="<%= pupil._id %>"
+                               aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                               aria-checked="false"
+                               role="checkbox">
+                        <div></div>
+                    </div>
+                </td>
+            </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <br class="clearfix"/>
+        <p>No pupils found.</p>
+        <% } %>
+
+        <br class="clearfix"/>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
     </div>
 </div>
+    <%- partial('partials/_sticky_confirmation_banner',
+            {
+                cancelLabel: 'Cancel',
+                cancelLink: '/restart/overview',
+                submitLabel: 'Confirm',
+                isSubmitDisabled: true
+            })
+    %>
+</form>

@@ -16,7 +16,7 @@ const pinService = {}
 pinService.getPupilsWithActivePins = async (schoolId) => {
   let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
   pupils = pupils
-    .filter(p => pinValidator.isValidPin(p.pin, p.pinExpiresAt))
+    .filter(p => pinValidator.isActivePin(p.pin, p.pinExpiresAt))
     .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
       ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
@@ -30,7 +30,7 @@ pinService.getPupilsWithActivePins = async (schoolId) => {
  */
 pinService.getActiveSchool = async (schoolId) => {
   const school = await schoolDataService.findOne({_id: schoolId})
-  if (!pinValidator.isValidPin(school.schoolPin, school.pinExpiresAt)) {
+  if (!pinValidator.isActivePin(school.schoolPin, school.pinExpiresAt)) {
     return null
   }
   return school

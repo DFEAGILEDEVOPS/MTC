@@ -35,6 +35,7 @@
     }
   ],
   "isTestAccount": false,
+  "restartCount": 1,
   "checkOptions": {
     "speechSynthesis": false
   }

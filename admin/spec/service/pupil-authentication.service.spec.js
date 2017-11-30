@@ -39,7 +39,7 @@ describe('pupil authentication service', () => {
   describe('happy path', () => {
     beforeEach(() => {
       service = setupService(schoolMock, pupilMock)
-      sandbox.mock(pinValidator).expects('isValidPin').resolves(true)
+      sandbox.mock(pinValidator).expects('isActivePin').resolves(true)
       proxyquire('../../services/pin-generation.service', {
         '../../services/pin-generation.service': pinValidator
       })

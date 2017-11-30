@@ -1,6 +1,9 @@
 'use strict'
-/* global describe it expect jasmine spyOn */
+/* global describe it expect beforeEach jasmine spyOn */
 const httpMocks = require('node-mocks-http')
+const restartService = require('../../services/restart.service')
+
+require('sinon-mongoose')
 
 describe('restart controller:', () => {
   function getRes () {
@@ -38,22 +41,41 @@ describe('restart controller:', () => {
   })
 
   describe('getSelectRestartList route', () => {
+    let next
     let goodReqParams = {
       method: 'GET',
       url: '/restart/select-restart-list',
       session: {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      user: {
+        School: 9991001
       }
     }
+
+    beforeEach(() => {
+      next = jasmine.createSpy('next')
+    })
 
     it('displays the restart pupils list page', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      await controller(req, res)
+      spyOn(restartService, 'getPupils').and.returnValue(null)
+      await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('calls next if an error occurs within restart service', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/restart').getSelectRestartList
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(restartService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
       done()
     })
   })
