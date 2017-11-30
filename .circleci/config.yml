@@ -18,28 +18,26 @@ jobs:
     
     steps:
       - checkout
-      - run: pwd
-      - run: cd admin
-      - run: pwd
+      - run: cd admin;pwd
       # what does the structure look like?
-      - run: ls -lah
+      - run: cd admin;ls -lah
 
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "admin/package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: yarn install
+      - run: cd admin;yarn install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "admin/package.json" }}
         
       # run tests!
-      - run: yarn test
+      - run: cd admin;yarn test
 
 
