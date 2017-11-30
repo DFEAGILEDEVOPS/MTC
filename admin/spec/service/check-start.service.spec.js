@@ -1,25 +1,22 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine afterEach */
+/* global describe it expect jasmine */
 
 const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
 const { ObjectId } = require('mongoose').Types
-require('sinon-mongoose')
 
 const checkWindowMock = require('../mocks/check-window')
 const checkFormMock = require('../mocks/check-form')
-const Check = require('../../models/check')
+const resolvesNull = function () { return Promise.resolve(null) }
+const resolvesObject = function () { return Promise.resolve({}) }
 
 describe('check-start.service', () => {
   describe('startCheck', () => {
-    let service, pupilId, sandbox
+    let service, pupilId, checkDataServiceCreateSpy
 
-    beforeEach(() => { sandbox = sinon.sandbox.create() })
-    afterEach(() => sandbox.restore())
-
-    function setupService () {
+    function setupService (options) {
       pupilId = ObjectId()
+      checkDataServiceCreateSpy = jasmine.createSpy('checkDataServiceCreateSpy')
 
       return proxyquire('../../services/check-start.service', {
         '../services/data-access/check-window.data.service': {
@@ -32,19 +29,25 @@ describe('check-start.service', () => {
             function () { return Promise.resolve(checkFormMock) }
           )
         },
-        '../models/check': Check
+        '../services/data-access/check.data.service': {
+          create: checkDataServiceCreateSpy.and.callFake(
+            resolvesNull
+          ),
+          findOneByCheckCode: jasmine.createSpy().and.callFake(
+            options.findOneByCheckCode
+          )
+        }
       })
     }
 
     describe('happy path', () => {
       it('returns a checkCode and a checkForm', async (done) => {
-        sandbox.mock(Check).expects('findOne').chain('lean').chain('exec').resolves(null)
-        sandbox.mock(Check.prototype).expects('save').resolves({})
-        service = setupService()
+        service = setupService({findOneByCheckCode: resolvesNull})
         try {
           const res = await service.startCheck(pupilId)
           expect(res.checkCode).toBeDefined()
           expect(res.checkForm).toBeDefined()
+          expect(checkDataServiceCreateSpy).toHaveBeenCalled()
         } catch (error) {
           // we are not expecting the happy path to throw
           expect(error).toBeUndefined()
@@ -55,8 +58,7 @@ describe('check-start.service', () => {
 
     describe('error path', () => {
       it('throws an error when the checkCode is not unique', async (done) => {
-        sandbox.mock(Check).expects('findOne').chain('lean').chain('exec').resolves({ checkCode: 'found' })
-        service = setupService()
+        service = setupService({findOneByCheckCode: resolvesObject})
         try {
           await service.startCheck(pupilId)
           expect('this is expected to throw').toBe('error')
