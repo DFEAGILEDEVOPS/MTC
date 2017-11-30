@@ -70,4 +70,14 @@ checkDataService.update = async function (query, criteria) {
   })
 }
 
+/**
+ * Create a new Check
+ * @param data
+ * @return {Promise}
+ */
+checkDataService.create = async function (data) {
+  const check = new Check(data)
+  return check.save()
+}
+
 module.exports = checkDataService
