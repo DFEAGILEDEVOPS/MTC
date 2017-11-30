@@ -124,25 +124,18 @@ describe('check-window.service', () => {
     })
 
     describe('If saving documents fails', () => {
-      let checkFormMockStub
-
       beforeEach(() => {
         service = setupService(function () { return Promise.reject(new Error('ERROR SAVING')) })
       })
 
-      xit('should return an error', async (done) => {
-        checkFormMock._id = 100
-        checkFormMockStub = sandbox.stub(CheckForm, 'save').resolves(checkFormMock)
-
+      it('should return an error', async (done) => {
         try {
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()
-          done()
         } catch (error) {
-          console.log('ERROR!', error)
-          expect(error.toString()).toBe('ERROR SAVING')
-          done()
+          expect(error.toString()).toBe('Error: This form does not have an id')
         }
+        done()
       })
     })
   })

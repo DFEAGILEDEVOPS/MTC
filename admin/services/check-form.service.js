@@ -88,11 +88,18 @@ const checkFormService = {
    */
   formatCheckFormsAndWindows: async (sortField, sortDirection) => {
     let formData
-    formData = await checkFormDataService.fetchSortedActiveForms({}, 'name', sortDirection)
+    let passSortField
+    let passSortDirection
+
+    if (sortField === 'name') {
+      passSortField = 'name'
+      passSortDirection = sortDirection
+    }
+
+    formData = await checkFormDataService.fetchSortedActiveForms({}, passSortField, passSortDirection)
 
     if (formData.length > 0) {
       const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-
       formData.forEach(f => {
         f.removeLink = true
         if (checkWindows[f._id]) {
@@ -108,17 +115,13 @@ const checkFormService = {
       })
 
       if (sortField === 'window') {
-        formData.sort((a, b) => {
-          if (a.checkWindows === '') {
-            return 1
-          } else if (b.checkWindows === '') {
-            return -1
-          } else if (a.checkWindows === b.checkWindows) {
+        formData = formData.sort((a, b) => {
+          if (a.checkWindows === b.checkWindows) {
             return 0
           } else if (sortDirection === 'asc') {
-            return a.checkWindows < b.checkWindows ? -1 : 1
-          } else {
             return a.checkWindows < b.checkWindows ? 1 : -1
+          } else {
+            return a.checkWindows < b.checkWindows ? -1 : 1
           }
         })
       }
