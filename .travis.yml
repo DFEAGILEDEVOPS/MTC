@@ -30,6 +30,10 @@ addons:
 
 services: mongodb
 
+sudo: required
+before_install:
+- sudo apt-get update
+- sudo apt-get install google-chrome-stable
 sudo: false
 
 before_install:
