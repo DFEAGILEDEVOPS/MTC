@@ -7,7 +7,10 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:8.9.1
+      - image: $REGISTRY_IMAGE_ADMIN
+        auth:
+          username: $AZURE_REGISTRY_USERNAME
+          password: $AZURE_REGISTRY_PASSWORD
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,5 +38,9 @@ jobs:
         
       # run tests!
       - run: cd admin;yarn test
+  
+  build-spa:
+    docker:
+      - image: 
 
 
