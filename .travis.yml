@@ -31,15 +31,12 @@ addons:
 services: mongodb
 
 sudo: required
-before_install:
-- sudo apt-get update
-- sudo apt-get install google-chrome-stable
-
-sudo: false
 
 before_install:
 #  - "$CXX --version"
+  - sudo apt-get update
   - rvm install 2.4.0
+  - sudo apt-get install google-chrome-stable
 
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install
