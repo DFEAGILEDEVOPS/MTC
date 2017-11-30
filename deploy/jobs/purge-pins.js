@@ -3,7 +3,7 @@
 try {
   print('erasing pupil pins...')
   printjson(db.pupils.updateMany(
-    { pin: {$ne: null}, isTestAccount: {$eq: false} },
+    { isTestAccount: {$eq: false}, pin: {$ne: null}},
     { $set: { pin: null, pinExpiresAt: null } }
   ))
 
