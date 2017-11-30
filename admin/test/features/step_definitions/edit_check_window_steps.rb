@@ -9,34 +9,40 @@ And(/^I want to edit a previously added check$/) do
 end
 
 And(/^I create new check window with valid data$/) do
-  @today_date = Date.today
-  @check_window_name = "TestCheck-#{@today_date.day}-#{@today_date.month}-#{@today_date.year}-#{rand(1..10000)}"
+  today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
+  @check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: @check_window_name,
-                        admin_start_day: @today_date.next_month.day,
-                        admin_start_mon: @today_date.month,
-                        admin_start_year: @today_date.next_year.year,
-                        check_start_day: @today_date.next_month.day,
-                        check_start_mon: @today_date.next_month.month,
-                        check_start_year: @today_date.next_year.year,
-                        check_end_day: @today_date.next_day.day,
-                        check_end_mon: @today_date.next_month.month,
-                        check_end_year: @today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.next_year.year,
+                        check_start_day: @check_start_date.next_month.day,
+                        check_start_mon: @check_start_date.next_month.month,
+                        check_start_year: @check_start_date.next_year.year,
+                        check_end_day: @check_end_date.next_day.day,
+                        check_end_mon: @check_end_date.next_month.month,
+                        check_end_year: @check_end_date.next_year.year
   }
   @page.enter_details(@check_window_hash)
   @page.save_changes.click
 end
 
 When(/^I update the check window with valid data$/) do
+  @admin_start_date = @admin_start_date + 30
+  @check_start_date = @check_start_date + 33
+  @check_end_date = @check_end_date + 35
   @updated_check_window_hash = {check_name: @check_window_name,
-                                admin_start_day: @today_date.next_month.day,
-                                admin_start_mon: @today_date.next_month.month,
-                                admin_start_year: @today_date.year,
-                                check_start_day: @today_date.next_month.day,
-                                check_start_mon: @today_date.next_month.month,
-                                check_start_year: @today_date.year,
-                                check_end_day: @today_date.day,
-                                check_end_mon: @today_date.next_month.next_month.month,
-                                check_end_year: @today_date.next_year.year
+                                admin_start_day: @admin_start_date.day,
+                                admin_start_mon: @admin_start_date.month,
+                                admin_start_year: @admin_start_date.year,
+                                check_start_day: @check_start_date.day,
+                                check_start_mon: @check_start_date.month,
+                                check_start_year: @check_start_date.year,
+                                check_end_day: @check_end_date.day,
+                                check_end_mon: @check_end_date.next_month.next_month.month,
+                                check_end_year: @check_end_date.next_year.year
   }
   @page.enter_details(@updated_check_window_hash)
   @page.save_changes.click
