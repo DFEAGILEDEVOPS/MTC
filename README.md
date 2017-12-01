@@ -28,10 +28,8 @@ See each projects readme for app specifics.
 Each application has a dockerfile.  The [compose file in the repository root](docker-compose.yml) contains configuration to setup a local development environment, which includes the following nodes...
 
 Pupil SPA (Nginx alpine container)
-Legacy Pupil MVC App (Node container)
 Admin MVC App (Node container)
 Database (MongoDB container)
-ESB (RabbitMQ container) (Currently disabled until required)
 
 Simply run `docker-compose up` from the root directory to start the environment.  See 1st paragraph above for URL info.
 
