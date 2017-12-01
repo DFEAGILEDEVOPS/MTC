@@ -30,7 +30,7 @@ const PupilRestart = new Schema({
     default: false,
     required: true
   },
-  deletedBy: {
+  deletedByUser: {
     type: String
   },
   deletedAt: {
