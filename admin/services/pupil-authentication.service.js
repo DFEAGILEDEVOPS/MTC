@@ -17,7 +17,7 @@ const pupilAuthenticationService = {
       pin: pupilPin,
       school: school && school._id
     })
-    if (!pupil || !school || !pinValidator.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
+    if (!pupil || !school || !pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       throw new Error('Authentication failure')
     }
     return pupil

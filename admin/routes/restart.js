@@ -8,7 +8,7 @@ const {
   getSelectRestartList
 } = require('../controllers/restart')
 
-router.get('/overview', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getRestartOverview(req, res))
-router.get('/select-restart-list', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectRestartList(req, res))
+router.get('/overview', isAuthenticated(config.ROLE_TEACHER), (req, res) => getRestartOverview(req, res))
+router.get('/select-restart-list', isAuthenticated(config.ROLE_TEACHER), (req, res, next) => getSelectRestartList(req, res, next))
 
 module.exports = router

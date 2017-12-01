@@ -28,17 +28,20 @@ end
 
 When(/^I submit details for a valid check window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -73,17 +76,20 @@ end
 
 When(/^I enter details for a valid check window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
 end
@@ -98,16 +104,19 @@ end
 
 When(/^I try to submit without a name for the window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   @check_window_hash = {check_name: '',
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -121,17 +130,19 @@ end
 
 When(/^I try to submit without a admin start date for the window$/) do
   today_date = Date.today
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: nil,
                         admin_start_mon: nil,
                         admin_start_year: nil,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -139,17 +150,19 @@ end
 
 When(/^I try to submit with a invalid admin start date for the window$/) do
   today_date = Date.today
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: '32',
                         admin_start_mon: '13',
                         admin_start_year: '1000',
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.month,
-                        check_end_year: today_date.year
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -165,17 +178,19 @@ end
 
 When(/^I try to submit without a check start date for the window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
                         check_start_day: '',
                         check_start_mon: '',
                         check_start_year: '',
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -190,17 +205,19 @@ end
 
 When(/^I try to submit with a invalid check start date for the window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
                         check_start_day: '32',
                         check_start_mon: '13',
                         check_start_year: '20181',
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -216,14 +233,16 @@ end
 
 When(/^I try to submit without a check end date for the window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
                         check_end_day: '',
                         check_end_mon: '',
                         check_end_year: ''
@@ -241,14 +260,16 @@ end
 
 When(/^I try to submit with a invalid check end date for the window$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..1000000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
                         check_end_day: '63',
                         check_end_mon: '49',
                         check_end_year: '100'
@@ -269,16 +290,19 @@ end
 
 When(/^I try to submit a name that is less than (\d+) characters long$/) do |arg|
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   @check_window_hash = {check_name: 'W',
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -286,16 +310,19 @@ end
 
 When(/^I try to submit a name that is (\d+) characters long$/) do |arg|
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   @check_window_hash = {check_name: 'Win',
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -307,17 +334,20 @@ end
 
 When(/^I try to submit admin start date that is in the past$/) do
   today_date = Date.today
+  @admin_start_date = today_date - 1
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: (today_date - 30).month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -330,17 +360,20 @@ end
 
 When(/^I try to submit a admin start date with more digits for day month year than specified$/) do
   today_date = Date.today
+  @admin_start_date = today_date - 1
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: 101,
                         admin_start_mon: 101,
                         admin_start_year: 20178,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: today_date.next_month.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -356,17 +389,20 @@ end
 
 When(/^I try to submit an admin start date that is after the check start date$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 34
+  @check_start_date = today_date + 33
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.day,
-                        admin_start_mon: today_date.month,
-                        admin_start_year: today_date.next_year.year,
-                        check_start_day: today_date.next_month.day,
-                        check_start_mon: (today_date - 30).month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.next_month.next_month.day,
-                        check_end_mon: (today_date - 30).month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -379,17 +415,20 @@ end
 
 When(/^I try to submit a start date that is in the past$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_start_date = today_date - 1
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: (today_date - 30).month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -403,17 +442,19 @@ end
 
 When(/^I try to submit a check start date with more digits for day month year than specified$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 30
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
                         check_start_day: 101,
                         check_start_mon: 101,
                         check_start_year: 20172,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -429,17 +470,20 @@ end
 
 When(/^I try to submit an check start date that is before the admin start date$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 33
+  @check_start_date = today_date + 32
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.month,
-                        check_start_year: today_date.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -447,17 +491,20 @@ end
 
 When(/^I try to submit an check start date that is after the check end date$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 33
+  @check_start_date = today_date + 36
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: today_date.next_month.next_month.month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -470,17 +517,20 @@ end
 
 When(/^I try to submit check end date that is in the past$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 33
+  @check_start_date = today_date + 36
+  @check_end_date = today_date - 1
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: (today_date - 60).month,
-                        check_end_year: today_date.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click
@@ -498,14 +548,16 @@ end
 
 When(/^I try to submit a check end date with more digits for day month year than specified$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 33
+  @check_start_date = today_date + 36
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.next_month.next_month.month,
-                        check_start_year: today_date.next_year.year,
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
                         check_end_day: 101,
                         check_end_mon: 101,
                         check_end_year: 20178
@@ -521,17 +573,20 @@ end
 
 When(/^I try to submit an check end date that is before the check start date$/) do
   today_date = Date.today
+  @admin_start_date = today_date + 33
+  @check_start_date = today_date + 36
+  @check_end_date = today_date + 35
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
-                        admin_start_day: today_date.next_month.day,
-                        admin_start_mon: today_date.next_month.month,
-                        admin_start_year: today_date.year,
-                        check_start_day: today_date.day,
-                        check_start_mon: today_date.month,
-                        check_start_year: today_date.next_year.year,
-                        check_end_day: today_date.day,
-                        check_end_mon: (today_date - 30).month,
-                        check_end_year: today_date.next_year.year
+                        admin_start_day: @admin_start_date.day,
+                        admin_start_mon: @admin_start_date.month,
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   add_edit_check_window_page.enter_details(@check_window_hash)
   add_edit_check_window_page.save_changes.click

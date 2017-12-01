@@ -1,3 +1,5 @@
+const restartService = require('../services/restart.service')
+
 const getRestartOverview = async (req, res) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
@@ -6,11 +8,19 @@ const getRestartOverview = async (req, res) => {
   })
 }
 
-const getSelectRestartList = async (req, res) => {
+const getSelectRestartList = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils for restart'
+  req.breadcrumbs('Restarts', '/restart/overview')
   req.breadcrumbs(res.locals.pageTitle)
+  let pupils
+  try {
+    pupils = await restartService.getPupils(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
   return res.render('restart/select-restart-list', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    pupils
   })
 }
 

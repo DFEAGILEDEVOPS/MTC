@@ -35,7 +35,7 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @param p
  * @returns {Boolean}
  */
-pinGenerationService.removeInvalidPupils = (p) => !pinValidator.isValidPin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
+pinGenerationService.removeInvalidPupils = (p) => !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
 
 /**
  * Generate pupils pins
@@ -55,7 +55,7 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
   // pupils = await pupilDataService.find({ _id: { $in: ids } })
   // Apply the updates to the pupil object(s)
   pupils.forEach(pupil => {
-    if (!pinValidator.isValidPin(pupil.pin, pupil.pinExpiresAt)) {
+    if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       const length = 5
       pupil.pin = pinGenerationService.generateRandomPin(length)
       pupil.pinExpiresAt = fourPmToday()
@@ -71,7 +71,7 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
  */
 pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
-  if (!pinValidator.isValidPin(schoolPin, pinExpiresAt)) {
+  if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
     const length = 8
     school.schoolPin = pinGenerationService.generateRandomPin(length)
     school.pinExpiresAt = fourPmToday()
