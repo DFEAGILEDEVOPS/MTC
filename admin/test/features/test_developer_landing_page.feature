@@ -9,14 +9,17 @@ Feature: Test Developer Landing page
     Given I have signed in with test-developer
     Then I should see test-developer's name
 
+  @travis
   Scenario: Test Developers should be given the option to upload and view forms
     Given I have signed in with test-developer
     Then I should be given the option to upload and view forms
 
+  @travis
   Scenario: Test Developers should be given the option to assign forms to check windows
     Given I have signed in with test-developer
     Then I should be given the option to assign forms to check windows
 
+  @travis
   Scenario: Test Developers should be given some guidance
     Given I have signed in with test-developer
     Then I should be given some guidance

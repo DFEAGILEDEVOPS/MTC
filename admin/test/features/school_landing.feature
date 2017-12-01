@@ -3,7 +3,6 @@ Feature:
   I want to have a central page as a starting point
   So that I can easily get to where I need to go
 
-
   Scenario Outline: Teachers school is displayed
     Given I have signed in with <teacher>
     Then I should see <teacher>'s school name
@@ -15,6 +14,7 @@ Feature:
       | teacher3 |
       | teacher4 |
 
+  @travis
   Scenario Outline: Teachers' sees their name on the school homepage
     Given I have signed in with <teacher>
     Then I should see <teacher>'s name

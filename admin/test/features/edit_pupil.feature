@@ -6,10 +6,12 @@ Feature:
   Background:
     Given I want to edit a previously added pupil
 
+  @travis
   Scenario: Edit details page has fields to capture pupil data
     Then I should see fields that will allow me to capture pupil data
     And the fields are pre populated with the data
 
+  @travis
   Scenario: Pupil data is updated when valid details are entered
     When I update with valid pupil data
     Then this should be saved
@@ -141,6 +143,7 @@ Feature:
     When I submit the form with a DOB that has 1 as the month
     Then I should be taken to the Pupil register page
 
+  @travis
   Scenario: UPN cannot be assigned twice
     When I submit valid details with a already used UPN
     Then I should see an error stating more than 1 pupil with the same UPN

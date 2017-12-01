@@ -11,6 +11,7 @@ Feature: Question time limit tests
     When I am on the check settings page
     Then I should see that question time limit is set to 5 seconds
 
+  @travis
   Scenario: The 'Question time limit' contains the value it was last populated with
     When I have updated the question time limit to 6 seconds
     Then I should see that question time limit is set to 6 seconds
@@ -29,11 +30,13 @@ Feature: Question time limit tests
     When I have updated the question time limit to 5.5555 seconds
     Then I should see that question time limit is set to 5.56 seconds
 
+  @travis
   Scenario: An audit record is created that defines the date and date from which the new
   value of the Question time limit was applied
     When I update the question time limit from 7 to 5 seconds
     Then I should see a record that has date and time of the question time limit change to 5 in database
 
+  @travis
   Scenario: A historic record is appended for every change of Question time limit
     When I update the question time limit from 5 to 7 seconds
     Then I should see a historic record appended for question Time limit change to 7 in the database

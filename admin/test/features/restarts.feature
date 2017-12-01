@@ -39,6 +39,7 @@ Feature: Restarts
     And I am on the Restarts Page
     Then I should not see a sticky banner on restarts page
 
+  @travis
   Scenario: Sticky banner is displayed on pupil Restarts page when a reason and a pupil are selected
     Given I have single pupils for restart
     And I select a reason for restarts
@@ -50,6 +51,7 @@ Feature: Restarts
     When I select multiple pupils for restarts
     Then the sticky banner should display the pupil count
 
+  @travis
   Scenario: Confirmation is enabled if a reason and at least 1 pupil are selected for restarts
     Given I have single pupils for restart
     And I select a reason for restarts

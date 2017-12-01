@@ -1,12 +1,20 @@
 Feature:
   Unauthorized login
 
+  @travis
   Scenario: School teachers can only access pages their roles apply to
     Given I have logged in with teacher1
     When I try to view the admin page
     Then I should be shown the access unauthorized page
 
+  @travis
   Scenario: Service managers can only access pages their roles apply to
+    Given I have logged in with service-manager
+    When I try to view the school landing page
+    Then I should be shown the access unauthorized page
+
+  @travis
+  Scenario: Test developers can only access pages their roles apply to
     Given I have logged in with test-developer
     When I try to view the school landing page
     Then I should be shown the access unauthorized page

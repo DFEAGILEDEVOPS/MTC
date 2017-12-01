@@ -17,6 +17,7 @@ Feature:
     Given I am on the create a check window page
     Then I should be able to enter a check end date
 
+  @travis
   Scenario: Users can create a check window
     Given I am on the create a check window page
     When I submit details for a valid check window
@@ -70,11 +71,13 @@ Feature:
     When I try to submit a admin start date with more digits for day month year than specified
     Then I should see errors for the admin start day month and year being invalid
 
+  @travis
   Scenario: Admin start date cant be after the check start date
     Given I am on the create a check window page
     When I try to submit an admin start date that is after the check start date
     Then I should see an error stating the admin start date has to be before the check start date
 
+  @travis
   Scenario: Start date has to be in the future
     Given I am on the create a check window page
     When I try to submit a start date that is in the past
@@ -96,6 +99,7 @@ Feature:
     When I try to submit with a invalid check start date for the window
     Then I should see errors for the start day month and year
 
+  @travis
   Scenario: Check start date can't have more digits for day month year than specified
     Given I am on the create a check window page
     When I try to submit a check start date with more digits for day month year than specified
@@ -106,6 +110,7 @@ Feature:
     When I try to submit an check start date that is before the admin start date
     Then I should see an error stating the admin start date has to be before the check start date
 
+  @travis
   Scenario: Check start date cannot be after check end date
     Given I am on the create a check window page
     When I try to submit an check start date that is after the check end date
@@ -132,11 +137,13 @@ Feature:
     When I try to submit with a invalid check end date for the window
     Then I should see errors for the end day month and year
 
+  @travis
   Scenario: Check end date can't have more digits for day month year than specified
     Given I am on the create a check window page
     When I try to submit a check end date with more digits for day month year than specified
     Then I should see errors for the check end day month and year being invalid
 
+  @travis
   Scenario: Check end date cant be before check start date
     Given I am on the create a check window page
     When I try to submit an check end date that is before the check start date

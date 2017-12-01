@@ -8,18 +8,22 @@ Feature: Service manager homepage
     Given I have signed in with service-manager
     Then I should see service-manager's name
 
+  @travis
   Scenario: Service manager should be given the option to manage check windows
     Given I am logged in with a service manager
     Then I should be given the option to manage check windows
 
+  @travis
   Scenario: Service manager should be given the option to adjust question timings
     Given I am logged in with a service manager
     Then I should be given the option to adjust question timings
 
+  @travis
   Scenario: Service manager should be given the option to view progress reports
     Given I am logged in with a service manager
     Then I should be given the option to view progress reports
 
+  @travis
   Scenario: Service manager should be given the option to manage retake requests
     Given I am logged in with a service manager
     Then I should be given the option to manage retake requests

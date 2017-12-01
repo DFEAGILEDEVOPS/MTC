@@ -27,10 +27,12 @@ Feature: Upload and View Forms
     And I am on the Upload new forms page
     Then I should have the option to choose a csv file for adding new forms
 
+  @travis
   Scenario: Users can upload a csv file
     When I upload a csv file
     Then it should be added to the list of forms
 
+  @travis
   Scenario: Flash message is displayed after successful upload
     When I upload a csv file
     Then I should see a flash message to state that new form is uploaded
