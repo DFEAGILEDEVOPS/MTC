@@ -274,7 +274,6 @@ describe('check-form controller:', () => {
           field: 'uploadFile',
           file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
           filename: 'form-1.csv',
-          filename: 'form-1.csv',
           encoding: '7bit',
           mimetype: 'text/csv',
           truncated: false,
