@@ -86,10 +86,9 @@ restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, r
 restartService.canAllPupilsRestart = async (pupilsList) => {
   const eligibilityList = await Promise.all(pupilsList.map(async pupilId => {
     const canRestart = await restartService.canRestart(pupilId)
-    if (!canRestart) return { pupilId, notEligible: true }
-    return { pupilId }
+    return { pupilId, canRestart: canRestart }
   }))
-  return eligibilityList.every(e => !e.notEligible)
+  return eligibilityList.every(e => e.canRestart)
 }
 
 /**
