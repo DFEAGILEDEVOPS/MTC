@@ -7,7 +7,7 @@ jobs:
   build:
     working_directory: ~/repo/
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:8-browsers
     environment:
       TZ: Europe/London
     steps:
