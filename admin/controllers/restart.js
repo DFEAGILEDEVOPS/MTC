@@ -4,7 +4,7 @@ const ValidationError = require('../lib/validation-error')
 
 const controller = {}
 
-controller.getRestartOverview = async (req, res) => {
+controller.getRestartOverview = (req, res) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
   return res.render('restart/restart-overview', {
