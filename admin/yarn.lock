@@ -341,7 +341,7 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@^6.22.0, babel-runtime@^6.26.0, babel-runtime@^6.9.2:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -425,7 +425,7 @@ binary-extensions@^1.0.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.10.0.tgz#9aeb9a6c5e88638aad171e167f5900abe24835d0"
 
-bl@^1.2.0:
+bl@^1.0.0, bl@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.1.tgz#cac328f7bee45730d404b692203fcb590e172d5e"
   dependencies:
@@ -1100,6 +1100,12 @@ diff@^3.1.0:
 dijkstrajs@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/dijkstrajs/-/dijkstrajs-1.0.1.tgz#d3cd81221e3ea40742cfcde556d4e99e98ddc71b"
+
+dns-lookup-all@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/dns-lookup-all/-/dns-lookup-all-1.0.2.tgz#4d8b2b1af69c83a7b262eb5de92485b7b3a215eb"
+  dependencies:
+    semver "^5.3.0"
 
 dns-prefetch-control@0.1.0:
   version "0.1.0"
@@ -5102,6 +5108,24 @@ tar@^2.0.0, tar@^2.2.1:
     block-stream "*"
     fstream "^1.0.2"
     inherits "2"
+
+tedious-connection-pool@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-1.0.5.tgz#2d694a72a2f4773564ef2911e86e5fd622ca01c1"
+  dependencies:
+    tedious "^1.14.0"
+
+tedious@^1.14.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
+  dependencies:
+    babel-runtime "^6.9.2"
+    big-number "0.3.1"
+    bl "^1.0.0"
+    dns-lookup-all "^1.0.2"
+    iconv-lite "^0.4.11"
+    readable-stream "^2.0.2"
+    sprintf "0.1.5"
 
 tedious@^2.1.5:
   version "2.1.5"
