@@ -2,7 +2,7 @@
 
 # Build script to ensure static assets are built and copied
 # to the correct places
-# A working person's version of gulp.js 
+# A working person's version of gulp.js
 
 MAGENTA="\033[1;35m"
 RED="\033[1;31m"
@@ -25,7 +25,7 @@ function delete_node_modules() {
 
 function install_modules() {
   color_prompt "Installing $MAGENTA node modules"
-  npm install
+  yarn install
 }
 
 function copy_assets() {
