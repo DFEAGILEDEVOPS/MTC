@@ -38,9 +38,6 @@ const checkWindowDataService = {
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
     }
-    // else {
-    //   query.checkEndDate = {$lte: currentTimestamp}
-    // }
 
     if (sortBy && sortDirection) {
       sorting[sortBy] = sortDirection
@@ -62,6 +59,24 @@ const checkWindowDataService = {
       throw new Error('No check-window is currently available')
     }
     return checkWindow
+  },
+  /**
+   * Fetch (non-deleted) current check windows by sort by, sort direction
+   * @param sortBy
+   * @param sortDirection
+   * @returns {Promise.<*|Promise.<void>>}
+   */
+  fetchCurrentCheckWindows: async (sortBy, sortDirection) => {
+    return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, true)
+  },
+  /**
+   * Fetch (non-deleted) past check windows by sort by, sort direction
+   * @param sortBy
+   * @param sortDirection
+   * @returns {Promise.<*|Promise.<void>>}
+   */
+  fetchPastCheckWindows: async (sortBy, sortDirection) => {
+    return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, false)
   }
 }
 

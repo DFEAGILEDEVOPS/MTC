@@ -148,12 +148,11 @@ describe('check-form controller:', () => {
         spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue()
 
         await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(next).toHaveBeenCalled()
         expect(checkFormDataService.getActiveForm).toHaveBeenCalled()
         expect(checkWindowService.getCheckWindowsAssignedToForms).not.toHaveBeenCalled()
         expect(checkFormService.unassignedCheckFormsFromCheckWindows).not.toHaveBeenCalled()
         expect(checkWindowService.markAsDeleted).not.toHaveBeenCalled()
+        expect(next).toHaveBeenCalled()
         done()
       })
 
@@ -264,7 +263,7 @@ describe('check-form controller:', () => {
       it('should render the page with errors if method populateFromFile fails', async (done) => {
         spyOn(checkFormService, 'populateFromFile').and.returnValue(Promise.reject(new Error('error')))
         spyOn(CheckForm, 'create').and.returnValue(Promise.resolve(checkFormMock))
-        spyOn(fs, 'remove').and.returnValue(Promise.reject(new Error('error')))
+        spyOn(fs, 'remove').and.returnValue(null)
         controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
 
         req.method = 'POST'
@@ -274,6 +273,7 @@ describe('check-form controller:', () => {
           uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
           field: 'uploadFile',
           file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
+          filename: 'form-1.csv',
           filename: 'form-1.csv',
           encoding: '7bit',
           mimetype: 'text/csv',
@@ -354,7 +354,7 @@ describe('check-form controller:', () => {
       })
 
       it('should catch an error when getCheckWindowsAssignedToForms fails', async (done) => {
-        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(function () { return Promise.resolve(checkFormMock) })
+        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('error')))
         req.url = '/test-developer/view-form/29'
 
