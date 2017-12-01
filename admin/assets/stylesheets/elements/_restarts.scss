@@ -1,0 +1,42 @@
+.restart-list {
+  overflow: hidden;
+  margin-left: pem(-4px);
+
+  .multiple-choice {
+    margin: pem(4px);
+  }
+
+  li {
+    overflow: hidden;
+    margin-top: pem(10px);
+
+    @include media(desktop) {
+      width: 100%;
+      float: left;
+    }
+
+    @include media(mobile) {
+      margin-top: pem(5px);
+    }
+  }
+}
+
+label:hover {
+  text-decoration: underline
+}
+.hide {
+  display: none;
+}
+
+input[type=radio]:checked ~ .hide {
+  display: block;
+  position: relative;
+  margin-top: 60px;
+  margin-left: -35px;
+  width: 500px;
+}
+
+#did-not-complete-textarea {
+  margin-top: pem(10px);
+  width: pem(375px)
+}
