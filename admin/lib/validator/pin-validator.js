@@ -8,7 +8,7 @@ const pinValidator = {}
  * @param pinExpiresAt
  * @returns {Boolean}
  */
-pinValidator.isValidPin = (pin, pinExpiresAt) => {
+pinValidator.isActivePin = (pin, pinExpiresAt) => {
   if (!pinExpiresAt || !pin) return false
   return moment(pinExpiresAt).isAfter(moment.utc())
 }
