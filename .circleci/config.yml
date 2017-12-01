@@ -14,6 +14,8 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
+      - restore_cache:
+          key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - run: cd admin; yarn install
       - run: cd pupil-spa; yarn install
       - run: cd admin; yarn test
@@ -22,6 +24,10 @@ jobs:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
             - ~/repo/admin/node_modules
+      - save_cache:
+          key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
+          paths:
+            - ~/repo/pupil-spa/node_modules
 
 workflows:
   version: 2
