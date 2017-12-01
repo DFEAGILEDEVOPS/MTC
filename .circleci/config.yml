@@ -13,13 +13,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-node-admin-deps-{{ checksum 'admin/yarn.lock' }}
+          key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
       - run: cd admin; yarn install
       - run: cd pupil-spa; yarn install
       - run: cd admin; yarn test
       - run: cd pupil-spa; yarn run test-single
       - save_cache:
-          key: v1-node-admin-deps-{{ checksum 'admin/yarn.lock' }}
+          key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
             - ~/repo/admin/node_modules
 
