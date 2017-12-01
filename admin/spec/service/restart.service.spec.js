@@ -34,7 +34,7 @@ describe('restart.service', () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(schoolDataService, 'findOne').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'getSortedPupils').and.returnValue([pupil1, pupil2])
+      spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])
       spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
       try {
@@ -96,11 +96,11 @@ describe('restart.service', () => {
   describe('restart', () => {
     it('it should call create if the pupil can be restarted', async () => {
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
-      spyOn(restartService, 'canRestart').and.returnValue(true)
+      spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
       spyOn(pupilRestartDataService, 'create').and.returnValue({ 'ok': 1, 'n': 1 })
       let results
       try {
-        results = await restartService.restart([pupilMock._id, pupilMock._id], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
+        results = await restartService.restart([ pupilMock._id, pupilMock._id ], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
       } catch (error) {
         expect(error).toBeUndefined()
       }
@@ -109,14 +109,26 @@ describe('restart.service', () => {
     })
     it('it should throw an error if the pupil cannot be restarted', async () => {
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
-      spyOn(restartService, 'canRestart').and.returnValue(false)
+      spyOn(restartService, 'canAllPupilsRestart').and.returnValue(false)
       spyOn(pupilRestartDataService, 'create').and.returnValue(null)
       try {
-        await restartService.restart([pupilMock._id], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
+        await restartService.restart([ pupilMock._id ], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
       } catch (error) {
-        expect(error.message).toBe(`Pupil ${pupilMock._id} is not eligible for a restart`)
+        expect(error.message).toBe('One of the pupils is not eligible for a restart')
       }
       expect(pupilRestartDataService.create).toHaveBeenCalledTimes(0)
+    })
+  })
+  describe('canAllPupilsRestart', () => {
+    it('returns true if all pupils can restart', async () => {
+      spyOn(restartService, 'canRestart').and.returnValue(true)
+      const result = await restartService.canAllPupilsRestart([ pupilMock._id, pupilMock._id ])
+      expect(result).toBeTruthy()
+    })
+    it('returns false if at least one of the pupils is not eligible for a restart', async () => {
+      spyOn(restartService, 'canRestart').and.returnValue(false)
+      const result = await restartService.canAllPupilsRestart([ pupilMock._id, pupilMock._id ])
+      expect(result).toBeFalsy()
     })
   })
 })

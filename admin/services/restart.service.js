@@ -60,14 +60,10 @@ restartService.isPupilEligible = async (p) => {
 restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo, userName) => {
   await pinService.expireMultiplePins(pupilsList)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
-  const eligibilityList = await Promise.all(pupilsList.map(async pupilId => {
-    const canRestart = await restartService.canRestart(pupilId)
-    if (!canRestart) return { pupilId, notEligible: true }
-    return { pupilId }
-  }))
-  eligibilityList.forEach(e => {
-    if (e.notEligible) throw new Error(`Pupil ${e.pupilId} is not eligible for a restart`)
-  })
+  const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
+  if (!canAllPupilsRestart) {
+    throw new Error(`One of the pupils is not eligible for a restart`)
+  }
   const submitted = await Promise.all(pupilsList.map(async pupilId => {
     const pupilRestartData = {
       pupilId,
@@ -80,6 +76,20 @@ restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, r
     return pupilRestartDataService.create(pupilRestartData)
   }))
   return submitted
+}
+
+/**
+ * Checks if all selected pupils are eligible for restarts
+ * @param pupilsList
+ * @return {boolean}
+ */
+restartService.canAllPupilsRestart = async (pupilsList) => {
+  const eligibilityList = await Promise.all(pupilsList.map(async pupilId => {
+    const canRestart = await restartService.canRestart(pupilId)
+    if (!canRestart) return { pupilId, notEligible: true }
+    return { pupilId }
+  }))
+  return eligibilityList.every(e => !e.notEligible)
 }
 
 /**
