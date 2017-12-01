@@ -6,7 +6,7 @@ var ConnectionPool = require('tedious-connection-pool')
 var poolConfig = {
   min: process.env.SQL_POOL_MIN_COUNT,
   max: process.env.SQL_POOL_MAX_COUNT,
-  log: process.env.SQL_POOL_LOG_ENABLED
+  log: true
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js
@@ -36,15 +36,17 @@ sqlConnectionService.init = () => {
 
 // TODO make async
 sqlConnectionService.getConnection = () => {
-  if (pool == null) {
-    // TODO: should we just initialise?
-    throw new Error('Connection Pool not initialised')
-  }
-  pool.acquire(function (err, connection) {
-    if (err) {
-      console.error(err)
-      return
+  return new Promise((resolve, reject) => {
+    if (pool == null) {
+      sqlConnectionService.init()
     }
-    return connection
+    pool.acquire(function (err, connection) {
+      if (err) {
+        reject(err)
+      }
+      resolve(connection)
+    })
   })
 }
+
+module.exports = sqlConnectionService
