@@ -36,9 +36,10 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   const validationError = restartValidator.validateReason(restartReason, didNotCompleteInfo)
   if (validationError.hasError()) {
-    res.locals.pageTitle = 'Select pupils for restart'
+    const pageTitle = 'Select pupils for restart'
+    res.locals.pageTitle = `Error: ${pageTitle}`
     req.breadcrumbs('Restarts', '/restart/overview')
-    req.breadcrumbs(res.locals.pageTitle)
+    req.breadcrumbs(pageTitle)
     let pupils
     try {
       pupils = await restartService.getPupils(req.user.School)

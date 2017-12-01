@@ -10,7 +10,7 @@ const restartValidator = {}
 restartValidator.validateReason = (reason, specifyReason) => {
   const validationError = new ValidationError()
   if (reason === 'Did not complete' && specifyReason.length === 0) {
-    validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
+    validationError.addError('didNotCompleteInfo', 'Please specify further information when "Did not complete" option is selected')
   }
   return validationError
 }
