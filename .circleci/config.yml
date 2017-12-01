@@ -25,9 +25,9 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - admin-unit-tests
+      - admin-unit-tests:
         requires:
           - build
-      - pupil-unit-tests
+      - pupil-unit-tests:
         requires:
           - build
