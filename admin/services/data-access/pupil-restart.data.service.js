@@ -10,7 +10,8 @@ const pupilRestartDataService = {}
  */
 pupilRestartDataService.create = async function (data) {
   const pupilRestart = new PupilRestart(data)
-  return pupilRestart.save()
+  await pupilRestart.save()
+  return pupilRestart.toObject()
 }
 
 /**

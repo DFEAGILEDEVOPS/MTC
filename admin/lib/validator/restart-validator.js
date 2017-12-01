@@ -1,4 +1,5 @@
 const ValidationError = require('../validation-error')
+const restartErrorMessages = require('../errors/restart')
 const restartValidator = {}
 
 /**
@@ -10,7 +11,7 @@ const restartValidator = {}
 restartValidator.validateReason = (reason, specifyReason) => {
   const validationError = new ValidationError()
   if (reason === 'Did not complete' && specifyReason.length === 0) {
-    validationError.addError('didNotCompleteInfo', 'Please specify further information when "Did not complete" option is selected')
+    validationError.addError('didNotCompleteInfo', restartErrorMessages.didNotCompleteInfo)
   }
   return validationError
 }
