@@ -8,33 +8,15 @@ jobs:
     working_directory: ~/repo/
     docker:
       - image: circleci/node:8
+    environment:
+      TZ: Europe/London
     steps:
       - checkout
-      - run: 'cd admin; yarn install'
-      - run: 'cd pupil-spa; yarn install'
-
-  pupil_unit_tests:
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
-      - run: 'cd pupil-spa; yarn run test-single'
-
-  admin_unit_tests:
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
-      - run: 'cd admin; yarn test'
+      - run: cd admin; yarn install
+      - run: cd pupil-spa; yarn install
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - admin_unit_tests:
-        requires:
-          - build
-      - pupil_unit_tests:
-        requires:
-          - build
