@@ -13,14 +13,14 @@ jobs:
       - run: 'cd admin; yarn install'
       - run: 'cd pupil-spa; yarn install'
 
-  pupil-unit-tests:
+  pupil_unit_tests:
     docker:
       - image: circleci/node:8
     steps:
       - checkout
       - run: 'cd pupil-spa; yarn run test-single'
 
-  admin-unit-tests:
+  admin_unit_tests:
     docker:
       - image: circleci/node:8
     steps:
@@ -29,12 +29,12 @@ jobs:
 
 workflows:
   version: 2
-  build-and-test:
+  build_and_test:
     jobs:
       - build
-      - admin-unit-tests:
+      - admin_unit_tests:
         requires:
           - build
-      - pupil-unit-tests:
+      - pupil_unit_tests:
         requires:
           - build
