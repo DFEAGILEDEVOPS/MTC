@@ -37,6 +37,8 @@ const checkWindowDataService = {
     query.isDeleted = !deleted ? false : deleted
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
+    } else {
+      query.checkEndDate = {$lte: currentTimestamp}
     }
 
     if (sortBy && sortDirection) {
