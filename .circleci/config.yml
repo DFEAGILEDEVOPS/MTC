@@ -4,43 +4,18 @@
 #
 version: 2
 jobs:
-  build-admin:
+  build:
     docker:
       - image: circleci/node:8
     working_directory: ~/repo/
 
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-admin-{{ checksum "admin/package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-admin
       - run: cd admin; yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-admin-{{ checksum "admin/package.json" }}
+      - run: cd pupil-spa; yarn install
 
   admin-unit-tests:
-    - run: cd admin;yarn test
-
-  build-pupil:
-    docker:
-      - image: circleci/node:8
-      working_directory: ~/repo/
-      steps:
-          - checkout
-          - restore_cache:
-              keys:
-              - v1-dependencies-pupil-{{ checksum "pupil/package.json" }}
-              # fallback to using the latest cache if no exact match is found
-              - v1-dependencies-pupil
-          - run: cd admin; yarn install
-          - save_cache:
-              paths:
-                - node_modules
-              key: v1-dependencies-pupil-{{ checksum "pupil/package.json" }}
+    - run: cd admin; yarn test
 
   pupil-unit-tests:
     - run: cd pupil-spa; yarn run test-single
@@ -49,11 +24,10 @@ workflows:
   version: 1
   build_and_test:
     jobs:
-      - build-admin
-      - build-pupil
+      - build
       - admin-unit-tests
         requires:
-          - build-admin
+          - build
       - pupil-unit-tests
         requires:
-          - build-pupil
+          - build
