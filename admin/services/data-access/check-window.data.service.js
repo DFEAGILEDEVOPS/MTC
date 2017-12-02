@@ -32,7 +32,7 @@ const checkWindowDataService = {
     let sorting = {}
     let query = {}
 
-    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D HH:mm:ss.SSS')
+    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D 00:00:00')
 
     query.isDeleted = !deleted ? false : deleted
     if (current === true) {
@@ -40,6 +40,7 @@ const checkWindowDataService = {
     } else {
       query.checkEndDate = {$lte: currentTimestamp}
     }
+    console.log('QUERY', query)
 
     if (sortBy && sortDirection) {
       sorting[sortBy] = sortDirection
