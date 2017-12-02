@@ -87,4 +87,20 @@ describe('checkWindowDataService', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#create', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(CheckWindow.prototype).expects('save').resolves(checkWindowsMock)
+      service = proxyquire('../../../services/data-access/check-window.data.service', {
+        '../../models/check': CheckWindow
+      })
+    })
+
+    it('should validate the model', async () => {
+      await service.create({prop: 'test'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })
