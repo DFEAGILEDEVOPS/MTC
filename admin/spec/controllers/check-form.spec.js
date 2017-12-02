@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn */
 
 const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
