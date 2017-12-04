@@ -53,6 +53,12 @@ And(/^I select a reason for restarts$/) do
   restarts_page.reason_1.click
 end
 
+And(/^I submit the pupil for restart with a reason 'Did not complete' for restarts$/) do
+  restarts_page.reason_4.click
+  step 'I select a pupil for restarts'
+  restarts_page.sticky_banner.confirm.click
+end
+
 When(/^I select a pupil for restarts$/) do
   pupil = restarts_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
@@ -82,6 +88,8 @@ Given(/^I have single pupils for restart$/) do
   MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
   MongoDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001)
 
+  pupil_id = MongoDbHelper.pupil_details(@details_hash[:upn])
+  MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
   step 'I am on the Restarts Page'
 end
 
@@ -95,7 +103,26 @@ Given(/^I have multiple pupils for restart$/) do
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
     MongoDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
     MongoDbHelper.reset_pin(pupil_firstname, pupil_lastname, 9991001)
+
+    pupil_id = MongoDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
   end
 
   step 'I am on the Restarts Page'
+end
+
+Given(/^I submitted pupils for Restart$/) do
+  step 'I have single pupils for restart'
+  step 'I select a pupil for restarts'
+  restarts_page.reason_1.click
+  restarts_page.sticky_banner.confirm.click
+end
+
+Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
+  expect(restarts_page).to have_flash_message
+  expect(restarts_page.flash_message.text).to eql('Restarts made for 1 pupil')
+end
+
+Then(/^I should see the error message for further information for 'Did not complete' reason$/) do
+  expect(restarts_page.error_summary).to be_all_there
 end

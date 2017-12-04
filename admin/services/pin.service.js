@@ -51,4 +51,26 @@ pinService.expirePupilPin = async (token, checkCode) => {
   }
 }
 
+/**
+ * Check and expire pupil pins based on set of provided pupil Ids
+ * @param pupilIds
+ * @returns {Promise}
+ */
+
+pinService.expireMultiplePins = async (pupilIds) => {
+  let pupils = []
+  for (let index = 0; index < pupilIds.length; index++) {
+    const id = pupilIds[ index ]
+    const pupil = await pupilDataService.findOne({_id: ObjectId(id)})
+    if (pupil.pin || pupil.pinExpiresAt) pupils.push(pupil)
+  }
+  if (pupils.length === 0) return
+  pupils = pupils.map(p => {
+    p.pin = null
+    p.pinExpiresAt = null
+    return p
+  })
+  return pupilDataService.updateMultiple(pupils)
+}
+
 module.exports = pinService
