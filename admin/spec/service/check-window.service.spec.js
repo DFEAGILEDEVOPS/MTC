@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect it beforeEach */
+/* global describe expect it beforeEach afterEach */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
