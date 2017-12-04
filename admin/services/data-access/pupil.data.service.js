@@ -13,7 +13,7 @@ const pupilDataService = {}
 pupilDataService.getPupils = async (schoolId) => {
   const [ schoolData, pupils ] = await Promise.all([
     School.findOne({'_id': schoolId}).lean().exec(),
-    Pupil.getPupils(schoolId).exec()
+    Pupil.find({ school: schoolId }).sort({ createdAt: 1 }).lean().exec()
   ]).catch((error) => {
     throw new Error(error)
   })
