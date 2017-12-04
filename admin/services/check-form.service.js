@@ -176,6 +176,18 @@ const checkFormService = {
       }
     })
     return canDelete
+  },
+  /**
+   * Build a form name based on the file name.
+   * @param fileName
+   */
+  buildFormName: async (fileName) => {
+    if (!fileName || fileName.length < 5) {
+      return
+    }
+    const formName = fileName.slice(0, -4)
+    const checkFileName = await checkFormDataService.findCheckFormByName(formName)
+    return !checkFileName ? formName : false
   }
 }
 

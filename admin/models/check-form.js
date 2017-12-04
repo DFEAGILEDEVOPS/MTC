@@ -44,8 +44,6 @@ CheckForm.pre('save', async function (next) {
     const latestId = latestDocument._id || 0
     this._id = parseInt(latestId) + 1
   }
-  let id = this._id.toString()
-  this.name = PREFIX + id.padStart(4, '0')
   next()
 })
 

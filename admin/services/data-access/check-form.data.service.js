@@ -48,10 +48,24 @@ const checkFormDataService = {
     return CheckForm.find(q).sort(sort).lean().exec()
   },
 
+  /**
+   * Create.
+   * @param data
+   * @returns {Promise<*>}
+   */
   create: async (data) => {
     const checkForm = new CheckForm(data)
     await checkForm.save()
     return checkForm.toObject()
+  },
+
+  /**
+   * Find check form by name.
+   * @param formName
+   */
+  findCheckFormByName: (formName) => {
+    let query = { 'isDeleted': false, 'name': formName }
+    return CheckForm.findOne(query).exec()
   }
 }
 

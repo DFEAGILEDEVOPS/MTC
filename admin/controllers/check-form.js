@@ -172,6 +172,18 @@ const saveCheckForm = async (req, res, next) => {
     })
   }
 
+  try {
+    const fileName = await checkFormService.buildFormName(uploadFile.filename)
+    if (!fileName) {
+      req.flash('error', `${fileName} already exists. Rename and upload again.`)
+      return res.redirect('/test-developer/upload-new-form')
+    } else {
+      checkForm.name = fileName
+    }
+  } catch (error) {
+    return next(new Error(`Error trying to find form with name ${uploadFile.filename.slice(0, -4)}`))
+  }
+
   fs.remove(deleteDir, err => {
     if (err) console.error(err)
   })
