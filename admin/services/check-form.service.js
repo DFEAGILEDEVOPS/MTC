@@ -32,8 +32,8 @@ const checkFormService = {
   },
 
   /**
-   * Populate a Mongoose model with data from a CSV file
-   * @param {CheckForm} checkForm Mongoose model
+   * Populate a plain object with data from a CSV file
+   * @param {object} plain checkForm object
    * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
    * @return {Promise}
    */
