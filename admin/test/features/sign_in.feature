@@ -11,13 +11,11 @@ Feature:
     Given I am on the sign in page
     Then I should see instructions
 
-  @travis
   Scenario: User is logged in when Valid credentials are added
     Given I have entered valid credentials
     When I sign in
     Then I should be taken to the school landing page
 
-  @travis
   Scenario: Invalid credentials allow user to be authenticated
     Given I have entered invalid credentials
     When I sign in

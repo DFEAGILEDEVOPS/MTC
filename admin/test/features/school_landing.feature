@@ -14,7 +14,6 @@ Feature:
       | teacher3 |
       | teacher4 |
 
-  @travis
   Scenario Outline: Teachers' sees their name on the school homepage
     Given I have signed in with <teacher>
     Then I should see <teacher>'s name

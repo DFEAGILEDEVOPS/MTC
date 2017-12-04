@@ -32,7 +32,7 @@ Feature: Add Multiple Pupil validation Error
     When I download the Multiple Pupil upload CSV file with error
     Then I can see the validation error for wrong gender for multiple pupil upload
 
-  @multiple_pupil_upload @multiple_pupil_csv_download @travis
+  @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with empty first name and lastname
     And I Upload a CSV file with empty first name and last name to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error
@@ -68,13 +68,13 @@ Feature: Add Multiple Pupil validation Error
     When I download the Multiple Pupil upload CSV file with error
     And I can see the validation error for future date of birth for multiple pupil upload
 
-  @multiple_pupil_upload @multiple_pupil_csv_download @travis
+  @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with duplicate UPN from attendance register
     And I Upload a CSV file with duplicate UPN from attendance register to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error
     Then I can see the validation error for duplicate UPN from attendance register for multiple pupil upload
 
-  @multiple_pupil_upload @multiple_pupil_csv_download @travis
+  @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with empty UPN
     And I Upload a CSV file with empty UPN to add Multiple Pupil
     When I download the Multiple Pupil upload CSV file with error

@@ -26,7 +26,7 @@ Feature: Add Multiple Pupil
     Then I should be taken to the Pupil register page
     And I should see a flash message for the multiple pupil upload
 
-  @multiple_pupil_upload @travis
+  @multiple_pupil_upload
   Scenario: User can see new pupil in the list after uploading valid file for adding multiple pupil
     When I Upload a valid CSV file to add Multiple Pupil
     Then I should be taken to the Pupil register page
@@ -37,7 +37,7 @@ Feature: Add Multiple Pupil
     When I Upload a CSV file with errors to add Multiple Pupil
     And I can see the error message for adding Multiple Pupil
 
-  @multiple_pupil_upload @travis
+  @multiple_pupil_upload
   Scenario: User uploading a CSV files with errors can see a link to download error file
     When I Upload a CSV file with errors to add Multiple Pupil
     And I can see link to download Error File

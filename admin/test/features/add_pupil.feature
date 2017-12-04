@@ -26,14 +26,12 @@ Feature:
     Given I am on the add pupil page
     Then I should see fields that will allow me to capture pupil data
 
-  @travis
   Scenario: Pupil data is stored when valid details are entered
     Given I am on the add pupil page
     When I have submitted valid pupil details
     Then the pupil details should be stored
     Then I should see a flash message to state the pupil has been added
 
-  @travis
   Scenario: Pupil data is not stored when invalid details are entered
     Given I am on the add pupil page
     When I have submitted invalid pupil details

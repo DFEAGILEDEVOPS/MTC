@@ -90,7 +90,6 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pin should consist of 5 characters
 
-  @travis
   Scenario: Generated pupil pins are stored in the DB alongside the pupil
     Given I have generated a pin for a pupil
     Then the pin should be stored against the pupil
@@ -104,12 +103,10 @@ Feature: Generate Pupil PINs
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
 
-  @travis
   Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  @travis
   Scenario: School Password is displayed on Generated Pin Page
     Given I have generated a pin for a pupil
     Then I should see the school password for teacher1
@@ -122,7 +119,6 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then I should see link to download all pupil pins
 
-  @travis
   Scenario: Create Custom download link is displayed on Generated Pin Page
     Given I have generated a pin for a pupil
     Then I should see link to create custom download

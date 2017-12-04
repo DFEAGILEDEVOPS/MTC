@@ -5,10 +5,12 @@ dist: trusty
 cache:
   - bundler
   - yarn
+  directories:
+       - /home/travis/.rvm/
 
 env:
 #  - TEST_TYPE=admin-specs
-  - TEST_TYPE=pupil-specs
+#  - TEST_TYPE=pupil-specs
   - TEST_TYPE=admin-e2e
   - TEST_TYPE=pupil-e2e
 global:

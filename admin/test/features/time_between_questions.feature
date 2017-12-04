@@ -11,7 +11,6 @@ Feature: Time between questions
     When I am on the check settings page
     Then I should see that time between questions is set to 2 seconds
 
-  @travis
   Scenario: The 'Time between questions' contains the value it was last populated with
     When I have updated the time between questions to 3 seconds
     Then I should see that time between questions is set to 3 seconds
@@ -30,13 +29,11 @@ Feature: Time between questions
     And I have updated the time between questions to 3.555 seconds
     Then I should see that time between questions is set to 3.56 seconds
 
-  @travis
   Scenario: An audit record is created that defines the date and date from which the new
   value of the Time between questions was applied
     When I update the time between questions from 2 to 4 seconds
     Then I should see a record that has date and time of the Time between questions change to 4 in database
 
-  @travis
   Scenario: A historic record is appended for every change of Time between questions
     When I update the time between questions from 4 to 2 seconds
     Then I should see a historic record appended for Time between questions change to 2 in the database

@@ -6,7 +6,6 @@ Feature: Edit Check Window
   Scenario: Edit check window displays pre populated data
     Then I would see the edit check fields prepopulated with the data
 
-  @travis
   Scenario: Check Window detail is updated when valid details are entered
     When I update the check window with valid data
     Then I should be taken to the Manage Check Window page
@@ -55,7 +54,6 @@ Feature: Edit Check Window
     When I try to submit a admin start date with more digits for day month year than specified
     Then I should see errors for the admin start day month and year being invalid
 
-  @travis
   Scenario: Admin start date cant be after the check start date
     When I try to submit an admin start date that is after the check start date
     Then I should see an error stating the admin start date has to be before the check start date
@@ -82,7 +80,6 @@ Feature: Edit Check Window
     When I try to submit a check start date with more digits for day month year than specified
     Then I should see errors for the check start day month and year being invalid
 
-  @travis
   Scenario: Check start date cant be before the admin start date
     When I try to submit an check start date that is before the admin start date
     Then I should see an error stating the admin start date has to be before the check start date
@@ -113,7 +110,6 @@ Feature: Edit Check Window
     When I try to submit a check end date with more digits for day month year than specified
     Then I should see errors for the check end day month and year being invalid
 
-  @travis
   Scenario: Check end date cant be before check start date
     When I try to submit an check end date that is before the check start date
     Then I should see an error stating the check end date has to be after the check start date
