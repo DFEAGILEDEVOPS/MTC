@@ -92,3 +92,21 @@ Then(/^I should see the modal has some text$/) do
   expect(manage_check_window_page.modal.content.text).to eql 'Are you sure you want to remove this?'
 
 end
+
+Then(/^the check name should be sorted a\-z by default$/) do
+  windows_from_db = MongoDbHelper.check_windows.map{|a| a['checkWindowName']}
+  windows_from_db = windows_from_db.reject(&:nil?)
+  windows_from_page = manage_check_window_page.windows_table.rows.map {|row| row.check_name.text}
+  expect(windows_from_db.sort).to eql windows_from_page
+end
+
+When(/^I choose to sort to z\-a$/) do
+  manage_check_window_page.sort_desc.click
+end
+
+Then(/^the check name should be sorted z\-a by default$/) do
+  windows_from_db = MongoDbHelper.check_windows.map{|a| a['checkWindowName']}
+  windows_removed_empties = windows_from_db.reject(&:nil?)
+  windows_from_page = manage_check_window_page.windows_table.rows.map {|row| row.check_name.text}
+  expect(windows_removed_empties.sort.reverse).to eql windows_from_page
+end
