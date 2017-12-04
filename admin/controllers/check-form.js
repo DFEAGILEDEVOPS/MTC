@@ -132,7 +132,7 @@ const saveCheckForm = async (req, res, next) => {
     // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
     // * file size exceeded?
-    res.locals.pageTitle = 'ERROR: Upload check form'
+    res.locals.pageTitle = 'Upload check form'
     uploadError.message = 'A valid CSV file was not uploaded'
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)

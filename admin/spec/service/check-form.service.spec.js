@@ -149,4 +149,14 @@ describe('check-form.service', () => {
       done()
     })
   })
+
+  describe('#buildFormName()', () => {
+    it('should return a valid form name', async (done) => {
+      sandbox.stub(checkFormDataService, 'findCheckFormByName').resolves(null)
+      const result = await service.buildFormName('MTC0100.csv')
+      expect(result).toBe('MTC0100')
+      expect(result).toBeTruthy()
+      done()
+    })
+  })
 })
