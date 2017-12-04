@@ -23,4 +23,5 @@ examples.modifyData = () => {
     id, updatedAt, loadingTimeLimit, questionTimeLimit)
 }
 
-module.exports = examples
+examples.modifyData()
+examples.getData()

@@ -21,12 +21,10 @@ var connectionConfig = {
   }
 }
 
-// TODO: declare methods inside?
 // TODO: JsDoc - void return?
 const sqlConnectionService = {}
 let pool = null
 
-// TODO: promisify?
 sqlConnectionService.init = () => {
   pool = new ConnectionPool(poolConfig, connectionConfig)
   pool.on('error', function (err) {
@@ -34,7 +32,6 @@ sqlConnectionService.init = () => {
   })
 }
 
-// TODO make async
 sqlConnectionService.getConnection = () => {
   return new Promise((resolve, reject) => {
     if (pool == null) {
