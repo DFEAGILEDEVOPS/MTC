@@ -79,6 +79,17 @@ const checkWindowDataService = {
    */
   fetchPastCheckWindows: async (sortBy, sortDirection) => {
     return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, false)
+  },
+
+  /**
+   * Create a new check window
+   * @param data
+   * @return {Promise.<*>}
+   */
+  create: async (data) => {
+    const cw = new CheckWindow(data)
+    await cw.save()
+    return cw.toObject()
   }
 }
 
