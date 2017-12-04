@@ -1,3 +1,4 @@
+@travis3
 Feature: Service manager homepage
 
   Scenario: Service Manager are taken to the service manager homepage

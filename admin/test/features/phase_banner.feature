@@ -1,4 +1,4 @@
-@poltergeist
+@poltergeist @travis2
 Feature:
   As a member of the development team
   I want users to be aware which phase the application is in and also offer feedback

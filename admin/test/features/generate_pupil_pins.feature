@@ -1,3 +1,4 @@
+@travis2
 Feature: Generate Pupil PINs
 
   @no_pin

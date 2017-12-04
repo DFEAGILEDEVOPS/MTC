@@ -1,3 +1,4 @@
+@travis1
 Feature: Event Auditing
 
   Scenario: Events are recorded into local storage

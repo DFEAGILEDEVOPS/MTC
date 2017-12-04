@@ -1,3 +1,4 @@
+@travis2
 Feature: Loading Page
 
   Scenario: Warm up questions start after a 2 second delay

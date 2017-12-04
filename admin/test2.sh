@@ -8,7 +8,7 @@ MSG+=$PID
 echo $MSG
 
 cd test
-rake features OPTS='-t @travis1'
+rake features OPTS='-t @travis2'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID

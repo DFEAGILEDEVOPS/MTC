@@ -1,3 +1,4 @@
+@travis2
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section

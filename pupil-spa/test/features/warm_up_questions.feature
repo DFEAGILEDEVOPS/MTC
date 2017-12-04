@@ -1,3 +1,4 @@
+@travis2
 Feature: Warm up questions
   As a pupil I want some warm up questions
   So that I can prepare myself for the check

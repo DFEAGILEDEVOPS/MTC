@@ -1,3 +1,4 @@
+@travis2
 Feature:
   Pin expiry after check has started
 

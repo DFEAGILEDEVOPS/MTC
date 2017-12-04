@@ -1,3 +1,4 @@
+@travis3
 Feature:
   As part of test development
   I want to be able to add a pupil

@@ -1,3 +1,4 @@
+@travis1
 Feature:
   As part of test development
   I want to be able to edit a pupil
