@@ -40,7 +40,7 @@
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.1.0",
     "migrate-mongo": "^2.2.1",
-    "moment": "^2.19.2",
+    "moment": "^2.19.3",
     "mongoose": "^4.13.5",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-uuid2": "^2.0.1",
@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "govuk-elements-sass": "^3.1.2",
-    "govuk_template_ejs": "^0.19.2",
+    "govuk_template_ejs": "^0.23.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",

@@ -2054,9 +2054,9 @@ govuk_frontend_toolkit@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-7.1.0.tgz#9c24ccbccd2b4df5ae9ecd3eeeac70b436597325"
 
-govuk_template_ejs@^0.19.2:
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/govuk_template_ejs/-/govuk_template_ejs-0.19.2.tgz#761c5ef6073c2eea147cdb2c1478affe77cefff0"
+govuk_template_ejs@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/govuk_template_ejs/-/govuk_template_ejs-0.23.0.tgz#d7463b4f6028bb7ea222d6c098d9d00738bdc988"
 
 graceful-fs@^3.0.0:
   version "3.0.11"
@@ -2333,7 +2333,7 @@ https-proxy-agent@^0.3.5:
     debug "2"
     extend "3"
 
-iconv-lite@0.4.19, iconv-lite@^0.4.11, iconv-lite@^0.4.19:
+iconv-lite@0.4.19, iconv-lite@^0.4.19:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
 

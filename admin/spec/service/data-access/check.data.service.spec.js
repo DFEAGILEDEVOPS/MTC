@@ -112,4 +112,20 @@ describe('check.data.service', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#create', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Check.prototype).expects('save')
+      service = proxyquire('../../../services/data-access/check.data.service', {
+        '../../models/check': Check
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.create({test: 'property'})
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })

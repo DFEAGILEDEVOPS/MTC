@@ -68,3 +68,14 @@ Feature:
     When I want to remove a window
     But decide to cancel
     Then the window should not be removed
+
+  @manual
+  Scenario: Users can sort via check window name a-z
+    Given I am on the manage check windows page
+    Then the check name should be sorted a-z by default
+
+  @manual
+  Scenario: Users can sort via check window name z-a
+    Given I am on the manage check windows page
+    When I choose to sort to z-a
+    Then the check name should be sorted z-a by default
