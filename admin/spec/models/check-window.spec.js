@@ -6,13 +6,11 @@ const mongoose = require('mongoose')
 mongoose.Promomise = global.Promise
 
 const moment = require('moment')
-const sinon = require('sinon')
 require('sinon-mongoose')
 
 const CheckWindow = require('../../models/check-window')
 
 describe('check-window schema', function () {
-  let sandbox
   let checkWindow
 
   beforeEach(function () {
@@ -24,12 +22,6 @@ describe('check-window schema', function () {
       registrationStartDate: moment().toDate(),
       forms: []
     })
-
-    sandbox = sinon.sandbox.create()
-  })
-
-  afterEach(() => {
-    sandbox.restore()
   })
 
   it('should allow a valid object', function (done) {

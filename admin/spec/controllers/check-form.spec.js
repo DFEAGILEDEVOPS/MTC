@@ -167,10 +167,10 @@ describe('check-form controller:', () => {
           expect(checkFormDataService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
-          done()
         } catch (error) {
           expect(error).toBe('not thrown')
         }
+        done()
       })
     })
 

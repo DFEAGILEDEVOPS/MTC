@@ -39,8 +39,11 @@ const uploadAndViewForms = async (req, res, next) => {
     let formData
 
     // Sorting
-    const sortingOptions = [{ 'key': 'name', 'value': 'asc' }]
-    const sortField = 'name'
+    const sortingOptions = [
+      { key: 'name', value: 'asc' },
+      { key: 'window', value: 'asc' }
+    ]
+    const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
     const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
     const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
 
