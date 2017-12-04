@@ -2,7 +2,6 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const School = require('../models/school')
 const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
@@ -89,7 +88,7 @@ controller.getAddMultiplePupils = (req, res, next) => {
 controller.postAddMultiplePupils = async (req, res, next) => {
   let school
   try {
-    school = await School.findOne({_id: req.user.School}).exec()
+    school = await schoolDataService.findOne({_id: req.user.School})
     if (!school) {
       throw new Error(`School [${req.user.school}] not found`)
     }
@@ -144,7 +143,7 @@ controller.getEditPupilById = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
-    const school = await School.findOne({_id: pupil.school}).exec()
+    const school = await schoolDataService.findOne({_id: pupil.school})
     if (!school) {
       return next(new Error(`School ${pupil.school} not found`))
     }
@@ -156,7 +155,7 @@ controller.getEditPupilById = async (req, res, next) => {
     pupilData['dob-year'] = dob.format('YYYY')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/edit-pupil', {
-      school: school.toJSON(),
+      school,
       formData: pupilData,
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs()
@@ -178,7 +177,7 @@ controller.postEditPupil = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.id} not found`))
     }
-    school = await School.findOne({_id: pupil.school}).exec() //  can just use pupil.school as populated
+    school = await schoolDataService.findOne({_id: pupil.school})
     if (!school) {
       return next(new Error(`School ${pupil.school} not found`))
     }
@@ -190,7 +189,7 @@ controller.postEditPupil = async (req, res, next) => {
   if (validationError.hasError()) {
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('school/edit-pupil', {
-      school: school.toJSON(),
+      school,
       formData: req.body,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
