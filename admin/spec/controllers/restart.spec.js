@@ -136,8 +136,26 @@ describe('restart controller:', () => {
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Restarts')
+      const requestFlashCalls = req.flash.calls.all()
       expect(req.flash).toHaveBeenCalled()
+      expect(requestFlashCalls[0].args[1]).toBe('Restarts made for 2 pupils')
       expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('renders a specific flash message for 1 pupil', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      req.body = {
+        pupil: [pupilMock._id]
+      }
+      const validationError = new ValidationError()
+      spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
+      spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }])
+      spyOn(res, 'render').and.returnValue(null)
+      const controller = require('../../controllers/restart').postSubmitRestartList
+      await controller(req, res, next)
+      const requestFlashCalls = req.flash.calls.all()
+      expect(requestFlashCalls[0].args[1]).toBe('Restarts made for 1 pupil')
       done()
     })
   })

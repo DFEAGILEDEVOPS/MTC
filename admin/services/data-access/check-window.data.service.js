@@ -32,14 +32,15 @@ const checkWindowDataService = {
     let sorting = {}
     let query = {}
 
-    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D HH:mm:ss.SSS')
+    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D 00:00:00')
 
     query.isDeleted = !deleted ? false : deleted
     if (current === true) {
       query.checkEndDate = {$gte: currentTimestamp}
     } else {
-      query.checkEndDate = {$lt: currentTimestamp}
+      query.checkEndDate = {$lte: currentTimestamp}
     }
+    console.log('QUERY', query)
 
     if (sortBy && sortDirection) {
       sorting[sortBy] = sortDirection
@@ -79,6 +80,17 @@ const checkWindowDataService = {
    */
   fetchPastCheckWindows: async (sortBy, sortDirection) => {
     return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, false)
+  },
+
+  /**
+   * Create a new check window
+   * @param data
+   * @return {Promise.<*>}
+   */
+  create: async (data) => {
+    const cw = new CheckWindow(data)
+    await cw.save()
+    return cw.toObject()
   }
 }
 

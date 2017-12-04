@@ -5,35 +5,32 @@
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:8.9.1
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
     working_directory: ~/repo/
-    
+    docker:
+      - image: circleci/node:8-browsers
+    environment:
+      TZ: Europe/London
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "admin/package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: cd admin;yarn install
-
+          key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
+      - restore_cache:
+          key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
+      - run: cd admin; yarn install
+      - run: cd pupil-spa; yarn install
+      - run: cd admin; yarn test
+      - run: cd pupil-spa; yarn run test-single
       - save_cache:
+          key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "admin/package.json" }}
-        
-      # run tests!
-      - run: cd admin;yarn test
+            - ~/repo/admin/node_modules
+      - save_cache:
+          key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
+          paths:
+            - ~/repo/pupil-spa/node_modules
 
-
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
