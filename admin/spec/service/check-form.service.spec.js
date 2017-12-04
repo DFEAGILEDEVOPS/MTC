@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect */
+/* global describe beforeEach afterEach jasmine it expect */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
