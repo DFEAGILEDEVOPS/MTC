@@ -60,7 +60,8 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
-  req.flash('info', `${submittedPupils.length} new pupils have been submitted for restart`)
+  const restartInfo = submittedPupils.length < 2 ? '1 pupil' : `${submittedPupils.length} pupils`
+  req.flash('info', ` Restarts made for ${restartInfo}`)
   return res.render('restart/restart-overview', {
     breadcrumbs: req.breadcrumbs(),
     submittedPupils,
