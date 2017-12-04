@@ -1,8 +1,8 @@
 'use strict'
 
 const moment = require('moment')
+const R = require('ramda')
 const School = require('../models/school')
-const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
 const ValidationError = require('../lib/validation-error')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
@@ -14,6 +14,7 @@ const azureFileDataService = require('../services/data-access/azure-file.data.se
 const pupilUploadService = require('../services/pupil-upload.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilAddService = require('../services/pupil-add-service')
+const dateService = require('../services/date.service')
 
 const controller = {}
 
@@ -139,18 +140,17 @@ controller.getErrorCSVFile = async (req, res) => {
 controller.getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   try {
-    const pupil = await Pupil.findOne({_id: req.params.id}).exec()
+    const pupil = await pupilDataService.findOne({_id: req.params.id})
     if (!pupil) {
-      return next(new Error(`Pupil ${req.body.id} not found`))
+      return next(new Error(`Pupil ${req.params.id} not found`))
     }
     const school = await School.findOne({_id: pupil.school}).exec()
     if (!school) {
       return next(new Error(`School ${pupil.school} not found`))
     }
-    const pupilData = pupil.toJSON()
+    const pupilData = R.omit('dob', pupil)
     const dob = moment(pupil.dob)
     // expand single date field to 3
-    delete pupilData['dob']
     pupilData['dob-day'] = dob.format('D')
     pupilData['dob-month'] = dob.format('M')
     pupilData['dob-year'] = dob.format('YYYY')
@@ -174,11 +174,11 @@ controller.postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await Pupil.findOne({_id: req.body._id}).exec()
+    pupil = await pupilDataService.findOne({_id: req.body._id})
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.id} not found`))
     }
-    school = await School.findOne({_id: pupil.school}).exec()
+    school = await School.findOne({_id: pupil.school}).exec() //  can just use pupil.school as populated
     if (!school) {
       return next(new Error(`School ${pupil.school} not found`))
     }
@@ -187,41 +187,8 @@ controller.postEditPupil = async (req, res, next) => {
     return next(error)
   }
 
-  pupil.foreName = req.body.foreName
-  pupil.middleNames = req.body.middleNames
-  pupil.lastName = req.body.lastName
-  pupil.upn = req.body.upn.trim().toUpperCase()
-  pupil.gender = req.body.gender
-  pupil.pin = pupil.pin || null
-  pupil.pinExpired = pupil.pinExpired || false
-  pupil.dob = moment.utc('' + req.body['dob-day'] + '/' + req.body['dob-month'] + '/' + req.body['dob-year'], 'DD/MM/YYYY')
-
-  try {
-    await pupil.validate()
-    if (validationError.hasError()) {
-      throw new Error('custom validation error')
-    }
-  } catch (error) {
+  if (validationError.hasError()) {
     req.breadcrumbs(res.locals.pageTitle)
-
-    if (error.message !== 'custom validation error') {
-      // Mongoose error
-      // At this point we have validated the schema and may or may not have anything in validationError
-      // So = combine all validation errors into one
-      let combinedValidationError = errorConverter.fromMongoose(error, addPupilErrorMessages, validationError)
-      // error fixup: if the mongoose schema bails out on the dob field - we should make sure we have some
-      // actual html fields that have an error.  If we do, we can ditch the mongoose error as being superfluous.
-      if (combinedValidationError.isError('dob') && (combinedValidationError.isError('dob-day') || combinedValidationError.isError('dob-month') || combinedValidationError.isError('dob-year'))) {
-        combinedValidationError.removeError('dob')
-      }
-      return res.render('school/edit-pupil', {
-        school: school.toJSON(),
-        formData: req.body,
-        error: combinedValidationError,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
-
     return res.render('school/edit-pupil', {
       school: school.toJSON(),
       formData: req.body,
@@ -230,14 +197,25 @@ controller.postEditPupil = async (req, res, next) => {
     })
   }
 
+  pupil._id = req.body._id
+  pupil.foreName = req.body.foreName
+  pupil.middleNames = req.body.middleNames
+  pupil.lastName = req.body.lastName
+  pupil.upn = req.body.upn.trim().toUpperCase()
+  pupil.gender = req.body.gender
+  pupil.pin = pupil.pin || null
+  pupil.pinExpired = pupil.pinExpired || false
+  pupil.dob = dateService.createFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
+
   try {
-    await pupil.save()
+    await pupilDataService.update(pupil._id, pupil)
     req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
+    // TODO: handle mongoose validation error?
     next(error)
   }
 
-  // pupil saved
+  // pupil saved - redirect and highlight the saved pupil
   const pupilId = JSON.stringify([pupil._id])
   res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
 }

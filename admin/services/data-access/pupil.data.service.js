@@ -103,7 +103,8 @@ pupilDataService.updateMultiple = async function (pupils) {
  */
 pupilDataService.save = async function (data) {
   const pupil = new Pupil(data)
-  return pupil.save()
+  await pupil.save()
+  return pupil.toObject()
 }
 
 module.exports = pupilDataService
