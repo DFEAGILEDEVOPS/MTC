@@ -1,9 +1,10 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach afterEach it expect jasmine spyOn */
 
 const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
 
+const sinon = require('sinon')
 require('sinon-mongoose')
 const fs = require('fs-extra')
 
@@ -11,8 +12,6 @@ const checkWindowService = require('../../services/check-window.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const checkFormService = require('../../services/check-form.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
-
-const CheckForm = require('../../models/check-form')
 
 const checkFormMock = require('../mocks/check-form')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
@@ -40,9 +39,8 @@ describe('check-form controller:', () => {
   }
 
   describe('Check routes', () => {
-    let res
-    let req
     let controller
+    let sandbox
     let next
     let goodReqParams = {
       method: 'GET',
@@ -50,9 +48,12 @@ describe('check-form controller:', () => {
     }
 
     beforeEach(() => {
+      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-      res = getRes()
-      req = getReq(goodReqParams)
+    })
+
+    afterEach(() => {
+      sandbox.restore()
     })
 
     describe('Logging in as a test-developer', () => {
@@ -61,19 +62,12 @@ describe('check-form controller:', () => {
       })
 
       it('should take me to the \'test-developer\'s the landing page', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('MTC for test development')
         expect(next).not.toHaveBeenCalled()
-        done()
-      })
-
-      it('should execute next when rendering fails', async (done) => {
-        spyOn(res, 'render').and.throwError('error')
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('MTC for test development')
-        expect(next).toHaveBeenCalled()
         done()
       })
     })
@@ -84,14 +78,15 @@ describe('check-form controller:', () => {
 
       beforeEach(() => {
         spyOn(sortingAttributesService, 'getAttributes').and.returnValue({htmlSortDirection, arrowSortDirection})
+        spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(checkFormsFormattedMock)
         controller = proxyquire('../../controllers/check-form', {}).uploadAndViewForms
-        req.url = 'test-developer/upload-and-view-forms'
       })
 
       it('should take me to \'Upload and view forms\' page', async (done) => {
-        spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(checkFormsFormattedMock)
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        req.url = 'test-developer/upload-and-view-forms'
         await controller(req, res, next)
-
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('Upload and view forms')
         expect(next).not.toHaveBeenCalled()
@@ -99,33 +94,20 @@ describe('check-form controller:', () => {
         expect(checkFormService.formatCheckFormsAndWindows).toHaveBeenCalled()
         done()
       })
-
-      it('should fail and execute next', async (done) => {
-        spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(Promise.reject(new Error('error')))
-        await controller(req, res, next)
-
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Upload and view forms')
-        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
-        expect(checkFormService.formatCheckFormsAndWindows).toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-        done()
-      })
     })
 
     describe('Removing a form', () => {
       beforeEach(() => {
-        spyOn(checkFormService, 'unassignedCheckFormsFromCheckWindows').and.returnValue(checkFormsFormattedMock)
+        spyOn(checkFormDataService, 'getActiveForm').and.returnValue(checkFormMock)
+        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
         spyOn(checkWindowService, 'markAsDeleted').and.returnValue(checkFormMock)
+        spyOn(checkFormService, 'unassignedCheckFormsFromCheckWindows').and.returnValue(checkFormsFormattedMock)
         controller = proxyquire('../../controllers/check-form', {}).removeCheckForm
-        res = getRes()
-        req = getReq(goodReqParams)
       })
 
       it('should soft delete a form and redirect the user', async (done) => {
-        spyOn(checkFormDataService, 'getActiveForm').and.returnValue(checkFormMock)
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
-
+        const res = getRes()
+        const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(302)
         expect(next).not.toHaveBeenCalled()
@@ -133,33 +115,6 @@ describe('check-form controller:', () => {
         expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
         expect(checkWindowService.markAsDeleted).toHaveBeenCalled()
         expect(checkFormService.unassignedCheckFormsFromCheckWindows).toHaveBeenCalled()
-        done()
-      })
-
-      it('should fail when getActiveForm method fails', async (done) => {
-        spyOn(checkFormDataService, 'getActiveForm').and.returnValue(Promise.reject(new Error('error')))
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue()
-
-        await controller(req, res, next)
-        expect(checkFormDataService.getActiveForm).toHaveBeenCalled()
-        expect(checkWindowService.getCheckWindowsAssignedToForms).not.toHaveBeenCalled()
-        expect(checkFormService.unassignedCheckFormsFromCheckWindows).not.toHaveBeenCalled()
-        expect(checkWindowService.markAsDeleted).not.toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-        done()
-      })
-
-      it('should fail when trying to soft delete', async (done) => {
-        spyOn(checkFormDataService, 'getActiveForm').and.returnValue(checkFormMock)
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('error')))
-
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(next).toHaveBeenCalled()
-        expect(checkFormDataService.getActiveForm).toHaveBeenCalled()
-        expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
-        expect(checkFormService.unassignedCheckFormsFromCheckWindows).not.toHaveBeenCalled()
-        expect(checkWindowService.markAsDeleted).not.toHaveBeenCalled()
         done()
       })
     })
@@ -170,19 +125,12 @@ describe('check-form controller:', () => {
       })
 
       it('should take me to the upload file page', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('Upload new form')
         expect(next).not.toHaveBeenCalled()
-        done()
-      })
-
-      it('should fail and execute next if rendering fails', async (done) => {
-        spyOn(res, 'render').and.throwError('error')
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Upload new form')
-        expect(next).toHaveBeenCalled()
         done()
       })
     })
@@ -190,10 +138,14 @@ describe('check-form controller:', () => {
     describe('Saving a form', () => {
       beforeEach(() => {
         spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
-        spyOn(CheckForm, 'create').and.returnValue(Promise.resolve(checkFormMock))
+        spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(fs, 'remove').and.returnValue(checkFormMock)
         controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+      })
 
+      it('should save the form and redirect the user', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
         req.method = 'POST'
         req.url = 'test-developer/upload-new-form'
         req.files = {}
@@ -207,81 +159,17 @@ describe('check-form controller:', () => {
           truncated: false,
           done: true
         }
-      })
-
-      it('should save the form and redirect the user', async (done) => {
-        let checkForm = {}
-        checkForm.validate = () => {}
-        checkForm.save = () => {}
 
         try {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Upload check form')
           expect(checkFormService.populateFromFile).toHaveBeenCalled()
+          expect(checkFormDataService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
-          expect(res.statusCode).toBe(200)
-          done()
+          expect(res.statusCode).toBe(302)
         } catch (error) {
-          console.log('ERROR', error)
+          expect(error).toBe('not thrown')
         }
-
-        try {
-          await checkForm.save()
-          expect(req.flash).toBeTruthy()
-        } catch (error) {
-          console.log('ERROR (2)', error)
-        }
-      })
-
-      it('should render the page with errors if file does not exists', async (done) => {
-        req.files.csvFile = null
-
-        try {
-          await controller(req, res, next)
-          const uploadFile = req.files.csvFile
-          if (!uploadFile) {
-            expect(res.locals.pageTitle).toBe('ERROR: Upload check form')
-            expect(checkFormService.populateFromFile).not.toHaveBeenCalled()
-            expect(next).not.toHaveBeenCalled()
-            expect(res.statusCode).toBe(200)
-          }
-          done()
-        } catch (error) {
-          console.log('ERROR', error)
-        }
-      })
-    })
-
-    describe('Saving a form fails', () => {
-      it('should render the page with errors if method populateFromFile fails', async (done) => {
-        spyOn(checkFormService, 'populateFromFile').and.returnValue(Promise.reject(new Error('error')))
-        spyOn(CheckForm, 'create').and.returnValue(Promise.resolve(checkFormMock))
-        spyOn(fs, 'remove').and.returnValue(null)
-        controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
-
-        req.method = 'POST'
-        req.url = 'test-developer/upload-new-form'
-        req.files = {}
-        req.files.csvFile = {
-          uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
-          field: 'uploadFile',
-          file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
-          filename: 'form-1.csv',
-          encoding: '7bit',
-          mimetype: 'text/csv',
-          truncated: false,
-          done: true
-        }
-
-        try {
-          await controller(req, res, next)
-          expect(checkFormService.populateFromFile).toHaveBeenCalled()
-        } catch (error) {
-          expect(fs.remove).toHaveBeenCalled()
-        }
-        expect(next).not.toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe('Upload check form')
-        expect(res.statusCode).toBe(200)
         done()
       })
     })
@@ -296,70 +184,15 @@ describe('check-form controller:', () => {
       })
 
       it('should take me to the form page detail', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
         req.url = '/test-developer/view-form/29'
-
-        try {
-          await controller(req, res, next)
-          expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
-        } catch (error) {
-          console.log('ERROR (1)', error)
-        }
-
-        try {
-          expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
-        } catch (error) {
-          console.log('ERROR (2)', error)
-        }
-
-        expect(next).not.toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe('View form')
+        await controller(req, res, next)
         expect(res.statusCode).toBe(200)
-        done()
-      })
-    })
-
-    describe('Clicking a form fails', () => {
-      beforeEach(() => {
-        spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
-        spyOn(checkFormService, 'canDelete').and.returnValue(false)
-        spyOn(console, 'log').and.returnValue('test')
-
-        controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
-      })
-
-      it('should catch an error when getActiveFormPlain fails', async (done) => {
-        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.reject(new Error('error')))
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(function () { return Promise.resolve(checkFormsByWindowMock) })
-        req.url = '/test-developer/view-form/29'
-
-        try {
-          await controller(req, res, next)
-          expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
-        } catch (error) {
-          expect(console.log).toHaveBeenCalled()
-        }
-
-        expect(next).not.toHaveBeenCalled()
+        expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
+        expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('View form')
-        expect(res.statusCode).toBe(302)
-        done()
-      })
-
-      it('should catch an error when getCheckWindowsAssignedToForms fails', async (done) => {
-        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.resolve(checkFormMock))
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('error')))
-        req.url = '/test-developer/view-form/29'
-
-        try {
-          await controller(req, res, next)
-          expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
-        } catch (error) {
-          expect(console.log).toHaveBeenCalled()
-        }
-
         expect(next).not.toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe('View form')
-        expect(res.statusCode).toBe(200)
         done()
       })
     })
