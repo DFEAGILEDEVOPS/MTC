@@ -11,7 +11,8 @@
     "sasswatch": "gulp watch",
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
-    "test": "nyc -r html ./run-jasmine.js"
+    "test": "nyc -r html ./run-jasmine.js",
+    "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js"
   },
   "engines": {
     "node": ">= 8.4"

@@ -17,7 +17,8 @@ var connectionConfig = {
   server: process.env.SQL_SERVER,
   options: {
     database: process.env.SQL_DATABASE,
-    encrypt: true
+    encrypt: true,
+    requestTimeout: process.env.SQL_TIMEOUT
   }
 }
 
