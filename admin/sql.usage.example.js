@@ -8,20 +8,18 @@ sqlConnectionService.init()
 
 const examples = {}
 
-examples.getData = () => {
-  sqlService.query('SELECT * FROM settings')
-    .then(result => console.log('query settings table result:', result))
+examples.getData = async () => {
+  const data = await sqlService.query('SELECT * FROM settings')
+  console.log('query settings table result:', data)
 }
 
-examples.modifyData = () => {
+examples.modifyData = async () => {
   const id = { name: 'id', type: TYPES.Int, value: 2 }
   const updatedAt = { name: 'updatedAt', type: TYPES.DateTime2, value: TYPES.Null }
   const loadingTimeLimit = { name: 'loadingTimeLimit', type: TYPES.TinyInt, value: 1 }
   const questionTimeLimit = { name: 'questionTimeLimit', type: TYPES.TinyInt, value: 2 }
 
-  sqlService.modify('INSERT settings (id, updatedAt, loadingTimeLimit, questionTimeLimit) VALUES (@id, @updatedAt, @loadingTimeLimit, @questionTimeLimit)',
+  const rowsAffected = await sqlService.modify('INSERT settings (id, updatedAt, loadingTimeLimit, questionTimeLimit) VALUES (@id, @updatedAt, @loadingTimeLimit, @questionTimeLimit)',
     id, updatedAt, loadingTimeLimit, questionTimeLimit)
+  console.log('rows inserted:', rowsAffected)
 }
-
-examples.modifyData()
-examples.getData()

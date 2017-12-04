@@ -5,6 +5,12 @@ const connectionService = require('./sql.connection.service')
 
 const sqlService = {}
 
+/**
+ * Represents a book.
+ * @param {string} sql - The SELECT statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
+ */
 sqlService.query = (sql, params) => {
   return new Promise(async (resolve, reject) => {
     const con = await connectionService.getConnection()
@@ -33,7 +39,13 @@ sqlService.query = (sql, params) => {
   })
 }
 
-sqlService.modify = async (sql, params) => {
+/**
+ * Represents a book.
+ * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
+ * @param {array} params - Array of parameters for SQL statement
+ * @return {Promise}
+ */
+sqlService.modify = (sql, params) => {
   return new Promise(async (resolve, reject) => {
     const con = await connectionService.getConnection()
 
