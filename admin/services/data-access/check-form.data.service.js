@@ -65,7 +65,7 @@ const checkFormDataService = {
    */
   findCheckFormByName: (formName) => {
     let query = { 'isDeleted': false, 'name': formName }
-    return CheckForm.findOne(query).exec()
+    return CheckForm.findOne(query).lean().exec()
   }
 }
 

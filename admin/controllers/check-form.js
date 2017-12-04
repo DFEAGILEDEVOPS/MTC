@@ -174,10 +174,13 @@ const saveCheckForm = async (req, res, next) => {
 
   try {
     const fileName = await checkFormService.buildFormName(uploadFile.filename)
+    console.log('FILE NAME', typeof fileName, fileName)
     if (!fileName) {
-      req.flash('error', `${fileName} already exists. Rename and upload again.`)
+      console.log('!FILENAME')
+      req.flash('error', `${uploadFile.filename.slice(0, -4)} already exists. Rename and upload again.`)
       return res.redirect('/test-developer/upload-new-form')
     } else {
+      console.log('FILENAME')
       checkForm.name = fileName
     }
   } catch (error) {

@@ -182,7 +182,8 @@ const checkFormService = {
    * @param fileName
    */
   buildFormName: async (fileName) => {
-    if (!fileName || fileName.length < 5) {
+    const minFileNameSize = 4 // for example: a.csv
+    if (!fileName || fileName.length < minFileNameSize) {
       return
     }
     const formName = fileName.slice(0, -4)
