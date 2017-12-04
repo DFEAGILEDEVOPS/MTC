@@ -99,7 +99,7 @@ restartService.canAllPupilsRestart = async (pupilsList) => {
 
 restartService.canRestart = async pupilId => {
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
-  const pupilRestartsCount = await pupilRestartDataService.count({ pupil: pupilId, isDeleted: false })
+  const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   const hasRestartAttemptRemaining = pupilRestartsCount < restartService.totalRestartsAllowed
   const hasCheckAttemptRemaining = checkCount < restartService.totalChecksAllowed
   // i.e. If pupil has been given a restart on the very first time then:
