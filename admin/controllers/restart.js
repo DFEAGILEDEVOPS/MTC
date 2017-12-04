@@ -4,11 +4,25 @@ const ValidationError = require('../lib/validation-error')
 
 const controller = {}
 
-controller.getRestartOverview = (req, res) => {
+controller.getRestartOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Restarts'
   req.breadcrumbs(res.locals.pageTitle)
+  let restarts
+  try {
+    restarts = await restartService.getSubmittedRestarts(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
+  let { hl } = req.query
+  if (hl) {
+    hl = JSON.parse(hl)
+    hl = typeof hl === 'string' ? JSON.parse(hl) : hl
+  }
   return res.render('restart/restart-overview', {
-    breadcrumbs: req.breadcrumbs()
+    highlight: hl && new Set(hl),
+    breadcrumbs: req.breadcrumbs(),
+    restarts,
+    messages: res.locals.messages
   })
 }
 
@@ -58,15 +72,11 @@ controller.postSubmitRestartList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  res.locals.pageTitle = 'Restarts'
-  req.breadcrumbs(res.locals.pageTitle)
   const restartInfo = submittedPupils.length < 2 ? '1 pupil' : `${submittedPupils.length} pupils`
+  const restartIds = submittedPupils && submittedPupils.map(p => p._id)
+  const ids = JSON.stringify(restartIds)
   req.flash('info', `Restarts made for ${restartInfo}`)
-  return res.render('restart/restart-overview', {
-    breadcrumbs: req.breadcrumbs(),
-    submittedPupils,
-    messages: req.flash('info')
-  })
+  return res.redirect(`/restart/overview?hl=${ids}`)
 }
 
 module.exports = controller

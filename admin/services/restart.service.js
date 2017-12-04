@@ -110,4 +110,47 @@ restartService.canRestart = async pupilId => {
   return hasUsedRestart && hasRestartAttemptRemaining && hasCheckAttemptRemaining
 }
 
+/**
+ * Get pupils who have been submitted for a restart
+ * @param schoolId
+ * @returns {Array}
+ */
+
+restartService.getSubmittedRestarts = async schoolId => {
+  let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
+  if (!pupils || pupils.length === 0) return []
+  let restarts = []
+  await Promise.all(pupils.map(async p => {
+    const r = await pupilRestartDataService.findOne({ pupilId: p._id, isDeleted: false })
+    if (r) {
+      const status = await restartService.getStatus(p._id)
+      restarts.push({
+        _id: r._id,
+        reason: r.reason,
+        status,
+        foreName: p.foreName,
+        lastName: p.lastName,
+        middleNames: p.middleNames,
+        dob: dateService.formatShortGdsDate(p.dob)
+      })
+    }
+  }))
+  restarts = pupilIdentificationFlagService.addIdentificationFlags(restarts)
+  return restarts
+}
+
+/**
+ * Get pupil's restart status
+ * @param pupilId
+ * @returns {String}
+ */
+
+restartService.getStatus = async pupilId => {
+  const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
+  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return 'Maximum number of restarts taken'
+  if (checkCount === pupilRestartsCount) return 'Remove restart'
+  if (checkCount === pupilRestartsCount + 1) return 'Restart taken'
+}
+
 module.exports = restartService

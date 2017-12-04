@@ -23,4 +23,13 @@ pupilRestartDataService.count = async function (query) {
   return PupilRestart.count(query).exec()
 }
 
+/**
+ * Find and returna single restart by criteria in `options`
+ * @param options
+ * @return {Promise.<{Object}>}
+ */
+pupilRestartDataService.findOne = async function (options) {
+  return PupilRestart.findOne(options).lean().exec()
+}
+
 module.exports = pupilRestartDataService

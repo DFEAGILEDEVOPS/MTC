@@ -6,7 +6,7 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const PupilRestart = require('../../../models/pupil-restart')
-const pupilRestartMocks = require('../../mocks/pupil-restarts')
+const pupilRestartMock = require('../../mocks/pupil-restart')
 
 describe('pupil-restart.data.service', () => {
   let service, sandbox
@@ -21,7 +21,7 @@ describe('pupil-restart.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestart.prototype).expects('save').resolves(pupilRestartMocks)
+      mock = sandbox.mock(PupilRestart.prototype).expects('save').resolves(pupilRestartMock)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
         '../../models/pupil-restarts': PupilRestart
       })
@@ -44,6 +44,21 @@ describe('pupil-restart.data.service', () => {
 
     it('counts docs in the db', async (done) => {
       await service.count({ searchCriteria: 'someValue' })
+      expect(mock.verify()).toBe(true)
+      done()
+    })
+  })
+  describe('#findOne', () => {
+    let mock
+    beforeEach(() => {
+      mock = sandbox.mock(PupilRestart).expects('findOne').chain('exec').resolves(pupilRestartMock)
+      service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
+        '../../models/pupil-restarts': PupilRestart
+      })
+    })
+
+    it('counts docs in the db', async (done) => {
+      await service.findOne({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
       done()
     })
