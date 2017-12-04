@@ -30,7 +30,8 @@ restartService.getPupils = async (schoolId) => {
   }), p => !!p)
   if (pupils.length === 0) return []
   pupils = pupils.map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-      ({ _id, pin, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName }))
+    ({ _id, pin, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName })
+  )
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
 }

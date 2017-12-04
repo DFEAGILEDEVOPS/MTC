@@ -2,7 +2,6 @@
 /* global describe, it, expect */
 const restartValidator = require('../../../lib/validator/restart-validator')
 
-
 describe('restart-validator', () => {
   describe('validateReason', () => {
     describe('returns true', () => {
