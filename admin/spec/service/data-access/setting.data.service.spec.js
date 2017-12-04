@@ -33,4 +33,20 @@ describe('pupil.data.service', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#createOrUpdate', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Setting).expects('update').chain('exec').resolves({ n: 1, nModified: 1, ok: 1 })
+      service = proxyquire('../../../services/data-access/setting.data.service', {
+        '../../models/setting': Setting
+      })
+    })
+
+    it('calls the model', () => {
+      service.createOrUpdate({ prop: 'some-prop' })
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })
