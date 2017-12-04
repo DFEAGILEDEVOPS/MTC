@@ -1,6 +1,5 @@
 const path = require('path')
 const fs = require('fs-extra')
-const CheckForm = require('../models/check-form')
 const checkFormService = require('../services/check-form.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
@@ -123,7 +122,7 @@ const saveCheckForm = async (req, res, next) => {
 
   let uploadError = {}
   let uploadFile = req.files.csvFile
-  let checkForm = new CheckForm()
+  let checkForm = {}
   let absFile
   let deleteDir
 
@@ -178,18 +177,10 @@ const saveCheckForm = async (req, res, next) => {
   })
 
   try {
-    await checkForm.validate()
-  } catch (error) {
-    return res.render('test-developer/upload-and-view-forms', {
-      error: new Error('There is a problem with the form content'),
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
-
-  try {
-    await checkForm.save()
+    // await checkForm.save()
+    const newForm = await checkFormDataService.create(checkForm)
     req.flash('info', 'New form uploaded')
-    req.flash('formName', checkForm.name)
+    req.flash('formName', newForm.name)
   } catch (error) {
     return next(error)
   }
