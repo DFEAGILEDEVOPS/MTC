@@ -9,6 +9,8 @@ class ManageCheckWindowPage < SitePrism::Page
   element :adjust_timings, 'aside.support-column nav li a', text: 'Settings on pupil check'
   element :progress_report, 'aside.support-column nav li a', text: 'Progress report'
   element :info_message, '.info-message', text: 'Changes have been saved'
+  element :sort_desc, 'a[href="/service-manager/check-windows/checkWindowName/desc"]'
+  element :sort_asc, 'a[href="/service-manager/check-windows/checkWindowName/asc"]'
 
   section :windows_table, '#checkWindowList' do
     elements :coloumns, 'tr th'

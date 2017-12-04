@@ -169,3 +169,7 @@ end
 Then(/^it should not be available to be uploaded$/) do
   expect(upload_and_view_forms_page.upload.disabled?).to be_truthy, "File is not removed Or Upload button is not disabled"
 end
+
+Then(/^I should see no link to download an example usage report$/) do
+  expect(upload_and_view_forms_page).to have_no_download_form_example_template
+end
