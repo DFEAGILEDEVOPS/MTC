@@ -1,7 +1,4 @@
 const moment = require('moment')
-const Settings = require('../models/setting')
-const CheckWindow = require('../models/check-window')
-const SettingsLog = require('../models/setting-log')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
@@ -11,6 +8,8 @@ const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const config = require('../config')
+const settingDataService = require('../services/data-access/setting.data.service')
+const settingLogDataService = require('../services/data-access/setting-log.data.service')
 
 /**
  * Returns the service-manager (role) landing page
@@ -45,7 +44,7 @@ const getUpdateTiming = async (req, res, next) => {
   const successfulPost = req.params.status || false
 
   try {
-    const settingsRecord = await Settings.findOne().exec()
+    const settingsRecord = await settingDataService.findOne()
     if (settingsRecord) {
       settings = settingsRecord
     } else {
@@ -81,11 +80,11 @@ const setUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
 
-  const settingsRecord = await Settings.findOne().exec()
+  const settingsRecord = await settingDataService.findOne()
   if (settingsRecord) {
     settings = settingsRecord
   } else {
-    settings = new Settings()
+    settings = {}
   }
   settings.questionTimeLimit = Math.round(req.body.questionTimeLimit * 100) / 100
   settings.loadingTimeLimit = Math.round(req.body.loadingTimeLimit * 100) / 100
@@ -103,9 +102,9 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settings.save()
-    let settingsLog = new SettingsLog()
+    await settingDataService.createOrUpdate(settings)
 
+    let settingsLog = {}
     settingsLog.adminSession = req.session.id
     settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
     settingsLog.userName = ((res.locals).user || {}).UserName
@@ -113,7 +112,7 @@ const setUpdateTiming = async (req, res, next) => {
     settingsLog.loadingTimeLimit = settings.loadingTimeLimit
 
     try {
-      await settingsLog.save()
+      await settingLogDataService.create(settingsLog)
     } catch (error) {
       console.log('Could not save setting log.')
     }
@@ -312,7 +311,7 @@ const saveCheckWindows = async (req, res, next) => {
   }
 
   if (typeof checkWindow === 'undefined') {
-    checkWindow = new CheckWindow()
+    checkWindow = {}
   }
 
   checkWindow.checkWindowName = req.body['checkWindowName']
@@ -327,7 +326,7 @@ const saveCheckWindows = async (req, res, next) => {
   // Auditing? Question for BAs.
 
   try {
-    await checkWindow.save()
+    await checkWindowDataService.create(checkWindow)
     req.flash('info', flashMessage)
   } catch (error) {
     console.log('Could not save check windows data.', error)
