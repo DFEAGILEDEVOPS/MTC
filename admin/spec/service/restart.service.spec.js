@@ -138,7 +138,7 @@ describe('restart.service', () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])
-      spyOn(pupilRestartDataService, 'findOne').and.returnValue(pupilRestartMock)
+      spyOn(pupilRestartDataService, 'findLatest').and.returnValue(pupilRestartMock)
       spyOn(restartService, 'getStatus').and.returnValue('Remove restart')
       const result = await restartService.getSubmittedRestarts(schoolMock._id)
       expect(result.length).toBe(2)

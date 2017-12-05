@@ -14,7 +14,9 @@ controller.getRestartOverview = async (req, res, next) => {
     return next(error)
   }
   let { hl } = req.query
-  hl = hl && hl.split(',')
+  if (hl) {
+    hl = hl.split(',').map(h => decodeURIComponent(h))
+  }
   return res.render('restart/restart-overview', {
     highlight: hl && new Set(hl),
     breadcrumbs: req.breadcrumbs(),
@@ -70,7 +72,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
     return next(error)
   }
   const restartInfo = submittedPupils.length < 2 ? '1 pupil' : `${submittedPupils.length} pupils`
-  const restartIds = submittedPupils && submittedPupils.map(p => p._id)
+  const restartIds = submittedPupils && submittedPupils.map(p => encodeURIComponent(p._id))
   const ids = restartIds.join()
   req.flash('info', `Restarts made for ${restartInfo}`)
   return res.redirect(`/restart/overview?hl=${ids}`)

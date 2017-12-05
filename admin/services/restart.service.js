@@ -122,21 +122,27 @@ restartService.getSubmittedRestarts = async schoolId => {
   if (!pupils || pupils.length === 0) return []
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
-  await Promise.all(pupils.map(async p => {
-    const r = await pupilRestartDataService.findOne({ pupilId: p._id, isDeleted: false })
-    if (r) {
+  const latestPupilRestarts = await Promise.filter(pupils.map(async p => {
+    const restart = await pupilRestartDataService.findLatest({ pupilId: p._id, isDeleted: false })
+    if (restart) {
       const status = await restartService.getStatus(p._id)
+      return { ...restart, status }
+    }
+  }), p => !!p)
+  pupils.map(p => {
+    const record = latestPupilRestarts.find(l => l.pupilId.toString() === p._id.toString())
+    if (record) {
       restarts.push({
-        _id: r._id,
-        reason: r.reason,
-        status,
+        _id: record._id,
+        reason: record.reason,
+        status: record.status,
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames,
         dob: dateService.formatShortGdsDate(p.dob)
       })
     }
-  }))
+  })
   restarts = pupilIdentificationFlagService.addIdentificationFlags(restarts)
   return restarts
 }
@@ -151,8 +157,7 @@ restartService.getStatus = async pupilId => {
   const restartCodes = await pupilRestartDataService.getRestartCodes()
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
-  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed)
-    return restartCodes[2].status
+  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return restartCodes[2].status
   if (checkCount === pupilRestartsCount) return restartCodes[0].status
   if (checkCount === pupilRestartsCount + 1) return restartCodes[1].status
 }

@@ -50,17 +50,17 @@ describe('pupil-restart.data.service', () => {
       done()
     })
   })
-  describe('#findOne', () => {
+  describe('#findLatest', () => {
     let mock
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestart).expects('findOne').chain('exec').resolves(pupilRestartMock)
+      mock = sandbox.mock(PupilRestart).expects('find').chain('sort').chain('limit').chain('lean').chain('exec').resolves(pupilRestartMock)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
         '../../models/pupil-restarts': PupilRestart
       })
     })
 
     it('counts docs in the db', async (done) => {
-      await service.findOne({ _id: 'some-id' })
+      await service.findLatest({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
       done()
     })

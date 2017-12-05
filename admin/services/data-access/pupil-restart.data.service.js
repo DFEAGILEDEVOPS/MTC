@@ -25,12 +25,13 @@ pupilRestartDataService.count = async function (query) {
 }
 
 /**
- * Find and return a single restart by criteria in `options`
+ * Find and return the latest single restart by criteria in `options`
  * @param options
  * @return {Promise.<{Object}>}
  */
-pupilRestartDataService.findOne = async function (options) {
-  return PupilRestart.findOne(options).lean().exec()
+pupilRestartDataService.findLatest = async function (options) {
+  const latest = await PupilRestart.find(options).sort({ $natural: -1 }).limit(1).lean().exec()
+  return latest[0]
 }
 
 /**

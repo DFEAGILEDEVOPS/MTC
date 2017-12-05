@@ -64,18 +64,18 @@
         <table id='submitted-restarts' class="spacious">
             <thead>
             <tr>
-                <th scope="col" class="one-third">Pupil</th>
-                <th scope="col" class="one-third">Reason</th>
-                <th scope="col" class="one-thirds">Status</th>
+                <th scope="col">Pupil</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Status</th>
             </tr>
             </thead>
             <tbody>
             <% restarts.forEach( (restart, index) => { %>
             <tr>
                 <td<% if (highlight && highlight.has(restart._id.toString())) { %> class="highlight-item"<% } %>>
-                    <label for="pupil-<%= restart._id %>">
+                    <span id="pupil-<%= restart._id %>">
                     <%= restart.lastName %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
-                    </label>
+                    </span>
                     <% if (restart.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
                         Date of birth: <%= restart.dob %>
@@ -84,9 +84,9 @@
                 </td>
                 <td><%= restart.reason %></td>
                 <% if (restart.status === 'Remove restart') {%>
-                <td><a href="#"><%= restart.status %></a></td>
+                <td class="restart-status"><a href="#"><%= restart.status %></a></td>
                 <% } else { %>
-                <td><%= restart.status %></td>
+                <td class="restart-status"><%= restart.status %></td>
                 <% } %>
             </tr>
             <% }) %>
