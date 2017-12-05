@@ -15,6 +15,7 @@ var connectionConfig = {
   userName: process.env.SQL_USER,
   password: process.env.SQL_PASSWORD,
   server: process.env.SQL_SERVER,
+  port: process.env.SQL_PORT || 1433,
   options: {
     database: process.env.SQL_DATABASE,
     encrypt: true,

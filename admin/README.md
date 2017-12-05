@@ -75,6 +75,7 @@ SQL Server specific environment variables
 * SQL_PASSWORD - the password for the credentials
 * SQL_SERVER - the server to connect to
 * SQL_DATABASE - the database to connect to
+* SQL_PORT - the port to connect on, defaults to 1433
 
 #### Using SQL Server
 
@@ -86,7 +87,11 @@ Example usage can be found [here](./sql.usage.example.js)
 
 `yarn test`
 
-### Running database migrations
+### Running SQL Server migrations
+
+We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
+
+### Running mongo migrations
 
 You will need a local mongo datastore.  SQL Server migrations are yet to be added at this stage.
 

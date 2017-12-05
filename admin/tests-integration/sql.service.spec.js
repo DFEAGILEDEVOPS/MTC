@@ -8,7 +8,7 @@ const sqlConnection = require('../services/data-access/sql.connection.service')
 describe('sql.service:integration', () => {
   beforeAll(async (done) => {
     sqlConnection.init()
-    const tableRows = 1000000
+    const tableRows = 1000
     const timerName = 'Time to create Table:'
     console.log(`creating table with ${tableRows} rows`)
     try {
@@ -26,7 +26,13 @@ describe('sql.service:integration', () => {
   it('should permit select query with no parameters', async (done) => {
     const timerName = 'Time to sum price column of all rows'
     console.time(timerName)
-    const priceSum = await sql.query('SELECT SUM(Price) FROM IntegrationTestTable')
+    let priceSum
+    try {
+      priceSum = await sql.query('SELECT SUM(Price) FROM IntegrationTestTable')
+      console.dir(priceSum)
+    } catch (error) {
+      fail(error)
+    }
     console.timeEnd(timerName)
     console.log('returned value:', priceSum)
     done()

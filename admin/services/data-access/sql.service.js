@@ -13,7 +13,12 @@ const sqlService = {}
  */
 sqlService.query = (sql, params) => {
   return new Promise(async (resolve, reject) => {
-    const con = await connectionService.getConnection()
+    let con
+    try {
+      con = await connectionService.getConnection()
+    } catch (error) {
+      reject(error)
+    }
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
@@ -21,7 +26,7 @@ sqlService.query = (sql, params) => {
       // TODO request also emits a 'done' event for each SQL statement.
       // which is a more deterministic completion?
       con.release()
-      resolve(results)
+      resolve(parseResults(results))
     })
 
     if (params) {
@@ -37,6 +42,10 @@ sqlService.query = (sql, params) => {
     })
     con.execSql(request)
   })
+}
+
+function parseResults (results) {
+  return Object.assign({}, results)
 }
 
 /**

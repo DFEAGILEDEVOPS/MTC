@@ -12,7 +12,8 @@
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
     "test": "nyc -r html ./run-jasmine.js",
-    "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js"
+    "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
+    "migrate-sql": "node ./data/sql/migrate-sql.js"
   },
   "engines": {
     "node": ">= 8.4"
@@ -46,6 +47,7 @@
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-uuid2": "^2.0.1",
     "morgan": "~1.9.0",
+    "mssql": "^4.1.0",
     "newrelic": "^1.40.0",
     "node-gyp": "^3.6.1",
     "number-to-words": "^1.2.3",
@@ -53,6 +55,7 @@
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
     "piping": "^1.0.0-rc.4",
+    "postgrator": "^3.0.0",
     "qrcode": "^1.0.0",
     "ramda": "^0.25.0",
     "serve-favicon": "^2.4.5",

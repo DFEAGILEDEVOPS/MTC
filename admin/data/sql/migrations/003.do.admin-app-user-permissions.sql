@@ -1,0 +1,16 @@
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.settingsLog TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.question TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.pupilLogonEvent TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.pupilFeedback TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.pupilAttendance TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.hdf TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.adminLogonEvent TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.[check] TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.[user] TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.pupil TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.checkForm TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.school TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.role TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.checkWindow TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.attendanceCode TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::dbo.settings TO mtcAdminUser;
