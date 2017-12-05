@@ -1,6 +1,7 @@
 'use strict'
 
 const PupilRestart = require('../../models/pupil-restart')
+const RestartCode = require('../../models/restart-code')
 const pupilRestartDataService = {}
 
 /**
@@ -30,6 +31,16 @@ pupilRestartDataService.count = async function (query) {
  */
 pupilRestartDataService.findOne = async function (options) {
   return PupilRestart.findOne(options).lean().exec()
+}
+
+/**
+ * Get all the restart codes documents
+ * @return {Promise.<{Object}>}
+ */
+pupilRestartDataService.getRestartCodes = async () => {
+  return RestartCode
+    .find()
+    .sort('order')
 }
 
 module.exports = pupilRestartDataService

@@ -148,11 +148,13 @@ restartService.getSubmittedRestarts = async schoolId => {
  */
 
 restartService.getStatus = async pupilId => {
+  const restartCodes = await pupilRestartDataService.getRestartCodes()
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
-  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return 'Maximum number of restarts taken'
-  if (checkCount === pupilRestartsCount) return 'Remove restart'
-  if (checkCount === pupilRestartsCount + 1) return 'Restart taken'
+  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed)
+    return restartCodes[2].status
+  if (checkCount === pupilRestartsCount) return restartCodes[0].status
+  if (checkCount === pupilRestartsCount + 1) return restartCodes[1].status
 }
 
 module.exports = restartService

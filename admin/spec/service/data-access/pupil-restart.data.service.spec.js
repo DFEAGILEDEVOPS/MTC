@@ -6,7 +6,9 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const PupilRestart = require('../../../models/pupil-restart')
+const RestartCode = require('../../../models/restart-code')
 const pupilRestartMock = require('../../mocks/pupil-restart')
+const restartCodesMock = require('../../mocks/restart-codes')
 
 describe('pupil-restart.data.service', () => {
   let service, sandbox
@@ -61,6 +63,22 @@ describe('pupil-restart.data.service', () => {
       await service.findOne({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
       done()
+    })
+  })
+
+  describe('#getRestartcodes', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(RestartCode).expects('find').chain('sort').resolves(restartCodesMock)
+      service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
+        '../../models/restart-code': RestartCode
+      })
+    })
+
+    it('should return a list of attendance codes', () => {
+      service.getRestartCodes()
+      expect(mock.verify()).toBe(true)
     })
   })
 })
