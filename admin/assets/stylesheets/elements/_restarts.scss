@@ -1,5 +1,5 @@
 .restart-list {
-  overflow: visible;
+  overflow: hidden;
   margin-left: pem(-4px);
 
   .multiple-choice {
@@ -7,7 +7,7 @@
   }
 
   li {
-    overflow: visible;
+    overflow: hidden;
     margin-top: pem(10px);
 
     @include media(desktop) {
@@ -18,12 +18,6 @@
     @include media(mobile) {
       margin-top: pem(5px);
     }
-  }
-}
-
-#select-pupils-restart {
-  .panel.panel-border-wide {
-    padding-top: 0;
   }
 }
 
