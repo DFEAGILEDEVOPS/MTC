@@ -33,10 +33,12 @@ input[type=radio]:checked ~ .hide {
   position: relative;
   margin-top: pem(60px);
   margin-left: pem(-35px);
-  width: pem(540px);
-  height: pem(65px);
+  .form-group {
+    margin-bottom: pem(-10px);
+  }
 }
 
 #didNotCompleteInfo {
   padding-bottom: pem(5px);
+  min-width:pem(380px);
 }
