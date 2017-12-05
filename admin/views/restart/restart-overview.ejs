@@ -8,6 +8,11 @@
 </div>
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.length > 0) { %>
+        <div class="info-message">
+            <%= messages %>
+        </div>
+        <% } %>
         <header class="page-header">
             <h1 class="heading-xlarge">Restarts</h1>
         </header>
@@ -55,6 +60,6 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        No pupils selected to restart the check
+        No pupils selected to restart the check.
     </div>
 </div>

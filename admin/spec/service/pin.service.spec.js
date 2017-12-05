@@ -130,4 +130,22 @@ describe('pin.service', () => {
       })
     })
   })
+  describe('expireMultiplePins', () => {
+    it('it returns if no pupils have empty pins', async () => {
+      const pupil = Object.assign({}, pupilMock)
+      pupil.pin = null
+      pupil.pinExpiresAt = null
+      spyOn(pupilDataService, 'findOne').and.returnValue(pupil)
+      spyOn(pupilDataService, 'updateMultiple').and.returnValue(null)
+      await pinService.expireMultiplePins([pupil._id])
+      expect(pupilDataService.updateMultiple).toHaveBeenCalledTimes(0)
+    })
+    it('it calls updateMultiple method if not empty pin is found', async () => {
+      const pupil = Object.assign({}, pupilMock)
+      spyOn(pupilDataService, 'findOne').and.returnValue(pupil)
+      spyOn(pupilDataService, 'updateMultiple').and.returnValue(null)
+      await pinService.expireMultiplePins([pupil._id])
+      expect(pupilDataService.updateMultiple).toHaveBeenCalledTimes(1)
+    })
+  })
 })
