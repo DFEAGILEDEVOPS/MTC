@@ -40,7 +40,7 @@
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.1.0",
     "migrate-mongo": "^2.2.1",
-    "moment": "^2.19.2",
+    "moment": "^2.19.3",
     "mongoose": "^4.13.5",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-uuid2": "^2.0.1",
@@ -55,6 +55,8 @@
     "qrcode": "^1.0.0",
     "ramda": "^0.25.0",
     "serve-favicon": "^2.4.5",
+    "tedious": "^2.1.5",
+    "tedious-connection-pool": "^1.0.5",
     "uuid": "^3.1.0",
     "validator": "^9.1.2",
     "xregexp": "^3.2.0"

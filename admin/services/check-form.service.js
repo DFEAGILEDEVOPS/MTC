@@ -32,8 +32,8 @@ const checkFormService = {
   },
 
   /**
-   * Populate a Mongoose model with data from a CSV file
-   * @param {CheckForm} checkForm Mongoose model
+   * Populate a plain object with data from a CSV file
+   * @param {object} plain checkForm object
    * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
    * @return {Promise}
    */
@@ -88,10 +88,18 @@ const checkFormService = {
    */
   formatCheckFormsAndWindows: async (sortField, sortDirection) => {
     let formData
-    formData = await checkFormDataService.fetchSortedActiveForms({}, sortField, sortDirection)
+    let passSortField
+    let passSortDirection
+
+    if (sortField === 'name') {
+      passSortField = 'name'
+      passSortDirection = sortDirection
+    }
+
+    formData = await checkFormDataService.fetchSortedActiveForms({}, passSortField, passSortDirection)
+
     if (formData.length > 0) {
       const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-
       formData.forEach(f => {
         f.removeLink = true
         if (checkWindows[f._id]) {
@@ -101,6 +109,22 @@ const checkFormService = {
           f.checkWindows = []
         }
       })
+
+      formData.forEach(f => {
+        f.checkWindows = f.checkWindows.join('<br>')
+      })
+
+      if (sortField === 'window') {
+        formData = formData.sort((a, b) => {
+          if (a.checkWindows === b.checkWindows) {
+            return 0
+          } else if (sortDirection === 'asc') {
+            return a.checkWindows < b.checkWindows ? 1 : -1
+          } else {
+            return a.checkWindows < b.checkWindows ? -1 : 1
+          }
+        })
+      }
     }
     return formData
   },

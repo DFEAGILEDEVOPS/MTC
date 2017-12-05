@@ -46,6 +46,12 @@ const checkFormDataService = {
     query.isDeleted = false
 
     return CheckForm.find(q).sort(sort).lean().exec()
+  },
+
+  create: async (data) => {
+    const checkForm = new CheckForm(data)
+    await checkForm.save()
+    return checkForm.toObject()
   }
 }
 

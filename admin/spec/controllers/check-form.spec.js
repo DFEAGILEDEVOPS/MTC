@@ -13,8 +13,6 @@ const checkFormDataService = require('../../services/data-access/check-form.data
 const checkFormService = require('../../services/check-form.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
 
-const CheckForm = require('../../models/check-form')
-
 const checkFormMock = require('../mocks/check-form')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
 const checkFormsByWindowMock = require('../mocks/check-window-by-form')
@@ -140,16 +138,12 @@ describe('check-form controller:', () => {
     describe('Saving a form', () => {
       beforeEach(() => {
         spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
-        spyOn(CheckForm, 'create').and.returnValue(Promise.resolve(checkFormMock))
+        spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(fs, 'remove').and.returnValue(checkFormMock)
         controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
       })
 
       it('should save the form and redirect the user', async (done) => {
-        let checkForm = {}
-        checkForm.validate = () => {}
-        checkForm.save = () => {}
-
         const res = getRes()
         const req = getReq(goodReqParams)
         req.method = 'POST'
@@ -170,19 +164,13 @@ describe('check-form controller:', () => {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Upload check form')
           expect(checkFormService.populateFromFile).toHaveBeenCalled()
+          expect(checkFormDataService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
-          expect(res.statusCode).toBe(200)
-          done()
+          expect(res.statusCode).toBe(302)
         } catch (error) {
-          console.log('ERROR', error)
+          expect(error).toBe('not thrown')
         }
-
-        try {
-          await checkForm.save()
-          expect(req.flash).toBeTruthy()
-        } catch (error) {
-          console.log('ERROR (2)', error)
-        }
+        done()
       })
     })
 

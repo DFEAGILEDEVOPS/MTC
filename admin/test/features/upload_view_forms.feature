@@ -5,6 +5,9 @@ Feature: Upload and View Forms
     Given I have signed in with test-developer
     And I am on the Upload and View forms page
 
+  Scenario: Download usage report link is not displayed
+    Then I should see no link to download an example usage report
+
   Scenario: Upload and view forms page has a title
     Then I should see a heading on Upload and View forms page
 

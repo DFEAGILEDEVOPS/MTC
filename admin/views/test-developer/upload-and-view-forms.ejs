@@ -36,8 +36,8 @@
             <table class="spacious sorting" id="checkFormsList" role="group">
                 <thead>
                     <tr>
-                        <th scope="col"><a href="/test-developer/upload-and-view-forms/<%= htmlSortDirection.name %>">Form <span class="<%= arrowSortDirection.name %>"><span>Sort by check form name <%= htmlSortDirection.name %></span></span></a></th>
-                        <th scope="col">Assigned to</th>
+                        <th scope="col"><a href="/test-developer/upload-and-view-forms/name/<%= htmlSortDirection.name %>">Form <span class="<%= arrowSortDirection.name %>"><span>Sort by check form name <%= htmlSortDirection.name %></span></span></a></th>
+                        <th scope="col"><a href="/test-developer/upload-and-view-forms/window/<%= htmlSortDirection.window %>">Assigned to<span class="<%= arrowSortDirection.window %>"><span>Sort by check window <%= htmlSortDirection.window %></span></span></a></th>
                         <th scope="col">Uploaded on</th>
                         <td> </td>
                     </tr>
@@ -51,7 +51,7 @@
                         </td>
                         <td>
                             <% if (form.checkWindows.length > 0) { %>
-                            <% form.checkWindows.forEach(cw => { %><div><%= cw %></div><% }) %>
+                            <%- form.checkWindows %>
                             <% } else { %>
                             Unassigned
                             <% } %>
