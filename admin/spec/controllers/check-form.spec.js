@@ -140,7 +140,8 @@ describe('check-form controller:', () => {
     describe('Saving a form', () => {
       beforeEach(() => {
         spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
-        spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100')
+        spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
+        spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
         spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(fs, 'remove').and.returnValue(checkFormMock)
         controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
@@ -169,6 +170,7 @@ describe('check-form controller:', () => {
           expect(res.locals.pageTitle).toBe('Upload check form')
           expect(checkFormService.populateFromFile).toHaveBeenCalled()
           expect(checkFormService.buildFormName).toHaveBeenCalled()
+          expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
           expect(checkFormDataService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)

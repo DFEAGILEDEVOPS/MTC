@@ -13,5 +13,6 @@ module.exports = {
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
   QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
-  PUPIL_APP_URL: process.env.PUPIL_APP_URL
+  PUPIL_APP_URL: process.env.PUPIL_APP_URL,
+  LINES_PER_CHECK_FORM: 24 // 25, counting from 0
 }

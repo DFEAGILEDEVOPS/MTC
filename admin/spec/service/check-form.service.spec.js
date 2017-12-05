@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach afterEach jasmine it expect */
+/* global describe beforeEach afterEach it expect jasmine spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
@@ -25,7 +25,8 @@ describe('check-form.service', () => {
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
       '../services/data-access/check-form.data.service': {
-        getActiveFormPlain: jasmine.createSpy().and.callFake(cb)
+        getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
+        findCheckFormByName: jasmine.createSpy().and.callFake(cb)
       },
       '../models/check-form': CheckForm
     })
@@ -152,11 +153,46 @@ describe('check-form.service', () => {
 
   describe('#buildFormName()', () => {
     it('should return a valid form name', async (done) => {
-      sandbox.stub(checkFormDataService, 'findCheckFormByName').resolves(null)
       const result = await service.buildFormName('MTC0100.csv')
       expect(result).toBe('MTC0100')
       expect(result).toBeTruthy()
       done()
+    })
+
+    it('should return a false if the name is invalid', async (done) => {
+      const result = await service.buildFormName('0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.csv')
+      expect(result).toBeFalsy()
+      done()
+    })
+  })
+
+  describe('#validateCheckFormName()', () => {
+
+    describe('When the name is valid', () => {
+      const formName = 'MTC0100'
+      beforeEach(() => {
+        spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(false)
+      })
+
+      it('should return the form name', async (done) => {
+        const result = await service.validateCheckFormName(formName)
+        expect(result).toBe(formName)
+        expect(result).toBeTruthy()
+        done()
+      })
+    })
+
+    describe('When the name is not valid', () => {
+      const formName = 'MTC0100'
+      beforeEach(() => {
+        spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(formName)
+      })
+
+      it('should return a form name if it is not available', async (done) => {
+        const result = await service.validateCheckFormName(formName)
+        expect(result).toBeFalsy()
+        done()
+      })
     })
   })
 })

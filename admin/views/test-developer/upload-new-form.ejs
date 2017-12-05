@@ -14,26 +14,31 @@
 
         <% if (messages && messages.error && messages.error.length) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
-                <%= messages.error %>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                There is a problem with the file name
             </h2>
+            <p><%= messages.error %></p>
+            <ul class="error-summary-list">
+                <li><a href="#file-upload">Please try uploading a file again</a></li>
+            </ul>
         </div>
         <% } %>
 
         <% if (error) { %>
             <% if (error.hasOwnProperty('message')) { %>
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-2">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-2">
                     <%= error.message %>
                 </h2>
 
                 <p>The form upload spreadsheet:</p>
 
                 <ul class="list list-bullet">
-                    <li> must be in CSV format</li>
+                    <li> must be in CSV format - <a href="#csv-guidance">see guidance for instructions</a></li>
                     <li> must only contain 2 columns</li>
                     <li> must not have a header row</li>
                     <li> must only contain numbers between 1 and 12</li>
+                    <li> must contain exactly 25 rows of data</li>
                 </ul>
 
                 <ul class="error-summary-list">
@@ -44,7 +49,7 @@
         <% } %>
 
         <h1 class="heading-xlarge">Upload new form</h1>
-        <h2 class="heading-medium">Download example</h2>
+        <h2 class="heading-medium"><a name="csv-guidance">Download example</h2>
 
         <ol class="numeric-list">
             <li>

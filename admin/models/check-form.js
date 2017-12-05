@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 mongoose.Promise = global.Promise
-const PREFIX = 'MTC'
 
 /**
  * NB: name will be overwritten
