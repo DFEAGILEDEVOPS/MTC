@@ -41,18 +41,22 @@ Feature:
     Given I am on the manage check windows page
     Then windows in the past cannot be removed
 
+  @create_new_window
   Scenario: Modal has a heading
     Given I am viewing the modal
     Then I should see the modal has a heading
 
+  @create_new_window
   Scenario: Modal has content
     Given I am viewing the modal
     Then I should see the modal has some text
 
+  @create_new_window
   Scenario: Modal has a option to cancel
     Given I am viewing the modal
     Then I should see an option to cancel
 
+  @create_new_window
   Scenario: Modal has a option to confirm
     Given I am viewing the modal
     Then I should see an option to confirm
@@ -64,6 +68,7 @@ Feature:
     Then it should be removed from the list of check windows
     And it should be removed from the database
 
+  @create_new_window
   Scenario: Removal of check window can be cancelled
     Given I am on the manage check windows page
     When I want to remove a window
