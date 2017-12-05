@@ -121,6 +121,7 @@ restartService.getSubmittedRestarts = async schoolId => {
   let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
   if (!pupils || pupils.length === 0) return []
   let restarts = []
+  // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
   await Promise.all(pupils.map(async p => {
     const r = await pupilRestartDataService.findOne({ pupilId: p._id, isDeleted: false })
     if (r) {

@@ -24,7 +24,7 @@ pupilRestartDataService.count = async function (query) {
 }
 
 /**
- * Find and returna single restart by criteria in `options`
+ * Find and return a single restart by criteria in `options`
  * @param options
  * @return {Promise.<{Object}>}
  */
