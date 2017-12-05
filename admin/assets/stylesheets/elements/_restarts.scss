@@ -31,12 +31,12 @@ label:hover {
 input[type=radio]:checked ~ .hide {
   display: block;
   position: relative;
-  margin-top: 60px;
-  margin-left: -35px;
-  width: 500px;
+  margin-top: pem(60px);
+  margin-left: pem(-35px);
+  width: pem(540px);
+  height: pem(65px);
 }
 
-#did-not-complete-textarea {
-  margin-top: pem(10px);
-  width: pem(375px)
+#didNotCompleteInfo {
+  padding-bottom: pem(5px);
 }
