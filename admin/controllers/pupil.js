@@ -2,18 +2,15 @@
 
 const moment = require('moment')
 const R = require('ramda')
-const errorConverter = require('../lib/error-converter')
-const ValidationError = require('../lib/validation-error')
-const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
-const pupilValidator = require('../lib/validator/pupil-validator')
-const fileValidator = require('../lib/validator/file-validator')
-const pupilService = require('../services/pupil.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
-const pupilUploadService = require('../services/pupil-upload.service')
-const schoolDataService = require('../services/data-access/school.data.service')
-const pupilAddService = require('../services/pupil-add-service')
 const dateService = require('../services/date.service')
+const fileValidator = require('../lib/validator/file-validator')
+const pupilAddService = require('../services/pupil-add-service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilUploadService = require('../services/pupil-upload.service')
+const pupilValidator = require('../lib/validator/pupil-validator')
+const schoolDataService = require('../services/data-access/school.data.service')
+const ValidationError = require('../lib/validation-error')
 
 const controller = {}
 
