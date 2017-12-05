@@ -12,6 +12,7 @@ class RestartsPage < SitePrism::Page
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
   element :back_to_top, 'a', text: 'Back to top'
+  element :flash_message, '.info-message'
 
   section :pupil_list, '#pupilsRestartList tbody' do
     sections :rows, 'tr' do
@@ -34,6 +35,13 @@ class RestartsPage < SitePrism::Page
     element :classroom_disruption, 'strong', text: 'Classroom disruption'
     element :did_not_complete, 'strong', text: 'Did not complete'
   end
+
+  section :error_summary, '.error-summary' do
+    element :error_heading, '#error-summary-heading-1', text: 'Check the restart form'
+    element :error_info, 'p', text: 'You need to fix the errors on this page before continuing. See highlighted errors below'
+    element :error_text, 'ul li a', text: 'Please specify further information when "Did not complete" option is selected'
+  end
+
   def restarts_for_pupil(name)
     pupil = find_pupil_row(name)
     name = pupil.name.text
