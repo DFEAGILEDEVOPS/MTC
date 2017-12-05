@@ -161,7 +161,7 @@ describe('restart.service', () => {
       const status = await restartService.getStatus(pupilMock._id)
       expect(status).toBe('Remove restart')
     })
-    it('returns restart if the pupil has taken the restart', async () => {
+    it('returns restart taken if the pupil has taken the restart', async () => {
       spyOn(checkDataService, 'count').and.returnValue(2)
       spyOn(pupilRestartDataService, 'count').and.returnValue(1)
       const status = await restartService.getStatus(pupilMock._id)
