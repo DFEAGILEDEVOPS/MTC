@@ -102,9 +102,9 @@
             </li>
         </ul>
 
-        <label class="form-label" for="textarea">
+        <span class="form-label" for="textarea">
             If necessary, please provide further information:
-        </label>
+        </span>
         <textarea class="form-control form-control-3-4" name="restartFurtherInfo" id="restartFurtherInfo" rows="5" maxlength="1000"></textarea>
 
 
@@ -138,7 +138,7 @@
             <thead>
             <tr>
                 <th scope="col">
-                    <a>Pupil</a>
+                    <a class="bold-small">Pupil</a>
                 </th>
                 <th scope="col">
                     <div class="tick-all-checkboxes-wrapper">
@@ -154,7 +154,7 @@
             </thead>
             <% pupils.forEach( (pupil, index) => { %>
             <tr>
-                <td>
+                <td class="font-small">
                     <label for="pupil-<%= pupil._id %>">
                         <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                     </label>
