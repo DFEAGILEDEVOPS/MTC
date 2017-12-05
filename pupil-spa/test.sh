@@ -18,7 +18,7 @@ echo ${MSG}
 sleep 30
 
 cd test
-rake parallel NODES=6 GROUP_SIZE=6 OPTS='-t @travis1'
+rake parallel NODES=6 GROUP_SIZE=16 OPTS='-t @travis1'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 ${PID}
