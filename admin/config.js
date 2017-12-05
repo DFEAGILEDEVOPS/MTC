@@ -14,5 +14,5 @@ module.exports = {
   QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
-  LINES_PER_CHECK_FORM: 24 // 25, counting from 0
+  LINES_PER_CHECK_FORM: 25
 }

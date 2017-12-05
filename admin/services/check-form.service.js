@@ -61,13 +61,11 @@ const checkFormService = {
           if (row[ 0 ].match(/[^0-9]/) || row[ 1 ].match(/[^0-9]/)) {
             return false
           }
+          if (checkFormService.isValidRowsPerFile(absCsvFile) === false) {
+            return false
+          }
           // We expect 2, and only 2 columns
           return row.length === 2
-        })
-        .validate(() => {
-          // File must have 25 rows
-          console.log('TRUE OR FALSE?', !!checkFormService.checkRowsPerFile(absCsvFile))
-          return !!checkFormService.checkRowsPerFile(absCsvFile)
         })
         .on('data', function (row) {
           let q = {}
@@ -215,11 +213,12 @@ const checkFormService = {
    * @param file
    * @returns {boolean}
    */
-  checkRowsPerFile: (file) => {
+  isValidRowsPerFile: (file) => {
     let csvData = fs.readFileSync(file)
-    const result = csvData.toString().split('\n').length
-    console.log('HOW MANY LINES?', result)
-    return result === config.LINES_PER_CHECK_FORM
+    const result = csvData.toString().split('\n').map(function (line) {
+      return line.trim()
+    }).filter(Boolean)
+    return result.length === config.LINES_PER_CHECK_FORM
   }
 }
 

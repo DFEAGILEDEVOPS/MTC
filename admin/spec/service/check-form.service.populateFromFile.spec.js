@@ -1,11 +1,12 @@
 'use strict'
-
-/* global beforeEach, describe, it, expect */
+/* global describe beforeEach it expect spyOn */
 
 // Test the check-form.service populateFromFile method
 
+const config = require('../../config')
 const path = require('path')
 const proxyquire = require('proxyquire').noCallThru()
+const checkFormService = require('../../services/check-form.service')
 const MongooseModelMock = require('../mocks/mongoose-model-mock')
 
 describe('check form service', () => {
@@ -19,6 +20,7 @@ describe('check form service', () => {
 
   beforeEach(function () {
     checkForm = {}
+    spyOn(checkFormService, 'isValidRowsPerFile')
     service = setupService(function () {})
   })
 
@@ -54,7 +56,7 @@ describe('check form service', () => {
     const file = path.join(__dirname, '/../../', csvFile)
     try {
       checkForm = await service.populateFromFile(checkForm, file)
-      expect(checkForm.questions.length).toBe(10)
+      expect(checkForm.questions.length).toBe(config.LINES_PER_CHECK_FORM)
       // check last question is 12 x 12
       expect(checkForm.questions[9].f1).toBe(12)
       expect(checkForm.questions[9].f2).toBe(12)
