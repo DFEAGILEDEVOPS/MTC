@@ -10,9 +10,10 @@ const whitelist = [
   'MTC_SERVICE',
   'NCA_TOOLS_AUTH_URL',
   'NEW_RELIC_LICENSE_KEY',
+  'PUPIL_APP_URL',
+  'RESTART_MAX_ATTEMPTS',
   'STD_LOG_FILE',
-  'TSO_AUTH_PUBLIC_KEY',
-  'PUPIL_APP_URL'
+  'TSO_AUTH_PUBLIC_KEY'
 ]
 
 module.exports = process.env.NODE_ENV !== 'production' ? whitelist : []

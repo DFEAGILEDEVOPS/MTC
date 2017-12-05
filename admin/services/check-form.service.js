@@ -54,15 +54,19 @@ const checkFormService = {
 
     return new Promise(function (resolve, reject) {
       csv.fromPath(absCsvFile, { headers: false, trim: true })
+        .on('readable', function () {
+          if (checkFormService.isRowCountValid(absCsvFile) !== true) {
+            reject(new Error(`Invalid number of lines`))
+          }
+        })
         .validate((row) => {
-          if (row[ 0 ] < 1 || row[ 0 ] > 12 || row[ 1 ] < 1 || row[ 1 ] > 12) {
-            return false
-          }
-          if (row[ 0 ].match(/[^0-9]/) || row[ 1 ].match(/[^0-9]/)) {
-            return false
-          }
-          if (checkFormService.isValidRowsPerFile(absCsvFile) === false) {
-            return false
+          if (row && row[0] && row[1]) {
+            if (row[0] < 1 || row[0] > 12 || row[1] < 1 || row[1] > 12) {
+              return false
+            }
+            if (row[0].match(/[^0-9]/) || row[1].match(/[^0-9]/)) {
+              return false
+            }
           }
           // We expect 2, and only 2 columns
           return row.length === 2
@@ -188,9 +192,10 @@ const checkFormService = {
   /**
    * Build a form name based on the file name.
    * @param fileName
+   * @returns {boolean} or {string}
    */
   buildFormName: (fileName) => {
-    const minFileNameSize = 4 // for example: a.csv
+    const minFileNameSize = 5
     const maxFileNameSize = 131
     if (!fileName || fileName.length < minFileNameSize || fileName.length > maxFileNameSize) {
       return false
@@ -213,9 +218,10 @@ const checkFormService = {
    * @param file
    * @returns {boolean}
    */
-  isValidRowsPerFile: (file) => {
+  isRowCountValid: (file) => {
+    let result
     let csvData = fs.readFileSync(file)
-    const result = csvData.toString().split('\n').map(function (line) {
+    result = csvData.toString().split('\n').map(function (line) {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM

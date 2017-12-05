@@ -20,7 +20,7 @@ describe('check form service', () => {
 
   beforeEach(function () {
     checkForm = {}
-    spyOn(checkFormService, 'isValidRowsPerFile')
+    spyOn(checkFormService, 'isRowCountValid')
     service = setupService(function () {})
   })
 

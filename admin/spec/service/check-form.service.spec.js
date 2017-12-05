@@ -1,6 +1,7 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
+const fs = require('fs-extra')
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -26,7 +27,8 @@ describe('check-form.service', () => {
     return proxyquire('../../services/check-form.service', {
       '../services/data-access/check-form.data.service': {
         getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
-        findCheckFormByName: jasmine.createSpy().and.callFake(cb)
+        findCheckFormByName: jasmine.createSpy().and.callFake(cb),
+        isRowCountValid: jasmine.createSpy().and.callFake(cb)
       },
       '../models/check-form': CheckForm
     })
@@ -190,6 +192,36 @@ describe('check-form.service', () => {
 
       it('should return a form name if it is not available', async (done) => {
         const result = await service.validateCheckFormName(formName)
+        expect(result).toBeFalsy()
+        done()
+      })
+    })
+  })
+
+  describe('#isRowCountValid()', () => {
+    let csvFile
+
+    describe('When the number of lines is valid', () => {
+      beforeEach(() => {
+        csvFile = 'data/fixtures/check-form-5.csv'
+        spyOn(fs, 'readFileSync').and.returnValue(csvFile)
+      })
+
+      it('should return true', (done) => {
+        const result = service.isRowCountValid(csvFile)
+        expect(result).toBeTruthy()
+        done()
+      })
+    })
+
+    describe('When the number of lines is valid', () => {
+      beforeEach(() => {
+        csvFile = 'data/fixtures/check-form-7.csv'
+        spyOn(fs, 'readFileSync').and.returnValue(false)
+      })
+
+      it('should return true', (done) => {
+        const result = service.isRowCountValid(csvFile)
         expect(result).toBeFalsy()
         done()
       })

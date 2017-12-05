@@ -6,8 +6,6 @@ const gdsShortFormat = 'D MMM YYYY'
 const UKFormat = 'DD/MM/YYYY'
 const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
-// this is neither GDS nor Long.  @pris54 to review
-const gdsLongFormat = 'DD MMM YYYY'
 const dayAndDateFormat = 'dddd D MMMM'
 
 const dateService = {
@@ -15,16 +13,11 @@ const dateService = {
     return this.checkAndFormat(date, gdsFullFormat)
   },
 
-  // This is probably one too many
-  formatLongGdsDate: (date) => {
-    return this.checkAndFormat(date, gdsLongFormat)
-  },
-
   formatShortGdsDate: function (date) {
     return this.checkAndFormat(date, gdsShortFormat)
   },
 
-  formatDayAndDate: (date) => {
+  formatDayAndDate: function (date) {
     return moment(date).format(dayAndDateFormat)
   },
 
@@ -58,7 +51,7 @@ const dateService = {
    * @param keyYear
    * @returns {Date}
    */
-  formatDateFromRequest: (dateItem, keyDay, keyMonth, keyYear) => {
+  formatDateFromRequest: function (dateItem, keyDay, keyMonth, keyYear) {
     return moment.utc(
       '' + dateItem[keyDay] +
       '/' + dateItem[keyMonth] +
@@ -72,7 +65,7 @@ const dateService = {
    * @param endDate
    * @returns {string} E.g. "1 Nov to 20 Nov 2017" or "1 Dec 2016 to 1 Jan 2017"
    */
-  formatCheckPeriod: (startDate, endDate) => {
+  formatCheckPeriod: function (startDate, endDate) {
     let startYear = ' ' + startDate.format('YYYY')
     let endYear = ' ' + endDate.format('YYYY')
 
@@ -89,7 +82,7 @@ const dateService = {
    * @param {number|string} year
    * @return {Moment}
    */
-  createFromDayMonthYear: (day, month, year) => {
+  createFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
     const paddedMonth = (+month).toString().padStart(2, '0')
     const data = paddedDay + '/' + paddedMonth + '/' + (+year).toString()
