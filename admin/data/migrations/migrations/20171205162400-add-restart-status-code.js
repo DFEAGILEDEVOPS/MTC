@@ -13,9 +13,9 @@ module.exports = {
       }
 
       try {
-        await createRestartCode('Remove restart', 1)
-        await createRestartCode('Restart taken', 2)
-        await createRestartCode('Maximum number of restarts taken', 3)
+        await createRestartCode('Remove restart', 'REM')
+        await createRestartCode('Restart taken', 'TKN')
+        await createRestartCode('Maximum number of restarts taken', 'MAX')
         mongoose.disconnect(() => next())
       } catch (error) {
         console.log('ERROR', error)
