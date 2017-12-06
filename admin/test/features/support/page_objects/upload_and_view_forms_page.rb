@@ -21,7 +21,7 @@ class UploadAndViewFormsPage < SitePrism::Page
 
   section :available_checks, '#checkFormsList' do
     sections :rows, 'tbody tr' do
-      element :title, 'td:nth-child(1)'
+      element :title, 'td:nth-child(1) a:last-of-type'
       element :assigned_to, 'td:nth-of-type(2)'
       element :uploaded_date, 'td:nth-of-type(3)'
       element :remove_form, 'a', text: 'Remove'
