@@ -84,7 +84,7 @@ describe('checkWindowDataService', () => {
     })
   })
 
-  describe('#findCheckFormByName', () => {
+  describe('#findCheckFormByName - It looks for a document by check form name', () => {
     let mock
 
     beforeEach(() => {
@@ -94,7 +94,7 @@ describe('checkWindowDataService', () => {
       })
     })
 
-    it('looks for a document by check form name', async () => {
+    it('returns a promise', async () => {
       await service.findCheckFormByName('MTC0100')
       expect(mock.verify()).toBe(true)
     })

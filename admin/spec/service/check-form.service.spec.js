@@ -169,14 +169,13 @@ describe('check-form.service', () => {
   })
 
   describe('#validateCheckFormName()', () => {
-
-    describe('When the name is valid', () => {
+    describe('When the name is available', () => {
       const formName = 'MTC0100'
       beforeEach(() => {
         spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(false)
       })
 
-      it('should return the form name', async (done) => {
+      it('should return back the form name', async (done) => {
         const result = await service.validateCheckFormName(formName)
         expect(result).toBe(formName)
         expect(result).toBeTruthy()
@@ -184,13 +183,13 @@ describe('check-form.service', () => {
       })
     })
 
-    describe('When the name is not valid', () => {
+    describe('When the form name is not available', () => {
       const formName = 'MTC0100'
       beforeEach(() => {
         spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(formName)
       })
 
-      it('should return a form name if it is not available', async (done) => {
+      it('should return false', async (done) => {
         const result = await service.validateCheckFormName(formName)
         expect(result).toBeFalsy()
         done()
@@ -214,13 +213,13 @@ describe('check-form.service', () => {
       })
     })
 
-    describe('When the number of lines is valid', () => {
+    describe('When the number of lines is invalid', () => {
       beforeEach(() => {
         csvFile = 'data/fixtures/check-form-7.csv'
         spyOn(fs, 'readFileSync').and.returnValue(false)
       })
 
-      it('should return true', (done) => {
+      it('should return false', (done) => {
         const result = service.isRowCountValid(csvFile)
         expect(result).toBeFalsy()
         done()

@@ -134,7 +134,6 @@ const saveCheckForm = async (req, res, next) => {
     // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
     // * file size exceeded?
-    res.locals.pageTitle = 'Upload check form'
     uploadError.message = 'A valid CSV file was not uploaded'
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
@@ -186,7 +185,7 @@ const saveCheckForm = async (req, res, next) => {
   try {
     const isFileNameValid = await checkFormService.validateCheckFormName(fileName)
     if (!isFileNameValid) {
-      req.flash('error', `${uploadFile.filename.slice(0, -4)} already exists. Rename and upload again.`)
+      req.flash('error', `${fileName} already exists. Rename and upload again.`)
       return res.redirect('/test-developer/upload-new-form')
     }
     checkForm.name = fileName

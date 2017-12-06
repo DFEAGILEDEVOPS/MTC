@@ -44,7 +44,6 @@ const checkFormDataService = {
       sort[sortField] = sortDirection
     }
     query.isDeleted = false
-
     return CheckForm.find(q).sort(sort).lean().exec()
   },
 
@@ -62,6 +61,7 @@ const checkFormDataService = {
   /**
    * Find check form by name.
    * @param formName
+   * @returns {Promise|*}
    */
   findCheckFormByName: (formName) => {
     let query = { 'isDeleted': false, 'name': formName }
