@@ -162,7 +162,7 @@ class MongoDbHelper
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
     collection=CLIENT[:checks]
-    collection.insert_one({'updatedAt': updatedime, 'createdAt': createdTime, 'pupilId': BSON::ObjectId("#{pupil_id}"), 'checkCode': "40e5356c-b0d6-#{rand(1000)}-a46e-b100d346a9e6", 'checkWindowId': BSON::ObjectId("5a252a57ceb4b183159256e7"),'checkFormId': '100','pupilLoginDate': pupilLoginDate, 'checkStartedAt': checkStartedTime})
+    collection.insert_one({'updatedAt': updatedime, 'createdAt': createdTime, 'pupilId': BSON::ObjectId("#{pupil_id}"), 'checkCode': "40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6", 'checkWindowId': BSON::ObjectId("5a252a57ceb4b183159256e7"),'checkFormId': '100','pupilLoginDate': pupilLoginDate, 'checkStartedAt': checkStartedTime})
 
   end
 
