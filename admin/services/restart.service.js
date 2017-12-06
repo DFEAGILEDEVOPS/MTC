@@ -1,5 +1,6 @@
 const moment = require('moment')
 const Promise = require('bluebird')
+const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -155,7 +156,7 @@ restartService.getSubmittedRestarts = async schoolId => {
 
 restartService.getStatus = async pupilId => {
   const restartCodes = await pupilRestartDataService.getRestartCodes()
-  const getStatus = (value) => restartCodes && restartCodes.find(c => c.code === value).status
+  const getStatus = (value) => restartCodes && R.find(c => R.propEq(c.code, value))(restartCodes).status
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
