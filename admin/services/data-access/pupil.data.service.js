@@ -13,7 +13,7 @@ const pupilDataService = {}
 pupilDataService.getPupils = async (schoolId) => {
   const [ schoolData, pupils ] = await Promise.all([
     School.findOne({'_id': schoolId}).lean().exec(),
-    Pupil.getPupils(schoolId).exec()
+    Pupil.find({ school: schoolId }).sort({ createdAt: 1 }).lean().exec()
   ]).catch((error) => {
     throw new Error(error)
   })
@@ -103,7 +103,8 @@ pupilDataService.updateMultiple = async function (pupils) {
  */
 pupilDataService.save = async function (data) {
   const pupil = new Pupil(data)
-  return pupil.save()
+  await pupil.save()
+  return pupil.toObject()
 }
 
 module.exports = pupilDataService
