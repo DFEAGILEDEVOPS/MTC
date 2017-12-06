@@ -23,22 +23,42 @@ describe('restart controller:', () => {
   }
 
   describe('getRestartOverview route', () => {
+    let next
     let goodReqParams = {
       method: 'GET',
       url: '/restart/overview',
       session: {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      user: {
+        School: 9991001
       }
     }
+    beforeEach(() => {
+      next = jasmine.createSpy('next')
+    })
 
     it('displays the restart overview page', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getRestartOverview
       spyOn(res, 'render').and.returnValue(null)
-      await controller(req, res)
+      spyOn(restartService, 'getSubmittedRestarts').and.returnValue({ id: 'test' })
+      await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Restarts')
       expect(res.render).toHaveBeenCalled()
+      done()
+    })
+    it('throws an error if getSubmittedResults has an error', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      const controller = require('../../controllers/restart').getRestartOverview
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(restartService, 'getSubmittedRestarts').and.returnValue(Promise.reject(new Error()))
+      await controller(req, res, next)
+      expect(res.locals.pageTitle).toBe('Restarts')
+      expect(res.render).toHaveBeenCalledTimes(0)
+      expect(next).toHaveBeenCalled()
       done()
     })
   })
@@ -132,14 +152,13 @@ describe('restart controller:', () => {
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }, { 'ok': 1, 'n': 1 }])
-      spyOn(res, 'render').and.returnValue(null)
+      spyOn(res, 'redirect').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
-      expect(res.locals.pageTitle).toBe('Restarts')
       const requestFlashCalls = req.flash.calls.all()
       expect(req.flash).toHaveBeenCalled()
       expect(requestFlashCalls[0].args[1]).toBe('Restarts made for 2 pupils')
-      expect(res.render).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
       done()
     })
     it('renders a specific flash message for 1 pupil', async (done) => {
@@ -151,7 +170,6 @@ describe('restart controller:', () => {
       const validationError = new ValidationError()
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'restart').and.returnValue([{ 'ok': 1, 'n': 1 }])
-      spyOn(res, 'render').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()

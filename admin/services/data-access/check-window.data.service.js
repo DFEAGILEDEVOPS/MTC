@@ -40,7 +40,6 @@ const checkWindowDataService = {
     } else {
       query.checkEndDate = {$lte: currentTimestamp}
     }
-    console.log('QUERY', query)
 
     if (sortBy && sortDirection) {
       sorting[sortBy] = sortDirection
