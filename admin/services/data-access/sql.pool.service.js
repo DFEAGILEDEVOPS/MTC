@@ -6,7 +6,7 @@ var ConnectionPool = require('tedious-connection-pool')
 var poolConfig = {
   min: process.env.SQL_POOL_MIN_COUNT,
   max: process.env.SQL_POOL_MAX_COUNT,
-  log: true
+  log: process.env.NODE_ENV === 'production' ? null : true
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js

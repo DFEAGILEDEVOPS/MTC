@@ -3,13 +3,14 @@
 require('dotenv').config()
 const Postgrator = require('postgrator')
 const path = require('path')
+const createDatabaseIfNotExists = require('./createDatabase')
 
 const postgrator = new Postgrator({
   migrationDirectory: path.join(__dirname, '/migrations'),
   driver: 'mssql',
   host: process.env.SQL_SERVER,
   port: process.env.SQL_PORT || 1433,
-  database: process.env.SQL_DATABASE,  // this wont exist??
+  database: process.env.SQL_DATABASE, // this wont exist??
   username: process.env.SQL_ADMIN_USER,
   password: process.env.SQL_ADMIN_USER_PASSWORD,
   // Schema table name. Optional. Default is schemaversion
@@ -19,20 +20,21 @@ const postgrator = new Postgrator({
   }
 })
 
-// subscribe to events
-// postgrator.on('validation-started', migration => console.log('validating migration:', migration.name))
-// postgrator.on('validation-finished', migration => console.log('validated migration:', migration.name))
-postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
-postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
+createDatabaseIfNotExists()
+  .then(() => {
+    // subscribe to useful events
+    postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
+    postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
 
-// Migrate to max version (optionally can provide 'max')
-postgrator.migrate()
-  .then(appliedMigrations => {
-    console.log('SQL Migrations complete')
-    process.exit()
-  })
-  .catch(error => {
-    console.log(error)
-    console.log(error.appliedMigrations)
-    process.exit()
+    // Migrate to max version (optionally can provide 'max')
+    postgrator.migrate()
+      .then(appliedMigrations => {
+        console.log('SQL Migrations complete')
+        process.exit()
+      })
+      .catch(error => {
+        console.log(error)
+        console.log(error.appliedMigrations)
+        process.exit()
+      })
   })
