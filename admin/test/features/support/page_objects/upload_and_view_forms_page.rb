@@ -47,4 +47,14 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :retry_upload, 'a[href="#file-upload"]', text: 'Please try uploading a file again'
   end
 
+  def create_unique_check_csv(file_name, file_contents)
+    out_file = File.new(file_name, "w")
+    out_file.puts(file_contents)
+    out_file.close
+  end
+
+  def delete_csv_file(file_name)
+    File.delete(file_name)
+  end
+
 end
