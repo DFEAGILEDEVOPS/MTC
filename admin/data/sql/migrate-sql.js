@@ -22,8 +22,8 @@ const postgrator = new Postgrator({
 // subscribe to events
 // postgrator.on('validation-started', migration => console.log('validating migration:', migration.name))
 // postgrator.on('validation-finished', migration => console.log('validated migration:', migration.name))
-postgrator.on('migration-started', migration => console.log(`starting migration:${migration.name} operation:${migration.action}`))
-postgrator.on('migration-finished', migration => console.log(`starting migration:${migration.name} operation:${migration.action}`))
+postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
+postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
 
 // Migrate to max version (optionally can provide 'max')
 postgrator.migrate()
@@ -34,4 +34,5 @@ postgrator.migrate()
   .catch(error => {
     console.log(error)
     console.log(error.appliedMigrations)
+    process.exit()
   })
