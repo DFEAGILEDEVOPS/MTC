@@ -7,7 +7,6 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
-const School = require('../../models/school')
 const fileValidator = require('../../lib/validator/file-validator')
 const pupilUploadService = require('../../services/pupil-upload.service')
 const ValidationError = require('../../lib/validation-error')
@@ -239,9 +238,9 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(new School({ name: 'Test School' }))
+        sandbox.mock(schoolDataService).expects('findOne').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).postAddMultiplePupils
       })
 
@@ -314,9 +313,9 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(School).expects('findOne').chain('exec').resolves(null)
+        sandbox.mock(schoolDataService).expects('findOne').resolves(null)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../models/school': School
+          '../services/data-access/school.data.service': schoolDataService
         }).postAddMultiplePupils
       })
       it('it throws an error', async (done) => {

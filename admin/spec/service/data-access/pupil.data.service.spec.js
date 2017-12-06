@@ -90,11 +90,12 @@ describe('pupil.data.service', () => {
   describe('#getPupils', () => {
     let mockPupil
     let mockSchool
+
     beforeEach(() => {
       const pupil1 = pupilMock
       const pupil2 = pupilMock
       mockPupil = sandbox.mock(School).expects('findOne').chain('lean').chain('exec').returns(schoolMock)
-      mockSchool = sandbox.mock(Pupil).expects('getPupils').chain('exec').returns([ pupil1, pupil2 ])
+      mockSchool = sandbox.mock(Pupil).expects('find').chain('sort').chain('lean').chain('exec').returns([ pupil1, pupil2 ])
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil,
         '../../models/school': School
@@ -133,6 +134,7 @@ describe('pupil.data.service', () => {
       expect(mockPupil.verify()).toBe(true)
     })
   })
+
   describe('#updateMultiple', () => {
     let pupil1
     let pupil2
