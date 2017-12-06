@@ -481,4 +481,3 @@ ALTER TABLE [dbo].[user]  WITH CHECK ADD  CONSTRAINT [FK_user_school_id] FOREIGN
 REFERENCES [dbo].[school] ([id])
 
 ALTER TABLE [dbo].[user] CHECK CONSTRAINT [FK_user_school_id]
-
