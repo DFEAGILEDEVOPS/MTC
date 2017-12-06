@@ -201,5 +201,5 @@ And(/^I attempt to upload the same csv again$/) do
 end
 
 Then(/^I should see an error stating it has already been uploaded$/) do
-  find('p', text: "#{@file_name.split('.').first} already exists. Rename and upload again.")
+  find('p', text: "'#{@file_name.split('.').first}' already exists. Rename and upload again.")
 end
