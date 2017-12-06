@@ -107,19 +107,4 @@ Pupil.pre('validate', function (next) {
   next()
 })
 
-/**
- * Retrieve pupil records by school code
- * @return {Query} || null
- */
-Pupil.statics.getPupils = function (schoolCode) {
-  if (schoolCode < 1) {
-    throw new Error('Missing school code')
-  }
-  const pupils = this.find({ school: schoolCode }).sort({ createdAt: 1 }) || null
-  if (!pupils) {
-    console.log('getPupils ERROR: no pupils found')
-  }
-  return pupils
-}
-
 module.exports = mongoose.model('Pupil', Pupil)
