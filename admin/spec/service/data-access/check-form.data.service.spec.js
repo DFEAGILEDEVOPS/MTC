@@ -83,4 +83,20 @@ describe('checkWindowDataService', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#findCheckFormByName - It looks for a document by check form name', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(CheckForm).expects('findOne').chain('lean').chain('exec').resolves(checkFormMock)
+      service = proxyquire('../../../services/data-access/check-form.data.service', {
+        '../../models/check-form': CheckForm
+      })
+    })
+
+    it('returns a promise', async () => {
+      await service.findCheckFormByName('MTC0100')
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })
