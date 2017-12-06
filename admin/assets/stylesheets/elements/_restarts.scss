@@ -5,7 +5,6 @@
   .multiple-choice {
     margin: pem(4px);
   }
-
   li {
     overflow: hidden;
     margin-top: pem(10px);
@@ -19,6 +18,10 @@
       margin-top: pem(5px);
     }
   }
+}
+
+.restart-status {
+  max-width: pem(80px);
 }
 
 label:hover {
