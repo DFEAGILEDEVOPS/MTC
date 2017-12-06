@@ -95,12 +95,6 @@ describe('Pupil schema', function () {
     })
   })
 
-  it('has a method to retrieve all pupils', function (done) {
-    expect(typeof Pupil.getPupils).toBeDefined()
-    expect(typeof Pupil.getPupils).toBe('function')
-    done()
-  })
-
   it('truncates foreName if it\'s too long', function (done) {
     pupil.foreName = 's'.repeat(130)
     pupil.validate(error => {
