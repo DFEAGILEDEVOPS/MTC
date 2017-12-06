@@ -120,7 +120,7 @@ end
 
 Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
   expect(restarts_page).to have_flash_message
-  expect(restarts_page.flash_message.text).to eql('Restarts made for 1 pupil')
+  expect(restarts_page.flash_message.text).to eql('Restart made for 1 pupil')
 end
 
 Then(/^I should see the error message for further information for 'Did not complete' reason$/) do
