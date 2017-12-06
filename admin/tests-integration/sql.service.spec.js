@@ -43,4 +43,8 @@ describe('sql.service:integration', () => {
       expect(error).toBeDefined()
     }
   })
+
+  xit('should transform the results arrays into a JSON array', async () => {
+    fail('no implementation')
+  })
 })
