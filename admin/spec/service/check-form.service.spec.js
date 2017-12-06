@@ -1,6 +1,7 @@
 'use strict'
-/* global describe beforeEach afterEach jasmine it expect */
+/* global describe beforeEach afterEach it expect jasmine spyOn */
 
+const fs = require('fs-extra')
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -25,7 +26,9 @@ describe('check-form.service', () => {
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
       '../services/data-access/check-form.data.service': {
-        getActiveFormPlain: jasmine.createSpy().and.callFake(cb)
+        getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
+        findCheckFormByName: jasmine.createSpy().and.callFake(cb),
+        isRowCountValid: jasmine.createSpy().and.callFake(cb)
       },
       '../models/check-form': CheckForm
     })
@@ -147,6 +150,80 @@ describe('check-form.service', () => {
       expect(result.toString()).toBe('false')
       expect(result).toBeFalsy()
       done()
+    })
+  })
+
+  describe('#buildFormName()', () => {
+    it('should return a valid form name', async (done) => {
+      const result = await service.buildFormName('MTC0100.csv')
+      expect(result).toBe('MTC0100')
+      expect(result).toBeTruthy()
+      done()
+    })
+
+    it('should return a false if the name is invalid', async (done) => {
+      const result = await service.buildFormName('0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789.csv')
+      expect(result).toBeFalsy()
+      done()
+    })
+  })
+
+  describe('#validateCheckFormName()', () => {
+    describe('When the name is available', () => {
+      const formName = 'MTC0100'
+      beforeEach(() => {
+        spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(false)
+      })
+
+      it('should return back the form name', async (done) => {
+        const result = await service.validateCheckFormName(formName)
+        expect(result).toBe(formName)
+        expect(result).toBeTruthy()
+        done()
+      })
+    })
+
+    describe('When the form name is not available', () => {
+      const formName = 'MTC0100'
+      beforeEach(() => {
+        spyOn(checkFormDataService, 'findCheckFormByName').and.returnValue(formName)
+      })
+
+      it('should return false', async (done) => {
+        const result = await service.validateCheckFormName(formName)
+        expect(result).toBeFalsy()
+        done()
+      })
+    })
+  })
+
+  describe('#isRowCountValid()', () => {
+    let csvFile
+
+    describe('When the number of lines is valid', () => {
+      beforeEach(() => {
+        csvFile = 'data/fixtures/check-form-5.csv'
+        spyOn(fs, 'readFileSync').and.returnValue(csvFile)
+      })
+
+      it('should return true', (done) => {
+        const result = service.isRowCountValid(csvFile)
+        expect(result).toBeTruthy()
+        done()
+      })
+    })
+
+    describe('When the number of lines is invalid', () => {
+      beforeEach(() => {
+        csvFile = 'data/fixtures/check-form-7.csv'
+        spyOn(fs, 'readFileSync').and.returnValue(false)
+      })
+
+      it('should return false', (done) => {
+        const result = service.isRowCountValid(csvFile)
+        expect(result).toBeFalsy()
+        done()
+      })
     })
   })
 })

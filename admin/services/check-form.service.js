@@ -1,7 +1,9 @@
 'use strict'
 
+const fs = require('fs')
 const csv = require('fast-csv')
 const moment = require('moment')
+const config = require('../config')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
 
@@ -33,7 +35,7 @@ const checkFormService = {
 
   /**
    * Populate a plain object with data from a CSV file
-   * @param {object} plain checkForm object
+   * @param {object} checkForm object
    * @param {String} absCsvFile Absolute path to csv file: e.g /home/abc/csvfile.csv
    * @return {Promise}
    */
@@ -52,12 +54,19 @@ const checkFormService = {
 
     return new Promise(function (resolve, reject) {
       csv.fromPath(absCsvFile, { headers: false, trim: true })
-        .validate((row) => {
-          if (row[ 0 ] < 1 || row[ 0 ] > 12 || row[ 1 ] < 1 || row[ 1 ] > 12) {
-            return false
+        .on('readable', function () {
+          if (checkFormService.isRowCountValid(absCsvFile) !== true) {
+            reject(new Error(`Invalid number of lines`))
           }
-          if (row[ 0 ].match(/[^0-9]/) || row[ 1 ].match(/[^0-9]/)) {
-            return false
+        })
+        .validate((row) => {
+          if (row && row[0] && row[1]) {
+            if (row[0] < 1 || row[0] > 12 || row[1] < 1 || row[1] > 12) {
+              return false
+            }
+            if (row[0].match(/[^0-9]/) || row[1].match(/[^0-9]/)) {
+              return false
+            }
           }
           // We expect 2, and only 2 columns
           return row.length === 2
@@ -151,6 +160,7 @@ const checkFormService = {
       return Promise.all(promises)
     }
   },
+
   /**
    * Return check windows name(s).
    * @param checkWindows
@@ -163,6 +173,7 @@ const checkFormService = {
     })
     return checkWindowsName
   },
+
   /**
    * Return canDelete.
    * @param checkWindows
@@ -176,6 +187,44 @@ const checkFormService = {
       }
     })
     return canDelete
+  },
+
+  /**
+   * Build a form name based on the file name.
+   * @param fileName
+   * @returns {boolean} or {string}
+   */
+  buildFormName: (fileName) => {
+    const minFileNameSize = 5
+    const maxFileNameSize = 131
+    if (!fileName || fileName.length < minFileNameSize || fileName.length > maxFileNameSize) {
+      return false
+    }
+    return fileName.slice(0, -4)
+  },
+
+  /**
+   * Validate check form name. Check if it already exists.
+   * @param formName
+   * @returns {Promise<boolean>}
+   */
+  validateCheckFormName: async (formName) => {
+    const checkFileName = await checkFormDataService.findCheckFormByName(formName)
+    return !checkFileName ? formName : false
+  },
+
+  /**
+   * Return true/false based on how many lines a file can have
+   * @param file
+   * @returns {boolean}
+   */
+  isRowCountValid: (file) => {
+    let result
+    let csvData = fs.readFileSync(file)
+    result = csvData.toString().split('\n').map(function (line) {
+      return line.trim()
+    }).filter(Boolean)
+    return result.length === config.LINES_PER_CHECK_FORM
   }
 }
 
