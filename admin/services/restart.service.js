@@ -156,7 +156,10 @@ restartService.getSubmittedRestarts = async schoolId => {
 
 restartService.getStatus = async pupilId => {
   const restartCodes = await pupilRestartDataService.getRestartCodes()
-  const getStatus = (value) => restartCodes && R.find(c => c.code === value)(restartCodes).status
+  const getStatus = (value) => {
+    const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
+    return entry && entry.status
+  }
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
