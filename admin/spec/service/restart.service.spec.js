@@ -9,6 +9,8 @@ const restartService = require('../../services/restart.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
+const pupilRestartMock = require('../mocks/pupil-restart')
+const restartCodesMock = require('../mocks/restart-codes')
 
 /* global describe, it, expect, beforeEach, afterEach, spyOn */
 
@@ -70,7 +72,7 @@ describe('restart.service', () => {
     })
   })
   describe('canRestart', () => {
-    it('it should return true if the pupil has 1 completed check and no restart requested', async () => {
+    it('it should return true if the pupil has 1 started check and no restart requested', async () => {
       spyOn(checkDataService, 'count').and.returnValue(1)
       spyOn(pupilRestartDataService, 'count').and.returnValue(0)
       let result
@@ -129,6 +131,45 @@ describe('restart.service', () => {
       spyOn(restartService, 'canRestart').and.returnValue(false)
       const result = await restartService.canAllPupilsRestart([ pupilMock._id, pupilMock._id ])
       expect(result).toBeFalsy()
+    })
+  })
+  describe('getSubmittedRestarts', () => {
+    it('returns a list of  if all pupils can restart', async () => {
+      const pupil1 = Object.assign({}, pupilMock)
+      const pupil2 = Object.assign({}, pupilMock)
+      spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])
+      spyOn(pupilRestartDataService, 'findLatest').and.returnValue(pupilRestartMock)
+      spyOn(restartService, 'getStatus').and.returnValue('Remove restart')
+      const result = await restartService.getSubmittedRestarts(schoolMock._id)
+      expect(result.length).toBe(2)
+    })
+    it('returns an empty list if no pupil has been submitted for a restart', async () => {
+      spyOn(pupilDataService, 'getSortedPupils').and.returnValue([])
+      const result = await restartService.getSubmittedRestarts(schoolMock._id)
+      expect(result.length).toBe(0)
+    })
+  })
+  describe('getStatus', () => {
+    it('returns maximum number reached if the restart or check count reaches the limit', async () => {
+      spyOn(checkDataService, 'count').and.returnValue(3)
+      spyOn(pupilRestartDataService, 'count').and.returnValue(2)
+      spyOn(pupilRestartDataService, 'getRestartCodes').and.returnValue(restartCodesMock)
+      const status = await restartService.getStatus(pupilMock._id)
+      expect(status).toBe('Maximum number of restarts taken')
+    })
+    it('returns remove restart if the pupil has been submitted for a restart', async () => {
+      spyOn(checkDataService, 'count').and.returnValue(1)
+      spyOn(pupilRestartDataService, 'count').and.returnValue(1)
+      spyOn(pupilRestartDataService, 'getRestartCodes').and.returnValue(restartCodesMock)
+      const status = await restartService.getStatus(pupilMock._id)
+      expect(status).toBe('Remove restart')
+    })
+    it('returns restart taken if the pupil has taken the restart', async () => {
+      spyOn(checkDataService, 'count').and.returnValue(2)
+      spyOn(pupilRestartDataService, 'count').and.returnValue(1)
+      spyOn(pupilRestartDataService, 'getRestartCodes').and.returnValue(restartCodesMock)
+      const status = await restartService.getStatus(pupilMock._id)
+      expect(status).toBe('Restart taken')
     })
   })
 })
