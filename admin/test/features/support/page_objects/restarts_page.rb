@@ -22,6 +22,15 @@ class RestartsPage < SitePrism::Page
     end
   end
 
+  section :restarts_pupil_list, '#submitted-restarts tbody' do
+    sections :rows, 'tr' do
+      element :name, 'span'
+      element :reason, 'td:nth-child(2)'
+      element :status, 'td:nth-child(3)'
+      element :highlighted_pupil, '.highlight-item'
+    end
+  end
+
   section :sticky_banner, '.sticky-banner-wrapper' do
     element :count, '.grid-row .column-half.first-half'
     element :cancel, '#stickyCancel'
@@ -46,8 +55,8 @@ class RestartsPage < SitePrism::Page
     pupil = find_pupil_row(name)
     name = pupil.name.text
     pupil.checkbox.click
+    reason_1.click
     sticky_banner.confirm.click
-    name
   end
 
   def restarts_for_multiple_pupils(number_of_pupils)
