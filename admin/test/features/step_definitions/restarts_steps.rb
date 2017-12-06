@@ -120,7 +120,7 @@ end
 
 Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
   expect(restarts_page).to have_flash_message
-  expect(restarts_page.flash_message.text).to eql('Restarts made for 1 pupil')
+  expect(restarts_page.flash_message.text).to eql('Restart made for 1 pupil')
 end
 
 Then(/^I should see the error message for further information for 'Did not complete' reason$/) do
@@ -159,6 +159,7 @@ end
 
 And(/^Pupil has taken a 2nd restart$/) do
   step 'Pupil has taken a 2nd check'
+  restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   @page = restarts_page
   restarts_page.restarts_for_pupil(@details_hash[:first_name])
