@@ -1,11 +1,11 @@
-@wip @fix-in-17402
+
 Feature:
   As a test developer
   I want to preview the check form i have upload
   So I can ensure i have not made any mistakes
 
   Background:
-    Given I am logged in
+    Given I am logged in with a test developer
 
   Scenario: Users can view an uploaded check
     Given I have uploaded a check form
@@ -25,7 +25,7 @@ Feature:
   Scenario: Users can go back to the manage check form page
     Given I am viewing a check form that is unassigned to a check window
     When I choose to go back
-    Then I am taken to the manage check forms page
+    Then I am taken to the view forms page
 
   Scenario: Users can delete a unassigned check form
     Given I am viewing a check form that is unassigned to a check window
