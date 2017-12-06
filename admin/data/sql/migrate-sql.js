@@ -10,8 +10,8 @@ const postgrator = new Postgrator({
   host: process.env.SQL_SERVER,
   port: process.env.SQL_PORT || 1433,
   database: process.env.SQL_DATABASE,  // this wont exist??
-  username: process.env.SQL_USER,
-  password: process.env.SQL_PASSWORD,
+  username: process.env.SQL_ADMIN_USER,
+  password: process.env.SQL_ADMIN_USER_PASSWORD,
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {

@@ -1,21 +1,26 @@
 'use strict'
 
 const Request = require('tedious').Request
-const connectionService = require('./sql.connection.service')
+const sqlPoolService = require('./sql.pool.service')
+
+function parseResults (results) {
+  // TODO deconstruct array of arrays into object array
+  return results
+}
 
 const sqlService = {}
 
-/**
- * Represents a book.
+  /**
+ * Query data from the SQL Server Database
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
- * @return {Promise}
+ * @return {Promise<results>}
  */
 sqlService.query = (sql, params) => {
   return new Promise(async (resolve, reject) => {
     let con
     try {
-      con = await connectionService.getConnection()
+      con = await sqlPoolService.getConnection()
     } catch (error) {
       reject(error)
     }
@@ -23,8 +28,6 @@ sqlService.query = (sql, params) => {
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
       if (err) reject(err)
-      // TODO request also emits a 'done' event for each SQL statement.
-      // which is a more deterministic completion?
       con.release()
       resolve(parseResults(results))
     })
@@ -44,19 +47,15 @@ sqlService.query = (sql, params) => {
   })
 }
 
-function parseResults (results) {
-  return Object.assign({}, results)
-}
-
-/**
- * Represents a book.
+ /**
+ * Modify data in the SQL Server Database.
  * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
 sqlService.modify = (sql, params) => {
   return new Promise(async (resolve, reject) => {
-    const con = await connectionService.getConnection()
+    const con = await sqlPoolService.getConnection()
 
     var request = new Request(sql, function (err, rowCount) {
       if (err) reject(err)
