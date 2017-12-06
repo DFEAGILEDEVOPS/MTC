@@ -8,6 +8,8 @@ MSG+=$PID
 echo $MSG
 
 cd test
+echo " Cucumber install location "
+which cucumber
 rake features OPTS='-t @travis1'
 CUCUMBER_EXIT_CODE=$?
 
