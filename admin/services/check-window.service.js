@@ -27,6 +27,7 @@ const checkWindowService = {
       }
     })
   },
+
   /**
    * Retrieve all (active) CheckWindows and return the list
    * indexed by form.id, so we can easily list the check windows
@@ -67,6 +68,7 @@ const checkWindowService = {
       resolve(data)
     })
   },
+
   /**
    * Soft delete check window.
    */
@@ -102,6 +104,21 @@ const checkWindowService = {
 
       resolve(checkForm)
     })
+  },
+
+  getCheckCurrentCheckWindowsAndCountForms: async () => {
+    let checkWindowsList
+    checkWindowsList = await checkWindowDataService.fetchCurrentCheckWindows()
+    if (checkWindowsList) {
+      checkWindowsList = checkWindowsList.map((cw) => {
+        return {
+          '_id': cw._id,
+          'checkWindowName': cw.checkWindowName,
+          'totalForms': cw.forms.length
+        }
+      })
+    }
+    return checkWindowsList
   }
 }
 

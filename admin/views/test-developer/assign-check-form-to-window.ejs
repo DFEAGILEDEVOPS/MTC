@@ -1,0 +1,69 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+        </div>
+        <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge">Assign forms to check window</h1>
+        <p class="lede" id="lead-paragraph">
+            Select forms to assign to each window. One form can be allied to different windows.
+        </p>
+
+        <% if (Array.isArray(checkWindowsData)) { %>
+        <table class="spacious" id="assignFormToWindowList" role="group">
+            <thead>
+                <tr>
+                    <th scope="col">Window name</th>
+                    <td> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <% checkWindowsData.forEach(checkWindow => { %>
+                <tr>
+                    <td>
+                        <a href="/test-developer/view-form/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> (<%= checkWindow.totalForms %> forms)
+                    </td>
+                    <td class="align-right">
+                        <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } %>
+    </div>
+    <div class="column-one-third add-title-margin">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+            </li>
+                    <li>
+                        <a href="/test-developer/upload-and-view-forms">Upload and view forms</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>

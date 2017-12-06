@@ -221,7 +221,7 @@ const displayCheckForm = async (req, res, next) => {
     formData.canDelete = true
   } catch (error) {
     req.flash('error', `Unable to find check form details for form id ${req.params.formId}`)
-    res.redirect('/test-developer/upload-and-view-forms')
+    return res.redirect('/test-developer/upload-and-view-forms')
   }
 
   try {
@@ -243,11 +243,30 @@ const displayCheckForm = async (req, res, next) => {
   })
 }
 
+const assignCheckFormToWindow = async (req, res, next) => {
+  res.locals.pageTitle = 'Assign forms to check windows'
+
+  let checkWindowsData
+
+  try {
+    checkWindowsData = await checkWindowService.getCheckCurrentCheckWindowsAndCountForms()
+  } catch (error) {
+    console.log('getCheckCurrentCheckWindowsAndCountForms FAILED', error)
+  }
+
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('test-developer/assign-check-form-to-window', {
+    checkWindowsData: checkWindowsData,
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
 module.exports = {
   getTestDeveloperHome,
   uploadAndViewForms,
   removeCheckForm,
   uploadCheckForm,
   saveCheckForm,
-  displayCheckForm
+  displayCheckForm,
+  assignCheckFormToWindow
 }
