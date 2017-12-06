@@ -159,6 +159,7 @@ end
 
 And(/^Pupil has taken a 2nd restart$/) do
   step 'Pupil has taken a 2nd check'
+  restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   @page = restarts_page
   restarts_page.restarts_for_pupil(@details_hash[:first_name])
