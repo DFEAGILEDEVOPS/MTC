@@ -7,8 +7,8 @@ const sqlPool = require('../services/data-access/sql.pool.service')
 const Connection = require('tedious').Connection
 const Request = require('tedious').Request
 
-const executeAdminRequest = async (adminConnection, sql) => {
-  return new Promise(async (resolve, reject) => {
+const executeAdminRequest = (adminConnection, sql) => {
+  return new Promise((resolve, reject) => {
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
