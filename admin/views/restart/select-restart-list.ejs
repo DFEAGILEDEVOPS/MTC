@@ -85,7 +85,7 @@
                                    name="restartReason"
                                    value="Did not complete">
                             <% }  %>
-                            <label for="restart-reason-4">Did not complete</label>
+                            <div for="restart-reason-4">Did not complete</div>
                             <div class="hide">
                                 <div class="panel panel-border-wide">
                                     <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
@@ -155,7 +155,7 @@
                     </th>
                 </tr>
                 </thead>
-                    <tbody>
+                <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
                     <td class="font-small">

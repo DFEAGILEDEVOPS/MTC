@@ -1,6 +1,7 @@
 'use strict'
 
 const PupilRestart = require('../../models/pupil-restart')
+const RestartCode = require('../../models/restart-code')
 const pupilRestartDataService = {}
 
 /**
@@ -21,6 +22,26 @@ pupilRestartDataService.create = async function (data) {
  */
 pupilRestartDataService.count = async function (query) {
   return PupilRestart.count(query).exec()
+}
+
+/**
+ * Find and return the latest single restart by criteria in `options`
+ * @param options
+ * @return {Promise.<{Object}>}
+ */
+pupilRestartDataService.findLatest = async function (options) {
+  const latest = await PupilRestart.find(options).sort({ $natural: -1 }).limit(1).lean().exec()
+  return latest[0]
+}
+
+/**
+ * Get all the restart codes documents
+ * @return {Promise.<{Object}>}
+ */
+pupilRestartDataService.getRestartCodes = async () => {
+  return RestartCode
+    .find()
+    .sort('order')
 }
 
 module.exports = pupilRestartDataService
