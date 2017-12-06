@@ -34,7 +34,10 @@ createDatabaseIfNotExists()
       })
       .catch(error => {
         console.log(error)
-        console.log(error.appliedMigrations)
+        console.log('applied migrations...')
+        error.appliedMigrations.forEach(migration => {
+          console.log(migration.name)
+        })
         process.exit()
       })
   })

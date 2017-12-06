@@ -1,35 +1,46 @@
 'use strict'
-/* global describe beforeEach beforeAll afterEach it expect jasmine spyOn fail */
+/* global describe beforeEach beforeAll afterEach it xit expect jasmine spyOn fail */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
+const TYPES = require('tedious').TYPES
 
 describe('sql.service:integration', () => {
-  beforeAll(async (done) => {
+  beforeAll(() => {
     sqlPool.init()
-    done()
   })
 
-  it('should permit select query with no parameters', async (done) => {
+  it('should permit select query with no parameters', async () => {
+    let settingsRows = await sql.query('SELECT * FROM Settings')
+    expect(settingsRows).toBeDefined()
+    expect(settingsRows.length).toBe(1)
+  })
+
+  it('should permit select query with parameters', async () => {
     let settingsRows
-    try {
-      settingsRows = await sql.query('SELECT * FROM Settings')
-      console.dir(settingsRows)
-    } catch (error) {
-      fail(error)
-    }
-    done()
+    const id = { name: 'id', type: TYPES.Int, value: 1 }
+    settingsRows = await sql.query('SELECT * FROM Settings WHERE id=@id', [id])
+    expect(settingsRows).toBeDefined()
+    expect(settingsRows.length).toBe(1)
   })
 
-  it('should not permit delete operation to mtc application user', async (done) => {
+  it('should not permit delete operation to mtc application user', async () => {
     try {
       await sql.query('DELETE FROM Settings')
-      fail('delete operation should not have succeeded')
+      fail('DELETE operation should not have succeeded')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message.startsWith('The DELETE permission was denied')).toBe(true)
-      done()
+      expect(error.message).toContain('The DELETE permission was denied')
+    }
+  })
+
+  it('should not permit TRUNCATE TABLE operation to mtc application user', async () => {
+    try {
+      await sql.query('TRUNCATE TABLE dbo.Settings')
+      fail('TRUNCATE operation should not have succeeded')
+    } catch (error) {
+      expect(error).toBeDefined()
     }
   })
 })
