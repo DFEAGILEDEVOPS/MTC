@@ -72,7 +72,7 @@ describe('restart.service', () => {
     })
   })
   describe('canRestart', () => {
-    it('it should return true if the pupil has 1 completed check and no restart requested', async () => {
+    it('it should return true if the pupil has 1 started check and no restart requested', async () => {
       spyOn(checkDataService, 'count').and.returnValue(1)
       spyOn(pupilRestartDataService, 'count').and.returnValue(0)
       let result
