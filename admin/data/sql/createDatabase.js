@@ -37,7 +37,7 @@ const createDatabase = async (connection) => {
   try {
     console.log(`attempting to create database ${process.env.SQL_DATABASE} if it does not already exist...`)
     const output = await executeRequest(connection,
-      `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}]; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`)
+      `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}] (SERVICE_OBJECTIVE = '${process.env.SQL_SCALE}'); SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`)
     console.log(output[0][0].value)
   } catch (error) {
     console.error(error)
