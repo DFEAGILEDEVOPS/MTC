@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const upnService = require('../../../services/upn.service')
-const pupilsData = require('./data/users.json')
+const pupilsData = require('../../migrations/migrations/data/users.json')
 
 function generatePupils () {
   const pupils = []
@@ -18,7 +18,7 @@ function generatePupils () {
     for (let j = 0; j < pupilsRequired; j++) {
       let serial = pupilIdx.toString().padStart(3, 0)
       const pupil = {
-        school: school._id,
+        school: school,
         foreName: pupilsData[j].foreName,
         middleNames: randomMiddleName(),
         lastName: pupilsData[j].lastName,
@@ -27,9 +27,11 @@ function generatePupils () {
         upn: upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
       }
       pupilIdx += 1
-      pupils.push(pupil)
+      const sql = `INSERT INTO dbo.pupil (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn, speechSynthesis, isTestAccount) VALUES (${pupil.school}, '${pupil.foreName}', '${pupil.middleNames}', '${pupil.lastName}', '${pupil.gender}', '${pupil.dob.toISOString()}', '${pupil.upn}', 0, 0);`
+      pupils.push(sql)
     }
   }
+  return pupils
 }
 
 function randomMiddleName (i) {
@@ -37,12 +39,6 @@ function randomMiddleName (i) {
   // Assume 50% of people have middlenames
   const rnd = Math.floor(Math.random() * (mnArray.length * 2) + 1)
   return mnArray[rnd] ? mnArray[rnd] : ''
-}
-
-function toTitleCase (text) {
-  return text.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  })
 }
 
 function randomDob () {
@@ -54,5 +50,5 @@ function randomDob () {
 
 module.exports.generateSql = function () {
   const statements = generatePupils()
-  return statements.join(';')
+  return statements.join('\n')
 }

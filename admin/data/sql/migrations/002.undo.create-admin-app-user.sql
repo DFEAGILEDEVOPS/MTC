@@ -1,1 +1,1 @@
-DROP USER [mtcAdminUser]
+DROP IF EXISTS USER [mtcAdminUser]
