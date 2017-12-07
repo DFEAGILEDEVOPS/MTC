@@ -118,6 +118,7 @@ const uploadCheckForm = async (req, res, next) => {
  */
 const saveCheckForm = async (req, res, next) => {
   res.locals.pageTitle = 'Upload check form'
+  req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
   req.breadcrumbs(res.locals.pageTitle)
 
   let uploadError = {}
@@ -125,6 +126,7 @@ const saveCheckForm = async (req, res, next) => {
   let checkForm = {}
   let absFile
   let deleteDir
+  let fileName
 
   // Various errors cause a page to be rendered instead, and it *needs* a title
   if (!uploadFile) {
@@ -132,7 +134,6 @@ const saveCheckForm = async (req, res, next) => {
     // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
     // * file size exceeded?
-    res.locals.pageTitle = 'ERROR: Upload check form'
     uploadError.message = 'A valid CSV file was not uploaded'
     uploadError.errors = {}
     uploadError.errors['csvFile'] = new Error(uploadError.message)
@@ -162,7 +163,6 @@ const saveCheckForm = async (req, res, next) => {
   try {
     await checkFormService.populateFromFile(checkForm, absFile)
   } catch (error) {
-    // Remove the uploaded file
     fs.remove(deleteDir, err => {
       if (err) console.error(err)
     })
@@ -172,12 +172,32 @@ const saveCheckForm = async (req, res, next) => {
     })
   }
 
+  try {
+    fileName = await checkFormService.buildFormName(uploadFile.filename)
+    if (!fileName) {
+      req.flash('error', `Select a file with no more than 128 characters in name`)
+      return res.redirect('/test-developer/upload-new-form')
+    }
+  } catch (error) {
+    return next(new Error(`File name should be between 1 and 128 characters - ${uploadFile.filename.slice(0, -4)}`))
+  }
+
+  try {
+    const isFileNameValid = await checkFormService.validateCheckFormName(fileName)
+    if (!isFileNameValid) {
+      req.flash('error', `'${fileName}' already exists. Rename and upload again.`)
+      return res.redirect('/test-developer/upload-new-form')
+    }
+    checkForm.name = fileName
+  } catch (error) {
+    return next(new Error(`Error trying to find form with name ${uploadFile.filename.slice(0, -4)}`))
+  }
+
   fs.remove(deleteDir, err => {
     if (err) console.error(err)
   })
 
   try {
-    // await checkForm.save()
     const newForm = await checkFormDataService.create(checkForm)
     req.flash('info', 'New form uploaded')
     req.flash('formName', newForm.name)
@@ -198,11 +218,9 @@ const displayCheckForm = async (req, res, next) => {
   try {
     formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
     formData.checkWindowsName = []
-    formData.canDelete = false
+    formData.canDelete = true
   } catch (error) {
-    const errorMsg = `Unable to find check form details for form id ${req.params.formId}`
-    console.log(`${errorMsg} - ${error}`)
-    req.flash('error', errorMsg)
+    req.flash('error', `Unable to find check form details for form id ${req.params.formId}`)
     res.redirect('/test-developer/upload-and-view-forms')
   }
 

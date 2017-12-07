@@ -64,9 +64,11 @@ describe('check-form controller:', () => {
       it('should take me to the \'test-developer\'s the landing page', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
+        spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('MTC for test development')
+        expect(res.render).toHaveBeenCalled()
         expect(next).not.toHaveBeenCalled()
         done()
       })
@@ -138,6 +140,8 @@ describe('check-form controller:', () => {
     describe('Saving a form', () => {
       beforeEach(() => {
         spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
+        spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
+        spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
         spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
         spyOn(fs, 'remove').and.returnValue(checkFormMock)
         controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
@@ -146,6 +150,7 @@ describe('check-form controller:', () => {
       it('should save the form and redirect the user', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
+
         req.method = 'POST'
         req.url = 'test-developer/upload-new-form'
         req.files = {}
@@ -164,6 +169,8 @@ describe('check-form controller:', () => {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Upload check form')
           expect(checkFormService.populateFromFile).toHaveBeenCalled()
+          expect(checkFormService.buildFormName).toHaveBeenCalled()
+          expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
           expect(checkFormDataService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)

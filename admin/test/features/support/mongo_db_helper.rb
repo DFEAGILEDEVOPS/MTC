@@ -8,6 +8,13 @@ class MongoDbHelper
     result.first
   end
 
+  def self.pupil_details_using_names(firstname, lastname)
+    result = []
+    collection=CLIENT[:pupils].find({'foreName': firstname, 'lastName': lastname})
+    collection.each {|a| result << a}
+    result.first
+  end
+
   def self.pupil_pins
     collection=CLIENT[:pinforpupils]
     @array_of_pins = []
@@ -151,6 +158,12 @@ class MongoDbHelper
     collection=CLIENT[:attendancecodes].find({'_id': BSON::ObjectId(id)})
     collection.each {|a| result << a}
     result.first
+  end
+
+  def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
+    collection=CLIENT[:checks]
+    collection.insert_one({'updatedAt': updatedime, 'createdAt': createdTime, 'pupilId': BSON::ObjectId("#{pupil_id}"), 'checkCode': "40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6", 'checkWindowId': BSON::ObjectId("5a252a57ceb4b183159256e7"),'checkFormId': '100','pupilLoginDate': pupilLoginDate, 'checkStartedAt': checkStartedTime})
+
   end
 
 end

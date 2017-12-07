@@ -1,13 +1,12 @@
 .restart-list {
-  overflow: hidden;
+  overflow: visible;
   margin-left: pem(-4px);
 
   .multiple-choice {
     margin: pem(4px);
   }
-
   li {
-    overflow: hidden;
+    overflow: visible;
     margin-top: pem(10px);
 
     @include media(desktop) {
@@ -21,6 +20,16 @@
   }
 }
 
+#select-pupils-restart {
+  .panel.panel-border-wide {
+    padding: 0 pem(10px);
+  }
+}
+
+.restart-status {
+  max-width: pem(80px);
+}
+
 label:hover {
   text-decoration: underline
 }
@@ -31,12 +40,14 @@ label:hover {
 input[type=radio]:checked ~ .hide {
   display: block;
   position: relative;
-  margin-top: 60px;
-  margin-left: -35px;
-  width: 500px;
+  margin-top: pem(60px);
+  margin-left: pem(-35px);
+  .form-group {
+    margin-bottom: pem(-10px);
+  }
 }
 
-#did-not-complete-textarea {
-  margin-top: pem(10px);
-  width: pem(375px)
+#didNotCompleteInfo {
+  padding-bottom: pem(5px);
+  min-width:pem(380px);
 }

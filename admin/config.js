@@ -8,10 +8,12 @@ module.exports = {
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
   PORT: process.env.PORT || '3001',
+  PUPIL_APP_URL: process.env.PUPIL_APP_URL,
+  QUESTION_TIME_LIMIT: 5,
+  RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   STD_LOG_FILE: process.env.STD_LOG_FILE,
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
-  QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
-  PUPIL_APP_URL: process.env.PUPIL_APP_URL
+  LINES_PER_CHECK_FORM: 25
 }
