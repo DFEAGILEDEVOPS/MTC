@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 mongoose.Promise = global.Promise
-const PREFIX = 'MTC'
 
 /**
  * NB: name will be overwritten
@@ -44,8 +43,6 @@ CheckForm.pre('save', async function (next) {
     const latestId = latestDocument._id || 0
     this._id = parseInt(latestId) + 1
   }
-  let id = this._id.toString()
-  this.name = PREFIX + id.padStart(4, '0')
   next()
 })
 

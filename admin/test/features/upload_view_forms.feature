@@ -97,4 +97,9 @@ Feature: Upload and View Forms
     Given I attempt to upload a csv containing spaces around the column values
     Then I should see a flash message to state that new form is uploaded
 
+  Scenario: Checks cannot be uploaded twice
+    When I upload a csv file
+    And I attempt to upload the same csv again
+    Then I should see an error stating it has already been uploaded
+
 

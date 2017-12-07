@@ -14,5 +14,6 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   STD_LOG_FILE: process.env.STD_LOG_FILE,
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
-  TIME_BETWEEN_QUESTIONS: 2
+  TIME_BETWEEN_QUESTIONS: 2,
+  LINES_PER_CHECK_FORM: 25
 }
