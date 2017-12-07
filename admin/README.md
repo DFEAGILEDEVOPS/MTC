@@ -70,12 +70,16 @@ dotenv is installed and will load environment variables from a `.env` file store
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
 * SQL_POOL_MAX_COUNT - the maximum number of connections in the pool
+* SQL_POOL_LOG_ENABLED - enables console logging of connection pool activity
 * SQL_APP_NAME - the name of the application added to log traces.  very useful for debugging
-* SQL_USER - the username for the credentials
-* SQL_PASSWORD - the password for the credentials
+* SQL_APP_USER - the username that the application connects as (should be a database level user _only_)
+* SQL_APP_USER_PASSWORD - password for the SQL_APP_USER
+* SQL_ADMIN_USER - the server level user account used to perform database migrations
+* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD
 * SQL_SERVER - the server to connect to
 * SQL_DATABASE - the database to connect to
 * SQL_PORT - the port to connect on, defaults to 1433
+* SQL_TIMEOUT - the time in milliseconds before an operation times out
 
 #### Using SQL Server
 
