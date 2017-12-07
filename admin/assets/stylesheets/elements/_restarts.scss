@@ -27,7 +27,7 @@
 }
 
 .restart-status {
-  max-width: pem(80px);
+  max-width: pem(110px);
 }
 
 label:hover {
@@ -58,7 +58,7 @@ input[type=radio]:checked ~ .hide {
   border: none;
   text-decoration: underline;
   cursor: pointer;
-  font-size: $font-size;
+  font-size: 19px;
   color: $link-colour;
 }
 
