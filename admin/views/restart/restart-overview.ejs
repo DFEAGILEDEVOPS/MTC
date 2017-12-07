@@ -74,10 +74,10 @@
             </thead>
             <tbody>
             <% restarts.forEach( (restart, index) => { %>
-            <tr>
+            <tr class="restart-pupil-name">
                 <td<% if (highlight && highlight.has(restart._id.toString())) { %> class="highlight-item"<% } %>>
                     <span id="pupil-<%= restart._id %>">
-                    <%= restart.lastName %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
+                    <%= restart.lastName  %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
                     </span>
                     <% if (restart.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
@@ -85,7 +85,7 @@
                     </div>
                     <% } %>
                 </td>
-                <td><%= restart.reason %></td>
+                <td class="restart-reason"><%= restart.reason %></td>
                 <% if (restart.status === 'Remove restart') {%>
                     <td class="restart-status">
                             <button class="link-button" name="pupilId" value="<%= restart.pupilId %>" >

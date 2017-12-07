@@ -25,9 +25,17 @@
     padding: 0 pem(10px);
   }
 }
-
+.restart-pupil-name {
+  max-width: 33%;
+  min-width: 33%;
+}
+.restart-reason {
+   max-width: 33%;
+   min-width: pem(135px);
+ }
 .restart-status {
-  max-width: pem(110px);
+  max-width: 33%;
+  min-width: pem(135px);
 }
 
 label:hover {
