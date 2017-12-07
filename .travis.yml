@@ -5,6 +5,7 @@ dist: trusty
 cache:
   directories:
     - /home/travis/.rvm/
+    - node_modules
 
 env:
   - TEST_TYPE=admin-e2e-1
