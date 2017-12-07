@@ -10,8 +10,8 @@ SET QUOTED_IDENTIFIER ON
 CREATE TABLE [admin].[adminLogonEvent]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[user_id] [int] NOT NULL,
 	[sessionId] [nvarchar](max) NOT NULL,
@@ -31,8 +31,8 @@ CREATE TABLE [admin].[adminLogonEvent]
 CREATE TABLE [admin].[attendanceCode]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[reason] [nvarchar](50) NOT NULL,
 	[order] [tinyint] NOT NULL,
@@ -46,17 +46,17 @@ CREATE TABLE [admin].[attendanceCode]
 CREATE TABLE [admin].[check]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[pupil_id] [int] NOT NULL,
 	[checkCode] [uniqueidentifier] NOT NULL,
 	[checkWindow_id] [int] NOT NULL,
 	[checkForm_id] [int] NOT NULL,
-	[pupilLoginDate] [datetime2](3) NOT NULL,
+	[pupilLoginDate] [datetimeoffset](3) NOT NULL,
 	[mark] [tinyint] NULL,
 	[maxMark] [tinyint] NULL,
-	[markedAt] [datetime2](3) NULL,
+	[markedAt] [datetimeoffset](3) NULL,
 	CONSTRAINT [PK_check] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -66,8 +66,8 @@ CREATE TABLE [admin].[check]
 CREATE TABLE [admin].[checkForm]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[name] [nvarchar](max) NOT NULL,
 	[isDeleted] [bit] NOT NULL,
@@ -81,13 +81,13 @@ CREATE TABLE [admin].[checkForm]
 CREATE TABLE [admin].[checkWindow]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[name] [nvarchar](max) NOT NULL,
-	[adminStartDate] [datetime2](3) NOT NULL,
-	[checkStartDate] [datetime2](3) NOT NULL,
-	[checkEndDate] [datetime2](3) NOT NULL,
+	[adminStartDate] [datetimeoffset](3) NOT NULL,
+	[checkStartDate] [datetimeoffset](3) NOT NULL,
+	[checkEndDate] [datetimeoffset](3) NOT NULL,
 	[isDeleted] [bit] NOT NULL,
 	CONSTRAINT [PK_checkWindow] PRIMARY KEY CLUSTERED 
 (
@@ -98,10 +98,10 @@ CREATE TABLE [admin].[checkWindow]
 CREATE TABLE [admin].[hdf]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
-	[signedDate] [datetime2](3) NOT NULL,
+	[signedDate] [datetimeoffset](3) NOT NULL,
 	[declaration] [nvarchar](max) NOT NULL,
 	[jobTitle] [nvarchar](max) NOT NULL,
 	[fullName] [nvarchar](max) NOT NULL,
@@ -117,16 +117,16 @@ CREATE TABLE [admin].[hdf]
 CREATE TABLE [admin].[pupil]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[school_id] [int] NOT NULL,
 	[foreName] [nvarchar](max) NOT NULL,
 	[middleNames] [nvarchar](max) NULL,
 	[lastName] [nvarchar](max) NOT NULL,
 	[gender] [char](1) NOT NULL,
-	[dateOfBirth] [datetime2](3) NOT NULL,
-	[pinExpiresAt] [datetime2](3) NULL,
+	[dateOfBirth] [datetimeoffset](3) NOT NULL,
+	[pinExpiresAt] [datetimeoffset](3) NULL,
 	[upn] [char](13) NOT NULL,
 	[pin] [char](5) NULL,
 	[speechSynthesis] [bit] NOT NULL,
@@ -142,8 +142,8 @@ CREATE TABLE [admin].[pupil]
 CREATE TABLE [admin].[pupilAttendance]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[recordedBy_user_id] [int] NOT NULL,
 	[attendanceCode_id] [int] NOT NULL,
@@ -157,8 +157,8 @@ CREATE TABLE [admin].[pupilAttendance]
 CREATE TABLE [admin].[pupilFeedback]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[inputType] [int] NOT NULL,
 	[satisfactionRating] [tinyint] NULL,
@@ -173,8 +173,8 @@ CREATE TABLE [admin].[pupilFeedback]
 CREATE TABLE [admin].[pupilLogonEvent]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[pupil_id] [int] NULL,
 	[isAuthenticated] [bit] NOT NULL,
@@ -191,8 +191,8 @@ CREATE TABLE [admin].[pupilLogonEvent]
 CREATE TABLE [admin].[question]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[factor1] [tinyint] NOT NULL,
 	[factor2] [tinyint] NOT NULL,
@@ -207,8 +207,8 @@ CREATE TABLE [admin].[question]
 CREATE TABLE [admin].[role]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[title] [nvarchar](max) NOT NULL,
 	CONSTRAINT [PK_role] PRIMARY KEY CLUSTERED 
@@ -220,14 +220,14 @@ CREATE TABLE [admin].[role]
 CREATE TABLE [admin].[school]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[leaCode] [int] NULL,
 	[estabCode] [nvarchar](max) NULL,
 	[name] [nvarchar](max) NOT NULL,
 	[pin] [char](8) NULL,
-	[pinExpiresAt] [datetime2](3) NULL,
+	[pinExpiresAt] [datetimeoffset](3) NULL,
 	[urlSlug] [uniqueidentifier] NOT NULL,
 	CONSTRAINT [PK_school] PRIMARY KEY CLUSTERED 
 (
@@ -238,8 +238,8 @@ CREATE TABLE [admin].[school]
 CREATE TABLE [admin].[settings]
 (
 	[id] [tinyint] NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[loadingTimeLimit] [tinyint] NOT NULL,
 	[questionTimeLimit] [tinyint] NOT NULL,
@@ -252,8 +252,8 @@ CREATE TABLE [admin].[settings]
 CREATE TABLE [admin].[settingsLog]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[loadingTimeLimit] [tinyint] NOT NULL,
 	[questionTimeLimit] [tinyint] NOT NULL,
@@ -267,8 +267,8 @@ CREATE TABLE [admin].[settingsLog]
 CREATE TABLE [admin].[user]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetime2](3) NOT NULL,
-	[updatedAt] [datetime2](3) NOT NULL,
+	[createdAt] [datetimeoffset](3) NOT NULL,
+	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
 	[identifier] [nvarchar](max) NOT NULL,
 	[passwordHash] [nvarchar](max) NULL,
