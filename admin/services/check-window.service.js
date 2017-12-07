@@ -71,6 +71,8 @@ const checkWindowService = {
 
   /**
    * Soft delete check window.
+   * @param checkForm
+   * @returns {Promise<void>}
    */
   markAsDeleted: async (checkForm) => {
     return new Promise(async (resolve, reject) => {
@@ -106,7 +108,11 @@ const checkWindowService = {
     })
   },
 
-  getCheckCurrentCheckWindowsAndCountForms: async () => {
+  /**
+   * Get current check windows and count forms assigned.
+   * @returns {Promise<*>}
+   */
+  getCurrentCheckWindowsAndCountForms: async () => {
     let checkWindowsList
     checkWindowsList = await checkWindowDataService.fetchCurrentCheckWindows()
     if (checkWindowsList) {
@@ -119,6 +125,23 @@ const checkWindowService = {
       })
     }
     return checkWindowsList
+  },
+
+  /**
+   * Merge existing (db saved) and new (passed via form) check form ids.
+   * @param existingForms
+   * @param newForms
+   * @returns {Array}
+   */
+  mergedFormIds: (existingForms, newForms) => {
+    let resultArray = []
+    existingForms.map((f) => {
+      resultArray.push(f)
+    })
+    newForms.map((f) => {
+      resultArray.push(parseInt(f))
+    })
+    return resultArray
   }
 }
 

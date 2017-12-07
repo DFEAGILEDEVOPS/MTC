@@ -2,10 +2,8 @@
 
 const express = require('express')
 const router = express.Router()
-const CheckWindow = require('../models/check-window')
 const isAuthenticated = require('../authentication/middleware')
 const rolesConfig = require('../roles-config')
-const checkFormService = require('../services/data-access/check-form.data.service')
 const checkFormController = require('../controllers/check-form')
 
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHome(req, res, next))

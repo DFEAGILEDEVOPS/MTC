@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
@@ -250,9 +252,9 @@ const assignCheckFormsToWindows = async (req, res, next) => {
   let checkWindowsData
 
   try {
-    checkWindowsData = await checkWindowService.getCheckCurrentCheckWindowsAndCountForms()
+    checkWindowsData = await checkWindowService.getCurrentCheckWindowsAndCountForms()
   } catch (error) {
-    console.log('getCheckCurrentCheckWindowsAndCountForms FAILED', error)
+    console.log('getCurrentCheckWindowsAndCountForms FAILED', error)
     return next(error)
   }
 
@@ -264,7 +266,6 @@ const assignCheckFormsToWindows = async (req, res, next) => {
 }
 
 /**
- * @TODO: WIP.
  * Assign check forms to check window.
  * @param req
  * @param res
@@ -281,15 +282,16 @@ const assignCheckFormToWindow = async (req, res, next) => {
   try {
     checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
   } catch (error) {
-    console.log('CHECK WINDOW', error) // @TODO: WIP
+    return next(error)
   }
 
   try {
     checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.forms)
   } catch (error) {
-    console.log('CHECK FORMS LIST', error) // @TODO: WIP
+    return next(error)
   }
 
+  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-forms', {
     checkWindowId: checkWindowId,
@@ -308,7 +310,6 @@ const assignCheckFormToWindow = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const saveAssignCheckFormsToWindow = async (req, res, next) => {
-  console.log('POST', req.body)
   const postedForms = req.body.checkForm
   const totalForms = Object.values(postedForms).length
   const checkWindowName = req.body.checkWindowName || 'N/A'
@@ -319,10 +320,25 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
     return res.redirect('/test-developer/assign-form-to-window')
   }
 
+  if (!req.body.checkWindowId) {
+    req.flash('error', `Missing check window id`)
+    return res.redirect('/test-developer/assign-form-to-window')
+  }
+
+  let checkWindowId = req.body.checkWindowId
+  let checkWindow
+
   try {
-
+    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
   } catch (error) {
+    return next(error)
+  }
 
+  try {
+    checkWindow.forms = checkWindowService.mergedFormIds(checkWindow.forms, Object.values(req.body.checkForm))
+    await checkWindowDataService.create(checkWindow)
+  } catch (error) {
+    return next(error)
   }
 
   req.flash('info', `${totalForms} forms have been assigned to ${checkWindowName}`)

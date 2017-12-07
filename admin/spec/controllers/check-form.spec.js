@@ -9,6 +9,7 @@ require('sinon-mongoose')
 const fs = require('fs-extra')
 
 const checkWindowService = require('../../services/check-window.service')
+const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const checkFormService = require('../../services/check-form.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
@@ -16,6 +17,8 @@ const sortingAttributesService = require('../../services/sorting-attributes.serv
 const checkFormMock = require('../mocks/check-form')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
 const checkFormsByWindowMock = require('../mocks/check-window-by-form')
+const checkWindowMock = require('../mocks/check-window')
+const checkWindowsMock = require('../mocks/check-windows')
 
 describe('check-form controller:', () => {
   function getRes () {
@@ -336,28 +339,183 @@ describe('check-form controller:', () => {
           done()
         })
       })
+
+      describe('When unsuccessful', () => {
+        beforeEach(() => {
+          spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
+          spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
+          spyOn(checkFormService, 'canDelete').and.returnValue(false)
+          controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+        })
+
+        it('should redirect the user if #getActiveFormPlain fails', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.url = '/test-developer/view-form/29'
+          await controller(req, res, next)
+          expect(res.locals.pageTitle).toBe('View form')
+          expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
+          expect(checkWindowService.getCheckWindowsAssignedToForms).not.toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+      })
     })
 
-    describe('When unsuccessful', () => {
-      beforeEach(() => {
-        spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.reject(new Error('Error')))
-        spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
-        spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
-        spyOn(checkFormService, 'canDelete').and.returnValue(false)
-        controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+    describe('Initial page to assign check forms to check windows', () => {
+      describe('Happy path', () => {
+        beforeEach(() => {
+          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(checkFormMock)
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindows
+        })
+
+        it('should render the correct page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.url = '/test-developer/assign-form-to-window'
+          await controller(req, res, next)
+          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms to check windows')
+          expect(res.render).toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          expect(next).not.toHaveBeenCalled()
+          done()
+        })
       })
 
-      it('should redirect the user if #getActiveFormPlain fails', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        req.url = '/test-developer/view-form/29'
-        await controller(req, res, next)
-        expect(res.locals.pageTitle).toBe('View form')
-        expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
-        expect(checkWindowService.getCheckWindowsAssignedToForms).not.toHaveBeenCalled()
-        expect(next).not.toHaveBeenCalled()
-        expect(res.statusCode).toBe(302)
-        done()
+      describe('Unhappy path', () => {
+        beforeEach(() => {
+          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindows
+        })
+
+        it('should render the correct page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.url = '/test-developer/assign-form-to-window'
+          await controller(req, res, next)
+          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms to check windows')
+          expect(res.render).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          expect(next).toHaveBeenCalled()
+          done()
+        })
+      })
+    })
+
+    describe('Page to assign check forms to chosen check window', () => {
+      describe('Happy path', () => {
+        beforeEach(() => {
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindow
+        })
+
+        it('should render the correct page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms')
+          expect(res.statusCode).toBe(200)
+          expect(next).not.toHaveBeenCalled()
+          done()
+        })
+      })
+
+      describe('Unhappy path - checkWindowDataService.fetchCheckWindow fails', () => {
+        beforeEach(() => {
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindow
+        })
+
+        it('should execute next', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.getUnassignedFormsForCheckWindow).not.toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms')
+          expect(res.statusCode).toBe(200)
+          expect(next).toHaveBeenCalled()
+          done()
+        })
+      })
+
+      describe('Unhappy path - checkFormService.getUnassignedFormsForCheckWindow fails', () => {
+        beforeEach(() => {
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindow
+        })
+
+        it('should execute next', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms')
+          expect(res.statusCode).toBe(200)
+          expect(next).toHaveBeenCalled()
+          done()
+        })
+      })
+    })
+
+    describe('Save forms to chosen check window', () => {
+      describe('Happy path', () => {
+        const mergedFormIds = [5, 6, 7, 8]
+        beforeEach(() => {
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowsMock)
+          spyOn(checkWindowService, 'mergedFormIds').and.returnValue(mergedFormIds)
+          spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
+          controller = proxyquire('../../controllers/check-form', {}).saveAssignCheckFormsToWindow
+        })
+
+        xit('should redirect the user', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'POST'
+          req.url = '/test-developer/assign-form-to-window'
+          req.body = {
+            checkWindowName: 'Check Window 1',
+            checkWindowId: '59e88622d38a9f2d1fcebbb3',
+            checkForm: [5, 6, 7]
+          }
+
+          try {
+            await controller(req, res, next)
+            expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+            expect(checkWindowService.mergedFormIds).toHaveBeenCalled()
+            expect(checkFormDataService.create).toHaveBeenCalled()
+            expect(res.statusCode).toBe(302)
+            expect(next).not.toHaveBeenCalled()
+            done()
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+        })
       })
     })
   })
