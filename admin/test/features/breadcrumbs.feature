@@ -4,14 +4,12 @@ Feature:
   I want to ensure that the system displays
   the navigation path as breadcrumb
 
-  @wip @fix-in-17402
   Scenario: Verify breadcrumb on manage check forms
-    Given I am logged in
-    And I am on the profile page
-    When I choose to manage check forms
-    Then I should see the breadcrumb as "Home > Manage check forms"
+    Given I have signed in with test-developer
+    And I am on the Upload and View forms page
+    Then I should see the breadcrumb as "Home > Upload and view forms"
     And I click the Home link on breadcrumb
-    Then I should be taken to the school landing page
+    Then I should be taken to the Test Developer homepage
 
   Scenario: Verify breadcrumb on add pupil page
     Given I am logged in
@@ -20,11 +18,10 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
-  @wip
-  Scenario: Verify breadcrumb on Manage pupil page
-    Given I am logged in
-    And I click Manage pupil link
-    Then I should see the breadcrumb as "Home > Manage pupils"
+  Scenario: Verify breadcrumb on Generate Pin page
+    Given I have signed in with teacher1
+    And I navigate to generate pupil pins page
+    Then I should see the breadcrumb as "Home > Generate pupil PINs"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
