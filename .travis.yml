@@ -3,9 +3,11 @@ language: node_js
 dist: trusty
 
 cache:
+  yarn: true
   directories:
     - /home/travis/.rvm/
-    - node_modules
+    - ${TRAVIS_BUILD_DIR}/admin/node_modules
+    - ${TRAVIS_BUILD_DIR}/pupilspa/node_modules
 
 env:
   - TEST_TYPE=admin-e2e-1
