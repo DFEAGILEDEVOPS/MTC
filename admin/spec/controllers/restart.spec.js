@@ -173,7 +173,7 @@ describe('restart controller:', () => {
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
       const requestFlashCalls = req.flash.calls.all()
-      expect(requestFlashCalls[0].args[1]).toBe('Restarts made for 1 pupil')
+      expect(requestFlashCalls[0].args[1]).toBe('Restart made for 1 pupil')
       done()
     })
   })

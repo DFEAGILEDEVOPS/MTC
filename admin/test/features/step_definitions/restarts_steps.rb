@@ -61,6 +61,7 @@ end
 
 When(/^I select a pupil for restarts$/) do
   pupil = restarts_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  @pupil_name = pupil.name.text
   pupil.checkbox.click
 end
 
@@ -120,7 +121,7 @@ end
 
 Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
   expect(restarts_page).to have_flash_message
-  expect(restarts_page.flash_message.text).to eql('Restarts made for 1 pupil')
+  expect(restarts_page.flash_message.text).to eql('Restart made for 1 pupil')
 end
 
 Then(/^I should see the error message for further information for 'Did not complete' reason$/) do
@@ -129,7 +130,7 @@ end
 
 Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'$/) do|restart_status|
   hightlighted_row = restarts_page.restarts_pupil_list.rows.find{|row| row.has_highlighted_pupil?}
-  expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  expect(hightlighted_row.text).to include("#{@pupil_name}")
   expect(hightlighted_row.status.text).to include(restart_status)
 end
 
@@ -159,6 +160,7 @@ end
 
 And(/^Pupil has taken a 2nd restart$/) do
   step 'Pupil has taken a 2nd check'
+  restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   @page = restarts_page
   restarts_page.restarts_for_pupil(@details_hash[:first_name])

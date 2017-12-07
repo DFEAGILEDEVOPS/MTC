@@ -71,10 +71,10 @@ controller.postSubmitRestartList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  const restartInfo = submittedPupils.length < 2 ? '1 pupil' : `${submittedPupils.length} pupils`
+  const restartInfo = submittedPupils.length < 2 ? 'Restart made for 1 pupil' : `Restarts made for ${submittedPupils.length} pupils`
   const restartIds = submittedPupils && submittedPupils.map(p => encodeURIComponent(p._id))
   const ids = restartIds.join()
-  req.flash('info', `Restarts made for ${restartInfo}`)
+  req.flash('info', restartInfo)
   return res.redirect(`/restart/overview?hl=${ids}`)
 }
 

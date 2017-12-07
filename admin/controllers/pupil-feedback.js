@@ -1,7 +1,9 @@
-const PupilFeedback = require('../models/pupil-feedback')
+'use strict'
+
 const { verify } = require('../services/jwt.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const apiResponse = require('./api-response')
+const pupilFeedbackDataService = require('../services/data-access/pupil-feedback.data.service')
 
 // TODO: add logging for all error paths
 
@@ -33,15 +35,15 @@ const setPupilFeedback = async (req, res, next) => {
     return apiResponse.serverError(res)
   }
 
-  const pupilFeedback = new PupilFeedback({
+  const pupilFeedbackData = {
     inputType: inputType,
     satisfactionRating: satisfactionRating,
     comments: comments,
     checkId: check._id
-  })
+  }
 
   try {
-    await pupilFeedback.save()
+    await pupilFeedbackDataService.create(pupilFeedbackData)
     apiResponse.sendJson(res, 'Pupil feedback saved', 201)
   } catch (error) {
     apiResponse.serverError(res)
