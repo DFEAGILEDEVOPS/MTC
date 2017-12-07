@@ -21,7 +21,7 @@ class UploadAndViewFormsPage < SitePrism::Page
 
   section :available_checks, '#checkFormsList' do
     sections :rows, 'tbody tr' do
-      element :title, 'td:nth-child(1)'
+      element :title, 'td:nth-child(1) a:last-of-type'
       element :assigned_to, 'td:nth-of-type(2)'
       element :uploaded_date, 'td:nth-of-type(3)'
       element :remove_form, 'a', text: 'Remove'
@@ -45,6 +45,16 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :no_header_error, 'li', text: 'must not have a header row'
     element :number_range_error, 'li', text: 'must only contain numbers between 1 and 12'
     element :retry_upload, 'a[href="#file-upload"]', text: 'Please try uploading a file again'
+  end
+
+  def create_unique_check_csv(file_name, file_contents)
+    out_file = File.new(file_name, "w")
+    out_file.puts(file_contents)
+    out_file.close
+  end
+
+  def delete_csv_file(file_name)
+    File.delete(file_name)
   end
 
 end

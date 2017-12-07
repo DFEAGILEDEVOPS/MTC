@@ -38,14 +38,17 @@ end
 When(/^I upload a csv file$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step 'I am on the Upload new forms page'
-
   driver = page.driver.browser
   driver.file_detector = lambda do |args|
     str = args.first.to_s
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
-  page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
+  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../data/fixtures/check-form-1.csv')) )
+  page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   upload_and_view_forms_page.upload.click
+  upload_and_view_forms_page.delete_csv_file(@file_path)
 end
 
 Then(/^it should be added to the list of forms$/) do
@@ -54,8 +57,8 @@ end
 
 Then(/^I should see a flash message to state that new form is uploaded$/) do
   expect(upload_and_view_forms_page).to have_info_message
-  hightlighted_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.has_highlighted_row?}
-  expect(hightlighted_row).to be_truthy, "New uploaded form is not highlighted"
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row.has_highlighted_row?).to be_truthy, "New uploaded form is not highlighted"
 end
 
 When(/^I decide to remove a check form/) do
@@ -146,14 +149,22 @@ end
 Given(/^I attempt to upload a csv containing quotes around the column values$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/quotes-around-values.csv'))
+  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/quotes-around-values.csv')) )
+  page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   upload_and_view_forms_page.upload.click
+  upload_and_view_forms_page.delete_csv_file(@file_path)
 end
 
 Given(/^I attempt to upload a csv containing spaces around the column values$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/spaces.csv'))
+  @file_name = "check-form-#{rand(234243234234234)}.csv"
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/spaces.csv')) )
+  page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
+  page.attach_file('csvFile', File.expand_path(@file_path))
   upload_and_view_forms_page.upload.click
 end
 
@@ -172,4 +183,23 @@ end
 
 Then(/^I should see no link to download an example usage report$/) do
   expect(upload_and_view_forms_page).to have_no_download_form_example_template
+end
+
+And(/^I attempt to upload the same csv again$/) do
+  @current_form_count = upload_and_view_forms_page.available_checks.rows.count
+  step 'I am on the Upload new forms page'
+  driver = page.driver.browser
+  driver.file_detector = lambda do |args|
+    str = args.first.to_s
+    str if File.exist?(str)
+  end if Capybara.current_driver.to_s.include? 'bs_'
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../data/fixtures/check-form-1.csv')) )
+  page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
+  upload_and_view_forms_page.upload.click
+  upload_and_view_forms_page.delete_csv_file(@file_path)
+end
+
+Then(/^I should see an error stating it has already been uploaded$/) do
+  find('p', text: "'#{@file_name.split('.').first}' already exists. Rename and upload again.")
 end
