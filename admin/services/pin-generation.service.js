@@ -27,7 +27,7 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
     const isValid = await pinGenerationService.isValid(p)
     if (isValid) {
       return {
-        id: p._id,
+        _id: p._id,
         pin: p.pin,
         dob: dateService.formatShortGdsDate(p.dob),
         foreName: p.foreName,
