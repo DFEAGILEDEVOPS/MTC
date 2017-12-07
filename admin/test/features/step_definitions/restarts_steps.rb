@@ -61,6 +61,7 @@ end
 
 When(/^I select a pupil for restarts$/) do
   pupil = restarts_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  @pupil_name = pupil.name.text
   pupil.checkbox.click
 end
 
@@ -129,7 +130,7 @@ end
 
 Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'$/) do|restart_status|
   hightlighted_row = restarts_page.restarts_pupil_list.rows.find{|row| row.has_highlighted_pupil?}
-  expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  expect(hightlighted_row.text).to include("#{@pupil_name}")
   expect(hightlighted_row.status.text).to include(restart_status)
 end
 
