@@ -42,53 +42,6 @@ Then(/^I should see the questions exactly as intended$/) do
   expect(view_form_page.question_and_answers_on_page).to eql view_form_page.question_and_answers_from_csv(File.expand_path('../data/fixtures/check-form-1.csv'))
 end
 
-Given(/^I am on the assign check window page$/) do
-  step "I am on the manage check forms page"
-  step "I upload a csv file"
-  manage_check_forms_page.available_checks.rows.first.checkbox.click
-  manage_check_forms_page.assign.click
-end
-
-Then(/^I should see a heading for the page$/) do
-  expect(choose_check_window_page).to have_heading
-end
-
-Then(/^I should see some information about the check form$/) do
-  expect(choose_check_window_page).to have_information
-end
-
-Then(/^I should see some instructions$/) do
-  expect(choose_check_window_page).to have_page_instructions
-end
-
-Then(/^I should see an option to continue$/) do
-  expect(choose_check_window_page).to have_continue
-end
-
-Then(/^I should see an option to go back$/) do
-  expect(choose_check_window_page).to have_back
-end
-
-Then(/^I should see check windows$/) do
-  expect(choose_check_window_page.assign_to_check_window.rows).to_not be_empty
-end
-
-Then(/^check windows should have a title$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.title.text).to_not be_empty}
-end
-
-Then(/^check windows should have a checkbox$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row).to have_checkbox}
-end
-
-Then(/^check windows should have a start date$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.start_date.text).to_not be_empty}
-end
-
-Then(/^check windows should have a end date$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.end_date.text).to_not be_empty}
-end
-
 Then(/^I should be given the option to delete the form$/) do
   expect(view_form_page).to have_delete_form
 end

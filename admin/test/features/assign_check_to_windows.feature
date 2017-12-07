@@ -1,11 +1,10 @@
-@wip @fix-in-17402
 Feature:
   As a test developer
   I want to assign a window for a check form
   So that pupils can sit the check
 
   Background:
-    Given I am logged in
+    Given I am logged in with a test developer
 
   Scenario: Assign check window page has a heading
     Given I am on the assign check window page
@@ -15,18 +14,6 @@ Feature:
     Given I am on the assign check window page
     Then I should see some information about the check form
 
-  Scenario: Assign check window page has page instructions
-    Given I am on the assign check window page
-    Then I should see some instructions
-
-  Scenario: Assign check window page has option to continue
-    Given I am on the assign check window page
-    Then I should see an option to continue
-
-  Scenario: Assign check window page has option to go back
-    Given I am on the assign check window page
-    Then I should see an option to go back
-
   Scenario: Assign check window page has check windows
     Given I am on the assign check window page
     Then I should see check windows
@@ -35,18 +22,6 @@ Feature:
   Scenario: Check windows have a title
     Given I am on the assign check window page
     Then check windows should have a title
-
-  Scenario: Check windows have a checkbox for selection
-    Given I am on the assign check window page
-    Then check windows should have a checkbox
-
-  Scenario: Check windows have a start date
-    Given I am on the assign check window page
-    Then check windows should have a start date
-
-  Scenario: Check windows have a end date
-    Given I am on the assign check window page
-    Then check windows should have a end date
 
   @wip
   Scenario: Users can attach a check form to a check window
