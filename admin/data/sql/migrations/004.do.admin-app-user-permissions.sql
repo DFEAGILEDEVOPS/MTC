@@ -1,0 +1,16 @@
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].settingsLog TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].question TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].pupilLogonEvent TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].pupilFeedback TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].pupilAttendance TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].hdf TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].adminLogonEvent TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].[check] TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].[user] TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].pupil TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].checkForm TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].school TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].role TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].checkWindow TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].attendanceCode TO mtcAdminUser;
+GRANT SELECT, INSERT, UPDATE ON OBJECT::[admin].settings TO mtcAdminUser;
