@@ -66,6 +66,8 @@ dotenv is installed and will load environment variables from a `.env` file store
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there is
   a tracking code and in production mode, eg `NODE_ENV=production`
+* RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
+  
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool

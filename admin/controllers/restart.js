@@ -78,4 +78,16 @@ controller.postSubmitRestartList = async (req, res, next) => {
   return res.redirect(`/restart/overview?hl=${ids}`)
 }
 
+controller.postDeleteRestart = async (req, res, next) => {
+  let deleted
+  const pupilId = req.body && req.body.pupilId
+  try {
+    deleted = await restartService.markDeleted(pupilId)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('info', `Restarts removed for pupil ${deleted.lastName} ${deleted.foreName}`)
+  return res.redirect('/restart/overview')
+}
+
 module.exports = controller

@@ -39,7 +39,8 @@ const getHome = async (req, res, next) => {
 
 const getScorePercentage = async (pupilId) => {
   // find the score, if they have one
-  const latestCheck = await checkDataService.findLatestCheckByPupilId(pupilId)
+  // TODO: extract this dataservice call to a service
+  const latestCheck = await checkDataService.findLatestCheck({ pupilId: pupilId })
   let score
   if (latestCheck && latestCheck.results) {
     // calculate percentage
