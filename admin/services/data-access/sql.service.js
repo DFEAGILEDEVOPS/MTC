@@ -27,8 +27,8 @@ sqlService.query = (sql, params) => {
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
-      if (err) reject(err)
       con.release()
+      if (err) reject(err)
       resolve(parseResults(results))
     })
 
