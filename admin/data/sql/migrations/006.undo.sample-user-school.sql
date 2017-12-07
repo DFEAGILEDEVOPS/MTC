@@ -1,2 +1,2 @@
 DELETE dbo.school WHERE name LIKE 'Example School%'
-TRUNCATE TABLE dbo.[user]
+DELETE dbo.[user] WHERE identifier LIKE 'teacher%'
