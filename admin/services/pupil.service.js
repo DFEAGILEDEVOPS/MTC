@@ -14,6 +14,7 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
   // TODO: Introduce integration tests
   const pupil = await Pupil
     .findOne({ '_id': pupilId, 'school': schoolId })
+    .lean()
     .exec()
   return pupil
 }

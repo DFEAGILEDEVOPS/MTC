@@ -3,7 +3,6 @@ const moment = require('moment')
 const csv = require('fast-csv')
 const mongoose = require('mongoose')
 
-const Pupil = require('../models/pupil')
 const School = require('../models/school')
 const ValidationError = require('../lib/validation-error')
 const errorConverter = require('../lib/error-converter')
@@ -14,6 +13,7 @@ const pupilsNotTackingCheckService = require('../services/pupils-not-taking-chec
 const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 const { sortRecords } = require('../utils')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -23,7 +23,7 @@ const getHome = async (req, res, next) => {
   let schoolName = ''
 
   try {
-    const school = await School.findOne({ '_id': req.user.School }).exec()
+    const school = await schoolDataService.findOne({ '_id': req.user.School })
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
     }
@@ -237,27 +237,24 @@ const postSubmitAttendance = async (req, res, next) => {
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-  const data = Object.values(req.body[ 'attendee' ] || null)
-  let selected
-  const { pupils } = await pupilDataService.getPupils(req.user.School)
-  try {
-    let ids = data.map(id => mongoose.Types.ObjectId(id))
-    selected = await Pupil.find({ _id: { $in: ids } }).exec()
-  } catch (error) {
-    return next(error)
-  }
+  const data = Object.values(req.body[ 'attendee' ] || [])
+  let ids = data.map(id => mongoose.Types.ObjectId(id))
+
   // Update attendance for selected pupils
-  selected.forEach((p) => (p.hasAttended = true))
-  const selectedPromises = selected.map(s => s.save())
-  // Expire all pins for school pupils
-  pupils.forEach(p => (p.pinExpired = true))
-  const pupilsPromises = pupils.map(p => p.save())
-  Promise.all(selectedPromises.concat(pupilsPromises)).then(() => {
-    return res.redirect('/school/declaration-form')
-  },
-  error => next(error))
-  .catch(error => next(error)
+  await pupilDataService.update2(
+    { _id: { $in: ids } },
+    { $set: { hasAttended: true } },
+    { multi: true }
   )
+
+  // Expire all pins for school pupils
+  await pupilDataService.update2(
+    { 'pupils.school': req.user.School },
+    { $set: { pinExpired: true } },
+    { multi: true }
+  )
+
+  return res.redirect('/school/declaration-form')
 }
 
 const getDeclarationForm = async (req, res, next) => {
@@ -527,8 +524,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
     }
-    pupil.attendanceCode = undefined
-    await pupil.save()
+    await pupilDataService.unsetAttendanceCode(pupil._id)
   } catch (error) {
     next(error)
   }

@@ -88,10 +88,12 @@ pupilDataService.update = async function (id, doc) {
 pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
-  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p))).then(results => {
-    // all pupils saved ok
-    savedPupils = results
-  }, error => { throw new Error(error) }
+  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p)))
+    .then(results => {
+      // all pupils saved ok
+      savedPupils = results
+    },
+    error => { throw new Error(error) }
   )
   return savedPupils
 }
@@ -105,6 +107,25 @@ pupilDataService.save = async function (data) {
   const pupil = new Pupil(data)
   await pupil.save()
   return pupil.toObject()
+}
+
+/**
+ * Generalised update function - can update many in one transaction
+ * @param query
+ * @param criteria
+ * @return {Promise}
+ */
+pupilDataService.updateMany2 = async function (query, criteria, options = {}) {
+  return Pupil.update(query, criteria, options).exec()
+}
+
+/**
+ * Unset the attendance code for a single pupil
+ * @param id
+ * @return {Promise<*>}
+ */
+pupilDataService.unsetAttendanceCode = async function (id) {
+  return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
 }
 
 module.exports = pupilDataService
