@@ -35,11 +35,9 @@ const executeRequest = (connection, sql) => {
 
 const createDatabase = async (connection) => {
   try {
-    const timerName = 'Time taken to create database'
-    console.time(timerName)
+    console.log(`attempting to create database ${process.env.SQL_DATABASE} if it does not already exist...`)
     const output = await executeRequest(connection,
       `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}]; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`)
-    console.timeEnd(timerName)
     console.log(output[0][0].value)
   } catch (error) {
     console.error(error)
