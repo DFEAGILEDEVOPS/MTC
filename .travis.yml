@@ -7,7 +7,7 @@ cache:
   directories:
     - /home/travis/.rvm/
     - ${TRAVIS_BUILD_DIR}/admin/node_modules
-    - ${TRAVIS_BUILD_DIR}/pupilspa/node_modules
+    - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
   - TEST_TYPE=admin-e2e-1
