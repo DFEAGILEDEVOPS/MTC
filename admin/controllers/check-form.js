@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
+const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 
 /**
@@ -243,7 +244,7 @@ const displayCheckForm = async (req, res, next) => {
   })
 }
 
-const assignCheckFormToWindow = async (req, res, next) => {
+const assignCheckFormsToWindows = async (req, res, next) => {
   res.locals.pageTitle = 'Assign forms to check windows'
 
   let checkWindowsData
@@ -252,13 +253,85 @@ const assignCheckFormToWindow = async (req, res, next) => {
     checkWindowsData = await checkWindowService.getCheckCurrentCheckWindowsAndCountForms()
   } catch (error) {
     console.log('getCheckCurrentCheckWindowsAndCountForms FAILED', error)
+    return next(error)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
-  res.render('test-developer/assign-check-form-to-window', {
+  res.render('test-developer/assign-check-forms-to-windows', {
     checkWindowsData: checkWindowsData,
     breadcrumbs: req.breadcrumbs()
   })
+}
+
+/**
+ * @TODO: WIP.
+ * Assign check forms to check window.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const assignCheckFormToWindow = async (req, res, next) => {
+  const checkWindowId = req.params.checkWindowId
+  res.locals.pageTitle = 'Assign forms'
+
+  let checkFormsList
+  let checkWindow
+
+  try {
+    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+  } catch (error) {
+    console.log('CHECK WINDOW', error) // @TODO: WIP
+  }
+
+  try {
+    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.forms)
+  } catch (error) {
+    console.log('CHECK FORMS LIST', error) // @TODO: WIP
+  }
+
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('test-developer/assign-forms', {
+    checkWindowId: checkWindowId,
+    checkWindowName: checkWindow.checkWindowName,
+    checkFormsList,
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
+/**
+ * @TODO: WIP.
+ * Save assigned check forms to check window.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<void>}
+ */
+const saveAssignCheckFormsToWindow = async (req, res, next) => {
+  console.log('POST', req.body)
+  const postedForms = req.body.checkForm
+  const totalForms = Object.values(postedForms).length
+  const checkWindowName = req.body.checkWindowName || 'N/A'
+
+  // Validate again that at least one check form has been ticked
+  if (totalForms < 1) {
+    req.flash('error', `Select at least one form`)
+    return res.redirect('/test-developer/assign-form-to-window')
+  }
+
+  try {
+
+  } catch (error) {
+
+  }
+
+  req.flash('info', `${totalForms} forms have been assigned to ${checkWindowName}`)
+  res.redirect('/test-developer/assign-form-to-window')
+}
+
+// @TODO: WIP.
+const unassignCheckFormsFromWindow = async (req, res, next) => {
+  res.redirect('/test-developer/assign-form-to-window')
 }
 
 module.exports = {
@@ -268,5 +341,8 @@ module.exports = {
   uploadCheckForm,
   saveCheckForm,
   displayCheckForm,
-  assignCheckFormToWindow
+  assignCheckFormsToWindows,
+  assignCheckFormToWindow,
+  saveAssignCheckFormsToWindow,
+  unassignCheckFormsFromWindow
 }

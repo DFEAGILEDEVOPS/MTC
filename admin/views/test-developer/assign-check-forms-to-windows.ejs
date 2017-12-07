@@ -11,7 +11,7 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+            <%= messages.info %>
         </div>
         <% } %>
 
@@ -40,7 +40,9 @@
                 <% checkWindowsData.forEach(checkWindow => { %>
                 <tr>
                     <td>
-                        <a href="/test-developer/view-form/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> (<%= checkWindow.totalForms %> forms)
+                        <% if (checkWindow.totalForms > 0) { %>
+                        <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
+                        (<%= checkWindow.totalForms %> forms)
                     </td>
                     <td class="align-right">
                         <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
@@ -51,6 +53,7 @@
         </table>
         <% } %>
     </div>
+
     <div class="column-one-third add-title-margin">
         <aside role="complementary" class="support-column">
             <h3 class="heading-medium">Related</h3>

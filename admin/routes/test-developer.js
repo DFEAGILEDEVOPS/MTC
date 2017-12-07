@@ -16,7 +16,10 @@ router.get('/view-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER
 router.get('/delete-form/:formId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.removeCheckForm(req, res, next))
 router.get('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.uploadCheckForm(req, res, next))
 router.post('/upload-new-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.saveCheckForm(req, res, next))
-router.get('/assign-form-to-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.assignCheckFormToWindow(req, res, next))
+router.get('/assign-form-to-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.assignCheckFormsToWindows(req, res, next))
+router.get('/assign-form-to-window/:checkWindowId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.assignCheckFormToWindow(req, res, next))
+router.post('/assign-form-to-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.saveAssignCheckFormsToWindow(req, res, next))
+router.get('/unassign-forms/:checkWindowId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.unassignCheckFormsFromWindow(req, res, next))
 
 /* @TODO: The code below will be refactored in the next PR (PBI 17403) */
 /* GET - choose the check window page */

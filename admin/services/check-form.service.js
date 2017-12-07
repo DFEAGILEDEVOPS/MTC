@@ -6,6 +6,7 @@ const moment = require('moment')
 const config = require('../config')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
+const checkWindowDataService = require('../services/data-access/check-form.data.service')
 
 const checkFormService = {
   /**
@@ -225,6 +226,34 @@ const checkFormService = {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM
+  },
+
+  getUnassignedFormsForCheckWindow: async (checkWindowAssignedForms) => {
+    let checkFormData
+    let checkFormList = []
+
+    if (!checkWindowAssignedForms) {
+      return false
+    }
+
+    try {
+      checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+    } catch (error) {
+      console.log('ERROR', error) // @TODO: WIP
+    }
+
+    if (checkWindowAssignedForms && checkFormData) {
+      checkFormData.map((form) => {
+        if (checkWindowAssignedForms.filter(item => item === form._id).length < 1) {
+          checkFormList.push({
+            '_id': form._id,
+            'name': form.name
+          })
+        }
+      })
+    }
+
+    return checkFormList
   }
 }
 
