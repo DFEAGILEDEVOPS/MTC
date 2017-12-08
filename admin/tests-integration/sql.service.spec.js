@@ -37,7 +37,7 @@ describe('sql.service:integration', () => {
 
   it('should not permit TRUNCATE TABLE operation to mtc application user', async () => {
     try {
-      await sql.query('TRUNCATE TABLE dbo.Settings')
+      await sql.query('TRUNCATE TABLE Settings')
       fail('TRUNCATE operation should not have succeeded')
     } catch (error) {
       expect(error).toBeDefined()
@@ -45,6 +45,6 @@ describe('sql.service:integration', () => {
   })
 
   xit('should transform the results arrays into a JSON array', async () => {
-    fail('no implementation')
+    await sql.query('SELECT * FROM Settings')
   })
 })
