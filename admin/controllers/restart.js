@@ -44,7 +44,7 @@ controller.getSelectRestartList = async (req, res, next) => {
 
 controller.postSubmitRestartList = async (req, res, next) => {
   const { pupil: pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo } = req.body
-  if (!pupilsList) {
+  if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
   const validationError = restartValidator.validateReason(restartReason, didNotCompleteInfo)
