@@ -1,3 +1,4 @@
+@registered_inputs
 Feature: Registered Inputs
 
   Scenario: All inputs are recorded when using the on screen keyboard

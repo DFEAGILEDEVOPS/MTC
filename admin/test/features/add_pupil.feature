@@ -1,3 +1,4 @@
+@add_pupil
 Feature:
   As part of test development
   I want to be able to add a pupil
@@ -181,6 +182,7 @@ Feature:
       | ÞÐÇÑẞ              |
       | þçðñß              |
 
+  @upn
   Scenario: UPN cannot be assigned twice
     Given I am on the add pupil page
     When I submit valid details with a already used UPN

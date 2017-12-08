@@ -3,14 +3,19 @@ language: node_js
 dist: trusty
 
 cache:
-  - bundler
-  - yarn
+  yarn: true
+  directories:
+    - /home/travis/.rvm/
+    - ${TRAVIS_BUILD_DIR}/admin/node_modules
+    - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
-#  - TEST_TYPE=admin-specs
-#  - TEST_TYPE=pupil-specs
-  - TEST_TYPE=admin-e2e
-  - TEST_TYPE=pupil-e2e
+  - TEST_TYPE=admin-e2e-1
+  - TEST_TYPE=admin-e2e-2
+  - TEST_TYPE=admin-e2e-3
+  - TEST_TYPE=pupil-e2e-1
+  - TEST_TYPE=pupil-e2e-2
+
 global:
   - STD_LOG_FILE="./build.log"
   - CXX=g++-4.8
@@ -39,13 +44,14 @@ before_install:
   - sudo apt-get install google-chrome-stable
 
 install:
-  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install
-  - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install
-  - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler && bundle install
-  - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler && bundle install
+  - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
+  - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
+  - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler --conservative && bundle install
+  - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
 
 script:
-  - if [[ "$TEST_TYPE" = admin-specs ]]; then cd ${TRAVIS_BUILD_DIR}/admin && npm test; fi
-  - if [[ "$TEST_TYPE" = pupil-specs ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && npm run test-single; fi
-  - if [[ "$TEST_TYPE" = admin-e2e ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
+  - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
+  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test2.sh; fi
+  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test3.sh; fi
+  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
+  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
