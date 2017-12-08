@@ -1,4 +1,4 @@
-@travis2
+@manage_check_window
 Feature:
   Manage check windows
 

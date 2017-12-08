@@ -1,4 +1,4 @@
-@travis2
+@pupils_not_taking_check
 Feature:
   Pupil not taking check
 

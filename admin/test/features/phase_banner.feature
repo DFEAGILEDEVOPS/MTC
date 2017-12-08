@@ -1,4 +1,4 @@
-@poltergeist @travis2
+@poltergeist @phase_banner
 Feature:
   As a member of the development team
   I want users to be aware which phase the application is in and also offer feedback

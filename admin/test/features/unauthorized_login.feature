@@ -1,4 +1,4 @@
-@travis3
+@unauthorized_login
 Feature:
   Unauthorized login
 

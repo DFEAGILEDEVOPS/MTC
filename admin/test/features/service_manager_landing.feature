@@ -1,4 +1,4 @@
-@travis3
+@service_manager_landing
 Feature: Service manager homepage
 
   Scenario: Service Manager are taken to the service manager homepage

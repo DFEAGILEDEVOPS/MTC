@@ -1,4 +1,4 @@
-@travis2
+@pupil_auth
 Feature:
   Pupil auth
 

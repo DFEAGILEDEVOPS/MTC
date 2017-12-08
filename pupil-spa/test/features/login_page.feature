@@ -1,4 +1,4 @@
-@travis2
+@login
 Feature: Login page
 
   Scenario: Sign in page has a STA logo

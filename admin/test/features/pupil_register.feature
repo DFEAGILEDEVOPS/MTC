@@ -1,4 +1,4 @@
-@travis2
+@pupil_register
 Feature:
   As part of test development
   I want to be able to register a pupil

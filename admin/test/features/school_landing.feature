@@ -1,4 +1,4 @@
-@travis3
+@school_landing
 Feature:
   As a member of staff
   I want to have a central page as a starting point

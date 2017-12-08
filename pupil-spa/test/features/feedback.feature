@@ -1,4 +1,4 @@
-@travis1
+@feedback
 Feature: Feedback page
 
   Scenario: Users can supply the method of entry on the feedback page

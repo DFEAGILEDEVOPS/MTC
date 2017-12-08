@@ -1,4 +1,4 @@
-@travis1
+@edit_check_window
 Feature: Edit Check Window
 
   Background:

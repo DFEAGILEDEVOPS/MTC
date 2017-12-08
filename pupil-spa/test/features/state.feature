@@ -1,4 +1,4 @@
-@travis2
+@state
 Feature:
   State tracking
 

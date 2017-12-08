@@ -1,4 +1,4 @@
-@travis1
+@check
 Feature: Check questions
 
   Scenario: Loading page should display for configured number of seconds

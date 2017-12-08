@@ -1,4 +1,4 @@
-@travis2
+@complete_page
 Feature: Complete page
 
   Scenario: Completion page has a heading

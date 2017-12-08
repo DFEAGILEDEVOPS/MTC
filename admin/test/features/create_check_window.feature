@@ -1,4 +1,4 @@
-@travis1
+@create_check_window
 Feature:
   Create check window
 

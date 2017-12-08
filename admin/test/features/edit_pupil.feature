@@ -1,4 +1,4 @@
-@travis1
+@edit_pupil
 Feature:
   As part of test development
   I want to be able to edit a pupil

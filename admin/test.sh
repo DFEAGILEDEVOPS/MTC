@@ -8,7 +8,7 @@ MSG+=$PID
 echo $MSG
 
 cd test
-rake features OPTS='-t @travis1'
+rake features OPTS='-t @add_multiple_pupils -t @add_multiple_pupil_validation -t @breadcrumbs -t @create_check_window -t @edit_check_window -t @edit_pupil'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID

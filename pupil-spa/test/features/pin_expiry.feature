@@ -1,4 +1,4 @@
-@travis2
+@pin_expiry
 Feature:
   Pin expiry after check has started
 
