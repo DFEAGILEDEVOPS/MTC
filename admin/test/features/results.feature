@@ -1,4 +1,4 @@
-@wip
+@wip @results
 Feature: Results tests
   As a headteacher
   I need to see individual scores of pupils
