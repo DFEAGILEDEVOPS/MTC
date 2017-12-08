@@ -110,13 +110,13 @@ const checkWindowService = {
 
   /**
    * Get current check windows and count forms assigned.
-   * @returns {Promise<*>}
+   * @returns {Promise<*|null>}
    */
   getCurrentCheckWindowsAndCountForms: async () => {
-    let checkWindowsList
-    checkWindowsList = await checkWindowDataService.fetchCurrentCheckWindows()
-    if (checkWindowsList) {
-      checkWindowsList = checkWindowsList.map((cw) => {
+    let checkWindowsList = null
+    let checkWindowsListData = await checkWindowDataService.fetchCurrentCheckWindows()
+    if (checkWindowsListData) {
+      checkWindowsList = checkWindowsListData.map((cw) => {
         return {
           '_id': cw._id,
           'checkWindowName': cw.checkWindowName,

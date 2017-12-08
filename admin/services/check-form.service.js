@@ -240,11 +240,7 @@ const checkFormService = {
       return false
     }
 
-    try {
-      checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
-    } catch (error) {
-      console.log('ERROR', error) // @TODO: WIP
-    }
+    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
 
     if (checkWindowAssignedForms && checkFormData) {
       checkFormData.map((form) => {
@@ -273,11 +269,7 @@ const checkFormService = {
       return false
     }
 
-    try {
-      checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
-    } catch (error) {
-      console.log('ERROR', error) // @TODO: WIP
-    }
+    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
 
     if (checkWindowAssignedForms && checkFormData) {
       checkFormData.map((form) => {
@@ -294,7 +286,7 @@ const checkFormService = {
   },
 
   /**
-   * Remove form form id from array of current forms.
+   * Remove form id from array of current forms.
    * @param checkWindow
    * @param checkFormId
    * @returns {*}

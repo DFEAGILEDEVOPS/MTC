@@ -230,7 +230,8 @@ const displayCheckForm = async (req, res, next) => {
   try {
     checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
   } catch (error) {
-    console.log(`Unable to find check window(s) for active check form: ${error.message}`)
+    req.flash(`Unable to find check window(s) for active check form: ${error.message}`)
+    return res.redirect('/test-developer/upload-and-view-forms')
   }
 
   if (checkWindows[req.params.formId]) {
@@ -254,7 +255,6 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   try {
     checkWindowsData = await checkWindowService.getCurrentCheckWindowsAndCountForms()
   } catch (error) {
-    console.log('getCurrentCheckWindowsAndCountForms FAILED', error)
     return next(error)
   }
 
@@ -419,7 +419,6 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   } catch (error) {
     req.flash('error', `Failing to unassigned form from ${checkWindow.checkWindowName}`)
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
-    return next(error)
   }
 
   req.flash('info', `Form unassigned from ${checkWindow.checkWindowName}`)

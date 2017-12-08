@@ -77,7 +77,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Clicking menu option \'Upload and view forms\'', () => {
+    describe('#uploadAndViewFormsPage - Happy path', () => {
       let htmlSortDirection = 'asc'
       let arrowSortDirection = 'asc'
 
@@ -101,7 +101,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Removing a form', () => {
+    describe('#removeCheckForm - Happy path', () => {
       beforeEach(() => {
         spyOn(checkFormDataService, 'getActiveForm').and.returnValue(checkFormMock)
         spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
@@ -124,7 +124,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Clicking upload form button', () => {
+    describe('#uploadCheckForm - Happy path', () => {
       beforeEach(() => {
         controller = proxyquire('../../controllers/check-form', {}).uploadCheckForm
       })
@@ -140,7 +140,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Saving a form', () => {
+    describe('#saveCheckForm - Saving a check form', () => {
       function standardReq () {
         let req
         req = getReq(goodReqParams)
@@ -162,7 +162,7 @@ describe('check-form controller:', () => {
         return req
       }
 
-      describe('When saving successfully', () => {
+      describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
@@ -192,7 +192,7 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('When saving is unsuccessful', () => {
+      describe('Unhappy path - When checkFormDataService.create fails', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
@@ -222,12 +222,12 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('When saving is unsuccessful', () => {
+      describe('Unhappy path - When checkFormService.populateFromFile fails', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
-          spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
+          spyOn(checkFormDataService, 'create').and.returnValue((Promise.resolve(checkFormMock)))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
           controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
         })
@@ -253,7 +253,7 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('When saving is unsuccessful', () => {
+      describe('Unhappy path - When checkFormService.buildFormName returns false', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue(false)
@@ -284,7 +284,7 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('When saving is unsuccessful', () => {
+      describe('Unhappy path - When checkFormService.validateCheckFormName fails', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100')
@@ -316,8 +316,8 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Clicking a form', () => {
-      describe('When successfully', () => {
+    describe('#displayCheckForm - Clicking a form', () => {
+      describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(checkFormMock)
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
@@ -330,17 +330,20 @@ describe('check-form controller:', () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.url = '/test-developer/view-form/29'
+          req.params = {
+            formId: 29
+          }
           await controller(req, res, next)
           expect(res.statusCode).toBe(200)
           expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
           expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
+          expect(checkFormService.checkWindowNames).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('View form')
-          expect(next).not.toHaveBeenCalled()
           done()
         })
       })
 
-      describe('When unsuccessful', () => {
+      describe('Unhappy path - checkFormDataService.getActiveFormPlain fails', () => {
         beforeEach(() => {
           spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
@@ -357,14 +360,38 @@ describe('check-form controller:', () => {
           expect(res.locals.pageTitle).toBe('View form')
           expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
           expect(checkWindowService.getCheckWindowsAssignedToForms).not.toHaveBeenCalled()
-          expect(next).not.toHaveBeenCalled()
+          expect(checkFormService.checkWindowNames).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+      })
+
+      describe('Unhappy path - checkWindowService.getCheckWindowsAssignedToForms', () => {
+        beforeEach(() => {
+          spyOn(checkFormDataService, 'getActiveFormPlain').and.returnValue(checkFormMock)
+          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
+          spyOn(checkFormService, 'canDelete').and.returnValue(false)
+          controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+        })
+
+        it('should redirect the user if #getCheckWindowsAssignedToForms fails', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.url = '/test-developer/view-form/29'
+          await controller(req, res, next)
+          expect(res.locals.pageTitle).toBe('View form')
+          expect(checkFormDataService.getActiveFormPlain).toHaveBeenCalled()
+          expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
+          expect(checkFormService.checkWindowNames).not.toHaveBeenCalled()
+          expect(req.flash).toBeTruthy()
           expect(res.statusCode).toBe(302)
           done()
         })
       })
     })
 
-    describe('Initial page to assign check forms to check windows', () => {
+    describe('#assignCheckFormsToWindowsPage - Initial page to assign check forms to check windows', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(checkFormMock)
@@ -374,19 +401,19 @@ describe('check-form controller:', () => {
         it('should render the correct page', async (done) => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
+          //spyOn(res, 'render').and.returnValue(null)
           req.url = '/test-developer/assign-form-to-window'
           await controller(req, res, next)
           expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
-          expect(res.render).toHaveBeenCalled()
+          //expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(next).not.toHaveBeenCalled()
           done()
         })
       })
 
-      describe('Unhappy path', () => {
+      describe('Unhappy path - When #getCurrentCheckWindowsAndCountForms fails', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
           controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindowsPage
@@ -395,12 +422,11 @@ describe('check-form controller:', () => {
         it('should render the correct page', async (done) => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
           req.url = '/test-developer/assign-form-to-window'
+
           await controller(req, res, next)
           expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
-          expect(res.render).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(next).toHaveBeenCalled()
           done()
@@ -408,7 +434,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('Page to assign check forms to chosen check window', () => {
+    describe('#assignCheckFormToWindowPage - Page to assign check forms to chosen check window', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
@@ -434,7 +460,7 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('Unhappy path - checkWindowDataService.fetchCheckWindow fails', () => {
+      describe('Unhappy path - When checkWindowDataService.fetchCheckWindow fails', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
@@ -448,21 +474,27 @@ describe('check-form controller:', () => {
           req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
 
-          await controller(req, res, next)
-          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
-          expect(checkFormService.getUnassignedFormsForCheckWindow).not.toHaveBeenCalled()
-          expect(res.locals.pageTitle).toBe('Assign forms')
-          expect(res.statusCode).toBe(200)
-          expect(next).toHaveBeenCalled()
-          done()
+          try {
+            await controller(req, res, next)
+            expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+            expect(checkFormService.getUnassignedFormsForCheckWindow).not.toHaveBeenCalled()
+            expect(res.locals.pageTitle).toBe('Assign forms')
+            expect(res.statusCode).toBe(200)
+            expect(next).toHaveBeenCalled()
+            done()
+          } catch (error) {
+            console.log('ERROR (checkWindowDataService.fetchCheckWindow)', error)
+            expect(error).toBe('Error')
+            done(error)
+          }
         })
       })
 
-      describe('Unhappy path - checkFormService.getUnassignedFormsForCheckWindow fails', () => {
+      describe('#assignCheckFormToWindowPage - Unhappy path - When checkFormService.getUnassignedFormsForCheckWindow fails', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindow
+          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindowPage
         })
 
         it('should execute next', async (done) => {
@@ -472,18 +504,24 @@ describe('check-form controller:', () => {
           req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
           req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
 
-          await controller(req, res, next)
-          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
-          expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
-          expect(res.locals.pageTitle).toBe('Assign forms')
-          expect(res.statusCode).toBe(200)
-          expect(next).toHaveBeenCalled()
-          done()
+          try {
+            await controller(req, res, next)
+            expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+            expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
+            expect(res.locals.pageTitle).toBe('Assign forms')
+            expect(res.statusCode).toBe(200)
+            expect(next).toHaveBeenCalled()
+            done()
+          } catch (error) {
+            console.log('ERROR (checkFormService.getUnassignedFormsForCheckWindow)', error)
+            expect(error).toBe('Error')
+            done(error)
+          }
         })
       })
     })
 
-    describe('Save forms to chosen check window', () => {
+    describe('#saveAssignCheckFormsToWindow - Save forms to chosen check window', () => {
       describe('Happy path', () => {
         const mergedFormIds = [5, 6, 7, 8]
         beforeEach(() => {
@@ -503,7 +541,7 @@ describe('check-form controller:', () => {
             checkWindowId: '59e88622d38a9f2d1fcebbb3',
             checkForm: [5, 6, 7]
           }
-
+          
           try {
             await controller(req, res, next)
             expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
@@ -515,6 +553,218 @@ describe('check-form controller:', () => {
           } catch (error) {
             expect(error).toBe('not thrown')
           }
+        })
+      })
+    })
+
+    describe('#unassignCheckFormsFromWindowPage - Render page to unassign check forms from check windows', () => {
+      describe('Happy path', () => {
+        beforeEach(() => {
+          const assignedCheckForms = [
+            { '_id': 100, 'name': 'MTC0100' }
+          ]
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+          spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
+          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+        })
+
+        it('should render the correct page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.getAssignedFormsForCheckWindow).toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Check Window Name')
+          expect(res.statusCode).toBe(200)
+          expect(next).not.toHaveBeenCalled()
+          done()
+        })
+      })
+    })
+
+    describe('Unhappy path - When checkWindowDataService.fetchCheckWindow', () => {
+      beforeEach(() => {
+        const assignedCheckForms = [
+          { '_id': 100, 'name': 'MTC0100' }
+        ]
+        spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+        spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
+        controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+      })
+
+      it('should execute next if #fetchCheckWindow fails', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'render').and.returnValue(null)
+        req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+        req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
+
+        await controller(req, res, next)
+        expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+        expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
+        expect(res.render).not.toHaveBeenCalled()
+        expect(res.locals.pageTitle).toBe(undefined)
+        expect(res.statusCode).toBe(200)
+        expect(next).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    describe('Unhappy path - When checkFormService.getAssignedFormsForCheckWindow', () => {
+      beforeEach(() => {
+        spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+        spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+        controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+      })
+
+      it('should execute next if #getAssignedFormsForCheckWindow fails', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'render').and.returnValue(null)
+        req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+        req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
+
+        await controller(req, res, next)
+        expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+        expect(checkFormService.getAssignedFormsForCheckWindow).toHaveBeenCalled()
+        expect(res.render).not.toHaveBeenCalled()
+        expect(res.locals.pageTitle).toBe(undefined)
+        expect(res.statusCode).toBe(200)
+        expect(next).toHaveBeenCalled()
+        done()
+      })
+
+      it('should redirect the user and show a flash error if req.params.checkWindowId is false', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'render').and.returnValue(null)
+        req.params.checkWindowId = null
+        req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
+
+        await controller(req, res, next)
+        expect(checkWindowDataService.fetchCheckWindow).not.toHaveBeenCalled()
+        expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
+        expect(res.render).not.toHaveBeenCalled()
+        expect(res.locals.pageTitle).toBe(undefined)
+        expect(res.statusCode).toBe(302)
+        expect(req.flash).toBeTruthy()
+        done()
+      })
+    })
+
+    describe('#unassignCheckFormFromWindow (POST) ', () => {
+      describe('happy path', () => {
+        beforeEach(() => {
+          const finalCheckForms = [100, 102, 103]
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+          spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
+          spyOn(checkWindowDataService, 'create')
+          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+        })
+
+        it('should save and redirect the user', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.body.checkFormId = 101
+          req.url = `/test-developer/unassign-form`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.removeFormIdFromArray).toHaveBeenCalled()
+          expect(checkWindowDataService.create).toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          expect(next).not.toHaveBeenCalled()
+          done()
+        })
+      })
+
+      describe('Unhappy path - checkWindowDataService.fetchCheckWindow fails', () => {
+        beforeEach(() => {
+          const finalCheckForms = [100, 102, 103]
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
+          spyOn(checkWindowDataService, 'create')
+          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+        })
+
+        it('should execute next if #checkWindowDataService.fetchCheckWindow fails', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.body.checkFormId = 101
+          req.url = `/test-developer/unassign-form`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.removeFormIdFromArray).not.toHaveBeenCalled()
+          expect(checkWindowDataService.create).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          expect(next).toHaveBeenCalled()
+          done()
+        })
+      })
+
+      describe('Unhappy path(s) - checkWindowDataService.create fails or req.body is incomplete', () => {
+        beforeEach(() => {
+          const finalCheckForms = [100, 102, 103]
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
+          spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
+          spyOn(checkWindowDataService, 'create').and.returnValue(Promise.reject(new Error('Error')))
+          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+        })
+
+        it('should redirect the user and show a flash message if #checkWindowDataService.create fails', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.body.checkFormId = 101
+          req.url = `/test-developer/unassign-form`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkFormService.removeFormIdFromArray).toHaveBeenCalled()
+          expect(checkWindowDataService.create).toHaveBeenCalled()
+          expect(req.flash).toBeTruthy()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+
+        it('should redirect the user if req.body.checkWindowId is false', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.body.checkWindowId = null
+          req.body.checkFormId = 101
+          req.url = `/test-developer/unassign-form`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).not.toHaveBeenCalled()
+          expect(checkFormService.removeFormIdFromArray).not.toHaveBeenCalled()
+          expect(checkWindowDataService.create).not.toHaveBeenCalled()
+          expect(req.flash).toBeTruthy()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+
+        it('should redirect the user if req.body.checkFormId is false', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.body.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.body.checkFormId = null
+          req.url = `/test-developer/unassign-form`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).not.toHaveBeenCalled()
+          expect(checkFormService.removeFormIdFromArray).not.toHaveBeenCalled()
+          expect(checkWindowDataService.create).not.toHaveBeenCalled()
+          expect(req.flash).toBeTruthy()
+          expect(res.statusCode).toBe(302)
+          done()
         })
       })
     })
