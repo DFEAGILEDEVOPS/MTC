@@ -71,3 +71,19 @@ Feature: Restarts
     Given I have single pupils for restart
     When I submit the pupil for restart with a reason 'Did not complete' for restarts
     Then I should see the error message for further information for 'Did not complete' reason
+
+  Scenario: Pupil added to the restart list after Pupil is submitted successfully for Restarts
+    Given I submitted pupils for Restart
+    Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
+
+  @wip
+  Scenario: Pupil Restarts status changes to Restart Taken when pupil take 2nd check
+    Given I submitted pupils for Restart
+    And Pupil has taken a 2nd check
+    Then I should see the Restart Status 'Restart taken' for the pupil
+
+  @wip
+  Scenario: Pupil Restarts status changes to Maximum Restart Taken when pupil take 2nd Restart
+    Given I submitted pupils for Restart
+    When Pupil has taken a 2nd restart
+    Then I should see pupil is added to the pupil restarts list with status 'Maximum number of restarts taken'

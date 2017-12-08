@@ -1,0 +1,58 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+        <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge"><%= checkWindowName %></h1>
+
+        <form method="post" action="/test-developer/unassign-form">
+            <% if (Array.isArray(checkFormsList)) { %>
+            <table class="spacious" id="assignFormToWindowList" role="group">
+                <thead>
+                    <tr>
+                        <th scope="col">Form name</th>
+                        <td> </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% checkFormsList.forEach(form => { %>
+                    <tr>
+                        <td>
+                            <%= form.name %>
+                        </td>
+                        <td class="align-right">
+                            <button class="button button-secondary" name="checkFormId" value="<%= form._id %>">Remove from window</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <input type="hidden" name="checkWindowId" value="<%= checkWindowId %>">
+            <% } %>
+        </form>
+
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+</div>

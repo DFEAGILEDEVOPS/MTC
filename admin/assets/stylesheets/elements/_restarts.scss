@@ -1,13 +1,12 @@
 .restart-list {
-  overflow: hidden;
+  overflow: visible;
   margin-left: pem(-4px);
 
   .multiple-choice {
     margin: pem(4px);
   }
-
   li {
-    overflow: hidden;
+    overflow: visible;
     margin-top: pem(10px);
 
     @include media(desktop) {
@@ -19,6 +18,16 @@
       margin-top: pem(5px);
     }
   }
+}
+
+#select-pupils-restart {
+  .panel.panel-border-wide {
+    padding: 0 pem(10px);
+  }
+}
+
+.restart-status {
+  max-width: pem(80px);
 }
 
 label:hover {

@@ -1,5 +1,5 @@
 Given(/^I have uploaded a check form$/) do
-  step "I am on the manage check forms page"
+  step "I am on the Upload and View forms page"
   step "I upload a csv file"
 end
 
@@ -34,7 +34,8 @@ Then(/^the check form should be displayed as being assigned to multiple check wi
 end
 
 When(/^I choose to preview the check form questions$/) do
-  manage_check_forms_page.available_checks.rows.first.title.click
+  new_check = upload_and_view_forms_page.available_checks.rows.find{|row| row.has_highlighted_row?}
+  new_check.title.click
 end
 
 Then(/^I should see the questions exactly as intended$/) do
@@ -59,17 +60,18 @@ When(/^I choose to go back$/) do
   view_form_page.back_to_manage_forms.click
 end
 
-Then(/^I am taken to the manage check forms page$/) do
-  expect(manage_check_forms_page).to be_displayed
+Then(/^I am taken to the view forms page$/) do
+  expect(upload_and_view_forms_page).to be_displayed
 end
 
 When(/^I choose to delete it$/) do
   @form_title = view_form_page.heading.text
   view_form_page.delete_form.click
+  view_form_page.modal.confirm.click
 end
 
 Then(/^it should be removed from the list of available checks$/) do
-  available_checks = manage_check_forms_page.available_checks.rows.map{|check| check.title.text}
+  available_checks =  upload_and_view_forms_page.available_checks.rows.map{|check| check.title.text}
   expect(available_checks).to_not include @form_title
 end
 

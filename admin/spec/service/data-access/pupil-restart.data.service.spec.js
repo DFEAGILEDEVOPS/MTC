@@ -6,7 +6,9 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const PupilRestart = require('../../../models/pupil-restart')
-const pupilRestartMocks = require('../../mocks/pupil-restarts')
+const RestartCode = require('../../../models/restart-code')
+const pupilRestartMock = require('../../mocks/pupil-restart')
+const restartCodesMock = require('../../mocks/restart-codes')
 
 describe('pupil-restart.data.service', () => {
   let service, sandbox
@@ -21,7 +23,7 @@ describe('pupil-restart.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestart.prototype).expects('save').resolves(pupilRestartMocks)
+      mock = sandbox.mock(PupilRestart.prototype).expects('save').resolves(pupilRestartMock)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
         '../../models/pupil-restarts': PupilRestart
       })
@@ -46,6 +48,37 @@ describe('pupil-restart.data.service', () => {
       await service.count({ searchCriteria: 'someValue' })
       expect(mock.verify()).toBe(true)
       done()
+    })
+  })
+  describe('#findLatest', () => {
+    let mock
+    beforeEach(() => {
+      mock = sandbox.mock(PupilRestart).expects('find').chain('sort').chain('limit').chain('lean').chain('exec').resolves(pupilRestartMock)
+      service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
+        '../../models/pupil-restarts': PupilRestart
+      })
+    })
+
+    it('counts docs in the db', async (done) => {
+      await service.findLatest({ _id: 'some-id' })
+      expect(mock.verify()).toBe(true)
+      done()
+    })
+  })
+
+  describe('#getRestartcodes', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(RestartCode).expects('find').chain('sort').resolves(restartCodesMock)
+      service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
+        '../../models/restart-code': RestartCode
+      })
+    })
+
+    it('should return a list of attendance codes', () => {
+      service.getRestartCodes()
+      expect(mock.verify()).toBe(true)
     })
   })
 })

@@ -15,7 +15,7 @@ const sortingAttributesService = require('../services/sorting-attributes.service
  * @param next
  * @returns {Promise.<void>}
  */
-const getTestDeveloperHome = async (req, res, next) => {
+const getTestDeveloperHomePage = async (req, res, next) => {
   res.locals.pageTitle = 'MTC for test development'
   try {
     req.breadcrumbs(res.locals.pageTitle)
@@ -34,7 +34,7 @@ const getTestDeveloperHome = async (req, res, next) => {
  * @param next
  * @returns {Promise.<*>}
  */
-const uploadAndViewForms = async (req, res, next) => {
+const uploadAndViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -246,7 +246,7 @@ const displayCheckForm = async (req, res, next) => {
   })
 }
 
-const assignCheckFormsToWindows = async (req, res, next) => {
+const assignCheckFormsToWindowsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Assign forms to check windows'
 
   let checkWindowsData
@@ -272,7 +272,7 @@ const assignCheckFormsToWindows = async (req, res, next) => {
  * @param next
  * @returns {Promise<void>}
  */
-const assignCheckFormToWindow = async (req, res, next) => {
+const assignCheckFormToWindowPage = async (req, res, next) => {
   const checkWindowId = req.params.checkWindowId
   res.locals.pageTitle = 'Assign forms'
 
@@ -302,7 +302,6 @@ const assignCheckFormToWindow = async (req, res, next) => {
 }
 
 /**
- * @TODO: WIP.
  * Save assigned check forms to check window.
  * @param req
  * @param res
@@ -345,20 +344,98 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
   res.redirect('/test-developer/assign-form-to-window')
 }
 
-// @TODO: WIP.
-const unassignCheckFormsFromWindow = async (req, res, next) => {
+/**
+ * Render page to unassign check forms from check windows.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
+const unassignCheckFormsFromWindowPage = async (req, res, next) => {
+  if (!req.params.checkWindowId) {
+    req.flash('error', `Missing check window id`)
+    return res.redirect('/test-developer/assign-form-to-window')
+  }
+
+  let checkWindowId = req.params.checkWindowId
+  let checkFormsList
+  let checkWindow
+
+  try {
+    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+  } catch (error) {
+    return next(error)
+  }
+
+  try {
+    checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.forms)
+  } catch (error) {
+    return next(error)
+  }
+
+  res.locals.pageTitle = checkWindow.checkWindowName
+  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('test-developer/unassign-check-forms', {
+    checkWindowId: checkWindowId,
+    checkWindowName: checkWindow.checkWindowName,
+    checkFormsList,
+    breadcrumbs: req.breadcrumbs()
+  })
+}
+
+/**
+ * Unassign form from selected check window.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
+const unassignCheckFormFromWindow = async (req, res, next) => {
+  if (!req.body.checkWindowId) {
+    req.flash('error', `Missing check window id`)
+    return res.redirect('/test-developer/assign-form-to-window')
+  }
+
+  if (!req.body.checkFormId) {
+    req.flash('error', `Missing check form id`)
+    return res.redirect(`/test-developer/unassign-forms/${req.body.checkWindowId}`)
+  }
+
+  const checkFormId = req.body.checkFormId
+  const checkWindowId = req.body.checkWindowId
+
+  let checkWindow
+
+  try {
+    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+  } catch (error) {
+    return next(error)
+  }
+
+  try {
+    checkWindow.forms = checkFormService.removeFormIdFromArray(checkWindow, checkFormId)
+    await checkWindowDataService.create(checkWindow)
+  } catch (error) {
+    req.flash('error', `Failing to unassigned form from ${checkWindow.checkWindowName}`)
+    res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
+    return next(error)
+  }
+
+  req.flash('info', `Form unassigned from ${checkWindow.checkWindowName}`)
   res.redirect('/test-developer/assign-form-to-window')
 }
 
 module.exports = {
-  getTestDeveloperHome,
-  uploadAndViewForms,
+  getTestDeveloperHomePage,
+  uploadAndViewFormsPage,
   removeCheckForm,
   uploadCheckForm,
   saveCheckForm,
   displayCheckForm,
-  assignCheckFormsToWindows,
-  assignCheckFormToWindow,
+  assignCheckFormsToWindowsPage,
+  assignCheckFormToWindowPage,
   saveAssignCheckFormsToWindow,
-  unassignCheckFormsFromWindow
+  unassignCheckFormsFromWindowPage,
+  unassignCheckFormFromWindow
 }

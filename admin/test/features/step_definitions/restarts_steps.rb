@@ -61,6 +61,7 @@ end
 
 When(/^I select a pupil for restarts$/) do
   pupil = restarts_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  @pupil_name = pupil.name.text
   pupil.checkbox.click
 end
 
@@ -120,9 +121,52 @@ end
 
 Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
   expect(restarts_page).to have_flash_message
-  expect(restarts_page.flash_message.text).to eql('Restarts made for 1 pupil')
+  expect(restarts_page.flash_message.text).to eql('Restart made for 1 pupil')
 end
 
 Then(/^I should see the error message for further information for 'Did not complete' reason$/) do
   expect(restarts_page.error_summary).to be_all_there
+end
+
+Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'$/) do|restart_status|
+  hightlighted_row = restarts_page.restarts_pupil_list.rows.find{|row| row.has_highlighted_pupil?}
+  expect(hightlighted_row.text).to include("#{@pupil_name}")
+  expect(hightlighted_row.status.text).to include(restart_status)
+end
+
+And(/^Pupil has taken a 2nd check$/) do
+
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
+  @page = generate_pupil_pins_page
+  @pupil_name = generate_pupil_pins_page.generate_pin_using_name(@details_hash[:first_name])
+
+  ct = Time.now
+  newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  MongoDbHelper.set_school_pin_expiry('1001', newTime)
+
+  step "I am on the generate pupil pins page"
+
+  ct = Time.now
+  newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  MongoDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001)
+
+  pupil_id = MongoDbHelper.pupil_details(@details_hash[:upn])
+  MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
+  restarts_page.load
+end
+
+And(/^Pupil has taken a 2nd restart$/) do
+  step 'Pupil has taken a 2nd check'
+  restarts_page.load
+  restarts_page.select_pupil_to_restart_btn.click
+  @page = restarts_page
+  restarts_page.restarts_for_pupil(@details_hash[:first_name])
+end
+
+Then(/^I should see the Restart Status '(.*)' for the pupil$/) do|restart_status|
+  pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
+  expect(pupil_row.status.text).to include(restart_status)
 end
