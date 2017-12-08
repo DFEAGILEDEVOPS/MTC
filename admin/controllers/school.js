@@ -20,6 +20,7 @@ const getHome = async (req, res, next) => {
   let schoolName = ''
 
   try {
+    // TODO: extract this dataservice call to a service
     const school = await schoolDataService.findOne({ '_id': req.user.School })
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
@@ -237,6 +238,7 @@ const postSubmitAttendance = async (req, res, next) => {
   const data = Object.values(req.body[ 'attendee' ] || [])
   let ids = data.map(id => mongoose.Types.ObjectId(id))
 
+  // TODO: extract this dataservice call to a service
   // Update attendance for selected pupils
   await pupilDataService.update(
     { _id: { $in: ids } },
@@ -244,6 +246,7 @@ const postSubmitAttendance = async (req, res, next) => {
     { multi: true }
   )
 
+  // TODO: extract this dataservice call to a service
   // Expire all pins for school pupils
   await pupilDataService.update(
     { 'pupils.school': req.user.School },
@@ -272,6 +275,7 @@ const getDeclarationForm = async (req, res) => {
 
 const postDeclarationForm = async (req, res, next) => {
   const { jobTitle, fullName, declaration } = req.body
+  // TODO: extract this dataservice call to a service
   const school = await schoolDataService.findOne({ '_id': req.user.School })
   school.hdf = {
     signedDate: Date.now(),
@@ -292,6 +296,7 @@ const postDeclarationForm = async (req, res, next) => {
   }
 
   try {
+    // TODO: extract this dataservice call to a service
     await schoolDataService.update(school)
   } catch (error) {
     return next(error)
@@ -303,6 +308,7 @@ const getHDFSubmitted = async (req, res, next) => {
   res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
   req.breadcrumbs(res.locals.pageTitle)
   try {
+    // TODO: extract this dataservice call to a service
     const school = await schoolDataService.findOne({ '_id': req.user.School })
     const { hdf: { signedDate } } = school
     return res.render('school/declaration-form-submitted', {
@@ -509,6 +515,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
     }
+    // TODO: extract this dataservice call to a service
     await pupilDataService.unsetAttendanceCode(pupil._id)
   } catch (error) {
     next(error)
