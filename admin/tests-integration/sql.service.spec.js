@@ -44,7 +44,25 @@ describe('sql.service:integration', () => {
     }
   })
 
-  xit('should transform the results arrays into a JSON array', async () => {
+  it('should transform the results arrays into a JSON array', async () => {
     await sql.query('SELECT * FROM Settings')
+    const actual = await sql.query('SELECT * FROM Settings')
+    expect(actual).toBeDefined()
+    expect(actual.length).toBe(1)
+    const row = actual[0]
+    expect(row.id).toBeDefined()
+    expect(row.id).toBe(1)
+    expect(row.loadingTimeLimit).toBeDefined()
+    expect(row.loadingTimeLimit).toBe(5)
+    expect(row.questionTimeLimit).toBeDefined()
+    expect(row.questionTimeLimit).toBe(2)
+  })
+
+  it('should omit the version column from returned set', async () => {
+    await sql.query('SELECT * FROM Settings')
+    const actual = await sql.query('SELECT * FROM Settings')
+    expect(actual).toBeDefined()
+    const row = actual[0]
+    expect(row.version).toBeUndefined()
   })
 })

@@ -4,8 +4,21 @@ const Request = require('tedious').Request
 const sqlPoolService = require('./sql.pool.service')
 
 function parseResults (results) {
-  // TODO deconstruct array of arrays into object array
-  return results
+  // omit metadata for now, can introduce if useful at later date
+  const jsonArray = []
+  results.forEach(row => {
+    const json = {}
+    // const metadata = []
+    row.forEach(col => {
+      if (col.metadata.colName !== 'version') {
+        json[col.metadata.colName] = col.value
+      }
+      // metadata.push(col.metadata)
+    })
+    // json['metadata'] = metadata
+    jsonArray.push(json)
+  })
+  return jsonArray
 }
 
 const sqlService = {}
