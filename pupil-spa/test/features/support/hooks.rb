@@ -24,7 +24,8 @@ end
 
 After do |scenario|
   if scenario.failed?
-    page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{Time.now.strftime("%H_%M_%S")}.png")
-    p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{Time.now.strftime("%H_%M_%S")}.png"
+    time = Time.now.strftime("%H_%M_%S")
+    page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png")
+    p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
   end
 end

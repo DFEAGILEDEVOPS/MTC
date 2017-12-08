@@ -75,7 +75,7 @@ describe('pupil.data.service', () => {
   describe('#update', () => {
     let mock
     beforeEach(() => {
-      mock = sandbox.mock(Pupil).expects('updateOne').returns(pupilMock)
+      mock = sandbox.mock(Pupil).expects('update').chain('exec').resolves(pupilMock)
       service = proxyquire('../../../services/data-access/pupil.data.service', {
         '../../models/pupil': Pupil
       })

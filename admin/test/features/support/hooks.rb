@@ -77,9 +77,9 @@ end
 
 After do |scenario|
   visit ENV['BASE_URL'] + '/sign-out'
-  if (scenario.failed?)
-    image_name = "screenshots/#{scenario.__id__}.png"
-    save_screenshot(image_name, :full => true)
-    embed(image_name, "image/png", "SCREENSHOT")
+  if scenario.failed?
+    time = Time.now.strftime("%H_%M_%S")
+    page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png")
+    p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
   end
 end

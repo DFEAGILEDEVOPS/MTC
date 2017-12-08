@@ -36,11 +36,13 @@ describe('school.data.service', () => {
   describe('#update', () => {
     let school
     let mock
+
     beforeEach(() => {
       school = Object.assign({}, schoolMock)
-      School.updateOne = () => {}
-      mock = sandbox.mock(School).expects('updateOne').resolves({})
-      service = require('../../../services/data-access/school.data.service')
+      mock = sandbox.mock(School).expects('updateOne').chain('exec').resolves({})
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        '../../models/school': School
+      })
     })
 
     it('calls the model', () => {
