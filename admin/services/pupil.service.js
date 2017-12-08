@@ -1,7 +1,7 @@
-const Pupil = require('../models/pupil')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
+const pupilDataService = require('./data-access/pupil.data.service')
 
 const pupilService = {}
 /**
@@ -12,17 +12,14 @@ const pupilService = {}
  */
 pupilService.fetchOnePupil = async (pupilId, schoolId) => {
   // TODO: Introduce integration tests
-  const pupil = await Pupil
-    .findOne({ '_id': pupilId, 'school': schoolId })
-    .exec()
-  return pupil
+  return pupilDataService.findOne({_id: pupilId, school: schoolId})
 }
 
+// TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
 pupilService.fetchMultiplePupils = async (pupilIds) => {
   const pupils = []
-  for (var index = 0; index < pupilIds.length; index++) {
-    let pupilId = pupilIds[ index ]
-    const pupil = await Pupil.findOne({ '_id': pupilId }).exec()
+  for (const id of pupilIds) {
+    const pupil = await pupilDataService.findOne({ '_id': id })
     pupils.push(pupil)
   }
   return pupils
@@ -48,6 +45,7 @@ pupilService.calculateScorePercentage = (results) => {
   var rounded = Math.round(percentage * 10) / 10
   return rounded
 }
+
 pupilService.validatePupil = async (pupil, pupilData) => {
   const validationError = await pupilValidator.validate(pupilData)
   try {
