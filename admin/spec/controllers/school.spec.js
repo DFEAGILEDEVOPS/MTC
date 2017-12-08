@@ -7,10 +7,9 @@ mongoose.Promomise = global.Promise
 const sinon = require('sinon')
 require('sinon-mongoose')
 
-const proxyquire = require('proxyquire')
+const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 
-const Pupil = require('../../models/pupil')
 const pupilService = require('../../services/pupil.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
@@ -20,6 +19,7 @@ const pupilMock = require('../mocks/pupil-with-reason')
 const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
+const mongooseResponseMock = require('../mocks/mongo-response-mock')
 
 describe('school controller:', () => {
   function getRes () {
@@ -99,7 +99,7 @@ describe('school controller:', () => {
         pupil.save = () => {
         }
         spyOn(pupilService, 'fetchMultiplePupils').and.returnValue(Promise.resolve(pupil))
-        spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
+        // spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
         spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
         spyOn(pupilsNotTakingCheckDataService, 'fetchPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         controller = proxyquire('../../controllers/school', {}).savePupilNotTakingCheck
@@ -129,23 +129,54 @@ describe('school controller:', () => {
 
     describe('Remove reason for pupil', () => {
       beforeEach(() => {
-        spyOn(pupilService, 'fetchOnePupil').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
-        controller = proxyquire('../../controllers/school', {}).removePupilNotTakingCheck
+        spyOn(pupilService, 'fetchOnePupil').and.returnValue(Promise.resolve(pupilMock))
+        spyOn(pupilDataService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(mongooseResponseMock))
+        controller = proxyquire('../../controllers/school', {
+          '../services/pupil.service': pupilService,
+          '../services/data-access/pupil.data.service': pupilDataService
+        }).removePupilNotTakingCheck
       })
-      it('should delete reason from pupils document and redirect', async (done) => {
+
+      it('should redirect to the select pupils page if pupilId is not supplied', async () => {
         const res = getRes()
         const req = getReq(
           {
             method: 'GET',
             url: '/school/pupils-not-taking-check/remove',
-            params: '59d02ab09b865f35a3f51940'
+            params: {
+              pupilId: undefined
+            },
+            user: {
+              school: '42'
+            }
           }
         )
         await controller(req, res, next)
         expect(res.statusCode).toBe(302)
+        expect(res._getRedirectUrl()).toBe('/school/pupils-not-taking-check/select-pupils')
         expect(next).not.toHaveBeenCalled()
-        done()
+      })
+
+      it('should delete reason from pupils document and redirect', async () => {
+        const res = getRes()
+        const req = getReq(
+          {
+            method: 'GET',
+            url: '/school/pupils-not-taking-check/remove',
+            params: {
+              pupilId: '59d02ab09b865f35a3f51940'
+            },
+            user: {
+              school: '42'
+            }
+          }
+        )
+        await controller(req, res, next)
+        expect(pupilService.fetchOnePupil).toHaveBeenCalled()
+        expect(pupilDataService.unsetAttendanceCode).toHaveBeenCalledWith('59d02ab09b865f35a3f51940')
+        expect(res.statusCode).toBe(302)
+        expect(res._getRedirectUrl()).toBe('/school/pupils-not-taking-check/59d02ab09b865f35a3f51940')
+        expect(next).not.toHaveBeenCalled()
       })
     })
   })
