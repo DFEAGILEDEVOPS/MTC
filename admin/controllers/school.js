@@ -3,10 +3,7 @@ const moment = require('moment')
 const csv = require('fast-csv')
 const mongoose = require('mongoose')
 
-const School = require('../models/school')
 const ValidationError = require('../lib/validation-error')
-const errorConverter = require('../lib/error-converter')
-const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const pupilService = require('../services/pupil.service')
 const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
@@ -257,7 +254,7 @@ const postSubmitAttendance = async (req, res, next) => {
   return res.redirect('/school/declaration-form')
 }
 
-const getDeclarationForm = async (req, res, next) => {
+const getDeclarationForm = async (req, res) => {
   const { schoolData } = await pupilDataService.getPupils(req.user.School)
   if (schoolData.hdf && schoolData.hdf.signedDate) {
     return res.redirect('/school/declaration-form-submitted')
@@ -275,38 +272,27 @@ const getDeclarationForm = async (req, res, next) => {
 
 const postDeclarationForm = async (req, res, next) => {
   const { jobTitle, fullName, declaration } = req.body
-  const school = await School.findOne({ '_id': req.user.School }).exec()
+  const school = await schoolDataService.findOne({ '_id': req.user.School })
   school.hdf = {
     signedDate: Date.now(),
     declaration,
     jobTitle,
     fullName
   }
+
   let validationError = await hdfValidator.validate(req)
-  try {
-    await school.validate()
-    if (validationError.hasError()) {
-      throw new Error('school validation error')
-    }
-  } catch (error) {
+  if (validationError.hasError()) {
     res.locals.pageTitle = 'Headteacher\'s declaration form'
     req.breadcrumbs(res.locals.pageTitle)
-    if (error.message !== 'school validation error') {
-      const combinedValidationError = errorConverter.fromMongoose(error, hdfErrorMessages, validationError)
-      return res.render('school/declaration-form', {
-        formData: req.body,
-        error: combinedValidationError,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
     return res.render('school/declaration-form', {
       formData: req.body,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
     })
   }
+
   try {
-    await school.save()
+    await schoolDataService.update(school)
   } catch (error) {
     return next(error)
   }
@@ -316,17 +302,16 @@ const postDeclarationForm = async (req, res, next) => {
 const getHDFSubmitted = async (req, res, next) => {
   res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
   req.breadcrumbs(res.locals.pageTitle)
-  let school
   try {
-    school = await School.findOne({ '_id': req.user.School }).exec()
+    const school = await schoolDataService.findOne({ '_id': req.user.School })
+    const { hdf: { signedDate } } = school
+    return res.render('school/declaration-form-submitted', {
+      breadcrumbs: req.breadcrumbs(),
+      signedDate: signedDate && moment(signedDate).format('Do MMMM YYYY')
+    })
   } catch (error) {
     return next(error)
   }
-  const { hdf: { signedDate } } = school
-  return res.render('school/declaration-form-submitted', {
-    breadcrumbs: req.breadcrumbs(),
-    signedDate: signedDate && moment(signedDate).format('Do MMMM YYYY')
-  })
 }
 
 /**
@@ -462,7 +447,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupils
 
   for (let index = 0; index < pupilsData.length; index++) {
-    var pupil = pupilsData[index]
+    let pupil = pupilsData[index]
     pupil.attendanceCode = {
       _id: req.body.attendanceCode,
       dateRecorded: new Date(todayDate),
@@ -475,7 +460,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   try {
     for (var index = 0; index < pupilsData.length; index++) {
       const pupil = pupilsData[index]
-      await pupil.save()
+      await pupilDataService.update({_id: pupil._id}, pupil)
     }
     req.flash('info', `${pupilsData.length} pupil reasons updated`)
   } catch (error) {

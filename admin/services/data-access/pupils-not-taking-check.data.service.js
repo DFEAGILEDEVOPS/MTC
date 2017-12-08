@@ -10,19 +10,19 @@ const pupilsNotTakingCheckDataService = {}
  * @returns {Promise.<*>}
  */
 pupilsNotTakingCheckDataService.fetchPupilsWithReasons = async (schoolId) => {
-  let pupilsWithReasons
-  pupilsWithReasons = await Pupil
+  return Pupil
     .find({'attendanceCode': {$exists: true}, 'school': schoolId})
     .sort('lastName')
-  return pupilsWithReasons
+    .lean()
+    .exec()
 }
 
 pupilsNotTakingCheckDataService.getAttendanceCodes = async () => {
-  let attendanceCodes
-  attendanceCodes = await AttendanceCode
+  return AttendanceCode
     .find()
     .sort('order')
-  return attendanceCodes
+    .lean()
+    .exec()
 }
 
 module.exports = pupilsNotTakingCheckDataService

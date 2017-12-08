@@ -10,7 +10,6 @@ require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 
-const Pupil = require('../../models/pupil')
 const pupilService = require('../../services/pupil.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')

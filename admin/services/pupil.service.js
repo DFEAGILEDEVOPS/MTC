@@ -23,7 +23,7 @@ pupilService.fetchMultiplePupils = async (pupilIds) => {
   const pupils = []
   for (var index = 0; index < pupilIds.length; index++) {
     let pupilId = pupilIds[ index ]
-    const pupil = await Pupil.findOne({ '_id': pupilId }).exec()
+    const pupil = await Pupil.findOne({ '_id': pupilId }).lean().exec()
     pupils.push(pupil)
   }
   return pupils
