@@ -1,4 +1,4 @@
-@manual
+@manual @declaration_form
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form

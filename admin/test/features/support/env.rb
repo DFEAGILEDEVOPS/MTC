@@ -8,7 +8,6 @@ require 'selenium-webdriver'
 require 'site_prism'
 require 'pry'
 require 'capybara/poltergeist'
-require 'capybara-screenshot/cucumber'
 require 'mongo'
 require 'csv'
 require 'fileutils'
@@ -34,13 +33,6 @@ end
 
 Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
-end
-
-Capybara::Screenshot.prune_strategy = :keep_last_run
-
-Capybara::Screenshot.register_driver('headless_chrome') do |driver|
-  time = Time.now
-  driver.browser.save_screenshot("screenshots/#{time.strftime("%Y-%M-%d-%H-%M-%S")}.png")
 end
 
 Capybara.register_driver :headless_chrome do |app|

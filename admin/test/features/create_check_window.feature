@@ -1,3 +1,4 @@
+@create_check_window
 Feature:
   Create check window
 

@@ -3,17 +3,14 @@ const moment = require('moment')
 const csv = require('fast-csv')
 const mongoose = require('mongoose')
 
-const Pupil = require('../models/pupil')
-const School = require('../models/school')
 const ValidationError = require('../lib/validation-error')
-const errorConverter = require('../lib/error-converter')
-const hdfErrorMessages = require('../lib/errors/hdf')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const pupilService = require('../services/pupil.service')
 const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 const { sortRecords } = require('../utils')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -23,7 +20,8 @@ const getHome = async (req, res, next) => {
   let schoolName = ''
 
   try {
-    const school = await School.findOne({ '_id': req.user.School }).exec()
+    // TODO: extract this dataservice call to a service
+    const school = await schoolDataService.findOne({ '_id': req.user.School })
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
     }
@@ -238,30 +236,29 @@ const postSubmitAttendance = async (req, res, next) => {
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-  const data = Object.values(req.body[ 'attendee' ] || null)
-  let selected
-  const { pupils } = await pupilDataService.getPupils(req.user.School)
-  try {
-    let ids = data.map(id => mongoose.Types.ObjectId(id))
-    selected = await Pupil.find({ _id: { $in: ids } }).exec()
-  } catch (error) {
-    return next(error)
-  }
+  const data = Object.values(req.body[ 'attendee' ] || [])
+  let ids = data.map(id => mongoose.Types.ObjectId(id))
+
+  // TODO: extract this dataservice call to a service
   // Update attendance for selected pupils
-  selected.forEach((p) => (p.hasAttended = true))
-  const selectedPromises = selected.map(s => s.save())
-  // Expire all pins for school pupils
-  pupils.forEach(p => (p.pinExpired = true))
-  const pupilsPromises = pupils.map(p => p.save())
-  Promise.all(selectedPromises.concat(pupilsPromises)).then(() => {
-    return res.redirect('/school/declaration-form')
-  },
-  error => next(error))
-  .catch(error => next(error)
+  await pupilDataService.update(
+    { _id: { $in: ids } },
+    { $set: { hasAttended: true } },
+    { multi: true }
   )
+
+  // TODO: extract this dataservice call to a service
+  // Expire all pins for school pupils
+  await pupilDataService.update(
+    { 'pupils.school': req.user.School },
+    { $set: { pinExpired: true } },
+    { multi: true }
+  )
+
+  return res.redirect('/school/declaration-form')
 }
 
-const getDeclarationForm = async (req, res, next) => {
+const getDeclarationForm = async (req, res) => {
   const { schoolData } = await pupilDataService.getPupils(req.user.School)
   if (schoolData.hdf && schoolData.hdf.signedDate) {
     return res.redirect('/school/declaration-form-submitted')
@@ -279,38 +276,29 @@ const getDeclarationForm = async (req, res, next) => {
 
 const postDeclarationForm = async (req, res, next) => {
   const { jobTitle, fullName, declaration } = req.body
-  const school = await School.findOne({ '_id': req.user.School }).exec()
+  // TODO: extract this dataservice call to a service
+  const school = await schoolDataService.findOne({ '_id': req.user.School })
   school.hdf = {
     signedDate: Date.now(),
     declaration,
     jobTitle,
     fullName
   }
+
   let validationError = await hdfValidator.validate(req)
-  try {
-    await school.validate()
-    if (validationError.hasError()) {
-      throw new Error('school validation error')
-    }
-  } catch (error) {
+  if (validationError.hasError()) {
     res.locals.pageTitle = 'Headteacher\'s declaration form'
     req.breadcrumbs(res.locals.pageTitle)
-    if (error.message !== 'school validation error') {
-      const combinedValidationError = errorConverter.fromMongoose(error, hdfErrorMessages, validationError)
-      return res.render('school/declaration-form', {
-        formData: req.body,
-        error: combinedValidationError,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
     return res.render('school/declaration-form', {
       formData: req.body,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
     })
   }
+
   try {
-    await school.save()
+    // TODO: extract this dataservice call to a service
+    await schoolDataService.update(school)
   } catch (error) {
     return next(error)
   }
@@ -320,17 +308,17 @@ const postDeclarationForm = async (req, res, next) => {
 const getHDFSubmitted = async (req, res, next) => {
   res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
   req.breadcrumbs(res.locals.pageTitle)
-  let school
   try {
-    school = await School.findOne({ '_id': req.user.School }).exec()
+    // TODO: extract this dataservice call to a service
+    const school = await schoolDataService.findOne({ '_id': req.user.School })
+    const { hdf: { signedDate } } = school
+    return res.render('school/declaration-form-submitted', {
+      breadcrumbs: req.breadcrumbs(),
+      signedDate: signedDate && moment(signedDate).format('Do MMMM YYYY')
+    })
   } catch (error) {
     return next(error)
   }
-  const { hdf: { signedDate } } = school
-  return res.render('school/declaration-form-submitted', {
-    breadcrumbs: req.breadcrumbs(),
-    signedDate: signedDate && moment(signedDate).format('Do MMMM YYYY')
-  })
 }
 
 /**
@@ -466,7 +454,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   let pupils
 
   for (let index = 0; index < pupilsData.length; index++) {
-    var pupil = pupilsData[index]
+    let pupil = pupilsData[index]
     pupil.attendanceCode = {
       _id: req.body.attendanceCode,
       dateRecorded: new Date(todayDate),
@@ -479,7 +467,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   try {
     for (var index = 0; index < pupilsData.length; index++) {
       const pupil = pupilsData[index]
-      await pupil.save()
+      await pupilDataService.update({_id: pupil._id}, pupil)
     }
     req.flash('info', `${pupilsData.length} pupil reasons updated`)
   } catch (error) {
@@ -528,8 +516,8 @@ const removePupilNotTakingCheck = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
     }
-    pupil.attendanceCode = undefined
-    await pupil.save()
+    // TODO: extract this dataservice call to a service
+    await pupilDataService.unsetAttendanceCode(pupil._id)
   } catch (error) {
     next(error)
   }

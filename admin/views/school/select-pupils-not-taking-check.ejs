@@ -23,13 +23,13 @@
             <% attendanceCodes.forEach( (aValues) => { %>
                 <li>
                     <div class="multiple-choice">
-                        <input id="attendance-code-<%= aValues.id %>"
+                        <input id="attendance-code-<%= aValues._id %>"
                                type="radio"
                                role="radio"
                                aria-checked="false"
                                name="attendanceCode"
-                               value="<%= aValues.id %>">
-                        <label for="attendance-code-<%= aValues.id %>"><%= aValues.reason %></label>
+                               value="<%= aValues._id %>">
+                        <label for="attendance-code-<%= aValues._id %>"><%= aValues.reason %></label>
                     </div>
                 </li>
                 <% }) %>

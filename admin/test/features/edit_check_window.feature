@@ -1,3 +1,4 @@
+@edit_check_window
 Feature: Edit Check Window
 
   Background:
@@ -16,7 +17,6 @@ Feature: Edit Check Window
     When I decide to go back
     Then I should be taken to the Manage Check Window page
     And I should see no flash message to update check window is displayed
-
 
   Scenario: Users can cancel editing a check window
     But decide against editing it
@@ -105,6 +105,7 @@ Feature: Edit Check Window
   Scenario: Check window has to have a valid end date
     When I try to submit with a invalid check end date for the window
     Then I should see errors for the end day month and year
+
 
   Scenario: Check end date can't have more digits for day month year than specified
     When I try to submit a check end date with more digits for day month year than specified
