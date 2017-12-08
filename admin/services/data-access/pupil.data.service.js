@@ -71,18 +71,13 @@ pupilDataService.find = async function (options) {
 }
 
 /**
- * Update a single object with the new fields from `doc`
- * @param {string} id Object._id
- * @param {Object} doc Document to pass to mongo
+ * Generalised update function - can update many in one transaction
+ * @param query
+ * @param criteria
  * @return {Promise}
  */
-pupilDataService.update = async function (id, doc) {
-  return new Promise((resolve, reject) => {
-    Pupil.updateOne({_id: id}, doc, (error) => {
-      if (error) { return reject(error) }
-      resolve(null)
-    })
-  })
+pupilDataService.update = async function (query, criteria, options = {multi: false}) {
+  return Pupil.update(query, criteria, options).exec()
 }
 
 pupilDataService.updateMultiple = async function (pupils) {
@@ -109,15 +104,7 @@ pupilDataService.save = async function (data) {
   return pupil.toObject()
 }
 
-/**
- * Generalised update function - can update many in one transaction
- * @param query
- * @param criteria
- * @return {Promise}
- */
-pupilDataService.updateMany2 = async function (query, criteria, options = {}) {
-  return Pupil.update(query, criteria, options).exec()
-}
+
 
 /**
  * Unset the attendance code for a single pupil

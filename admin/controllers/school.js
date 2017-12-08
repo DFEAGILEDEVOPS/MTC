@@ -238,14 +238,14 @@ const postSubmitAttendance = async (req, res, next) => {
   let ids = data.map(id => mongoose.Types.ObjectId(id))
 
   // Update attendance for selected pupils
-  await pupilDataService.update2(
+  await pupilDataService.update(
     { _id: { $in: ids } },
     { $set: { hasAttended: true } },
     { multi: true }
   )
 
   // Expire all pins for school pupils
-  await pupilDataService.update2(
+  await pupilDataService.update(
     { 'pupils.school': req.user.School },
     { $set: { pinExpired: true } },
     { multi: true }
