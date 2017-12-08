@@ -28,6 +28,7 @@ class RestartsPage < SitePrism::Page
       element :reason, 'td:nth-child(2)'
       element :status, 'td:nth-child(3)'
       element :highlighted_pupil, '.highlight-item'
+      element :remove_restart, 'td:nth-child(3) button'
     end
   end
 
