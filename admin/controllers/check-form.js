@@ -211,7 +211,13 @@ const saveCheckForm = async (req, res, next) => {
   res.redirect('/test-developer/upload-and-view-forms')
 }
 
-const displayCheckForm = async (req, res, next) => {
+/**
+ * Display check form page.
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+const displayCheckForm = async (req, res) => {
   req.breadcrumbs('Upload and view forms', '/test-developer/upload-and-view-forms')
   res.locals.pageTitle = 'View form'
 
@@ -247,10 +253,23 @@ const displayCheckForm = async (req, res, next) => {
   })
 }
 
+/**
+ * Initial page with form to assign check forms to check windows.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
 const assignCheckFormsToWindowsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Assign forms to check windows'
 
   let checkWindowsData
+  let totalFormsAvailable
+
+  totalFormsAvailable = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+  if (totalFormsAvailable) {
+    totalFormsAvailable = totalFormsAvailable.length
+  }
 
   try {
     checkWindowsData = await checkWindowService.getCurrentCheckWindowsAndCountForms()
@@ -261,6 +280,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-check-forms-to-windows', {
     checkWindowsData: checkWindowsData,
+    totalFormsAvailable,
     breadcrumbs: req.breadcrumbs()
   })
 }

@@ -15,6 +15,7 @@ const checkFormService = require('../../services/check-form.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
 
 const checkFormMock = require('../mocks/check-form')
+const checkFormsMock = require('../mocks/check-forms')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
 const checkFormsByWindowMock = require('../mocks/check-window-by-form')
 const checkWindowMock = require('../mocks/check-window')
@@ -395,18 +396,20 @@ describe('check-form controller:', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(checkFormMock)
+          spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock)
           controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindowsPage
         })
 
         it('should render the correct page', async (done) => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          //spyOn(res, 'render').and.returnValue(null)
+          spyOn(res, 'render').and.returnValue(null)
           req.url = '/test-developer/assign-form-to-window'
           await controller(req, res, next)
           expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(checkFormDataService.fetchSortedActiveForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
-          //expect(res.render).toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           expect(next).not.toHaveBeenCalled()
           done()
@@ -416,6 +419,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - When #getCurrentCheckWindowsAndCountForms fails', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock)
           controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindowsPage
         })
 
@@ -425,6 +429,7 @@ describe('check-form controller:', () => {
           req.url = '/test-developer/assign-form-to-window'
 
           await controller(req, res, next)
+          expect(checkFormDataService.fetchSortedActiveForms).toHaveBeenCalled()
           expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
           expect(res.statusCode).toBe(200)

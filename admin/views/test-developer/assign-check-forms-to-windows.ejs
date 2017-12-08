@@ -45,7 +45,11 @@
                         (<%= checkWindow.totalForms %> forms)
                     </td>
                     <td class="align-right">
+                        <% if (totalFormsAvailable > checkWindow.totalForms) { %>
                         <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
+                        <% } else { %>
+                        <div class="font-greyed-out italic">All forms assigned</div>
+                        <% } %>
                     </td>
                 </tr>
                 <% }) %>
