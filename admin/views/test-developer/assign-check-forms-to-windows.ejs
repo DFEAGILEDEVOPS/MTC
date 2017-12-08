@@ -28,6 +28,14 @@
             Select forms to assign to each window. One form can be allied to different windows.
         </p>
 
+        <% if (totalFormsAvailable < 1) { %>
+        <div class="panel panel-border-wide">
+            <p>
+                There are currently no available forms to assign.<br />
+                <a href="/test-developer/upload-new-form">Add a new form</a>
+            </p>
+        </div>
+        <% } %>
         <% if (Array.isArray(checkWindowsData)) { %>
         <table class="spacious" id="assignFormToWindowList" role="group">
             <thead>
@@ -40,13 +48,15 @@
                 <% checkWindowsData.forEach(checkWindow => { %>
                 <tr>
                     <td>
-                        <% if (checkWindow.totalForms > 0) { %>
+                        <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
                         <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
                         (<%= checkWindow.totalForms %> forms)
                     </td>
                     <td class="align-right">
-                        <% if (totalFormsAvailable > checkWindow.totalForms) { %>
+                        <% if (totalFormsAvailable > checkWindow.totalForms && totalFormsAvailable > 0) { %>
                         <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
+                        <% } else if (totalFormsAvailable === 0) { %>
+                        <div class="font-greyed-out italic">No forms available</div>
                         <% } else { %>
                         <div class="font-greyed-out italic">All forms assigned</div>
                         <% } %>
@@ -55,6 +65,13 @@
                 <% }) %>
             </tbody>
         </table>
+        <% } else { %>
+        <div class="panel panel-border-wide">
+            <p>
+                There are currently no available check windows .<br />
+                Contact the service manager to get new check windows created.
+            </p>
+        </div>
         <% } %>
     </div>
 
