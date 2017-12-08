@@ -1,4 +1,4 @@
-@wip @fix-in-17402
+@wip @fix-in-17402 @assign_to_check_window
 Feature:
   As a test developer
   I want to assign a window for a check form

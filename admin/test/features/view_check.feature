@@ -1,4 +1,4 @@
-
+@view_check
 Feature:
   As a test developer
   I want to preview the check form i have upload

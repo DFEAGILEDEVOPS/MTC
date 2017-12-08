@@ -1,3 +1,4 @@
+@upload_view_forms
 Feature: Upload and View Forms
 
   Background:
