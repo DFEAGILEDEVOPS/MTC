@@ -1,3 +1,4 @@
+@add_multiple_pupil_validation
 Feature: Add Multiple Pupil validation Error
 
   Background:

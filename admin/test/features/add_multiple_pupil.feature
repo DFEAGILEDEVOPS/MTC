@@ -1,3 +1,4 @@
+@add_multiple_pupils
 Feature: Add Multiple Pupil
 
   Background:
