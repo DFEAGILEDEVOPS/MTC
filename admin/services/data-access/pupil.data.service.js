@@ -71,27 +71,24 @@ pupilDataService.find = async function (options) {
 }
 
 /**
- * Update a single object with the new fields from `doc`
- * @param {string} id Object._id
- * @param {Object} doc Document to pass to mongo
+ * Generalised update function - can update many in one transaction
+ * @param query
+ * @param criteria
  * @return {Promise}
  */
-pupilDataService.update = async function (id, doc) {
-  return new Promise((resolve, reject) => {
-    Pupil.updateOne({_id: id}, doc, (error) => {
-      if (error) { return reject(error) }
-      resolve(null)
-    })
-  })
+pupilDataService.update = async function (query, criteria, options = {multi: false}) {
+  return Pupil.update(query, criteria, options).exec()
 }
 
 pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
-  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p))).then(results => {
-    // all pupils saved ok
-    savedPupils = results
-  }, error => { throw new Error(error) }
+  await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p)))
+    .then(results => {
+      // all pupils saved ok
+      savedPupils = results
+    },
+    error => { throw new Error(error) }
   )
   return savedPupils
 }
@@ -105,6 +102,17 @@ pupilDataService.save = async function (data) {
   const pupil = new Pupil(data)
   await pupil.save()
   return pupil.toObject()
+}
+
+
+
+/**
+ * Unset the attendance code for a single pupil
+ * @param id
+ * @return {Promise<*>}
+ */
+pupilDataService.unsetAttendanceCode = async function (id) {
+  return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
 }
 
 module.exports = pupilDataService

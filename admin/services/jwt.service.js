@@ -21,7 +21,7 @@ const jwtService = {
     }
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
-    await pupilDataService.update(pupil._id, {jwtSecret: jwtSecret})
+    await pupilDataService.update({_id: pupil._id}, {jwtSecret: jwtSecret})
 
     // TODO: for additional security add in a device Id
     const payload = {
