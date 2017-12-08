@@ -26,15 +26,15 @@
   }
 }
 .restart-pupil-name {
-  max-width: 33%;
-  min-width: 33%;
+  max-width: pem(150px);
+  min-width: pem(135px);
 }
 .restart-reason {
-   max-width: 33%;
+  max-width: pem(150px);
    min-width: pem(135px);
  }
 .restart-status {
-  max-width: 33%;
+  max-width: pem(150px);
   min-width: pem(135px);
 }
 

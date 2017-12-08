@@ -1,7 +1,8 @@
 const moment = require('moment')
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
+const pupilDataService = require('../services/data-access/pupil.data.service')
+const checkDataService = require('../services/data-access/check.data.service')
+const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
@@ -49,6 +50,8 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @returns {Boolean}
  */
 pinGenerationService.isValid = async (p) => {
+  const checkCount = await checkDataService.count({ pupilId: p._id, checkStartedAt: { $ne: null } })
+  if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p._id)
   return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !canRestart
 }
