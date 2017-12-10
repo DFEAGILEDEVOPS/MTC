@@ -5,6 +5,7 @@ require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
 const TYPES = require('tedious').TYPES
+const moment = require('moment')
 
 describe('sql.service:integration', () => {
   beforeAll(() => {
@@ -64,5 +65,20 @@ describe('sql.service:integration', () => {
     expect(actual).toBeDefined()
     const row = actual[0]
     expect(row.version).toBeUndefined()
+  })
+
+  fit('should store the timezone offset with the datetime value', async () => {
+    await sql.modify(`UPDATE Settings SET questionTimeLimit=5, updatedAt='2017-12-01 15:00:00.000 -08:00' WHERE id=1`)
+    const results = await sql.query('SELECT updatedAt FROM Settings WHERE id=1')
+    expect(results.length).toBe(1)
+    const row = results[0]
+    expect(row.updatedAt).toBeDefined()
+    const actualDateTime = moment(row.updatedAt)
+    const utcOffset = moment.parseZone(actualDateTime).utcOffset()
+    console.log('utcOffset:', utcOffset)
+    const expectedDateTime = moment('2017-12-01 15:00:00.000 -8:00')
+    console.log('actual:', actualDateTime)
+    console.log('expected:', expectedDateTime)
+    expect(actualDateTime).toBe(expectedDateTime)
   })
 })
