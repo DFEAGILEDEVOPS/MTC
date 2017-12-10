@@ -1,1 +1,1 @@
-CREATE SCHEMA [admin];
+CREATE SCHEMA [mtc];

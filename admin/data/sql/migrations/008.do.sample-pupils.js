@@ -27,7 +27,7 @@ function generatePupils () {
         upn: upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
       }
       pupilIdx += 1
-      const sql = `INSERT INTO [admin].pupil (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn, speechSynthesis, isTestAccount) VALUES (${pupil.school}, '${pupil.foreName}', '${pupil.middleNames}', '${pupil.lastName}', '${pupil.gender}', '${pupil.dob.toISOString()}', '${pupil.upn}', 0, 0);`
+      const sql = `INSERT INTO [mtc].pupil (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn, speechSynthesis, isTestAccount) VALUES (${pupil.school}, '${pupil.foreName}', '${pupil.middleNames}', '${pupil.lastName}', '${pupil.gender}', '${pupil.dob.toISOString()}', '${pupil.upn}', 0, 0);`
       pupils.push(sql)
     }
   }

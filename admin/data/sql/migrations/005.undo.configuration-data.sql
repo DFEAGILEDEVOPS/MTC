@@ -1,3 +1,3 @@
-TRUNCATE TABLE [admin].settings;
-TRUNCATE TABLE [admin].attendanceCode;
-TRUNCATE TABLE [admin].[role];
+TRUNCATE TABLE [mtc].settings;
+TRUNCATE TABLE [mtc].attendanceCode;
+TRUNCATE TABLE [mtc].[role];

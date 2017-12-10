@@ -1,4 +1,4 @@
 -- test users
-TRUNCATE TABLE [admin].school;
+TRUNCATE TABLE [mtc].school;
 -- test forms
-TRUNCATE TABLE [admin].pupil;
+TRUNCATE TABLE [mtc].pupil;

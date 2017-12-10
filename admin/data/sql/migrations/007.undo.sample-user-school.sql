@@ -1,2 +1,2 @@
-DELETE [admin].school WHERE name LIKE 'Example School%'
-DELETE [admin].[user] WHERE identifier LIKE 'teacher%'
+DELETE [mtc].school WHERE name LIKE 'Example School%'
+DELETE [mtc].[user] WHERE identifier LIKE 'teacher%'
