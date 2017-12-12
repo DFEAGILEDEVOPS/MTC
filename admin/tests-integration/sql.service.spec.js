@@ -67,7 +67,7 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  fit('should store the timezone offset with the datetime value', async () => {
+  it('should store the timezone offset with the datetime value', async () => {
     const updatedAtDate = moment('2017-12-01 15:00:00.000 -08:00')
     const updatedAtParam = {
       name: 'updatedAt',

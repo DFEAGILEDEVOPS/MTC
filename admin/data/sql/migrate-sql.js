@@ -10,7 +10,7 @@ const postgrator = new Postgrator({
   driver: 'mssql',
   host: process.env.SQL_SERVER,
   port: process.env.SQL_PORT || 1433,
-  database: process.env.SQL_DATABASE, // this wont exist??
+  database: process.env.SQL_DATABASE,
   username: process.env.SQL_ADMIN_USER,
   password: process.env.SQL_ADMIN_USER_PASSWORD,
   // Schema table name. Optional. Default is schemaversion

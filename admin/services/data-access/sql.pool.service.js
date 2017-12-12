@@ -51,6 +51,7 @@ sqlPoolService.getConnection = () => {
     pool.acquire(function (err, connection) {
       if (err) {
         reject(err)
+        return
       }
       resolve(connection)
     })

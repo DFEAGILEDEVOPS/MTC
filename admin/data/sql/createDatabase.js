@@ -9,11 +9,11 @@ const adminConfig = {
   userName: process.env.SQL_ADMIN_USER,
   password: process.env.SQL_ADMIN_USER_PASSWORD,
   server: process.env.SQL_SERVER,
-  port: process.env.SQL_PORT || 1433,
   options: {
     database: 'master',
     encrypt: true,
-    requestTimeout: twoMinutesInMilliseconds
+    requestTimeout: twoMinutesInMilliseconds,
+    port: process.env.SQL_PORT || 1433
   }
 }
 
@@ -22,7 +22,10 @@ const executeRequest = (connection, sql) => {
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
-      if (err) reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       resolve(results)
     })
 
@@ -35,9 +38,13 @@ const executeRequest = (connection, sql) => {
 
 const createDatabase = async (connection) => {
   try {
-    console.log(`attempting to create database ${process.env.SQL_DATABASE} if it does not already exist...`)
-    const output = await executeRequest(connection,
-      `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}] (SERVICE_OBJECTIVE = '${process.env.SQL_SCALE}'); SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`)
+    let azureOnlyScaleSetting = ''
+    if (process.env.SQL_SCALE) {
+      azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = ${process.env.SQL_SCALE})`
+    }
+    console.log(`attempting to create database ${process.env.SQL_DATABASE} ${azureOnlyScaleSetting} if it does not already exist...`)
+    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
+    const output = await executeRequest(connection, createDbSql)
     console.log(output[0][0].value)
   } catch (error) {
     console.error(error)
@@ -46,9 +53,13 @@ const createDatabase = async (connection) => {
 
 const main = () => {
   return new Promise((resolve, reject) => {
+    console.log(`attempting to connect to ${adminConfig.server} on ${adminConfig.port} `)
     const connection = new Connection(adminConfig)
     connection.on('connect', (err) => {
-      if (err) reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       createDatabase(connection).then(() => {
         connection.close()
         resolve()

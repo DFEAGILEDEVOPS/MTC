@@ -36,12 +36,16 @@ sqlService.query = (sql, params) => {
       con = await sqlPoolService.getConnection()
     } catch (error) {
       reject(error)
+      return
     }
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
       con.release()
-      if (err) reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       resolve(parseResults(results))
     })
 
@@ -71,8 +75,11 @@ sqlService.modify = (sql, params) => {
     const con = await sqlPoolService.getConnection()
 
     var request = new Request(sql, function (err, rowCount) {
-      if (err) reject(err)
       con.release()
+      if (err) {
+        reject(err)
+        return
+      }
       resolve(rowCount)
     })
 
