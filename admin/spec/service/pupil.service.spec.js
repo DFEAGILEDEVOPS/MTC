@@ -10,11 +10,11 @@ const schoolMock = require('../mocks/school')
 /* global describe, it, expect, spyOn */
 
 describe('pupil service', () => {
+
+  const getPupil = () => R.assoc('school', R.clone(schoolMock), pupilMock)
+
   const pupilMockPromise = () => {
-    const newPupil = R.clone(pupilMock)
-    const newSchool = R.clone(schoolMock)
-    newPupil.school = newSchool
-    return Promise.resolve(newPupil)
+    return Promise.resolve(getPupil())
   }
 
   function setupService (pupilDataService) {
