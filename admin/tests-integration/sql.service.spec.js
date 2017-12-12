@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach beforeAll afterEach it xit expect jasmine spyOn fail */
+/* global describe beforeEach beforeAll afterEach it fit xit expect jasmine spyOn fail */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
@@ -68,8 +68,20 @@ describe('sql.service:integration', () => {
   })
 
   fit('should store the timezone offset with the datetime value', async () => {
-    await sql.modify(`UPDATE Settings SET questionTimeLimit=5, updatedAt='2017-12-01 15:00:00.000 -08:00' WHERE id=1`)
-    const results = await sql.query('SELECT updatedAt FROM Settings WHERE id=1')
+    const updatedAtParam = {
+      name: 'updatedAt',
+      type: TYPES.DateTimeOffset,
+      value: moment('2017-12-01 15:00:00.000 -08:00')
+    }
+    const idParam = {
+      name: 'id',
+      type: TYPES.Int,
+      value: 1
+    }
+    const updateSql = 'UPDATE Settings SET questionTimeLimit=5, updatedAt=@updatedAt WHERE id=@id'
+    await sql.modify(updateSql, [updatedAtParam, idParam])
+    const selectSql = 'SELECT updatedAt FROM Settings WHERE id=@id'
+    const results = await sql.query(selectSql, [idParam])
     expect(results.length).toBe(1)
     const row = results[0]
     expect(row.updatedAt).toBeDefined()
