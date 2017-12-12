@@ -68,10 +68,11 @@ describe('sql.service:integration', () => {
   })
 
   fit('should store the timezone offset with the datetime value', async () => {
+    const updatedAtDate = moment('2017-12-01 15:00:00.000 -08:00')
     const updatedAtParam = {
       name: 'updatedAt',
       type: TYPES.DateTimeOffset,
-      value: moment('2017-12-01 15:00:00.000 -08:00')
+      value: updatedAtDate
     }
     const idParam = {
       name: 'id',
@@ -88,9 +89,8 @@ describe('sql.service:integration', () => {
     const actualDateTime = moment(row.updatedAt)
     const utcOffset = moment.parseZone(actualDateTime).utcOffset()
     console.log('utcOffset:', utcOffset)
-    const expectedDateTime = moment('2017-12-01 15:00:00.000 -8:00')
     console.log('actual:', actualDateTime)
-    console.log('expected:', expectedDateTime)
-    expect(actualDateTime).toBe(expectedDateTime)
+    console.log('expected:', updatedAtDate)
+    expect(actualDateTime).toBe(updatedAtDate)
   })
 })
