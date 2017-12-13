@@ -1,25 +1,28 @@
 'use strict'
 
 require('dotenv').config()
+const config = require('../../config')
 const Postgrator = require('postgrator')
 const path = require('path')
 const createDatabaseIfNotExists = require('./createDatabase')
 
-const postgrator = new Postgrator({
+const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
   driver: 'mssql',
-  host: process.env.SQL_SERVER,
-  port: process.env.SQL_PORT || 1433,
-  database: process.env.SQL_DATABASE,
-  username: process.env.SQL_ADMIN_USER,
-  password: process.env.SQL_ADMIN_USER_PASSWORD,
+  host: config.Sql.Server,
+  port: config.Sql.Port,
+  database: config.Sql.Database,
+  username: config.Sql.Migrator.Username,
+  password: config.Sql.Migrator.Password,
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {
     encrypt: true
   },
   validateChecksums: false
-})
+}
+console.log(migratorConfig)
+const postgrator = new Postgrator(migratorConfig)
 
 createDatabaseIfNotExists()
   .then(() => {
