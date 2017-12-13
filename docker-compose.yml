@@ -15,7 +15,7 @@ services:
 #    volumes:
 #    - ./admin:/usr/src/app
     environment:
-      MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
+      MONGO_CONNECTION_STRING: "mongodb://mtc_mongo/mtc"
     depends_on:
     - sqldb
     - mongo
