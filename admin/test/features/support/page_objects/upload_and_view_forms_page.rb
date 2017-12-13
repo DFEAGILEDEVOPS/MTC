@@ -35,7 +35,6 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :content, '.modal-content p'
     element :cancel, '.modal-cancel'
     element :confirm, '.modal-confirm'
-
   end
 
   section :errors, '.error-summary' do

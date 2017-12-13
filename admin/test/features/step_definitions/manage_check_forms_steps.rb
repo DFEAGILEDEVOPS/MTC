@@ -120,3 +120,33 @@ Then(/^the check form should be displayed as being assigned to multiple check wi
   check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
   expect(check_row.assigned_to.text).to eql @window_2_name.split(' ').first + ' ' + @window_1_name.split(' ').first
 end
+
+Then(/^the check form should not be removable$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row).to have_no_remove_form
+end
+
+Then(/^I should be able to remove the check form$/) do
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row).to have_no_remove_form
+  check_row.remove_form.click
+end
+
+Given(/^I have assigned a check to a check window$/) do
+  step "I have uploaded a check form"
+  step "I have assigned the check form to a check window"
+end
+
+When(/^I decide i want to remove the check from the check window$/) do
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  window.name_of_window.click
+  check_row = unassign_form_page.check_forms.rows.find{|row| row.name_of_form.text == @file_name.split('.').first}
+  check_row.remove_from_window.click
+end
+
+Then(/^the check should be unassigned from that check window$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row.assigned_to.text).to eql 'Unassigned'
+end

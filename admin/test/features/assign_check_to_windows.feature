@@ -32,3 +32,20 @@ Feature:
     When I have assigned the check form to multiple check windows
     Then the check form should be displayed as being assigned to multiple check windows
 
+  @create_new_window
+  Scenario: Users cannot remove assigned forms
+    Given I have uploaded a check form
+    When I have assigned the check form to a check window
+    Then the check form should not be removable
+
+  @create_new_window
+  Scenario: Users can remove unassigned forms
+    Given I have uploaded a check form
+    Then I should be able to remove the check form
+
+  @create_new_window
+  Scenario: Users can remove a check assigned to a window
+    Given I have assigned a check to a check window
+    When I decide i want to remove the check from the check window
+    Then the check should be unassigned from that check window
+
