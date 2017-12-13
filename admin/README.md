@@ -80,7 +80,7 @@ SQL Server specific environment variables
 * SQL_DATABASE - the database to connect to
 * SQL_PORT - the port to connect on, defaults to 1433
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
-* SQL_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
+* SQL_AZURE_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
 
 #### Using SQL Server
 

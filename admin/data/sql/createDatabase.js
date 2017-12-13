@@ -39,8 +39,8 @@ const executeRequest = (connection, sql) => {
 const createDatabase = async (connection) => {
   try {
     let azureOnlyScaleSetting = ''
-    if (process.env.SQL_SCALE) {
-      azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${process.env.SQL_SCALE}')`
+    if (process.env.SQL_AZURE_SCALE) {
+      azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${process.env.SQL_AZURE_SCALE}')`
     }
     console.log(`attempting to create database ${process.env.SQL_DATABASE} ${azureOnlyScaleSetting} if it does not already exist...`)
     const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${process.env.SQL_DATABASE}') BEGIN CREATE DATABASE [${process.env.SQL_DATABASE}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
