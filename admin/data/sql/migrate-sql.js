@@ -17,7 +17,8 @@ const postgrator = new Postgrator({
   schemaTable: 'migrationLog',
   options: {
     encrypt: true
-  }
+  },
+  validateChecksums: false
 })
 
 createDatabaseIfNotExists()
