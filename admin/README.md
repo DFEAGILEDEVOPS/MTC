@@ -74,13 +74,13 @@ SQL Server specific environment variables
 * SQL_APP_NAME - the name of the application added to log traces.  very useful for debugging
 * SQL_APP_USER - the username that the application connects as (should be a database level user _only_)
 * SQL_APP_USER_PASSWORD - password for the SQL_APP_USER
-* SQL_ADMIN_USER - the server level user account used to perform database migrations.  To be extracted to dedicated migration app soon
-* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.  To be extracted to dedicated migration app soon
+* SQL_ADMIN_USER - the server level user account used to perform database migrations.
+* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.
 * SQL_SERVER - the server to connect to
 * SQL_DATABASE - the database to connect to
 * SQL_PORT - the port to connect on, defaults to 1433
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
-* SQL_SCALE - the azure specific scale setting for the database.  To be extracted to dedicated migration app soon
+* SQL_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
 
 #### Using SQL Server
 

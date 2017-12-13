@@ -62,4 +62,3 @@ data/files/*
 
 # dotenv files
 .env
-*.env
