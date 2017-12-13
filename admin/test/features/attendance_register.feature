@@ -1,4 +1,4 @@
-@wip
+@wip @attendance_register
 Feature: Attendance register
 
   As a head teacher

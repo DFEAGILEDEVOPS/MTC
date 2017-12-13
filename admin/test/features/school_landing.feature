@@ -1,8 +1,8 @@
+@school_landing
 Feature:
   As a member of staff
   I want to have a central page as a starting point
   So that I can easily get to where I need to go
-
 
   Scenario Outline: Teachers school is displayed
     Given I have signed in with <teacher>

@@ -204,7 +204,7 @@ controller.postEditPupil = async (req, res, next) => {
   pupil.dob = dateService.createFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
 
   try {
-    await pupilDataService.update(pupil._id, pupil)
+    await pupilDataService.update({_id: pupil._id}, pupil)
     req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
     // TODO: handle mongoose validation error?

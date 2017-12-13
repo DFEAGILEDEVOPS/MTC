@@ -1,4 +1,4 @@
-@timer_reset
+@timer_reset @time_between_questions
 Feature: Time between questions
   I want to be able to vary the time given to pupils between questions during the check
   As a STA Researcher
@@ -14,7 +14,6 @@ Feature: Time between questions
   Scenario: The 'Time between questions' contains the value it was last populated with
     When I have updated the time between questions to 3 seconds
     Then I should see that time between questions is set to 3 seconds
-
 
   Scenario Outline: Error message is shown when the input for Time between questions is not valid
     When I attempt to enter time between questions as <value> seconds

@@ -24,7 +24,7 @@ describe('pupils-not-taking-check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Pupil).expects('find').chain('sort').resolves(pupilsWithReasonsMock)
+      mock = sandbox.mock(Pupil).expects('find').chain('sort').chain('lean').chain('exec').resolves(pupilsWithReasonsMock)
       service = proxyquire('../../../services/data-access/pupils-not-taking-check.data.service', {
         '../../models/pupil': Pupil
       })
@@ -40,7 +40,7 @@ describe('pupils-not-taking-check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(AttendanceCode).expects('find').chain('sort').resolves(attendanceCodesMock)
+      mock = sandbox.mock(AttendanceCode).expects('find').chain('sort').chain('lean').chain('exec').resolves(attendanceCodesMock)
       service = proxyquire('../../../services/data-access/pupils-not-taking-check.data.service', {
         '../../models/attencance-code': AttendanceCode
       })

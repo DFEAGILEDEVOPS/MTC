@@ -47,7 +47,7 @@ pinService.expirePupilPin = async (token, checkCode) => {
   const currentTimeStamp = moment.utc()
   await checkDataService.update({checkCode: checkCode}, { '$set': { checkStartedAt: currentTimeStamp } })
   if (!pupil.isTestAccount) {
-    await pupilDataService.update(pupil._id, { pinExpiresAt: currentTimeStamp, pin: null })
+    await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
   }
 }
 

@@ -1,3 +1,4 @@
+@pupil_auth
 Feature:
   Pupil auth
 

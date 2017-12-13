@@ -17,7 +17,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
   // If pin expiration request failed previously ensure it is updated now
   if (pupil && pupil.pin && !pupil.isTestAccount) {
-    await pupilDataService.update(pupil._id, { pinExpiresAt: moment.utc(), pin: null })
+    await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request
   completedCheck.receivedByServerAt = moment.utc()
