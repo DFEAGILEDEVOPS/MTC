@@ -1,6 +1,5 @@
 const moment = require('moment')
 const Promise = require('bluebird')
-const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -157,7 +156,7 @@ restartService.getSubmittedRestarts = async schoolId => {
 restartService.getStatus = async pupilId => {
   const restartCodes = await pupilRestartDataService.getRestartCodes()
   const getStatus = (value) => {
-    const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
+    const entry = restartCodes && restartCodes.find(r => r.code === value)
     return entry && entry.status
   }
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
