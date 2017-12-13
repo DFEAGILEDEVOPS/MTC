@@ -38,6 +38,6 @@ createDatabaseIfNotExists()
         error.appliedMigrations.forEach(migration => {
           console.log(migration.name)
         })
-        process.exit()
+        process.exit(1)
       })
   })
