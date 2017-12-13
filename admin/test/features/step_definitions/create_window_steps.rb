@@ -1,3 +1,11 @@
+Given(/^I have created a check window$/) do
+  step "I am on the create a check window page"
+  step "I submit details for a valid check window"
+  step "I should see it added to the list of windows"
+  step "stored correctly in the database"
+end
+
+
 Given(/^I am on the create a check window page$/) do
   step 'I am logged in with a service manager'
   admin_page.manage_check_windows.click
