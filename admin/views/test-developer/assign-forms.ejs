@@ -1,8 +1,8 @@
 <div class="grid-row">
-    <div class="column-one-half">
+    <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
-    <div class="column-one-half">
+    <div class="column-one-third">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
@@ -52,13 +52,13 @@
                     <% checkFormsList.forEach(checkForm => { %>
                     <tr>
                         <td>
-                            <label for="check-form-<%= checkForm._id %>">
+                            <label for="checkForm<%= checkForm._id %>">
                                 <%= checkForm.name %>
                             </label>
                         </td>
                         <td class="align-right">
                             <div class="multiple-choice-mtc">
-                                <input id="checkForm-<%= checkForm._id %>"
+                                <input id="checkForm<%= checkForm._id %>"
                                        name="checkForm[<%= checkForm._id %>]"
                                        type="checkbox"
                                        value="<%= checkForm._id %>"
@@ -100,6 +100,7 @@
     </div>
     <%- partial('partials/_sticky_confirmation_banner',
         {
+            countingLabel: 'Form(s)',
             cancelLabel: 'Cancel',
             cancelLink: '/test-developer/assign-form-to-window',
             submitLabel: 'Confirm',

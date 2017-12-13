@@ -40,7 +40,7 @@ const checkWindowService = {
       let data = {}
 
       try {
-        checkWindows = await checkWindowDataService.fetchCheckWindows()
+        checkWindows = await checkWindowDataService.fetchCurrentCheckWindows()
       } catch (error) {
         reject(error)
       }

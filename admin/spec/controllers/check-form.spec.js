@@ -1,7 +1,6 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
-const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
 
 const sinon = require('sinon')
@@ -62,7 +61,7 @@ describe('check-form controller:', () => {
 
     describe('#getTestDeveloperHomePage - Happy path', () => {
       beforeEach(() => {
-        controller = proxyquire('../../controllers/check-form', {}).getTestDeveloperHomePage
+        controller = require('../../controllers/check-form').getTestDeveloperHomePage
       })
 
       it('should render the \'test-developer\'s the landing page', async (done) => {
@@ -86,7 +85,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(sortingAttributesService, 'getAttributes').and.returnValue({htmlSortDirection, arrowSortDirection})
           spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(checkFormsFormattedMock)
-          controller = proxyquire('../../controllers/check-form', {}).uploadAndViewFormsPage
+          controller = require('../../controllers/check-form').uploadAndViewFormsPage
         })
 
         it('should take me to \'Upload and view forms\' page', async (done) => {
@@ -107,7 +106,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(sortingAttributesService, 'getAttributes').and.returnValue({htmlSortDirection, arrowSortDirection})
           spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(Promise.reject(new Error('Error')))
-          controller = proxyquire('../../controllers/check-form', {}).uploadAndViewFormsPage
+          controller = require('../../controllers/check-form').uploadAndViewFormsPage
         })
 
         it('should execute next if #formatCheckFormsAndWindows fails', async (done) => {
@@ -132,7 +131,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
           spyOn(checkFormService, 'unassignedCheckFormsFromCheckWindows').and.returnValue(checkFormsFormattedMock)
           spyOn(checkWindowService, 'markAsDeleted').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).removeCheckForm
+          controller = require('../../controllers/check-form').removeCheckForm
         })
 
         it('should soft delete a form and redirect the user', async (done) => {
@@ -155,7 +154,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
           spyOn(checkFormService, 'unassignedCheckFormsFromCheckWindows').and.returnValue(checkFormsFormattedMock)
           spyOn(checkWindowService, 'markAsDeleted').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).removeCheckForm
+          controller = require('../../controllers/check-form').removeCheckForm
         })
 
         it('should execute next', async (done) => {
@@ -179,7 +178,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'unassignedCheckFormsFromCheckWindows').and.returnValue(checkFormsFormattedMock)
           spyOn(checkWindowService, 'markAsDeleted').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).removeCheckForm
+          controller = require('../../controllers/check-form').removeCheckForm
         })
 
         it('should execute next', async (done) => {
@@ -200,7 +199,7 @@ describe('check-form controller:', () => {
 
     describe('#uploadCheckForm - Happy path', () => {
       beforeEach(() => {
-        controller = proxyquire('../../controllers/check-form', {}).uploadCheckForm
+        controller = require('../../controllers/check-form').uploadCheckForm
       })
 
       it('should take me to the upload file page', async (done) => {
@@ -243,7 +242,7 @@ describe('check-form controller:', () => {
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
           spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+          controller = require('../../controllers/check-form').saveCheckForm
         })
 
         it('should save the form and redirect the user', async (done) => {
@@ -273,7 +272,7 @@ describe('check-form controller:', () => {
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
           spyOn(checkFormDataService, 'create').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+          controller = require('../../controllers/check-form').saveCheckForm
         })
 
         it('should execute next when #create fails', async (done) => {
@@ -303,7 +302,7 @@ describe('check-form controller:', () => {
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
           spyOn(checkFormDataService, 'create').and.returnValue((Promise.resolve(checkFormMock)))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+          controller = require('../../controllers/check-form').saveCheckForm
         })
 
         it('should handle #populateFromFile failure', async (done) => {
@@ -334,7 +333,7 @@ describe('check-form controller:', () => {
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
           spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+          controller = require('../../controllers/check-form').saveCheckForm
         })
 
         it('should handle #buildFormName failure', async (done) => {
@@ -365,7 +364,7 @@ describe('check-form controller:', () => {
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
-          controller = proxyquire('../../controllers/check-form', {}).saveCheckForm
+          controller = require('../../controllers/check-form').saveCheckForm
         })
 
         it('should handle #validateCheckFormName failure', async (done) => {
@@ -397,7 +396,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
           spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
           spyOn(checkFormService, 'canDelete').and.returnValue(false)
-          controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+          controller = require('../../controllers/check-form').displayCheckForm
         })
 
         it('should take me to the form page detail', async (done) => {
@@ -423,7 +422,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
           spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
           spyOn(checkFormService, 'canDelete').and.returnValue(false)
-          controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+          controller = require('../../controllers/check-form').displayCheckForm
         })
 
         it('should redirect the user if #getActiveFormPlain fails', async (done) => {
@@ -446,7 +445,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
           spyOn(checkFormService, 'canDelete').and.returnValue(false)
-          controller = proxyquire('../../controllers/check-form', {}).displayCheckForm
+          controller = require('../../controllers/check-form').displayCheckForm
         })
 
         it('should redirect the user if #getCheckWindowsAssignedToForms fails', async (done) => {
@@ -470,7 +469,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(checkFormMock)
           spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock)
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindowsPage
+          controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
 
         it('should render the correct page', async (done) => {
@@ -493,7 +492,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock)
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormsToWindowsPage
+          controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
 
         it('should render the correct page', async (done) => {
@@ -517,7 +516,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindowPage
+          controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
 
         it('should render the correct page', async (done) => {
@@ -542,7 +541,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindowPage
+          controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
 
         it('should execute next', async (done) => {
@@ -572,7 +571,7 @@ describe('check-form controller:', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
-          controller = proxyquire('../../controllers/check-form', {}).assignCheckFormToWindowPage
+          controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
 
         it('should execute next', async (done) => {
@@ -603,10 +602,10 @@ describe('check-form controller:', () => {
       describe('Happy path', () => {
         const mergedFormIds = [5, 6, 7, 8]
         beforeEach(() => {
-          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowsMock)
+          spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkWindowService, 'mergedFormIds').and.returnValue(mergedFormIds)
           spyOn(checkFormDataService, 'create').and.returnValue(Promise.resolve(checkFormMock))
-          controller = proxyquire('../../controllers/check-form', {}).saveAssignCheckFormsToWindow
+          controller = require('../../controllers/check-form').saveAssignCheckFormsToWindow
         })
 
         it('should redirect the user', async (done) => {
@@ -619,18 +618,14 @@ describe('check-form controller:', () => {
             checkWindowId: '59e88622d38a9f2d1fcebbb3',
             checkForm: [5, 6, 7]
           }
-          
-          try {
-            await controller(req, res, next)
-            expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
-            expect(checkWindowService.mergedFormIds).toHaveBeenCalled()
-            // expect(checkFormDataService.create).toHaveBeenCalled()
-            // expect(res.statusCode).toBe(302)
-            // expect(next).not.toHaveBeenCalled()
-            done()
-          } catch (error) {
-            expect(error).toBe('not thrown')
-          }
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.fetchCheckWindow).toHaveBeenCalled()
+          expect(checkWindowService.mergedFormIds).toHaveBeenCalled()
+          // expect(checkFormDataService.create).toHaveBeenCalled()
+          // expect(res.statusCode).toBe(302)
+          // expect(next).not.toHaveBeenCalled()
+          done()
         })
       })
     })
@@ -643,7 +638,7 @@ describe('check-form controller:', () => {
           ]
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
-          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+          controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
         })
 
         it('should render the correct page', async (done) => {
@@ -671,7 +666,7 @@ describe('check-form controller:', () => {
           ]
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
-          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+          controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
         })
 
         it('should execute next if #fetchCheckWindow fails', async (done) => {
@@ -697,7 +692,7 @@ describe('check-form controller:', () => {
       beforeEach(() => {
         spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
         spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
-        controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormsFromWindowPage
+        controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
       })
 
       it('should execute next if #getAssignedFormsForCheckWindow fails', async (done) => {
@@ -742,7 +737,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
           spyOn(checkWindowDataService, 'create')
-          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+          controller = require('../../controllers/check-form').unassignCheckFormFromWindow
         })
 
         it('should save and redirect the user', async (done) => {
@@ -768,7 +763,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
           spyOn(checkWindowDataService, 'create')
-          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+          controller = require('../../controllers/check-form').unassignCheckFormFromWindow
         })
 
         it('should execute next if #checkWindowDataService.fetchCheckWindow fails', async (done) => {
@@ -794,7 +789,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowDataService, 'fetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkFormService, 'removeFormIdFromArray').and.returnValue(finalCheckForms)
           spyOn(checkWindowDataService, 'create').and.returnValue(Promise.reject(new Error('Error')))
-          controller = proxyquire('../../controllers/check-form', {}).unassignCheckFormFromWindow
+          controller = require('../../controllers/check-form').unassignCheckFormFromWindow
         })
 
         it('should redirect the user and show a flash message if #checkWindowDataService.create fails', async (done) => {
