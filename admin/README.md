@@ -70,11 +70,17 @@ dotenv is installed and will load environment variables from a `.env` file store
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
 * SQL_POOL_MAX_COUNT - the maximum number of connections in the pool
+* SQL_POOL_LOG_ENABLED - enables console logging of connection pool activity
 * SQL_APP_NAME - the name of the application added to log traces.  very useful for debugging
-* SQL_USER - the username for the credentials
-* SQL_PASSWORD - the password for the credentials
+* SQL_APP_USER - the username that the application connects as (should be a database level user _only_)
+* SQL_APP_USER_PASSWORD - password for the SQL_APP_USER
+* SQL_ADMIN_USER - the server level user account used to perform database migrations.  To be extracted to dedicated migration app soon
+* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.  To be extracted to dedicated migration app soon
 * SQL_SERVER - the server to connect to
 * SQL_DATABASE - the database to connect to
+* SQL_PORT - the port to connect on, defaults to 1433
+* SQL_TIMEOUT - the time in milliseconds before an operation times out
+* SQL_SCALE - the azure specific scale setting for the database.  To be extracted to dedicated migration app soon
 
 #### Using SQL Server
 
@@ -86,7 +92,11 @@ Example usage can be found [here](./sql.usage.example.js)
 
 `yarn test`
 
-### Running database migrations
+### Running SQL Server migrations
+
+We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
+
+### Running mongo migrations
 
 You will need a local mongo datastore.  SQL Server migrations are yet to be added at this stage.
 
