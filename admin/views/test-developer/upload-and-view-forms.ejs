@@ -31,7 +31,7 @@
             <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
         </p>
 
-        <% if (Array.isArray(forms)) { %>
+        <% if (Array.isArray(forms) && forms.length > 0) { %>
         <div class="group">
             <table class="spacious sorting" id="checkFormsList" role="group">
                 <thead>
