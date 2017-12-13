@@ -1,4 +1,4 @@
-@wip @fix-in-17402 @assign_to_check_window
+@assign_to_check_window
 Feature:
   As a test developer
   I want to assign a window for a check form
@@ -19,19 +19,16 @@ Feature:
     Given I am on the assign check window page
     Then I should see check windows
 
-  @wip
-  Scenario: Check windows have a title
-    Given I am on the assign check window page
-    Then check windows should have a title
-
-  @wip
-  Scenario: Users can attach a check form to a check window
+  @create_new_window
+  Scenario: Users can assign a check form to a check window
     Given I have uploaded a check form
     When I have assigned the check form to a check window
     Then the check form should be displayed as being assigned to the check window
+    And should show what form is assigned on the upload and view forms pge
 
-  @wip
-  Scenario: Users can attach a check form to multiple check windows
-    Given I previously assigned a check form to a check window
-    When I have assigned the check form to another check window
-    Then the check form should be displayed as being assigned to multiple check window
+  @create_new_window
+  Scenario: Users can assign a form to multiple check windows
+    Given I have uploaded a check form
+    When I have assigned the check form to multiple check windows
+    Then the check form should be displayed as being assigned to multiple check windows
+
