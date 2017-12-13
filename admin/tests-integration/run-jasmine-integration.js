@@ -6,7 +6,7 @@ const jasmine = new Jasmine()
 const jasmineConfig = require('./../spec/support/jasmine.integration.json')
 jasmine.loadConfig(jasmineConfig)
 // long timeout for SQL table build
-jasmine.jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
+jasmine.jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000
 
 // setup console reporter
 const JasmineConsoleReporter = require('jasmine-console-reporter')

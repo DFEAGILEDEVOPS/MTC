@@ -67,12 +67,14 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  it('should store the timezone offset with the datetime value', async () => {
-    const updatedAtDate = moment('2017-12-01 15:00:00.000 -08:00')
+  it('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
+    const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
+    const britishSummerTimeValue = moment(fullDateFormat)
+    console.log('moment.format:', britishSummerTimeValue.format(fullDateFormat))
     const updatedAtParam = {
       name: 'updatedAt',
-      type: TYPES.DateTimeOffset,
-      value: updatedAtDate
+      type: TYPES.NVarChar,
+      value: britishSummerTimeValue.format(fullDateFormat)
     }
     const idParam = {
       name: 'id',
@@ -80,17 +82,82 @@ describe('sql.service:integration', () => {
       value: 1
     }
     const updateSql = 'UPDATE Settings SET questionTimeLimit=5, updatedAt=@updatedAt WHERE id=@id'
-    await sql.modify(updateSql, [updatedAtParam, idParam])
+    try {
+      await sql.modify(updateSql, [updatedAtParam, idParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+    }
     const selectSql = 'SELECT updatedAt FROM Settings WHERE id=@id'
-    const results = await sql.query(selectSql, [idParam])
-    expect(results.length).toBe(1)
-    const row = results[0]
-    expect(row.updatedAt).toBeDefined()
-    const actualDateTime = moment(row.updatedAt)
-    const utcOffset = moment.parseZone(actualDateTime).utcOffset()
-    console.log('utcOffset:', utcOffset)
+    let results
+    try {
+      results = await sql.query(selectSql, [idParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+    }
+    try {
+      expect(results.length).toBe(1)
+      const row = results[0]
+      expect(row.updatedAt).toBeDefined()
+      console.log('raw stored date:', row.updatedAt)
+      const actualDateTime = moment(row.updatedAt)
+      console.log('stored date to string:', actualDateTime.toString())
+      const utcOffset = moment.parseZone(actualDateTime).utcOffset()
+      expect(utcOffset).toBe(60)
+      expect(actualDateTime.milliseconds()).toBe(123)
+    } catch (err) {
+      fail(err)
+    }
+
+    /* console.log('utcOffset:', utcOffset)
     console.log('actual:', actualDateTime)
-    console.log('expected:', updatedAtDate)
-    expect(actualDateTime).toBe(updatedAtDate)
+    console.log('expected:', britishSummerTimeValue)
+    expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString()) */
+  })
+
+  it('should store the timezone offset with the datetime value', async () => {
+    const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00')
+    const updatedAtParam = {
+      name: 'updatedAt',
+      type: TYPES.DateTimeOffset,
+      value: updatedAtDate.toISOString()
+    }
+    const idParam = {
+      name: 'id',
+      type: TYPES.Int,
+      value: 1
+    }
+    const updateSql = 'UPDATE Settings SET questionTimeLimit=5, updatedAt=@updatedAt WHERE id=@id'
+    try {
+      await sql.modify(updateSql, [updatedAtParam, idParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+      return
+    }
+    const selectSql = 'SELECT updatedAt FROM Settings WHERE id=@id'
+    let results
+    try {
+      results = await sql.query(selectSql, [idParam])
+    } catch (err) {
+      console.log(err)
+      fail(err)
+      return
+    }
+    try {
+      expect(results.length).toBe(1)
+      const row = results[0]
+      expect(row.updatedAt).toBeDefined()
+      const actualDateTime = moment(row.updatedAt)
+      const utcOffset = moment.parseZone(actualDateTime).utcOffset()
+      console.log('utcOffset:', utcOffset)
+      console.log('actual:', actualDateTime)
+      console.log('expected:', updatedAtDate)
+      expect(actualDateTime.toISOString()).toBe(updatedAtDate.toISOString())
+    } catch (err) {
+      console.log(err)
+      fail(err)
+    }
   })
 })

@@ -15,11 +15,12 @@ var connectionConfig = {
   userName: process.env.SQL_APP_USER,
   password: process.env.SQL_APP_USER_PASSWORD,
   server: process.env.SQL_SERVER,
-  port: process.env.SQL_PORT || 1433,
   options: {
+    port: process.env.SQL_PORT || 1433,
     database: process.env.SQL_DATABASE,
     encrypt: true,
-    requestTimeout: process.env.SQL_TIMEOUT
+    requestTimeout: process.env.SQL_TIMEOUT,
+    useUTC: false
   }
 }
 
