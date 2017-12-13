@@ -131,7 +131,7 @@ $(function () {
      * @param checkboxParent
      */
     countCheckboxes: function (checkboxParent) {
-      var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked')
+      var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
       $('#totalPupilsSelected').text(el.length)
     }
   }
