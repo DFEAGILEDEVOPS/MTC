@@ -7,10 +7,8 @@ const createLocalSqlUser = `CREATE LOGIN mtcAdminUser WITH PASSWORD = '${process
 // TODO test on sql azure
 module.exports.generateSql = function () {
   if (process.env.SQL_SCALE) {
-    console.log('creating azure user')
     return createAzureUser
   } else {
-    console.log('creating local sql user')
     return createLocalSqlUser
   }
 }
