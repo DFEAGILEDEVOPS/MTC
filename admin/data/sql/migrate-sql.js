@@ -22,7 +22,7 @@ const migratorConfig = {
   },
   validateChecksums: false
 }
-console.log(migratorConfig)
+
 const postgrator = new Postgrator(migratorConfig)
 
 createDatabaseIfNotExists()
