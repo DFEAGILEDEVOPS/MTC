@@ -54,7 +54,7 @@ restartService.isPupilEligible = async (p) => {
  * @param restartReason
  * @param didNotCompleteInfo
  * @param restartFurtherInfo
- * @param userId
+ * @param userName
  * @returns {Promise.<void>}
  */
 
@@ -65,7 +65,7 @@ restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, r
   if (!canAllPupilsRestart) {
     throw new Error(`One of the pupils is not eligible for a restart`)
   }
-  const submitted = await Promise.all(pupilsList.map(async pupilId => {
+  return Promise.all(pupilsList.map(async pupilId => {
     const pupilRestartData = {
       pupilId,
       recordedByUser: userName,
@@ -76,7 +76,6 @@ restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, r
     }
     return pupilRestartDataService.create(pupilRestartData)
   }))
-  return submitted
 }
 
 /**
@@ -134,6 +133,7 @@ restartService.getSubmittedRestarts = async schoolId => {
     if (record) {
       restarts.push({
         _id: record._id,
+        pupilId: p._id,
         reason: record.reason,
         status: record.status,
         foreName: p.foreName,
@@ -161,9 +161,24 @@ restartService.getStatus = async pupilId => {
   }
   const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
-  if (pupilRestartsCount === restartService.totalRestartsAllowed || checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
+  if (checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
   if (checkCount === pupilRestartsCount) return getStatus('REM')
   if (checkCount === pupilRestartsCount + 1) return getStatus('TKN')
+}
+
+/**
+ * Mark as deleted the latest pupil's restart
+ * @param pupilId
+ * @returns {String}
+ */
+
+restartService.markDeleted = async pupilId => {
+  const pupil = await pupilDataService.findOne({_id: pupilId})
+  const lastStartedCheck = await checkDataService.findLatestCheck({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
+  const updated = await pupilRestartDataService.update({pupilId: pupilId, isDeleted: false}, { '$set': { isDeleted: true } })
+  if (!updated || updated.nModified !== 1) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)
+  return pupil
 }
 
 module.exports = restartService

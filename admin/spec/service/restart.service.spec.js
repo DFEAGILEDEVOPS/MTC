@@ -9,6 +9,7 @@ const restartService = require('../../services/restart.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
+const startedCheckMock = require('../mocks/check-started')
 const pupilRestartMock = require('../mocks/pupil-restart')
 const restartCodesMock = require('../mocks/restart-codes')
 
@@ -170,6 +171,29 @@ describe('restart.service', () => {
       spyOn(pupilRestartDataService, 'getRestartCodes').and.returnValue(restartCodesMock)
       const status = await restartService.getStatus(pupilMock._id)
       expect(status).toBe('Restart taken')
+    })
+  })
+  describe('markDeleted', () => {
+    it('returns the pupil object of the pupil who is mark as deleted', async () => {
+      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
+      spyOn(checkDataService, 'findLatestCheck').and.returnValue(startedCheckMock)
+      spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
+      spyOn(pupilRestartDataService, 'update').and.returnValue({ n: 1, nModified: 1, ok: 1 })
+      const deleted = await restartService.markDeleted(pupilMock._id)
+      expect(deleted).toBeDefined()
+    })
+    it('throws an error if the deletion failed', async () => {
+      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
+      spyOn(checkDataService, 'findLatestCheck').and.returnValue(startedCheckMock)
+      spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
+      spyOn(pupilRestartDataService, 'update').and.returnValue({})
+      let deleted
+      try {
+        deleted = await restartService.markDeleted(pupilMock._id)
+      } catch (error) {
+        expect(error.message).toBe(`Restart deletion marking failed for pupil ${pupilMock.lastName} ${pupilMock.foreName} failed`)
+      }
+      expect(deleted).toBeUndefined()
     })
   })
 })

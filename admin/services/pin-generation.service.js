@@ -1,9 +1,12 @@
 const moment = require('moment')
-const pupilDataService = require('../services/data-access/pupil.data.service')
-const randomGenerator = require('../lib/random-generator')
 const mongoose = require('mongoose')
+const pupilDataService = require('../services/data-access/pupil.data.service')
+const checkDataService = require('../services/data-access/check.data.service')
+const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const restartService = require('../services/restart.service')
+const dateService = require('../services/date.service')
 
 const fourPmToday = () => {
   return moment().startOf('day').add(16, 'hours')
@@ -21,10 +24,21 @@ const pinGenerationService = {}
 pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
   let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
   // filter pupils
-  pupils = pupils
-    .filter(p => pinGenerationService.removeInvalidPupils(p))
-    .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-      ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
+  pupils = await Promise.all(pupils.map(async p => {
+    const isValid = await pinGenerationService.isValid(p)
+    if (isValid) {
+      return {
+        _id: p._id,
+        pin: p.pin,
+        dob: dateService.formatShortGdsDate(p.dob),
+        foreName: p.foreName,
+        lastName: p.lastName,
+        middleNames: p.middleNames
+      }
+    }
+  }))
+  pupils = pupils.filter(p => !!p)
+  if (pupils.length === 0) return []
   // determine if more than one pupil has same full name
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
@@ -35,7 +49,12 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @param p
  * @returns {Boolean}
  */
-pinGenerationService.removeInvalidPupils = (p) => !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !p.result
+pinGenerationService.isValid = async (p) => {
+  const checkCount = await checkDataService.count({ pupilId: p._id, checkStartedAt: { $ne: null } })
+  if (checkCount === restartService.totalChecksAllowed) return false
+  const canRestart = await restartService.canRestart(p._id)
+  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !canRestart
+}
 
 /**
  * Generate pupils pins
