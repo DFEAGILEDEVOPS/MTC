@@ -29,19 +29,21 @@ const getGeneratePinsList = async (req, res, next) => {
   req.breadcrumbs('Generate pupil PINs', '/pupil-pin/generate-pins-overview')
   req.breadcrumbs(res.locals.pageTitle)
   let school
-  try {
-    school = await schoolDataService.findOne({_id: req.user.School})
-    if (!school) {
-      return next(Error(`School [${req.user.school}] not found`))
-    }
-  } catch (error) {
-    return next(error)
-  }
+  let pupils
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-  const pupils = await pinGenerationService.getPupils(school._id, sortField, sortDirection)
+  // TODO: data service call should be moved to a service
+  try {
+    school = await schoolDataService.findOne({ _id: req.user.School })
+    if (!school) {
+      return next(Error(`School [${req.user.school}] not found`))
+    }
+    pupils = await pinGenerationService.getPupils(school._id, sortField, sortDirection)
+  } catch (error) {
+    return next(error)
+  }
   return res.render('pupil-pin/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
     pupils,

@@ -63,6 +63,7 @@
         <%if (restarts.length > 0) { %>
         <br class="clearfix"/>
         <b class="bold-medium">Restarts recorded</b>
+        <form method="post" action="/restart/delete/" autocomplete="off">
         <table id='submitted-restarts' class="spacious">
             <thead>
             <tr>
@@ -73,10 +74,10 @@
             </thead>
             <tbody>
             <% restarts.forEach( (restart, index) => { %>
-            <tr>
+            <tr class="restart-pupil-name">
                 <td<% if (highlight && highlight.has(restart._id.toString())) { %> class="highlight-item"<% } %>>
                     <span id="pupil-<%= restart._id %>">
-                    <%= restart.lastName %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
+                    <%= restart.lastName  %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
                     </span>
                     <% if (restart.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
@@ -84,9 +85,13 @@
                     </div>
                     <% } %>
                 </td>
-                <td><%= restart.reason %></td>
+                <td class="restart-reason"><%= restart.reason %></td>
                 <% if (restart.status === 'Remove restart') {%>
-                <td class="restart-status"><a href="#"><%= restart.status %></a></td>
+                    <td class="restart-status">
+                            <button class="link-button" name="pupilId" value="<%= restart.pupilId %>" >
+                                <%= restart.status %>
+                            </button>
+                    </td>
                 <% } else { %>
                 <td class="restart-status"><%= restart.status %></td>
                 <% } %>
@@ -94,6 +99,7 @@
             <% }) %>
             </tbody>
         </table>
+        </form>
         <% } else { %>
         No pupils selected to restart the check.
         <% } %>

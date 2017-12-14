@@ -49,7 +49,7 @@ describe('check.data.service', () => {
     })
   })
 
-  describe('#findLatestCheckByPupilId', () => {
+  describe('#findLatestCheck', () => {
     let mock
 
     beforeEach(() => {
@@ -60,7 +60,7 @@ describe('check.data.service', () => {
     })
 
     it('should makes the expecte call', () => {
-      service.findLatestCheckByPupilId({'_id': '01234'})
+      service.findLatestCheck({'_id': '01234'})
       expect(mock.verify()).toBe(true)
     })
   })
