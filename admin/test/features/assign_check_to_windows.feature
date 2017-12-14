@@ -49,3 +49,10 @@ Feature:
     When I decide i want to remove the check from the check window
     Then the check should be unassigned from that check window
 
+  @create_new_window
+  Scenario: Users cant assign the same form to a window
+    Given I have assigned a check to a check window
+    When I attempt to assign the same form to the window again
+    Then the list of available checks should not contain the form already assigned to the window
+
+

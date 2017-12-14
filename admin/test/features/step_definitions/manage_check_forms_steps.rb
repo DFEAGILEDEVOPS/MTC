@@ -150,3 +150,14 @@ Then(/^the check should be unassigned from that check window$/) do
   check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
   expect(check_row.assigned_to.text).to eql 'Unassigned'
 end
+
+When(/^I attempt to assign the same form to the window again$/) do
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  window.assign_form.click
+end
+
+
+Then(/^the list of available checks should not contain the form already assigned to the window$/) do
+  available_forms = assign_form_to_window_page.check_forms.rows.map{|row| row.name_of_form.text}
+  expect(available_forms).to_not include @file_name.split('.').first
+end
