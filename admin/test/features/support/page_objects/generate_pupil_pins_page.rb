@@ -22,6 +22,7 @@ class GeneratePupilPinsPage < SitePrism::Page
     element :count, '.grid-row .column-half.first-half'
     element :cancel, '#stickyCancel'
     element :confirm, '#stickyConfirm'
+    element :selected_pupil_count, '#totalPupilsSelected'
   end
 
   def generate_pin_using_name(name)

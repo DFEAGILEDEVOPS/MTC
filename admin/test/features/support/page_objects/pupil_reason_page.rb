@@ -13,6 +13,7 @@ class PupilReasonPage < SitePrism::Page
     element :count, '.grid-row .column-half.first-half'
     element :cancel, 'a[href="/school/pupils-not-taking-check"]'
     element :confirm, 'input[value="Confirm"]'
+    element :selected_pupil_count, '#totalPupilsSelected'
   end
 
   element :select_all_pupils, '#selectAll'

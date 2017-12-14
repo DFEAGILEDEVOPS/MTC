@@ -51,6 +51,11 @@ Feature: Restarts
     When I select multiple pupils for restarts
     Then the sticky banner should display the pupil count
 
+  Scenario: Sticky banner displays total pupil count for restarts when all pupil is selected
+    Given I have multiple pupils for restart
+    When I select all pupils for Restarts
+    Then the sticky banner should display the total pupil count
+
   Scenario: Confirmation is enabled if a reason and at least 1 pupil are selected for restarts
     Given I have single pupils for restart
     And I select a reason for restarts
