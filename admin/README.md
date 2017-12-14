@@ -95,6 +95,15 @@ Example usage can be found [here](./sql.usage.example.js)
 ### Running SQL Server migrations
 
 We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
+NB - the migration name is limited to 32 characters.  Names larges than this will cause an SQL Server error message to be
+generated that is hard to track down:
+
+`String or binary data would be truncated.`
+
+There is a request to Microsoft to [fix this](https://connect.microsoft.com/SQLServer/feedback/details/339410/please-fix-the-string-or-binary-data-would-be-truncated-message-to-give-the-column-name)
+but it was opened in 2008.
+
+We could also consider making a request to Postgrator to increase this size.
 
 ### Running mongo migrations
 
