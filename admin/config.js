@@ -1,3 +1,6 @@
+const twoMinutesInMilliseconds = 120000
+const oneMinuteInMilliseconds = 60000
+
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   AZURE_STORAGE_LOGGING_ENABLED: process.env.AZURE_STORAGE_LOGGING_ENABLED,
@@ -15,5 +18,30 @@ module.exports = {
   STD_LOG_FILE: process.env.STD_LOG_FILE,
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
   TIME_BETWEEN_QUESTIONS: 2,
-  LINES_PER_CHECK_FORM: 25
+  LINES_PER_CHECK_FORM: 25,
+  Sql: {
+    Database: process.env.SQL_DATABASE || 'mtc',
+    Server: process.env.SQL_SERVER || 'mtc_mssql',
+    Port: process.env.SQL_PORT || 1433,
+    Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
+    Encrypt: process.env.SQL_ENCRYPT || true,
+    Application: {
+      Name: process.env.SQL_APP_NAME || 'mtc-local-dev',
+      Username: process.env.SQL_APP_USER || 'mtcAdminUser',
+      Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!'
+    },
+    Pooling: {
+      MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
+      MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
+      LoggingEnabled: process.env.SQL_POOL_LOG_ENABLED
+    },
+    Migrator: {
+      Username: process.env.SQL_ADMIN_USER || 'sa',
+      Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r',
+      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
+    },
+    Azure: {
+      Scale: process.env.SQL_AZURE_SCALE
+    }
+  }
 }

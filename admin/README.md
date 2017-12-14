@@ -74,13 +74,13 @@ SQL Server specific environment variables
 * SQL_APP_NAME - the name of the application added to log traces.  very useful for debugging
 * SQL_APP_USER - the username that the application connects as (should be a database level user _only_)
 * SQL_APP_USER_PASSWORD - password for the SQL_APP_USER
-* SQL_ADMIN_USER - the server level user account used to perform database migrations.  To be extracted to dedicated migration app soon
-* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.  To be extracted to dedicated migration app soon
+* SQL_ADMIN_USER - the server level user account used to perform database migrations.
+* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.
 * SQL_SERVER - the server to connect to
 * SQL_DATABASE - the database to connect to
 * SQL_PORT - the port to connect on, defaults to 1433
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
-* SQL_SCALE - the azure specific scale setting for the database.  To be extracted to dedicated migration app soon
+* SQL_AZURE_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
 
 #### Using SQL Server
 
@@ -95,6 +95,15 @@ Example usage can be found [here](./sql.usage.example.js)
 ### Running SQL Server migrations
 
 We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
+NB - the migration name is limited to 32 characters.  Names larges than this will cause an SQL Server error message to be
+generated that is hard to track down:
+
+`String or binary data would be truncated.`
+
+There is a request to Microsoft to [fix this](https://connect.microsoft.com/SQLServer/feedback/details/339410/please-fix-the-string-or-binary-data-would-be-truncated-message-to-give-the-column-name)
+but it was opened in 2008.
+
+We could also consider making a request to Postgrator to increase this size.
 
 ### Running mongo migrations
 

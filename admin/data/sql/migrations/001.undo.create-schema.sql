@@ -1,1 +1,1 @@
-DROP IF EXISTS SCHEMA [mtc];
+DROP IF EXISTS SCHEMA [mtc_admin];
