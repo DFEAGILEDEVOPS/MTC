@@ -5,7 +5,9 @@ const proxyquire = require('proxyquire').noCallThru()
 const moment = require('moment')
 const sinon = require('sinon')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const checkDataService = require('../../services/data-access/check.data.service')
 const pinGenerationService = require('../../services/pin-generation.service')
+const restartService = require('../../services/restart.service')
 
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
@@ -30,8 +32,12 @@ describe('pin-generation.service', () => {
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(checkDataService).expects('count').resolves(0).twice()
+        sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
-          '../../services/pupil.service': pupilDataService
+          '../../services/pupil.service': pupilDataService,
+          '../../services/restart.service': restartService,
+          '../../services/data-access/check.data.service': checkDataService
         })
       })
       it('with specific properties', async (done) => {
@@ -51,14 +57,43 @@ describe('pin-generation.service', () => {
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(checkDataService).expects('count').resolves(0).twice()
+        sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../services/pin-generation.service', {
-          '../../services/pupil.service': pupilDataService
+          '../../services/pupil.service': pupilDataService,
+          '../../services/restart.service': restartService,
+          '../../services/data-access/check.data.service': checkDataService
         })
       })
       it('without expired pins', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
         expect(pupils.length).toBe(1)
+        done()
+      })
+    })
+
+    describe('filters pupils who reached the max number of attempts and cant restart', () => {
+      beforeEach(() => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupil2 = Object.assign({}, pupilMock)
+        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.pin = 'f55sg'
+        pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(checkDataService).expects('count').resolves(3).twice()
+        sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
+        sandbox.useFakeTimers(moment().startOf('day'))
+        proxyquire('../../services/pin-generation.service', {
+          '../../services/pupil.service': pupilDataService,
+          '../../services/restart.service': restartService,
+          '../../services/data-access/check.data.service': checkDataService
+        })
+      })
+      it('without expired pins', async (done) => {
+        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        expect(pupils.length).toBe(0)
         done()
       })
     })
@@ -73,8 +108,12 @@ describe('pin-generation.service', () => {
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(checkDataService).expects('count').resolves(0).twice()
+        sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
-          '../../services/pupil.service': pupilDataService
+          '../../services/pupil.service': pupilDataService,
+          '../../services/restart.service': restartService,
+          '../../services/data-access/check.data.service': checkDataService
         })
       })
       it('should display DoB', async (done) => {
