@@ -77,14 +77,29 @@ Feature: Restarts
     Given I submitted pupils for Restart
     Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
 
-  @wip
   Scenario: Pupil Restarts status changes to Restart Taken when pupil take 2nd check
     Given I submitted pupils for Restart
     And Pupil has taken a 2nd check
     Then I should see the Restart Status 'Restart taken' for the pupil
 
-  @wip
-  Scenario: Pupil Restarts status changes to Maximum Restart Taken when pupil take 2nd Restart
+  Scenario: Pupil Restarts status changes to Remove Restart when pupil take 2nd Restart
     Given I submitted pupils for Restart
     When Pupil has taken a 2nd restart
-    Then I should see pupil is added to the pupil restarts list with status 'Maximum number of restarts taken'
+    Then I should see the Restart Status 'Remove restart' for the pupil
+
+  Scenario: Pupil Restarts status changes to Maximum Restart Taken when pupil take 3rd check
+    Given I submitted pupils for Restart
+    When Pupil has taken a 3rd check
+    Then I should see the Restart Status 'Maximum number of restarts taken' for the pupil
+
+  Scenario: Flash message is displayed when a pupil is removed from restart
+    Given I submitted pupils for Restart
+    When I remove restart for that pupil
+    Then I should see a flash message to state the pupil has been removed from restart
+
+  Scenario: Pupil doesnt appear in Generate Pin list if Restart is removed for that Pupil
+    Given I submitted pupils for Restart
+    When I remove restart for that pupil
+    Then I should not see this pupil removed from restart in Generate Pin Pupil list
+
+

@@ -16,6 +16,16 @@ pupilRestartDataService.create = async function (data) {
 }
 
 /**
+ * Update a Pupil's restart
+ * @param query
+ * @param criteria
+ * @return {Promise}
+ */
+pupilRestartDataService.update = async function (query, criteria) {
+  return PupilRestart.updateOne(query, criteria).exec()
+}
+
+/**
  * Find the count
  * @param query
  * @return {Promise.<*>}
