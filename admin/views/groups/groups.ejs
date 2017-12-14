@@ -28,7 +28,7 @@
             Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
         </p>
         <p>
-            <a class="button button-primary" href="/school/manage-group/add">Create new group</a>
+            <a class="button button-primary" href="/school/group-pupils/add">Create new group</a>
         </p>
 
         <% if (Array.isArray(groups) && groups.length > 0) { %>
@@ -43,14 +43,12 @@
                 <tbody>
                     <% groups.forEach( group => { %>
                     <tr>
-                        <td<% if (messages.groupName == group.groupName) { %> class="highlight-item"<% } %>>
-                            <a name="anchor-<%= group.groupName %>"></a>
-                            <a href="/school/manage-group/edit/<%= group._id %>" class="strong-no-underline"><%= group.groupName %></a>
+                        <td<% if (messages.groupName == group.name) { %> class="highlight-item"<% } %>>
+                            <a name="anchor-<%= group.name %>"></a>
+                            <a href="/school/group-pupils/edit/<%= group._id %>" class="strong-no-underline"><%= group.name %></a>
                         </td>
                         <td class="align-right">
-                            <% if (group.removeLink == true) { %>
                             <a href="/school/delete-group/<%= group._id %>" class="modal-link" id="js-modal-link">Remove</a>
-                            <% } %>
                         </td>
                     </tr>
                     <% }) %>
