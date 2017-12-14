@@ -129,7 +129,7 @@ end
 
 Then(/^I should be able to remove the check form$/) do
   check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
-  expect(check_row).to have_no_remove_form
+  expect(check_row).to have_remove_form
   check_row.remove_form.click
 end
 
