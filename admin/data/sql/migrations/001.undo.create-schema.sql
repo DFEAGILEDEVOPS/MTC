@@ -1,0 +1,1 @@
+DROP IF EXISTS SCHEMA [mtc];
