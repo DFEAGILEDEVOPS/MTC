@@ -13,7 +13,8 @@ const adminConfig = {
     database: 'master',
     encrypt: config.Sql.Encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
-    port: config.Sql.Port
+    port: config.Sql.Port,
+    connectTimeout: 30000
   }
 }
 
