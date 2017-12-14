@@ -81,4 +81,19 @@ describe('pupil-restart.data.service', () => {
       expect(mock.verify()).toBe(true)
     })
   })
+
+  describe('#update', () => {
+    let mock
+    beforeEach(() => {
+      mock = sandbox.mock(PupilRestart).expects('updateOne').returns(pupilRestartMock)
+      service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
+        '../../models/pupil-restarts': PupilRestart
+      })
+    })
+
+    it('makes the expected calls', () => {
+      service.update(1, { $set: { 'some': 'criteria' } })
+      expect(mock.verify()).toBe(true)
+    })
+  })
 })

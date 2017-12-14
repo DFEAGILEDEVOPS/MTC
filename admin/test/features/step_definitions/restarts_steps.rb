@@ -60,7 +60,7 @@ And(/^I submit the pupil for restart with a reason 'Did not complete' for restar
 end
 
 When(/^I select a pupil for restarts$/) do
-  pupil = restarts_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
   @pupil_name = pupil.name.text
   pupil.checkbox.click
 end
@@ -165,10 +165,15 @@ end
 
 And(/^Pupil has taken a 2nd restart$/) do
   step 'Pupil has taken a 2nd check'
-  restarts_page.load
+  # restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   @page = restarts_page
   restarts_page.restarts_for_pupil(@details_hash[:first_name])
+end
+
+And(/^Pupil has taken a 3rd check$/) do
+  step 'Pupil has taken a 2nd restart'
+  step 'Pupil has taken a 2nd check'
 end
 
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do|restart_status|
@@ -179,4 +184,21 @@ end
 Then(/^the sticky banner should display the total pupil count$/) do
   total_pupil_count = restarts_page.pupil_list.rows.count
   expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+end
+
+When(/^I remove restart for that pupil$/) do
+  pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
+  pupil_row.remove_restart.click
+end
+
+Then(/^I should see a flash message to state the pupil has been removed from restart$/) do
+  expect(restarts_page).to have_flash_message
+  expect(restarts_page.flash_message.text).to eql("Restart removed for pupil #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+end
+
+Then(/^I should not see this pupil removed from restart in Generate Pin Pupil list$/) do
+  @pupil_forename = @details_hash[:first_name]
+  step 'I am on the generate pupil pins page'
+  step 'I click Generate PINs button'
+  step 'I cannot see this pupil in the list of Pupil on Generate Pin list page'
 end

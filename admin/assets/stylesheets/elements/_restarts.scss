@@ -25,9 +25,17 @@
     padding: 0 pem(10px);
   }
 }
-
+.restart-pupil-name {
+  max-width: pem(150px);
+  min-width: pem(135px);
+}
+.restart-reason {
+  max-width: pem(150px);
+   min-width: pem(135px);
+ }
 .restart-status {
-  max-width: pem(80px);
+  max-width: pem(150px);
+  min-width: pem(135px);
 }
 
 label:hover {
@@ -50,4 +58,26 @@ input[type=radio]:checked ~ .hide {
 #didNotCompleteInfo {
   padding-bottom: pem(5px);
   min-width:pem(380px);
+}
+
+.link-button {
+  padding-left: 0;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 19px;
+  color: $link-colour;
+}
+
+.link-button:visited {
+  color: $link-visited-colour;
+}
+
+.link-button:hover {
+  color: $link-hover-colour;
+}
+
+.link-button:active {
+  color: $link-hover-colour;
 }
