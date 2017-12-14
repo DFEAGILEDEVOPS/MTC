@@ -44,7 +44,7 @@ controller.getSelectRestartList = async (req, res, next) => {
 
 controller.postSubmitRestartList = async (req, res, next) => {
   const { pupil: pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo } = req.body
-  if (!pupilsList) {
+  if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
   const validationError = restartValidator.validateReason(restartReason, didNotCompleteInfo)
@@ -76,6 +76,18 @@ controller.postSubmitRestartList = async (req, res, next) => {
   const ids = restartIds.join()
   req.flash('info', restartInfo)
   return res.redirect(`/restart/overview?hl=${ids}`)
+}
+
+controller.postDeleteRestart = async (req, res, next) => {
+  let deleted
+  const pupilId = req.body && req.body.pupilId
+  try {
+    deleted = await restartService.markDeleted(pupilId)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('info', `Restart removed for pupil ${deleted.lastName}, ${deleted.foreName}`)
+  return res.redirect('/restart/overview')
 }
 
 module.exports = controller
