@@ -237,7 +237,7 @@ const checkFormService = {
     let checkFormList = []
 
     if (!checkWindowAssignedForms) {
-      return false
+      return []
     }
 
     checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
@@ -266,7 +266,7 @@ const checkFormService = {
     let checkFormList = []
 
     if (!checkWindowAssignedForms) {
-      return false
+      return []
     }
 
     checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')

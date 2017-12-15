@@ -243,7 +243,8 @@ describe('check-form.service', () => {
 
     it('should return false if the argument is false', async (done) => {
       const result = await service.getUnassignedFormsForCheckWindow(null)
-      expect(result).toBeFalsy()
+      const expected = []
+      expect(result).toEqual(expected)
       done()
     })
   })
@@ -266,7 +267,8 @@ describe('check-form.service', () => {
 
     it('should return false if the argument is false', async (done) => {
       const result = await service.getAssignedFormsForCheckWindow(null)
-      expect(result).toBeFalsy()
+      const expected = []
+      expect(result).toEqual(expected)
       done()
     })
   })

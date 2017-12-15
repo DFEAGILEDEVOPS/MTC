@@ -146,7 +146,7 @@ describe('check-window.service', () => {
 
     beforeEach(() => {
       fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCurrentCheckWindows').resolves(checkWindowsMock)
-      service = setupService(function () { return Promise.resolve(checkWindowsAndCountFormsMock) })
+      service = setupService()
     })
 
     it('should return an object with _id, checkWindowName and totalForms items', () => {

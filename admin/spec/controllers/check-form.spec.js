@@ -1,10 +1,7 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
-
-const sinon = require('sinon')
-require('sinon-mongoose')
 const fs = require('fs-extra')
 
 const checkWindowService = require('../../services/check-window.service')
@@ -43,7 +40,6 @@ describe('check-form controller:', () => {
 
   describe('Check routes', () => {
     let controller
-    let sandbox
     let next
     let goodReqParams = {
       method: 'GET',
@@ -51,12 +47,7 @@ describe('check-form controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     describe('#getTestDeveloperHomePage - Happy path', () => {
