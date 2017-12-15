@@ -315,7 +315,7 @@ input {
   margin-left: pem(5);
 }
 
-// Grey buttons
+// Buttons and button as link
 
 .button-secondary {
   @include button($grey-3);
@@ -334,6 +334,32 @@ input {
   @include media(tablet) {
     margin-top: 0;
   }
+}
+
+.button-single {
+  margin-left: 0;
+}
+
+.link-button {
+  padding-left: 0;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 19px;
+  color: $link-colour;
+}
+
+.link-button:visited {
+  color: $link-visited-colour;
+}
+
+.link-button:hover {
+  color: $link-hover-colour;
+}
+
+.link-button:active {
+  color: $link-hover-colour;
 }
 
 // Errors

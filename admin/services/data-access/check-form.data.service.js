@@ -43,7 +43,7 @@ const checkFormDataService = {
     if (sortField && sortDirection) {
       sort[sortField] = sortDirection
     }
-    query.isDeleted = false
+    q.isDeleted = false
     return CheckForm.find(q).sort(sort).lean().exec()
   },
 

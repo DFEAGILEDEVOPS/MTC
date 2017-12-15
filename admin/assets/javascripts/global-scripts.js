@@ -184,6 +184,10 @@ $(function () {
       var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
       return el.length > 0
     },
+    /**
+     * Validation rules.
+     * @returns {*}
+     */
     validateForm: function () {
       return pupilsNotTakingCheck.isRadioChecked() && pupilsNotTakingCheck.isCheckboxChecked()
     }
@@ -227,6 +231,28 @@ $(function () {
   }
 
   /**
+   * Methods for 'assign check form to check windows'.
+   * @type {{isCheckboxChecked: isCheckboxChecked}}
+   */
+  var assignForm = {
+    /**
+     * Is there at least one checkbox checked?
+     * @returns {boolean}
+     */
+    isCheckboxChecked: function () {
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      return el.length > 0
+    },
+    /**
+     * Validation rules.
+     * @returns {*}
+     */
+    validateForm: function () {
+      return assignForm.isCheckboxChecked()
+    }
+  }
+
+  /**
    * Page based implementations.
    */
   if ($('#attendanceList').length > 0) {
@@ -257,5 +283,12 @@ $(function () {
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
+  }
+
+  if ($('#assignFormToWindowList').length > 0) {
+    inputStatus.toggleAllCheckboxes('#assignFormToWindowList', assignForm.validateForm)
+    inputStatus.selectAll('.multiple-choice-mtc')
+    inputStatus.deselectAll('.multiple-choice-mtc')
+    inputStatus.checkboxStatus('.multiple-choice-mtc', assignForm.validateForm)
   }
 })
