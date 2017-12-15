@@ -1,1 +1,0 @@
-REVOKE SELECT,UPDATE,DELETE,INSERT,EXECUTE,REFERENCES ON schema::[mtc_admin] to mtcAdminUser;
