@@ -82,6 +82,8 @@ SQL Server specific environment variables
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
 * SQL_AZURE_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
 
+`config.js` contains defaults for a local sql server instance with matching credentials for the docker compose instance.
+
 #### Using SQL Server
 
 We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server data operations.  This has been abstracted with a connection pool implementation and methods for querying and modifying data have been surfaced via the [sqlService](./services/data-access/sql.service.js) object.  
@@ -95,7 +97,7 @@ Example usage can be found [here](./sql.usage.example.js)
 ### Running SQL Server migrations
 
 We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
-NB - the migration name is limited to 32 characters.  Names larges than this will cause an SQL Server error message to be
+NB - the migration name is limited to 32 characters [(PR submitted to change this)](https://github.com/rickbergfalk/postgrator/pull/44).  Names larges than this will cause an SQL Server error message to be
 generated that is hard to track down:
 
 `String or binary data would be truncated.`
@@ -103,7 +105,7 @@ generated that is hard to track down:
 There is a request to Microsoft to [fix this](https://connect.microsoft.com/SQLServer/feedback/details/339410/please-fix-the-string-or-binary-data-would-be-truncated-message-to-give-the-column-name)
 but it was opened in 2008.
 
-We could also consider making a request to Postgrator to increase this size.
+We could also consider making a request to Postgrator to increase the size of the .
 
 ### Running mongo migrations
 
