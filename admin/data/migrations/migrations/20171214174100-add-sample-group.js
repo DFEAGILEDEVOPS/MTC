@@ -30,7 +30,7 @@ module.exports = {
   },
 
   down (db, next) {
-    db.collection('group').removeOne({name: 'Test Group 1'})
+    db.collection('groups').removeOne({name: 'Test Group 1'})
     .then((result) => next())
   }
 }
