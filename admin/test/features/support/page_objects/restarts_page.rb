@@ -1,3 +1,4 @@
+require_relative 'sticky_banner_module'
 class RestartsPage < SitePrism::Page
   set_url '/restart/overview'
 
@@ -32,12 +33,7 @@ class RestartsPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, '.sticky-banner-wrapper' do
-    element :count, '.grid-row .column-half.first-half'
-    element :cancel, '#stickyCancel'
-    element :confirm, '#stickyConfirm'
-    element :selected_pupil_count, '#totalPupilsSelected'
-  end
+  section :sticky_banner, StickyBanner, '.sticky-banner-wrapper'
 
   section :explanation_section, 'details' do
     element :toggle, 'summary[role="button"]'

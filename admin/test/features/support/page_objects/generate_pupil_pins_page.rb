@@ -1,3 +1,4 @@
+require_relative 'sticky_banner_module'
 class GeneratePupilPinsPage < SitePrism::Page
   set_url '/pupil-pin/generate-pins-overview'
 
@@ -18,12 +19,7 @@ class GeneratePupilPinsPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, '.sticky-banner-wrapper' do
-    element :count, '.grid-row .column-half.first-half'
-    element :cancel, '#stickyCancel'
-    element :confirm, '#stickyConfirm'
-    element :selected_pupil_count, '#totalPupilsSelected'
-  end
+  section :sticky_banner, StickyBanner, '.sticky-banner-wrapper'
 
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)
