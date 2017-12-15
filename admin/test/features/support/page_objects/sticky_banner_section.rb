@@ -1,4 +1,4 @@
-class StickyBanner < SitePrism::Section
+class StickyBannerSection < SitePrism::Section
 
   element :count, '.grid-row .column-half.first-half'
     element :cancel, '#stickyCancel'

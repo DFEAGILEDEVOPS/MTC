@@ -1,4 +1,3 @@
-require_relative 'sticky_banner_module'
 class PupilReasonPage < SitePrism::Page
   set_url '/school/pupils-not-taking-check/select-pupils'
 
@@ -10,7 +9,7 @@ class PupilReasonPage < SitePrism::Page
   element :pupil_coloumn, 'a', text: 'Pupil name'
   element :reason_coloumn, 'a', text: 'Reason'
 
-  section :sticky_banner, StickyBanner, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'

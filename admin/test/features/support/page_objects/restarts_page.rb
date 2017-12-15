@@ -1,4 +1,3 @@
-require_relative 'sticky_banner_module'
 class RestartsPage < SitePrism::Page
   set_url '/restart/overview'
 
@@ -33,7 +32,7 @@ class RestartsPage < SitePrism::Page
     end
   end
 
-  section :sticky_banner, StickyBanner, '.sticky-banner-wrapper'
+  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
   section :explanation_section, 'details' do
     element :toggle, 'summary[role="button"]'
