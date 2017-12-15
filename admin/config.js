@@ -26,9 +26,9 @@ module.exports = {
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     Encrypt: process.env.SQL_ENCRYPT || true,
     Application: {
-      Name: process.env.SQL_APP_NAME || 'mtc-local-dev',
-      Username: process.env.SQL_APP_USER || 'mtcAdminUser',
-      Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!'
+      Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
+      Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
+      Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
     },
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
@@ -36,8 +36,8 @@ module.exports = {
       LoggingEnabled: process.env.SQL_POOL_LOG_ENABLED
     },
     Migrator: {
-      Username: process.env.SQL_ADMIN_USER || 'sa',
-      Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r',
+      Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
+      Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
       Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
     },
     Azure: {
