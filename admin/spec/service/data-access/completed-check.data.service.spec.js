@@ -6,7 +6,7 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const CompletedChecks = require('../../../models/completed-checks')
-const completedChecksMock = require('../../mocks/completed-checks')
+const completedChecksMock = require('../../mocks/completed-check')
 const mongoResponseMock = require('../../mocks/mongo-response-mock')
 
 describe('completed-checks.data.service', () => {

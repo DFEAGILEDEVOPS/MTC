@@ -2,6 +2,7 @@
 
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
+const PupilStatusCode = require('../../models/pupil-status-code')
 const pupilDataService = {}
 
 /**
@@ -105,8 +106,6 @@ pupilDataService.save = async function (data) {
   return pupil.toObject()
 }
 
-
-
 /**
  * Unset the attendance code for a single pupil
  * @param id
@@ -114,6 +113,14 @@ pupilDataService.save = async function (data) {
  */
 pupilDataService.unsetAttendanceCode = async function (id) {
   return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
+}
+
+/**
+ * Get all the restart codes documents
+ * @return {Promise.<{Object}>}
+ */
+pupilDataService.getStatusCodes = async () => {
+  return PupilStatusCode.find().lean().exec()
 }
 
 module.exports = pupilDataService

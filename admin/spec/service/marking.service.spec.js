@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire').noCallThru()
 
 const checkDataService = require('../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
-const completedCheckMock = require('../mocks/completed-checks')
+const completedCheckMock = require('../mocks/completed-check')
 
 describe('markingService', () => {
   let service, sandbox

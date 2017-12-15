@@ -49,9 +49,7 @@ pupilRestartDataService.findLatest = async function (options) {
  * @return {Promise.<{Object}>}
  */
 pupilRestartDataService.getRestartCodes = async () => {
-  return RestartCode
-    .find()
-    .sort('order')
+  return RestartCode.find().lean().exec()
 }
 
 module.exports = pupilRestartDataService
