@@ -75,7 +75,6 @@ pupilService.getStatus = async (pupil) => {
   const checkCount = await checkDataService.count({ pupilId: pupil._id, checkStartedAt: { $ne: null } })
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupil._id, isDeleted: false })
   const isActivePin = pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)
-  console.log(pupil.lastName, checkCount === pupilRestartsCount)
   const hasActiveRestart = latestPupilRestart && !latestPupilRestart.isDeleted && checkCount === pupilRestartsCount &&
     !isActivePin
   if (hasActiveRestart) return getStatus('RES')
@@ -88,7 +87,6 @@ pupilService.getStatus = async (pupil) => {
   if (hasPinGenerated) return getStatus('PIN')
   // Pupil's in progress
   const isInProgress = checkCount === pupilRestartsCount && isActivePin
-  console.log(pupil.lastName, isInProgress)
   if (isInProgress) return getStatus('INP')
   // Pupil's check started
   const latestCompletedCheck = await completedCheckDataService.find({ 'data.pupil.checkCode': latestCheck.checkCode })
