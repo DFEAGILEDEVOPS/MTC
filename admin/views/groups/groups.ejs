@@ -27,13 +27,11 @@
         <p class="lede" id="lead-paragraph">
             Organise pupils into groups if you are not planning to administer the check to the whole cohort at the same time.
         </p>
-        <p>
-            <a class="button button-primary" href="/school/group-pupils/add">Create new group</a>
-        </p>
+        <a class="button button-primary" href="/school/group-pupils/add">Create new group</a>
 
         <% if (Array.isArray(groups) && groups.length > 0) { %>
         <div class="group">
-            <table class="spacious sorting" id="groupList" role="group">
+            <table class="spacious" id="groupList" role="group">
                 <thead>
                     <tr>
                         <th scope="col">Groups</th>
@@ -45,7 +43,7 @@
                     <tr>
                         <td<% if (messages.groupName == group.name) { %> class="highlight-item"<% } %>>
                             <a name="anchor-<%= group.name %>"></a>
-                            <a href="/school/group-pupils/edit/<%= group._id %>" class="strong-no-underline"><%= group.name %></a>
+                            <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong>
                         </td>
                         <td class="align-right">
                             <a href="/school/delete-group/<%= group._id %>" class="modal-link" id="js-modal-link">Remove</a>
