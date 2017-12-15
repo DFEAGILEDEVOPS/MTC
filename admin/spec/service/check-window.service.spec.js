@@ -9,6 +9,7 @@ const checkFormMock = require('../mocks/check-form')
 const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
 const checkWindowsByFormMock = require('../mocks/check-window-by-form')
+const checkWindowsAndCountFormsMock = require('../mocks/check-windows-and-count-forms')
 const checkWindowService = require('../../services/check-window.service')
 const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 
@@ -137,6 +138,36 @@ describe('check-window.service', () => {
         }
         done()
       })
+    })
+  })
+
+  describe('#getCurrentCheckWindowsAndCountForms', () => {
+    let fetchCurrentCheckWindowsStub
+
+    beforeEach(() => {
+      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCurrentCheckWindows').resolves(checkWindowsMock)
+      service = setupService()
+    })
+
+    it('should return an object with _id, checkWindowName and totalForms items', () => {
+      const result = service.getCurrentCheckWindowsAndCountForms()
+      expect(result).toBeTruthy()
+      expect(fetchCurrentCheckWindowsStub.callCount).toBe(1)
+    })
+  })
+
+  describe('#mergedFormIds', () => {
+    beforeEach(() => {
+      service = setupService(function () { return Promise.resolve(checkWindowMock) })
+    })
+
+    it('should merge two arrays and return one', () => {
+      const arr1 = [ 1, 2, 3, 4 ]
+      const arr2 = [ 5, 6 ]
+      const expected = [ 1, 2, 3, 4, 5, 6 ]
+      const result = service.mergedFormIds(arr1, arr2)
+      expect(result.toString).toBe(expected.toString)
+      expect(result).toBeTruthy()
     })
   })
 })
