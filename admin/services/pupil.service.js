@@ -1,4 +1,5 @@
 const R = require('ramda')
+const moment = require('moment')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
@@ -83,10 +84,13 @@ pupilService.getStatus = async (pupil) => {
   if (hasNotStarted) return getStatus('NTS')
   // Pupil has PIN generated
   const latestCheck = await checkDataService.findLatestCheck({ pupilId: pupil._id })
-  const hasPinGenerated = (!latestCheck && checkCount === pupilRestartsCount) && isActivePin
+  const hasPupilLoggedIn = (pupilRestartsCount === 0 && !!latestCheck) ||
+    (pupilRestartsCount > 0 && latestCheck && latestPupilRestart &&
+      moment(latestCheck.pupilLoginDate).isAfter(latestPupilRestart.createdAt))
+  const hasPinGenerated = (!hasPupilLoggedIn && checkCount === pupilRestartsCount) && isActivePin
   if (hasPinGenerated) return getStatus('PIN')
   // Pupil's in progress
-  const isInProgress = checkCount === pupilRestartsCount && isActivePin
+  const isInProgress = hasPupilLoggedIn && checkCount === pupilRestartsCount && isActivePin
   if (isInProgress) return getStatus('INP')
   // Pupil's check started
   const latestCompletedCheck = await completedCheckDataService.find({ 'data.pupil.checkCode': latestCheck.checkCode })
