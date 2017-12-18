@@ -37,6 +37,7 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
   return Pupil
     .find({'school': schoolId})
     .sort(sort)
+    .collation({ locale: 'en', strength: 2 })
     .lean()
     .exec()
 }
