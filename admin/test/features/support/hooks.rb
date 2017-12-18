@@ -46,10 +46,7 @@ Before("@pupil_not_taking_check") do
 end
 
 Before("@create_new_window") do
-  step "I am on the create a check window page"
-  step "I submit details for a valid check window"
-  step "I should see it added to the list of windows"
-  step "stored correctly in the database"
+  step "I have created a check window"
   visit Capybara.app_host + '/sign-out'
 end
 

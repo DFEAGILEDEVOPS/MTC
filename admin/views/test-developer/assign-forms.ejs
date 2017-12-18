@@ -1,0 +1,109 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<form method="post" action="/test-developer/assign-form-to-window">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <% if (messages && messages.info && messages.info.length) { %>
+            <div class="info-message">
+                <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+            </div>
+            <% } %>
+
+            <% if (messages && messages.error && messages.error.length) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    <%= messages.error %>
+                </h2>
+            </div>
+            <% } %>
+
+            <h1 class="heading-xlarge">Assign forms</h1>
+            <div class="panel panel-border-wide">
+                <p class="lede" id="lead-paragraph">
+                    Assign forms to <%= checkWindowName %>
+                </p>
+            </div>
+
+            <% if (Array.isArray(checkFormsList) && checkFormsList.length > 0) { %>
+            <table class="spacious" id="assignFormToWindowList" role="group">
+                <thead>
+                    <tr>
+                        <th scope="col">Form name</th>
+                        <th scope="col">
+                            <div class="tick-all-checkboxes-wrapper">
+                                <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                                <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                                <div class="multiple-choice-mtc">
+                                    <input id="tickAllCheckboxes" name="allForms" type="checkbox" aria-label="Select all Forms.">
+                                    <div></div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% checkFormsList.forEach(checkForm => { %>
+                    <tr>
+                        <td>
+                            <label for="checkForm<%= checkForm._id %>">
+                                <%= checkForm.name %>
+                            </label>
+                        </td>
+                        <td class="align-right">
+                            <div class="multiple-choice-mtc">
+                                <input id="checkForm<%= checkForm._id %>"
+                                       name="checkForm[<%= checkForm._id %>]"
+                                       type="checkbox"
+                                       value="<%= checkForm._id %>"
+                                       aria-label="Tick form <%= checkForm.name %>"
+                                       aria-checked="false"
+                                       role="checkbox">
+                                <div></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <input type="hidden" name="checkWindowName" value="<%= checkWindowName %>">
+            <input type="hidden" name="checkWindowId" value="<%= checkWindowId %>">
+            <% } %>
+
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
+
+        </div>
+
+        <div class="column-one-third add-title-margin">
+            <aside role="complementary" class="support-column">
+                <h3 class="heading-medium">Related</h3>
+                <nav role="navigation">
+                    <ul class="list">
+                        <li>
+                            <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
+                </li>
+                        <li>
+                            <a href="/test-developer/upload-and-view-forms">Upload and view forms</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+    <%- partial('partials/_sticky_confirmation_banner',
+        {
+            countingLabel: 'Form(s)',
+            cancelLabel: 'Cancel',
+            cancelLink: '/test-developer/assign-form-to-window',
+            submitLabel: 'Confirm',
+            isSubmitDisabled: true
+        }) %>
+</form>

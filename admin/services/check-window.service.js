@@ -27,6 +27,7 @@ const checkWindowService = {
       }
     })
   },
+
   /**
    * Retrieve all (active) CheckWindows and return the list
    * indexed by form.id, so we can easily list the check windows
@@ -39,7 +40,7 @@ const checkWindowService = {
       let data = {}
 
       try {
-        checkWindows = await checkWindowDataService.fetchCheckWindows()
+        checkWindows = await checkWindowDataService.fetchCurrentCheckWindows()
       } catch (error) {
         reject(error)
       }
@@ -67,8 +68,11 @@ const checkWindowService = {
       resolve(data)
     })
   },
+
   /**
    * Soft delete check window.
+   * @param checkForm
+   * @returns {Promise<void>}
    */
   markAsDeleted: async (checkForm) => {
     return new Promise(async (resolve, reject) => {
@@ -102,6 +106,42 @@ const checkWindowService = {
 
       resolve(checkForm)
     })
+  },
+
+  /**
+   * Get current check windows and count forms assigned.
+   * @returns {Promise<*|null>}
+   */
+  getCurrentCheckWindowsAndCountForms: async () => {
+    let checkWindowsList = null
+    let checkWindowsListData = await checkWindowDataService.fetchCurrentCheckWindows()
+    if (checkWindowsListData) {
+      checkWindowsList = checkWindowsListData.map((cw) => {
+        return {
+          '_id': cw._id,
+          'checkWindowName': cw.checkWindowName,
+          'totalForms': cw.forms.length
+        }
+      })
+    }
+    return checkWindowsList
+  },
+
+  /**
+   * Merge existing (db saved) and new (passed via form) check form ids.
+   * @param existingForms
+   * @param newForms
+   * @returns {Array}
+   */
+  mergedFormIds: (existingForms, newForms) => {
+    let resultArray = []
+    existingForms.map((f) => {
+      resultArray.push(f)
+    })
+    newForms.map((f) => {
+      resultArray.push(parseInt(f))
+    })
+    return resultArray
   }
 }
 
