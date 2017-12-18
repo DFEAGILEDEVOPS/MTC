@@ -18,6 +18,7 @@ $(function () {
         if (validation) {
           validationStatus = validation()
         }
+        console.log('VALIDATE', validationStatus)
 
         $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
@@ -94,7 +95,7 @@ $(function () {
           }
         } else {
           $($(this)).attr('data-checked', null)
-          stickyBanner.toggle(validationStatus)
+          stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
           if (countCheckedCheckboxes === 0) {
             $('#deselectAll').addClass('all-hide')
             $('#selectAll').removeClass('all-hide')
@@ -153,11 +154,10 @@ $(function () {
      * @param status
      */
     toggle: function (status) {
-      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
-      if (status === false || countCheckedCheckboxes === 0) {
+      if (status === false) {
         $('#stickyBanner').removeClass('show')
       } else {
-        inputStatus.outputCheckedCheckboxes(countCheckedCheckboxes)
+        inputStatus.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
         $('#stickyBanner').addClass('show')
       }
     }
@@ -181,8 +181,9 @@ $(function () {
      * @returns {boolean}
      */
     isCheckboxChecked: function () {
-      var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
-      return el.length > 0
+      var elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
+      var elTickAll = $('.multiple-choice-mtc > input#tickAllCheckboxes:checkbox:checked')
+      return elTickAll.length > 0 || elCheckboxes.length > 0
     },
     /**
      * Validation rules.
@@ -222,7 +223,7 @@ $(function () {
      * @returns {boolean}
      */
     isCheckboxChecked: function () {
-      var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
+      var el = $('.multiple-choice-mtc > input:checkbox:checked')
       return el.length > 0
     },
     validateForm: function () {
