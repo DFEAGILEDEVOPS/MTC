@@ -36,12 +36,12 @@
         <% if (checkWindowList.length > 0) { %>
         <table class="spacious sorting" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
-            <tr>
-                <th scope="col"><a href="/service-manager/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
-                <th scope="col"><a href="/service-manager/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="<%= arrowSortDirection.adminStartDate %>"><span>Sort by admin start date <%= htmlSortDirection.adminStartDate %></span></span></a></th>
-                <th scope="col"><a href="/service-manager/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="<%= arrowSortDirection.checkStartDate %>"><span>Sort by check date<%= htmlSortDirection.checkStartDate %></span></span></a></th>
-                <th scope="col">&nbsp;</th>
-            </tr>
+                <tr>
+                    <th scope="col"><a href="/service-manager/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
+                    <th scope="col"><a href="/service-manager/check-windows/adminStartDate/<%= htmlSortDirection.adminStartDate %>">Administration<br>start date <span class="<%= arrowSortDirection.adminStartDate %>"><span>Sort by admin start date <%= htmlSortDirection.adminStartDate %></span></span></a></th>
+                    <th scope="col"><a href="/service-manager/check-windows/checkStartDate/<%= htmlSortDirection.checkStartDate %>">Check period <span class="<%= arrowSortDirection.checkStartDate %>"><span>Sort by check date<%= htmlSortDirection.checkStartDate %></span></span></a></th>
+                    <th scope="col">&nbsp;</th>
+                </tr>
             </thead>
             <tbody>
                 <% checkWindowList.forEach( (checkWindow, index) => { %>

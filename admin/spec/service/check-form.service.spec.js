@@ -226,4 +226,71 @@ describe('check-form.service', () => {
       })
     })
   })
+
+  describe('#getUnassignedFormsForCheckWindow() - Get unassigned forms for selected check window.', () => {
+    beforeEach(() => {
+      spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
+    })
+
+    it('should return a list of unassigned check forms ids', async (done) => {
+      const existingAssignedForms = [101, 102]
+      const result = await service.getUnassignedFormsForCheckWindow(existingAssignedForms)
+      expect(result[0]._id).toBe(100)
+      expect(result[0].name).toBe('MTC0100')
+      expect(result).toBeTruthy()
+      done()
+    })
+
+    it('should return false if the argument is false', async (done) => {
+      const result = await service.getUnassignedFormsForCheckWindow(null)
+      const expected = []
+      expect(result).toEqual(expected)
+      done()
+    })
+  })
+
+  describe('#getAssignedFormsForCheckWindow() - Get assigned forms for selected check window.', () => {
+    beforeEach(() => {
+      spyOn(checkFormDataService, 'fetchSortedActiveForms').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
+    })
+
+    it('should return a list of assigned check forms id', async (done) => {
+      const existingAssignedForms = [101, 102]
+      const result = await service.getAssignedFormsForCheckWindow(existingAssignedForms)
+      expect(result[0]._id).toBe(101)
+      expect(result[0].name).toBe('MTC0101')
+      expect(result[1]._id).toBe(102)
+      expect(result[1].name).toBe('MTC0102')
+      expect(result).toBeTruthy()
+      done()
+    })
+
+    it('should return false if the argument is false', async (done) => {
+      const result = await service.getAssignedFormsForCheckWindow(null)
+      const expected = []
+      expect(result).toEqual(expected)
+      done()
+    })
+  })
+
+  describe('#removeFormIdFromArray() - Remove form id from array of current forms.', () => {
+    it('should remove passed form id from array of ids', () => {
+      const formIdToRemove = 102
+      const result = service.removeFormIdFromArray(checkWindowMock, formIdToRemove) // checkWindowMock has form ids 101, 102, 103
+      expect(result[0]).toBe(101)
+      expect(result[1]).toBe(103)
+      expect(result).toBeTruthy()
+    })
+
+    it('should return false if the first argument is false', () => {
+      const formIdToRemove = 102
+      const result = service.removeFormIdFromArray(null, formIdToRemove)
+      expect(result).toBeFalsy()
+    })
+
+    it('should return false if the second argument is false', () => {
+      const result = service.removeFormIdFromArray(checkWindowMock, null)
+      expect(result).toBeFalsy()
+    })
+  })
 })

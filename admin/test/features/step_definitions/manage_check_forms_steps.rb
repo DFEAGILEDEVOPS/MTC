@@ -4,15 +4,20 @@ Given(/^I have uploaded a check form$/) do
 end
 
 When(/^I have assigned the check form to a check window$/) do
-  manage_check_forms_page.available_checks.rows.first.checkbox.click
-  manage_check_forms_page.assign.click
-  @window_name = choose_check_window_page.assign_to_check_window.rows.first.title.text
-  choose_check_window_page.assign_to_check_window.rows.first.checkbox.click
-  choose_check_window_page.continue.click
+  testdeveloper_landing_page.load
+  testdeveloper_landing_page.assign_forms_to_check_windows.click
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  window.assign_form.click
+  form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
+  form.select.click
+  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  assign_form_to_window_page.sticky_banner.confirm.click
 end
 
 Then(/^the check form should be displayed as being assigned to the check window$/) do
-  expect(manage_check_forms_page.available_checks.rows.first.assigned_to.text).to include @window_name
+  expect(assign_form_to_window_page.flash_message.text).to eql "1 forms have been assigned to #{@check_window_hash[:check_name]}"
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  expect(window.name_of_window.text).to eql "#{@check_window_hash[:check_name]} (1 forms)"
 end
 
 Given(/^I previously assigned a check form to a check window$/) do
@@ -41,53 +46,6 @@ end
 Then(/^I should see the questions exactly as intended$/) do
   expect(view_form_page).to be_displayed
   expect(view_form_page.question_and_answers_on_page).to eql view_form_page.question_and_answers_from_csv(File.expand_path('../data/fixtures/check-form-1.csv'))
-end
-
-Given(/^I am on the assign check window page$/) do
-  step "I am on the manage check forms page"
-  step "I upload a csv file"
-  manage_check_forms_page.available_checks.rows.first.checkbox.click
-  manage_check_forms_page.assign.click
-end
-
-Then(/^I should see a heading for the page$/) do
-  expect(choose_check_window_page).to have_heading
-end
-
-Then(/^I should see some information about the check form$/) do
-  expect(choose_check_window_page).to have_information
-end
-
-Then(/^I should see some instructions$/) do
-  expect(choose_check_window_page).to have_page_instructions
-end
-
-Then(/^I should see an option to continue$/) do
-  expect(choose_check_window_page).to have_continue
-end
-
-Then(/^I should see an option to go back$/) do
-  expect(choose_check_window_page).to have_back
-end
-
-Then(/^I should see check windows$/) do
-  expect(choose_check_window_page.assign_to_check_window.rows).to_not be_empty
-end
-
-Then(/^check windows should have a title$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.title.text).to_not be_empty}
-end
-
-Then(/^check windows should have a checkbox$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row).to have_checkbox}
-end
-
-Then(/^check windows should have a start date$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.start_date.text).to_not be_empty}
-end
-
-Then(/^check windows should have a end date$/) do
-  choose_check_window_page.assign_to_check_window.rows.each{|row| expect(row.end_date.text).to_not be_empty}
 end
 
 Then(/^I should be given the option to delete the form$/) do
@@ -130,4 +88,76 @@ end
 
 Then(/^I should not be able to delete it$/) do
   expect(view_form_page).to have_no_delete_form
+end
+
+And(/^should show what form is assigned on the upload and view forms pge$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row.assigned_to.text).to eql @check_window_hash[:check_name]
+end
+
+When(/^I have assigned the check form to multiple check windows$/) do
+  testdeveloper_landing_page.load
+  testdeveloper_landing_page.assign_forms_to_check_windows.click
+  window1 = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  @window_1_name = window1.name_of_window.text
+  window1.assign_form.click
+  form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
+  form.select.click
+  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  assign_form_to_window_page.sticky_banner.confirm.click
+  window2 = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text != @check_window_hash[:check_name]}
+  @window_2_name = window2.name_of_window.text
+  window2.assign_form.click
+  form = assign_form_to_window_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
+  form.select.click
+  expect(assign_form_to_window_page.sticky_banner.count.text).to eql 'Form(s) selected: 1'
+  assign_form_to_window_page.sticky_banner.confirm.click
+end
+
+Then(/^the check form should be displayed as being assigned to multiple check windows$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row.assigned_to.text).to eql @window_2_name.split(' ').first + ' ' + @window_1_name.split(' ').first
+end
+
+Then(/^the check form should not be removable$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row).to have_no_remove_form
+end
+
+Then(/^I should be able to remove the check form$/) do
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row).to have_remove_form
+  check_row.remove_form.click
+end
+
+Given(/^I have assigned a check to a check window$/) do
+  step "I have uploaded a check form"
+  step "I have assigned the check form to a check window"
+end
+
+When(/^I decide i want to remove the check from the check window$/) do
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  window.name_of_window.click
+  check_row = unassign_form_page.check_forms.rows.find{|row| row.name_of_form.text == @file_name.split('.').first}
+  check_row.remove_from_window.click
+end
+
+Then(/^the check should be unassigned from that check window$/) do
+  upload_and_view_forms_page.load
+  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  expect(check_row.assigned_to.text).to eql 'Unassigned'
+end
+
+When(/^I attempt to assign the same form to the window again$/) do
+  window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
+  window.assign_form.click
+end
+
+
+Then(/^the list of available checks should not contain the form already assigned to the window$/) do
+  available_forms = assign_form_to_window_page.check_forms.rows.map{|row| row.name_of_form.text}
+  expect(available_forms).to_not include @file_name.split('.').first
 end
