@@ -6,7 +6,11 @@ const groupService = {
 
   getGroups: async function (query) {
     let groups
-    groups = await groupDataService.fetchGroups(query)
+    try {
+      groups = await groupDataService.fetchGroups(query)
+    } catch (error) {
+      throw new Error(error)
+    }
     return groups || []
   }
 }
