@@ -18,6 +18,7 @@ $(function () {
         if (validation) {
           validationStatus = validation()
         }
+        console.log('VALIDATE', validationStatus)
 
         $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
@@ -78,15 +79,28 @@ $(function () {
     checkboxStatus: function (sel, validation) {
       $(sel + ' > input:checkbox').on('click', function () {
         var validationStatus = true
+        var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+        var countAllCheckboxes = inputStatus.countCheckboxes()
+
         if (validation) {
           validationStatus = validation()
         }
         if ($(this).is(':checked')) {
           $($(this)).attr('data-checked', true)
           stickyBanner.toggle(validationStatus)
+          if (countCheckedCheckboxes === countAllCheckboxes) {
+            $('#deselectAll').removeClass('all-hide')
+            $('#selectAll').addClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', true)
+          }
         } else {
           $($(this)).attr('data-checked', null)
-          stickyBanner.toggle(validationStatus)
+          stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
+          if (countCheckedCheckboxes === 0) {
+            $('#deselectAll').addClass('all-hide')
+            $('#selectAll').removeClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', false)
+          }
         }
       })
     },
@@ -108,31 +122,44 @@ $(function () {
           stickyBanner.toggle(validationStatus)
         }
       })
+    },
+    /**
+     * @param checkboxParent
+     */
+    countCheckedCheckboxes: function (checkboxParent) {
+      var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
+      return el.length || 0
+    },
+    /**
+     * @param checkboxParent
+     */
+    countCheckboxes: function (checkboxParent) {
+      var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox').not('#tickAllCheckboxes')
+      return el.length
+    },
+    /**
+     * @param totalCount
+     */
+    outputCheckedCheckboxes: function (totalCount) {
+      $('#totalPupilsSelected').text(totalCount)
     }
   }
 
   /**
    * Enable/disable confirmation button from sticky banner.
-   * @type {{toggle: toggle, countCheckboxes: countCheckboxes}}
+   * @type {{toggle: toggle}}
    */
   var stickyBanner = {
     /**
      * @param status
      */
     toggle: function (status) {
-      if (status === true) {
-        stickyBanner.countCheckboxes()
-        $('#stickyBanner').addClass('show')
-      } else {
+      if (status === false) {
         $('#stickyBanner').removeClass('show')
+      } else {
+        inputStatus.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
+        $('#stickyBanner').addClass('show')
       }
-    },
-    /**
-     * @param checkboxParent
-     */
-    countCheckboxes: function (checkboxParent) {
-      var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked')
-      $('#totalPupilsSelected').text(el.length)
     }
   }
 
@@ -154,8 +181,9 @@ $(function () {
      * @returns {boolean}
      */
     isCheckboxChecked: function () {
-      var el = $('.multiple-choice-mtc > input:checkbox:checked')
-      return el.length > 0
+      var elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
+      var elTickAll = $('.multiple-choice-mtc > input#tickAllCheckboxes:checkbox:checked')
+      return elTickAll.length > 0 || elCheckboxes.length > 0
     },
     /**
      * Validation rules.
@@ -172,7 +200,7 @@ $(function () {
    */
   var generatePins = {
     isCheckboxChecked: function () {
-      var el = $('.multiple-choice-mtc > input:checkbox:checked')
+      var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
       return el.length > 0
     }
   }
@@ -228,10 +256,6 @@ $(function () {
   /**
    * Page based implementations.
    */
-  // @TODO: check forms are to be refactored next.
-  // if ($('#checkFormsList').length > 0) inputStatus.toggleAllCheckboxes('#checkFormsList')
-
-  // @TODO: No sticky on this page. Feature needs further work and will change radically.
   if ($('#attendanceList').length > 0) {
     inputStatus.toggleAllCheckboxes('#attendanceList')
     inputStatus.selectAll('.multiple-choice')
