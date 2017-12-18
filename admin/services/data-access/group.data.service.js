@@ -9,13 +9,9 @@ const groupDataService = {}
  * @returns {Promise<Promise|*>}
  */
 groupDataService.fetchGroups = async function (query) {
-  let sort = {}
-  let q = query || {}
-
-  sort['name'] = 'asc'
+  const q = query || {}
   q.isDeleted = false
-
-  return Group.find(q).sort(sort).lean().exec()
+  return Group.find(q).sort({ name: 'asc' }).lean().exec()
 }
 
 module.exports = groupDataService
