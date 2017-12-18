@@ -11,7 +11,7 @@ const groupPupilsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Group pupils'
 
   let groups
-  groups = await groupService.getGroups({'name': 'x'})
+  groups = await groupService.getGroups({})
 
   try {
     req.breadcrumbs(res.locals.pageTitle)
