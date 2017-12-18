@@ -12,6 +12,7 @@ class UploadAndViewFormsPage < SitePrism::Page
   element :remove_upload, 'input[value="Remove file"]'
   element :error_message, '.error-message', text: 'A valid CSV file was not uploaded'
   element :check_form_title_column_heading, '#checkFormsList thead tr th:nth-child(1) a'
+  element :back_to_home, '.breadcrumbs a[href="/"]'
 
   element :upload_form_message, '#lead-paragraph'
   element :upload_new_form, 'a', text: 'Upload new form'
@@ -34,7 +35,6 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :content, '.modal-content p'
     element :cancel, '.modal-cancel'
     element :confirm, '.modal-confirm'
-
   end
 
   section :errors, '.error-summary' do

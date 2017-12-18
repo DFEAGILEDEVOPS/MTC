@@ -73,6 +73,12 @@ Feature: Generate Pupil PINs
     When I select multiple pupils from Generate Pin Page
     Then the sticky banner should display the pupil count
 
+  Scenario: Sticky banner displays total pupil count for Generate Pins when all pupil is selected
+    Given I am logged in
+    And I am on Generate pins Pupil List page
+    When I select all pupils for Generate pin
+    Then the sticky banner should display the total pupil count on Generate Pin Page
+
   @no_pin
   Scenario: Cancel returns user to Generate Pupil Pin Landing page if there are no pupil with pins
     Given I am logged in
