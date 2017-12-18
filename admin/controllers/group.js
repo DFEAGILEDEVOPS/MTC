@@ -11,7 +11,11 @@ const groupPupilsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Group pupils'
 
   let groups
-  groups = await groupService.getGroups({})
+  try {
+    groups = await groupService.getGroups({})
+  } catch (error) {
+    next(error)
+  }
 
   try {
     req.breadcrumbs(res.locals.pageTitle)
