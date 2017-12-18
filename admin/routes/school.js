@@ -14,6 +14,7 @@ const { getHome,
   getSelectPupilNotTakingCheck,
   savePupilNotTakingCheck,
   removePupilNotTakingCheck } = require('../controllers/school')
+const group = require('../controllers/group.js')
 
 const school = (router) => {
   router.get('/school-home', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getHome(req, res, next))
@@ -32,6 +33,9 @@ const school = (router) => {
   router.get('/pupils-not-taking-check/remove/:pupilId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => removePupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/:removed', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
+  router.get('/group-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
+  router.get('/group-pupils/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
+  router.get('/group-pupils/edit/:groupId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
 }
 
 module.exports = school

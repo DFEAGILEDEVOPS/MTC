@@ -6,6 +6,7 @@ class SchoolLandingPage < SitePrism::Page
   element :heading, '.heading-xlarge'
   element :instructions, 'p.lede', text: 'To start the check you will need to generate PINs for each individual pupil.'
   element :pupil_register, 'a[href="/school/pupil-register/lastName/true"]'
+  element :group_pupils, 'a[href="/school/group-pupils'
   element :pupils_not_taking_check, 'a[href="/school/pupils-not-taking-check"]'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-pins-overview"]'
   element :restarts, 'a[href="/restart/overview"]'
