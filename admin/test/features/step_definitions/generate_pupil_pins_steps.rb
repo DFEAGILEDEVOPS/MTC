@@ -122,6 +122,12 @@ When(/^I have generated a pin for a pupil$/) do
   step "I am on the generate pupil pins page"
 end
 
+When(/^I expired the pupil pin$/) do
+  ct = Time.now
+  newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+end
+
 Given(/^I have generated pin for all pupil$/) do
   step "I am logged in"
   step "I am on Generate pins Pupil List page"

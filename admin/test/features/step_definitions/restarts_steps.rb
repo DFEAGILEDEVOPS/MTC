@@ -192,3 +192,10 @@ Then(/^I should not see this pupil removed from restart in Generate Pin Pupil li
   step 'I click Generate PINs button'
   step 'I cannot see this pupil in the list of Pupil on Generate Pin list page'
 end
+
+Given(/^pupil has started a check$/) do
+  step 'I am logged in'
+  step 'I am on the add pupil page'
+  step 'I have submitted valid pupil details'
+  step 'Pupil has taken a 2nd check'
+end
