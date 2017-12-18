@@ -14,6 +14,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const { sortRecords } = require('../utils')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const scoreService = require('../services/score.service')
+const pupilStatusService = require('../services/pupil.status.service')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -42,22 +43,27 @@ const getPupils = async (req, res, next) => {
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
-  const { pupils } = await pupilDataService.getPupils(req.user.School)
-  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const { foreName, lastName, _id } = p
-    const dob = dateService.formatShortGdsDate(p.dob)
-    const outcome = await pupilService.getStatus(p)
-    // TODO: Fetch pupil's group when it's implemented
-    const group = 'N/A'
-    return {
-      _id,
-      foreName,
-      lastName,
-      dob,
-      group,
-      outcome
-    }
-  })).catch((error) => next(error))
+  let pupilsFormatted
+  try {
+    const { pupils } = await pupilDataService.getPupils(req.user.School)
+    pupilsFormatted = await Promise.all(pupils.map(async (p) => {
+      const { foreName, lastName, _id } = p
+      const dob = dateService.formatShortGdsDate(p.dob)
+      const outcome = await pupilStatusService.getStatus(p)
+      // TODO: Fetch pupil's group when it's implemented
+      const group = 'N/A'
+      return {
+        _id,
+        foreName,
+        lastName,
+        dob,
+        group,
+        outcome
+      }
+    })).catch((error) => next(error))
+  } catch (error) {
+    next(error)
+  }
   pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
   pupilsFormatted.map((p, i) => {
     if (pupilsFormatted[ i + 1 ] === undefined) return
@@ -67,21 +73,17 @@ const getPupils = async (req, res, next) => {
       pupilsFormatted[ i + 1 ].showDoB = true
     }
   })
-  try {
-    req.breadcrumbs(res.locals.pageTitle)
-    let { hl } = req.query
-    if (hl) {
-      hl = JSON.parse(hl)
-      hl = typeof hl === 'string' ? JSON.parse(hl) : hl
-    }
-    res.render('school/pupil-register', {
-      highlight: hl && new Set(hl),
-      pupils: pupilsFormatted,
-      breadcrumbs: req.breadcrumbs()
-    })
-  } catch (error) {
-    next(error)
+  req.breadcrumbs(res.locals.pageTitle)
+  let { hl } = req.query
+  if (hl) {
+    hl = JSON.parse(hl)
+    hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
+  res.render('school/pupil-register', {
+    highlight: hl && new Set(hl),
+    pupils: pupilsFormatted,
+    breadcrumbs: req.breadcrumbs()
+  })
 }
 
 const getResults = async (req, res, next) => {

@@ -85,6 +85,10 @@ When(/^I select a Pupil from Generate Pin page$/) do
   pupil.checkbox.click
 end
 
+When(/^I select all pupils for Generate pin$/) do
+  generate_pupil_pins_page.select_all_pupils.click
+end
+
 When(/^I deselect all pupils from Generate Pin Page$/) do
   generate_pupil_pins_page.select_all_pupils.click
   expect(@page).to have_sticky_banner
@@ -196,4 +200,9 @@ end
 
 Then(/^I should see link to create custom download$/) do
   expect(generated_pins_page).to have_custom_download_link
+end
+
+Then(/^the sticky banner should display the total pupil count on Generate Pin Page$/) do
+  total_pupil_count = generate_pupil_pins_page.pupil_list.rows.count
+  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
 end
