@@ -2,17 +2,10 @@
 
 const groupDataService = require('../services/data-access/group.data.service')
 
-const groupService = {
+const groupService = {}
 
-  getGroups: async function (query) {
-    let groups
-    try {
-      groups = await groupDataService.fetchGroups(query)
-    } catch (error) {
-      throw new Error(error)
-    }
-    return groups || []
-  }
+groupService.getGroups = async function (query) {
+  return groupDataService.fetchGroups(query)
 }
 
 module.exports = groupService

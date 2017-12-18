@@ -42,37 +42,46 @@ describe('group.js controller', () => {
     })
 
     describe('#groupPupilsPage', () => {
-      beforeEach(() => {
-        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-        controller = require('../../controllers/group').groupPupilsPage
+      describe('(happy path)', () => {
+        beforeEach(() => {
+          spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
+          controller = require('../../controllers/group').groupPupilsPage
+        })
+
+        it('should render the initial groups page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          await controller(req, res, next)
+
+          expect(res.locals.pageTitle).toBe('Group pupils')
+          expect(groupService.getGroups).toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          done()
+        })
       })
 
-      it('should render the initial groups page (happy path)', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(res, 'render').and.returnValue(null)
-        await controller(req, res, next)
+      describe('(unhappy path)', () => {
+        beforeEach(() => {
+          spyOn(groupService, 'getGroups').and.returnValue(Promise.reject(new Error()))
+          controller = require('../../controllers/group').groupPupilsPage
+        })
 
-        expect(res.locals.pageTitle).toBe('Group pupils')
-        expect(groupService.getGroups).toHaveBeenCalled()
-        expect(next).not.toHaveBeenCalled()
-        expect(res.render).toHaveBeenCalled()
-        expect(res.statusCode).toBe(200)
-        done()
-      })
+        it('should render the initial groups page', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          await controller(req, res, next)
 
-      it('should execute next when rendering fails (unhappy path)', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(res, 'render').and.throwError('test')
-        await controller(req, res, next)
-
-        expect(res.locals.pageTitle).toBe('Group pupils')
-        expect(groupService.getGroups).toHaveBeenCalled()
-        expect(res.render).toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-        expect(res.statusCode).toBe(200)
-        done()
+          expect(res.locals.pageTitle).toBe('Group pupils')
+          expect(groupService.getGroups).toHaveBeenCalled()
+          expect(next).toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          done()
+        })
       })
     })
   })

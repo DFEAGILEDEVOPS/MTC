@@ -9,23 +9,17 @@ const groupService = require('../services/group.service')
  */
 const groupPupilsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Group pupils'
-
   let groups
   try {
     groups = await groupService.getGroups({})
   } catch (error) {
     next(error)
   }
-
-  try {
-    req.breadcrumbs(res.locals.pageTitle)
-    res.render('groups/groups.ejs', {
-      breadcrumbs: req.breadcrumbs(),
-      groups
-    })
-  } catch (error) {
-    next(error)
-  }
+  req.breadcrumbs(res.locals.pageTitle)
+  res.render('groups/groups.ejs', {
+    breadcrumbs: req.breadcrumbs(),
+    groups
+  })
 }
 
 module.exports = {
