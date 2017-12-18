@@ -13,7 +13,7 @@ CREATE TABLE [mtc_admin].[adminLogonEvent]
 	[createdAt] [datetimeoffset](3) NOT NULL,
 	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
-	[user_id] [int] NOT NULL,
+	[user_id] [int] NULL,
 	[sessionId] [nvarchar](max) NOT NULL,
 	[remoteIp] [nvarchar](max) NOT NULL,
 	[userAgent] [nvarchar](max) NOT NULL,
