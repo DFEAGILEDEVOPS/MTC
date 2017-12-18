@@ -1,8 +1,8 @@
 <div class="grid-row">
-    <div class="column-one-half">
+    <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
-    <div class="column-one-half">
+    <div class="column-one-third">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
@@ -31,7 +31,7 @@
             <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
         </p>
 
-        <% if (Array.isArray(forms)) { %>
+        <% if (Array.isArray(forms) && forms.length > 0) { %>
         <div class="group">
             <table class="spacious sorting" id="checkFormsList" role="group">
                 <thead>
@@ -75,7 +75,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank">Guidance</a>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
             </li>
                     <li>
                         <a href="#">Assign forms to check window</a>

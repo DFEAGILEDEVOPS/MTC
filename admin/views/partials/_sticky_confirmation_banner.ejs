@@ -1,8 +1,9 @@
+<% if (typeof countingLabel == 'undefined') { countingLabel = 'Pupil(s)' } %>
 <div class="sticky-banner-wrapper" id="stickyBanner">
     <div id="content">
         <div class="grid-row">
             <div class="column-half first-half">
-                Pupil(s) selected: <span id="totalPupilsSelected"></span>
+                <%= countingLabel %> selected: <span id="totalPupilsSelected"></span>
             </div>
             <div class="column-half">
                 <input type="submit" class="button" value="<%= submitLabel %>" id="stickyConfirm">

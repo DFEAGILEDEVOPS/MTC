@@ -28,14 +28,11 @@ class RestartsPage < SitePrism::Page
       element :reason, 'td:nth-child(2)'
       element :status, 'td:nth-child(3)'
       element :highlighted_pupil, '.highlight-item'
+      element :remove_restart, 'td:nth-child(3) button'
     end
   end
 
-  section :sticky_banner, '.sticky-banner-wrapper' do
-    element :count, '.grid-row .column-half.first-half'
-    element :cancel, '#stickyCancel'
-    element :confirm, '#stickyConfirm'
-  end
+  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
   section :explanation_section, 'details' do
     element :toggle, 'summary[role="button"]'

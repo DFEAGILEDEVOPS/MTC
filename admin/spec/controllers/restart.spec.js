@@ -177,4 +177,40 @@ describe('restart controller:', () => {
       done()
     })
   })
+  describe('postDeleteRestart route', () => {
+    let next
+    let goodReqParams = {
+      method: 'GET',
+      url: '/restart/overview',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      body: {
+        pupilId: '59c38bcf3cd57f97b7da2011'
+      }
+    }
+    beforeEach(() => {
+      next = jasmine.createSpy('next')
+    })
+    it('redirects to restart overview page when successfully marking the pupil as deleted', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(pupilMock)
+      spyOn(res, 'redirect').and.returnValue(null)
+      const controller = require('../../controllers/restart').postDeleteRestart
+      await controller(req, res, next)
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      done()
+    })
+    it('calls next if error occurred while marking the pupil as deleted', async (done) => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(restartService, 'markDeleted').and.returnValue(Promise.reject(new Error('error')))
+      const controller = require('../../controllers/restart').postDeleteRestart
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
+      done()
+    })
+  })
 })
