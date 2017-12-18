@@ -23,28 +23,35 @@ const migratorConfig = {
   validateChecksums: false
 }
 
-const postgrator = new Postgrator(migratorConfig)
+const runMigrations = () => {
+  return createDatabaseIfNotExists()
+    .then(() => {
+      const postgrator = new Postgrator(migratorConfig)
+      // subscribe to useful events
+      postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
+      postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
 
-createDatabaseIfNotExists()
-  .then(() => {
-    // subscribe to useful events
-    postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
-    postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
-
-    // Migrate to 'max' version or user-specified e.g. '008'
-    const version = process.argv.length > 2 ? process.argv[2] : 'max'
-    console.log(chalk.green('Migrating to version:'), chalk.green.bold(version))
-    postgrator.migrate(version)
-      .then(appliedMigrations => {
-        console.log(chalk.green('SQL Migrations complete'))
-        process.exit()
-      })
-      .catch(error => {
-        console.log(chalk.red('ERROR:', error.message))
-        console.log(`${error.appliedMigrations.length} migrations were applied...`)
-        error.appliedMigrations.forEach(migration => {
-          console.log(migration.name)
+      // Migrate to 'max' version or user-specified e.g. '008'
+      const version = process.argv.length > 2 ? process.argv[2] : 'max'
+      console.log(chalk.green('Migrating to version:'), chalk.green.bold(version))
+      postgrator.migrate(version)
+        .then(appliedMigrations => {
+          console.log(chalk.green('SQL Migrations complete'))
+          process.exit()
         })
-        process.exit(1)
-      })
-  })
+        .catch(error => {
+          console.log(chalk.red('ERROR:', error.message))
+          console.log(`${error.appliedMigrations.length} migrations were applied...`)
+          error.appliedMigrations.forEach(migration => {
+            console.log(migration.name)
+          })
+          process.exit(1)
+        })
+    })
+}
+
+if (config.Sql.Enabled) {
+  setTimeout(runMigrations, 15000)
+} else {
+  console.log('Sql Server Disabled. Bypassing Migrations...')
+}

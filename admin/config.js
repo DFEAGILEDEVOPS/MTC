@@ -20,6 +20,7 @@ module.exports = {
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
   Sql: {
+    Enabled: process.env.SQL_ENABLED || false,
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'mtc_mssql',
     Port: process.env.SQL_PORT || 1433,
