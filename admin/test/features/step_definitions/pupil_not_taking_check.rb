@@ -58,9 +58,9 @@ When(/^I want to add a reason for pupils not taking a check$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
-  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
-  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
-  expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  pupil_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  sorted_pupil_from_page = pupil_from_page.sort_by { |pupil_list| pupil_list.downcase }
+  expect(sorted_pupil_from_page).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
 Given(/^I am on the pupil reason page$/) do
@@ -87,9 +87,9 @@ And(/^I want to sort the surnames in to desecending order$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname in descending order$/) do
-  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
-  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
-  expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort.reverse).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  pupil_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  sorted_pupil_from_page = pupil_from_page.sort_by { |pupil_list| pupil_list.downcase }.reverse
+  expect(sorted_pupil_from_page).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
 Then(/^I should see a sticky banner$/) do
@@ -110,6 +110,10 @@ end
 When(/^I select a pupil$/) do
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   pupil.checkbox.click
+end
+
+When(/^I select all pupil for pupil not taking check$/) do
+  pupil_reason_page.select_all_pupils.click
 end
 
 And(/^I select a reason$/) do
@@ -267,4 +271,9 @@ end
 
 Then(/^the sticky banner should display the pupil count$/) do
   expect(@page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
+end
+
+Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
+  total_pupil_count = pupils_not_taking_check_page.pupil_list.rows.count
+  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
 end
