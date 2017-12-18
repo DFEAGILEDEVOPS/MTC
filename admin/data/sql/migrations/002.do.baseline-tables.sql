@@ -53,7 +53,7 @@ CREATE TABLE [mtc_admin].[check]
 	[checkCode] [uniqueidentifier] NOT NULL,
 	[checkWindow_id] [int] NOT NULL,
 	[checkForm_id] [int] NOT NULL,
-	[pupilLoginDate] [datetimeoffset](3) NOT NULL,
+	[pupilLoginDate] [datetimeoffset](3) NULL,
 	[mark] [tinyint] NULL,
 	[maxMark] [tinyint] NULL,
 	[markedAt] [datetimeoffset](3) NULL,
