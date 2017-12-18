@@ -65,6 +65,11 @@ When(/^I select a pupil for restarts$/) do
   pupil.checkbox.click
 end
 
+When(/^I select all pupils for Restarts$/) do
+  step 'I select a reason for restarts'
+  restarts_page.select_all_pupils.click
+end
+
 When(/^I select multiple pupils for restarts$/) do
   step 'I select a reason for restarts'
   page.execute_script "window.scrollBy(0,1000)"
@@ -174,6 +179,11 @@ end
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do|restart_status|
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
   expect(pupil_row.status.text).to include(restart_status)
+end
+
+Then(/^the sticky banner should display the total pupil count$/) do
+  total_pupil_count = restarts_page.pupil_list.rows.count
+  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
 end
 
 When(/^I remove restart for that pupil$/) do

@@ -9,11 +9,7 @@ class PupilReasonPage < SitePrism::Page
   element :pupil_coloumn, 'a', text: 'Pupil name'
   element :reason_coloumn, 'a', text: 'Reason'
 
-  section :sticky_banner, '.sticky-banner-wrapper' do
-    element :count, '.grid-row .column-half.first-half'
-    element :cancel, 'a[href="/school/pupils-not-taking-check"]'
-    element :confirm, 'input[value="Confirm"]'
-  end
+  section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'
