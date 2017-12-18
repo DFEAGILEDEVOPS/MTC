@@ -3,7 +3,7 @@ mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
 const PupilStatusCode = new Schema({
-  status: {
+  statusDesc: {
     type: String,
     required: true
   },

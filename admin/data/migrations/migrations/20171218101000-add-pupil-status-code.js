@@ -34,10 +34,10 @@ module.exports = {
   }
 }
 
-function createPupilStatusCode (status, code) {
+function createPupilStatusCode (statusDesc, code) {
   return new Promise(async function (resolve, reject) {
     let pupilStatusCode = new PupilStatusCode({
-      status: status,
+      statusDesc: statusDesc,
       code: code
     })
 
