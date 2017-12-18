@@ -10,17 +10,20 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
     const currentPupil = pupils[ i ]
     const nextPupil = pupils[ i + 1 ]
     if (nextPupil === undefined) return
-    if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName &&
+    if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil) &&
       currentPupil.dob === nextPupil.dob) {
       currentPupil.showMiddleNames = true
       nextPupil.showMiddleNames = true
     }
-    if (currentPupil.foreName === nextPupil.foreName && currentPupil.lastName === nextPupil.lastName) {
+    if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil)) {
       currentPupil.showDoB = true
       nextPupil.showDoB = true
     }
   })
   return pupils
 }
+
+pupilIdentificationFlag.haveEqualFullNames = (p1, p2) => p1.foreName.toLowerCase() === p2.foreName.toLowerCase() &&
+p1.lastName.toLowerCase() === p2.lastName.toLowerCase()
 
 module.exports = pupilIdentificationFlag

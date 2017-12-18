@@ -96,6 +96,13 @@ Feature:
     When I select multiple pupils with the Absent reason
     Then the sticky banner should display the pupil count
 
+  @pupil_not_taking_check
+  Scenario: Sticky banner displays total pupil count when all pupils are selected for pupil not taking check
+    Given I am on the pupil reason page
+    And I select a reason
+    When I select all pupil for pupil not taking check
+    Then the sticky banner should display the total pupil count for pupil not taking the check
+
   Scenario: Confirmation is enabled if a reason and at least 1 pupil are selected
     Given I am on the pupil reason page
     And I select a reason
