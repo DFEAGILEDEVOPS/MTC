@@ -1,0 +1,93 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-thirds">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+        <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge">Assign forms to check window</h1>
+        <p class="lede" id="lead-paragraph">
+            Select forms to assign to each window. One form can be allied to different windows.
+        </p>
+
+        <% if (totalFormsAvailable < 1) { %>
+        <div class="panel panel-border-wide">
+            <p>
+                There are currently no available forms to assign.<br />
+                <a href="/test-developer/upload-new-form">Add a new form</a>
+            </p>
+        </div>
+        <% } %>
+        <% if (Array.isArray(checkWindowsData) && checkWindowsData.length > 0) { %>
+        <table class="spacious" id="assignFormToWindowList" role="group">
+            <thead>
+                <tr>
+                    <th scope="col">Window name</th>
+                    <td> </td>
+                </tr>
+            </thead>
+            <tbody>
+                <% checkWindowsData.forEach(checkWindow => { %>
+                <tr>
+                    <td>
+                        <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
+                        <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
+                        (<%= checkWindow.totalForms %> forms)
+                    </td>
+                    <td class="align-right">
+                        <% if (totalFormsAvailable > checkWindow.totalForms && totalFormsAvailable > 0) { %>
+                        <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
+                        <% } else if (totalFormsAvailable === 0) { %>
+                        <div class="font-greyed-out italic">No forms available</div>
+                        <% } else { %>
+                        <div class="font-greyed-out italic">All forms assigned</div>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
+        <div class="panel panel-border-wide">
+            <p>
+                There are currently no available check windows .<br />
+                Contact the service manager to get new check windows created.
+            </p>
+        </div>
+        <% } %>
+    </div>
+
+    <div class="column-one-third add-title-margin">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
+            </li>
+                    <li>
+                        <a href="/test-developer/upload-and-view-forms">Upload and view forms</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>

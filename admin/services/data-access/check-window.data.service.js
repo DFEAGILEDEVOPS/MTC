@@ -22,20 +22,20 @@ const checkWindowDataService = {
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
-   * @param deleted
+   * @param isDeleted
    * @param sortBy
    * @param sortDirection
-   * @param current
+   * @param isCurrent
    * @returns {Promise.<void>}
    */
-  fetchCheckWindows: async (sortBy, sortDirection, deleted, current) => {
+  fetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
     let sorting = {}
     let query = {}
 
     const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D 00:00:00')
 
-    query.isDeleted = !deleted ? false : deleted
-    if (current === true) {
+    query.isDeleted = !isDeleted ? false : isDeleted
+    if (isCurrent === true) {
       query.checkEndDate = {$gte: currentTimestamp}
     } else {
       query.checkEndDate = {$lte: currentTimestamp}

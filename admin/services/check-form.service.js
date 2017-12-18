@@ -225,6 +225,92 @@ const checkFormService = {
       return line.trim()
     }).filter(Boolean)
     return result.length === config.LINES_PER_CHECK_FORM
+  },
+
+  /**
+   * Get unassigned forms for selected check window.
+   * @param checkWindowAssignedForms
+   * @returns {Promise<*>}
+   */
+  getUnassignedFormsForCheckWindow: async (checkWindowAssignedForms) => {
+    let checkFormData
+    let checkFormList = []
+
+    if (!checkWindowAssignedForms) {
+      return []
+    }
+
+    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+
+    if (checkWindowAssignedForms && checkFormData) {
+      checkFormData.map((form) => {
+        if (checkWindowAssignedForms.filter(item => item === form._id).length < 1) {
+          checkFormList.push({
+            '_id': form._id,
+            'name': form.name
+          })
+        }
+      })
+    }
+
+    return checkFormList
+  },
+
+  /**
+   * Get assigned forms for selected check window.
+   * @param checkWindowAssignedForms
+   * @returns {Promise<*>}
+   */
+  getAssignedFormsForCheckWindow: async (checkWindowAssignedForms) => {
+    let checkFormData
+    let checkFormList = []
+
+    if (!checkWindowAssignedForms) {
+      return []
+    }
+
+    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+
+    if (checkWindowAssignedForms && checkFormData) {
+      checkFormData.map((form) => {
+        if (checkWindowAssignedForms.filter(item => item === form._id).length > 0) {
+          checkFormList.push({
+            '_id': form._id,
+            'name': form.name
+          })
+        }
+      })
+    }
+
+    return checkFormList
+  },
+
+  /**
+   * Remove form id from array of current forms.
+   * @param checkWindow
+   * @param checkFormId
+   * @returns {*}
+   */
+  removeFormIdFromArray: (checkWindow, checkFormId) => {
+    if (!checkWindow) {
+      return false
+    }
+
+    if (!checkFormId) {
+      return false
+    }
+
+    let checkWindowForms = []
+
+    if (checkWindow.forms.length > 0) {
+      checkWindow.forms.map((f) => {
+        if (parseInt(f) !== parseInt(checkFormId)) {
+          checkWindowForms.push(f)
+        }
+      })
+    }
+
+    return checkWindowForms
   }
 }
 
