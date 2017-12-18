@@ -16,6 +16,7 @@ services:
 #    - ./admin:/usr/src/app
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mtc_mongo/mtc"
+      SQL_ENABLED: "true"
     depends_on:
     - sqldb
     - mongo
