@@ -112,6 +112,10 @@ When(/^I select a pupil$/) do
   pupil.checkbox.click
 end
 
+When(/^I select all pupil for pupil not taking check$/) do
+  pupil_reason_page.select_all_pupils.click
+end
+
 And(/^I select a reason$/) do
   pupil_reason_page.attendance_codes.first.click
 end
@@ -267,4 +271,9 @@ end
 
 Then(/^the sticky banner should display the pupil count$/) do
   expect(@page.sticky_banner.count.text).to eql "Pupil(s) selected: " + @pupil_names.size.to_s
+end
+
+Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
+  total_pupil_count = pupils_not_taking_check_page.pupil_list.rows.count
+  expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
 end
