@@ -396,7 +396,6 @@ input {
 // Tables
 
 table.spacious {
-
   border-bottom: 1px solid $grey-2;
   border-collapse: collapse;
   margin-bottom: $gutter-and-a-half;
@@ -420,6 +419,10 @@ table.spacious {
   td {
     padding-bottom: $gutter-half;
     padding-top: $gutter-half;
+
+    a {
+      text-decoration: underline;
+    }
   }
 }
 
