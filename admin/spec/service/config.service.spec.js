@@ -18,7 +18,7 @@ describe('config service', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       sandbox.mock(settingsDataService)
-        .expects('findOne')
+        .expects('sqlFindOne')
         .resolves({
           loadingTimeLimit: 20,
           questionTimeLimit: 50
@@ -48,7 +48,7 @@ describe('config service', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       sandbox.mock(settingsDataService)
-        .expects('findOne')
+        .expects('sqlFindOne')
         .resolves(null)
       configService = proxyquire('../../services/config.service', {
         './data-access/setting.data.service': settingsDataService,
