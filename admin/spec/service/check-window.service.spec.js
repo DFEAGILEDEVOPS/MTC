@@ -9,7 +9,6 @@ const checkFormMock = require('../mocks/check-form')
 const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
 const checkWindowsByFormMock = require('../mocks/check-window-by-form')
-const checkWindowsAndCountFormsMock = require('../mocks/check-windows-and-count-forms')
 const checkWindowService = require('../../services/check-window.service')
 const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 

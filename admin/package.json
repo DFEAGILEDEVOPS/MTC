@@ -7,7 +7,7 @@
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
     "postinstall": "gulp build",
-    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up",
+    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up && cd ../.. && yarn migrate-sql ",
     "sasswatch": "gulp watch",
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
@@ -66,6 +66,7 @@
     "xregexp": "^3.2.0"
   },
   "devDependencies": {
+    "chalk": "^2.3.0",
     "govuk-elements-sass": "^3.1.2",
     "govuk_template_ejs": "^0.23.0",
     "gulp": "^3.9.1",

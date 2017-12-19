@@ -70,7 +70,7 @@ describe('pupil-restart.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(RestartCode).expects('find').chain('sort').resolves(restartCodesMock)
+      mock = sandbox.mock(RestartCode).expects('find').chain('lean').chain('exec').resolves(restartCodesMock)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
         '../../models/restart-code': RestartCode
       })

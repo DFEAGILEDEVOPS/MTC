@@ -2,6 +2,7 @@
 
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
+const PupilStatusCode = require('../../models/pupil-status-code')
 const pupilDataService = {}
 
 /**
@@ -37,7 +38,6 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
   return Pupil
     .find({'school': schoolId})
     .sort(sort)
-    .collation({ locale: 'en', strength: 2 })
     .lean()
     .exec()
 }
@@ -49,8 +49,7 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
  */
 pupilDataService.insertMany = async (pupils) => {
   const mongoosePupils = pupils.map(p => new Pupil(p))
-  const savedPupils = await Pupil.insertMany(mongoosePupils)
-  return savedPupils
+  return Pupil.insertMany(mongoosePupils)
 }
 
 /**
@@ -75,7 +74,8 @@ pupilDataService.find = async function (options) {
  * Generalised update function - can update many in one transaction
  * @param query
  * @param criteria
- * @return {Promise}
+ * @param options
+ * @returns {Promise<void>}
  */
 pupilDataService.update = async function (query, criteria, options = {multi: false}) {
   return Pupil.update(query, criteria, options).exec()
@@ -105,8 +105,6 @@ pupilDataService.save = async function (data) {
   return pupil.toObject()
 }
 
-
-
 /**
  * Unset the attendance code for a single pupil
  * @param id
@@ -114,6 +112,14 @@ pupilDataService.save = async function (data) {
  */
 pupilDataService.unsetAttendanceCode = async function (id) {
   return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
+}
+
+/**
+ * Get all the restart codes documents
+ * @return {Promise.<{Object}>}
+ */
+pupilDataService.getStatusCodes = async () => {
+  return PupilStatusCode.find().lean().exec()
 }
 
 module.exports = pupilDataService

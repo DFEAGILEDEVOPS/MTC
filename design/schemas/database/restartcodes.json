@@ -5,7 +5,6 @@
     "createdAt": "2017-10-20T11:55:00.550Z",
     "status": "Remove restart",
     "code": "REM",
-    "order": 0,
     "__v": 0
   },
   {
@@ -14,7 +13,6 @@
     "createdAt": "2017-10-20T11:55:00.550Z",
     "status": "Restart taken",
     "code": "TKN",
-    "order": 1,
     "__v": 0
   },
   {
@@ -23,7 +21,6 @@
     "createdAt": "2017-10-20T11:55:00.550Z",
     "status": "Maximum number of restarts taken",
     "code": "MAX",
-    "order": 2,
     "__v": 0
   }
 ]

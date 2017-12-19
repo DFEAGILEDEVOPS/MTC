@@ -8,8 +8,10 @@ require('sinon-mongoose')
 
 const Pupil = require('../../../models/pupil')
 const School = require('../../../models/school')
+const PupilStatusCode = require('../../../models/pupil-status-code')
 const pupilMock = require('../../mocks/pupil')
 const schoolMock = require('../../mocks/school')
+const pupilStatusCodesMock = require('../../mocks/pupil-status-codes')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -171,6 +173,22 @@ describe('pupil.data.service', () => {
 
     it('calls the model', () => {
       service.save({ _id: 'some-id' })
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#getStatusCodes', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(PupilStatusCode).expects('find').chain('lean').chain('exec').resolves(pupilStatusCodesMock)
+      service = proxyquire('../../../services/data-access/pupil.data.service', {
+        '../../models/pupil-status-code': PupilStatusCode
+      })
+    })
+
+    it('should return a list of attendance codes', () => {
+      service.getStatusCodes()
       expect(mock.verify()).toBe(true)
     })
   })
