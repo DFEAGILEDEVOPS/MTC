@@ -5,11 +5,15 @@ const sqlService = require('./sql.service')
 
 const settingDataService = {}
 
-settingDataService.findOne = async function () {
+settingDataService.findOne = async (options) => {
+  return Setting.findOne(options).lean().exec()
+}
+
+settingDataService.sqlFindOne = async function () {
   const sql = 'SELECT TOP 1 * FROM Settings'
 
   const result = await sqlService.query(sql)
-  if (result && result.length === 1) {
+  if (result && result.length > 0) {
     return result[0]
   }
   return {}

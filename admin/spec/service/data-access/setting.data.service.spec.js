@@ -30,7 +30,7 @@ describe('pupil.data.service', () => {
     })
 
     it('calls the model', () => {
-      service.findOne()
+      service.sqlFindOne()
       expect(mock.verify()).toBe(true)
     })
   })
