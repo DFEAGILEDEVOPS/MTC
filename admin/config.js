@@ -22,7 +22,7 @@ module.exports = {
   Sql: {
     Enabled: process.env.SQL_ENABLED || false,
     Database: process.env.SQL_DATABASE || 'mtc',
-    Server: process.env.SQL_SERVER || 'mtc_mssql',
+    Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     Encrypt: process.env.SQL_ENCRYPT || true,
