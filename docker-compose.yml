@@ -17,6 +17,7 @@ services:
     environment:
       MONGO_CONNECTION_STRING: "mongodb://mtc_mongo/mtc"
       SQL_ENABLED: "true"
+      SQL_SERVER: "mtc_mssql"
     depends_on:
     - sqldb
     - mongo
