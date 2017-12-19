@@ -1,4 +1,3 @@
--- test users
-TRUNCATE TABLE [mtc].school;
--- test forms
-TRUNCATE TABLE [mtc].pupil;
+DELETE FROM [mtc_admin].pupil;
+DELETE FROM [mtc_admin].school;
+
