@@ -3,6 +3,7 @@
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
 const config = require('../../config')
+const winston = require('winston')
 
 const adminConfig = {
   appName: config.Sql.Application.Name,
@@ -43,10 +44,10 @@ const createDatabase = async (connection) => {
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
-    console.log(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
+    winston.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
     const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     const output = await executeRequest(connection, createDbSql)
-    console.log(output[0][0].value)
+    winston.info(output[0][0].value)
   } catch (error) {
     console.error(error)
   }
@@ -54,7 +55,7 @@ const createDatabase = async (connection) => {
 
 const main = () => {
   return new Promise((resolve, reject) => {
-    console.log(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} `)
+    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} `)
     const connection = new Connection(adminConfig)
     connection.on('connect', (err) => {
       if (err) {
