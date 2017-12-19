@@ -58,9 +58,9 @@ When(/^I want to add a reason for pupils not taking a check$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
-  pupil_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
-  sorted_pupil_from_page = pupil_from_page.sort_by { |pupil_list| pupil_list.downcase }
-  expect(sorted_pupil_from_page).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
+  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
+  expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
 Given(/^I am on the pupil reason page$/) do
@@ -87,9 +87,9 @@ And(/^I want to sort the surnames in to desecending order$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname in descending order$/) do
-  pupil_from_page = pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
-  sorted_pupil_from_page = pupil_from_page.sort_by { |pupil_list| pupil_list.downcase }.reverse
-  expect(sorted_pupil_from_page).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
+  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
+  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
+  expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort.reverse).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
 Then(/^I should see a sticky banner$/) do
