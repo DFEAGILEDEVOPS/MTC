@@ -34,8 +34,9 @@ const school = (router) => {
   router.get('/pupils-not-taking-check', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/:removed', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getPupilNotTakingCheck(req, res, next))
   router.get('/group-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
-  router.get('/group-pupils/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
-  router.get('/group-pupils/edit/:groupId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.groupPupilsPage(req, res, next))
+  router.get('/group-pupils/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.manageGroupPage(req, res, next))
+  router.post('/group-pupils/save', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.saveGroupPage(req, res, next))
+  router.get('/group-pupils/edit/:groupId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.manageGroupPage(req, res, next))
 }
 
 module.exports = school

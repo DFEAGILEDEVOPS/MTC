@@ -33,7 +33,7 @@ pupilDataService.getPupils = async (schoolId) => {
 pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
   // TODO: Introduce integration tests
   const sort = {}
-  sort[sortingField] = sortingDirection
+  sort[sortingField || 'lastName'] = sortingDirection || 'asc'
   return Pupil
     .find({'school': schoolId})
     .sort(sort)
