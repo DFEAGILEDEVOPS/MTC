@@ -49,3 +49,8 @@ Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   pupil_row = pupil_register_page.find_pupil_row(@details_hash[:first_name])
   expect(pupil_row.result.text).to eql(status)
 end
+
+Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the check$/) do |status|
+  pupil_row = pupil_register_page.find_pupil_row(@pupil['lastName'])
+  expect(pupil_row.result.text).to eql(status)
+end

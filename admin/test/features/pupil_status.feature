@@ -17,22 +17,27 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'PIN generated'
 
-#  @manual
-#  Scenario: Pupil status is IN Progress when a pupil is logged in
+  @manual
+  Scenario: Pupil status is IN Progress when a pupil is logged in
+    Given I have a pupil who has started a warm up question
+    When I am on the Pupil Register page
+    Then I can see the status for the pupil is 'In Progress'
 
   Scenario: Pupil status is Check Started when a pupil started the actual check
     Given pupil has started a check
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Check started'
 
-#  @manual
-#  Scenario: Pupil status is Check Completed when a pupil completed its check
+  @manual
+  Scenario: Pupil status is Check Completed when a pupil completed its check
+    Given I have a pupil who has completed the check
+    When I am on the Pupil Register page
+    Then I can see the status for the pupil is 'In Progress'
 
-  @wip
   Scenario: Pupil Status is Not Taking the Check when a pupil is not taking the check
     Given I have a pupil not taking the check
     When I am on the Pupil Register page
-    Then I can see the status for the pupil is 'Not taking the Check'
+    Then I can see the status for the pupil is 'Not taking the Check' for pupil not taking the check
 
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
