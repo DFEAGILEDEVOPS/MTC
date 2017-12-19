@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 const Schema = mongoose.Schema
 
-const RestartCode = new Schema({
-  status: {
+const PupilStatusCode = new Schema({
+  statusDesc: {
     type: String,
     required: true
   },
@@ -13,4 +13,4 @@ const RestartCode = new Schema({
   }
 }, {timestamps: true})
 
-module.exports = mongoose.model('RestartCode', RestartCode)
+module.exports = mongoose.model('PupilStatusCode', PupilStatusCode)

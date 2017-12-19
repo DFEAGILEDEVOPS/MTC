@@ -36,7 +36,7 @@
                     </th>
                     <th class="numeric" scope="col">
                         <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
-                        Result
+                        Outcome
                         <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
                         </a>
                     </th>
@@ -64,7 +64,7 @@
                         </div>
                     </td>
                     <td class="numeric table-cell"><%= p.group %></td>
-                    <td class="numeric table-cell"><%= p.score %></td>
+                    <td class="numeric table-cell"><%= p.outcome %></td>
                 </tr>
             <% }) %>
             </tbody>
