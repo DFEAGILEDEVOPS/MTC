@@ -1,0 +1,1 @@
+ALTER TABLE [mtc_admin].[adminLogonEvent] ADD errorMsg NVARCHAR(max) DEFAULT NULL ;
