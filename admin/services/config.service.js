@@ -18,7 +18,7 @@ const configService = {
     let questionTime = QUESTION_TIME_LIMIT
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
-    const timeSettings = await settingDataService.findOne({})
+    const timeSettings = await settingDataService.findOne()
 
     if (timeSettings) {
       loadingTime = timeSettings.loadingTimeLimit

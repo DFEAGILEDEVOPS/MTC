@@ -7,6 +7,7 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 
 const Setting = require('../../../models/setting')
+const sqlService = require('../../../services/data-access/sql.service')
 const settingMock = require('../../mocks/setting')
 
 describe('pupil.data.service', () => {
@@ -22,14 +23,14 @@ describe('pupil.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Setting).expects('findOne').chain('lean').chain('exec').resolves(settingMock)
+      mock = sandbox.mock(sqlService).expects('query').resolves(settingMock)
       service = proxyquire('../../../services/data-access/setting.data.service', {
-        '../../models/setting': Setting
+        '../data-access/sql.service': sqlService
       })
     })
 
     it('calls the model', () => {
-      service.findOne({ _id: 'some-id' })
+      service.findOne()
       expect(mock.verify()).toBe(true)
     })
   })

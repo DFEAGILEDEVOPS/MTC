@@ -1,11 +1,24 @@
 'use strict'
 
 const Setting = require('../../models/setting')
+const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
 
 const settingDataService = {}
 
-settingDataService.findOne = async function (options) {
-  return Setting.findOne(options).lean().exec()
+settingDataService.findOne = async function () {
+  const sql = 'SELECT * FROM Settings WHERE id=@id'
+  const params = [ {
+    name: 'id',
+    value: 1,
+    type: TYPES.Int
+  }]
+
+  const result = await sqlService.query(sql, params)
+  if (result && result.length === 1) {
+    return result[0]
+  }
+  return {}
 }
 
 /**
