@@ -3,17 +3,17 @@ Description: MTC Baseline Script
 Author: Guy Harwood
 Date: 23/11/2017 12:32
 */
-/****** Object:  Table [mtc].[adminLogonEvent]    Script Date: 23/11/2017 17:14:08 ******/
+/****** Object:  Table [mtc_admin].[adminLogonEvent]    Script Date: 23/11/2017 17:14:08 ******/
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
-CREATE TABLE [mtc].[adminLogonEvent]
+CREATE TABLE [mtc_admin].[adminLogonEvent]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
 	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [rowversion],
-	[user_id] [int] NOT NULL,
+	[user_id] [int] NULL,
 	[sessionId] [nvarchar](max) NOT NULL,
 	[remoteIp] [nvarchar](max) NOT NULL,
 	[userAgent] [nvarchar](max) NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE [mtc].[adminLogonEvent]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[attendanceCode]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[attendanceCode]
+/****** Object:  Table [mtc_admin].[attendanceCode]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[attendanceCode]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -42,8 +42,8 @@ CREATE TABLE [mtc].[attendanceCode]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[check]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[check]
+/****** Object:  Table [mtc_admin].[check]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[check]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE [mtc].[check]
 	[checkCode] [uniqueidentifier] NOT NULL,
 	[checkWindow_id] [int] NOT NULL,
 	[checkForm_id] [int] NOT NULL,
-	[pupilLoginDate] [datetimeoffset](3) NOT NULL,
+	[pupilLoginDate] [datetimeoffset](3) NULL,
 	[mark] [tinyint] NULL,
 	[maxMark] [tinyint] NULL,
 	[markedAt] [datetimeoffset](3) NULL,
@@ -62,8 +62,8 @@ CREATE TABLE [mtc].[check]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[checkForm]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[checkForm]
+/****** Object:  Table [mtc_admin].[checkForm]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[checkForm]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -78,8 +78,8 @@ CREATE TABLE [mtc].[checkForm]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[checkWindow]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[checkWindow]
+/****** Object:  Table [mtc_admin].[checkWindow]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[checkWindow]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -95,8 +95,8 @@ CREATE TABLE [mtc].[checkWindow]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[hdf]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[hdf]
+/****** Object:  Table [mtc_admin].[hdf]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[hdf]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -114,8 +114,8 @@ CREATE TABLE [mtc].[hdf]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[pupil]    Script Date: 23/11/2017 17:14:08 ******/
-CREATE TABLE [mtc].[pupil]
+/****** Object:  Table [mtc_admin].[pupil]    Script Date: 23/11/2017 17:14:08 ******/
+CREATE TABLE [mtc_admin].[pupil]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -139,8 +139,8 @@ CREATE TABLE [mtc].[pupil]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[pupilAttendance]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[pupilAttendance]
+/****** Object:  Table [mtc_admin].[pupilAttendance]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[pupilAttendance]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -154,8 +154,8 @@ CREATE TABLE [mtc].[pupilAttendance]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[pupilFeedback]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[pupilFeedback]
+/****** Object:  Table [mtc_admin].[pupilFeedback]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[pupilFeedback]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -170,8 +170,8 @@ CREATE TABLE [mtc].[pupilFeedback]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[pupilLogonEvent]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[pupilLogonEvent]
+/****** Object:  Table [mtc_admin].[pupilLogonEvent]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[pupilLogonEvent]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -189,8 +189,8 @@ CREATE TABLE [mtc].[pupilLogonEvent]
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
 
-/****** Object:  Table [mtc].[role]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[role]
+/****** Object:  Table [mtc_admin].[role]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[role]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -202,8 +202,8 @@ CREATE TABLE [mtc].[role]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[school]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[school]
+/****** Object:  Table [mtc_admin].[school]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[school]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -220,8 +220,8 @@ CREATE TABLE [mtc].[school]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[settings]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[settings]
+/****** Object:  Table [mtc_admin].[settings]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[settings]
 (
 	[id] [tinyint] NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -234,8 +234,8 @@ CREATE TABLE [mtc].[settings]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[settingsLog]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[settingsLog]
+/****** Object:  Table [mtc_admin].[settingsLog]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[settingsLog]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -249,8 +249,8 @@ CREATE TABLE [mtc].[settingsLog]
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
-/****** Object:  Table [mtc].[user]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE TABLE [mtc].[user]
+/****** Object:  Table [mtc_admin].[user]    Script Date: 23/11/2017 17:14:09 ******/
+CREATE TABLE [mtc_admin].[user]
 (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[createdAt] [datetimeoffset](3) NOT NULL,
@@ -269,128 +269,128 @@ SET ANSI_PADDING ON
 
 -- Indexes
 /****** Object:  Index [attendanceCode_code_uindex]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE UNIQUE NONCLUSTERED INDEX [attendanceCode_code_uindex] ON [mtc].[attendanceCode]
+CREATE UNIQUE NONCLUSTERED INDEX [attendanceCode_code_uindex] ON [mtc_admin].[attendanceCode]
 (
 	[code] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 /****** Object:  Index [pupil_upn_uindex]    Script Date: 23/11/2017 17:14:09 ******/
-CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_uindex] ON [mtc].[pupil]
+CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_uindex] ON [mtc_admin].[pupil]
 (
 	[upn] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 
 -- Defaults
-ALTER TABLE [mtc].[adminLogonEvent] ADD  CONSTRAINT [DF_adminLogonEvent_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[adminLogonEvent] ADD  CONSTRAINT [DF_adminLogonEvent_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[adminLogonEvent] ADD  CONSTRAINT [DF_adminLogonEvent_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[adminLogonEvent] ADD  CONSTRAINT [DF_adminLogonEvent_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[attendanceCode] ADD  CONSTRAINT [DF_attendanceCode_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[attendanceCode] ADD  CONSTRAINT [DF_attendanceCode_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[attendanceCode] ADD  CONSTRAINT [DF_attendanceCode_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[attendanceCode] ADD  CONSTRAINT [DF_attendanceCode_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[check] ADD  CONSTRAINT [DF_check_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[check] ADD  CONSTRAINT [DF_check_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[check] ADD  CONSTRAINT [DF_check_checkCode_default]  DEFAULT (newid()) FOR [checkCode]
+ALTER TABLE [mtc_admin].[check] ADD  CONSTRAINT [DF_check_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[check] ADD  CONSTRAINT [DF_check_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[check] ADD  CONSTRAINT [DF_check_checkCode_default]  DEFAULT (newid()) FOR [checkCode]
 
-ALTER TABLE [mtc].[checkForm] ADD  CONSTRAINT [DF_checkForm_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[checkForm] ADD  CONSTRAINT [DF_checkForm_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[checkForm] ADD  CONSTRAINT [DF_checkForm_isDeleted_default]  DEFAULT ((0)) FOR [isDeleted]
+ALTER TABLE [mtc_admin].[checkForm] ADD  CONSTRAINT [DF_checkForm_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[checkForm] ADD  CONSTRAINT [DF_checkForm_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[checkForm] ADD  CONSTRAINT [DF_checkForm_isDeleted_default]  DEFAULT ((0)) FOR [isDeleted]
 
-ALTER TABLE [mtc].[checkWindow] ADD  DEFAULT ((0)) FOR [isDeleted]
-ALTER TABLE [mtc].[checkWindow] ADD  CONSTRAINT [DF_checkWindow_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[checkWindow] ADD  CONSTRAINT [DF_checkWindow_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[checkWindow] ADD  DEFAULT ((0)) FOR [isDeleted]
+ALTER TABLE [mtc_admin].[checkWindow] ADD  CONSTRAINT [DF_checkWindow_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[checkWindow] ADD  CONSTRAINT [DF_checkWindow_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[hdf] ADD  CONSTRAINT [DF_hdf_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[hdf] ADD  CONSTRAINT [DF_hdf_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[hdf] ADD  CONSTRAINT [DF_hdf_signedDate_default]  DEFAULT (GETUTCDATE()) FOR [signedDate]
+ALTER TABLE [mtc_admin].[hdf] ADD  CONSTRAINT [DF_hdf_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[hdf] ADD  CONSTRAINT [DF_hdf_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[hdf] ADD  CONSTRAINT [DF_hdf_signedDate_default]  DEFAULT (GETUTCDATE()) FOR [signedDate]
 
-ALTER TABLE [mtc].[pupil] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[pupil] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[pupil] ADD  DEFAULT ((0)) FOR [speechSynthesis]
-ALTER TABLE [mtc].[pupil] ADD  DEFAULT ((0)) FOR [isTestAccount]
-ALTER TABLE [mtc].[pupil] ADD  DEFAULT (newid()) FOR [urlSlug]
+ALTER TABLE [mtc_admin].[pupil] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[pupil] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[pupil] ADD  DEFAULT ((0)) FOR [speechSynthesis]
+ALTER TABLE [mtc_admin].[pupil] ADD  DEFAULT ((0)) FOR [isTestAccount]
+ALTER TABLE [mtc_admin].[pupil] ADD  DEFAULT (newid()) FOR [urlSlug]
 
-ALTER TABLE [mtc].[pupilAttendance] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[pupilAttendance] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[pupilAttendance] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[pupilAttendance] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[pupilFeedback] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[pupilFeedback] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[pupilFeedback] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[pupilFeedback] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[pupilLogonEvent] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[pupilLogonEvent] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[pupilLogonEvent] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[pupilLogonEvent] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[role] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[role] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[role] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[role] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
 
-ALTER TABLE [mtc].[school] ADD  CONSTRAINT [DF_school_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[school] ADD  CONSTRAINT [DF_school_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
-ALTER TABLE [mtc].[school] ADD  DEFAULT (newid()) FOR [urlSlug]
+ALTER TABLE [mtc_admin].[school] ADD  CONSTRAINT [DF_school_createdAt_default]  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[school] ADD  CONSTRAINT [DF_school_updatedAt_default]  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[school] ADD  DEFAULT (newid()) FOR [urlSlug]
 
-ALTER TABLE [mtc].[settings] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[settings] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[settings] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[settings] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[settingsLog] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[settingsLog] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[settingsLog] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[settingsLog] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
-ALTER TABLE [mtc].[user] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
-ALTER TABLE [mtc].[user] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
+ALTER TABLE [mtc_admin].[user] ADD  DEFAULT (GETUTCDATE()) FOR [createdAt]
+ALTER TABLE [mtc_admin].[user] ADD  DEFAULT (GETUTCDATE()) FOR [updatedAt]
 
 -- Foreign Keys
-ALTER TABLE [mtc].[adminLogonEvent]  WITH CHECK ADD  CONSTRAINT [FK_adminLogonEvent_user_id] FOREIGN KEY([user_id])
-REFERENCES [mtc].[user] ([id])
-ALTER TABLE [mtc].[adminLogonEvent] CHECK CONSTRAINT [FK_adminLogonEvent_user_id]
+ALTER TABLE [mtc_admin].[adminLogonEvent]  WITH CHECK ADD  CONSTRAINT [FK_adminLogonEvent_user_id] FOREIGN KEY([user_id])
+REFERENCES [mtc_admin].[user] ([id])
+ALTER TABLE [mtc_admin].[adminLogonEvent] CHECK CONSTRAINT [FK_adminLogonEvent_user_id]
 
-ALTER TABLE [mtc].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_checkForm_id] FOREIGN KEY([checkForm_id])
-REFERENCES [mtc].[checkForm] ([id])
-ALTER TABLE [mtc].[check] CHECK CONSTRAINT [FK_check_checkForm_id]
-ALTER TABLE [mtc].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_checkWindow_id] FOREIGN KEY([checkWindow_id])
-REFERENCES [mtc].[checkWindow] ([id])
-ALTER TABLE [mtc].[check] CHECK CONSTRAINT [FK_check_checkWindow_id]
-ALTER TABLE [mtc].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_pupil_id] FOREIGN KEY([pupil_id])
-REFERENCES [mtc].[pupil] ([id])
-ALTER TABLE [mtc].[check] CHECK CONSTRAINT [FK_check_pupil_id]
+ALTER TABLE [mtc_admin].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_checkForm_id] FOREIGN KEY([checkForm_id])
+REFERENCES [mtc_admin].[checkForm] ([id])
+ALTER TABLE [mtc_admin].[check] CHECK CONSTRAINT [FK_check_checkForm_id]
+ALTER TABLE [mtc_admin].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_checkWindow_id] FOREIGN KEY([checkWindow_id])
+REFERENCES [mtc_admin].[checkWindow] ([id])
+ALTER TABLE [mtc_admin].[check] CHECK CONSTRAINT [FK_check_checkWindow_id]
+ALTER TABLE [mtc_admin].[check]  WITH CHECK ADD  CONSTRAINT [FK_check_pupil_id] FOREIGN KEY([pupil_id])
+REFERENCES [mtc_admin].[pupil] ([id])
+ALTER TABLE [mtc_admin].[check] CHECK CONSTRAINT [FK_check_pupil_id]
 
-ALTER TABLE [mtc].[checkForm]  WITH CHECK ADD  CONSTRAINT [FK_checkForm_checkWindow_id] FOREIGN KEY([checkWindow_id])
-REFERENCES [mtc].[checkWindow] ([id])
-ALTER TABLE [mtc].[checkForm] CHECK CONSTRAINT [FK_checkForm_checkWindow_id]
+ALTER TABLE [mtc_admin].[checkForm]  WITH CHECK ADD  CONSTRAINT [FK_checkForm_checkWindow_id] FOREIGN KEY([checkWindow_id])
+REFERENCES [mtc_admin].[checkWindow] ([id])
+ALTER TABLE [mtc_admin].[checkForm] CHECK CONSTRAINT [FK_checkForm_checkWindow_id]
 
-ALTER TABLE [mtc].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_checkWindow_id] FOREIGN KEY([checkWindow_id])
-REFERENCES [mtc].[checkWindow] ([id])
-ALTER TABLE [mtc].[hdf] CHECK CONSTRAINT [FK_hdf_checkWindow_id]
-ALTER TABLE [mtc].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_school_id] FOREIGN KEY([school_id])
-REFERENCES [mtc].[school] ([id])
-ALTER TABLE [mtc].[hdf] CHECK CONSTRAINT [FK_hdf_school_id]
-ALTER TABLE [mtc].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_user_id] FOREIGN KEY([user_id])
-REFERENCES [mtc].[user] ([id])
-ALTER TABLE [mtc].[hdf] CHECK CONSTRAINT [FK_hdf_user_id]
+ALTER TABLE [mtc_admin].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_checkWindow_id] FOREIGN KEY([checkWindow_id])
+REFERENCES [mtc_admin].[checkWindow] ([id])
+ALTER TABLE [mtc_admin].[hdf] CHECK CONSTRAINT [FK_hdf_checkWindow_id]
+ALTER TABLE [mtc_admin].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_school_id] FOREIGN KEY([school_id])
+REFERENCES [mtc_admin].[school] ([id])
+ALTER TABLE [mtc_admin].[hdf] CHECK CONSTRAINT [FK_hdf_school_id]
+ALTER TABLE [mtc_admin].[hdf]  WITH CHECK ADD  CONSTRAINT [FK_hdf_user_id] FOREIGN KEY([user_id])
+REFERENCES [mtc_admin].[user] ([id])
+ALTER TABLE [mtc_admin].[hdf] CHECK CONSTRAINT [FK_hdf_user_id]
 
-ALTER TABLE [mtc].[pupil]  WITH CHECK ADD  CONSTRAINT [FK_pupil_school_id] FOREIGN KEY([school_id])
-REFERENCES [mtc].[school] ([id])
-ALTER TABLE [mtc].[pupil] CHECK CONSTRAINT [FK_pupil_school_id]
+ALTER TABLE [mtc_admin].[pupil]  WITH CHECK ADD  CONSTRAINT [FK_pupil_school_id] FOREIGN KEY([school_id])
+REFERENCES [mtc_admin].[school] ([id])
+ALTER TABLE [mtc_admin].[pupil] CHECK CONSTRAINT [FK_pupil_school_id]
 
-ALTER TABLE [mtc].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_attendanceCode_id] FOREIGN KEY([attendanceCode_id])
-REFERENCES [mtc].[attendanceCode] ([id])
-ALTER TABLE [mtc].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_attendanceCode_id]
-ALTER TABLE [mtc].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_pupil_id] FOREIGN KEY([pupil_id])
-REFERENCES [mtc].[pupil] ([id])
-ALTER TABLE [mtc].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_pupil_id]
-ALTER TABLE [mtc].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_user_id] FOREIGN KEY([recordedBy_user_id])
-REFERENCES [mtc].[user] ([id])
-ALTER TABLE [mtc].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_user_id]
+ALTER TABLE [mtc_admin].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_attendanceCode_id] FOREIGN KEY([attendanceCode_id])
+REFERENCES [mtc_admin].[attendanceCode] ([id])
+ALTER TABLE [mtc_admin].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_attendanceCode_id]
+ALTER TABLE [mtc_admin].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_pupil_id] FOREIGN KEY([pupil_id])
+REFERENCES [mtc_admin].[pupil] ([id])
+ALTER TABLE [mtc_admin].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_pupil_id]
+ALTER TABLE [mtc_admin].[pupilAttendance]  WITH CHECK ADD  CONSTRAINT [FK_pupilAttendance_user_id] FOREIGN KEY([recordedBy_user_id])
+REFERENCES [mtc_admin].[user] ([id])
+ALTER TABLE [mtc_admin].[pupilAttendance] CHECK CONSTRAINT [FK_pupilAttendance_user_id]
 
-ALTER TABLE [mtc].[pupilFeedback]  WITH CHECK ADD  CONSTRAINT [FK_pupilFeedback_check_id] FOREIGN KEY([check_id])
-REFERENCES [mtc].[check] ([id])
-ALTER TABLE [mtc].[pupilFeedback] CHECK CONSTRAINT [FK_pupilFeedback_check_id]
+ALTER TABLE [mtc_admin].[pupilFeedback]  WITH CHECK ADD  CONSTRAINT [FK_pupilFeedback_check_id] FOREIGN KEY([check_id])
+REFERENCES [mtc_admin].[check] ([id])
+ALTER TABLE [mtc_admin].[pupilFeedback] CHECK CONSTRAINT [FK_pupilFeedback_check_id]
 
-ALTER TABLE [mtc].[pupilLogonEvent]  WITH CHECK ADD  CONSTRAINT [FK_pupilLogonEvent_pupil_id] FOREIGN KEY([pupil_id])
-REFERENCES [mtc].[pupil] ([id])
-ALTER TABLE [mtc].[pupilLogonEvent] CHECK CONSTRAINT [FK_pupilLogonEvent_pupil_id]
+ALTER TABLE [mtc_admin].[pupilLogonEvent]  WITH CHECK ADD  CONSTRAINT [FK_pupilLogonEvent_pupil_id] FOREIGN KEY([pupil_id])
+REFERENCES [mtc_admin].[pupil] ([id])
+ALTER TABLE [mtc_admin].[pupilLogonEvent] CHECK CONSTRAINT [FK_pupilLogonEvent_pupil_id]
 
-ALTER TABLE [mtc].[settingsLog]  WITH CHECK ADD  CONSTRAINT [FK_settingsLog_user_id] FOREIGN KEY([user_id])
+ALTER TABLE [mtc_admin].[settingsLog]  WITH CHECK ADD  CONSTRAINT [FK_settingsLog_user_id] FOREIGN KEY([user_id])
 
-REFERENCES [mtc].[user] ([id])
-ALTER TABLE [mtc].[settingsLog] CHECK CONSTRAINT [FK_settingsLog_user_id]
-ALTER TABLE [mtc].[user]  WITH CHECK ADD  CONSTRAINT [FK_user_role_id] FOREIGN KEY([role_id])
-REFERENCES [mtc].[role] ([id])
-ALTER TABLE [mtc].[user] CHECK CONSTRAINT [FK_user_role_id]
-ALTER TABLE [mtc].[user]  WITH CHECK ADD  CONSTRAINT [FK_user_school_id] FOREIGN KEY([school_id])
-REFERENCES [mtc].[school] ([id])
-ALTER TABLE [mtc].[user] CHECK CONSTRAINT [FK_user_school_id]
+REFERENCES [mtc_admin].[user] ([id])
+ALTER TABLE [mtc_admin].[settingsLog] CHECK CONSTRAINT [FK_settingsLog_user_id]
+ALTER TABLE [mtc_admin].[user]  WITH CHECK ADD  CONSTRAINT [FK_user_role_id] FOREIGN KEY([role_id])
+REFERENCES [mtc_admin].[role] ([id])
+ALTER TABLE [mtc_admin].[user] CHECK CONSTRAINT [FK_user_role_id]
+ALTER TABLE [mtc_admin].[user]  WITH CHECK ADD  CONSTRAINT [FK_user_school_id] FOREIGN KEY([school_id])
+REFERENCES [mtc_admin].[school] ([id])
+ALTER TABLE [mtc_admin].[user] CHECK CONSTRAINT [FK_user_school_id]
