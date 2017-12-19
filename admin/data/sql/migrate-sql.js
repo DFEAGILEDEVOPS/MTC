@@ -51,9 +51,9 @@ const runMigrations = () => {
 }
 
 if (config.Sql.Enabled) {
-  const fifteenSeconds = 15000
-  console.log(`waiting ${fifteenSeconds}ms for SQL Server to come online before running migrations...`)
-  setTimeout(runMigrations, 15000)
+  const tenSeconds = 10000
+  console.log(`waiting ${tenSeconds / 1000} seconds for SQL Server to come online before running migrations...`)
+  setTimeout(runMigrations, tenSeconds)
 } else {
   console.log('Sql Server Disabled. Bypassing Migrations...')
 }
