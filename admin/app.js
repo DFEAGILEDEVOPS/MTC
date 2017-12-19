@@ -24,6 +24,11 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+const winston = require('winston')
+
+if (process.env.NODE_ENV !== 'production') {
+  winston.level = 'debug'
+}
 
 azure.startInsightsIfConfigured()
 
@@ -238,8 +243,8 @@ app.use(function (err, req, res, next) {
   // TODO change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
-  console.error('ERROR: ' + err.message + ' ID:' + errorId)
-  console.error(err.stack)
+  winston.error('ERROR: ' + err.message + ' ID:' + errorId)
+  winston.error(err.stack)
 
   // render the error page
   // TODO provide an error code and phone number? for the user to call support
