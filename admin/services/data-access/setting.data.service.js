@@ -2,19 +2,13 @@
 
 const Setting = require('../../models/setting')
 const sqlService = require('./sql.service')
-const TYPES = require('tedious').TYPES
 
 const settingDataService = {}
 
 settingDataService.findOne = async function () {
-  const sql = 'SELECT * FROM Settings WHERE id=@id'
-  const params = [ {
-    name: 'id',
-    value: 1,
-    type: TYPES.Int
-  }]
+  const sql = 'SELECT TOP 1 * FROM Settings'
 
-  const result = await sqlService.query(sql, params)
+  const result = await sqlService.query(sql)
   if (result && result.length === 1) {
     return result[0]
   }
