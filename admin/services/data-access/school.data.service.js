@@ -1,7 +1,10 @@
 'use strict'
 
+const { TYPES } = require('tedious')
+const R = require('ramda')
+const sqlService = require('./sql.service')
 const School = require('../../models/school')
-
+const table = '[school]'
 const schoolDataService = {}
 
 schoolDataService.findOne = async function (options) {
@@ -27,6 +30,18 @@ schoolDataService.find = async function (criteria) {
  */
 schoolDataService.update = async function (id, doc) {
   return School.updateOne({ _id: id }, doc).exec()
+}
+
+/** SQL METHODS **/
+
+/**
+ * Find a School by the id
+ * number -> {School} || undefined
+ * @param {number} id
+ * @return {Promise<object>}
+ */
+schoolDataService.sqlFindOneById = async function (id) {
+  return sqlService.findOneById(table, id)
 }
 
 module.exports = schoolDataService
