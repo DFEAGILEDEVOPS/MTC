@@ -25,27 +25,6 @@ pupilService.fetchMultiplePupils = async (pupilIds) => {
   return pupils
 }
 
-/**
- * Calculates the score of a check that the pupil has taken.
- * @param {object} results - The check results.
- */
-pupilService.calculateScorePercentage = (results) => {
-  const errorMessage = 'Error Calculating Score'
-  if (!results) return undefined
-
-  if (results.marks === undefined || results.maxMarks === undefined) {
-    return errorMessage
-  }
-
-  if (results.marks > results.maxMarks) {
-    return errorMessage
-  }
-
-  let percentage = (results.marks / results.maxMarks) * 100
-  var rounded = Math.round(percentage * 10) / 10
-  return rounded
-}
-
 pupilService.validatePupil = async (pupil, pupilData) => {
   const validationError = await pupilValidator.validate(pupilData)
   try {
