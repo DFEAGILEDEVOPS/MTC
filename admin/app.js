@@ -30,6 +30,13 @@ if (process.env.NODE_ENV !== 'production') {
   winston.level = 'debug'
 }
 
+if (config.Logging.LogDna.hostname) {
+  const options = config.Logging.LogDna
+  options.index_meta = true
+  options.handleExceptions = true
+  winston.add(winston.transports.logDna, options)
+}
+
 azure.startInsightsIfConfigured()
 
 const unsetVars = []
@@ -132,7 +139,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 app.use(partials())
 app.use(logger('dev'))
@@ -146,7 +153,7 @@ busboy.extend(app, {
 })
 
 const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
-    (/^\/test-developer\/upload-new-form$/).test(url)
+  (/^\/test-developer\/upload-new-form$/).test(url)
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
