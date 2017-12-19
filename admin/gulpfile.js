@@ -5,6 +5,7 @@ const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
+const winston = require('winston')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
@@ -26,7 +27,7 @@ gulp.task('bundleJs', function () {
     .pipe(uglify({
       ie8: true
     }).on('error', function (e) {
-      console.log(e)
+      winston.error(e)
     }))
     .pipe(gulp.dest('./public/javascripts/'))
 })
