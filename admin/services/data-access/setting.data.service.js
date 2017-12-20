@@ -23,7 +23,7 @@ settingDataService.sqlFindOne = async () => {
  * @return {Promise.<*>} returns a sql service response object `{ rowsModified: 1 }`
  */
 settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
-  const sql = 'UPDATE [mtcAdmin].[Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
+  const sql = 'UPDATE [Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
   const params = [
     {
       name: 'loadingTimeLimit',
