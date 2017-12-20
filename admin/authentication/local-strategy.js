@@ -3,6 +3,7 @@
 const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 const AdminLogonEvent = require('../models/admin-logon-event')
+const winston = require('winston')
 
 module.exports = function (req, email, password, done) {
   /**
@@ -53,7 +54,7 @@ module.exports = function (req, email, password, done) {
           return done(null, false)
         }
       } catch (error) {
-        console.error(error)
+        winston.error(error)
         return done(error)
       }
     })
@@ -66,7 +67,7 @@ async function saveInvalidLogonEvent (logonEvent, message) {
     logonEvent.isAuthenticated = false
     await logonEvent.save()
   } catch (error) {
-    console.log('Failed to save logon event: ' + error.message)
+    winston.error('Failed to save logon event: ' + error.message)
   }
 }
 
@@ -81,6 +82,6 @@ async function saveValidLogonEvent (logonEvent, session) {
     logonEvent.role = session.role
     logonEvent.save()
   } catch (error) {
-    console.log('Failed to save logon event: ' + error.message)
+    winston.log('Failed to save logon event: ' + error.message)
   }
 }

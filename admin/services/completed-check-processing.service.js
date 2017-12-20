@@ -3,6 +3,7 @@
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const markingService = require('./marking.service')
 const psychometricianReportService = require('./psychometrician-report.service')
+const winston = require('winston')
 
 const completedCheckProcessingService = {}
 const batchSize = 100
@@ -16,7 +17,7 @@ completedCheckProcessingService.process = async function () {
   try {
     let hasWorkToDo = await completedCheckDataService.hasUnmarked()
     if (!hasWorkToDo) {
-      console.log('Processing: nothing to do')
+      winston.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await this.markAndProcess(batchSize)
@@ -30,12 +31,12 @@ completedCheckProcessingService.process = async function () {
 completedCheckProcessingService.markAndProcess = async function (batchSize) {
   const batchIds = await completedCheckDataService.findUnmarked(batchSize)
   if (batchIds.length === 0) {
-    console.log('No documents IDs found')
+    winston.info('No documents IDs found')
     return false
   }
   await markingService.batchMark(batchIds)
   await psychometricianReportService.batchProduceCacheData(batchIds)
-  console.log('Processed %d completed checks', batchIds.length)
+  winston.info('Processed %d completed checks', batchIds.length)
   return true
 }
 

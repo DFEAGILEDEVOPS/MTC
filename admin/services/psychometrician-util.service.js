@@ -2,6 +2,8 @@
 
 const R = require('ramda')
 const moment = require('moment')
+const winston = require('winston')
+
 const psUtilService = {}
 
 psUtilService.getSurname = function (completedCheck) {
@@ -96,8 +98,8 @@ psUtilService.getUserInput = function getUserInput (inputs) {
           ident = 't'
           break
         default:
-          console.log('Unknown input type: ' + inp.eventType)
-          console.log('inp ', inp)
+          winston.info('Unknown input type: ' + inp.eventType)
+          winston.info('inp ', inp)
           ident = 'u'
           break
       }
@@ -113,7 +115,7 @@ psUtilService.getUserInput = function getUserInput (inputs) {
  */
 psUtilService.getLastAnswerInputTime = function (inputs) {
   if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
+    winston.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -134,7 +136,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
  */
 psUtilService.getFirstInputTime = function (inputs) {
   if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
+    winston.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -150,7 +152,7 @@ psUtilService.getFirstInputTime = function (inputs) {
  */
 psUtilService.getResponseTime = function (inputs) {
   if (!(inputs && Array.isArray(inputs))) {
-    console.log('Invalid param inputs')
+    winston.info('Invalid param inputs')
     return 'error'
   }
   if (inputs.length === 0) {
@@ -172,7 +174,7 @@ psUtilService.getResponseTime = function (inputs) {
 psUtilService.getTimeoutFlag = function (inputs) {
   let timeout = 1
   if (!(inputs && Array.isArray(inputs))) {
-    console.log('invalid input: ', inputs)
+    winston.info('invalid input: ', inputs)
     return 'error'
   }
   if (R.pathOr('', ['input'], R.last(inputs)).toUpperCase() === 'ENTER') {
