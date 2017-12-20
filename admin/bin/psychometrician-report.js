@@ -13,33 +13,34 @@ const csvStream = csv.createWriteStream({headers: true})
 const moment = require('moment')
 const fileNow = moment().format('YYYYMMDD')
 const writableStream = fs.createWriteStream(`psychometrician-report-${fileNow}.csv`, {headers: true})
+const winston = require('winston')
 
 writableStream.on('finish', function () {
-  console.error('DONE!')
+  winston.info('DONE!')
 })
 
 csvStream.pipe(writableStream)
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
-  if (error) { console.error(error) }
+  if (error) { winston.error(error) }
 
   const answers = []
 
   // extract all complete or incomplete answers, by fetching the last answer for that test
   // 1st we need all testIds
   const testIds = await Answers.distinct('testId').exec()
-  console.log(`Got ${testIds.length} distinct checks`)
+  winston.info(`Got ${testIds.length} distinct checks`)
 
   let count = 0
   for (let testId of testIds) {
     const answer = await Answers.findOne({testId: testId}).sort({createdAt: -1}).populate('pupil school').lean().exec()
     count += 1
     if (count % 100 === 0) {
-      console.log(`retrieved ${count} answers`)
+      winston.info(`retrieved ${count} answers`)
     }
     answers.push(answer)
   }
-  console.log(`Got ${answers.length} answers`)
+  winston.info(`Got ${answers.length} answers`)
   for (let answer of answers) {
     // Due to lot's of double-clicking etc we need to re-mark the results
     answer = markResults(cleanDups(answer))
@@ -121,7 +122,7 @@ function cleanDups (answer) {
     seen[key] = true
     cleanedAnswers.push(ans)
   })
-  if (cleanedAnswers.length > 30) { console.log(`Got more than 30 answers`) }
+  if (cleanedAnswers.length > 30) { winston.info(`Got more than 30 answers`) }
   answer.answers = cleanedAnswers
   return answer
 }
@@ -151,8 +152,8 @@ function getUserInput (answer) {
         ident = 't'
         break
       default:
-        console.log('Unknown input type: ' + inp.eventType)
-        console.log('inp ', inp)
+        winston.info('Unknown input type: ' + inp.eventType)
+        winston.info('inp ', inp)
         ident = 'u'
         break
     }
@@ -214,8 +215,8 @@ function getInputMethod (answer) {
         inputMethods.add('t')
         break
       default:
-        console.log('Unknown input type: ' + ri.eventType)
-        console.log('inp ', ri)
+        winston.info('Unknown input type: ' + ri.eventType)
+        winston.info('inp ', ri)
         inputMethods.add('u')
         break
     }

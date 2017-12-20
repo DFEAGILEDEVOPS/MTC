@@ -6,6 +6,7 @@ const XRegExp = require('xregexp')
 const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const winston = require('winston')
 
 module.exports.validate = async (pupilData) => {
   // TODO: Move to reusable validation service
@@ -95,24 +96,24 @@ module.exports.validate = async (pupilData) => {
   const upn = pupilData['upn'].trim().toUpperCase()
   const expected = upnService.calculateCheckLetter(upn.substring(1))
   if (expected !== upn[0]) {
-    // console.log(`UPN check letter validation failed for [${upn}]: expected [${expected}] but got [${upn[0]}]`)
+    // winston.info(`UPN check letter validation failed for [${upn}]: expected [${expected}] but got [${upn[0]}]`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCheckDigit)
   }
   if (!upnService.hasValidLaCode(upn)) {
-    // console.log(`upnHasValidLaCode: val: [${upn}] failed check guard`)
+    // winston.info(`upnHasValidLaCode: val: [${upn}] failed check guard`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidLaCode)
   }
   if (!(/^[A-Z]\d{11}[0-9A-Z]$/.test(upn))) {
-    // console.log(`UPN upnHasValidChars5To12 for [${upn}] failed regex check`)
+    // winston.info(`UPN upnHasValidChars5To12 for [${upn}] failed regex check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacters5To12)
   }
   if (upn.length !== 13) {
-    // console.log(`upnHasValidChar13: val: [${upn}] failed length check`)
+    // winston.info(`upnHasValidChar13: val: [${upn}] failed length check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
   }
   const char = upn[12] // 13th char
   if (!/^[ABCDEFGHJKLMNPQRTUVWXYZ0-9]$/.test(char)) {
-    // console.log(`upnHasValidChar13: val: [${upn}] failed char 13 check`)
+    // winston.info(`upnHasValidChar13: val: [${upn}] failed char 13 check`)
     validationError.addError('upn', addPupilErrorMessages.upnInvalidCharacter13)
   }
   if (isEmpty(upn)) {
