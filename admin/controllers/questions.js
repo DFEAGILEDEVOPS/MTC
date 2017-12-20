@@ -60,7 +60,6 @@ const getQuestions = async (req, res) => {
     config,
     access_token: token.token
   }
-  // console.log('response', responseData)
 
   apiResponse.sendJson(res, responseData)
 }
