@@ -35,6 +35,24 @@ describe('pupil.data.service', () => {
     })
   })
 
+  describe('#sqlUpdate', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(sqlService).expects('modify').resolves({ rowsModified: 1 })
+      service = proxyquire('../../../services/data-access/setting.data.service', {
+        '../data-access/sql.service': sqlService
+      })
+    })
+
+    it('calls the model', () => {
+      const loadingTimeLimit = 10
+      const questionTimeLimit = 20
+      service.sqlUpdate(loadingTimeLimit, questionTimeLimit)
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
   describe('#createOrUpdate', () => {
     let mock
 
