@@ -2,6 +2,7 @@
 
 const Setting = require('../../models/setting')
 const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
 
 const settingDataService = {}
 
@@ -9,7 +10,7 @@ settingDataService.findOne = async (options) => {
   return Setting.findOne(options).lean().exec()
 }
 
-settingDataService.sqlFindOne = async function () {
+settingDataService.sqlFindOne = async () => {
   const sql = 'SELECT TOP 1 * FROM Settings'
 
   const result = await sqlService.query(sql)
@@ -26,6 +27,23 @@ settingDataService.sqlFindOne = async function () {
  */
 settingDataService.createOrUpdate = async function (doc) {
   return Setting.update({_id: doc._id}, doc, {upsert: true}).exec()
+}
+
+settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
+  const sql = 'UPDATE [mtcAdmin].[Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
+  const params = [
+    {
+      name: 'loadingTimeLimit',
+      value: loadingTimeLimit,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'questionTimeLimit',
+      value: questionTimeLimit,
+      type: TYPES.TinyInt
+    }
+  ]
+  return sqlService.modify(sql, params)
 }
 
 module.exports = settingDataService
