@@ -1,4 +1,7 @@
+'use strict'
+
 const moment = require('moment')
+const winston = require('winston')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
@@ -114,7 +117,7 @@ const setUpdateTiming = async (req, res, next) => {
     try {
       await settingLogDataService.create(settingsLog)
     } catch (error) {
-      console.log('Could not save setting log.')
+      winston.info('Could not save setting log.')
     }
   } catch (error) {
     return next(error)
@@ -329,7 +332,7 @@ const saveCheckWindows = async (req, res, next) => {
     await checkWindowDataService.create(checkWindow)
     req.flash('info', flashMessage)
   } catch (error) {
-    console.log('Could not save check windows data.', error)
+    winston.info('Could not save check windows data.', error)
     return next(error)
   }
 

@@ -24,6 +24,18 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+const winston = require('winston')
+
+if (process.env.NODE_ENV !== 'production') {
+  winston.level = 'debug'
+}
+
+if (config.Logging.LogDna.hostname) {
+  const options = config.Logging.LogDna
+  options.index_meta = true
+  options.handleExceptions = true
+  winston.add(winston.transports.logDna, options)
+}
 
 azure.startInsightsIfConfigured()
 
@@ -127,7 +139,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 // uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 app.use(partials())
 app.use(logger('dev'))
@@ -141,7 +153,7 @@ busboy.extend(app, {
 })
 
 const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
-    (/^\/test-developer\/upload-new-form$/).test(url)
+  (/^\/test-developer\/upload-new-form$/).test(url)
 
 const mongoStoreOptions = {
   mongooseConnection: mongoose.connection,
@@ -238,8 +250,8 @@ app.use(function (err, req, res, next) {
   // TODO change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
-  console.error('ERROR: ' + err.message + ' ID:' + errorId)
-  console.error(err.stack)
+  winston.error('ERROR: ' + err.message + ' ID:' + errorId)
+  winston.error(err.stack)
 
   // render the error page
   // TODO provide an error code and phone number? for the user to call support
