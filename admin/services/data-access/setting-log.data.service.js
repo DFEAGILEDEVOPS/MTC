@@ -12,6 +12,7 @@ const settingLogDataService = {}
  */
 settingLogDataService.sqlCreate = async function (data) {
   // TODO
+  
 }
 
 /**
