@@ -12,10 +12,10 @@ const pupilAuthenticationService = {
    * @return {Promise.<Pupil>}
    */
   authenticate: async (pupilPin, schoolPin) => {
-    const school = await schoolDataService.findOne({schoolPin: schoolPin})
+    const school = await schoolDataService.sqlFindOneBySchoolPin(schoolPin)
     const pupil = await pupilDataService.findOne({
       pin: pupilPin,
-      school: school && school._id
+      school: school && school.dfeNumber
     })
     if (!pupil || !school || !pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       throw new Error('Authentication failure')

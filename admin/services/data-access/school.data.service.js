@@ -44,4 +44,15 @@ schoolDataService.sqlFindOneById = async function (id) {
   return sqlService.findOneById(table, id)
 }
 
+schoolDataService.sqlFindOneBySchoolPin = async function (pin) {
+  const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE pin = @pin
+    `
+  const rows = await sqlService.query(sql, [paramPin])
+  return R.head(rows)
+}
+
 module.exports = schoolDataService
