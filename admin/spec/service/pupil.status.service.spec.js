@@ -93,7 +93,7 @@ describe('pupil service', () => {
       spyOn(pinValidator, 'isActivePin').and.returnValue(false)
       spyOn(checkDataService, 'findLatestCheck').and.returnValue(checkStartedMock)
       const result = await pupilStatusService.getStatus(pupil)
-      expect(result).toBe('Complete')
+      expect(result).toBe('Completed')
     })
     it('returns pin generated when new pin is generated after a restart', async () => {
       const pupil = Object.assign({}, pupilMock)
@@ -147,7 +147,7 @@ describe('pupil service', () => {
       newCheckMock.pupilLoginDate = moment.utc()
       spyOn(checkDataService, 'findLatestCheck').and.returnValue(newCheckMock)
       const result = await pupilStatusService.getStatus(pupil)
-      expect(result).toBe('Complete')
+      expect(result).toBe('Completed')
     })
   })
 })

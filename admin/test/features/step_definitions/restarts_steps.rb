@@ -193,7 +193,7 @@ end
 
 Then(/^I should see a flash message to state the pupil has been removed from restart$/) do
   expect(restarts_page).to have_flash_message
-  expect(restarts_page.flash_message.text).to eql("Restart removed for pupil #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  expect(restarts_page.flash_message.text).to eql("Restart removed for #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
 end
 
 Then(/^I should not see this pupil removed from restart in Generate Pin Pupil list$/) do
