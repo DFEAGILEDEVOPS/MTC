@@ -3,6 +3,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const randomGenerator = require('../lib/random-generator')
+const winston = require('winston')
 
 const School = new Schema({
   _id: {type: Number},
@@ -93,7 +94,7 @@ School.statics.getSchoolFromPin = function (schoolPin) {
   try {
     school = this.find({schoolPin: schoolPin})
   } catch (error) {
-    console.log('getSchoolFromPin ERROR', error)
+    winston.error('getSchoolFromPin ERROR', error)
   }
   return school
 }
