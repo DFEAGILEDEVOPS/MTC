@@ -41,7 +41,7 @@
                        id="name"
                        name="name"
                        type="text"
-                       value="<% if (typeof error !== 'undefined' && error.name) { %><%= group.name %><% } %>"
+                       value="<% if (group && group.name) { %><%= group.name %><% } %>"
                        aria-required="true"
                        aria-label="Group name.">
             </div>
@@ -79,6 +79,7 @@
                                            value="<%= pupil._id %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"
+                                           <% if (group.pupils[0][pupil._id]) { %>checked="true"<% } %>
                                            role="checkbox">
                                     <div></div>
                                 </div>
@@ -88,6 +89,7 @@
                     </tbody>
                 </table>
             </div>
+            <% if (group && group._id) { %><input type="hidden" name="groupId" value="<%= group._id %>" /><% } %>
             <%- partial('partials/_sticky_confirmation_banner',
                     {
                         cancelLabel: 'Cancel',

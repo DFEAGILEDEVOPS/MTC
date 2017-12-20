@@ -82,7 +82,7 @@ const checkWindowDataService = {
   },
 
   /**
-   * Create a new check window
+   * Save check window
    * @param data
    * @return {Promise.<*>}
    */

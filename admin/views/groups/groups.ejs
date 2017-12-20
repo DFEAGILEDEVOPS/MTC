@@ -11,7 +11,7 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+            <a href="#group-<%= messages.groupId %>"><%= messages.info %></a>
         </div>
         <% } %>
 
@@ -41,8 +41,8 @@
                 <tbody>
                     <% groups.forEach( group => { %>
                     <tr>
-                        <td<% if (messages.groupName == group.name) { %> class="highlight-item"<% } %>>
-                            <a name="anchor-<%= group.name %>"></a>
+                        <td<% if (messages.groupId == group._id) { %> class="highlight-item"<% } %>>
+                            <a name="group-<%= group._id %>"></a>
                             <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong>
                         </td>
                         <td class="align-right">

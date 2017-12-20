@@ -18,7 +18,6 @@ $(function () {
         if (validation) {
           validationStatus = validation()
         }
-        console.log('VALIDATE', validationStatus)
 
         $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
