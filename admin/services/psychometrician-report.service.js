@@ -7,6 +7,7 @@ const completedCheckDataService = require('./data-access/completed-check.data.se
 const checkDataService = require('./data-access/check.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
+// const winston = require('winston')
 
 const psychometricianReportService = {}
 
@@ -111,7 +112,7 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
 psychometricianReportService.populateWithCheck = async function (completedChecks) {
   const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
   const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
-  // console.log('checks > pupil > school', checks[0].pupilId.school)
+  // winston.info('checks > pupil > school', checks[0].pupilId.school)
   const checksByCheckCode = new Map()
   // populate the map
   checks.map(c => checksByCheckCode.set(c.checkCode, c))
