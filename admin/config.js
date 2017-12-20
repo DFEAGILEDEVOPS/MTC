@@ -9,7 +9,6 @@ module.exports = {
   MTC_AUTH_PRIVATE_KEY: process.env.MTC_AUTH_PRIVATE_KEY,
   MTC_SERVICE: process.env.MTC_SERVICE,
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
-  NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   QUESTION_TIME_LIMIT: 5,
