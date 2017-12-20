@@ -244,13 +244,13 @@ sqlService.updateDataTypeCache = async function () {
     // add the datatype to the cache
     cache[key] = findTediousDataType(type)
   })
-  winston.log('sql.service: updateDataTypeCache() complete')
+  winston.info('sql.service: updateDataTypeCache() complete')
 };
 
 // Trigger on load - fetch the data caches for the whole schema so we know the
 // data types for each column.
 (async function () {
-  winston.log('sql.service: on-load: fetching data type cache')
+  winston.info('sql.service: on-load: fetching data type cache')
   await sqlService.updateDataTypeCache()
 })()
 
