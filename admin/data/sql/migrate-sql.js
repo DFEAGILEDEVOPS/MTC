@@ -51,12 +51,13 @@ const runMigrations = () => {
     })
 }
 
-winston.info('sql enabled:', config.Sql.Enabled)
-
 if (config.Sql.Enabled === 'true') {
-  const timeInMilliSeconds = 10000
-  winston.info(`waiting ${timeInMilliSeconds / 1000} seconds for SQL Server to come online before running migrations...`)
-  setTimeout(runMigrations, timeInMilliSeconds)
+  const migrationWaitTime = config.Sql.Migrator.WaitTime
+  winston.info('SQL Server enabled.  Preparing migrations...')
+  if (migrationWaitTime > 0) {
+    winston.info('Running migrations in %s seconds...', migrationWaitTime / 1000)
+  }
+  setTimeout(runMigrations, migrationWaitTime)
 } else {
   winston.info('Sql Server Disabled. Bypassing Migrations...')
 }
