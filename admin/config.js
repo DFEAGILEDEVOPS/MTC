@@ -44,5 +44,15 @@ module.exports = {
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
     }
+  },
+  Logging: {
+    LogDna: {
+      key: process.env.LOGDNA_API_KEY,
+      hostname: process.env.LOGDNA_HOSTNAME,
+      ip: process.env.LOGDNA_IPADDRESS,
+      mac: process.env.LOGDNA_MACADDRESS,
+      app: 'MTC Admin',
+      env: process.env.LOGDNA_ENV_NAME
+    }
   }
 }
