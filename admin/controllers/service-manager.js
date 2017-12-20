@@ -47,7 +47,7 @@ const getUpdateTiming = async (req, res, next) => {
   const successfulPost = req.params.status || false
 
   try {
-    const settingsRecord = await settingDataService.findOne()
+    const settingsRecord = await settingDataService.sqlFindOne()
     if (settingsRecord) {
       settings = settingsRecord
     } else {
@@ -83,7 +83,7 @@ const setUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
 
-  const settingsRecord = await settingDataService.findOne()
+  const settingsRecord = await settingDataService.sqlFindOne()
   if (settingsRecord) {
     settings = settingsRecord
   } else {
