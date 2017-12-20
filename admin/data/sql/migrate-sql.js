@@ -2,6 +2,7 @@
 
 require('dotenv').config()
 const config = require('../../config')
+const winston = require('winston')
 const Postgrator = require('postgrator')
 const path = require('path')
 const chalk = require('chalk')
@@ -28,32 +29,34 @@ const runMigrations = () => {
     .then(() => {
       const postgrator = new Postgrator(migratorConfig)
       // subscribe to useful events
-      postgrator.on('migration-started', migration => console.log(`${migration.action}:${migration.name} started`))
-      postgrator.on('migration-finished', migration => console.log(`${migration.action}:${migration.name} complete`))
+      postgrator.on('migration-started', migration => winston.info(`${migration.action}:${migration.name} started`))
+      postgrator.on('migration-finished', migration => winston.info(`${migration.action}:${migration.name} complete`))
 
       // Migrate to 'max' version or user-specified e.g. '008'
       const version = process.argv.length > 2 ? process.argv[2] : 'max'
-      console.log(chalk.green('Migrating to version:'), chalk.green.bold(version))
+      winston.info(chalk.green('Migrating to version:'), chalk.green.bold(version))
       postgrator.migrate(version)
         .then(appliedMigrations => {
-          console.log(chalk.green('SQL Migrations complete'))
+          winston.info(chalk.green('SQL Migrations complete'))
           process.exit()
         })
         .catch(error => {
-          console.log(chalk.red('ERROR:', error.message))
-          console.log(`${error.appliedMigrations.length} migrations were applied...`)
+          winston.error(chalk.red('ERROR:', error.message))
+          winston.error(`${error.appliedMigrations.length} migrations were applied...`)
           error.appliedMigrations.forEach(migration => {
-            console.log(migration.name)
+            winston.error(migration.name)
           })
           process.exit(1)
         })
     })
 }
 
-if (config.Sql.Enabled) {
+winston.info('sql enabled:', config.Sql.Enabled)
+
+if (config.Sql.Enabled === 'true') {
   const tenSeconds = 10000
-  console.log(`waiting ${tenSeconds / 1000} seconds for SQL Server to come online before running migrations...`)
-  setTimeout(runMigrations, tenSeconds)
+  winston.info(`waiting ${tenSeconds}ms for SQL Server to come online before running migrations...`)
+  setTimeout(runMigrations, 15000)
 } else {
-  console.log('Sql Server Disabled. Bypassing Migrations...')
+  winston.info('Sql Server Disabled. Bypassing Migrations...')
 }
