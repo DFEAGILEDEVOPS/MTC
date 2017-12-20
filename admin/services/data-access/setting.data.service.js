@@ -29,6 +29,12 @@ settingDataService.createOrUpdate = async function (doc) {
   return Setting.update({_id: doc._id}, doc, {upsert: true}).exec()
 }
 
+/**
+ * Create or Update a document, depending on whether an `_id` field is present
+ * @param {number} loadingTimeLimit - the loadingTime for each question
+ * @param {number} questionTimeLimit - the time given for each question
+ * @return {Promise.<*>} returns a sql service response object `{ rowsModified: 1 }`
+ */
 settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
   const sql = 'UPDATE [mtcAdmin].[Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
   const params = [
