@@ -2,6 +2,10 @@ language: node_js
 
 dist: trusty
 
+branches:
+  only:
+    - master
+
 cache:
   yarn: true
   directories:
