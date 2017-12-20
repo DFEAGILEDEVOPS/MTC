@@ -230,7 +230,6 @@ sqlService.updateDataTypeCache = async function () {
     `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE   
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema
-    AND TABLE_NAME = 'adminLogonEvent'
     `
   const paramSchema = { name: 'schema', value: 'mtc_admin', type: TYPES.NVarChar }
   // delete any existing cache
