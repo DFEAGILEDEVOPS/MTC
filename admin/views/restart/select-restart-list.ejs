@@ -88,6 +88,9 @@
                                 <div class="panel panel-border-wide">
                                     <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
                                             <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
+                                        <% if (error.isError('didNotCompleteInfo')) { %>
+                                        <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
+                                        <% } %>
                                         <textarea
                                                 class="form-control form-control-3-4 <%= error.isError('didNotCompleteInfo') ? 'form-control-error' : '' %>"
                                                 name="didNotCompleteInfo"
