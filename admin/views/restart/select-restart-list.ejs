@@ -11,8 +11,8 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Check the restart form</h2>
-            <p>You need to fix the errors on this page before continuing. See highlighted errors below</p>
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing</h2>
+            <p>See highlighted errors below</p>
             <ul class="error-summary-list">
                 <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
                 <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
@@ -88,6 +88,9 @@
                                 <div class="panel panel-border-wide">
                                     <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
                                             <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
+                                        <% if (error.isError('didNotCompleteInfo')) { %>
+                                        <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
+                                        <% } %>
                                         <textarea
                                                 class="form-control form-control-3-4 <%= error.isError('didNotCompleteInfo') ? 'form-control-error' : '' %>"
                                                 name="didNotCompleteInfo"
