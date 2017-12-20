@@ -1,28 +1,5 @@
 version: '3'
 services:
-  pupil-spa:
-    build: ./pupil-spa
-    container_name: mtc_pupil_spa
-    ports:
-    - "3002:80"
-    depends_on:
-    - admin-app
-  admin-app:
-    build: ./admin
-    container_name: mtc_admin
-    ports:
-    - "3001:3001"
-#    volumes:
-#    - ./admin:/usr/src/app
-    environment:
-      MONGO_CONNECTION_STRING: "mongodb://mtc_mongo/mtc"
-      SQL_ENABLED: "true"
-    depends_on:
-    - sqldb
-    - mongo
-    links:
-    - sqldb
-    - mongo
   mongo:
     image: mongo
     container_name: mtc_mongo
