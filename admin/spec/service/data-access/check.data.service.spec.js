@@ -53,7 +53,7 @@ describe('check.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Check).expects('findOne').chain('sort').chain('lean').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(Check).expects('find').chain('sort').chain('lean').chain('exec').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
         '../../models/check': Check
       })
