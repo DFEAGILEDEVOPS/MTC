@@ -94,7 +94,7 @@ sqlService.query = (sql, params) => {
         return reject(err)
       }
       const objects = parseResults(results)
-      winston.debug('RESULTS', objects)
+      winston.debug('RESULTS', JSON.stringify(objects))
       resolve(objects)
     })
 
