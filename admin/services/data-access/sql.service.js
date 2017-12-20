@@ -1,7 +1,51 @@
 'use strict'
 
-const Request = require('tedious').Request
+const R = require('ramda')
+const { Request, TYPES } = require('tedious')
+const winston = require('winston')
+
 const sqlPoolService = require('./sql.pool.service')
+const moment = require('moment')
+let cache = {}
+
+/** Utility functions **/
+
+const findTediousDataType = (type) => Object.keys(TYPES).find(k => {
+  if (type.toUpperCase() === k.toUpperCase()) { return k }
+})
+
+const cacheKey = (table, column) => table.replace('[', '').replace(']', '') + '_' + column
+
+const extractColumns = R.compose(
+  R.join(' , '),
+  R.keysIn
+)
+
+const paramName = (s) => '@' + s
+
+const createParamIdentifiers = R.compose(
+  R.join(' , '),
+  R.map(paramName),
+  R.keysIn()
+)
+
+function generateParams (tableName, data) {
+  const pairs = R.toPairs(data)
+  const params = []
+  pairs.forEach(p => {
+    const [column, value] = p
+    const type = sqlService.lookupDataTypeForColumn(tableName, column)
+    if (!type) {
+      throw new Error(`Column '${column}' not found in table '${tableName}'`)
+    }
+    params.push({
+      name: column,
+      value,
+      type
+    })
+  })
+  return params
+}
 
 function parseResults (results) {
   // omit metadata for now, can introduce if useful at later date
@@ -11,16 +55,19 @@ function parseResults (results) {
     // const metadata = []
     row.forEach(col => {
       if (col.metadata.colName !== 'version') {
-        json[col.metadata.colName] = col.value
+        if (col.metadata.type.type === 'DATETIMEOFFSETN' && col.value) {
+          json[col.metadata.colName] = moment(col.value)
+        } else {
+          json[col.metadata.colName] = col.value
+        }
       }
-      // metadata.push(col.metadata)
     })
-    // json['metadata'] = metadata
     jsonArray.push(json)
   })
   return jsonArray
 }
 
+/** SQL Service **/
 const sqlService = {}
 
   /**
@@ -40,13 +87,15 @@ sqlService.query = (sql, params) => {
     }
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
+    winston.debug(`sql.service: SQL: ${sql}`)
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
-        reject(err)
-        return
+        return reject(err)
       }
-      resolve(parseResults(results))
+      const objects = parseResults(results)
+      winston.debug('RESULTS', objects)
+      resolve(objects)
     })
 
     if (params) {
@@ -73,25 +122,135 @@ sqlService.query = (sql, params) => {
 sqlService.modify = (sql, params) => {
   return new Promise(async (resolve, reject) => {
     const con = await sqlPoolService.getConnection()
-
+    const response = {}
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
-        reject(err)
-        return
+        return reject(err)
       }
-      resolve(rowCount)
+      resolve(R.assoc('rowsModified', rowCount, response))
     })
 
     if (params) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
         // TODO add support for other options
+        if (!param.type) {
+          con.release()
+          return reject(new Error('parameter type invalid'))
+        }
         request.addParameter(param.name, param.type, param.value)
       }
     }
+
+    // Pick up any OUTPUT
+    request.on('row', function (cols) {
+      const col = cols[0]
+      const id = col.value
+      if (id) { response.insertId = id }
+    })
+
     con.execSql(request)
   })
 }
+
+/**
+ * Find a row by numeric ID
+ * Assumes all table have Int ID datatype
+ * @param {string} table
+ * @param {number} id
+ * @return {Promise<void>}
+ */
+sqlService.findOneById = async (table, id) => {
+  const paramId = { name: 'id', type: TYPES.Int, value: id }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE id = @id
+    `
+  const rows = await sqlService.query(sql, [paramId])
+  return R.head(rows)
+}
+
+/**
+ * Return the Tedious datatype object required for a particular table and column
+ * It's okay if the table name has square brackets around it like '[pupil]'
+ * @param {string} table
+ * @param {string} column
+ * @return {TYPE}
+ */
+sqlService.lookupDataTypeForColumn = function (table, column) {
+  const key = cacheKey(table, column)
+  if (!cache.hasOwnProperty(key)) {
+    winston.debug(`sql.service: cache miss for ${key}`)
+    return undefined
+  }
+  winston.debug(`sql.service: cache hit for ${key}`)
+  return R.prop(R.prop(key, cache), TYPES)
+}
+
+/**
+ * Provide the INSERT statement for passing to modify and parameters given a kay/value object
+ * @param {string} table
+ * @param {object} data
+ * @return {{sql: string, params}}
+ */
+sqlService.generateInsertStatement = (table, data) => {
+  const params = generateParams(table, data)
+  winston.debug('sql.service: Params ', params)
+  const sql = `INSERT INTO ${table} (` + extractColumns(data) + ') OUTPUT INSERTED.id VALUES (' + createParamIdentifiers(data) + ')'
+  winston.debug('sql.service: SQL ', sql)
+  return { sql, params }
+}
+
+/**
+ * Create a new record
+ * @param {string} tableName
+ * @param {object} data
+ * @return {Promise} - returns the number of rows modified (e.g. 1)
+ */
+sqlService.create = async (tableName, data) => {
+  const { sql, params } = sqlService.generateInsertStatement(tableName, data)
+  try {
+    const res = await sqlService.modify(sql, params)
+    winston.debug('sql.service: INSERT RESULT: ', res)
+    return res
+  } catch (error) {
+    winston.debug('sql.service: Failed to INSERT', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch the data-types for each column in the schema.  Populates the cache.
+ * @return {Promise<void>}
+ */
+sqlService.updateDataTypeCache = async function () {
+  const sql =
+    `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE   
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = @schema
+    `
+  const paramSchema = { name: 'schema', value: 'mtc_admin', type: TYPES.NVarChar }
+  // delete any existing cache
+  cache = {}
+  const rows = await sqlService.query(sql, [paramSchema])
+  rows.forEach((row) => {
+    const table = row.TABLE_NAME
+    const column = row.COLUMN_NAME
+    const type = row.DATA_TYPE
+    const key = cacheKey(table, column)
+    // add the datatype to the cache
+    cache[key] = findTediousDataType(type)
+  })
+  winston.info('sql.service: updateDataTypeCache() complete')
+};
+
+// Trigger on load - fetch the data caches for the whole schema so we know the
+// data types for each column.
+(async function () {
+  winston.info('sql.service: on-load: fetching data type cache')
+  await sqlService.updateDataTypeCache()
+})()
 
 module.exports = sqlService

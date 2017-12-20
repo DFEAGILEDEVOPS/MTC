@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach beforeAll afterEach it fit xit expect jasmine spyOn fail */
+/* global describe beforeAll it expect fail */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
@@ -8,8 +8,9 @@ const TYPES = require('tedious').TYPES
 const moment = require('moment')
 
 describe('sql.service:integration', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     sqlPool.init()
+    await sql.updateDataTypeCache()
   })
 
   it('should permit select query with no parameters', async () => {
@@ -159,5 +160,41 @@ describe('sql.service:integration', () => {
       console.log(err)
       fail(err)
     }
+  })
+
+  it('#findOneById should retrieve a row', async () => {
+    const row = await sql.findOneById('[user]', 3)
+    expect(row).toBeDefined()
+    expect(row['id']).toBe(3)
+    expect(row['identifier']).toBe('teacher3')
+    expect(row['school_id']).toBe(4)
+    expect(row['role_id']).toBe(3)
+  })
+
+  it('#findOneById should prevent sql injection', async () => {
+    const row = await sql.findOneById('[user]', '3 OR 1=1')
+    // We still expect to get the row where id=3 as running parseInt('3 OR 1=1')
+    // still gives numeric 3.  If sql injection was allowed we would get all users.
+    expect(row.length).toBe(1)
+  })
+
+  describe('#create', () => {
+    it('should insert a new row and provide the new insert id', async () => {
+      const user = {
+        identifier: 'integration-test',
+        school_id: 5,
+        role_id: 3
+      }
+      const res = await sql.create('[user]', user)
+      expect(res).toBeDefined()
+      expect(res.insertId).toBeDefined()
+      expect(res.rowsModified).toBe(1)
+
+      const retrievedUser = await sql.findOneById('[user]', res.insertId)
+      expect(retrievedUser).toBeDefined()
+      expect(retrievedUser.identifier).toBe(user.identifier)
+      expect(retrievedUser.school_id).toBe(user.school_id)
+      expect(retrievedUser.role_id).toBe(user.role_id)
+    })
   })
 })
