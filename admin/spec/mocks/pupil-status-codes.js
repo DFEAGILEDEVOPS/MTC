@@ -54,7 +54,7 @@ module.exports = [
     '_id': ObjectId('59df7e1c283960b43172ac71'),
     'updatedAt': moment('2017-09-21 12:17:59').toDate(),
     'createdAt': moment('2017-09-21 12:17:59').toDate(),
-    'statusDesc': 'Complete',
+    'statusDesc': 'Completed',
     'code': 'COM',
     '__v': 0
   }

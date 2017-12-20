@@ -49,7 +49,9 @@ pupilStatusService.getStatus = async (pupil) => {
 
 /**
  * Determine if pupil has logged in after pin generation
- * @param pupil
+ * @param pupilRestartsCount
+ * @param latestCheck
+ * @param latestPupilRestart
  * @returns {String}
  */
 pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPupilRestart) => {
