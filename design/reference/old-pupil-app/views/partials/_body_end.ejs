@@ -1,7 +1,0 @@
-<script>
-  // Detect electron, and include the bundled renderer module on all pages
-  if (window && window.process && window.process.type) {
-    var electron = '<scr' + 'ipt>require(__dirname + "/../../app.asar/lib/renderer");</scr' + 'ipt>';
-    $('body').append(electron);
-  }
-</script>
