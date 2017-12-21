@@ -108,14 +108,15 @@ const setUpdateTiming = async (req, res, next) => {
     await settingDataService.createOrUpdate(settings)
 
     let settingsLog = {}
-    settingsLog.adminSession = req.session.id
-    settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
-    settingsLog.userName = ((res.locals).user || {}).UserName
+    // settingsLog.adminSession = req.session.id
+    // settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
+    // settingsLog.userName = ((res.locals).user || {}).UserName
+    settingsLog.user_id = req.session.userId
     settingsLog.questionTimeLimit = settings.questionTimeLimit
     settingsLog.loadingTimeLimit = settings.loadingTimeLimit
 
     try {
-      await settingLogDataService.create(settingsLog)
+      await settingLogDataService.sqlCreate(settingsLog)
     } catch (error) {
       winston.info('Could not save setting log.')
     }
