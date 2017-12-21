@@ -4,10 +4,12 @@
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 require('sinon-mongoose')
+const moment = require('moment')
 
 const School = require('../../../models/school')
 const schoolMock = require('../../mocks/school')
 const sqlService = require('../../../services/data-access/sql.service')
+const responseMock = require('../../mocks/sql-modify-response')
 
 describe('school.data.service', () => {
   let service, sandbox
@@ -95,6 +97,25 @@ describe('school.data.service', () => {
       const res = await service.sqlFindOneByDfeNumber(12345678)
       expect(sqlService.query).toHaveBeenCalled()
       expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlUpdate', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'update').and.returnValue(Promise.resolve(responseMock))
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        './sql.service': sqlService
+      })
+    })
+
+    it('it makes the expected calls', async () => {
+      const update = {
+        id: 42,
+        pin: '3333a',
+        pinExpiresAt: moment().add(4, 'hours')
+      }
+      await service.sqlUpdate(update)
+      expect(sqlService.update).toHaveBeenCalled()
     })
   })
 })

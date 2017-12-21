@@ -76,4 +76,8 @@ schoolDataService.sqlFindOneByDfeNumber = async function (dfeNumber) {
   return R.head(rows)
 }
 
+schoolDataService.sqlUpdate = async function (update) {
+  return sqlService.update(table, update)
+}
+
 module.exports = schoolDataService
