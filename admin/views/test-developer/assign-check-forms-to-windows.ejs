@@ -2,7 +2,7 @@
     <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
-    <div class="column-one-thirds">
+    <div class="column-one-third">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
@@ -49,7 +49,7 @@
                 <tr>
                     <td>
                         <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
-                        <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="strong-no-underline"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
+                        <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="bold"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
                         (<%= checkWindow.totalForms %> forms)
                     </td>
                     <td class="align-right">
@@ -82,7 +82,7 @@
                 <ul class="list">
                     <li>
                         <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
-            </li>
+                    </li>
                     <li>
                         <a href="/test-developer/upload-and-view-forms">Upload and view forms</a>
                     </li>

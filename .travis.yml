@@ -2,6 +2,10 @@ language: node_js
 
 dist: trusty
 
+branches:
+  only:
+    - master
+
 cache:
   yarn: true
   directories:
@@ -33,7 +37,9 @@ addons:
     packages:
       - g++-4.8
 
-services: mongodb
+services: 
+ # - mongodb
+  - docker
 
 sudo: required
 
@@ -49,9 +55,15 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler --conservative && bundle install
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
 
+before_script:
+  - docker-compose up --build -d
+
 script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test2.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test3.sh; fi
   - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
   - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
+
+after_script:
+  - docker-compose down

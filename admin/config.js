@@ -9,7 +9,6 @@ module.exports = {
   MTC_AUTH_PRIVATE_KEY: process.env.MTC_AUTH_PRIVATE_KEY,
   MTC_SERVICE: process.env.MTC_SERVICE,
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
-  NEW_RELIC_LICENSE_KEY: process.env.NEW_RELIC_LICENSE_KEY,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   QUESTION_TIME_LIMIT: 5,
@@ -22,7 +21,7 @@ module.exports = {
   Sql: {
     Enabled: process.env.SQL_ENABLED || false,
     Database: process.env.SQL_DATABASE || 'mtc',
-    Server: process.env.SQL_SERVER || 'mtc_mssql',
+    Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     Encrypt: process.env.SQL_ENCRYPT || true,
@@ -39,7 +38,8 @@ module.exports = {
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
+      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds,
+      WaitTime: process.env.SQL_MIGRATION_WAIT_TIME || 0
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE

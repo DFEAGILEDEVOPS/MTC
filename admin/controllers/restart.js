@@ -86,7 +86,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  req.flash('info', `Restart removed for pupil ${deleted.lastName}, ${deleted.foreName}`)
+  req.flash('info', `Restart removed for ${deleted.lastName}, ${deleted.foreName}`)
   return res.redirect('/restart/overview')
 }
 

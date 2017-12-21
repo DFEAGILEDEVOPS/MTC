@@ -24,7 +24,7 @@ class RestartsPage < SitePrism::Page
 
   section :restarts_pupil_list, '#submitted-restarts tbody' do
     sections :rows, 'tr' do
-      element :name, 'span'
+      element :name, 'td:nth-child(1)'
       element :reason, 'td:nth-child(2)'
       element :status, 'td:nth-child(3)'
       element :highlighted_pupil, '.highlight-item'
@@ -43,9 +43,9 @@ class RestartsPage < SitePrism::Page
   end
 
   section :error_summary, '.error-summary' do
-    element :error_heading, '#error-summary-heading-1', text: 'Check the restart form'
-    element :error_info, 'p', text: 'You need to fix the errors on this page before continuing. See highlighted errors below'
-    element :error_text, 'ul li a', text: 'Please specify further information when "Did not complete" option is selected'
+    element :error_heading, '#error-summary-heading-1', text: 'You need to fix the errors on this page before continuing'
+    element :error_info, 'p', text: 'See highlighted errors below'
+    element :error_text, 'ul li a', text: 'Enter an explanation'
   end
 
   def restarts_for_pupil(name)

@@ -426,6 +426,12 @@ table.spacious {
   }
 }
 
+table.spacious {
+  .button-secondary {
+    text-decoration: none;
+  }
+}
+
 table.spacious-two-column {
   @extend table.spacious;
 
