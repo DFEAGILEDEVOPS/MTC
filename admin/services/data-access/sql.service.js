@@ -284,7 +284,7 @@ sqlService.generateInsertStatement = async (table, data) => {
 }
 
 /**
- * Utility function for internal sqlServivce use.  Generate the SQL UPDATE statement and list of parameters
+ * Utility function for internal sqlService use.  Generate the SQL UPDATE statement and list of parameters
  * given the table name and the object containing key/values to be updated.
  * @param table
  * @param data
