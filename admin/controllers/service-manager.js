@@ -104,7 +104,7 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.session.passport.user.id)
+    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.user.id)
   } catch (error) {
     return next(error)
   }
