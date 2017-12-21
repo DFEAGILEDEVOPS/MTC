@@ -29,12 +29,12 @@ const createParamIdentifiers = R.compose(
   R.keysIn()
 )
 
-function generateParams (tableName, data) {
+async function generateParams (tableName, data) {
   const pairs = R.toPairs(data)
   const params = []
-  pairs.forEach(p => {
+  for (const p of pairs) {
     const [column, value] = p
-    const type = sqlService.lookupDataTypeForColumn(tableName, column)
+    const type = await sqlService.lookupDataTypeForColumn(tableName, column)
     if (!type) {
       throw new Error(`Column '${column}' not found in table '${tableName}'`)
     }
@@ -43,7 +43,7 @@ function generateParams (tableName, data) {
       value,
       type
     })
-  })
+  }
   return params
 }
 
@@ -179,8 +179,12 @@ sqlService.findOneById = async (table, id) => {
  * @param {string} column
  * @return {TYPE}
  */
-sqlService.lookupDataTypeForColumn = function (table, column) {
+sqlService.lookupDataTypeForColumn = async function (table, column) {
   const key = cacheKey(table, column)
+  if (R.isEmpty(cache)) {
+    // This will cache all data-types once on the first sql request
+    await this.updateDataTypeCache()
+  }
   if (!cache.hasOwnProperty(key)) {
     winston.debug(`sql.service: cache miss for ${key}`)
     return undefined
@@ -195,9 +199,9 @@ sqlService.lookupDataTypeForColumn = function (table, column) {
  * @param {object} data
  * @return {{sql: string, params}}
  */
-sqlService.generateInsertStatement = (table, data) => {
-  const params = generateParams(table, data)
-  winston.debug('sql.service: Params ', params)
+sqlService.generateInsertStatement = async (table, data) => {
+  const params = await generateParams(table, data)
+  winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `INSERT INTO ${table} (` + extractColumns(data) + ') OUTPUT INSERTED.id VALUES (' + createParamIdentifiers(data) + ')'
   winston.debug('sql.service: SQL ', sql)
   return { sql, params }
@@ -210,7 +214,7 @@ sqlService.generateInsertStatement = (table, data) => {
  * @return {Promise} - returns the number of rows modified (e.g. 1)
  */
 sqlService.create = async (tableName, data) => {
-  const { sql, params } = sqlService.generateInsertStatement(tableName, data)
+  const { sql, params } = await sqlService.generateInsertStatement(tableName, data)
   try {
     const res = await sqlService.modify(sql, params)
     winston.debug('sql.service: INSERT RESULT: ', res)
@@ -244,13 +248,6 @@ sqlService.updateDataTypeCache = async function () {
     cache[key] = findTediousDataType(type)
   })
   winston.info('sql.service: updateDataTypeCache() complete')
-};
-
-// Trigger on load - fetch the data caches for the whole schema so we know the
-// data types for each column.
-(async function () {
-  winston.info('sql.service: on-load: fetching data type cache')
-  await sqlService.updateDataTypeCache()
-})()
+}
 
 module.exports = sqlService

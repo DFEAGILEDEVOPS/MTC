@@ -2,14 +2,11 @@
 
 const Setting = require('../../models/setting')
 const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
 
 const settingDataService = {}
 
-settingDataService.findOne = async (options) => {
-  return Setting.findOne(options).lean().exec()
-}
-
-settingDataService.sqlFindOne = async function () {
+settingDataService.sqlFindOne = async () => {
   const sql = 'SELECT TOP 1 * FROM Settings'
 
   const result = await sqlService.query(sql)
@@ -17,6 +14,33 @@ settingDataService.sqlFindOne = async function () {
     return result[0]
   }
   return {}
+}
+
+/**
+ * Create or Update a document, depending on whether an `_id` field is present
+ * @param {number} loadingTimeLimit - the loadingTime for each question
+ * @param {number} questionTimeLimit - the time given for each question
+ * @return {Promise.<*>} returns a sql service response object `{ rowsModified: 1 }`
+ */
+settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
+  const sql = 'UPDATE [Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
+  const params = [
+    {
+      name: 'loadingTimeLimit',
+      value: loadingTimeLimit,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'questionTimeLimit',
+      value: questionTimeLimit,
+      type: TYPES.TinyInt
+    }
+  ]
+  return sqlService.modify(sql, params)
+}
+
+settingDataService.findOne = async (options) => {
+  return Setting.findOne(options).lean().exec()
 }
 
 /**
