@@ -4,13 +4,13 @@ const pinValidator = {}
 
 /**
  * Validate pin
- * @param pin
- * @param pinExpiresAt
+ * @param {string} pin
+ * @param {Moment} pinExpiresAt
  * @returns {Boolean}
  */
 pinValidator.isActivePin = (pin, pinExpiresAt) => {
   if (!pinExpiresAt || !pin) return false
-  return moment(pinExpiresAt).isAfter(moment.utc())
+  return pinExpiresAt.isAfter(moment.utc())
 }
 
 module.exports = pinValidator

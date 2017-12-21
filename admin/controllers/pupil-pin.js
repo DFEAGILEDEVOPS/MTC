@@ -1,3 +1,4 @@
+const R = require('ramda')
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -62,12 +63,14 @@ const postGeneratePins = async (req, res, next) => {
   try {
     submittedPupils = await pinGenerationService.generatePupilPins(pupilsList)
     await pupilDataService.updateMultiple(submittedPupils)
-    school = await schoolDataService.findOne({_id: req.user.School})
+    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    const { schoolPin, pinExpiresAt } = pinGenerationService.generateSchoolPassword(school)
-    await schoolDataService.update(school._id, {schoolPin, pinExpiresAt})
+    const update = pinGenerationService.generateSchoolPassword(school)
+    if (update) {
+      await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+    }
   } catch (error) {
     return next(error)
   }
