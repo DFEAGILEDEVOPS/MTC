@@ -1,22 +1,11 @@
-/* CREATE TRIGGER user_school_id_required_for_teachers  
-ON [mtcAdmin].[user]  
-FOR INSERT, UPDATE AS  
-IF @@ROWCOUNT = 1  
-BEGIN  
-   UPDATE Purchasing.PurchaseOrderHeader  
-   SET SubTotal = SubTotal + LineTotal  
-   FROM inserted  
-   WHERE PurchaseOrderHeader.PurchaseOrderID = inserted.PurchaseOrderID  
-
-END  
-ELSE  
-BEGIN  
-      UPDATE Purchasing.PurchaseOrderHeader  
-   SET SubTotal = SubTotal +   
-      (SELECT SUM(LineTotal)  
-      FROM inserted  
-      WHERE PurchaseOrderHeader.PurchaseOrderID  
-       = inserted.PurchaseOrderID)  
-   WHERE PurchaseOrderHeader.PurchaseOrderID IN  
-      (SELECT PurchaseOrderID FROM inserted)  
-END;  */ 
+CREATE TRIGGER user_school_id_null_check
+ON [mtc_admin].[user]
+FOR INSERT, UPDATE
+AS
+IF UPDATE(school_id)
+BEGIN
+      IF EXISTS (SELECT * FROM inserted i WHERE i.school_id IS NULL AND i.role_id = 3)
+      BEGIN
+            THROW 50000, 'Users in Teacher role must be assigned to a school', 1;
+      END
+END
