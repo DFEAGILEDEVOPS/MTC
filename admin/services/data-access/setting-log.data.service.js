@@ -7,12 +7,12 @@ const settingLogDataService = {}
 
 /**
  * Create a new settingLog record in the DB
- * @param data
+ * @param data { questonTimeLimit, loadingTimeLimit, user_id }
  * @return {Promise.<*>}
  */
 settingLogDataService.sqlCreate = async function (data) {
-  // TODO
-  
+  const table = '[settingsLog]'
+  return sqlService.create(table, data)
 }
 
 /**
