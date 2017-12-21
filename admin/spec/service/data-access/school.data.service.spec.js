@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect, spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
@@ -7,6 +7,7 @@ require('sinon-mongoose')
 
 const School = require('../../../models/school')
 const schoolMock = require('../../mocks/school')
+const sqlService = require('../../../services/data-access/sql.service')
 
 describe('school.data.service', () => {
   let service, sandbox
@@ -64,6 +65,21 @@ describe('school.data.service', () => {
     it('calls the model', () => {
       service.find({ _id: 'some-id' })
       expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#sqlFindOneBySchoolPin', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([schoolMock]))
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        './sql.service': sqlService
+      })
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneBySchoolPin('9999z')
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
     })
   })
 })
