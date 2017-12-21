@@ -50,7 +50,7 @@ const manageGroupPage = async (req, res, next) => {
   try {
     pupilsList = await groupService.getPupils(req.user.School)
   } catch (error) {
-    next(error)
+    return next(error)
   }
 
   res.locals.pageTitle = `${action} group`
