@@ -53,6 +53,7 @@ module.exports = async function (req, email, password, done) {
 
     // Success - valid login
     logonEvent.user_id = user.id
+    req.session.userId = user.id
     await saveValidLogonEvent(logonEvent, sessionData)
     return done(null, sessionData)
   } catch (error) {
