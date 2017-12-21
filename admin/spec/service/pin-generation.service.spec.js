@@ -188,7 +188,7 @@ describe('pin-generation.service', () => {
         const school = Object.assign({}, schoolMock)
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
-        expect(result.schoolPin.length).toBe(8)
+        expect(result.pin.length).toBe(8)
       })
     })
 
@@ -198,10 +198,9 @@ describe('pin-generation.service', () => {
       })
       it('should not generate school password', () => {
         const school = Object.assign({}, schoolMock)
-        const password = school.schoolPin
         school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         const result = pinGenerationService.generateSchoolPassword(school)
-        expect(result.schoolPin).toBe(password)
+        expect(result).toBe(undefined)
       })
     })
 
@@ -213,9 +212,9 @@ describe('pin-generation.service', () => {
         sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
       })
       it('it should generate school password ', () => {
-        const password = school.schoolPin
+        const password = school.pin
         const result = pinGenerationService.generateSchoolPassword(school)
-        expect(result.schoolPin === password).toBeFalsy()
+        expect(result.pin === password).toBeFalsy()
       })
     })
   })

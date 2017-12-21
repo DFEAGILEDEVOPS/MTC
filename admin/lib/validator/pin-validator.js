@@ -10,7 +10,7 @@ const pinValidator = {}
  */
 pinValidator.isActivePin = (pin, pinExpiresAt) => {
   if (!pinExpiresAt || !pin) return false
-  return moment(pinExpiresAt).isAfter(moment.utc)
+  return moment(pinExpiresAt).isAfter(moment.utc())
 }
 
 module.exports = pinValidator
