@@ -11,16 +11,21 @@ const groupDataService = {}
 groupDataService.fetchGroups = async function (query) {
   const q = query || {}
   q.isDeleted = false
-  return Group.find(q).sort({ name: 'asc' }).lean().exec()
+  return Group
+    .find(q)
+    .collation({ locale: 'en', strength: 2 })
+    .sort({ name: 'asc' })
+    .lean()
+    .exec()
 }
 
 /**
  * Get group document by _id.
- * @param id
+ * @param query
  * @returns {Promise<*>}
  */
-groupDataService.fetchGroup = async function (id) {
-  return Group.findOne({'_id': id}).lean().exec()
+groupDataService.fetchGroup = async function (query) {
+  return Group.findOne(query).lean().exec()
 }
 
 /**
@@ -32,6 +37,31 @@ groupDataService.create = async function (data) {
   const group = new Group(data)
   await group.save()
   return group.toObject()
+}
+
+/**
+ * Update group.
+ * @param id
+ * @param data
+ * @returns {Promise<void>}
+ */
+groupDataService.update = async function (id, data) {
+  return new Promise((resolve, reject) => {
+    Group.findByIdAndUpdate(
+      id,
+      {
+        '$set': {
+          'name': data.name,
+          'pupils': data.pupils
+        }
+      }, function (error) {
+        if (error) {
+          return reject(error)
+        }
+      }
+    )
+    return resolve(data)
+  })
 }
 
 module.exports = groupDataService

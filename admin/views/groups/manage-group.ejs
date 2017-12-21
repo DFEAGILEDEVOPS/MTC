@@ -23,21 +23,21 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge">Create group</h1>
+        <h1 class="heading-xlarge"><%= action %> group</h1>
         <br>
 
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
-        <form method="post" action="/school/group-pupils/save">
+        <form method="post" action="/school/group-pupils/<%= action.toLowerCase() %>">
             <div class="form-group">
                 <label for="name" class="form-label-bold">
                     <span class="bold-medium">1. New group name</span>
                 </label>
                 <span class="form-hint">For example, Class 4A</span>
-                <% if (typeof error !== 'undefined' && error.name) { %>
-                <span class="error-message"><%= error.name %></span>
+                <% if (typeof validation !== 'undefined' && validation.name) { %>
+                <span class="error-message"><%= validation.name %></span>
                 <% } %>
 
-                <input class="form-control <% if (typeof error !== 'undefined' && error.name) { %><%= error.name ? 'form-control-error' : '' %><% } %>"
+                <input class="form-control <% if (typeof validation !== 'undefined' && validation.name) { %><%= validation.name ? 'form-control-error' : '' %><% } %>"
                        id="name"
                        name="name"
                        type="text"
@@ -49,6 +49,9 @@
 
             <div class="group-pupils-list">
                 <div class="bold-medium">2. Select/deselect pupil(s) in group</div>
+                <% if (typeof validation !== 'undefined' && validation.pupils) { %>
+                <span class="error-message"><%= validation.pupils    %></span>
+                <% } %>
                 <table class="spacious reduced-top-margin" role="group">
                     <thead>
                         <tr>
@@ -66,7 +69,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% pupilsList.forEach( pupil => { %>
+                        <% pupilsList.forEach( (pupil) => { %>
                         <tr>
                             <td>
                                 <label for="pupil-<%= pupil._id %>"><%= pupil.lastName %>, <%= pupil.foreName %></label>
@@ -79,7 +82,7 @@
                                            value="<%= pupil._id %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"
-                                           <% if (group.pupils[0][pupil._id]) { %>checked="true"<% } %>
+                                           <% if (group && group.pupils && group.pupils[pupil._id]) { %>checked="true"<% } %>
                                            role="checkbox">
                                     <div></div>
                                 </div>

@@ -17,7 +17,7 @@ module.exports = {
       try {
         const newGroup = new Group({
           name: 'Test Group 1',
-          pupils: [],
+          pupils: {},
           isDeleted: false
         })
         await newGroup.save()

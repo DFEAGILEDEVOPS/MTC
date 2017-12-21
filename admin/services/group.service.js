@@ -14,8 +14,14 @@ groupService.getPupils = async function (schoolId) {
   return pupilDataService.getSortedPupils(schoolId)
 }
 
-groupService.getGroup = async function (groupId) {
+groupService.getGroupById = async function (groupId) {
   if (!groupId) { return false }
-  return groupDataService.fetchGroup(groupId)
+  return groupDataService.fetchGroup({'_id': groupId})
 }
+
+groupService.getGroupByName = async function (groupName) {
+  if (!groupName) { return false }
+  return groupDataService.fetchGroup({'name': groupName})
+}
+
 module.exports = groupService

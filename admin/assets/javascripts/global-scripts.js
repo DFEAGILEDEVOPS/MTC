@@ -350,5 +350,8 @@ $(function () {
     inputStatus.toggleAllCheckboxes('#groupPupil', pupilGroups.validateForm)
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilGroups.validateForm)
     inputStatus.textFieldStatus('input#name', pupilGroups.validateForm)
+    if (pupilGroups.validateForm()) {
+      stickyBanner.toggle(true)
+    }
   }
 })
