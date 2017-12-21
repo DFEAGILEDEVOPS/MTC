@@ -44,7 +44,7 @@ const getUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
   const successfulPost = req.params.status || false
-
+  console.log('session:', req.session)
   try {
     const settingsRecord = await settingService.get() // settingDataService.sqlFindOne()
     if (settingsRecord) {
@@ -104,7 +104,7 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.session.userId)
+    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.session.passport.user.id)
   } catch (error) {
     return next(error)
   }

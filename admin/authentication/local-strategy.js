@@ -48,12 +48,11 @@ module.exports = async function (req, email, password, done) {
       School: school.dfeNumber,
       role: role.title,
       logonAt: Date.now(),
-      userId: user.id
+      id: user.id
     }
 
     // Success - valid login
     logonEvent.user_id = user.id
-    req.session.userId = user.id
     await saveValidLogonEvent(logonEvent, sessionData)
     return done(null, sessionData)
   } catch (error) {
