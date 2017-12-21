@@ -8,7 +8,7 @@
 </div>
 
 <div class="grid-row">
-    <div class="column-two-thirds" id="groupPupil">
+    <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
             <a href="#anchor-<%= messages.name %>"><%= messages.info %></a>
@@ -52,7 +52,7 @@
                 <% if (typeof validation !== 'undefined' && validation.pupils) { %>
                 <span class="error-message"><%= validation.pupils    %></span>
                 <% } %>
-                <table class="spacious reduced-top-margin" role="group">
+                <table class="spacious reduced-top-margin" id="groupPupil" role="group">
                     <thead>
                         <tr>
                             <th scope="col">Pupil</th>

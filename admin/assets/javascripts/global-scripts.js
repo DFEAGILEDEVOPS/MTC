@@ -345,9 +345,9 @@ $(function () {
   }
 
   if ($('#groupPupil').length > 0) {
+    inputStatus.toggleAllCheckboxes('#groupPupil', pupilGroups.validateForm)
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
-    inputStatus.toggleAllCheckboxes('#groupPupil', pupilGroups.validateForm)
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilGroups.validateForm)
     inputStatus.textFieldStatus('input#name', pupilGroups.validateForm)
     if (pupilGroups.validateForm()) {
