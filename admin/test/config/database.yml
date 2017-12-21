@@ -1,0 +1,18 @@
+localhost:
+  username: 'sa'
+  password: 'Mtc-D3v.5ql_S3rv3r'
+  host: 'localhost'
+  port: '1433'
+  database: 'mtc'
+dev:
+  username: 'sa'
+  password: 'Mtc-D3v.5ql_S3rv3r'
+  host: ''
+  port: '1433'
+  database: 'mtc'
+test:
+  username: 'sa'
+  password: 'Mtc-D3v.5ql_S3rv3r'
+  host: ''
+  port: '1433'
+  database: 'mtc'

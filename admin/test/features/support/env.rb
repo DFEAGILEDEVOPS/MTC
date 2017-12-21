@@ -13,6 +13,7 @@ require 'csv'
 require 'fileutils'
 require 'date'
 require 'waitutil'
+require 'tiny_tds'
 require_relative '../../../test/features/support/browserstack_driver_helper'
 require_relative 'helpers'
 include Helpers
@@ -55,5 +56,14 @@ if ENV['MONGO_CONNECTION_STRING']
 else
   CLIENT = Mongo::Client.new('mongodb://localhost/mtc')
 end
+
+DATABASE_CONFIG = YAML::load(File.read("#{File.dirname(__FILE__)}/../../config/database.yml"))
+ENV['SQL_ENV'] ||='localhost'
+SQL_CLIENT = TinyTds::Client.new(username: DATABASE_CONFIG[ENV['SQL_ENV']]['username'],
+                                 password: DATABASE_CONFIG[ENV['SQL_ENV']]['password'],
+                                 host: DATABASE_CONFIG[ENV['SQL_ENV']]['host'],
+                                 port: DATABASE_CONFIG[ENV['SQL_ENV']]['port'],
+                                 database: DATABASE_CONFIG[ENV['SQL_ENV']]['database'])
+
 
 Capybara.visit Capybara.app_host
