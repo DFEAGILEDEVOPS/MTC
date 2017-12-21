@@ -11,7 +11,7 @@ class CheckSettingsPage < SitePrism::Page
 
   def update_question_time_limit(value)
     sleep 1
-    p has_question_time_limit
+    p has_question_time_limit?
     question_time_limit.set ''
     question_time_limit.set value
     save_changes.click
