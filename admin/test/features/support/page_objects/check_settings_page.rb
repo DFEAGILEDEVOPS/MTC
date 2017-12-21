@@ -11,6 +11,7 @@ class CheckSettingsPage < SitePrism::Page
 
   def update_question_time_limit(value)
     p current_url
+    p page.current_window.size
     sleep 1
     question_time_limit.set ''
     question_time_limit.set value
@@ -19,6 +20,7 @@ class CheckSettingsPage < SitePrism::Page
 
   def update_loading_time_limit(value)
     p current_url
+    p page.current_window.size
     sleep 1
     loading_time_limit.set ''
     loading_time_limit.set value
