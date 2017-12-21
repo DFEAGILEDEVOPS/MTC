@@ -15,10 +15,10 @@ cache:
 
 env:
   - TEST_TYPE=admin-e2e-1
-  - TEST_TYPE=admin-e2e-2
-  - TEST_TYPE=admin-e2e-3
-  - TEST_TYPE=pupil-e2e-1
-  - TEST_TYPE=pupil-e2e-2
+#  - TEST_TYPE=admin-e2e-2
+#  - TEST_TYPE=admin-e2e-3
+#  - TEST_TYPE=pupil-e2e-1
+#  - TEST_TYPE=pupil-e2e-2
 
 global:
   - STD_LOG_FILE="./build.log"

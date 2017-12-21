@@ -8,7 +8,7 @@ MSG+=$PID
 echo $MSG
 
 cd test
-rake features OPTS='-t @question_time_limits -t @time_between_questions'
+rake features OPTS='-t @question_time_limits,@time_between_questions'
 CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
