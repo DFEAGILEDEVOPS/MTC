@@ -10,12 +10,16 @@ class CheckSettingsPage < SitePrism::Page
   element :successful_submission, '.box-successful h2'
 
   def update_question_time_limit(value)
+    p current_url
+    sleep 1
     question_time_limit.set ''
     question_time_limit.set value
     save_changes.click
   end
 
   def update_loading_time_limit(value)
+    p current_url
+    sleep 1
     loading_time_limit.set ''
     loading_time_limit.set value
     save_changes.click
