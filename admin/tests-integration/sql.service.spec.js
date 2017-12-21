@@ -6,6 +6,7 @@ const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
 const TYPES = require('tedious').TYPES
 const moment = require('moment')
+const R = require('ramda')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
@@ -194,6 +195,24 @@ describe('sql.service:integration', () => {
       expect(retrievedUser.identifier).toBe(user.identifier)
       expect(retrievedUser.school_id).toBe(user.school_id)
       expect(retrievedUser.role_id).toBe(user.role_id)
+    })
+  })
+
+  describe('#update', () => {
+    it('should update a record', async () => {
+      const school = await sql.findOneById('[school]', 1)
+      const pin = 'zzz98765'
+      const expiry = moment().add(4, 'hours')
+      const update = R.pick(['id', 'pin', 'pinExpiresAt'], school)
+      update.pin = pin
+      update.pinExpiresAt = expiry.clone()
+      const result = await sql.update('[school]', update)
+      expect(result.rowsModified).toBe(1)
+
+      // read the school back and check
+      const school2 = await sql.findOneById('[school]', 1)
+      expect(school2.pin).toBe(pin)
+      expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
     })
   })
 })
