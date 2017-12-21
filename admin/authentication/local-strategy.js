@@ -41,19 +41,20 @@ module.exports = async function (req, email, password, done) {
       return done(null, false)
     }
 
-    const mock = {
+    const sessionData = {
       EmailAddress: email,
       UserName: email,
       UserType: 'SchoolNom',
       School: school.dfeNumber,
       role: role.title,
-      logonAt: Date.now()
+      logonAt: Date.now(),
+      id: user.id
     }
 
     // Success - valid login
     logonEvent.user_id = user.id
-    await saveValidLogonEvent(logonEvent, mock)
-    return done(null, mock)
+    await saveValidLogonEvent(logonEvent, sessionData)
+    return done(null, sessionData)
   } catch (error) {
     winston.warn(error)
     await saveInvalidLogonEvent(logonEvent, 'Server error: ' + error.message)

@@ -11,8 +11,7 @@ const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const config = require('../config')
-const settingDataService = require('../services/data-access/setting.data.service')
-const settingLogDataService = require('../services/data-access/setting-log.data.service')
+const settingService = require('../services/setting.service')
 
 /**
  * Returns the service-manager (role) landing page
@@ -45,9 +44,9 @@ const getUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
   const successfulPost = req.params.status || false
-
+  console.log('session:', req.session)
   try {
-    const settingsRecord = await settingDataService.sqlFindOne()
+    const settingsRecord = await settingService.get() // settingDataService.sqlFindOne()
     if (settingsRecord) {
       settings = settingsRecord
     } else {
@@ -83,7 +82,7 @@ const setUpdateTiming = async (req, res, next) => {
   res.locals.pageTitle = 'Check settings'
   let settings
 
-  const settingsRecord = await settingDataService.sqlFindOne()
+  const settingsRecord = await settingService.get()
   if (settingsRecord) {
     settings = settingsRecord
   } else {
@@ -105,20 +104,7 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settingDataService.sqlUpdate(settings.loadingTimeLimit, settings.questionTimeLimit)
-
-    let settingsLog = {}
-    settingsLog.adminSession = req.session.id
-    settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
-    settingsLog.userName = ((res.locals).user || {}).UserName
-    settingsLog.questionTimeLimit = settings.questionTimeLimit
-    settingsLog.loadingTimeLimit = settings.loadingTimeLimit
-
-    try {
-      await settingLogDataService.create(settingsLog)
-    } catch (error) {
-      winston.info('Could not save setting log.')
-    }
+    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.user.id)
   } catch (error) {
     return next(error)
   }

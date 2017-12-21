@@ -1,7 +1,19 @@
 'use strict'
 
 const SettingLog = require('../../models/setting-log')
+const sqlService = require('../data-access/sql.service')
+
 const settingLogDataService = {}
+
+/**
+ * Create a new settingLog record in the DB
+ * @param data { questonTimeLimit, loadingTimeLimit, user_id }
+ * @return {Promise.<*>}
+ */
+settingLogDataService.sqlCreate = async function (data) {
+  const table = '[settingsLog]'
+  return sqlService.create(table, data)
+}
 
 /**
  * Create a new settingLog record in the DB
