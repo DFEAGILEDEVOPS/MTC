@@ -36,11 +36,11 @@ const getGeneratePinsList = async (req, res, next) => {
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
   // TODO: data service call should be moved to a service
   try {
-    school = await schoolDataService.findOne({ _id: req.user.School })
+    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    pupils = await pinGenerationService.getPupils(school._id, sortField, sortDirection)
+    pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
   } catch (error) {
     return next(error)
   }
