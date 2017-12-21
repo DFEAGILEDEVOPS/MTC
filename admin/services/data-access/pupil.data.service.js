@@ -34,7 +34,7 @@ pupilDataService.getPupils = async (schoolId) => {
 pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
   // TODO: Introduce integration tests
   const sort = {}
-  sort[sortingField || 'lastName'] = sortingDirection || 'asc'
+  sort[sortingField] = sortingDirection
   return Pupil
     .find({'school': schoolId})
     .sort(sort)
@@ -49,7 +49,8 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
  */
 pupilDataService.insertMany = async (pupils) => {
   const mongoosePupils = pupils.map(p => new Pupil(p))
-  return Pupil.insertMany(mongoosePupils)
+  const savedPupils = await Pupil.insertMany(mongoosePupils)
+  return savedPupils
 }
 
 /**
@@ -74,8 +75,7 @@ pupilDataService.find = async function (options) {
  * Generalised update function - can update many in one transaction
  * @param query
  * @param criteria
- * @param options
- * @returns {Promise<void>}
+ * @return {Promise}
  */
 pupilDataService.update = async function (query, criteria, options = {multi: false}) {
   return Pupil.update(query, criteria, options).exec()
