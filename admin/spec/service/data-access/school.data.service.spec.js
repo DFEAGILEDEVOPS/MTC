@@ -82,4 +82,19 @@ describe('school.data.service', () => {
       expect(typeof res).toBe('object')
     })
   })
+
+  describe('#sqlFindOneByDfeNumber', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([schoolMock]))
+      service = proxyquire('../../../services/data-access/school.data.service', {
+        './sql.service': sqlService
+      })
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneByDfeNumber(12345678)
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
 })
