@@ -6,7 +6,6 @@ const XRegExp = require('xregexp')
 const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
-const winston = require('winston')
 
 module.exports.validate = async (pupilData) => {
   // TODO: Move to reusable validation service
