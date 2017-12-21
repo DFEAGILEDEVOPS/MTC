@@ -105,7 +105,7 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settingDataService.createOrUpdate(settings)
+    await settingDataService.sqlUpdate(settings.loadingTimeLimit, settings.questionTimeLimit)
 
     let settingsLog = {}
     settingsLog.adminSession = req.session.id
