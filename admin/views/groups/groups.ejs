@@ -41,7 +41,7 @@
                 <tbody>
                     <% groups.forEach( group => { %>
                     <tr>
-                        <td<% if (messages.groupId && messages.groupId.toString() === group._id.toString()) { %> class="highlight-item"<% } %>>
+                        <td<% if (messages.groupId && messages.groupId === group._id) { %> class="highlight-item"<% } %>>
                             <a name="group-<%= group._id %>"></a>
                             <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong>
                         </td>
