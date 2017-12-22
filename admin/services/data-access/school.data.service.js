@@ -44,4 +44,40 @@ schoolDataService.sqlFindOneById = async function (id) {
   return sqlService.findOneById(table, id)
 }
 
+/**
+ * Find a School from the pin
+ * @param {number} pin
+ * @return {Promise<void>}
+ */
+schoolDataService.sqlFindOneBySchoolPin = async function (pin) {
+  const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE pin = @pin
+    `
+  const rows = await sqlService.query(sql, [paramPin])
+  return R.head(rows)
+}
+
+/**
+ * Find a School by DfeNumber
+ * @param dfeNumber
+ * @return {Promise<void>}
+ */
+schoolDataService.sqlFindOneByDfeNumber = async function (dfeNumber) {
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE dfeNumber = @dfeNumber
+    `
+  const rows = await sqlService.query(sql, [paramDfeNumber])
+  return R.head(rows)
+}
+
+schoolDataService.sqlUpdate = async function (update) {
+  return sqlService.update(table, update)
+}
+
 module.exports = schoolDataService
