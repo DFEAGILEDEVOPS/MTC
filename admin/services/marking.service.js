@@ -44,13 +44,16 @@ markingService.mark = async function (completedCheck) {
       answer.isCorrect = false
     }
   }
+
+  // TODO this will be set in the check table
   completedCheck.isMarked = true
   completedCheck.markedAt = new Date()
 
-  // Update the completed check
+  // TODO this call will be superfluous as the check record will be updated
   await completedCheckDataService.save(completedCheck)
 
-  // update the check meta info
+  // update the check entry
+  // TODO update mark and marked at too
   await checkDataService.update({checkCode: completedCheck.data.pupil.checkCode}, {'$set': {results: results}})
 }
 

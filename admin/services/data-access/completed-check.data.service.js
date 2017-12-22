@@ -1,6 +1,7 @@
 'use strict'
 
 const CompletedChecks = require('../../models/completed-checks')
+const sqlService = require('../data-access/sql.service')
 const completedCheckDataService = {}
 
 /**
@@ -22,14 +23,22 @@ const unmarkedQueryCriteria = {
 completedCheckDataService.create = async function (data) {
   const completedCheck = new CompletedChecks(data)
   return completedCheck.save()
-}
-// used by check-complete.service to insert pupil check
+} // used by check-complete.service to insert pupil check
 
 /**
- * Save a document (plain javascript object) with an existing _id field - uses replaceOne()
- * @param doc
- * @return {Promise.<*>}
+ * Updates check record with results
+ * @param data
+ * @return {Promise}
  */
+completedCheckDataService.sqlAddResult = async function (data) {
+  const checkDataParam = {
+    'id': data.data.pupil.checkCode,
+    'data': data
+  }
+  return sqlService.update('[check]', checkDataParam)
+}
+
+// TODO burn this
 completedCheckDataService.save = async function (doc) {
   return CompletedChecks.replaceOne({_id: doc._id}, doc).exec()
 }
