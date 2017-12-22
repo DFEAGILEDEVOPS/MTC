@@ -3,7 +3,6 @@
 const Check = require('../../models/check')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const moment = require('moment')
 
 const checkDataService = {}
 
