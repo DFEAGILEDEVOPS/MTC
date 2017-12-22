@@ -88,6 +88,30 @@ checkDataService.findFullyPopulated = async function (criteria) {
 }
 
 /**
+ * Find Checks and associated data by checkCode
+ * @param checkCodes - array of UUID
+ * @return {Promise.<void>} - lean Check objects, fully populated
+ * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
+ * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
+ */
+checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
+  let sql = 'SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id INNER JOIN mtc_admin.checkForm frm ON frm.id = chk.checkForm_id'
+  let whereClause = ' WHERE chk.checkCode IN ('
+  const params = []
+  for (let index = 0; index < checkCodes.length; index++) {
+    whereClause = whereClause + `@p${index}`
+    params.push({
+      name: `p${index}`,
+      value: checkCodes[index],
+      type: TYPES.UniqueIdentifier
+    })
+  }
+  whereClause = whereClause + ')'
+  sql = sql + whereClause
+  return sqlService.query(sql, params)
+}
+
+/**
  * Find the count
  * @param query
  * @return {Promise.<*>}
