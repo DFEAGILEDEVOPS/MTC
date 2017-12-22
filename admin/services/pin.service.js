@@ -46,7 +46,7 @@ pinService.expirePupilPin = async (token, checkCode) => {
   const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
   // TODO should this use date service???
   const currentTimeStamp = moment.utc()
-  await checkDataService.sqlSetCheckStartedAt(checkCode, currentTimeStamp)
+  await checkDataService.sqlUpdateCheckStartedAt(checkCode, currentTimeStamp)
   if (!pupil.isTestAccount) {
     await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
   }

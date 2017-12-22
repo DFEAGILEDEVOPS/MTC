@@ -95,7 +95,10 @@ checkDataService.findFullyPopulated = async function (criteria) {
  * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
  */
 checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
-  let sql = 'SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id INNER JOIN mtc_admin.checkForm frm ON frm.id = chk.checkForm_id'
+  let sql = 'SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id \
+   INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id \
+   INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id \
+   INNER JOIN mtc_admin.checkForm frm ON frm.id = chk.checkForm_id'
   let whereClause = ' WHERE chk.checkCode IN ('
   const params = []
   for (let index = 0; index < checkCodes.length; index++) {
@@ -126,7 +129,7 @@ checkDataService.count = async function (query) {
  * @param query
  * @return {Promise.<*>}
  */
-checkDataService.sqlNumberOfChecksStartedByPupil = async function (pupilId) {
+checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {
   const sql = 'SELECT COUNT(*) FROM [mtc_admin].[check] WHERE pupil_id=@pupilId AND startedAt IS NOT NULL'
   const params = [
     {
@@ -153,7 +156,7 @@ checkDataService.update = async function (query, criteria) {
   })
 } // NOTE: broken down into 2 specific sql methods
 
-checkDataService.sqlSetCheckStartedAt = async (checkCode, startedAt) => {
+checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
   const sql = 'UPDATE [mtc_admin].[check] SET startedAt=@startedAt WHERE checkCode=@checkCode AND startedAt IS NULL'
   const params = [
     {
@@ -170,7 +173,7 @@ checkDataService.sqlSetCheckStartedAt = async (checkCode, startedAt) => {
   return sqlService.modify(sql, params)
 }
 
-checkDataService.sqlSetResults = async (checkCode, mark, maxMark, markedAt) => {
+checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
   const sql = 'UPDATE [mtc_admin].[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode'
   const params = [
     {

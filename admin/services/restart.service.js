@@ -99,7 +99,7 @@ restartService.canAllPupilsRestart = async (pupilsList) => {
  */
 
 restartService.canRestart = async pupilId => {
-  const checkCount = await checkDataService.sqlNumberOfChecksStartedByPupil(pupilId)
+  const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   const hasRestartAttemptRemaining = pupilRestartsCount < restartService.totalRestartsAllowed
   const hasCheckAttemptRemaining = checkCount < restartService.totalChecksAllowed
@@ -160,7 +160,7 @@ restartService.getStatus = async pupilId => {
     const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
     return entry && entry.status
   }
-  const checkCount = await checkDataService.sqlNumberOfChecksStartedByPupil(pupilId)
+  const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   if (checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
   if (checkCount === pupilRestartsCount) return getStatus('REM')

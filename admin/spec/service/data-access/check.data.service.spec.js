@@ -82,7 +82,7 @@ describe('check.data.service', () => {
     })
   })
 
-  describe('#sqlNumberOfChecksStartedByPupil', () => {
+  describe('#sqlGetNumberOfChecksStartedByPupil', () => {
     let mock
 
     beforeEach(() => {
@@ -93,7 +93,7 @@ describe('check.data.service', () => {
     })
 
     it('makes the expected calls', () => {
-      service.sqlNumberOfChecksStartedByPupil(1234)
+      service.sqlGetNumberOfChecksStartedByPupil(1234)
       expect(mock.verify()).toBe(true)
     })
   })

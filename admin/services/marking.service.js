@@ -53,7 +53,7 @@ markingService.mark = async function (completedCheck) {
   await completedCheckDataService.save(completedCheck)
 
   // update the check meta info
-  await checkDataService.sqlSetResults(completedCheck.data.pupil.checkCode, results.marks, results.maxMarks, results.processedAt)
+  await checkDataService.sqlUpdateCheckWithResults(completedCheck.data.pupil.checkCode, results.marks, results.maxMarks, results.processedAt)
 }
 
 module.exports = markingService

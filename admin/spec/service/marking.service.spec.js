@@ -21,7 +21,7 @@ describe('markingService', () => {
   describe('#mark', () => {
     let checkDataServiceStub, completedCheckDataServiceStub
     beforeEach(() => {
-      checkDataServiceStub = sandbox.stub(checkDataService, 'sqlSetResults')
+      checkDataServiceStub = sandbox.stub(checkDataService, 'sqlUpdateCheckWithResults')
       completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'save')
       service = proxyquire('../../services/marking.service', {
         './data-access/completed-check.data.service': completedCheckDataService,

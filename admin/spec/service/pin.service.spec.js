@@ -104,10 +104,10 @@ describe('pin.service', () => {
       })
       it('it expire pin and set check start time ', async () => {
         spyOn(pupilDataService, 'update').and.returnValue(null)
-        spyOn(checkDataService, 'sqlSetCheckStartedAt').and.returnValue(null)
+        spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
         await pinService.expirePupilPin('token', 'checkCode')
         expect(pupilDataService.update).toHaveBeenCalled()
-        expect(checkDataService.sqlSetCheckStartedAt).toHaveBeenCalled()
+        expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
     })
     describe('for test developer users', () => {
@@ -123,10 +123,10 @@ describe('pin.service', () => {
       })
       it('it should not expire pin for developer test account', async () => {
         spyOn(pupilDataService, 'update').and.returnValue(null)
-        spyOn(checkDataService, 'sqlSetCheckStartedAt').and.returnValue(null)
+        spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
         await pinService.expirePupilPin('token', 'checkCode')
         expect(pupilDataService.update).toHaveBeenCalledTimes(0)
-        expect(checkDataService.sqlSetCheckStartedAt).toHaveBeenCalled()
+        expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
     })
   })
