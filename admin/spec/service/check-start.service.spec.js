@@ -30,7 +30,7 @@ describe('check-start.service', () => {
           )
         },
         '../services/data-access/check.data.service': {
-          create: checkDataServiceCreateSpy.and.callFake(
+          sqlCreate: checkDataServiceCreateSpy.and.callFake(
             resolvesNull
           ),
           sqlFindOneByCheckCode: jasmine.createSpy().and.callFake(

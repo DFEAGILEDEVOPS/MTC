@@ -208,4 +208,13 @@ checkDataService.create = async function (data) {
   return check.save()
 }
 
+/**
+ * Create a new Check
+ * @param check
+ * @return {Promise}
+ */
+checkDataService.sqlCreate = async function (check) {
+  return sqlService.create('[check]', check)
+}
+
 module.exports = checkDataService

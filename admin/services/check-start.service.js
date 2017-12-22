@@ -30,16 +30,16 @@ const checkStartService = {
     }
 
     const checkData = {
-      pupilId,
+      pupil_id: pupilId,
       checkCode,
-      checkWindowId: checkWindow._id,
-      checkFormId: checkForm._id,
+      checkWindow_id: checkWindow._id,
+      checkForm_id: checkForm._id,
       pupilLoginDate: moment.utc(),
-      checkStartedAt: null
+      startedAt: null
     }
 
     // Save the details to the `Check` collection
-    await checkDataService.create(checkData)
+    await checkDataService.sqlCreate(checkData)
 
     return {
       checkCode,
