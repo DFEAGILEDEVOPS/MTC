@@ -32,7 +32,7 @@ pupilStatusService.getStatus = async (pupil) => {
   const hasNotStarted = checkCount === pupilRestartsCount && !isActivePin
   if (hasNotStarted) return getStatus('NTS')
   // Pupil has PIN generated
-  const latestCheck = await checkDataService.findLatestCheck({ pupilId: pupil._id })
+  const latestCheck = await checkDataService.sqlFindLatestCheck(pupil._id)
   const hasPupilLoggedIn = pupilStatusService.hasPupilLoggedIn(pupilRestartsCount, latestCheck, latestPupilRestart)
   const hasPinGenerated = (!hasPupilLoggedIn && checkCount === pupilRestartsCount) && isActivePin
   if (hasPinGenerated) return getStatus('PIN')

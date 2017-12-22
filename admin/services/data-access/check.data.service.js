@@ -11,7 +11,7 @@ const checkDataService = {}
  * @param checkCode
  * @return {Promise}
  */
-checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
+checkDataService.findOneByCheckCode = async function (checkCode) {
   return Check.findOne({checkCode}).lean().exec()
 }
 
@@ -36,6 +36,7 @@ checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
  * @param criteria
  * @return {Promise.<void>} - lean Check objects
  */
+// NOT USED - will not replace with sql call
 checkDataService.find = async function (criteria) {
   return Check.find(criteria).lean().exec()
 }
@@ -47,6 +48,27 @@ checkDataService.find = async function (criteria) {
  */
 checkDataService.findLatestCheck = async function (criteria) {
   return Check.findOne(criteria).sort({ field: 'asc', _id: -1 }).lean().exec()
+}
+
+/**
+ * Find latest check for pupil
+ * @param pupilId - the pupil taking the check
+ * @param started - if true returns latest started check only
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
+  let sql = 'SELECT * FROM [mtc_admin].[check] WHERE pupil_id = @pupilId'
+  if (started) {
+    sql = sql + ' AND startedAt IS NOT NULL'
+  }
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
 }
 
 /**

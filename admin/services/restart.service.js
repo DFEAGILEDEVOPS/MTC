@@ -175,7 +175,7 @@ restartService.getStatus = async pupilId => {
 
 restartService.markDeleted = async pupilId => {
   const pupil = await pupilDataService.findOne({_id: pupilId})
-  const lastStartedCheck = await checkDataService.findLatestCheck({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
   await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
   const updated = await pupilRestartDataService.update({pupilId: pupilId, isDeleted: false}, { '$set': { isDeleted: true } })
   if (!updated || updated.nModified !== 1) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)

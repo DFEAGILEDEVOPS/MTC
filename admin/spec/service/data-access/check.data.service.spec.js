@@ -50,18 +50,18 @@ describe('check.data.service', () => {
     })
   })
 
-  describe('#findLatestCheck', () => {
+  describe('#sqlFindLatestCheck', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Check).expects('findOne').chain('sort').chain('lean').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
-        '../../models/check': Check
+        '../../../services/data-access/sql.service': sqlService
       })
     })
 
-    it('should makes the expecte call', () => {
-      service.findLatestCheck({'_id': '01234'})
+    it('should makes the expected call', () => {
+      service.sqlFindLatestCheck(1234)
       expect(mock.verify()).toBe(true)
     })
   })
