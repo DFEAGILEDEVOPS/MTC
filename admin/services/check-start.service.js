@@ -5,7 +5,6 @@ const moment = require('moment')
 const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
-const winston = require('winston')
 
 const checkStartService = {
   /**

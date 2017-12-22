@@ -91,7 +91,6 @@ describe('markingService', () => {
 
     it('gives the pupil the correct marks', async (done) => {
       await service.mark(completedCheckMock)
-      console.log('args:', checkDataServiceStub.args[0])
       const mark = checkDataServiceStub.args[0][1]
       expect(mark).toBe(3)
 

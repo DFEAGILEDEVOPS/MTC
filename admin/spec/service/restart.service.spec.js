@@ -176,7 +176,7 @@ describe('restart.service', () => {
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
       spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
-      spyOn(checkDataService, 'findLatestCheck').and.returnValue(startedCheckMock)
+      spyOn(checkDataService, 'sqlFindLatestCheck').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
       spyOn(pupilRestartDataService, 'update').and.returnValue({ n: 1, nModified: 1, ok: 1 })
       const deleted = await restartService.markDeleted(pupilMock._id)
@@ -184,7 +184,7 @@ describe('restart.service', () => {
     })
     it('throws an error if the deletion failed', async () => {
       spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
-      spyOn(checkDataService, 'findLatestCheck').and.returnValue(startedCheckMock)
+      spyOn(checkDataService, 'sqlFindLatestCheck').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
       spyOn(pupilRestartDataService, 'update').and.returnValue({})
       let deleted
