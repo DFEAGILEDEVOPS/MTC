@@ -3,6 +3,7 @@
 const Check = require('../../models/check')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const moment = require('moment')
 
 const checkDataService = {}
 
@@ -121,7 +122,8 @@ checkDataService.count = async function (query) {
 }
 
 /**
- * Find the count
+ * replaces mongo count implementation
+ * returns number of checks started by specified pupil
  * @param query
  * @return {Promise.<*>}
  */
@@ -150,6 +152,50 @@ checkDataService.update = async function (query, criteria) {
       resolve(null)
     })
   })
+} // NOTE: broken down into 2 specific sql methods
+
+checkDataService.sqlSetCheckStartedAt = async (checkCode, startedAt) => {
+  const sql = 'UPDATE [mtc_admin].[check] SET startedAt=@startedAt WHERE checkCode=@checkCode'
+  const params = [
+    {
+      name: 'startedAt',
+      value: startedAt,
+      type: TYPES.DateTimeOffset
+    },
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  return sqlService.modify(sql, params)
+}
+
+checkDataService.sqlSetResults = async (checkCode, mark, maxMark, markedAt) => {
+  const sql = 'UPDATE [mtc_admin].[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode'
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    },
+    {
+      name: 'mark',
+      value: mark,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'maxMark',
+      value: maxMark,
+      type: TYPES.TinyInt
+    },
+    {
+      name: 'markedAt',
+      value: markedAt,
+      type: TYPES.DateTimeOffset
+    }
+  ]
+  return sqlService.modify(sql, params)
 }
 
 /**
