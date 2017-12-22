@@ -23,6 +23,7 @@ completedCheckDataService.create = async function (data) {
   const completedCheck = new CompletedChecks(data)
   return completedCheck.save()
 }
+// used by check-complete.service to insert pupil check
 
 /**
  * Save a document (plain javascript object) with an existing _id field - uses replaceOne()
@@ -41,6 +42,7 @@ completedCheckDataService.save = async function (doc) {
 completedCheckDataService.find = async function (criteria) {
   return CompletedChecks.find(criteria).lean().exec()
 }
+// used by pupil-status.service to find latest completed check by pupil
 
 /**
  * Count the number of documents that match `criteria`
@@ -89,5 +91,6 @@ completedCheckDataService.findUnmarked = async function (batchSize) {
 completedCheckDataService.update = async function (query, criteria, options = {}) {
   return CompletedChecks.update(query, criteria, options).exec()
 }
+// used by PS Report to set all unmarked
 
 module.exports = completedCheckDataService
