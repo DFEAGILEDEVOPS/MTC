@@ -57,18 +57,18 @@ else
   CLIENT = Mongo::Client.new('mongodb://localhost/mtc')
 end
 
-Database = ENV['SQL_DATABASE'] || 'mtc'
-Server = ENV['SQL_SERVER'] || 'localhost'
-Port =  ENV['SQL_PORT'] || 1433
-Admin_User = ENV['SQL_ADMIN_USER'] || 'sa'
-Admin_Password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+database = ENV['SQL_DATABASE'] || 'mtc'
+server = ENV['SQL_SERVER'] || 'localhost'
+port =  ENV['SQL_PORT'] || 1433
+admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
+admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 
 
-SQL_CLIENT = TinyTds::Client.new(username: Admin_User,
-                                 password: Admin_Password,
-                                 host: Server,
-                                 port: Port,
-                                 database: Database)
+SQL_CLIENT = TinyTds::Client.new(username: admin_user,
+                                 password: admin_password,
+                                 host: server,
+                                 port: port,
+                                 database: database)
 SQL_CLIENT.execute('SET ANSI_NULLS ON').do
 SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
 SQL_CLIENT.execute('SET ANSI_NULL_DFLT_ON ON').do
