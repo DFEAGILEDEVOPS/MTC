@@ -121,6 +121,23 @@ checkDataService.count = async function (query) {
 }
 
 /**
+ * Find the count
+ * @param query
+ * @return {Promise.<*>}
+ */
+checkDataService.sqlNumberOfChecksStartedByPupil = async function (pupilId) {
+  const sql = 'SELECT COUNT(*) FROM [mtc_admin].[check] WHERE pupil_id=@pupilId AND startedAt IS NOT NULL'
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
+}
+
+/**
  * Generalised update function - use with care
  * @param query
  * @param criteria

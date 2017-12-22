@@ -66,34 +66,34 @@ describe('check.data.service', () => {
     })
   })
 
-  describe('#findFullyPopulated', () => {
+  describe('#sqlFindFullyPopulated', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Check).expects('find').chain('populate').chain('lean').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
-        '../../models/check': Check
+        '../../../services/data-access/sql.service': sqlService
       })
     })
 
     it('makes the expected calls', () => {
-      service.findFullyPopulated({'testCriteria': 'someValue'})
+      service.sqlFindFullyPopulated({'testCriteria': 'someValue'})
       expect(mock.verify()).toBe(true)
     })
   })
 
-  describe('#count', () => {
+  describe('#sqlNumberOfChecksStartedByPupil', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Check).expects('count').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
-        '../../models/check': Check
+        '../../../services/data-access/sql.service': sqlService
       })
     })
 
     it('makes the expected calls', () => {
-      service.count({'testCriteria': 'someValue'})
+      service.sqlNumberOfChecksStartedByPupil(1234)
       expect(mock.verify()).toBe(true)
     })
   })
