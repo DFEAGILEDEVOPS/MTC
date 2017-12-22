@@ -1,6 +1,8 @@
 language: node_js
 
+sudo: required
 dist: trusty
+group: deprecated-2017Q4
 
 branches:
   only:
@@ -40,8 +42,6 @@ addons:
 services: 
  # - mongodb
   - docker
-
-sudo: required
 
 before_install:
 #  - "$CXX --version"
