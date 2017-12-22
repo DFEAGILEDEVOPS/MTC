@@ -50,7 +50,7 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @returns {Boolean}
  */
 pinGenerationService.isValid = async (p) => {
-  const checkCount = await checkDataService.count({ pupilId: p._id, checkStartedAt: { $ne: null } })
+  const checkCount = await checkDataService.sqlNumberOfChecksStartedByPupil(p._id)
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p._id)
   return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !canRestart
