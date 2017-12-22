@@ -1,4 +1,5 @@
-@timer_reset @question_time_limits
+#These tests are having issues with travis
+@timer_reset @question_time_limits @wip
 Feature: Question time limit tests
   I want to be able to vary the time limit used for the questions in an MTC check
   As a STA Researcher
