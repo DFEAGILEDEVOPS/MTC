@@ -21,7 +21,7 @@ describe('group.service', () => {
     beforeEach(() => {
       service = proxyquire('../../services/group.service', {
         '../services/data-access/group.data.service': {
-          fetchGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
+          getGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
         },
         '../models/group': Group
       })
@@ -41,7 +41,7 @@ describe('group.service', () => {
           getSortedPupils: jasmine.createSpy().and.callFake(function () { return Promise.resolve(pupilsMock) })
         },
         '../services/data-access/group.data.service': {
-          fetchGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
+          getGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
         },
         '../models/group': Group
       })
@@ -65,7 +65,7 @@ describe('group.service', () => {
     beforeEach(() => {
       service = proxyquire('../../services/group.service', {
         '../services/data-access/group.data.service': {
-          fetchGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
+          getGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
         },
         '../models/group': Group
       })
@@ -89,7 +89,7 @@ describe('group.service', () => {
     beforeEach(() => {
       service = proxyquire('../../services/group.service', {
         '../services/data-access/group.data.service': {
-          fetchGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
+          getGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
         },
         '../models/group': Group
       })

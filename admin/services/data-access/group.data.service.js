@@ -8,7 +8,7 @@ const groupDataService = {}
  * @param query
  * @returns {Promise<Promise|*>}
  */
-groupDataService.fetchGroups = async function (query) {
+groupDataService.getGroups = async function (query) {
   const q = query || {}
   q.isDeleted = false
   return Group
@@ -24,7 +24,7 @@ groupDataService.fetchGroups = async function (query) {
  * @param query
  * @returns {Promise<*>}
  */
-groupDataService.fetchGroup = async function (query) {
+groupDataService.getGroup = async function (query) {
   return Group.findOne(query).lean().exec()
 }
 

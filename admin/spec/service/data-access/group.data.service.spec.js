@@ -20,7 +20,7 @@ describe('GroupDataService', () => {
 
   afterEach(() => sandbox.restore())
 
-  describe('#fetchGroups', () => {
+  describe('#getGroups', () => {
     let mock
 
     beforeEach(() => {
@@ -31,12 +31,12 @@ describe('GroupDataService', () => {
     })
 
     it('should fetch groups', async () => {
-      await service.fetchGroups()
+      await service.getGroups()
       expect(mock.verify()).toBe(true)
     })
   })
 
-  describe('#fetchGroup', () => {
+  describe('#getGroup', () => {
     let mock
 
     beforeEach(() => {
@@ -47,7 +47,7 @@ describe('GroupDataService', () => {
     })
 
     it('should fetch group document', async () => {
-      await service.fetchGroup({ name: 'Test Group 1' })
+      await service.getGroup({ name: 'Test Group 1' })
       expect(mock.verify()).toBe(true)
     })
   })

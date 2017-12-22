@@ -20,7 +20,7 @@ describe('groupValidation', function () {
 
   describe('happy path', () => {
     beforeEach(() => {
-      sandbox.mock(groupDataService).expects('fetchGroup').resolves(null)
+      sandbox.mock(groupDataService).expects('getGroup').resolves(null)
       proxyquire('../../../lib/validator/group-validator', {
         '../../../services/data-access/group.data.service': groupDataService
       })
@@ -39,7 +39,7 @@ describe('groupValidation', function () {
 
   describe('unhappy paths', () => {
     beforeEach(() => {
-      sandbox.mock(groupDataService).expects('fetchGroup').resolves(null)
+      sandbox.mock(groupDataService).expects('getGroup').resolves(null)
       proxyquire('../../../lib/validator/group-validator', {
         '../../../services/data-access/group.data.service': groupDataService
       })

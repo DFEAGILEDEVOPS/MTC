@@ -25,7 +25,7 @@ module.exports.validate = async (groupData, oldName) => {
   }
 
   if (oldName !== groupData.name || !oldName) {
-    const group = await groupDataService.fetchGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }})
+    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }})
     if (group !== null) {
       validationError.addError('name', groupErrorMessages.nameAlreadyExists)
     }

@@ -6,7 +6,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const groupService = {}
 
 groupService.getGroups = async function (query) {
-  return groupDataService.fetchGroups(query)
+  return groupDataService.getGroups(query)
 }
 
 groupService.getPupils = async function (schoolId, groupIdToExclude) {
@@ -19,7 +19,7 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
   if (groupIdToExclude) {
     query = { '_id': { $ne: groupIdToExclude.toString() } }
   }
-  const groups = await groupDataService.fetchGroups(query)
+  const groups = await groupDataService.getGroups(query)
   groups.map((group) => {
     const pupils = Object.values(group.pupils)
     pupils.forEach(id => {
@@ -38,12 +38,12 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
 
 groupService.getGroupById = async function (groupId) {
   if (!groupId) { return false }
-  return groupDataService.fetchGroup({'_id': groupId})
+  return groupDataService.getGroup({'_id': groupId})
 }
 
 groupService.getGroupByName = async function (groupName) {
   if (!groupName) { return false }
-  return groupDataService.fetchGroup({'name': groupName})
+  return groupDataService.getGroup({'name': groupName})
 }
 
 module.exports = groupService
