@@ -48,7 +48,7 @@ const manageGroupPage = async (req, res, next) => {
   }
 
   try {
-    pupilsList = await groupService.getPupils(req.user.School)
+    pupilsList = await groupService.getPupils(req.user.School, req.params.groupId)
   } catch (error) {
     return next(error)
   }

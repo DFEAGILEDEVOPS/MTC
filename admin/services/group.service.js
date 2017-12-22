@@ -9,9 +9,31 @@ groupService.getGroups = async function (query) {
   return groupDataService.fetchGroups(query)
 }
 
-groupService.getPupils = async function (schoolId) {
+groupService.getPupils = async function (schoolId, groupIdToExclude) {
   if (!schoolId) { return false }
-  return pupilDataService.getSortedPupils(schoolId)
+  let query = {}
+  let filteredPupil = []
+  let groupedPupils = []
+  let pupils = await pupilDataService.getSortedPupils(schoolId)
+
+  if (groupIdToExclude) {
+    query = { '_id': { $ne: groupIdToExclude.toString() } }
+  }
+  const groups = await groupDataService.fetchGroups(query)
+  groups.map((group) => {
+    const pupils = Object.values(group.pupils)
+    pupils.forEach(id => {
+      return groupedPupils.push(id)
+    })
+  })
+
+  pupils.map((pupil) => {
+    if (!groupedPupils.includes(pupil._id.toString())) {
+      filteredPupil.push(pupil)
+    }
+  })
+
+  return filteredPupil
 }
 
 groupService.getGroupById = async function (groupId) {

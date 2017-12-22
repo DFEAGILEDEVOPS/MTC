@@ -40,6 +40,9 @@ describe('group.service', () => {
         '../services/data-access/pupil.data.service': {
           getSortedPupils: jasmine.createSpy().and.callFake(function () { return Promise.resolve(pupilsMock) })
         },
+        '../services/data-access/group.data.service': {
+          fetchGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
+        },
         '../models/group': Group
       })
     })
