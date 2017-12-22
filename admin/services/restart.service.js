@@ -99,7 +99,7 @@ restartService.canAllPupilsRestart = async (pupilsList) => {
  */
 
 restartService.canRestart = async pupilId => {
-  const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   const hasRestartAttemptRemaining = pupilRestartsCount < restartService.totalRestartsAllowed
   const hasCheckAttemptRemaining = checkCount < restartService.totalChecksAllowed
@@ -160,7 +160,7 @@ restartService.getStatus = async pupilId => {
     const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
     return entry && entry.status
   }
-  const checkCount = await checkDataService.count({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
   if (checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
   if (checkCount === pupilRestartsCount) return getStatus('REM')
@@ -175,7 +175,7 @@ restartService.getStatus = async pupilId => {
 
 restartService.markDeleted = async pupilId => {
   const pupil = await pupilDataService.findOne({_id: pupilId})
-  const lastStartedCheck = await checkDataService.findLatestCheck({ pupilId: pupilId, checkStartedAt: { $ne: null } })
+  const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
   await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
   const updated = await pupilRestartDataService.update({pupilId: pupilId, isDeleted: false}, { '$set': { isDeleted: true } })
   if (!updated || updated.nModified !== 1) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)

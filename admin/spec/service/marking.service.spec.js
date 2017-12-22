@@ -21,7 +21,7 @@ describe('markingService', () => {
   describe('#mark', () => {
     let checkDataServiceStub, completedCheckDataServiceStub
     beforeEach(() => {
-      checkDataServiceStub = sandbox.stub(checkDataService, 'update')
+      checkDataServiceStub = sandbox.stub(checkDataService, 'sqlUpdateCheckWithResults')
       completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'save')
       service = proxyquire('../../services/marking.service', {
         './data-access/completed-check.data.service': completedCheckDataService,
@@ -91,11 +91,14 @@ describe('markingService', () => {
 
     it('gives the pupil the correct marks', async (done) => {
       await service.mark(completedCheckMock)
-      const results = checkDataServiceStub.args[0][1]['$set'].results
-      expect(results).toBeDefined()
-      expect(results.marks).toBe(3)
-      expect(results.maxMarks).toBe(6)
-      expect(results.processedAt).toBeTruthy()
+      const mark = checkDataServiceStub.args[0][1]
+      expect(mark).toBe(3)
+
+      const maxMark = checkDataServiceStub.args[0][2]
+      expect(maxMark).toBe(6)
+
+      const markedAt = checkDataServiceStub.args[0][3]
+      expect(markedAt).toBeTruthy()
       done()
     })
   })
