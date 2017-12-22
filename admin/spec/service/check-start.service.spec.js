@@ -8,7 +8,6 @@ const { ObjectId } = require('mongoose').Types
 const checkWindowMock = require('../mocks/check-window')
 const checkFormMock = require('../mocks/check-form')
 const resolvesNull = function () { return Promise.resolve(null) }
-const resolvesObject = function () { return Promise.resolve({}) }
 
 describe('check-start.service', () => {
   describe('startCheck', () => {
@@ -30,11 +29,11 @@ describe('check-start.service', () => {
           )
         },
         '../services/data-access/check.data.service': {
-          create: checkDataServiceCreateSpy.and.callFake(
+          sqlCreate: checkDataServiceCreateSpy.and.callFake(
             resolvesNull
           ),
-          findOneByCheckCode: jasmine.createSpy().and.callFake(
-            options.findOneByCheckCode
+          sqlFindOneByCheckCode: jasmine.createSpy().and.callFake(
+            options.sqlFindOneByCheckCode
           )
         }
       })
@@ -42,7 +41,7 @@ describe('check-start.service', () => {
 
     describe('happy path', () => {
       it('returns a checkCode and a checkForm', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesNull})
+        service = setupService({sqlFindOneByCheckCode: resolvesNull})
         try {
           const res = await service.startCheck(pupilId)
           expect(res.checkCode).toBeDefined()
@@ -51,20 +50,6 @@ describe('check-start.service', () => {
         } catch (error) {
           // we are not expecting the happy path to throw
           expect(error).toBeUndefined()
-        }
-        done()
-      })
-    })
-
-    describe('error path', () => {
-      it('throws an error when the checkCode is not unique', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesObject})
-        try {
-          await service.startCheck(pupilId)
-          expect('this is expected to throw').toBe('error')
-        } catch (error) {
-          expect(error).toBeDefined()
-          expect(error.message).toContain('Failed to generate a unique UUID for the check code')
         }
         done()
       })

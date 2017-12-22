@@ -111,7 +111,7 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
  */
 psychometricianReportService.populateWithCheck = async function (completedChecks) {
   const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
-  const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
+  const checks = await checkDataService.sqlFindFullyPopulated({checkCode: {'$in': checkCodes}})
   // winston.info('checks > pupil > school', checks[0].pupilId.school)
   const checksByCheckCode = new Map()
   // populate the map
