@@ -17,7 +17,7 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
   let pupils = await pupilDataService.getSortedPupils(schoolId)
 
   if (groupIdToExclude) {
-    query = { '_id': { $ne: groupIdToExclude.toString() } }
+    query = { '_id': { $ne: groupIdToExclude } }
   }
   const groups = await groupDataService.getGroups(query)
   groups.map((group) => {
