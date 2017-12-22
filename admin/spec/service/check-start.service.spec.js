@@ -33,8 +33,8 @@ describe('check-start.service', () => {
           create: checkDataServiceCreateSpy.and.callFake(
             resolvesNull
           ),
-          findOneByCheckCode: jasmine.createSpy().and.callFake(
-            options.findOneByCheckCode
+          sqlFindOneByCheckCode: jasmine.createSpy().and.callFake(
+            options.sqlFindOneByCheckCode
           )
         }
       })
@@ -42,7 +42,7 @@ describe('check-start.service', () => {
 
     describe('happy path', () => {
       it('returns a checkCode and a checkForm', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesNull})
+        service = setupService({sqlFindOneByCheckCode: resolvesNull})
         try {
           const res = await service.startCheck(pupilId)
           expect(res.checkCode).toBeDefined()
@@ -58,7 +58,7 @@ describe('check-start.service', () => {
 
     describe('error path', () => {
       it('throws an error when the checkCode is not unique', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesObject})
+        service = setupService({sqlFindOneByCheckCode: resolvesObject})
         try {
           await service.startCheck(pupilId)
           expect('this is expected to throw').toBe('error')

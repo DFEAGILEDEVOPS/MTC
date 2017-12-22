@@ -1,6 +1,9 @@
 'use strict'
 
 const Check = require('../../models/check')
+const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
+
 const checkDataService = {}
 
 /**
@@ -8,8 +11,24 @@ const checkDataService = {}
  * @param checkCode
  * @return {Promise}
  */
-checkDataService.findOneByCheckCode = async function (checkCode) {
+checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
   return Check.findOne({checkCode}).lean().exec()
+}
+
+/**
+ * Find a Check by its checkCode UUID
+ * @param checkCode
+ * @return {Promise}
+ */
+checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  return sqlService.query('SELECT * FROM [mtc_admin].[check] WHERE checkCode=@checkCode', params)
 }
 
 /**

@@ -24,7 +24,7 @@ const checkStartService = {
 
     // Ensure that the checkCode is unique - let's give a big hand to CosmosDB everyone, for not supporting
     // secondary unique indexes.
-    const found = await checkDataService.findOneByCheckCode(checkCode)
+    const found = await checkDataService.sqlFindOneByCheckCode(checkCode)
     if (found) {
       throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
     }

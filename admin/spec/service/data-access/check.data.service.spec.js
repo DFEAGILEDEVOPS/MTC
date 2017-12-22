@@ -7,6 +7,7 @@ require('sinon-mongoose')
 
 const Check = require('../../../models/check')
 const checkMock = require('../../mocks/check')
+const sqlService = require('../../../services/data-access/sql.service')
 
 describe('check.data.service', () => {
   let service, sandbox
@@ -17,18 +18,18 @@ describe('check.data.service', () => {
 
   afterEach(() => sandbox.restore())
 
-  describe('#findOneByCheckCode', () => {
+  describe('#sqlFindOneByCheckCode', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Check).expects('findOne').chain('lean').chain('exec').resolves(checkMock)
+      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
       service = proxyquire('../../../services/data-access/check.data.service', {
-        '../../models/check': Check
+        '../../../services/data-access/sql.service': sqlService
       })
     })
 
     it('makes the expected calls', () => {
-      service.findOneByCheckCode('mock-check-code')
+      service.sqlFindOneByCheckCode('mock-check-code')
       expect(mock.verify()).toBe(true)
     })
   })
