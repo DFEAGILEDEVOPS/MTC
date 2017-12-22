@@ -80,7 +80,6 @@ describe('groupValidation', function () {
         name: 'Test Group 1'
       }
       const result = await groupValidator.validate(data, '')
-      console.log('RESULTS', result)
       expect(result.hasError()).toBeTruthy()
       expect(result.errors.pupils).toBe(groupErrorMessages.missingPupils)
     })
