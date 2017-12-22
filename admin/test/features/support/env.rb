@@ -57,13 +57,26 @@ else
   CLIENT = Mongo::Client.new('mongodb://localhost/mtc')
 end
 
-DATABASE_CONFIG = YAML::load(File.read("#{File.dirname(__FILE__)}/../../config/database.yml"))
-ENV['SQL_ENV'] ||='localhost'
-SQL_CLIENT = TinyTds::Client.new(username: DATABASE_CONFIG[ENV['SQL_ENV']]['username'],
-                                 password: DATABASE_CONFIG[ENV['SQL_ENV']]['password'],
-                                 host: DATABASE_CONFIG[ENV['SQL_ENV']]['host'],
-                                 port: DATABASE_CONFIG[ENV['SQL_ENV']]['port'],
-                                 database: DATABASE_CONFIG[ENV['SQL_ENV']]['database'])
+Database = ENV['SQL_DATABASE'] || 'mtc'
+Server = ENV['SQL_SERVER'] || 'localhost'
+Port =  ENV['SQL_PORT'] || 1433
+Admin_User = ENV['SQL_ADMIN_USER'] || 'sa'
+Admin_Password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+
+
+SQL_CLIENT = TinyTds::Client.new(username: Admin_User,
+                                 password: Admin_Password,
+                                 host: Server,
+                                 port: Port,
+                                 database: Database)
+SQL_CLIENT.execute('SET ANSI_NULLS ON').do
+SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
+SQL_CLIENT.execute('SET ANSI_NULL_DFLT_ON ON').do
+SQL_CLIENT.execute('SET IMPLICIT_TRANSACTIONS OFF').do
+SQL_CLIENT.execute('SET ANSI_PADDING ON').do
+SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
+SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
+SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
 
 Capybara.visit Capybara.app_host
