@@ -154,7 +154,7 @@ checkDataService.update = async function (query, criteria) {
 } // NOTE: broken down into 2 specific sql methods
 
 checkDataService.sqlSetCheckStartedAt = async (checkCode, startedAt) => {
-  const sql = 'UPDATE [mtc_admin].[check] SET startedAt=@startedAt WHERE checkCode=@checkCode'
+  const sql = 'UPDATE [mtc_admin].[check] SET startedAt=@startedAt WHERE checkCode=@checkCode AND startedAt IS NULL'
   const params = [
     {
       name: 'startedAt',

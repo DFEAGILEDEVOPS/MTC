@@ -5,6 +5,7 @@ const moment = require('moment')
 const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
+const winston = require('winston')
 
 const checkStartService = {
   /**
@@ -21,24 +22,17 @@ const checkStartService = {
 
     // Generate a new CheckCode for this unique check
     const checkCode = uuidv4()
-
-    // Ensure that the checkCode is unique - let's give a big hand to CosmosDB everyone, for not supporting
-    // secondary unique indexes.
-    const found = await checkDataService.sqlFindOneByCheckCode(checkCode)
-    if (found) {
-      throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
-    }
-
+    // TODO: the hard coded values below are in place until check form and window move to SQL
     const checkData = {
-      pupil_id: pupilId,
+      pupil_id: 1,
       checkCode,
-      checkWindow_id: checkWindow._id,
-      checkForm_id: checkForm._id,
+      checkWindow_id: 1,
+      checkForm_id: 1,
       pupilLoginDate: moment.utc(),
       startedAt: null
     }
 
-    // Save the details to the `Check` collection
+    // Save the details to the `Check` table
     await checkDataService.sqlCreate(checkData)
 
     return {

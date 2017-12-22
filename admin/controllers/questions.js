@@ -6,6 +6,7 @@ const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
 const apiResponse = require('./api-response')
+const winston = require('winston')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -44,9 +45,12 @@ const getQuestions = async (req, res) => {
     return apiResponse.serverError(res)
   }
 
+  winston.debug('auth OK, calling startCheck')
+
   // start the check
   try {
     ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    winston.debug('startCheck ok.  preparing question data...')
     questions = checkFormService.prepareQuestionData(checkForm)
     pupilData.checkCode = checkCode
   } catch (error) {
