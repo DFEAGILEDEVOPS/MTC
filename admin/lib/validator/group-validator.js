@@ -10,16 +10,17 @@ module.exports.validate = async (groupData, oldName) => {
   let validationError = new ValidationError()
 
   // Group name
-  if (!groupData.name) {
-    console.log('NAME IS REQUIRED', groupErrorMessages.nameIsRequired)
+  if (!groupData.name || isEmpty(groupData.name.trim())) {
     validationError.addError('name', groupErrorMessages.nameIsRequired)
   }
 
-  if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name)) {
-    validationError.addError('name', groupErrorMessages.nameInvalidCharacters)
+  if (!isEmpty(groupData.name.trim())) {
+    if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name)) {
+      validationError.addError('name', groupErrorMessages.nameInvalidCharacters)
+    }
   }
 
-  if (isEmpty(groupData.name.trim()) || groupData.name.length > 35) {
+  if (groupData.name.length > 35) {
     validationError.addError('name', groupErrorMessages.nameIsTooLong)
   }
 
