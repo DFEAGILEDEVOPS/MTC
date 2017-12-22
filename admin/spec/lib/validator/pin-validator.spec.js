@@ -10,7 +10,7 @@ describe('pin-validator', () => {
     let sandbox
     beforeEach(() => { sandbox = sinon.sandbox.create() })
     afterEach(() => sandbox.restore())
-    describe('returns true', () => {
+    describe('returns true if the pin is active', () => {
       beforeEach(() => {
         pinExpiredAt = moment().startOf('day')
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
@@ -20,7 +20,7 @@ describe('pin-validator', () => {
         expect(result).toBeTruthy()
       })
     })
-    describe('returns false', () => {
+    describe('returns false if the pin is inactive', () => {
       beforeEach(() => {
         pinExpiredAt = moment().startOf('day')
         sandbox.useFakeTimers(moment().startOf('day').add(1, 'years').valueOf())

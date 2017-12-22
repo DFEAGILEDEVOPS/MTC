@@ -3,6 +3,7 @@
 const R = require('ramda')
 const { Request, TYPES } = require('tedious')
 const winston = require('winston')
+// winston.level = 'debug'
 
 const sqlPoolService = require('./sql.pool.service')
 const moment = require('moment')
@@ -10,25 +11,100 @@ let cache = {}
 
 /** Utility functions **/
 
+/**
+ * Return the Tedious key value given a SQL Server datatype
+ * E.g. 'nvarchar' => 'NVarChar'
+ * To get the whole Type for a parameter you need the object stored under this key.
+ * @param {string} type
+ * @return {string | undefined}
+ */
 const findTediousDataType = (type) => Object.keys(TYPES).find(k => {
   if (type.toUpperCase() === k.toUpperCase()) { return k }
 })
 
+/**
+ *  Given table and column names returns the cache key for looking up the datatype from the DB server
+ *  It will remove square brackets from the table name if present.
+ * @param {string} table
+ * @param {string} column
+ * @return {string}
+ */
 const cacheKey = (table, column) => table.replace('[', '').replace(']', '') + '_' + column
 
+/**
+ * Returns a function that extracts the keys from an object joins them together in a sql fragment
+ * @type {Function}
+ */
 const extractColumns = R.compose(
   R.join(' , '),
-  R.keysIn
+  R.keys
 )
 
+/**
+ * Prefix a string with '@'
+ * @param s
+ * @return {string}
+ */
 const paramName = (s) => '@' + s
 
+/**
+ * Return a function that takes the keys from an object joins them together into a list
+ * of sql parameter identifiers.
+ * @type {Function}
+ */
 const createParamIdentifiers = R.compose(
   R.join(' , '),
   R.map(paramName),
-  R.keysIn()
+  R.keys
 )
 
+/**
+ * Return a string for use in a SQL UPDATE statement
+ * E.g. 'foo' => 'foo=@foo'
+ * @param k
+ */
+const singleUpdate = (k) => R.join('', [k, '=', paramName(k)])
+
+/**
+ * Return a function that generates a list of UPDATE fragments for an entire object's keys (except the `id` key)
+ * @type {Function}
+ */
+const generateSetStatements = R.compose(
+  R.join(' , '),
+  R.map(singleUpdate),
+  R.keys
+)
+
+/**
+ * Calls `toDate()` which returns the Javascript Date object wrapped by the Moment object
+ * @param {Moment} v
+ * @return {Date}
+ */
+const convertToDate = (v) => v.toDate()
+
+/**
+ * Returns a bool indiciating the supplied object is a Moment object
+ * @param v
+ * @return {boolean}
+ */
+const isMoment = (v) => moment.isMoment(v)
+
+/**
+ * Given an object will convert all Moment values to Javascript Date
+ * Useful for converting Data during UPDATES and INSERTS
+ */
+const convertMomentToJsDate = R.map(R.ifElse(
+  isMoment,
+  convertToDate,
+  R.identity)
+)
+
+/**
+ * Return a list of parameters given a table and an object whose keys are column names
+ * @param {string} tableName
+ * @param {object} data - keys should be col. names
+ * @return {Promise<Array>}
+ */
 async function generateParams (tableName, data) {
   const pairs = R.toPairs(data)
   const params = []
@@ -94,7 +170,7 @@ sqlService.query = (sql, params) => {
         return reject(err)
       }
       const objects = parseResults(results)
-      winston.debug('RESULTS', objects)
+      winston.debug('RESULTS', JSON.stringify(objects))
       resolve(objects)
     })
 
@@ -208,6 +284,26 @@ sqlService.generateInsertStatement = async (table, data) => {
 }
 
 /**
+ * Utility function for internal sqlService use.  Generate the SQL UPDATE statement and list of parameters
+ * given the table name and the object containing key/values to be updated.
+ * @param table
+ * @param data
+ * @return {Promise<{sql, params: Array}>}
+ */
+sqlService.generateUpdateStatement = async (table, data) => {
+  const params = await generateParams(table, data)
+  const sql = R.join(' ', [
+    'UPDATE',
+    table,
+    'SET ',
+    generateSetStatements(R.omit(['id'], data)),
+    'WHERE id=@id'
+  ])
+  winston.debug('sql.service: SQL ', sql)
+  return { sql, params }
+}
+
+/**
  * Create a new record
  * @param {string} tableName
  * @param {object} data
@@ -220,7 +316,7 @@ sqlService.create = async (tableName, data) => {
     winston.debug('sql.service: INSERT RESULT: ', res)
     return res
   } catch (error) {
-    winston.debug('sql.service: Failed to INSERT', error)
+    winston.warn('sql.service: Failed to INSERT', error)
     throw error
   }
 }
@@ -247,7 +343,29 @@ sqlService.updateDataTypeCache = async function () {
     // add the datatype to the cache
     cache[key] = findTediousDataType(type)
   })
-  winston.info('sql.service: updateDataTypeCache() complete')
+  winston.debug('sql.service: updateDataTypeCache() complete')
+}
+
+/**
+ * Call SQL Update on the table given an object whose keys are the columns to be updated and whose keys are the new
+ * values.
+ * Returns { rowsModified: n } the number of rows modified.
+ * @param tableName
+ * @param data
+ * @return {Promise<*>}
+ */
+sqlService.update = async function (tableName, data) {
+  // Convert any moment objects to JS Date objects as that's required by Tedious
+  const preparedData = convertMomentToJsDate(data)
+  const { sql, params } = await sqlService.generateUpdateStatement(tableName, preparedData)
+  try {
+    const res = await sqlService.modify(sql, params)
+    winston.debug('sql.service: UPDATE RESULT: ', res)
+    return res
+  } catch (error) {
+    winston.warn('sql.service: Failed to UPDATE', error)
+    throw error
+  }
 }
 
 module.exports = sqlService

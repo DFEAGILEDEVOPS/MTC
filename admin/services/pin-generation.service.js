@@ -86,16 +86,16 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
 /**
  * Generate school password
  * @param school
- * @returns {Object}
+ * @returns { pin: string, pinExpiresAt: Moment } || undefined
  */
 pinGenerationService.generateSchoolPassword = (school) => {
-  let { schoolPin, pinExpiresAt } = school
-  if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const length = 8
-    school.schoolPin = pinGenerationService.generateRandomPin(length)
-    school.pinExpiresAt = fourPmToday()
+  if (pinValidator.isActivePin(school.pin, school.pinExpiresAt)) {
+    return undefined
   }
-  return school
+  const length = 8
+  const newPin = pinGenerationService.generateRandomPin(length)
+  const newExpiry = fourPmToday()
+  return { pin: newPin, pinExpiresAt: newExpiry }
 }
 
 /**
