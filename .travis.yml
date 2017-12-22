@@ -1,6 +1,8 @@
 language: node_js
 
+sudo: required
 dist: trusty
+group: deprecated-2017Q4
 
 branches:
   only:
@@ -15,10 +17,10 @@ cache:
 
 env:
   - TEST_TYPE=admin-e2e-1
-  - TEST_TYPE=admin-e2e-2
-  - TEST_TYPE=admin-e2e-3
-  - TEST_TYPE=pupil-e2e-1
-  - TEST_TYPE=pupil-e2e-2
+#  - TEST_TYPE=admin-e2e-2
+#  - TEST_TYPE=admin-e2e-3
+#  - TEST_TYPE=pupil-e2e-1
+#  - TEST_TYPE=pupil-e2e-2
 
 global:
   - STD_LOG_FILE="./build.log"
@@ -41,8 +43,6 @@ services:
  # - mongodb
   - docker
 
-sudo: required
-
 before_install:
 #  - "$CXX --version"
   - sudo apt-get update
@@ -60,10 +60,10 @@ before_script:
 
 script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test2.sh; fi
-  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
+#  - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test2.sh; fi
+#  - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test3.sh; fi
+#  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
+#  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
 
 after_script:
   - docker-compose down
