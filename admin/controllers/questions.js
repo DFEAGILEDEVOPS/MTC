@@ -18,7 +18,7 @@ const winston = require('winston')
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
   if (!pupilPin || !schoolPin) return apiResponse.badRequest(res)
-  let config, checkCode, checkForm, pupil, questions, token
+  let config, pupil, questions, token
 
   try {
     pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
@@ -49,10 +49,10 @@ const getQuestions = async (req, res) => {
 
   // start the check
   try {
-    ({ checkCode, checkForm } = await checkStartService.startCheck(pupil._id))
+    const startCheckResponse = await checkStartService.startCheck(pupil._id)
     winston.debug('startCheck ok.  preparing question data...')
-    questions = checkFormService.prepareQuestionData(checkForm)
-    pupilData.checkCode = checkCode
+    questions = checkFormService.prepareQuestionData(startCheckResponse.checkForm)
+    pupilData.checkCode = startCheckResponse.checkCode
   } catch (error) {
     return apiResponse.serverError(res)
   }
