@@ -85,7 +85,7 @@ describe('pupil-restart.data.service', () => {
   describe('#update', () => {
     let mock
     beforeEach(() => {
-      mock = sandbox.mock(PupilRestart).expects('updateOne').returns(pupilRestartMock)
+      mock = sandbox.mock(PupilRestart).expects('updateOne').chain('exec').resolves(pupilRestartMock)
       service = proxyquire('../../../services/data-access/pupil-restart.data.service', {
         '../../models/pupil-restarts': PupilRestart
       })
