@@ -85,7 +85,7 @@ controller.getAddMultiplePupils = (req, res, next) => {
 controller.postAddMultiplePupils = async (req, res, next) => {
   let school
   try {
-    school = await schoolDataService.findOne({_id: req.user.School})
+    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       throw new Error(`School [${req.user.school}] not found`)
     }
