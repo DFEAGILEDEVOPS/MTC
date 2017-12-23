@@ -18,7 +18,7 @@ controller.getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add single pupil'
   // school id from session
   const schoolId = req.user.School
-  const school = await schoolDataService.findOne({_id: schoolId})
+  const school = await schoolDataService.sqlFindOneByDfeNumber(schoolId)
   if (!school) {
     throw new Error(`School [${schoolId}] not found`)
   }

@@ -55,7 +55,7 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(schoolMock)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
@@ -84,7 +84,7 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'findOne').resolves(null)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(undefined)
         controller = proxyquire('../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService
         }).getAddPupil
