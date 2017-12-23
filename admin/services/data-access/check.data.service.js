@@ -47,7 +47,8 @@ checkDataService.find = async function (criteria) {
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.findLatestCheck = async function (criteria) {
-  return Check.findOne(criteria).sort({ field: 'asc', _id: -1 }).lean().exec()
+  const checks = await Check.find(criteria).sort({ _id: -1 }).lean().exec()
+  return checks[0]
 }
 
 /**
