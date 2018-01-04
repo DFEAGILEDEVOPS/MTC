@@ -20,7 +20,7 @@ module.exports.validate = async (groupData, oldName) => {
     }
   }
 
-  if (groupData.name.length > 35) {
+  if (groupData.name.length >= 35) {
     validationError.addError('name', groupErrorMessages.nameIsTooLong)
   }
 

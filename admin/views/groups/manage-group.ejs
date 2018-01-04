@@ -23,6 +23,16 @@
         </div>
         <% } %>
 
+        <% if (typeof validation !== 'undefined') { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                Check the details in the groups form
+            </h2>
+            <p>Check that the group name is no longer than 35 characters, has no forbidden characters and hasn't being already used.</p>
+            <p>Check that least one pupil has been selected</p>
+        </div>
+        <% } %>
+
         <h1 class="heading-xlarge"><%= action %> group</h1>
         <br>
 

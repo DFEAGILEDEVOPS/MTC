@@ -97,7 +97,7 @@ const addGroup = async (req, res, next) => {
 
     return res.render('groups/manage-group.ejs', {
       breadcrumbs: req.breadcrumbs(),
-      action: 'add',
+      action: 'Add',
       group,
       validation: validationError.errors,
       pupilsList
@@ -151,7 +151,7 @@ const editGroup = async (req, res, next) => {
 
     return res.render('groups/manage-group.ejs', {
       breadcrumbs: req.breadcrumbs(),
-      action: 'edit',
+      action: 'Edit',
       group,
       validation: validationError.errors,
       pupilsList
