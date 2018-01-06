@@ -10,6 +10,7 @@ const groupService = require('../../services/group.service')
 const groupDataService = require('../../services/data-access/group.data.service')
 const groupValidator = require('../../lib/validator/group-validator')
 const groupMock = require('../mocks/group')
+const groupDeletedMock = require('../mocks/group-deleted')
 const groupsMock = require('../mocks/groups')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
@@ -556,6 +557,29 @@ describe('group.js controller', () => {
           expect(groupDataService.update).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
+          done()
+        })
+      })
+    })
+
+    describe('#removeGroup', () => {
+      describe('(happy path)', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: '123456abcde'
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+          
+          expect(groupDataService.delete).toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
           done()
         })
       })

@@ -24,8 +24,8 @@ module.exports.validate = async (groupData, oldName) => {
     validationError.addError('name', groupErrorMessages.nameIsTooLong)
   }
 
-  if (oldName !== groupData.name || !oldName) {
-    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }})
+  if ((oldName && oldName.toLowerCase() !== groupData.name.toLowerCase()) || !oldName) {
+    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }, 'isDeleted': false})
     if (group !== null) {
       validationError.addError('name', groupErrorMessages.nameAlreadyExists)
     }

@@ -9,6 +9,7 @@ require('sinon-mongoose')
 const Group = require('../../../models/group')
 const groupsMock = require('../../mocks/groups')
 const groupMock = require('../../mocks/group')
+const groupDeletedMock = require('../../mocks/group-deleted')
 
 describe('GroupDataService', () => {
   let service
@@ -83,6 +84,22 @@ describe('GroupDataService', () => {
       group.name = 'Test Group 1'
       group.pupils = ['5a324c40c9decb39628b84a2', '5a324c40c9decb39628b84a3', '5a324c40c9decb39628b84a4']
       await service.update('123456abcde', group)
+      expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#delete', () => {
+    let mock
+
+    beforeEach(() => {
+      mock = sandbox.mock(Group).expects('updateOne').chain('exec').resolves(groupDeletedMock)
+      service = proxyquire('../../../services/data-access/group.data.service', {
+        '../../models/group': Group
+      })
+    })
+
+    it('should soft-delete a document', async () => {
+      await service.delete({ _id: '123456abcde' })
       expect(mock.verify()).toBe(true)
     })
   })

@@ -64,4 +64,8 @@ groupDataService.update = async function (id, data) {
   })
 }
 
+groupDataService.delete = async function (id) {
+  return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
+}
+
 module.exports = groupDataService
