@@ -576,7 +576,7 @@ describe('group.js controller', () => {
 
           controller = require('../../controllers/group').removeGroup
           await controller(req, res, next)
-          
+
           expect(groupDataService.delete).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
