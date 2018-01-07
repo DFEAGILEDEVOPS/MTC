@@ -583,6 +583,48 @@ describe('group.js controller', () => {
           done()
         })
       })
+
+      describe('(unhappy path - missing parameter group id)', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: null
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+
+          expect(groupDataService.delete).not.toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+      })
+
+      describe('(unhappy path - soft-delete fails )', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: '123456abcde'
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.reject(new Error()))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+
+          expect(groupDataService.delete).toHaveBeenCalled()
+          expect(next).toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          done()
+        })
+      })
     })
   })
 })
