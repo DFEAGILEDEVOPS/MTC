@@ -140,9 +140,9 @@ controller.getEditPupilById = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
-    const school = await schoolDataService.findOne({_id: pupil.school})
+    const school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
     if (!school) {
-      return next(new Error(`School ${pupil.school} not found`))
+      return next(new Error(`School ${pupil.school._id} not found`))
     }
     const pupilData = R.omit('dob', pupil)
     const dob = moment(pupil.dob)
@@ -172,7 +172,7 @@ controller.postEditPupil = async (req, res, next) => {
   try {
     pupil = await pupilDataService.findOne({_id: req.body._id})
     if (!pupil) {
-      return next(new Error(`Pupil ${req.body.id} not found`))
+      return next(new Error(`Pupil ${req.body._id} not found`))
     }
     school = await schoolDataService.findOne({_id: pupil.school})
     if (!school) {
