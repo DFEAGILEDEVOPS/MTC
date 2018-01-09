@@ -404,7 +404,7 @@ describe('pupil controller:', () => {
     })
   })
 
-  fdescribe('#getEditPupilById', () => {
+  describe('#getEditPupilById', () => {
     let controller, next
     const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
     let goodReqParams = {
@@ -427,6 +427,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
       await controller(req, res, next)
       expect(pupilDataService.findOne).toHaveBeenCalled()
     })
