@@ -144,6 +144,7 @@ const checkFormService = {
    * @param CheckWindowsByForm
    * @returns {Promise.<void>}
    */
+  // WARN this expects a CheckWindow but is passed a check form in controllers/check-form.js
   unassignedCheckFormsFromCheckWindows: async (CheckWindow, CheckWindowsByForm) => {
     if (CheckWindowsByForm[CheckWindow._id]) {
       // Array of CheckWindows models, each with a forms array

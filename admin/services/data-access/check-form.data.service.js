@@ -1,6 +1,8 @@
 'use strict'
 
 const CheckForm = require('../../models/check-form')
+const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
 
 const checkFormDataService = {
   /**
@@ -14,6 +16,24 @@ const checkFormDataService = {
       query = Object.assign(query, {'_id': id})
     }
     return CheckForm.findOne(query).exec()
+  },
+
+  /**
+   * Get form by id (if passed), otherwise just an active form
+   * This will be deprecated when the form choice algorithm is introduced
+   */
+  sqlGetActiveForm: (id) => {
+    let sql = 'SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
+    const params = []
+    if (id) {
+      sql += ' AND [id]=@id'
+      params.push({
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      })
+    }
+    return sqlService.query(sql, params)
   },
 
   /**
