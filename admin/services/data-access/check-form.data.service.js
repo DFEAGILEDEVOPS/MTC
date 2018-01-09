@@ -129,6 +129,17 @@ const checkFormDataService = {
       type: TYPES.NVarChar
     }]
     return sqlService.query(sql, params)
+  },
+
+  /**
+   * assigns a check form to a window
+   */
+  sqlAssignFormToWindow: (formId, windowId) => {
+    throw new Error('not yet implemented')
+  },
+
+  sqlRemoveFormAssignmentFromWindow: (formId, windowId) => {
+    throw new Error('not yet implemented')
   }
 }
 
