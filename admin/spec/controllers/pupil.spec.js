@@ -457,7 +457,7 @@ describe('pupil controller:', () => {
       expect(next).toHaveBeenCalledWith(new Error(`School ${populatedPupilMock.school._id} not found`))
     })
 
-    fit('bails out if any of the method raises an exception', async () => {
+    it('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'findOne').and.callFake(() => { throw new Error('dummy error') })
