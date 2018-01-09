@@ -312,6 +312,11 @@ const checkFormService = {
     }
 
     return checkWindowForms
+  },
+
+  deleteCheckForm: (id) => {
+    // remove window assignments
+    // mark as deleted
   }
 }
 

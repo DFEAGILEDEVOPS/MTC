@@ -77,10 +77,12 @@ const removeCheckForm = async (req, res, next) => {
     if (!checkForm) {
       return next(new Error(`Unable to find check form with id [${id}]`))
     }
-
+    // WARN this is extremely confusing.  Are we deleting the window or form??????????????
     // Un-assign check-form from any check-windows
     const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
+    // WARN this method name makes no sense whatsoever....
     await checkFormService.unassignedCheckFormsFromCheckWindows(checkForm, CheckWindowsByForm)
+    // WARN this method is called removeCheckForm, but we are deleting the window?????????
     await checkWindowService.markAsDeleted(checkForm)
   } catch (error) {
     return next(error)
