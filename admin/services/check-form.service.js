@@ -17,7 +17,7 @@ const checkFormService = {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first.
     // UPDATE: There is a PBI to ensure randomness. This work is pending.
-    const checkForm = await checkFormDataService.getActiveFormPlain()
+    const checkForm = await checkFormDataService.sqlGetActiveForm()
     if (!checkForm) {
       throw new Error('CheckForm not found')
     }
@@ -97,15 +97,22 @@ const checkFormService = {
    */
   formatCheckFormsAndWindows: async (sortField, sortDirection) => {
     let formData
-    let passSortField
-    let passSortDirection
+    let sortByWindow = false
+    let sortDescending = false
 
-    if (sortField === 'name') {
-      passSortField = 'name'
-      passSortDirection = sortDirection
+    if (sortField !== 'name') {
+      sortByWindow = true
     }
 
-    formData = await checkFormDataService.fetchSortedActiveForms({}, passSortField, passSortDirection)
+    if (sortDirection !== 'asc') {
+      sortDescending = true
+    }
+
+    if (sortByWindow) {
+      formData = await checkFormDataService.sqlFetchSortedActiveFormsByWindow(sortDescending)
+    } else {
+      formData = await checkFormDataService.sqlFetchSortedActiveFormsByName(sortDescending)
+    }
 
     if (formData.length > 0) {
       const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
@@ -210,7 +217,7 @@ const checkFormService = {
    * @returns {Promise<boolean>}
    */
   validateCheckFormName: async (formName) => {
-    const checkFileName = await checkFormDataService.findCheckFormByName(formName)
+    const checkFileName = await checkFormDataService.sqlFindCheckFormByName(formName)
     return !checkFileName ? formName : false
   },
 
@@ -240,8 +247,8 @@ const checkFormService = {
     if (!checkWindowAssignedForms) {
       return []
     }
-
-    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+    const sortDescending = false
+    checkFormData = await checkFormDataService.sqlFetchSortedActiveFormsByName(sortDescending)
 
     if (checkWindowAssignedForms && checkFormData) {
       checkFormData.map((form) => {
@@ -269,8 +276,8 @@ const checkFormService = {
     if (!checkWindowAssignedForms) {
       return []
     }
-
-    checkFormData = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+    const sortDescending = false
+    checkFormData = await checkFormDataService.fetchSortedActiveFormsByName(sortDescending)
 
     if (checkWindowAssignedForms && checkFormData) {
       checkFormData.map((form) => {

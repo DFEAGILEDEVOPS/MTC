@@ -78,11 +78,31 @@ const checkFormDataService = {
 
   /**
    * Fetch active forms (not deleted)
-   * parameter usage was the same in all calls, so they have been omitted
+   * sorted by name
    * @returns {Promise<*>}
    */
-  sqlFetchSortedActiveForms: () => {
-    const sql = 'SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ORDER BY [name] ASC'
+  sqlFetchSortedActiveFormsByName: (sortDescending) => {
+    let sortOrder = 'ASC'
+    if (sortDescending) {
+      sortOrder = 'DESC'
+    }
+    const sql = 'SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ORDER BY [name] ' + sortOrder
+    return sqlService.query(sql)
+  },
+
+    /**
+   * Fetch active forms (not deleted)
+   * sorted by window
+   * @returns {Promise<*>}
+   */
+  sqlFetchSortedActiveFormsByWindow: (sortDescending) => {
+    let sortOrder = 'ASC'
+    if (sortDescending) {
+      sortOrder = 'DESC'
+    }
+    const sql = 'SELECT f.*, w.name as [window_name] FROM [mtc_admin].checkForm f \
+     INNER JOIN mtc_admin.checkWindow w ON f.checkWindow_id = w.id \
+     WHERE isDeleted=0 ORDER BY [window_name] ' + sortOrder
     return sqlService.query(sql)
   },
 
