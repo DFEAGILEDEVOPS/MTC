@@ -7,14 +7,17 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
-const fileValidator = require('../../lib/validator/file-validator')
-const pupilUploadService = require('../../services/pupil-upload.service')
-const ValidationError = require('../../lib/validation-error')
+const R = require('ramda')
+
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
-const schoolDataService = require('../../services/data-access/school.data.service')
-const schoolMock = require('../mocks/school')
+const fileValidator = require('../../lib/validator/file-validator')
 const pupilAddService = require('../../services/pupil-add-service')
 const pupilMock = require('../mocks/pupil')
+const pupilUploadService = require('../../services/pupil-upload.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const schoolDataService = require('../../services/data-access/school.data.service')
+const schoolMock = require('../mocks/school')
+const ValidationError = require('../../lib/validation-error')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -398,6 +401,68 @@ describe('pupil controller:', () => {
       expect(res.write).toHaveBeenCalledWith('text')
       expect(res.end).toHaveBeenCalled()
       done()
+    })
+  })
+
+  fdescribe('#getEditPupilById', () => {
+    let controller, next
+    const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
+    let goodReqParams = {
+      method: 'GET',
+      url: '/school/pupil/edit/pupil1234',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      params: {
+        id: 'pupil999'
+      }
+    }
+
+    beforeEach(() => {
+      controller = require('../../controllers/pupil.js').getEditPupilById
+      next = jasmine.createSpy('next')
+    })
+
+    it('retrieves the pupil data', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      await controller(req, res, next)
+      expect(pupilDataService.findOne).toHaveBeenCalled()
+    })
+
+    it('bails out if the pupil is not found', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(null))
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
+    })
+
+    it('retrieves the school data', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      await controller(req, res, next)
+      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+    })
+
+    it('bails out if the school is not found', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error(`School ${populatedPupilMock.school._id} not found`))
+    })
+
+    fit('bails out if any of the method raises an exception', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.callFake(() => { throw new Error('dummy error') })
+      controller(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
   })
 })
