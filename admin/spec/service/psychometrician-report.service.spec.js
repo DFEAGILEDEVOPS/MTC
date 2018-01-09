@@ -192,7 +192,7 @@ describe('psychometricians-report.service', () => {
     let checkDataServiceStub
 
     beforeEach(() => {
-      checkDataServiceStub = sandbox.stub(checkDataService, 'findFullyPopulated')
+      checkDataServiceStub = sandbox.stub(checkDataService, 'sqlFindFullyPopulated')
       service = proxyquire('../../services/psychometrician-report.service', {
         './data-access/check.data.service': checkDataService
       })

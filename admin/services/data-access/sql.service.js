@@ -310,7 +310,8 @@ sqlService.generateUpdateStatement = async (table, data) => {
  * @return {Promise} - returns the number of rows modified (e.g. 1)
  */
 sqlService.create = async (tableName, data) => {
-  const { sql, params } = await sqlService.generateInsertStatement(tableName, data)
+  const preparedData = convertMomentToJsDate(data)
+  const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params)
     winston.debug('sql.service: INSERT RESULT: ', res)

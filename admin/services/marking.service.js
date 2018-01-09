@@ -3,6 +3,7 @@
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const markingService = {}
+const moment = require('moment')
 
 markingService.batchMark = async function (batchIds) {
   if (!batchIds) {
@@ -33,7 +34,8 @@ markingService.mark = async function (completedCheck) {
   const results = {
     marks: 0,
     maxMarks: completedCheck.data.answers.length,
-    processedAt: new Date()
+    // TODO date service?
+    processedAt: moment.utc()
   }
 
   for (let answer of completedCheck.data.answers) {
@@ -52,9 +54,8 @@ markingService.mark = async function (completedCheck) {
   // TODO this call will be superfluous as the check record will be updated
   await completedCheckDataService.save(completedCheck)
 
-  // update the check entry
-  // TODO update mark and marked at too
-  await checkDataService.update({checkCode: completedCheck.data.pupil.checkCode}, {'$set': {results: results}})
+  // update the check meta info
+  await checkDataService.sqlUpdateCheckWithResults(completedCheck.data.pupil.checkCode, results.marks, results.maxMarks, results.processedAt)
 }
 
 module.exports = markingService

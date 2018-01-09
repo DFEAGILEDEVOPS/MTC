@@ -22,7 +22,7 @@ pupilStatusService.getStatus = async (pupil) => {
   if (pupil.attendanceCode) return getStatus('NTC')
   // Pupil has an ongoing restart
   const latestPupilRestart = await pupilRestartDataService.findLatest({ pupilId: pupil._id })
-  const checkCount = await checkDataService.count({ pupilId: pupil._id, checkStartedAt: { $ne: null } })
+  const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupil._id)
   const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupil._id, isDeleted: false })
   const isActivePin = pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)
   const hasActiveRestart = latestPupilRestart && !latestPupilRestart.isDeleted && checkCount === pupilRestartsCount &&
@@ -32,7 +32,7 @@ pupilStatusService.getStatus = async (pupil) => {
   const hasNotStarted = checkCount === pupilRestartsCount && !isActivePin
   if (hasNotStarted) return getStatus('NTS')
   // Pupil has PIN generated
-  const latestCheck = await checkDataService.findLatestCheck({ pupilId: pupil._id })
+  const latestCheck = await checkDataService.sqlFindLatestCheck(pupil._id)
   const hasPupilLoggedIn = pupilStatusService.hasPupilLoggedIn(pupilRestartsCount, latestCheck, latestPupilRestart)
   const hasPinGenerated = (!hasPupilLoggedIn && checkCount === pupilRestartsCount) && isActivePin
   if (hasPinGenerated) return getStatus('PIN')

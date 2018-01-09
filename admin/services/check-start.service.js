@@ -21,25 +21,18 @@ const checkStartService = {
 
     // Generate a new CheckCode for this unique check
     const checkCode = uuidv4()
-
-    // Ensure that the checkCode is unique - let's give a big hand to CosmosDB everyone, for not supporting
-    // secondary unique indexes.
-    const found = await checkDataService.findOneByCheckCode(checkCode)
-    if (found) {
-      throw new Error(`Failed to generate a unique UUID for the check code. Pupil [${pupilId}]`)
-    }
-
+    // TODO: the hard coded values below are in place until check form and window move to SQL
     const checkData = {
-      pupilId,
+      pupil_id: 1,
       checkCode,
-      checkWindowId: checkWindow._id,
-      checkFormId: checkForm._id,
+      checkWindow_id: 1,
+      checkForm_id: 1,
       pupilLoginDate: moment.utc(),
-      checkStartedAt: null
+      startedAt: null
     }
 
-    // Save the details to the `Check` collection
-    await checkDataService.create(checkData)
+    // Save the details to the `Check` table
+    await checkDataService.sqlCreate(checkData)
 
     return {
       checkCode,

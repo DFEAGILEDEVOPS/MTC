@@ -27,7 +27,7 @@ const setPupilFeedback = async (req, res, next) => {
   }
 
   try {
-    check = await checkDataService.findOneByCheckCode(checkCode)
+    check = await checkDataService.sqlFindOneByCheckCode(checkCode)
     if (!check) {
       return apiResponse.badRequest(res)
     }
