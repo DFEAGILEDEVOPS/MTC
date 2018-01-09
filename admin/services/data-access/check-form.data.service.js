@@ -21,6 +21,8 @@ const checkFormDataService = {
   /**
    * Get form by id (if passed), otherwise just an active form
    * This will be deprecated when the form choice algorithm is introduced
+   * @param id
+   * @returns {Promise<*>}
    */
   sqlGetActiveForm: (id) => {
     let sql = 'SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
@@ -50,6 +52,13 @@ const checkFormDataService = {
   },
 
   /**
+   * This method will not be refactored as all calls should be repointed to sqlGetActiveForm.
+   */
+  sqlGetActiveFormPlain: (id) => {
+    throw new Error('do not implement')
+  },
+
+  /**
    * Fetch active forms (forms not soft-deleted)
    * @param query
    * @param sortField
@@ -68,6 +77,16 @@ const checkFormDataService = {
   },
 
   /**
+   * Fetch active forms (not deleted)
+   * parameter usage was the same in all calls, so they have been omitted
+   * @returns {Promise<*>}
+   */
+  sqlFetchSortedActiveForms: () => {
+    const sql = 'SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ORDER BY [name] ASC'
+    return sqlService.query(sql)
+  },
+
+  /**
    * Create.
    * @param data
    * @returns {Promise<*>}
@@ -78,6 +97,15 @@ const checkFormDataService = {
     return checkForm.toObject()
   },
 
+    /**
+   * Create check form
+   * @param checkForm
+   * @returns {Promise<*>}
+   */
+  sqlCreate: (checkForm) => {
+    return sqlService.create('[checkForm]', checkForm)
+  },
+
   /**
    * Find check form by name.
    * @param formName
@@ -86,6 +114,21 @@ const checkFormDataService = {
   findCheckFormByName: (formName) => {
     let query = { 'isDeleted': false, 'name': formName }
     return CheckForm.findOne(query).lean().exec()
+  },
+
+    /**
+   * Find check form by name.
+   * @param formName
+   * @returns {Promise|*}
+   */
+  sqlFindCheckFormByName: (formName) => {
+    const sql = 'SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 AND [name]=@name'
+    const params = [{
+      name: 'name',
+      value: formName,
+      type: TYPES.NVarChar
+    }]
+    return sqlService.query(sql, params)
   }
 }
 
