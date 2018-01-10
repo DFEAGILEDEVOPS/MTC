@@ -417,10 +417,11 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   const checkWindowId = req.body.checkWindowId
 
   try {
-    checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
+    await checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
     req.flash('error', `Failing to unassigned form`)
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
+    return next(error)
   }
 
   req.flash('info', `Form unassigned successfully`)
