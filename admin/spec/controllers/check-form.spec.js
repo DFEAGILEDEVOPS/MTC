@@ -16,7 +16,7 @@ const checkFormsByWindowMock = require('../mocks/check-window-by-form')
 const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
 
-fdescribe('check-form controller:', () => {
+describe('check-form controller:', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
