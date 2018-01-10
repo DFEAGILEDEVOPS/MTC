@@ -13,7 +13,8 @@ groupDataService.getGroups = async function (query) {
   q.isDeleted = false
   return Group
     .find(q)
-    .collation({ locale: 'en', strength: 2 })
+    // @TODO: Collation won't work in Cosmos - This when migrating to SQL.
+    // .collation({ locale: 'en', strength: 2 })
     .sort({ name: 'asc' })
     .lean()
     .exec()
