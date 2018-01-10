@@ -47,7 +47,7 @@
                     <tr>
                         <td<% if (messages.formName == form.name) { %> class="highlight-item"<% } %>>
                             <a name="anchor-<%= form.name %>"></a>
-                            <a href="/test-developer/view-form/<%= form._id %>" class="bold"><%= form.name %></a>
+                            <a href="/test-developer/view-form/<%= form.id %>" class="bold"><%= form.name %></a>
                         </td>
                         <td>
                             <% if (form.checkWindows.length > 0) { %>
@@ -59,7 +59,7 @@
                         <td><%= formatGdsDate(form.createdAt) %></td>
                         <td class="align-right">
                             <% if (form.removeLink == true) { %>
-                            <a href="/test-developer/delete-form/<%= form._id %>" class="modal-link" id="js-modal-link">Remove</a>
+                            <a href="/test-developer/delete-form/<%= form.id %>" class="modal-link" id="js-modal-link">Remove</a>
                             <% } %>
                         </td>
                     </tr>

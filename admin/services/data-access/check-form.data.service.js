@@ -93,7 +93,7 @@ const checkFormDataService = {
         type: TYPES.Int
       })
     }
-    const sql = `SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ${windowFilter} ORDER BY [name] ${sortOrder}`
+    const sql = `SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 ${windowFilter} ORDER BY [name] ${sortOrder}`
     return sqlService.query(sql, params)
   },
 
@@ -103,7 +103,7 @@ const checkFormDataService = {
       value: windowId,
       type: TYPES.Int
     }]
-    const sql = `SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 AND checkWindow_id !=@windowId ORDER BY [name]`
+    const sql = `SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 AND checkWindow_id !=@windowId ORDER BY [name]`
     return sqlService.query(sql, params)
   },
 
@@ -129,7 +129,7 @@ const checkFormDataService = {
     }
     const sql = `SELECT f.*, w.name as [window_name] FROM [mtc_admin].checkForm f 
      INNER JOIN mtc_admin.checkWindow w ON f.checkWindow_id = w.id 
-     WHERE isDeleted=0 ${windowFilter} ORDER BY [window_name] ${sortOrder}`
+     WHERE isDeleted=0 ${windowFilter} ORDER BY w.name ${sortOrder}`
     return sqlService.query(sql, params)
   },
 
@@ -220,7 +220,7 @@ const checkFormDataService = {
         type: TYPES.Int
       }
     ]
-    const result = sqlService.query('SELECT COUNT (*) FROM [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
+    const result = sqlService.query('SELECT COUNT(*) FROM [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
     // HACK test object structure
     return result.value > 0
   },

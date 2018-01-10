@@ -6,6 +6,7 @@ const checkFormService = require('../services/check-form.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const winston = require('winston')
 
 /**
  * Display landing page for 'test developer' role.
@@ -162,7 +163,7 @@ const saveCheckForm = async (req, res, next) => {
     await checkFormService.populateFromFile(checkForm, absFile)
   } catch (error) {
     fs.remove(deleteDir, err => {
-      if (err) console.error(err)
+      if (err) winston.error(err)
     })
     return res.render('test-developer/upload-new-form', {
       error: new Error('There is a problem with the form content'),
@@ -192,7 +193,7 @@ const saveCheckForm = async (req, res, next) => {
   }
 
   fs.remove(deleteDir, err => {
-    if (err) console.error(err)
+    if (err) winston.error(err)
   })
 
   try {

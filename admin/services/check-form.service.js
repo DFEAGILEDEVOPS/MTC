@@ -6,6 +6,7 @@ const moment = require('moment')
 const config = require('../config')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
+const winston = require('winston')
 
 const checkFormService = {
   /**
@@ -37,7 +38,12 @@ const checkFormService = {
    * @param formId the id of the form
    */
   getCheckForm: async (formId) => {
-    return checkFormDataService.sqlGetActiveForm(formId)
+    let form = await checkFormDataService.sqlGetActiveForm(formId)
+    if (form && form.length > 0) {
+      form = form[0]
+      form.questions = JSON.parse(form.formData)
+    }
+    return form
   },
 
   /**
@@ -134,8 +140,8 @@ const checkFormService = {
       const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
       formData.forEach(f => {
         f.removeLink = true
-        if (checkWindows[f._id]) {
-          f.checkWindows = checkWindows[f._id].map(cw => { return cw.checkWindowName })
+        if (checkWindows[f.id]) {
+          f.checkWindows = checkWindows[f.id].map(cw => { return cw.checkWindowName })
           f.removeLink = moment(f.checkStartDate).isAfter(moment())
         } else {
           f.checkWindows = []
@@ -195,7 +201,7 @@ const checkFormService = {
    */
   deleteCheckForm: async (formId) => {
     // remove assignments from windows
-    await checkFormDataService.sqlRemoveFormWindowAssignments(formId)
+    await checkFormDataService.sqlRemoveAllWindowAssignments(formId)
     // mark as deleted
     return checkFormDataService.sqlDeleteForm(formId)
   },
