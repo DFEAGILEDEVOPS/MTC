@@ -69,17 +69,15 @@ class SqlDbHelper
   end
 
   def self.get_settings
-    @array_of_setting = []
-    sql = "SELECT * FROM [mtc_admin].[setting]"
+    sql = "SELECT * FROM [mtc_admin].[settings]"
     result = SQL_CLIENT.execute(sql)
-    @array_of_setting = result.each{|row| row.map}
+    result.first
   end
 
   def self.latest_setting_log
-    @array_of_settingLog = []
     sql = "SELECT * FROM [mtc_admin].[settingsLog] ORDER BY createdAt DESC"
     result = SQL_CLIENT.execute(sql)
-    @array_of_settingLog = result.each{|row| row.map}
+    result.first
   end
 
   def self.check_window_details(check_name)
