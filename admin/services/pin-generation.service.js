@@ -99,7 +99,6 @@ pinGenerationService.generateSchoolPassword = (school) => {
 
 /**
  * Generate Pupil Pin
- * @param length
  * @returns {String}
  */
 pinGenerationService.generatePupilPin = () => {
