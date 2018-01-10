@@ -34,7 +34,7 @@ const dateService = {
   },
 
   checkAndFormat: function (date, format) {
-    if (!(date instanceof Date)) {
+    if (!(date instanceof Date || date instanceof moment)) {
       return ''
     }
     const m = moment(date)

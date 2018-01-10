@@ -3,18 +3,19 @@ const moment = require('moment')
 const csv = require('fast-csv')
 const mongoose = require('mongoose')
 
-const ValidationError = require('../lib/validation-error')
-const hdfValidator = require('../lib/validator/hdf-validator')
-const pupilService = require('../services/pupil.service')
-const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
-const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const dateService = require('../services/date.service')
+const hdfValidator = require('../lib/validator/hdf-validator')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const schoolDataService = require('../services/data-access/school.data.service')
-const { sortRecords } = require('../utils')
-const sortingAttributesService = require('../services/sorting-attributes.service')
-const scoreService = require('../services/score.service')
+const pupilService = require('../services/pupil.service')
+const pupilsNotTackingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
+const pupilsNotTackingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../services/pupil.status.service')
+const schoolDataService = require('../services/data-access/school.data.service')
+const scoreService = require('../services/score.service')
+const sortingAttributesService = require('../services/sorting-attributes.service')
+const ValidationError = require('../lib/validation-error')
+const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -264,14 +265,6 @@ const getDeclarationForm = async (req, res) => {
 
 const postDeclarationForm = async (req, res, next) => {
   const { jobTitle, fullName, declaration } = req.body
-  // TODO: extract this dataservice call to a service
-  const school = await schoolDataService.findOne({ '_id': req.user.School })
-  school.hdf = {
-    signedDate: Date.now(),
-    declaration,
-    jobTitle,
-    fullName
-  }
 
   let validationError = await hdfValidator.validate(req)
   if (validationError.hasError()) {
@@ -285,11 +278,16 @@ const postDeclarationForm = async (req, res, next) => {
   }
 
   try {
-    // TODO: extract this dataservice call to a service
-    await schoolDataService.update(school)
+    const form = {
+      jobTitle,
+      fullName,
+      declaration
+    }
+    await headteacherDeclarationService.declare(form, req.user.School, req.user.id)
   } catch (error) {
     return next(error)
   }
+
   return res.redirect('/school/declaration-form-submitted')
 }
 
@@ -297,12 +295,10 @@ const getHDFSubmitted = async (req, res, next) => {
   res.locals.pageTitle = 'Headteacher\'s declaration form submitted'
   req.breadcrumbs(res.locals.pageTitle)
   try {
-    // TODO: extract this dataservice call to a service
-    const school = await schoolDataService.findOne({ '_id': req.user.School })
-    const { hdf: { signedDate } } = school
+    const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
     return res.render('school/declaration-form-submitted', {
       breadcrumbs: req.breadcrumbs(),
-      signedDate: signedDate && moment(signedDate).format('Do MMMM YYYY')
+      signedDate: dateService.formatFullGdsDate(hdf.signedDate)
     })
   } catch (error) {
     return next(error)
