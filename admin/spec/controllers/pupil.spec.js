@@ -15,6 +15,7 @@ const pupilAddService = require('../../services/pupil-add-service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../services/pupil-upload.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const pupilValidator = require('../../lib/validator/pupil-validator')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const schoolMock = require('../mocks/school')
 const ValidationError = require('../../lib/validation-error')
@@ -465,5 +466,63 @@ describe('pupil controller:', () => {
       controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
+  })
+
+  describe('postEditPupil', () => {
+    let controller, next
+    // const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
+    let goodReqParams = {
+      method: 'GET',
+      url: '/school/pupil/edit/pupil1234',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      body: {
+        _id: 'pupil998'
+      }
+    }
+    const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
+    const emptyValidationError = new ValidationError()
+    const validationErrorWithError = new ValidationError()
+    validationErrorWithError.addError('first_name', 'This is an error from the unit test')
+
+    beforeEach(() => {
+      controller = require('../../controllers/pupil.js').postEditPupil
+      next = jasmine.createSpy('next')
+    })
+
+    it('makes a call to retrieve the pupil', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      // As we do not want to run any more of the controller code than we need to we can trigger an
+      // exception to bail out early, which saves mocking the remaining calls.
+      spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
+      await controller(req, res, next)
+      expect(pupilDataService.findOne).toHaveBeenCalled()
+    })
+
+    it('bails out if the pupil if not found', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(null))
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body._id} not found`))
+    })
+
+    it('makes a call to retrieve the school', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      // As we do not want to run any more of the controller code than we need to we can trigger an
+      // exception to bail out early, which saves mocking the remaining calls.
+      spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
+      await controller(req, res, next)
+      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalledWith(pupilMock.school)
+    })
+
+    // TODO - this method requires further coverage
   })
 })

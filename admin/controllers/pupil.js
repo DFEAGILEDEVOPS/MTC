@@ -174,9 +174,9 @@ controller.postEditPupil = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil ${req.body._id} not found`))
     }
-    school = await schoolDataService.findOne({_id: pupil.school})
+    school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
     if (!school) {
-      return next(new Error(`School ${pupil.school} not found`))
+      return next(new Error(`School ${pupil.school._id} not found`))
     }
     validationError = await pupilValidator.validate(req.body)
   } catch (error) {
@@ -193,11 +193,13 @@ controller.postEditPupil = async (req, res, next) => {
     })
   }
 
+  const trimAndUppercase = R.compose(R.toUpper, R.trim)
+
   pupil._id = req.body._id
   pupil.foreName = req.body.foreName
   pupil.middleNames = req.body.middleNames
   pupil.lastName = req.body.lastName
-  pupil.upn = req.body.upn.trim().toUpperCase()
+  pupil.upn = trimAndUppercase(R.pathOr('', ['body', 'upn'], req))
   pupil.gender = req.body.gender
   pupil.pin = pupil.pin || null
   pupil.pinExpired = pupil.pinExpired || false
