@@ -19,7 +19,7 @@ module.exports = {
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
   Data: {
-    allowedPasswordWords: process.env.THREE_LETTER_WORDS
+    allowedPasswordWords: process.env.ALLOWED_WORDS
   },
   Sql: {
     Enabled: process.env.SQL_ENABLED || false,
