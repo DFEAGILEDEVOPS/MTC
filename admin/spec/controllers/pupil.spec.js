@@ -520,7 +520,7 @@ describe('pupil controller:', () => {
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
-      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalledWith(pupilMock.school)
+      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalledWith(populatedPupilMock.school.id)
     })
 
     // TODO - this method requires further coverage
