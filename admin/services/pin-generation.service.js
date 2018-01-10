@@ -7,6 +7,7 @@ const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const dateService = require('../services/date.service')
+const config = require('../config')
 
 const fourPmToday = () => {
   return moment().startOf('day').add(16, 'hours')
@@ -91,8 +92,12 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
 pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const length = 8
-    school.schoolPin = pinGenerationService.generateRandomPin(length)
+    const chars = '23456789'
+    const allowedWords = config.Data.allowedPasswordWords && config.Data.allowedPasswordWords.split(',')
+    const randomWord = allowedWords[Math.floor(Math.random() * allowedWords.length)]
+    const numberCombination = randomGenerator.getRandom(2, chars)
+    const randomIndex = Math.floor(Math.random() * Math.floor(randomWord.length))
+    school.schoolPin = `${randomWord.slice(0, randomIndex)}${numberCombination}${randomWord.slice(randomIndex)}`
     school.pinExpiresAt = fourPmToday()
   }
   return school
