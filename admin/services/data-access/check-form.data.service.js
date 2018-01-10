@@ -234,10 +234,11 @@ const checkFormDataService = {
       },
       {
         name: 'updatedAt',
-        value: moment.utc()
+        value: moment.utc(),
+        type: TYPES.DateTimeOffset
       }
     ]
-    return sqlService.modify('UPDATE [mtc_admin].[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE checkForm_id=@formId', params)
+    return sqlService.modify('UPDATE [mtc_admin].[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE [id]=@formId', params)
   }
 }
 
