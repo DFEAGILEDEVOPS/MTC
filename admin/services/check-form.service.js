@@ -287,34 +287,6 @@ const checkFormService = {
     return checkFormDataService.sqlFetchSortedActiveFormsByName(windowId, sortDescending)
   },
 
-  /**
-   * Remove form id from array of current forms.
-   * @param checkWindow
-   * @param checkFormId
-   * @returns {*}
-   */
-  removeFormIdFromArray: (checkWindow, checkFormId) => {
-    if (!checkWindow) {
-      return false
-    }
-
-    if (!checkFormId) {
-      return false
-    }
-
-    let checkWindowForms = []
-
-    if (checkWindow.forms.length > 0) {
-      checkWindow.forms.map((f) => {
-        if (parseInt(f) !== parseInt(checkFormId)) {
-          checkWindowForms.push(f)
-        }
-      })
-    }
-
-    return checkWindowForms
-  },
-
   removeWindowAssignment: async (formId, windowId) => {
     return checkFormDataService.sqlRemoveFormAssignmentFromWindow(formId, windowId)
   }
