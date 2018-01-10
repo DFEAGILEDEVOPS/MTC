@@ -25,6 +25,14 @@ const checkFormService = {
   },
 
   /**
+   * create a check form
+   * @param form the form as an object
+   */
+  create: async (form) => {
+    return checkFormDataService.sqlCreate(form)
+  },
+
+  /**
    * Get a non-deleted form
    * @param formId the id of the form
    */
@@ -265,28 +273,8 @@ const checkFormService = {
    * @param checkWindowAssignedForms
    * @returns {Promise<*>}
    */
-  getUnassignedFormsForCheckWindow: async (checkWindowAssignedForms) => {
-    let checkFormData
-    let checkFormList = []
-
-    if (!checkWindowAssignedForms) {
-      return []
-    }
-    const sortDescending = false
-    checkFormData = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, sortDescending)
-
-    if (checkWindowAssignedForms && checkFormData) {
-      checkFormData.map((form) => {
-        if (checkWindowAssignedForms.filter(item => item === form.id).length < 1) {
-          checkFormList.push({
-            '_id': form.id,
-            'name': form.name
-          })
-        }
-      })
-    }
-
-    return checkFormList
+  getUnassignedFormsForCheckWindow: async (windowId) => {
+    return checkFormDataService.sqlFetchSortedActiveFormsNotAssignedToWindowByName(windowId)
   },
 
   /**

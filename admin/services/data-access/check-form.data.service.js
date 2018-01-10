@@ -74,6 +74,8 @@ const checkFormDataService = {
   /**
    * Fetch active forms (not deleted)
    * sorted by name
+   * @param windowId only forms assigned to the specified window (optional)
+   * @param sortDescending if true, sorts descending
    * @returns {Promise<*>}
    */
   sqlFetchSortedActiveFormsByName: (windowId, sortDescending) => {
@@ -92,6 +94,16 @@ const checkFormDataService = {
       })
     }
     const sql = `SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ${windowFilter} ORDER BY [name] ${sortOrder}`
+    return sqlService.query(sql, params)
+  },
+
+  sqlFetchSortedActiveFormsNotAssignedToWindowByName: (windowId) => {
+    const params = [{
+      name: 'windowId',
+      value: windowId,
+      type: TYPES.Int
+    }]
+    const sql = `SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 AND checkWindow_id !=@windowId ORDER BY [name]`
     return sqlService.query(sql, params)
   },
 

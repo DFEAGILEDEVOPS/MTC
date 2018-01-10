@@ -3,7 +3,6 @@
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
-const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
@@ -73,7 +72,7 @@ const uploadAndViewFormsPage = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const checkForm = await checkFormDataService.getActiveForm(id)
+    const checkForm = await checkFormService.getCheckForm(id)
     if (!checkForm) {
       return next(new Error(`Unable to find check form with id [${id}]`))
     }
@@ -197,7 +196,7 @@ const saveCheckForm = async (req, res, next) => {
   })
 
   try {
-    const newForm = await checkFormDataService.create(checkForm)
+    const newForm = await checkFormService.create(checkForm)
     req.flash('info', 'New form uploaded')
     req.flash('formName', newForm.name)
   } catch (error) {
@@ -263,7 +262,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   let checkWindowsData
   let totalFormsAvailable
 
-  totalFormsAvailable = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, false)
+  totalFormsAvailable = await checkFormService.getUnassignedFormsForCheckWindow(req.params.checkWindowId)
   if (totalFormsAvailable) {
     totalFormsAvailable = totalFormsAvailable.length
   }
