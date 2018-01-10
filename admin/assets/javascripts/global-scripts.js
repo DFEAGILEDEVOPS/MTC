@@ -18,7 +18,6 @@ $(function () {
         if (validation) {
           validationStatus = validation()
         }
-        console.log('VALIDATE', validationStatus)
 
         $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
@@ -158,7 +157,7 @@ $(function () {
         $('#stickyBanner').removeClass('show')
       } else {
         inputStatus.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
-        $('#stickyBanner').addClass('show')
+        stickyBannerPositioning()
       }
     }
   }
@@ -251,6 +250,27 @@ $(function () {
     validateForm: function () {
       return assignForm.isCheckboxChecked()
     }
+  }
+
+  /**
+   * Sticky banner positioning.
+   */
+  function stickyBannerPositioning () {
+    var windowHeight = $(window).height()
+    var documentHeight = $(document).height()
+    var footerHeight = $('#footer').height()
+    var distance = documentHeight - windowHeight - footerHeight - 10
+    var stickyBanner = $('#stickyBanner')
+    stickyBanner.addClass('show')
+    
+    $(document).scroll(function () {
+      var y = $(this).scrollTop()
+      if (y > distance) {
+        stickyBanner.css({ bottom: y - distance })
+      } else {
+        stickyBanner.css({ bottom: 0 })
+      }
+    })
   }
 
   /**
