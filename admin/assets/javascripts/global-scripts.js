@@ -153,11 +153,12 @@ $(function () {
      * @param status
      */
     toggle: function (status) {
+      stickyBannerPositioning()
       if (status === false) {
         $('#stickyBanner').removeClass('show')
       } else {
         inputStatus.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
-        stickyBannerPositioning()
+        $('#stickyBanner').addClass('show')
       }
     }
   }
@@ -261,8 +262,7 @@ $(function () {
     var footerHeight = $('#footer').height()
     var distance = documentHeight - windowHeight - footerHeight - 10
     var stickyBanner = $('#stickyBanner')
-    stickyBanner.addClass('show')
-    
+
     $(document).scroll(function () {
       var y = $(this).scrollTop()
       if (y > distance) {
