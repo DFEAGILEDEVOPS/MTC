@@ -93,8 +93,8 @@ pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
     const chars = '23456789'
-    const allowedWords = config.Data.allowedWords && config.Data.allowedWords.split(',')
-    const randomWord = allowedWords[Math.floor(Math.random() * allowedWords.length)]
+    const allowedWords = (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
+    const randomWord = allowedWords.length > 0 ? allowedWords[Math.floor(Math.random() * allowedWords.length)] : ''
     const numberCombination = randomGenerator.getRandom(2, chars)
     const randomIndex = Math.floor(Math.random() * Math.floor(randomWord.length))
     school.schoolPin = `${randomWord.slice(0, randomIndex)}${numberCombination}${randomWord.slice(randomIndex)}`
