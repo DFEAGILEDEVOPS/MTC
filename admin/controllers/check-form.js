@@ -77,13 +77,7 @@ const removeCheckForm = async (req, res, next) => {
     if (!checkForm) {
       return next(new Error(`Unable to find check form with id [${id}]`))
     }
-    // WARN this is extremely confusing.  Are we deleting the window or form??????????????
-    // Un-assign check-form from any check-windows
-    const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
-    // WARN this method name makes no sense whatsoever....
-    await checkFormService.unassignedCheckFormsFromCheckWindows(checkForm, CheckWindowsByForm)
-    // WARN this method is called removeCheckForm, but we are deleting the window?????????
-    await checkWindowService.markAsDeleted(checkForm)
+    await checkFormService.deleteCheckForm(id)
   } catch (error) {
     return next(error)
   }
@@ -225,13 +219,14 @@ const displayCheckForm = async (req, res) => {
 
   let formData
   let checkWindows
+  const formId = req.params.formId
 
   try {
-    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
+    formData = await checkFormService.getCheckForm(formId)
     formData.checkWindowsName = []
     formData.canDelete = true
   } catch (error) {
-    req.flash('error', `Unable to find check form details for form id ${req.params.formId}`)
+    req.flash('error', `Unable to find check form details for form id ${formId}`)
     return res.redirect('/test-developer/upload-and-view-forms')
   }
 
@@ -268,7 +263,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   let checkWindowsData
   let totalFormsAvailable
 
-  totalFormsAvailable = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+  totalFormsAvailable = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, false)
   if (totalFormsAvailable) {
     totalFormsAvailable = totalFormsAvailable.length
   }
@@ -308,7 +303,7 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   }
 
   try {
-    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.forms)
+    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow._id)
   } catch (error) {
     return next(error)
   }
@@ -385,11 +380,6 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
 
   try {
     checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
-  } catch (error) {
-    return next(error)
-  }
-
-  try {
     checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.forms)
   } catch (error) {
     return next(error)
@@ -427,23 +417,14 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   const checkFormId = req.body.checkFormId
   const checkWindowId = req.body.checkWindowId
 
-  let checkWindow
-
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+    checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
-    return next(error)
-  }
-
-  try {
-    checkWindow.forms = checkFormService.removeFormIdFromArray(checkWindow, checkFormId)
-    await checkWindowDataService.create(checkWindow)
-  } catch (error) {
-    req.flash('error', `Failing to unassigned form from ${checkWindow.checkWindowName}`)
+    req.flash('error', `Failing to unassigned form`)
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
   }
 
-  req.flash('info', `Form unassigned from ${checkWindow.checkWindowName}`)
+  req.flash('info', `Form unassigned successfully`)
   res.redirect('/test-developer/assign-form-to-window')
 }
 

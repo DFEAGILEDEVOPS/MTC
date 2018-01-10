@@ -25,6 +25,14 @@ const checkFormService = {
   },
 
   /**
+   * Get a non-deleted form
+   * @param formId the id of the form
+   */
+  getCheckForm: async (formId) => {
+    return checkFormDataService.sqlGetActiveForm(formId)
+  },
+
+  /**
    * Extract the questions from the check-form, and add an `order` property.
    * @param checkForm
    */
@@ -109,9 +117,9 @@ const checkFormService = {
     }
 
     if (sortByWindow) {
-      formData = await checkFormDataService.sqlFetchSortedActiveFormsByWindow(sortDescending)
+      formData = await checkFormDataService.sqlFetchSortedActiveFormsByWindow(null, sortDescending)
     } else {
-      formData = await checkFormDataService.sqlFetchSortedActiveFormsByName(sortDescending)
+      formData = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, sortDescending)
     }
 
     if (formData.length > 0) {
@@ -172,11 +180,24 @@ const checkFormService = {
     }
   },
 
+    /**
+   * Un-assign check form from check window.
+   * @param formId the check form to remove
+   * @returns {Promise.<void>}
+   */
+  deleteCheckForm: async (formId) => {
+    // remove assignments from windows
+    await checkFormDataService.sqlRemoveFormWindowAssignments(formId)
+    // mark as deleted
+    return checkFormDataService.sqlDeleteForm(formId)
+  },
+
   /**
    * Return check windows name(s).
    * @param checkWindows
    * @returns {Array}
    */
+    // TODO why is there functionality for check windows in the check form service?????
   checkWindowNames: (checkWindows) => {
     let checkWindowsName = []
     checkWindows.forEach(cw => {
@@ -190,6 +211,7 @@ const checkFormService = {
    * @param checkWindows
    * @returns {*}
    */
+  // TODO why is there functionality for check windows in the check form service?????
   canDelete: (checkWindows) => {
     let canDelete = false
     checkWindows.forEach(cw => {
@@ -251,13 +273,13 @@ const checkFormService = {
       return []
     }
     const sortDescending = false
-    checkFormData = await checkFormDataService.sqlFetchSortedActiveFormsByName(sortDescending)
+    checkFormData = await checkFormDataService.sqlFetchSortedActiveFormsByName(null, sortDescending)
 
     if (checkWindowAssignedForms && checkFormData) {
       checkFormData.map((form) => {
-        if (checkWindowAssignedForms.filter(item => item === form._id).length < 1) {
+        if (checkWindowAssignedForms.filter(item => item === form.id).length < 1) {
           checkFormList.push({
-            '_id': form._id,
+            '_id': form.id,
             'name': form.name
           })
         }
@@ -272,28 +294,9 @@ const checkFormService = {
    * @param checkWindowAssignedForms
    * @returns {Promise<*>}
    */
-  getAssignedFormsForCheckWindow: async (checkWindowAssignedForms) => {
-    let checkFormData
-    let checkFormList = []
-
-    if (!checkWindowAssignedForms) {
-      return []
-    }
+  getAssignedFormsForCheckWindow: async (windowId) => {
     const sortDescending = false
-    checkFormData = await checkFormDataService.fetchSortedActiveFormsByName(sortDescending)
-
-    if (checkWindowAssignedForms && checkFormData) {
-      checkFormData.map((form) => {
-        if (checkWindowAssignedForms.filter(item => item === form._id).length > 0) {
-          checkFormList.push({
-            '_id': form._id,
-            'name': form.name
-          })
-        }
-      })
-    }
-
-    return checkFormList
+    return checkFormDataService.sqlFetchSortedActiveFormsByName(windowId, sortDescending)
   },
 
   /**
@@ -324,9 +327,8 @@ const checkFormService = {
     return checkWindowForms
   },
 
-  deleteCheckForm: (id) => {
-    // remove window assignments
-    // mark as deleted
+  removeWindowAssignment: async (formId, windowId) => {
+    return checkFormDataService.sqlRemoveFormAssignmentFromWindow(formId, windowId)
   }
 }
 

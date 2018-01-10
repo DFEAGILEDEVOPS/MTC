@@ -3,6 +3,7 @@
 const CheckForm = require('../../models/check-form')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const moment = require('moment')
 
 const checkFormDataService = {
   /**
@@ -25,7 +26,7 @@ const checkFormDataService = {
    * @returns {Promise<*>}
    */
   sqlGetActiveForm: (id) => {
-    let sql = 'SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
+    let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
     const params = []
     if (id) {
       sql += ' AND [id]=@id'
@@ -41,6 +42,7 @@ const checkFormDataService = {
   /**
    * Get check form when isDeleted is false.
    * Return plain javascript object.
+   * This method will not be refactored as all calls should be repointed to sqlGetActiveForm.
    * @returns {Promise}
    */
   getActiveFormPlain: (id) => {
@@ -49,13 +51,6 @@ const checkFormDataService = {
       query = Object.assign(query, {'_id': id})
     }
     return CheckForm.findOne(query).lean().exec()
-  },
-
-  /**
-   * This method will not be refactored as all calls should be repointed to sqlGetActiveForm.
-   */
-  sqlGetActiveFormPlain: (id) => {
-    throw new Error('do not implement')
   },
 
   /**
@@ -81,13 +76,23 @@ const checkFormDataService = {
    * sorted by name
    * @returns {Promise<*>}
    */
-  sqlFetchSortedActiveFormsByName: (sortDescending) => {
+  sqlFetchSortedActiveFormsByName: (windowId, sortDescending) => {
     let sortOrder = 'ASC'
     if (sortDescending) {
       sortOrder = 'DESC'
     }
-    const sql = 'SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ORDER BY [name] ' + sortOrder
-    return sqlService.query(sql)
+    let windowFilter = ''
+    const params = []
+    if (windowId) {
+      windowFilter = ' AND checkWindow_id=@windowId'
+      params.push({
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      })
+    }
+    const sql = `SELECT * FROM mtc_admin].[checkForm] WHERE isDeleted=0 ${windowFilter} ORDER BY [name] ${sortOrder}`
+    return sqlService.query(sql, params)
   },
 
     /**
@@ -95,15 +100,25 @@ const checkFormDataService = {
    * sorted by window
    * @returns {Promise<*>}
    */
-  sqlFetchSortedActiveFormsByWindow: (sortDescending) => {
+  sqlFetchSortedActiveFormsByWindow: (windowId, sortDescending) => {
     let sortOrder = 'ASC'
     if (sortDescending) {
       sortOrder = 'DESC'
     }
-    const sql = 'SELECT f.*, w.name as [window_name] FROM [mtc_admin].checkForm f \
-     INNER JOIN mtc_admin.checkWindow w ON f.checkWindow_id = w.id \
-     WHERE isDeleted=0 ORDER BY [window_name] ' + sortOrder
-    return sqlService.query(sql)
+    let windowFilter = ''
+    const params = []
+    if (windowId) {
+      windowFilter = ' AND f.checkWindow_id=@windowId'
+      params.push({
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      })
+    }
+    const sql = `SELECT f.*, w.name as [window_name] FROM [mtc_admin].checkForm f 
+     INNER JOIN mtc_admin.checkWindow w ON f.checkWindow_id = w.id 
+     WHERE isDeleted=0 ${windowFilter} ORDER BY [window_name] ${sortOrder}`
+    return sqlService.query(sql, params)
   },
 
   /**
@@ -154,12 +169,63 @@ const checkFormDataService = {
   /**
    * assigns a check form to a window
    */
-  sqlAssignFormToWindow: (formId, windowId) => {
-    throw new Error('not yet implemented')
+  sqlAssignFormToWindow: async (formId, windowId) => {
+    return sqlService.create('[checkFormWindow]', { checkForm_id: formId, checkWindow_id: windowId })
   },
 
-  sqlRemoveFormAssignmentFromWindow: (formId, windowId) => {
-    throw new Error('not yet implemented')
+  sqlRemoveWindowAssignment: (formId, windowId) => {
+    const params = [
+      {
+        name: 'formId',
+        value: formId,
+        type: TYPES.Int
+      },
+      {
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      }
+    ]
+    sqlService.modify('DELETE [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId AND checkWindow_id=@windowId', params)
+  },
+
+  sqlRemoveAllWindowAssignments: async (formId) => {
+    const params = [
+      {
+        name: 'formId',
+        value: formId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.modify('DELETE [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
+  },
+
+  sqlIsAssignedToWindows: async (formId) => {
+    const params = [
+      {
+        name: 'formId',
+        value: formId,
+        type: TYPES.Int
+      }
+    ]
+    const result = sqlService.query('SELECT COUNT (*) FROM [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
+    // HACK test object structure
+    return result.value > 0
+  },
+
+  sqlDeleteForm: async (formId) => {
+    const params = [
+      {
+        name: 'formId',
+        value: formId,
+        type: TYPES.Int
+      },
+      {
+        name: 'updatedAt',
+        value: moment.utc()
+      }
+    ]
+    return sqlService.modify('UPDATE [mtc_admin].[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE checkForm_id=@formId', params)
   }
 }
 
