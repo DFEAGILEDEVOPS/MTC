@@ -22,7 +22,7 @@ const getHome = async (req, res, next) => {
 
   try {
     // TODO: extract this dataservice call to a service
-    const school = await schoolDataService.findOne({ '_id': req.user.School })
+    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
     }
