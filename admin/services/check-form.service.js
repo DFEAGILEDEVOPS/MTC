@@ -126,10 +126,13 @@ const checkFormService = {
         }
       })
 
+      // TODO - why on earth does a service have a view concern inside it?
+      // TODO - this must be moved to the view
       formData.forEach(f => {
         f.checkWindows = f.checkWindows.join('<br>')
       })
 
+      // TODO rereview server side sorting after SQL move.
       if (sortField === 'window') {
         formData = formData.sort((a, b) => {
           if (a.checkWindows === b.checkWindows) {
