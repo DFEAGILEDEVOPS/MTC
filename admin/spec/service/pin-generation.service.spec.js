@@ -8,6 +8,7 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const checkDataService = require('../../services/data-access/check.data.service')
 const pinGenerationService = require('../../services/pin-generation.service')
 const restartService = require('../../services/restart.service')
+const config = require('../../config')
 
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
@@ -188,10 +189,11 @@ describe('pin-generation.service', () => {
         const school = Object.assign({}, schoolMock)
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
-        expect(result.schoolPin.length).toBe(5)
-        expect(/[a-z]/i.test(result.schoolPin)).toBe(true)
-        expect(/[1-9]/i.test(result.schoolPin)).toBe(true)
-        expect(result.schoolPin.length).toBe(5)
+        if (config.Data.allowedWords) {
+          expect(result.schoolPin.length).toBe(5)
+          expect(/[a-z]/i.test(result.schoolPin)).toBe(true)
+          expect(/[1-9]/i.test(result.schoolPin)).toBe(true)
+        }
       })
     })
 
