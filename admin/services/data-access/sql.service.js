@@ -212,7 +212,8 @@ sqlService.modify = (sql, params) => {
 
     if (params) {
       for (let index = 0; index < params.length; index++) {
-        const param = params[index]
+        let param = params[index]
+        param = convertMomentToJsDate(param)
         // TODO add support for other options
         if (!param.type) {
           con.release()
