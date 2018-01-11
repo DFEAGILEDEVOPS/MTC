@@ -16,7 +16,7 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
  * @return {Promise<void>}
  */
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
-  const sql = `SELECT TOP 1 * FROM ${sqlService.adminDb}.${table} WHERE school_id = @schoolId
+  const sql = `SELECT TOP 1 * FROM ${table} WHERE school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const rows = await sqlService.query(sql, [paramSchoolId])

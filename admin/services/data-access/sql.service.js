@@ -147,7 +147,7 @@ function parseResults (results) {
 const sqlService = {}
 
 // Name of the admin database
-sqlService.adminDb = '[mtc_admin]'
+sqlService.adminSchema = '[mtc_admin]'
 
   /**
  * Query data from the SQL Server Database
