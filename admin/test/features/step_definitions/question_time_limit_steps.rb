@@ -85,7 +85,7 @@ When(/^I update the time between questions from (\d+) to (\d+) seconds$/) do |li
 end
 
 Then(/^I should see a record that has date and time of the Time between questions change to (\d+) in database$/) do |arg|
-  wait_until{SqlDbHelper.get_settings['questionTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.get_settings['loadingTimeLimit'] == arg.to_i}
 end
 
 Then(/^I should see a historic record appended for Time between questions change to (\d+) in the database$/) do |arg|
