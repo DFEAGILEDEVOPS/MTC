@@ -42,29 +42,27 @@ const checkWindowService = {
 
       try {
         checkWindows = await checkWindowDataService.sqlFetchCurrentCheckWindows('', '')
+        if (checkWindows) {
+          checkWindows.forEach(cw => {
+            cw.forms.forEach(formId => {
+              if (!data.hasOwnProperty(formId)) {
+                data[formId] = []
+              }
+              data[formId].push(cw)
+            })
+          })
+  
+          // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
+          // before summer.
+          Object.getOwnPropertyNames(data).forEach(d => {
+            data[d].sort((cw1, cw2) => {
+              if (cw1.checkStartDate === cw2.checkStartDate) { return 0 }
+              return cw1.checkStartDate < cw2.checkStartDate ? -1 : 1
+            })
+          })
+        }
       } catch (error) {
         reject(error)
-      }
-
-      // Create a data structure:
-      if (checkWindows) {
-        checkWindows.forEach(cw => {
-          cw.forms.forEach(formId => {
-            if (!data.hasOwnProperty(formId)) {
-              data[formId] = []
-            }
-            data[formId].push(cw)
-          })
-        })
-
-        // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
-        // before summer.
-        Object.getOwnPropertyNames(data).forEach(d => {
-          data[d].sort((cw1, cw2) => {
-            if (cw1.checkStartDate === cw2.checkStartDate) { return 0 }
-            return cw1.checkStartDate < cw2.checkStartDate ? -1 : 1
-          })
-        })
       }
       resolve(data)
     })

@@ -104,7 +104,7 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   sqlFetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
-    const currentTimestamp = moment.utc()
+    const currentTimestamp = moment.utc().toDate()
     let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
 
     if (isCurrent === true) {
@@ -115,13 +115,15 @@ const checkWindowDataService = {
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
       case 'checkWindowName':
+        sortBy = 'name'
+        break
       case 'adminStartDate':
       case 'checkStartDate':
       // all 3 are acceptable as-is
         break
       default:
       // anything else should default to checkWindow name
-        sortBy = 'checkWindowName'
+        sortBy = 'name'
     }
 
     const sql = `SELECT * FROM [mtc_admin].[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
