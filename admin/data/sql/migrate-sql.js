@@ -29,8 +29,7 @@ const runMigrations = () => {
     .then(() => {
       const postgrator = new Postgrator(migratorConfig)
       // subscribe to useful events
-      postgrator.on('migration-started', migration => winston.info(`${migration.action}:${migration.name} started`))
-      postgrator.on('migration-finished', migration => winston.info(`${migration.action}:${migration.name} complete`))
+      postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
 
       // Migrate to 'max' version or user-specified e.g. '008'
       const version = process.argv.length > 2 ? process.argv[2] : 'max'
