@@ -131,7 +131,7 @@ describe('pin.service', () => {
       })
     })
   })
-  
+
   describe('expireMultiplePins', () => {
     it('it returns if no pupils have empty pins', async () => {
       const pupil = Object.assign({}, pupilMock)
