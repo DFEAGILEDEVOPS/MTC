@@ -16,6 +16,7 @@ module.exports.validate = async (groupData, oldName) => {
   }
 
   if (!isEmpty(groupData.name.trim())) {
+    // Allow only latin alphabet characters, numbers, hyphens and single quotes.
     if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name)) {
       validationError.addError('name', groupErrorMessages.nameInvalidCharacters)
       isValid = true
