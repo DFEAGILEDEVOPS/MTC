@@ -39,7 +39,6 @@ describe('pupil controller:', () => {
     let controller
     let sandbox
     let next
-    let schoolDataServiceSpy
     let goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add',
@@ -115,6 +114,12 @@ describe('pupil controller:', () => {
       it('calls pupilAddService to add a new pupil to the database', async (done) => {
         await controller(req, res, nextSpy)
         expect(pupilAddServiceSpy.callCount).toBe(1)
+        done()
+      })
+
+      it('calls schoolDataService', async (done) => {
+        await controller(req, res, nextSpy)
+        expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
       })
 
@@ -460,9 +465,6 @@ describe('pupil controller:', () => {
       }
     }
     const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
-    const emptyValidationError = new ValidationError()
-    const validationErrorWithError = new ValidationError()
-    validationErrorWithError.addError('first_name', 'This is an error from the unit test')
 
     beforeEach(() => {
       controller = require('../../controllers/pupil.js').postEditPupil
