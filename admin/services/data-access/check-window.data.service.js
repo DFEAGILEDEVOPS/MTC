@@ -67,23 +67,23 @@ const checkWindowDataService = {
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
    * @param isDeleted
-   * @param sortBy valid values are 
-   * @param sortDirection
+   * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
+   * @param sortDirection valid values are [asc|desc]
    * @param isCurrent
    * @deprecated use sqlFetchCheckWindows
-   * @returns {Promise.<void>}
+   * @returns {Promise.<*>}
    */
   fetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
     let sorting = {}
     let query = {}
-    winston.warn('check-window.data.service.fetchCheckWindows is deprecated')
-    const currentTimestamp = moment.utc()
-    let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
 
+    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D 00:00:00')
+
+    query.isDeleted = !isDeleted ? false : isDeleted
     if (isCurrent === true) {
-      criteria += ` AND checkEndDate >= @currentTimestamp`
+      query.checkEndDate = {$gte: currentTimestamp}
     } else {
-      criteria += ` AND checkEndDate <= @currentTimestamp`
+      query.checkEndDate = {$lte: currentTimestamp}
     }
 
     if (sortBy && sortDirection) {
@@ -98,29 +98,49 @@ const checkWindowDataService = {
     /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
    * @param isDeleted
-   * @param sortBy
-   * @param sortDirection
+   * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
+   * @param sortDirection valid values are [asc|desc]
    * @param isCurrent
    * @returns {Promise.<void>}
    */
   sqlFetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
-    let sorting = {}
-    let query = {}
-    winston.warn('check-window.data.service.fetchCheckWindows is deprecated')
     const currentTimestamp = moment.utc()
     let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
 
     if (isCurrent === true) {
-      criteria += ` AND checkEndDate >= @currentTimestamp`
+      isDeleted += ` AND checkEndDate >= @currentTimestamp`
     } else {
-      criteria += ` AND checkEndDate <= @currentTimestamp`
+      isDeleted += ` AND checkEndDate <= @currentTimestamp`
     }
+    sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+    switch (sortBy) {
+      case 'checkWindowName':
+      case 'adminStartDate':
+      case 'checkStartDate':
+      // all 3 are acceptable as-is
+        break
+      default:
+      // anything else should default to checkWindow name
+        sortBy = 'checkWindowName'
+    }
+
+    const sql = `SELECT * FROM [mtc_admin].[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
+    const params = [
+      {
+        name: 'currentTimestamp',
+        value: currentTimestamp,
+        type: TYPES.DateTimeOffset
+      }
+    ]
+    return sqlService.query(sql, params)
   },
   /**
    * Fetch (one) check window for present date.
+   * @deprecated use sqlFetchCurrentCheckWindow
    * @returns {Promise.<*>}
    */
   fetchCurrentCheckWindow: async () => {
+    winston.warn('deprecated. use check-window.data.service.sqlFetchCurrentCheckWindow')
     const now = new Date()
     const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
     if (!checkWindow) {
@@ -128,14 +148,32 @@ const checkWindowDataService = {
     }
     return checkWindow
   },
+    /**
+   * Fetch (one) check window for present date.
+   * @returns {Promise.<*>}
+   */
+  sqlFetchCurrentCheckWindow: async () => {
+    const now = moment.utc()
+    const sql = `SELECT * FROM [mtc_admin].[checkWindow] WHERE 
+      adminStartDate <=@currentTimestamp AND
+       adminStartDate >=@currentTimestamp`
+    const params = [
+      {
+        name: 'currentTimestamp',
+        value: now,
+        type: TYPES.DateTimeOffset
+      }
+    ]
+    return sqlService.query(sql, params)
+  },
   /**
    * Fetch (non-deleted) current check windows by sort by, sort direction
    * @param sortBy
    * @param sortDirection
    * @returns {Promise.<*|Promise.<void>>}
    */
-  fetchCurrentCheckWindows: async (sortBy, sortDirection) => {
-    return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, true)
+  sqlFetchCurrentCheckWindows: async (sortBy, sortDirection) => {
+    return checkWindowDataService.sqlFetchCheckWindows(sortBy, sortDirection, false, true)
   },
   /**
    * Fetch (non-deleted) past check windows by sort by, sort direction
@@ -143,19 +181,27 @@ const checkWindowDataService = {
    * @param sortDirection
    * @returns {Promise.<*|Promise.<void>>}
    */
-  fetchPastCheckWindows: async (sortBy, sortDirection) => {
-    return checkWindowDataService.fetchCheckWindows(sortBy, sortDirection, false, false)
+  sqlFetchPastCheckWindows: async (sortBy, sortDirection) => {
+    return checkWindowDataService.sqlFetchCheckWindows(sortBy, sortDirection, false, false)
   },
-
   /**
    * Create a new check window
    * @param data
+   * @deprecated use sqlCreate
    * @return {Promise.<*>}
    */
   create: async (data) => {
     const cw = new CheckWindow(data)
     await cw.save()
     return cw.toObject()
+  },
+    /**
+   * Create a new check window
+   * @param data
+   * @return {Promise.<*>}
+   */
+  sqlCreate: async (data) => {
+    return sqlService.create('[checkWindow]', data)
   }
 }
 

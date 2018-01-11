@@ -139,15 +139,15 @@ const getCheckWindows = async (req, res, next) => {
 
   // Get current check windows
   try {
-    checkWindows = await checkWindowDataService.fetchCurrentCheckWindows(sortField, sortDirection)
-    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true)
+    checkWindows = await checkWindowDataService.sqlFetchCurrentCheckWindows(sortField, sortDirection)
+    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true, false)
   } catch (error) {
     return next(error)
   }
 
   // Get past check windows
   try {
-    checkWindows = await checkWindowDataService.fetchPastCheckWindows(sortField, sortDirection)
+    checkWindows = await checkWindowDataService.sqlFetchPastCheckWindows(sortField, sortDirection)
     checkWindowsPast = checkWindowService.formatCheckWindowDocuments(checkWindows, false, false)
   } catch (error) {
     return next(error)
@@ -197,7 +197,7 @@ const checkWindowsForm = async (req, res, next) => {
 
   if (req.params.id !== undefined) {
     try {
-      checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
+      checkWindowData = await checkWindowDataService.sqlFetchCheckWindow(req.params.id)
 
       const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
       const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
@@ -266,7 +266,7 @@ const saveCheckWindows = async (req, res, next) => {
     urlActionName = 'edit'
     flashMessage = 'Changes have been saved'
 
-    checkWindow = await checkWindowDataService.fetchCheckWindow(req.body.checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(req.body.checkWindowId)
   }
 
   if (validationError.hasError()) {
@@ -340,7 +340,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(req.params.checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(req.params.checkWindowId)
   } catch (err) {
     return next(err)
   }
@@ -350,7 +350,7 @@ const removeCheckWindow = async (req, res, next) => {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {
-        await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
+        await checkWindowDataService.sqlSetDeletedCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')

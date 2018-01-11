@@ -29,7 +29,8 @@ describe('check-window.service', () => {
 
   describe('formatCheckWindowDocuments', () => {
     beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(checkWindowMock) })
+      // TODO once all tests sorted, move this to top of file and remove proxyquire
+      service = require('../../services/check-window.service')
     })
 
     it('should return data correctly formatted (1)', () => {
@@ -62,8 +63,8 @@ describe('check-window.service', () => {
 
     describe('Happy path', () => {
       beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCheckWindows').resolves(checkWindowsMock)
-        service = setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCheckWindows').resolves(checkWindowsMock)
+        service = setupService() // setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
       })
 
       it('should return check windows grouped by form id', () => {
@@ -75,8 +76,8 @@ describe('check-window.service', () => {
 
     describe('Unhappy path', () => {
       beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCheckWindows').rejects(new Error('ERROR retrieving check windows'))
-        service = setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCheckWindows').rejects(new Error('ERROR retrieving check windows'))
+        service = setupService() // setupService(function () { return Promise.resolve(checkWindowsByFormMock) })
       })
 
       it('should return an error', async (done) => {
@@ -95,7 +96,7 @@ describe('check-window.service', () => {
 
   describe('markAsDeleted - happy path', () => {
     beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(checkWindowMock) })
+      service = setupService() // setupService(function () { return Promise.resolve(checkWindowMock) })
     })
 
     it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', () => {
@@ -125,7 +126,7 @@ describe('check-window.service', () => {
 
     describe('If saving documents fails', () => {
       beforeEach(() => {
-        service = setupService(function () { return Promise.reject(new Error('ERROR SAVING')) })
+        service = setupService() // setupService(function () { return Promise.reject(new Error('ERROR SAVING')) })
       })
 
       it('should return an error', async (done) => {
@@ -144,7 +145,7 @@ describe('check-window.service', () => {
     let fetchCurrentCheckWindowsStub
 
     beforeEach(() => {
-      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'fetchCurrentCheckWindows').resolves(checkWindowsMock)
+      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCurrentCheckWindows').resolves(checkWindowsMock)
       service = setupService()
     })
 
@@ -157,7 +158,7 @@ describe('check-window.service', () => {
 
   describe('#mergedFormIds', () => {
     beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(checkWindowMock) })
+      service = setupService() // setupService(function () { return Promise.resolve(checkWindowMock) })
     })
 
     it('should merge two arrays and return one', () => {
