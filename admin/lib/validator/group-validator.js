@@ -8,6 +8,7 @@ const groupDataService = require('../../services/data-access/group.data.service'
 
 module.exports.validate = async (groupData, oldName) => {
   let validationError = new ValidationError()
+  let isValid = false
 
   // Group name
   if (!groupData.name || isEmpty(groupData.name.trim())) {
@@ -17,14 +18,17 @@ module.exports.validate = async (groupData, oldName) => {
   if (!isEmpty(groupData.name.trim())) {
     if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name)) {
       validationError.addError('name', groupErrorMessages.nameInvalidCharacters)
+      isValid = true
     }
   }
 
   if (groupData.name.length >= 35) {
     validationError.addError('name', groupErrorMessages.nameIsTooLong)
+    isValid = true
   }
 
-  if (oldName !== groupData.name || !oldName) {
+  // Don't query the DB if at this point group name is not valid.
+  if ((oldName !== groupData.name || !oldName) && !isValid) {
     const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }})
     if (group !== null) {
       validationError.addError('name', groupErrorMessages.nameAlreadyExists)

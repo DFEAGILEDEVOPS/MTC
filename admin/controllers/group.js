@@ -1,3 +1,5 @@
+'use strict'
+
 const groupService = require('../services/group.service')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
@@ -77,12 +79,18 @@ const addGroup = async (req, res, next) => {
     return res.redirect('/school/group-pupils/add')
   }
 
+  let validationError
   let group = {
     name: req.body.name,
     pupils: req.body.pupil
   }
 
-  const validationError = await groupValidator.validate(req.body)
+  try {
+    validationError = await groupValidator.validate(req.body)
+  } catch (error) {
+    next(error)
+  }
+
   if (validationError.hasError()) {
     let pupilsList
 
