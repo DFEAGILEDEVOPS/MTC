@@ -3,10 +3,10 @@
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
-const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const winston = require('winston')
 
 /**
  * Display landing page for 'test developer' role.
@@ -73,15 +73,11 @@ const uploadAndViewFormsPage = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const checkForm = await checkFormDataService.getActiveForm(id)
+    const checkForm = await checkFormService.getCheckForm(id)
     if (!checkForm) {
       return next(new Error(`Unable to find check form with id [${id}]`))
     }
-
-    // Un-assign check-form from any check-windows
-    const CheckWindowsByForm = await checkWindowService.getCheckWindowsAssignedToForms()
-    await checkFormService.unassignedCheckFormsFromCheckWindows(checkForm, CheckWindowsByForm)
-    await checkWindowService.markAsDeleted(checkForm)
+    await checkFormService.deleteCheckForm(id)
   } catch (error) {
     return next(error)
   }
@@ -167,7 +163,7 @@ const saveCheckForm = async (req, res, next) => {
     await checkFormService.populateFromFile(checkForm, absFile)
   } catch (error) {
     fs.remove(deleteDir, err => {
-      if (err) console.error(err)
+      if (err) winston.error(err)
     })
     return res.render('test-developer/upload-new-form', {
       error: new Error('There is a problem with the form content'),
@@ -197,11 +193,11 @@ const saveCheckForm = async (req, res, next) => {
   }
 
   fs.remove(deleteDir, err => {
-    if (err) console.error(err)
+    if (err) winston.error(err)
   })
 
   try {
-    const newForm = await checkFormDataService.create(checkForm)
+    const newForm = await checkFormService.create(checkForm)
     req.flash('info', 'New form uploaded')
     req.flash('formName', newForm.name)
   } catch (error) {
@@ -223,13 +219,14 @@ const displayCheckForm = async (req, res) => {
 
   let formData
   let checkWindows
+  const formId = req.params.formId
 
   try {
-    formData = await checkFormDataService.getActiveFormPlain(req.params.formId)
+    formData = await checkFormService.getCheckForm(formId)
     formData.checkWindowsName = []
     formData.canDelete = true
   } catch (error) {
-    req.flash('error', `Unable to find check form details for form id ${req.params.formId}`)
+    req.flash('error', `Unable to find check form details for form id ${formId}`)
     return res.redirect('/test-developer/upload-and-view-forms')
   }
 
@@ -266,7 +263,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   let checkWindowsData
   let totalFormsAvailable
 
-  totalFormsAvailable = await checkFormDataService.fetchSortedActiveForms({}, 'name', 'asc')
+  totalFormsAvailable = await checkFormService.getUnassignedFormsForCheckWindow(req.params.checkWindowId)
   if (totalFormsAvailable) {
     totalFormsAvailable = totalFormsAvailable.length
   }
@@ -306,7 +303,7 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   }
 
   try {
-    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.forms)
+    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow._id)
   } catch (error) {
     return next(error)
   }
@@ -383,11 +380,6 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
 
   try {
     checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
-  } catch (error) {
-    return next(error)
-  }
-
-  try {
     checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.forms)
   } catch (error) {
     return next(error)
@@ -425,23 +417,15 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   const checkFormId = req.body.checkFormId
   const checkWindowId = req.body.checkWindowId
 
-  let checkWindow
-
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+    await checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
+    req.flash('error', `Failing to unassigned form`)
+    res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
     return next(error)
   }
 
-  try {
-    checkWindow.forms = checkFormService.removeFormIdFromArray(checkWindow, checkFormId)
-    await checkWindowDataService.create(checkWindow)
-  } catch (error) {
-    req.flash('error', `Failing to unassigned form from ${checkWindow.checkWindowName}`)
-    res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
-  }
-
-  req.flash('info', `Form unassigned from ${checkWindow.checkWindowName}`)
+  req.flash('info', `Form unassigned successfully`)
   res.redirect('/test-developer/assign-form-to-window')
 }
 
