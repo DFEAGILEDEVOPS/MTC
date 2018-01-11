@@ -204,6 +204,28 @@ const checkWindowDataService = {
    */
   sqlCreate: async (data) => {
     return sqlService.create('[checkWindow]', data)
+  },
+  sqlFetchCheckWindowsAssignedToForms: async (formIds) => {
+    let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
+    INNER JOIN mtc_admin.checkFormWindow cfw
+      ON cw.id = cfw.[checkWindow_id]`
+
+    let whereClause = ' WHERE cfw.checkForm_id IN ('
+    const params = []
+    for (let index = 0; index < formIds.length; index++) {
+      whereClause = whereClause + `@p${index}`
+      if (index < formIds.length - 1) {
+        whereClause += ','
+      }
+      params.push({
+        name: `p${index}`,
+        value: formIds[index],
+        type: TYPES.Int
+      })
+    }
+    whereClause = whereClause + ')'
+    sql = sql + whereClause + ' ORDER BY cw.checkStartDate'
+    return sqlService.query(sql, params)
   }
 }
 

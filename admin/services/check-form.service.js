@@ -137,11 +137,13 @@ const checkFormService = {
     }
 
     if (formData.length > 0) {
-      const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+      var formIds = formData.map(f => f.id)
+      const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2(formIds)
+      winston.debug(checkWindows)
       formData.forEach(f => {
         f.removeLink = true
         if (checkWindows[f.id]) {
-          f.checkWindows = checkWindows[f.id].map(cw => { return cw.checkWindowName })
+          f.checkWindows = checkWindows[f.id].map(cw => { return cw.name })
           f.removeLink = moment(f.checkStartDate).isAfter(moment())
         } else {
           f.checkWindows = []

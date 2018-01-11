@@ -75,7 +75,7 @@ checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
- * @return {Promise.<void>} - lean Check objects, fully populated
+ * @return {Promise.<object>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
  * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
  */
@@ -104,6 +104,9 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
   const params = []
   for (let index = 0; index < checkCodes.length; index++) {
     whereClause = whereClause + `@p${index}`
+    if (index < checkCodes.length - 1) {
+      whereClause += ','
+    }
     params.push({
       name: `p${index}`,
       value: checkCodes[index],
@@ -127,7 +130,7 @@ checkDataService.count = async function (query) {
 /**
  * replaces mongo count implementation
  * returns number of checks started by specified pupil
- * @param query
+ * @param pupilId
  * @return {Promise.<*>}
  */
 checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {

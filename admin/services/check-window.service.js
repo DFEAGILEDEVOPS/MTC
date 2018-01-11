@@ -30,6 +30,14 @@ const checkWindowService = {
   },
 
   /**
+   * Retrieve all check window names, sorted by date for a set of forms.
+   * @param {Array<number>} formIds an array of integer formIds
+   */
+  getCheckWindowsAssignedToFormsV2: async (formIds) => {
+    return checkWindowDataService.sqlFetchCheckWindowsAssignedToForms(formIds)
+  },
+
+  /**
    * Retrieve all (active) CheckWindows and return the list
    * indexed by form.id, so we can easily list the check windows
    *  each form is assigned to.
@@ -45,9 +53,12 @@ const checkWindowService = {
         if (checkWindows) {
           checkWindows.forEach(cw => {
             cw.forms.forEach(formId => {
+              // if this form does not have the check window in its forms collection
               if (!data.hasOwnProperty(formId)) {
+                // assign an empty array to that form property
                 data[formId] = []
               }
+              // it has this window assigned to it, so push the window into the array
               data[formId].push(cw)
             })
           })
@@ -61,10 +72,10 @@ const checkWindowService = {
             })
           })
         }
+        resolve(data)
       } catch (error) {
         reject(error)
       }
-      resolve(data)
     })
   },
 
