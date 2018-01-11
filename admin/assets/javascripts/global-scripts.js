@@ -138,6 +138,8 @@ $(function () {
       $(sel).on('change keyup', function (e) {
         if (e.currentTarget.value.length > 0 && validation()) {
           stickyBanner.toggle(true)
+        } else {
+          stickyBanner.toggle(false)
         }
       })
     },
