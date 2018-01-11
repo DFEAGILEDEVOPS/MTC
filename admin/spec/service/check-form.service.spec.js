@@ -88,7 +88,7 @@ describe('check-form.service', () => {
     })
   })
 
-  //TODO consider removal when moved to SQL as method under test is questionable
+  // TODO consider removal when moved to SQL as method under test is questionable
   xdescribe('#formatCheckFormsAndWindows()', () => {
     let checkFormDataServiceStub
 

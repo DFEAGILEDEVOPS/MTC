@@ -16,18 +16,10 @@ const controller = {}
 
 controller.getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add single pupil'
-  // school id from session
-  const schoolId = req.user.School
-  const school = await schoolDataService.findOne({_id: schoolId})
-  if (!school) {
-    throw new Error(`School [${schoolId}] not found`)
-  }
-
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
-      school: school,
       formData: req.body,
       error: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
@@ -40,20 +32,21 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   req.breadcrumbs(res.locals.pageTitle)
-  const pupilData = {
-    school: req.body.school,
-    upn: req.body.upn && req.body.upn.trim().toUpperCase(),
-    foreName: req.body.foreName,
-    lastName: req.body.lastName,
-    middleNames: req.body.middleNames,
-    gender: req.body.gender,
-    'dob-month': req.body['dob-month'],
-    'dob-day': req.body['dob-day'],
-    'dob-year': req.body['dob-year'],
-    pin: null,
-    pinExpired: false
-  }
   try {
+    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    const pupilData = {
+      school: school.dfeNumber, // Change to `id` when saving to SQL Server
+      upn: req.body.upn,
+      foreName: req.body.foreName,
+      lastName: req.body.lastName,
+      middleNames: req.body.middleNames,
+      gender: req.body.gender,
+      'dob-month': req.body['dob-month'],
+      'dob-day': req.body['dob-day'],
+      'dob-year': req.body['dob-year'],
+      pin: null,
+      pinExpired: false
+    }
     const pupil = await pupilAddService.addPupil(pupilData)
     req.flash('info', '1 new pupil has been added')
     const json = JSON.stringify([pupil._id])
@@ -85,7 +78,7 @@ controller.getAddMultiplePupils = (req, res, next) => {
 controller.postAddMultiplePupils = async (req, res, next) => {
   let school
   try {
-    school = await schoolDataService.findOne({_id: req.user.School})
+    school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       throw new Error(`School [${req.user.school}] not found`)
     }
@@ -140,9 +133,9 @@ controller.getEditPupilById = async (req, res, next) => {
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
-    const school = await schoolDataService.findOne({_id: pupil.school})
+    const school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
     if (!school) {
-      return next(new Error(`School ${pupil.school} not found`))
+      return next(new Error(`School ${pupil.school._id} not found`))
     }
     const pupilData = R.omit('dob', pupil)
     const dob = moment(pupil.dob)
@@ -152,7 +145,6 @@ controller.getEditPupilById = async (req, res, next) => {
     pupilData['dob-year'] = dob.format('YYYY')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/edit-pupil', {
-      school,
       formData: pupilData,
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs()
@@ -172,11 +164,11 @@ controller.postEditPupil = async (req, res, next) => {
   try {
     pupil = await pupilDataService.findOne({_id: req.body._id})
     if (!pupil) {
-      return next(new Error(`Pupil ${req.body.id} not found`))
+      return next(new Error(`Pupil ${req.body._id} not found`))
     }
-    school = await schoolDataService.findOne({_id: pupil.school})
+    school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
     if (!school) {
-      return next(new Error(`School ${pupil.school} not found`))
+      return next(new Error(`School ${pupil.school._id} not found`))
     }
     validationError = await pupilValidator.validate(req.body)
   } catch (error) {
@@ -193,11 +185,13 @@ controller.postEditPupil = async (req, res, next) => {
     })
   }
 
+  const trimAndUppercase = R.compose(R.toUpper, R.trim)
+
   pupil._id = req.body._id
   pupil.foreName = req.body.foreName
   pupil.middleNames = req.body.middleNames
   pupil.lastName = req.body.lastName
-  pupil.upn = req.body.upn.trim().toUpperCase()
+  pupil.upn = trimAndUppercase(R.pathOr('', ['body', 'upn'], req))
   pupil.gender = req.body.gender
   pupil.pin = pupil.pin || null
   pupil.pinExpired = pupil.pinExpired || false

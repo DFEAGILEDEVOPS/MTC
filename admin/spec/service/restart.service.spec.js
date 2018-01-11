@@ -26,9 +26,9 @@ describe('restart.service', () => {
 
   describe('getPupils', () => {
     it('it should throw an error if school is not found', async () => {
-      spyOn(schoolDataService, 'findOne').and.returnValue(null)
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
       try {
-        await restartService.getPupils(schoolMock._id)
+        await restartService.getPupils(schoolMock.dfeNumber)
       } catch (error) {
         expect(error.message).toBe('School [9991001] not found')
       }
@@ -36,7 +36,7 @@ describe('restart.service', () => {
     it('it should return a list of pupils', async () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
-      spyOn(schoolDataService, 'findOne').and.returnValue(schoolMock)
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
       spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])
       spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
