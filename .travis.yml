@@ -45,7 +45,7 @@ sudo: required
 
 before_install:
 #  - "$CXX --version"
-  - sudo apt-get update --force
+  - sudo apt-get --allow-unauthenticated upgrade
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
 
