@@ -57,13 +57,14 @@ describe('pin.service', () => {
       })
     })
   })
+
   describe('getActiveSchool', () => {
     let service
     let school = Object.assign({}, schoolMock)
     school.pinExpiresAt = moment().startOf('day').add(16, 'hours')
     describe('if pin is valid', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('findOne').resolves(school)
+        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(school)
         sandbox.mock(pinValidator).expects('isActivePin').returns(true)
         service = proxyquire('../../services/pin.service', {
           '../../services/data-access/school.data.service': schoolDataService,
@@ -78,7 +79,7 @@ describe('pin.service', () => {
     })
     describe('if pin is invalid', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('findOne').resolves(school)
+        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(school)
         sandbox.mock(pinValidator).expects('isActivePin').returns(false)
         service = proxyquire('../../services/pin.service', {
           '../../services/data-access/school.data.service': schoolDataService,
@@ -130,6 +131,7 @@ describe('pin.service', () => {
       })
     })
   })
+  
   describe('expireMultiplePins', () => {
     it('it returns if no pupils have empty pins', async () => {
       const pupil = Object.assign({}, pupilMock)
