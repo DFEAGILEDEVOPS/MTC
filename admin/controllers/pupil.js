@@ -36,7 +36,7 @@ controller.postAddPupil = async (req, res, next) => {
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     const pupilData = {
       school: school.dfeNumber, // Change to `id` when saving to SQL Server
-      upn: req.body.upn && req.body.upn.trim().toUpperCase(),
+      upn: req.body.upn,
       foreName: req.body.foreName,
       lastName: req.body.lastName,
       middleNames: req.body.middleNames,
