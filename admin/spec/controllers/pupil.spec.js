@@ -59,10 +59,7 @@ describe('pupil controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
-        controller = proxyquire('../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService
-        }).getAddPupil
+        controller = require('../../controllers/pupil.js').getAddPupil
       })
 
       it('displays an add pupil page', async (done) => {
@@ -71,7 +68,6 @@ describe('pupil controller:', () => {
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
-        expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
       })
 
@@ -85,32 +81,10 @@ describe('pupil controller:', () => {
         done()
       })
     })
-
-    describe('when the school is not found in the database', () => {
-      beforeEach(() => {
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(undefined)
-        controller = proxyquire('../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService
-        }).getAddPupil
-      })
-
-      it('it throws an error', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        try {
-          await controller(req, res, next)
-          expect('this').toBe('thrown')
-        } catch (error) {
-          expect(error.message).toBe('School [9991999] not found')
-        }
-        expect(res.statusCode).toBe(200)
-        done()
-      })
-    })
   })
 
   describe('#postAddPupil route', () => {
-    let sandbox, controller, nextSpy, pupilAddServiceSpy, req, res
+    let sandbox, controller, nextSpy, pupilAddServiceSpy, schoolDataServiceSpy, req, res
     let goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
@@ -131,7 +105,9 @@ describe('pupil controller:', () => {
     describe('the pupilData is saved', () => {
       beforeEach(() => {
         pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
+          '../services/data-access/school.data.service': schoolDataService,
           '../services/pupil-add-service': pupilAddService
         }).postAddPupil
       })
@@ -154,7 +130,9 @@ describe('pupil controller:', () => {
         const validationError = new ValidationError()
         validationError.addError('upn', 'Mock error')
         pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').throws(validationError)
+        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
+          '../services/data-access/school.data.service': schoolDataService,
           '../services/pupil-add-service': pupilAddService
         })
       })

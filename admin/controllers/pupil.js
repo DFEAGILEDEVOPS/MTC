@@ -16,18 +16,10 @@ const controller = {}
 
 controller.getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add single pupil'
-  // school id from session
-  const schoolId = req.user.School
-  const school = await schoolDataService.sqlFindOneByDfeNumber(schoolId)
-  if (!school) {
-    throw new Error(`School [${schoolId}] not found`)
-  }
-
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
-      school: school,
       formData: req.body,
       error: error || new ValidationError(),
       breadcrumbs: req.breadcrumbs()
@@ -40,20 +32,21 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
   req.breadcrumbs(res.locals.pageTitle)
-  const pupilData = {
-    school: req.body.school,
-    upn: req.body.upn && req.body.upn.trim().toUpperCase(),
-    foreName: req.body.foreName,
-    lastName: req.body.lastName,
-    middleNames: req.body.middleNames,
-    gender: req.body.gender,
-    'dob-month': req.body['dob-month'],
-    'dob-day': req.body['dob-day'],
-    'dob-year': req.body['dob-year'],
-    pin: null,
-    pinExpired: false
-  }
   try {
+    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
+    const pupilData = {
+      school: school.dfeNumber, // Change to `id` when saving to SQL Server
+      upn: req.body.upn && req.body.upn.trim().toUpperCase(),
+      foreName: req.body.foreName,
+      lastName: req.body.lastName,
+      middleNames: req.body.middleNames,
+      gender: req.body.gender,
+      'dob-month': req.body['dob-month'],
+      'dob-day': req.body['dob-day'],
+      'dob-year': req.body['dob-year'],
+      pin: null,
+      pinExpired: false
+    }
     const pupil = await pupilAddService.addPupil(pupilData)
     req.flash('info', '1 new pupil has been added')
     const json = JSON.stringify([pupil._id])
@@ -152,7 +145,6 @@ controller.getEditPupilById = async (req, res, next) => {
     pupilData['dob-year'] = dob.format('YYYY')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/edit-pupil', {
-      school,
       formData: pupilData,
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs()
