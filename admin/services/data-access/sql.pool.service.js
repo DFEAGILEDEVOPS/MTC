@@ -2,6 +2,7 @@
 
 var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
+const winston = require('winston')
 // TODO add to config object
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
@@ -36,7 +37,7 @@ sqlPoolService.init = () => {
   if (pool !== null) return
   pool = new ConnectionPool(poolConfig, connectionConfig)
   pool.on('error', function (err) {
-    console.error(err)
+    winston.error(err)
   })
 }
 
