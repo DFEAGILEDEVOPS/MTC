@@ -1,17 +1,24 @@
 'use strict'
 
+const winston = require('winston')
+const { TYPES } = require('tedious')
+
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
 const PupilStatusCode = require('../../models/pupil-status-code')
 const pupilDataService = {}
+const table = '[pupil]'
+const sqlService = require('./sql.service')
 
 /**
  * Returns an object that consists of a plain JS school data and pupils.
  * @param {number} schoolId - School unique Id.
+ * @deprecated Use an sql* methods instead
  * @return {Object}
  */
 
 pupilDataService.getPupils = async (schoolId) => {
+  winston.warn('*** pupilDataService.getPupils is deprecated ***')
   const [ schoolData, pupils ] = await Promise.all([
     School.findOne({'_id': schoolId}).lean().exec(),
     Pupil.find({ school: schoolId }).sort({ createdAt: 1 }).lean().exec()
@@ -120,6 +127,23 @@ pupilDataService.unsetAttendanceCode = async function (id) {
  */
 pupilDataService.getStatusCodes = async () => {
   return PupilStatusCode.find().lean().exec()
+}
+
+/** SQL METHODS */
+
+/**
+ * Fetch all pupils for a school by dfeNumber sorted by pupil name
+ * @param {number} dfeNumber
+ * @return {Promise<results>}
+ */
+pupilDataService.sqlGetPupils = async function (dfeNumber) {
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const sql = `
+      SELECT p.*    
+      FROM ${table} p INNER JOIN school s ON s.id = p.school_id
+      WHERE s.dfeNumber = @dfeNumber      
+    `
+  return sqlService.query(sql, [paramDfeNumber])
 }
 
 module.exports = pupilDataService

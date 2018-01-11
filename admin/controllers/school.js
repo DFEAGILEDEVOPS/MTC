@@ -46,7 +46,7 @@ const getPupils = async (req, res, next) => {
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
   let pupilsFormatted
   try {
-    const { pupils } = await pupilDataService.getPupils(req.user.School)
+    const pupils = await pupilDataService.sqlGetPupils(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
       const { foreName, lastName, _id } = p
       const dob = dateService.formatShortGdsDate(p.dob)

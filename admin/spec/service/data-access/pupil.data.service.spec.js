@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
@@ -12,6 +12,7 @@ const PupilStatusCode = require('../../../models/pupil-status-code')
 const pupilMock = require('../../mocks/pupil')
 const schoolMock = require('../../mocks/school')
 const pupilStatusCodesMock = require('../../mocks/pupil-status-codes')
+const sqlService = require('../../../services/data-access/sql.service')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -190,6 +191,19 @@ describe('pupil.data.service', () => {
     it('should return a list of attendance codes', () => {
       service.getStatusCodes()
       expect(mock.verify()).toBe(true)
+    })
+  })
+
+  describe('#sqlGetPupils', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlGetPupils(12345678)
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(Array.isArray(res)).toBe(true)
     })
   })
 })
