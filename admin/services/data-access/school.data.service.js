@@ -2,12 +2,20 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
+const winston = require('winston')
+
 const sqlService = require('./sql.service')
 const School = require('../../models/school')
 const table = '[school]'
 const schoolDataService = {}
 
+/**
+ * @deprecated Please use an sql* method instead
+ * @param options
+ * @return {Promise<Promise|*>}
+ */
 schoolDataService.findOne = async function (options) {
+  winston.warn('*** schoolDataService.findOne is deprecated ***')
   return School.findOne(options).lean().exec()
 }
 
