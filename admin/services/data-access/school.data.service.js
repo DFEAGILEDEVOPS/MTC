@@ -2,21 +2,31 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
+const winston = require('winston')
+
 const sqlService = require('./sql.service')
 const School = require('../../models/school')
 const table = '[school]'
 const schoolDataService = {}
 
+/**
+ * @deprecated Please use an sql* method instead
+ * @param options
+ * @return {Promise<Promise|*>}
+ */
 schoolDataService.findOne = async function (options) {
+  winston.warn('*** schoolDataService.findOne is deprecated ***')
   return School.findOne(options).lean().exec()
 }
 
 /**
  * Find Schools by criteria: e.g. schoolDataService.find({_id: '1234'})
  * @param criteria
+ * @deprecated Use an sql* method instead
  * @return {Promise.<void>} - lean School objects
  */
 schoolDataService.find = async function (criteria) {
+  winston.warn('*** schoolDataService.find is deprecated ***')
   return School.find(criteria).lean().exec()
 }
 
@@ -25,10 +35,12 @@ schoolDataService.find = async function (criteria) {
  * Example: `const res = await schoolDataService.update({_id: 9991999}, { $set: {name: 'Some Primary School'}})`
  * Example: `const res = await schoolDataService.update({_id: 9991999}, { _id: 9991999, name: 'Some Primary School', anotherProp: someVal, ...})`
  * @param {object} id  - the _id to match in the db
+ * @deprecated Use an sql* method instead
  * @param {object} doc - the update to run
  * @return {Promise<void>} - E.g. `{ n: 1, nModified: 1, ok: 1 }`
  */
 schoolDataService.update = async function (id, doc) {
+  winston.warn('*** schoolDataService.update is deprecated ***')
   return School.updateOne({ _id: id }, doc).exec()
 }
 

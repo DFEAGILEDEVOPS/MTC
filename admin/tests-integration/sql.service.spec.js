@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail */
+/* global describe beforeAll it expect fail xit */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')

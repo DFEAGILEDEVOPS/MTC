@@ -38,9 +38,9 @@ const postSignIn = (req, res) => {
     case 'HEADTEACHER':
       return res.redirect(rolesConfig.HOME_TEACHER)
     case 'TEST-DEVELOPER':
-      return res.redirect(res.redirect(rolesConfig.HOME_TEST_DEVELOPER))
+      return res.redirect(rolesConfig.HOME_TEST_DEVELOPER)
     case 'SERVICE-MANAGER':
-      return res.redirect(res.redirect(rolesConfig.HOME_SERVICE_MANAGER))
+      return res.redirect(rolesConfig.HOME_SERVICE_MANAGER)
     default:
       return res.redirect(rolesConfig.HOME_TEACHER)
   }
