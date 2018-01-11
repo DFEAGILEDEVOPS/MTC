@@ -10,6 +10,7 @@ jobs:
       - image: circleci/node:8-browsers
     environment:
       TZ: Europe/London
+      ALLOWED_WORDS: "ant,bag,ben,bid,bin,box"
     steps:
       - checkout
       - restore_cache:
