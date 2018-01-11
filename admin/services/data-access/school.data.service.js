@@ -22,9 +22,11 @@ schoolDataService.findOne = async function (options) {
 /**
  * Find Schools by criteria: e.g. schoolDataService.find({_id: '1234'})
  * @param criteria
+ * @deprecated Use an sql* method instead
  * @return {Promise.<void>} - lean School objects
  */
 schoolDataService.find = async function (criteria) {
+  winston.warn('*** schoolDataService.find is deprecated ***')
   return School.find(criteria).lean().exec()
 }
 
