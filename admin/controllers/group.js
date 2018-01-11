@@ -84,7 +84,7 @@ const addGroup = async (req, res, next) => {
     name: req.body.name,
     pupils: req.body.pupil
   }
-
+  
   try {
     validationError = await groupValidator.validate(req.body)
   } catch (error) {
@@ -100,15 +100,16 @@ const addGroup = async (req, res, next) => {
       next(error)
     }
 
+    req.breadcrumbs('Group pupils', '/school/group-pupils')
     res.locals.pageTitle = 'Add group'
     req.breadcrumbs(res.locals.pageTitle)
 
     return res.render('groups/manage-group.ejs', {
       breadcrumbs: req.breadcrumbs(),
       action: 'Add',
-      group,
+      group: req.body,
       validation: validationError.errors,
-      pupilsList
+      pupilsList: pupilsList
     })
   }
 
@@ -137,23 +138,32 @@ const editGroup = async (req, res, next) => {
   }
 
   let group
+  let oldGroup
 
   try {
-    group = await groupService.getGroupById(req.body.groupId)
+    oldGroup = await groupService.getGroupById(req.body.groupId)
   } catch (error) {
     return next(error)
   }
 
-  const validationError = await groupValidator.validate(req.body, group.name)
+  group = {
+    name: req.body.name,
+    pupils: req.body.pupil,
+    _id: req.body.groupId,
+    isDeleted: false
+  }
+
+  const validationError = await groupValidator.validate(req.body, oldGroup.name)
   if (validationError.hasError()) {
     let pupilsList
 
     try {
-      pupilsList = await groupService.getPupils(req.user.School)
+      pupilsList = await groupService.getPupils(req.user.School, req.body.groupId)
     } catch (error) {
       return next(error)
     }
 
+    req.breadcrumbs('Group pupils', '/school/group-pupils')
     res.locals.pageTitle = 'Edit group'
     req.breadcrumbs(res.locals.pageTitle)
 
@@ -165,9 +175,6 @@ const editGroup = async (req, res, next) => {
       pupilsList
     })
   }
-
-  group.name = req.body.name
-  group.pupils = req.body.pupil
 
   try {
     group = await groupDataService.update(req.body.groupId, group)

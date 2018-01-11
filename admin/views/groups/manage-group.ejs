@@ -26,10 +26,11 @@
         <% if (typeof validation !== 'undefined') { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                Check the details in the groups form
+                You need to fix the errors on this page before continuing
             </h2>
-            <p>Check that the group name is no longer than 35 characters, has no forbidden characters and hasn't being already used.</p>
-            <p>Check that least one pupil has been selected</p>
+            <ul class="error-summary-list">
+                <li><a href="#group-name">See highlighted errors below</a></li>
+            </ul>
         </div>
         <% } %>
 
@@ -38,9 +39,9 @@
 
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
         <form method="post" action="/school/group-pupils/<%= action.toLowerCase() %>">
-            <div class="form-group">
+            <div class="form-group <%= typeof validation !== 'undefined' && validation.name ? 'form-group-error' : '' %>">
                 <label for="name" class="form-label-bold">
-                    <span class="bold-medium">1. New group name</span>
+                    <span class="bold-medium">1. New group name</span><a name="group-name"></a>
                 </label>
                 <span class="form-hint">For example, Class 4A</span>
                 <% if (typeof validation !== 'undefined' && validation.name) { %>
@@ -106,7 +107,7 @@
             <%- partial('partials/_sticky_confirmation_banner',
                     {
                         cancelLabel: 'Cancel',
-                        cancelLink: '/school/group-pupils/add',
+                        cancelLink: '/school/group-pupils',
                         submitLabel: 'Confirm',
                         isSubmitDisabled: true
                     })
