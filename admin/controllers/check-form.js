@@ -73,10 +73,6 @@ const uploadAndViewFormsPage = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const checkForm = await checkFormService.getCheckForm(id)
-    if (!checkForm) {
-      return next(new Error(`Unable to find check form with id [${id}]`))
-    }
     await checkFormService.deleteCheckForm(id)
   } catch (error) {
     return next(error)
@@ -193,7 +189,7 @@ const saveCheckForm = async (req, res, next) => {
   }
 
   fs.remove(deleteDir, err => {
-    if (err) winston.error(err)
+    if (err) winston.error(err.message)
   })
 
   try {
@@ -427,7 +423,7 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   try {
     await checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
-    req.flash('error', `Failing to unassigned form`)
+    req.flash('error', `Failed to unassign form`)
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
     return next(error)
   }
