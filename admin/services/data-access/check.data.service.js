@@ -99,9 +99,9 @@ checkDataService.findFullyPopulated = async function (criteria) {
  * involving 1 extra query per document set per sub-document.
  */
 checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
-  let sql = `SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id 
-   INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id 
-   INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id 
+  let sql = `SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id
+   INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id
+   INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id
    INNER JOIN mtc_admin.checkForm frm ON frm.id = chk.checkForm_id`
   let whereClause = ' WHERE chk.checkCode IN ('
   const params = []

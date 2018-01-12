@@ -83,7 +83,7 @@ const generateSetStatements = R.compose(
 const convertToDate = (v) => v.toDate()
 
 /**
- * Returns a bool indiciating the supplied object is a Moment object
+ * Returns a bool indicating the supplied object is a Moment object
  * @param v
  * @return {boolean}
  */
@@ -145,6 +145,9 @@ function parseResults (results) {
 
 /** SQL Service **/
 const sqlService = {}
+
+// Name of the admin database
+sqlService.adminSchema = '[mtc_admin]'
 
   /**
  * Query data from the SQL Server Database

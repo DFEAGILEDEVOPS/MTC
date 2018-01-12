@@ -3,19 +3,25 @@ class SqlDbHelper
   def self.pupil_details(upn)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
   def self.pupil_details_using_names(firstname, lastname)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
   def self.find_pupil_from_school(first_name, school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
   def self.find_teacher(name)
@@ -28,13 +34,17 @@ class SqlDbHelper
   def self.find_school(school_id)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    school_res = result.first
+    result.cancel
+    school_res
   end
 
   def self.find_school_by_dfeNumber(school_dfeNumber)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE dfeNumber='#{school_dfeNumber}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    school_res = result.first
+    result.cancel
+    school_res
   end
 
   def self.list_of_pupils_from_school(school_id)
@@ -69,23 +79,27 @@ class SqlDbHelper
   end
 
   def self.get_settings
-    @array_of_setting = []
-    sql = "SELECT * FROM [mtc_admin].[setting]"
+    sql = "SELECT * FROM [mtc_admin].[settings]"
     result = SQL_CLIENT.execute(sql)
-    @array_of_setting = result.each{|row| row.map}
+    settings_res = result.first
+    result.cancel
+    settings_res
   end
 
   def self.latest_setting_log
-    @array_of_settingLog = []
     sql = "SELECT * FROM [mtc_admin].[settingsLog] ORDER BY createdAt DESC"
     result = SQL_CLIENT.execute(sql)
-    @array_of_settingLog = result.each{|row| row.map}
+    settingsLog_res = result.first
+    result.cancel
+    settingsLog_res
   end
 
   def self.check_window_details(check_name)
     sql = "SELECT * FROM [mtc_admin].[checkWindow] WHERE name = '#{check_name}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    chk_window_res = result.first
+    result.cancel
+    chk_window_res
   end
 
   def self.check_windows
@@ -98,7 +112,9 @@ class SqlDbHelper
   def self.check_form_details(check_form_name)
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE name = '#{check_form_name}'"
     result = SQL_CLIENT.execute(sql)
-    result.first
+    chk_form_res = result.first
+    result.cancel
+    chk_form_res
   end
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)

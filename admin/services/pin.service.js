@@ -25,11 +25,11 @@ pinService.getPupilsWithActivePins = async (schoolId) => {
 
 /**
  * Get active school Password
- * @param schoolId
+ * @param {number} dfeNumber
  * @returns {String}
  */
-pinService.getActiveSchool = async (schoolId) => {
-  const school = await schoolDataService.findOne({_id: schoolId})
+pinService.getActiveSchool = async (dfeNumber) => {
+  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!pinValidator.isActivePin(school.schoolPin, school.pinExpiresAt)) {
     return null
   }
