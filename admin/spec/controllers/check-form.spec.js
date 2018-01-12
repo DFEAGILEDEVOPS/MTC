@@ -698,7 +698,7 @@ describe('check-form controller:', () => {
         req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
         await controller(req, res, next)
-        expect(checkWindowDataService.fetchCheckWindow).not.toHaveBeenCalled()
+        expect(checkWindowDataService.sqlFetchCheckWindow).not.toHaveBeenCalled()
         expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
         expect(res.render).not.toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe(undefined)

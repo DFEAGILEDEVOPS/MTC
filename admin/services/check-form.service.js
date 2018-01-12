@@ -6,7 +6,6 @@ const moment = require('moment')
 const config = require('../config')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
-const winston = require('winston')
 
 const checkFormService = {
   /**
@@ -63,11 +62,11 @@ const checkFormService = {
    */
   populateFromFile: function (checkForm, absCsvFile) {
     if (!checkForm) {
-      throw new Error('Check form arguments missing')
+      throw new Error('Check form argument missing')
     }
 
     if (!absCsvFile) {
-      throw new Error('CSV file arguments missing')
+      throw new Error('CSV file argument missing')
     }
     const checkFormData = []
 
@@ -75,7 +74,7 @@ const checkFormService = {
       csv.fromPath(absCsvFile, { headers: false, trim: true })
         .on('readable', function () {
           if (checkFormService.isRowCountValid(absCsvFile) !== true) {
-            reject(new Error(`Invalid number of lines`))
+            reject(new Error(`Invalid number of lines:`))
           }
         })
         .validate((row) => {

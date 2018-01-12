@@ -28,7 +28,7 @@ const checkFormDataService = {
    * @param id
    * @returns {Promise<*>}
    */
-  sqlGetActiveForm: (id) => {
+  sqlGetActiveForm: (id = undefined) => {
     let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
     const params = []
     if (id) {
