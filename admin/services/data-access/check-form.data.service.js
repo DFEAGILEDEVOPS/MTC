@@ -129,18 +129,28 @@ const checkFormDataService = {
       sortOrder = 'DESC'
     }
     const params = []
-    const sql = `SELECT cf.*, cw.[name] FROM [mtc_admin].[checkForm] cf
-    INNER JOIN [mtc_admin].[checkFormWindow] fw
-        ON cf.id = fw.checkForm_id
-    INNER JOIN [mtc_admin].[checkWindow] cw
-      ON cw.id = fw.checkWindow_id
-    WHERE cf.isDeleted=0 AND fw.checkWindow_id=@windowId
-    ORDER BY cw.[name] ${sortOrder}`
-    params.push({
-      name: 'windowId',
-      value: windowId,
-      type: TYPES.Int
-    })
+    let sql
+    if (windowId) {
+      sql = `SELECT cf.*, cw.[name] FROM [mtc_admin].[checkForm] cf
+      INNER JOIN [mtc_admin].[checkFormWindow] fw
+          ON cf.id = fw.checkForm_id
+      INNER JOIN [mtc_admin].[checkWindow] cw
+        ON cw.id = fw.checkWindow_id
+      WHERE cf.isDeleted=0 AND fw.checkWindow_id=@windowId
+      ORDER BY cw.[name] ${sortOrder}`
+      params.push({
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      })
+    } else {
+      sql = `SELECT DISTINCT cf.id, cf.[name], cf.isDeleted FROM [mtc_admin].[checkForm] cf
+      LEFT OUTER JOIN [mtc_admin].[checkFormWindow] fw
+          ON cf.id = fw.checkForm_id
+      LEFT OUTER JOIN [mtc_admin].[checkWindow] cw
+        ON cw.id = fw.checkWindow_id
+      ORDER BY cf.name ${sortOrder}`
+    }
     return sqlService.query(sql, params)
   },
 

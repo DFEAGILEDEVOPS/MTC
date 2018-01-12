@@ -214,7 +214,7 @@ const checkFormService = {
   checkWindowNames: (checkWindows) => {
     let checkWindowsName = []
     checkWindows.forEach(cw => {
-      checkWindowsName.push(' ' + cw.checkWindowName)
+      checkWindowsName.push(' ' + cw.name)
     })
     return checkWindowsName
   },

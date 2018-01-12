@@ -231,15 +231,16 @@ const displayCheckForm = async (req, res) => {
   }
 
   try {
-    checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+    checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([formId])
   } catch (error) {
+    // WARN how would this ever be shown????
     req.flash(`Unable to find check window(s) for active check form: ${error.message}`)
     return res.redirect('/test-developer/upload-and-view-forms')
   }
 
-  if (checkWindows[req.params.formId]) {
-    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows[req.params.formId])
-    formData.canDelete = checkFormService.canDelete(checkWindows[req.params.formId])
+  if (checkWindows && checkWindows.length > 0) {
+    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows)
+    formData.canDelete = checkFormService.canDelete(checkWindows)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
