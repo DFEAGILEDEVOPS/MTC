@@ -298,13 +298,14 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
+    checkWindow = checkWindow[0]
   } catch (error) {
     return next(error)
   }
 
   try {
-    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow._id)
+    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.id)
   } catch (error) {
     return next(error)
   }
@@ -312,8 +313,8 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-forms', {
-    checkWindowId: checkWindowId,
-    checkWindowName: checkWindow.checkWindowName,
+    checkWindowId: checkWindow.id,
+    checkWindowName: checkWindow.name,
     checkFormsList,
     breadcrumbs: req.breadcrumbs()
   })
@@ -327,8 +328,8 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const saveAssignCheckFormsToWindow = async (req, res, next) => {
-  const postedForms = req.body.checkForm
-  const totalForms = Object.values(postedForms).length
+  const postedFormIds = req.body.checkForm
+  const totalForms = Object.values(postedFormIds).length
   const checkWindowName = req.body.checkWindowName || 'N/A'
 
   // Validate again that at least one check form has been ticked
@@ -343,20 +344,21 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
   }
 
   let checkWindowId = req.body.checkWindowId
-  let checkWindow
+//  let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+    // checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
+    await checkWindowService.assignFormsToWindow(checkWindowId, postedFormIds)
   } catch (error) {
     return next(error)
   }
-
+/*
   try {
     checkWindow.forms = checkWindowService.mergedFormIds(checkWindow.forms, Object.values(req.body.checkForm))
     await checkWindowDataService.create(checkWindow)
   } catch (error) {
     return next(error)
-  }
+  } */
 
   req.flash('info', `${totalForms} forms have been assigned to ${checkWindowName}`)
   res.redirect('/test-developer/assign-form-to-window')
@@ -380,21 +382,25 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
-    checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.forms)
+    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
+    if (!checkWindow || checkWindow.length === 0) {
+      req.flash('error', 'check window not found')
+      return res.redirect('/test-developer/assign-form-to-window')
+    }
+    checkWindow = checkWindow[0]
+    checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.id)
+    res.locals.pageTitle = checkWindow.name
+    req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('test-developer/unassign-check-forms', {
+      checkWindowId: checkWindow.id,
+      checkWindowName: checkWindow.name,
+      checkFormsList,
+      breadcrumbs: req.breadcrumbs()
+    })
   } catch (error) {
     return next(error)
   }
-
-  res.locals.pageTitle = checkWindow.checkWindowName
-  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
-  req.breadcrumbs(res.locals.pageTitle)
-  res.render('test-developer/unassign-check-forms', {
-    checkWindowId: checkWindowId,
-    checkWindowName: checkWindow.checkWindowName,
-    checkFormsList,
-    breadcrumbs: req.breadcrumbs()
-  })
 }
 
 /**

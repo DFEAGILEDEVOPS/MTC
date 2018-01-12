@@ -150,7 +150,7 @@ const sqlService = {}
  * Query data from the SQL Server Database
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
- * @return {Promise<results>}
+ * @return {Promise<*>}
  */
 sqlService.query = (sql, params) => {
   return new Promise(async (resolve, reject) => {

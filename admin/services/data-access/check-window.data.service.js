@@ -226,6 +226,19 @@ const checkWindowDataService = {
     whereClause = whereClause + ')'
     sql = sql + whereClause + ' ORDER BY cw.checkStartDate'
     return sqlService.query(sql, params)
+  },
+  sqlAssignFormsToWindow: async (checkWindowId, checkFormIds) => {
+    const inserts = []
+    for (let index = 0; index < checkFormIds.length; index++) {
+      const formId = checkFormIds[index]
+      inserts.push(sqlService.create('[checkFormWindow]',
+        {
+          checkForm_id: formId,
+          checkWindow_id: checkWindowId
+        }
+      ))
+    }
+    return Promise.all(inserts)
   }
 }
 

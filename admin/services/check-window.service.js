@@ -144,6 +144,9 @@ const checkWindowService = {
       resultArray.push(parseInt(f))
     })
     return resultArray
+  },
+  assignFormsToWindow: async (checkWindowId, checkFormIds) => {
+    return checkWindowDataService.sqlAssignFormsToWindow(checkWindowId, checkFormIds)
   }
 }
 
