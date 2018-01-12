@@ -137,19 +137,16 @@ const checkFormService = {
     }
 
     if (formData.length > 0) {
-      var formIds = formData.map(f => f.id)
-      const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2(formIds)
-      winston.debug(checkWindows)
-      formData.forEach(f => {
-        f.removeLink = true
-        if (checkWindows[f.id]) {
-          f.checkWindows = checkWindows[f.id].map(cw => { return cw.name })
-          f.removeLink = moment(f.checkStartDate).isAfter(moment())
+      for (let index = 0; index < formData.length; index++) {
+        const form = formData[index]
+        const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([form.id])
+        if (checkWindows.length > 0) {
+          form.checkWindows = checkWindows.map(cw => cw.name)
+          form.removeLink = moment(form.checkStartDate).isAfter(moment())
         } else {
-          f.checkWindows = []
+          form.checkWindows = []
         }
-      })
-
+      }
       // TODO - why on earth does a service have a view concern inside it?
       // TODO - this must be moved to the view
       formData.forEach(f => {
