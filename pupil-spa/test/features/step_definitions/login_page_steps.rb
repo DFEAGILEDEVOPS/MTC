@@ -24,7 +24,7 @@ Then(/^I should be taken to the sign in failure page$/) do
 end
 
 When(/^I attempt to login with just a pupil pin$/) do
-  sign_in_page.pupil_pin.set '9999a'
+  sign_in_page.pupil_pin.set '9999'
   sign_in_page.sign_in_button.click
 end
 
@@ -77,8 +77,8 @@ end
 Given(/^I have attempted to enter a school I do not attend upon login$/) do
   sign_in_page.load
   MongoDbHelper.expire_pin("Automated","Account",9991999,false)
-  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
-  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
+  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999")
+  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999")
   schools = MongoDbHelper.get_list_of_schools.delete_if{|a| a['_id'] == @pupil_information['school']}
   sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
   sign_in_page.sign_in_button.click
