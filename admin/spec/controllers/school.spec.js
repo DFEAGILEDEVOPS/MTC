@@ -59,7 +59,7 @@ describe('school controller:', () => {
         spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
         spyOn(pupilsNotTakingCheckDataService, 'fetchPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
-        controller = proxyquire('../../controllers/school', {}).getPupilNotTakingCheck
+        controller = require('../../controllers/school').getPupilNotTakingCheck
       })
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
@@ -79,7 +79,7 @@ describe('school controller:', () => {
         spyOn(pupilDataService, 'getSortedPupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         spyOn(pupilsNotTakingCheckService, 'sortPupilsByReason').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
-        controller = proxyquire('../../controllers/school', {}).getSelectPupilNotTakingCheck
+        controller = require('../../controllers/school').getSelectPupilNotTakingCheck
       })
 
       it('should display reasons and pupils', async (done) => {

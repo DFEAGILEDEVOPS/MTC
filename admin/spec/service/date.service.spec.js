@@ -30,6 +30,11 @@ describe('date service', () => {
       expect(dateService.formatFullGdsDate(date)).toBe('31 December 2010')
     })
 
+    it('can be given a moment object as input', () => {
+      const date = moment('2010-12-31 14:10Z')
+      expect(dateService.formatFullGdsDate(date)).toBe('31 December 2010')
+    })
+
     invalidInputTests('formatFullGdsDate')
   })
 

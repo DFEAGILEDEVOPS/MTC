@@ -18,13 +18,13 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
  * Get pupils who are eligible for restart
- * @param schoolId
+ * @param dfeNumber
  * @returns {Array}
  */
-restartService.getPupils = async (schoolId) => {
-  const school = await schoolDataService.findOne({_id: schoolId})
-  if (!school) throw new Error(`School [${schoolId}] not found`)
-  let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
+restartService.getPupils = async (dfeNumber) => {
+  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  if (!school) throw new Error(`School [${dfeNumber}] not found`)
+  let pupils = await pupilDataService.getSortedPupils(dfeNumber, 'lastName', 'asc')
   pupils = await Promise.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
     if (isPupilEligible) return p

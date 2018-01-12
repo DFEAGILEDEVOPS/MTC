@@ -155,20 +155,20 @@ module.exports.validate = function (req) {
     if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
       adminStartDate = moment.utc(
         req.body['adminStartYear'] + '-' +
-        req.body['adminStartMonth'] + '-' +
-        req.body['adminStartDay'])
+        (req.body['adminStartMonth'].padStart(2, '0')) + '-' +
+        (req.body['adminStartDay']).padStart(2, '0'))
     }
     if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
       checkStartDate = moment.utc(
         req.body['checkStartYear'] + '-' +
-        req.body['checkStartMonth'] + '-' +
-        req.body['checkStartDay'])
+        (req.body['checkStartMonth'].padStart(2, '0')) + '-' +
+        (req.body['checkStartDay'].padStart(2, '0')))
     }
     if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear']) {
       checkEndDate = moment.utc(
         req.body['checkEndYear'] + '-' +
-        req.body['checkEndMonth'] + '-' +
-        req.body['checkEndDay'])
+        (req.body['checkEndMonth'].padStart(2, '0')) + '-' +
+        (req.body['checkEndDay'].padStart(2, '0')))
     }
     try {
       if (!req.body.checkWindowId) { // Adding
