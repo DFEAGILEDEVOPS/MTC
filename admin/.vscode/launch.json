@@ -9,18 +9,6 @@
       "request": "launch",
       "name": "Node Debugger",
       "program": "${workspaceFolder}/server.js"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jasmine Individual Test",
-      "program": "${workspaceRoot}/node_modules/jasmine/bin/jasmine.js",
-      "args": [
-          "spec/service/check-form.service.populateFormFile.spec.js"
-      ],
-      "env": {
-          "NODE_PATH": "."
-      }
-  }
+    }
   ]
 }
