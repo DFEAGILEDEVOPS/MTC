@@ -14,6 +14,7 @@ const fourPmToday = () => {
 }
 
 const pinGenerationService = {}
+const chars = '23456789'
 
 /**
  * Fetch pupils and filter required only pupil attributes
@@ -91,7 +92,6 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
 pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const chars = '23456789'
     const allowedWords = (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
     const firstRandomWord = allowedWords.length > 0 ? allowedWords[Math.floor(Math.random() * allowedWords.length)] : ''
     const secondRandomWord = allowedWords.length > 0 ? allowedWords[Math.floor(Math.random() * allowedWords.length)] : ''
@@ -107,18 +107,7 @@ pinGenerationService.generateSchoolPassword = (school) => {
  * @returns {String}
  */
 pinGenerationService.generatePupilPin = () => {
-  const chars = '23456789'
   return randomGenerator.getRandom(4, chars)
-}
-
-/**
- * Generate Random Pin
- * @param length
- * @returns {String}
- */
-pinGenerationService.generateRandomPin = (length) => {
-  const chars = '23456789bcdfghjkmnpqrstvwxyz'
-  return randomGenerator.getRandom(length, chars)
 }
 
 module.exports = pinGenerationService
