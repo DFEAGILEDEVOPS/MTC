@@ -233,7 +233,6 @@ const displayCheckForm = async (req, res) => {
     req.flash(`Unable to find check window(s) for active check form: ${error.message}`)
     return res.redirect('/test-developer/upload-and-view-forms')
   }
-
   if (checkWindows && checkWindows.length > 0) {
     formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows)
     formData.canDelete = checkFormService.canDelete(checkWindows)
@@ -340,21 +339,12 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
   }
 
   let checkWindowId = req.body.checkWindowId
-//  let checkWindow
 
   try {
-    // checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
     await checkWindowService.assignFormsToWindow(checkWindowId, postedFormIds)
   } catch (error) {
     return next(error)
   }
-/*
-  try {
-    checkWindow.forms = checkWindowService.mergedFormIds(checkWindow.forms, Object.values(req.body.checkForm))
-    await checkWindowDataService.create(checkWindow)
-  } catch (error) {
-    return next(error)
-  } */
 
   req.flash('info', `${totalForms} forms have been assigned to ${checkWindowName}`)
   res.redirect('/test-developer/assign-form-to-window')
