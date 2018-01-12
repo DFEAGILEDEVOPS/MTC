@@ -306,7 +306,7 @@ input {
   @extend .form-group;
 
   input, a {
-    margin-right: em(20);
+    margin-right: 15px; // 'pem' returns the wrong conversion to px.
   }
 }
 
@@ -321,7 +321,6 @@ input {
   @include button($grey-3);
 
   margin-top: em(20);
-  margin-left: pem(10px);
 
   &:not(:last-child) {
     margin-right: pem(10px);
@@ -404,6 +403,18 @@ table.spacious {
 
   tr {
     border-bottom: 1px solid $grey-2;
+  }
+
+  th, td {
+    &:first-child {
+      white-space: nowrap;
+      width: 50%;
+    }
+
+    &:not(:first-child) {
+      white-space: nowrap;
+      width: 25%;
+    }
   }
 
   th {

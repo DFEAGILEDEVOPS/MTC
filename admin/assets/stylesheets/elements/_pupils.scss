@@ -37,10 +37,11 @@
 #register-pupils {
   table-layout: fixed;
 
-  td {
-    padding-top: pem(10px);
-    padding-bottom: pem(10px);
-  }
+  // @TODO: to be deleted
+  //td {
+  //  padding-top: pem(10px);
+  //  padding-bottom: pem(10px);
+  //}
 }
 
 .pupil-name-container {
@@ -49,27 +50,30 @@
   position: relative;
 }
 
-.table-cell {
-  padding-left: pem(10px);
-  padding-right: pem(10px);
-}
+// @TODO: to be deleted
+//.table-cell {
+//  padding-left: pem(10px);
+//  padding-right: pem(10px);
+//}
 
+// @TODO: to be deleted
 // Pupil listing - highlight pupils
-.highlight {
-  border-left: 7px solid $green;
-  height: 80%;
-  left: 0;
-  position: absolute;
-  right: 7px;
-  top: 10%;
-  width: 7px;
-}
+//.highlight {
+//  border-left: 7px solid $green;
+//  height: 80%;
+//  left: 0;
+//  position: absolute;
+//  right: 7px;
+//  top: 10%;
+//  width: 7px;
+//}
 
+// @TODO: To be deleted
 // pupil listing - centering method using padding
-.pupil-name {
-  padding-bottom: 0.4em;
-  padding-top: 0.4em;
-}
+//.pupil-name {
+//  padding-bottom: 0.4em;
+//  padding-top: 0.4em;
+//}
 
 // pupil listing indent highlighted lines as the 'highlight' is positioned absolutely
 .indent {
@@ -84,9 +88,10 @@
   white-space: nowrap;
 }
 
-.two-thirds {
-  width: 66%;
-}
+// @TODO: to be deleted
+//.two-thirds {
+//  width: 66%;
+//}
 
 // Add multiple pupil
 
