@@ -13,7 +13,7 @@ markingService.batchMark = async function (batchIds) {
     throw new Error('No documents to mark')
   }
 
-  const completedChecks = await completedCheckDataService.find({_id: {'$in': batchIds}})
+  const completedChecks = await completedCheckDataService.findChecksWithIds(batchIds) // await completedCheckDataService.find({_id: {'$in': batchIds}})
 
   for (let cc of completedChecks) {
     try {
@@ -46,13 +46,6 @@ markingService.mark = async function (completedCheck) {
       answer.isCorrect = false
     }
   }
-
-  // TODO this will be set in the check table
-  completedCheck.isMarked = true
-  completedCheck.markedAt = new Date()
-
-  // TODO this call will be superfluous as the check record will be updated
-  await completedCheckDataService.save(completedCheck)
 
   // update the check meta info
   await checkDataService.sqlUpdateCheckWithResults(completedCheck.data.pupil.checkCode, results.marks, results.maxMarks, results.processedAt)

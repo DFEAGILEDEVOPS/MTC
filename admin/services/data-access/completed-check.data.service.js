@@ -1,11 +1,12 @@
 'use strict'
 
 const CompletedChecks = require('../../models/completed-checks')
-const sqlService = require('../data-access/sql.service')
+const sqlService = require('./sql.service')
 const completedCheckDataService = {}
 
 /**
  * Query : find a completedCheck document that has not been marked
+ * @deprecated
  * @type {{$or: [null,null]}}
  */
 const unmarkedQueryCriteria = {
@@ -18,12 +19,17 @@ const unmarkedQueryCriteria = {
 /**
  * Create a new Check
  * @param data
+ * @deprecated
  * @return {Promise}
  */
 completedCheckDataService.create = async function (data) {
   const completedCheck = new CompletedChecks(data)
   return completedCheck.save()
 } // used by check-complete.service to insert pupil check
+
+completedCheckDataService.sqlCreate = async function (data) {
+  return sqlService.create('[check]', data)
+}
 
 /**
  * Updates check record with results
@@ -38,9 +44,21 @@ completedCheckDataService.sqlAddResult = async function (data) {
   return sqlService.update('[check]', checkDataParam)
 }
 
-// TODO burn this
+/**
+ * updates check document
+ * @deprecated use sqlUpdate instead
+ * @param {*} doc
+ */
 completedCheckDataService.save = async function (doc) {
   return CompletedChecks.replaceOne({_id: doc._id}, doc).exec()
+}
+
+/**
+ * updates the check record
+ * @param {object} check the check to update
+ */
+completedCheckDataService.sqlUpdate = async (check) => {
+
 }
 
 /**
