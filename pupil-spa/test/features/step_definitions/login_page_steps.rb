@@ -96,7 +96,7 @@ end
 
 Given(/^I am logged in with a user who needs speech synthesis$/) do
   sign_in_page.load
-  sign_in_page.login("abc12345","8888a")
+  sign_in_page.login("abc12345","8888")
   sign_in_page.sign_in_button.click
 end
 
