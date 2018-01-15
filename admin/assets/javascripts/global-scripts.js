@@ -36,6 +36,7 @@ $(function () {
         }
       })
     },
+
     /**
      * 'Select all' checkbox link.
      * @param sel
@@ -53,6 +54,7 @@ $(function () {
         stickyBanner.toggle(validationStatus || true)
       })
     },
+
     /**
      * 'Deselect all' checkbox link.
      * @param sel
@@ -70,6 +72,7 @@ $(function () {
         $(sel + ' > input:checkbox').attr('data-checked', null)
       })
     },
+
     /**
      * Manage checkboxes and dependencies.
      * @param sel
@@ -103,6 +106,7 @@ $(function () {
         }
       })
     },
+
     /**
      * Manage radio button status and dependencies.
      * @param sel
@@ -122,6 +126,24 @@ $(function () {
         }
       })
     },
+
+    /**
+     * Detect if textbox has changed.
+     * @param sel
+     * @param validation
+     * @returns {boolean}
+     */
+    textFieldStatus: function (sel, validation) {
+      if (!sel) { return false }
+      $(sel).on('change keyup', function (e) {
+        if (e.currentTarget.value.trim().length > 0 && validation()) {
+          stickyBanner.toggle(true)
+        } else {
+          stickyBanner.toggle(false)
+        }
+      })
+    },
+
     /**
      * @param checkboxParent
      */
@@ -129,6 +151,7 @@ $(function () {
       var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox:checked').not('#tickAllCheckboxes')
       return el.length || 0
     },
+
     /**
      * @param checkboxParent
      */
@@ -136,6 +159,7 @@ $(function () {
       var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox').not('#tickAllCheckboxes')
       return el.length
     },
+
     /**
      * @param totalCount
      */
@@ -254,6 +278,36 @@ $(function () {
   }
 
   /**
+   * Methods for 'pupils groups'.
+   * @type {{isCheckboxChecked: isCheckboxChecked, isGroupNameComplete: *}}
+   */
+  var pupilGroups = {
+    /**
+     * Is there at least one checkbox checked?
+     * @returns {boolean}
+     */
+    isCheckboxChecked: function () {
+      var elCheckboxes = $('.multiple-choice-mtc > input:checkbox:checked')
+      return elCheckboxes.length > 0
+    },
+    /**
+     * Check if name field is not empty.
+     * @returns {boolean}
+     */
+    isGroupNameComplete: function () {
+      var elName = $('input#name').val()
+      return elName.length > 0
+    },
+    /**
+     * Validation rules.
+     * @returns {*}
+     */
+    validateForm: function () {
+      return pupilGroups.isCheckboxChecked() && pupilGroups.isGroupNameComplete()
+    }
+  }
+
+  /**
    * Sticky banner positioning.
    */
   function stickyBannerPositioning () {
@@ -311,5 +365,16 @@ $(function () {
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', assignForm.validateForm)
+  }
+
+  if ($('#groupPupil').length > 0) {
+    inputStatus.toggleAllCheckboxes('#groupPupil', pupilGroups.validateForm)
+    inputStatus.selectAll('.multiple-choice-mtc')
+    inputStatus.deselectAll('.multiple-choice-mtc')
+    inputStatus.checkboxStatus('.multiple-choice-mtc', pupilGroups.validateForm)
+    inputStatus.textFieldStatus('input#name', pupilGroups.validateForm)
+    if (pupilGroups.validateForm()) {
+      stickyBanner.toggle(true)
+    }
   }
 })
