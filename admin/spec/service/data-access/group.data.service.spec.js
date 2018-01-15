@@ -24,7 +24,7 @@ describe('GroupDataService', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(Group).expects('find').chain('collation').chain('sort').chain('lean').chain('exec').resolves(groupsMock)
+      mock = sandbox.mock(Group).expects('find').chain('sort').chain('lean').chain('exec').resolves(groupsMock)
       service = proxyquire('../../../services/data-access/group.data.service', {
         '../../models/group': Group
       })
