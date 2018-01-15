@@ -75,8 +75,7 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
   // Apply the updates to the pupil object(s)
   pupils.forEach(pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
-      const length = 5
-      pupil.pin = pinGenerationService.generateRandomPin(length)
+      pupil.pin = pinGenerationService.generatePupilPin()
       pupil.pinExpiresAt = fourPmToday()
     }
   })
@@ -96,6 +95,15 @@ pinGenerationService.generateSchoolPassword = (school) => {
   const newPin = pinGenerationService.generateRandomPin(length)
   const newExpiry = fourPmToday()
   return { pin: newPin, pinExpiresAt: newExpiry }
+}
+
+/**
+ * Generate Pupil Pin
+ * @returns {String}
+ */
+pinGenerationService.generatePupilPin = () => {
+  const chars = '23456789'
+  return randomGenerator.getRandom(4, chars)
 }
 
 /**
