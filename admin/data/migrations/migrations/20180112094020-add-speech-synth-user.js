@@ -28,6 +28,7 @@ module.exports = {
           gender: 'M',
           dob: moment.utc('2009-11-30 00:00:00'),
           pin: '8888',
+          isTestAccount: true,
           pinExpiresAt: moment.utc('2025-12-31 23:59:59'),
           checkOptions: {
             speechSynthesis: true
