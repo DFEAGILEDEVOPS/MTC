@@ -149,9 +149,10 @@ describe('pin-generation.service', () => {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('when pin has not been generated', async (done) => {
+      it('when pin has not been generated and include only numbers', async (done) => {
         const pupils = await pinGenerationService.generatePupilPins([ pupil1._id, pupil2._id ])
-        expect(pupils[ 0 ].pin.length).toBe(5)
+        expect(pupils[ 0 ].pin.length).toBe(4)
+        expect(/[a-z]/i.test(pupils[ 0 ].pin)).toBe(false)
         expect(pupils[ 0 ].pinExpiresAt).toBeDefined()
         done()
       })

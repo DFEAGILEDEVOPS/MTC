@@ -155,7 +155,7 @@ end
 
 Then(/^all pupil pins should be generated from the specified pool of characters$/) do
   pins_array = generate_pupil_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
-  pins_array.each {|pin| pin.split('').each {|char| expect("23456789bcdfghjkmnpqrstvwxyz").to include char}}
+  pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
 end
 
 Then(/^school password should be generated from the specified pool of characters$/) do
