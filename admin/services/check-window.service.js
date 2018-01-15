@@ -34,7 +34,7 @@ const checkWindowService = {
    * @param {Array<number>} formIds an array of integer formIds
    */
   getCheckWindowsAssignedToFormsV2: async (formIds) => {
-    return checkWindowDataService.sqlFetchCheckWindowsAssignedToForms(formIds)
+    return checkWindowDataService.sqlFindCheckWindowsAssignedToForms(formIds)
   },
 
   /**

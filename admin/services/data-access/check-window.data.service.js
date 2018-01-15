@@ -189,7 +189,7 @@ const checkWindowDataService = {
   sqlCreate: async (data) => {
     return sqlService.create('[checkWindow]', data)
   },
-  sqlFetchCheckWindowsAssignedToForms: async (formIds) => {
+  sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
     INNER JOIN mtc_admin.checkFormWindow cfw
       ON cw.id = cfw.[checkWindow_id]`
