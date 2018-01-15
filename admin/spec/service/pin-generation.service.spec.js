@@ -190,8 +190,10 @@ describe('pin-generation.service', () => {
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
         expect(result.schoolPin.length).toBe(8)
-        expect(/[a-z]/i.test(result.schoolPin)).toBe(true)
-        expect(/[1-9]/i.test(result.schoolPin)).toBe(true)
+        const schoolPin = result.schoolPin
+        expect(/[a-z]{3}/.test(schoolPin.slice(0, 3))).toBe(true)
+        expect(/[1-9]{2}/.test(schoolPin.slice(3, 5))).toBe(true)
+        expect(/[a-z]{3}/.test(schoolPin.slice(5, 8))).toBe(true)
       })
     })
 
