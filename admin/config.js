@@ -19,7 +19,7 @@ module.exports = {
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
   Data: {
-    allowedWords: process.env.ALLOWED_WORDS
+    allowedWords: process.env.ALLOWED_WORDS || 'ant,bag,ben,bid,bin,box'
   },
   Sql: {
     Enabled: process.env.SQL_ENABLED || false,
