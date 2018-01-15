@@ -367,7 +367,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Add reason'
+  res.locals.pageTitle = 'Select pupil and reason'
   req.breadcrumbs('Pupils not taking the check', '/school/pupils-not-taking-check')
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -453,11 +453,12 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // @TODO: Auditing (to be discussed)
   try {
-    for (var index = 0; index < pupilsData.length; index++) {
+    for (let index = 0; index < pupilsData.length; index++) {
       const pupil = pupilsData[index]
       await pupilDataService.update({_id: pupil._id}, pupil)
     }
-    req.flash('info', `${pupilsData.length} pupil reasons updated`)
+    const reasonText = pupilsData.length > 1 ? 'reasons' : 'reason'
+    req.flash('info', `${pupilsData.length} ${reasonText} updated`)
   } catch (error) {
     return next(error)
   }

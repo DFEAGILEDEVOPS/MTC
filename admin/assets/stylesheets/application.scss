@@ -174,6 +174,10 @@ hr.divider {
   padding-bottom: $gutter-half;
 }
 
+.wrap-text {
+  word-wrap: break-word;
+}
+
 // Visibility
 
 .hidden {
