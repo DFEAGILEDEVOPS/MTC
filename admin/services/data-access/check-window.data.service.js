@@ -110,9 +110,9 @@ const checkWindowDataService = {
     let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
 
     if (isCurrent === true) {
-      isDeleted += ` AND checkEndDate >= @currentTimestamp`
+      criteria += ` AND checkEndDate >= @currentTimestamp`
     } else {
-      isDeleted += ` AND checkEndDate <= @currentTimestamp`
+      criteria += ` AND checkEndDate <= @currentTimestamp`
     }
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
     switch (sortBy) {
@@ -121,7 +121,7 @@ const checkWindowDataService = {
         break
       case 'adminStartDate':
       case 'checkStartDate':
-      // all 3 are acceptable as-is
+      // are acceptable as-is
         break
       default:
       // anything else should default to checkWindow name

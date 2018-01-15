@@ -303,7 +303,7 @@ const saveCheckWindows = async (req, res, next) => {
     checkWindow = {}
   }
 
-  checkWindow.checkWindowName = req.body['checkWindowName']
+  checkWindow.name = req.body['checkWindowName']
   if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
     checkWindow.adminStartDate = dateService.formatDateFromRequest(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
   }
@@ -315,7 +315,7 @@ const saveCheckWindows = async (req, res, next) => {
   // Auditing? Question for BAs.
 
   try {
-    await checkWindowDataService.create(checkWindow)
+    await checkWindowDataService.sqlCreate(checkWindow)
     req.flash('info', flashMessage)
   } catch (error) {
     winston.info('Could not save check windows data.', error)
