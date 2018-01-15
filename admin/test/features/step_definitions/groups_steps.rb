@@ -220,3 +220,17 @@ end
 Given(/^groups have been previoulsy created$/) do
   step 'I have created a group'
 end
+
+Given(/^I can see the sticky banner$/) do
+  step "I am on the create group page"
+  step "I enter a valid group name"
+  step "select a pupil"
+end
+
+When(/^decide to cancel creating a group$/) do
+  add_edit_groups_page.sticky_banner.cancel.click
+end
+
+Then(/^I should be returned to the group hub page$/) do
+  expect(group_pupils_page).to be_displayed
+end

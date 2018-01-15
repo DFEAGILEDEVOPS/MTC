@@ -31,7 +31,6 @@ Feature:
     When group name is longer than 35 characters
     Then I should see a validation error for the group name
 
-  @wip
   Scenario: Group names cannot contain special characters
     Given I am on the create group page
     Then I should see validation errors for group name when I enter the following special characters
@@ -97,7 +96,6 @@ Feature:
     Given I want to edit a previously added group
     Then I should be able to edit the group name
 
-
   Scenario: Duplicate group names cannot be used
     Given I have created a group
     When I attempt to use the same group name for a new group
@@ -108,19 +106,16 @@ Feature:
     When I attempt to use the same group name for a new group with a different case
     Then I should see an error for duplicate group name
 
-  @wip
   Scenario: Cancel in the sticky banner returns the user to the previous page
+    Given I can see the sticky banner
+    When decide to cancel creating a group
+    Then I should be returned to the group hub page
 
   @wip
   Scenario: List of pupils is sorted via surname
-    Given I am on the create group page
-    Then pupil names should be sorted by surname
 
   @wip
   Scenario: DOB is displayed for pupils with the same names
-    Given there are 2 pupils with the same names
-    When I want to create a new group
-    Then I should see DOB displayed to differentiate the pupils
 
   @wip
   Scenario: Middle name is displayed when pupils have the same name and DOB
