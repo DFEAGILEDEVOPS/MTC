@@ -72,7 +72,7 @@ const checkWindowDataService = {
    * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
    * @param sortDirection valid values are [asc|desc]
    * @param isCurrent
-   * @deprecated use sqlFetchCheckWindows
+   * @deprecated use sqlFind
    * @returns {Promise.<*>}
    */
   fetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
@@ -105,7 +105,7 @@ const checkWindowDataService = {
    * @param isCurrent
    * @returns {Promise.<void>}
    */
-  sqlFetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
+  sqlFind: async (sortBy, sortDirection, isDeleted, isCurrent) => {
     const currentTimestamp = moment.utc().toDate()
     let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
 
@@ -177,7 +177,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFetchCurrentCheckWindows: async (sortBy, sortDirection) => {
-    return checkWindowDataService.sqlFetchCheckWindows(sortBy, sortDirection, false, true)
+    return checkWindowDataService.sqlFind(sortBy, sortDirection, false, true)
   },
   /**
    * Fetch (non-deleted) past check windows by sort by, sort direction
@@ -186,7 +186,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFetchPastCheckWindows: async (sortBy, sortDirection) => {
-    return checkWindowDataService.sqlFetchCheckWindows(sortBy, sortDirection, false, false)
+    return checkWindowDataService.sqlFind(sortBy, sortDirection, false, false)
   },
   /**
    * Create a new check window

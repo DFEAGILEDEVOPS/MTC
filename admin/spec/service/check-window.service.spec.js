@@ -44,7 +44,7 @@ describe('check-window.service', () => {
 
     describe('Happy path', () => {
       beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCheckWindows').resolves(checkWindowsMock)
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFind').resolves(checkWindowsMock)
       })
 
       it('should return check windows grouped by form id', () => {
@@ -56,7 +56,7 @@ describe('check-window.service', () => {
 
     describe('Unhappy path', () => {
       beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCheckWindows').rejects(new Error('ERROR retrieving check windows'))
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFind').rejects(new Error('ERROR retrieving check windows'))
       })
 
       it('should return an error', async (done) => {

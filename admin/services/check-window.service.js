@@ -62,7 +62,6 @@ const checkWindowService = {
               data[formId].push(cw)
             })
           })
-  
           // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
           // before summer.
           Object.getOwnPropertyNames(data).forEach(d => {
