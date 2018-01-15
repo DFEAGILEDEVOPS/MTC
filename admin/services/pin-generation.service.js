@@ -1,5 +1,7 @@
 const moment = require('moment')
 const mongoose = require('mongoose')
+const bluebird = require('bluebird')
+const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const randomGenerator = require('../lib/random-generator')
@@ -93,13 +95,30 @@ pinGenerationService.generateSchoolPassword = (school) => {
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
     const allowedWords = (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
-    const firstRandomWord = allowedWords.length > 0 ? allowedWords[Math.floor(Math.random() * allowedWords.length)] : ''
-    const secondRandomWord = allowedWords.length > 0 ? allowedWords[Math.floor(Math.random() * allowedWords.length)] : ''
+    const firstRandomWord = allowedWords.length > 0
+      ? allowedWords[pinGenerationService.generateCryptoRandomNumber(0, allowedWords.length - 1)] : ''
+    const secondRandomWord = allowedWords.length > 0
+      ? allowedWords[pinGenerationService.generateCryptoRandomNumber(0, allowedWords.length - 1)] : ''
     const numberCombination = randomGenerator.getRandom(2, chars)
     school.schoolPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
     school.pinExpiresAt = fourPmToday()
   }
   return school
+}
+
+/**
+ * Generating random numbers in specific range using crypto.randomBytes from crypto library
+ * Maximum available range is 281474976710655 or 256^6-1
+ * Maximum number for range must be equal or less than Number.MAX_SAFE_INTEGER (usually 9007199254740991)
+ * @param minimum
+ * @param maximum
+ * @returns {Number}
+*/
+pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
+  const maxDec = 281474976710656
+  const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
+  let result = Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)
+  return result
 }
 
 /**

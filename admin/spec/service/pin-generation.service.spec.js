@@ -8,7 +8,6 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const checkDataService = require('../../services/data-access/check.data.service')
 const pinGenerationService = require('../../services/pin-generation.service')
 const restartService = require('../../services/restart.service')
-const config = require('../../config')
 
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
@@ -220,6 +219,33 @@ describe('pin-generation.service', () => {
         const password = school.schoolPin
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.schoolPin === password).toBeFalsy()
+      })
+    })
+  })
+  describe('generateCryptoRandomNumber', () => {
+    it('should generate a random number in specific range', () => {
+      const number = pinGenerationService.generateCryptoRandomNumber(1, 6)
+      expect(typeof number).toBe('number')
+      expect(number >= 0 || number <= 6).toBeTruthy()
+    })
+    it('should approximately generate numbers with similar probability chance', () => {
+      const numbersArr = []
+      const length = 1000
+      for (let index = 0; index < length; index++) {
+        numbersArr.push(pinGenerationService.generateCryptoRandomNumber(1, 5))
+      }
+      let counters = numbersArr.reduce((acc, curr) => {
+        if (typeof acc[ curr ] === 'undefined') {
+          acc[ curr ] = 1
+        } else {
+          acc[ curr ] += 1
+        }
+        return acc
+      }, [])
+      counters = Object.values(counters)
+      counters.forEach((c, i) => {
+        const sample = Math.floor((counters[ i ] = c / length) * 100)
+        expect(sample >= 0 && sample <= 25).toBeTruthy()
       })
     })
   })
