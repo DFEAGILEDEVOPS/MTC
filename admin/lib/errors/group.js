@@ -2,8 +2,8 @@
 
 module.exports.group = {
   nameIsRequired: 'Group name is required',
-  nameInvalidCharacters: 'Check the group name doesn\'t contain special characters',
-  nameIsTooLong: 'Group name can\'t contain more than 35 characters',
-  nameAlreadyExists: 'Group name already exists',
+  nameInvalidCharacters: 'Enter a group name without special characters',
+  nameIsTooLong: 'Enter a group name in no more than 35 characters',
+  nameAlreadyExists: ' already exists. Enter a different name.',
   missingPupils: 'Assign pupils to this group'
 }

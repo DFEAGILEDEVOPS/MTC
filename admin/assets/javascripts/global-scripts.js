@@ -136,8 +136,10 @@ $(function () {
     textFieldStatus: function (sel, validation) {
       if (!sel) { return false }
       $(sel).on('change keyup', function (e) {
-        if (e.currentTarget.value.length > 0 && validation()) {
+        if (e.currentTarget.value.trim().length > 0 && validation()) {
           stickyBanner.toggle(true)
+        } else {
+          stickyBanner.toggle(false)
         }
       })
     },
@@ -175,6 +177,7 @@ $(function () {
      * @param status
      */
     toggle: function (status) {
+      stickyBannerPositioning()
       if (status === false) {
         $('#stickyBanner').removeClass('show')
       } else {
@@ -302,6 +305,26 @@ $(function () {
     validateForm: function () {
       return pupilGroups.isCheckboxChecked() && pupilGroups.isGroupNameComplete()
     }
+  }
+
+  /**
+   * Sticky banner positioning.
+   */
+  function stickyBannerPositioning () {
+    var windowHeight = $(window).height()
+    var documentHeight = $(document).height()
+    var footerHeight = $('#footer').height()
+    var distance = documentHeight - windowHeight - footerHeight - 10
+    var stickyBanner = $('#stickyBanner')
+
+    $(document).scroll(function () {
+      var y = $(this).scrollTop()
+      if (y > distance) {
+        stickyBanner.css({ bottom: y - distance })
+      } else {
+        stickyBanner.css({ bottom: 0 })
+      }
+    })
   }
 
   /**

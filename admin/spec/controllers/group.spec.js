@@ -10,8 +10,8 @@ const groupService = require('../../services/group.service')
 const groupDataService = require('../../services/data-access/group.data.service')
 const groupValidator = require('../../lib/validator/group-validator')
 const groupMock = require('../mocks/group')
-const groupDeletedMock = require('../mocks/group-deleted')
 const groupsMock = require('../mocks/groups')
+const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
 describe('group.js controller', () => {

@@ -8,6 +8,8 @@ const groupDataService = require('../../services/data-access/group.data.service'
 
 module.exports.validate = async (groupData, oldName) => {
   let validationError = new ValidationError()
+  let isValid = false
+  let groupName
 
   // Group name
   if (!groupData.name || isEmpty(groupData.name.trim())) {
@@ -15,19 +17,23 @@ module.exports.validate = async (groupData, oldName) => {
   }
 
   if (!isEmpty(groupData.name.trim())) {
-    if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name)) {
+    // Allow only latin alphabet characters, numbers, hyphens and single quotes.
+    if (!XRegExp('^[\\p{Latin}-\' 0-9]+$').test(groupData.name.trim())) {
       validationError.addError('name', groupErrorMessages.nameInvalidCharacters)
+      isValid = true
     }
   }
 
   if (groupData.name.length >= 35) {
     validationError.addError('name', groupErrorMessages.nameIsTooLong)
+    isValid = true
   }
 
-  if ((oldName && oldName.toLowerCase() !== groupData.name.toLowerCase()) || !oldName) {
-    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name, 'ig') }, 'isDeleted': false})
+  // Don't query the DB if at this point group name is not valid.
+  if ((oldName !== groupData.name.trim().toLowerCase() || !oldName.toLowerCase()) && !isValid) {
+    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name.trim(), 'ig') }, 'isDeleted': false })
     if (group !== null) {
-      validationError.addError('name', groupErrorMessages.nameAlreadyExists)
+      validationError.addError('name', groupData.name.trim() + groupErrorMessages.nameAlreadyExists)
     }
   }
 
