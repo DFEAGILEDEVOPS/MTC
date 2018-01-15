@@ -37,7 +37,7 @@ const checkWindowDataService = {
   },
   /**
    * Set check window as deleted.
-   * @deprecated use sqlSetDeletedCheckWindow
+   * @deprecated use sqlDeleteCheckWindow
    * @param id
    * @returns {Promise.<void>}
    */
@@ -50,7 +50,7 @@ const checkWindowDataService = {
    * @param id
    * @returns {Promise.<void>}
    */
-  sqlSetDeletedCheckWindow: async (id) => {
+  sqlDeleteCheckWindow: async (id) => {
     const params = [
       {
         name: 'id',
