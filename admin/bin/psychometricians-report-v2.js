@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING, async function (error) {
       if (process.argv[2] === '-f') {
         // force the report to re-process all marks
         winston.info('force detected: re-processing all checks')
-        await completedCheckDataService.update({}, {$set: {isMarked: false}}, {multi: true})
+        await completedCheckDataService.sqlSetAllUnmarked()
       }
     }
 

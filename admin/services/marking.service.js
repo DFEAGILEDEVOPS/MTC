@@ -13,7 +13,7 @@ markingService.batchMark = async function (batchIds) {
     throw new Error('No documents to mark')
   }
 
-  const completedChecks = await completedCheckDataService.findChecksWithIds(batchIds) // await completedCheckDataService.find({_id: {'$in': batchIds}})
+  const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
 
   for (let cc of completedChecks) {
     try {
