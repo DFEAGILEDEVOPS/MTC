@@ -12,7 +12,7 @@ const conditions = {
   lastName: 'Account',
   gender: 'M',
   dob: moment.utc('20000101', 'YYYYMMDD'),
-  pin: '9999a'
+  pin: '9999'
 }
 
 const update = {
