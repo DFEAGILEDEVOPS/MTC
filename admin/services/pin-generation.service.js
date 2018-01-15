@@ -126,7 +126,8 @@ pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
  * @returns {String}
  */
 pinGenerationService.generatePupilPin = () => {
-  return randomGenerator.getRandom(4, chars)
+  const pupilPinLength = 4
+  return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
 module.exports = pinGenerationService
