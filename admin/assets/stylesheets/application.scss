@@ -67,7 +67,13 @@ $mainstream-brand: $department-for-education;
   white-space: nowrap;
 }
 
-.add-title-margin {
+.wrap-text {
+  word-wrap: break-word;
+}
+
+// Sidebar
+
+.sidebar {
   margin-top: 40px;
 }
 
@@ -142,40 +148,22 @@ hr.divider {
   }
 }
 
-// Layout, alignments and positions
+// General alignments, positions and spacing.
 
 .text-center {
   text-align: center;
-}
-
-.right {
-  float: right;
 }
 
 .align-right {
   text-align: right;
 }
 
-.left-padding {
+.left-padding-30 {
   padding-left: $gutter;
 }
 
-.padding-first-item,
-.padding-top {
-  margin-top: $gutter-and-a-half;
-}
-
-.side-padding {
-  padding-left: $gutter;
-  padding-right: $gutter;
-}
-
-.bottom-padding {
-  padding-bottom: $gutter-half;
-}
-
-.wrap-text {
-  word-wrap: break-word;
+.top-padding-30 {
+  margin-top: $gutter;
 }
 
 // Visibility
@@ -327,11 +315,11 @@ input {
   margin-top: em(20);
 
   &:not(:last-child) {
-    margin-right: pem(10px);
+    margin-right: pem(10);
   }
 
   @include ie(8) {
-    margin-right: pem(10px);
+    margin-right: pem(10);
   }
 
   @include media(tablet) {
@@ -341,6 +329,11 @@ input {
 
 .button-single {
   margin-left: 0;
+}
+
+.button-wrapper {
+  padding-top: pem(5);
+  margin-bottom: 0;
 }
 
 .link-button {
@@ -363,6 +356,11 @@ input {
 
 .link-button:active {
   color: $link-hover-colour;
+}
+
+.link-icon-wrapper {
+  padding-top: pem(10);
+  padding-bottom: pem(25);
 }
 
 // Errors

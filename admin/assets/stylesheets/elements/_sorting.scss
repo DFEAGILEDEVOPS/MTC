@@ -15,15 +15,18 @@
 table.spacious {
   &.sorting {
     font-size: pem(14px);
+  }
+}
 
-    a {
+table.spacious,
+table.spacious.sorting {
+  a {
+    span {
+      margin-left: pem(7px);
+
       span {
-        margin-left: pem(7px);
-
-        span {
-          font-size: pem(12px);
-          display: none;
-        }
+        font-size: pem(12px);
+        display: none;
       }
     }
   }

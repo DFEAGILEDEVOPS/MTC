@@ -107,9 +107,10 @@
   margin-right: 6px;
 }
 
-.template-link {
-  cursor: pointer;
-}
+// @TODO: To be deleted
+//.template-link {
+//  cursor: pointer;
+//}
 
 .panel, .warning-panel, .panel-no-border {
   margin-bottom: 0;
@@ -127,4 +128,12 @@
     content: " ";
     padding-left: 28px;
   }
+}
+
+.school-pin-wrapper {
+  padding-top: 15px;
+}
+
+.school-pin-pin {
+  padding-top: 10px;
 }
