@@ -17,7 +17,7 @@ const checkFormService = {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first.
     // UPDATE: There is a PBI to ensure randomness. This work is pending.
-    const checkForm = await checkFormDataService.sqlGetActiveForm()
+    const checkForm = await checkFormDataService.sqlFindActiveForm()
     if (!checkForm) {
       throw new Error('CheckForm not found')
     }
@@ -37,7 +37,7 @@ const checkFormService = {
    * @param formId the id of the form
    */
   getCheckForm: async (formId) => {
-    let form = await checkFormDataService.sqlGetActiveForm(formId)
+    let form = await checkFormDataService.sqlFindActiveFormById(formId)
     if (form && form.length > 0) {
       form = form[0]
       form.questions = JSON.parse(form.formData)

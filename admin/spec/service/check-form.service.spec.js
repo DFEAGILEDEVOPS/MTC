@@ -23,7 +23,7 @@ describe('check-form.service', () => {
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
       '../services/data-access/check-form.data.service': {
-        sqlGetActiveForm: jasmine.createSpy().and.callFake(cb),
+        sqlFindActiveForm: jasmine.createSpy().and.callFake(cb),
         getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
         findCheckFormByName: jasmine.createSpy().and.callFake(cb),
         isRowCountValid: jasmine.createSpy().and.callFake(cb)

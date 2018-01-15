@@ -10,7 +10,7 @@ const checkFormDataService = {
   /**
    * Get form by id (if passed), when isDeleted is false.
    * Return Mongoose object.
-   * @deprecated use sqlGetActiveForm
+   * @deprecated use sqlFindActiveForm
    * @param id
    */
   getActiveForm: (id) => {
@@ -22,13 +22,24 @@ const checkFormDataService = {
     return CheckForm.findOne(query).exec()
   },
 
-  /**
-   * Get form by id (if passed), otherwise just an active form
+    /**
+   * Get active forms
    * This will be deprecated when the form choice algorithm is introduced
    * @param id
    * @returns {Promise<*>}
    */
-  sqlGetActiveForm: (id = undefined) => {
+  sqlFindActiveForm: (id = undefined) => {
+    let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
+    return sqlService.query(sql)
+  },
+
+  /**
+   * Get active form by id
+   * This will be deprecated when the form choice algorithm is introduced
+   * @param id
+   * @returns {Promise<*>}
+   */
+  sqlFindActiveFormById: (id) => {
     let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
     const params = []
     if (id) {
@@ -45,8 +56,8 @@ const checkFormDataService = {
   /**
    * Get check form when isDeleted is false.
    * Return plain javascript object.
-   * This method will not be refactored as all calls should be repointed to sqlGetActiveForm.
-   * @deprecated use sqlGetActiveForm
+   * This method will not be refactored as all calls should be repointed to sqlFindActiveFormById.
+   * @deprecated use sqlFindActiveFormById
    * @returns {Promise}
    */
   getActiveFormPlain: (id) => {
