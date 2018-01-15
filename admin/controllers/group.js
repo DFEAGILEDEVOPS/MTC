@@ -84,7 +84,7 @@ const addGroup = async (req, res, next) => {
     name: req.body.name,
     pupils: req.body.pupil
   }
-  
+
   try {
     validationError = await groupValidator.validate(req.body)
   } catch (error) {
@@ -100,6 +100,7 @@ const addGroup = async (req, res, next) => {
       next(error)
     }
 
+    req.body.pupils = req.body.pupil
     req.breadcrumbs('Group pupils', '/school/group-pupils')
     res.locals.pageTitle = 'Add group'
     req.breadcrumbs(res.locals.pageTitle)
