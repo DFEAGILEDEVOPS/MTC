@@ -43,6 +43,7 @@ function createTestPupil () {
       pin: '9999',
       pinExpired: false,
       hasAttended: false,
+      isTestAccount: true,
       upn: upnService.calculateCheckLetter('999199900001') + '999199900001',
       checkOptions: { speechSynthesis: false }
     })
