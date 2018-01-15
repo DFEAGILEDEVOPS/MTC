@@ -95,7 +95,7 @@ Feature: Generate Pupil PINs
 
   Scenario: Pupil pins should consist of 5 characters
     Given I have generated a pin for a pupil
-    Then the pin should consist of 5 characters
+    Then the pin should consist of 4 characters
 
   Scenario: Generated pupil pins are stored in the DB alongside the pupil
     Given I have generated a pin for a pupil
