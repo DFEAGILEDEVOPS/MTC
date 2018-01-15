@@ -206,7 +206,7 @@ end
 Then(/^I should see an error for duplicate group name$/) do
   expect(add_edit_groups_page.error_summary).to be_all_there
   expect(add_edit_groups_page).to have_name_already_in_use
-  expect(add_edit_groups_page.name_already_in_use.text).to eql @group_name + ' already exists'
+  expect(add_edit_groups_page.name_already_in_use.text).to eql @group_name + ' already exists. Enter a different name.'
 end
 
 When(/^I attempt to use the same group name for a new group with a different case$/) do
