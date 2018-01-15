@@ -110,8 +110,8 @@ pinGenerationService.generateSchoolPassword = (school) => {
  * Generating random numbers in specific range using crypto.randomBytes from crypto library
  * Maximum available range is 281474976710655 or 256^6-1
  * Maximum number for range must be equal or less than Number.MAX_SAFE_INTEGER (usually 9007199254740991)
- * @param minimum
- * @param maximum
+ * @param minimum - inclusive
+ * @param maximum - inclusive
  * @returns {Number}
 */
 pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
