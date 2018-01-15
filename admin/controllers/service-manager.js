@@ -197,7 +197,7 @@ const checkWindowsForm = async (req, res, next) => {
 
   if (req.params.id !== undefined) {
     try {
-      checkWindowData = await checkWindowDataService.sqlFetchCheckWindow(req.params.id)
+      checkWindowData = await checkWindowDataService.sqlFindOneById(req.params.id)
 
       const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
       const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
@@ -266,7 +266,7 @@ const saveCheckWindows = async (req, res, next) => {
     urlActionName = 'edit'
     flashMessage = 'Changes have been saved'
 
-    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(req.body.checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFindOneById(req.body.checkWindowId)
   }
 
   if (validationError.hasError()) {
@@ -340,7 +340,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   try {
-    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(req.params.checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFindOneById(req.params.checkWindowId)
   } catch (err) {
     return next(err)
   }

@@ -476,12 +476,12 @@ describe('check-form controller:', () => {
     describe('#assignCheckFormToWindowPage - Page to assign check forms to chosen check window', () => {
       describe('Happy path', () => {
         beforeEach(() => {
-          spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue([
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
             {
               id: 1,
               name: 'window 1'
             }
-          ])
+          )
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
           controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
@@ -494,7 +494,7 @@ describe('check-form controller:', () => {
           req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
 
           await controller(req, res, next)
-          expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+          expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
           expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms')
@@ -506,7 +506,7 @@ describe('check-form controller:', () => {
 
       describe('Unhappy path - When checkWindowDataService.fetchCheckWindow fails', () => {
         beforeEach(() => {
-          spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
           controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
@@ -520,7 +520,7 @@ describe('check-form controller:', () => {
 
           try {
             await controller(req, res, next)
-            expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+            expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
             expect(checkFormService.getUnassignedFormsForCheckWindow).not.toHaveBeenCalled()
             expect(res.locals.pageTitle).toBe('Assign forms')
             expect(res.statusCode).toBe(200)
@@ -535,10 +535,10 @@ describe('check-form controller:', () => {
 
       describe('#assignCheckFormToWindowPage - Unhappy path - When checkFormService.getUnassignedFormsForCheckWindow fails', () => {
         beforeEach(() => {
-          spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue([{
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue({
             id: 1,
             name: 'window 1'
-          }])
+          })
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           controller = require('../../controllers/check-form').assignCheckFormToWindowPage
         })
@@ -552,7 +552,7 @@ describe('check-form controller:', () => {
 
           try {
             await controller(req, res, next)
-            expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+            expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
             expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
             expect(res.locals.pageTitle).toBe('Assign forms')
             expect(res.statusCode).toBe(200)
@@ -568,11 +568,8 @@ describe('check-form controller:', () => {
 
     describe('#saveAssignCheckFormsToWindow - Save forms to chosen check window', () => {
       describe('Happy path', () => {
-        // const mergedFormIds = [5, 6, 7, 8]
         beforeEach(() => {
-          // spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue(checkWindowMock)
           spyOn(checkWindowService, 'assignFormsToWindow').and.returnValue(Promise.resolve())
-          // spyOn(checkFormService, 'create').and.returnValue(Promise.resolve(checkFormMock))
           controller = require('../../controllers/check-form').saveAssignCheckFormsToWindow
         })
 
@@ -588,11 +585,7 @@ describe('check-form controller:', () => {
           }
 
           await controller(req, res, next)
-          // expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
           expect(checkWindowService.assignFormsToWindow).toHaveBeenCalled()
-          // expect(checkFormDataService.create).toHaveBeenCalled()
-          // expect(res.statusCode).toBe(302)
-          // expect(next).not.toHaveBeenCalled()
           done()
         })
       })
@@ -604,12 +597,11 @@ describe('check-form controller:', () => {
           const assignedCheckForms = [
             { 'id': 100, 'name': 'MTC0100' }
           ]
-          spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue([
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
             {
               id: 1,
               name: 'window 1'
-            }
-          ])
+            })
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
           controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
         })
@@ -622,7 +614,7 @@ describe('check-form controller:', () => {
           req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
           await controller(req, res, next)
-          expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+          expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
           expect(checkFormService.getAssignedFormsForCheckWindow).toHaveBeenCalled()
           expect(res.render).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('window 1')
@@ -637,7 +629,7 @@ describe('check-form controller:', () => {
           const assignedCheckForms = [
             {'_id': 100, 'name': 'MTC0100'}
           ]
-          spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)
           controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
         })
@@ -650,7 +642,7 @@ describe('check-form controller:', () => {
           req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
           await controller(req, res, next)
-          expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+          expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
           expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
           expect(res.render).not.toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe(undefined)
@@ -663,12 +655,10 @@ describe('check-form controller:', () => {
 
     describe('Unhappy path - When checkFormService.getAssignedFormsForCheckWindow', () => {
       beforeEach(() => {
-        spyOn(checkWindowDataService, 'sqlFetchCheckWindow').and.returnValue([
-          {
-            id: 1,
-            name: 'window 1'
-          }
-        ])
+        spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue({
+          id: 1,
+          name: 'window 1'
+        })
         spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
         controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
       })
@@ -681,7 +671,7 @@ describe('check-form controller:', () => {
         req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
         await controller(req, res, next)
-        expect(checkWindowDataService.sqlFetchCheckWindow).toHaveBeenCalled()
+        expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
         expect(checkFormService.getAssignedFormsForCheckWindow).toHaveBeenCalled()
         expect(res.render).not.toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe(undefined)
@@ -698,7 +688,7 @@ describe('check-form controller:', () => {
         req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
         await controller(req, res, next)
-        expect(checkWindowDataService.sqlFetchCheckWindow).not.toHaveBeenCalled()
+        expect(checkWindowDataService.sqlFindOneById).not.toHaveBeenCalled()
         expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
         expect(res.render).not.toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe(undefined)

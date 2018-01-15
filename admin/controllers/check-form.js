@@ -293,8 +293,7 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
-    checkWindow = checkWindow[0]
+    checkWindow = await checkWindowDataService.sqlFindOneById(checkWindowId)
   } catch (error) {
     return next(error)
   }
@@ -368,12 +367,11 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.sqlFetchCheckWindow(checkWindowId)
-    if (!checkWindow || checkWindow.length === 0) {
+    checkWindow = await checkWindowDataService.sqlFindOneById(checkWindowId)
+    if (!checkWindow) {
       req.flash('error', 'check window not found')
       return res.redirect('/test-developer/assign-form-to-window')
     }
-    checkWindow = checkWindow[0]
     checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.id)
     res.locals.pageTitle = checkWindow.name
     req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')

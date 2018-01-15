@@ -5,12 +5,13 @@ const CheckWindow = require('../../models/check-window')
 const winston = require('winston')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const R = require('ramda')
 
 const checkWindowDataService = {
   /**
    * Fetch check window document by id.
    * @param id
-   * @deprecated use sqlFetchCheckWindow
+   * @deprecated use sqlFindOneById
    * @returns {Promise.<*>}
    */
   fetchCheckWindow: async (id) => {
@@ -20,9 +21,9 @@ const checkWindowDataService = {
     /**
    * Fetch check window document by id.
    * @param id
-   * @returns {Promise.<*>}
+   * @returns {Promise.<void>}
    */
-  sqlFetchCheckWindow: async (id) => {
+  sqlFindOneById: async (id) => {
     const sql = 'SELECT * FROM [mtc_admin].[checkWindow] WHERE isDeleted=0 AND id=@id'
     const params = [
       {
@@ -31,7 +32,8 @@ const checkWindowDataService = {
         type: TYPES.Int
       }
     ]
-    return sqlService.query(sql, params)
+    const rows = await sqlService.query(sql, params)
+    return R.head(rows)
   },
   /**
    * Set check window as deleted.
