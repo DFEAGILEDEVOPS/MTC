@@ -185,7 +185,7 @@ const checkWindowDataService = {
    * @param sortDirection
    * @returns {Promise.<*|Promise.<void>>}
    */
-  sqlFetchPastCheckWindows: async (sortBy, sortDirection) => {
+  sqlFindPast: async (sortBy, sortDirection) => {
     return checkWindowDataService.sqlFind(sortBy, sortDirection, false, false)
   },
   /**
