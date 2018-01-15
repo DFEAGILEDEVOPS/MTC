@@ -5,7 +5,8 @@ class AddEditGroupsPage < SitePrism::Page
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
   section :error_summary, '.error-summary' do
     element :heading, 'h2', text: 'You need to fix the errors on this page before continuing'
-    element :message, 'li a', text: "See highlighted errors below"
+    element :message, 'p', text: "See highlighted errors below"
+    element :message, 'li a'
   end
   element :length_error, '.error-message', text: "Enter a group name in no more than 35 characters"
   element :special_char_error, '.error-message', text: "Enter a group name without special characters"
