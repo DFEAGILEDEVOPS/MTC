@@ -350,7 +350,7 @@ const removeCheckWindow = async (req, res, next) => {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {
-        await checkWindowDataService.sqlSetDeletedCheckWindow(req.params.checkWindowId)
+        await checkWindowDataService.sqlDeleteCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')
