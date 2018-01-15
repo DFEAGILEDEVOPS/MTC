@@ -46,9 +46,7 @@ describe('check form service.populateFromFile', () => {
     const file = path.join(__dirname, '/../../', csvFile)
     try {
       checkForm = await service.populateFromFile(checkForm, file)
-      console.log('formData:', checkForm.formData)
       const questions = JSON.parse(checkForm.formData)
-      console.log('asObject:', questions)
       expect(questions.length).toBe(config.LINES_PER_CHECK_FORM)
       // check last question is 12 x 12
       expect(questions[9].f1).toBe(12)
