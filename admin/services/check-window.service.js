@@ -49,7 +49,7 @@ const checkWindowService = {
       let data = {}
 
       try {
-        checkWindows = await checkWindowDataService.sqlFetchCurrentCheckWindows('', '')
+        checkWindows = await checkWindowDataService.sqlFindCurrent('', '')
         if (checkWindows) {
           checkWindows.forEach(cw => {
             cw.forms.forEach(formId => {
@@ -115,7 +115,7 @@ const checkWindowService = {
    */
   getCurrentCheckWindowsAndCountForms: async () => {
     let checkWindowsList = null
-    let checkWindowsListData = await checkWindowDataService.sqlFetchCurrentCheckWindows('', '')
+    let checkWindowsListData = await checkWindowDataService.sqlFindCurrent('', '')
     if (checkWindowsListData) {
       checkWindowsList = checkWindowsListData.map((cw) => {
         return {

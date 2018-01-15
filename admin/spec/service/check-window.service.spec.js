@@ -44,7 +44,7 @@ describe('check-window.service', () => {
 
     describe('Happy path', () => {
       beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFind').resolves(checkWindowsMock)
+        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFindCurrent').resolves(checkWindowsMock)
       })
 
       it('should return check windows grouped by form id', () => {
@@ -112,7 +112,7 @@ describe('check-window.service', () => {
     let fetchCurrentCheckWindowsStub
 
     beforeEach(() => {
-      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFetchCurrentCheckWindows').resolves(checkWindowsMock)
+      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFindCurrent').resolves(checkWindowsMock)
     })
 
     it('should return an object with _id, checkWindowName and totalForms items', () => {

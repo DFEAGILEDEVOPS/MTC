@@ -139,7 +139,7 @@ const getCheckWindows = async (req, res, next) => {
 
   // Get current check windows
   try {
-    checkWindows = await checkWindowDataService.sqlFetchCurrentCheckWindows(sortField, sortDirection)
+    checkWindows = await checkWindowDataService.sqlFindCurrent(sortField, sortDirection)
     checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true, false)
   } catch (error) {
     return next(error)
@@ -147,7 +147,7 @@ const getCheckWindows = async (req, res, next) => {
 
   // Get past check windows
   try {
-    checkWindows = await checkWindowDataService.sqlFetchPastCheckWindows(sortField, sortDirection)
+    checkWindows = await checkWindowDataService.sqlFindPast(sortField, sortDirection)
     checkWindowsPast = checkWindowService.formatCheckWindowDocuments(checkWindows, false, false)
   } catch (error) {
     return next(error)
