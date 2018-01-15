@@ -17,9 +17,9 @@ end
 Given(/^I have logged in$/) do
   sign_in_page.load
   MongoDbHelper.expire_pin("Automated","Account",9991999,false)
-  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999a")
-  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999a")
-  sign_in_page.login("abc12345","9999a")
+  MongoDbHelper.reset_pin("Automated","Account",9991999,"9999")
+  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999")
+  sign_in_page.login("abc12345","9999")
   sign_in_page.sign_in_button.click
 end
 
