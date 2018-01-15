@@ -152,24 +152,6 @@ const checkWindowDataService = {
     }
     return checkWindow
   },
-    /**
-   * Fetch (one) check window for present date.
-   * @returns {Promise.<*>}
-   */
-  sqlFetchCurrentCheckWindow: async () => {
-    const now = moment.utc()
-    const sql = `SELECT * FROM [mtc_admin].[checkWindow] WHERE 
-      adminStartDate <=@currentTimestamp AND
-       adminStartDate >=@currentTimestamp`
-    const params = [
-      {
-        name: 'currentTimestamp',
-        value: now,
-        type: TYPES.DateTimeOffset
-      }
-    ]
-    return sqlService.query(sql, params)
-  },
   /**
    * Fetch (non-deleted) current check windows by sort by, sort direction
    * @param sortBy
