@@ -1,0 +1,129 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <a href="#anchor-<%= messages.name %>"><%= messages.info %></a>
+        </div>
+        <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
+        <% if (typeof validation !== 'undefined') { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                You need to fix the errors on this page before continuing
+            </h2>
+            <p>See highlighted errors below</p>
+            <ul class="error-summary-list">
+                <% if (typeof validation !== 'undefined' && validation.name) { %>
+                <li><a href="#group-name"><%= validation.name %></a></li>
+                <% } %>
+            </ul>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge"><%= action %> group</h1>
+        <br>
+
+        <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
+        <form method="post" action="/school/group-pupils/<%= action.toLowerCase() %>">
+            <div class="form-group <%= typeof validation !== 'undefined' && validation.name ? 'form-group-error' : '' %>">
+                <label for="name" class="form-label-bold">
+                    <span class="bold-medium">1. New group name</span><a name="group-name"></a>
+                </label>
+                <span class="form-hint">For example, Class 4A</span>
+                <% if (typeof validation !== 'undefined' && validation.name) { %>
+                <span class="error-message"><%= validation.name %></span>
+                <% } %>
+
+                <input class="form-control <% if (typeof validation !== 'undefined' && validation.name) { %><%= validation.name ? 'form-control-error' : '' %><% } %>"
+                       id="name"
+                       name="name"
+                       type="text"
+                       value="<% if (group && group.name) { %><%= group.name %><% } %>"
+                       aria-required="true"
+                       aria-label="Group name.">
+            </div>
+            <br>
+
+            <div class="group-pupils-list">
+                <div class="bold-medium">2. Select/deselect pupil(s) in group</div>
+                <% if (typeof validation !== 'undefined' && validation.pupils) { %>
+                <span class="error-message"><%= validation.pupils    %></span>
+                <% } %>
+                <table class="spacious reduced-top-margin" id="groupPupil" role="group">
+                    <thead>
+                        <tr>
+                            <th scope="col">Pupil</th>
+                            <td>
+                                <div class="tick-all-checkboxes-wrapper">
+                                    <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Select all</label>
+                                    <label class="tick-all-checkboxes all-hide" id="deselectAll" for="tickAllCheckboxes">Deselect all</label>
+                                    <div class="multiple-choice-mtc">
+                                        <input id="tickAllCheckboxes" name="allPupils" type="checkbox" aria-label="Select all pupils.">
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% pupilsList.forEach( (pupil) => { %>
+                        <tr>
+                            <td>
+                                <label for="pupil-<%= pupil._id %>"><%= pupil.lastName %>, <%= pupil.foreName %></label>
+                            </td>
+                            <td class="align-right">
+                                <div class="multiple-choice-mtc">
+                                    <input id="pupil-<%= pupil._id %>"
+                                           name="pupil[<%= pupil._id %>]"
+                                           type="checkbox"
+                                           value="<%= pupil._id %>"
+                                           aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                           aria-checked="false"
+                                           <% if (group && group.pupils && group.pupils[pupil._id]) { %>checked="true"<% } %>
+                                           role="checkbox">
+                                    <div></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% if (group && group._id) { %><input type="hidden" name="groupId" value="<%= group._id %>" /><% } %>
+            <%- partial('partials/_sticky_confirmation_banner',
+                    {
+                        cancelLabel: 'Cancel',
+                        cancelLink: '/school/group-pupils',
+                        submitLabel: 'Confirm',
+                        isSubmitDisabled: true
+                    })
+            %>
+        </form>
+        <% } else { %>
+        <div class="panel panel-border-wide">
+            <p>There are no pupils</p>
+        </div>
+        <% } %>
+        <div class="back-to-top-container">
+            <a href="#top">Back to top</a>
+        </div>
+    </div>
+    <div class="column-one-third add-title-margin"></div>
+</div>
