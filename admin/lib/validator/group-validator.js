@@ -9,7 +9,6 @@ const groupDataService = require('../../services/data-access/group.data.service'
 module.exports.validate = async (groupData, oldName) => {
   let validationError = new ValidationError()
   let isValid = false
-  let groupName
 
   // Group name
   if (!groupData.name || isEmpty(groupData.name.trim())) {
