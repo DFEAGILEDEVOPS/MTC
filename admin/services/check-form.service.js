@@ -136,6 +136,7 @@ const checkFormService = {
     if (formData.length > 0) {
       for (let index = 0; index < formData.length; index++) {
         const form = formData[index]
+        form.removeLink = true
         const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([form.id])
         if (checkWindows.length > 0) {
           form.checkWindows = checkWindows.map(cw => cw.name)
