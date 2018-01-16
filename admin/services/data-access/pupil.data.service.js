@@ -17,7 +17,6 @@ const sqlService = require('./sql.service')
  * @deprecated Use an sql* methods instead
  * @return {Object}
  */
-
 pupilDataService.getPupils = async (schoolId) => {
   winston.warn('*** pupilDataService.getPupils is deprecated ***')
   const [ schoolData, pupils ] = await Promise.all([
@@ -203,6 +202,12 @@ pupilDataService.sqlFindOneById = async (id) => {
   return R.head(results)
 }
 
+/**
+ * Find a pupil by Id and check they have rights to that school by checking the school id matches too
+ * @param {number} id
+ * @param {number} schoolId
+ * @return {Promise<void>}
+ */
 pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
   const paramPupil = { name: 'id', type: TYPES.Int, value: id }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }

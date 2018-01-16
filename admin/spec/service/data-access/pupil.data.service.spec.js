@@ -13,6 +13,7 @@ const pupilMock = require('../../mocks/pupil')
 const schoolMock = require('../../mocks/school')
 const pupilStatusCodesMock = require('../../mocks/pupil-status-codes')
 const sqlService = require('../../../services/data-access/sql.service')
+const sqlResponseMock = require('../../mocks/sql-modify-response')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -110,7 +111,7 @@ describe('pupil.data.service', () => {
     })
 
     it('returns a school data object and a list of pupils', async () => {
-      const data = await pupilDataService.getPupils(schoolMock._id)
+      const data = await pupilDataService.getPupils(schoolMock._id) // deprecated usage
       expect(data.schoolData._id).toBe(9991001)
       expect(data.pupils.length).toBe(2)
       expect(mockPupil.verify()).toBe(true)
@@ -194,7 +195,7 @@ describe('pupil.data.service', () => {
     })
   })
 
-  describe('#sqlGetPupils', () => {
+  describe('#sqlFindPupilsByDfeNumber', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
       service = require('../../../services/data-access/pupil.data.service')
@@ -204,6 +205,92 @@ describe('pupil.data.service', () => {
       const res = await service.sqlFindPupilsByDfeNumber(12345678)
       expect(sqlService.query).toHaveBeenCalled()
       expect(Array.isArray(res)).toBe(true)
+    })
+  })
+
+  describe('#sqlFindOneBySlug', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneBySlug('abc-def-ghi')
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlFindOneByUpn', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneByUpn('AB123456789')
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlFindOneById', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneById(42)
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlFindOneByIdAndSchool', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const res = await service.sqlFindOneByIdAndSchool(42, 26)
+      expect(sqlService.query).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlUpdate', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'update').and.returnValue(Promise.resolve(sqlResponseMock))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const obj = {
+        id: 42,
+        updatedProp: 'new value'
+      }
+      const res = await service.sqlUpdate(obj)
+      expect(sqlService.update).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlCreate', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'create').and.returnValue(Promise.resolve(sqlResponseMock))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const obj = {
+        id: 42,
+        prop: 'new value'
+      }
+      const res = await service.sqlCreate(obj)
+      expect(sqlService.create).toHaveBeenCalled()
+      expect(typeof res).toBe('object')
     })
   })
 })
