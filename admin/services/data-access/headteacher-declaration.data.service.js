@@ -17,7 +17,11 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
  * @return {Promise<object>}
  */
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
-  const sql = `SELECT TOP 1 * FROM ${table} WHERE school_id = @schoolId
+  const sql = `
+  SELECT TOP 1 
+    * 
+  FROM ${sqlService.adminSchema}.${table} 
+  WHERE school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const rows = await sqlService.query(sql, [paramSchoolId])
@@ -41,10 +45,13 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   }
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindow.id }
-  const sql = `SELECT * from ${table} h INNER JOIN school s ON h.school_id = school.id 
+  const sql = `
+  SELECT TOP 1 
+    *
+  FROM ${sqlService.adminSchema}.${table} h INNER JOIN school s ON h.school_id = school.id 
   WHERE h.checkWindow_id = @checkWindowId 
   AND s.dfeNumber = @dfeNumber`
-  const result = await sqlService.query(table, sql, [paramCheckWindow, paramDfeNumber])
+  const result = await sqlService.query(sql, [paramCheckWindow, paramDfeNumber])
   // This will only return a single result as an object
   return R.head(result)
 }
