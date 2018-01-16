@@ -2,7 +2,7 @@
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
 const mongoose = require('mongoose')
-mongoose.Promomise = global.Promise
+mongoose.Promise = global.Promise
 
 const sinon = require('sinon')
 require('sinon-mongoose')
@@ -14,6 +14,7 @@ const pupilService = require('../../services/pupil.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
+const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 const attendanceCodesMock = require('../mocks/attendance-codes')
@@ -56,8 +57,8 @@ describe('school controller:', () => {
 
     describe('When there are pupils for the active school', () => {
       beforeEach(() => {
-        spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilsNotTakingCheckDataService, 'fetchPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         controller = require('../../controllers/school').getPupilNotTakingCheck
       })
@@ -75,7 +76,7 @@ describe('school controller:', () => {
 
     describe('Select reason for pupils', () => {
       beforeEach(() => {
-        spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
         spyOn(pupilDataService, 'getSortedPupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         spyOn(pupilsNotTakingCheckService, 'sortPupilsByReason').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
@@ -100,8 +101,8 @@ describe('school controller:', () => {
         }
         spyOn(pupilService, 'fetchMultiplePupils').and.returnValue(Promise.resolve(pupil))
         // spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
-        spyOn(pupilsNotTakingCheckDataService, 'getAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilsNotTakingCheckDataService, 'fetchPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         controller = proxyquire('../../controllers/school', {}).savePupilNotTakingCheck
       })
 

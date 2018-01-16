@@ -2,13 +2,11 @@
 
 const sqlService = require('./sql.service')
 
-const attendanceCodeDataService = {}
-const table = '[attendanceCode]'
-
-attendanceCodeDataService.sqlFindStatusCodes = async () => {
-  // TODO: data-refactor: candidate for caching
-  const sql = `SELECT code, reason FROM ${sqlService.adminSchema}.${table}`
-  return sqlService.query(sql)
+const attendanceCodeDataService = {
+  sqlFindAttendanceCodes: async () => {
+    const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
+    return sqlService.query(sql)
+  }
 }
 
 module.exports = attendanceCodeDataService

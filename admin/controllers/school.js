@@ -9,6 +9,7 @@ const headteacherDeclarationService = require('../services/headteacher-declarati
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilService = require('../services/pupil.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
+const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -335,14 +336,14 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await pupilsNotTakingCheckDataService.fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -385,7 +386,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -463,14 +464,14 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await pupilsNotTakingCheckDataService.fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
