@@ -88,6 +88,10 @@ pupilDataService.update = async function (query, criteria, options = {multi: fal
   return Pupil.update(query, criteria, options).exec()
 }
 
+/**
+ * @param pupils
+ * @return {Promise<Array>}
+ */
 pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
@@ -103,6 +107,7 @@ pupilDataService.updateMultiple = async function (pupils) {
 
 /**
  * Create a new Pupil
+ * @deprecated
  * @param data
  * @return {Promise}
  */
@@ -139,8 +144,9 @@ pupilDataService.getStatusCodes = async () => {
 pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
-      SELECT p.*    
-      FROM ${table} p INNER JOIN school s ON s.id = p.school_id
+      SELECT 
+        p.*    
+      FROM ${sqlService.adminSchema}.${table} p INNER JOIN school s ON s.id = p.school_id
       WHERE s.dfeNumber = @dfeNumber      
     `
   return sqlService.query(sql, [paramDfeNumber])
@@ -154,8 +160,9 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
 pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
   const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const sql = `
-      SELECT *    
-      FROM ${table}
+      SELECT TOP 1 
+      *  
+      FROM ${sqlService.adminSchema}.${table}
       WHERE urlSlug = @urlSlug    
     `
   const results = await sqlService.query(sql, [param])
@@ -170,8 +177,9 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
 pupilDataService.sqlFindOneByUpn = async (upn = '') => {
   const param = { name: 'upn', type: TYPES.NVarChar, value: upn.trim().toUpperCase() }
   const sql = `
-      SELECT *    
-      FROM ${table}
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
       WHERE upn = @upn    
     `
   const results = await sqlService.query(sql, [param])
@@ -186,11 +194,25 @@ pupilDataService.sqlFindOneByUpn = async (upn = '') => {
 pupilDataService.sqlFindOneById = async (id) => {
   const param = { name: 'id', type: TYPES.Int, value: id }
   const sql = `
-      SELECT *    
-      FROM ${table}
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
       WHERE id = @id    
     `
   const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
+  const paramPupil = { name: 'id', type: TYPES.Int, value: id }
+  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE id = @id and school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, [paramPupil, paramSchool])
   return R.head(results)
 }
 

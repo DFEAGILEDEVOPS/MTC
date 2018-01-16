@@ -4,6 +4,7 @@ const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilDataService = require('./data-access/pupil.data.service')
 
 const pupilService = {}
+
 /**
  * Fetch one pupil filtered by pupil id and school id
  * @param pupilId
@@ -12,7 +13,8 @@ const pupilService = {}
  */
 pupilService.fetchOnePupil = async (pupilId, schoolId) => {
   // TODO: Introduce integration tests
-  return pupilDataService.findOne({_id: pupilId, school: schoolId})
+  return pupilDataService.sqlFindOneByIdAndSchool(pupilId, schoolId)
+}
 }
 
 // TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
