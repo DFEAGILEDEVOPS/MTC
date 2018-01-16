@@ -190,7 +190,7 @@ describe('pin-generation.service', () => {
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
         expect(result.schoolPin.length).toBe(8)
-        expect(/[a-z]{3}[2-9]{2}[a-z]{3}/.test(result.schoolPin)).toBe(true)
+        expect(/^[a-z]{3}[2-9]{2}[a-z]{3}$/.test(result.schoolPin)).toBe(true)
       })
     })
 
