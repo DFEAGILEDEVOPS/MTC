@@ -8,8 +8,7 @@ class GroupPupilsPage < SitePrism::Page
   element :guidance, "a[href='/PDFs/MTC_administration_guidance_June-2017-trial.pdf']", text: 'Guidance'
   element :pupil_register, "a[href='#']", text: 'Pupil register'
   element :generate_pins, "a[href='#']", text: 'Generate pupil PINs'
-  element :new_group_added, '.info-message', text: 'New group created'
-  element :changes_made, '.info-message'
+  element :info_message, '.info-message'
 
   section :group_list, '#groupList' do
     sections :rows, 'tbody tr' do
@@ -26,8 +25,16 @@ class GroupPupilsPage < SitePrism::Page
     element :confirm, '.modal-confirm'
   end
 
+  def remove_all_groups
+    (groups = group_list.rows.count
+    groups.to_i.times do
+      group_list.rows.first.remove.click
+      modal.confirm.click
+    end) unless has_no_group_list?
+  end
+
   def remove_group(name)
-    row = group_list.rows.find{|row| row.group_name.text == name}
+    row = group_list.rows.find {|row| row.group_name.text == name}
     row.remove.click
     modal.confirm.click
   end

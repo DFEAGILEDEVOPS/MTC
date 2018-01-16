@@ -67,15 +67,16 @@ end
 Then(/^I can enter the following special characters as the group name$/) do |table|
   step 'I am logged in'
   school_landing_page.group_pupils.click
+  @group_name = []
   table.raw.flatten.each do |value|
     group_pupils_page.create_group.click
-    @group_name = value
-    add_edit_groups_page.group_name.set @group_name
+    @group_name << value
+    add_edit_groups_page.group_name.set value
     add_edit_groups_page.pupil_list.rows.first.checkbox.click
     add_edit_groups_page.sticky_banner.confirm.click
-    expect(group_pupils_page).to have_new_group_added
+    expect(group_pupils_page.info_message.text).to eql 'New group created'
     new_group_row = group_pupils_page.group_list.rows.find {|row| row.has_highlight?}
-    expect(new_group_row.group_name.text).to eql @group_name
+    expect(new_group_row.group_name.text).to eql value
   end
 end
 
@@ -86,7 +87,7 @@ Given(/^I have added already added a pupil to another group$/) do
   pupil.checkbox.click
   @pupil_name = pupil.name.text
   add_edit_groups_page.sticky_banner.confirm.click
-  expect(group_pupils_page).to have_new_group_added
+  expect(group_pupils_page.info_message.text).to eql 'New group created'
 end
 
 When(/^I want to create a new group$/) do
@@ -166,7 +167,7 @@ Given(/^I have created a group$/) do
 end
 
 Then(/^I should see the group page reflect this$/) do
-  expect(group_pupils_page).to have_new_group_added
+  expect(group_pupils_page.info_message.text).to eql 'New group created'
 end
 
 Given(/^I want to edit a previously added group$/) do
@@ -180,7 +181,7 @@ Then(/^I should be able to add and remove pupils$/) do
   add_edit_groups_page.pupil_list.rows[1].checkbox.click
   add_edit_groups_page.pupil_list.rows[2].checkbox.click
   add_edit_groups_page.sticky_banner.confirm.click
-  expect(group_pupils_page).to have_changes_made
+  expect(group_pupils_page.info_message.text).to eql "Changes made to '#{@group_name}'"
   group_row = group_pupils_page.group_list.rows.find {|row| row.has_highlight?}
   expect(group_row.group_name.text).to eql @group_name
 end
@@ -189,8 +190,8 @@ Then(/^I should be able to edit the group name$/) do
   new_value = 'Group1'+ (rand(23243)).to_s
   add_edit_groups_page.group_name.set new_value
   add_edit_groups_page.sticky_banner.confirm.click
-  expect(group_pupils_page).to have_changes_made
-  expect(group_pupils_page.changes_made.text).to eql "Changes made to '#{new_value}'"
+  expect(group_pupils_page).to have_info_message
+  expect(group_pupils_page.info_message.text).to eql "Changes made to '#{new_value}'"
   group_row = group_pupils_page.group_list.rows.find {|row| row.has_highlight?}
   expect(group_row.group_name.text).to eql new_value
 end
@@ -233,4 +234,27 @@ end
 
 Then(/^I should be returned to the group hub page$/) do
   expect(group_pupils_page).to be_displayed
+end
+
+Then(/^I should be able to remove the group$/) do
+  group_pupils_page.remove_group(@group_name)
+  if group_pupils_page.has_group_list?
+    expect(group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}).to be_nil
+  else
+    expect(group_pupils_page).to have_no_group_list
+  end
+  expect(group_pupils_page.info_message.text).to eql 'Group deleted'
+end
+
+When(/^I choose to remove the group$/) do
+  row = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
+  row.remove.click
+end
+
+But(/^decide against it and cancel$/) do
+  group_pupils_page.modal.cancel.click
+end
+
+Then(/^the group should not be removed$/) do
+  expect(group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}).to_not be_nil
 end

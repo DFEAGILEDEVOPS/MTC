@@ -18,6 +18,9 @@ module.exports = {
   TSO_AUTH_PUBLIC_KEY: process.env.TSO_AUTH_PUBLIC_KEY,
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
+  Data: {
+    allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx'
+  },
   Sql: {
     Enabled: process.env.SQL_ENABLED || false,
     Database: process.env.SQL_DATABASE || 'mtc',
