@@ -2,6 +2,7 @@
 
 const winston = require('winston')
 const { TYPES } = require('tedious')
+const R = require('ramda')
 
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
@@ -136,7 +137,7 @@ pupilDataService.getStatusCodes = async () => {
  * @param {number} dfeNumber
  * @return {Promise<results>}
  */
-pupilDataService.sqlGetPupils = async function (dfeNumber) {
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
       SELECT p.*    
@@ -144,6 +145,72 @@ pupilDataService.sqlGetPupils = async function (dfeNumber) {
       WHERE s.dfeNumber = @dfeNumber      
     `
   return sqlService.query(sql, [paramDfeNumber])
+}
+
+/**
+ * Find a pupil by their urlSlug
+ * @param urlSlug
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
+  const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE urlSlug = @urlSlug    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by upn
+ * @param upn
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByUpn = async (upn = '') => {
+  const param = { name: 'upn', type: TYPES.NVarChar, value: upn.trim().toUpperCase() }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE upn = @upn    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by Id
+ * @param id
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneById = async (id) => {
+  const param = { name: 'id', type: TYPES.Int, value: id }
+  const sql = `
+      SELECT *    
+      FROM ${table}
+      WHERE id = @id    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Update am existing pupil object.  Must provide the `id` field
+ * @param update
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlUpdate = async (update) => {
+  return sqlService.update(table, update)
+}
+
+/**
+ * Create a new pupil.
+ * @param {object} data
+ * @return  { insertId: <number>, rowsModified: <number> }
+ */
+pupilDataService.sqlCreate = async (data) => {
+  return sqlService.create(table, data)
 }
 
 module.exports = pupilDataService

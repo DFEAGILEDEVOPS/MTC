@@ -1,6 +1,6 @@
 'use strict'
 /* global describe it expect beforeEach spyOn */
-
+const winston = require('winston')
 const service = require('../../services/psychometrician-util.service')
 
 // Get a marked check mock
@@ -118,6 +118,10 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getUserInput', () => {
+    beforeEach(() => {
+      spyOn(winston, 'info')
+    })
+
     it('returns a string showing all the user input for key events', () => {
       const ks1 = service.getUserInput(keyboardInput)
       expect(ks1).toBe('k[1], k[0], k[Enter]')
@@ -134,7 +138,6 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns shows "U" for any unknown event types', () => {
-      spyOn(console, 'log')
       const input = [
         {
           eventType: 'FuturisticEvent',
@@ -148,7 +151,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getLastAnswerInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(console, 'log')
+      spyOn(winston, 'info')
       const res = service.getLastAnswerInputTime(null)
       expect(res).toBe('error')
     })
@@ -177,7 +180,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getFirstInputTime', () => {
     it('returns "error" if not passed an array', () => {
-      spyOn(console, 'log')
+      spyOn(winston, 'info')
       const res = service.getLastAnswerInputTime(null)
       expect(res).toBe('error')
     })
@@ -200,7 +203,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getResponseTime', () => {
     it('returns "error" if the arg is not an array', () => {
-      spyOn(console, 'log')
+      spyOn(winston, 'info')
       const res = service.getResponseTime(999)
       expect(res).toBe('error')
     })
@@ -217,7 +220,7 @@ describe('psychometrician-util.service', () => {
 
   describe('#getTimeOutFlag', () => {
     it('throws an error if not passed an Array', () => {
-      spyOn(console, 'log')
+      spyOn(winston, 'info')
       const res = service.getTimeoutFlag(null)
       expect(res).toBe('error')
     })

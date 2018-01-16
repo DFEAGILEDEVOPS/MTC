@@ -201,7 +201,7 @@ describe('pupil.data.service', () => {
     })
 
     it('it makes the expected calls', async () => {
-      const res = await service.sqlGetPupils(12345678)
+      const res = await service.sqlFindPupilsByDfeNumber(12345678)
       expect(sqlService.query).toHaveBeenCalled()
       expect(Array.isArray(res)).toBe(true)
     })

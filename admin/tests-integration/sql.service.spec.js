@@ -189,7 +189,6 @@ describe('sql.service:integration', () => {
       expect(res).toBeDefined()
       expect(res.insertId).toBeDefined()
       expect(res.rowsModified).toBe(1)
-
       const retrievedUser = await sql.findOneById('[user]', res.insertId)
       expect(retrievedUser).toBeDefined()
       expect(retrievedUser.identifier).toBe(user.identifier)

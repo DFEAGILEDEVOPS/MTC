@@ -43,7 +43,28 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
   // TODO: hdf: role checks? Date checks?
 
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  if (!school) {
+    return null
+  }
   return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id)
+}
+
+/**
+ * Returns true if we are in a check window and the hdf has already been submitted
+ * False if we are not in a check window
+ * False if we are in a check window and it has not been submitted
+ * @param dfeNumber
+ * @return {Promise<boolean>}
+ */
+headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) => {
+  const hdf = headteacherDeclarationDataService.findCurrentHdfForSchool(dfeNumber)
+  if (!hdf) {
+    return false
+  }
+  if (hdf && hdf.signedDate) {
+    return true
+  }
+  return false
 }
 
 module.exports = headteacherDeclarationService

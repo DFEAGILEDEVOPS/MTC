@@ -46,15 +46,15 @@ const getPupils = async (req, res, next) => {
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
   let pupilsFormatted
   try {
-    const pupils = await pupilDataService.sqlGetPupils(req.user.School)
+    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-      const { foreName, lastName, _id } = p
-      const dob = dateService.formatShortGdsDate(p.dob)
+      const { foreName, lastName } = p
+      const dob = dateService.formatShortGdsDate(p.dateOfBirth)
       const outcome = await pupilStatusService.getStatus(p)
       // TODO: Fetch pupil's group when it's implemented
       const group = 'N/A'
       return {
-        _id,
+        urlSlug: p.urlSlug,
         foreName,
         lastName,
         dob,
@@ -89,25 +89,28 @@ const getPupils = async (req, res, next) => {
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
-  const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const score = await scoreService.getScorePercentage(p._id)
+    const score = await scoreService.getScorePercentage(p._id) // FIXME
     const hasScore = (score !== undefined)
     return {
       fullName,
       hasScore,
-      score
+      score,
+      urlSlug: p.urlSlug
     }
   })).catch((error) => next(error))
   req.breadcrumbs(res.locals.pageTitle)
   pupilsFormatted = pupilsFormatted.filter((p) => p.hasScore)
-  if ((schoolData.hdf && schoolData.hdf.signedDate) &&
+
+  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck() &&
     (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
     return res.render('school/results', {
       breadcrumbs: req.breadcrumbs(),
       pupils: pupilsFormatted,
-      schoolData
+      school
     })
   } else {
     return res.render('school/no-results', {

@@ -155,7 +155,7 @@ sqlService.adminSchema = '[mtc_admin]'
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise<results>}
  */
-sqlService.query = (sql, params) => {
+sqlService.query = (sql, params = []) => {
   return new Promise(async (resolve, reject) => {
     let con
     try {
@@ -282,7 +282,10 @@ sqlService.lookupDataTypeForColumn = async function (table, column) {
 sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
   winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
-  const sql = `INSERT INTO ${table} (` + extractColumns(data) + ') OUTPUT INSERTED.id VALUES (' + createParamIdentifiers(data) + ')'
+  const sql = `
+  INSERT INTO ${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
+  SELECT @@IDENTITY`
+
   winston.debug('sql.service: SQL ', sql)
   return { sql, params }
 }
@@ -353,13 +356,16 @@ sqlService.updateDataTypeCache = async function () {
 
 /**
  * Call SQL Update on the table given an object whose keys are the columns to be updated and whose keys are the new
- * values.
+ * values. You *MUST* pass the `id` field for the WHERE clause.
  * Returns { rowsModified: n } the number of rows modified.
  * @param tableName
  * @param data
  * @return {Promise<*>}
  */
 sqlService.update = async function (tableName, data) {
+  if (!data.id) {
+    throw new Error('`id` is required')
+  }
   // Convert any moment objects to JS Date objects as that's required by Tedious
   const preparedData = convertMomentToJsDate(data)
   const { sql, params } = await sqlService.generateUpdateStatement(tableName, preparedData)
