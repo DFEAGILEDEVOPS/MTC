@@ -23,7 +23,7 @@ const checkWindowService = {
         checkWindowName: cw.name,
         adminStartDate: adminStartDateMo.format('D MMM YYYY'),
         checkDates: dateService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
-        canRemove: typeof canRemove === 'boolean' ? canRemove : (Date.parse(cw.checkStartDate) >= Date.now()),
+        canRemove: typeof canRemove === 'boolean' ? canRemove : moment(cw.checkStartDate).isSameOrAfter(moment()),
         isCurrent: isCurrent
       }
     })

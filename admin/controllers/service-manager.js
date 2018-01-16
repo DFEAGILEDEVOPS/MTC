@@ -140,7 +140,7 @@ const getCheckWindows = async (req, res, next) => {
   // Get current check windows
   try {
     checkWindows = await checkWindowDataService.sqlFindCurrent(sortField, sortDirection)
-    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true, false)
+    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true, true)
   } catch (error) {
     return next(error)
   }
