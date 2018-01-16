@@ -15,13 +15,13 @@ const batchSize = 100
  */
 completedCheckProcessingService.process = async function () {
   try {
-    let hasWorkToDo = await completedCheckDataService.hasUnmarked()
+    let hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
     if (!hasWorkToDo) {
       winston.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await this.markAndProcess(batchSize)
-      hasWorkToDo = await completedCheckDataService.hasUnmarked()
+      hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
     }
   } catch (error) {
     console.error('Bailing out: ', error)
@@ -29,7 +29,7 @@ completedCheckProcessingService.process = async function () {
 }
 
 completedCheckProcessingService.markAndProcess = async function (batchSize) {
-  const batchIds = await completedCheckDataService.findUnmarked(batchSize)
+  const batchIds = await completedCheckDataService.sqlFindUnmarked(batchSize)
   if (batchIds.length === 0) {
     winston.info('No documents IDs found')
     return false

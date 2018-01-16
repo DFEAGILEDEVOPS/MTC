@@ -40,9 +40,10 @@ function createTestPupil () {
       lastName: 'Account',
       gender: 'M',
       dob: moment.utc('20000101', 'YYYYMMDD'),
-      pin: '9999a',
+      pin: '9999',
       pinExpired: false,
       hasAttended: false,
+      isTestAccount: true,
       upn: upnService.calculateCheckLetter('999199900001') + '999199900001',
       checkOptions: { speechSynthesis: false }
     })

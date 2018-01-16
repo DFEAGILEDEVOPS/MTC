@@ -73,10 +73,6 @@ const uploadAndViewFormsPage = async (req, res, next) => {
 const removeCheckForm = async (req, res, next) => {
   const id = req.params.formId
   try {
-    const checkForm = await checkFormService.getCheckForm(id)
-    if (!checkForm) {
-      return next(new Error(`Unable to find check form with id [${id}]`))
-    }
     await checkFormService.deleteCheckForm(id)
   } catch (error) {
     return next(error)
@@ -163,7 +159,7 @@ const saveCheckForm = async (req, res, next) => {
     await checkFormService.populateFromFile(checkForm, absFile)
   } catch (error) {
     fs.remove(deleteDir, err => {
-      if (err) winston.error(err)
+      if (err) winston.error(err.message)
     })
     return res.render('test-developer/upload-new-form', {
       error: new Error('There is a problem with the form content'),
@@ -193,13 +189,13 @@ const saveCheckForm = async (req, res, next) => {
   }
 
   fs.remove(deleteDir, err => {
-    if (err) winston.error(err)
+    if (err) winston.error(err.message)
   })
 
   try {
-    const newForm = await checkFormService.create(checkForm)
+    await checkFormService.create(checkForm)
     req.flash('info', 'New form uploaded')
-    req.flash('formName', newForm.name)
+    req.flash('formName', checkForm.name)
   } catch (error) {
     return next(error)
   }
@@ -231,15 +227,15 @@ const displayCheckForm = async (req, res) => {
   }
 
   try {
-    checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
+    checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([formId])
   } catch (error) {
+    // WARN how would this ever be shown????
     req.flash(`Unable to find check window(s) for active check form: ${error.message}`)
     return res.redirect('/test-developer/upload-and-view-forms')
   }
-
-  if (checkWindows[req.params.formId]) {
-    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows[req.params.formId])
-    formData.canDelete = checkFormService.canDelete(checkWindows[req.params.formId])
+  if (checkWindows && checkWindows.length > 0) {
+    formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows)
+    formData.canDelete = checkFormService.canDelete(checkWindows)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
@@ -297,13 +293,13 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFindOneById(checkWindowId)
   } catch (error) {
     return next(error)
   }
 
   try {
-    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow._id)
+    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.id)
   } catch (error) {
     return next(error)
   }
@@ -311,8 +307,8 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
   req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/assign-forms', {
-    checkWindowId: checkWindowId,
-    checkWindowName: checkWindow.checkWindowName,
+    checkWindowId: checkWindow.id,
+    checkWindowName: checkWindow.name,
     checkFormsList,
     breadcrumbs: req.breadcrumbs()
   })
@@ -326,8 +322,8 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const saveAssignCheckFormsToWindow = async (req, res, next) => {
-  const postedForms = req.body.checkForm
-  const totalForms = Object.values(postedForms).length
+  const postedFormIds = req.body.checkForm
+  const totalForms = Object.values(postedFormIds).length
   const checkWindowName = req.body.checkWindowName || 'N/A'
 
   // Validate again that at least one check form has been ticked
@@ -342,17 +338,9 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
   }
 
   let checkWindowId = req.body.checkWindowId
-  let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
-  } catch (error) {
-    return next(error)
-  }
-
-  try {
-    checkWindow.forms = checkWindowService.mergedFormIds(checkWindow.forms, Object.values(req.body.checkForm))
-    await checkWindowDataService.create(checkWindow)
+    await checkWindowService.assignFormsToWindow(checkWindowId, postedFormIds)
   } catch (error) {
     return next(error)
   }
@@ -379,21 +367,24 @@ const unassignCheckFormsFromWindowPage = async (req, res, next) => {
   let checkWindow
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(checkWindowId)
-    checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.forms)
+    checkWindow = await checkWindowDataService.sqlFindOneById(checkWindowId)
+    if (!checkWindow) {
+      req.flash('error', 'check window not found')
+      return res.redirect('/test-developer/assign-form-to-window')
+    }
+    checkFormsList = await checkFormService.getAssignedFormsForCheckWindow(checkWindow.id)
+    res.locals.pageTitle = checkWindow.name
+    req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('test-developer/unassign-check-forms', {
+      checkWindowId: checkWindow.id,
+      checkWindowName: checkWindow.name,
+      checkFormsList,
+      breadcrumbs: req.breadcrumbs()
+    })
   } catch (error) {
     return next(error)
   }
-
-  res.locals.pageTitle = checkWindow.checkWindowName
-  req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')
-  req.breadcrumbs(res.locals.pageTitle)
-  res.render('test-developer/unassign-check-forms', {
-    checkWindowId: checkWindowId,
-    checkWindowName: checkWindow.checkWindowName,
-    checkFormsList,
-    breadcrumbs: req.breadcrumbs()
-  })
 }
 
 /**
@@ -420,7 +411,7 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   try {
     await checkFormService.removeWindowAssignment(checkFormId, checkWindowId)
   } catch (error) {
-    req.flash('error', `Failing to unassigned form`)
+    req.flash('error', `Failed to unassign form`)
     res.redirect(`/test-developer/unassign-forms/${checkWindowId}`)
     return next(error)
   }

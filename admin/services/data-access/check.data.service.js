@@ -9,6 +9,7 @@ const checkDataService = {}
 /**
  * Find a Check and return the lean model
  * @param checkCode
+ * @deprecated
  * @return {Promise}
  */
 checkDataService.findOneByCheckCode = async function (checkCode) {
@@ -17,7 +18,7 @@ checkDataService.findOneByCheckCode = async function (checkCode) {
 
 /**
  * Find a Check by its checkCode UUID
- * @param checkCode
+ * @param checkCode * 
  * @return {Promise}
  */
 checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
@@ -28,15 +29,15 @@ checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
       type: TYPES.UniqueIdentifier
     }
   ]
-  return sqlService.query('SELECT * FROM [mtc_admin].[check] WHERE checkCode=@checkCode', params)
+  return sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
 }
 
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
- * @return {Promise.<void>} - lean Check objects
+ * @deprecated
+ * @return {Promise.<*>} - lean Check objects
  */
-// NOT USED - will not replace with sql call
 checkDataService.find = async function (criteria) {
   return Check.find(criteria).lean().exec()
 }
@@ -44,6 +45,7 @@ checkDataService.find = async function (criteria) {
 /**
  * Find latest checks by criteria: e.g. checkDataService.findOne({checkWindowId: 1234})
  * @param criteria
+ * @deprecated
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.findLatestCheck = async function (criteria) {
@@ -58,7 +60,7 @@ checkDataService.findLatestCheck = async function (criteria) {
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
-  let sql = 'SELECT * FROM [mtc_admin].[check] WHERE pupil_id = @pupilId'
+  let sql = `SELECT * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId`
   if (started) {
     sql = sql + ' AND startedAt IS NOT NULL'
   }
@@ -75,7 +77,8 @@ checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
- * @return {Promise.<void>} - lean Check objects, fully populated
+ * @deprecated
+ * @return {Promise.<object>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
  * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
  */
@@ -93,17 +96,20 @@ checkDataService.findFullyPopulated = async function (criteria) {
  * @param checkCodes - array of UUID
  * @return {Promise.<void>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
- * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
+ * involving 1 extra query per document set per sub-document.
  */
 checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
-  let sql = `SELECT * FROM mtc_admin.[check] chk INNER JOIN mtc_admin.pupil pup ON pup.id = chk.pupil_id
-   INNER JOIN mtc_admin.school sch ON sch.id = pup.school_id
-   INNER JOIN mtc_admin.checkWindow wdw ON wdw.id = chk.checkWindow_id
-   INNER JOIN mtc_admin.checkForm frm ON frm.id = chk.checkForm_id`
+  let sql = `SELECT * FROM ${sqlService.adminSchema}.[check] chk INNER JOIN ${sqlService.adminSchema}.pupil pup ON pup.id = chk.pupil_id
+   INNER JOIN ${sqlService.adminSchema}.school sch ON sch.id = pup.school_id
+   INNER JOIN ${sqlService.adminSchema}.checkWindow wdw ON wdw.id = chk.checkWindow_id
+   INNER JOIN ${sqlService.adminSchema}.checkForm frm ON frm.id = chk.checkForm_id`
   let whereClause = ' WHERE chk.checkCode IN ('
   const params = []
   for (let index = 0; index < checkCodes.length; index++) {
     whereClause = whereClause + `@p${index}`
+    if (index < checkCodes.length - 1) {
+      whereClause += ','
+    }
     params.push({
       name: `p${index}`,
       value: checkCodes[index],
@@ -118,6 +124,7 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
 /**
  * Find the count
  * @param query
+ * @deprecated
  * @return {Promise.<*>}
  */
 checkDataService.count = async function (query) {
@@ -127,11 +134,11 @@ checkDataService.count = async function (query) {
 /**
  * replaces mongo count implementation
  * returns number of checks started by specified pupil
- * @param query
+ * @param pupilId
  * @return {Promise.<*>}
  */
 checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {
-  const sql = 'SELECT COUNT(*) FROM [mtc_admin].[check] WHERE pupil_id=@pupilId AND startedAt IS NOT NULL'
+  const sql = `SELECT COUNT(*) FROM ${sqlService.adminSchema}.[check] WHERE pupil_id=@pupilId AND startedAt IS NOT NULL`
   const params = [
     {
       name: 'pupilId',
@@ -145,6 +152,7 @@ checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {
 /**
  * Generalised update function - use with care
  * @param query
+ * @deprecated
  * @param criteria
  * @return {Promise}
  */
@@ -158,7 +166,7 @@ checkDataService.update = async function (query, criteria) {
 } // NOTE: broken down into 2 specific sql methods
 
 checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
-  const sql = 'UPDATE [mtc_admin].[check] SET startedAt=@startedAt WHERE checkCode=@checkCode AND startedAt IS NULL'
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] SET startedAt=@startedAt WHERE checkCode=@checkCode AND startedAt IS NULL`
   const params = [
     {
       name: 'startedAt',
@@ -175,7 +183,7 @@ checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
 }
 
 checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = 'UPDATE [mtc_admin].[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode'
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode`
   const params = [
     {
       name: 'checkCode',
@@ -204,6 +212,7 @@ checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, ma
 /**
  * Create a new Check
  * @param data
+ * @deprecated
  * @return {Promise}
  */
 checkDataService.create = async function (data) {

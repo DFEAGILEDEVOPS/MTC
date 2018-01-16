@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const jwtService = require('../../services/jwt.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
+
 describe('check-complete.service', () => {
   let service
   let spy
@@ -18,14 +19,14 @@ describe('check-complete.service', () => {
 
   function setupService (cb) {
     const pupil = Object.assign({}, pupilMock)
-    spy = jasmine.createSpy('create').and.callFake(cb)
+    spy = jasmine.createSpy('sqlAddResult').and.callFake(cb)
     markingSpy = jasmine.createSpy('mark').and.callFake(cb)
     sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
     sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
     spyOn(pupilDataService, 'update').and.returnValue(null)
     return proxyquire('../../services/check-complete.service', {
       './data-access/completed-check.data.service': {
-        create: spy
+        sqlAddResult: spy
       },
       './marking.service': {
         mark: markingSpy

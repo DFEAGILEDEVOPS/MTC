@@ -17,7 +17,7 @@ const checkFormService = {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first.
     // UPDATE: There is a PBI to ensure randomness. This work is pending.
-    const checkForm = await checkFormDataService.sqlGetActiveForm()
+    const checkForm = await checkFormDataService.sqlFindActiveForm()
     if (!checkForm) {
       throw new Error('CheckForm not found')
     }
@@ -37,7 +37,7 @@ const checkFormService = {
    * @param formId the id of the form
    */
   getCheckForm: async (formId) => {
-    let form = await checkFormDataService.sqlGetActiveForm(formId)
+    let form = await checkFormDataService.sqlFindActiveForm(formId)
     if (form && form.length > 0) {
       form = form[0]
       form.questions = JSON.parse(form.formData)
@@ -62,22 +62,19 @@ const checkFormService = {
    */
   populateFromFile: function (checkForm, absCsvFile) {
     if (!checkForm) {
-      throw new Error('Check form arguments missing')
+      throw new Error('Check form argument missing')
     }
 
     if (!absCsvFile) {
-      throw new Error('CSV file arguments missing')
+      throw new Error('CSV file argument missing')
     }
-
-    if (!checkForm.questions) {
-      checkForm.questions = []
-    }
+    const checkFormData = []
 
     return new Promise(function (resolve, reject) {
       csv.fromPath(absCsvFile, { headers: false, trim: true })
         .on('readable', function () {
           if (checkFormService.isRowCountValid(absCsvFile) !== true) {
-            reject(new Error(`Invalid number of lines`))
+            reject(new Error(`Invalid number of lines:`))
           }
         })
         .validate((row) => {
@@ -96,12 +93,13 @@ const checkFormService = {
           let q = {}
           q.f1 = parseInt(row[ 0 ], 10)
           q.f2 = parseInt(row[ 1 ], 10)
-          checkForm.questions.push(q)
+          checkFormData.push(q)
         })
         .on('data-invalid', function (row) {
           reject(new Error(`Row is invalid: [${row[ 0 ]}] [${row[ 1 ]}]`))
         })
         .on('end', function () {
+          checkForm.formData = JSON.stringify(checkFormData)
           resolve(checkForm)
         })
         .on('error', function (error) {
@@ -136,17 +134,17 @@ const checkFormService = {
     }
 
     if (formData.length > 0) {
-      const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-      formData.forEach(f => {
-        f.removeLink = true
-        if (checkWindows[f.id]) {
-          f.checkWindows = checkWindows[f.id].map(cw => { return cw.checkWindowName })
-          f.removeLink = moment(f.checkStartDate).isAfter(moment())
+      for (let index = 0; index < formData.length; index++) {
+        const form = formData[index]
+        form.removeLink = true
+        const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([form.id])
+        if (checkWindows.length > 0) {
+          form.checkWindows = checkWindows.map(cw => cw.name)
+          form.removeLink = moment(form.checkStartDate).isAfter(moment())
         } else {
-          f.checkWindows = []
+          form.checkWindows = []
         }
-      })
-
+      }
       // TODO - why on earth does a service have a view concern inside it?
       // TODO - this must be moved to the view
       formData.forEach(f => {
@@ -173,7 +171,7 @@ const checkFormService = {
    * Un-assign check forms from check windows.
    * @param CheckWindow
    * @param CheckWindowsByForm
-   * @returns {Promise.<void>}
+   * @returns {Promise.<*>}
    */
   // WARN this expects a CheckWindow but is passed a check form in controllers/check-form.js
   unassignedCheckFormsFromCheckWindows: async (CheckWindow, CheckWindowsByForm) => {
@@ -214,7 +212,7 @@ const checkFormService = {
   checkWindowNames: (checkWindows) => {
     let checkWindowsName = []
     checkWindows.forEach(cw => {
-      checkWindowsName.push(' ' + cw.checkWindowName)
+      checkWindowsName.push(' ' + cw.name)
     })
     return checkWindowsName
   },
@@ -250,13 +248,13 @@ const checkFormService = {
   },
 
   /**
-   * Validate check form name. Check if it already exists.
+   * Validate check form name. Returns true if not already in use
    * @param formName
    * @returns {Promise<boolean>}
    */
   validateCheckFormName: async (formName) => {
-    const checkFileName = await checkFormDataService.sqlFindCheckFormByName(formName)
-    return !checkFileName ? formName : false
+    const matchingFileNames = await checkFormDataService.sqlFindCheckFormByName(formName)
+    return matchingFileNames.length === 0
   },
 
   /**
@@ -293,7 +291,7 @@ const checkFormService = {
   },
 
   removeWindowAssignment: async (formId, windowId) => {
-    return checkFormDataService.sqlRemoveFormAssignmentFromWindow(formId, windowId)
+    return checkFormDataService.sqlRemoveWindowAssignment(formId, windowId)
   }
 }
 

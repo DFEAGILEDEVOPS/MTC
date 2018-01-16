@@ -23,7 +23,7 @@ describe('check-form.service', () => {
   function setupService (cb) {
     return proxyquire('../../services/check-form.service', {
       '../services/data-access/check-form.data.service': {
-        sqlGetActiveForm: jasmine.createSpy().and.callFake(cb),
+        sqlFindActiveForm: jasmine.createSpy().and.callFake(cb),
         getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
         findCheckFormByName: jasmine.createSpy().and.callFake(cb),
         isRowCountValid: jasmine.createSpy().and.callFake(cb)
@@ -125,8 +125,11 @@ describe('check-form.service', () => {
 
   describe('#checkWindowNames()', () => {
     it('should return a string value', (done) => {
-      const formData = checkWindowByForm[29]
-      const result = service.checkWindowNames(formData)
+      const formData = {
+        id: 1,
+        name: 'Window Test 1'
+      }
+      const result = service.checkWindowNames([formData])
       expect(result.toString()).toBe(' Window Test 1')
       expect(result).toBeTruthy()
       done()
@@ -162,13 +165,12 @@ describe('check-form.service', () => {
     describe('When the name is available', () => {
       const formName = 'MTC0100'
       beforeEach(() => {
-        spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue(false)
+        spyOn(checkFormDataService, 'sqlFindCheckFormByName').and.returnValue([])
       })
 
-      it('should return back the form name', async (done) => {
+      it('should return true when form name not in use', async (done) => {
         const result = await service.validateCheckFormName(formName)
-        expect(result).toBe(formName)
-        expect(result).toBeTruthy()
+        expect(result).toBe(true)
         done()
       })
     })
