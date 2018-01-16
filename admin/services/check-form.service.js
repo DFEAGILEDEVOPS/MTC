@@ -37,7 +37,7 @@ const checkFormService = {
    * @param formId the id of the form
    */
   getCheckForm: async (formId) => {
-    let form = await checkFormDataService.sqlFindActiveFormById(formId)
+    let form = await checkFormDataService.sqlFindActiveForm(formId)
     if (form && form.length > 0) {
       form = form[0]
       form.questions = JSON.parse(form.formData)

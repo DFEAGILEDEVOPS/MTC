@@ -30,7 +30,16 @@ const checkFormDataService = {
    */
   sqlFindActiveForm: (id = undefined) => {
     let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
-    return sqlService.query(sql)
+    const params = []
+    if (id) {
+      sql += ' AND id=@id'
+      params.push({
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      })
+    }
+    return sqlService.query(sql, params)
   },
 
   /**
