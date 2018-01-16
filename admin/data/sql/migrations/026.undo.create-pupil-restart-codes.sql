@@ -1,1 +1,1 @@
-DROP TABLE [mtc_admin].[pupilRestartCodes]
+DROP TABLE [mtc_admin].[pupilRestartCode]
