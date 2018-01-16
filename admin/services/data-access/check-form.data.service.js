@@ -39,8 +39,8 @@ const checkFormDataService = {
    * @param id
    * @returns {Promise<*>}
    */
-  sqlFindActiveFormById: (id) => {
-    let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
+  sqlGetActiveForm: (id) => {
+    let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0`
     const params = []
     if (id) {
       sql += ' AND [id]=@id'
@@ -103,7 +103,7 @@ const checkFormDataService = {
     const params = []
     let sql = ''
     if (windowId) {
-      sql = `SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 
+      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 
       AND [id] IN (SELECT checkForm_id FROM checkFormWindow 
         WHERE checkWindow_id=@windowId)  ORDER BY [name] ${sortOrder}`
       params.push({
@@ -112,7 +112,7 @@ const checkFormDataService = {
         type: TYPES.Int
       })
     } else {
-      sql = `SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 ORDER BY [name] ${sortOrder}`
+      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 ORDER BY [name] ${sortOrder}`
     }
     return sqlService.query(sql, params)
   },
@@ -123,7 +123,7 @@ const checkFormDataService = {
       value: windowId,
       type: TYPES.Int
     }]
-    const sql = `SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 
       AND [id] NOT IN (SELECT DISTINCT checkForm_id FROM checkFormWindow 
       WHERE checkWindow_id =@windowId) ORDER BY [name]`
     return sqlService.query(sql, params)
@@ -142,10 +142,10 @@ const checkFormDataService = {
     const params = []
     let sql
     if (windowId) {
-      sql = `SELECT cf.*, cw.[name] FROM [mtc_admin].[checkForm] cf
-      INNER JOIN [mtc_admin].[checkFormWindow] fw
+      sql = `SELECT cf.*, cw.[name] FROM ${sqlService.adminSchema}.[checkForm] cf
+      INNER JOIN ${sqlService.adminSchema}.[checkFormWindow] fw
           ON cf.id = fw.checkForm_id
-      INNER JOIN [mtc_admin].[checkWindow] cw
+      INNER JOIN ${sqlService.adminSchema}.[checkWindow] cw
         ON cw.id = fw.checkWindow_id
       WHERE cf.isDeleted=0 AND fw.checkWindow_id=@windowId
       ORDER BY cw.[name] ${sortOrder}`
@@ -155,10 +155,10 @@ const checkFormDataService = {
         type: TYPES.Int
       })
     } else {
-      sql = `SELECT DISTINCT cf.id, cf.[name], cf.isDeleted FROM [mtc_admin].[checkForm] cf
-      LEFT OUTER JOIN [mtc_admin].[checkFormWindow] fw
+      sql = `SELECT DISTINCT cf.id, cf.[name], cf.isDeleted FROM ${sqlService.adminSchema}.[checkForm] cf
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[checkFormWindow] fw
           ON cf.id = fw.checkForm_id
-      LEFT OUTER JOIN [mtc_admin].[checkWindow] cw
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[checkWindow] cw
         ON cw.id = fw.checkWindow_id
       ORDER BY cf.name ${sortOrder}`
     }
@@ -205,7 +205,7 @@ const checkFormDataService = {
    * @returns {Promise|*}
    */
   sqlFindCheckFormByName: (formName) => {
-    const sql = 'SELECT * FROM [mtc_admin].[checkForm] WHERE isDeleted=0 AND [name]=@name'
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 AND [name]=@name`
     const params = [{
       name: 'name',
       value: formName,
@@ -234,7 +234,7 @@ const checkFormDataService = {
         type: TYPES.Int
       }
     ]
-    sqlService.modify('DELETE [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId AND checkWindow_id=@windowId', params)
+    sqlService.modify(`DELETE ${sqlService.adminSchema}.[checkFormWindow] WHERE checkForm_id=@formId AND checkWindow_id=@windowId`, params)
   },
 
   sqlRemoveAllWindowAssignments: async (formId) => {
@@ -245,7 +245,7 @@ const checkFormDataService = {
         type: TYPES.Int
       }
     ]
-    return sqlService.modify('DELETE [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
+    return sqlService.modify(`DELETE ${sqlService.adminSchema}.[checkFormWindow] WHERE checkForm_id=@formId`, params)
   },
 
   sqlIsAssignedToWindows: async (formId) => {
@@ -256,7 +256,7 @@ const checkFormDataService = {
         type: TYPES.Int
       }
     ]
-    const result = sqlService.query('SELECT COUNT(*) FROM [mtc_admin].[checkFormWindow] WHERE checkForm_id=@formId', params)
+    const result = sqlService.query(`SELECT COUNT(*) FROM ${sqlService.adminSchema}.[checkFormWindow] WHERE checkForm_id=@formId`, params)
     // HACK test object structure
     return result.value > 0
   },
@@ -274,7 +274,7 @@ const checkFormDataService = {
         type: TYPES.DateTimeOffset
       }
     ]
-    return sqlService.modify('UPDATE [mtc_admin].[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE [id]=@formId', params)
+    return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE [id]=@formId`, params)
   }
 }
 
