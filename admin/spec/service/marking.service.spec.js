@@ -80,7 +80,7 @@ describe('markingService', () => {
         {}, {}, {}
       ])
       await service.batchMark([1, 2, 3])
-      expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1,2,3])
+      expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1, 2, 3])
       done()
     })
 

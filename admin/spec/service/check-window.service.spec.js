@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect it beforeEach afterEach xdescribe */
+/* global describe expect it beforeEach afterEach xdescribe xit */
 
 const sinon = require('sinon')
 const checkFormMock = require('../mocks/check-form')

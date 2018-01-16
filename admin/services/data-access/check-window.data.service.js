@@ -25,7 +25,7 @@ const checkWindowDataService = {
    * @returns {Promise.<void>}
    */
   sqlFindOneById: async (id) => {
-    const sql = 'SELECT * FROM [mtc_admin].[checkWindow] WHERE isDeleted=0 AND id=@id'
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
     const params = [
       {
         name: 'id',
@@ -64,7 +64,7 @@ const checkWindowDataService = {
         type: TYPES.DateTimeOffset
       }
     ]
-    const sql = 'UPDATE [mtc_admin].[checkWindow] SET isDeleted=1, updatedAt=@updatedAt WHERE id=@id'
+    const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1, updatedAt=@updatedAt WHERE id=@id`
     return sqlService.modify(sql, params)
   },
   /**
@@ -129,7 +129,7 @@ const checkWindowDataService = {
         sortBy = 'name'
     }
 
-    const sql = `SELECT * FROM [mtc_admin].[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
     const params = [
       {
         name: 'currentTimestamp',
@@ -196,7 +196,7 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create('[checkWindow]', data)
+    return sqlService.create(table, data)
   },
   sqlFindCheckWindowsAssignedToForms: async (formIds) => {
     let sql = `SELECT cw.[id], cw.[name] FROM mtc_admin.checkWindow cw
