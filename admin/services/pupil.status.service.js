@@ -44,7 +44,7 @@ pupilStatusService.getStatus = async (pupil) => {
   const isInProgress = hasPupilLoggedIn && checkCount === pupilRestartsCount && isActivePin
   if (isInProgress) return getStatusDescription('INP')
   // Pupil's check started
-  const latestCompletedCheck = await completedCheckDataService.find({ 'data.pupil.checkCode': latestCheck.checkCode })
+  const latestCompletedCheck = await completedCheckDataService.sqlFindOne(latestCheck.checkCode)
   const hasCheckStarted = latestCheck && latestCheck.checkStartedAt && latestCompletedCheck.length === 0 && !isActivePin
   if (hasCheckStarted) return getStatusDescription('CHS')
   // Pupil has a result

@@ -18,7 +18,7 @@ describe('completedCheckProcessingService', () => {
   describe('#markAndProcess', () => {
     let completedCheckDataServiceStub, markingServiceStub, psychometricianReportServiceStub
     beforeEach(() => {
-      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'findUnmarked')
+      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'sqlFindUnmarked')
       psychometricianReportServiceStub = sandbox.stub(psychometricianReportService, 'batchProduceCacheData')
       markingServiceStub = sandbox.stub(markingService, 'batchMark')
       service = proxyquire('../../services/completed-check-processing.service', {
@@ -60,7 +60,7 @@ describe('completedCheckProcessingService', () => {
   describe('#process', () => {
     let completedCheckDataServiceStub, serviceMarkStub
     beforeEach(() => {
-      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'hasUnmarked')
+      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'sqlHasUnmarked')
       sandbox.stub(markingService)
       service = proxyquire('../../services/completed-check-processing.service', {
         './data-access/completed-check.data.service': completedCheckDataService,

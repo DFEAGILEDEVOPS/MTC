@@ -57,7 +57,7 @@ const Pupil = new Schema({
   },
   pin: {
     type: String,
-    maxlength: 5,
+    maxlength: 4,
     trim: true
   },
   pinExpiresAt: {
