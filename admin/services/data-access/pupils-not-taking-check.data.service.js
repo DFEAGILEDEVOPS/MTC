@@ -8,7 +8,7 @@ const TYPES = require('tedious').TYPES
 const pupilsNotTakingCheckDataService = {
 /**
  * @param schoolId
- * @deprecated use sqlFetchPupilsWithReasons
+ * @deprecated use sqlFindPupilsWithReasons
  * @returns {Promise.<*>}
  */
   fetchPupilsWithReasons: async (schoolId) => {
@@ -23,7 +23,7 @@ const pupilsNotTakingCheckDataService = {
  * @description returns all pupils with specified school that have a record of attendance
  * @returns {Promise.<*>}
  */
-  sqlFetchPupilsWithReasons: async (schoolId) => {
+  sqlFindPupilsWithReasons: async (schoolId) => {
     const sql = `SELECT DISTINCT p.* FROM ${sqlService.adminSchema}.[pupil] p 
     INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa
     ON p.id = pa.pupil_id WHERE p.school_id = @schoolId`
@@ -36,7 +36,7 @@ const pupilsNotTakingCheckDataService = {
   },
   /**
  *
- * @deprecated use sqlGetAttendanceCodes
+ * @deprecated use sqlFindAttendanceCodes
  * @returns {Promise.<*>}
  */
   getAttendanceCodes: async () => {
@@ -46,7 +46,7 @@ const pupilsNotTakingCheckDataService = {
       .lean()
       .exec()
   },
-  sqlGetAttendanceCodes: async () => {
+  sqlFindAttendanceCodes: async () => {
     const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
     return sqlService.query(sql)
   }
