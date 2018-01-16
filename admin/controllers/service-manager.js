@@ -204,7 +204,7 @@ const checkWindowsForm = async (req, res, next) => {
 
       checkWindowData = {
         checkWindowId: req.params.id,
-        checkWindowName: checkWindowData.checkWindowName,
+        checkWindowName: checkWindowData.name,
         adminStartDay: moment(checkWindowData.adminStartDate).format('D'),
         adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
         adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
