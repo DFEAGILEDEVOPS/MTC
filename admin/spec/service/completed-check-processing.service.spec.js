@@ -2,6 +2,7 @@
 /* global describe, beforeEach, afterEach, it, expect */
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
+const winston = require('winston')
 
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
@@ -24,7 +25,7 @@ describe('completedCheckProcessingService', () => {
         './data-access/completed-check.data.service': completedCheckDataService,
         './marking.service': markingService
       })
-      sandbox.stub(console, 'log')
+      sandbox.stub(winston, 'log')
     })
 
     it('bails out early if the array is empty', async (done) => {
@@ -66,7 +67,7 @@ describe('completedCheckProcessingService', () => {
         './marking.service': markingService
       })
       serviceMarkStub = sandbox.stub(service, 'markAndProcess')
-      sandbox.stub(console, 'log')
+      sandbox.stub(winston, 'log')
     })
 
     it('initially find out if there is any work to do', async (done) => {
