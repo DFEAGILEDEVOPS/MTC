@@ -7,14 +7,6 @@ const completedCheckMock = require('../mocks/completed-check')
 describe('markingService', () => {
   let service = require('../../services/marking.service')
 
-  beforeEach(() => {
-    // sandbox = sinon.sandbox.create()
-  })
-
-  afterEach(() => {
-    // sandbox.restore()
-  })
-
   describe('#mark', () => {
     it('throws an error if the arg is missing', async (done) => {
       try {
