@@ -143,6 +143,20 @@ function parseResults (results) {
   return jsonArray
 }
 
+/**
+ * Return a boolean to indicate if the SQL provided is an insert statement
+ * @param sql
+ * @return {boolean}
+ */
+function isInsertStatement (sql = '') {
+  const s = sql.replace(/\s/g, '').toUpperCase()
+  if (s.slice(0, 6) !== 'INSERT') {
+    return false
+  }
+  winston.debug('sql.service: INSERT statement found')
+  return true
+}
+
 /** SQL Service **/
 const sqlService = {}
 
@@ -200,6 +214,7 @@ sqlService.query = (sql, params = []) => {
  */
 sqlService.modify = (sql, params) => {
   return new Promise(async (resolve, reject) => {
+    const isInsert = isInsertStatement(sql)
     const con = await sqlPoolService.getConnection()
     const response = {}
     var request = new Request(sql, function (err, rowCount) {
@@ -207,7 +222,7 @@ sqlService.modify = (sql, params) => {
       if (err) {
         return reject(err)
       }
-      resolve(R.assoc('rowsModified', rowCount, response))
+      resolve(R.assoc('rowsModified', (isInsert ? rowCount - 1 : rowCount), response))
     })
 
     if (params) {
@@ -245,7 +260,7 @@ sqlService.findOneById = async (table, id) => {
   const paramId = { name: 'id', type: TYPES.Int, value: id }
   const sql = `
       SELECT *    
-      FROM ${table}
+      FROM ${sqlService.adminSchema}.${table}
       WHERE id = @id
     `
   const rows = await sqlService.query(sql, [paramId])
@@ -283,7 +298,7 @@ sqlService.generateInsertStatement = async (table, data) => {
   const params = await generateParams(table, data)
   winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
-  INSERT INTO ${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
+  INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT @@IDENTITY`
 
   winston.debug('sql.service: SQL ', sql)
@@ -300,9 +315,8 @@ sqlService.generateInsertStatement = async (table, data) => {
 sqlService.generateUpdateStatement = async (table, data) => {
   const params = await generateParams(table, data)
   const sql = R.join(' ', [
-    'UPDATE',
-    table,
-    'SET ',
+    `UPDATE ${sqlService.adminSchema}.${table}`,
+    'SET',
     generateSetStatements(R.omit(['id'], data)),
     'WHERE id=@id'
   ])
@@ -335,7 +349,7 @@ sqlService.create = async (tableName, data) => {
  */
 sqlService.updateDataTypeCache = async function () {
   const sql =
-    `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE   
+    `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema
     `
