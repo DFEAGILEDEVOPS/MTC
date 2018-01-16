@@ -11,6 +11,8 @@ const restartService = require('../services/restart.service')
 const dateService = require('../services/date.service')
 const config = require('../config')
 
+const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
+
 const fourPmToday = () => {
   return moment().startOf('day').add(16, 'hours')
 }
@@ -92,13 +94,14 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
  * @returns {Object}
  */
 pinGenerationService.generateSchoolPassword = (school) => {
+  if (allowedWords.size < 5) {
+    throw new Error('Service is incorrectly configured')
+  }
+  const wordsArray = Array.from(allowedWords)
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const allowedWords = (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
-    const firstRandomWord = allowedWords.length > 0
-      ? allowedWords[pinGenerationService.generateCryptoRandomNumber(0, allowedWords.length - 1)] : ''
-    const secondRandomWord = allowedWords.length > 0
-      ? allowedWords[pinGenerationService.generateCryptoRandomNumber(0, allowedWords.length - 1)] : ''
+    const firstRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+    const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
     const numberCombination = randomGenerator.getRandom(2, chars)
     school.schoolPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
     school.pinExpiresAt = fourPmToday()
