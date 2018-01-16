@@ -8,7 +8,7 @@ const completedCheckDataService = {}
 
 /**
  * Query : find a completedCheck document that has not been marked
- * @deprecated
+ * @deprecated mongoose specific
  * @type {{$or: [null,null]}}
  */
 const unmarkedQueryCriteria = {
@@ -155,9 +155,8 @@ completedCheckDataService.findUnmarked = async function (batchSize) {
 }
 
 /**
- * Return plain completedCheck objects that have not been marked, up to a the limit specified by `batchsize`
  * Returns an array of Ids: [1234, 5678, ...] of CompletedChecks.  Used by the batch processor.
- * @param batchSize
+ * @param batchSize the size of the batch to work with
  * @return {Promise.<Array>}
  */
 completedCheckDataService.sqlFindUnmarked = async function (batchSize) {

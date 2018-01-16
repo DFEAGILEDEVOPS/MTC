@@ -24,7 +24,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
 
   // store to data store
   await completedCheckDataService.sqlAddResult(completedCheck)
-  // HACK temporary way to m ark checks until we move to a dedicated scheduled process
+  // HACK temporary way to mark checks until we move to a dedicated scheduled process
   await markingService.mark(completedCheck)
 }
 
