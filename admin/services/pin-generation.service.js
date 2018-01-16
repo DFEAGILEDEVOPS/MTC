@@ -1,5 +1,7 @@
 const moment = require('moment')
 const mongoose = require('mongoose')
+const bluebird = require('bluebird')
+const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const randomGenerator = require('../lib/random-generator')
@@ -7,12 +9,16 @@ const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const dateService = require('../services/date.service')
+const config = require('../config')
+
+const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
 
 const fourPmToday = () => {
   return moment().startOf('day').add(16, 'hours')
 }
 
 const pinGenerationService = {}
+const chars = '23456789'
 
 /**
  * Fetch pupils and filter required only pupil attributes
@@ -88,13 +94,34 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
  * @returns {Object}
  */
 pinGenerationService.generateSchoolPassword = (school) => {
+  if (allowedWords.size < 5) {
+    throw new Error('Service is incorrectly configured')
+  }
+  const wordsArray = Array.from(allowedWords)
   let { schoolPin, pinExpiresAt } = school
   if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const length = 8
-    school.schoolPin = pinGenerationService.generateRandomPin(length)
+    const firstRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+    const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+    const numberCombination = randomGenerator.getRandom(2, chars)
+    school.schoolPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
     school.pinExpiresAt = fourPmToday()
   }
   return school
+}
+
+/**
+ * Generating random numbers in specific range using crypto.randomBytes from crypto library
+ * Maximum available range is 281474976710655 or 256^6-1
+ * Maximum number for range must be equal or less than Number.MAX_SAFE_INTEGER (usually 9007199254740991)
+ * @param minimum - inclusive
+ * @param maximum - inclusive
+ * @returns {Number}
+*/
+pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
+  const maxDec = 281474976710656
+  const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
+  let result = Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)
+  return result
 }
 
 /**
@@ -102,18 +129,8 @@ pinGenerationService.generateSchoolPassword = (school) => {
  * @returns {String}
  */
 pinGenerationService.generatePupilPin = () => {
-  const chars = '23456789'
-  return randomGenerator.getRandom(4, chars)
-}
-
-/**
- * Generate Random Pin
- * @param length
- * @returns {String}
- */
-pinGenerationService.generateRandomPin = (length) => {
-  const chars = '23456789bcdfghjkmnpqrstvwxyz'
-  return randomGenerator.getRandom(length, chars)
+  const pupilPinLength = 4
+  return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
 module.exports = pinGenerationService
