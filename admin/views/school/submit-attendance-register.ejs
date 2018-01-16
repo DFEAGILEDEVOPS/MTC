@@ -9,22 +9,22 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge" tabindex="0">Attendance register</h1>
+        <h1 class="heading-xlarge">Attendance register</h1>
 
         <div class="panel panel-border-wide">
-            <p tabindex="0" id="intro-paragraph" aria-labelledby="intro-paragraph">Your school’s trial will close when you submit the attendance register.<br>
+            <p id="intro-paragraph" aria-labelledby="intro-paragraph">Your school’s trial will close when you submit the attendance register.<br>
                 You can only submit this form once.</p>
         </div>
 
         <br style="clear: both"/>
 
-        <p class="lede" id="lead-paragraph" tabindex="0" aria-labelledby="lead-paragraph">Use this page to confirm pupil attendance.</p>
+        <p class="lede" id="lead-paragraph" aria-labelledby="lead-paragraph">Use this page to confirm pupil attendance.</p>
 
-        <ul class="list list-bullet font-small" role="list" tabindex="0">
-            <li tabindex="0" role="listitem">This page will populate with pupil details when they have taken the check.</li>
-            <li tabindex="0" role="listitem">Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
-            <li tabindex="0" role="listitem">Please only submit this form when all pupils have completed the check.</li>
-            <li tabindex="0" role="listitem">You will then be able to sign the headteacher’s declaration form.</li>
+        <ul class="list list-bullet font-small" role="list">
+            <li role="listitem">This page will populate with pupil details when they have taken the check.</li>
+            <li role="listitem">Select the checkboxes next to the names of the pupils that took the check and click ‘Submit’.</li>
+            <li role="listitem">Please only submit this form when all pupils have completed the check.</li>
+            <li role="listitem">You will then be able to sign the headteacher’s declaration form.</li>
         </ul>
     </div>
 </div>
@@ -62,7 +62,6 @@
                                    name="attendee[<%= index %>]"
                                    type="checkbox"
                                    value="<%= pupil.id %>"
-                                   tabindex="0"
                                    aria-label="Tick pupil <%= pupil.fullName %>"
                                    role="option">
                             <% } %>
@@ -73,9 +72,9 @@
                     </td>
                     <td>
                         <% if (pupil.percentage) { %>
-                        <span tabindex="0" aria-label="Score is <%= pupil.percentage %>"><%= pupil.percentage %></span>
+                        <span aria-label="Score is <%= pupil.percentage %>"><%= pupil.percentage %></span>
                         <% } else { %>
-                        <span class="font-greyed-out" tabindex="0" aria-label="Score is not available">n/a</span>
+                        <span class="font-greyed-out" aria-label="Score is not available">n/a</span>
                         <% } %>
                     </td>
                 </tr>

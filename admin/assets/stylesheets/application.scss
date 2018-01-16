@@ -71,6 +71,14 @@ $mainstream-brand: $department-for-education;
   word-wrap: break-word;
 }
 
+.back-to-top-container {
+  margin-top: 0;
+
+  @include media(desktop) {
+    margin-top: 4.4em;
+  }
+}
+
 // Sidebar
 
 .sidebar {
@@ -461,17 +469,17 @@ table.spacious.reduced-top-margin {
   margin-top: 1.1em;
 }
 
+// Panels
+
 .panel-no-border {
   @extend .panel;
   border-left: 0;
 }
 
-.back-to-top-container {
-  margin-top: 0;
-
-  @include media(desktop) {
-    margin-top: 4.4em;
-  }
+.panel.panel-border-wide.short {
+  padding: 5px 0 6px 15px;
+  margin-top: 8px;
+  margin-bottom: 10px;
 }
 
 .panel, .warning-panel, .panel-no-border {

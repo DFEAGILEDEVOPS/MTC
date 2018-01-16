@@ -10,7 +10,7 @@
 <% if (hasError) { %>
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Errors in your uploaded file</h2>
             <% if (fileErrors && fileErrors.hasError()) { %>
             <p>You need to fix the errors on this page before continuing. See highlighted errors below
@@ -47,9 +47,8 @@
         <h3 class="heading-medium">Download template</h3>
         <ol class="list list-number">
             <li>Download the template
-                <div class="panel panel-border-wide">
-                    <div class="icon-file-download pupils-template"></div>
-                    <b><a class="template-link" href="/school/pupil/download-multiple-template">Pupil details template</a></b> (CSV file)
+                <div class="panel panel-border-wide short">
+                    <a href="/school/pupil/download-multiple-template" class="heading-small icon-download">Pupil details template</a> (CSV file)
                 </div>
             </li>
             <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>

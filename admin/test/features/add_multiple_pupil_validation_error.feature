@@ -14,7 +14,7 @@ Feature: Add Multiple Pupil validation Error
   @multiple_pupil_upload
   Scenario: Uploading a CSV file with only 1 row
     And I Upload a CSV file with 1 row to add Multiple Pupil
-    Then I can see the error message for uploading multiple pupil 'You must contain at least two rows of data'
+    Then I can see the error message for uploading multiple pupil 'Must contain at least two rows of data
 
 
   Scenario: clicking Save without selecting a CSV file
