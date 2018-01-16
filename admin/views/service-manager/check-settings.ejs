@@ -1,8 +1,5 @@
 <div class="grid-row">
-    <div class="column-one-half">
-        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    </div>
-    <div class="column-one-half">
+    <div class="column-full">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
@@ -11,13 +8,13 @@
     <div class="column-two-thirds">
 
         <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
-        <div class="box-successful top-padding-30">
-            <h2 class="heading-large">Changes have been saved</h2>
+        <div class="govuk-box-highlight">
+            <div class="bold-large">Changes have been saved</div>
         </div>
         <% } %>
 
         <% if (typeof error !== 'undefined') { %>
-        <div class="error-summary top-padding-30" role="group" aria-labelledby="error-summary-1" tabindex="0">
+        <div class="error-summary top-padding-30" role="group" aria-labelledby="error-summary-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-1">Check the settings details</h2>
             <p>Question time and time between questions are measured in seconds.</p>
 
@@ -33,10 +30,9 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge" tabindex="0">Check settings</h1>
+        <h1 class="heading-xlarge" tabindex="0">Settings on pupil check</h1>
 
-        <p class="lede" id="lead-paragraph" tabindex="0">Use the form below to customise time settings.
-        </p>
+        <p class="lede" id="lead-paragraph">Adjust question timings.</p>
 
         <form action="/service-manager/check-settings" method="post">
             <div class="form-group">
@@ -71,10 +67,10 @@
                        aria-required="true"
                        aria-label="Time between questions.">
             </div>
-            <div class="form-group">
-                <p>
-                    <input class="button" type="submit" value="Save changes">
-                </p>
+
+            <div class="form-buttons">
+                <input class="button" type="submit" value="Save">
+                <a href="/school/pupil-register/lastName/true" class="button button-secondary">Cancel</a>
             </div>
         </form>
     </div>

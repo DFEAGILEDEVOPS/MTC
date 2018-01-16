@@ -24,8 +24,8 @@ controller.getAddPupil = async (req, res, next, error = null) => {
   }
 
   try {
-    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
-    req.breadcrumbs(res.locals.pageTitle)
+    req.breadcrumbs('Add pupil', '/school/pupil/add')
+    req.breadcrumbs('Pupil Register')
     res.render('school/add-pupil', {
       school: school,
       formData: req.body,
@@ -39,7 +39,6 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
-  req.breadcrumbs(res.locals.pageTitle)
   const pupilData = {
     school: req.body.school,
     upn: req.body.upn && req.body.upn.trim().toUpperCase(),

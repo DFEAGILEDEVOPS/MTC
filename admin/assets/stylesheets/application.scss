@@ -410,12 +410,12 @@ table.spacious {
   th, td {
     &:first-child {
       white-space: nowrap;
-      width: 50%;
+      //width: 50%;
     }
 
     &:not(:first-child) {
       white-space: nowrap;
-      width: 25%;
+      //width: 25%;
     }
   }
 
@@ -449,7 +449,7 @@ table.spacious-two-column {
   @extend table.spacious;
 
   th {
-    width: 50%;
+    //width: 50%;
   }
 }
 

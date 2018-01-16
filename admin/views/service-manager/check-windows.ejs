@@ -34,7 +34,7 @@
         </p>
 
         <% if (checkWindowList.length > 0) { %>
-        <table class="spacious sorting" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
                 <tr>
                     <th scope="col"><a href="/service-manager/check-windows/checkWindowName/<%= htmlSortDirection.checkWindowName %>">Check window <span class="<%= arrowSortDirection.checkWindowName %>"><span>Sort by check window name <%= htmlSortDirection.checkWindowName %></span></span></a></th>
@@ -48,9 +48,9 @@
                 <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
                     <td>
                         <% if (checkWindow.isCurrent) { %>
-                        <a href="/service-manager/check-windows/edit/<%= checkWindow.id %>"><%= checkWindow.checkWindowName %></a>
+                        <a href="/service-manager/check-windows/edit/<%= checkWindow.id %>" class="bold-small"><%= checkWindow.checkWindowName %></a>
                         <% } else { %>
-                        <%= checkWindow.checkWindowName %>
+                        <span class="bold-small"><%= checkWindow.checkWindowName %></span>
                         <% } %>
                     </td>
                     <td><%= checkWindow.adminStartDate %></td>

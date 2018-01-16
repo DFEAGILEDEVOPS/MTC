@@ -27,13 +27,13 @@
         <p class="lede" id="lead-paragraph">
             View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
         </p>
-        <p>
+        <div class="button-wrapper">
             <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
-        </p>
+        </div>
 
         <% if (Array.isArray(forms) && forms.length > 0) { %>
         <div class="group">
-            <table class="spacious sorting" id="checkFormsList" role="group">
+            <table class="spacious" id="checkFormsList" role="group">
                 <thead>
                     <tr>
                         <th scope="col"><a href="/test-developer/upload-and-view-forms/name/<%= htmlSortDirection.name %>">Form <span class="<%= arrowSortDirection.name %>"><span>Sort by check form name <%= htmlSortDirection.name %></span></span></a></th>
