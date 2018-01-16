@@ -1,12 +1,16 @@
 'use strict'
-
+const { TYPES } = require('tedious')
+const moment = require('moment')
+const sqlService = require('./sql.service')
 const PupilRestart = require('../../models/pupil-restart')
 const RestartCode = require('../../models/restart-code')
+const table = '[pupilRestart]'
 const pupilRestartDataService = {}
 
 /**
  * Create a new Pupil restart
  * @param data
+ * @deprecated Please use sqlCreate method instead
  * @return {Promise}
  */
 pupilRestartDataService.create = async function (data) {
@@ -16,9 +20,10 @@ pupilRestartDataService.create = async function (data) {
 }
 
 /**
- * Update a Pupil's restart
+ * Update a Pupil restart
  * @param query
  * @param criteria
+ * @deprecated Please use sqlMarkRestartAsDeleted method instead
  * @return {Promise}
  */
 pupilRestartDataService.update = async function (query, criteria) {
@@ -28,6 +33,7 @@ pupilRestartDataService.update = async function (query, criteria) {
 /**
  * Find the count
  * @param query
+ * @deprecated Please use sqlGetNumberOfRestartsByPupil method instead
  * @return {Promise.<*>}
  */
 pupilRestartDataService.count = async function (query) {
@@ -37,6 +43,7 @@ pupilRestartDataService.count = async function (query) {
 /**
  * Find and return the latest single restart by criteria in `options`
  * @param options
+ * @deprecated Please use sqlFindLatestRestart method instead
  * @return {Promise.<{Object}>}
  */
 pupilRestartDataService.findLatest = async function (options) {
@@ -46,10 +53,88 @@ pupilRestartDataService.findLatest = async function (options) {
 
 /**
  * Get all the restart codes documents
+ * @deprecated Please use sqlGetRestartCodes instead
  * @return {Promise.<{Object}>}
  */
 pupilRestartDataService.getRestartCodes = async () => {
   return RestartCode.find().lean().exec()
+}
+
+/** SQL METHODS **/
+
+/**
+ * Create a new pupil restart.
+ * @param {object} data
+ * @return  { insertId: <number>, rowsModified: <number> }
+ */
+pupilRestartDataService.sqlCreate = async (data) => {
+  return sqlService.create(table, data)
+}
+
+/**
+ * Returns number of restarts specified by pupil id
+ * @param pupilId
+ * @return {Promise.<*>}
+ */
+pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
+  const sql = `SELECT COUNT(*) FROM ${sqlService.adminSchema}.[pupilRestart] WHERE pupil_id=@pupilId`
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find latest check for pupil
+ * @param pupilId - the pupil taking the check
+ * @return {Promise.<void>} - lean Check objects
+ */
+pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[pupilRestart] WHERE pupil_id=@pupilId AND isDeleted=0 ORDER BY createdAt DESC`
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find latest check for pupil
+ * @param pupilId - the pupil taking the check
+ * @return {Promise.<void>} - lean Check objects
+ */
+pupilRestartDataService.sqlGetRestartCodes = async function () {
+  const sql = `SELECT * FROM ${sqlService.adminSchema}.[pupilRestartCode]`
+  const params = []
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Mark an existing pupil restart as deleted
+ * @param pupilId
+ * @return {Promise<*>}
+ */
+pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId) => {
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    },
+    {
+      name: 'updatedAt',
+      value: moment.utc(),
+      type: TYPES.DateTimeOffset
+    }
+  ]
+  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[pupilRestart] SET isDeleted=1, updatedAt=@updatedAt WHERE [pupil_id]=@pupilId`, params)
 }
 
 module.exports = pupilRestartDataService

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect, spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
@@ -9,6 +9,8 @@ const PupilRestart = require('../../../models/pupil-restart')
 const RestartCode = require('../../../models/restart-code')
 const pupilRestartMock = require('../../mocks/pupil-restart')
 const restartCodesMock = require('../../mocks/restart-codes')
+const pupilMock = require('../../mocks/pupil')
+const sqlService = require('../../../services/data-access/sql.service')
 
 describe('pupil-restart.data.service', () => {
   let service, sandbox
@@ -94,6 +96,20 @@ describe('pupil-restart.data.service', () => {
     it('makes the expected calls', () => {
       service.update(1, { $set: { 'some': 'criteria' } })
       expect(mock.verify()).toBe(true)
+    })
+
+
+    describe('#sqlFindLatestRestart', () => {
+      beforeEach(() => {
+        spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilRestartMock]))
+        service = require('../../../services/data-access/pupil-restart.data.service')
+      })
+
+      it('it makes the expected calls', async () => {
+        const res = await service.sqlFindLatestRestart(pupilMock._id)
+        expect(sqlService.query).toHaveBeenCalled()
+        expect(Array.isArray(res)).toBe(true)
+      })
     })
   })
 })

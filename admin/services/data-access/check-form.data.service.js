@@ -240,7 +240,7 @@ const checkFormDataService = {
     return result.value > 0
   },
 
-  sqlDeleteForm: async (formId) => {
+  sqlMarkFormAsDeleted: async (formId) => {
     const params = [
       {
         name: 'formId',

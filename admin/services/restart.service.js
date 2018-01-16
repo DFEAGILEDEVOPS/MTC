@@ -1,5 +1,5 @@
 const moment = require('moment')
-const Promise = require('bluebird')
+const bluebird = require('bluebird')
 const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -25,7 +25,7 @@ restartService.getPupils = async (dfeNumber) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) throw new Error(`School [${dfeNumber}] not found`)
   let pupils = await pupilDataService.getSortedPupils(dfeNumber, 'lastName', 'asc')
-  pupils = await Promise.filter(pupils.map(async p => {
+  pupils = await bluebird.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
     if (isPupilEligible) return p
   }), p => !!p)
@@ -68,14 +68,14 @@ restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, r
   }
   return Promise.all(pupilsList.map(async pupilId => {
     const pupilRestartData = {
-      pupilId,
+      pupil_id: pupilId,
       recordedByUser: userName,
       reason: restartReason,
       didNotCompleteInformation: didNotCompleteInfo,
       furtherInformation: restartFurtherInfo,
       createdAt: moment.utc()
     }
-    return pupilRestartDataService.create(pupilRestartData)
+    return pupilRestartDataService.sqlCreate(pupilRestartData)
   }))
 }
 
@@ -100,7 +100,7 @@ restartService.canAllPupilsRestart = async (pupilsList) => {
 
 restartService.canRestart = async pupilId => {
   const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
-  const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
+  const pupilRestartsCount = await pupilRestartDataService.sqlGetNumberOfRestartsByPupil(pupilId)
   const hasRestartAttemptRemaining = pupilRestartsCount < restartService.totalRestartsAllowed
   const hasCheckAttemptRemaining = checkCount < restartService.totalChecksAllowed
   // i.e. If pupil has been given a restart on the very first time then:
@@ -122,8 +122,8 @@ restartService.getSubmittedRestarts = async schoolId => {
   if (!pupils || pupils.length === 0) return []
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
-  const latestPupilRestarts = await Promise.filter(pupils.map(async p => {
-    const restart = await pupilRestartDataService.findLatest({ pupilId: p._id, isDeleted: false })
+  const latestPupilRestarts = await bluebird.filter(pupils.map(async p => {
+    const restart = await pupilRestartDataService.sqlFindLatestRestart(p._id)
     if (restart) {
       const status = await restartService.getStatus(p._id)
       return { ...restart, status }
@@ -155,13 +155,13 @@ restartService.getSubmittedRestarts = async schoolId => {
  */
 
 restartService.getStatus = async pupilId => {
-  const restartCodes = await pupilRestartDataService.getRestartCodes()
+  const restartCodes = await pupilRestartDataService.sqlGetRestartCodes()
   const getStatus = (value) => {
     const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
     return entry && entry.status
   }
   const checkCount = await checkDataService.sqlGetNumberOfChecksStartedByPupil(pupilId)
-  const pupilRestartsCount = await pupilRestartDataService.count({ pupilId: pupilId, isDeleted: false })
+  const pupilRestartsCount = await pupilRestartDataService.sqlGetNumberOfRestartsByPupil(pupilId)
   if (checkCount === restartService.totalChecksAllowed) return getStatus('MAX')
   if (checkCount === pupilRestartsCount) return getStatus('REM')
   if (checkCount === pupilRestartsCount + 1) return getStatus('TKN')
@@ -177,8 +177,8 @@ restartService.markDeleted = async pupilId => {
   const pupil = await pupilDataService.findOne({_id: pupilId})
   const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
   await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
-  const updated = await pupilRestartDataService.update({pupilId: pupilId, isDeleted: false}, { '$set': { isDeleted: true } })
-  if (!updated || updated.nModified !== 1) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)
+  const updated = await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId)
+  if (!updated) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)
   return pupil
 }
 
