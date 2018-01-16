@@ -12,9 +12,7 @@ const pupilService = {}
  * @returns {Promise.<*>}
  */
 pupilService.fetchOnePupil = async (pupilId, schoolId) => {
-  // TODO: Introduce integration tests
   return pupilDataService.sqlFindOneByIdAndSchool(pupilId, schoolId)
-}
 }
 
 // TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again

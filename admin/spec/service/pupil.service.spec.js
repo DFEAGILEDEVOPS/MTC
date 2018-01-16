@@ -23,10 +23,10 @@ describe('pupil service', () => {
 
   describe('#fetchOnePupil', () => {
     it('it makes a call to the pupilDataService', async () => {
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMockPromise())
+      spyOn(pupilDataService, 'sqlFindOneByIdAndSchool').and.returnValue(pupilMockPromise())
       const service = setupService(pupilDataService)
       await service.fetchOnePupil('arg1', 'arg2')
-      expect(pupilDataService.findOne).toHaveBeenCalledWith({ _id: 'arg1', school: 'arg2' })
+      expect(pupilDataService.sqlFindOneByIdAndSchool).toHaveBeenCalledWith('arg1', 'arg2')
     })
   })
 
