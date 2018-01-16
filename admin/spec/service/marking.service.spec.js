@@ -1,5 +1,7 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect, spyOn */
+/* global describe, it, expect, spyOn, fail */
+
+const winston = require('winston')
 const checkDataService = require('../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const completedCheckMock = require('../mocks/completed-check')
@@ -11,7 +13,7 @@ describe('markingService', () => {
     it('throws an error if the arg is missing', async (done) => {
       try {
         await service.mark()
-        expect('this').toBe('thrown')
+        fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')
       }
@@ -21,7 +23,7 @@ describe('markingService', () => {
     it('throws an error if the arg is invalid', async (done) => {
       try {
         await service.mark({data: ''})
-        expect('this').toBe('thrown')
+        fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')
       }
@@ -31,7 +33,7 @@ describe('markingService', () => {
     it('throws an error if the arg is invalid', async (done) => {
       try {
         await service.mark({data: {answers: null}})
-        expect('this').toBe('thrown')
+        fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')
       }
@@ -55,7 +57,7 @@ describe('markingService', () => {
     it('throws an error if called without an arg', async (done) => {
       try {
         await service.batchMark()
-        expect('this').toBe('thrown')
+        fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('Missing arg batchIds')
       }
@@ -65,7 +67,7 @@ describe('markingService', () => {
     it('throws an error if called with an empty array', async (done) => {
       try {
         await service.batchMark([])
-        expect('this').toBe('thrown')
+        fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('No documents to mark')
       }
@@ -78,7 +80,7 @@ describe('markingService', () => {
         {}, {}, {}
       ])
       await service.batchMark([1, 2, 3])
-      expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalled()
+      expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1,2,3])
       done()
     })
 
@@ -86,6 +88,8 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
+      // As we know this will output a warning lets shut it up during the test
+      spyOn(winston, 'error')
       let callCount = 0
       spyOn(service, 'mark').and.callFake((completedCheck) => {
         callCount++
