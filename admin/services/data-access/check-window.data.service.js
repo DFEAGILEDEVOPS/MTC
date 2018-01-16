@@ -171,7 +171,7 @@ const checkWindowDataService = {
     return checkWindowDataService.sqlFind(sortBy, sortDirection, false, false)
   },
   /**
-   * Create a new check window
+   * Save check window
    * @param data
    * @deprecated use sqlCreate
    * @return {Promise.<*>}

@@ -72,6 +72,11 @@ After("@multiple_pupil_upload") do
   FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
+After("@remove_group") do
+  step 'I am on the groups page'
+  group_pupils_page.remove_group(@group_name)
+end
+
 After do |scenario|
   visit ENV['BASE_URL'] + '/sign-out'
   if scenario.failed?
