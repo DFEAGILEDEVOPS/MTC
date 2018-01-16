@@ -11,7 +11,13 @@ const table = '[pupilStatusCode]'
  */
 pupilStatusCodeDataService.sqlFindStatusCodes = async () => {
   // TODO: data-refactor: candidate for caching
-  const sql = `SELECT code, statusDesc FROM ${table} ORDER By statusDesc ASC`
+  const sql = `
+  SELECT 
+    id, 
+    code, 
+    statusDesc 
+  FROM ${sqlService.adminSchema}.${table} 
+  ORDER BY statusDesc ASC`
   return sqlService.query(sql)
 }
 
