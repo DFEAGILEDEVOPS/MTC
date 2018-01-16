@@ -265,8 +265,6 @@ const saveCheckWindows = async (req, res, next) => {
     actionName = 'Edit'
     urlActionName = 'edit'
     flashMessage = 'Changes have been saved'
-
-    checkWindow = await checkWindowDataService.sqlFindOneById(req.body.checkWindowId)
   }
 
   if (validationError.hasError()) {
@@ -299,7 +297,18 @@ const saveCheckWindows = async (req, res, next) => {
     })
   }
 
+  try {
+    if (req.body.checkWindowId) {
+      checkWindow = await checkWindowDataService.sqlFindOneById(req.body.checkWindowId)
+    }
+  } catch (error) {
+    return next(error)
+  }
+
+  let insertNew = false
+
   if (typeof checkWindow === 'undefined') {
+    insertNew = true
     checkWindow = {}
   }
 
@@ -315,10 +324,14 @@ const saveCheckWindows = async (req, res, next) => {
   // Auditing? Question for BAs.
 
   try {
-    await checkWindowDataService.sqlCreate(checkWindow)
+    if (insertNew) {
+      await checkWindowDataService.sqlCreate(checkWindow)
+    } else {
+      await checkWindowDataService.sqlUpdate(checkWindow)
+    }
     req.flash('info', flashMessage)
   } catch (error) {
-    winston.info('Could not save check windows data.', error)
+    winston.error('Could not save check windows data.', error)
     return next(error)
   }
 
