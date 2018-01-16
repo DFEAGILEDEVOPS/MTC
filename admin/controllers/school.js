@@ -332,14 +332,14 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await pupilsNotTakingCheckDataService.sqlGetAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await pupilsNotTakingCheckDataService.fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckDataService.sqlFetchPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -382,7 +382,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await pupilsNotTakingCheckDataService.sqlGetAttendanceCodes()
   } catch (error) {
     return next(error)
   }
@@ -460,14 +460,14 @@ const savePupilNotTakingCheck = async (req, res, next) => {
 
   // Get attendance code index
   try {
-    attendanceCodes = await pupilsNotTakingCheckDataService.getAttendanceCodes()
+    attendanceCodes = await pupilsNotTakingCheckDataService.sqlGetAttendanceCodes()
   } catch (error) {
     return next(error)
   }
 
   // Get pupils for active school
   try {
-    pupils = await pupilsNotTakingCheckDataService.fetchPupilsWithReasons(req.user.School)
+    pupils = await pupilsNotTakingCheckDataService.sqlFetchPupilsWithReasons(req.user.School)
   } catch (error) {
     return next(error)
   }
