@@ -210,12 +210,13 @@ controller.getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupilsFormatted
   try {
-    const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
-    const pupilsData = pupils.map(e => e.toJSON()).filter(p => !!p.pin && !p.pinExpired)
+    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+    const pupilsData = pupils.filter(p => !!p.pin)
+    const schoolData = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     pupilsFormatted = pupilsData.map(p => {
       return {
         fullName: `${p.foreName} ${p.lastName}`,
-        schoolPin: schoolData.schoolPin,
+        schoolPin: schoolData.pin,
         pupilPin: p.pin
       }
     })
