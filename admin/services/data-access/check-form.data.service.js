@@ -10,7 +10,7 @@ const checkFormDataService = {
   /**
    * Get form by id (if passed), when isDeleted is false.
    * Return Mongoose object.
-   * @deprecated use sqlGetActiveForm
+   * @deprecated use sqlFindActiveForm
    * @param id
    */
   getActiveForm: (id) => {
@@ -22,8 +22,19 @@ const checkFormDataService = {
     return CheckForm.findOne(query).exec()
   },
 
+    /**
+   * Get active forms
+   * This will be deprecated when the form choice algorithm is introduced
+   * @param id
+   * @returns {Promise<*>}
+   */
+  sqlFindActiveForm: (id = undefined) => {
+    let sql = 'SELECT TOP 1 * FROM [mtc_admin].[checkForm] WHERE isDeleted=0'
+    return sqlService.query(sql)
+  },
+
   /**
-   * Get form by id (if passed), otherwise just an active form
+   * Get active form by id
    * This will be deprecated when the form choice algorithm is introduced
    * @param id
    * @returns {Promise<*>}
@@ -45,8 +56,8 @@ const checkFormDataService = {
   /**
    * Get check form when isDeleted is false.
    * Return plain javascript object.
-   * This method will not be refactored as all calls should be repointed to sqlGetActiveForm.
-   * @deprecated use sqlGetActiveForm
+   * This method will not be refactored as all calls should be repointed to sqlFindActiveFormById.
+   * @deprecated use sqlFindActiveFormById
    * @returns {Promise}
    */
   getActiveFormPlain: (id) => {
@@ -129,18 +140,28 @@ const checkFormDataService = {
       sortOrder = 'DESC'
     }
     const params = []
-    const sql = `SELECT cf.*, cw.[name] FROM ${sqlService.adminSchema}.[checkForm] cf
-    INNER JOIN ${sqlService.adminSchema}.[checkFormWindow] fw
-        ON cf.id = fw.checkForm_id
-    INNER JOIN ${sqlService.adminSchema}.[checkWindow] cw
-      ON cw.id = fw.checkWindow_id
-    WHERE cf.isDeleted=0 AND fw.checkWindow_id=@windowId
-    ORDER BY cw.[name] ${sortOrder}`
-    params.push({
-      name: 'windowId',
-      value: windowId,
-      type: TYPES.Int
-    })
+    let sql
+    if (windowId) {
+      sql = `SELECT cf.*, cw.[name] FROM ${sqlService.adminSchema}.[checkForm] cf
+      INNER JOIN ${sqlService.adminSchema}.[checkFormWindow] fw
+          ON cf.id = fw.checkForm_id
+      INNER JOIN ${sqlService.adminSchema}.[checkWindow] cw
+        ON cw.id = fw.checkWindow_id
+      WHERE cf.isDeleted=0 AND fw.checkWindow_id=@windowId
+      ORDER BY cw.[name] ${sortOrder}`
+      params.push({
+        name: 'windowId',
+        value: windowId,
+        type: TYPES.Int
+      })
+    } else {
+      sql = `SELECT DISTINCT cf.id, cf.[name], cf.isDeleted FROM ${sqlService.adminSchema}.[checkForm] cf
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[checkFormWindow] fw
+          ON cf.id = fw.checkForm_id
+      LEFT OUTER JOIN ${sqlService.adminSchema}.[checkWindow] cw
+        ON cw.id = fw.checkWindow_id
+      ORDER BY cf.name ${sortOrder}`
+    }
     return sqlService.query(sql, params)
   },
 

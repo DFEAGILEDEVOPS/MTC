@@ -1,53 +1,43 @@
 'use strict'
-/* global describe beforeEach it expect spyOn */
+/* global describe beforeEach it expect spyOn fail */
 
 // Test the check-form.service populateFromFile method
 
 const config = require('../../config')
 const path = require('path')
-const proxyquire = require('proxyquire').noCallThru()
 const checkFormService = require('../../services/check-form.service')
-const MongooseModelMock = require('../mocks/mongoose-model-mock')
 
-describe('check form service', () => {
+describe('check form service.populateFromFile', () => {
   let checkForm, service
 
-  function setupService (cb) {
-    return proxyquire('../../services/check-form.service', {
-      '../models/check-form': new MongooseModelMock(cb)
+  describe('with spy', function () {
+    beforeEach(function () {
+      checkForm = {}
+      spyOn(checkFormService, 'isRowCountValid')
+      service = require('../../services/check-form.service')
     })
-  }
 
-  beforeEach(function () {
-    checkForm = {}
-    spyOn(checkFormService, 'isRowCountValid')
-    service = setupService(function () {})
-  })
+    it('should throw an error if not called with a checkForm in arg 1', async (done) => {
+      try {
+        await service.populateFromFile(null, null)
+        expect('expected to throw').toBe('error')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toBe('Check form argument missing')
+      }
+      done()
+    })
 
-  it('should have a populateFromFile() method', () => {
-    expect(service.hasOwnProperty('populateFromFile')).toBe(true)
-  })
-
-  it('should throw an error if not called with a checkForm in arg 1', async (done) => {
-    try {
-      await service.populateFromFile(null, null)
-      expect('expected to throw').toBe('error')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toBe('Check form arguments missing')
-    }
-    done()
-  })
-
-  it('should throw an error if not called with a csvFile in arg 2', async (done) => {
-    try {
-      await service.populateFromFile(checkForm, null)
-      expect('expected to throw').toBe('error')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toBe('CSV file arguments missing')
-    }
-    done()
+    it('should throw an error if not called with a csvFile in arg 2', async (done) => {
+      try {
+        await service.populateFromFile(checkForm, null)
+        expect('expected to throw').toBe('error')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toBe('CSV file argument missing')
+      }
+      done()
+    })
   })
 
   it('should return a populated object', async (done) => {
@@ -56,13 +46,13 @@ describe('check form service', () => {
     const file = path.join(__dirname, '/../../', csvFile)
     try {
       checkForm = await service.populateFromFile(checkForm, file)
-      expect(checkForm.questions.length).toBe(config.LINES_PER_CHECK_FORM)
+      const questions = JSON.parse(checkForm.formData)
+      expect(questions.length).toBe(config.LINES_PER_CHECK_FORM)
       // check last question is 12 x 12
-      expect(checkForm.questions[9].f1).toBe(12)
-      expect(checkForm.questions[9].f2).toBe(12)
+      expect(questions[9].f1).toBe(12)
+      expect(questions[9].f2).toBe(12)
     } catch (error) {
-      console.error('should return a populated object: ', error)
-      expect('not expected to throw').toBe('error')
+      fail('should not throw an error. Error:' + error.message)
     }
     done()
   })
@@ -108,18 +98,19 @@ describe('check form service', () => {
     let csvFile = 'data/fixtures/check-form-5.csv'
     try {
       checkForm = await service.populateFromFile(checkForm, path.join(__dirname, '/../../', csvFile))
+      const questions = JSON.parse(checkForm.formData)
       // Test trim on Q4
-      expect(checkForm.questions[4 - 1].f1).toBe(1)
+      expect(questions[4 - 1].f1).toBe(1)
 
       // Test rtrim() on Q2
-      expect(checkForm.questions[2 - 1].f1).toBe(1)
+      expect(questions[2 - 1].f1).toBe(1)
 
       // Test ltrim() on Q2
-      expect(checkForm.questions[2 - 1].f2).toBe(2)
+      expect(questions[2 - 1].f2).toBe(2)
 
       // Test trim on quoted strings
-      expect(checkForm.questions[10 - 1].f1).toBe(12)
-      expect(checkForm.questions[10 - 1].f2).toBe(12)
+      expect(questions[10 - 1].f1).toBe(12)
+      expect(questions[10 - 1].f2).toBe(12)
     } catch (error) {
       expect('not expected to throw').toBe('error')
     }

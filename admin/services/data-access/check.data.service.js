@@ -9,6 +9,7 @@ const checkDataService = {}
 /**
  * Find a Check and return the lean model
  * @param checkCode
+ * @deprecated
  * @return {Promise}
  */
 checkDataService.findOneByCheckCode = async function (checkCode) {
@@ -17,7 +18,7 @@ checkDataService.findOneByCheckCode = async function (checkCode) {
 
 /**
  * Find a Check by its checkCode UUID
- * @param checkCode
+ * @param checkCode * 
  * @return {Promise}
  */
 checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
@@ -34,9 +35,9 @@ checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
- * @return {Promise.<void>} - lean Check objects
+ * @deprecated
+ * @return {Promise.<*>} - lean Check objects
  */
-// NOT USED - will not replace with sql call
 checkDataService.find = async function (criteria) {
   return Check.find(criteria).lean().exec()
 }
@@ -44,6 +45,7 @@ checkDataService.find = async function (criteria) {
 /**
  * Find latest checks by criteria: e.g. checkDataService.findOne({checkWindowId: 1234})
  * @param criteria
+ * @deprecated
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.findLatestCheck = async function (criteria) {
@@ -75,7 +77,8 @@ checkDataService.sqlFindLatestCheck = async function (pupilId, started) {
 /**
  * Find Checks by criteria: e.g. checkDataService.find({checkWindowId: 1234})
  * @param criteria
- * @return {Promise.<void>} - lean Check objects, fully populated
+ * @deprecated
+ * @return {Promise.<object>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
  * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
  */
@@ -93,7 +96,7 @@ checkDataService.findFullyPopulated = async function (criteria) {
  * @param checkCodes - array of UUID
  * @return {Promise.<void>} - lean Check objects, fully populated
  * This includes the pupil (includes the school), checkWindow, and checkForm.  This is fairly efficient
- * involving 1 extra query per document set per sub-document.  The whole lot is done in 5 queries total.
+ * involving 1 extra query per document set per sub-document.
  */
 checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
   let sql = `SELECT * FROM ${sqlService.adminSchema}.[check] chk INNER JOIN ${sqlService.adminSchema}.pupil pup ON pup.id = chk.pupil_id
@@ -104,6 +107,9 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
   const params = []
   for (let index = 0; index < checkCodes.length; index++) {
     whereClause = whereClause + `@p${index}`
+    if (index < checkCodes.length - 1) {
+      whereClause += ','
+    }
     params.push({
       name: `p${index}`,
       value: checkCodes[index],
@@ -118,6 +124,7 @@ checkDataService.sqlFindFullyPopulated = async function (checkCodes) {
 /**
  * Find the count
  * @param query
+ * @deprecated
  * @return {Promise.<*>}
  */
 checkDataService.count = async function (query) {
@@ -127,7 +134,7 @@ checkDataService.count = async function (query) {
 /**
  * replaces mongo count implementation
  * returns number of checks started by specified pupil
- * @param query
+ * @param pupilId
  * @return {Promise.<*>}
  */
 checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {
@@ -145,6 +152,7 @@ checkDataService.sqlGetNumberOfChecksStartedByPupil = async function (pupilId) {
 /**
  * Generalised update function - use with care
  * @param query
+ * @deprecated
  * @param criteria
  * @return {Promise}
  */
@@ -204,6 +212,7 @@ checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, ma
 /**
  * Create a new Check
  * @param data
+ * @deprecated
  * @return {Promise}
  */
 checkDataService.create = async function (data) {
