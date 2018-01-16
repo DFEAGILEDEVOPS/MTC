@@ -34,9 +34,9 @@ const pupilsNotTakingCheckDataService = {
     }]
     return sqlService.query(sql, params)
   },
-  /**
+ /**
  *
- * @deprecated use sqlFindAttendanceCodes
+ * @deprecated use attendanceCodeDataService.sqlFindAttendanceCodes
  * @returns {Promise.<*>}
  */
   getAttendanceCodes: async () => {
@@ -45,12 +45,7 @@ const pupilsNotTakingCheckDataService = {
       .sort('order')
       .lean()
       .exec()
-  },
-  sqlFindAttendanceCodes: async () => {
-    const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
-    return sqlService.query(sql)
   }
-
 }
 
 module.exports = pupilsNotTakingCheckDataService
