@@ -14,7 +14,7 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
 /**
  * Return the last HDF submitted for a school
  * @param {number} schoolId
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `SELECT TOP 1 * FROM ${table} WHERE school_id = @schoolId
@@ -27,10 +27,10 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
 /**
  * Find the HDF for current check window
  * @param dfeNumber
- * @return {Promise<void>}
+ * @return {Promise<object|undefined>}
  */
 headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) => {
-  const checkWindow = checkWindowDataService.sqlFindCurrentCheckWindow()
+  const checkWindow = await checkWindowDataService.sqlFindCurrentCheckWindow()
   if (!checkWindow) {
     // we are not in a live check window
     return undefined
@@ -41,7 +41,7 @@ headteacherDeclarationDataService.findCurrentHdfForSchool = async (dfeNumber) =>
   WHERE h.checkWindow_id = @checkWindowId 
   AND s.dfeNumber = @dfeNumber`
   const result = await sqlService.query(table, sql, [paramCheckWindow, paramDfeNumber])
-  // This will only return a single result
+  // This will only return a single result as an object
   return R.head(result)
 }
 
