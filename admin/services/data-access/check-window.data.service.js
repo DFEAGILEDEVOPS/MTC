@@ -6,6 +6,7 @@ const winston = require('winston')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
+const table = '[checkWindow]'
 
 const checkWindowDataService = {
   /**
@@ -18,7 +19,7 @@ const checkWindowDataService = {
     winston.warn('check-window.data.service.fetchCheckWindow is deprecated')
     return CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
   },
-    /**
+  /**
    * Fetch check window document by id.
    * @param id
    * @returns {Promise.<void>}
@@ -144,7 +145,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*>}
    */
   fetchCurrentCheckWindow: async () => {
-    winston.warn('deprecated. use check-window.data.service.sqlFetchCurrentCheckWindow')
+    winston.warn('deprecated. use check-window.data.service.sqlFindCurrent')
     const now = new Date()
     const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
     if (!checkWindow) {
@@ -160,6 +161,14 @@ const checkWindowDataService = {
    */
   sqlFindCurrent: async (sortBy, sortDirection) => {
     return checkWindowDataService.sqlFind(sortBy, sortDirection, false, true)
+  },
+  /**
+   * Find a single current check window.  If multiple windows are concurrently running it takes the first.
+   * @return {Promise<void>}
+   */
+  sqlFindOneCurrent: async () => {
+    const checkWindows = await checkWindowDataService.sqlFindCurrent(null, null)
+    return R.head(checkWindows)
   },
   /**
    * Fetch (non-deleted) past check windows by sort by, sort direction
