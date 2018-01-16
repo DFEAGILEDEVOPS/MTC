@@ -9,7 +9,7 @@ const Group = new Schema({
     type: String,
     required: true
   },
-  pupils: [],
+  pupils: {},
   isDeleted: {
     type: Boolean,
     default: false
