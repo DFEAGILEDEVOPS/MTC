@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const ObjectId = require('mongoose').Types.ObjectId
-const completedChecksDataService = require('./data-access/completed-check.data.service')
+const completedCheckDataService = require('./data-access/completed-check.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const jwtService = require('../services/jwt.service')
 const markingService = require('./marking.service')
@@ -23,8 +23,8 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   completedCheck.receivedByServerAt = moment.utc()
 
   // store to data store
-  await completedChecksDataService.create(completedCheck)
-  // temporary way to mark checks until we move to a dedicated scheduled process
+  await completedCheckDataService.sqlAddResult(completedCheck)
+  // HACK temporary way to mark checks until we move to a dedicated scheduled process
   await markingService.mark(completedCheck)
 }
 
