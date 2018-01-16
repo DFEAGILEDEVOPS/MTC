@@ -57,14 +57,14 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * @return {Promise<boolean>}
  */
 headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) => {
-  const hdf = headteacherDeclarationDataService.findCurrentHdfForSchool(dfeNumber)
+  const hdf = await headteacherDeclarationDataService.findCurrentHdfForSchool(dfeNumber)
   if (!hdf) {
     return false
   }
-  if (hdf && hdf.signedDate) {
-    return true
+  if (!hdf.signedDate) {
+    return false
   }
-  return false
+  return true
 }
 
 module.exports = headteacherDeclarationService
