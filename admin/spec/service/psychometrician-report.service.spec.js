@@ -1,9 +1,10 @@
 'use strict'
-/* global describe, expect, it, beforeEach, afterEach */
+/* global describe, expect, it, beforeEach, afterEach, fail */
 
 const sinon = require('sinon')
 require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
+const winston = require('winston')
 
 const psReportCacheDataService = require('../../services/data-access/ps-report-cache.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
@@ -55,7 +56,7 @@ describe('psychometricians-report.service', () => {
     it('throws an error if not provided with an argument', async (done) => {
       try {
         await service.batchProduceCacheData()
-        expect('this').toBe('to be thrown')
+        fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Missing argument: batchIds')
       }
@@ -65,7 +66,7 @@ describe('psychometricians-report.service', () => {
     it('throws an error if not provided with a array of positive length', async (done) => {
       try {
         await service.batchProduceCacheData(123)
-        expect('this').toBe('to be thrown')
+        fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Invalid arg: batchIds')
       }
@@ -82,8 +83,7 @@ describe('psychometricians-report.service', () => {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataServiceStub.callCount).toBe(1)
       } catch (error) {
-        expect('this').toBe('NOT to be thrown')
-        console.error(error)
+        fail(error)
       }
       done()
     })
@@ -98,7 +98,7 @@ describe('psychometricians-report.service', () => {
         await service.batchProduceCacheData([1, 2, 3])
         expect(servicePopulateWithCheck.callCount).toBe(1)
       } catch (error) {
-        expect('this').toBe('NOT to be thrown')
+        fail(error)
       }
       done()
     })
@@ -113,7 +113,7 @@ describe('psychometricians-report.service', () => {
         await service.batchProduceCacheData([1, 2, 3])
         expect(serviceProduceCacheStub.callCount).toBe(3)
       } catch (error) {
-        expect('this').toBe('NOT to be thrown')
+        fail(error)
       }
       done()
     })
@@ -134,7 +134,7 @@ describe('psychometricians-report.service', () => {
     it('throws an error if not called with an argument', async (done) => {
       try {
         await service.produceCacheData()
-        expect('this').toBe('to be thrown')
+        fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Missing argument: completedCheck')
       }
@@ -144,7 +144,7 @@ describe('psychometricians-report.service', () => {
     it('throws an error if not called with a completedCheck as an argument', async (done) => {
       try {
         await service.produceCacheData(123)
-        expect('this').toBe('to be thrown')
+        fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Invalid argument: completedCheck')
       }
@@ -156,8 +156,7 @@ describe('psychometricians-report.service', () => {
         await service.produceCacheData(completedCheckMock)
         expect(serviceProduceReportDataStub.callCount).toBe(1)
       } catch (error) {
-        expect(error).toBeUndefined()
-        expect('this').toBe('NOT to be thrown')
+        fail(error)
       }
       done()
     })
@@ -167,8 +166,7 @@ describe('psychometricians-report.service', () => {
         await service.produceCacheData(completedCheckMock)
         expect(psReportCacheDataServiceStub.callCount).toBe(1)
       } catch (error) {
-        expect(error).toBeUndefined()
-        expect('this').toBe('NOT to be thrown')
+        fail(error)
       }
       done()
     })
@@ -180,7 +178,7 @@ describe('psychometricians-report.service', () => {
       service = require('../../services/psychometrician-report.service')
     })
     it('returns the data', () => {
-      sandbox.stub(console, 'log')
+      sandbox.stub(winston, 'info')
       const data = service.produceReportData(completedCheckMock)
       expect(data).toBeTruthy()
       expect(data.Surname).toBeTruthy()
@@ -204,8 +202,7 @@ describe('psychometricians-report.service', () => {
         await service.populateWithCheck([completedCheckMock])
         expect(checkDataServiceStub.callCount).toBe(1)
       } catch (error) {
-        expect('this').toBe('NOT to be thrown')
-        console.error(error)
+        fail(error)
       }
       done()
     })
@@ -218,8 +215,7 @@ describe('psychometricians-report.service', () => {
         expect(completedChecks[0].check).toBeDefined()
         expect(completedChecks[0].check.results.marks).toBe(7)
       } catch (error) {
-        expect('this').toBe('NOT to be thrown')
-        console.error(error)
+        fail(error)
       }
       done()
     })
