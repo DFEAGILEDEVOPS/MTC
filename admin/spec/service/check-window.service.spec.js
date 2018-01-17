@@ -39,41 +39,7 @@ describe('check-window.service', () => {
     })
   })
 
-  xdescribe('getCheckWindowsAssignedToForms', () => {
-    let fetchCheckWindowsStub
-
-    describe('Happy path', () => {
-      beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFindCurrent').resolves([checkWindowsMock])
-      })
-
-      it('should return check windows grouped by form id', () => {
-        const result = service.getCheckWindowsAssignedToForms()
-        expect(result).toBeTruthy()
-        expect(fetchCheckWindowsStub.callCount).toBe(1)
-      })
-    })
-
-    describe('Unhappy path', () => {
-      beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFind').rejects(new Error('ERROR retrieving check windows'))
-      })
-
-      it('should return an error', async (done) => {
-        try {
-          const result = await service.getCheckWindowsAssignedToForms()
-          expect(result).toBeTruthy()
-          expect(fetchCheckWindowsStub.callCount).toBe(1)
-          done()
-        } catch (error) {
-          expect(error.toString()).toBe('Error: ERROR retrieving check windows')
-          done()
-        }
-      })
-    })
-  })
-
-  xdescribe('markAsDeleted - happy path', () => {
+  describe('markAsDeleted - happy path', () => {
     it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', () => {
       const result = service.markAsDeleted(checkFormMock)
       expect(result).toBeTruthy()
@@ -81,9 +47,9 @@ describe('check-window.service', () => {
   })
 
   describe('markAsDeleted - unhappy path', () => {
-    xdescribe('If the argument has no data', () => {
+    describe('If the argument has no data', () => {
       it('should return an error if the argument does not contain an _id', async (done) => {
-        checkFormMock._id = null
+        checkFormMock.id = null
         try {
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()
@@ -96,7 +62,7 @@ describe('check-window.service', () => {
     })
 
     describe('If saving documents fails', () => {
-      xit('should return an error', async (done) => {
+      it('should return an error', async (done) => {
         try {
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()

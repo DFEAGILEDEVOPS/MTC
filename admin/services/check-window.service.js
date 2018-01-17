@@ -33,49 +33,8 @@ const checkWindowService = {
    * Retrieve all check window names, sorted by date for a set of forms.
    * @param {Array<number>} formIds an array of integer formIds
    */
-  getCheckWindowsAssignedToFormsV2: async (formIds) => {
+  getCheckWindowsAssignedToForms: async (formIds) => {
     return checkWindowDataService.sqlFindCheckWindowsAssignedToForms(formIds)
-  },
-
-  /**
-   * Retrieve all (active) CheckWindows and return the list
-   * indexed by form.id, so we can easily list the check windows
-   *  each form is assigned to.
-   * @return {Promise}
-   */
-  getCheckWindowsAssignedToForms: async () => {
-    return new Promise(async (resolve, reject) => {
-      let checkWindows
-      let data = {}
-
-      try {
-        checkWindows = await checkWindowDataService.sqlFindCurrent('', '')
-        if (checkWindows) {
-          checkWindows.forEach(cw => {
-            cw.forms.forEach(formId => {
-              // if this form does not have the check window in its forms collection
-              if (!data.hasOwnProperty(formId)) {
-                // assign an empty array to that form property
-                data[formId] = []
-              }
-              // it has this window assigned to it, so push the window into the array
-              data[formId].push(cw)
-            })
-          })
-          // Ideally we want the check windows to be sorted in order of the check windows, so spring comes
-          // before summer.
-          Object.getOwnPropertyNames(data).forEach(d => {
-            data[d].sort((cw1, cw2) => {
-              if (cw1.checkStartDate === cw2.checkStartDate) { return 0 }
-              return cw1.checkStartDate < cw2.checkStartDate ? -1 : 1
-            })
-          })
-        }
-        resolve(data)
-      } catch (error) {
-        reject(error)
-      }
-    })
   },
 
   /**
@@ -93,14 +52,16 @@ const checkWindowService = {
         // Only mark as deleted if:
         // 1. there is no check window assigned or
         // 2. the check window has not yet started.
-        const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms()
-        if (checkWindows[checkForm.id]) {
-          let now = new Date()
-          checkWindows[checkForm.id].forEach(cw => {
-            if (cw.checkStartDate <= now) {
-              return reject(new Error(`Unable to delete check-form ${cw.id} as it is assigned to CheckWindow ${cw.name} which has a start date in the past`))
+        const checkWindows = await checkWindowDataService.sqlFindCheckWindowsAssignedToForms([checkForm.id])
+        if (checkWindows && checkWindows.length > 0) {
+          let now = moment.utc()
+          for (let index = 0; index < checkWindows.length; index++) {
+            const window = checkWindows[index]
+            if (window.checkStartDate.isSameOrAfter(now)) {
+              return reject(new Error(`Unable to delete check-form ${window.id} as it is assigned to 
+              CheckWindow ${window.name} which has a start date in the past`))
             }
-          })
+          }
         }
       } catch (error) {
         return reject(error)
