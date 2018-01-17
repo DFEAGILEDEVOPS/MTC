@@ -21,6 +21,8 @@ const groupPupilsPage = async (req, res, next) => {
     next(error)
   }
 
+  console.log('GROUPS', groups)
+
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/groups.ejs', {
     breadcrumbs: req.breadcrumbs(),
@@ -188,9 +190,26 @@ const editGroup = async (req, res, next) => {
   return res.redirect('/school/group-pupils')
 }
 
+const removeGroup = async (req, res, next) => {
+  if (!req.params.groupId) {
+    req.flash('error', 'Missing group id.')
+    return res.redirect('/school/group-pupils')
+  }
+
+  try {
+    await groupDataService.delete(req.params.groupId)
+  } catch (error) {
+    return next(error)
+  }
+
+  req.flash('deleted', 'Group deleted')
+  return res.redirect('/school/group-pupils')
+}
+
 module.exports = {
   groupPupilsPage,
   manageGroupPage,
   addGroup,
-  editGroup
+  editGroup,
+  removeGroup
 }
