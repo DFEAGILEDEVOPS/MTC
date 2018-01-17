@@ -159,7 +159,7 @@ const saveCheckForm = async (req, res, next) => {
     await checkFormService.populateFromFile(checkForm, absFile)
   } catch (error) {
     fs.remove(deleteDir, err => {
-      if (err) winston.error(err)
+      if (err) winston.error(err.message)
     })
     return res.render('test-developer/upload-new-form', {
       error: new Error('There is a problem with the form content'),
@@ -193,9 +193,9 @@ const saveCheckForm = async (req, res, next) => {
   })
 
   try {
-    const newForm = await checkFormService.create(checkForm)
+    await checkFormService.create(checkForm)
     req.flash('info', 'New form uploaded')
-    req.flash('formName', newForm.name)
+    req.flash('formName', checkForm.name)
   } catch (error) {
     return next(error)
   }
