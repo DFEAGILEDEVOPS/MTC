@@ -182,18 +182,5 @@ describe('restart.service', () => {
       const deleted = await restartService.markDeleted(pupilMock._id)
       expect(deleted).toBeDefined()
     })
-    it('throws an error if the deletion failed', async () => {
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
-      spyOn(checkDataService, 'sqlFindLatestCheck').and.returnValue(startedCheckMock)
-      spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
-      spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue(null)
-      let deleted
-      try {
-        deleted = await restartService.markDeleted(pupilMock._id)
-      } catch (error) {
-        expect(error.message).toBe(`Restart deletion marking failed for pupil ${pupilMock.lastName} ${pupilMock.foreName} failed`)
-      }
-      expect(deleted).toBeUndefined()
-    })
   })
 })
