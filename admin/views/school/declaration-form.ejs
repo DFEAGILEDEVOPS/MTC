@@ -28,7 +28,7 @@
         <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
 
         <form method="post" action="/school/submit-declaration-form" autocomplete="off">
-            <div  id="declaration" class="form-group <%= error.isError('declaration') ? 'form-group-error' : '' %>">
+            <div id="declaration" <%= error.isError('declaration') ? 'class="form-group-error"' : '' %>>
                 <fieldset role="radiogroup" aria-label="Choose an option.">
                     <legend>
                         <% if (error.isError('declaration')) { %>
