@@ -78,7 +78,9 @@ pupilRestartDataService.sqlCreate = async (data) => {
  * @return {Promise.<*>}
  */
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
-  const sql = `SELECT COUNT(*) FROM ${sqlService.adminSchema}.[pupilRestart] WHERE pupil_id=@pupilId`
+  const sql = `SELECT COUNT(*) 
+  FROM ${sqlService.adminSchema}.[pupilRestart] 
+  WHERE pupil_id=@pupilId`
   const params = [
     {
       name: 'pupilId',
@@ -95,7 +97,10 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
  * @return {Promise.<void>} - lean Check objects
  */
 pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
-  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[pupilRestart] WHERE pupil_id=@pupilId AND isDeleted=0 ORDER BY createdAt DESC`
+  const sql = `SELECT TOP 1 * 
+  FROM ${sqlService.adminSchema}.[pupilRestart] 
+  WHERE pupil_id=@pupilId AND isDeleted=0 
+  ORDER BY createdAt DESC`
   const params = [
     {
       name: 'pupilId',
@@ -147,7 +152,10 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
       type: TYPES.DateTimeOffset
     }
   ]
-  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[pupilRestart] SET isDeleted=1, deletedByUser_id=@userId, updatedAt=@updatedAt WHERE [pupil_id]=@pupilId`, params)
+  const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart] 
+  SET isDeleted=1, deletedByUser_id=@userId, updatedAt=@updatedAt 
+  WHERE [pupil_id]=@pupilId`
+  return sqlService.modify(sql, params)
 }
 
 module.exports = pupilRestartDataService
