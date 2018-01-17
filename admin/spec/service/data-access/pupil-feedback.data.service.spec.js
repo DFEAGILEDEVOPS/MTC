@@ -1,35 +1,16 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, it, expect, spyOn */
 
-const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
-require('sinon-mongoose')
+const sqlService = require('../../../services/data-access/sql.service')
 
-const PupilFeedback = require('../../../models/pupil-feedback')
-// const pupilFeedback = require('../../mocks/pupil-feedback')
-
-describe('check.data.service', () => {
-  let service, sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-  })
-
-  afterEach(() => sandbox.restore())
+describe('pupil-feedback.data.service', () => {
+  let service = require('../../../services/data-access/pupil-feedback.data.service') // , sandbox
 
   describe('#create', () => {
-    let mock
-
-    beforeEach(() => {
-      mock = sandbox.mock(PupilFeedback.prototype).expects('save')
-      service = proxyquire('../../../services/data-access/pupil-feedback.data.service', {
-        '../../models/pupil-feedback': PupilFeedback
-      })
-    })
-
     it('makes the expected calls', async (done) => {
-      await service.create({test: 'property'})
-      expect(mock.verify()).toBe(true)
+      spyOn(sqlService, 'create').and.returnValue(Promise.resolve())
+      await service.sqlCreate({test: 'property'})
+      expect(sqlService.create).toHaveBeenCalled()
       done()
     })
   })
