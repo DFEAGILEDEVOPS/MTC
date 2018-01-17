@@ -1,11 +1,11 @@
 'use strict'
 
-const R = require('ramda')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const dateService = require('../services/date.service')
 const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -206,26 +206,19 @@ controller.postEditPupil = async (req, res, next) => {
   res.redirect(`/school/pupil-register/lastName/true?hl=${highlight}`)
 }
 
+/**
+ * Print the pupil and school pins
+ */
 controller.getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
-  let pupilsFormatted
   try {
-    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
-    const pupilsData = pupils.filter(p => !!p.pin)
-    const schoolData = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
-    pupilsFormatted = pupilsData.map(p => {
-      return {
-        fullName: `${p.foreName} ${p.lastName}`,
-        schoolPin: schoolData.pin,
-        pupilPin: p.pin
-      }
+    const pupilData = await pupilService.getPrintPupils(req.user.School)
+    res.render('school/pupils-print', {
+      pupils: pupilData
     })
   } catch (error) {
     return next(error)
   }
-  res.render('school/pupils-print', {
-    pupils: pupilsFormatted
-  })
 }
 
 module.exports = controller

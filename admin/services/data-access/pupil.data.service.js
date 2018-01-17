@@ -239,4 +239,24 @@ pupilDataService.sqlCreate = async (data) => {
   return sqlService.create(table, data)
 }
 
+/**
+ * Find pupils for a school with pins that have not yet expired
+ * @param dfeNumber
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
+  winston.debug('sqlFindPupilsWithActivePins: called with [${dfeNumber]')
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const sql = `
+  SELECT p.*
+  FROM ${sqlService.adminSchema}.${table} p INNER JOIN ${sqlService.adminSchema}.[school] s
+    ON p.school_id = s.id
+  WHERE p.pin IS NOT NULL
+  AND s.dfeNumber = @dfeNumber
+  AND p.pinExpiresAt IS NOT NULL
+  AND p.pinExpiresAt > GETUTCDATE()
+  `
+  return sqlService.query(sql, [paramDfeNumber])
+}
+
 module.exports = pupilDataService
