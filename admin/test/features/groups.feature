@@ -121,6 +121,10 @@ Feature:
     But decide against it and cancel
     Then the group should not be removed
 
+  Scenario: Number of pupils in the group is displayed next to the group name
+    Given I have created a group
+    Then I should see the number of pupils in that group on the group hub page
+
   @wip
   Scenario: List of pupils is sorted via surname
 

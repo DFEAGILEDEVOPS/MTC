@@ -13,6 +13,7 @@ class GroupPupilsPage < SitePrism::Page
   section :group_list, '#groupList' do
     sections :rows, 'tbody tr' do
       element :group_name, 'strong a'
+      element :group_count, 'span'
       element :highlight, '.highlight-item'
       element :remove, '.modal-link'
     end

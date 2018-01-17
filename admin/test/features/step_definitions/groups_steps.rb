@@ -258,3 +258,8 @@ end
 Then(/^the group should not be removed$/) do
   expect(group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}).to_not be_nil
 end
+
+Then(/^I should see the number of pupils in that group on the group hub page$/) do
+  row = group_pupils_page.group_list.rows.find {|row| row.has_highlight?}
+  expect(row.group_count.text).to eql '(1 pupils)'
+end
