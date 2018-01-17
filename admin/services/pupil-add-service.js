@@ -16,13 +16,14 @@ pupilAddService.addPupil = async function (pupilData) {
 
   // Create the date of birth
   const saveData = R.omit(['dob-day', 'dob-month', 'dob-year'], pupilData)
-  saveData.dob = dateService.createFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
+  saveData.dateOfBirth = dateService.createFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
 
   // Trim and uppercase the UPN
   saveData.upn = R.pathOr('', ['upn'], pupilData).trim().toUpperCase()
 
   // Save and return the pupil
-  return pupilDataService.save(saveData)
+  const res = await pupilDataService.sqlCreate(saveData)
+  return pupilDataService.sqlFindOneById(res.insertId)
 }
 
 module.exports = pupilAddService

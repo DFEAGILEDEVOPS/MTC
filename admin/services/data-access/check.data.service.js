@@ -18,7 +18,7 @@ checkDataService.findOneByCheckCode = async function (checkCode) {
 
 /**
  * Find a Check by its checkCode UUID
- * @param checkCode * 
+ * @param checkCode *
  * @return {Promise}
  */
 checkDataService.sqlFindOneByCheckCode = async function (checkCode) {

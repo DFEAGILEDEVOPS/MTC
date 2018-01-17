@@ -2,7 +2,7 @@
 let now = new Date();
 let currentYear = now.getFullYear();
 let createOrSave;
-if (formData._id) {
+if (formData.urlSlug) {
     createOrSave = '/school/pupil/edit';
 } else {
     createOrSave = '/school/pupil/add';
@@ -11,8 +11,8 @@ if (formData._id) {
 
 
 <form action="<%= createOrSave %>" method="post" novalidate>
-    <% if (formData._id) { %>
-    <input type="hidden" name="_id" value="<%= formData._id %>">
+    <% if (formData.urlSlug) { %>
+    <input type="hidden" name="slug" value="<%= formData.urlSlug %>">
     <% } %>
 
     <div class="form-group <%= err.isError('foreName') ? 'form-group-error' : '' %>">

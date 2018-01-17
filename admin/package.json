@@ -90,6 +90,8 @@
     "exclude": [
       "**/*.spec.js",
       "**/*Spec.js",
+      "data/sql/*",
+      "tests-integration/*",
       "app.js",
       "assets/javascripts/details.polyfill.js",
       "assets/javascripts/jquery-1.12.4.js",
