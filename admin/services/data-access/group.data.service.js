@@ -2,6 +2,9 @@
 
 const Group = require('../../models/group')
 const groupDataService = {}
+const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
+const R = require('ramda')
 
 /**
  * Get groups filtered by query.
@@ -27,6 +30,19 @@ groupDataService.getGroups = async function (query) {
  */
 groupDataService.getGroup = async function (query) {
   return Group.findOne(query).lean().exec()
+}
+
+groupDataService.sqlFindOne = async function (groupId) {
+  const sql = `SELECT * FROM [mtc_admin].[group] WHERE id=@groupId`
+  const params = [
+    {
+      name: 'groupId',
+      value: groupId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
 }
 
 /**
