@@ -25,7 +25,7 @@ describe('completedCheckProcessingService', () => {
         './data-access/completed-check.data.service': completedCheckDataService,
         './marking.service': markingService
       })
-      sandbox.stub(winston, 'log')
+      sandbox.stub(winston, 'info')
     })
 
     it('bails out early if the array is empty', async (done) => {
