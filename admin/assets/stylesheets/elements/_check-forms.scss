@@ -1,13 +1,5 @@
 // Check forms
 
-// @TODO: to be deleted
-//.check-forms {
-//  .panel-border-wide {
-//    padding: 5px 0 10px 15px;
-//    margin-top: 5px;
-//  }
-//}
-
 #checkWindowList {
   td {
     text-align: left;
@@ -22,7 +14,6 @@
   }
 }
 
-/* @TODO: Icons to be moved to there own file */
 .icon-download {
   &:before {
     content: " ";
