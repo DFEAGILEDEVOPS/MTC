@@ -134,7 +134,7 @@ describe('pupil-restart.data.service', () => {
     it('it makes the expected calls', async () => {
       const res = await service.sqlFindLatestRestart(pupilMock._id)
       expect(sqlService.query).toHaveBeenCalled()
-      expect(Array.isArray(res)).toBe(true)
+      expect(typeof res).toBe('object')
     })
   })
 

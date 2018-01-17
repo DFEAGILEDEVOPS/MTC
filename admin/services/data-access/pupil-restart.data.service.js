@@ -1,6 +1,7 @@
 'use strict'
 const { TYPES } = require('tedious')
 const moment = require('moment')
+const R = require('ramda')
 const sqlService = require('./sql.service')
 const PupilRestart = require('../../models/pupil-restart')
 const RestartCode = require('../../models/restart-code')
@@ -102,7 +103,8 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
 }
 
 /**
