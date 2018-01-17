@@ -72,7 +72,7 @@ end
 And(/^the updated Check Window Detail is Saved$/) do
   wait_until {!(SqlDbHelper.check_window_details(@check_window_name.to_s)).nil?}
   @stored_pupil_details = SqlDbHelper.check_window_details @check_window_name.to_s
-  expect(@updated_check_window_hash[:check_name]).to eql @stored_pupil_details['checkWindowName']
+  expect(@updated_check_window_hash[:check_name]).to eql @stored_pupil_details['name']
 end
 
 But(/^decide against editing it$/) do
