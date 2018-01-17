@@ -6,7 +6,9 @@ class SignInPage < SitePrism::Page
   element :username_field, '#username'
   element :password_field, '#password'
   element :sign_in, 'input[value="Sign in"]'
+  element :contact, "a[href='/contact']"
   section :phase_banner, PhaseBanner, '.phase-banner'
+
 
   def enter_credentials(username, password)
     username_field.set username
