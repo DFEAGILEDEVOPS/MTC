@@ -1,9 +1,10 @@
 'use strict'
 
+const moment = require('moment')
+const winston = require('winston')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const markingService = {}
-const moment = require('moment')
 
 markingService.batchMark = async function (batchIds) {
   if (!batchIds) {
@@ -19,7 +20,7 @@ markingService.batchMark = async function (batchIds) {
     try {
       await this.mark(cc)
     } catch (error) {
-      console.error('Error marking document: ', error)
+      winston.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
       // ToDo: add a count to the document of the number of processing attempts?
     }

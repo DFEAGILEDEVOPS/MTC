@@ -1,15 +1,12 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect */
-const proxyquire = require('proxyquire')
+/* global beforeEach, afterEach, describe, it, expect, spyOn */
 const sinon = require('sinon')
 require('sinon-mongoose')
 
-let pupilValidator = require('../../../lib/validator/pupil-validator')
-// TODO: Remove Pupil mongoose model mocking from tests and replace it with corresponding service mock
-const Pupil = require('../../../models/pupil')
+const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const dataMock = require('../../mocks/pupil')
+const pupilMock = require('../../mocks/pupil')
 
 let sandbox
 
@@ -18,6 +15,7 @@ describe('pupil validator', function () {
 
   function getBody () {
     return {
+      slug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722',
       foreName: 'John',
       lastName: 'Smith',
       middleNames: '',
@@ -54,11 +52,7 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check passes', () => {
     beforeEach(() => {
-      const PupilMock = sandbox.mock(Pupil)
-      PupilMock.expects('findOne').atLeast(1).chain('exec').atLeast(1).resolves(null)
-      pupilValidator = proxyquire('../../../lib/validator/pupil-validator', {
-        '../models/pupil': PupilMock
-      })
+      spyOn(pupilDataService, 'sqlFindOneByUpn').and.returnValue(undefined)
     })
 
     it('allows a valid request', async function (done) {
@@ -637,26 +631,25 @@ describe('pupil validator', function () {
 
   describe('and the pupil uniqueness check fails', () => {
     beforeEach(() => {
-      const pupil = Object.assign({}, dataMock)
-      pupil._id = '12345'
+      const pupil = Object.assign({}, pupilMock)
+      pupil.id = '12345'
       pupil.upn = 'H801200001001'
-      sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
-      proxyquire('../../../lib/validator/pupil-validator', {
-        '../../../services/data-access/pupil.data.service': pupilDataService
-      })
+      spyOn(pupilDataService, 'sqlFindOneByUpn').and.returnValue(pupil)
     })
+
     it('it ensures the UPN is unique when adding new pupil', async (done) => {
       req.body = getBody()
-      req.body._id = '123456'
+      // Make it looks like a new pupil
+      req.body.slug = undefined
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)
       expect(validationError.get('upn')).toBe('UPN is a duplicate of a pupil already in your register')
       done()
     })
+
     it('it ensures the UPN is unique when editing pupil', async (done) => {
       req.body = getBody()
-      req.body._id = '12345'
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(false)
       expect(validationError.isError('upn')).toBe(false)

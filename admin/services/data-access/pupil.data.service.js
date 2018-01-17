@@ -1,17 +1,24 @@
 'use strict'
 
+const winston = require('winston')
+const { TYPES } = require('tedious')
+const R = require('ramda')
+
 const Pupil = require('../../models/pupil')
 const School = require('../../models/school')
 const PupilStatusCode = require('../../models/pupil-status-code')
 const pupilDataService = {}
+const table = '[pupil]'
+const sqlService = require('./sql.service')
 
 /**
  * Returns an object that consists of a plain JS school data and pupils.
  * @param {number} schoolId - School unique Id.
+ * @deprecated Use an sql* methods instead
  * @return {Object}
  */
-
 pupilDataService.getPupils = async (schoolId) => {
+  winston.warn('*** pupilDataService.getPupils is deprecated ***')
   const [ schoolData, pupils ] = await Promise.all([
     School.findOne({'_id': schoolId}).lean().exec(),
     Pupil.find({ school: schoolId }).sort({ createdAt: 1 }).lean().exec()
@@ -80,6 +87,10 @@ pupilDataService.update = async function (query, criteria, options = {multi: fal
   return Pupil.update(query, criteria, options).exec()
 }
 
+/**
+ * @param pupils
+ * @return {Promise<Array>}
+ */
 pupilDataService.updateMultiple = async function (pupils) {
   // returns Promise
   let savedPupils = []
@@ -95,6 +106,7 @@ pupilDataService.updateMultiple = async function (pupils) {
 
 /**
  * Create a new Pupil
+ * @deprecated
  * @param data
  * @return {Promise}
  */
@@ -119,6 +131,132 @@ pupilDataService.unsetAttendanceCode = async function (id) {
  */
 pupilDataService.getStatusCodes = async () => {
   return PupilStatusCode.find().lean().exec()
+}
+
+/** SQL METHODS */
+
+/**
+ * Fetch all pupils for a school by dfeNumber sorted by pupil name
+ * @param {number} dfeNumber
+ * @return {Promise<results>}
+ */
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const sql = `
+      SELECT 
+        p.*    
+      FROM ${sqlService.adminSchema}.${table} p INNER JOIN school s ON s.id = p.school_id
+      WHERE s.dfeNumber = @dfeNumber      
+    `
+  return sqlService.query(sql, [paramDfeNumber])
+}
+
+/**
+ * Find a pupil by their urlSlug
+ * @param urlSlug
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
+  const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
+  const sql = `
+      SELECT TOP 1 
+      *  
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE urlSlug = @urlSlug    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by upn
+ * @param upn
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByUpn = async (upn = '') => {
+  const param = { name: 'upn', type: TYPES.NVarChar, value: upn.trim().toUpperCase() }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE upn = @upn    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by Id
+ * @param id
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneById = async (id) => {
+  const param = { name: 'id', type: TYPES.Int, value: id }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE id = @id    
+    `
+  const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by Id and check they have rights to that school by checking the school id matches too
+ * @param {number} id
+ * @param {number} schoolId
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
+  const paramPupil = { name: 'id', type: TYPES.Int, value: id }
+  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE id = @id and school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, [paramPupil, paramSchool])
+  return R.head(results)
+}
+
+/**
+ * Update am existing pupil object.  Must provide the `id` field
+ * @param update
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlUpdate = async (update) => {
+  return sqlService.update(table, update)
+}
+
+/**
+ * Create a new pupil.
+ * @param {object} data
+ * @return  { insertId: <number>, rowsModified: <number> }
+ */
+pupilDataService.sqlCreate = async (data) => {
+  return sqlService.create(table, data)
+}
+
+/**
+ * Find pupils for a school with pins that have not yet expired
+ * @param dfeNumber
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
+  winston.debug('sqlFindPupilsWithActivePins: called with [${dfeNumber]')
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  const sql = `
+  SELECT p.*
+  FROM ${sqlService.adminSchema}.${table} p INNER JOIN ${sqlService.adminSchema}.[school] s
+    ON p.school_id = s.id
+  WHERE p.pin IS NOT NULL
+  AND s.dfeNumber = @dfeNumber
+  AND p.pinExpiresAt IS NOT NULL
+  AND p.pinExpiresAt > GETUTCDATE()
+  `
+  return sqlService.query(sql, [paramDfeNumber])
 }
 
 module.exports = pupilDataService

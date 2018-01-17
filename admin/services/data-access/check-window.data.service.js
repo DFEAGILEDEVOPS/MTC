@@ -6,6 +6,7 @@ const winston = require('winston')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
+const table = '[checkWindow]'
 
 const checkWindowDataService = {
   /**
@@ -18,13 +19,13 @@ const checkWindowDataService = {
     winston.warn('check-window.data.service.fetchCheckWindow is deprecated')
     return CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
   },
-    /**
+  /**
    * Fetch check window document by id.
    * @param id
    * @returns {Promise.<void>}
    */
   sqlFindOneById: async (id) => {
-    const sql = 'SELECT * FROM [mtc_admin].[checkWindow] WHERE isDeleted=0 AND id=@id'
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
     const params = [
       {
         name: 'id',
@@ -63,7 +64,7 @@ const checkWindowDataService = {
         type: TYPES.DateTimeOffset
       }
     ]
-    const sql = 'UPDATE [mtc_admin].[checkWindow] SET isDeleted=1, updatedAt=@updatedAt WHERE id=@id'
+    const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1, updatedAt=@updatedAt WHERE id=@id`
     return sqlService.modify(sql, params)
   },
   /**
@@ -128,7 +129,7 @@ const checkWindowDataService = {
         sortBy = 'name'
     }
 
-    const sql = `SELECT * FROM [mtc_admin].[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
     const params = [
       {
         name: 'currentTimestamp',
@@ -144,7 +145,7 @@ const checkWindowDataService = {
    * @returns {Promise.<*>}
    */
   fetchCurrentCheckWindow: async () => {
-    winston.warn('deprecated. use check-window.data.service.sqlFetchCurrentCheckWindow')
+    winston.warn('deprecated. use check-window.data.service.sqlFindCurrent')
     const now = new Date()
     const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
     if (!checkWindow) {
@@ -160,6 +161,14 @@ const checkWindowDataService = {
    */
   sqlFindCurrent: async (sortBy, sortDirection) => {
     return checkWindowDataService.sqlFind(sortBy, sortDirection, false, true)
+  },
+  /**
+   * Find a single current check window.  If multiple windows are concurrently running it takes the first.
+   * @return {Promise<void>}
+   */
+  sqlFindOneCurrent: async () => {
+    const checkWindows = await checkWindowDataService.sqlFindCurrent(null, null)
+    return R.head(checkWindows)
   },
   /**
    * Fetch (non-deleted) past check windows by sort by, sort direction
@@ -187,7 +196,7 @@ const checkWindowDataService = {
    * @return {Promise.<*>}
    */
   sqlCreate: async (data) => {
-    return sqlService.create('[checkWindow]', data)
+    return sqlService.create(table, data)
   },
   sqlUpdate: async (data) => {
     return sqlService.update('[checkWindow]', data)

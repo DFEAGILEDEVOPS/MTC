@@ -2,8 +2,10 @@ const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilDataService = require('./data-access/pupil.data.service')
+const schoolDataService = require('./data-access/school.data.service')
 
 const pupilService = {}
+
 /**
  * Fetch one pupil filtered by pupil id and school id
  * @param pupilId
@@ -11,8 +13,7 @@ const pupilService = {}
  * @returns {Promise.<*>}
  */
 pupilService.fetchOnePupil = async (pupilId, schoolId) => {
-  // TODO: Introduce integration tests
-  return pupilDataService.findOne({_id: pupilId, school: schoolId})
+  return pupilDataService.sqlFindOneByIdAndSchool(pupilId, schoolId)
 }
 
 // TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
@@ -23,6 +24,27 @@ pupilService.fetchMultiplePupils = async (pupilIds) => {
     pupils.push(pupil)
   }
   return pupils
+}
+
+/**
+ * Return a subset of pupil data so their Pins can be printed
+ * @param dfeNumber
+ * @return {Promise<void>}
+ */
+pupilService.getPrintPupils = async (dfeNumber) => {
+  if (!dfeNumber) {
+    throw new Error(`dfeNumber is required`)
+  }
+  const p1 = pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+  const p2 = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  const [pupils, school] = await Promise.all([p1, p2])
+  if (!pupils) { throw new Error(`Pupils not found for ${dfeNumber}`) }
+  if (!school) { throw new Error(`School not found for ${dfeNumber}`) }
+  return pupils.map(p => ({
+    fullName: `${p.foreName} ${p.lastName}`,
+    schoolPin: school.pin,
+    pupilPin: p.pin
+  }))
 }
 
 pupilService.validatePupil = async (pupil, pupilData) => {
