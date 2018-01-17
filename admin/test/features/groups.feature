@@ -1,3 +1,4 @@
+@remove_all_groups
 Feature:
   Pupil groups
 
@@ -55,7 +56,6 @@ Feature:
       | <who   |
       | who,   |
 
-  @remove_group @wip
   Scenario: Group names can have some special characters
     Then I can enter the following special characters as the group name
       | áàâãäåāæéèêēëíìîïī |
@@ -111,6 +111,20 @@ Feature:
     When decide to cancel creating a group
     Then I should be returned to the group hub page
 
+  Scenario: Groups can be removed
+    Given I have created a group
+    Then I should be able to remove the group
+
+  Scenario: Removing a group can be cancelled
+    Given I have created a group
+    When I choose to remove the group
+    But decide against it and cancel
+    Then the group should not be removed
+
+  Scenario: Number of pupils in the group is displayed next to the group name
+    Given I have created a group
+    Then I should see the number of pupils in that group on the group hub page
+
   @wip
   Scenario: List of pupils is sorted via surname
 
@@ -122,9 +136,3 @@ Feature:
 
   @wip
   Scenario: Pupil records are updated
-
-  @wip
-  Scenario: Groups can be removed
-
-  @wip
-  Scenario: Removing a group can be cancelled
