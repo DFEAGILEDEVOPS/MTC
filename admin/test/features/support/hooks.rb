@@ -72,16 +72,16 @@ After("@multiple_pupil_upload") do
   FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
-After("@remove_group") do
+After("@remove_all_groups") do
   step 'I am on the groups page'
-  group_pupils_page.remove_group(@group_name)
+  group_pupils_page.remove_all_groups
 end
 
 After do |scenario|
-  visit ENV['BASE_URL'] + '/sign-out'
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
     page.save_screenshot("screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png")
     p "Screenshot raised - " + "screenshots/#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
   end
+  visit ENV['BASE_URL'] + '/sign-out'
 end

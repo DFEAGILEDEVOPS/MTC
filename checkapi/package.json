@@ -14,7 +14,7 @@
     "pm2": "pm2 start ./index.js"
   },
   "engines": {
-    "node": "8.4.0"
+    "node": "8"
   },
   "dependencies": {
     "azure-storage": "^2.6.0",
@@ -26,5 +26,9 @@
   "devDependencies": {
     "jsdoc": "^3.5.5",
     "standard": "^10.0.3"
+  },
+  "resolutions": {
+    "marked": "marked 0.3.6 has security vulns. jsdoc depends on marked",
+    "marked": "0.3.12"
   }
 }
