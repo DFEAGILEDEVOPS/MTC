@@ -88,7 +88,8 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
       type: TYPES.Int
     }
   ]
-  return sqlService.query(sql, params)
+  const result = sqlService.query(sql, params)
+  return R.head(result)
 }
 
 /**
