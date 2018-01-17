@@ -190,6 +190,7 @@ describe('pin-generation.service', () => {
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
         expect(result.schoolPin.length).toBe(8)
+        expect(/^[a-z]{3}[2-9]{2}[a-z]{3}$/.test(result.schoolPin)).toBe(true)
       })
     })
 
@@ -218,6 +219,39 @@ describe('pin-generation.service', () => {
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.schoolPin === password).toBeFalsy()
       })
+    })
+  })
+
+  describe('generateCryptoRandomNumber', () => {
+    it('should generate a random number in specific range', () => {
+      const number = pinGenerationService.generateCryptoRandomNumber(1, 6)
+      expect(typeof number).toBe('number')
+      expect(number >= 0 || number <= 6).toBeTruthy()
+    })
+    it('should approximately generate numbers with similar probability chance', () => {
+      const numbersArr = []
+      const length = 1000
+      const min = 1
+      const max = 5
+
+      for (let index = 0; index < length; index++) {
+        numbersArr.push(pinGenerationService.generateCryptoRandomNumber(min, max))
+      }
+
+      const count = {}
+      for (let num of numbersArr) {
+        count[num] = count[num] ? count[num] + 1 : 1
+      }
+
+      const expectedResult = numbersArr.length / ((max - min) + 1)
+      const errorPercentTolerance = 0.18 // 18%
+      const tolerance = expectedResult * errorPercentTolerance
+
+      for (let [number, freq] of Object.entries(count)) {
+        expect(number >= min && number <= max).toBeTruthy()
+        expect(freq).toBeGreaterThanOrEqual(expectedResult - tolerance)
+        expect(freq).toBeLessThanOrEqual(expectedResult + tolerance)
+      }
     })
   })
 })
