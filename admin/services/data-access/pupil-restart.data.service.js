@@ -92,9 +92,9 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
 }
 
 /**
- * Find latest check for pupil
- * @param pupilId - the pupil taking the check
- * @return {Promise.<void>} - lean Check objects
+ * Find latest restart for pupil
+ * @param pupilId
+ * @return {Promise.<void>}
  */
 pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
   const sql = `SELECT TOP 1 * 
@@ -113,9 +113,9 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
 }
 
 /**
- * Find latest check for pupil
- * @param pupilId - the pupil taking the check
- * @return {Promise.<void>} - lean Check objects
+ * Find pupil's restart codes
+ * @param pupilId
+ * @return {Promise.<void>}
  */
 pupilRestartDataService.sqlFindRestartCodes = async function () {
   const sql = `
