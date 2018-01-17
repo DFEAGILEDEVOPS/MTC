@@ -7,13 +7,14 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 require('sinon-mongoose')
 
 const Pupil = require('../../../models/pupil')
-const School = require('../../../models/school')
-const PupilStatusCode = require('../../../models/pupil-status-code')
 const pupilMock = require('../../mocks/pupil')
-const schoolMock = require('../../mocks/school')
+const PupilStatusCode = require('../../../models/pupil-status-code')
 const pupilStatusCodesMock = require('../../mocks/pupil-status-codes')
-const sqlService = require('../../../services/data-access/sql.service')
+const R = require('ramda')
+const School = require('../../../models/school')
+const schoolMock = require('../../mocks/school')
 const sqlResponseMock = require('../../mocks/sql-modify-response')
+const sqlService = require('../../../services/data-access/sql.service')
 
 describe('pupil.data.service', () => {
   let service, sandbox
@@ -28,8 +29,8 @@ describe('pupil.data.service', () => {
     let pupil1
     let pupil2
     beforeEach(() => {
-      const pupil1 = pupilMock
-      const pupil2 = pupilMock
+      const pupil1 = R.clone(pupilMock)
+      const pupil2 = R.clone(pupilMock)
       pupil2.id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'f55sg'
       sandbox.mock(Pupil).expects('insertMany').resolves([ pupil1, pupil2 ])
@@ -144,9 +145,9 @@ describe('pupil.data.service', () => {
     let pupil2
     let mockPupil
     beforeEach(() => {
-      pupil1 = pupilMock
+      pupil1 = R.clone(pupilMock)
       pupil1.pin = 'ggd4d'
-      pupil2 = Object.assign({}, pupilMock)
+      pupil2 = R.clone(pupilMock)
       pupil2._id = '595cd5416e5ca13e48ed2520'
       pupil2.pin = 'gfd4d'
       mockPupil = sandbox.mock(Pupil).expects('updateOne').twice()
@@ -291,6 +292,19 @@ describe('pupil.data.service', () => {
       const res = await service.sqlCreate(obj)
       expect(sqlService.create).toHaveBeenCalled()
       expect(typeof res).toBe('object')
+    })
+  })
+
+  describe('#sqlFindPupilsWithActivePins', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilMock]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const dfeNumber = 9991001
+      await service.sqlFindPupilsWithActivePins(dfeNumber)
+      expect(sqlService.query).toHaveBeenCalled()
     })
   })
 })

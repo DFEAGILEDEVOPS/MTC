@@ -32,6 +32,9 @@ pupilService.fetchMultiplePupils = async (pupilIds) => {
  * @return {Promise<void>}
  */
 pupilService.getPrintPupils = async (dfeNumber) => {
+  if (!dfeNumber) {
+    throw new Error(`dfeNumber is required`)
+  }
   const p1 = pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
   const p2 = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   const [pupils, school] = await Promise.all([p1, p2])
