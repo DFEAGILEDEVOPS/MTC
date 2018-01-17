@@ -73,7 +73,7 @@ Then(/^I should see it added to the list of windows$/) do
 end
 
 And(/^stored correctly in the database$/) do
-  window_in_db = MongoDbHelper.check_window_details(@check_window_hash[:check_name])
+  window_in_db = SqlDbHelper.check_window_details(@check_window_hash[:check_name])
   expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_start_day].to_s + ' ' + @check_window_hash[:check_start_mon].to_s +
                                                                            ' ' + @check_window_hash[:check_start_year].to_s
   expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:check_end_day].to_s + ' ' + @check_window_hash[:check_end_mon].to_s +
