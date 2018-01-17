@@ -13,7 +13,6 @@ const checkFormMock = require('../mocks/check-form')
 const checkFormsMock = require('../mocks/check-forms')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
 const checkFormsByWindowMock = require('../mocks/check-window-by-form')
-const checkWindowMock = require('../mocks/check-window')
 const checkWindowsMock = require('../mocks/check-windows')
 
 describe('check-form controller:', () => {
@@ -659,41 +658,31 @@ describe('check-form controller:', () => {
           id: 1,
           name: 'window 1'
         })
-        spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
         controller = require('../../controllers/check-form').unassignCheckFormsFromWindowPage
       })
 
       it('should execute next if #getAssignedFormsForCheckWindow fails', async (done) => {
+        spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error A')))
         const res = getRes()
         const req = getReq(goodReqParams)
-        spyOn(res, 'render').and.returnValue(null)
         req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
         req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
 
         await controller(req, res, next)
-        expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
-        expect(checkFormService.getAssignedFormsForCheckWindow).toHaveBeenCalled()
-        expect(res.render).not.toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe(undefined)
         expect(res.statusCode).toBe(200)
-        expect(next).toHaveBeenCalled()
+        expect(next).toHaveBeenCalledWith(new Error('Error A'))
         done()
       })
 
       it('should redirect the user and show a flash error if req.params.checkWindowId is false', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        spyOn(res, 'render').and.returnValue(null)
         req.params.checkWindowId = null
         req.url = `/test-developer/unassign-forms/${req.params.checkWindowId}`
-
         await controller(req, res, next)
-        expect(checkWindowDataService.sqlFindOneById).not.toHaveBeenCalled()
-        expect(checkFormService.getAssignedFormsForCheckWindow).not.toHaveBeenCalled()
-        expect(res.render).not.toHaveBeenCalled()
-        expect(res.locals.pageTitle).toBe(undefined)
         expect(res.statusCode).toBe(302)
         expect(req.flash).toBeTruthy()
+        expect(res._getRedirectUrl()).toBe('/test-developer/assign-form-to-window')
         done()
       })
     })

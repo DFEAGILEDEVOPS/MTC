@@ -47,15 +47,15 @@ const getPupils = async (req, res, next) => {
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
   let pupilsFormatted
   try {
-    const { pupils } = await pupilDataService.getPupils(req.user.School)
+    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-      const { foreName, lastName, _id } = p
-      const dob = dateService.formatShortGdsDate(p.dob)
+      const { foreName, lastName } = p
+      const dob = dateService.formatShortGdsDate(p.dateOfBirth)
       const outcome = await pupilStatusService.getStatus(p)
       // TODO: Fetch pupil's group when it's implemented
       const group = 'N/A'
       return {
-        _id,
+        urlSlug: p.urlSlug,
         foreName,
         lastName,
         dob,
@@ -90,25 +90,28 @@ const getPupils = async (req, res, next) => {
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
-  const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.school)
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const score = await scoreService.getScorePercentage(p._id)
+    const score = await scoreService.getScorePercentage(p.id)
     const hasScore = (score !== undefined)
     return {
       fullName,
       hasScore,
-      score
+      score,
+      urlSlug: p.urlSlug
     }
   })).catch((error) => next(error))
   req.breadcrumbs(res.locals.pageTitle)
   pupilsFormatted = pupilsFormatted.filter((p) => p.hasScore)
-  if ((schoolData.hdf && schoolData.hdf.signedDate) &&
+
+  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck() &&
     (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
     return res.render('school/results', {
       breadcrumbs: req.breadcrumbs(),
       pupils: pupilsFormatted,
-      schoolData
+      school
     })
   } else {
     return res.render('school/no-results', {
@@ -117,15 +120,17 @@ const getResults = async (req, res, next) => {
   }
 }
 
+// TODO: refactor this into a service call
 const downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
   const csvStream = csv.createWriteStream()
-  const { schoolData, pupils } = await pupilDataService.getPupils(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  const schoolData = await schoolDataService.sqlFindOneById(pupils[0].school_id)
   // Format the pupils
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const dob = moment(p.dob).format('DD/MM/YYYY')
-    const answersSet = await pupilService.fetchAnswers(p._id)
+    const dob = dateService.formatUKDate(p.dateOfBirth)
+    const answersSet = null // await pupilService.fetchAnswers(p.id) // method has been removed!
     if (!answersSet) return
     let answers = answersSet.answers && answersSet.answers.sort((a1, a2) => {
       const f1 = a1.factor1 - a2.factor1
@@ -191,15 +196,20 @@ const downloadResults = async (req, res, next) => {
 const getSubmitAttendance = async (req, res, next) => {
   res.locals.pageTitle = 'Attendance register'
   req.breadcrumbs(res.locals.pageTitle)
-  const { pupils, schoolData } = await pupilDataService.getPupils(req.user.School)
+  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+  if (!pupils) {
+    throw new Error('No pupils found')
+  }
+
   // Redirect to confirmation of submission if hdf has been signed
-  if (schoolData.hdf && schoolData.hdf.signedDate) {
+  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)) {
     return res.redirect('/school/declaration-form-submitted')
   }
+
   let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
     const fullName = `${p.foreName} ${p.lastName}`
-    const { _id: id, hasAttended } = p
-    const score = await scoreService.getScorePercentage(p._id)
+    const { id, hasAttended } = p
+    const score = await scoreService.getScorePercentage(p.id)
     const hasScore = (score !== undefined)
 
     return {
@@ -249,8 +259,7 @@ const postSubmitAttendance = async (req, res, next) => {
 }
 
 const getDeclarationForm = async (req, res) => {
-  const { schoolData } = await pupilDataService.getPupils(req.user.School)
-  if (schoolData.hdf && schoolData.hdf.signedDate) {
+  if (headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School)) {
     return res.redirect('/school/declaration-form-submitted')
   }
   req.body[ 'fullName' ] = req.user && req.user[ 'UserName' ]

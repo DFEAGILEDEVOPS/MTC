@@ -12,9 +12,9 @@ const R = require('ramda')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 const fileValidator = require('../../lib/validator/file-validator')
 const pupilAddService = require('../../services/pupil-add-service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../services/pupil-upload.service')
-const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilValidator = require('../../lib/validator/pupil-validator')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const schoolMock = require('../mocks/school')
@@ -103,8 +103,8 @@ describe('pupil controller:', () => {
 
     describe('the pupilData is saved', () => {
       beforeEach(() => {
-        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
         schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
+        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
         controller = proxyquire('../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService,
           '../services/pupil-add-service': pupilAddService
@@ -117,7 +117,7 @@ describe('pupil controller:', () => {
         done()
       })
 
-      it('calls schoolDataService', async (done) => {
+      it('calls schoolDataService to find the school', async (done) => {
         await controller(req, res, nextSpy)
         expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
@@ -410,16 +410,16 @@ describe('pupil controller:', () => {
     it('retrieves the pupil data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       await controller(req, res, next)
-      expect(pupilDataService.findOne).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlug).toHaveBeenCalled()
     })
 
     it('bails out if the pupil is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(null))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
@@ -427,17 +427,17 @@ describe('pupil controller:', () => {
     it('retrieves the school data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       await controller(req, res, next)
-      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+      expect(schoolDataService.sqlFindOneById).toHaveBeenCalled()
     })
 
     it('bails out if the school is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
       await controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`School ${populatedPupilMock.school._id} not found`))
     })
@@ -445,7 +445,7 @@ describe('pupil controller:', () => {
     it('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.callFake(() => { throw new Error('dummy error') })
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.callFake(() => { throw new Error('dummy error') })
       controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
@@ -453,7 +453,6 @@ describe('pupil controller:', () => {
 
   describe('postEditPupil', () => {
     let controller, next
-    // const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
     let goodReqParams = {
       method: 'GET',
       url: '/school/pupil/edit/pupil1234',
@@ -461,10 +460,9 @@ describe('pupil controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       body: {
-        _id: 'pupil998'
+        slug: 'pupil998'
       }
     }
-    const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
 
     beforeEach(() => {
       controller = require('../../controllers/pupil.js').postEditPupil
@@ -474,33 +472,33 @@ describe('pupil controller:', () => {
     it('makes a call to retrieve the pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(pupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
-      expect(pupilDataService.findOne).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlug).toHaveBeenCalled()
     })
 
     it('bails out if the pupil if not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(null))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
-      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body._id} not found`))
+      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.slug} not found`))
     })
 
     it('makes a call to retrieve the school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'findOne').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
+      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(pupilMock))
+      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
       await controller(req, res, next)
-      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalledWith(populatedPupilMock.school.id)
+      expect(schoolDataService.sqlFindOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
 
     // TODO - this method requires further coverage
