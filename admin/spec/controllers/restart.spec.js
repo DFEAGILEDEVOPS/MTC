@@ -187,6 +187,9 @@ describe('restart controller:', () => {
       },
       body: {
         pupilId: '59c38bcf3cd57f97b7da2011'
+      },
+      user: {
+        id: '1111'
       }
     }
     beforeEach(() => {

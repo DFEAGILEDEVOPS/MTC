@@ -5,12 +5,12 @@ CREATE TABLE [mtc_admin].[pupilRestart] (
   createdAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
-  recordedByUser nvarchar(50) NOT NULL,
+  recordedByUser_id int NOT NULL,
   reason nvarchar(50) NOT NULL,
   didNotCompleteInformation nvarchar(100) NULL,
   furtherInformation nvarchar(1000) NULL,
   isDeleted bit NOT NULL DEFAULT 0,
-  deletedByUser datetimeoffset(3),
+  deletedByUser_id int NULL,
   CONSTRAINT [PK_pupilRestart] PRIMARY KEY CLUSTERED ([id] ASC)
   WITH (
       PAD_INDEX = OFF,

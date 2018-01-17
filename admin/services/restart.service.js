@@ -155,7 +155,7 @@ restartService.getSubmittedRestarts = async schoolId => {
  */
 
 restartService.getStatus = async pupilId => {
-  const restartCodes = await pupilRestartDataService.sqlGetRestartCodes()
+  const restartCodes = await pupilRestartDataService.sqlFindRestartCodes()
   const getStatus = (value) => {
     const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
     return entry && entry.status
@@ -170,14 +170,15 @@ restartService.getStatus = async pupilId => {
 /**
  * Mark as deleted the latest pupil's restart
  * @param pupilId
+ * @param userId
  * @returns {String}
  */
 
-restartService.markDeleted = async pupilId => {
+restartService.markDeleted = async (pupilId, userId) => {
   const pupil = await pupilDataService.findOne({_id: pupilId})
   const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
   await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
-  const updated = await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId)
+  const updated = await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId, userId)
   if (!updated) throw new Error(`Restart deletion marking failed for pupil ${pupil.lastName} ${pupil.foreName} failed`)
   return pupil
 }

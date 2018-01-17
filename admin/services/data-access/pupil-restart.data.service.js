@@ -53,7 +53,7 @@ pupilRestartDataService.findLatest = async function (options) {
 
 /**
  * Get all the restart codes documents
- * @deprecated Please use sqlGetRestartCodes instead
+ * @deprecated Please use sqlFindRestartCodes instead
  * @return {Promise.<{Object}>}
  */
 pupilRestartDataService.getRestartCodes = async () => {
@@ -110,22 +110,33 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
  * @param pupilId - the pupil taking the check
  * @return {Promise.<void>} - lean Check objects
  */
-pupilRestartDataService.sqlGetRestartCodes = async function () {
-  const sql = `SELECT * FROM ${sqlService.adminSchema}.[pupilRestartCode]`
-  const params = []
-  return sqlService.query(sql, params)
+pupilRestartDataService.sqlFindRestartCodes = async function () {
+  const sql = `
+  SELECT 
+    id, 
+    code, 
+    statusDesc 
+  FROM ${sqlService.adminSchema}.[pupilRestartCode]
+  ORDER BY statusDesc ASC`
+  return sqlService.query(sql)
 }
 
 /**
  * Mark an existing pupil restart as deleted
  * @param pupilId
+ * @param userId
  * @return {Promise<*>}
  */
-pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId) => {
+pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   const params = [
     {
       name: 'pupilId',
       value: pupilId,
+      type: TYPES.Int
+    },
+    {
+      name: 'deletedByUser_id',
+      value: userId,
       type: TYPES.Int
     },
     {
@@ -134,7 +145,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId) => {
       type: TYPES.DateTimeOffset
     }
   ]
-  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[pupilRestart] SET isDeleted=1, updatedAt=@updatedAt WHERE [pupil_id]=@pupilId`, params)
+  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[pupilRestart] SET isDeleted=1, deletedByUser_id=@userId, updatedAt=@updatedAt WHERE [pupil_id]=@pupilId`, params)
 }
 
 module.exports = pupilRestartDataService
