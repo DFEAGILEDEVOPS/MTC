@@ -184,6 +184,7 @@ sqlService.query = (sql, params = []) => {
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
+        winston.debug('ERROR SQL: ', sql)
         return reject(err)
       }
       const objects = parseResults(results)
