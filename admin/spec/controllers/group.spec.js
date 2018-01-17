@@ -11,6 +11,7 @@ const groupDataService = require('../../services/data-access/group.data.service'
 const groupValidator = require('../../lib/validator/group-validator')
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
+const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
 describe('group.js controller', () => {
@@ -554,6 +555,71 @@ describe('group.js controller', () => {
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(groupDataService.update).toHaveBeenCalled()
+          expect(next).toHaveBeenCalled()
+          expect(res.statusCode).toBe(200)
+          done()
+        })
+      })
+    })
+
+    describe('#removeGroup', () => {
+      describe('(happy path)', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: '123456abcde'
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+
+          expect(groupDataService.delete).toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+      })
+
+      describe('(unhappy path - missing parameter group id)', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: null
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+
+          expect(groupDataService.delete).not.toHaveBeenCalled()
+          expect(next).not.toHaveBeenCalled()
+          expect(res.statusCode).toBe(302)
+          done()
+        })
+      })
+
+      describe('(unhappy path - soft-delete fails )', () => {
+        it('should soft-delete a group', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          req.method = 'GET'
+          req.params = {
+            groupId: '123456abcde'
+          }
+
+          spyOn(groupDataService, 'delete').and.returnValue(Promise.reject(new Error()))
+
+          controller = require('../../controllers/group').removeGroup
+          await controller(req, res, next)
+
+          expect(groupDataService.delete).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()

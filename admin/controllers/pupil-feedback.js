@@ -39,11 +39,11 @@ const setPupilFeedback = async (req, res, next) => {
     inputType: inputType,
     satisfactionRating: satisfactionRating,
     comments: comments,
-    checkId: check._id
+    id: check.id
   }
 
   try {
-    await pupilFeedbackDataService.create(pupilFeedbackData)
+    await pupilFeedbackDataService.sqlCreate(pupilFeedbackData)
     apiResponse.sendJson(res, 'Pupil feedback saved', 201)
   } catch (error) {
     apiResponse.serverError(res)
