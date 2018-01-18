@@ -33,7 +33,7 @@ Then(/^I should see a heading on the page$/) do
 end
 
 Then(/^I should see set of reasons I can choose$/) do
-  expected_reason_hash = MongoDbHelper.get_attendance_codes
+  expected_reason_hash = SqlDbHelper.get_attendance_codes
   actual_reason_hash = {}
   pupil_reason_page.attendance_codes.each_with_index {|c, i| actual_reason_hash.merge!((i+1) => find("label[for=#{c['id']}]").text)}
   expect(actual_reason_hash).to eql expected_reason_hash

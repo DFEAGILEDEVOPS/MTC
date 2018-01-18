@@ -117,6 +117,24 @@ class SqlDbHelper
     chk_form_res
   end
 
+  def self.get_attendance_codes
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
+    result = SQL_CLIENT.execute(sql)
+    array_of_result = result.each{|row| row.map}
+    result.cancel
+    hash = {}
+    array_of_result.map{|a| hash.merge!(a['code'] => a['reason'])}
+    hash
+  end
+
+  # def self.check_attendance_code(id)
+  #   result = []
+  #   collection=CLIENT[:attendancecodes].find({'_id': BSON::ObjectId(id)})
+  #   collection.each {|a| result << a}
+  #   result.first
+  # end
+
+
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
     sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupilId, checkCode, checkWindowId, checkFormId, pupilLoginDate, checkStartedAt) VALUES ('#{updatedime}', '#{createdTime}', '#{pupil_id}', '40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6', '#{check_window_id}', '100', '#{pupilLoginDate}', '#{checkStartedTime}' )"
     result = SQL_CLIENT.execute(sql)
