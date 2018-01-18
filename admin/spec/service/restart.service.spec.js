@@ -135,7 +135,7 @@ describe('restart.service', () => {
     })
   })
   describe('getSubmittedRestarts', () => {
-    it('returns a list of  if all pupils can restart', async () => {
+    it('returns a list of pupils who have been submitted for a restart', async () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])

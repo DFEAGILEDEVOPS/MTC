@@ -18,7 +18,7 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 
 /**
  * Get pupils who are eligible for restart
- * @param dfdeNumber
+ * @param dfeNumber
  * @returns {Array}
  */
 restartService.getPupils = async (dfeNumber) => {
@@ -30,8 +30,8 @@ restartService.getPupils = async (dfeNumber) => {
     if (isPupilEligible) return p
   }), p => !!p)
   if (pupils.length === 0) return []
-  pupils = pupils.map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-    ({ _id, pin, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName })
+  pupils = pupils.map(({ id, pin, dob, foreName, middleNames, lastName }) =>
+    ({ id, pin, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName })
   )
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
@@ -43,7 +43,7 @@ restartService.getPupils = async (dfeNumber) => {
  * @returns {boolean}
  */
 restartService.isPupilEligible = async (p) => {
-  const canRestart = await restartService.canRestart(p._id)
+  const canRestart = await restartService.canRestart(p.id)
   if (p.attendanceCode || !canRestart) return false
   const hasExpiredToday = p.pinExpiresAt && moment(p.pinExpiresAt).isSame(moment.now(), 'day')
   return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && hasExpiredToday
@@ -123,18 +123,18 @@ restartService.getSubmittedRestarts = async schoolId => {
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
   const latestPupilRestarts = await bluebird.filter(pupils.map(async p => {
-    const restart = await pupilRestartDataService.sqlFindLatestRestart(p._id)
+    const restart = await pupilRestartDataService.sqlFindLatestRestart(p.id)
     if (restart) {
-      const status = await restartService.getStatus(p._id)
+      const status = await restartService.getStatus(p.id)
       return { ...restart, status }
     }
   }), p => !!p)
   pupils.map(p => {
-    const record = latestPupilRestarts.find(l => l.pupilId.toString() === p._id.toString())
+    const record = latestPupilRestarts.find(l => l.pupilId.toString() === p.id.toString())
     if (record) {
       restarts.push({
-        _id: record._id,
-        pupilId: p._id,
+        id: record.id,
+        pupilId: p.id,
         reason: record.reason,
         status: record.status,
         foreName: p.foreName,
