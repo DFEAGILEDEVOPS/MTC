@@ -346,7 +346,7 @@ describe('check-form controller:', () => {
       describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'getCheckForm').and.returnValue(checkFormMock)
-          spyOn(checkWindowService, 'getCheckWindowsAssignedToFormsV2').and.returnValue([{
+          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue([{
             id: 1,
             name: 'Window Test 1'
           },
@@ -369,7 +369,7 @@ describe('check-form controller:', () => {
           await controller(req, res, next)
           expect(res.statusCode).toBe(200)
           expect(checkFormService.getCheckForm).toHaveBeenCalled()
-          expect(checkWindowService.getCheckWindowsAssignedToFormsV2).toHaveBeenCalled()
+          expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
           expect(checkFormService.checkWindowNames).toHaveBeenCalled()
           expect(checkFormService.canDelete).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('View form')
@@ -403,7 +403,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - checkWindowService.getCheckWindowsAssignedToForms', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'getCheckForm').and.returnValue(checkFormMock)
-          spyOn(checkWindowService, 'getCheckWindowsAssignedToFormsV2').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
           spyOn(checkFormService, 'canDelete').and.returnValue(false)
           controller = require('../../controllers/check-form').displayCheckForm
@@ -416,7 +416,7 @@ describe('check-form controller:', () => {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('View form')
           expect(checkFormService.getCheckForm).toHaveBeenCalled()
-          expect(checkWindowService.getCheckWindowsAssignedToFormsV2).toHaveBeenCalled()
+          expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
           expect(checkFormService.checkWindowNames).not.toHaveBeenCalled()
           expect(req.flash).toBeTruthy()
           expect(res.statusCode).toBe(302)
