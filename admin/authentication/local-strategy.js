@@ -46,6 +46,7 @@ module.exports = async function (req, email, password, done) {
       UserName: email,
       UserType: 'SchoolNom',
       School: school.dfeNumber,
+      schoolId: school.id,
       role: role.title,
       logonAt: Date.now(),
       id: user.id
