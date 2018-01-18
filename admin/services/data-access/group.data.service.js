@@ -7,6 +7,7 @@ const TYPES = require('tedious').TYPES
 const R = require('ramda')
 
 /**
+ * @TODO: To be deleted when the data layer refactoring is done.
  * Get groups filtered by query.
  * @param query
  * @returns {Promise<Promise|*>}
@@ -24,6 +25,15 @@ groupDataService.getGroups = async function (query) {
 }
 
 /**
+ * Get groups filtered by query.
+ * @returns {Promise<*>}
+ */
+groupDataService.sqlGetGroups = async () => {
+  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] WHERE isDeleted=0 SORT BY name ASC`
+  return sqlService.query(sql)
+}
+
+/**
  * Get group document by _id.
  * @param query
  * @returns {Promise<*>}
@@ -32,8 +42,8 @@ groupDataService.getGroup = async function (query) {
   return Group.findOne(query).lean().exec()
 }
 
-groupDataService.sqlFindOne = async function (groupId) {
-  const sql = `SELECT * FROM [mtc_admin].[group] WHERE id=@groupId`
+groupDataService.sqlGetGroup = async (groupId) => {
+  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] g WHERE p.id=@groupId`
   const params = [
     {
       name: 'groupId',
@@ -54,6 +64,10 @@ groupDataService.create = async function (data) {
   const group = new Group(data)
   await group.save()
   return group.toObject()
+}
+
+groupDataService.sqlCreate = (group) => {
+  return sqlService.create('[group]', group)
 }
 
 /**
@@ -80,5 +94,9 @@ groupDataService.update = async function (id, data) {
     return resolve(data)
   })
 }
+
+// groupDataService.sqlUpdate = async (id, data) => {
+//
+// }
 
 module.exports = groupDataService
