@@ -1,17 +1,16 @@
 'use strict'
-/* global describe expect it beforeEach afterEach xdescribe xit */
+/* global describe expect it beforeEach afterEach fail xdescribe xit spyOn */
 
-const sinon = require('sinon')
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
-const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 
 describe('check-window.service', () => {
-  let service = require('../../services/check-window.service')
-  let sandbox
-
-  beforeEach(() => { sandbox = sinon.sandbox.create() })
-  afterEach(() => sandbox.restore())
+  let service, checkWindowDataService, checkFormDataService
+  beforeEach(() => {
+    service = require('../../services/check-window.service')
+    checkWindowDataService = require('../../services/data-access/check-window.data.service')
+    checkFormDataService = require('../../services/data-access/check-form.data.service')
+  })
 
   describe('formatCheckWindowDocuments', () => {
     it('should return data correctly formatted (1)', () => {
@@ -39,69 +38,43 @@ describe('check-window.service', () => {
     })
   })
 
-  xdescribe('getCheckWindowsAssignedToForms', () => {
-    let fetchCheckWindowsStub
-
-    describe('Happy path', () => {
-      beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFindCurrent').resolves([checkWindowsMock])
-      })
-
-      it('should return check windows grouped by form id', () => {
-        const result = service.getCheckWindowsAssignedToForms()
-        expect(result).toBeTruthy()
-        expect(fetchCheckWindowsStub.callCount).toBe(1)
-      })
-    })
-
-    describe('Unhappy path', () => {
-      beforeEach(() => {
-        fetchCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFind').rejects(new Error('ERROR retrieving check windows'))
-      })
-
-      it('should return an error', async (done) => {
-        try {
-          const result = await service.getCheckWindowsAssignedToForms()
-          expect(result).toBeTruthy()
-          expect(fetchCheckWindowsStub.callCount).toBe(1)
-          done()
-        } catch (error) {
-          expect(error.toString()).toBe('Error: ERROR retrieving check windows')
-          done()
-        }
-      })
-    })
-  })
-
-  xdescribe('markAsDeleted - happy path', () => {
-    it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', () => {
-      const result = service.markAsDeleted(checkFormMock)
-      expect(result).toBeTruthy()
+  describe('markAsDeleted - happy path', () => {
+    it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', async (done) => {
+      spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
+      spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(Promise.resolve())
+      await service.markAsDeleted(checkFormMock)
+      expect(checkFormDataService.sqlDeleteForm).toHaveBeenCalledWith(checkFormMock.id)
+      done()
     })
   })
 
   describe('markAsDeleted - unhappy path', () => {
-    xdescribe('If the argument has no data', () => {
-      it('should return an error if the argument does not contain an _id', async (done) => {
-        checkFormMock._id = null
+    describe('If the argument has no data', () => {
+      it('should return an error if the argument does not contain an id', async (done) => {
+        checkFormMock.id = undefined
         try {
-          const result = await service.markAsDeleted(checkFormMock)
-          expect(result).toBeTruthy()
+          await service.markAsDeleted(checkFormMock)
+          fail('error should have been thrown')
           done()
         } catch (error) {
-          expect(error.toString()).toBe('Error: This form does not have an id')
+          expect(error.message).toBe('Form with an id is required')
           done()
         }
       })
     })
 
     describe('If saving documents fails', () => {
-      xit('should return an error', async (done) => {
+      it('should return an error', async (done) => {
         try {
+          spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
+          spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(new Error('testing error path'))
+          checkFormMock.id = 1
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()
+          expect(checkFormDataService.sqlDeleteForm).toHaveBeenCalled()
+          expect(checkWindowDataService.sqlFindCheckWindowsAssignedToForms).toHaveBeenCalled()
         } catch (error) {
-          expect(error.toString()).toBe('Error: This form does not have an id')
+          expect(error.message).toBe('testing error path')
         }
         done()
       })
@@ -109,16 +82,13 @@ describe('check-window.service', () => {
   })
 
   describe('#getCurrentCheckWindowsAndCountForms', () => {
-    let fetchCurrentCheckWindowsStub
-
-    beforeEach(() => {
-      fetchCurrentCheckWindowsStub = sandbox.stub(checkWindowDataService, 'sqlFindCurrent').resolves(checkWindowsMock)
-    })
-
-    it('should return an object with _id, checkWindowName and totalForms items', () => {
-      const result = service.getCurrentCheckWindowsAndCountForms()
+    it('should return an object with id, checkWindowName and totalForms items', async (done) => {
+      spyOn(checkWindowDataService, 'sqlFindCurrent').and.returnValue(checkWindowsMock)
+      const result = await service.getCurrentCheckWindowsAndCountForms()
       expect(result).toBeTruthy()
-      expect(fetchCurrentCheckWindowsStub.callCount).toBe(1)
+      expect(result.length).toBe(3)
+      expect(checkWindowDataService.sqlFindCurrent).toHaveBeenCalledTimes(1)
+      done()
     })
   })
 

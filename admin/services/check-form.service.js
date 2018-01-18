@@ -137,7 +137,7 @@ const checkFormService = {
       for (let index = 0; index < formData.length; index++) {
         const form = formData[index]
         form.removeLink = true
-        const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([form.id])
+        const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms([form.id])
         if (checkWindows.length > 0) {
           form.checkWindows = checkWindows.map(cw => cw.name)
           form.removeLink = moment(form.checkStartDate).isAfter(moment())
@@ -200,7 +200,7 @@ const checkFormService = {
     // remove assignments from windows
     await checkFormDataService.sqlRemoveAllWindowAssignments(formId)
     // mark as deleted
-    return checkFormDataService.sqlDeleteForm(formId)
+    return checkFormDataService.sqlMarkFormAsDeleted(formId)
   },
 
   /**
