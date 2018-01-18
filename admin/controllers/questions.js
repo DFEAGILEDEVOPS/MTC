@@ -23,11 +23,9 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     return apiResponse.unauthorised(res)
   }
-
   const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
-
   const schoolData = {
-    id: data.school._id,
+    id: data.school.id,
     name: data.school.name
   }
   try {
@@ -35,7 +33,6 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     return apiResponse.serverError(res)
   }
-
   try {
     token = await jwtService.createToken(data.pupil)
   } catch (error) {
