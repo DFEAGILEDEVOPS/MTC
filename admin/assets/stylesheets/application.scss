@@ -455,14 +455,14 @@ table.spacious {
 
 table.spacious-two-column {
   @extend table.spacious;
-
-  th {
-    //width: 50%;
-  }
 }
 
 table.spacious.reduced-top-margin {
   margin-top: 10px;
+}
+
+.column-narrow {
+  width: 10%;
 }
 
 .master-detail {
