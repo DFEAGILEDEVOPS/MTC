@@ -4,6 +4,7 @@ const Group = require('../../models/group')
 const groupDataService = {}
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const moment = require('moment')
 const R = require('ramda')
 
 /**
@@ -42,6 +43,11 @@ groupDataService.getGroup = async function (query) {
   return Group.findOne(query).lean().exec()
 }
 
+/**
+ * Get group by id.
+ * @param groupId
+ * @returns {Promise<void>}
+ */
 groupDataService.sqlGetGroup = async (groupId) => {
   const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] g WHERE p.id=@groupId`
   const params = [
@@ -95,8 +101,33 @@ groupDataService.update = async function (id, data) {
   })
 }
 
-// groupDataService.sqlUpdate = async (id, data) => {
-//
-// }
+/**
+ * Update group.
+ * @param id
+ * @param name
+ * @returns {Promise}
+ */
+groupDataService.sqlUpdateGroup = async (id, name) => {
+  const params = [
+    {
+      name: 'id',
+      value: id,
+      type: TYPES.Int
+    },
+    {
+      name: 'name',
+      value: name,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'updatedAt',
+      value: moment.utc(),
+      type: TYPES.DateTimeOffset
+    }
+  ]
+  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[group] SET name=@name, updatedAt=@updatedAt WHERE [id]=@id`, params)
+}
+
+// @TODO: updating pupils for group - this now needs to be done separately.
 
 module.exports = groupDataService
