@@ -40,7 +40,7 @@ Then(/^windows in the past cannot be removed$/) do
 end
 
 When(/^I decide to remove a window$/) do
-  window = manage_check_window_page.windows_table.rows.find {|chk| chk.has_remove?}
+  window = manage_check_window_page.windows_table.rows.find {|chk| chk.check_name.text.eql?(@check_window_hash[:check_name])}
   @check_name = window.check_name.text
   window.remove.click
   manage_check_window_page.modal.confirm.click
@@ -51,11 +51,11 @@ Then(/^it should be removed from the list of check windows$/) do
 end
 
 And(/^it should be removed from the database$/) do
-  expect(MongoDbHelper.check_window_details(@check_name)['isDeleted']).to be_truthy
+  expect(SqlDbHelper.check_window_details(@check_name)['isDeleted']).to be_truthy
 end
 
 When(/^I want to remove a window$/) do
-  window = manage_check_window_page.windows_table.rows.find {|chk| chk.has_remove?}
+  window = manage_check_window_page.windows_table.rows.find {|chk| chk.check_name.text.eql?(@check_window_hash[:check_name])}
   @check_name = window.check_name.text
   window.remove.click
 end
@@ -66,7 +66,7 @@ end
 
 Then(/^the window should not be removed$/) do
   expect(manage_check_window_page.windows_table.rows.find {|chk| chk.text.include? @check_name}).to_not be_nil
-  expect(MongoDbHelper.check_window_details(@check_name)['isDeleted']).to be_falsey
+  expect(SqlDbHelper.check_window_details(@check_name)['isDeleted']).to be_falsey
 end
 
 Given(/^I am viewing the modal$/) do

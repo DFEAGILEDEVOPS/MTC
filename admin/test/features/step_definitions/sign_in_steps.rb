@@ -46,3 +46,11 @@ end
 Given(/^I am on the sign in failure page$/) do
   sign_in_failure_page.load
 end
+
+When(/^I decide to get in contact$/) do
+  sign_in_page.contact.click
+end
+
+Then(/^I should be taken to the contact page for mtc$/) do
+  expect(contact_page).to be_displayed
+end
