@@ -4,7 +4,7 @@
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
 
-fdescribe('check-window.service', () => {
+describe('check-window.service', () => {
   let service, checkWindowDataService, checkFormDataService
   beforeEach(() => {
     service = require('../../services/check-window.service')
@@ -43,7 +43,6 @@ fdescribe('check-window.service', () => {
       spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
       spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(Promise.resolve())
       await service.markAsDeleted(checkFormMock)
-      // expect(result).toBeTruthy()
       expect(checkFormDataService.sqlDeleteForm).toHaveBeenCalledWith(checkFormMock.id)
       done()
     })
@@ -68,7 +67,7 @@ fdescribe('check-window.service', () => {
       it('should return an error', async (done) => {
         try {
           spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
-          spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(Promise.reject(new Error('testing error path')))
+          spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(new Error('testing error path'))
           checkFormMock.id = 1
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()
