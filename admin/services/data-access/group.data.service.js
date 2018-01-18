@@ -30,7 +30,7 @@ groupDataService.getGroups = async function (query) {
  * @returns {Promise<*>}
  */
 groupDataService.sqlGetGroups = async () => {
-  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] WHERE isDeleted=0 SORT BY name ASC`
+  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] g WHERE isDeleted=0 ORDER BY name ASC`
   return sqlService.query(sql)
 }
 
@@ -48,8 +48,8 @@ groupDataService.getGroup = async function (query) {
  * @param groupId
  * @returns {Promise<void>}
  */
-groupDataService.sqlGetGroup = async (groupId) => {
-  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] g WHERE p.id=@groupId`
+groupDataService.sqlGetGroupById = async (groupId) => {
+  const sql = `SELECT g.* FROM ${sqlService.adminSchema}.[group] g WHERE g.id=@groupId`
   const params = [
     {
       name: 'groupId',
@@ -72,12 +72,17 @@ groupDataService.create = async function (data) {
   return group.toObject()
 }
 
+/**
+ * Create 'group' record.
+ * @param group
+ * @returns {Promise}
+ */
 groupDataService.sqlCreate = (group) => {
   return sqlService.create('[group]', group)
 }
 
 /**
- * Update group.
+ * Update 'group' record.
  * @param id
  * @param data
  * @returns {Promise<void>}
@@ -125,9 +130,45 @@ groupDataService.sqlUpdateGroup = async (id, name) => {
       type: TYPES.DateTimeOffset
     }
   ]
-  return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[group] SET name=@name, updatedAt=@updatedAt WHERE [id]=@id`, params)
+  return sqlService.modify(
+    `UPDATE ${sqlService.adminSchema}.[group] 
+    SET name=@name, updatedAt=@updatedAt 
+    WHERE [id]=@id`,
+    params)
 }
 
 // @TODO: updating pupils for group - this now needs to be done separately.
+
+/**
+ * Get pupils filtered by school,
+ * joined by all not grouped and grouped by group_id.
+ * @param schoolId
+ * @param groupId
+ * @returns {Promise<*>}
+ */
+groupDataService.sqlGetPupils = async (schoolId, groupId) => {
+  let param = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    },
+    {
+      name: 'groupId',
+      value: groupId,
+      type: TYPES.Int
+    }
+  ]
+
+  let sql = `SELECT p.[id], p.[foreName], p.[middleNames], p.[lastName], g.[group_id]
+    FROM [mtc_admin].[pupil] p 
+    LEFT JOIN [mtc_admin].[pupilGroup] g 
+      ON p.id = g.pupil_id 
+    WHERE p.school_id=@schoolId 
+    AND g.group_id=@groupId  
+    OR g.group_id IS NULL`
+
+  return sqlService.query(sql, param)
+}
 
 module.exports = groupDataService

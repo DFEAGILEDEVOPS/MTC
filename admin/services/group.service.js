@@ -11,7 +11,10 @@ const groupService = {}
  * @returns {Promise<Promise|*>}
  */
 groupService.getGroups = async function (query) {
-  return groupDataService.getGroups(query)
+  // @TODO: TO BE DELETED
+  //return groupDataService.getGroups(query)
+  console.log('DEBUG: groupService.getGroups > groupDataService.sqlGetGroups')
+  return groupDataService.sqlGetGroups()
 }
 
 /**
@@ -47,6 +50,11 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
   return filteredPupil
 }
 
+groupService.sqlGetPupils = async (schoolId, groupId) => {
+  if (!schoolId || !groupId) { return false }
+  return groupDataService.sqlGetPupils(schoolId, groupId)
+}
+
 /**
  * Get group by id.
  * @param groupId
@@ -54,7 +62,10 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
  */
 groupService.getGroupById = async function (groupId) {
   if (!groupId) { return false }
-  return groupDataService.getGroup({'_id': groupId})
+  // @TODO: TO BE DELETED
+  //return groupDataService.getGroup({'_id': groupId})
+  console.log('DEBUG: groupService.getGroupById > groupDataService.sqlGetGroupById', groupDataService.sqlGetGroupById(groupId))
+  return groupDataService.sqlGetGroupById(groupId)
 }
 
 /**

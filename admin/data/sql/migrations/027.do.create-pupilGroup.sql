@@ -2,9 +2,11 @@ CREATE TABLE [mtc_admin].[pupilGroup]
 (
   [id] [int] IDENTITY(1,1) NOT NULL,
   [group_id] INT NOT NULL,
+  [pupil_id] INT NOT NULL,
   [createdAt] [datetimeoffset](3) NOT NULL DEFAULT GETUTCDATE(),
   [updatedAt] [datetimeoffset](3) NOT NULL DEFAULT GETUTCDATE(),
   FOREIGN KEY (group_id) REFERENCES [mtc_admin].[group] (id),
+  FOREIGN KEY (pupil_id) REFERENCES [mtc_admin].[pupil] (id),
   PRIMARY KEY CLUSTERED
   (
 	  [id] ASC
@@ -16,4 +18,3 @@ CREATE TABLE [mtc_admin].[pupilGroup]
     ALLOW_PAGE_LOCKS = ON
   )
 )
-

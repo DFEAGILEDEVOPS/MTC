@@ -86,17 +86,17 @@
                         <% pupilsList.forEach( (pupil) => { %>
                         <tr>
                             <td>
-                                <label for="pupil-<%= pupil._id %>"><%= pupil.lastName %>, <%= pupil.foreName %></label>
+                                <label for="pupil-<%= pupil.id %>"><%= pupil.lastName %>, <%= pupil.foreName %></label>
                             </td>
                             <td class="align-right">
                                 <div class="multiple-choice-mtc">
-                                    <input id="pupil-<%= pupil._id %>"
-                                           name="pupil[<%= pupil._id %>]"
+                                    <input id="pupil-<%= pupil.id %>"
+                                           name="pupil[<%= pupil.id %>]"
                                            type="checkbox"
-                                           value="<%= pupil._id %>"
+                                           value="<%= pupil.id %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"
-                                           <% if (group && group.pupils && group.pupils[pupil._id]) { %>checked="true"<% } %>
+                                           <% if (pupil.group_id) { %>checked="true"<% } %>
                                            role="checkbox">
                                     <div></div>
                                 </div>
@@ -106,7 +106,7 @@
                     </tbody>
                 </table>
             </div>
-            <% if (group && group._id) { %><input type="hidden" name="groupId" value="<%= group._id %>" /><% } %>
+            <% if (group && group.id) { %><input type="hidden" name="groupId" value="<%= group.id %>" /><% } %>
             <%- partial('partials/_sticky_confirmation_banner',
                     {
                         cancelLabel: 'Cancel',
