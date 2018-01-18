@@ -3153,8 +3153,8 @@ jasmine@^2.8.0:
     jasmine-core "~2.8.0"
 
 js-base64@^2.1.8:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.0.tgz#9e566fee624751a1d720c966cd6226d29d4025aa"
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.1.tgz#e02813181cd53002888e918935467acb2910e596"
 
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
@@ -4706,8 +4706,8 @@ posix-character-classes@^0.1.0:
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
 
 postgrator@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/postgrator/-/postgrator-3.2.0.tgz#db22cc251101cfca85fc1ba8008e0020c064395f"
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/postgrator/-/postgrator-3.3.0.tgz#84081a5c8c55887d746446fe813c42fdaaba2021"
   dependencies:
     glob "^7.1.2"
     newline "0.0.3"
@@ -4829,8 +4829,8 @@ raw-body@~1.1.0:
     string_decoder "0.10"
 
 rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.3.tgz#51575a900f8dd68381c710b4712c2154c3e2035b"
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.4.tgz#a0f606caae2a3b862bbd0ef85482c0125b315fa3"
   dependencies:
     deep-extend "~0.4.0"
     ini "~1.3.0"
@@ -5241,8 +5241,8 @@ semver-diff@^2.0.0:
     semver "^5.0.3"
 
 "semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@^5.3.0, semver@^5.4.1:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 
 semver@5.3.0, semver@~5.3.0:
   version "5.3.0"
@@ -5379,15 +5379,15 @@ sinon-mongoose@^2.0.2:
   resolved "https://registry.yarnpkg.com/sinon-mongoose/-/sinon-mongoose-2.0.2.tgz#658cae722657916d2e1e652b029a36f1e847acf5"
 
 sinon@^4.1.3:
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-4.1.5.tgz#620a9b2ac599f88b0455763070f16f4057ed6395"
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-4.1.6.tgz#9cb346bddb180d68a804429ffe14978d7fafd629"
   dependencies:
     diff "^3.1.0"
     formatio "1.2.0"
     lodash.get "^4.4.2"
     lolex "^2.2.0"
     nise "^1.2.0"
-    supports-color "^4.4.0"
+    supports-color "^5.1.0"
     type-detect "^4.0.5"
 
 slice-ansi@0.0.4:
@@ -5711,9 +5711,15 @@ supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-supports-color@^4.0.0, supports-color@^4.4.0:
+supports-color@^4.0.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.5.0.tgz#be7a0de484dec5c5cddf8b3d59125044912f635b"
+  dependencies:
+    has-flag "^2.0.0"
+
+supports-color@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.1.0.tgz#058a021d1b619f7ddf3980d712ea3590ce7de3d5"
   dependencies:
     has-flag "^2.0.0"
 
@@ -5771,18 +5777,7 @@ tedious@^1.14.0:
     readable-stream "^2.0.2"
     sprintf "0.1.5"
 
-tedious@^2.0.0:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.1.5.tgz#85574d22cde1769dfe4cc4a0d697175b13e5d318"
-  dependencies:
-    babel-runtime "^6.26.0"
-    big-number "0.3.1"
-    bl "^1.2.0"
-    iconv-lite "^0.4.11"
-    readable-stream "^2.2.6"
-    sprintf "0.1.5"
-
-tedious@^2.2.3:
+tedious@^2.0.0, tedious@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.2.3.tgz#4364c347d585dba6fc5bfe3c340c15ea3f1ae78d"
   dependencies:
@@ -6096,8 +6091,8 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
 uuid@^3.0.0, uuid@^3.1.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.0.tgz#19a63e22b3b32a0ba23984a4f384836465e24949"
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
 uuid@~1.4.1:
   version "1.4.2"
@@ -6348,8 +6343,8 @@ yargs-parser@^8.0.0, yargs-parser@^8.1.0:
     camelcase "^4.1.0"
 
 yargs@^10.0.3:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-10.1.1.tgz#5fe1ea306985a099b33492001fa19a1e61efe285"
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-10.1.2.tgz#454d074c2b16a51a43e2fb7807e4f9de69ccb5c5"
   dependencies:
     cliui "^4.0.0"
     decamelize "^1.1.1"
