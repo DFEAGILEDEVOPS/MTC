@@ -244,7 +244,7 @@ describe('pin-generation.service', () => {
       }
 
       const expectedResult = numbersArr.length / ((max - min) + 1)
-      const errorPercentTolerance = 0.18 // 18%
+      const errorPercentTolerance = 0.31 // 31%
       const tolerance = expectedResult * errorPercentTolerance
 
       for (let [number, freq] of Object.entries(count)) {
