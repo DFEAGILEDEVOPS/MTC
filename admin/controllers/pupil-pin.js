@@ -62,7 +62,7 @@ const postGeneratePins = async (req, res, next) => {
   let school
   try {
     submittedPupils = await pinGenerationService.generatePupilPins(pupilsList)
-    await pupilDataService.updateMultiple(submittedPupils)
+    await submittedPupils.forEach(async pupil => pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil)))
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))

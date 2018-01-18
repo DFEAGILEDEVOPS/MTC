@@ -136,17 +136,20 @@ pupilDataService.getStatusCodes = async () => {
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by dfeNumber sorted by pupil name
+ * Fetch all pupils for a school by dfeNumber sorted by pupil last name
  * @param {number} dfeNumber
+ * @param orderColumn
+ * @param orderDirection
  * @return {Promise<results>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, orderDirection = 'ASC', orderColumn = 'lastName') {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
       SELECT 
         p.*    
       FROM ${sqlService.adminSchema}.${table} p INNER JOIN school s ON s.id = p.school_id
-      WHERE s.dfeNumber = @dfeNumber      
+      WHERE s.dfeNumber = @dfeNumber
+      ORDER BY ${orderColumn} ${orderDirection}      
     `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -218,6 +221,25 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
       WHERE id = @id and school_id = @schoolId   
     `
   const results = await sqlService.query(sql, [paramPupil, paramSchool])
+  return R.head(results)
+}
+
+/**
+ * Find a pupil by school id and pupil pin
+ * @param {number} pin
+ * @param {number} schoolId
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
+  const paramPupilPin = { name: 'pin', type: TYPES.Int, value: pin }
+  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE pin = @pin and school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, [paramPupilPin, paramSchool])
   return R.head(results)
 }
 

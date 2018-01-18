@@ -96,7 +96,7 @@ describe('pupil service', () => {
       const pupils = await service.getPrintPupils(dfeNumber)
       const pupil = pupils[0]
       expect(pupil.fullName).toBe('Pupil One')
-      expect(pupil.pupilPin).toBe('d55sg')
+      expect(pupil.pupilPin).toBe(4466)
       expect(pupil.schoolPin).toBe('newpin88')
     })
   })

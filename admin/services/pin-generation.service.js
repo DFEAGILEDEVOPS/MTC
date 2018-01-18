@@ -1,5 +1,4 @@
 const moment = require('moment')
-const mongoose = require('mongoose')
 const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -22,21 +21,20 @@ const chars = '23456789'
 
 /**
  * Fetch pupils and filter required only pupil attributes
- * @param schoolId
+ * @param dfeNumber
  * @param sortField
  * @param sortDirection
  * @returns {Array}
  */
-pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
-  let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
-  // filter pupils
+pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => {
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection.toUpperCase(), sortField)
   pupils = await Promise.all(pupils.map(async p => {
     const isValid = await pinGenerationService.isValid(p)
     if (isValid) {
       return {
-        _id: p._id,
+        id: p.id,
         pin: p.pin,
-        dob: dateService.formatShortGdsDate(p.dob),
+        dob: dateService.formatShortGdsDate(p.dateOfBirth),
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames
@@ -71,10 +69,10 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
   const data = Object.values(pupilsList || null)
   let pupils = []
   // fetch pupils
-  const ids = data.map(id => mongoose.Types.ObjectId(id))
+  const ids = data.map(id => id)
   for (let index = 0; index < ids.length; index++) {
     const id = ids[ index ]
-    const pupil = await pupilDataService.findOne(id)
+    const pupil = await pupilDataService.sqlFindOneById(id)
     pupils.push(pupil)
   }
   // pupils = await pupilDataService.find({ _id: { $in: ids } })

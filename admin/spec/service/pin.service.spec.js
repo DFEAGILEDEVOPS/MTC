@@ -33,7 +33,7 @@ describe('pin.service', () => {
     describe('if pins are valid', () => {
       beforeEach(() => {
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'years').valueOf())
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsWithActivePins').resolves([ pupil1, pupil2 ])
         proxyquire('../../services/pupil.service', {
           '../../services/data-access/pupil.data.service': pupilDataService
         })
@@ -46,7 +46,7 @@ describe('pin.service', () => {
     describe('if pins are invalid', () => {
       beforeEach(() => {
         sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsWithActivePins').resolves([])
         proxyquire('../../services/pupil.service', {
           '../../services/data-access/pupil.data.service': pupilDataService
         })
