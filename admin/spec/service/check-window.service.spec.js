@@ -3,6 +3,7 @@
 
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
+const moment = require('moment')
 
 describe('check-window.service', () => {
   let service, checkWindowDataService, checkFormDataService
@@ -13,28 +14,112 @@ describe('check-window.service', () => {
   })
 
   describe('formatCheckWindowDocuments', () => {
-    it('should return data correctly formatted (1)', () => {
+    it('should return dates correctly formatted', () => {
       const isCurrent = true
       const canRemove = false
-      const result = service.formatCheckWindowDocuments(checkWindowsMock, isCurrent, canRemove)
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment('2018-01-20 00:00:00'),
+          checkStartDate: moment('2018-01-10 00:00:00'),
+          adminStartDate: moment('2017-10-18 00:00:00'),
+          name: 'Test window 3',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
 
       expect(result[0].checkWindowName).toBe('Test window 3')
       expect(result[0].adminStartDate).toBe('18 Oct 2017')
       expect(result[0].checkDates).toBe('10 Jan to 20 Jan 2018')
-      expect(result[0].isCurrent).toBe(isCurrent)
+    })
+
+    it('should respect passed in value of canRemove when false', () => {
+      const isCurrent = false
+      const canRemove = false
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment('2018-01-20 00:00:00'),
+          checkStartDate: moment('2018-01-10 00:00:00'),
+          adminStartDate: moment('2017-10-18 00:00:00'),
+          name: 'Test window 3',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
       expect(result[0].canRemove).toBe(canRemove)
     })
 
-    it('should return data correctly formatted (2)', () => {
+    it('should respect passed in value of canRemove when true', () => {
       const isCurrent = false
-      const canRemove = false
-      const result = service.formatCheckWindowDocuments(checkWindowsMock, isCurrent, canRemove)
+      const canRemove = true
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment('2018-01-20 00:00:00'),
+          checkStartDate: moment('2018-01-10 00:00:00'),
+          adminStartDate: moment('2017-10-18 00:00:00'),
+          name: 'Test window 3',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
+      expect(result[0].canRemove).toBe(canRemove)
+    })
 
-      expect(result[1].checkWindowName).toBe('Window Test 1')
-      expect(result[1].adminStartDate).toBe('19 Oct 2017')
-      expect(result[1].checkDates).toBe('25 Oct to 28 Nov 2017')
-      expect(result[1].isCurrent).toBe(isCurrent)
-      expect(result[1].canRemove).toBe(canRemove)
+    it('should set canRemove to true when checkStartDate is greater than today', () => {
+      const isCurrent = false
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment().add(7, 'days'),
+          checkStartDate: moment().add(2, 'days'),
+          adminStartDate: moment().subtract(5, 'days'),
+          name: 'Future Test Window',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
+      expect(result[0].canRemove).toBe(true)
+    })
+
+    it('should set canRemove to true when checkStartDate is today', () => {
+      const isCurrent = false
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment().add(7, 'days'),
+          checkStartDate: moment(),
+          adminStartDate: moment().subtract(5, 'days'),
+          name: 'Future Test Window',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
+      expect(result[0].canRemove).toBe(true)
+    })
+
+    it('should set canRemove to false when checkStartDate is before today', () => {
+      const isCurrent = false
+      const checkWindows = [
+        {
+          id: 1,
+          checkEndDate: moment().add(7, 'days'),
+          checkStartDate: moment().subtract(2, 'days'),
+          adminStartDate: moment().subtract(5, 'days'),
+          name: 'Future Test Window',
+          formCount: 2,
+          isDeleted: false
+        }
+      ]
+      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
+      expect(result[0].canRemove).toBe(false)
     })
   })
 
