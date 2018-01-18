@@ -200,7 +200,7 @@ const checkFormService = {
     // remove assignments from windows
     await checkFormDataService.sqlRemoveAllWindowAssignments(formId)
     // mark as deleted
-    return checkFormDataService.sqlDeleteForm(formId)
+    return checkFormDataService.sqlMarkFormAsDeleted(formId)
   },
 
   /**
