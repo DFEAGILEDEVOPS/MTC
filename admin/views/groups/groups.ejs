@@ -15,6 +15,12 @@
         </div>
         <% } %>
 
+        <% if (messages && messages.deleted && messages.deleted.length) { %>
+        <div class="info-message">
+            <%= messages.deleted %>
+        </div>
+        <% } %>
+
         <% if (messages && messages.error && messages.error.length) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
@@ -48,7 +54,7 @@
                             <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong> <span class="font-xsmall">(<%= Object.keys(group.pupils).length || 0 %> pupils)</span>
                         </td>
                         <td class="align-right">
-                            <a href="/school/delete-group/<%= group._id %>" class="modal-link font-xsmall" id="js-modal-link">Remove</a>
+                            <a href="/school/group-pupils/delete/<%= group._id %>" class="modal-link font-xsmall" id="js-modal-link">Remove</a>
                         </td>
                     </tr>
                     <% }) %>
@@ -82,7 +88,7 @@
     modalTitle: 'Remove group',
     modalText: 'Are you sure you want to remove this?',
     modalConfirmationLabel: 'Yes',
-    modalConfirmationUrl: '#',
+    modalConfirmationUrl: '/school/group-pupils/delete',
     modalCancelLabel: 'No',
     modalCancelUrl: '#'
 }) %>
