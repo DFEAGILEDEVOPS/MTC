@@ -227,7 +227,7 @@ const displayCheckForm = async (req, res) => {
   }
 
   try {
-    checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([formId])
+    checkWindows = await checkWindowService.getCheckWindowsAssignedToForms([formId])
   } catch (error) {
     // WARN how would this ever be shown????
     req.flash(`Unable to find check window(s) for active check form: ${error.message}`)
