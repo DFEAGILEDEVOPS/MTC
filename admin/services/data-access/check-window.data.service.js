@@ -57,14 +57,9 @@ const checkWindowDataService = {
         name: 'id',
         value: id,
         type: TYPES.Int
-      },
-      {
-        name: 'updatedAt',
-        value: moment.utc(),
-        type: TYPES.DateTimeOffset
       }
     ]
-    const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1, updatedAt=@updatedAt WHERE id=@id`
+    const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1 WHERE id=@id`
     return sqlService.modify(sql, params)
   },
   /**

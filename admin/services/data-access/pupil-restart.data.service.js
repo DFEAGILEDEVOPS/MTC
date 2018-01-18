@@ -146,15 +146,10 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
       name: 'deletedByUser_id',
       value: userId,
       type: TYPES.Int
-    },
-    {
-      name: 'updatedAt',
-      value: moment.utc(),
-      type: TYPES.DateTimeOffset
     }
   ]
   const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart] 
-  SET isDeleted=1, deletedByUser_id=@userId, updatedAt=@updatedAt 
+  SET isDeleted=1, deletedByUser_id=@userId  
   WHERE [pupil_id]=@pupilId`
   return sqlService.modify(sql, params)
 }
