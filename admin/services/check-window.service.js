@@ -60,7 +60,7 @@ const checkWindowService = {
         }
       }
     }
-    return checkFormDataService.sqlDeleteForm(checkForm.id)
+    return checkFormDataService.sqlMarkFormAsDeleted(checkForm.id)
   },
 
   /**

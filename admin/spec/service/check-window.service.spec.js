@@ -41,9 +41,9 @@ describe('check-window.service', () => {
   describe('markAsDeleted - happy path', () => {
     it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', async (done) => {
       spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
-      spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(Promise.resolve())
+      spyOn(checkFormDataService, 'sqlMarkFormAsDeleted').and.returnValue(Promise.resolve())
       await service.markAsDeleted(checkFormMock)
-      expect(checkFormDataService.sqlDeleteForm).toHaveBeenCalledWith(checkFormMock.id)
+      expect(checkFormDataService.sqlMarkFormAsDeleted).toHaveBeenCalledWith(checkFormMock.id)
       done()
     })
   })
@@ -67,11 +67,11 @@ describe('check-window.service', () => {
       it('should return an error', async (done) => {
         try {
           spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
-          spyOn(checkFormDataService, 'sqlDeleteForm').and.returnValue(new Error('testing error path'))
+          spyOn(checkFormDataService, 'sqlMarkFormAsDeleted').and.returnValue(new Error('testing error path'))
           checkFormMock.id = 1
           const result = await service.markAsDeleted(checkFormMock)
           expect(result).toBeTruthy()
-          expect(checkFormDataService.sqlDeleteForm).toHaveBeenCalled()
+          expect(checkFormDataService.sqlMarkFormAsDeleted).toHaveBeenCalled()
           expect(checkWindowDataService.sqlFindCheckWindowsAssignedToForms).toHaveBeenCalled()
         } catch (error) {
           expect(error.message).toBe('testing error path')
