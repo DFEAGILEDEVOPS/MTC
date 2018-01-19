@@ -8,7 +8,13 @@ require('sinon-mongoose')
 const checkFormService = require('../../services/check-form.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const CheckForm = require('../../models/check-form')
-const checkFormMock = require('../mocks/check-form')
+// const checkFormMock = require('../mocks/check-form')
+const checkFormMock = {
+  id: 100,
+  name: 'MTC0100',
+  isDeleted: false,
+  formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11,"f2" : 2    }]'
+}
 const checkFormsMock = require('../mocks/check-forms')
 const checkWindowMock = require('../mocks/check-window-2')
 const checkWindowByForm = require('../mocks/check-window-by-form')
@@ -34,7 +40,7 @@ describe('check-form.service', () => {
 
   describe('#allocateCheckForm - Happy path', () => {
     beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(checkFormMock) })
+      service = setupService(function () { return Promise.resolve([checkFormMock]) })
     })
 
     it('should return a check-form', async (done) => {
@@ -55,7 +61,7 @@ describe('check-form.service', () => {
           const checkForm = await service.allocateCheckForm()
           const questions = service.prepareQuestionData(checkForm)
           expect(Array.isArray(questions)).toBeTruthy()
-          expect(questions.length).toBe(checkFormMock.questions.length)
+          expect(questions.length).toBe(2)
           questions.forEach((q) => {
             expect(q.hasOwnProperty('order')).toBeTruthy()
             expect(q.hasOwnProperty('factor1')).toBeTruthy()

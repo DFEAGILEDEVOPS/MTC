@@ -32,7 +32,7 @@ describe('pin-generation.service', () => {
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(checkDataService).expects('sqlGetNumberOfChecksStartedByPupil').resolves(0).twice()
+        sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
           '../../services/pupil.service': pupilDataService,
@@ -57,7 +57,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(checkDataService).expects('sqlGetNumberOfChecksStartedByPupil').resolves(0).twice()
+        sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../services/pin-generation.service', {
@@ -82,7 +82,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(checkDataService).expects('sqlGetNumberOfChecksStartedByPupil').resolves(3).twice()
+        sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(3).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../services/pin-generation.service', {
@@ -108,7 +108,7 @@ describe('pin-generation.service', () => {
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
         sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        sandbox.mock(checkDataService).expects('sqlGetNumberOfChecksStartedByPupil').resolves(0).twice()
+        sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
           '../../services/pupil.service': pupilDataService,
@@ -226,31 +226,6 @@ describe('pin-generation.service', () => {
       const number = pinGenerationService.generateCryptoRandomNumber(1, 6)
       expect(typeof number).toBe('number')
       expect(number >= 0 || number <= 6).toBeTruthy()
-    })
-    it('should approximately generate numbers with similar probability chance', () => {
-      const numbersArr = []
-      const length = 1000
-      const min = 1
-      const max = 5
-
-      for (let index = 0; index < length; index++) {
-        numbersArr.push(pinGenerationService.generateCryptoRandomNumber(min, max))
-      }
-
-      const count = {}
-      for (let num of numbersArr) {
-        count[num] = count[num] ? count[num] + 1 : 1
-      }
-
-      const expectedResult = numbersArr.length / ((max - min) + 1)
-      const errorPercentTolerance = 0.18 // 18%
-      const tolerance = expectedResult * errorPercentTolerance
-
-      for (let [number, freq] of Object.entries(count)) {
-        expect(number >= min && number <= max).toBeTruthy()
-        expect(freq).toBeGreaterThanOrEqual(expectedResult - tolerance)
-        expect(freq).toBeLessThanOrEqual(expectedResult + tolerance)
-      }
     })
   })
 })

@@ -5,6 +5,7 @@ const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
 const completedCheckDataService = {}
+const checkDataService = require('./check.data.service')
 
 /**
  * Query : find a completedCheck document that has not been marked
@@ -72,17 +73,10 @@ completedCheckDataService.find = async function (criteria) {
 
 /**
  * @param {string} checkCode
+ * @deprecated - Use checkDataService.sqlFindOneByCheckCode instead
  */
 completedCheckDataService.sqlFindOne = async (checkCode) => {
-  const sql = `SELECT * FROM [mtc_admin].[check] WHERE checkCode=@checkCode`
-  const params = [
-    {
-      name: 'checkCode',
-      value: checkCode,
-      type: TYPES.Int
-    }
-  ]
-  const result = await sqlService.query(sql, params)
+  const result = await checkDataService.sqlFindOneByCheckCode(checkCode)
   return R.head(result)
 }
 

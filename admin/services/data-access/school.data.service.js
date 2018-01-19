@@ -65,7 +65,7 @@ schoolDataService.sqlFindOneBySchoolPin = async function (pin) {
   const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
   const sql = `
       SELECT *    
-      FROM ${table}
+      FROM ${sqlService.adminSchema}.${table}
       WHERE pin = @pin
     `
   const rows = await sqlService.query(sql, [paramPin])
@@ -81,7 +81,7 @@ schoolDataService.sqlFindOneByDfeNumber = async function (dfeNumber) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
       SELECT *    
-      FROM ${table}
+      FROM ${sqlService.adminSchema}.${table}
       WHERE dfeNumber = @dfeNumber
     `
   const rows = await sqlService.query(sql, [paramDfeNumber])

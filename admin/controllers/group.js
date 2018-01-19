@@ -21,8 +21,6 @@ const groupPupilsPage = async (req, res, next) => {
     next(error)
   }
 
-  console.log('GROUPS', groups)
-
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/groups.ejs', {
     breadcrumbs: req.breadcrumbs(),

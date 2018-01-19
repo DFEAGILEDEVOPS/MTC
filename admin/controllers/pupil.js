@@ -1,16 +1,17 @@
 'use strict'
 
-const moment = require('moment')
-const R = require('ramda')
 const azureFileDataService = require('../services/data-access/azure-file.data.service')
 const dateService = require('../services/date.service')
 const fileValidator = require('../lib/validator/file-validator')
 const pupilAddService = require('../services/pupil-add-service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const pupilUploadService = require('../services/pupil-upload.service')
 const pupilValidator = require('../lib/validator/pupil-validator')
+const R = require('ramda')
 const schoolDataService = require('../services/data-access/school.data.service')
 const ValidationError = require('../lib/validation-error')
+const winston = require('winston')
 
 const controller = {}
 
@@ -35,7 +36,7 @@ controller.postAddPupil = async (req, res, next) => {
   try {
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     const pupilData = {
-      school: school.dfeNumber, // Change to `id` when saving to SQL Server
+      school_id: school.id,
       upn: req.body.upn,
       foreName: req.body.foreName,
       lastName: req.body.lastName,
@@ -43,18 +44,17 @@ controller.postAddPupil = async (req, res, next) => {
       gender: req.body.gender,
       'dob-month': req.body['dob-month'],
       'dob-day': req.body['dob-day'],
-      'dob-year': req.body['dob-year'],
-      pin: null,
-      pinExpired: false
+      'dob-year': req.body['dob-year']
     }
     const pupil = await pupilAddService.addPupil(pupilData)
     req.flash('info', '1 new pupil has been added')
-    const json = JSON.stringify([pupil._id])
-    res.redirect(`/school/pupil-register/lastName/true?hl=${json}`)
+    const highlight = JSON.stringify([pupil.urlSlug.toString()])
+    res.redirect(`/school/pupil-register/lastName/true?hl=${highlight}`)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return controller.getAddPupil(req, res, next, error)
     }
+    winston.warn(error)
     next(error)
   }
 }
@@ -129,20 +129,19 @@ controller.getErrorCSVFile = async (req, res) => {
 controller.getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   try {
-    const pupil = await pupilDataService.findOne({_id: req.params.id})
+    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id)
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
-    const school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
+    const school = await schoolDataService.sqlFindOneById(pupil.school_id)
     if (!school) {
       return next(new Error(`School ${pupil.school._id} not found`))
     }
-    const pupilData = R.omit('dob', pupil)
-    const dob = moment(pupil.dob)
+    const pupilData = R.omit('dateOfBirth', pupil)
     // expand single date field to 3
-    pupilData['dob-day'] = dob.format('D')
-    pupilData['dob-month'] = dob.format('M')
-    pupilData['dob-year'] = dob.format('YYYY')
+    pupilData['dob-day'] = pupil.dateOfBirth.format('D')
+    pupilData['dob-month'] = pupil.dateOfBirth.format('M')
+    pupilData['dob-year'] = pupil.dateOfBirth.format('YYYY')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/edit-pupil', {
       formData: pupilData,
@@ -162,13 +161,13 @@ controller.postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.findOne({_id: req.body._id})
+    pupil = await pupilDataService.sqlFindOneBySlug(req.body.slug)
     if (!pupil) {
-      return next(new Error(`Pupil ${req.body._id} not found`))
+      return next(new Error(`Pupil ${req.body.slug} not found`))
     }
-    school = await schoolDataService.sqlFindOneByDfeNumber(pupil.school._id)
+    school = await schoolDataService.sqlFindOneById(pupil.school_id)
     if (!school) {
-      return next(new Error(`School ${pupil.school._id} not found`))
+      return next(new Error(`School not found`))
     }
     validationError = await pupilValidator.validate(req.body)
   } catch (error) {
@@ -187,48 +186,40 @@ controller.postEditPupil = async (req, res, next) => {
 
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
 
-  pupil._id = req.body._id
-  pupil.foreName = req.body.foreName
-  pupil.middleNames = req.body.middleNames
-  pupil.lastName = req.body.lastName
-  pupil.upn = trimAndUppercase(R.pathOr('', ['body', 'upn'], req))
-  pupil.gender = req.body.gender
-  pupil.pin = pupil.pin || null
-  pupil.pinExpired = pupil.pinExpired || false
-  pupil.dob = dateService.createFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
-
+  const update = {
+    id: pupil.id,
+    foreName: req.body.foreName,
+    middleNames: req.body.middleNames,
+    lastName: req.body.lastName,
+    upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
+    gender: req.body.gender,
+    dateOfBirth: dateService.createFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
+  }
   try {
-    await pupilDataService.update({_id: pupil._id}, pupil)
+    await pupilDataService.sqlUpdate(update)
     req.flash('info', 'Changes to pupil details have been saved')
   } catch (error) {
-    // TODO: handle mongoose validation error?
     next(error)
   }
 
   // pupil saved - redirect and highlight the saved pupil
-  const pupilId = JSON.stringify([pupil._id])
-  res.redirect(`/school/pupil-register/lastName/true?hl=${pupilId}`)
+  const highlight = JSON.stringify([pupil.urlSlug.toString()])
+  res.redirect(`/school/pupil-register/lastName/true?hl=${highlight}`)
 }
 
+/**
+ * Print the pupil and school pins
+ */
 controller.getPrintPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
-  let pupilsFormatted
   try {
-    const {pupils, schoolData} = await pupilDataService.getPupils(req.user.School)
-    const pupilsData = pupils.map(e => e.toJSON()).filter(p => !!p.pin && !p.pinExpired)
-    pupilsFormatted = pupilsData.map(p => {
-      return {
-        fullName: `${p.foreName} ${p.lastName}`,
-        schoolPin: schoolData.schoolPin,
-        pupilPin: p.pin
-      }
+    const pupilData = await pupilService.getPrintPupils(req.user.School)
+    res.render('school/pupils-print', {
+      pupils: pupilData
     })
   } catch (error) {
     return next(error)
   }
-  res.render('school/pupils-print', {
-    pupils: pupilsFormatted
-  })
 }
 
 module.exports = controller
