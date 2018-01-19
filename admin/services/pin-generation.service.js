@@ -27,7 +27,7 @@ const chars = '23456789'
  * @returns {Array}
  */
 pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => {
-  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection.toUpperCase(), sortField)
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection, sortField)
   pupils = await Promise.all(pupils.map(async p => {
     const isValid = await pinGenerationService.isValid(p)
     if (isValid) {

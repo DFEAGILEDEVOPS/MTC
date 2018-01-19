@@ -136,20 +136,30 @@ pupilDataService.getStatusCodes = async () => {
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by dfeNumber sorted by pupil last name
+ * Fetch all pupils for a school by dfeNumber sorted by specific column
  * @param {number} dfeNumber
- * @param orderColumn
- * @param orderDirection
+ * @param sortDirection
+ * @param sortBy
  * @return {Promise<results>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, orderDirection = 'ASC', orderColumn = 'lastName') {
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirection, sortBy) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+  switch (sortBy) {
+    case 'lastName':
+      sortBy = 'lastName'
+      break
+    default:
+      // anything else should default to last name
+      sortBy = 'lastName'
+  }
   const sql = `
       SELECT 
         p.*    
-      FROM ${sqlService.adminSchema}.${table} p INNER JOIN school s ON s.id = p.school_id
+      FROM ${sqlService.adminSchema}.${table} p 
+      INNER JOIN school s ON s.id = p.school_id
       WHERE s.dfeNumber = @dfeNumber
-      ORDER BY ${orderColumn} ${orderDirection}      
+      ORDER BY ${sortBy} ${sortDirection}      
     `
   return sqlService.query(sql, [paramDfeNumber])
 }
