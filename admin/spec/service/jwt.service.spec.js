@@ -9,7 +9,7 @@ let jwtService
 let pupilDataServiceUpdateSpy
 const pupilId = 123
 
-describe('JWT service', () => {
+fdescribe('JWT service', () => {
   let pupil
 
   beforeEach(() => {
@@ -138,7 +138,7 @@ describe('JWT service', () => {
       })
     })
 
-    describe('and the pupil has had the key revoked', () => {
+    fdescribe('and the pupil has had the key revoked', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
         pupil.token = undefined
@@ -156,13 +156,14 @@ describe('JWT service', () => {
         })
       })
       it('then it throws an error', async (done) => {
-        const token = await jwtService.createToken(pupil)
+        const result = await jwtService.createToken(pupil)
+        pupil.token = undefined
         // Note we pass in pupil, and this object gets the secret saved in it
         // But we wasn't to mimic the the key not being found on the object
         // (as it is not a required property) so we get the sandbox to returned a cloned object that
         // definitely does not have a valid `jztSecret` property.
         try {
-          await jwtService.verify(token.token)
+          await jwtService.verify(result.token)
           expect('this').toBe('thrown')
         } catch (error) {
           expect(error.message).toBe('Error - missing secret')
