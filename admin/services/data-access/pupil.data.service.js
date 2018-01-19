@@ -33,6 +33,7 @@ pupilDataService.getPupils = async (schoolId) => {
 
 /**
  * Returns pupils filtered by school and sorted by field and direction (asc/desc)
+ * @deprecated
  * @param schoolId
  * @param sortingField
  * @param sortingDirection
@@ -46,6 +47,46 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
     .sort(sort)
     .lean()
     .exec()
+}
+
+/**
+ * Find all pupils for a dfeNumber and provide the reason field: null if not present
+ * @param {number} dfeNumber
+ * @param {string} sortField
+ * @param {string} sortDirection
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, sortField = 'name', sortDirection = 'ASC') => {
+  const safeSort = sortDirection.toUpperCase()
+  if (safeSort !== 'ASC' && safeSort !== 'DESC') {
+    throw new Error(`Invalid sortDirection: ${safeSort}`)
+  }
+
+  // Whitelist the sortFields so we can be sure of the SQL we are generating.
+  const allowedSortFields = ['name', 'reason']
+  if (R.indexOf(sortField, allowedSortFields) === -1) {
+    throw new Error(`Unsupported value for sortField: ${sortField}`)
+  }
+  let sqlSort
+  if (sortField === 'name') {
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
+  } else if (sortField === 'reason') {
+    sqlSort = `ac.reason ${sortDirection}`
+  }
+  const params = [
+    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  ]
+  // The order by clause is to sort nulls last
+  const sql = `
+  SELECT p.*, ac.reason
+  FROM ${sqlService.adminSchema}.${table} p 
+    INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
+  WHERE s.dfeNumber = @dfeNumber
+  ORDER BY CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ${sqlSort}
+  `
+  return sqlService.query(sql, params)
 }
 
 /**
@@ -118,6 +159,7 @@ pupilDataService.save = async function (data) {
 
 /**
  * Unset the attendance code for a single pupil
+ * @deprecated use attendanceCodeDataService.unsetAttendanceCode instead
  * @param id
  * @return {Promise<*>}
  */
@@ -165,6 +207,22 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
       WHERE urlSlug = @urlSlug    
     `
   const results = await sqlService.query(sql, [param])
+  return R.head(results)
+}
+
+pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, dfeNumber) {
+  const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
+  const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+
+  const sql = `
+      SELECT TOP 1 
+      p.*  
+      FROM ${sqlService.adminSchema}.${table} p
+      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
+      WHERE p.urlSlug = @urlSlug  
+      AND   s.dfeNumber = @dfeNumber
+    `
+  const results = await sqlService.query(sql, [paramSlug, paramDfeNumber])
   return R.head(results)
 }
 
@@ -257,6 +315,25 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND p.pinExpiresAt > GETUTCDATE()
   `
   return sqlService.query(sql, [paramDfeNumber])
+}
+
+/**
+ * Find pupils using urlSlugs
+ * @param {Array|string} slugs
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
+  if (!Array.isArray(slugs) && slugs.length > 0) {
+    throw new Error('No slugs provided')
+  }
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.${table}
+  `
+  const {params, paramIdentifiers} = sqlService.whereClauseHelper(slugs, TYPES.UniqueIdentifier)
+  const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')'
+  const sql = [select, whereClause].join(' ')
+  return sqlService.query(sql, params)
 }
 
 module.exports = pupilDataService
