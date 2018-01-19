@@ -24,8 +24,8 @@ controller.getAddPupil = async (req, res, next, error = null) => {
   }
 
   try {
-    req.breadcrumbs('Add pupil', '/school/pupil/add')
-    req.breadcrumbs('Pupil Register')
+    req.breadcrumbs('Pupil Register', req.header('referrer'))
+    req.breadcrumbs('Add pupil')
     res.render('school/add-pupil', {
       school: school,
       formData: req.body,
