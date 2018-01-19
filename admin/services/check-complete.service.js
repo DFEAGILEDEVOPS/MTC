@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const ObjectId = require('mongoose').Types.ObjectId
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const jwtService = require('../services/jwt.service')
@@ -18,7 +17,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   const pupil = await pupilDataService.sqlFindOneById(pupilId) // findOne({_id: ObjectId(decoded.sub)})
   // If pin expiration request failed previously ensure it is updated now
   if (pupil && pupil.pin && !pupil.isTestAccount) {
-    await pupilDataService.sqlUpdate({id: pupil.id}, { pinExpiresAt: moment.utc(), pin: null }) // .update({_id: pupil._id}, { pinExpiresAt: moment.utc(), pin: null })
+    await pupilDataService.sqlUpdate({ id: pupil.id, pinExpiresAt: moment.utc(), pin: null }) // .update({_id: pupil._id}, { pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request
   completedCheck.receivedByServerAt = moment.utc()

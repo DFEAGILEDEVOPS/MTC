@@ -1,14 +1,13 @@
 'use strict'
 /* global beforeEach, describe, it, expect, jasmine */
 
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+const moment = require('moment')
 const jwt = require('jsonwebtoken')
 const proxyquire = require('proxyquire')
-const ObjectId = require('mongoose').Types.ObjectId
 
 let jwtService
 let pupilDataServiceUpdateSpy
+const pupilId = 123
 
 describe('JWT service', () => {
   let pupil
@@ -16,9 +15,9 @@ describe('JWT service', () => {
   beforeEach(() => {
     pupil = {
       id: 1,
-      jwtSecret: undefined,
+      token: undefined,
       // required pupil fields
-      dob: new Date(),
+      dob: moment(),
       gender: 'M',
       school: 9991999,
       lastName: 'Test',
@@ -101,7 +100,7 @@ describe('JWT service', () => {
       it('then it is able to decode a valid token', async (done) => {
         const token = await jwtService.createToken(pupil)
         try {
-          pupil.jwtSecret = token.jwtSecret
+          pupil.token = token.jwtSecret
           const isVerified = await jwtService.verify(token.token)
           expect(isVerified).toBe(true)
         } catch (error) {
@@ -142,7 +141,7 @@ describe('JWT service', () => {
     describe('and the pupil has had the key revoked', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupil.jwtSecret = undefined
+        pupil.token = undefined
         pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
           return Promise.resolve()
         })
@@ -174,7 +173,7 @@ describe('JWT service', () => {
     describe('and the pupil has an incorrect jwtSecret', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupil.jwtSecret = 'incorrect secret'
+        pupil.token = 'incorrect secret'
         pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
           return Promise.resolve()
         })
@@ -222,12 +221,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000) - (60 * 60),         // Expires an hour ago
         nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)
@@ -242,12 +241,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000) - 1,                 // Expires 1s ago
         nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)
@@ -262,12 +261,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
         nbf: Math.floor(Date.now() / 1000) + 60                 // Not before: becomes active in 60s
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)
@@ -282,12 +281,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
         nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)
@@ -302,12 +301,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000) - 1,                 // Expired 1s ago
         nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)
@@ -322,12 +321,12 @@ describe('JWT service', () => {
       // Setup
       const payload = {
         iss: 'MTC Admin',                                       // Issuer
-        sub: new ObjectId(),                                    // Subject
+        sub: pupilId,                                    // Subject
         exp: Math.floor(Date.now() / 1000),                     // Expired now
         nbf: Math.floor(Date.now() / 1000)                      // Not before: becomes active mow
       }
-      pupil.jwtSecret = 'testing123'
-      const token = jwt.sign(payload, pupil.jwtSecret)
+      pupil.token = 'testing123'
+      const token = jwt.sign(payload, pupil.token)
       // Test
       try {
         await jwtService.verify(token)

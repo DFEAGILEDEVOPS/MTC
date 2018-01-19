@@ -4,7 +4,6 @@ const R = require('ramda')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
-const ObjectId = require('mongoose').Types.ObjectId
 
 const pupilDataService = require('./data-access/pupil.data.service')
 
