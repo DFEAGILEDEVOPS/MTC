@@ -39,6 +39,10 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
   return sqlService.modify(sql, params)
 }
 
+/**
+ * @deprecated use sqlFindOne
+ * @param options
+ */
 settingDataService.findOne = async (options) => {
   return Setting.findOne(options).lean().exec()
 }
