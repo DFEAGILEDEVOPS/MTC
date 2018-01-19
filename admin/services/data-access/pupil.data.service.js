@@ -281,4 +281,32 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   return sqlService.query(sql, [paramDfeNumber])
 }
 
+/**
+ * Find pupils by ids
+ * @param ids
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindByIds = async (ids) => {
+  let sql = `
+      SELECT *    
+      FROM ${sqlService.adminSchema}.${table}
+      `
+  let whereClause = ' WHERE id IN ('
+  const params = []
+  for (let index = 0; index < ids.length; index++) {
+    whereClause = whereClause + `@p${index}`
+    if (index < ids.length - 1) {
+      whereClause += ','
+    }
+    params.push({
+      name: `p${index}`,
+      value: ids[index],
+      type: TYPES.Int
+    })
+  }
+  whereClause = `${whereClause})`
+  sql = sql + whereClause + ' ORDER BY lastName'
+  return sqlService.query(sql, params)
+}
+
 module.exports = pupilDataService

@@ -66,18 +66,9 @@ pinGenerationService.isValid = async (p) => {
  * @returns {Array}
  */
 pinGenerationService.generatePupilPins = async (pupilsList) => {
-  const data = Object.values(pupilsList || null)
-  let pupils = []
-  // fetch pupils
-  const ids = data.map(id => id)
-  for (let index = 0; index < ids.length; index++) {
-    const id = ids[ index ]
-    const pupil = await pupilDataService.sqlFindOneById(id)
-    pupils.push(pupil)
-  }
-  // pupils = await pupilDataService.find({ _id: { $in: ids } })
-  // Apply the updates to the pupil object(s)
-  pupils.forEach(pupil => {
+  const ids = Object.values(pupilsList || null)
+  const pupils = await pupilDataService.sqlFindByIds(ids)
+  pupils.forEach(async pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
       pupil.pinExpiresAt = fourPmToday()
