@@ -230,4 +230,8 @@ groupDataService.sqlGetPupils = async (schoolId, groupId) => {
   return sqlService.query(sql, params)
 }
 
+groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
+  return sqlService.update('[group]', { id: groupId, isDeleted: 1 })
+}
+
 module.exports = groupDataService
