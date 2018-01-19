@@ -19,7 +19,7 @@ const checkStartService = {
 
     // Allocate a checkForm to a pupil, or will throw an error
     const checkForm = await checkFormService.allocateCheckForm()
-    const checkWindow = await checkWindowDataService.fetchCurrentCheckWindow()
+    const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
 
     // Generate a new CheckCode for this unique check
     const checkCode = uuidv4()
