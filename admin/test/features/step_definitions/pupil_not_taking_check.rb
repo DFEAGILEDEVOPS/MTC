@@ -172,7 +172,7 @@ end
 
 And(/^I should see the updated pupil on the hub page$/) do
   expect(pupils_not_taking_check_page).to have_flash_message
-  expect(pupils_not_taking_check_page.flash_message.text).to eql '1 pupil reasons updated'
+  expect(pupils_not_taking_check_page.flash_message.text).to eql '1 reason updated'
   hightlighted_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.has_highlight?}
   expect(hightlighted_row.text).to include("#{@pupil['lastName']}, #{@pupil[:foreName]}")
   expect(hightlighted_row.text).to include(@attendance_code['reason'])
@@ -200,7 +200,7 @@ end
 
 And(/^I should see the updated pupils on the hub page$/) do
   expect(pupils_not_taking_check_page).to have_flash_message
-  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} pupil reasons updated"
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} reasons updated"
   hightlighted_rows = pupils_not_taking_check_page.pupil_list.rows.select {|row| row.has_highlight?}
   updated_names = hightlighted_rows.map {|row| row.text.split[0] + ' ' + row.text.split[1]}
   expect(updated_names).to eql @pupil_names

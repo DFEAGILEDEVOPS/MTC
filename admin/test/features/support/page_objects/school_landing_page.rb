@@ -4,23 +4,29 @@ class SchoolLandingPage < SitePrism::Page
   element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
   element :heading, '.heading-xlarge'
-  element :instructions, 'p.lede', text: 'To start the check you will need to generate PINs for each individual pupil.'
   element :pupil_register, 'a[href="/school/pupil-register/lastName/true"]'
+  element :pupil_register_text, 'p', text: 'Add, edit and review pupils'
   element :group_pupils, 'a[href="/school/group-pupils'
+  element :group_pupils_text, 'p', text: 'Create groups'
   element :pupils_not_taking_check, 'a[href="/school/pupils-not-taking-check"]'
+  element :pupils_not_taking_check_text, 'p', text: 'Enter a reason for pupils who were unable to take the check'
+  element :access_arrangements, 'a', text: 'Access arrangements'
+  element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-pins-overview"]'
+  element :generate_pupil_pin_text, 'p', text: 'Generate pupil Personal Identification Numbers (PINs) and view school password'
   element :restarts, 'a[href="/restart/overview"]'
-  element :manage_pupil_instructions, 'p', text: 'Generate and print pupil Personal Identification Numbers (PINs) and view existing PINs'
-  element :submit_attendance_register, 'a', text: 'Submit attendance register'
-  element :teacher_name, '.signed-in-as'
-  element :submit_attendance_register_instructions, '.list li:nth-child(2) p', text: "Review your attendance register and submit the headteacher’s declaration form"
+  element :restarts_text, 'p', text: 'Select a pupil to restart because of an interrupted check'
+  element :hdf, 'a', text: "Headteacher's declaration form"
+  element :hdf_text, 'p', text: "Complete headteacher's declaration form once pupil register has been submitted"
   element :results, 'a[href="/school/results"]', text: 'Results'
-  element :results_instructions, 'p', text: "View a summary and breakdown of pupil results"
+  element :results_text, 'p', text: "View pupil results"
+
+  element :teacher_name, '.signed-in-as'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
 
-  element :before_you_start, '#content h3'
+  element :related, '#content h3'
   element :guidance, 'aside.support-column nav li a', text: 'Guidance'
 
 end
