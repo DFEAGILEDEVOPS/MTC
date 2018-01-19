@@ -28,7 +28,7 @@ const jwtService = {
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin',                                       // Issuer
-      sub: pupil._id,                                         // Subject
+      sub: pupil.id,                                         // Subject
       exp: Math.floor(Date.now() / 1000) + (60 * 60),         // Expiry
       nbf: Math.floor(Date.now() / 1000),                     // Not before
       jwi: jwtId                                              // JWT token ID

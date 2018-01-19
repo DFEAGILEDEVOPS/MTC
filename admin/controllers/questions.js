@@ -41,7 +41,7 @@ const getQuestions = async (req, res) => {
 
   // start the check
   try {
-    const startCheckResponse = await checkStartService.startCheck(data.pupil._id)
+    const startCheckResponse = await checkStartService.startCheck(data.pupil.id)
     questions = checkFormService.prepareQuestionData(startCheckResponse.checkForm)
     pupilData.checkCode = startCheckResponse.checkCode
   } catch (error) {
