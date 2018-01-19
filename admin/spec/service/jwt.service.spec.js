@@ -15,7 +15,7 @@ describe('JWT service', () => {
 
   beforeEach(() => {
     pupil = {
-      _id: new mongoose.Types.ObjectId(),
+      id: 1,
       jwtSecret: undefined,
       // required pupil fields
       dob: new Date(),
@@ -31,7 +31,7 @@ describe('JWT service', () => {
       pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
       jwtService = proxyquire('../../services/jwt.service', {
         './data-access/pupil.data.service': {
-          update: pupilDataServiceUpdateSpy
+          sqlUpdate: pupilDataServiceUpdateSpy
         }
       })
     })
@@ -46,6 +46,7 @@ describe('JWT service', () => {
     it('the token details look correct', async (done) => {
       const token = await jwtService.createToken(pupil)
       const decoded = jwt.verify(token.token, token.jwtSecret)
+      console.log(decoded)
       expect(decoded).toBeTruthy()
       const expiry = Math.abs(decoded.exp - Math.round(Date.now() / 1000))
       expect(expiry - 3600 <= 1).toBe(true) // expect the expiry date to be 3600 seconds +- 1 second
@@ -92,8 +93,8 @@ describe('JWT service', () => {
         pupilDataServiceFindOneSpy = jasmine.createSpy().and.callFake(function () { return Promise.resolve(pupil) })
         jwtService = proxyquire('../../services/jwt.service', {
           './data-access/pupil.data.service': {
-            update: pupilDataServiceUpdateSpy,
-            findOne: pupilDataServiceFindOneSpy
+            sqlUpdate: pupilDataServiceUpdateSpy,
+            sqlFindOneById: pupilDataServiceFindOneSpy
           }
         })
       })
@@ -122,8 +123,8 @@ describe('JWT service', () => {
         })
         jwtService = proxyquire('../../services/jwt.service', {
           './data-access/pupil.data.service': {
-            update: pupilDataServiceUpdateSpy,
-            findOne: pupilDataServiceFindOneSpy
+            sqlUpdate: pupilDataServiceUpdateSpy,
+            sqlFindOneById: pupilDataServiceFindOneSpy
           }
         })
       })
@@ -151,8 +152,8 @@ describe('JWT service', () => {
         })
         jwtService = proxyquire('../../services/jwt.service', {
           './data-access/pupil.data.service': {
-            update: pupilDataServiceUpdateSpy,
-            findOne: pupilDataServiceFindOneSpy
+            sqlUpdate: pupilDataServiceUpdateSpy,
+            sqlFindOneById: pupilDataServiceFindOneSpy
           }
         })
       })
@@ -183,8 +184,8 @@ describe('JWT service', () => {
         })
         jwtService = proxyquire('../../services/jwt.service', {
           './data-access/pupil.data.service': {
-            update: pupilDataServiceUpdateSpy,
-            findOne: pupilDataServiceFindOneSpy
+            sqlUpdate: pupilDataServiceUpdateSpy,
+            sqlFindOneById: pupilDataServiceFindOneSpy
           }
         })
       })
@@ -213,8 +214,8 @@ describe('JWT service', () => {
       })
       jwtService = proxyquire('../../services/jwt.service', {
         './data-access/pupil.data.service': {
-          update: pupilDataServiceUpdateSpy,
-          findOne: pupilDataServiceFindOneSpy
+          sqlUpdate: pupilDataServiceUpdateSpy,
+          sqlFindOneById: pupilDataServiceFindOneSpy
         }
       })
     })
