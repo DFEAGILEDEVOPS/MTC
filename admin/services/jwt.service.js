@@ -58,12 +58,12 @@ const jwtService = {
       throw new Error('Subject not found')
     }
 
-    if (!pupil.jwtSecret) {
+    if (!pupil.token) {
       throw new Error('Error - missing secret')
     }
 
     try {
-      await jwt.verify(token, pupil.jwtSecret)
+      await jwt.verify(token, pupil.token)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }

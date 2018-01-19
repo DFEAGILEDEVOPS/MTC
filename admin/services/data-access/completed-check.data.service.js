@@ -40,15 +40,30 @@ completedCheckDataService.sqlCreate = async function (data) {
 
 /**
  * Updates check record with results
- * @param data
+ * @param checkCode
+ * @param completedCheck the entire JSON payload submitted by the pupil
  * @return {Promise}
  */
-completedCheckDataService.sqlAddResult = async function (data) {
-  const checkDataParam = {
-    'id': data.data.pupil.checkCode,
-    'data': data
+completedCheckDataService.sqlAddResult = async function (checkCode, completedCheck) {
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  const sql = `SELECT id FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`
+  let result = await sqlService.query(sql, params)
+  result = R.head(result)
+  if (!result || !result.id) {
+    throw new Error(`Could not find check with checkCode:${checkCode}`)
   }
-  return sqlService.update('[check]', checkDataParam)
+  const checkId = result.id
+  const checkDataParams = {
+    'id': checkId,
+    'data': JSON.stringify(completedCheck)
+  }
+  return sqlService.update('[check]', checkDataParams)
 }
 
 /**
