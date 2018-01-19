@@ -46,12 +46,11 @@ describe('JWT service', () => {
     it('the token details look correct', async (done) => {
       const token = await jwtService.createToken(pupil)
       const decoded = jwt.verify(token.token, token.jwtSecret)
-      console.log(decoded)
       expect(decoded).toBeTruthy()
       const expiry = Math.abs(decoded.exp - Math.round(Date.now() / 1000))
       expect(expiry - 3600 <= 1).toBe(true) // expect the expiry date to be 3600 seconds +- 1 second
       expect(decoded.sub).toBeTruthy()
-      expect(decoded.sub.length).toBe(24)
+      expect(decoded.sub).toBe(1)
       done()
     })
 
