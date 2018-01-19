@@ -122,5 +122,4 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
-
 end

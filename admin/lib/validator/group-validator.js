@@ -29,8 +29,8 @@ module.exports.validate = async (groupData, oldName) => {
   }
 
   // Don't query the DB if at this point group name is not valid.
-  if ((oldName !== groupData.name.trim() || !oldName) && !isValid) {
-    const group = await groupDataService.getGroup({'name': { '$regex': new RegExp(groupData.name.trim(), 'ig') }, 'isDeleted': false })
+  if (((oldName && oldName.toLowerCase() !== groupData.name.trim().toLowerCase()) || !oldName) && !isValid) {
+    const group = await groupDataService.getGroup({ 'name': { '$regex': new RegExp(groupData.name.trim(), 'ig') }, 'isDeleted': false })
     if (group !== null) {
       validationError.addError('name', groupData.name.trim() + groupErrorMessages.nameAlreadyExists)
     }

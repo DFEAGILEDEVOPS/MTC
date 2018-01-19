@@ -76,17 +76,17 @@ end
 
 Then(/^it should be removed from the list of check form$/) do
   expect(upload_and_view_forms_page.available_checks.rows.find {|chk| chk.text.include? @check_name}).to be_nil
-  expect(MongoDbHelper.check_form_details(@check_name)['isDeleted']).to be_truthy
+  expect(SqlDbHelper.check_form_details(@check_name)['isDeleted']).to be_truthy
 end
 
 Then(/^the check form should not be removed$/) do
   expect(upload_and_view_forms_page.available_checks.rows.find {|chk| chk.text.include? @check_name}).to_not be_nil
-  expect(MongoDbHelper.check_form_details(@check_name)['isDeleted']).to be_falsey
+  expect(SqlDbHelper.check_form_details(@check_name)['isDeleted']).to be_falsey
 end
 
 Then(/^I should see on the check forms are displayed in descending order of form name$/) do
-  check_forms = upload_and_view_forms_page.available_checks.rows.map {|x| x.title.text}
-  sorted_check_forms = upload_and_view_forms_page.available_checks.rows.map {|x| x.title.text}.sort.reverse
+  check_forms = upload_and_view_forms_page.available_checks.rows.map {|x| x.title.text.downcase}
+  sorted_check_forms = upload_and_view_forms_page.available_checks.rows.map {|x| x.title.text.downcase}.sort.reverse
   expect(sorted_check_forms.eql?(check_forms)).to be_truthy, "Forms are not sorted"
 end
 

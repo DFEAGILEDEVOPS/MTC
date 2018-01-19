@@ -117,120 +117,26 @@ groupDataService.update = async function (id, data) {
 }
 
 /**
- * Update group.
- * @param id
- * @param name
- * @returns {Promise}
+ * @deprecated use sqlMarkGroupAsDeleted
+ * @param {*} id 
  */
-groupDataService.sqlUpdate = async (id, name) => {
+groupDataService.delete = async function (id) {
+  return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
+}
+
+/**
+ * soft deletes a group
+ * @param {number} groupId the id of the group to mark as deleted
+ */
+groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   const params = [
     {
-      name: 'id',
-      value: id,
-      type: TYPES.Int
-    },
-    {
-      name: 'name',
-      value: name,
-      type: TYPES.NVarChar
-    },
-    {
-      name: 'updatedAt',
-      value: moment.utc(),
-      type: TYPES.DateTimeOffset
-    }
-  ]
-  return sqlService.modify(
-    `UPDATE ${sqlService.adminSchema}.[group] 
-    SET name=@name, updatedAt=@updatedAt 
-    WHERE [id]=@id`,
-    params)
-}
-
-/**
- * Update pupils assigned to group.
- * @param groupId
- * @param pupilIds
- * @returns {Promise<void>}
- */
-groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
-  // First, delete all pupils for the selected groupId
-  const sqlDelete = `DELETE FROM ${sqlService.adminSchema}.[pupilGroup] 
-    WHERE group_id=@groupId`
-
-  const paramsDel = [
-    {
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
     }
   ]
-  await sqlService.query(sqlDelete, paramsDel)
-
-  // Next, insert passed pupils
-  if (pupilIds.length > 0) {
-    let sqlInsert = ''
-    let paramsInsert
-
-    pupilIds.forEach(p => {
-      if (p) {
-        paramsInsert = [
-          {
-            name: 'groupId',
-            value: groupId,
-            type: TYPES.Int
-          },
-          {
-            name: 'pupilId',
-            value: p,
-            type: TYPES.Int
-          }
-        ]
-
-        sqlInsert += `INSERT INTO ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id) VALUES (@groupId, @pupilId)`
-      }
-    })
-
-    await sqlService.query(sqlInsert, paramsInsert)
-  }
-}
-
-/**
- * Get pupils filtered by schoolId and/or groupId.
- * and grouped by group_id.
- * @param schoolId
- * @param groupId
- * @returns {Promise<*>}
- */
-groupDataService.sqlGetPupils = async (schoolId, groupId) => {
-  let params = [
-    {
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    }
-  ]
-
-  let sql = `SELECT p.[id], p.[foreName], p.[middleNames], p.[lastName], g.[group_id]
-    FROM [mtc_admin].[pupil] p 
-    LEFT JOIN [mtc_admin].[pupilGroup] g 
-      ON p.id = g.pupil_id 
-    WHERE p.school_id=@schoolId 
-    AND g.group_id IS NULL`
-
-  if (groupId) {
-    params.push({
-      name: 'groupId',
-      value: groupId,
-      type: TYPES.Int
-    })
-    sql += ` OR g.group_id=@groupId`
-  }
-
-  return sqlService.query(sql, params)
-}
-
-groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
+  await sqlService.modify(`DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId`, params)
   return sqlService.update('[group]', { id: groupId, isDeleted: 1 })
 }
 

@@ -129,3 +129,15 @@ Feature: Generate Pupil PINs
   Scenario: Create Custom download link is displayed on Generated Pin Page
     Given I have generated a pin for a pupil
     Then I should see link to create custom download
+
+  Scenario: School password should consist of 8 characters
+    Given I have generated a pin for a pupil
+    Then the school password should consist of 8 characters
+
+  Scenario: School password should not contain charachter q
+    Given I have generated a pin for a pupil
+    Then the school password should not contain charachter 'q'
+
+  Scenario: School Password must be generated from the specified pool of characters
+    Given I have generated a pin for a pupil
+    Then school password should be generated from the specified pool of characters

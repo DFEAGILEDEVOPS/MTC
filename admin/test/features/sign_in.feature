@@ -21,3 +21,8 @@ Feature:
     Given I have entered invalid credentials
     When I sign in
     Then I should be taken to the failed login page
+
+  Scenario: Contact page can be accessed via the footer
+    Given I am on the sign in page
+    When I decide to get in contact
+    Then I should be taken to the contact page for mtc
