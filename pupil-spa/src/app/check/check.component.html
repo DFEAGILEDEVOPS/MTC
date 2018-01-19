@@ -1,6 +1,3 @@
-<h1 *ngIf="isWarmUp" class="page-header heading-small left">
-    <span class="warm-up-questions-label">Practice questions</span>
-</h1>
 <div [ngSwitch]="viewState">
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
                       (clickEvent)="warmupIntroClickHandler()">
