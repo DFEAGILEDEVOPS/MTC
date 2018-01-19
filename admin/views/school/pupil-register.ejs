@@ -1,5 +1,3 @@
-<% console.log(highlight) %>
-
 <div class="grid-row">
     <div class="column-one-half">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
@@ -46,12 +44,12 @@
             <% pupils.forEach((p) => { %>
                 <tr>
                     <td class="pupil-name-container">
-                        <% if (highlight && highlight.has(p._id.toString())) { %>
+                        <% if (highlight && highlight.has(p.urlSlug.toString())) { %>
                         <div class="highlight"></div>
                         <% } %>
-                        <div class="pupil-name <% if (highlight && highlight.has(p._id.toString())) { %>indent<% } %>%>">
+                        <div class="pupil-name <% if (highlight && highlight.has(p.urlSlug.toString())) { %>indent<% } %>%>">
                             <div class="truncate">
-                                <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
+                                <a class="bold-small" href="/school/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.lastName}, ${p.foreName}` %>
                                 </a>
                             </div>

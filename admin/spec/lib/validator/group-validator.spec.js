@@ -7,7 +7,6 @@ const sinon = require('sinon')
 const groupValidator = require('../../../lib/validator/group-validator')
 const groupDataService = require('../../../services/data-access/group.data.service')
 const groupErrorMessages = require('../../../lib/errors/group').group
-const groupMock = require('../../mocks/group')
 
 describe('groupValidation', function () {
   let sandbox

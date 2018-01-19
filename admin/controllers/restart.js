@@ -82,7 +82,7 @@ controller.postDeleteRestart = async (req, res, next) => {
   let deleted
   const pupilId = req.body && req.body.pupilId
   try {
-    deleted = await restartService.markDeleted(pupilId)
+    deleted = await restartService.markDeleted(pupilId, req.user.id)
   } catch (error) {
     return next(error)
   }

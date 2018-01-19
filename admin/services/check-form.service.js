@@ -6,6 +6,7 @@ const moment = require('moment')
 const config = require('../config')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const checkWindowService = require('../services/check-window.service')
+const R = require('ramda')
 
 const checkFormService = {
   /**
@@ -17,11 +18,11 @@ const checkFormService = {
     // Until we determine the logic behind fetching the appropriate check form
     // the pupil will receive the first.
     // UPDATE: There is a PBI to ensure randomness. This work is pending.
-    const checkForm = await checkFormDataService.sqlFindActiveForm()
-    if (!checkForm) {
+    const results = await checkFormDataService.sqlFindActiveForm()
+    if (!results) {
       throw new Error('CheckForm not found')
     }
-    return checkForm
+    return R.head(results)
   },
 
   /**
@@ -50,7 +51,7 @@ const checkFormService = {
    * @param checkForm
    */
   prepareQuestionData: function (checkForm) {
-    const {questions} = checkForm
+    const questions = JSON.parse(checkForm.formData)
     return questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
   },
 
@@ -137,7 +138,7 @@ const checkFormService = {
       for (let index = 0; index < formData.length; index++) {
         const form = formData[index]
         form.removeLink = true
-        const checkWindows = await checkWindowService.getCheckWindowsAssignedToFormsV2([form.id])
+        const checkWindows = await checkWindowService.getCheckWindowsAssignedToForms([form.id])
         if (checkWindows.length > 0) {
           form.checkWindows = checkWindows.map(cw => cw.name)
           form.removeLink = moment(form.checkStartDate).isAfter(moment())
@@ -200,7 +201,7 @@ const checkFormService = {
     // remove assignments from windows
     await checkFormDataService.sqlRemoveAllWindowAssignments(formId)
     // mark as deleted
-    return checkFormDataService.sqlDeleteForm(formId)
+    return checkFormDataService.sqlMarkFormAsDeleted(formId)
   },
 
   /**

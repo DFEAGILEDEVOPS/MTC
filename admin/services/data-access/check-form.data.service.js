@@ -270,20 +270,15 @@ const checkFormDataService = {
     return result.value > 0
   },
 
-  sqlDeleteForm: async (formId) => {
+  sqlMarkFormAsDeleted: async (formId) => {
     const params = [
       {
         name: 'formId',
         value: formId,
         type: TYPES.Int
-      },
-      {
-        name: 'updatedAt',
-        value: moment.utc(),
-        type: TYPES.DateTimeOffset
       }
     ]
-    return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[checkForm] SET isDeleted=1, updatedAt=@updatedAt WHERE [id]=@formId`, params)
+    return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[checkForm] SET isDeleted=1 WHERE [id]=@formId`, params)
   }
 }
 
