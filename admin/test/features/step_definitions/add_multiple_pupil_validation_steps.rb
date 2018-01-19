@@ -243,3 +243,8 @@ end
 Then(/^I can see the validation error for wrong 13th char for UPN for multiple pupil upload$/) do
   expect(@hashed_data[0][:errors].to_s.include?('UPN invalid (character 13 not a recognised value)')).to be_truthy, "Expected: 'UPN invalid (character 13 not a recognised value)'... But Got: #{@hashed_data[0][:errors].to_s}"
 end
+
+
+Then(/^the upload button should be disabled$/) do
+  expect(add_multiple_pupil_page.save).to be_disabled
+end
