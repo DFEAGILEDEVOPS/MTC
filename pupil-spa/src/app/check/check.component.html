@@ -1,3 +1,4 @@
+<div *ngIf="isWarmUp" class="practice-box">practice</div>
 <div [ngSwitch]="viewState">
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
                       (clickEvent)="warmupIntroClickHandler()">
