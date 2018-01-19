@@ -18,3 +18,5 @@ CREATE TABLE [mtc_admin].[pupilGroup]
     ALLOW_PAGE_LOCKS = ON
   )
 )
+
+--`GRANT DELETE ON [mtc_admin].[checkFormWindow] TO ${config.Sql.Application.Username}`

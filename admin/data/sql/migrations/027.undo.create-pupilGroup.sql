@@ -1,1 +1,1 @@
-DROP VIEW [mtc_admin].[pupilGroup]
+DROP TABLE [mtc_admin].[pupilGroup]
