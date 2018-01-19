@@ -145,8 +145,8 @@ legend {
 .back-link:active,
 .back-link:hover,
 .back-link:visited {
-  border-bottom: 1px solid #000000;
-  color: #000000;
+  border-bottom: 1px solid $black;
+  color: $black;
   display: inline-block;
   font-size: 15px;
   margin-top: 15px;
@@ -157,7 +157,7 @@ legend {
 
   &:before {
     border-top: 5px solid transparent;
-    border-right: 6px solid #0b0c0c;
+    border-right: 6px solid $black;
     border-bottom: 5px solid transparent;
     content: '';
     display: block;
