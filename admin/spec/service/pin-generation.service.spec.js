@@ -141,9 +141,9 @@ describe('pin-generation.service', () => {
         pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         pupil2 = Object.assign({}, pupilMock)
-        pupil2.id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '2'
         pupil2.pin = ''
-        sandbox.mock(pupilDataService).expects('sqlFindOneById').twice().resolves(pupil1)
+        sandbox.mock(pupilDataService).expects('sqlFindByIds').resolves([pupil1, pupil2])
         proxyquire('../../services/pin-generation.service', {
           '../../services/pupil.service': pupilDataService
         })
@@ -169,7 +169,7 @@ describe('pin-generation.service', () => {
         pupil2.pin = 'fdsgs'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
         sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'months').valueOf())
-        sandbox.mock(pupilDataService).expects('sqlFindOneById').twice().resolves(pupil1)
+        sandbox.mock(pupilDataService).expects('sqlFindByIds').resolves([pupil1, pupil2])
         proxyquire('../../services/pin-generation.service', {
           '../../services/pupil.service': pupilDataService
         })
