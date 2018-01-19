@@ -6,6 +6,7 @@ const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const moment = require('moment')
 const R = require('ramda')
+const winston = require('winston')
 
 /**
  * Get groups filtered by query.
@@ -121,12 +122,14 @@ groupDataService.update = async function (id, data) {
  * @param {*} id 
  */
 groupDataService.delete = async function (id) {
+  winston.warn('groupDataService.delete is deprecated.  use sqlMarkGroupAsDeleted')
   return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
 }
 
 /**
  * soft deletes a group
  * @param {number} groupId the id of the group to mark as deleted
+ * @returns {Promise<*>}
  */
 groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   const params = [
