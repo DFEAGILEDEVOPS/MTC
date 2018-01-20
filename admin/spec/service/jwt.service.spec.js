@@ -9,7 +9,7 @@ let jwtService
 let pupilDataServiceUpdateSpy
 const pupilId = 123
 
-fdescribe('JWT service', () => {
+describe('JWT service', () => {
   let pupil
 
   beforeEach(() => {
@@ -138,10 +138,9 @@ fdescribe('JWT service', () => {
       })
     })
 
-    fdescribe('and the pupil has had the key revoked', () => {
+    describe('and the pupil has had the key revoked', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupil.token = undefined
         pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
           return Promise.resolve()
         })
@@ -174,7 +173,6 @@ fdescribe('JWT service', () => {
     describe('and the pupil has an incorrect jwtSecret', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
-        pupil.token = 'incorrect secret'
         pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () {
           return Promise.resolve()
         })
@@ -190,6 +188,7 @@ fdescribe('JWT service', () => {
       })
       it('then it throws an error', async (done) => {
         const token = await jwtService.createToken(pupil)
+        pupil.token = 'incorrect secret'
         try {
           await jwtService.verify(token.token)
           expect('this').toBe('thrown')
