@@ -13,7 +13,6 @@ attendanceService.updatePupilAttendanceBySlug = async (slugs, code, userId) => {
   if (!pupils) {
     throw new Error('Pupils not found')
   }
-  const ids = pupils.map(p => { return p.id })
   const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)
   if (!attendanceCode) {
     throw new Error(`attendanceCode not found: ${code}`)
@@ -21,6 +20,7 @@ attendanceService.updatePupilAttendanceBySlug = async (slugs, code, userId) => {
 
   // We need to determine if this is an update or an insert, the db doesn't support
   // UPSERT so we need to do it manually.
+  const ids = pupils.map(p => { return p.id })
   const pupilAttendance = await pupilAttendanceDataService.findByPupilIds(ids)
 
   const updates = pupilAttendance.map(pa => { return pa.pupil_id })

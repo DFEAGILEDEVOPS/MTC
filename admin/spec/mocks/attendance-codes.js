@@ -4,6 +4,7 @@ const moment = require('moment')
 module.exports = [
   {
     '_id': ObjectId('59df7e1c283960b43172ac6b'),
+    'id': 1,
     'updatedAt': moment('2017-09-21 12:17:59').toDate(),
     'createdAt': moment('2017-09-21 12:17:59').toDate(),
     'reason': 'Incorrect registration',
@@ -12,6 +13,7 @@ module.exports = [
   },
   {
     '_id': ObjectId('59df7e1c283960b43172ac6c'),
+    'id': 2,
     'updatedAt': moment('2017-09-21 12:18:32').toDate(),
     'createdAt': moment('2017-09-21 12:18:32').toDate(),
     'reason': 'Absent',
@@ -20,6 +22,7 @@ module.exports = [
   },
   {
     '_id': ObjectId('59df7e1c283960b43172ac6d'),
+    'id': 3,
     'updatedAt': moment('2017-09-21 12:19:04').toDate(),
     'createdAt': moment('2017-09-21 12:19:04').toDate(),
     'reason': 'Left school',
@@ -28,12 +31,14 @@ module.exports = [
   },
   {
     '_id': ObjectId('59df7e1c283960b43172ac6e'),
+    'id': 4,
     'updatedAt': moment('2017-09-21 12:21:32').toDate(),
     'createdAt': moment('2017-09-21 12:21:32').toDate(),
     'reason': 'Unable to access',
     'code': 4
   },
   {
+    'id': 5,
     '_id': ObjectId('59df7e1c283960b43172ac6f'),
     'updatedAt': moment('2017-09-23 12:21:32').toDate(),
     'createdAt': moment('2017-09-23 12:21:32').toDate(),
@@ -41,6 +46,7 @@ module.exports = [
     'code': 5
   },
   {
+    'id': 6,
     '_id': ObjectId('59df7e1c283960b43172ac70'),
     'updatedAt': moment('2017-09-25 12:21:32').toDate(),
     'createdAt': moment('2017-09-25 12:21:32').toDate(),
