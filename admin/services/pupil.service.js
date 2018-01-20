@@ -61,7 +61,7 @@ pupilService.getPrintPupils = async (dfeNumber) => {
 
 /**
  * Find Pupils using urlSlugs
- * @param slugs
+ * @param {Array} slugs
  * @return {Promise<*>}
  */
 pupilService.getPupilsByUrlSlug = async (slugs) => {

@@ -110,4 +110,14 @@ describe('pupil service', () => {
       expect(pupil.schoolPin).toBe('newpin88')
     })
   })
+
+  describe('#getPupilsByUrlSlug', () => {
+    // const schoolId = 1
+    it('it makes a call to the pupilDataService', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue([pupilMock])
+      const service = setupService(pupilDataService)
+      await service.getPupilsByUrlSlug(['slug'])
+      expect(pupilDataService.sqlFindPupilsByUrlSlug).toHaveBeenCalledWith(['slug'])
+    })
+  })
 })
