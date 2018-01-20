@@ -31,6 +31,16 @@ describe('pupil service', () => {
     })
   })
 
+  describe('#fetchOnePupilBySlug', () => {
+    const schoolId = 1
+    it('it makes a call to the pupilDataService', async () => {
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMockPromise())
+      const service = setupService(pupilDataService)
+      await service.fetchOnePupilBySlug('slug', schoolId)
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalledWith('slug', schoolId)
+    })
+  })
+
   describe('#fetchMultiplePupils', () => {
     it('it makes a call to the pupilDataService for each pupil', async () => {
       spyOn(pupilDataService, 'findOne').and.returnValue(pupilMockPromise())

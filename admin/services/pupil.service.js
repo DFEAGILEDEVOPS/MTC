@@ -23,8 +23,8 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
  * @param schoolId
  * @returns {Promise.<*>}
  */
-pupilService.fetchOnePupilBySlug = async (pupilId, schoolId) => {
-  return pupilDataService.sqlFindOneBySlugAndSchool(pupilId, schoolId)
+pupilService.fetchOnePupilBySlug = async (slug, schoolId) => {
+  return pupilDataService.sqlFindOneBySlugAndSchool(slug, schoolId)
 }
 
 // TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
