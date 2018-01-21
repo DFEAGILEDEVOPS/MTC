@@ -64,16 +64,6 @@ groupService.getGroupById = async function (groupId) {
 }
 
 /**
- * Get group by name.
- * @param groupName
- * @returns {Promise<*>}
- */
-groupService.getGroupByName = async function (groupName) {
-  if (!groupName) { return false }
-  return groupDataService.sqlGetGroup({'name': groupName})
-}
-
-/**
  * Update group (group and pupils assigned to groups).
  * @param id
  * @param group
@@ -95,6 +85,7 @@ groupService.updateGroup = async (id, group) => {
 /**
  * Create group.
  * @param group
+ * @param groupPupils
  * @returns {Promise<boolean>}
  */
 groupService.create = async (group, groupPupils) => {
@@ -108,6 +99,18 @@ groupService.create = async (group, groupPupils) => {
       reject(error)
     }
   })
+}
+
+/**
+ * Get pupils per group.
+ * @returns {Promise<Array>}
+ */
+groupService.getPupilsPerGroup = async () => {
+  let data = await groupDataService.getPupilsPerGroup()
+  let pupilsPerGroup = []
+  data.map((g) => { pupilsPerGroup[g.group_id] = g.total_pupils })
+
+  return pupilsPerGroup
 }
 
 module.exports = groupService

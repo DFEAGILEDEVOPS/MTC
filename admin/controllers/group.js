@@ -1,6 +1,7 @@
 'use strict'
 
 const groupService = require('../services/group.service')
+const groupDataService = require('../services/data-access/group.data.service')
 const groupValidator = require('../lib/validator/group-validator')
 
 /**
@@ -12,10 +13,13 @@ const groupValidator = require('../lib/validator/group-validator')
  */
 const groupPupilsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Group pupils'
+
   let groups
+  let pupilsPerGroup
 
   try {
     groups = await groupService.getGroups()
+    pupilsPerGroup = await groupService.getPupilsPerGroup()
   } catch (error) {
     next(error)
   }
@@ -23,6 +27,7 @@ const groupPupilsPage = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/groups.ejs', {
     breadcrumbs: req.breadcrumbs(),
+    pupilsPerGroup,
     groups
   })
 }
@@ -36,6 +41,7 @@ const groupPupilsPage = async (req, res, next) => {
  */
 const manageGroupPage = async (req, res, next) => {
   let pupilsList
+  let selectedPupils = []
   let group
   let action = 'Add'
 
@@ -50,6 +56,7 @@ const manageGroupPage = async (req, res, next) => {
 
   try {
     pupilsList = await groupService.getPupils(req.user.schoolId, req.params.groupId)
+    pupilsList.map((p) => { selectedPupils[p.id] = !!p.group_id })
   } catch (error) {
     return next(error)
   }
@@ -61,6 +68,7 @@ const manageGroupPage = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     action,
     group,
+    selectedPupils,
     pupilsList
   })
 }
@@ -84,35 +92,39 @@ const addGroup = async (req, res, next) => {
     pupils: req.body.pupil
   }
 
-  // @TODO: To be reviewed/refactored
-  // try {
-  //   validationError = await groupValidator.validate(req.body)
-  // } catch (error) {
-  //   next(error)
-  // }
+  try {
+    validationError = await groupValidator.validate(req.body)
+  } catch (error) {
+    next(error)
+  }
 
-  // if (validationError.hasError()) {
-  //   let pupilsList
-  //
-  //   try {
-  //     pupilsList = await groupService.getPupils(req.user.schoolId, req.params.groupId)
-  //   } catch (error) {
-  //     next(error)
-  //   }
-  //
-  //   req.body.pupils = req.body.pupil
-  //   req.breadcrumbs('Group pupils', '/school/group-pupils')
-  //   res.locals.pageTitle = 'Add group'
-  //   req.breadcrumbs(res.locals.pageTitle)
-  //
-  //   return res.render('groups/manage-group.ejs', {
-  //     breadcrumbs: req.breadcrumbs(),
-  //     action: 'Add',
-  //     group: req.body,
-  //     validation: validationError.errors,
-  //     pupilsList: pupilsList
-  //   })
-  // }
+  if (validationError.hasError()) {
+    let pupilsList
+    let selectedPupils = []
+    let selectedPupilsIds = Object.values(req.body.pupil)
+
+    try {
+      pupilsList = await groupService.getPupils(req.user.schoolId)
+    } catch (error) {
+      next(error)
+    }
+
+    selectedPupilsIds.map((s) => { selectedPupils[s] = true })
+
+    req.body.pupils = req.body.pupil
+    req.breadcrumbs('Group pupils', '/school/group-pupils')
+    res.locals.pageTitle = 'Add group'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    return res.render('groups/manage-group.ejs', {
+      breadcrumbs: req.breadcrumbs(),
+      action: 'Add',
+      group: req.body,
+      validation: validationError.errors,
+      pupilsList,
+      selectedPupils
+    })
+  }
 
   try {
     // @TODO: TO BE DELETED
@@ -123,7 +135,7 @@ const addGroup = async (req, res, next) => {
   }
 
   req.flash('info', 'New group created')
-  req.flash('groupId', group._id)
+  req.flash('groupId', group.id)
   return res.redirect('/school/group-pupils')
 }
 
@@ -152,21 +164,24 @@ const editGroup = async (req, res, next) => {
   group = {
     name: req.body.name,
     pupils: req.body.pupil,
-    _id: req.body.groupId,
+    id: req.body.groupId,
     isDeleted: false
   }
 
-
-  // @TODO: To be reviewed/refactored
   const validationError = await groupValidator.validate(req.body, oldGroup.name)
   if (validationError.hasError()) {
     let pupilsList
+    let selectedPupils = []
+    let selectedPupilIds
 
     try {
       pupilsList = await groupService.getPupils(req.user.schoolId, req.body.groupId)
     } catch (error) {
       return next(error)
     }
+
+    selectedPupilIds = Object.values(req.body.pupil)
+    selectedPupilIds.map((p) => { selectedPupils[p] = true })
 
     req.breadcrumbs('Group pupils', '/school/group-pupils')
     res.locals.pageTitle = 'Edit group'
@@ -177,7 +192,8 @@ const editGroup = async (req, res, next) => {
       action: 'Edit',
       group,
       validation: validationError.errors,
-      pupilsList
+      pupilsList,
+      selectedPupils
     })
   }
 
@@ -188,7 +204,7 @@ const editGroup = async (req, res, next) => {
   }
 
   req.flash('info', `Changes made to '${req.body.name}'`)
-  req.flash('groupId', group._id)
+  req.flash('groupId', group.id)
   return res.redirect('/school/group-pupils')
 }
 
@@ -199,7 +215,7 @@ const removeGroup = async (req, res, next) => {
   }
 
   try {
-    await groupDataService.delete(req.params.groupId)
+    await groupDataService.sqlMarkGroupAsDeleted(req.params.groupId)
   } catch (error) {
     return next(error)
   }

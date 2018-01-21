@@ -96,7 +96,7 @@
                                            value="<%= pupil.id %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"
-                                           <% if (pupil.group_id) { %>checked="true"<% } %>
+                                           <% if (selectedPupils && selectedPupils[pupil.id]) { %>checked="true"<% } %>
                                            role="checkbox">
                                     <div></div>
                                 </div>

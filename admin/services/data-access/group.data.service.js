@@ -6,7 +6,6 @@ const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const moment = require('moment')
 const R = require('ramda')
-const winston = require('winston')
 
 /**
  * Get groups filtered by query.
@@ -71,6 +70,29 @@ groupDataService.sqlGetGroup = async (groupId) => {
 }
 
 /**
+ * Get group by name.
+ * @param groupName
+ * @returns {Promise<void>}
+ */
+groupDataService.sqlGetGroupByName = async (groupName) => {
+  const sql = `SELECT g.* 
+    FROM ${sqlService.adminSchema}.[group] g 
+    WHERE isDeleted=0
+    AND g.name=@groupName`
+
+  const params = [
+    {
+      name: 'groupName',
+      value: groupName,
+      type: TYPES.NVarChar
+    }
+  ]
+
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
+/**
  * Save group.
  * @deprecated use sqlCreate
  * @param data
@@ -118,16 +140,144 @@ groupDataService.update = async function (id, data) {
 }
 
 /**
+ * Update group.
+ * @param id
+ * @param name
+ * @returns {Promise}
+ */
+groupDataService.sqlUpdate = async (id, name) => {
+  const params = [
+    {
+      name: 'id',
+      value: id,
+      type: TYPES.Int
+    },
+    {
+      name: 'name',
+      value: name,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'updatedAt',
+      value: moment.utc(),
+      type: TYPES.DateTimeOffset
+    }
+  ]
+  return sqlService.modify(
+    `UPDATE ${sqlService.adminSchema}.[group] 
+    SET name=@name, updatedAt=@updatedAt 
+    WHERE [id]=@id`,
+    params)
+}
+
+/**
+ * Get pupils per group.
+ * @returns {Promise<*>}
+ */
+groupDataService.getPupilsPerGroup = async () => {
+  const sql = `SELECT group_id, COUNT (pupil_id) AS total_pupils 
+    FROM ${sqlService.adminSchema}.[pupilGroup] 
+    GROUP BY group_id`
+  return sqlService.query(sql)
+}
+
+/**
+ * Update pupils assigned to group.
+ * @param groupId
+ * @param pupilIds
+ * @returns {Promise<void>}
+ */
+groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
+  // First, delete all pupils for the selected groupId
+  const sqlDelete = `DELETE FROM ${sqlService.adminSchema}.[pupilGroup] 
+    WHERE group_id=@groupId`
+
+  const paramsDel = [
+    {
+      name: 'groupId',
+      value: groupId,
+      type: TYPES.Int
+    }
+  ]
+  await sqlService.modify(sqlDelete, paramsDel)
+
+  // Next, insert passed pupils
+  if (pupilIds.length > 0) {
+    let sqlInsert = ''
+    let paramsInsert
+
+    pupilIds.forEach(async p => {
+      if (p) {
+        paramsInsert = [
+          {
+            name: 'groupId',
+            value: groupId,
+            type: TYPES.Int
+          },
+          {
+            name: 'pupilId',
+            value: p,
+            type: TYPES.Int
+          }
+        ]
+
+        // @TODO: This can be improved to avoid the loop with a syntax as follows:
+        // INSERT INTO #SQLAuthority (ID, Value)
+        // VALUES (1, 'First'), (2, 'Second'), (3, 'Third');
+        sqlInsert = `INSERT INTO ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id) VALUES (@groupId, @pupilId)`
+        await sqlService.modify(sqlInsert, paramsInsert)
+      }
+    })
+  }
+}
+
+/**
+ * Get pupils filtered by schoolId and/or groupId.
+ * and grouped by group_id.
+ * @param schoolId
+ * @param groupId
+ * @returns {Promise<*>}
+ */
+groupDataService.sqlGetPupils = async (schoolId, groupId) => {
+  let params = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    }
+  ]
+
+  let sql = `SELECT p.[id], p.[foreName], p.[middleNames], p.[lastName], g.[group_id]
+    FROM ${sqlService.adminSchema}.[pupil] p 
+    LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g 
+      ON p.id = g.pupil_id 
+    WHERE p.school_id=@schoolId 
+    AND g.group_id IS NULL`
+
+  if (groupId) {
+    params.push({
+      name: 'groupId',
+      value: groupId,
+      type: TYPES.Int
+    })
+    sql += ` OR g.group_id=@groupId`
+  }
+
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Soft-deletes a group.
  * @deprecated use sqlMarkGroupAsDeleted
- * @param {*} id 
+ * @param id
+ * @returns {Promise<void>}
  */
 groupDataService.delete = async function (id) {
-  winston.warn('groupDataService.delete is deprecated.  use sqlMarkGroupAsDeleted')
   return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
 }
 
 /**
- * soft deletes a group
+ * Soft deletes a group.
  * @param {number} groupId the id of the group to mark as deleted
  * @returns {Promise<*>}
  */

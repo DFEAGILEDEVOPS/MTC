@@ -14,7 +14,7 @@ const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
-describe('group.js controller', () => {
+xdescribe('group.js controller', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}

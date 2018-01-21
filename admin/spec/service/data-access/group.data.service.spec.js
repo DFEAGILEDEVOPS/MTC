@@ -11,7 +11,7 @@ const groupsMock = require('../../mocks/groups')
 const groupMock = require('../../mocks/group')
 const groupDeletedMock = require('../../mocks/group-deleted')
 
-describe('GroupDataService', () => {
+xdescribe('GroupDataService', () => {
   let service
   let sandbox
 
