@@ -5,10 +5,9 @@ const groupService = {}
 
 /**
  * Get groups.
- * @param query
  * @returns {Promise<Promise|*>}
  */
-groupService.getGroups = async function (query) {
+groupService.getGroups = async function () {
   // @TODO: TO BE DELETED
   // return groupDataService.getGroups(query)
   return groupDataService.sqlGetGroups()
@@ -109,7 +108,6 @@ groupService.getPupilsPerGroup = async () => {
   let data = await groupDataService.getPupilsPerGroup()
   let pupilsPerGroup = []
   data.map((g) => { pupilsPerGroup[g.group_id] = g.total_pupils })
-
   return pupilsPerGroup
 }
 
