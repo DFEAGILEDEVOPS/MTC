@@ -68,7 +68,7 @@ groupService.getGroupById = async function (groupId) {
  * @param group
  * @returns {Promise<boolean>}
  */
-groupService.updateGroup = async (id, group) => {
+groupService.update = async (id, group) => {
   if (!id || !group || !group.name) { return false }
   return new Promise(async (resolve, reject) => {
     try {

@@ -57,7 +57,7 @@ describe('group.service', () => {
     })
   })
 
-  describe('#updateGroup', () => {
+  describe('#update', () => {
     let service
 
     describe('happy path', () => {
@@ -71,7 +71,7 @@ describe('group.service', () => {
       })
 
       it('should update group', async (done) => {
-        const group = await service.updateGroup(1, groupMock)
+        const group = await service.update(1, groupMock)
         expect(group).toEqual(groupMock)
         done()
       })
@@ -89,7 +89,7 @@ describe('group.service', () => {
 
       it('should not update group', async (done) => {
         try {
-          const group = await service.updateGroup(1, groupMock)
+          const group = await service.update(1, groupMock)
           expect(group).toEqual(groupMock)
           done()
         } catch (error) {

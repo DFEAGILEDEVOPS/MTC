@@ -14,7 +14,7 @@ const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
-xdescribe('group.js controller', () => {
+describe('group.js controller', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -24,8 +24,8 @@ xdescribe('group.js controller', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = {
-      EmailAddress: 'test-developer',
-      UserName: 'test-developer',
+      EmailAddress: 'teacher1',
+      UserName: 'teacher1',
       UserType: 'SchoolNom',
       role: 'TEACHER',
       logonAt: 1511374645103
@@ -232,7 +232,7 @@ xdescribe('group.js controller', () => {
           const validationError = new ValidationError()
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupDataService, 'create').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
@@ -240,7 +240,7 @@ xdescribe('group.js controller', () => {
           expect(validationError.hasError()).toBeFalsy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.create).toHaveBeenCalled()
+          expect(groupService.create).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -260,7 +260,7 @@ xdescribe('group.js controller', () => {
           const validationError = new ValidationError()
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupDataService, 'create').and.returnValue(Promise.reject(new Error()))
+          spyOn(groupService, 'create').and.returnValue(Promise.reject(new Error()))
 
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
@@ -268,7 +268,7 @@ xdescribe('group.js controller', () => {
           expect(validationError.hasError()).toBeFalsy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.create).toHaveBeenCalled()
+          expect(groupService.create).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -290,7 +290,7 @@ xdescribe('group.js controller', () => {
 
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(Promise.resolve(groupMock))
-          spyOn(groupDataService, 'create').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
@@ -299,7 +299,7 @@ xdescribe('group.js controller', () => {
           expect(validationError.hasError()).toBeTruthy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
-          expect(groupDataService.create).not.toHaveBeenCalled()
+          expect(groupService.create).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -341,7 +341,7 @@ xdescribe('group.js controller', () => {
         beforeEach(() => {
           spyOn(groupValidator, 'validate').and.returnValue()
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupDataService, 'create').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
           controller = require('../../controllers/group').addGroup
         })
 
@@ -358,7 +358,7 @@ xdescribe('group.js controller', () => {
           expect(res.locals.pageTitle).toBeUndefined()
           expect(groupValidator.validate).not.toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.create).not.toHaveBeenCalled()
+          expect(groupService.create).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -382,7 +382,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -391,7 +391,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.update).toHaveBeenCalled()
+          expect(groupService.update).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -413,7 +413,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -422,7 +422,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupValidator.validate).not.toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.update).not.toHaveBeenCalled()
+          expect(groupService.update).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -444,7 +444,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(Promise.reject(new Error()))
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -453,7 +453,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupValidator.validate).not.toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.update).not.toHaveBeenCalled()
+          expect(groupService.update).not.toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -477,7 +477,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -487,7 +487,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
-          expect(groupDataService.update).not.toHaveBeenCalled()
+          expect(groupService.update).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -511,7 +511,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
           spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.resolve(groupMock))
+          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -521,7 +521,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
-          expect(groupDataService.update).not.toHaveBeenCalled()
+          expect(groupService.update).not.toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -544,7 +544,7 @@ xdescribe('group.js controller', () => {
           spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
           spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupDataService, 'update').and.returnValue(Promise.reject(new Error()))
+          spyOn(groupService, 'update').and.returnValue(Promise.reject(new Error()))
 
           controller = require('../../controllers/group').editGroup
           await controller(req, res, next)
@@ -554,7 +554,7 @@ xdescribe('group.js controller', () => {
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
-          expect(groupDataService.update).toHaveBeenCalled()
+          expect(groupService.update).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
@@ -572,12 +572,12 @@ xdescribe('group.js controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
 
           controller = require('../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.delete).toHaveBeenCalled()
+          expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -593,12 +593,12 @@ xdescribe('group.js controller', () => {
             groupId: null
           }
 
-          spyOn(groupDataService, 'delete').and.returnValue(Promise.resolve(groupDeletedMock))
+          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.resolve(groupDeletedMock))
 
           controller = require('../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.delete).not.toHaveBeenCalled()
+          expect(groupDataService.sqlMarkGroupAsDeleted).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
           expect(res.statusCode).toBe(302)
           done()
@@ -614,12 +614,12 @@ xdescribe('group.js controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupDataService, 'delete').and.returnValue(Promise.reject(new Error()))
+          spyOn(groupDataService, 'sqlMarkGroupAsDeleted').and.returnValue(Promise.reject(new Error()))
 
           controller = require('../../controllers/group').removeGroup
           await controller(req, res, next)
 
-          expect(groupDataService.delete).toHaveBeenCalled()
+          expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()

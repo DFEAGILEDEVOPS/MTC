@@ -198,7 +198,7 @@ const editGroup = async (req, res, next) => {
   }
 
   try {
-    group = await groupService.updateGroup(req.body.groupId, group)
+    group = await groupService.update(req.body.groupId, group)
   } catch (error) {
     return next(error)
   }
