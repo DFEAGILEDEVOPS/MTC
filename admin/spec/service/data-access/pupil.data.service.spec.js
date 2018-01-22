@@ -112,8 +112,8 @@ describe('pupil.data.service', () => {
     })
 
     it('returns a school data object and a list of pupils', async () => {
-      const data = await pupilDataService.getPupils(schoolMock._id) // deprecated usage
-      expect(data.schoolData._id).toBe(9991001)
+      const data = await pupilDataService.getPupils(schoolMock.id) // deprecated usage
+      expect(data.schoolData.id).toBe(1)
       expect(data.pupils.length).toBe(2)
       expect(mockPupil.verify()).toBe(true)
       expect(mockSchool.verify()).toBe(true)
@@ -304,6 +304,19 @@ describe('pupil.data.service', () => {
     it('it makes the expected calls', async () => {
       const dfeNumber = 9991001
       await service.sqlFindPupilsWithActivePins(dfeNumber)
+      expect(sqlService.query).toHaveBeenCalled()
+    })
+  })
+  describe('#sqlFindOneByPinAndSchool', () => {
+    beforeEach(() => {
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([ pupilMock ]))
+      service = require('../../../services/data-access/pupil.data.service')
+    })
+
+    it('it makes the expected calls', async () => {
+      const dfeNumber = 9991001
+      const pupil = pupilMock
+      await service.sqlFindOneByPinAndSchool(pupil.pin, dfeNumber)
       expect(sqlService.query).toHaveBeenCalled()
     })
   })
