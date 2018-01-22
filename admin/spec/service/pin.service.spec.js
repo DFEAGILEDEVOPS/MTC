@@ -30,20 +30,6 @@ describe('pin.service', () => {
       pupil2._id = '595cd5416e5ca13e48ed2520'
       pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
     })
-    
-    describe('if pins are invalid', () => {
-      beforeEach(() => {
-        sandbox.useFakeTimers(moment().startOf('day').add(100, 'years').valueOf())
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
-        proxyquire('../../services/pupil.service', {
-          '../../services/data-access/pupil.data.service': pupilDataService
-        })
-      })
-      it('it should return a list of active pupils', async () => {
-        const pupils = await pinService.getPupilsWithActivePins(schoolMock._id)
-        expect(pupils.length).toBe(0)
-      })
-    })
   })
 
   describe('getActiveSchool', () => {
