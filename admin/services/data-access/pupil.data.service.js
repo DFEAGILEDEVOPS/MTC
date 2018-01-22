@@ -313,6 +313,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
+  ORDER BY p.lastName ASC, p.foreName ASC
   `
   return sqlService.query(sql, [paramDfeNumber])
 }

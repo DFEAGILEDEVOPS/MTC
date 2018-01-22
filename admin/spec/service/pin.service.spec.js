@@ -1,13 +1,16 @@
-const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
 const moment = require('moment')
-const pupilDataService = require('../../services/data-access/pupil.data.service')
-const schoolDataService = require('../../services/data-access/school.data.service')
+const proxyquire = require('proxyquire').noCallThru()
+const R = require('ramda')
+const sinon = require('sinon')
+
 const checkDataService = require('../../services/data-access/check.data.service')
-const pinService = require('../../services/pin.service')
 const jwtService = require('../../services/jwt.service')
+const pinService = require('../../services/pin.service')
 const pinValidator = require('../../lib/validator/pin-validator')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const pupilIdentificationFlagService = require('../../services/pupil-identification-flag.service')
 const pupilMock = require('../mocks/pupil')
+const schoolDataService = require('../../services/data-access/school.data.service')
 const schoolMock = require('../mocks/school')
 
 /* global describe, it, expect, beforeEach, afterEach, spyOn */
@@ -22,13 +25,52 @@ describe('pin.service', () => {
   describe('getPupilsWithActivePins', () => {
     let pupil1
     let pupil2
+    const service = require('../../services/pin.service')
+    const dfeNumber = 9991999
+
     beforeEach(() => {
       pupil1 = Object.assign({}, pupilMock)
       pupil1.pin = 'f55sg'
       pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
       pupil2 = Object.assign({}, pupilMock)
       pupil2._id = '595cd5416e5ca13e48ed2520'
+      pupil2.id = 43
       pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
+    })
+    it('makes a call to get the pupils with active pins', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
+      await service.getPupilsWithActivePins(dfeNumber)
+      expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber)
+    })
+
+    it('formats the dateOfBirth', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
+      await service.getPupilsWithActivePins(dfeNumber)
+      const data = pupilIdentificationFlagService.addIdentificationFlags.calls.mostRecent().args[0]
+      expect(data[0].dob).toBeDefined()
+      expect(data[0].dateOfBirth).toBeUndefined()
+    })
+
+    it('Adds identification flags to the pupil when they have the same name', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
+      const data = await service.getPupilsWithActivePins(dfeNumber)
+      // Because we used the pupil mock we expect the pupils to have the same name, so we need
+      // show the dob to differentiate.
+      expect(data[0].showDoB).toBe(true)
+      expect(data[1].showDoB).toBe(true)
+    })
+
+    it('does not add identification flags to the pupil when they have different names', async () => {
+      const p1 = R.clone(pupilMock)
+      const p2 = R.clone(pupilMock)
+      p2.lastName = 'Sherlock'
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([p1, p2]))
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
+      const data = await service.getPupilsWithActivePins(dfeNumber)
+      expect(data[0].showDoB).toBeUndefined()
+      expect(data[1].showDoB).toBeUndefined()
     })
   })
 
