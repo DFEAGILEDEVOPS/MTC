@@ -330,7 +330,7 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-  const {params, paramIdentifiers} = sqlService.whereClauseHelper(slugs, TYPES.UniqueIdentifier)
+  const {params, paramIdentifiers} = sqlService.buildParameterList(slugs, TYPES.UniqueIdentifier)
   const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')'
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)

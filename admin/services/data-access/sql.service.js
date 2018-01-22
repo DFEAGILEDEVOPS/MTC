@@ -405,7 +405,7 @@ sqlService.update = async function (tableName, data) {
  * @param {Tedious.TYPE} type
  * @return {Promise<{params: Array, paramIdentifiers: Array}>}
  */
-sqlService.whereClauseHelper = (ary, type) => {
+sqlService.buildParameterList = (ary, type) => {
   const params = []
   const paramIdentifiers = []
   for (let i = 0; i < ary.length; i++) {

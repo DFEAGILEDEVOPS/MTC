@@ -43,7 +43,7 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
     { name: 'userId', type: TYPES.Int, value: userId }
   ]
 
-  const where = sqlService.whereClauseHelper(pupilIds, TYPES.Int)
+  const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
   const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
   const sql = [update, whereClause].join(' ')
   return sqlService.modify(sql, R.concat(params, where.params))
@@ -65,7 +65,7 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-  const {params, paramIdentifiers} = sqlService.whereClauseHelper(ids, TYPES.Int)
+  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ')'
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
