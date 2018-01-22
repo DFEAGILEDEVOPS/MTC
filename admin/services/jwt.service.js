@@ -1,9 +1,9 @@
 'use strict'
 const Promise = require('bluebird')
+const R = require('ramda')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
-const ObjectId = require('mongoose').Types.ObjectId
 
 const pupilDataService = require('./data-access/pupil.data.service')
 
@@ -16,17 +16,18 @@ const jwtService = {
    * @return {*}
    */
   createToken: async (pupil) => {
-    if (!(pupil && pupil._id)) {
+    if (!(pupil && pupil.id)) {
       throw new Error('Pupil is required')
     }
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
-    await pupilDataService.update({_id: pupil._id}, {jwtSecret: jwtSecret})
+    pupil.token = jwtSecret
+    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
 
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin',                                       // Issuer
-      sub: pupil._id,                                         // Subject
+      sub: pupil.id,                                         // Subject
       exp: Math.floor(Date.now() / 1000) + (60 * 60),         // Expiry
       nbf: Math.floor(Date.now() / 1000),                     // Not before
       jwi: jwtId                                              // JWT token ID
@@ -50,18 +51,18 @@ const jwtService = {
     const decoded = jwtService.decode(token)
 
     // Find the pupil in the subject to retrieve the secret
-    const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
+    const pupil = await pupilDataService.sqlFindOneById(decoded.sub)
 
     if (!pupil) {
       throw new Error('Subject not found')
     }
 
-    if (!pupil.jwtSecret) {
+    if (!pupil.token) {
       throw new Error('Error - missing secret')
     }
 
     try {
-      await jwt.verify(token, pupil.jwtSecret)
+      await jwt.verify(token, pupil.token)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }

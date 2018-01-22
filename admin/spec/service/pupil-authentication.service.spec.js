@@ -23,7 +23,7 @@ describe('pupil authentication service', () => {
         .expects('sqlFindOneBySchoolPin')
         .resolves(schoolMock),
       '../models/pupil': sandbox.mock(pupilDataService)
-        .expects('findOne')
+        .expects('sqlFindOneByPinAndSchool')
         .resolves(pupilMock)
     })
   }
@@ -46,8 +46,8 @@ describe('pupil authentication service', () => {
     })
 
     it('authenticates a pupil', async (done) => {
-      const pupil = await service.authenticate('pupilPin', 'schoolPin')
-      expect(pupil).toEqual(pupilMock)
+      const data = await service.authenticate('pupilPin', 'schoolPin')
+      expect(data).toEqual({ pupil: pupilMock, school: schoolMock })
       done()
     })
 
@@ -55,7 +55,7 @@ describe('pupil authentication service', () => {
       const pupilData = service.getPupilDataForSpa(pupilMock)
       expect(pupilData.firstName).toBe(pupilMock.foreName)
       expect(pupilData.lastName).toBe(pupilMock.lastName)
-      expect(pupilData.dob).toBe('31 December 2000')
+      expect(pupilData.dateOfBirth).toBe('31 December 2000')
     })
   })
 

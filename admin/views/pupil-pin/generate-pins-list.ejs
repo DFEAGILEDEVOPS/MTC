@@ -43,7 +43,7 @@
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
                     <td>
-                        <label for="pupil-<%= pupil._id %>">
+                        <label for="pupil-<%= pupil.id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                         </label>
                         <% if (pupil.showDoB) { %>
@@ -54,10 +54,10 @@
                     </td>
                     <td>
                         <div class="multiple-choice-mtc">
-                            <input id="pupil-<%= pupil._id %>"
+                            <input id="pupil-<%= pupil.id %>"
                                    name="pupil[<%= index %>]"
                                    type="checkbox"
-                                   value="<%= pupil._id %>"
+                                   value="<%= pupil.id %>"
                                    aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                    aria-checked="false"
                                    role="checkbox">
