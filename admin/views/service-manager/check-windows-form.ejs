@@ -230,18 +230,16 @@
                                aria-label="Check end day.">
                     </div>
                 </div>
+                <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
+                <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
+                <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
+                <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
+                <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
             </div>
 
-            <div class="form-group">
-                <p>
-                    <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
-                    <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
-                    <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
-                    <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
-                    <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
-                    <input class="button" type="submit" value="Save">
-                    <a href="/service-manager/check-windows" class="button button-secondary">Cancel</a>
-                </p>
+            <div class="form-buttons">
+                <input class="button" type="submit" value="Save">
+                <a href="/service-manager/check-windows" class="button button-secondary">Cancel</a>
             </div>
         </form>
 

@@ -51,7 +51,7 @@
                     <tr>
                         <td<% if (messages.groupId && messages.groupId.toString() === group._id.toString()) { %> class="highlight-item"<% } %>>
                             <a name="group-<%= group._id %>"></a>
-                            <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong> <span class="font-xsmall">(<%= Object.keys(group.pupils).length || 0 %> pupils)</span>
+                            <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong>  <span class="font-xsmall">(<%= Object.keys(group.pupils).length || 0 %> pupils)</span>
                         </td>
                         <td class="align-right">
                             <a href="/school/group-pupils/delete/<%= group._id %>" class="modal-link font-xsmall" id="js-modal-link">Remove</a>
@@ -62,7 +62,7 @@
             </table>
         </div>
         <% } else { %>
-        <div class="padding-top">No groups available.</div>
+        <div class="top-padding-30">No groups available.</div>
         <% } %>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">

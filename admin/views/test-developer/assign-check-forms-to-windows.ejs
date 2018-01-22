@@ -47,7 +47,7 @@
             <tbody>
                 <% checkWindowsData.forEach(checkWindow => { %>
                 <tr>
-                    <td>
+                    <td<% if (messages && messages.checkWindowId && messages.checkWindowId.toString() === checkWindow._id.toString()) { %> class="highlight-item" <% } %>>
                         <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
                         <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="bold"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
                         (<%= checkWindow.totalForms %> forms)

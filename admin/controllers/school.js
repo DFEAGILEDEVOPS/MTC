@@ -329,7 +329,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
     let flashMessage = 'Reason removed'
     const pupil = await pupilService.fetchOnePupil(req.params.removed, req.user.School)
     if (pupil) {
-      flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
+      flashMessage = `Reason removed for ${pupil.lastName}, ${pupil.foreName}`
     }
     req.flash('info', flashMessage)
   }
