@@ -53,6 +53,7 @@ describe('check-complete.service', () => {
     })
 
     xit('adds a timestamp', async (done) => {
+      // TODO: Relocate this test once timestamp recording occurs in application service tier
       await service.completeCheck(completedCheck)
       const args = spy.calls.mostRecent().args[0]
       expect(args.hasOwnProperty('receivedByServerAt')).toBe(true)

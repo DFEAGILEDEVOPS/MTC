@@ -65,7 +65,7 @@ pinGenerationService.isValid = async (p) => {
  * @param pupilsList
  * @returns {Array}
  */
-pinGenerationService.generatePupilPins = async (pupilsList) => {
+pinGenerationService.updatePupilPins = async (pupilsList) => {
   const ids = Object.values(pupilsList || null)
   const pupils = await pupilDataService.sqlFindByIds(ids)
   pupils.forEach(async pupil => {
@@ -74,7 +74,8 @@ pinGenerationService.generatePupilPins = async (pupilsList) => {
       pupil.pinExpiresAt = fourPmToday()
     }
   })
-  return pupils
+  const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
 /**

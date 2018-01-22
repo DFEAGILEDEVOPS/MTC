@@ -20,6 +20,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
     await pupilDataService.sqlUpdate({ id: pupil.id, pinExpiresAt: moment.utc(), pin: null }) // .update({_id: pupil._id}, { pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request
+  // TODO: This timestamp should be recorded in the application service tier instead
   completedCheck.receivedByServerAt = moment.utc()
 
   // store to data store

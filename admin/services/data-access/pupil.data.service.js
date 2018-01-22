@@ -319,4 +319,34 @@ pupilDataService.sqlFindByIds = async (ids) => {
   return sqlService.query(sql, params)
 }
 
+/**
+ * Batch update pupil pins
+ * @param pupils
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
+  const params = []
+  const update = []
+  pupils.forEach((p, i) => {
+    update.push(`UPDATE ${sqlService.adminSchema}.${table} SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i} WHERE id = @id${i}`)
+    params.push({
+      name: `pin${i}`,
+      value: p.pin,
+      type: TYPES.SmallInt
+    })
+    params.push({
+      name: `pinExpiredAt${i}`,
+      value: p.pinExpiresAt,
+      type: TYPES.DateTimeOffset
+    })
+    params.push({
+      name: `id${i}`,
+      value: p.id,
+      type: TYPES.Int
+    })
+  })
+  const sql = update.join(';\n')
+  return sqlService.modify(sql, params)
+}
+
 module.exports = pupilDataService

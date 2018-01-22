@@ -52,6 +52,8 @@ completedCheckDataService.sqlAddResult = async function (checkCode, completedChe
       type: TYPES.UniqueIdentifier
     }
   ]
+  // TODO: Refactor to extract two DL methods from this to make it simpler
+  // TODO: The error should be thrown from a service method instead
   const sql = `SELECT id FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`
   let result = await sqlService.query(sql, params)
   result = R.head(result)
