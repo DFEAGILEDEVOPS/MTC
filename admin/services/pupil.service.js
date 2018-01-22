@@ -1,3 +1,4 @@
+const winston = require('winston')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
@@ -16,8 +17,19 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
   return pupilDataService.sqlFindOneByIdAndSchool(pupilId, schoolId)
 }
 
+/**
+ * Fetch one pupil filtered by pupil urlSlug and school id
+ * @param urlSlug
+ * @param schoolId
+ * @returns {Promise.<*>}
+ */
+pupilService.fetchOnePupilBySlug = async (slug, schoolId) => {
+  return pupilDataService.sqlFindOneBySlugAndSchool(slug, schoolId)
+}
+
 // TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
 pupilService.fetchMultiplePupils = async (pupilIds) => {
+  winston.warn('WARNING: fetchMultiplePupils called, and it is operating very inefficiently')
   const pupils = []
   for (const id of pupilIds) {
     const pupil = await pupilDataService.findOne({ '_id': id })
@@ -45,6 +57,15 @@ pupilService.getPrintPupils = async (dfeNumber) => {
     schoolPin: school.pin,
     pupilPin: p.pin
   }))
+}
+
+/**
+ * Find Pupils using urlSlugs
+ * @param {Array} slugs
+ * @return {Promise<*>}
+ */
+pupilService.getPupilsByUrlSlug = async (slugs) => {
+  return pupilDataService.sqlFindPupilsByUrlSlug(slugs)
 }
 
 pupilService.validatePupil = async (pupil, pupilData) => {
