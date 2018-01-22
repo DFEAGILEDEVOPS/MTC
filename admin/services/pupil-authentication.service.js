@@ -12,6 +12,7 @@ const pupilAuthenticationService = {
    * @return {object}
    */
   authenticate: async (pupilPin, schoolPin) => {
+    // TODO: Consolidate the following data layer calls to a single one
     const school = await schoolDataService.sqlFindOneBySchoolPin(schoolPin)
     if (!school) {
       throw new Error('Authentication failure')
