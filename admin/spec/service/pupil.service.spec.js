@@ -31,6 +31,16 @@ describe('pupil service', () => {
     })
   })
 
+  describe('#fetchOnePupilBySlug', () => {
+    const schoolId = 1
+    it('it makes a call to the pupilDataService', async () => {
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMockPromise())
+      const service = setupService(pupilDataService)
+      await service.fetchOnePupilBySlug('slug', schoolId)
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalledWith('slug', schoolId)
+    })
+  })
+
   describe('#fetchMultiplePupils', () => {
     it('it makes a call to the pupilDataService for each pupil', async () => {
       spyOn(pupilDataService, 'findOne').and.returnValue(pupilMockPromise())
@@ -98,6 +108,16 @@ describe('pupil service', () => {
       expect(pupil.fullName).toBe('Pupil One')
       expect(pupil.pupilPin).toBe('d55sg')
       expect(pupil.schoolPin).toBe('newpin88')
+    })
+  })
+
+  describe('#getPupilsByUrlSlug', () => {
+    // const schoolId = 1
+    it('it makes a call to the pupilDataService', async () => {
+      spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue([pupilMock])
+      const service = setupService(pupilDataService)
+      await service.getPupilsByUrlSlug(['slug'])
+      expect(pupilDataService.sqlFindPupilsByUrlSlug).toHaveBeenCalledWith(['slug'])
     })
   })
 })
