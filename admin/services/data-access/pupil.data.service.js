@@ -405,7 +405,9 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
   const params = []
   const update = []
   pupils.forEach((p, i) => {
-    update.push(`UPDATE ${sqlService.adminSchema}.${table} SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i} WHERE id = @id${i}`)
+    update.push(`UPDATE ${sqlService.adminSchema}.${table} 
+    SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i} 
+    WHERE id = @id${i}`)
     params.push({
       name: `pin${i}`,
       value: p.pin,
