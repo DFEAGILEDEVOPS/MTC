@@ -46,7 +46,7 @@ describe('Questions controller', () => {
 
   function setupController (options = {}) {
     if (!options['pupil-authentication.service.authenticate']) {
-      options['pupil-authentication.service.authenticate'] = function () { return Promise.resolve(pupilMock) }
+      options['pupil-authentication.service.authenticate'] = function () { return Promise.resolve({ pupil: pupilMock, school: schoolMock }) }
     }
     if (!options['check-form.service.prepareQuestionData']) {
       options['check-form.service.prepareQuestionData'] = function () { return questionsMock }
