@@ -153,7 +153,7 @@ function isInsertStatement (sql = '') {
   if (s.slice(0, 6) !== 'INSERT') {
     return false
   }
-  winston.debug('sql.service: INSERT statement found')
+  winston.debug(`sql.service: INSERT statement found: ${sql}`)
   return true
 }
 
@@ -214,6 +214,7 @@ sqlService.query = (sql, params = []) => {
  * @return {Promise}
  */
 sqlService.modify = (sql, params) => {
+  winston.debug('sql.service: modify: SQL: ' + sql)
   return new Promise(async (resolve, reject) => {
     const isInsert = isInsertStatement(sql)
     const con = await sqlPoolService.getConnection()
@@ -223,7 +224,9 @@ sqlService.modify = (sql, params) => {
       if (err) {
         return reject(err)
       }
-      resolve(R.assoc('rowsModified', (isInsert ? rowCount - 1 : rowCount), response))
+      const res = R.assoc('rowsModified', (isInsert ? rowCount - 1 : rowCount), response)
+      winston.debug('sql.service: modify: result:', res)
+      return resolve(res)
     })
 
     if (params) {
@@ -334,6 +337,8 @@ sqlService.generateUpdateStatement = async (table, data) => {
 sqlService.create = async (tableName, data) => {
   const preparedData = convertMomentToJsDate(data)
   const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
+  winston.debug('sql.service: sql: ' + sql)
+  winston.debug('sql.service: params: ' + params.map(p => p.value).join(', '))
   try {
     const res = await sqlService.modify(sql, params)
     winston.debug('sql.service: INSERT RESULT: ', res)
@@ -394,4 +399,19 @@ sqlService.update = async function (tableName, data) {
   }
 }
 
+/**
+ * Helper function useful for constructing parameterised WHERE clauses
+ * @param {Array} ary
+ * @param {Tedious.TYPE} type
+ * @return {Promise<{params: Array, paramIdentifiers: Array}>}
+ */
+sqlService.buildParameterList = (ary, type) => {
+  const params = []
+  const paramIdentifiers = []
+  for (let i = 0; i < ary.length; i++) {
+    params.push({ name: `p${i}`, type, value: ary[i] })
+    paramIdentifiers.push(`@p${i}`)
+  }
+  return {params, paramIdentifiers}
+}
 module.exports = sqlService

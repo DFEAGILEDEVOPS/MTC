@@ -23,13 +23,13 @@
             <% attendanceCodes.forEach( (aValues) => { %>
                 <li>
                     <div class="multiple-choice">
-                        <input id="attendance-code-<%= aValues._id %>"
+                        <input id="attendance-code-<%= aValues.code %>"
                                type="radio"
                                role="radio"
                                aria-checked="false"
                                name="attendanceCode"
-                               value="<%= aValues._id %>">
-                        <label for="attendance-code-<%= aValues._id %>"><%= aValues.reason %></label>
+                               value="<%= aValues.code %>">
+                        <label for="attendance-code-<%= aValues.id %>"><%= aValues.reason %></label>
                     </div>
                 </li>
                 <% }) %>
@@ -94,24 +94,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <% pupilsList.forEach( (pupil, index) => { %>
+                    <% pupilsList.forEach(pupil => { %>
                     <tr>
                         <td>
-                            <label for="pupil-<%= pupil._id %>">
+                            <label for="pupil-<%= pupil.urlSlug %>">
                                 <%= pupil.lastName %>, <%= pupil.foreName %>
                             </label>
                         </td>
                         <td>
-                            <% if (pupil.reason) { %>
-                            <%= pupil.reason %>
-                            <% } %>
+                            <%= pupil.reason || 'N/A' %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">
-                                <input id="pupil-<%= pupil._id %>"
-                                       name="pupil[<%= index %>]"
+                                <input id="pupil-<%= pupil.urlSlug %>"
+                                       name="pupil"
                                        type="checkbox"
-                                       value="<%= pupil._id %>"
+                                       value="<%= pupil.urlSlug %>"
                                        aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                        aria-checked="false"
                                        role="checkbox">

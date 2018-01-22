@@ -6,21 +6,16 @@ mongoose.Promise = global.Promise
 
 const sinon = require('sinon')
 require('sinon-mongoose')
-
-const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 
-const pupilService = require('../../services/pupil.service')
-const pupilDataService = require('../../services/data-access/pupil.data.service')
-const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
-const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
-
-const pupilMock = require('../mocks/pupil-with-reason')
 const attendanceCodesMock = require('../mocks/attendance-codes')
-const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
+const attendanceService = require('../../services/attendance.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
-const mongooseResponseMock = require('../mocks/mongo-response-mock')
+const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
+const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 
 describe('school controller:', () => {
   function getRes () {
@@ -55,15 +50,13 @@ describe('school controller:', () => {
       sandbox.restore()
     })
 
-    describe('When there are pupils for the active school', () => {
+    describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
-        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         controller = require('../../controllers/school').getPupilNotTakingCheck
       })
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -74,13 +67,25 @@ describe('school controller:', () => {
       })
     })
 
-    describe('Select reason for pupils', () => {
+    describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
         spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilDataService, 'getSortedPupils').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(pupilsNotTakingCheckService, 'formatPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
-        spyOn(pupilsNotTakingCheckService, 'sortPupilsByReason').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
+        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         controller = require('../../controllers/school').getSelectPupilNotTakingCheck
+      })
+
+      it('makes a call to get the attendance codes', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await controller(req, res, next)
+        expect(attendanceCodeDataService.sqlFindAttendanceCodes).toHaveBeenCalled()
+      })
+
+      it('makes a call to get the pupils with reasons', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await controller(req, res, next)
+        expect(pupilDataService.sqlFindSortedPupilsWithAttendanceReasons).toHaveBeenCalled()
       })
 
       it('should display reasons and pupils', async (done) => {
@@ -94,19 +99,13 @@ describe('school controller:', () => {
       })
     })
 
-    describe('Save reason for pupil', () => {
+    describe('#savePupilNotTakingCheck: Save reason for pupil', () => {
       beforeEach(() => {
-        const pupil = Object.assign({}, pupilsWithReasonsMock)
-        pupil.save = () => {
-        }
-        spyOn(pupilService, 'fetchMultiplePupils').and.returnValue(Promise.resolve(pupil))
-        // spyOn(Pupil, 'create').and.returnValue(Promise.resolve(pupilMock))
-        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        controller = proxyquire('../../controllers/school', {}).savePupilNotTakingCheck
+        spyOn(attendanceService, 'updatePupilAttendanceBySlug')
+        controller = require('../../controllers/school').savePupilNotTakingCheck
       })
 
-      it('should save and display reasons and pupils', async (done) => {
+      it('should save and redirect', async (done) => {
         const res = getRes()
         const req = getReq(
           {
@@ -121,21 +120,17 @@ describe('school controller:', () => {
           }
         )
         await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Save pupils not taking the check')
-        expect(next).not.toHaveBeenCalled()
+        expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalled()
+        expect(res.statusCode).toBe(302)
         done()
       })
     })
 
-    describe('Remove reason for pupil', () => {
+    describe('#removePupilNotTakingCheck: Remove:  reason for pupil', () => {
       beforeEach(() => {
-        spyOn(pupilService, 'fetchOnePupil').and.returnValue(Promise.resolve(pupilMock))
-        spyOn(pupilDataService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(mongooseResponseMock))
-        controller = proxyquire('../../controllers/school', {
-          '../services/pupil.service': pupilService,
-          '../services/data-access/pupil.data.service': pupilDataService
-        }).removePupilNotTakingCheck
+        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
+        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+        controller = require('../../controllers/school').removePupilNotTakingCheck
       })
 
       it('should redirect to the select pupils page if pupilId is not supplied', async () => {
@@ -168,16 +163,36 @@ describe('school controller:', () => {
               pupilId: '59d02ab09b865f35a3f51940'
             },
             user: {
-              school: '42'
+              School: '42'
             }
           }
         )
         await controller(req, res, next)
-        expect(pupilService.fetchOnePupil).toHaveBeenCalled()
-        expect(pupilDataService.unsetAttendanceCode).toHaveBeenCalledWith('59d02ab09b865f35a3f51940')
+        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.School)
+        expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
-        expect(res._getRedirectUrl()).toBe('/school/pupils-not-taking-check/59d02ab09b865f35a3f51940')
-        expect(next).not.toHaveBeenCalled()
+      })
+    })
+
+    describe('#viewPupilsNotTakingTheCheck', () => {
+      beforeEach(() => {
+        controller = require('../../controllers/school').viewPupilsNotTakingTheCheck
+      })
+
+      it('makes a call to get the pupils', async () => {
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        const res = getRes()
+        const req = getReq(
+          {
+            method: 'GET',
+            url: '/school/pupils-not-taking-check/remove',
+            user: {
+              school: '9991999'
+            }
+          }
+        )
+        await controller(req, res, next)
+        expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons).toHaveBeenCalled()
       })
     })
   })
