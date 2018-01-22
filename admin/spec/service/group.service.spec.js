@@ -88,9 +88,14 @@ describe('group.service', () => {
       })
 
       it('should not update group', async (done) => {
-        const group = await service.updateGroup(1, groupMock)
-        expect(group).toEqual(groupMock)
-        done()
+        try {
+          const group = await service.updateGroup(1, groupMock)
+          expect(group).toEqual(groupMock)
+          done()
+        } catch (error) {
+          expect(error.message).toBe('TEST ERROR')
+          done()
+        }
       })
     })
   })
@@ -130,8 +135,8 @@ describe('group.service', () => {
           await service.create(groupMock, [6, 2, 3])
         } catch (error) {
           expect(error.message).toBe('TEST ERROR')
+          done()
         }
-        done()
       })
     })
   })
