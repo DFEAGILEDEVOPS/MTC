@@ -33,13 +33,14 @@ pupilDataService.getPupils = async (schoolId) => {
 
 /**
  * Returns pupils filtered by school and sorted by field and direction (asc/desc)
- * @deprecated
+ * @deprecated use sqlFindPupilsByDfeNumber instead
  * @param schoolId
  * @param sortingField
  * @param sortingDirection
  * @returns {Array}
  */
 pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirection) => {
+  winston.warn('*** pupilDataService.getSortedPupils is deprecated ***')
   const sort = {}
   sort[sortingField || 'lastName'] = sortingDirection || 'asc'
   return Pupil
