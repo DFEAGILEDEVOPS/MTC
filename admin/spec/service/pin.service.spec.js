@@ -144,14 +144,14 @@ describe('pin.service', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.pin = null
       pupil.pinExpiresAt = null
-      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupil)
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
       await pinService.expireMultiplePins([pupil._id])
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(0)
     })
     it('it calls updateMultiple method if not empty pin is found', async () => {
       const pupil = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupil)
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
       await pinService.expireMultiplePins([pupil._id])
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)

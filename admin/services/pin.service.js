@@ -58,19 +58,18 @@ pinService.expirePupilPin = async (token, checkCode) => {
  */
 
 pinService.expireMultiplePins = async (pupilIds) => {
-  let pupils = []
-  for (let index = 0; index < pupilIds.length; index++) {
-    const id = pupilIds[ index ]
-    const pupil = await pupilDataService.sqlFindOneById(id)
-    if (pupil.pin || pupil.pinExpiresAt) pupils.push(pupil)
-  }
-  if (pupils.length === 0) return
-  pupils = pupils.map(p => {
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds)
+  let pupilData = []
+  pupils.forEach(p => {
+    if (p.pin || p.pinExpiresAt) pupilData.push(p)
+  })
+  if (pupilData.length === 0) return
+  pupilData = pupilData.map(p => {
     p.pin = null
     p.pinExpiresAt = null
     return p
   })
-  const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  const data = pupilData.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
   return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
