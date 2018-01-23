@@ -3,8 +3,6 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
-require('sinon-mongoose')
-
 const ValidationError = require('../../lib/validation-error')
 const groupService = require('../../services/group.service')
 const groupDataService = require('../../services/data-access/group.data.service')

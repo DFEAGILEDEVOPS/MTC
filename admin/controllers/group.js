@@ -92,7 +92,7 @@ const addGroup = async (req, res, next) => {
   }
 
   try {
-    validationError = await groupValidator.validate(req.body, req.user.schoolId)
+    validationError = await groupValidator.validate(req.body, '', req.user.schoolId)
   } catch (error) {
     next(error)
   }
