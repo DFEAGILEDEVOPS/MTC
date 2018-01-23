@@ -14,7 +14,7 @@ const groupsMock = require('../mocks/groups')
 const groupDeletedMock = require('../mocks/group-deleted')
 const pupilsMock = require('../mocks/pupils-with-reason')
 
-describe('group.js controller', () => {
+describe('group controller', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -51,14 +51,15 @@ describe('group.js controller', () => {
       describe('(happy path)', () => {
         beforeEach(() => {
           spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-          controller = require('../../controllers/group').groupPupilsPage
+          spyOn(groupService, 'getPupilsPerGroup').and.returnValue(groupMock)
+          controller = require('../../controllers/group')
         })
 
         it('should render the initial groups page', async (done) => {
           const res = getRes()
           const req = getReq(goodReqParams)
           spyOn(res, 'render').and.returnValue(null)
-          await controller(req, res, next)
+          await controller.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Group pupils')
           expect(groupService.getGroups).toHaveBeenCalled()
