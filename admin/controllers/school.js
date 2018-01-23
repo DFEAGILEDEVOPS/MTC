@@ -1,16 +1,14 @@
 'use strict'
-const moment = require('moment')
 const csv = require('fast-csv')
-const mongoose = require('mongoose')
+const moment = require('moment')
 
+const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
+const attendanceService = require('../services/attendance.service')
 const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilService = require('../services/pupil.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
-const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
-const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
@@ -231,30 +229,16 @@ const getSubmitAttendance = async (req, res, next) => {
   })
 }
 
+/**
+ * @deprecated potentially superfluous - attached to HDF
+ */
 const postSubmitAttendance = async (req, res, next) => {
   const attendees = req.body[ 'attendee' ]
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-  const data = Object.values(req.body[ 'attendee' ] || [])
-  let ids = data.map(id => mongoose.Types.ObjectId(id))
-
-  // TODO: extract this dataservice call to a service
-  // Update attendance for selected pupils
-  await pupilDataService.update(
-    { _id: { $in: ids } },
-    { $set: { hasAttended: true } },
-    { multi: true }
-  )
-
-  // TODO: extract this dataservice call to a service
-  // Expire all pins for school pupils
-  await pupilDataService.update(
-    { 'pupils.school': req.user.School },
-    { $set: { pinExpired: true } },
-    { multi: true }
-  )
-
+//  const data = Object.values(req.body[ 'attendee' ] || [])
+  // TODO consider removal as part of HDF refresh
   return res.redirect('/school/declaration-form')
 }
 
@@ -326,47 +310,22 @@ const getPupilNotTakingCheck = async (req, res, next) => {
   res.locals.pageTitle = 'Pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
 
-  let pupilsList
-  let attendanceCodes
-  let pupils
-
-  // Flash message after removing a reason
-  if (req.params.removed) {
-    let flashMessage = 'Reason removed'
-    const pupil = await pupilService.fetchOnePupil(req.params.removed, req.user.School)
-    if (pupil) {
-      flashMessage = `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`
-    }
-    req.flash('info', flashMessage)
-  }
-
-  // Get attendance code index
   try {
-    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
+    // Get pupils for active school
+    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
+    return res.render('school/pupils-not-taking-check', {
+      breadcrumbs: req.breadcrumbs(),
+      pupilsList: pupils,
+      highlight: [],
+      messages: req.flash('info')
+    })
   } catch (error) {
     return next(error)
   }
-
-  // Get pupils for active school
-  try {
-    pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-
-  if (attendanceCodes && pupils) {
-    pupilsList = await pupilsNotTakingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
-  }
-
-  return res.render('school/pupils-not-taking-check', {
-    breadcrumbs: req.breadcrumbs(),
-    pupilsList,
-    messages: req.flash('info')
-  })
 }
 
 /**
- * Pupils not taking the check: render and sorting.
+ * Pupils not taking the check: pupil selection to add a new reason or change a reason
  * @param req
  * @param res
  * @param next
@@ -379,7 +338,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   let attendanceCodes
   let pupils
-  let pupilsList
 
   // Sorting
   const sortingOptions = [
@@ -390,27 +348,11 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
 
-  // Get attendance code index
   try {
     attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
+    pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(req.user.School, sortField, sortDirection)
   } catch (error) {
     return next(error)
-  }
-
-  // Get pupils for active school
-  try {
-    pupils = await pupilDataService.getSortedPupils(req.user.School, 'lastName', sortDirection)
-  } catch (error) {
-    return next(error)
-  }
-
-  if (attendanceCodes && pupils) {
-    pupilsList = await pupilsNotTakingCheckService.formatPupilsWithReasons(attendanceCodes, pupils)
-  }
-
-  // Sorting by 'reason' needs to be done using .sort
-  if (sortField === 'reason') {
-    pupilsList = pupilsNotTakingCheckService.sortPupilsByReason(pupilsList, sortDirection)
   }
 
   return res.render('school/select-pupils-not-taking-check', {
@@ -418,9 +360,10 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     sortField,
     sortDirection,
     attendanceCodes,
-    pupilsList,
+    pupilsList: pupils,
     htmlSortDirection,
-    arrowSortDirection
+    arrowSortDirection,
+    highlight: []
   })
 }
 
@@ -439,62 +382,39 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     return res.redirect('/school/pupils-not-taking-check/select-pupils')
   }
 
-  const todayDate = moment(moment.now()).format()
-  const postedPupils = req.body.pupil
-  const pupilsData = await pupilService.fetchMultiplePupils(Object.values(postedPupils))
-
-  let pupilsList
-  let attendanceCodes
-  let pupils
-
-  for (let index = 0; index < pupilsData.length; index++) {
-    let pupil = pupilsData[index]
-    pupil.attendanceCode = {
-      _id: req.body.attendanceCode,
-      dateRecorded: new Date(todayDate),
-      byUserName: req.user.UserName,
-      byUserEmail: req.user.EmailAddress
+  // The req.body.pupil data is posted in 3 forms:
+  // 1: string: 'abc-def' (single selection)
+  // 2: array of strings: ['abc-def', 'foo-bar'] (multiple selection)
+  // 3: object with properties/values: { 0: 'abc-def, 1: 'foo-bar' } (using checkbox "Select all")
+  let postedPupilSlugs
+  if (typeof req.body.pupil === 'object') {
+    if (Array.isArray(req.body.pupil)) {
+      postedPupilSlugs = req.body.pupil
+    } else {
+      postedPupilSlugs = Object.values(req.body.pupil)
     }
+  } else if (typeof req.body.pupil === 'string') {
+    postedPupilSlugs = [ req.body.pupil ]
   }
-
-  // @TODO: Auditing (to be discussed)
   try {
-    for (var index = 0; index < pupilsData.length; index++) {
-      const pupil = pupilsData[index]
-      await pupilDataService.update({_id: pupil._id}, pupil)
-    }
-    req.flash('info', `${pupilsData.length} pupil reasons updated`)
+    // Update the pupils with the attendanceCode
+    await attendanceService.updatePupilAttendanceBySlug(
+      postedPupilSlugs,
+      req.body.attendanceCode,
+      req.user.id)
+
+    req.flash('info', `${postedPupilSlugs.length} pupil reasons updated`)
+
+    // Send the information required for highlighting
+    const highlight = JSON.stringify(postedPupilSlugs)
+    return res.redirect(`/school/pupils-not-taking-check/view?hl=${highlight}`)
   } catch (error) {
     return next(error)
   }
-
-  // Get attendance code index
-  try {
-    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
-  } catch (error) {
-    return next(error)
-  }
-
-  // Get pupils for active school
-  try {
-    pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
-  } catch (error) {
-    return next(error)
-  }
-
-  if (attendanceCodes && pupils) {
-    pupilsList = await pupilsNotTakingCheckService.formatPupilsWithReasons(attendanceCodes, pupils, Object.values(postedPupils))
-  }
-
-  return res.render('school/pupils-not-taking-check', {
-    breadcrumbs: req.breadcrumbs(),
-    pupilsList,
-    messages: req.flash('info')
-  })
 }
 
 /**
- * Removing reason for pupil.
+ * Remove an attendance code for a pupil
  * @param req
  * @param res
  * @param next
@@ -504,18 +424,44 @@ const removePupilNotTakingCheck = async (req, res, next) => {
   if (!req.params.pupilId || !req.user.School) {
     return res.redirect('/school/pupils-not-taking-check/select-pupils')
   }
-  const pupilId = req.params.pupilId
+  const pupilSlug = req.params.pupilId
   try {
-    let pupil = await pupilService.fetchOnePupil(pupilId, req.user.School)
-    if (!pupil) {
-      return next(new Error(`Pupil with id ${pupilId} and school ${req.user.School} not found`))
-    }
-    // TODO: extract this dataservice call to a service
-    await pupilDataService.unsetAttendanceCode(pupil._id)
+    await attendanceService.unsetAttendanceCode(pupilSlug, req.user.School)
+
+    // Update the flash message for the user on the next screen
+    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
+    req.flash('info', `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`)
+
+    // Send the information required for highlighting
+    const highlight = JSON.stringify(pupilSlug)
+    return res.redirect(`/school/pupils-not-taking-check/view?hl=${highlight}`)
   } catch (error) {
     next(error)
   }
-  return res.redirect(`/school/pupils-not-taking-check/${pupilId}`)
+}
+
+/**
+ * View the list of pupils that are not taking the check
+ * @param req
+ * @param res
+ * @param next
+ * @return {Promise<*>}
+ */
+const viewPupilsNotTakingTheCheck = async (req, res, next) => {
+  res.locals.pageTitle = 'View pupils not taking the check'
+  req.breadcrumbs(res.locals.pageTitle)
+  const highlight = req.query.hl || []
+  try {
+    const pupilsList = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
+    return res.render('school/pupils-not-taking-check', {
+      breadcrumbs: req.breadcrumbs(),
+      pupilsList,
+      messages: res.locals.messages,
+      highlight
+    })
+  } catch (error) {
+    return next(error)
+  }
 }
 
 module.exports = {
@@ -531,5 +477,6 @@ module.exports = {
   getPupilNotTakingCheck,
   getSelectPupilNotTakingCheck,
   savePupilNotTakingCheck,
-  removePupilNotTakingCheck
+  removePupilNotTakingCheck,
+  viewPupilsNotTakingTheCheck
 }

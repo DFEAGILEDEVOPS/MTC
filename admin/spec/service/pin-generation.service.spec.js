@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect, spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const moment = require('moment')
@@ -27,11 +27,11 @@ describe('pin-generation.service', () => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         const pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
         pupil1.foreName = 'foreName'
         pupil1.lastName = 'lastName'
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
@@ -41,7 +41,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('with specific properties', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
         expect(Object.keys(pupils[ 0 ]).length).toBe(6)
         done()
@@ -53,10 +53,10 @@ describe('pin-generation.service', () => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         const pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
@@ -67,7 +67,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('without expired pins', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(1)
         done()
       })
@@ -78,10 +78,10 @@ describe('pin-generation.service', () => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         const pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = 'f55sg'
         pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(3).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
@@ -92,7 +92,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('without expired pins', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(0)
         done()
       })
@@ -103,11 +103,11 @@ describe('pin-generation.service', () => {
         const pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         const pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '595cd5416e5ca13e48ed2520'
         pupil2.pin = ''
         pupil2.foreName = pupil1.foreName
         pupil2.lastName = pupil1.lastName
-        sandbox.mock(pupilDataService).expects('getSortedPupils').resolves([ pupil1, pupil2 ])
+        sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
         proxyquire('../../services/pin-generation.service', {
@@ -117,14 +117,14 @@ describe('pin-generation.service', () => {
         })
       })
       it('should display DoB', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
         expect(pupils[ 0 ].showDoB).toBeTruthy()
         expect(pupils[ 1 ].showDoB).toBeTruthy()
         done()
       })
       it('should display middle names', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock._id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
         expect(pupils[ 0 ].showMiddleNames).toBeTruthy()
         expect(pupils[ 1 ].showMiddleNames).toBeTruthy()
@@ -133,51 +133,26 @@ describe('pin-generation.service', () => {
     })
   })
 
-  describe('generatePupilPins', () => {
-    describe('should generate pin and expire timestamp', () => {
+  describe('updatePupilPins', () => {
+    describe('should generate pin and execute update', () => {
       let pupil1
       let pupil2
       beforeEach(() => {
         pupil1 = Object.assign({}, pupilMock)
         pupil1.pin = ''
         pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
+        pupil2.id = '2'
         pupil2.pin = ''
-        sandbox.mock(pupilDataService).expects('findOne').twice().resolves(pupil1)
+        sandbox.mock(pupilDataService).expects('sqlFindByIds').resolves([pupil1, pupil2])
+        spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
         proxyquire('../../services/pin-generation.service', {
           '../../services/pupil.service': pupilDataService
         })
       })
-      it('when pin has not been generated and include only numbers', async (done) => {
-        const pupils = await pinGenerationService.generatePupilPins([ pupil1._id, pupil2._id ])
-        expect(pupils[ 0 ].pin.length).toBe(4)
-        expect(/[a-z]/i.test(pupils[ 0 ].pin)).toBe(false)
-        expect(pupils[ 0 ].pinExpiresAt).toBeDefined()
-        done()
-      })
-    })
-
-    describe('does not return generate pin and timestamp', () => {
-      let pupil1
-      let pupil2
-      beforeEach(() => {
-        pupil1 = Object.assign({}, pupilMock)
-        pupil1.pin = 'fdsgs'
-        pupil1.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        pupil2 = Object.assign({}, pupilMock)
-        pupil2._id = '595cd5416e5ca13e48ed2520'
-        pupil2.pin = 'fdsgs'
-        pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
-        sandbox.useFakeTimers(moment().startOf('day').subtract(1, 'months').valueOf())
-        sandbox.mock(pupilDataService).expects('findOne').twice().resolves(pupil1)
-        proxyquire('../../services/pin-generation.service', {
-          '../../services/pupil.service': pupilDataService
-        })
-      })
-      it('when existing expiration date is before same day 4pm', async (done) => {
-        const pin = pupil1.pin
-        const pupils = await pinGenerationService.generatePupilPins([ pupil1._id, pupil2._id ])
-        expect(pupils[ 0 ].pin).toBe(pin)
+      it('when pin has not been generated', async (done) => {
+        await pinGenerationService.updatePupilPins([ pupil1, pupil2 ])
+        const data = [ pupil1, pupil2 ].map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+        expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data)
         done()
       })
     })

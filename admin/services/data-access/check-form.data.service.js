@@ -3,7 +3,6 @@
 const CheckForm = require('../../models/check-form')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const moment = require('moment')
 const winston = require('winston')
 
 const checkFormDataService = {

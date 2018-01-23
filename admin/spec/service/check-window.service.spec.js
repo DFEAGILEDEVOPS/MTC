@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect it beforeEach afterEach fail xdescribe xit spyOn */
+/* global describe expect it beforeEach fail spyOn */
 
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
@@ -89,13 +89,16 @@ describe('check-window.service', () => {
     })
 
     it('should set canRemove to true when checkStartDate is today', () => {
+      const dateService = require('../../services/date.service')
+      const today = moment('2017-09-01')
+      spyOn(dateService, 'utcNowAsMoment').and.returnValue(today)
       const isCurrent = false
       const checkWindows = [
         {
           id: 1,
-          checkEndDate: moment().add(7, 'days'),
-          checkStartDate: moment(),
-          adminStartDate: moment().subtract(5, 'days'),
+          checkEndDate: today.add(7, 'days'),
+          checkStartDate: today,
+          adminStartDate: today.subtract(5, 'days'),
           name: 'Future Test Window',
           formCount: 2,
           isDeleted: false

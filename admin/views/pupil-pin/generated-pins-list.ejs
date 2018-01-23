@@ -116,7 +116,7 @@
             <% pupils.forEach( (pupil) => { %>
             <tr>
                 <td>
-                    <label for="pupil-<%= pupil._id %>">
+                    <label for="pupil-<%= pupil.id %>">
                         <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                     </label>
                     <% if (pupil.showDoB) { %>
@@ -126,7 +126,7 @@
                     <% } %>
                 </td>
                 <td>
-                    <label for="pupil-<%= pupil._id %>">
+                    <label for="pupil-<%= pupil.id %>">
                         <%= pupil.pin %>
                     </label>
                 </td>
