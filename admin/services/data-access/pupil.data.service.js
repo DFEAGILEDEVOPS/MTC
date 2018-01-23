@@ -116,8 +116,10 @@ pupilDataService.findOne = async function (options) {
  * Find and return non-lean pupils by criteria in `options`
  * @param options
  * @return {Promise.<{Object}>}
+ * @deprecated create a new custom sql method
  */
 pupilDataService.find = async function (options) {
+  winston.warn('*** pupilDataService.find is deprecated ***')
   return Pupil.find(options).lean().exec()
 }
 
