@@ -45,7 +45,6 @@ pinService.expirePupilPin = async (token, checkCode) => {
   const currentTimeStamp = moment.utc()
   await checkDataService.sqlUpdateCheckStartedAt(checkCode, currentTimeStamp)
   if (!pupil.isTestAccount) {
-    // await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
     pupil.pinExpiresAt = currentTimeStamp
     pupil.pin = null
     await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
