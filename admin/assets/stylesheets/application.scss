@@ -418,12 +418,6 @@ table.spacious {
   th, td {
     &:first-child {
       white-space: nowrap;
-      //width: 50%;
-    }
-
-    &:not(:first-child) {
-      white-space: nowrap;
-      //width: 25%;
     }
   }
 
