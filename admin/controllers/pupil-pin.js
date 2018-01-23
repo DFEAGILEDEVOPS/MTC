@@ -1,7 +1,6 @@
 const R = require('ramda')
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')
@@ -58,11 +57,9 @@ const postGeneratePins = async (req, res, next) => {
   if (!pupilsList) {
     return res.redirect('/pupil-pin/generate-pins-list')
   }
-  let submittedPupils
   let school
   try {
-    submittedPupils = await pinGenerationService.generatePupilPins(pupilsList)
-    await pupilDataService.updateMultiple(submittedPupils)
+    await pinGenerationService.updatePupilPins(pupilsList)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
