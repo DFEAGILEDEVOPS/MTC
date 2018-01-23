@@ -202,31 +202,64 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
   if (pupilIds.length < 1) {
     return false
   }
-
-  // First, delete all pupils for the selected groupId
-  const sqlDelete = `DELETE FROM ${sqlService.adminSchema}.[pupilGroup] 
-    WHERE group_id=@groupId`
-
-  const paramsDel = [
+  const params = [
     {
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
     }
   ]
-  await sqlService.modify(sqlDelete, paramsDel)
+  const insertSql = []
+  for (let index = 0; index < pupilIds.length; index++) {
+    const pupilId = pupilIds[index]
+    insertSql.push(`(@pg${index},@pp${index})`)
+    params.push({
+      name: `pg${index}`,
+      value: groupId,
+      type: TYPES.Int
+    })
+    params.push({
+      name: `pp${index}`,
+      value: pupilId,
+      type: TYPES.Int
+    })
+  }
 
-  // Next, insert passed pupils
-  let sqlAppend = ''
+  const sql = `
+  BEGIN TRY
+  BEGIN TRANSACTION GroupPupilUpdate
+    DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+    INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
+    VALUES ${insertSql.join(',')}; 
+ COMMIT TRANSACTION GroupPupilUpdate
+END TRY
 
-  pupilIds.forEach(p => {
-    if (p) { sqlAppend += `(${groupId}, ${p}), ` }
-  })
+BEGIN CATCH
+  IF (@@TRANCOUNT > 0)
+   BEGIN
+      ROLLBACK TRANSACTION GroupPupilUpdate
+      PRINT 'Error detected, all changes reversed'
+   END
+  DECLARE @ErrorMessage NVARCHAR(4000);
+    DECLARE @ErrorSeverity INT;
+    DECLARE @ErrorState INT;
 
-  // 'sqlService.modify' doesn't seem to like @values as a param
-  const sqlInsert = `INSERT INTO ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id) VALUES ${sqlAppend.substr(0, sqlAppend.length - 2)}`
+    SELECT @ErrorMessage = ERROR_MESSAGE(),
+           @ErrorSeverity = ERROR_SEVERITY(),
+           @ErrorState = ERROR_STATE();
 
-  await sqlService.modify(sqlInsert, [])
+    -- Use RAISERROR inside the CATCH block to return
+    -- error information about the original error that
+    -- caused execution to jump to the CATCH block.
+    RAISERROR (@ErrorMessage, -- Message text.
+               @ErrorSeverity, -- Severity.
+               @ErrorState -- State.
+               );
+END CATCH
+  `
+  console.log(params)
+  console.log(sql)
+  return sqlService.modify(sql, params)
 }
 
 /**
