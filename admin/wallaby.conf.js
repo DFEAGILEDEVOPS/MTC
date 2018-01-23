@@ -1,3 +1,8 @@
+/*
+  This file configures the wallaby.js interactive test runner - https://wallabyjs.com/
+  Docs: https://wallabyjs.com/docs/config/overview.html
+*/
+
 module.exports = function (w) {
   return {
     files: [
