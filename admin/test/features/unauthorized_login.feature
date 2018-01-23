@@ -1,4 +1,4 @@
-@unauthorized_login
+@unauthorized_login @login
 Feature:
   Unauthorized login
 

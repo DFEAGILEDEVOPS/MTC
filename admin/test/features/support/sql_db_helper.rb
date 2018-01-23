@@ -54,6 +54,14 @@ class SqlDbHelper
     @array_of_pupils = result.each{|row| row.map}
   end
 
+  def self.pupil_pins
+    sql = "SELECT * FROM [mtc_admin].[pupil]"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_pins = result.each{|row| row.map}
+    result.cancel
+    @array_of_pins.map {|row| row['pin']}
+  end
+
   def self.reset_pin(forename,lastname,school_id,flag=nil)
     sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -118,7 +126,7 @@ class SqlDbHelper
   end
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
-    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupilId, checkCode, checkWindowId, checkFormId, pupilLoginDate, checkStartedAt) VALUES ('#{updatedime}', '#{createdTime}', '#{pupil_id}', '40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6', '#{check_window_id}', '100', '#{pupilLoginDate}', '#{checkStartedTime}' )"
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, pupilLoginDate, startedAt) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{pupilLoginDate}', '#{checkStartedTime}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end

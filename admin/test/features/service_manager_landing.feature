@@ -1,4 +1,4 @@
-@service_manager_landing
+@service_manager_landing @local
 Feature: Service manager homepage
 
   Scenario: Service Manager are taken to the service manager homepage

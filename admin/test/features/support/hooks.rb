@@ -62,7 +62,7 @@ Before("@no_pin") do
     pupil_with_pin.each do|pupil|
       pupil_lastname = pupil.split(',')[0]
       pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-      MongoDbHelper.reset_pin(pupil_firstname, pupil_lastname, 9991001)
+      SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 9991001)
     end
   end
   visit Capybara.app_host + '/sign-out'

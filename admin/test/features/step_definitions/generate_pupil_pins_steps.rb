@@ -28,7 +28,7 @@ Given(/^I have a pupil with active pin$/) do
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
   @pupil_forename = @details_hash[:first_name]
-  MongoDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001, "abc12345")
+  SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001, "2345")
 end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -120,8 +120,8 @@ When(/^I have generated a pin for a pupil$/) do
 
   ct = Time.now
   newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
-  MongoDbHelper.set_school_pin_expiry('1001', newTime)
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  SqlDbHelper.set_school_pin_expiry('1001', newTime)
 
   step "I am on the generate pupil pins page"
 end
@@ -129,7 +129,7 @@ end
 When(/^I expired the pupil pin$/) do
   ct = Time.now
   newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
 end
 
 Given(/^I have generated pin for all pupil$/) do
@@ -173,9 +173,9 @@ Given(/^I have generated pins for multiple pupils$/) do
   @pupil_names_arr.each do|pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    MongoDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
+    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
   end
-  MongoDbHelper.set_school_pin_expiry('1001', newTime)
+  SqlDbHelper.set_school_pin_expiry('1001', newTime)
   step "I am on the generate pupil pins page"
 end
 
@@ -184,20 +184,20 @@ Then(/^each pin should be displayed next to the pupil its assigned to$/) do
 end
 
 Then(/^the pupil pin should be unique$/) do
-  pins_before = MongoDbHelper.pupil_pins
-  expect(MongoDbHelper.pupil_pins.uniq).to eql pins_before
+  pins_before = SqlDbHelper.pupil_pins
+  expect(SqlDbHelper.pupil_pins.uniq).to eql pins_before
 end
 
 Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  wait_until{!(MongoDbHelper.pupil_details(pupil_upn)[:pin]).nil?}
-  pupil_pin = MongoDbHelper.pupil_details(pupil_upn)[:pin]
-  expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin
+  wait_until{!(SqlDbHelper.pupil_details(pupil_upn)['pin']).nil?}
+  pupil_pin = SqlDbHelper.pupil_details(pupil_upn)['pin']
+  expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|
-  school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
-  school_password = MongoDbHelper.find_school(school_id)[0]['schoolPin']
+  school_id = SqlDbHelper.find_teacher(teacher)[0]['school_id']
+  school_password = SqlDbHelper.find_school(school_id)['pin']
   expect(generated_pins_page.school_password.text).to eql school_password
 end
 

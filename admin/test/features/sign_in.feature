@@ -1,4 +1,4 @@
-@sign_in
+@sign_in @local
 Feature:
   As part of test development
   I want to be asked to autenticate
