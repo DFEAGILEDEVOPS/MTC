@@ -14,7 +14,6 @@ const pinGenerationService = require('../../services/pin-generation.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
 const dateService = require('../../services/date.service')
 const qrService = require('../../services/qr.service')
-const pupilMock = require('../mocks/pupil')
 
 describe('pupilPin controller:', () => {
   function getRes () {

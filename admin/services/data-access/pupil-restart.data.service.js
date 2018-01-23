@@ -1,6 +1,5 @@
 'use strict'
 const { TYPES } = require('tedious')
-const moment = require('moment')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 const PupilRestart = require('../../models/pupil-restart')
