@@ -1,7 +1,6 @@
 'use strict'
 const csv = require('fast-csv')
 const moment = require('moment')
-const mongoose = require('mongoose')
 
 const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
 const attendanceService = require('../services/attendance.service')
@@ -230,30 +229,16 @@ const getSubmitAttendance = async (req, res, next) => {
   })
 }
 
+/**
+ * @deprecated potentially superfluous - attached to HDF
+ */
 const postSubmitAttendance = async (req, res, next) => {
   const attendees = req.body[ 'attendee' ]
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-  const data = Object.values(req.body[ 'attendee' ] || [])
-  let ids = data.map(id => mongoose.Types.ObjectId(id))
-
-  // TODO: extract this dataservice call to a service
-  // Update attendance for selected pupils
-  await pupilDataService.update(
-    { _id: { $in: ids } },
-    { $set: { hasAttended: true } },
-    { multi: true }
-  )
-
-  // TODO: extract this dataservice call to a service
-  // Expire all pins for school pupils
-  await pupilDataService.update(
-    { 'pupils.school': req.user.School },
-    { $set: { pinExpired: true } },
-    { multi: true }
-  )
-
+//  const data = Object.values(req.body[ 'attendee' ] || [])
+  // TODO consider removal as part of HDF refresh
   return res.redirect('/school/declaration-form')
 }
 

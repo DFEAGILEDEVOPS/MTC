@@ -77,7 +77,7 @@ pupilRestartDataService.sqlCreate = async (data) => {
  * @return {Promise.<*>}
  */
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
-  const sql = `SELECT COUNT(*) 
+  const sql = `SELECT COUNT(*) AS [cnt]
   FROM ${sqlService.adminSchema}.[pupilRestart] 
   WHERE pupil_id=@pupilId`
   const params = [
@@ -88,7 +88,8 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
     }
   ]
   const result = await sqlService.query(sql, params)
-  return R.head(result)
+  const obj = R.head(result)
+  return obj['cnt']
 }
 
 /**
