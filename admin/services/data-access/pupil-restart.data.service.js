@@ -198,7 +198,7 @@ pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
 pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   const params = [
     {
-      name: 'pupilId',
+      name: 'pupil_id',
       value: pupilId,
       type: TYPES.Int
     },
@@ -209,8 +209,8 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
     }
   ]
   const sql = `UPDATE ${sqlService.adminSchema}.[pupilRestart] 
-  SET isDeleted=1, deletedByUser_id=@userId  
-  WHERE [pupil_id]=@pupilId`
+  SET isDeleted=1, deletedByUser_id=@deletedByUser_id  
+  WHERE pupil_id = @pupil_id`
   return sqlService.modify(sql, params)
 }
 
