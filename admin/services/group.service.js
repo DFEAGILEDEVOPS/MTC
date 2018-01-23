@@ -13,8 +13,8 @@ groupService.getGroups = async function (schoolId) {
 
 /**
  * Get pupils filtered by schoolId and groupId.
- * @param schoolId
- * @param groupIdToExclude
+ * @param schoolId required.  the school context
+ * @param groupIdToExclude optionally exclude a single group from the returned set
  * @returns {Promise<*>}
  */
 groupService.getPupils = async function (schoolId, groupIdToExclude) {
