@@ -4,13 +4,12 @@ module.exports = function (w) {
       'controllers/**/*.js',
       'services/**/*.js',
       'lib/**/*.js',
-      'models/**/*.js',
-      'spec/mocks/*.js',
+      { pattern: 'models/**/*.js', instrument: false, load: true, ignore: false },
+      { pattern: 'spec/mocks/*.js', instrument: false, load: true, ignore: false },
+      { pattern: 'data/fixtures/*.csv', instrument: false, load: true, ignore: false },
       'config.js',
-      'utils.js',
-      'data/fixtures/*.csv'
+      'utils.js'
     ],
-
     tests: [
       'spec/**/*.spec.js'
     ],
@@ -18,6 +17,7 @@ module.exports = function (w) {
       type: 'node',
       kind: 'chrome'
     },
-    testFramework: 'jasmine'
+    testFramework: 'jasmine',
+    workers: {recycle: true}
   }
 }
