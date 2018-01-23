@@ -1,7 +1,6 @@
 const R = require('ramda')
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
 const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')

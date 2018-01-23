@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect it beforeEach afterEach fail xdescribe xit spyOn */
+/* global describe expect it beforeEach fail spyOn */
 
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
