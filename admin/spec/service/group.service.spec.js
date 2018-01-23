@@ -51,7 +51,8 @@ describe('group.service', () => {
 
     it('should return group document filtered by group id', async (done) => {
       const groupId = '123456abcde'
-      const group = await groupService.getGroupById(groupId)
+      const schoolId = 123
+      const group = await groupService.getGroupById(groupId, schoolId)
       expect(group).toEqual(groupMock)
       done()
     })
@@ -71,7 +72,8 @@ describe('group.service', () => {
       })
 
       it('should update group', async (done) => {
-        const group = await service.update(1, groupMock)
+        const schoolId = 123
+        const group = await service.update(1, groupMock, schoolId)
         expect(group).toBeTruthy()
         done()
       })
@@ -89,7 +91,8 @@ describe('group.service', () => {
 
       it('should not update group', async (done) => {
         try {
-          const group = await service.update(1, groupMock)
+          const schoolId = 123
+          const group = await service.update(1, groupMock, schoolId)
           expect(group).toEqual(groupMock)
           done()
         } catch (error) {
@@ -114,7 +117,8 @@ describe('group.service', () => {
       })
 
       it('should create group', async (done) => {
-        const group = await service.create(groupMock.name, [6, 2, 3])
+        const schoolId = 123
+        const group = await service.create(groupMock.name, [6, 2, 3], schoolId)
         expect(group).toEqual(groupMock.id)
         done()
       })
@@ -132,7 +136,8 @@ describe('group.service', () => {
 
       it('should fail to create a group', async (done) => {
         try {
-          await service.create(groupMock, [6, 2, 3])
+          const schoolId = 123
+          await service.create(groupMock, [6, 2, 3], schoolId)
         } catch (error) {
           expect(error.message).toBe('Failed to create group')
           done()
