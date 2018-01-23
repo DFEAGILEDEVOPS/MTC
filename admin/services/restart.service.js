@@ -24,7 +24,7 @@ restartService.totalChecksAllowed = restartService.totalRestartsAllowed + 1
 restartService.getPupils = async (dfeNumber) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) throw new Error(`School [${dfeNumber}] not found`)
-  let pupils = await pupilDataService.getSortedPupils(dfeNumber, 'lastName', 'asc')
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, 'lastName', 'asc')
   pupils = await bluebird.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
     if (isPupilEligible) return p
