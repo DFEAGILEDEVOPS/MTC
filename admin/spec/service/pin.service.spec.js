@@ -43,15 +43,6 @@ describe('pin.service', () => {
       expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber)
     })
 
-    it('formats the dateOfBirth', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
-      await service.getPupilsWithActivePins(dfeNumber)
-      const data = pupilIdentificationFlagService.addIdentificationFlags.calls.mostRecent().args[0]
-      expect(data[0].dob).toBeDefined()
-      expect(data[0].dateOfBirth).toBeUndefined()
-    })
-
     it('Adds identification flags to the pupil when they have the same name', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()

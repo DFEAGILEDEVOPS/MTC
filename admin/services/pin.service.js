@@ -10,16 +10,13 @@ const pinService = {}
 
 /**
  * Get pupils with active pins
- * @param schoolId
+ * @param dfeNumber
  * @returns {Array}
  */
 pinService.getPupilsWithActivePins = async (dfeNumber) => {
-  const pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
-  const pupilData = pupils
-    .map(({ id, pin, dateOfBirth, foreName, middleNames, lastName }) =>
-      ({ id, pin, dob: dateOfBirth.format('DD MMM YYYY'), foreName, middleNames, lastName }))
-  const pupilDataWithIdentFlags = pupilIdentificationFlagService.addIdentificationFlags(pupilData)
-  return pupilDataWithIdentFlags
+  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
+  return pupils
 }
 
 /**

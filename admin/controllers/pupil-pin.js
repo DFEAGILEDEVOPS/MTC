@@ -58,11 +58,9 @@ const postGeneratePins = async (req, res, next) => {
   if (!pupilsList) {
     return res.redirect('/pupil-pin/generate-pins-list')
   }
-  let submittedPupils
   let school
   try {
-    submittedPupils = await pinGenerationService.generatePupilPins(pupilsList)
-    await pupilDataService.updateMultiple(submittedPupils)
+    await pinGenerationService.updatePupilPins(pupilsList)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
