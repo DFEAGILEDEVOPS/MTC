@@ -110,8 +110,7 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
     }
   ]
   const result = await sqlService.query(sql, params)
-  const count = R.head(result)
-  return count
+  return R.head(result)
 }
 
 /**
