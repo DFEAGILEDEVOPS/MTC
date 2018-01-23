@@ -6,7 +6,7 @@ const XRegExp = require('xregexp')
 const { isEmpty } = require('validator')
 const groupDataService = require('../../services/data-access/group.data.service')
 
-module.exports.validate = async (groupData, oldName) => {
+module.exports.validate = async (groupData, oldName, schoolId) => {
   let validationError = new ValidationError()
   let isValid = false
 
@@ -30,7 +30,7 @@ module.exports.validate = async (groupData, oldName) => {
 
   // Don't query the DB if at this point group name is not valid.
   if (((oldName && oldName.toLowerCase() !== groupData.name.trim().toLowerCase()) || !oldName) && !isValid) {
-    const group = await groupDataService.sqlFindGroupByName(groupData.name.trim())
+    const group = await groupDataService.sqlFindGroupByName(groupData.name.trim(), schoolId)
     if (group) {
       validationError.addError('name', groupData.name.trim() + groupErrorMessages.nameAlreadyExists)
     }

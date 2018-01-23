@@ -92,7 +92,7 @@ const addGroup = async (req, res, next) => {
   }
 
   try {
-    validationError = await groupValidator.validate(req.body)
+    validationError = await groupValidator.validate(req.body, req.user.schoolId)
   } catch (error) {
     next(error)
   }
@@ -165,7 +165,7 @@ const editGroup = async (req, res, next) => {
     isDeleted: false
   }
 
-  const validationError = await groupValidator.validate(req.body, oldGroup.name)
+  const validationError = await groupValidator.validate(req.body, oldGroup.name, req.user.schoolId)
   if (validationError.hasError()) {
     let pupilsList
     let selectedPupils = []
