@@ -114,12 +114,12 @@ describe('pupil-restart.data.service', () => {
 
   describe('#sqlGetNumberOfRestartsByPupil', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([1]))
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ 'cnt': 1 }]))
       service = require('../../../services/data-access/pupil-restart.data.service')
     })
 
     it('it makes the expected calls', async () => {
-      const res = await service.sqlGetNumberOfRestartsByPupil(pupilMock._id)
+      const res = await service.sqlGetNumberOfRestartsByPupil(pupilMock.id)
       expect(sqlService.query).toHaveBeenCalled()
       expect(res).toBe(1)
     })

@@ -17,36 +17,31 @@ const apiResponse = require('./api-response')
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
   if (!pupilPin || !schoolPin) return apiResponse.badRequest(res)
-  let config, pupil, questions, token
-
+  let config, data, questions, token
   try {
-    pupil = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+    data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
     return apiResponse.unauthorised(res)
   }
-
-  const pupilData = pupilAuthenticationService.getPupilDataForSpa(pupil)
-
+  const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
   const schoolData = {
-    id: pupil.school._id,
-    name: pupil.school.name
+    id: data.school.id,
+    name: data.school.name
   }
-
   try {
-    config = await configService.getConfig(pupil)
+    config = await configService.getConfig(data.pupil)
   } catch (error) {
     return apiResponse.serverError(res)
   }
-
   try {
-    token = await jwtService.createToken(pupil)
+    token = await jwtService.createToken(data.pupil)
   } catch (error) {
     return apiResponse.serverError(res)
   }
 
   // start the check
   try {
-    const startCheckResponse = await checkStartService.startCheck(pupil._id)
+    const startCheckResponse = await checkStartService.startCheck(data.pupil.id)
     questions = checkFormService.prepareQuestionData(startCheckResponse.checkForm)
     pupilData.checkCode = startCheckResponse.checkCode
   } catch (error) {

@@ -160,8 +160,8 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(new School({ _id: 1, name: 'Test School' }))
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
       spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
@@ -174,8 +174,8 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = { body: {} }
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
@@ -186,8 +186,8 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
