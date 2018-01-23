@@ -18,8 +18,7 @@ const groupPupilsPage = async (req, res, next) => {
   let pupilsPerGroup
 
   try {
-    groups = await groupService.getGroups()
-    pupilsPerGroup = await groupService.getPupilsPerGroup()
+    groups = await groupService.getGroups(req.user.schoolId)
   } catch (error) {
     next(error)
   }
@@ -47,7 +46,7 @@ const manageGroupPage = async (req, res, next) => {
 
   if (req.params.groupId) {
     try {
-      group = await groupService.getGroupById(req.params.groupId)
+      group = await groupService.getGroupById(req.params.groupId, req.user.schoolId)
     } catch (error) {
       return next(error)
     }
@@ -127,7 +126,7 @@ const addGroup = async (req, res, next) => {
   }
   let groupId
   try {
-    groupId = await groupService.create(group.name, group.pupils)
+    groupId = await groupService.create(group.name, group.pupils, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
@@ -154,7 +153,7 @@ const editGroup = async (req, res, next) => {
   let oldGroup
 
   try {
-    oldGroup = await groupService.getGroupById(req.body.groupId)
+    oldGroup = await groupService.getGroupById(req.body.groupId, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
@@ -196,7 +195,7 @@ const editGroup = async (req, res, next) => {
   }
 
   try {
-    group = await groupService.update(req.body.groupId, group)
+    group = await groupService.update(req.body.groupId, group, req.user.schoolId)
   } catch (error) {
     return next(error)
   }

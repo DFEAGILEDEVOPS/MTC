@@ -51,7 +51,6 @@ describe('group controller', () => {
       describe('(happy path)', () => {
         beforeEach(() => {
           spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-          spyOn(groupService, 'getPupilsPerGroup').and.returnValue(groupMock)
           controller = require('../../controllers/group')
         })
 

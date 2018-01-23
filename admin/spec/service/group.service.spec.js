@@ -24,7 +24,8 @@ describe('group.service', () => {
     })
 
     it('should return groups', async (done) => {
-      const groups = await groupService.getGroups()
+      const schoolId = 1
+      const groups = await groupService.getGroups(schoolId)
       expect(groups).toEqual(groupsMock)
       done()
     })
@@ -138,22 +139,6 @@ describe('group.service', () => {
           done()
         }
       })
-    })
-  })
-
-  describe('#sqlFindPupilsPerGroup', () => {
-    beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindPupilsPerGroup').and.returnValue(pupilsPerGroupMock)
-    })
-
-    it('should return the number of pupils per group', async (done) => {
-      const expected = []
-      expected[1] = 3
-      expected[2] = 1
-      expected[3] = 5
-      const pupilsPerGroup = await groupService.getPupilsPerGroup()
-      expect(pupilsPerGroup).toEqual(expected)
-      done()
     })
   })
 })

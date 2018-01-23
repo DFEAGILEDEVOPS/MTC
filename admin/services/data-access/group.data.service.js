@@ -28,12 +28,24 @@ groupDataService.getGroups = async function (query) {
  * Get active groups (non-soft-deleted).
  * @returns {Promise<*>}
  */
-groupDataService.sqlFindGroups = async () => {
-  const sql = `SELECT g.* 
-    FROM ${sqlService.adminSchema}.[group] g 
-    WHERE g.isDeleted=0 
-    ORDER BY name ASC`
-  return sqlService.query(sql)
+groupDataService.sqlFindGroups = async (schoolId) => {
+  const sql = `
+  SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount 
+  FROM ${sqlService.adminSchema}.[group] g
+  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg 
+  ON g.id = pg.group_id
+  WHERE g.isDeleted=0
+  AND g.school_id=@schoolId
+  GROUP BY g.id, g.name
+  ORDER BY name ASC`
+  const params = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    }
+  ]
+  return sqlService.query(sql, params)
 }
 
 /**
@@ -51,15 +63,20 @@ groupDataService.getGroup = async function (query) {
  * @param groupId
  * @returns {Promise<void>}
  */
-groupDataService.sqlFindGroup = async (groupId) => {
-  const sql = `SELECT g.* 
-    FROM ${sqlService.adminSchema}.[group] g 
-    WHERE g.id=@groupId`
+groupDataService.sqlFindGroup = async (groupId, schoolId) => {
+  const sql = `SELECT id, [name] 
+    FROM ${sqlService.adminSchema}.[group]
+    WHERE id=@groupId AND school_id=@schoolId`
 
   const params = [
     {
       name: 'groupId',
       value: groupId,
+      type: TYPES.Int
+    },
+    {
+      name: 'schoolId',
+      value: schoolId,
       type: TYPES.Int
     }
   ]
@@ -74,7 +91,7 @@ groupDataService.sqlFindGroup = async (groupId) => {
  * @returns {Promise<void>}
  */
 groupDataService.sqlFindGroupByName = async (groupName) => {
-  const sql = `SELECT g.* 
+  const sql = `SELECT id, [name] 
     FROM ${sqlService.adminSchema}.[group] g 
     WHERE isDeleted=0
     AND g.name=@groupName`
@@ -144,7 +161,7 @@ groupDataService.update = async function (id, data) {
  * @param name
  * @returns {Promise}
  */
-groupDataService.sqlUpdate = async (id, name) => {
+groupDataService.sqlUpdate = async (id, name, schoolId) => {
   const params = [
     {
       name: 'id',
@@ -155,24 +172,18 @@ groupDataService.sqlUpdate = async (id, name) => {
       name: 'name',
       value: name,
       type: TYPES.NVarChar
+    },
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
     }
   ]
   return sqlService.modify(
     `UPDATE ${sqlService.adminSchema}.[group] 
     SET name=@name 
-    WHERE [id]=@id`,
+    WHERE [id]=@id AND school_id=@schoolId`,
     params)
-}
-
-/**
- * Get pupils per group.
- * @returns {Promise<*>}
- */
-groupDataService.sqlFindPupilsPerGroup = async () => {
-  const sql = `SELECT group_id, COUNT (pupil_id) AS total_pupils 
-    FROM ${sqlService.adminSchema}.[pupilGroup] 
-    GROUP BY group_id`
-  return sqlService.query(sql)
 }
 
 /**

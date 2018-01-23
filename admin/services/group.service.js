@@ -7,8 +7,8 @@ const groupService = {}
  * Get groups.
  * @returns {Promise<Promise|*>}
  */
-groupService.getGroups = async function () {
-  return groupDataService.sqlFindGroups()
+groupService.getGroups = async function (schoolId) {
+  return groupDataService.sqlFindGroups(schoolId)
 }
 
 /**
@@ -27,9 +27,9 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
  * @param groupId
  * @returns {Promise<*>}
  */
-groupService.getGroupById = async function (groupId) {
+groupService.getGroupById = async function (groupId, schoolId) {
   if (!groupId) { return false }
-  return groupDataService.sqlFindGroup(groupId)
+  return groupDataService.sqlFindGroup(groupId, schoolId)
 }
 
 /**
@@ -38,11 +38,11 @@ groupService.getGroupById = async function (groupId) {
  * @param group
  * @returns {Promise<boolean>}
  */
-groupService.update = async (id, group) => {
+groupService.update = async (id, group, schoolId) => {
   if (!id || !group || !group.name) { return false }
   return new Promise(async (resolve, reject) => {
     try {
-      await groupDataService.sqlUpdate(id, group.name)
+      await groupDataService.sqlUpdate(id, group.name, schoolId)
       await groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
       resolve(group)
     } catch (error) {
@@ -57,26 +57,15 @@ groupService.update = async (id, group) => {
  * @param groupPupils
  * @returns {number} id of inserted group
  */
-groupService.create = async (groupName, groupPupils) => {
+groupService.create = async (groupName, groupPupils, schoolId) => {
   if (!groupName) { return false }
   try {
-    const newGroup = await groupDataService.sqlCreate({ name: groupName })
+    const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
     await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
     return newGroup.insertId
   } catch (error) {
     throw new Error('Failed to create group')
   }
-}
-
-/**
- * Get pupils per group.
- * @returns {Promise<Array>}
- */
-groupService.getPupilsPerGroup = async () => {
-  let data = await groupDataService.sqlFindPupilsPerGroup()
-  let pupilsPerGroup = []
-  data.map((g) => { pupilsPerGroup[g.group_id] = g.total_pupils })
-  return pupilsPerGroup
 }
 
 module.exports = groupService
