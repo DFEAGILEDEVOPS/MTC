@@ -125,15 +125,15 @@ const addGroup = async (req, res, next) => {
       selectedPupils
     })
   }
-
+  let groupId
   try {
-    group = await groupService.create({'name': group.name}, group.pupils)
+    groupId = await groupService.create(group.name, group.pupils)
   } catch (error) {
     return next(error)
   }
 
   req.flash('info', 'New group created')
-  req.flash('groupId', group.id)
+  req.flash('groupId', groupId)
   return res.redirect('/school/group-pupils')
 }
 

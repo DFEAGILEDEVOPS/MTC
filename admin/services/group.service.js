@@ -53,16 +53,16 @@ groupService.update = async (id, group) => {
 
 /**
  * Create group.
- * @param group
+ * @param groupName
  * @param groupPupils
- * @returns {Promise<*>}
+ * @returns {number} id of inserted group
  */
-groupService.create = async (group, groupPupils) => {
-  if (!group) { return false }
+groupService.create = async (groupName, groupPupils) => {
+  if (!groupName) { return false }
   try {
-    const newGroup = await groupDataService.sqlCreate(group)
+    const newGroup = await groupDataService.sqlCreate({ name: groupName })
     await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
-    return group
+    return newGroup.insertId
   } catch (error) {
     throw new Error('Failed to create group')
   }

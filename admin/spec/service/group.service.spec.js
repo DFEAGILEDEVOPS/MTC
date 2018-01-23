@@ -107,15 +107,15 @@ describe('group.service', () => {
       beforeEach(() => {
         service = proxyquire('../../services/group.service', {
           '../services/data-access/group.data.service': {
-            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.resolve({'newGroup': {'id': 1}}) }),
+            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.resolve({'insertId': 1}) }),
             sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
           }
         })
       })
 
       it('should create group', async (done) => {
-        const group = await service.create(groupMock, [6, 2, 3])
-        expect(group).toEqual(groupMock)
+        const group = await service.create(groupMock.name, [6, 2, 3])
+        expect(group).toEqual(groupMock.id)
         done()
       })
     })
