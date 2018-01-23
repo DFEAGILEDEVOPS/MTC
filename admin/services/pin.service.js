@@ -1,5 +1,6 @@
 const moment = require('moment')
 const ObjectId = require('mongoose').Types.ObjectId
+const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -39,12 +40,15 @@ pinService.getActiveSchool = async (dfeNumber) => {
  */
 pinService.expirePupilPin = async (token, checkCode) => {
   const decoded = jwtService.decode(token)
-  const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
+  const pupil = await pupilDataService.sqlFindOneById(decoded.sub)
   // TODO should this use date service???
   const currentTimeStamp = moment.utc()
   await checkDataService.sqlUpdateCheckStartedAt(checkCode, currentTimeStamp)
   if (!pupil.isTestAccount) {
-    await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
+    // await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
+    pupil.pinExpiresAt = currentTimeStamp
+    pupil.pin = null
+    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
   }
 }
 
@@ -58,7 +62,7 @@ pinService.expireMultiplePins = async (pupilIds) => {
   let pupils = []
   for (let index = 0; index < pupilIds.length; index++) {
     const id = pupilIds[ index ]
-    const pupil = await pupilDataService.findOne({_id: ObjectId(id)})
+    const pupil = await pupilDataService.sqlFindOneById(id)
     if (pupil.pin || pupil.pinExpiresAt) pupils.push(pupil)
   }
   if (pupils.length === 0) return
@@ -67,7 +71,8 @@ pinService.expireMultiplePins = async (pupilIds) => {
     p.pinExpiresAt = null
     return p
   })
-  return pupilDataService.updateMultiple(pupils)
+  const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
 module.exports = pinService

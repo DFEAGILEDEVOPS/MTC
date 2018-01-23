@@ -103,7 +103,7 @@ describe('pin.service', () => {
     describe('for actual users', () => {
       beforeEach(() => {
         let pupil = Object.assign({}, pupilMock)
-        sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
+        sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
         sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
         proxyquire('../../services/pin.service', {
           '../../services/data-access/pupil.data.service': pupilDataService,
@@ -111,10 +111,10 @@ describe('pin.service', () => {
         })
       })
       it('it expire pin and set check start time ', async () => {
-        spyOn(pupilDataService, 'update').and.returnValue(null)
+        spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
         await pinService.expirePupilPin('token', 'checkCode')
-        expect(pupilDataService.update).toHaveBeenCalled()
+        expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
         expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
     })
@@ -122,7 +122,7 @@ describe('pin.service', () => {
       beforeEach(() => {
         let pupil = Object.assign({}, pupilMock)
         pupil.isTestAccount = true
-        sandbox.mock(pupilDataService).expects('findOne').resolves(pupil)
+        sandbox.mock(pupilDataService).expects('sqlFindOneById').resolves(pupil)
         sandbox.mock(jwtService).expects('decode').resolves({ sub: '49g872ebf624b75400fbee09' })
         proxyquire('../../services/pin.service', {
           '../../services/data-access/pupil.data.service': pupilDataService,
@@ -130,10 +130,10 @@ describe('pin.service', () => {
         })
       })
       it('it should not expire pin for developer test account', async () => {
-        spyOn(pupilDataService, 'update').and.returnValue(null)
+        spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(checkDataService, 'sqlUpdateCheckStartedAt').and.returnValue(null)
         await pinService.expirePupilPin('token', 'checkCode')
-        expect(pupilDataService.update).toHaveBeenCalledTimes(0)
+        expect(pupilDataService.sqlUpdate).toHaveBeenCalledTimes(0)
         expect(checkDataService.sqlUpdateCheckStartedAt).toHaveBeenCalled()
       })
     })
@@ -144,17 +144,17 @@ describe('pin.service', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.pin = null
       pupil.pinExpiresAt = null
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupil)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupil)
+      spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
       await pinService.expireMultiplePins([pupil._id])
-      expect(pupilDataService.updateMultiple).toHaveBeenCalledTimes(0)
+      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(0)
     })
     it('it calls updateMultiple method if not empty pin is found', async () => {
       const pupil = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupil)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupil)
+      spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
       await pinService.expireMultiplePins([pupil._id])
-      expect(pupilDataService.updateMultiple).toHaveBeenCalledTimes(1)
+      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
     })
   })
 })
