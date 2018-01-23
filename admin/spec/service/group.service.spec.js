@@ -9,7 +9,6 @@ const groupService = require('../../services/group.service')
 const groupDataService = require('../../services/data-access/group.data.service')
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
-const pupilsPerGroupMock = require('../mocks/pupils-per-group')
 const pupilsMock = require('../mocks/pupils')
 
 describe('group.service', () => {
