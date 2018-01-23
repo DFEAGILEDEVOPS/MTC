@@ -127,8 +127,6 @@ const addGroup = async (req, res, next) => {
   }
 
   try {
-    // @TODO: TO BE DELETED
-    // group = await groupDataService.create(group)
     group = await groupService.create({'name': group.name}, group.pupils)
   } catch (error) {
     return next(error)

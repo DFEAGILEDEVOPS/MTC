@@ -8,9 +8,7 @@ const groupService = {}
  * @returns {Promise<Promise|*>}
  */
 groupService.getGroups = async function () {
-  // @TODO: TO BE DELETED
-  // return groupDataService.getGroups(query)
-  return groupDataService.sqlGetGroups()
+  return groupDataService.sqlFindGroups()
 }
 
 /**
@@ -21,33 +19,7 @@ groupService.getGroups = async function () {
  */
 groupService.getPupils = async function (schoolId, groupIdToExclude) {
   if (!schoolId) { return false }
-  return groupDataService.sqlGetPupils(schoolId, groupIdToExclude)
-
-  // @TODO: TO BE DELETED
-  // if (!schoolId) { return false }
-  // let query = {}
-  // let filteredPupil = []
-  // let groupedPupils = []
-  // let pupils = await pupilDataService.getSortedPupils(schoolId)
-  //
-  // if (groupIdToExclude) {
-  //   query = { '_id': { $ne: groupIdToExclude } }
-  // }
-  // const groups = await groupDataService.getGroups(query)
-  // groups.map((group) => {
-  //   const pupils = Object.values(group.pupils)
-  //   pupils.forEach(id => {
-  //     return groupedPupils.push(id)
-  //   })
-  // })
-  //
-  // pupils.map((pupil) => {
-  //   if (!groupedPupils.includes(pupil._id.toString())) {
-  //     filteredPupil.push(pupil)
-  //   }
-  // })
-  //
-  // return filteredPupil
+  return groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
 }
 
 /**
@@ -57,9 +29,7 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
  */
 groupService.getGroupById = async function (groupId) {
   if (!groupId) { return false }
-  // @TODO: TO BE DELETED
-  // return groupDataService.getGroup({'_id': groupId})
-  return groupDataService.sqlGetGroup(groupId)
+  return groupDataService.sqlFindGroup(groupId)
 }
 
 /**
@@ -85,19 +55,17 @@ groupService.update = async (id, group) => {
  * Create group.
  * @param group
  * @param groupPupils
- * @returns {Promise<boolean>}
+ * @returns {Promise<*>}
  */
 groupService.create = async (group, groupPupils) => {
   if (!group) { return false }
-  return new Promise(async (resolve, reject) => {
-    try {
-      const newGroup = await groupDataService.sqlCreate(group)
-      await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
-      resolve(group)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  try {
+    const newGroup = await groupDataService.sqlCreate(group)
+    await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
+    return group
+  } catch (error) {
+    throw new Error('Failed to create group')
+  }
 }
 
 /**
@@ -105,7 +73,7 @@ groupService.create = async (group, groupPupils) => {
  * @returns {Promise<Array>}
  */
 groupService.getPupilsPerGroup = async () => {
-  let data = await groupDataService.getPupilsPerGroup()
+  let data = await groupDataService.sqlFindPupilsPerGroup()
   let pupilsPerGroup = []
   data.map((g) => { pupilsPerGroup[g.group_id] = g.total_pupils })
   return pupilsPerGroup

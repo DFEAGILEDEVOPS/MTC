@@ -30,7 +30,7 @@ module.exports.validate = async (groupData, oldName) => {
 
   // Don't query the DB if at this point group name is not valid.
   if (((oldName && oldName.toLowerCase() !== groupData.name.trim().toLowerCase()) || !oldName) && !isValid) {
-    const group = await groupDataService.sqlGetGroupByName(groupData.name.trim())
+    const group = await groupDataService.sqlFindGroupByName(groupData.name.trim())
     if (group) {
       validationError.addError('name', groupData.name.trim() + groupErrorMessages.nameAlreadyExists)
     }

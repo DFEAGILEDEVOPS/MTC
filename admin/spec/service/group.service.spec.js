@@ -20,7 +20,7 @@ describe('group.service', () => {
 
   describe('#getGroups', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlGetGroups').and.returnValue(groupsMock)
+      spyOn(groupDataService, 'sqlFindGroups').and.returnValue(groupsMock)
     })
 
     it('should return groups', async (done) => {
@@ -32,7 +32,7 @@ describe('group.service', () => {
 
   describe('#getPupils', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlGetPupils').and.returnValue(pupilsMock)
+      spyOn(groupDataService, 'sqlFindPupils').and.returnValue(pupilsMock)
     })
 
     it('should return pupils', async (done) => {
@@ -46,7 +46,7 @@ describe('group.service', () => {
 
   describe('#getGroupById', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlGetGroup').and.returnValue(groupMock)
+      spyOn(groupDataService, 'sqlFindGroup').and.returnValue(groupMock)
     })
 
     it('should return group document filtered by group id', async (done) => {
@@ -72,7 +72,7 @@ describe('group.service', () => {
 
       it('should update group', async (done) => {
         const group = await service.update(1, groupMock)
-        expect(group).toEqual(groupMock)
+        expect(group).toBeTruthy()
         done()
       })
     })
@@ -124,7 +124,7 @@ describe('group.service', () => {
       beforeEach(() => {
         service = proxyquire('../../services/group.service', {
           '../services/data-access/group.data.service': {
-            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('TEST ERROR')) }),
+            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('Failed to create group')) }),
             sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
           }
         })
@@ -134,16 +134,16 @@ describe('group.service', () => {
         try {
           await service.create(groupMock, [6, 2, 3])
         } catch (error) {
-          expect(error.message).toBe('TEST ERROR')
+          expect(error.message).toBe('Failed to create group')
           done()
         }
       })
     })
   })
 
-  describe('#getPupilsPerGroup', () => {
+  describe('#sqlFindPupilsPerGroup', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'getPupilsPerGroup').and.returnValue(pupilsPerGroupMock)
+      spyOn(groupDataService, 'sqlFindPupilsPerGroup').and.returnValue(pupilsPerGroupMock)
     })
 
     it('should return the number of pupils per group', async (done) => {
@@ -151,7 +151,7 @@ describe('group.service', () => {
       expected[1] = 3
       expected[2] = 1
       expected[3] = 5
-      const pupilsPerGroup = await groupService.getPupilsPerGroup()
+      const pupilsPerGroup = await groupService.sqlFindPupilsPerGroup()
       expect(pupilsPerGroup).toEqual(expected)
       done()
     })

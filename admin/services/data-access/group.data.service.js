@@ -4,12 +4,11 @@ const Group = require('../../models/group')
 const groupDataService = {}
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
-const moment = require('moment')
 const R = require('ramda')
 
 /**
  * Get groups filtered by query.
- * @deprecated use sqlGetGroups
+ * @deprecated use sqlFindGroups
  * @param query
  * @returns {Promise<Promise|*>}
  */
@@ -29,7 +28,7 @@ groupDataService.getGroups = async function (query) {
  * Get active groups (non-soft-deleted).
  * @returns {Promise<*>}
  */
-groupDataService.sqlGetGroups = async () => {
+groupDataService.sqlFindGroups = async () => {
   const sql = `SELECT g.* 
     FROM ${sqlService.adminSchema}.[group] g 
     WHERE g.isDeleted=0 
@@ -39,7 +38,7 @@ groupDataService.sqlGetGroups = async () => {
 
 /**
  * Get group document by _id.
- * @deprecated use sqlGetGroup
+ * @deprecated use sqlFindGroup
  * @param query
  * @returns {Promise<*>}
  */
@@ -52,7 +51,7 @@ groupDataService.getGroup = async function (query) {
  * @param groupId
  * @returns {Promise<void>}
  */
-groupDataService.sqlGetGroup = async (groupId) => {
+groupDataService.sqlFindGroup = async (groupId) => {
   const sql = `SELECT g.* 
     FROM ${sqlService.adminSchema}.[group] g 
     WHERE g.id=@groupId`
@@ -74,7 +73,7 @@ groupDataService.sqlGetGroup = async (groupId) => {
  * @param groupName
  * @returns {Promise<void>}
  */
-groupDataService.sqlGetGroupByName = async (groupName) => {
+groupDataService.sqlFindGroupByName = async (groupName) => {
   const sql = `SELECT g.* 
     FROM ${sqlService.adminSchema}.[group] g 
     WHERE isDeleted=0
@@ -156,16 +155,11 @@ groupDataService.sqlUpdate = async (id, name) => {
       name: 'name',
       value: name,
       type: TYPES.NVarChar
-    },
-    {
-      name: 'updatedAt',
-      value: moment.utc(),
-      type: TYPES.DateTimeOffset
     }
   ]
   return sqlService.modify(
     `UPDATE ${sqlService.adminSchema}.[group] 
-    SET name=@name, updatedAt=@updatedAt 
+    SET name=@name 
     WHERE [id]=@id`,
     params)
 }
@@ -174,7 +168,7 @@ groupDataService.sqlUpdate = async (id, name) => {
  * Get pupils per group.
  * @returns {Promise<*>}
  */
-groupDataService.getPupilsPerGroup = async () => {
+groupDataService.sqlFindPupilsPerGroup = async () => {
   const sql = `SELECT group_id, COUNT (pupil_id) AS total_pupils 
     FROM ${sqlService.adminSchema}.[pupilGroup] 
     GROUP BY group_id`
@@ -185,9 +179,13 @@ groupDataService.getPupilsPerGroup = async () => {
  * Update pupils assigned to group.
  * @param groupId
  * @param pupilIds
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
+  if (pupilIds.length < 1) {
+    return false
+  }
+
   // First, delete all pupils for the selected groupId
   const sqlDelete = `DELETE FROM ${sqlService.adminSchema}.[pupilGroup] 
     WHERE group_id=@groupId`
@@ -202,33 +200,16 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
   await sqlService.modify(sqlDelete, paramsDel)
 
   // Next, insert passed pupils
-  if (pupilIds.length > 0) {
-    let sqlInsert = ''
-    let paramsInsert
+  let sqlAppend = ''
 
-    pupilIds.forEach(async p => {
-      if (p) {
-        paramsInsert = [
-          {
-            name: 'groupId',
-            value: groupId,
-            type: TYPES.Int
-          },
-          {
-            name: 'pupilId',
-            value: p,
-            type: TYPES.Int
-          }
-        ]
+  pupilIds.forEach(p => {
+    if (p) { sqlAppend += `(${groupId}, ${p}), ` }
+  })
 
-        // @TODO: This can be improved to avoid the loop with a syntax as follows:
-        // INSERT INTO #SQLAuthority (ID, Value)
-        // VALUES (1, 'First'), (2, 'Second'), (3, 'Third');
-        sqlInsert = `INSERT INTO ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id) VALUES (@groupId, @pupilId)`
-        await sqlService.modify(sqlInsert, paramsInsert)
-      }
-    })
-  }
+  // 'sqlService.modify' doesn't seem to like @values as a param
+  const sqlInsert = `INSERT INTO ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id) VALUES ${sqlAppend.substr(0, sqlAppend.length - 2)}`
+
+  await sqlService.modify(sqlInsert, [])
 }
 
 /**
@@ -238,7 +219,7 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
  * @param groupId
  * @returns {Promise<*>}
  */
-groupDataService.sqlGetPupils = async (schoolId, groupId) => {
+groupDataService.sqlFindPupils = async (schoolId, groupId) => {
   let params = [
     {
       name: 'schoolId',
