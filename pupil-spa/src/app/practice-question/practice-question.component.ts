@@ -55,11 +55,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   public remainingTime: number;
 
-  /**
-   * TBD
-   */
-  public showPracticeBox: boolean;
-
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -77,7 +72,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-    this.showPracticeBox = true;
   }
 
   /**
