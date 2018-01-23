@@ -151,7 +151,7 @@ describe('group.service', () => {
       expected[1] = 3
       expected[2] = 1
       expected[3] = 5
-      const pupilsPerGroup = await groupService.sqlFindPupilsPerGroup()
+      const pupilsPerGroup = await groupService.getPupilsPerGroup()
       expect(pupilsPerGroup).toEqual(expected)
       done()
     })
