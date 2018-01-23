@@ -11,7 +11,7 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
     const nextPupil = pupils[ i + 1 ]
     if (nextPupil === undefined) return
     if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil) &&
-      currentPupil.dob === nextPupil.dob) {
+      currentPupil.dateOfBirth === nextPupil.dateOfBirth) {
       currentPupil.showMiddleNames = true
       nextPupil.showMiddleNames = true
     }

@@ -178,17 +178,30 @@ pupilDataService.getStatusCodes = async () => {
 /** SQL METHODS */
 
 /**
- * Fetch all pupils for a school by dfeNumber sorted by pupil name
+ * Fetch all pupils for a school by dfeNumber sorted by specific column
  * @param {number} dfeNumber
+ * @param sortDirection
+ * @param sortBy
  * @return {Promise<results>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirection, sortBy) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+  switch (sortBy) {
+    case 'lastName':
+      sortBy = 'lastName'
+      break
+    default:
+      // anything else should default to last name
+      sortBy = 'lastName'
+  }
   const sql = `
       SELECT 
         p.*    
-      FROM ${sqlService.adminSchema}.${table} p INNER JOIN school s ON s.id = p.school_id
-      WHERE s.dfeNumber = @dfeNumber      
+      FROM ${sqlService.adminSchema}.${table} p 
+      INNER JOIN school s ON s.id = p.school_id
+      WHERE s.dfeNumber = @dfeNumber
+      ORDER BY ${sortBy} ${sortDirection}      
     `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -280,6 +293,25 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
 }
 
 /**
+ * Find a pupil by school id and pupil pin
+ * @param {number} pin
+ * @param {number} schoolId
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
+  const paramPupilPin = { name: 'pin', type: TYPES.Int, value: pin }
+  const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  const sql = `
+      SELECT TOP 1 
+        *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE pin = @pin and school_id = @schoolId   
+    `
+  const results = await sqlService.query(sql, [paramPupilPin, paramSchool])
+  return R.head(results)
+}
+
+/**
  * Update am existing pupil object.  Must provide the `id` field
  * @param update
  * @return {Promise<*>}
@@ -313,6 +345,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
+  ORDER BY p.lastName ASC, p.foreName ASC
   `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -334,6 +367,66 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
   const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')'
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
+}
+
+/**
+ * Find pupils by ids
+ * @param ids
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindByIds = async (ids) => {
+  let sql = `
+      SELECT *    
+      FROM ${sqlService.adminSchema}.${table}
+      `
+  let whereClause = ' WHERE id IN ('
+  const params = []
+  for (let index = 0; index < ids.length; index++) {
+    whereClause = whereClause + `@p${index}`
+    if (index < ids.length - 1) {
+      whereClause += ','
+    }
+    params.push({
+      name: `p${index}`,
+      value: ids[index],
+      type: TYPES.Int
+    })
+  }
+  whereClause = `${whereClause})`
+  sql = sql + whereClause + ' ORDER BY lastName'
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Batch update pupil pins
+ * @param pupils
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
+  const params = []
+  const update = []
+  pupils.forEach((p, i) => {
+    update.push(`UPDATE ${sqlService.adminSchema}.${table} 
+    SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i} 
+    WHERE id = @id${i}`)
+    params.push({
+      name: `pin${i}`,
+      value: p.pin,
+      type: TYPES.SmallInt
+    })
+    params.push({
+      name: `pinExpiredAt${i}`,
+      value: p.pinExpiresAt,
+      type: TYPES.DateTimeOffset
+    })
+    params.push({
+      name: `id${i}`,
+      value: p.id,
+      type: TYPES.Int
+    })
+  })
+  const sql = update.join(';\n')
+  return sqlService.modify(sql, params)
 }
 
 module.exports = pupilDataService
