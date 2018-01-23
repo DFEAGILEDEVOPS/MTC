@@ -6,7 +6,6 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
-const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const dateService = require('../services/date.service')
 const config = require('../config')
@@ -68,7 +67,7 @@ restartService.isPupilEligible = async (p) => {
  */
 
 restartService.restart = async (pupilsList, restartReasonCode, didNotCompleteInfo, restartFurtherInfo, userName) => {
-  // await pinService.expireMultiplePins(pupilsList)
+  await pinService.expireMultiplePins(pupilsList)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
   if (!canAllPupilsRestart) {

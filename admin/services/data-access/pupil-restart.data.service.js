@@ -79,7 +79,7 @@ pupilRestartDataService.sqlCreate = async (data) => {
 pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
   const sql = `SELECT COUNT(*) AS [cnt]
   FROM ${sqlService.adminSchema}.[pupilRestart] 
-  WHERE pupil_id=@pupilId`
+  WHERE pupil_id=@pupilId AND isDeleted=0`
   const params = [
     {
       name: 'pupilId',
