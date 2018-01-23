@@ -10,13 +10,13 @@
 <% if (hasError) { %>
 <div class="grid-row">
     <div class="column-two-thirds">
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Errors in your uploaded file</h2>
             <% if (fileErrors && fileErrors.hasError()) { %>
             <p>You need to fix the errors on this page before continuing. See highlighted errors below
             </p>
             <ul class="error-summary-list">
-                <% fileErrors.getUniqueFields(['template-upload']).map(f => { %>
+                <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
                 <% const errors = fileErrors.get(f) %>
                 <% if (Array.isArray(errors)) { %>
                 <%  errors.map(e => { %>
@@ -47,9 +47,8 @@
         <h3 class="heading-medium">Download template</h3>
         <ol class="list list-number">
             <li>Download the template
-                <div class="panel panel-border-wide">
-                    <div class="icon-file-download pupils-template"></div>
-                    <b><a class="template-link" href="/school/pupil/download-multiple-template">Pupil details template</a></b> (CSV file)
+                <div class="panel panel-border-wide short">
+                    <a href="/school/pupil/download-multiple-template" class="heading-small icon-download">Pupil details template</a> (CSV file)
                 </div>
             </li>
             <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
@@ -62,12 +61,18 @@
     </div>
     <div class="column-two-thirds">
         <h3 class="heading-medium">Upload file</h3>
-        <form action="/school/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template">
-            <div class="form-group">
-                <input type="file" name="csvTemplateFile" id="template-upload" accept="text/csv" aria-label="Choose a file to upload">
+        <form action="/school/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template" id="upload-form">
+            <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
+                <% if (fileErrors && fileErrors.hasError()) { %>
+                <label class="error-message">There is a problem with the form content</label>
+                <% } %>
+                <div class="font-xsmall">
+                    <input type="file" name="csvTemplateFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload" />
+                </div>
+                <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file." />
             </div>
             <div class="form-buttons">
-                <input type="submit" class="button" value="Upload"/>
+                <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled" />
                 <a href="/school/pupil-register/lastName/true" class="button button-secondary">Cancel</a>
             </div>
         </form>

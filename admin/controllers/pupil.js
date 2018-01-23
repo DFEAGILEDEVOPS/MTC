@@ -15,7 +15,7 @@ const ValidationError = require('../lib/validation-error')
 const controller = {}
 
 controller.getAddPupil = async (req, res, next, error = null) => {
-  res.locals.pageTitle = 'Add single pupil'
+  res.locals.pageTitle = 'Add pupil'
   // school id from session
   const schoolId = req.user.School
   const school = await schoolDataService.findOne({_id: schoolId})
@@ -24,8 +24,8 @@ controller.getAddPupil = async (req, res, next, error = null) => {
   }
 
   try {
-    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
-    req.breadcrumbs(res.locals.pageTitle)
+    req.breadcrumbs('Pupil Register', req.header('referrer'))
+    req.breadcrumbs('Add pupil')
     res.render('school/add-pupil', {
       school: school,
       formData: req.body,
@@ -39,7 +39,6 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
-  req.breadcrumbs(res.locals.pageTitle)
   const pupilData = {
     school: req.body.school,
     upn: req.body.upn && req.body.upn.trim().toUpperCase(),
@@ -93,7 +92,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
     return next(error)
   }
   const uploadFile = req.files && req.files.csvTemplateFile
-  const fileErrors = await fileValidator.validate(uploadFile, 'template-upload')
+  const fileErrors = await fileValidator.validate(uploadFile, 'file-upload')
   if (fileErrors.hasError()) {
     res.hasError = true
     res.fileErrors = fileErrors
@@ -121,7 +120,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
 }
 
 controller.getAddMultiplePupilsCSVTemplate = async (req, res) => {
-  const file = 'assets/csv/MTC-Pupil-details-template-Sheet-1.csv'
+  const file = 'public/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
   res.download(file)
 }
 

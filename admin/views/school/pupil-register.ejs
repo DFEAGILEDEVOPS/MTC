@@ -16,25 +16,30 @@
             </div>
         <% } %>
         <div>
-            <h1 tabindex="0" class="heading-xlarge">Pupil register</h1>
-            <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
-            <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
+            <h1 class="heading-xlarge">Pupil register</h1>
+            <p class="lede">
+                This list uses anonymous pupil data in the format Pupil 1, Pupil 2, etc. If you need to add more pupils please follow this pattern. Do not use real pupil data. To withdraw pupils, go to <a href="/school/pupils-not-taking-check">Pupils not taking the check</a>.
+            </p>
+            <div class="button-wrapper">
+                <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
+                <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
+            </div>
         </div>
-        <table id='register-pupils' class="spacious">
+        <table id="register-pupils" class="spacious">
             <thead>
                 <tr>
                     <th scope="col" class="two-thirds">
-                        <a class="no-underline" href=<%= `/school/pupil-register/lastName/${sortOrder}` %> >
+                        <a class="no-underline" href="<%= `/school/pupil-register/lastName/${sortOrder}` %>" >
                             Pupil
                             <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
                         </a>
                     </th>
-                    <th class="numeric" scope="col">
+                    <th scope="col">
                         <a class="no-underline">
                             Group
                         </a>
                     </th>
-                    <th class="numeric" scope="col">
+                    <th scope="col">
                         <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
                         Status
                         <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
@@ -45,17 +50,11 @@
             <tbody>
             <% pupils.forEach((p) => { %>
                 <tr>
-                    <td class="pupil-name-container">
-                        <% if (highlight && highlight.has(p._id.toString())) { %>
-                        <div class="highlight"></div>
-                        <% } %>
-                        <div class="pupil-name <% if (highlight && highlight.has(p._id.toString())) { %>indent<% } %>%>">
-                            <div class="truncate">
-                                <a class="bold-small" href="/school/pupil/edit/<%= p._id %>" >
-                                    <%= `${p.lastName}, ${p.foreName}` %>
-                                </a>
-                            </div>
-
+                    <td<% if (highlight && highlight.has(p._id.toString())) { %> class="highlight-item"<% } %>>
+                        <div class="highlight-wrapper">
+                            <a class="bold-small truncate" href="/school/pupil/edit/<%= p._id %>" >
+                                <%= `${p.lastName}, ${p.foreName}` %>
+                            </a>
                             <% if (p.showDoB) { %>
                             <div class="font-greyed-out font-xsmall">
                                 Date of birth: <%= p.dob %>
@@ -63,8 +62,8 @@
                             <% } %>
                         </div>
                     </td>
-                    <td class="numeric table-cell"><%= p.group %></td>
-                    <td class="numeric table-cell"><%= p.outcome %></td>
+                    <td><%= p.group %></td>
+                    <td class="nowrap column-narrow"><%= p.outcome %></td>
                 </tr>
             <% }) %>
             </tbody>
@@ -73,12 +72,12 @@
             <a href="#top">Back to top</a>
         </div>
     </div>
-    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
+    <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Related</h3>
+            <h3 class="heading-medium">Related</h3>
             <nav role="navigation">
                 <ul class="list">
-                    <li><a href="" >Guidance</a></li>
+                    <li><a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a></li>
                     <li><a href="" >Pupils not taking the check</a></li>
                     <li><a href="" >Access arrangements</a></li>
                 </ul>

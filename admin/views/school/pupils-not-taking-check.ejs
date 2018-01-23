@@ -18,15 +18,17 @@
 
         <h1 class="heading-xlarge" id="heading-xlarge">Pupils not taking the check</h1>
 
-        <p class="lede">All pupils should be considered for the multiplication tables check at the end of year 4. If the headteacher decides a pupil should not take the check, they must provide a reason.</p>
+        <p class="lede">All pupils should be considered for the multiplication tables check at the end of year 4. If pupil is not going to take the check, a reason must be provided.</p>
 
-        <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason for pupil</a>
+        <div class="button-wrapper">
+            <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason for pupil</a>
+        </div>
 
         <% if (pupilsList && pupilsList.length > 0) { %>
-        <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
+        <table class="spacious" id="pupilsList" role="listbox" aria-label="Select pupils.">
             <thead>
                 <tr>
-                    <th scope="col">Pupil name</th>
+                    <th scope="col">Pupil</th>
                     <th scope="col">Reason</th>
                     <th scope="col">&nbsp;</th>
                 </tr>
@@ -39,10 +41,10 @@
                             <%= pupil.lastName %>, <%= pupil.foreName %>
                         </label>
                     </td>
-                    <td>
+                    <td class="wrap-text">
                         <%= pupil.reason %>
                     </td>
-                    <td>
+                    <td class="align-right">
                         <a href="/school/pupils-not-taking-check/remove/<%= pupil._id %>">Remove</a>
                     </td>
                 </tr>
@@ -50,7 +52,7 @@
             </tbody>
         </table>
         <% } else { %>
-        <p class="padding-top">No pupils with reason for not taking the check.</p>
+        <p class="top-padding-30">No pupils with reason for not taking check.</p>
         <% } %>
 
         <br class="clearfix"/>
@@ -60,13 +62,18 @@
         </div>
     </div>
 
-    <div class="column-one-third add-title-margin" aria-label="sidebar">
+    <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
-            <h3 class="heading-medium">Start check</h3>
+            <h3 class="heading-medium">Related</h3>
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="#">Generate PINs</a>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a></li>
+                    <li>
+                        <a href="#">Access arrangements</a>
+                    </li>
+                    <li>
+                        <a href="#">Generate pupil PINs</a>
                     </li>
                 </ul>
             </nav>

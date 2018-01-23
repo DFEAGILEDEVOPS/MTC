@@ -5,7 +5,7 @@ class AddMultiplePupilPage < SitePrism::Page
   elements :sub_heading, '.heading-medium'
   elements :info_message, '.list-number li'
   element :pupil_upload_template, '.pupils-template a', text: 'Pupil details template'
-  element :chose_file, '#template-upload'
+  element :chose_file, '#file-upload'
   element :save, 'input[value="Upload"]'
   element :back, 'a.button.button-secondary'
   element :error_message, '.error-summary'
@@ -18,7 +18,7 @@ class AddMultiplePupilPage < SitePrism::Page
       csv_object << pupil_array1
       csv_object << pupil_array2 if !pupil_array2.nil?
     end
-    page.attach_file('template-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"))
+    page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"))
   end
 
 end
