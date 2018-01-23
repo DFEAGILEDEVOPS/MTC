@@ -283,7 +283,7 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
     LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g 
       ON p.id = g.pupil_id 
     WHERE p.school_id=@schoolId 
-    AND g.group_id IS NULL`
+    AND (g.group_id IS NULL`
 
   if (groupId) {
     params.push({
@@ -293,6 +293,8 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
     })
     sql += ` OR g.group_id=@groupId`
   }
+
+  sql += ')'
 
   return sqlService.query(sql, params)
 }
