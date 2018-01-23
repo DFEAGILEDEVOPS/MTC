@@ -72,6 +72,7 @@ describe('restart.service', () => {
       expect(result).toBeTruthy()
     })
   })
+
   describe('canRestart', () => {
     it('it should return true if the pupil has 1 started check and no restart requested', async () => {
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
@@ -96,6 +97,7 @@ describe('restart.service', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('restart', () => {
     it('it should call create if the pupil can be restarted', async () => {
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
@@ -122,6 +124,7 @@ describe('restart.service', () => {
       expect(pupilRestartDataService.sqlCreate).toHaveBeenCalledTimes(0)
     })
   })
+
   describe('canAllPupilsRestart', () => {
     it('returns true if all pupils can restart', async () => {
       spyOn(restartService, 'canRestart').and.returnValue(true)
@@ -134,6 +137,7 @@ describe('restart.service', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('getSubmittedRestarts', () => {
     it('returns a list of pupils who have been submitted for a restart', async () => {
       const pupil1 = Object.assign({}, pupilMock)
@@ -150,6 +154,7 @@ describe('restart.service', () => {
       expect(result.length).toBe(0)
     })
   })
+
   describe('getStatus', () => {
     it('returns maximum number reached if the restart or check count reaches the limit', async () => {
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(3)
@@ -173,9 +178,10 @@ describe('restart.service', () => {
       expect(status).toBe('Restart taken')
     })
   })
+
   describe('markDeleted', () => {
     it('returns the pupil object of the pupil who is mark as deleted', async () => {
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMock)
+      spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
       spyOn(checkDataService, 'sqlFindLatestCheck').and.returnValue(startedCheckMock)
       spyOn(pupilDataService, 'update').and.returnValue(pupilMock)
       spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').and.returnValue({ n: 1, nModified: 1, ok: 1 })

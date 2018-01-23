@@ -175,7 +175,7 @@ restartService.getStatus = async pupilId => {
  */
 
 restartService.markDeleted = async (pupilId, userId) => {
-  const pupil = await pupilDataService.findOne({_id: pupilId})
+  const pupil = await pupilDataService.sqlFindOneById(pupilId)
   const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
   await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
   await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId, userId)
