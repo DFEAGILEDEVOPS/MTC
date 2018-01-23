@@ -55,7 +55,7 @@ class SqlDbHelper
   end
 
   def self.pupil_pins
-    sql = "SELECT * FROM [mtc_admin].[pupil]"
+    sql = "SELECT * FROM [mtc_admin].[pupil] where pin IS NOT NULL"
     result = SQL_CLIENT.execute(sql)
     @array_of_pins = result.each{|row| row.map}
     result.cancel

@@ -1,4 +1,4 @@
-@test_developer_landing @local
+@test_developer_landing
 Feature: Test Developer Landing page
 
   Scenario: Test developers are taken to the service manager homepage

@@ -1,4 +1,4 @@
-@generate_pupil_pins @local
+@generate_pupil_pins
 Feature: Generate Pupil PINs
 
   @no_pin

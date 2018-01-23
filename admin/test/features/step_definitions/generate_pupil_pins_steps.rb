@@ -28,7 +28,7 @@ Given(/^I have a pupil with active pin$/) do
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
   @pupil_forename = @details_hash[:first_name]
-  SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001, "2345")
+  SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
 end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -120,7 +120,7 @@ When(/^I have generated a pin for a pupil$/) do
 
   ct = Time.now
   newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, newTime)
   SqlDbHelper.set_school_pin_expiry('1001', newTime)
 
   step "I am on the generate pupil pins page"
@@ -129,7 +129,7 @@ end
 When(/^I expired the pupil pin$/) do
   ct = Time.now
   newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, newTime)
 end
 
 Given(/^I have generated pin for all pupil$/) do
@@ -173,7 +173,7 @@ Given(/^I have generated pins for multiple pupils$/) do
   @pupil_names_arr.each do|pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
+    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, newTime)
   end
   SqlDbHelper.set_school_pin_expiry('1001', newTime)
   step "I am on the generate pupil pins page"
