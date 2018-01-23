@@ -17,7 +17,7 @@
 
         <% if (messages && messages.error && messages.error.length) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1" tabindex="0">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
                 <%= messages.error %>
             </h2>
         </div>
@@ -27,13 +27,13 @@
         <p class="lede" id="lead-paragraph">
             View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
         </p>
-        <p>
+        <div class="button-wrapper">
             <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
-        </p>
+        </div>
 
         <% if (Array.isArray(forms) && forms.length > 0) { %>
         <div class="group">
-            <table class="spacious sorting" id="checkFormsList" role="group">
+            <table class="spacious" id="checkFormsList" role="group">
                 <thead>
                     <tr>
                         <th scope="col"><a href="/test-developer/upload-and-view-forms/name/<%= htmlSortDirection.name %>">Form <span class="<%= arrowSortDirection.name %>"><span>Sort by check form name <%= htmlSortDirection.name %></span></span></a></th>
@@ -69,7 +69,7 @@
         </div>
         <% } %>
     </div>
-    <div class="column-one-third add-title-margin">
+    <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
             <h3 class="heading-medium">Related</h3>
             <nav role="navigation">

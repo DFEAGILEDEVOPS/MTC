@@ -3,7 +3,8 @@ class CheckSettingsPage < SitePrism::Page
 
   element :question_time_limit, "#questionTimeLimit"
   element :loading_time_limit, "#loadingTimeLimit"
-  element :save_changes, "input[value='Save changes']"
+  element :save_changes, "input[value='Save']"
+  element :cancel, "input[value='Cancel']"
   element :error_message, '.error-message'
   element :error_summary_list, '.error-summary-list'
   element :error_summary, '.error-summary p'

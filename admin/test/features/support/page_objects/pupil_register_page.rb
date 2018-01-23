@@ -7,7 +7,7 @@ class PupilRegisterPage < SitePrism::Page
   element :info_message, '.info-message', text: 'Changes to pupil details have been saved'
   element :new_pupil_info_message, '.info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.info-message'
-  element :edited_pupil, '.highlight'
+  element :edited_pupil, '.highlight-item'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
   section :pupil_list_column_heading, '#register-pupils thead tr' do
@@ -19,7 +19,7 @@ class PupilRegisterPage < SitePrism::Page
   section :pupil_list, '#register-pupils' do
     sections :pupil_row, 'tbody tr' do
       element :names, 'td:nth-child(1)'
-      element :edited_pupil, '.highlight'
+      element :edited_pupil, '.highlight-item'
       element :group, 'td:nth-child(2)'
       element :result, 'td:nth-child(3)'
       element :edit_pupil_link, 'a'
