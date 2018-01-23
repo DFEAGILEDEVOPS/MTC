@@ -19,7 +19,7 @@ pupilStatusService.getStatus = async (pupil) => {
 
   const getStatusDescription = (value) => {
     const entry = pupilStatusCodes && R.find(c => c.code === value)(pupilStatusCodes)
-    return entry && entry.statusDesc
+    return entry && entry.description
   }
 
   // Pupil not taking the check

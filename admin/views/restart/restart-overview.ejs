@@ -75,13 +75,13 @@
             <tbody>
             <% restarts.forEach( (restart, index) => { %>
             <tr class="restart-pupil-name">
-                <td<% if (highlight && highlight.has(restart._id.toString())) { %> class="highlight-item"<% } %>>
-                    <span id="pupil-<%= restart._id %>">
+                <td<% if (highlight && highlight.has(restart.id.toString())) { %> class="highlight-item"<% } %>>
+                    <span id="pupil-<%= restart.id %>">
                     <%= restart.lastName  %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
                     </span>
                     <% if (restart.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
-                        Date of birth: <%= restart.dob %>
+                        Date of birth: <%= restart.dateOfBirth %>
                     </div>
                     <% } %>
                 </td>

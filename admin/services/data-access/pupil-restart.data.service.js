@@ -115,7 +115,6 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
 
 /**
  * Find pupil's restart codes
- * @param pupilId
  * @return {Promise.<void>}
  */
 pupilRestartDataService.sqlFindRestartCodes = async function () {
@@ -123,10 +122,71 @@ pupilRestartDataService.sqlFindRestartCodes = async function () {
   SELECT 
     id, 
     code, 
-    statusDesc 
+    description
   FROM ${sqlService.adminSchema}.[pupilRestartCode]
-  ORDER BY statusDesc ASC`
+  ORDER BY description ASC`
   return sqlService.query(sql)
+}
+
+/**
+ * Find pupil's restart reason description by id
+ * @param id
+ * @return {Promise.<void>}
+ */
+pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
+  console.log('fdsfdsdsfdsfdsfasd', id)
+  const sql = `
+  SELECT 
+    description
+  FROM ${sqlService.adminSchema}.[pupilRestartReason]
+  WHERE id=@id
+  ORDER BY description ASC`
+  const params = [
+    {
+      name: 'id',
+      value: id,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  const obj = R.head(result)
+  return obj['description']
+}
+
+/**
+ * Find restart reasons
+ * @return {Promise.<void>}
+ */
+pupilRestartDataService.sqlFindRestartReasons = async function () {
+  const sql = `
+  SELECT 
+    id, 
+    code, 
+    description
+  FROM ${sqlService.adminSchema}.[pupilRestartReason]
+  ORDER BY id ASC`
+  return sqlService.query(sql)
+}
+
+/**
+ * Find restart reason id
+ * @return {Number}
+ */
+pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
+  const sql = `
+  SELECT TOP 1 id
+  FROM ${sqlService.adminSchema}.[pupilRestartReason]
+  WHERE code = @code`
+  const params = [
+    {
+      name: 'code',
+      value: code,
+      type: TYPES.Char
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  const obj = R.head(result)
+  return obj.id
 }
 
 /**

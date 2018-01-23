@@ -31,63 +31,33 @@
             <h2>1. Select reason for restart</h2>
             <div class="form-group">
                 <ul class="list restart-list">
+                    <% reasons.forEach( (reason, index) => { %>
                     <li>
                         <div class="multiple-choice">
-                            <input id="restart-reason-1"
+                            <% if (error.isError('didNotCompleteInfo') && reason.code === 'DNC') { %>
+                            <input id="restart-reason-<%= index %>"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
                                    name="restartReason"
-                                   value="Loss of internet">
-                            <label for="restart-reason-1">Loss of internet</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="multiple-choice">
-                            <input id="restart-reason-2"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="restartReason"
-                                   value="IT issues">
-                            <label for="restart-reason-2">IT issues</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="multiple-choice">
-                            <input id="restart-reason-3"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="restartReason"
-                                   value="Classroom disruption">
-                            <label for="restart-reason-3">Classroom disruption</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="multiple-choice">
-                            <% if (error.isError('didNotCompleteInfo')) { %>
-                            <input id="restart-reason-4"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="restartReason"
-                                   value="Did not complete"
+                                   value="<%= reason.code %>"
                                    checked
                             >
                             <% } else { %>
-                            <input id="restart-reason-4"
+                            <input id="restart-reason-<%= index %>"
                                    type="radio"
                                    role="radio"
                                    aria-checked="false"
                                    name="restartReason"
-                                   value="Did not complete">
-                            <% }  %>
-                            <label for="restart-reason-4">Did not complete</label>
+                                   value="<%= reason.code %>"
+                            >
+                            <% } %>
+                            <label for="restart-reason-<%= index %>"><%= reason.description %></label>
+                            <% if (reason.code === 'DNC') { %>
                             <div class="hide">
                                 <div class="panel panel-border-wide">
                                     <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
-                                            <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
+                                        <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
                                         <% if (error.isError('didNotCompleteInfo')) { %>
                                         <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
                                         <% } %>
@@ -100,8 +70,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <% } %>
                         </div>
                     </li>
+                    <% }) %>
                 </ul>
             </div>
 
@@ -160,21 +132,21 @@
                 <% pupils.forEach( (pupil, index) => { %>
                 <tr>
                     <td class="font-small">
-                        <label for="pupil-<%= pupil._id %>">
+                        <label for="pupil-<%= pupil.id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                         </label>
                         <% if (pupil.showDoB) { %>
                         <div class="font-greyed-out font-xsmall">
-                            Date of birth: <%= pupil.dob %>
+                            Date of birth: <%= pupil.dateOfBirth %>
                         </div>
                         <% } %>
                     </td>
                     <td>
                         <div class="multiple-choice-mtc">
-                            <input id="pupil-<%= pupil._id %>"
+                            <input id="pupil-<%= pupil.id %>"
                                    name="pupil[<%= index %>]"
                                    type="checkbox"
-                                   value="<%= pupil._id %>"
+                                   value="<%= pupil.id %>"
                                    aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                    aria-checked="false"
                                    role="checkbox">
