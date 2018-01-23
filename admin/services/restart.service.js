@@ -118,7 +118,7 @@ restartService.canRestart = async pupilId => {
  */
 
 restartService.getSubmittedRestarts = async schoolId => {
-  let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(schoolId, 'lastName', 'asc')
   if (!pupils || pupils.length === 0) return []
   let restarts = []
   // TODO: This loop is applied due to Cosmos MongoDB API bug and needs to be replaced with the new DB implementation
@@ -130,7 +130,7 @@ restartService.getSubmittedRestarts = async schoolId => {
     }
   }), p => !!p)
   pupils.map(p => {
-    const record = latestPupilRestarts.find(l => l.pupilId.toString() === p.id.toString())
+    const record = latestPupilRestarts.find(l => l.pupilId === p.id)
     if (record) {
       restarts.push({
         id: record.id,
