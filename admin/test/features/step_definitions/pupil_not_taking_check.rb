@@ -246,7 +246,7 @@ And(/^I remove a pupil from the list of pupils not taking a check$/) do
 end
 
 Then(/^the pupil should be removed and any attendance code cleared from the db against the pupil$/) do
-  expect(pupils_not_taking_check_page.flash_message.text).to eql "Reason removed for pupil #{@pupil['lastName'] + ', ' + @pupil['foreName']}"
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "Reason removed for #{@pupil['lastName'] + ', ' + @pupil['foreName']}"
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
   @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
