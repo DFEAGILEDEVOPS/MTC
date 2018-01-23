@@ -103,10 +103,12 @@ pupilDataService.insertMany = async (pupils) => {
 
 /**
  * Find a single pupil by criteria in `options`
+ * @deprecated use sqlFindOneById instead
  * @param options
  * @return {Promise.<{Object}>}
  */
 pupilDataService.findOne = async function (options) {
+  winston.warn('*** pupilDataService.findOne is deprecated ***')
   return Pupil.findOne(options).populate('school').lean().exec()
 }
 
