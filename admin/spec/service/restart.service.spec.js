@@ -37,7 +37,7 @@ describe('restart.service', () => {
       const pupil1 = Object.assign({}, pupilMock)
       const pupil2 = Object.assign({}, pupilMock)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'getSortedPupils').and.returnValue([ pupil1, pupil2 ])
+      spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([ pupil1, pupil2 ])
       spyOn(restartService, 'isPupilEligible').and.returnValue(true)
       let result
       try {
