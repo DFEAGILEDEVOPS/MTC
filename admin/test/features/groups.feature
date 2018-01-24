@@ -18,6 +18,10 @@ Feature:
     Given groups have been previoulsy created
     Then I should see a table of existing groups
 
+  Scenario: Groups are stored in the DB
+    Given I have created a group with 5 pupils
+    Then I should the group stored in the DB
+
   Scenario: Groups page has related content
     Given I am on the groups page
     Then I should see related content
@@ -114,6 +118,7 @@ Feature:
   Scenario: Groups can be removed
     Given I have created a group
     Then I should be able to remove the group
+    And the group should be soft deleted from the db
 
   Scenario: Removing a group can be cancelled
     Given I have created a group
