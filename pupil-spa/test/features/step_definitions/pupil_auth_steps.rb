@@ -36,18 +36,24 @@ end
 Given(/^I attempt to login whilst the check window is not open as the end date is in the past$/) do
   # original = MongoDbHelper.get_check_window_via_name('Summer 2017')
   original = SqlDbHelper.get_check_window_via_name('Summer 2017')
-  @original_date_time = {endDate: original['endDate']}
-  updated = original.each{ |key,str| original['endDate'] = Time.now - 60}
-  collection=CLIENT[:checkwindows]
-  collection.update_one({'_id' => original['_id']}, updated)
+  @original_date_time = {endDate: original['checkEndDate']}
+  # updated = original.each{ |key,str| original['checkEndDate'] = Time.now - 60}
+  # # collection=CLIENT[:checkwindows]
+  # # collection.update_one({'_id' => original['_id']}, updated)
+  check_end_date = Time.now - 60
+  SqlDbHelper.update_check_windows(original['id'], checkEndDate, check_end_date)
+
   step 'I have logged in'
 end
 
 Given(/^I attempt to login whilst the check window is not open as the start date is in the future$/) do
-  original = MongoDbHelper.get_check_window_via_name('Summer 2017')
-  @original_date_time = {startDate: original['startDate']}
-  updated = original.each{ |key,str| original['startDate'] = Time.now + 60}
-  collection=CLIENT[:checkwindows]
-  collection.update_one({'_id' => original['_id']}, updated)
+  original = SqlDbHelper.get_check_window_via_name('Summer 2017')
+  @original_date_time = {startDate: original['checkStartDate']}
+  # updated = original.each{ |key,str| original['startDate'] = Time.now + 60}
+  # collection=CLIENT[:checkwindows]
+  # collection.update_one({'_id' => original['_id']}, updated)
+  check_start_date = Time.now - 60
+  SqlDbHelper.update_check_windows(original['id'], checkStartDate, check_start_date)
+
   step 'I have logged in'
 end
