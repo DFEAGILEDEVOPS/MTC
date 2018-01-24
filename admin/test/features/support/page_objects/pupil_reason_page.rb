@@ -30,10 +30,10 @@ class PupilReasonPage < SitePrism::Page
     element :left_school_explanation, 'div', text: 'Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.'
     element :unable_to_access, 'strong', text: 'Unable to access'
     element :unable_to_access_explanation, 'div', text: 'Pupil is unable to access the check.'
-    element :below_standard, 'strong', text: 'Working below the overall standard of the check'
-    element :below_standard_explanation, 'div', text: 'Pupil has shown no understanding of the multiplication tables and is considered unable to answer the easiest questions.'
-    element :just_arrived, 'strong', text: 'Just arrived'
-    element :just_arrived_explanation, 'div', text: 'Pupils has arrived in school during the check window and there isn’t enough time to establish their abilities.'
+    element :below_standard, 'strong', text: 'Working below expectation'
+    element :below_standard_explanation, 'div', text: 'Pupil is considered unable to answer the easiest questions or is working below year 2 in multiplication tables.'
+    element :just_arrived, 'strong', text: 'Just arrived with EAL'
+    element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities."
   end
 
   def get_attendance_code

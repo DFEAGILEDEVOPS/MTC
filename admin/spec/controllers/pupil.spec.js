@@ -345,7 +345,7 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       await controller(req, res, next)
       expect(res.statusCode).toBe(200)
-      expect(res.download).toHaveBeenCalledWith('assets/csv/MTC-Pupil-details-template-Sheet-1.csv')
+      expect(res.download).toHaveBeenCalledWith('public/CSVs/MTC-Pupil-details-template-Sheet-1.csv')
       done()
     })
   })
