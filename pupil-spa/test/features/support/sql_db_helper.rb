@@ -53,7 +53,7 @@ class SqlDbHelper
   end
 
   def self.reset_pin(forename,lastname,school_id,flag=nil)
-    sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    sql = "UPDATE [mtc_admin].[pupil] set pin=#{flag} WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -79,11 +79,6 @@ class SqlDbHelper
   # end
 
   def self.get_pupil_check_metadata(check_code)
-    # collection=CLIENT[:checks].find({'checkCode': check_code})
-    # result = []
-    # collection.find.each { |check| result << check }
-    # result.first
-
     sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}'"
     result = SQL_CLIENT.execute(sql)
     chk_window_res = result.first
@@ -121,11 +116,6 @@ class SqlDbHelper
   end
 
   def self.get_form(form_id)
-    # collection=CLIENT[:checkforms].find({'_id': form_id})
-    # result = []
-    # collection.find.each { |form| result << form }
-    # result.first
-
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE id = '#{form_id}'"
     result = SQL_CLIENT.execute(sql)
     chk_form_res = result.first

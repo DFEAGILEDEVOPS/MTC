@@ -120,8 +120,9 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  completed_checks = MongoDbHelper.get_completed_checks
-  check = completed_checks.select {|check| check['data']['pupil']['sessionId'] == storage_pupil['sessionId']}.last
+  chk_data = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
+  check = JSON.parse(chk_data['data'])
+  # check = completed_checks.select {|check| check['data']['pupil']['sessionId'] == storage_pupil['sessionId']}.last
   storage_answers.each {|answer| expect(check['data']['answers']).to include answer}
   storage_inputs.each {|input| expect(check['data']['inputs']).to include input}
   storage_audit.each {|audit| expect(check['data']['audit']).to include audit}

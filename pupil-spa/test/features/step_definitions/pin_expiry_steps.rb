@@ -9,7 +9,6 @@ end
 Given(/^I login with a real user$/) do
   sign_in_page.load
   @pupil = SqlDbHelper.find_next_pupil
-  # @pin = 4.times.map {rand(1..9)}.join.to_s + ('a'..'z').to_a.shuffle[0, 1].join
   @pin = 4.times.map {rand(2..9)}.join
   SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], @pin)
   current_time = Time.now + 86400
@@ -17,7 +16,7 @@ Given(/^I login with a real user$/) do
   SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
   @school = SqlDbHelper.find_school(@pupil['school_id'])
   SqlDbHelper.set_school_pin_expiry(@school['estabCode'], new_time)
-  sign_in_page.login(@school['schoolPin'], @pin)
+  sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
 end
 

@@ -76,13 +76,6 @@ end
 
 Given(/^I have attempted to enter a school I do not attend upon login$/) do
   sign_in_page.load
-  # MongoDbHelper.expire_pin("Automated","Account",9991999,false)
-  # MongoDbHelper.reset_pin("Automated","Account",9991999,"9999")
-  # @pupil_information = MongoDbHelper.find_pupil_via_pin("9999")
-  # schools = MongoDbHelper.get_list_of_schools.delete_if{|a| a['_id'] == @pupil_information['school']}
-  # sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
-  # sign_in_page.sign_in_button.click
-
   SqlDbHelper.expire_pin("Automated","Account",1,false)
   SqlDbHelper.reset_pin("Automated","Account",1,"9999")
   @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
@@ -93,7 +86,6 @@ end
 
 
 Then(/^I should all the correct pupil details$/) do
-  # school = MongoDbHelper.find_school(9991999)['name']
   school = SqlDbHelper.find_school(1)['name']
   expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
   expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
