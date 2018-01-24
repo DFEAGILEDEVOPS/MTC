@@ -27,17 +27,6 @@ pupilService.fetchOnePupilBySlug = async (slug, schoolId) => {
   return pupilDataService.sqlFindOneBySlugAndSchool(slug, schoolId)
 }
 
-// TODO: refactor this when the Cosmos bug is fixed and we can allow $in queries again
-pupilService.fetchMultiplePupils = async (pupilIds) => {
-  winston.warn('WARNING: fetchMultiplePupils called, and it is operating very inefficiently')
-  const pupils = []
-  for (const id of pupilIds) {
-    const pupil = await pupilDataService.findOne({ '_id': id })
-    pupils.push(pupil)
-  }
-  return pupils
-}
-
 /**
  * Return a subset of pupil data so their Pins can be printed
  * @param dfeNumber

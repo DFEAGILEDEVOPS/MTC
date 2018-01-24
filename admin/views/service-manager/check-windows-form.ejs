@@ -11,14 +11,14 @@
     <div class="column-two-thirds" id="checkWindowsForm">
 
         <% if (typeof error === 'object' && error) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
             <p>See highlighted errors below</p>
         </div>
         <% } %>
 
         <% if (typeof successfulPost !== 'undefined' && successfulPost === 'updated') { %>
-        <div class="box-successful padding-first-item">
+        <div class="box-successful top-padding-30">
             <h2 class="heading-large">Changes have been saved</h2>
         </div>
         <% } %>
@@ -230,18 +230,16 @@
                                aria-label="Check end day.">
                     </div>
                 </div>
+                <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
+                <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
+                <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
+                <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
+                <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
             </div>
 
-            <div class="form-group">
-                <p>
-                    <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
-                    <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
-                    <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
-                    <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
-                    <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
-                    <input class="button" type="submit" value="Save">
-                    <a href="/service-manager/check-windows" class="button button-secondary">Cancel</a>
-                </p>
+            <div class="form-buttons">
+                <input class="button" type="submit" value="Save">
+                <a href="/service-manager/check-windows" class="button button-secondary">Cancel</a>
             </div>
         </form>
 

@@ -1,17 +1,21 @@
 const pupilValidator = require('../lib/validator/pupil-validator')
 const moment = require('moment')
 
+/**
+ *
+ * @param single
+ * @param {object} school
+ * @return {Promise<{pupil: {school_id, upn: string, foreName: *, lastName: *, middleNames: *, gender: *, dateOfBirth: Date}, single: *}>}
+ */
 module.exports.validate = async (single, school) => {
   const pupil = ({
-    school: school._id,
+    school_id: school.id,
     upn: single[ 5 ].trim().toUpperCase(),
     foreName: single[ 1 ],
     lastName: single[ 0 ],
     middleNames: single[ 2 ],
     gender: single[ 4 ],
-    dob: moment(single[ 3 ], 'DD/MM/YYYY').toDate(),
-    pin: null,
-    pinExpired: false
+    dateOfBirth: moment(single[ 3 ], 'DD/MM/YYYY').toDate()
   })
   const dob = single[ 3 ].split('/')
   const pupilData = Object.assign({

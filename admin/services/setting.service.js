@@ -7,11 +7,7 @@ const settingService = {}
 
 settingService.update = async (loadingTimeLimit, questionTimeLimit, userId) => {
   settingDataService.sqlUpdate(loadingTimeLimit, questionTimeLimit)
-  settingLogDataService.sqlCreate({
-    loadingTimeLimit: loadingTimeLimit,
-    questionTimeLimit: questionTimeLimit,
-    user_id: userId
-  })
+  settingLogDataService.sqlCreate(loadingTimeLimit, questionTimeLimit, userId)
 }
 
 settingService.get = async () => {

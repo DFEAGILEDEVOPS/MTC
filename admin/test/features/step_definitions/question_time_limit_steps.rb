@@ -3,7 +3,7 @@ Given(/^I am on the admin page$/) do
 end
 
 When(/^I am on the check settings page$/) do
-  admin_page.check_settings.click
+  admin_page.pupil_check_settings.click
 end
 
 When(/^I have updated the question time limit to (\d+) seconds$/) do |limit|
