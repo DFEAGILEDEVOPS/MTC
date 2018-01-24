@@ -219,6 +219,7 @@ sqlService.modify = (sql, params) => {
     const isInsert = isInsertStatement(sql)
     const con = await sqlPoolService.getConnection()
     const response = {}
+    const output = []
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
@@ -249,11 +250,16 @@ sqlService.modify = (sql, params) => {
 
     // Pick up any OUTPUT
     request.on('row', function (cols) {
-      const col = cols[0]
-      const id = col.value
-      if (id) { response.insertId = id }
+      // This output assumes a single column that is the inserted id
+      // You get a scalar if the insert is a single insert,
+      // you get an array of ids if the insert was multiple rows.
+      output.push(cols[0].value)
+      if (output.length === 1) {
+        response.insertId = R.head(output)
+      } else {
+        response.insertId = output
+      }
     })
-
     con.execSql(request)
   })
 }
