@@ -1,6 +1,6 @@
 Then(/^I should see (.*)'s school name$/) do |teacher|
-  school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
-  school_name = MongoDbHelper.find_school(school_id)[0]['name']
+  school_id = SqlDbHelper.find_teacher(teacher)[0]['school_id']
+  school_name = SqlDbHelper.find_school(school_id)['name']
   expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
 end
 

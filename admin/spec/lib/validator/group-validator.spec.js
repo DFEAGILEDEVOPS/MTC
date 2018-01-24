@@ -1,28 +1,15 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect */
+/* global beforeEach, describe, it, expect spyOn */
 
-const proxyquire = require('proxyquire')
-const sinon = require('sinon')
 const groupValidator = require('../../../lib/validator/group-validator')
 const groupDataService = require('../../../services/data-access/group.data.service')
 const groupErrorMessages = require('../../../lib/errors/group').group
 
 describe('groupValidation', function () {
-  let sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-  })
-
-  afterEach(() => sandbox.restore())
-
   describe('happy path', () => {
     beforeEach(() => {
-      sandbox.mock(groupDataService).expects('getGroup').resolves(null)
-      proxyquire('../../../lib/validator/group-validator', {
-        '../../../services/data-access/group.data.service': groupDataService
-      })
+      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
     })
 
     it('should return false if all is OK', async () => {
@@ -30,6 +17,7 @@ describe('groupValidation', function () {
         name: 'Group Tests 1',
         pupil: [1, 2, 3]
       }
+
       const result = await groupValidator.validate(data, '')
       expect(result.hasError()).toBeFalsy()
       expect(result.errors.name).toBeUndefined()
@@ -38,10 +26,7 @@ describe('groupValidation', function () {
 
   describe('unhappy paths', () => {
     beforeEach(() => {
-      sandbox.mock(groupDataService).expects('getGroup').resolves(null)
-      proxyquire('../../../lib/validator/group-validator', {
-        '../../../services/data-access/group.data.service': groupDataService
-      })
+      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
     })
 
     it('should return an error if group name is missing', async () => {
