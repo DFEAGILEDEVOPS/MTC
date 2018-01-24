@@ -63,18 +63,16 @@ describe('group.service', () => {
 
     describe('happy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlUpdate: jasmine.createSpy().and.callFake(function () { return Promise.resolve() }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should update group', async (done) => {
         const schoolId = 123
-        const group = await service.update(1, groupMock, schoolId)
-        expect(group).toBeTruthy()
+        await service.update(1, groupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalled()
+        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
         done()
       })
     })

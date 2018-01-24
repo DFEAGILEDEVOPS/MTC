@@ -132,6 +132,7 @@ const addGroup = async (req, res, next) => {
   }
 
   req.flash('info', 'New group created')
+  // TODO technical debt - do not use req.flash to pass data
   req.flash('groupId', groupId)
   return res.redirect('/school/group-pupils')
 }

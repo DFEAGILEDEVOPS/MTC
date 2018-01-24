@@ -257,8 +257,7 @@ BEGIN CATCH
                );
 END CATCH
   `
-  console.log(params)
-  console.log(sql)
+
   return sqlService.modify(sql, params)
 }
 
