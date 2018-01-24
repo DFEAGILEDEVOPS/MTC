@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect, spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
@@ -83,18 +83,16 @@ describe('check.data.service', () => {
   })
 
   describe('#sqlFindNumberOfChecksStartedByPupil', () => {
-    let mock
-
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('query').resolves(checkMock)
-      service = proxyquire('../../../services/data-access/check.data.service', {
-        '../../../services/data-access/sql.service': sqlService
-      })
+      service = require('../../../services/data-access/check.data.service')
+      spyOn(sqlService, 'query').and.returnValue([{
+        cnt: 5
+      }])
     })
 
     it('makes the expected calls', () => {
       service.sqlFindNumberOfChecksStartedByPupil(1234)
-      expect(mock.verify()).toBe(true)
+      expect(sqlService.query).toHaveBeenCalled()
     })
   })
 
