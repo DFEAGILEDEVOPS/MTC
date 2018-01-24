@@ -85,19 +85,20 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
 
   SqlDbHelper.expire_pin("Automated","Account",1,false)
   SqlDbHelper.reset_pin("Automated","Account",1,"9999")
-  @pupil_information = MongoDbHelper.find_pupil_via_pin("9999")
-  schools = SqlDbHelper.get_list_of_schools.delete_if{|a| a['_id'] == @pupil_information['school']}
+  @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
+  schools = SqlDbHelper.get_list_of_schools.delete_if{|a| a['id'] == @pupil_information['school_id']}
   sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
   sign_in_page.sign_in_button.click
 end
 
 
 Then(/^I should all the correct pupil details$/) do
-  school = MongoDbHelper.find_school(9991999)['name']
+  # school = MongoDbHelper.find_school(9991999)['name']
+  school = SqlDbHelper.find_school(1)['name']
   expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
   expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
   expect(confirmation_page.school_name.text).to  eql "School: #{school}"
-  expect(confirmation_page.dob.text).to  eql "Date of Birth: #{@pupil_information['dob'].strftime("%-d %B %Y")}"
+  expect(confirmation_page.dob.text).to  eql "Date of Birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
 end
 
 

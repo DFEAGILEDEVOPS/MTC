@@ -8,14 +8,15 @@ end
 
 Given(/^I login with a real user$/) do
   sign_in_page.load
-  @pupil = MongoDbHelper.find_next_pupil
-  @pin = 4.times.map {rand(1..9)}.join.to_s + ('a'..'z').to_a.shuffle[0, 1].join
-  MongoDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school'], @pin)
+  @pupil = SqlDbHelper.find_next_pupil
+  # @pin = 4.times.map {rand(1..9)}.join.to_s + ('a'..'z').to_a.shuffle[0, 1].join
+  @pin = 4.times.map {rand(2..9)}.join
+  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], @pin)
   current_time = Time.now + 86400
   new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school'], new_time)
-  @school = MongoDbHelper.find_school(@pupil['school'])
-  MongoDbHelper.set_school_pin_expiry(@school['estabCode'], new_time)
+  SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
+  @school = SqlDbHelper.find_school(@pupil['school_id'])
+  SqlDbHelper.set_school_pin_expiry(@school['estabCode'], new_time)
   sign_in_page.login(@school['schoolPin'], @pin)
   sign_in_page.sign_in_button.click
 end
@@ -48,7 +49,7 @@ Then(/^I should have an expired pin$/) do
   sign_in_page.login(@school['schoolPin'], @pin)
   sign_in_page.sign_in_button.click
   expect(sign_in_failure_page).to be_displayed
-  pupil = MongoDbHelper.find_pupil_from_school(@pupil['foreName'], @pupil['school'])
+  pupil = SqlDbHelper.find_pupil_from_school(@pupil['foreName'], @pupil['school'])
   expect(pupil['pin']).to be_nil
   expect(pupil['pinExpiresAt'].strftime('%d-%m-%Y %H')).to eql time.strftime('%d-%m-%Y %H')
 end

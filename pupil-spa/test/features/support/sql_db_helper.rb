@@ -24,6 +24,28 @@ class SqlDbHelper
     pupil_details_res
   end
 
+  def self.find_next_pupil
+    # collection=CLIENT[:pupils].find({})
+    # result = []
+    # collection.each { |pupil| result << pupil }
+    # result.select{|pupil| pupil['pin'] == nil}.first
+
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin is Null"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+  def self.find_pupil_from_school(first_name, school_id)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+
   def self.expire_pin(forename,lastname,school_id,flag=true)
     sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt=null WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
