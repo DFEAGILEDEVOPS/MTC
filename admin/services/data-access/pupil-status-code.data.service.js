@@ -15,9 +15,9 @@ pupilStatusCodeDataService.sqlFindStatusCodes = async () => {
   SELECT 
     id, 
     code, 
-    statusDesc 
+    description 
   FROM ${sqlService.adminSchema}.${table} 
-  ORDER BY statusDesc ASC`
+  ORDER BY description ASC`
   return sqlService.query(sql)
 }
 

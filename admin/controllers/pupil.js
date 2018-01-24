@@ -16,7 +16,7 @@ const winston = require('winston')
 const controller = {}
 
 controller.getAddPupil = async (req, res, next, error = null) => {
-  res.locals.pageTitle = 'Add single pupil'
+  res.locals.pageTitle = 'Add pupil'
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
@@ -32,7 +32,6 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
-  req.breadcrumbs(res.locals.pageTitle)
   try {
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     const pupilData = {
@@ -86,37 +85,35 @@ controller.postAddMultiplePupils = async (req, res, next) => {
     return next(error)
   }
   const uploadFile = req.files && req.files.csvTemplateFile
-  const fileErrors = await fileValidator.validate(uploadFile, 'template-upload')
+  const fileErrors = await fileValidator.validate(uploadFile, 'file-upload')
   if (fileErrors.hasError()) {
     res.hasError = true
     res.fileErrors = fileErrors
     return controller.getAddMultiplePupils(req, res, next)
   }
-  let uploadResult
+  let csvUploadResult
   try {
-    uploadResult = await pupilUploadService.upload(school, uploadFile)
+    csvUploadResult = await pupilUploadService.upload(school, uploadFile)
   } catch (error) {
     return next(error)
   }
   // upload error
-  if (uploadResult.error) return next(uploadResult.error)
+  if (csvUploadResult.error) return next(csvUploadResult.error)
   // render with errors
-  if (uploadResult.hasValidationError) {
-    req.session.csvErrorFile = uploadResult.csvErrorFile
-    res.hasError = uploadResult.hasValidationError
-    res.fileErrors = uploadResult.fileErrors
+  if (csvUploadResult.hasValidationError) {
+    req.session.csvErrorFile = csvUploadResult.csvErrorFile
+    res.hasError = csvUploadResult.hasValidationError
+    res.fileErrors = csvUploadResult.fileErrors
     return controller.getAddMultiplePupils(req, res, next)
   } else {
-    req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
-    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds)
-    const slugs = savedPupils.map(p => p.urlSlug)
-    const qp = encodeURIComponent(JSON.stringify(slugs))
-    res.redirect(`/school/pupil-register/lastName/true?hl=${qp}`)
+    req.flash('info', `${csvUploadResult.pupils && csvUploadResult.pupils.length} new pupils have been added`)
+    const ids = JSON.stringify(csvUploadResult.pupilIds)
+    res.redirect(`/school/pupil-register/lastName/true?hl=${ids}`)
   }
 }
 
 controller.getAddMultiplePupilsCSVTemplate = async (req, res) => {
-  const file = 'assets/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
+  const file = 'public/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
   res.download(file)
 }
 
