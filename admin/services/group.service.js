@@ -33,7 +33,7 @@ groupService.getGroupById = async function (groupId, schoolId) {
   if (!schoolId || !groupId) {
     throw new Error('schoolId and groupId are required')
   }
-  return groupDataService.sqlFindGroupById(groupId, schoolId)
+  return groupDataService.sqlFindOneById(groupId, schoolId)
 }
 
 /**
