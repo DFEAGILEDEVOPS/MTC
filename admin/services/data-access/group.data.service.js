@@ -226,39 +226,11 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
   }
 
   const sql = `
-  BEGIN TRY
-  BEGIN TRANSACTION GroupPupilUpdate
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
-    VALUES ${insertSql.join(',')}; 
- COMMIT TRANSACTION GroupPupilUpdate
-END TRY
+    VALUES ${insertSql.join(',')};`
 
-BEGIN CATCH
-  IF (@@TRANCOUNT > 0)
-   BEGIN
-      ROLLBACK TRANSACTION GroupPupilUpdate
-      PRINT 'Error detected, all changes reversed'
-   END
-  DECLARE @ErrorMessage NVARCHAR(4000);
-    DECLARE @ErrorSeverity INT;
-    DECLARE @ErrorState INT;
-
-    SELECT @ErrorMessage = ERROR_MESSAGE(),
-           @ErrorSeverity = ERROR_SEVERITY(),
-           @ErrorState = ERROR_STATE();
-
-    -- Use RAISERROR inside the CATCH block to return
-    -- error information about the original error that
-    -- caused execution to jump to the CATCH block.
-    RAISERROR (@ErrorMessage, -- Message text.
-               @ErrorSeverity, -- Severity.
-               @ErrorState -- State.
-               );
-END CATCH
-  `
-
-  return sqlService.modify(sql, params)
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 /**
@@ -321,38 +293,9 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `
-  BEGIN TRY
-  BEGIN TRANSACTION GroupAndPupilPurge
-    DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId
-    UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId
- COMMIT TRANSACTION GroupAndPupilPurge
-END TRY
-
-BEGIN CATCH
-  IF (@@TRANCOUNT > 0)
-   BEGIN
-      ROLLBACK TRANSACTION GroupAndPupilPurge
-      PRINT 'Error detected, all changes reversed'
-   END
-  DECLARE @ErrorMessage NVARCHAR(4000);
-    DECLARE @ErrorSeverity INT;
-    DECLARE @ErrorState INT;
-
-    SELECT @ErrorMessage = ERROR_MESSAGE(),
-           @ErrorSeverity = ERROR_SEVERITY(),
-           @ErrorState = ERROR_STATE();
-
-    -- Use RAISERROR inside the CATCH block to return
-    -- error information about the original error that
-    -- caused execution to jump to the CATCH block.
-    RAISERROR (@ErrorMessage, -- Message text.
-               @ErrorSeverity, -- Severity.
-               @ErrorState -- State.
-               );
-END CATCH
-  `
-  return sqlService.modify(sql, params)
+  const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+  UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 module.exports = groupDataService
