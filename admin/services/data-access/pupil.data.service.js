@@ -87,11 +87,13 @@ pupilDataService.find = async function (options) {
 
 /**
  * Generalised update function - can update many in one transaction
+ * @deprecated - use sqlUpdate instead
  * @param query
  * @param criteria
  * @return {Promise}
  */
 pupilDataService.update = async function (query, criteria, options = {multi: false}) {
+  winston.warn('*** pupilDataService.update is deprecated ***')
   return Pupil.update(query, criteria, options).exec()
 }
 
