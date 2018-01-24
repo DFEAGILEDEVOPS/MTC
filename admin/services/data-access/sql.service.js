@@ -238,7 +238,12 @@ sqlService.modify = (sql, params) => {
           con.release()
           return reject(new Error('parameter type invalid'))
         }
-        request.addParameter(param.name, param.type, param.value)
+        const options = {}
+        if (param.precision) {
+          options.scale = param.scale
+          options.precision = param.precision
+        }
+        request.addParameter(param.name, param.type, param.value, options)
       }
     }
 
