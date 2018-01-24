@@ -142,9 +142,11 @@ pupilDataService.unsetAttendanceCode = async function (id) {
 
 /**
  * Get all the restart codes documents
+ * @deprecated - moved to a lookup table
  * @return {Promise.<{Object}>}
  */
 pupilDataService.getStatusCodes = async () => {
+  winston.warn('*** pupilDataService.getStatusCodes is deprecated ***')
   return PupilStatusCode.find().lean().exec()
 }
 
