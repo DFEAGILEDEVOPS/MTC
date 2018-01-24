@@ -118,23 +118,9 @@ class SqlDbHelper
     chk_form_res
   end
 
-  # def self.get_attendance_codes
-  #   sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
-  #   result = SQL_CLIENT.execute(sql)
-  #   array_of_result = result.each{|row| row.map}
-  #   result.cancel
-  #   hash = {}
-  #   array_of_result.map{|a| hash.merge!(a['id'] => a['reason'])}
-  #   hash
-  # end
-
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
-    # result = SQL_CLIENT.execute(sql)
-    # chk_att_code_res = result.first
-    # result.cancel
-    # chk_att_code_res
     result = SQL_CLIENT.execute(sql)
     @array_of_attCode = result.each{|row| row.map}
     result.cancel
