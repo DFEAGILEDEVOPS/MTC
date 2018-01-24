@@ -35,4 +35,14 @@ class PupilReasonPage < SitePrism::Page
     element :just_arrived, 'strong', text: 'Just arrived'
     element :just_arrived_explanation, 'div', text: 'Pupils has arrived in school during the check window and there isn’t enough time to establish their abilities.'
   end
+
+  def get_attendance_code
+    attend_hash = {'attendance-code-ABSNT' => 'attendance-code-1',
+                   'attendance-code-INCRG' => 'attendance-code-3',
+                   'attendance-code-LEFTT' => 'attendance-code-2',
+                   'attendance-code-NOACC' => 'attendance-code-5',
+                   'attendance-code-BLSTD' => 'attendance-code-6',
+                   'attendance-code-JSTAR' => 'attendance-code-7'
+    }
+  end
 end
