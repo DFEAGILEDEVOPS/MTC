@@ -46,15 +46,8 @@ groupService.update = async (id, group, schoolId) => {
   if (!id || !group || !group.name || !schoolId) {
     throw new Error('id, group.name and schoolId are required')
   }
-  return new Promise(async (resolve, reject) => {
-    try {
-      await groupDataService.sqlUpdate(id, group.name, schoolId)
-      await groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
-      resolve(group)
-    } catch (error) {
-      reject(error)
-    }
-  })
+  await groupDataService.sqlUpdate(id, group.name, schoolId)
+  return groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
 }
 
 /**
@@ -67,13 +60,9 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
   if (!groupName || !schoolId) {
     throw new Error('groupName and schoolId are required')
   }
-  try {
-    const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
-    await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
-    return newGroup.insertId
-  } catch (error) {
-    throw new Error('Failed to create group')
-  }
+  const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
+  await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
+  return newGroup.insertId
 }
 
 module.exports = groupService
