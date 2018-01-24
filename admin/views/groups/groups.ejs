@@ -47,12 +47,12 @@
                 <tbody>
                     <% groups.forEach( group => { %>
                     <tr>
-                        <td<% if (messages.groupId && messages.groupId.toString() === group._id.toString()) { %> class="highlight-item"<% } %>>
-                            <a name="group-<%= group._id %>"></a>
-                            <strong><a href="/school/group-pupils/edit/<%= group._id %>"><%= group.name %></a></strong> <span class="font-greyed-out font-xsmall">(<%= Object.keys(group.pupils).length || 0 %> pupils)</span>
+                        <td<% if (messages.groupId && messages.groupId.toString() === group.id.toString()) { %> class="highlight-item"<% } %>>
+                            <a name="group-<%= group.id %>"></a>
+                            <strong><a href="/school/group-pupils/edit/<%= group.id %>"><%= group.name %></a></strong> <span class="font-greyed-out font-xsmall">(<%= group.pupilCount %> pupils)</span>
                         </td>
                         <td class="align-right">
-                            <a href="/school/group-pupils/delete/<%= group._id %>" class="modal-link" id="js-modal-link">Remove</a>
+                            <a href="/school/group-pupils/delete/<%= group.id %>" class="modal-link" id="js-modal-link">Remove</a>
                         </td>
                     </tr>
                     <% }) %>
