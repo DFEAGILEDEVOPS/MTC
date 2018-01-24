@@ -18,9 +18,9 @@ Then(/^I should be given the option to manage check windows$/) do
   expect(admin_page).to have_manage_check_windows_text
 end
 
-Then(/^I should be given the option to adjust question timings$/) do
-  expect(admin_page).to have_check_settings
-  expect(admin_page).to have_check_settings_text
+Then(/^I should be given the option to adjust settings on pupil check$/) do
+  expect(admin_page).to have_pupil_check_settings
+  expect(admin_page).to have_pupil_check_settings_text
 end
 
 Then(/^I should be given the option to view progress reports$/) do
@@ -50,4 +50,19 @@ end
 Then(/^I should be given the option to assign forms to check windows$/) do
   expect(testdeveloper_landing_page).to have_assign_forms_to_check_windows
   expect(testdeveloper_landing_page).to have_assign_forms_to_check_windows_text
+end
+
+Then(/^I should be given the option to adjust settings on school pages$/) do
+  expect(admin_page).to have_school_page_settings
+  expect(admin_page).to have_school_page_settings_text
+end
+
+Then(/^I should be given the option to manage access arangements$/) do
+  expect(admin_page).to have_manage_access_arrangements
+  expect(admin_page).to have_manage_access_arrangements_text
+end
+
+Then(/^I should be given the option to manage restart requests$/) do
+  expect(admin_page).to have_manage_restart_requests
+  expect(admin_page).to have_manage_restart_requests_text
 end

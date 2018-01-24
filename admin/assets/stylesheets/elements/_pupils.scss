@@ -34,41 +34,10 @@
   }
 }
 
-#register-pupils {
-  table-layout: fixed;
-
-  td {
-    padding-top: pem(10px);
-    padding-bottom: pem(10px);
-  }
-}
-
 .pupil-name-container {
   margin-bottom: pem(5px);
   margin-top: pem(5px);
   position: relative;
-}
-
-.table-cell {
-  padding-left: pem(10px);
-  padding-right: pem(10px);
-}
-
-// Pupil listing - highlight pupils
-.highlight {
-  border-left: 7px solid $green;
-  height: 80%;
-  left: 0;
-  position: absolute;
-  right: 7px;
-  top: 10%;
-  width: 7px;
-}
-
-// pupil listing - centering method using padding
-.pupil-name {
-  padding-bottom: 0.4em;
-  padding-top: 0.4em;
 }
 
 // pupil listing indent highlighted lines as the 'highlight' is positioned absolutely
@@ -82,28 +51,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.two-thirds {
-  width: 66%;
-}
-
-// Add multiple pupil
-
-.icon-file-download {
-  width: 22px;
-  height: 29px;
-  background-size: cover;
-}
-
-.icon-file-download.pupils-template {
-  display:inline-block;
-  vertical-align:middle;
-  margin-right: 6px;
-}
-
-.template-link {
-  cursor: pointer;
 }
 
 .panel, .warning-panel, .panel-no-border {
@@ -122,4 +69,12 @@
     content: " ";
     padding-left: 28px;
   }
+}
+
+.school-pin-wrapper {
+  padding-top: 15px;
+}
+
+.school-pin-pin {
+  padding-top: 10px;
 }

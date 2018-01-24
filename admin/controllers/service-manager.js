@@ -41,7 +41,7 @@ const getServiceManagerHome = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const getUpdateTiming = async (req, res, next) => {
-  res.locals.pageTitle = 'Check settings'
+  res.locals.pageTitle = 'Settings on pupil check'
   let settings
   const successfulPost = req.params.status || false
   console.log('session:', req.session)
@@ -79,7 +79,7 @@ const getUpdateTiming = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const setUpdateTiming = async (req, res, next) => {
-  res.locals.pageTitle = 'Check settings'
+  res.locals.pageTitle = 'Settings on pupil check'
   let settings
 
   const settingsRecord = await settingService.get()
@@ -93,7 +93,7 @@ const setUpdateTiming = async (req, res, next) => {
 
   let validationError = await settingsValidator.validate(req)
   if (validationError.hasError()) {
-    res.locals.pageTitle = 'Check settings'
+    res.locals.pageTitle = 'Settings on pupil check'
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('service-manager/check-settings', {
       settings: req.body,
