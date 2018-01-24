@@ -464,3 +464,9 @@ table.spacious.reduced-top-margin {
 .panel, .warning-panel, .panel-no-border {
   margin-bottom: 0;
 }
+
+a.disabled-link {
+  pointer-events: none;
+  cursor: default;
+  color: #6f777b;
+}
