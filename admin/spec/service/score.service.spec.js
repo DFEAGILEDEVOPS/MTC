@@ -9,7 +9,7 @@ const checkMock = require('../mocks/check')
 describe('score.service', () => {
   describe('getScorePercentage', () => {
     it('returns the score in percentage value if the latest check has results', async () => {
-      spyOn(checkDataService, 'sqlFindLatestCheck').and.returnValue(checkWithResultsMock)
+      spyOn(checkDataService, 'sqlFindLastStartedCheckByPupilId').and.returnValue(checkWithResultsMock)
       const result = await scoreService.getScorePercentage(pupilMock._id)
       expect(result).toBe('50%')
     })
