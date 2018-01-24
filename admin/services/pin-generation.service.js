@@ -12,8 +12,13 @@ const config = require('../config')
 
 const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
 
-const fourPmToday = () => {
-  return moment().startOf('day').add(16, 'hours')
+const fourPmToday = moment().startOf('day').add(16, 'hours')
+
+const pinExpiryTime = () => {
+  if (config.OverridePinExpiry === 'true') {
+    return moment().endOf('day')
+  }
+  return fourPmToday
 }
 
 const pinGenerationService = {}
@@ -71,7 +76,7 @@ pinGenerationService.updatePupilPins = async (pupilsList) => {
   pupils.forEach(async pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
-      pupil.pinExpiresAt = fourPmToday()
+      pupil.pinExpiresAt = pinExpiryTime()
     }
   })
   const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
@@ -95,7 +100,7 @@ pinGenerationService.generateSchoolPassword = (school) => {
   const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = fourPmToday()
+  const newExpiry = pinExpiryTime()
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 
