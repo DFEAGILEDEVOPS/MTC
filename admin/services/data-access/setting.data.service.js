@@ -28,12 +28,16 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
     {
       name: 'loadingTimeLimit',
       value: loadingTimeLimit,
-      type: TYPES.Decimal
+      type: TYPES.Decimal,
+      scale: 1,
+      precision: 5
     },
     {
       name: 'questionTimeLimit',
       value: questionTimeLimit,
-      type: TYPES.Decimal
+      type: TYPES.Decimal,
+      scale: 1,
+      precision: 5
     }
   ]
   return sqlService.modify(sql, params)
