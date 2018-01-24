@@ -234,17 +234,17 @@ describe('pupil controller:', () => {
       it('saves the new pupil and redirects to the register pupils page', async (done) => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ pupils: [ { id: 1 }, { id: 2 } ], pupilIds: [ '1', '2' ] }))
+          .resolve({ pupilIds: [ '1', '2' ] }))
+        spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve([pupilMock]))
         const res = getRes()
         const req = getReq(goodReqParams)
-        req.flash = () => {
-        }
+        req.flash = () => {}
         await controller(req, res, next)
         expect(res.statusCode).toBe(302)
         done()
       })
 
-      it('redirects to the add multiple pupils page when file errors have been found', async (done) => {
+      it('displays the add multiple pupils page when file errors have been found', async (done) => {
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
@@ -281,7 +281,7 @@ describe('pupil controller:', () => {
         done()
       })
 
-      it('redirects to the add multiple pupils page when csv validation returns errors', async (done) => {
+      it('displays the add multiple pupils page when csv validation returns errors', async (done) => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise.resolve({
           csvErrorFile: 'test.csv',

@@ -83,6 +83,7 @@ describe('pupil-upload service', () => {
       })
     })
   })
+
   describe('attempts to save csv errors', () => {
     beforeEach(() => {
       sandbox.mock(validateCSVService).expects('process')
@@ -98,21 +99,21 @@ describe('pupil-upload service', () => {
     })
     describe('and returns an object with pupils', () => {
       beforeEach(() => {
-        sandbox.mock(pupilDataService).expects('insertMany').resolves([ { _id: '1' }, { _id: '2' } ])
+        sandbox.mock(pupilDataService).expects('sqlInsertMany').resolves({ insertId: [1, 2], rowsModified: 4 })
         proxyquire('../../services/pupil-upload.service', {
           '../../services/data-access/pupil.data.service': pupilDataService
         })
       })
       it('when saved successfully', async (done) => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
-        expect(pr.pupils.length).toBe(2)
-        expect(pr.pupilIds).toBe('["1","2"]')
+        expect(pr.pupilIds.length).toBe(2)
+        expect(pr).toEqual({ pupilIds: [1, 2] })
         done()
       })
     })
     describe('and returns an object with an error if save fails', () => {
       beforeEach(() => {
-        sandbox.mock(pupilDataService).expects('insertMany').returns(null)
+        sandbox.mock(pupilDataService).expects('sqlInsertMany').returns(null)
         proxyquire('../../services/pupil-upload.service', {
           '../../services/data-access/pupil.data.service': pupilDataService
         })

@@ -57,5 +57,6 @@ module.exports = {
       app: 'MTC Admin',
       env: process.env.LOGDNA_ENV_NAME
     }
-  }
+  },
+  OverridePinExpiry: process.env.OVERRIDE_PIN_EXPIRY || false
 }
