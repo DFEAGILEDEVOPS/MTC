@@ -55,7 +55,7 @@ describe('pupil authentication service', () => {
       const pupilData = service.getPupilDataForSpa(pupilMock)
       expect(pupilData.firstName).toBe(pupilMock.foreName)
       expect(pupilData.lastName).toBe(pupilMock.lastName)
-      expect(pupilData.dateOfBirth).toBe('31 December 2000')
+      expect(pupilData.dob).toBe('31 December 2000')
     })
   })
 
