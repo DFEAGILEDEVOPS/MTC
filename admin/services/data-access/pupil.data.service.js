@@ -87,19 +87,23 @@ pupilDataService.find = async function (options) {
 
 /**
  * Generalised update function - can update many in one transaction
+ * @deprecated - use sqlUpdate instead
  * @param query
  * @param criteria
  * @return {Promise}
  */
 pupilDataService.update = async function (query, criteria, options = {multi: false}) {
+  winston.warn('*** pupilDataService.update is deprecated ***')
   return Pupil.update(query, criteria, options).exec()
 }
 
 /**
+ * @deprecated - use sql* methods instead
  * @param pupils
  * @return {Promise<Array>}
  */
 pupilDataService.updateMultiple = async function (pupils) {
+  winston.warn('*** pupilDataService.updateMultiple is deprecated ***')
   // returns Promise
   let savedPupils = []
   await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p)))
@@ -114,11 +118,12 @@ pupilDataService.updateMultiple = async function (pupils) {
 
 /**
  * Create a new Pupil
- * @deprecated
+ * @deprecated use sqlCreate instead
  * @param data
  * @return {Promise}
  */
 pupilDataService.save = async function (data) {
+  winston.warn('*** pupilDataService.save is deprecated ***')
   const pupil = new Pupil(data)
   await pupil.save()
   return pupil.toObject()
@@ -131,14 +136,17 @@ pupilDataService.save = async function (data) {
  * @return {Promise<*>}
  */
 pupilDataService.unsetAttendanceCode = async function (id) {
+  winston.warn('*** pupilDataService.unsetAttendanceCode is deprecated ***')
   return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
 }
 
 /**
  * Get all the restart codes documents
+ * @deprecated - moved to a lookup table
  * @return {Promise.<{Object}>}
  */
 pupilDataService.getStatusCodes = async () => {
+  winston.warn('*** pupilDataService.getStatusCodes is deprecated ***')
   return PupilStatusCode.find().lean().exec()
 }
 
