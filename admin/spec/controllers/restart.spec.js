@@ -137,6 +137,7 @@ describe('restart controller:', () => {
       validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
+      spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(res, 'render').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)

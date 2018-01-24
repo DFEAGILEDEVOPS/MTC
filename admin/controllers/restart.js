@@ -57,14 +57,17 @@ controller.postSubmitRestartList = async (req, res, next) => {
     req.breadcrumbs('Restarts', '/restart/overview')
     req.breadcrumbs(pageTitle)
     let pupils
+    let reasons
     try {
       pupils = await restartService.getPupils(req.user.School)
+      reasons = await restartService.getReasons()
     } catch (error) {
       return next(error)
     }
     return res.render('restart/select-restart-list', {
       breadcrumbs: req.breadcrumbs(),
       pupils,
+      reasons,
       error: validationError
     })
   }
