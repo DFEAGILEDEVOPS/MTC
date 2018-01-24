@@ -38,14 +38,14 @@ describe('setting-log.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('create').resolves({rowsAffected: 1})
+      mock = sandbox.mock(sqlService).expects('modify').resolves({rowsAffected: 1})
       service = proxyquire('../../../services/data-access/setting-log.data.service', {
         '../../../services/data-access/sql.service': sqlService
       })
     })
 
     it('calls the model', () => {
-      service.sqlCreate({ loadingTimeLimit: 10, questionTimeLimit: 5, user_id: 999 })
+      service.sqlCreate(10, 5, 999)
       expect(mock.verify()).toBe(true)
     })
   })
