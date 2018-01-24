@@ -9,7 +9,7 @@ const scoreService = {}
  */
 scoreService.getScorePercentage = async (pupilId) => {
   // find the score, if they have one
-  const latestCheck = await checkDataService.sqlFindLatestCheck(pupilId)
+  const latestCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupilId)
   let score
   if (latestCheck && latestCheck.results) {
     // calculate percentage
