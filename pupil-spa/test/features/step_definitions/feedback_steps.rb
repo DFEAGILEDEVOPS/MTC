@@ -92,8 +92,10 @@ end
 
 Then(/^my feedback should be saved$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("feedback");'))
-  wait_until {!MongoDbHelper.get_feedback(local_storage['sessionId']).nil?}
-  saved_feedback = MongoDbHelper.get_feedback(local_storage['sessionId'])
+  # wait_until {!MongoDbHelper.get_feedback(local_storage['sessionId']).nil?}
+  # saved_feedback = MongoDbHelper.get_feedback(local_storage['sessionId'])
+  wait_until {!SqlDbHelper.get_feedback(local_storage['check_id']).nil?}
+  saved_feedback = SqlDbHelper.get_feedback(local_storage['check_id'])
   expect(saved_feedback['inputType']).to eql '3'
   expect(saved_feedback['satisfactionRating']).to eql '1'
   expect(saved_feedback['comments']).to eql 'Test feedback'

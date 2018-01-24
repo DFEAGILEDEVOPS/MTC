@@ -58,18 +58,25 @@ class SqlDbHelper
     result.do
   end
 
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+
   def self.set_school_pin_expiry(estab_code,newTime)
     sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{newTime}' WHERE estabCode='#{estab_code}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.get_completed_checks
-    collection=CLIENT[:completedchecks].find({})
-    result = []
-    collection.each { |check| result << check }
-    result
-  end
+  # def self.get_completed_checks
+  #   collection=CLIENT[:completedchecks].find({})
+  #   result = []
+  #   collection.each { |check| result << check }
+  #   result
+  # end
 
   def self.get_pupil_check_metadata(check_code)
     # collection=CLIENT[:checks].find({'checkCode': check_code})
@@ -133,7 +140,7 @@ class SqlDbHelper
 
     sql = "SELECT * FROM [mtc_admin].[check]"
     result = SQL_CLIENT.execute(sql)
-    chk_window_count = result.done
+    chk_window_count = result.do
     chk_window_count
   end
 
@@ -143,12 +150,27 @@ class SqlDbHelper
     sql = "SELECT * FROM [mtc_admin].[checkWindow]"
     result = SQL_CLIENT.execute(sql)
     check_window_result = result.each{|row| row.map}
+    result.cancel
+    check_window_result
   end
 
   def update_check_windows(id, column_name, endDate)
     sql = "UPDATE [mtc_admin].[checkWindow] set #{column_name}='#{endDate}' WHERE id='#{id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
+  end
+
+  def self.get_feedback(check_id)
+    # result = []
+    # collection=CLIENT[:pupilfeedbacks].find({'sessionId': session_id})
+    # collection.each {|a| result << a}
+    # result.first
+
+    sql = "SELECT * FROM [mtc_admin].[pupilFeedback] WHERE check_id = '#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_form_res = result.first
+    result.cancel
+    chk_form_res
   end
 
 end
