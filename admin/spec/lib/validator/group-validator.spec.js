@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect spyOn */
+/* global beforeEach, describe, it, expect spyOn */
 
 const groupValidator = require('../../../lib/validator/group-validator')
 const groupDataService = require('../../../services/data-access/group.data.service')
@@ -9,7 +9,7 @@ const groupErrorMessages = require('../../../lib/errors/group').group
 describe('groupValidation', function () {
   describe('happy path', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindGroupByName').and.returnValue(null)
+      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
     })
 
     it('should return false if all is OK', async () => {
@@ -26,7 +26,7 @@ describe('groupValidation', function () {
 
   describe('unhappy paths', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindGroupByName').and.returnValue(null)
+      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
     })
 
     it('should return an error if group name is missing', async () => {

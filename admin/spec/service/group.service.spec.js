@@ -46,7 +46,7 @@ describe('group.service', () => {
 
   describe('#getGroupById', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindGroup').and.returnValue(groupMock)
+      spyOn(groupDataService, 'sqlFindGroupById').and.returnValue(groupMock)
     })
 
     it('should return group document filtered by group id', async (done) => {

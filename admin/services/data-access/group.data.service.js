@@ -63,7 +63,7 @@ groupDataService.getGroup = async function (query) {
  * @param groupId
  * @returns {Promise<void>}
  */
-groupDataService.sqlFindGroup = async (groupId, schoolId) => {
+groupDataService.sqlFindGroupById = async (groupId, schoolId) => {
   const sql = `SELECT id, [name] 
     FROM ${sqlService.adminSchema}.[group]
     WHERE id=@groupId AND school_id=@schoolId`
@@ -90,7 +90,7 @@ groupDataService.sqlFindGroup = async (groupId, schoolId) => {
  * @param groupName
  * @returns {Promise<void>}
  */
-groupDataService.sqlFindGroupByName = async (groupName, schoolId) => {
+groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
   const sql = `SELECT id, [name] 
     FROM ${sqlService.adminSchema}.[group]
     WHERE isDeleted=0
