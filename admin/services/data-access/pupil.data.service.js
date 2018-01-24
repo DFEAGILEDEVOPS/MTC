@@ -136,6 +136,7 @@ pupilDataService.save = async function (data) {
  * @return {Promise<*>}
  */
 pupilDataService.unsetAttendanceCode = async function (id) {
+  winston.warn('*** pupilDataService.unsetAttendanceCode is deprecated ***')
   return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
 }
 
