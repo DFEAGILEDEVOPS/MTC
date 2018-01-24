@@ -74,14 +74,14 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_pupil_pin_expiry(forename,lastname,school_id,newTime)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{newTime}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.set_school_pin_expiry(estab_code,newTime)
-    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{newTime}' WHERE estabCode='#{estab_code}'"
+  def self.set_school_pin_expiry(estab_code,new_time)
+    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{new_time}' WHERE estabCode='#{estab_code}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
