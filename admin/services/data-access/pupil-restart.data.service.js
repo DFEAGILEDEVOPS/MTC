@@ -90,7 +90,7 @@ pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId)
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj && obj['cnt']
+  return R.prop('cnt', obj)
 }
 
 /**
@@ -150,7 +150,7 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj && obj['description']
+  return R.prop('description', obj)
 }
 
 /**
@@ -186,7 +186,7 @@ pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj && obj.id
+  return R.prop('id', obj)
 }
 
 /**
