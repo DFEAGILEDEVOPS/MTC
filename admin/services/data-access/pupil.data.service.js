@@ -98,10 +98,12 @@ pupilDataService.update = async function (query, criteria, options = {multi: fal
 }
 
 /**
+ * @deprecated - use sql* methods instead
  * @param pupils
  * @return {Promise<Array>}
  */
 pupilDataService.updateMultiple = async function (pupils) {
+  winston.warn('*** pupilDataService.updateMultiple is deprecated ***')
   // returns Promise
   let savedPupils = []
   await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p)))
