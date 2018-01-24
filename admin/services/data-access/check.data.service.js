@@ -152,7 +152,7 @@ checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) 
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj['cnt']
+  return obj && obj['cnt']
 }
 
 /**
