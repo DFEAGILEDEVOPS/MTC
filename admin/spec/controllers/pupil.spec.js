@@ -486,7 +486,7 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
-      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.slug} not found`))
+      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
 
     it('makes a call to retrieve the school', async () => {

@@ -15,7 +15,7 @@ describe('pupil validator', function () {
 
   function getBody () {
     return {
-      slug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722',
+      urlSlug: 'EE882072-D3FC-46F6-84BC-691BFB1B5722',
       foreName: 'John',
       lastName: 'Smith',
       middleNames: '',
@@ -640,7 +640,7 @@ describe('pupil validator', function () {
     it('it ensures the UPN is unique when adding new pupil', async (done) => {
       req.body = getBody()
       // Make it looks like a new pupil
-      req.body.slug = undefined
+      req.body.urlSlug = undefined
       const validationError = await pupilValidator.validate(req.body)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('upn')).toBe(true)

@@ -160,9 +160,9 @@ controller.postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlug(req.body.slug)
+    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug)
     if (!pupil) {
-      return next(new Error(`Pupil ${req.body.slug} not found`))
+      return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
     school = await schoolDataService.sqlFindOneById(pupil.school_id)
     if (!school) {
