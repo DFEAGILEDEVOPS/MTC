@@ -145,7 +145,7 @@ restartService.getSubmittedRestarts = async schoolId => {
       restarts.push({
         id: record.id,
         pupilId: p.id,
-        reason,
+        reason: reason,
         status: record.status,
         foreName: p.foreName,
         lastName: p.lastName,
