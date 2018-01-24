@@ -1,6 +1,12 @@
 const csvValidator = require('../lib/validator/csv-validator')
 const singlePupilValidationService = require('./single-pupil-validation.service')
 
+/**
+ *
+ * @param csvDataArray
+ * @param {object} school
+ * @return {Promise<*>}
+ */
 module.exports.process = async (csvDataArray, school) => {
   // Remove error column and headers from data and validate rows
   if (csvDataArray.some(p => p[ 6 ])) csvDataArray.map((r) => r.splice(6, 1))

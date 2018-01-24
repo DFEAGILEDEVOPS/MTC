@@ -50,7 +50,6 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
     .exec()
 }
 
-
 /**
  * Insert a list of pupils in the db
  * @param pupils
@@ -435,5 +434,62 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   return sqlService.query(sql, params)
 }
 
+pupilDataService.sqlInsertMany = async (pupils) => {
+  const insertSql = `
+  DECLARE @output TABLE (id int);
+  INSERT INTO ${sqlService.adminSchema}.${table} 
+  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth)
+  OUTPUT inserted.ID INTO @output
+  VALUES
+  `
+  const output = `; SELECT * from @output`
+  const values = []
+  const params = []
+
+  for (let i = 0; i < pupils.length; i++) {
+    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i})`)
+    params.push(
+      {
+        name: `school_id${i}`,
+        value: pupils[i][ 'school_id' ],
+        type: TYPES.Int
+      },
+      {
+        name: `foreName${i}`,
+        value: pupils[i][ 'foreName' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `lastName${i}`,
+        value: pupils[i][ 'lastName' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `middleNames${i}`,
+        value: pupils[i][ 'middleNames' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `gender${i}`,
+        value: pupils[i][ 'gender' ],
+        type: TYPES.Char
+      },
+      {
+        name: `upn${i}`,
+        value: pupils[i][ 'upn' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `dateOfBirth${i}`,
+        value: pupils[i][ 'dateOfBirth' ],
+        type: TYPES.DateTimeOffset
+      }
+    )
+  }
+  const sql = [insertSql, values.join(',\n'), output].join(' ')
+  const res = await sqlService.modify(sql, params)
+  // E.g. { insertId: [1, 2], rowsModified: 4 }
+  return res
+}
 
 module.exports = pupilDataService
