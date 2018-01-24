@@ -251,7 +251,7 @@ checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
       type: TYPES.Int
     }
   ]
-  const result = sqlService.query(sql, params)
+  const result = await sqlService.query(sql, params)
   return R.head(result)
 }
 
