@@ -25,10 +25,11 @@ class SqlDbHelper
   end
 
   def self.find_teacher(name)
-    @array_of_users = []
     sql = "SELECT * FROM [mtc_admin].[user] WHERE identifier='#{name}'"
     result = SQL_CLIENT.execute(sql)
-    @array_of_users = result.each{|row| row.map}
+    teacher_res = result.first
+    result.cancel
+    teacher_res
   end
 
   def self.find_school(school_id)
@@ -116,6 +117,33 @@ class SqlDbHelper
     result.cancel
     chk_form_res
   end
+
+  def self.get_attendance_codes
+    @array_of_attCode = []
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_attCode = result.each{|row| row.map}
+    result.cancel
+    @array_of_attCode
+  end
+
+  def self.get_attendance_code_for_a_pupil(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilAttendance] WHERE pupil_id = '#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_att_code_res = result.first
+    result.cancel
+    pupil_att_code_res
+  end
+
+  def self.check_attendance_code(id)
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode] WHERE id = '#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_att_code_res = result.first
+    result.cancel
+    chk_att_code_res
+
+  end
+
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
     sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupilId, checkCode, checkWindowId, checkFormId, pupilLoginDate, checkStartedAt) VALUES ('#{updatedime}', '#{createdTime}', '#{pupil_id}', '40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6', '#{check_window_id}', '100', '#{pupilLoginDate}', '#{checkStartedTime}' )"
