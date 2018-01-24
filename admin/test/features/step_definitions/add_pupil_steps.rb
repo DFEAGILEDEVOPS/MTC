@@ -162,14 +162,14 @@ end
 
 Then(/^the pupil details should be stored$/) do
   gender = @details_hash[:male] ? 'M' : 'F'
-  wait_until {!(MongoDbHelper.pupil_details(@upn.to_s)).nil?}
-  @stored_pupil_details = MongoDbHelper.pupil_details @upn.to_s
+  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details @upn.to_s
   expect(@details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
   expect(@details_hash[:last_name]).to eql @stored_pupil_details['lastName']
   expect(gender).to eql @stored_pupil_details['gender']
   expect(@details_hash[:upn].to_s.upcase).to eql @stored_pupil_details['upn']
-  expect(Time.parse(@details_hash[:day]+ "-"+ @details_hash[:month]+"-"+ @details_hash[:year])).to eql @stored_pupil_details['dob']
+  expect(Time.parse(@details_hash[:day]+ "-"+ @details_hash[:month]+"-"+ @details_hash[:year])).to eql @stored_pupil_details['dateOfBirth']
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
 end
@@ -183,7 +183,7 @@ When(/^I have submitted invalid pupil details$/) do
 end
 
 Then(/^the pupil details should not be stored$/) do
-  wait_until {(MongoDbHelper.pupil_details @upn.to_s).nil?}
+  wait_until {(SqlDbhelper.pupil_details @upn.to_s).nil?}
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
@@ -278,8 +278,8 @@ When(/^I attempt to enter names that are more than (\d+) characters long$/) do |
 end
 
 Then(/^I should see only (\d+) characters are saved$/) do |number|
-  wait_until {!(MongoDbHelper.pupil_details(@upn.to_s)).nil?}
-  @stored_pupil_details = MongoDbHelper.pupil_details @upn.to_s
+  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details @upn.to_s
   expect(@details_hash[:first_name]).to eql @long_name
   expect(@details_hash[:middle_name]).to eql @long_name
   expect(@details_hash[:last_name]).to eql @long_name

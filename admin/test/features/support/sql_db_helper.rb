@@ -55,6 +55,14 @@ class SqlDbHelper
     @array_of_pupils = result.each{|row| row.map}
   end
 
+  def self.pupil_pins
+    sql = "SELECT * FROM [mtc_admin].[pupil] where pin IS NOT NULL"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_pins = result.each{|row| row.map}
+    result.cancel
+    @array_of_pins.map {|row| row['pin']}
+  end
+
   def self.reset_pin(forename,lastname,school_id,flag=nil)
     sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -67,14 +75,14 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_pupil_pin_expiry(forename,lastname,school_id,newTime)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{newTime}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.set_school_pin_expiry(estab_code,newTime)
-    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{newTime}' WHERE estabCode='#{estab_code}'"
+  def self.set_school_pin_expiry(estab_code,new_time)
+    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{new_time}' WHERE estabCode='#{estab_code}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -146,7 +154,7 @@ class SqlDbHelper
 
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
-    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupilId, checkCode, checkWindowId, checkFormId, pupilLoginDate, checkStartedAt) VALUES ('#{updatedime}', '#{createdTime}', '#{pupil_id}', '40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6', '#{check_window_id}', '100', '#{pupilLoginDate}', '#{checkStartedTime}' )"
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, pupilLoginDate, startedAt) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{pupilLoginDate}', '#{checkStartedTime}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
