@@ -118,11 +118,12 @@ pupilDataService.updateMultiple = async function (pupils) {
 
 /**
  * Create a new Pupil
- * @deprecated
+ * @deprecated use sqlCreate instead
  * @param data
  * @return {Promise}
  */
 pupilDataService.save = async function (data) {
+  winston.warn('*** pupilDataService.save is deprecated ***')
   const pupil = new Pupil(data)
   await pupil.save()
   return pupil.toObject()
