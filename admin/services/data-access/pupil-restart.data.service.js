@@ -186,7 +186,7 @@ pupilRestartDataService.sqlFindRestartReasonByCode = async function (code) {
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj & obj.id
+  return obj && obj.id
 }
 
 /**
