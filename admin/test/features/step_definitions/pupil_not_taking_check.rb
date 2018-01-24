@@ -34,7 +34,7 @@ end
 
 Then(/^I should see set of reasons I can choose$/) do
   expected_reason_hash = SqlDbHelper.get_attendance_codes['reason']
-  attend_hash = pupil_reason_page.get_attendance_code()
+  attend_hash = pupil_reason_page.get_attendance_code
   pupil_reason_page.attendance_codes.each_with_index {|c| actual_reason_hash = find("label[for=#{attend_hash[c['id']]}]").text}
   expect(actual_reason_hash).to eql expected_reason_hash
 end
@@ -133,7 +133,7 @@ Then(/^my selections are cleared$/) do
 end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
-  attend_hash = pupil_reason_page.get_attendance_code()
+  attend_hash = pupil_reason_page.get_attendance_code
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == reason}.click
   @pupil_row = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupil_forename = @pupil_row.name.text.split(',')[1].strip
@@ -181,7 +181,7 @@ end
 
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
-  attend_hash = pupil_reason_page.get_attendance_code()
+  attend_hash = pupil_reason_page.get_attendance_code
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
@@ -218,7 +218,7 @@ end
 But(/^I decide to change it$/) do
   pupils_not_taking_check_page.add_reason.click
   page.execute_script "window.scrollBy(0,500)"
-  attend_hash = pupil_reason_page.get_attendance_code()
+  attend_hash = pupil_reason_page.get_attendance_code
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == 'Just arrived'}.click
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
@@ -267,7 +267,7 @@ end
 
 When(/^I select multiple pupils with the (.+) reason$/) do |reason|
   @reason = reason
-  attend_hash = pupil_reason_page.get_attendance_code()
+  attend_hash = pupil_reason_page.get_attendance_code
   pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
