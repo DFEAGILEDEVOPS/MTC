@@ -1,17 +1,17 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine */
+/* global describe beforeEach afterEach it expect jasmine spyOn */
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 
-const Group = require('../../models/group')
+const groupService = require('../../services/group.service')
+const groupDataService = require('../../services/data-access/group.data.service')
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
-const pupilsMock = require('../mocks/pupils-with-reason')
+const pupilsMock = require('../mocks/pupils')
 
 describe('group.service', () => {
-  let service
   let sandbox
 
   beforeEach(() => { sandbox = sinon.sandbox.create() })
@@ -19,16 +19,12 @@ describe('group.service', () => {
 
   describe('#getGroups', () => {
     beforeEach(() => {
-      service = proxyquire('../../services/group.service', {
-        '../services/data-access/group.data.service': {
-          getGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
-        },
-        '../models/group': Group
-      })
+      spyOn(groupDataService, 'sqlFindGroups').and.returnValue(groupsMock)
     })
 
     it('should return groups', async (done) => {
-      const groups = await service.getGroups()
+      const schoolId = 1
+      const groups = await groupService.getGroups(schoolId)
       expect(groups).toEqual(groupsMock)
       done()
     })
@@ -36,76 +32,115 @@ describe('group.service', () => {
 
   describe('#getPupils', () => {
     beforeEach(() => {
-      service = proxyquire('../../services/group.service', {
-        '../services/data-access/pupil.data.service': {
-          getSortedPupils: jasmine.createSpy().and.callFake(function () { return Promise.resolve(pupilsMock) })
-        },
-        '../services/data-access/group.data.service': {
-          getGroups: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupsMock) })
-        },
-        '../models/group': Group
-      })
+      spyOn(groupDataService, 'sqlFindPupils').and.returnValue(pupilsMock)
     })
 
     it('should return pupils', async (done) => {
-      const schoolId = '9991001'
-      const pupils = await service.getPupils(schoolId)
+      const schoolId = 1
+      const groupIdToExclude = 1
+      const pupils = await groupService.getPupils(schoolId, groupIdToExclude)
       expect(pupils).toEqual(pupilsMock)
-      done()
-    })
-
-    it('should return false if school id is not passed', async (done) => {
-      const pupils = await service.getPupils()
-      expect(pupils).toBeFalsy()
       done()
     })
   })
 
   describe('#getGroupById', () => {
     beforeEach(() => {
-      service = proxyquire('../../services/group.service', {
-        '../services/data-access/group.data.service': {
-          getGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
-        },
-        '../models/group': Group
-      })
+      spyOn(groupDataService, 'sqlFindOneById').and.returnValue(groupMock)
     })
 
     it('should return group document filtered by group id', async (done) => {
       const groupId = '123456abcde'
-      const group = await service.getGroupById(groupId)
+      const schoolId = 123
+      const group = await groupService.getGroupById(groupId, schoolId)
       expect(group).toEqual(groupMock)
-      done()
-    })
-
-    it('should return false if group id is not passed', async (done) => {
-      const group = await service.getGroupById()
-      expect(group).toBeFalsy()
       done()
     })
   })
 
-  describe('#getGroupByName', () => {
-    beforeEach(() => {
-      service = proxyquire('../../services/group.service', {
-        '../services/data-access/group.data.service': {
-          getGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve(groupMock) })
-        },
-        '../models/group': Group
+  describe('#update', () => {
+    let service
+
+    describe('happy path', () => {
+      beforeEach(() => {
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
+      })
+
+      it('should update group', async (done) => {
+        const schoolId = 123
+        await service.update(1, groupMock, schoolId)
+        expect(groupDataService.sqlUpdate).toHaveBeenCalled()
+        expect(groupDataService.sqlAssignPupilsToGroup).toHaveBeenCalled()
+        done()
       })
     })
 
-    it('should return group document filtered by name', async (done) => {
-      const groupName = 'Test Group 1'
-      const group = await service.getGroupByName(groupName)
-      expect(group).toEqual(groupMock)
-      done()
+    describe('unhappy path', () => {
+      beforeEach(() => {
+        service = proxyquire('../../services/group.service', {
+          '../services/data-access/group.data.service': {
+            sqlUpdate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('TEST ERROR')) }),
+            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
+          }
+        })
+      })
+
+      it('should not update group', async (done) => {
+        try {
+          const schoolId = 123
+          const group = await service.update(1, groupMock, schoolId)
+          expect(group).toEqual(groupMock)
+          done()
+        } catch (error) {
+          expect(error.message).toBe('TEST ERROR')
+          done()
+        }
+      })
+    })
+  })
+
+  describe('#create', () => {
+    let service
+
+    describe('happy path', () => {
+      beforeEach(() => {
+        service = proxyquire('../../services/group.service', {
+          '../services/data-access/group.data.service': {
+            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.resolve({'insertId': 1}) }),
+            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
+          }
+        })
+      })
+
+      it('should create group', async (done) => {
+        const schoolId = 123
+        const group = await service.create(groupMock.name, [6, 2, 3], schoolId)
+        expect(group).toEqual(groupMock.id)
+        done()
+      })
     })
 
-    it('should return false if group name is not passed', async (done) => {
-      const group = await service.getGroupByName()
-      expect(group).toBeFalsy()
-      done()
+    describe('unhappy path', () => {
+      beforeEach(() => {
+        service = proxyquire('../../services/group.service', {
+          '../services/data-access/group.data.service': {
+            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('Failed to create group')) }),
+            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
+          }
+        })
+      })
+
+      it('should fail to create a group', async (done) => {
+        try {
+          const schoolId = 123
+          await service.create(groupMock, [6, 2, 3], schoolId)
+        } catch (error) {
+          expect(error.message).toBe('Failed to create group')
+          done()
+        }
+      })
     })
   })
 })
