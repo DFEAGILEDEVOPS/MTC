@@ -13,7 +13,6 @@ restartValidator.validateReason = (reason, specifyReason) => {
   if (reason === 'DNC' && specifyReason.length === 0) {
     validationError.addError('didNotCompleteInfo', restartErrorMessages.didNotCompleteInfo)
   }
-  console.log('validationError', validationError)
   return validationError
 }
 
