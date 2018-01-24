@@ -52,10 +52,12 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
 
 /**
  * Insert a list of pupils in the db
+ * @deprecated use sqlInsertMany instead
  * @param pupils
  * @return {Array}
  */
 pupilDataService.insertMany = async (pupils) => {
+  winston.warn('*** pupilDataService.insertMany is deprecated ***')
   const mongoosePupils = pupils.map(p => new Pupil(p))
   const savedPupils = await Pupil.insertMany(mongoosePupils)
   return savedPupils
