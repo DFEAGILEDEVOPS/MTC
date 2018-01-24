@@ -86,6 +86,7 @@ describe('restart controller:', () => {
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
       spyOn(restartService, 'getPupils').and.returnValue(null)
+      spyOn(restartService, 'getReasons').and.returnValue(null)
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
