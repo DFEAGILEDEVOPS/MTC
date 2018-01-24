@@ -238,7 +238,12 @@ sqlService.modify = (sql, params) => {
           con.release()
           return reject(new Error('parameter type invalid'))
         }
-        request.addParameter(param.name, param.type, param.value)
+        const options = {}
+        if (param.precision) {
+          options.scale = param.scale
+          options.precision = param.precision
+        }
+        request.addParameter(param.name, param.type, param.value, options)
       }
     }
 
@@ -413,5 +418,39 @@ sqlService.buildParameterList = (ary, type) => {
     paramIdentifiers.push(`@p${i}`)
   }
   return {params, paramIdentifiers}
+}
+
+sqlService.modifyWithTransaction = async (sqlStatements, params) => {
+  const wrappedSQL = `
+  BEGIN TRY
+  BEGIN TRANSACTION
+    ${sqlStatements}
+ COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+  IF (@@TRANCOUNT > 0)
+   BEGIN
+      ROLLBACK TRANSACTION
+      PRINT 'Error detected, all changes reversed'
+   END
+  DECLARE @ErrorMessage NVARCHAR(4000);
+    DECLARE @ErrorSeverity INT;
+    DECLARE @ErrorState INT;
+
+    SELECT @ErrorMessage = ERROR_MESSAGE(),
+           @ErrorSeverity = ERROR_SEVERITY(),
+           @ErrorState = ERROR_STATE();
+
+    -- Use RAISERROR inside the CATCH block to return
+    -- error information about the original error that
+    -- caused execution to jump to the CATCH block.
+    RAISERROR (@ErrorMessage, -- Message text.
+               @ErrorSeverity, -- Severity.
+               @ErrorState -- State.
+               );
+END CATCH
+  `
+  return sqlService.modify(wrappedSQL, params)
 }
 module.exports = sqlService

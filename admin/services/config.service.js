@@ -30,7 +30,12 @@ const configService = {
       loadingTime
     }
 
-    return R.merge(config, pupil.checkOptions)
+    // specific config for a pupil
+    const checkOptions = {
+      speechSynthesis: !!pupil.speechSynthesis
+    }
+
+    return R.merge(config, checkOptions)
   }
 }
 

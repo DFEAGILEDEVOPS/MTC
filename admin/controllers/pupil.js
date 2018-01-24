@@ -16,7 +16,7 @@ const winston = require('winston')
 const controller = {}
 
 controller.getAddPupil = async (req, res, next, error = null) => {
-  res.locals.pageTitle = 'Add single pupil'
+  res.locals.pageTitle = 'Add pupil'
   try {
     req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
     req.breadcrumbs(res.locals.pageTitle)
@@ -32,7 +32,6 @@ controller.getAddPupil = async (req, res, next, error = null) => {
 
 controller.postAddPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Add pupil'
-  req.breadcrumbs(res.locals.pageTitle)
   try {
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     const pupilData = {
@@ -86,7 +85,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
     return next(error)
   }
   const uploadFile = req.files && req.files.csvTemplateFile
-  const fileErrors = await fileValidator.validate(uploadFile, 'template-upload')
+  const fileErrors = await fileValidator.validate(uploadFile, 'file-upload')
   if (fileErrors.hasError()) {
     res.hasError = true
     res.fileErrors = fileErrors
@@ -114,7 +113,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
 }
 
 controller.getAddMultiplePupilsCSVTemplate = async (req, res) => {
-  const file = 'assets/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
+  const file = 'public/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
   res.download(file)
 }
 

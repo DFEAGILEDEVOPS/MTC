@@ -54,7 +54,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0])
-        .toBe('You must contain at least two rows of data')
+        .toBe('Must contain at least two rows of data')
       done()
     })
     it('detected a dataset which exceeds allowed max rows', async function (done) {

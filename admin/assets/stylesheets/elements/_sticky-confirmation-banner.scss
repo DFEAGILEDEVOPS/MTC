@@ -35,6 +35,10 @@
     text-align: left;
   }
 
+  .button-secondary {
+    margin-left: pem(15px)
+  }
+
   @include media(mobile) {
     overflow: hidden;
     padding: 0 0 15px 0;

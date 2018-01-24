@@ -25,10 +25,11 @@ class SqlDbHelper
   end
 
   def self.find_teacher(name)
-    @array_of_users = []
     sql = "SELECT * FROM [mtc_admin].[user] WHERE identifier='#{name}'"
     result = SQL_CLIENT.execute(sql)
-    @array_of_users = result.each{|row| row.map}
+    teacher_res = result.first
+    result.cancel
+    teacher_res
   end
 
   def self.find_school(school_id)
@@ -51,7 +52,15 @@ class SqlDbHelper
     @array_of_pupils = []
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
-    @array_of_pupils = result.each{|row| row.map}
+    @array_of_pupils = result.each {|row| row.map}
+  end
+
+  def self.pupil_pins
+    sql = "SELECT * FROM [mtc_admin].[pupil] where pin IS NOT NULL"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_pins = result.each{|row| row.map}
+    result.cancel
+    @array_of_pins.map {|row| row['pin']}
   end
 
   def self.reset_pin(forename,lastname,school_id,flag=nil)
@@ -60,20 +69,20 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_pupil_pin(forename,lastname,school_id,newPin)
+  def self.set_pupil_pin(forename, lastname, school_id, newPin)
     sql = "UPDATE [mtc_admin].[pupil] set pin='#{newPin}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.set_pupil_pin_expiry(forename,lastname,school_id,newTime)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{newTime}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+  def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.set_school_pin_expiry(estab_code,newTime)
-    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{newTime}' WHERE estabCode='#{estab_code}'"
+  def self.set_school_pin_expiry(estab_code,new_time)
+    sql = "UPDATE [mtc_admin].[school] set pinExpiresAt='#{new_time}' WHERE estabCode='#{estab_code}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -106,7 +115,7 @@ class SqlDbHelper
     check_window_result = []
     sql = "SELECT * FROM [mtc_admin].[checkWindow]"
     result = SQL_CLIENT.execute(sql)
-    check_window_result = result.each{|row| row.map}
+    check_window_result = result.each {|row| row.map}
   end
 
   def self.check_form_details(check_form_name)
@@ -117,9 +126,66 @@ class SqlDbHelper
     chk_form_res
   end
 
+  def self.get_attendance_codes
+    @array_of_attCode = []
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_attCode = result.each{|row| row.map}
+    result.cancel
+    @array_of_attCode
+  end
+
+  def self.get_attendance_code_for_a_pupil(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilAttendance] WHERE pupil_id = '#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_att_code_res = result.first
+    result.cancel
+    pupil_att_code_res
+  end
+
+  def self.check_attendance_code(id)
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode] WHERE id = '#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_att_code_res = result.first
+    result.cancel
+    chk_att_code_res
+
+  end
+
+
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
-    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupilId, checkCode, checkWindowId, checkFormId, pupilLoginDate, checkStartedAt) VALUES ('#{updatedime}', '#{createdTime}', '#{pupil_id}', '40e5356c-#{rand(1000)}-#{rand(1000)}-a46e-b100d346a9e6', '#{check_window_id}', '100', '#{pupilLoginDate}', '#{checkStartedTime}' )"
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, pupilLoginDate, startedAt) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{pupilLoginDate}', '#{checkStartedTime}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
+
+  def self.find_group(group_name)
+    sql = "SELECT * FROM [mtc_admin].[group] WHERE name = '#{group_name}'"
+    result = SQL_CLIENT.execute(sql)
+    row = result.first
+    result.cancel
+    row
+  end
+
+  def self.get_pupil_ids_from_group(group_name)
+    group = find_group(group_name)
+    group_id = group['id']
+    @array_of_pupil_group = []
+    sql = "SELECT * FROM [mtc_admin].[pupilGroup] WHERE group_id = #{group_id}"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_pupil_group = result.each {|row| row.map}
+    @array_of_pupil_group.map {|row| row['pupil_id']}
+  end
+
+  def self.pupils_assigned_to_group(pupil_ids_array)
+    @array_of_pupils = []
+    pupil_ids_array.each do |pupil_id|
+      sql = "SELECT * FROM [mtc_admin].[pupil] WHERE id = #{pupil_id}"
+      result = SQL_CLIENT.execute(sql)
+      @array_of_pupils << result.first
+      result.cancel
+    end
+    @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}" }
+  end
+
 end
