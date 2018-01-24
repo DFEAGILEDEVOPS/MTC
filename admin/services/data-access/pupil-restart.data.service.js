@@ -164,7 +164,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
     code, 
     description
   FROM ${sqlService.adminSchema}.[pupilRestartReason]
-  ORDER BY id ASC`
+  ORDER BY displayOrder ASC`
   return sqlService.query(sql)
 }
 

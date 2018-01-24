@@ -3,6 +3,7 @@ CREATE TABLE [mtc_admin].[pupilRestartReason] (
   createdAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
+  displayOrder smallint NOT NULL,
   description nvarchar(50) NOT NULL,
   code char(3) NOT NULL,
   CONSTRAINT [PK_pupilRestartReason] PRIMARY KEY CLUSTERED ([id] ASC)
