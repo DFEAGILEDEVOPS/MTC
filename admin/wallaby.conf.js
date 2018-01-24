@@ -23,6 +23,6 @@ module.exports = function (w) {
       kind: 'chrome'
     },
     testFramework: 'jasmine',
-    workers: {recycle: true}
+    workers: {recycle: true, initial: 1, regular: 1}
   }
 }

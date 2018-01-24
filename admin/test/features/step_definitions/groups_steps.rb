@@ -172,7 +172,7 @@ end
 
 Given(/^I want to edit a previously added group$/) do
   step 'I have created a group'
-  previoulsy_created_group = group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}
+  previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
   previoulsy_created_group.group_name.click
 end
 
@@ -239,7 +239,7 @@ end
 Then(/^I should be able to remove the group$/) do
   group_pupils_page.remove_group(@group_name)
   if group_pupils_page.has_group_list?
-    expect(group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}).to be_nil
+    expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to be_nil
   else
     expect(group_pupils_page).to have_no_group_list
   end
@@ -256,10 +256,33 @@ But(/^decide against it and cancel$/) do
 end
 
 Then(/^the group should not be removed$/) do
-  expect(group_pupils_page.group_list.rows.find{|row| row.group_name.text == @group_name}).to_not be_nil
+  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to_not be_nil
 end
 
 Then(/^I should see the number of pupils in that group on the group hub page$/) do
   row = group_pupils_page.group_list.rows.find {|row| row.has_highlight?}
   expect(row.group_count.text).to eql '(1 pupils)'
+end
+
+And(/^the group should be soft deleted from the db$/) do
+  group = SqlDbHelper.find_group(@group_name)
+  expect(group['isDeleted']).to be_truthy
+end
+
+Given(/^I have created a group with (\d+) pupils$/) do |number_of_pupils|
+  step 'I am on the create group page'
+  step 'I enter a valid group name'
+  page.execute_script "window.scrollBy(0,500)"
+  @pupil_names = []
+  number_of_pupils.to_i.times do |index|
+    add_edit_groups_page.pupil_list.rows[index].checkbox.click
+    @pupil_names << add_edit_groups_page.pupil_list.rows[index].name.text
+  end
+  add_edit_groups_page.sticky_banner.confirm.click
+end
+
+Then(/^I should the group stored in the DB$/) do
+  pupil_ids_array = SqlDbHelper.get_pupil_ids_from_group(@group_name)
+  pupils_names_from_db = SqlDbHelper.pupils_assigned_to_group(pupil_ids_array)
+  expect(pupils_names_from_db).to eql @pupil_names
 end
