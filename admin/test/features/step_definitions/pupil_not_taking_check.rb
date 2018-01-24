@@ -33,9 +33,9 @@ Then(/^I should see a heading on the page$/) do
 end
 
 Then(/^I should see set of reasons I can choose$/) do
-  expected_reason_hash = MongoDbHelper.get_attendance_codes
-  actual_reason_hash = {}
-  pupil_reason_page.attendance_codes.each_with_index {|c, i| actual_reason_hash.merge!((i+1) => find("label[for=#{c['id']}]").text)}
+  expected_reason_hash = SqlDbHelper.get_attendance_codes['reason']
+  attend_hash = pupil_reason_page.get_attendance_code
+  pupil_reason_page.attendance_codes.each_with_index {|c| actual_reason_hash = find("label[for=#{attend_hash[c['id']]}]").text}
   expect(actual_reason_hash).to eql expected_reason_hash
 end
 
@@ -133,7 +133,8 @@ Then(/^my selections are cleared$/) do
 end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == reason}.click
+  attend_hash = pupil_reason_page.get_attendance_code
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == reason}.click
   @pupil_row = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupil_forename = @pupil_row.name.text.split(',')[1].strip
   @pupil_row.checkbox.click
@@ -143,9 +144,9 @@ end
 Then(/^the (.+) reason should be stored against the pupils$/) do |reason|
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
-  @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
-  pupil_attendance_code = @pupil['attendanceCode']
-  @attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+  @pupil = SqlDbHelper.find_pupil_from_school(@pupil_forename, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
+  pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(@pupil['id'])
+  @attendance_code = SqlDbHelper.check_attendance_code(pupil_attendance_code['attendanceCode_id'])
   expect(@attendance_code['reason']).to eql reason
 end
 
@@ -180,7 +181,8 @@ end
 
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == @reason}.click
+  attend_hash = pupil_reason_page.get_attendance_code
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
@@ -191,9 +193,9 @@ Then(/^the reason should be stored against the pupils$/) do
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
   @pupil_names.each do |name|
-    pupil = MongoDbHelper.find_pupil_from_school(name.split(',')[1].strip, MongoDbHelper.find_teacher(teacher.strip).first['school'])
-    pupil_attendance_code = pupil['attendanceCode']
-    attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+    pupil = SqlDbHelper.find_pupil_from_school(name.split(',')[1].strip, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
+    pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(pupil['id'])
+    attendance_code = SqlDbHelper.check_attendance_code(pupil_attendance_code['attendanceCode_id'])
     expect(attendance_code['reason']).to eql @reason
   end
 end
@@ -216,7 +218,8 @@ end
 But(/^I decide to change it$/) do
   pupils_not_taking_check_page.add_reason.click
   page.execute_script "window.scrollBy(0,500)"
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == 'Just arrived'}.click
+  attend_hash = pupil_reason_page.get_attendance_code
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == 'Just arrived'}.click
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
@@ -225,9 +228,9 @@ end
 Then(/^the updated reason should be stored$/) do
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
-  @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
-  pupil_attendance_code = @pupil['attendanceCode']
-  @attendance_code = MongoDbHelper.check_attendance_code(pupil_attendance_code['_id'])
+  pupil = SqlDbHelper.find_pupil_from_school(@pupil_forename, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
+  pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(pupil['id'])
+  @attendance_code = SqlDbHelper.check_attendance_code(pupil_attendance_code['attendanceCode_id'])
   expect(@attendance_code['reason']).to eql 'Just arrived'
 end
 
@@ -249,8 +252,9 @@ Then(/^the pupil should be removed and any attendance code cleared from the db a
   expect(pupils_not_taking_check_page.flash_message.text).to eql "Reason removed for pupil #{@pupil['lastName'] + ', ' + @pupil['foreName']}"
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
-  @pupil = MongoDbHelper.find_pupil_from_school(@pupil_forename, MongoDbHelper.find_teacher(teacher.strip).first['school'])
-  expect(@pupil['attendanceCode']).to be_nil
+  @pupil = SqlDbHelper.find_pupil_from_school(@pupil_forename, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
+  pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(@pupil['id'])
+  expect(pupil_attendance_code).to be_nil
 end
 
 Then(/^I should see a message stating there are no pupils not taking the check$/) do
@@ -263,7 +267,8 @@ end
 
 When(/^I select multiple pupils with the (.+) reason$/) do |reason|
   @reason = reason
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{c['id']}]").text == @reason}.click
+  attend_hash = pupil_reason_page.get_attendance_code
+  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
