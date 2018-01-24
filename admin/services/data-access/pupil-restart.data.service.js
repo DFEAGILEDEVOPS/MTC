@@ -135,7 +135,6 @@ pupilRestartDataService.sqlFindRestartCodes = async function () {
  * @return {Promise.<void>}
  */
 pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
-  console.log('fdsfdsdsfdsfdsfasd', id)
   const sql = `
   SELECT 
     description
