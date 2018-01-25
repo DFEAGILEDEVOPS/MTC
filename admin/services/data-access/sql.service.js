@@ -115,8 +115,8 @@ async function generateParams (tableName, data) {
       throw new Error(`Column '${column}' not found in table '${tableName}'`)
     }
     const options = {}
-    // Construct the options array
-    if (cacheData.dataType === 'Decimal') {
+    // Construct the options array for params generated used `create()` or `update()`
+    if (cacheData.dataType === 'Decimal' || cacheData.dataType === 'Numeric') {
       options.precision = cacheData.precision
       options.scale = cacheData.scale
     }
@@ -248,7 +248,8 @@ sqlService.modify = (sql, params) => {
           return reject(new Error('parameter type invalid'))
         }
         const options = {}
-        if (R.pathEq(['type', 'name'], 'Decimal', param)) {
+        if (R.pathEq(['type', 'name'], 'Decimal', param) ||
+          R.pathEq(['type', 'name'], 'Numeric', param)) {
           options.precision = param.precision || 28
           options.scale = param.scale || 5
         }

@@ -254,5 +254,42 @@ describe('sql.service:integration', () => {
       const t2 = await sql.findOneById(table, t.id)
       expect(t2.tDecimal).toEqual(7.01)
     })
+
+    it('allows a numeric type to be set manually', async () => {
+      const value = 96.486
+      const params = [{
+        name: 'tNumeric',
+        value: value,
+        type: TYPES.Numeric,
+        precision: 5,
+        scale: 3
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tNumeric) 
+         VALUES (@tNumeric);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tNumeric).toEqual(value)
+    })
+
+    it('allows a numeric type to be set automatically on create', async () => {
+      const data = { tNumeric: 1.660 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tNumeric).toEqual(data.tNumeric)
+    })
+
+    it('allows a numeric type to be set automatically on update', async () => {
+      const data = { tNumeric: 1.380 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tNumeric: 2.381 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tNumeric).toEqual(2.381)
+    })
   })
 })
