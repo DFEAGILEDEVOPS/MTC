@@ -28,7 +28,6 @@ const school = (router) => {
   router.post('/submit-declaration-form', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => postDeclarationForm(req, res, next))
   router.get('/declaration-form-submitted', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getHDFSubmitted(req, res, next))
   router.get('/pupils-not-taking-check/select-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
-  router.get('/pupils-not-taking-check/select-pupils/group/:groupId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/select-pupils/:sortField/:sortDirection', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.get('/pupils-not-taking-check/save-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => getSelectPupilNotTakingCheck(req, res, next))
   router.post('/pupils-not-taking-check/save-pupils', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => savePupilNotTakingCheck(req, res, next))
