@@ -1,1 +1,1 @@
-ALTER TABLE mtc.mtc_admin.[check] ADD startedAt DATETIMEOFFSET NULL
+ALTER TABLE mtc_admin.[check] ADD startedAt DATETIMEOFFSET NULL

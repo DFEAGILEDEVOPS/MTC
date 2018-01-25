@@ -141,7 +141,8 @@ checkDataService.count = async function (query) {
  */
 checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) {
   const sql = `SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
-  WHERE pupil_id=@pupilId AND startedAt IS NOT NULL`
+  WHERE pupil_id=@pupilId AND startedAt IS NOT NULL
+  AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
     {
       name: 'pupilId',
@@ -151,7 +152,7 @@ checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) 
   ]
   const result = await sqlService.query(sql, params)
   const obj = R.head(result)
-  return obj['cnt']
+  return R.prop('cnt', obj)
 }
 
 /**
@@ -232,6 +233,46 @@ checkDataService.create = async function (data) {
  */
 checkDataService.sqlCreate = async function (check) {
   return sqlService.create('[check]', check)
+}
+
+/**
+ * Find the latest check for pupil that is flagged as not started
+ * @param pupilId - the pupil taking the check
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+    AND startedAt IS NULL ORDER BY createdAt DESC`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
+/**
+ * Find the latest started check for pupil
+ * @param pupilId - the pupil taking the check
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+    AND startedAt IS NOT NULL ORDER BY startedAt DESC`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
 }
 
 module.exports = checkDataService

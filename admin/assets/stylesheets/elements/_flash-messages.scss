@@ -3,7 +3,7 @@
   border: 5px solid $green;
   padding: 1em;
   margin-top: 40px;
-  color: $green;
+  color: $black;
   font-weight: bold;
 
   a,
@@ -16,10 +16,20 @@
 }
 
 // Green border to highlight table cell content
-.highlight-item:first-child:before {
-  content: '';
-  border-left: 7px solid $green;
-  padding-left: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+.highlight-item {
+  display: flex;
+
+  &:before {
+    content: '';
+    border-left: 7px solid $green;
+    display: table-cell;
+    padding-left: 10px;
+    margin-top: -5px;
+    margin-bottom: -5px;
+  }
+
+  .highlight-wrapper {
+    display: table-cell;
+  }
 }
+

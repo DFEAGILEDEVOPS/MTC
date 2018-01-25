@@ -81,8 +81,3 @@ When(/^I download the Multiple Pupil upload CSV file with error$/) do
   data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all})
   @hashed_data = data.map { |d| d.to_hash }
 end
-
-
-And(/^I click Save without selecting a CSV file$/) do
-  add_multiple_pupil_page.save.click
-end

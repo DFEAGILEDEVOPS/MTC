@@ -1,4 +1,4 @@
-INSERT INTO mtc.mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0100', 0, null, '[ 
+INSERT INTO mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0100', 0, null, '[ 
         {
             "f1" : 2,
             "f2" : 5
@@ -40,7 +40,7 @@ INSERT INTO mtc.mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData
             "f2" : 12
         }
     ]');
-INSERT INTO mtc.mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0101', 0, null, '[ 
+INSERT INTO mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0101', 0, null, '[ 
         {
             "f1" : 2,
             "f2" : 5
@@ -122,7 +122,7 @@ INSERT INTO mtc.mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData
             "f2" : 12
         }
     ]');
-INSERT INTO mtc.mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0102', 0, null, '[ 
+INSERT INTO mtc_admin.checkForm ([name], isDeleted, checkWindow_id, formData) VALUES ('MTC0102', 0, null, '[ 
         {
             "f1" : 2,
             "f2" : 5

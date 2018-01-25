@@ -333,7 +333,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const getSelectPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Add reason'
+  res.locals.pageTitle = 'Select pupil and reason'
   req.breadcrumbs('Pupils not taking the check', '/school/pupils-not-taking-check')
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -413,7 +413,8 @@ const savePupilNotTakingCheck = async (req, res, next) => {
       req.body.attendanceCode,
       req.user.id)
 
-    req.flash('info', `${postedPupilSlugs.length} pupil reasons updated`)
+    const reasonText = postedPupilSlugs.length > 1 ? 'reasons' : 'reason'
+    req.flash('info', `${postedPupilSlugs.length} ${reasonText} updated`)
 
     // Send the information required for highlighting
     const highlight = JSON.stringify(postedPupilSlugs)

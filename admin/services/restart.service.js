@@ -38,6 +38,14 @@ restartService.getPupils = async (dfeNumber) => {
 }
 
 /**
+ * Get restart reasons
+ * @returns {Array}
+ */
+restartService.getReasons = async () => {
+  return pupilRestartDataService.sqlFindRestartReasons()
+}
+
+/**
  * Determine all the factors that make pupil eligible for a restart
  * @param p
  * @returns {boolean}
@@ -52,25 +60,26 @@ restartService.isPupilEligible = async (p) => {
 /**
  * Perform restart for a list of pupils
  * @param pupilsList
- * @param restartReason
+ * @param restartReasonCode
  * @param didNotCompleteInfo
  * @param restartFurtherInfo
  * @param userName
  * @returns {Promise.<void>}
  */
 
-restartService.restart = async (pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo, userName) => {
+restartService.restart = async (pupilsList, restartReasonCode, didNotCompleteInfo, restartFurtherInfo, userName) => {
   await pinService.expireMultiplePins(pupilsList)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
   if (!canAllPupilsRestart) {
     throw new Error(`One of the pupils is not eligible for a restart`)
   }
+  const restartReasonId = await pupilRestartDataService.sqlFindRestartReasonByCode(restartReasonCode)
   return Promise.all(pupilsList.map(async pupilId => {
     const pupilRestartData = {
       pupil_id: pupilId,
-      recordedByUser: userName,
-      reason: restartReason,
+      recordedByUser_id: userName,
+      pupilRestartReason_id: restartReasonId,
       didNotCompleteInformation: didNotCompleteInfo,
       furtherInformation: restartFurtherInfo,
       createdAt: moment.utc()
@@ -129,21 +138,22 @@ restartService.getSubmittedRestarts = async schoolId => {
       return { ...restart, status }
     }
   }), p => !!p)
-  pupils.map(p => {
-    const record = latestPupilRestarts.find(l => l.pupilId === p.id)
+  await Promise.all(pupils.map(async p => {
+    const record = latestPupilRestarts.find(l => l.pupil_id === p.id)
     if (record) {
+      const reason = await pupilRestartDataService.sqlFindRestartReasonDescById(record.pupilRestartReason_id)
       restarts.push({
         id: record.id,
         pupilId: p.id,
-        reason: record.reason,
+        reason: reason,
         status: record.status,
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames,
-        dob: dateService.formatShortGdsDate(p.dob)
+        dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth)
       })
     }
-  })
+  }))
   restarts = pupilIdentificationFlagService.addIdentificationFlags(restarts)
   return restarts
 }
@@ -158,7 +168,7 @@ restartService.getStatus = async pupilId => {
   const restartCodes = await pupilRestartDataService.sqlFindRestartCodes()
   const getStatus = (value) => {
     const entry = restartCodes && R.find(c => c.code === value)(restartCodes)
-    return entry && entry.status
+    return entry && entry.description
   }
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(pupilId)
   const pupilRestartsCount = await pupilRestartDataService.sqlGetNumberOfRestartsByPupil(pupilId)
@@ -175,9 +185,10 @@ restartService.getStatus = async pupilId => {
  */
 
 restartService.markDeleted = async (pupilId, userId) => {
-  const pupil = await pupilDataService.findOne({_id: pupilId})
-  const lastStartedCheck = await checkDataService.sqlFindLatestCheck(pupilId, true)
-  await pupilDataService.update({ _id: pupilId }, { '$set': { pinExpiresAt: lastStartedCheck.checkStartedAt } })
+  const pupil = await pupilDataService.sqlFindOneById(pupilId)
+  let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupilId)
+  pupil.pinExpiresAt = lastStartedCheck.startedAt
+  await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
   await pupilRestartDataService.sqlMarkRestartAsDeleted(pupilId, userId)
   return pupil
 }

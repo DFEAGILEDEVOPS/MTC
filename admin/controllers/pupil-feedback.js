@@ -39,7 +39,7 @@ const setPupilFeedback = async (req, res, next) => {
     inputType: inputType,
     satisfactionRating: satisfactionRating,
     comments: comments,
-    id: check.id
+    check_id: check.id
   }
 
   try {

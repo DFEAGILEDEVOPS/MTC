@@ -13,7 +13,8 @@ const whitelist = [
   'PUPIL_APP_URL',
   'RESTART_MAX_ATTEMPTS',
   'STD_LOG_FILE',
-  'TSO_AUTH_PUBLIC_KEY'
+  'TSO_AUTH_PUBLIC_KEY',
+  'OverridePinExpiry'
 ]
 
 module.exports = process.env.NODE_ENV !== 'production' ? whitelist : []

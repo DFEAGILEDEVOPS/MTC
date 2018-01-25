@@ -173,7 +173,7 @@ end
 
 And(/^I should see the updated pupil on the hub page$/) do
   expect(pupils_not_taking_check_page).to have_flash_message
-  expect(pupils_not_taking_check_page.flash_message.text).to eql '1 pupil reasons updated'
+  expect(pupils_not_taking_check_page.flash_message.text).to eql '1 reason updated'
   hightlighted_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.has_highlight?}
   expect(hightlighted_row.text).to include("#{@pupil['lastName']}, #{@pupil[:foreName]}")
   expect(hightlighted_row.text).to include(@attendance_code['reason'])
@@ -202,7 +202,7 @@ end
 
 And(/^I should see the updated pupils on the hub page$/) do
   expect(pupils_not_taking_check_page).to have_flash_message
-  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} pupil reasons updated"
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "#{@pupils[0..3].count} reasons updated"
   hightlighted_rows = pupils_not_taking_check_page.pupil_list.rows.select {|row| row.has_highlight?}
   updated_names = hightlighted_rows.map {|row| row.text.split[0] + ' ' + row.text.split[1]}
   expect(updated_names).to eql @pupil_names
@@ -249,7 +249,7 @@ And(/^I remove a pupil from the list of pupils not taking a check$/) do
 end
 
 Then(/^the pupil should be removed and any attendance code cleared from the db against the pupil$/) do
-  expect(pupils_not_taking_check_page.flash_message.text).to eql "Reason removed for pupil #{@pupil['lastName'] + ', ' + @pupil['foreName']}"
+  expect(pupils_not_taking_check_page.flash_message.text).to eql "Reason removed for #{@pupil['lastName'] + ', ' + @pupil['foreName']}"
   teacher = pupils_not_taking_check_page.signed_in_as.text
   teacher.slice! 'Signed in as'
   @pupil = SqlDbHelper.find_pupil_from_school(@pupil_forename, SqlDbHelper.find_teacher(teacher.strip)['school_id'])

@@ -234,17 +234,17 @@ describe('pupil controller:', () => {
       it('saves the new pupil and redirects to the register pupils page', async (done) => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ pupils: [ { id: 1 }, { id: 2 } ], pupilIds: [ '1', '2' ] }))
+          .resolve({ pupilIds: [ '1', '2' ] }))
+        spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve([pupilMock]))
         const res = getRes()
         const req = getReq(goodReqParams)
-        req.flash = () => {
-        }
+        req.flash = () => {}
         await controller(req, res, next)
         expect(res.statusCode).toBe(302)
         done()
       })
 
-      it('redirects to the add multiple pupils page when file errors have been found', async (done) => {
+      it('displays the add multiple pupils page when file errors have been found', async (done) => {
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
@@ -281,7 +281,7 @@ describe('pupil controller:', () => {
         done()
       })
 
-      it('redirects to the add multiple pupils page when csv validation returns errors', async (done) => {
+      it('displays the add multiple pupils page when csv validation returns errors', async (done) => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise.resolve({
           csvErrorFile: 'test.csv',
@@ -345,7 +345,7 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       await controller(req, res, next)
       expect(res.statusCode).toBe(200)
-      expect(res.download).toHaveBeenCalledWith('assets/csv/MTC-Pupil-details-template-Sheet-1.csv')
+      expect(res.download).toHaveBeenCalledWith('public/CSVs/MTC-Pupil-details-template-Sheet-1.csv')
       done()
     })
   })
@@ -486,7 +486,7 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
-      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.slug} not found`))
+      expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
 
     it('makes a call to retrieve the school', async () => {

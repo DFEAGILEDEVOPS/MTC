@@ -94,10 +94,12 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
 
 /**
  * Insert a list of pupils in the db
+ * @deprecated use sqlInsertMany instead
  * @param pupils
  * @return {Array}
  */
 pupilDataService.insertMany = async (pupils) => {
+  winston.warn('*** pupilDataService.insertMany is deprecated ***')
   const mongoosePupils = pupils.map(p => new Pupil(p))
   const savedPupils = await Pupil.insertMany(mongoosePupils)
   return savedPupils
@@ -105,10 +107,12 @@ pupilDataService.insertMany = async (pupils) => {
 
 /**
  * Find a single pupil by criteria in `options`
+ * @deprecated use sqlFindOneById instead
  * @param options
  * @return {Promise.<{Object}>}
  */
 pupilDataService.findOne = async function (options) {
+  winston.warn('*** pupilDataService.findOne is deprecated ***')
   return Pupil.findOne(options).populate('school').lean().exec()
 }
 
@@ -116,26 +120,32 @@ pupilDataService.findOne = async function (options) {
  * Find and return non-lean pupils by criteria in `options`
  * @param options
  * @return {Promise.<{Object}>}
+ * @deprecated create a new custom sql method
  */
 pupilDataService.find = async function (options) {
+  winston.warn('*** pupilDataService.find is deprecated ***')
   return Pupil.find(options).lean().exec()
 }
 
 /**
  * Generalised update function - can update many in one transaction
+ * @deprecated - use sqlUpdate instead
  * @param query
  * @param criteria
  * @return {Promise}
  */
 pupilDataService.update = async function (query, criteria, options = {multi: false}) {
+  winston.warn('*** pupilDataService.update is deprecated ***')
   return Pupil.update(query, criteria, options).exec()
 }
 
 /**
+ * @deprecated - use sql* methods instead
  * @param pupils
  * @return {Promise<Array>}
  */
 pupilDataService.updateMultiple = async function (pupils) {
+  winston.warn('*** pupilDataService.updateMultiple is deprecated ***')
   // returns Promise
   let savedPupils = []
   await Promise.all(pupils.map(p => Pupil.updateOne({ '_id': p._id }, p)))
@@ -150,11 +160,12 @@ pupilDataService.updateMultiple = async function (pupils) {
 
 /**
  * Create a new Pupil
- * @deprecated
+ * @deprecated use sqlCreate instead
  * @param data
  * @return {Promise}
  */
 pupilDataService.save = async function (data) {
+  winston.warn('*** pupilDataService.save is deprecated ***')
   const pupil = new Pupil(data)
   await pupil.save()
   return pupil.toObject()
@@ -167,14 +178,17 @@ pupilDataService.save = async function (data) {
  * @return {Promise<*>}
  */
 pupilDataService.unsetAttendanceCode = async function (id) {
+  winston.warn('*** pupilDataService.unsetAttendanceCode is deprecated ***')
   return Pupil.update({ _id: id }, { $unset: { attendanceCode: true } })
 }
 
 /**
  * Get all the restart codes documents
+ * @deprecated - moved to a lookup table
  * @return {Promise.<{Object}>}
  */
 pupilDataService.getStatusCodes = async () => {
+  winston.warn('*** pupilDataService.getStatusCodes is deprecated ***')
   return PupilStatusCode.find().lean().exec()
 }
 
@@ -430,6 +444,104 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
   })
   const sql = update.join(';\n')
   return sqlService.modify(sql, params)
+}
+
+/**
+ * Find all pupils for a dfeNumber and provide the reason field: null if not present
+ * @param {number} dfeNumber
+ * @param {string} sortField
+ * @param {string} sortDirection
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, sortField = 'name', sortDirection = 'ASC') => {
+  const safeSort = sortDirection.toUpperCase()
+  if (safeSort !== 'ASC' && safeSort !== 'DESC') {
+    throw new Error(`Invalid sortDirection: ${safeSort}`)
+  }
+
+  // Whitelist the sortFields so we can be sure of the SQL we are generating.
+  const allowedSortFields = ['name', 'reason']
+  if (R.indexOf(sortField, allowedSortFields) === -1) {
+    throw new Error(`Unsupported value for sortField: ${sortField}`)
+  }
+  let sqlSort
+  if (sortField === 'name') {
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
+  } else if (sortField === 'reason') {
+    sqlSort = `ac.reason ${sortDirection}`
+  }
+  const params = [
+    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  ]
+  // The order by clause is to sort nulls last
+  const sql = `
+  SELECT p.*, ac.reason
+  FROM ${sqlService.adminSchema}.${table} p 
+    INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
+  WHERE s.dfeNumber = @dfeNumber
+  ORDER BY CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ${sqlSort}
+  `
+  return sqlService.query(sql, params)
+}
+
+pupilDataService.sqlInsertMany = async (pupils) => {
+  const insertSql = `
+  DECLARE @output TABLE (id int);
+  INSERT INTO ${sqlService.adminSchema}.${table} 
+  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth)
+  OUTPUT inserted.ID INTO @output
+  VALUES
+  `
+  const output = `; SELECT * from @output`
+  const values = []
+  const params = []
+
+  for (let i = 0; i < pupils.length; i++) {
+    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i})`)
+    params.push(
+      {
+        name: `school_id${i}`,
+        value: pupils[i][ 'school_id' ],
+        type: TYPES.Int
+      },
+      {
+        name: `foreName${i}`,
+        value: pupils[i][ 'foreName' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `lastName${i}`,
+        value: pupils[i][ 'lastName' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `middleNames${i}`,
+        value: pupils[i][ 'middleNames' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `gender${i}`,
+        value: pupils[i][ 'gender' ],
+        type: TYPES.Char
+      },
+      {
+        name: `upn${i}`,
+        value: pupils[i][ 'upn' ],
+        type: TYPES.NVarChar
+      },
+      {
+        name: `dateOfBirth${i}`,
+        value: pupils[i][ 'dateOfBirth' ],
+        type: TYPES.DateTimeOffset
+      }
+    )
+  }
+  const sql = [insertSql, values.join(',\n'), output].join(' ')
+  const res = await sqlService.modify(sql, params)
+  // E.g. { insertId: [1, 2], rowsModified: 4 }
+  return res
 }
 
 module.exports = pupilDataService

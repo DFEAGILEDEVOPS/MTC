@@ -28,7 +28,7 @@ const pupilAuthenticationService = {
     return {
       firstName: pupil.foreName,
       lastName: pupil.lastName,
-      dateOfBirth: dateService.formatFullGdsDate(pupil.dateOfBirth)
+      dob: dateService.formatFullGdsDate(pupil.dateOfBirth)
     }
   }
 }

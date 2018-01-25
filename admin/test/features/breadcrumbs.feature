@@ -14,7 +14,7 @@ Feature:
   Scenario: Verify breadcrumb on add pupil page
     Given I am logged in
     And I am on the add pupil page
-    Then I should see the breadcrumb as "Home > Pupil Register > Add single pupil"
+    Then I should see the breadcrumb as "Home > Pupil Register > Add pupil"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
@@ -50,7 +50,7 @@ Feature:
   Scenario: Verify breadcrumb for check settings page
     Given I am logged in with a service manager
     When I am on the check settings page
-    Then I should see the breadcrumb as "Home > Check settings"
+    Then I should see the breadcrumb as "Home > Settings on pupil check"
     And I click the Home link on breadcrumb
     Then I should be taken to the admin page
 

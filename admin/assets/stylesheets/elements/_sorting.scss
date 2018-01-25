@@ -3,27 +3,30 @@
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 12px 6px 0 6px;
+  border-width: pem(8) pem(5) 0 pem(5);
   border-color: $black transparent transparent transparent;
 }
 
 .sort.up {
-  border-width: 0 6px 12px 6px;
+  border-width: 0 pem(5) pem(8) pem(5);
   border-color: transparent transparent $black transparent;
 }
 
 table.spacious {
   &.sorting {
-    font-size: 16px;
+    font-size: pem(14);
+  }
+}
 
-    a {
+table.spacious,
+table.spacious.sorting {
+  a {
+    span {
+      margin-left: pem(7);
+
       span {
-        margin-left: 7px;
-
-        span {
-          font-size: 12px;
-          display: none;
-        }
+        font-size: pem(12);
+        display: none;
       }
     }
   }

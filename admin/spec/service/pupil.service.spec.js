@@ -41,16 +41,6 @@ describe('pupil service', () => {
     })
   })
 
-  describe('#fetchMultiplePupils', () => {
-    it('it makes a call to the pupilDataService for each pupil', async () => {
-      spyOn(pupilDataService, 'findOne').and.returnValue(pupilMockPromise())
-      const service = setupService(pupilDataService)
-      const res = await service.fetchMultiplePupils([ 1, 2, 3, 4, 5 ])
-      expect(pupilDataService.findOne).toHaveBeenCalledTimes(5)
-      expect(res.length).toBe(5)
-    })
-  })
-
   describe('#getPrintPupils', () => {
     const dfeNumber = 9991999
     const service = require('../../services/pupil.service')

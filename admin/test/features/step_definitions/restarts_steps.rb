@@ -95,7 +95,7 @@ Given(/^I have single pupils for restart$/) do
   SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
 
   pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
-  SqlDbHelper.create_check(newTime, newTime, pupil_id['id'], new_time, new_time)
+  SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
 
   step 'I am on the Restarts Page'
 end
