@@ -1,1 +1,1 @@
-ALTER TABLE mtc.mtc_admin.[check] ADD data NVARCHAR(MAX) NULL
+ALTER TABLE mtc_admin.[check] ADD data NVARCHAR(MAX) NULL
