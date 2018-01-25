@@ -12,7 +12,7 @@
   background-color: $grey-2;
   display: inline-block;
   font-weight: bold;
-  padding: 6px 15px 6px 15px;
+  padding: pem(6px) pem(15px) pem(6px) pem(15px);
   text-transform: uppercase;
   width: auto;
 }

@@ -15,11 +15,6 @@ import { QuestionRendered } from '../services/audit/auditEntry';
 export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;
 
-  /**
-   * TBD
-   */
-  public showPracticeBox: boolean;
-
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
@@ -29,7 +24,6 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-    this.showPracticeBox = true;
     this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
         if (speechStatus === SpeechService.speechEnded) {
