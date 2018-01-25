@@ -391,6 +391,10 @@ $(function () {
       }
       tableRowVisibility(groupIds)
     })
+
+    $('.filter-header').on('click', function (e) {
+      $('.filter-content').toggleClass('hidden')
+    })
   }
 
   function tableRowVisibility (groupIds) {

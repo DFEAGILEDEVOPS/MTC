@@ -1,17 +1,17 @@
 // Filters
 
-.filters-header {
+.filter-header {
   background-color: $panel-colour;
-  padding: pem(15);
+  padding: pem(8) pem(10) pem(4) pem(10)
 }
 
 .filter-label {
   font-weight: bold;
 }
 
-.filters-content {
+.filter-content {
   background-color: $panel-colour;
-  padding: pem(15);
+  padding: 0 pem(10) pem(10) pem(10);
 }
 
 #filterByGroup {
