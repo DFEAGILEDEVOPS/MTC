@@ -13,17 +13,25 @@ Feature: Service manager homepage
     Given I am logged in with a service manager
     Then I should be given the option to manage check windows
 
-  Scenario: Service manager should be given the option to adjust question timings
+  Scenario: Service manager should be given the option to adjust settings on pupil check
     Given I am logged in with a service manager
-    Then I should be given the option to adjust question timings
+    Then I should be given the option to adjust settings on pupil check
+
+  Scenario: Service manager should be given the option to adjust settings on school pages
+    Given I am logged in with a service manager
+    Then I should be given the option to adjust settings on school pages
+
+  Scenario: Service manager should be given the option to manage access arrangements
+    Given I am logged in with a service manager
+    Then I should be given the option to manage access arangements
+
+  Scenario: Service manager should be given the option to manage restart requests
+    Given I am logged in with a service manager
+    Then I should be given the option to manage restart requests
 
   Scenario: Service manager should be given the option to view progress reports
     Given I am logged in with a service manager
     Then I should be given the option to view progress reports
-
-  Scenario: Service manager should be given the option to manage retake requests
-    Given I am logged in with a service manager
-    Then I should be given the option to manage retake requests
 
   Scenario: Service manager should be given some guidance
     Given I am logged in with a test developer

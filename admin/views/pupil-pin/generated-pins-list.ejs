@@ -9,9 +9,8 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <header class="page-header">
-            <h1 class="heading-xlarge">Generate pupil PINs</h1>
-        </header>
+        <h1 class="heading-xlarge">Generate pupil PINs</h1>
+
         <div class="govuk-box-highlight">
             <div class="font-small">
                 <strong class="bold-medium">
@@ -21,87 +20,32 @@
                 Valid only until 4pm, <%= date %>
             </div>
         </div>
-    </div>
-    <div class="column-one-third add-title-margin" tabindex="0" aria-label="sidebar">
-        <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Related</h3>
-            <nav role="navigation">
-                <ul class="list">
-                    <li>
-                        <a href="">Guidance</a>
-                    </li>
-                    <li>
-                        <a href="">Group pupils</a>
-                    </li>
-                    <li>
-                        <a href="">Restarts</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-    </div>
-</div>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+        <p class="lede">
+            Please distribute pupil Personal Identification Numbers (PINs) and school password to your pupils.
+        </p>
 
-    </div>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        Please distribute pupil Personal Identification Numbers (PINs) and school password to your pupils.
-    </div>
-</div>
-<br/>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div>
-            <b>
-                <a class="template-link" href="/pupil-pin/print-pins">
-                    <div class="icon-file-download pupils-template"></div>
-                    Print pupil PINs and school password
-                </a>
-            </b>
+        <div class="link-icon-wrapper">
+            <a href="/pupil-pin/print-pins" class="icon-download">Print pupil PINs and school password</a>
         </div>
-        <br>
-        <div>
-            <b>
-                <a class="template-link" href="#">
-                    <div class="icon-custom-download"></div>
-                    Create custom download
-                </a>
-            </b>
-        </div>
-    </div>
-</div>
-</div>
-<br/>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <form action="/pupil-pin/generate-pins-list/lastName/asc" name="generate-pins-list">
-            <div class="form-group">
-                <div class="form-buttons">
-                    <input type="submit" class="button-secondary" value="Generate more PINs"/>
-                </div>
-            </div>
-        </form>
+        <div class="button-wrapper">
+            <a href="/pupil-pin/generate-pins-list/lastName/asc" class="button button-secondary">Generate more PINs</a>
+        </div>
+
+        <br />
+
         <% if (!!school) { %>
-        <b><%= school.name %>'s password for the day:</b>
-        <br>
-        <span id="school-pin"><%= school.schoolPin %></span>
+        <div class="school-pin-wrapper">
+            <b><%= school.name %>'s password for the day:</b>
+            <div class="school-pin-pin" id="school-pin"><%= school.pin %></div>
+        </div>
         <% } else { %>
-        No active password
+        <p>No active password</p>
         <% } %>
-    </div>
-</div>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
         <% if (pupils && pupils.length > 0) { %>
-        <table class="spacious sorting" id="generatePins" role="listbox" aria-label="Select pupils.">
+        <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
             <thead>
             <tr>
                 <th scope="col">
@@ -116,7 +60,7 @@
             <% pupils.forEach( (pupil) => { %>
             <tr>
                 <td>
-                    <label for="pupil-<%= pupil._id %>">
+                    <label for="pupil-<%= pupil.id %>">
                         <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
                     </label>
                     <% if (pupil.showDoB) { %>
@@ -126,7 +70,7 @@
                     <% } %>
                 </td>
                 <td>
-                    <label for="pupil-<%= pupil._id %>">
+                    <label for="pupil-<%= pupil.id %>">
                         <%= pupil.pin %>
                     </label>
                 </td>
@@ -134,9 +78,31 @@
             <% }) %>
             </tbody>
         </table>
+
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
         </div>
+
         <% } %>
     </div>
+
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="/PDFs/MTC_administration_guidance_June-2017-trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="">Group pupils</a>
+                    </li>
+                    <li>
+                        <a href="">Restarts</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
 </div>
+

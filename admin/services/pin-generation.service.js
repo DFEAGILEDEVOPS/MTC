@@ -1,5 +1,4 @@
 const moment = require('moment')
-const mongoose = require('mongoose')
 const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -13,8 +12,13 @@ const config = require('../config')
 
 const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
 
-const fourPmToday = () => {
-  return moment().startOf('day').add(16, 'hours')
+const fourPmToday = moment().startOf('day').add(16, 'hours')
+
+const pinExpiryTime = () => {
+  if (config.OverridePinExpiry === 'true') {
+    return moment().endOf('day')
+  }
+  return fourPmToday
 }
 
 const pinGenerationService = {}
@@ -22,21 +26,20 @@ const chars = '23456789'
 
 /**
  * Fetch pupils and filter required only pupil attributes
- * @param schoolId
+ * @param dfeNumber
  * @param sortField
  * @param sortDirection
  * @returns {Array}
  */
-pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
-  let pupils = await pupilDataService.getSortedPupils(schoolId, sortField, sortDirection)
-  // filter pupils
+pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => {
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection, sortField)
   pupils = await Promise.all(pupils.map(async p => {
     const isValid = await pinGenerationService.isValid(p)
     if (isValid) {
       return {
-        _id: p._id,
+        id: p.id,
         pin: p.pin,
-        dob: dateService.formatShortGdsDate(p.dob),
+        dob: dateService.formatShortGdsDate(p.dateOfBirth),
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames
@@ -56,9 +59,9 @@ pinGenerationService.getPupils = async (schoolId, sortField, sortDirection) => {
  * @returns {Boolean}
  */
 pinGenerationService.isValid = async (p) => {
-  const checkCount = await checkDataService.count({ pupilId: p._id, checkStartedAt: { $ne: null } })
+  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
   if (checkCount === restartService.totalChecksAllowed) return false
-  const canRestart = await restartService.canRestart(p._id)
+  const canRestart = await restartService.canRestart(p.id)
   return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !canRestart
 }
 
@@ -67,46 +70,38 @@ pinGenerationService.isValid = async (p) => {
  * @param pupilsList
  * @returns {Array}
  */
-pinGenerationService.generatePupilPins = async (pupilsList) => {
-  const data = Object.values(pupilsList || null)
-  let pupils = []
-  // fetch pupils
-  const ids = data.map(id => mongoose.Types.ObjectId(id))
-  for (let index = 0; index < ids.length; index++) {
-    const id = ids[ index ]
-    const pupil = await pupilDataService.findOne(id)
-    pupils.push(pupil)
-  }
-  // pupils = await pupilDataService.find({ _id: { $in: ids } })
-  // Apply the updates to the pupil object(s)
-  pupils.forEach(pupil => {
+pinGenerationService.updatePupilPins = async (pupilsList) => {
+  const ids = Object.values(pupilsList || null)
+  const pupils = await pupilDataService.sqlFindByIds(ids)
+  pupils.forEach(async pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
-      pupil.pinExpiresAt = fourPmToday()
+      pupil.pinExpiresAt = pinExpiryTime()
     }
   })
-  return pupils
+  const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
 /**
  * Generate school password
  * @param school
- * @returns {Object}
+ * @returns { pin: string, pinExpiresAt: Moment } || undefined
  */
 pinGenerationService.generateSchoolPassword = (school) => {
   if (allowedWords.size < 5) {
     throw new Error('Service is incorrectly configured')
   }
-  const wordsArray = Array.from(allowedWords)
-  let { schoolPin, pinExpiresAt } = school
-  if (!pinValidator.isActivePin(schoolPin, pinExpiresAt)) {
-    const firstRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
-    const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
-    const numberCombination = randomGenerator.getRandom(2, chars)
-    school.schoolPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-    school.pinExpiresAt = fourPmToday()
+  if (pinValidator.isActivePin(school.pin, school.pinExpiresAt)) {
+    return undefined
   }
-  return school
+  const wordsArray = Array.from(allowedWords)
+  const firstRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+  const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+  const numberCombination = randomGenerator.getRandom(2, chars)
+  const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
+  const newExpiry = pinExpiryTime()
+  return { pin: newPin, pinExpiresAt: newExpiry }
 }
 
 /**

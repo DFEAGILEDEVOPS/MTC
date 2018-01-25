@@ -52,16 +52,16 @@
                     <% checkFormsList.forEach(checkForm => { %>
                     <tr>
                         <td>
-                            <label for="checkForm<%= checkForm._id %>">
+                            <label for="checkForm<%= checkForm.id %>">
                                 <%= checkForm.name %>
                             </label>
                         </td>
                         <td class="align-right">
                             <div class="multiple-choice-mtc">
-                                <input id="checkForm<%= checkForm._id %>"
-                                       name="checkForm[<%= checkForm._id %>]"
+                                <input id="checkForm<%= checkForm.id %>"
+                                       name="checkForm[<%= checkForm.id %>]"
                                        type="checkbox"
-                                       value="<%= checkForm._id %>"
+                                       value="<%= checkForm.id %>"
                                        aria-label="Tick form <%= checkForm.name %>"
                                        aria-checked="false"
                                        role="checkbox">
@@ -82,7 +82,7 @@
 
         </div>
 
-        <div class="column-one-third add-title-margin">
+        <div class="column-one-third sidebar" aria-label="sidebar">
         </div>
     </div>
     <%- partial('partials/_sticky_confirmation_banner',

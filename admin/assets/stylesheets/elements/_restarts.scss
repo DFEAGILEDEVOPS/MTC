@@ -5,6 +5,7 @@
   .multiple-choice {
     margin: pem(4px);
   }
+
   li {
     overflow: visible;
     margin-top: pem(10px);
@@ -38,9 +39,6 @@
   min-width: pem(135px);
 }
 
-label:hover {
-  text-decoration: underline
-}
 .hide {
   display: none;
 }

@@ -22,14 +22,14 @@ end
 
 Then(/^this should be saved$/) do
   gender = @updated_details_hash[:male] ? 'M' : 'F'
-  wait_until{!(MongoDbHelper.pupil_details(@updated_upn.to_s)).nil?}
-  @stored_pupil_details = MongoDbHelper.pupil_details @updated_upn.to_s
+  wait_until{!(SqlDbHelper.pupil_details(@updated_upn.to_s)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details @updated_upn.to_s
   expect(@updated_details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@updated_details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
   expect(@updated_details_hash[:last_name]).to eql @stored_pupil_details['lastName']
   expect(gender).to eql @stored_pupil_details['gender']
   expect(@updated_details_hash[:upn].to_s).to eql @stored_pupil_details['upn']
-  expect(Time.parse(@updated_details_hash[:day]+ "-"+ @updated_details_hash[:month]+"-"+ @updated_details_hash[:year])).to eql @stored_pupil_details['dob']
+  expect(Time.parse(@updated_details_hash[:day]+ "-"+ @updated_details_hash[:month]+"-"+ @updated_details_hash[:year])).to eql @stored_pupil_details['dateOfBirth']
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['createdAt'])
   expect(@time_stored).to eql Helpers.time_to_nearest_hour(@stored_pupil_details['updatedAt'])
 end
@@ -65,8 +65,8 @@ end
 
 
 Then(/^the pupil details should not be updated$/) do
-  wait_until {(MongoDbHelper.pupil_details @upn.to_s)}
-  stored_details = MongoDbHelper.pupil_details @upn.to_s
+  wait_until {(SqlDbHelper.pupil_details @upn.to_s)}
+  stored_details = SqlDbHelper.pupil_details @upn.to_s
   expect(stored_details['foreName']).to_not eql @details_hash[:first_name]
   expect(stored_details['middleName']).to_not eql @details_hash[:middle_name]
   expect(stored_details['lastName']).to_not eql @details_hash[:last_name]

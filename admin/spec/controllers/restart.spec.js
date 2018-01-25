@@ -86,6 +86,7 @@ describe('restart controller:', () => {
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
       spyOn(restartService, 'getPupils').and.returnValue(null)
+      spyOn(restartService, 'getReasons').and.returnValue(null)
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
@@ -136,6 +137,7 @@ describe('restart controller:', () => {
       validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
+      spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(res, 'render').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
@@ -187,6 +189,9 @@ describe('restart controller:', () => {
       },
       body: {
         pupilId: '59c38bcf3cd57f97b7da2011'
+      },
+      user: {
+        id: '1111'
       }
     }
     beforeEach(() => {

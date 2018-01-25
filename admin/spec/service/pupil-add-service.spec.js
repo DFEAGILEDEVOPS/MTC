@@ -1,11 +1,14 @@
 'use strict'
-/* global describe beforeEach afterEach expect it */
+/* global describe beforeEach afterEach expect it spyOn */
 
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
 const pupilValidator = require('../../lib/validator/pupil-validator')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const ValidationError = require('../../lib/validation-error')
+const sqlResponse = require('../mocks/sql-modify-response')
+const pupilMock = require('../mocks/pupil')
+
 const pupilData = {
   school: 9991001,
   upn: 'L860100210012',
@@ -37,7 +40,8 @@ describe('pupil-add-service', () => {
 
   function getService (validationFn) {
     pupilValidatorSpy = sandbox.stub(pupilValidator, 'validate').callsFake(validationFn)
-    saveSpy = sandbox.stub(pupilDataService, 'save').resolves({ saved: true })
+    saveSpy = sandbox.stub(pupilDataService, 'sqlCreate').resolves(sqlResponse)
+    spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
     service = proxyquire('../../services/pupil-add-service', {
       '../lib/validator/pupil-validator': pupilValidator
     })
@@ -78,8 +82,8 @@ describe('pupil-add-service', () => {
       expect(saveSpy.calledOnce).toBeTruthy()
       const saveArg = saveSpy.args[0][0]
       // Check that the data of birth has been added
-      expect(saveArg.dob).toBeDefined()
-      expect(saveArg.dob.toISOString()).toBe('2009-06-30T00:00:00.000Z')
+      expect(saveArg.dateOfBirth).toBeDefined()
+      expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
       // check that the UI fields have been removed
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()

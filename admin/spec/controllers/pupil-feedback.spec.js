@@ -39,8 +39,8 @@ describe('Pupil Feedback controller', () => {
 
     mockCheckData = async (options) => {
       sandbox.stub(jwtService, 'verify').returns(jwtPromise)
-      sandbox.stub(checkDataService, 'findOneByCheckCode').returns(findOneByCheckCodePromise)
-      pupilFeedbackCreateStub = sandbox.stub(pupilFeedbackDataService, 'create')
+      sandbox.stub(checkDataService, 'sqlFindOneByCheckCode').returns(findOneByCheckCodePromise)
+      pupilFeedbackCreateStub = sandbox.stub(pupilFeedbackDataService, 'sqlCreate')
         .callsFake((options && options.create) || resolve)
       const { setPupilFeedback } = proxyquire('../../controllers/pupil-feedback', {
         '../services/jwt-service': jwtService,

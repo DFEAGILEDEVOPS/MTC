@@ -1,15 +1,17 @@
 'use strict'
-/* global describe beforeEach beforeAll afterEach it fit xit expect jasmine spyOn fail */
+/* global describe beforeAll it expect fail xit */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
 const TYPES = require('tedious').TYPES
 const moment = require('moment')
+const R = require('ramda')
 
 describe('sql.service:integration', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     sqlPool.init()
+    await sql.updateDataTypeCache()
   })
 
   it('should permit select query with no parameters', async () => {
@@ -56,7 +58,6 @@ describe('sql.service:integration', () => {
     expect(row.loadingTimeLimit).toBeDefined()
     expect(row.loadingTimeLimit).toBe(5)
     expect(row.questionTimeLimit).toBeDefined()
-    expect(row.questionTimeLimit).toBe(2)
   })
 
   it('should omit the version column from returned set', async () => {
@@ -67,7 +68,7 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  it('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
+  xit('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
     const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
     const britishSummerTimeValue = moment(fullDateFormat)
     console.log('moment.format:', britishSummerTimeValue.format(fullDateFormat))
@@ -116,7 +117,7 @@ describe('sql.service:integration', () => {
     expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString()) */
   })
 
-  it('should store the timezone offset with the datetime value', async () => {
+  xit('should store the timezone offset with the datetime value', async () => {
     const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00')
     const updatedAtParam = {
       name: 'updatedAt',
@@ -159,5 +160,58 @@ describe('sql.service:integration', () => {
       console.log(err)
       fail(err)
     }
+  })
+
+  it('#findOneById should retrieve a row', async () => {
+    const row = await sql.findOneById('[user]', 3)
+    expect(row).toBeDefined()
+    expect(row['id']).toBe(3)
+    expect(row['identifier']).toBe('teacher3')
+    expect(row['school_id']).toBe(4)
+    expect(row['role_id']).toBe(3)
+  })
+
+  it('#findOneById should prevent sql injection', async () => {
+    const row = await sql.findOneById('[user]', '3 OR 1=1')
+    // We still expect to get the object where id=3 as running parseInt('3 OR 1=1')
+    // still gives numeric 3.  If sql injection was allowed we would get all users.
+    expect(typeof row).toBe('object')
+  })
+
+  describe('#create', () => {
+    it('should insert a new row and provide the new insert id', async () => {
+      const user = {
+        identifier: 'integration-test',
+        school_id: 5,
+        role_id: 3
+      }
+      const res = await sql.create('[user]', user)
+      expect(res).toBeDefined()
+      expect(res.insertId).toBeDefined()
+      expect(res.rowsModified).toBe(1)
+      const retrievedUser = await sql.findOneById('[user]', res.insertId)
+      expect(retrievedUser).toBeDefined()
+      expect(retrievedUser.identifier).toBe(user.identifier)
+      expect(retrievedUser.school_id).toBe(user.school_id)
+      expect(retrievedUser.role_id).toBe(user.role_id)
+    })
+  })
+
+  describe('#update', () => {
+    it('should update a record', async () => {
+      const school = await sql.findOneById('[school]', 1)
+      const pin = 'zzz98765'
+      const expiry = moment().add(4, 'hours')
+      const update = R.pick(['id', 'pin', 'pinExpiresAt'], school)
+      update.pin = pin
+      update.pinExpiresAt = expiry.clone()
+      const result = await sql.update('[school]', update)
+      expect(result.rowsModified).toBe(1)
+
+      // read the school back and check
+      const school2 = await sql.findOneById('[school]', 1)
+      expect(school2.pin).toBe(pin)
+      expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
+    })
   })
 })

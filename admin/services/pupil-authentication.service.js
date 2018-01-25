@@ -9,27 +9,27 @@ const pupilAuthenticationService = {
    * Authenticate a pupil from the school pin and pupil pin
    * @param pupilPin
    * @param schoolPin
-   * @return {Promise.<Pupil>}
+   * @return {object}
    */
   authenticate: async (pupilPin, schoolPin) => {
-    const school = await schoolDataService.findOne({schoolPin: schoolPin})
-    const pupil = await pupilDataService.findOne({
-      pin: pupilPin,
-      school: school && school._id
-    })
-    if (!pupil || !school || !pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
+    // TODO: Consolidate the following data layer calls to a single one
+    const school = await schoolDataService.sqlFindOneBySchoolPin(schoolPin)
+    if (!school) {
       throw new Error('Authentication failure')
     }
-    return pupil
+    const pupil = await pupilDataService.sqlFindOneByPinAndSchool(pupilPin, school.id)
+    if (!pupil || !pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
+      throw new Error('Authentication failure')
+    }
+    return { pupil, school }
   },
 
   getPupilDataForSpa: (pupil) => {
-    const pupilData = {
+    return {
       firstName: pupil.foreName,
       lastName: pupil.lastName,
-      dob: dateService.formatFullGdsDate(pupil.dob)
+      dob: dateService.formatFullGdsDate(pupil.dateOfBirth)
     }
-    return pupilData
   }
 }
 

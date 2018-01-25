@@ -47,14 +47,14 @@
             <tbody>
                 <% checkWindowsData.forEach(checkWindow => { %>
                 <tr>
-                    <td>
+                    <td<% if (messages && messages.checkWindowId && messages.checkWindowId.toString() === checkWindow.id.toString()) { %> class="highlight-item" <% } %>>
                         <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
-                        <a href="/test-developer/unassign-forms/<%= checkWindow._id %>" class="bold"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
+                        <a href="/test-developer/unassign-forms/<%= checkWindow.id %>" class="bold"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
                         (<%= checkWindow.totalForms %> forms)
                     </td>
                     <td class="align-right">
                         <% if (totalFormsAvailable > checkWindow.totalForms && totalFormsAvailable > 0) { %>
-                        <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow._id %>">Assign forms</a>
+                        <a class="button button-secondary" href="/test-developer/assign-form-to-window/<%= checkWindow.id %>">Assign forms</a>
                         <% } else if (totalFormsAvailable === 0) { %>
                         <div class="font-greyed-out italic">No forms available</div>
                         <% } else { %>
@@ -75,7 +75,7 @@
         <% } %>
     </div>
 
-    <div class="column-one-third add-title-margin">
+    <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
             <h3 class="heading-medium">Related</h3>
             <nav role="navigation">

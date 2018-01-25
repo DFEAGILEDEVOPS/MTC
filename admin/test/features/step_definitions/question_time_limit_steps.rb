@@ -3,7 +3,7 @@ Given(/^I am on the admin page$/) do
 end
 
 When(/^I am on the check settings page$/) do
-  admin_page.check_settings.click
+  admin_page.pupil_check_settings.click
 end
 
 When(/^I have updated the question time limit to (\d+) seconds$/) do |limit|
@@ -42,11 +42,11 @@ When(/^I update the question time limit from (\d+) to (\d+) seconds$/) do |limit
 end
 
 Then(/^I should see a record that has date and time of the question time limit change to (\d+) in database$/) do |arg|
-  wait_until{MongoDbHelper.get_settings['questionTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.get_settings['questionTimeLimit'] == arg.to_i}
 end
 
 Then(/^I should see a historic record appended for question Time limit change to (\d+) in the database$/) do |arg|
-  wait_until{MongoDbHelper.latest_setting_log['questionTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.latest_setting_log['questionTimeLimit'] == arg.to_i}
 end
 
 Then(/^I should see that time between questions is set to (\d+) seconds$/) do |limit|
@@ -85,9 +85,9 @@ When(/^I update the time between questions from (\d+) to (\d+) seconds$/) do |li
 end
 
 Then(/^I should see a record that has date and time of the Time between questions change to (\d+) in database$/) do |arg|
-  wait_until{MongoDbHelper.get_settings['loadingTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.get_settings['loadingTimeLimit'] == arg.to_i}
 end
 
 Then(/^I should see a historic record appended for Time between questions change to (\d+) in the database$/) do |arg|
-  wait_until{MongoDbHelper.latest_setting_log['loadingTimeLimit'] == arg.to_i}
+  wait_until{SqlDbHelper.latest_setting_log['loadingTimeLimit'] == arg.to_i}
 end

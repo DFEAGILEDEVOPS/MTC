@@ -1,70 +1,35 @@
 'use strict'
 
-/* global describe it expect jasmine */
+/* global describe it expect beforeEach spyOn */
 
-const proxyquire = require('proxyquire').noCallThru()
-const { ObjectId } = require('mongoose').Types
-
-const checkWindowMock = require('../mocks/check-window')
-const checkFormMock = require('../mocks/check-form')
-const resolvesNull = function () { return Promise.resolve(null) }
-const resolvesObject = function () { return Promise.resolve({}) }
+const checkFormService = require('../../services/check-form.service')
+const checkWindowDataService = require('../../services/data-access/check-window.data.service')
+const checkDataService = require('../../services/data-access/check.data.service')
 
 describe('check-start.service', () => {
   describe('startCheck', () => {
-    let service, pupilId, checkDataServiceCreateSpy
-
-    function setupService (options) {
-      pupilId = ObjectId()
-      checkDataServiceCreateSpy = jasmine.createSpy('checkDataServiceCreateSpy')
-
-      return proxyquire('../../services/check-start.service', {
-        '../services/data-access/check-window.data.service': {
-          fetchCurrentCheckWindow: jasmine.createSpy().and.callFake(
-            function () { return Promise.resolve(checkWindowMock) }
-          )
-        },
-        '../services/check-form.service': {
-          allocateCheckForm: jasmine.createSpy().and.callFake(
-            function () { return Promise.resolve(checkFormMock) }
-          )
-        },
-        '../services/data-access/check.data.service': {
-          create: checkDataServiceCreateSpy.and.callFake(
-            resolvesNull
-          ),
-          findOneByCheckCode: jasmine.createSpy().and.callFake(
-            options.findOneByCheckCode
-          )
-        }
-      })
-    }
+    let service
+    beforeEach(() => {
+      service = require('../../services/check-start.service')
+    })
 
     describe('happy path', () => {
       it('returns a checkCode and a checkForm', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesNull})
+        spyOn(checkFormService, 'allocateCheckForm').and.returnValue({
+          id: 12345
+        })
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
+          id: 45678
+        })
+        spyOn(checkDataService, 'sqlCreate').and.returnValue(Promise.resolve())
         try {
-          const res = await service.startCheck(pupilId)
+          const res = await service.startCheck(789)
           expect(res.checkCode).toBeDefined()
-          expect(res.checkForm).toBeDefined()
-          expect(checkDataServiceCreateSpy).toHaveBeenCalled()
+          expect(res.checkForm.id).toBe(12345)
+          expect(checkDataService.sqlCreate).toHaveBeenCalled()
         } catch (error) {
           // we are not expecting the happy path to throw
           expect(error).toBeUndefined()
-        }
-        done()
-      })
-    })
-
-    describe('error path', () => {
-      it('throws an error when the checkCode is not unique', async (done) => {
-        service = setupService({findOneByCheckCode: resolvesObject})
-        try {
-          await service.startCheck(pupilId)
-          expect('this is expected to throw').toBe('error')
-        } catch (error) {
-          expect(error).toBeDefined()
-          expect(error.message).toContain('Failed to generate a unique UUID for the check code')
         }
         done()
       })

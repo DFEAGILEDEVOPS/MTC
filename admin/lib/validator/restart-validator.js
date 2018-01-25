@@ -10,7 +10,7 @@ const restartValidator = {}
  */
 restartValidator.validateReason = (reason, specifyReason) => {
   const validationError = new ValidationError()
-  if (reason === 'Did not complete' && specifyReason.length === 0) {
+  if (reason === 'DNC' && specifyReason.length === 0) {
     validationError.addError('didNotCompleteInfo', restartErrorMessages.didNotCompleteInfo)
   }
   return validationError

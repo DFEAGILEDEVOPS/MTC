@@ -1,49 +1,68 @@
 'use strict'
 
 const groupDataService = require('../services/data-access/group.data.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
-
 const groupService = {}
 
-groupService.getGroups = async function (query) {
-  return groupDataService.getGroups(query)
+/**
+ * Get groups.
+ * @returns {Promise<Promise|*>}
+ */
+groupService.getGroups = async function (schoolId) {
+  return groupDataService.sqlFindGroups(schoolId)
 }
 
+/**
+ * Get pupils filtered by schoolId and groupId.
+ * @param schoolId required.  the school context
+ * @param groupIdToExclude optionally exclude a single group from the returned set
+ * @returns {Promise<*>}
+ */
 groupService.getPupils = async function (schoolId, groupIdToExclude) {
-  if (!schoolId) { return false }
-  let query = {}
-  let filteredPupil = []
-  let groupedPupils = []
-  let pupils = await pupilDataService.getSortedPupils(schoolId)
-
-  if (groupIdToExclude) {
-    query = { '_id': { $ne: groupIdToExclude } }
+  if (!schoolId) {
+    throw new Error('schoolId is required')
   }
-  const groups = await groupDataService.getGroups(query)
-  groups.map((group) => {
-    const pupils = Object.values(group.pupils)
-    pupils.forEach(id => {
-      return groupedPupils.push(id)
-    })
-  })
-
-  pupils.map((pupil) => {
-    if (!groupedPupils.includes(pupil._id.toString())) {
-      filteredPupil.push(pupil)
-    }
-  })
-
-  return filteredPupil
+  return groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
 }
 
-groupService.getGroupById = async function (groupId) {
-  if (!groupId) { return false }
-  return groupDataService.getGroup({'_id': groupId})
+/**
+ * Get group by id.
+ * @param groupId
+ * @returns {Promise<*>}
+ */
+groupService.getGroupById = async function (groupId, schoolId) {
+  if (!schoolId || !groupId) {
+    throw new Error('schoolId and groupId are required')
+  }
+  return groupDataService.sqlFindOneById(groupId, schoolId)
 }
 
-groupService.getGroupByName = async function (groupName) {
-  if (!groupName) { return false }
-  return groupDataService.getGroup({'name': groupName})
+/**
+ * Update group (group and pupils assigned to groups).
+ * @param id
+ * @param group
+ * @returns {Promise<boolean>}
+ */
+groupService.update = async (id, group, schoolId) => {
+  if (!id || !group || !group.name || !schoolId) {
+    throw new Error('id, group.name and schoolId are required')
+  }
+  await groupDataService.sqlUpdate(id, group.name, schoolId)
+  return groupDataService.sqlAssignPupilsToGroup(id, group.pupils)
+}
+
+/**
+ * Create group.
+ * @param groupName
+ * @param groupPupils
+ * @returns {number} id of inserted group
+ */
+groupService.create = async (groupName, groupPupils, schoolId) => {
+  if (!groupName || !schoolId) {
+    throw new Error('groupName and schoolId are required')
+  }
+  const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
+  await groupDataService.sqlAssignPupilsToGroup(newGroup.insertId, groupPupils)
+  return newGroup.insertId
 }
 
 module.exports = groupService

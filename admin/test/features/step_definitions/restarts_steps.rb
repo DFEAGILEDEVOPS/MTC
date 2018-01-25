@@ -90,12 +90,13 @@ Given(/^I have single pupils for restart$/) do
   step 'I have generated a pin for a pupil'
 
   ct = Time.now
-  newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
-  MongoDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001)
+  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
+  SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
 
-  pupil_id = MongoDbHelper.pupil_details(@details_hash[:upn])
-  MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
+  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
+  SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
+
   step 'I am on the Restarts Page'
 end
 
@@ -103,15 +104,15 @@ Given(/^I have multiple pupils for restart$/) do
   step 'I have generated pins for multiple pupils'
 
   ct = Time.now
-  newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
   @pupil_names_arr.each do|pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    MongoDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 9991001, newTime)
-    MongoDbHelper.reset_pin(pupil_firstname, pupil_lastname, 9991001)
+    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
+    SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 2)
 
-    pupil_id = MongoDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
-    MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
+    pupil_id = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
   end
 
   step 'I am on the Restarts Page'
@@ -147,19 +148,20 @@ And(/^Pupil has taken a 2nd check$/) do
   @pupil_name = generate_pupil_pins_page.generate_pin_using_name(@details_hash[:first_name])
 
   ct = Time.now
-  newTime = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
-  MongoDbHelper.set_school_pin_expiry('1001', newTime)
+  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
+  SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
   step "I am on the generate pupil pins page"
 
   ct = Time.now
-  newTime = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  MongoDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 9991001, newTime)
-  MongoDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 9991001)
+  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
+  SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
 
-  pupil_id = MongoDbHelper.pupil_details(@details_hash[:upn])
-  MongoDbHelper.create_check(newTime, newTime, pupil_id['_id'].to_s, newTime, newTime)
+  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
+  SqlDbHelper.create_check(new_time, new_time, pupil_id['id'].to_s, new_time, new_time)
+
   restarts_page.load
 end
 

@@ -34,7 +34,7 @@ const dateService = {
   },
 
   checkAndFormat: function (date, format) {
-    if (!(date instanceof Date)) {
+    if (!(date instanceof Date || date instanceof moment)) {
       return ''
     }
     const m = moment(date)
@@ -49,7 +49,7 @@ const dateService = {
    * @param keyDay
    * @param keyMonth
    * @param keyYear
-   * @returns {Date}
+   * @returns {Moment}
    */
   formatDateFromRequest: function (dateItem, keyDay, keyMonth, keyYear) {
     return moment.utc(
@@ -80,7 +80,7 @@ const dateService = {
    * @param {number|string} day
    * @param {number|string} month
    * @param {number|string} year
-   * @return {Moment}
+   * @returns {Moment}
    */
   createFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
@@ -91,8 +91,14 @@ const dateService = {
       return null
     }
     return date
+  },
+  /**
+   * returns current UTC date and time as moment
+   * @returns {Moment}
+   */
+  utcNowAsMoment: () => {
+    return moment.utc()
   }
-
 }
 
 module.exports = dateService

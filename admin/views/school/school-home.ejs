@@ -1,17 +1,13 @@
 <div class="grid-row">
-    <div class="column-one-half">
-        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
-    </div>
-    <div class="column-one-half">
+    <div class="column-full">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
 
 <div class="grid-row" aria-describedby="lead-paragraph">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge" tabindex="0">Multiplication tables check
+        <h1 class="heading-xlarge">Multiplication tables check
             for <%= schoolName %></h1>
-        <p class="lede" id="lead-paragraph" tabindex="0">To start the check you will need to generate PINs for each individual pupil.</p>
 
         <ol class="list">
             <li>
@@ -21,12 +17,7 @@
 
             <li>
                 <h2 class="heading-small"><a href="/school/group-pupils">Group pupil</a></h2>
-                <p>Create groups based on classes</p>
-            </li>
-
-            <li>
-                <h2 class="heading-small"><a href="#">Access arrangements</a></h2>
-                <p>Apply in advance to support pupils with a range of different needs</p>
+                <p>Create groups</p>
             </li>
 
             <li>
@@ -35,7 +26,12 @@
             </li>
 
             <li>
-                <h2 class="heading-small"><a href="/pupil-pin/generate-pins-overview">Generate pupils PINs</a></h2>
+                <h2 class="heading-small"><a href="#">Access arrangements</a></h2>
+                <p>Select arrangements for pupils with access needs</p>
+            </li>
+
+            <li>
+                <h2 class="heading-small"><a href="/pupil-pin/generate-pins-overview">Generate pupil PINs</a></h2>
                 <p>Generate pupil Personal Identification Numbers (PINs) and view school password</p>
             </li>
 
@@ -45,24 +41,22 @@
             </li>
 
             <li>
-                <h2 class="heading-small"><a href="/school/submit-attendance">Headteacher's declaration form</a></h2>
-                <p>Sign headteacher's declaration form once pupil register has been submitted</p>
+                <!-- <h2 class="heading-small"><a href="/school/submit-attendance">Headteacher's declaration form</a></h2>
+                <p>Complete headteacher's declaration form once pupil register has been submitted</p> -->
+                <h2 class="heading-small"><a class="font-greyed-out disabled-link" href="/school/submit-attendance">Headteacher's declaration form</a></h2>
+                <p>The HDF module is unavailable until the HDF feature update is complete</p>
             </li>
 
             <li>
                 <h2 class="heading-small"><a href="/school/results">Results</a></h2>
-                <p>View a summary and breakdown of pupil results</p>
+                <p>View pupil results</p>
             </li>
         </ol>
-
-        <div class="back-to-top-container">
-            <a href="#top">Back to top</a>
-        </div>
     </div>
 
-    <div class="column-one-third add-title-margin" tabindex="0" role="group" aria-label="sidebar">
+    <div class="column-one-third sidebar" role="group" aria-label="sidebar">
         <aside role="complementary" class="support-column">
-            <h3 class="heading-medium" tabindex="0">Before you start</h3>
+            <h3 class="heading-medium">Related</h3>
             <nav role="navigation">
                 <ul class="list">
                     <li>

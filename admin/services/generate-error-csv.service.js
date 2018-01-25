@@ -14,7 +14,7 @@ module.exports.generate = async (school, headers, csvData) => {
 // Upload csv to Azure
   let file
   try {
-    const remoteFilename = `${school._id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
+    const remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
     const streamLength = 512 * 1000
     file = await azureFileDataService.azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
   } catch (error) {

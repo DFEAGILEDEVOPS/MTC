@@ -94,7 +94,7 @@ describe('pupilPin controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('findOne').resolves(new School({ name: 'Test School' }))
+        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(new School({ name: 'Test School' }))
         controller = proxyquire('../../controllers/pupil-pin.js', {
           '../../services/data-access/school.data.service': schoolDataService
         }).getGeneratePinsList
@@ -119,7 +119,7 @@ describe('pupilPin controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('findOne').resolves(null)
+        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(undefined)
         controller = proxyquire('../../controllers/pupil-pin.js', {
           '../../services/data-access/school.data.service': schoolDataService
         }).getGeneratePinsList
@@ -160,11 +160,11 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
-      spyOn(schoolDataService, 'findOne').and.returnValue(new School({ _id: 1, name: 'Test School' }))
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(new School({ _id: 1, name: 'Test School' }))
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
-      spyOn(schoolDataService, 'update').and.returnValue(null)
+      spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generated-pins-list')
@@ -174,8 +174,8 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = { body: {} }
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
       await controller(req, res, next)
@@ -186,9 +186,9 @@ describe('pupilPin controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
-      spyOn(pinGenerationService, 'generatePupilPins').and.returnValue(null)
-      spyOn(pupilDataService, 'updateMultiple').and.returnValue(true)
-      spyOn(schoolDataService, 'findOne').and.returnValue(null)
+      spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
+      spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
       done()
