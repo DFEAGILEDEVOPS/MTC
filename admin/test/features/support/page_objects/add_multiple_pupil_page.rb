@@ -14,7 +14,7 @@ class AddMultiplePupilPage < SitePrism::Page
 
   def upload_multiple_pupil(pupil_array1, pupil_array2=nil)
     CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"), 'wb') do |csv_object|
-      csv_object << ["Surname","Forename","Middle name(s)","Date of Birth","Gender", "UPN"]
+      csv_object << ["Surname","Forename","Middle name(s)","Date of birth","Gender", "UPN"]
       csv_object << pupil_array1
       csv_object << pupil_array2 if !pupil_array2.nil?
     end

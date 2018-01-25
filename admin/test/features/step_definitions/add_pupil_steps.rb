@@ -183,7 +183,7 @@ When(/^I have submitted invalid pupil details$/) do
 end
 
 Then(/^the pupil details should not be stored$/) do
-  wait_until {(SqlDbhelper.pupil_details @upn.to_s).nil?}
+  wait_until {(SqlDbHelper.pupil_details @upn.to_s).nil?}
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
