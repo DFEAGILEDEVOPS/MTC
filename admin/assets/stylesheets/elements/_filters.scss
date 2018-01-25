@@ -2,8 +2,9 @@
 
 .filter-header {
   background-color: $panel-colour;
-  padding: pem(8) pem(10) pem(4) pem(10);
   cursor: pointer;
+  margin-top: pem(15px);
+  padding: pem(8) pem(10) pem(4) pem(10);
 }
 
 .filter-label {

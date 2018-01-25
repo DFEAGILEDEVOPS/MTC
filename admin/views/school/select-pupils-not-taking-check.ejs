@@ -74,9 +74,8 @@
             <h2 class="top-padding-30">2. Select pupil(s)</h2>
 
             <% if (groups && groups.length > 0) { %>
-            <br />
             <div class="filter-header">
-                <div class="filter-label">Filter by name</div>
+                <div class="filter-label">Filter by groups</div>
             </div>
             <div class="hidden filter-content">
                 <ul id="filterByGroup">
@@ -98,7 +97,7 @@
             <% } %>
 
             <% if (pupilsList && pupilsList.length > 0) { %>
-            <table class="spacious" id="pupilsList" role="listbox" aria-label="Select pupils.">
+            <table class="spacious reduced-top-margin" id="pupilsList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
