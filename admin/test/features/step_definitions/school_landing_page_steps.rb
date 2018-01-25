@@ -1,16 +1,12 @@
 Then(/^I should see (.*)'s school name$/) do |teacher|
-  school_id = MongoDbHelper.find_teacher(teacher)[0]['school']
-  school_name = MongoDbHelper.find_school(school_id)[0]['name']
+  school_id = SqlDbHelper.find_teacher(teacher)[0]['school_id']
+  school_name = SqlDbHelper.find_school(school_id)['name']
   expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
 end
 
 Given(/^I am on the school landing page$/) do
   step "I am logged in"
-  expect(profile_page.breadcrumb.text).to eq("School Home")
-end
-
-Then(/^I should see some instructions on what to do next$/) do
-  expect(school_landing_page).to have_instructions
+  expect(school_landing_page).to be_displayed
 end
 
 Then(/^I should see an option to go to the manage pupils area$/) do
@@ -26,7 +22,7 @@ end
 
 Then(/^I should see an option to view the results$/) do
   expect(school_landing_page).to have_results
-  expect(school_landing_page).to have_results_instructions
+  expect(school_landing_page).to have_results_text
 end
 
 When(/^I decide to logout$/) do
@@ -37,8 +33,8 @@ Then(/^I am taken back to the login page$/) do
   expect(sign_in_page).to be_displayed
 end
 
-Then(/^I should see the before you start section$/) do
-  expect(school_landing_page).to have_before_you_start
+Then(/^I should see the related section$/) do
+  expect(school_landing_page).to have_related
 end
 
 Then(/^I should see option to view guidance in the before you start section$/) do
@@ -51,4 +47,39 @@ end
 
 Then(/^I should see (.*)'s name$/) do |teacher|
   expect(school_landing_page.teacher_name.text).to eql "Signed in as " + teacher
+end
+
+Then(/^I should see an option to view the pupil register$/) do
+  expect(school_landing_page).to have_pupil_register
+  expect(school_landing_page).to have_pupil_register_text
+end
+
+Then(/^I should see an option to group pupils$/) do
+  expect(school_landing_page).to have_group_pupils
+  expect(school_landing_page).to have_group_pupils_text
+end
+
+Then(/^I should see an option to select pupils not taking the check$/) do
+  expect(school_landing_page).to have_pupils_not_taking_check
+  expect(school_landing_page).to have_pupils_not_taking_check_text
+end
+
+Then(/^I should see an option to manage access arrangements$/) do
+  expect(school_landing_page).to have_access_arrangements
+  expect(school_landing_page).to have_access_arrangements_text
+end
+
+Then(/^I should see an option to generate pins$/) do
+  expect(school_landing_page).to have_generate_pupil_pin
+  expect(school_landing_page).to have_generate_pupil_pin_text
+end
+
+Then(/^I should see an option to manage restarts$/) do
+  expect(school_landing_page).to have_restarts
+  expect(school_landing_page).to have_restarts_text
+end
+
+Then(/^I should see an option to complete the hdf$/) do
+  expect(school_landing_page).to have_hdf
+  expect(school_landing_page).to have_hdf_text
 end

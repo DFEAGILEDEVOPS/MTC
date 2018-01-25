@@ -1,5 +1,5 @@
 const moment = require('moment')
-const ObjectId = require('mongoose').Types.ObjectId
+const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -10,27 +10,23 @@ const pinService = {}
 
 /**
  * Get pupils with active pins
- * @param schoolId
+ * @param dfeNumber
  * @returns {Array}
  */
-pinService.getPupilsWithActivePins = async (schoolId) => {
-  let pupils = await pupilDataService.getSortedPupils(schoolId, 'lastName', 'asc')
-  pupils = pupils
-    .filter(p => pinValidator.isActivePin(p.pin, p.pinExpiresAt))
-    .map(({ _id, pin, dob, foreName, middleNames, lastName }) =>
-      ({ _id, pin, dob: moment(dob).format('DD MMM YYYY'), foreName, middleNames, lastName }))
+pinService.getPupilsWithActivePins = async (dfeNumber) => {
+  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
 }
 
 /**
  * Get active school Password
- * @param schoolId
+ * @param {number} dfeNumber
  * @returns {String}
  */
-pinService.getActiveSchool = async (schoolId) => {
-  const school = await schoolDataService.findOne({_id: schoolId})
-  if (!pinValidator.isActivePin(school.schoolPin, school.pinExpiresAt)) {
+pinService.getActiveSchool = async (dfeNumber) => {
+  const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+  if (!pinValidator.isActivePin(school.pin, school.pinExpiresAt)) {
     return null
   }
   return school
@@ -43,11 +39,14 @@ pinService.getActiveSchool = async (schoolId) => {
  */
 pinService.expirePupilPin = async (token, checkCode) => {
   const decoded = jwtService.decode(token)
-  const pupil = await pupilDataService.findOne({_id: ObjectId(decoded.sub)})
+  const pupil = await pupilDataService.sqlFindOneById(decoded.sub)
+  // TODO should this use date service???
   const currentTimeStamp = moment.utc()
-  await checkDataService.update({checkCode: checkCode}, { '$set': { checkStartedAt: currentTimeStamp } })
+  await checkDataService.sqlUpdateCheckStartedAt(checkCode, currentTimeStamp)
   if (!pupil.isTestAccount) {
-    await pupilDataService.update({_id: pupil._id}, { pinExpiresAt: currentTimeStamp, pin: null })
+    pupil.pinExpiresAt = currentTimeStamp
+    pupil.pin = null
+    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
   }
 }
 
@@ -58,19 +57,19 @@ pinService.expirePupilPin = async (token, checkCode) => {
  */
 
 pinService.expireMultiplePins = async (pupilIds) => {
-  let pupils = []
-  for (let index = 0; index < pupilIds.length; index++) {
-    const id = pupilIds[ index ]
-    const pupil = await pupilDataService.findOne({_id: ObjectId(id)})
-    if (pupil.pin || pupil.pinExpiresAt) pupils.push(pupil)
-  }
-  if (pupils.length === 0) return
-  pupils = pupils.map(p => {
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds)
+  let pupilData = []
+  pupils.forEach(p => {
+    if (p.pin || p.pinExpiresAt) pupilData.push(p)
+  })
+  if (pupilData.length === 0) return
+  pupilData = pupilData.map(p => {
     p.pin = null
     p.pinExpiresAt = null
     return p
   })
-  return pupilDataService.updateMultiple(pupils)
+  const data = pupilData.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
 module.exports = pinService

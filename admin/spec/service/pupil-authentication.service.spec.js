@@ -20,10 +20,10 @@ describe('pupil authentication service', () => {
   function setupService (schoolMock, pupilMock) {
     return proxyquire('../../services/pupil-authentication.service', {
       '../services/data-access/school.data.service': sandbox.mock(schoolDataService)
-        .expects('findOne')
+        .expects('sqlFindOneBySchoolPin')
         .resolves(schoolMock),
       '../models/pupil': sandbox.mock(pupilDataService)
-        .expects('findOne')
+        .expects('sqlFindOneByPinAndSchool')
         .resolves(pupilMock)
     })
   }
@@ -46,8 +46,8 @@ describe('pupil authentication service', () => {
     })
 
     it('authenticates a pupil', async (done) => {
-      const pupil = await service.authenticate('pupilPin', 'schoolPin')
-      expect(pupil).toEqual(pupilMock)
+      const data = await service.authenticate('pupilPin', 'schoolPin')
+      expect(data).toEqual({ pupil: pupilMock, school: schoolMock })
       done()
     })
 

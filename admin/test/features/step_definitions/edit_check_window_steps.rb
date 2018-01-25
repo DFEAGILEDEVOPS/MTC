@@ -17,22 +17,22 @@ And(/^I create new check window with valid data$/) do
   @check_window_hash = {check_name: @check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_mon: @admin_start_date.month,
-                        admin_start_year: @admin_start_date.next_year.year,
-                        check_start_day: @check_start_date.next_month.day,
-                        check_start_mon: @check_start_date.next_month.month,
-                        check_start_year: @check_start_date.next_year.year,
-                        check_end_day: @check_end_date.next_day.day,
-                        check_end_mon: @check_end_date.next_month.month,
-                        check_end_year: @check_end_date.next_year.year
+                        admin_start_year: @admin_start_date.year,
+                        check_start_day: @check_start_date.day,
+                        check_start_mon: @check_start_date.month,
+                        check_start_year: @check_start_date.year,
+                        check_end_day: @check_end_date.day,
+                        check_end_mon: @check_end_date.month,
+                        check_end_year: @check_end_date.year
   }
   @page.enter_details(@check_window_hash)
   @page.save_changes.click
 end
 
 When(/^I update the check window with valid data$/) do
-  @admin_start_date = @admin_start_date + 30
-  @check_start_date = @check_start_date + 33
-  @check_end_date = @check_end_date + 35
+  @admin_start_date = @admin_start_date + 1
+  @check_start_date = @check_start_date + 1
+  @check_end_date = @check_end_date + 1
   @updated_check_window_hash = {check_name: @check_window_name,
                                 admin_start_day: @admin_start_date.day,
                                 admin_start_mon: @admin_start_date.month,
@@ -41,8 +41,8 @@ When(/^I update the check window with valid data$/) do
                                 check_start_mon: @check_start_date.month,
                                 check_start_year: @check_start_date.year,
                                 check_end_day: @check_end_date.day,
-                                check_end_mon: @check_end_date.next_month.next_month.month,
-                                check_end_year: @check_end_date.next_year.year
+                                check_end_mon: @check_end_date.month,
+                                check_end_year: @check_end_date.year
   }
   @page.enter_details(@updated_check_window_hash)
   @page.save_changes.click
@@ -70,9 +70,9 @@ And(/^I should see no flash message to update check window is displayed$/) do
 end
 
 And(/^the updated Check Window Detail is Saved$/) do
-  wait_until {!(MongoDbHelper.check_window_details(@check_window_name.to_s)).nil?}
-  @stored_pupil_details = MongoDbHelper.check_window_details @check_window_name.to_s
-  expect(@updated_check_window_hash[:check_name]).to eql @stored_pupil_details['checkWindowName']
+  wait_until {!(SqlDbHelper.check_window_details(@check_window_name.to_s)).nil?}
+  @stored_pupil_details = SqlDbHelper.check_window_details @check_window_name.to_s
+  expect(@updated_check_window_hash[:check_name]).to eql @stored_pupil_details['name']
 end
 
 But(/^decide against editing it$/) do

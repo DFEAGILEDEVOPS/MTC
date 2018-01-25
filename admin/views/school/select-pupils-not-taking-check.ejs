@@ -23,13 +23,13 @@
             <% attendanceCodes.forEach( (aValues) => { %>
                 <li>
                     <div class="multiple-choice">
-                        <input id="attendance-code-<%= aValues._id %>"
+                        <input id="attendance-code-<%= aValues.code %>"
                                type="radio"
                                role="radio"
                                aria-checked="false"
                                name="attendanceCode"
-                               value="<%= aValues._id %>">
-                        <label for="attendance-code-<%= aValues._id %>"><%= aValues.reason %></label>
+                               value="<%= aValues.code %>">
+                        <label for="attendance-code-<%= aValues.id %>"><%= aValues.reason %></label>
                     </div>
                 </li>
                 <% }) %>
@@ -52,27 +52,27 @@
                         </li>
                         <li>
                             <div><strong>Left school</strong></div>
-                            <div>Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.</div>
+                            <div>Pupil has left the school.</div>
                         </li>
                         <li>
                             <div><strong>Unable to access</strong></div>
-                            <div>Pupil is unable to access the check.</div>
+                            <div>Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.</div>
                         </li>
                         <li>
-                            <div><strong>Working below the overall standard of the check</strong></div>
-                            <div>Pupil has shown no understanding of the multiplication tables and is considered unable to answer the easiest questions.</div>
+                            <div><strong>Working below expectation</strong></div>
+                            <div>Pupil is considered unable to answer the easiest questions or is working below year 2 in multiplication tables.</div>
                         </li>
                         <li>
-                            <div><strong>Just arrived</strong></div>
-                            <div>Pupils has arrived in school during the check window and there isn’t enough time to establish their abilities.</div>
+                            <div><strong>Just arrived with EAL</strong></div>
+                            <div>Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities.</div>
                         </li>
                     </ul>
                 </details>
             </div>
 
-            <h2 class="padding-top">2. Select pupil(s)</h2>
+            <h2 class="top-padding-30">2. Select pupil(s)</h2>
             <% if (pupilsList && pupilsList.length > 0) { %>
-            <table class="spacious sorting" id="pupilsList" role="listbox" aria-label="Select pupils.">
+            <table class="spacious" id="pupilsList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
@@ -94,24 +94,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <% pupilsList.forEach( (pupil, index) => { %>
+                    <% pupilsList.forEach(pupil => { %>
                     <tr>
                         <td>
-                            <label for="pupil-<%= pupil._id %>">
+                            <label for="pupil-<%= pupil.urlSlug %>">
                                 <%= pupil.lastName %>, <%= pupil.foreName %>
                             </label>
                         </td>
                         <td>
-                            <% if (pupil.reason) { %>
-                            <%= pupil.reason %>
-                            <% } %>
+                            <%= pupil.reason || 'N/A' %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">
-                                <input id="pupil-<%= pupil._id %>"
-                                       name="pupil[<%= index %>]"
+                                <input id="pupil-<%= pupil.urlSlug %>"
+                                       name="pupil"
                                        type="checkbox"
-                                       value="<%= pupil._id %>"
+                                       value="<%= pupil.urlSlug %>"
                                        aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                        aria-checked="false"
                                        role="checkbox">
@@ -134,17 +132,8 @@
             </div>
         </div>
 
-        <div class="column-one-third add-title-margin" aria-label="sidebar">
-            <aside role="complementary" class="support-column">
-                <h3 class="heading-medium">Start check</h3>
-                <nav role="navigation">
-                    <ul class="list">
-                        <li>
-                            <a href="#">Generate PINs</a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
+        <div class="column-one-third sidebar" aria-label="sidebar">
+
         </div>
     </div>
     <%- partial('partials/_sticky_confirmation_banner',

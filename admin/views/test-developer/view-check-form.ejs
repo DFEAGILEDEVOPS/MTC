@@ -19,7 +19,7 @@
             <% } %>
         </div>
 
-        <div class="padding-top">
+        <div class="top-padding-30">
             <dl class="inline-definition-list" role="list">
                 <% form.questions.forEach((q) => { %>
                 <dt class="inline-definition-list" role="listitem">Q<%= num++ %></dt>
@@ -34,14 +34,14 @@
             </dl>
             <% if (form.canDelete === true) { %>
             <br />
-            <a href="/test-developer/delete-form/<%= form._id %>" class="modal-link" id="js-modal-link">Remove form</a>
+            <a href="/test-developer/delete-form/<%= form.id %>" class="modal-link" id="js-modal-link">Remove form</a>
             <% } %>
         </div>
         <div class="back-to-top-container">
             <a href="#top">Back to top</a>
         </div>
     </div>
-    <div class="column-one-third add-title-margin">
+    <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
             <h3 class="heading-medium">Related</h3>
             <nav role="navigation">

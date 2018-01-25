@@ -1,0 +1,1 @@
+DELETE [mtc_admin].[checkWindow] WHERE name='Past Development Phase'

@@ -68,7 +68,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     throw new Error('Invalid arg: batchIds')
   }
 
-  const completedChecks = await completedCheckDataService.find({_id: {'$in': batchIds}})
+  const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
 
   // Address some deficiencies in the data model by adding in data required for the report
   // additional data is added as a side-effect to the completedChecks objects
@@ -111,7 +111,7 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
  */
 psychometricianReportService.populateWithCheck = async function (completedChecks) {
   const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
-  const checks = await checkDataService.findFullyPopulated({checkCode: {'$in': checkCodes}})
+  const checks = await checkDataService.sqlFindFullyPopulated(checkCodes)
   // winston.info('checks > pupil > school', checks[0].pupilId.school)
   const checksByCheckCode = new Map()
   // populate the map

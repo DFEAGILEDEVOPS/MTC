@@ -11,8 +11,7 @@ const dateService = require('../services/date.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const config = require('../config')
-const settingDataService = require('../services/data-access/setting.data.service')
-const settingLogDataService = require('../services/data-access/setting-log.data.service')
+const settingService = require('../services/setting.service')
 
 /**
  * Returns the service-manager (role) landing page
@@ -42,12 +41,12 @@ const getServiceManagerHome = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const getUpdateTiming = async (req, res, next) => {
-  res.locals.pageTitle = 'Check settings'
+  res.locals.pageTitle = 'Settings on pupil check'
   let settings
   const successfulPost = req.params.status || false
-
+  console.log('session:', req.session)
   try {
-    const settingsRecord = await settingDataService.findOne()
+    const settingsRecord = await settingService.get() // settingDataService.sqlFindOne()
     if (settingsRecord) {
       settings = settingsRecord
     } else {
@@ -80,10 +79,10 @@ const getUpdateTiming = async (req, res, next) => {
  * @returns {Promise.<*>}
  */
 const setUpdateTiming = async (req, res, next) => {
-  res.locals.pageTitle = 'Check settings'
+  res.locals.pageTitle = 'Settings on pupil check'
   let settings
 
-  const settingsRecord = await settingDataService.findOne()
+  const settingsRecord = await settingService.get()
   if (settingsRecord) {
     settings = settingsRecord
   } else {
@@ -94,7 +93,7 @@ const setUpdateTiming = async (req, res, next) => {
 
   let validationError = await settingsValidator.validate(req)
   if (validationError.hasError()) {
-    res.locals.pageTitle = 'Check settings'
+    res.locals.pageTitle = 'Settings on pupil check'
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('service-manager/check-settings', {
       settings: req.body,
@@ -105,20 +104,7 @@ const setUpdateTiming = async (req, res, next) => {
   }
 
   try {
-    await settingDataService.createOrUpdate(settings)
-
-    let settingsLog = {}
-    settingsLog.adminSession = req.session.id
-    settingsLog.emailAddress = ((res.locals).user || {}).EmailAddress
-    settingsLog.userName = ((res.locals).user || {}).UserName
-    settingsLog.questionTimeLimit = settings.questionTimeLimit
-    settingsLog.loadingTimeLimit = settings.loadingTimeLimit
-
-    try {
-      await settingLogDataService.create(settingsLog)
-    } catch (error) {
-      winston.info('Could not save setting log.')
-    }
+    await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.user.id)
   } catch (error) {
     return next(error)
   }
@@ -153,15 +139,15 @@ const getCheckWindows = async (req, res, next) => {
 
   // Get current check windows
   try {
-    checkWindows = await checkWindowDataService.fetchCurrentCheckWindows(sortField, sortDirection)
-    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true)
+    checkWindows = await checkWindowDataService.sqlFindCurrent(sortField, sortDirection)
+    checkWindowsCurrent = checkWindowService.formatCheckWindowDocuments(checkWindows, true, true)
   } catch (error) {
     return next(error)
   }
 
   // Get past check windows
   try {
-    checkWindows = await checkWindowDataService.fetchPastCheckWindows(sortField, sortDirection)
+    checkWindows = await checkWindowDataService.sqlFindPast(sortField, sortDirection)
     checkWindowsPast = checkWindowService.formatCheckWindowDocuments(checkWindows, false, false)
   } catch (error) {
     return next(error)
@@ -211,14 +197,14 @@ const checkWindowsForm = async (req, res, next) => {
 
   if (req.params.id !== undefined) {
     try {
-      checkWindowData = await checkWindowDataService.fetchCheckWindow(req.params.id)
+      checkWindowData = await checkWindowDataService.sqlFindOneById(req.params.id)
 
       const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
       const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
 
       checkWindowData = {
         checkWindowId: req.params.id,
-        checkWindowName: checkWindowData.checkWindowName,
+        checkWindowName: checkWindowData.name,
         adminStartDay: moment(checkWindowData.adminStartDate).format('D'),
         adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
         adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
@@ -279,8 +265,6 @@ const saveCheckWindows = async (req, res, next) => {
     actionName = 'Edit'
     urlActionName = 'edit'
     flashMessage = 'Changes have been saved'
-
-    checkWindow = await checkWindowDataService.fetchCheckWindow(req.body.checkWindowId)
   }
 
   if (validationError.hasError()) {
@@ -313,11 +297,22 @@ const saveCheckWindows = async (req, res, next) => {
     })
   }
 
+  try {
+    if (req.body.checkWindowId) {
+      checkWindow = await checkWindowDataService.sqlFindOneById(req.body.checkWindowId)
+    }
+  } catch (error) {
+    return next(error)
+  }
+
+  let insertNew = false
+
   if (typeof checkWindow === 'undefined') {
+    insertNew = true
     checkWindow = {}
   }
 
-  checkWindow.checkWindowName = req.body['checkWindowName']
+  checkWindow.name = req.body['checkWindowName']
   if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
     checkWindow.adminStartDate = dateService.formatDateFromRequest(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
   }
@@ -329,10 +324,14 @@ const saveCheckWindows = async (req, res, next) => {
   // Auditing? Question for BAs.
 
   try {
-    await checkWindowDataService.create(checkWindow)
+    if (insertNew) {
+      await checkWindowDataService.sqlCreate(checkWindow)
+    } else {
+      await checkWindowDataService.sqlUpdate(checkWindow)
+    }
     req.flash('info', flashMessage)
   } catch (error) {
-    winston.info('Could not save check windows data.', error)
+    winston.error('Could not save check windows data.', error)
     return next(error)
   }
 
@@ -354,7 +353,7 @@ const removeCheckWindow = async (req, res, next) => {
   }
 
   try {
-    checkWindow = await checkWindowDataService.fetchCheckWindow(req.params.checkWindowId)
+    checkWindow = await checkWindowDataService.sqlFindOneById(req.params.checkWindowId)
   } catch (err) {
     return next(err)
   }
@@ -364,7 +363,7 @@ const removeCheckWindow = async (req, res, next) => {
       req.flash('error', 'Deleting an active check window is not allowed.')
     } else {
       try {
-        await checkWindowDataService.setDeletedCheckWindow(req.params.checkWindowId)
+        await checkWindowDataService.sqlDeleteCheckWindow(req.params.checkWindowId)
         req.flash('info', 'Check window deleted.')
       } catch (error) {
         req.flash('error', 'Error trying to delete check window.')

@@ -18,7 +18,7 @@ const configService = {
     let questionTime = QUESTION_TIME_LIMIT
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
-    const timeSettings = await settingDataService.findOne({})
+    const timeSettings = await settingDataService.sqlFindOne()
 
     if (timeSettings) {
       loadingTime = timeSettings.loadingTimeLimit
@@ -30,7 +30,12 @@ const configService = {
       loadingTime
     }
 
-    return R.merge(config, pupil.checkOptions)
+    // specific config for a pupil
+    const checkOptions = {
+      speechSynthesis: !!pupil.speechSynthesis
+    }
+
+    return R.merge(config, checkOptions)
   }
 }
 

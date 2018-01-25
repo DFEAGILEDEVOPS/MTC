@@ -1,62 +1,73 @@
 'use strict'
 
 const bcrypt = require('bcryptjs')
-const User = require('../models/user')
-const AdminLogonEvent = require('../models/admin-logon-event')
+const R = require('ramda')
 const winston = require('winston')
 
-module.exports = function (req, email, password, done) {
+const userDataService = require('../services/data-access/user.data.service')
+const schoolDataService = require('../services/data-access/school.data.service')
+const roleDataService = require('../services/data-access/role.data.service')
+const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
+
+module.exports = async function (req, email, password, done) {
   /**
    * Store the logon attempt
    */
-  const logonEvent = new AdminLogonEvent({
+  const logonEvent = {
     sessionId: req.session.id,
-    body: '<Not Logged>', // Don't store username and password combo in plaintext - no logging on this strategy
-    remoteIp: (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
+    body: JSON.stringify(R.omit(['password'], R.prop('body', req))),
+    remoteIp: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
     userAgent: req.headers['user-agent'],
     loginMethod: 'local'
-  })
+  }
 
-  User.findOne({email}, async function (err, user) {
-    try {
-      if (err) {
-        await saveInvalidLogonEvent(logonEvent, err.message)
-        return done(err)
-      }
-      if (!user) {
-        await saveInvalidLogonEvent(logonEvent, 'Invalid user')
-        return done(null, false) // failure - wrong email
-      }
-    } catch (error) {
-      console.error(error)
+  try {
+    const user = await userDataService.sqlFindOneByIdentifier(email)
+    const schoolPromise = schoolDataService.sqlFindOneById(R.prop('school_id', user))
+    const rolePromise = roleDataService.sqlFindOneById(R.prop('role_id', user))
+    const [school, role] = await Promise.all([schoolPromise, rolePromise])
+
+    if (!user || !role || !school) {
+      // Invalid user
+      await saveInvalidLogonEvent(logonEvent, 'Invalid user')
+      return done(null, false)
     }
 
-    bcrypt.compare(password, user.passwordHash, async function (err, res) {
-      try {
-        if (err) {
-          await saveInvalidLogonEvent(logonEvent, err.message)
-          return done(err)
-        }
-        if (res === true) {
-          // Success - but we should mock the expected session object coming in from NCA Tools
-          const mock = {
-            EmailAddress: email,
-            UserName: email,
-            UserType: 'SchoolNom',
-            School: user.school,
-            role: user.role,
-            logonAt: Date.now()
-          }
-          await saveValidLogonEvent(logonEvent, mock)
-          return done(null, mock)
-        } else {
-          await saveInvalidLogonEvent(logonEvent, 'Invalid password')
-          return done(null, false)
-        }
-      } catch (error) {
-        winston.error(error)
-        return done(error)
-      }
+    const isEqual = await bcryptCompare(password, user.passwordHash)
+
+    if (!isEqual) {
+      // Invalid password
+      await saveInvalidLogonEvent(logonEvent, 'Invalid password')
+      return done(null, false)
+    }
+
+    const sessionData = {
+      EmailAddress: email,
+      UserName: email,
+      UserType: 'SchoolNom',
+      School: school.dfeNumber,
+      schoolId: school.id,
+      role: role.title,
+      logonAt: Date.now(),
+      id: user.id
+    }
+
+    // Success - valid login
+    logonEvent.user_id = user.id
+    await saveValidLogonEvent(logonEvent, sessionData)
+    return done(null, sessionData)
+  } catch (error) {
+    winston.warn(error)
+    await saveInvalidLogonEvent(logonEvent, 'Server error: ' + error.message)
+    done(error)
+  }
+}
+
+function bcryptCompare (plaintext, hash) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(plaintext, hash, function (err, res) {
+      if (err) return reject(err)
+      resolve(res)
     })
   })
 }
@@ -65,9 +76,9 @@ async function saveInvalidLogonEvent (logonEvent, message) {
   try {
     logonEvent.errorMsg = message
     logonEvent.isAuthenticated = false
-    await logonEvent.save()
+    await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.error('Failed to save logon event: ' + error.message)
+    winston.warn('Failed to save logon event: ' + error.message)
   }
 }
 
@@ -75,13 +86,9 @@ async function saveValidLogonEvent (logonEvent, session) {
   try {
     logonEvent.isAuthenticated = true
     logonEvent.ncaEmailAddress = session.EmailAddress
-    logonEvent.ncaUserType = session.UserType
     logonEvent.ncaUserName = session.UserName
-    logonEvent.ncaSessionToken = session.SessionToken
-    logonEvent.school = session.School
-    logonEvent.role = session.role
-    logonEvent.save()
+    await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.log('Failed to save logon event: ' + error.message)
+    winston.warn('Failed to save logon event: ' + error.message)
   }
 }

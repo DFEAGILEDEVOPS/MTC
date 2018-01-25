@@ -6,7 +6,6 @@ const XRegExp = require('xregexp')
 const { isEmpty, isInt } = require('validator')
 const upnService = require('../../services/upn.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
-const winston = require('winston')
 
 module.exports.validate = async (pupilData) => {
   // TODO: Move to reusable validation service
@@ -119,11 +118,11 @@ module.exports.validate = async (pupilData) => {
   if (isEmpty(upn)) {
     validationError.addError('upn', addPupilErrorMessages.upnRequired)
   }
-  // We need to check that the UPN is unique
+  // Check that the UPN is unique
   if (!(validationError.get('upn'))) {
-    const existingPupil = await pupilDataService.findOne({ upn: pupilData.upn })
+    const existingPupil = await pupilDataService.sqlFindOneByUpn(pupilData.upn)
     // if pupil is not stored already under the same id and UPN
-    if (existingPupil && existingPupil._id.toString() !== pupilData._id &&
+    if (existingPupil && existingPupil.urlSlug.toString() !== pupilData.urlSlug &&
       existingPupil.upn === pupilData.upn) {
       validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
     }

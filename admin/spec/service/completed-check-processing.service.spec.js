@@ -1,7 +1,8 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, afterEach, it, expect, spyOn */
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
+const winston = require('winston')
 
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
@@ -17,14 +18,14 @@ describe('completedCheckProcessingService', () => {
   describe('#markAndProcess', () => {
     let completedCheckDataServiceStub, markingServiceStub, psychometricianReportServiceStub
     beforeEach(() => {
-      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'findUnmarked')
+      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'sqlFindUnmarked')
       psychometricianReportServiceStub = sandbox.stub(psychometricianReportService, 'batchProduceCacheData')
       markingServiceStub = sandbox.stub(markingService, 'batchMark')
       service = proxyquire('../../services/completed-check-processing.service', {
         './data-access/completed-check.data.service': completedCheckDataService,
         './marking.service': markingService
       })
-      sandbox.stub(console, 'log')
+      sandbox.stub(winston, 'info')
     })
 
     it('bails out early if the array is empty', async (done) => {
@@ -57,30 +58,23 @@ describe('completedCheckProcessingService', () => {
   })
 
   describe('#process', () => {
-    let completedCheckDataServiceStub, serviceMarkStub
-    beforeEach(() => {
-      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'hasUnmarked')
-      sandbox.stub(markingService)
-      service = proxyquire('../../services/completed-check-processing.service', {
-        './data-access/completed-check.data.service': completedCheckDataService,
-        './marking.service': markingService
-      })
-      serviceMarkStub = sandbox.stub(service, 'markAndProcess')
-      sandbox.stub(console, 'log')
-    })
-
+    const service = require('../../services/completed-check-processing.service')
     it('initially find out if there is any work to do', async (done) => {
-      completedCheckDataServiceStub.resolves(false)
+      spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValue(false)
+      spyOn(service, 'markAndProcess').and.returnValue(true)
       await service.process()
-      expect(completedCheckDataServiceStub.called).toBeTruthy()
+      expect(completedCheckDataService.sqlHasUnmarked).toHaveBeenCalled()
+      expect(service.markAndProcess).not.toHaveBeenCalled()
       done()
     })
 
     it('calls markAndProcess to handle any work', async (done) => {
-      completedCheckDataServiceStub.onCall(0).resolves(true).onCall(1).resolves(false)
+      spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValues(true, false)
+      spyOn(service, 'markAndProcess').and.returnValue(true)
+
       await service.process()
-      expect(completedCheckDataServiceStub.callCount).toBe(2)
-      expect(serviceMarkStub.callCount).toBe(1)
+      expect(completedCheckDataService.sqlHasUnmarked).toHaveBeenCalled()
+      expect(service.markAndProcess).toHaveBeenCalledTimes(1)
       done()
     })
   })

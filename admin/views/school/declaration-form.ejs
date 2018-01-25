@@ -1,8 +1,8 @@
 <div class="grid-row">
-    <div class="column-one-half">
+    <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
-    <div class="column-one-half">
+    <div class="column-one-third">
         <%- partial('partials/_name_and_sign_out') %>
     </div>
 </div>
@@ -10,7 +10,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <% if (error.hasError()) { %>
-        <div class="heading-medium error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="0">
+        <div class="heading-medium error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
                 Check the details in the headteacher’s declaration form
             </h2>
@@ -25,11 +25,11 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge" tabindex="0">Headteacher’s declaration form</h1>
+        <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
 
         <form method="post" action="/school/submit-declaration-form" autocomplete="off">
-            <div  id="declaration" class="form-group <%= error.isError('declaration') ? 'form-group-error' : '' %>">
-                <fieldset tabindex="0" role="radiogroup" aria-label="Choose an option.">
+            <div id="declaration" <%= error.isError('declaration') ? 'class="form-group-error"' : '' %>>
+                <fieldset role="radiogroup" aria-label="Choose an option.">
                     <legend>
                         <% if (error.isError('declaration')) { %>
                         <span class="error-message"><%= error.get('declaration') %></span>
@@ -47,7 +47,7 @@
                                 <% } %>
                         />
                         <label for="confirm" class="font-medium">I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance, and in particular:</label>
-                        <br style="clear: both;">
+                        <br />
 
                         <ul class="list list-bullet list-nested">
                             <li>attendance register details are correct</li>
@@ -73,16 +73,16 @@
                 </fieldset>
             </div>
 
-            <br style="clear: both"/>
+            <br />
 
             <div class="panel panel-border-wide">
-                <p tabindex="0" role="note">
+                <p role="note">
                     In the absence of the headteacher, a delegated senior member of staff should submit this
                     declaration.
                 </p>
             </div>
 
-            <br style="clear: both"/>
+            <br />
 
             <div class="form-group <%= error.isError('jobTitle') ? 'form-group-error' : '' %>">
                 <label class="form-label" for="jobTitle"><strong>Job title</strong>

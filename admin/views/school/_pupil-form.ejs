@@ -2,7 +2,7 @@
 let now = new Date();
 let currentYear = now.getFullYear();
 let createOrSave;
-if (formData._id) {
+if (formData.urlSlug) {
     createOrSave = '/school/pupil/edit';
 } else {
     createOrSave = '/school/pupil/add';
@@ -11,9 +11,8 @@ if (formData._id) {
 
 
 <form action="<%= createOrSave %>" method="post" novalidate>
-    <input type="hidden" name="school" value="<%= school._id %>"/>
-    <% if (formData._id) { %>
-    <input type="hidden" name="_id" value="<%= formData._id %>">
+    <% if (formData.urlSlug) { %>
+    <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
     <% } %>
 
     <div class="form-group <%= err.isError('foreName') ? 'form-group-error' : '' %>">
@@ -88,7 +87,7 @@ if (formData._id) {
 
     <div class="form-group <%= err.isError('dob-day') || err.isError('dob-month') || err.isError('dob-year') ? 'form-group-error' : '' %>"
          id="dob">
-        <fieldset tabindex="0" aria-labelledby="date-of-birth">
+        <fieldset aria-labelledby="date-of-birth">
             <legend>
                 <span class="form-label-bold" id="date-of-birth">Date of birth</span>
                 <span class="form-hint">For example, 30 6 2005</span>
@@ -137,7 +136,7 @@ if (formData._id) {
     </div>
 
     <div class="form-group <%= err.isError('gender') ? 'form-group-error' : '' %>" id="gender">
-        <fieldset tabindex="0" role="radiogroup">
+        <fieldset  role="radiogroup">
             <legend class="form-label-bold">Gender
                 <% if (err.isError('gender')) { %>
                 <span class="error-message"><%= err.get('gender') %></span>
