@@ -1,1 +1,1 @@
-ALTER TABLE mtc.mtc_admin.[user] ALTER COLUMN school_id INT
+ALTER TABLE mtc_admin.[user] ALTER COLUMN school_id INT
