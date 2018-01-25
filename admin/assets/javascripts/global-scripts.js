@@ -378,6 +378,9 @@ $(function () {
     }
   }
 
+  /**
+   * Filtering pupils by group.
+   */
   if ($('#filterByGroup').length > 0) {
     var groupIds = []
     $('#filterByGroup input:checkbox').on('click', function (e) {
@@ -399,6 +402,7 @@ $(function () {
       groupIds.map(function (gId) {
         $(sel + '#group-id-' + gId).removeClass('hidden')
       })
+      $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
     }
   }
 })

@@ -74,27 +74,27 @@
             <h2 class="padding-top">2. Select pupil(s)</h2>
             <br />
 
-            <div class="visibility-header">
-                <div>Filter by name</div>
-                <div class="visibility-content">
-                    <% if (groups && groups.length > 0) { %>
-                    <ul id="filterByGroup">
+            <div class="filters-header">
+                <div class="filter-label">Filter by name</div>
+            </div>
+            <div class="filters-content">
+                <% if (groups && groups.length > 0) { %>
+                <ul id="filterByGroup">
                     <% groups.forEach((group) => { %>
-                        <li>
-                            <input id="group-<%= group.id %>"
-                                   class="pupils-not-taking-the-check"
-                                   name="group"
-                                   type="checkbox"
-                                   value="<%= group.id %>"
-                                   aria-label="Tick group <%= group.name %>."
-                                   aria-checked="false"
-                                   role="checkbox">
-                            <label for="group-<%= group.id %>"><%= group.name %></label>
-                        </li>
+                    <li>
+                        <input id="group-<%= group.id %>"
+                               class="pupils-not-taking-the-check"
+                               name="group"
+                               type="checkbox"
+                               value="<%= group.id %>"
+                               aria-label="Tick group <%= group.name %>."
+                               aria-checked="false"
+                               role="checkbox">
+                        <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
+                    </li>
                     <% }) %>
-                    </ul>
-                    <% } %>
-                </div>
+                </ul>
+                <% } %>
             </div>
 
             <% if (pupilsList && pupilsList.length > 0) { %>

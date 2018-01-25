@@ -1,0 +1,21 @@
+// Filters
+
+.filters-header {
+  background-color: $panel-colour;
+  padding: pem(15);
+}
+
+.filter-label {
+  font-weight: bold;
+}
+
+.filters-content {
+  background-color: $panel-colour;
+  padding: pem(15);
+}
+
+#filterByGroup {
+  background-color: white;
+  padding: 10px;
+  margin: 0;
+}
