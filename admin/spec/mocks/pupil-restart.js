@@ -8,5 +8,5 @@ module.exports = {
   'pupilRestartReason_id': '4',
   'didNotCompleteInformation': 'The reason',
   'furtherInformation': 'Further reason',
-  'isDeleted': false
+  'isDeleted': 0
 }
