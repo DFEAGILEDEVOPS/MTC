@@ -241,7 +241,7 @@ checkDataService.sqlCreate = async function (check) {
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
-  let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
     AND startedAt IS NULL ORDER BY createdAt DESC`
 
   const params = [
@@ -261,7 +261,7 @@ checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
-  let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
     AND startedAt IS NOT NULL ORDER BY startedAt DESC`
 
   const params = [
