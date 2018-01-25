@@ -2,11 +2,32 @@
 
 .filter-header {
   background-color: $panel-colour;
-  padding: pem(8) pem(10) pem(4) pem(10)
+  padding: pem(8) pem(10) pem(4) pem(10);
+  cursor: pointer;
 }
 
 .filter-label {
+  display: block;
   font-weight: bold;
+  position: relative;
+
+  &:after {
+    color: $grey-1;
+    content: "^";
+    font-weight: normal;
+    font-size: pem(25px);
+    position: absolute;
+    right: pem(3px);
+    top: pem(-9px);
+    transform: rotate(-180deg) scale(1.5,1);
+  }
+}
+
+.filter-label.active {
+  &:after {
+    transform: scale(1.5,1);
+    top: 0;
+  }
 }
 
 .filter-content {

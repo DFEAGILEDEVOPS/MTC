@@ -353,7 +353,6 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   try {
     attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
     pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(req.user.School, sortField, sortDirection)
-    console.log('PUPILS', pupils)
   } catch (error) {
     return next(error)
   }
