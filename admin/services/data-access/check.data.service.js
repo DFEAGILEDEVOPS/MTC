@@ -236,12 +236,32 @@ checkDataService.sqlCreate = async function (check) {
 }
 
 /**
- * Find the latest check for pupil
+ * Find the latest check for pupil that is flagged as not started
+ * @param pupilId - the pupil taking the check
+ * @return {Promise.<void>} - lean Check objects
+ */
+checkDataService.sqlFindLastCheckByPupilId = async function (pupilId) {
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+    AND startedAt IS NULL ORDER BY createdAt DESC`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
+/**
+ * Find the latest started check for pupil
  * @param pupilId - the pupil taking the check
  * @return {Promise.<void>} - lean Check objects
  */
 checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
-  let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
+  const sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[check] WHERE pupil_id = @pupilId
     AND startedAt IS NOT NULL ORDER BY startedAt DESC`
 
   const params = [

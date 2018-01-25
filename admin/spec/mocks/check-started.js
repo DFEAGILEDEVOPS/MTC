@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  '_id': '59cd18c0a93d2271e2de6337',
+  'id': '59cd18c0a93d2271e2de6337',
   'updatedAt': '2017-09-28T15:44:00.550Z',
   'createdAt': '2017-09-28T15:44:00.550Z',
   'pupilId': '59cd18a731cb2f71e0bcc64f',
@@ -9,5 +9,5 @@ module.exports = {
   'checkWindowId': '59cd18a631cb2f71e0bcc561',
   'checkFormId': 100,
   'pupilLoginDate': '2017-09-28T15:44:00.548Z',
-  'checkStartedAt': '2017-12-07T08:35:28.324Z'
+  'startedAt': '2017-12-07T08:35:28.324Z'
 }
