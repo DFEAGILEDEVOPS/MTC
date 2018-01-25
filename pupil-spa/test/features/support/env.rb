@@ -10,6 +10,7 @@ require 'capybara/poltergeist'
 require 'numbers_in_words'
 require 'mongo'
 require 'waitutil'
+require 'tiny_tds'
 require 'show_me_the_cookies'
 require_relative '../../../test/features/support/browserstack_driver_helper'
 
@@ -56,6 +57,27 @@ if ENV['MONGO_CONNECTION_STRING']
 else
   CLIENT = Mongo::Client.new('mongodb://localhost/mtc')
 end
+
+database = ENV['SQL_DATABASE'] || 'mtc'
+server = ENV['SQL_SERVER'] || 'localhost'
+port =  ENV['SQL_PORT'] || 1433
+admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
+admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
+
+
+SQL_CLIENT = TinyTds::Client.new(username: admin_user,
+                                 password: admin_password,
+                                 host: server,
+                                 port: port,
+                                 database: database)
+SQL_CLIENT.execute('SET ANSI_NULLS ON').do
+SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
+SQL_CLIENT.execute('SET ANSI_NULL_DFLT_ON ON').do
+SQL_CLIENT.execute('SET IMPLICIT_TRANSACTIONS OFF').do
+SQL_CLIENT.execute('SET ANSI_PADDING ON').do
+SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
+SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
+SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
 Capybara.visit Capybara.app_host
 AUTH='5'
