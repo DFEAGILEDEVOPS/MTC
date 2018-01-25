@@ -144,8 +144,8 @@ class SqlDbHelper
     check_window_result
   end
 
-  def update_check_windows(id, column_name, endDate)
-    sql = "UPDATE [mtc_admin].[checkWindow] set #{column_name}='#{endDate}' WHERE id='#{id}'"
+  def self.update_check_window(id, column_name, new_date)
+    sql = "UPDATE [mtc_admin].[checkWindow] set #{column_name}='#{new_date}' WHERE id='#{id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
