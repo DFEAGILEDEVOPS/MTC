@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail xit */
+/* global describe beforeAll it expect fail xit beforeEach afterEach */
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
@@ -212,6 +212,47 @@ describe('sql.service:integration', () => {
       const school2 = await sql.findOneById('[school]', 1)
       expect(school2.pin).toBe(pin)
       expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
+    })
+  })
+
+  describe('data type handling', () => {
+    const table = '[integrationTest]'
+
+    it('allows a decimal type to be set manually', async () => {
+      const value = 3.14
+      const params = [{
+        name: 'tDecimal',
+        value: value,
+        type: TYPES.Decimal,
+        precision: 5,
+        scale: 2
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tDecimal) 
+         VALUES (@tDecimal);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tDecimal).toEqual(value)
+    })
+
+    it('allows a decimal type to be set automatically on create', async () => {
+      const data = { tDecimal: 6.02 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tDecimal).toEqual(data.tDecimal)
+    })
+
+    it('allows a decimal type to be set automatically on update', async () => {
+      const data = { tDecimal: 6.99 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tDecimal: 7.01 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tDecimal).toEqual(7.01)
     })
   })
 })
