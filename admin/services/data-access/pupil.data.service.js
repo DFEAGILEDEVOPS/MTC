@@ -426,7 +426,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   if (sortField === 'name') {
     sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
   } else if (sortField === 'reason') {
-    sqlSort = `ac.reason ${sortDirection}`
+    sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
   }
   const params = [
     { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
@@ -439,7 +439,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
     LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
   WHERE s.dfeNumber = @dfeNumber
-  ORDER BY CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ${sqlSort}
+  ORDER BY ${sqlSort}
   `
   return sqlService.query(sql, params)
 }
