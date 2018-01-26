@@ -1,12 +1,14 @@
 'use strict'
-/* global describe beforeAll it expect fail xit beforeEach afterEach */
+/* global describe beforeAll it expect fail xit spyOn */
+
+const moment = require('moment')
+const R = require('ramda')
+const TYPES = require('tedious').TYPES
+const winston = require('winston')
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
-const TYPES = require('tedious').TYPES
-const moment = require('moment')
-const R = require('ramda')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
@@ -353,11 +355,16 @@ describe('sql.service:integration', () => {
       expect(t.tNvarchar).toBe(data.tNvarchar)
     })
 
-    it('truncates an nvarchar set automatically on create', async () => {
+    it('raises an error on CREATE when the nvarchar provided is too long', async () => {
       const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
-      const res = await sql.create(table, data)
-      const t = await sql.findOneById(table, res.insertId)
-      expect(t.tNvarchar).toBe('the quick ')
+      // This will generate a warning because of the error, we can shut that up for this test
+      spyOn(winston, 'warn')
+      try {
+        await sql.create(table, data)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('String or binary data would be truncated.') // vendor message
+      }
     })
   })
 })
