@@ -51,47 +51,6 @@ pupilDataService.getSortedPupils = async (schoolId, sortingField, sortingDirecti
 }
 
 /**
- * Find all pupils for a dfeNumber and provide the reason field: null if not present
- * @param {number} dfeNumber
- * @param {string} sortField
- * @param {string} sortDirection
- * @return {Promise<*>}
- */
-pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, sortField = 'name', sortDirection = 'ASC') => {
-  const safeSort = sortDirection.toUpperCase()
-  if (safeSort !== 'ASC' && safeSort !== 'DESC') {
-    throw new Error(`Invalid sortDirection: ${safeSort}`)
-  }
-
-  // Whitelist the sortFields so we can be sure of the SQL we are generating.
-  const allowedSortFields = ['name', 'reason']
-  if (R.indexOf(sortField, allowedSortFields) === -1) {
-    throw new Error(`Unsupported value for sortField: ${sortField}`)
-  }
-  let sqlSort
-  if (sortField === 'name') {
-    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
-  } else if (sortField === 'reason') {
-    sqlSort = `ac.reason ${sortDirection}`
-  }
-  const params = [
-    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
-  ]
-  // The order by clause is to sort nulls last
-  const sql = `
-    SELECT p.*, pg.group_id, ac.reason
-    FROM ${sqlService.adminSchema}.${table} p 
-      INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
-    WHERE s.dfeNumber = @dfeNumber
-    ORDER BY CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ${sqlSort}
-    `
-  return sqlService.query(sql, params)
-}
-
-/**
  * Insert a list of pupils in the db
  * @deprecated use sqlInsertMany instead
  * @param pupils
@@ -239,11 +198,6 @@ pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
   return R.head(results)
 }
 
-/**
- * @param urlSlug
- * @param dfeNumber
- * @returns {Promise<void>}
- */
 pupilDataService.sqlFindOneBySlugAndSchool = async function (urlSlug, dfeNumber) {
   const paramSlug = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
@@ -448,6 +402,47 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
   })
   const sql = update.join(';\n')
   return sqlService.modify(sql, params)
+}
+
+/**
+ * Find all pupils for a dfeNumber and provide the reason field: null if not present
+ * @param {number} dfeNumber
+ * @param {string} sortField
+ * @param {string} sortDirection
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, sortField = 'name', sortDirection = 'ASC') => {
+  const safeSort = sortDirection.toUpperCase()
+  if (safeSort !== 'ASC' && safeSort !== 'DESC') {
+    throw new Error(`Invalid sortDirection: ${safeSort}`)
+  }
+
+  // Whitelist the sortFields so we can be sure of the SQL we are generating.
+  const allowedSortFields = ['name', 'reason']
+  if (R.indexOf(sortField, allowedSortFields) === -1) {
+    throw new Error(`Unsupported value for sortField: ${sortField}`)
+  }
+  let sqlSort
+  if (sortField === 'name') {
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
+  } else if (sortField === 'reason') {
+    sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
+  }
+  const params = [
+    { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
+  ]
+  // The order by clause is to sort nulls last
+  const sql = `
+  SELECT p.*, pg.group_id, ac.reason
+  FROM ${sqlService.adminSchema}.${table} p 
+    INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
+    LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
+  WHERE s.dfeNumber = @dfeNumber
+  ORDER BY ${sqlSort}
+  `
+  return sqlService.query(sql, params)
 }
 
 pupilDataService.sqlInsertMany = async (pupils) => {
