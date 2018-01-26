@@ -1,1 +1,1 @@
-sqlcmd -S $(SQL_SERVER) -U $(SQL_USER) -P $(SQL_PASSWORD) -d $1 -i purge-pins.sql -I
+sqlcmd -S $1 -U $2 -P $3 -d $4 -i purge-pins.sql -I
