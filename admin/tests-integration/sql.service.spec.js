@@ -291,5 +291,73 @@ describe('sql.service:integration', () => {
       const t2 = await sql.findOneById(table, t.id)
       expect(t2.tNumeric).toEqual(2.381)
     })
+
+    it('allows a float type to be set manually', async () => {
+      const value = 9.80665
+      const params = [{
+        name: 'tFloat',
+        value: value,
+        type: TYPES.Float
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tFloat) 
+         VALUES (@tFloat);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tFloat).toBeCloseTo(value, 5)
+    })
+
+    it('allows a float type to be set automatically on create', async () => {
+      const data = { tFloat: 9.80665 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tFloat).toBeCloseTo(data.tFloat, 5)
+    })
+
+    it('allows a float type to be set automatically on update', async () => {
+      const data = { tFloat: 9.80665 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tFloat: 10.12345 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tFloat).toBeCloseTo(10.12345, 5)
+    })
+
+    it('allows a nvarchar to set manually', async () => {
+      const value = 'the quick' // 9 chars, col length is 10
+      const params = [{
+        name: 'tNvarchar',
+        value: value,
+        type: TYPES.NVarChar
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tNvarchar) 
+         VALUES (@tNvarchar);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tNvarchar).toBe('the quick')
+    })
+
+    it('allows a nvarchar to be set automatically on create', async () => {
+      const data = { tNvarchar: 'brown fox' } // 9 chars col length is 10
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tNvarchar).toBe(data.tNvarchar)
+    })
+
+    it('truncates an nvarchar set automatically on create', async () => {
+      const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tNvarchar).toBe('the quick ')
+    })
   })
 })

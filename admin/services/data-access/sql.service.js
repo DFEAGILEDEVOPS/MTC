@@ -228,7 +228,7 @@ sqlService.modify = (sql, params) => {
     const con = await sqlPoolService.getConnection()
     const response = {}
     const output = []
-    var request = new Request(sql, function (err, rowCount) {
+    const request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
         return reject(err)
@@ -253,11 +253,14 @@ sqlService.modify = (sql, params) => {
           options.precision = param.precision || 28
           options.scale = param.scale || 5
         }
+        const opts = param.options ? param.options : options
+        winston.debug('sql.service: modify(): opts to addParameter are: ', opts)
+
         request.addParameter(
           param.name,
           param.type,
           param.value,
-          param.options ? param.options : options
+          opts
         )
       }
     }
