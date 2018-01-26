@@ -171,10 +171,10 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirec
       sortBy = 'lastName'
   }
   const sql = `
-      SELECT 
-        p.*    
+      SELECT p.*, g.group_id 
       FROM ${sqlService.adminSchema}.${table} p 
       INNER JOIN school s ON s.id = p.school_id
+      LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
       WHERE s.dfeNumber = @dfeNumber
       ORDER BY ${sortBy} ${sortDirection}      
     `

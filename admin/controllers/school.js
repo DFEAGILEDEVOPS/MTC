@@ -5,6 +5,7 @@ const moment = require('moment')
 const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
 const attendanceService = require('../services/attendance.service')
 const dateService = require('../services/date.service')
+const groupService = require('../services/group.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -44,14 +45,22 @@ const getPupils = async (req, res, next) => {
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
   let pupilsFormatted
+  let groupsIndex = []
+
+  try {
+    const groups = await groupService.getGroups(req.user.schoolId)
+    groups.map((obj) => { groupsIndex[obj.id] = obj.name })
+  } catch (error) {
+    next(error)
+  }
+
   try {
     const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
       const { foreName, lastName } = p
       const dob = dateService.formatShortGdsDate(p.dateOfBirth)
       const outcome = await pupilStatusService.getStatus(p)
-      // TODO: Fetch pupil's group when it's implemented
-      const group = 'N/A'
+      const group = groupsIndex[p.group_id] || '-'
       return {
         urlSlug: p.urlSlug,
         foreName,
@@ -64,6 +73,7 @@ const getPupils = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+
   pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
   pupilsFormatted.map((p, i) => {
     if (pupilsFormatted[ i + 1 ] === undefined) return
@@ -73,12 +83,14 @@ const getPupils = async (req, res, next) => {
       pupilsFormatted[ i + 1 ].showDoB = true
     }
   })
+
   req.breadcrumbs(res.locals.pageTitle)
   let { hl } = req.query
   if (hl) {
     hl = JSON.parse(hl)
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
+
   res.render('school/pupil-register', {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
