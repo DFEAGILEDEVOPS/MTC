@@ -196,13 +196,13 @@ const editGroup = async (req, res, next) => {
   }
 
   try {
-    group = await groupService.update(req.body.groupId, group, req.user.schoolId)
+    await groupService.update(req.body.groupId, group, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
 
   req.flash('info', `Changes made to '${req.body.name}'`)
-  req.flash('groupId', group.id)
+  req.flash('groupId', encodeURIComponent(req.body.groupId))
   return res.redirect('/school/group-pupils')
 }
 
