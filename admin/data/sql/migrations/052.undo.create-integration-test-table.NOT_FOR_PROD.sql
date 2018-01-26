@@ -1,1 +1,1 @@
-DROP TABLE [mtc].[mtc_admin].[integrationTest];
+DROP TABLE [mtc_admin].[integrationTest];
