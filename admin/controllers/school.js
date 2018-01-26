@@ -431,7 +431,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
 
     // Update the flash message for the user on the next screen
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
-    req.flash('info', `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`)
+    req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
 
     // Send the information required for highlighting
     const highlight = JSON.stringify(pupilSlug)
