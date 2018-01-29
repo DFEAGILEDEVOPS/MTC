@@ -14,7 +14,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   /**
    * Do not show 'practice' label on top left.
    */
-  public isWarmUpQuestion: boolean;
+  public isWarmUpQuestion = false;
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -25,7 +25,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-    this.isWarmUpQuestion = false;
   }
 
   /**
