@@ -25,9 +25,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
-  }
-
-  ngAfterViewInit() {
     this.isWarmUpQuestion = false;
   }
 

@@ -77,6 +77,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+    this.isWarmUpQuestion = true;
   }
 
   /**
@@ -86,7 +87,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.auditService.addEntry(new QuestionRendered());
     // Start the countdown and page timeout timers
     this.startTimer();
-    this.isWarmUpQuestion = true;
   }
 
   /**
