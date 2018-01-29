@@ -3,6 +3,7 @@ const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
+const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
@@ -39,7 +40,7 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
       return {
         id: p.id,
         pin: p.pin,
-        dob: dateService.formatShortGdsDate(p.dateOfBirth),
+        dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth),
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames
@@ -60,9 +61,11 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
  */
 pinGenerationService.isValid = async (p) => {
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
+  const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(p.id)
+  const hasAttendance = pupilAttendance && pupilAttendance.attendanceCode_id
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
-  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !p.attendanceCode && !canRestart
+  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !hasAttendance && !canRestart
 }
 
 /**
