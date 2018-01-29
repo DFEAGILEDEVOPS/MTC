@@ -11,11 +11,24 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 })
 export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
+  /**
+   * Do not show 'practice' label on top left.
+   */
+  public isWarmUpQuestion: boolean;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected registerInputService: RegisterInputService) {
     super(auditService, windowRefService);
     this.window = windowRefService.nativeWindow;
+  }
+
+  ngOnInit() {
+    this.remainingTime = this.questionTimeoutSecs;
+  }
+
+  ngAfterViewInit() {
+    this.isWarmUpQuestion = false;
   }
 
   /**
