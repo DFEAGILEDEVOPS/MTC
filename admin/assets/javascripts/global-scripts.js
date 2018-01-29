@@ -19,7 +19,7 @@ $(function () {
           validationStatus = validation()
         }
 
-        $(sel + ' > tbody div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+        $(sel + ' tbody > tr:not(.hidden) div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
         if (selectAll) {
           if ($(this).is(':checked') === true) {
