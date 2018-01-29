@@ -178,17 +178,6 @@ describe('sql.service:integration', () => {
     expect(typeof row).toBe('object')
   })
 
-  xit('#findOneByPupilId should retrieve a row', async () => {
-    const row = await sql.findOneByPupilId('[restart]', 3)
-    expect(row).toBeDefined()
-    expect(row['pupil_id']).toBe(3)
-  })
-
-  xit('#findOneByPupilId should prevent sql injection', async () => {
-    const row = await sql.findOneByPupilId('[restart]', '3 OR 1=1')
-    expect(typeof row).toBe('object')
-  })
-
   describe('#create', () => {
     it('should insert a new row and provide the new insert id', async () => {
       const user = {
