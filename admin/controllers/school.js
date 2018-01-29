@@ -50,11 +50,6 @@ const getPupils = async (req, res, next) => {
 
   try {
     groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
-  } catch (error) {
-    next(error)
-  }
-
-  try {
     const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
       const { foreName, lastName } = p
