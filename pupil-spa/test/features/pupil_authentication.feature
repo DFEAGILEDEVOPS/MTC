@@ -12,7 +12,7 @@ Feature:
     Then I should be taken to the sign in failure page
 
   @window_date_time_reset
-  Scenario: Pupils can only login if they are assigned to a open check window
+  Scenario: Pupils cannot login if they are assigned to a check window with start date in future
     Given I attempt to login whilst the check window is not open as the start date is in the future
     Then I should be taken to the sign in failure page
 

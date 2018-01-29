@@ -17,8 +17,11 @@ end
 Given(/^I have logged in$/) do
   sign_in_page.load
   sign_in_page.load
-  SqlDbHelper.expire_pin("Automated","Account",1,false)
-  SqlDbHelper.reset_pin("Automated","Account",1,"9999")
+  ct = Time.now
+  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+
+  SqlDbHelper.expire_pin("Standard","Pupil",1,false)
+  SqlDbHelper.reset_pin("Standard","Pupil",1, new_time, "9999")
   @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
   sign_in_page.login("abc12345","9999")
   sign_in_page.sign_in_button.click

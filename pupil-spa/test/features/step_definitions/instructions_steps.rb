@@ -13,7 +13,6 @@ end
 Then(/^I should see the timings between questions$/) do
   array_of_instructions = start_page.bulleted_list_instructions.map{|instruction| instruction.text}
   timings = JSON.parse page.evaluate_script('window.localStorage.getItem("config");')
+  expect(array_of_instructions).to include "There will be 10 questions."
   expect(array_of_instructions).to include "Each question will show for #{timings['questionTime']} seconds."
-  expect(array_of_instructions).to include "There will be a #{timings['loadingTime']} second pause between each question."
-  expect(array_of_instructions).to include "After #{timings['questionTime']} seconds, the number in the answer box will be accepted, even if you haven't pressed ‘Enter’."
 end
