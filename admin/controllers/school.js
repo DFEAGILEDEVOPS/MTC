@@ -44,12 +44,12 @@ const getPupils = async (req, res, next) => {
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
+
   let pupilsFormatted
   let groupsIndex = []
 
   try {
-    const groups = await groupService.getGroups(req.user.schoolId)
-    groups.map((obj) => { groupsIndex[obj.id] = obj.name })
+    groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
   } catch (error) {
     next(error)
   }

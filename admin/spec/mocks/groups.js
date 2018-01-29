@@ -16,7 +16,7 @@ module.exports = [
   },
   {
     _id: 4,
-    name: 'Test Group 3',
+    name: 'Test Group 4',
     isDeleted: false
   }
 ]
