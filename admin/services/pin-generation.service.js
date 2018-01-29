@@ -39,7 +39,7 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
       return {
         id: p.id,
         pin: p.pin,
-        dob: dateService.formatShortGdsDate(p.dateOfBirth),
+        dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth),
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames
