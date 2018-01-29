@@ -23,7 +23,7 @@ pupilStatusService.getStatus = async (pupil) => {
   }
 
   // Pupil not taking the check
-  const pupilAttendance = await pupilAttendanceDataService.findByPupilId(pupil.id)
+  const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(pupil.id)
   if (pupilAttendance && pupilAttendance.attendanceCode_id) return getStatusDescription('NTC')
   // Pupil has an ongoing restart
   const latestPupilRestart = await pupilRestartDataService.sqlFindLatestRestart(pupil.id)

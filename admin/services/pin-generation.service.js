@@ -61,7 +61,7 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
  */
 pinGenerationService.isValid = async (p) => {
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
-  const pupilAttendance = await pupilAttendanceDataService.findByPupilId(p.id)
+  const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(p.id)
   const hasAttendance = pupilAttendance && pupilAttendance.attendanceCode_id
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)

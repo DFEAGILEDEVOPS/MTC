@@ -283,6 +283,23 @@ sqlService.findOneById = async (table, id) => {
 }
 
 /**
+ * Find a row by numeric pupil ID
+ * @param {string} table
+ * @param {number} pupilId
+ * @return {Promise<void>}
+ */
+sqlService.findOneByPupilId = async (table, pupilId) => {
+  const paramId = { name: 'pupilId', type: TYPES.Int, value: pupilId }
+  const sql = `
+      SELECT *    
+      FROM ${sqlService.adminSchema}.${table}
+      WHERE pupil_id = @pupilId
+    `
+  const rows = await sqlService.query(sql, [paramId])
+  return R.head(rows)
+}
+
+/**
  * Return the Tedious datatype object required for a particular table and column
  * It's okay if the table name has square brackets around it like '[pupil]'
  * @param {string} table
