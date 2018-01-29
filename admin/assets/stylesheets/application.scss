@@ -48,6 +48,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/_printing';
 @import 'elements/_top_navigation';
 @import 'elements/_electron';
+@import 'elements/_filters';
 @import 'elements/_flash-messages';
 @import 'elements/_boxes';
 @import 'elements/_check-forms';
@@ -178,6 +179,7 @@ hr.divider {
 
 .hidden {
   display: none;
+  visibility: hidden;
 }
 
 .hidden-and-readable {

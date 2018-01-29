@@ -13,6 +13,7 @@ const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const groupService = require('../services/group.service')
 const ValidationError = require('../lib/validation-error')
 const { sortRecords } = require('../utils')
 
@@ -338,6 +339,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   let attendanceCodes
   let pupils
+  let groups = []
 
   // Sorting
   const sortingOptions = [
@@ -355,6 +357,12 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     return next(error)
   }
 
+  try {
+    groups = await groupService.getGroups(req.user.schoolId)
+  } catch (error) {
+    return next(error)
+  }
+
   return res.render('school/select-pupils-not-taking-check', {
     breadcrumbs: req.breadcrumbs(),
     sortField,
@@ -363,7 +371,8 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     pupilsList: pupils,
     htmlSortDirection,
     arrowSortDirection,
-    highlight: []
+    highlight: [],
+    groups
   })
 }
 
@@ -431,7 +440,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
 
     // Update the flash message for the user on the next screen
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
-    req.flash('info', `Reason removed for pupil ${pupil.lastName}, ${pupil.foreName}`)
+    req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
 
     // Send the information required for highlighting
     const highlight = JSON.stringify(pupilSlug)
