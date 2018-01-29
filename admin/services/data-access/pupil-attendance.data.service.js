@@ -70,5 +70,27 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
+/**
+ * Returns pupil attendance based on pupil id
+ * @param pupilId
+ * @return {Object}
+ */
+pupilAttendanceDataService.findByPupilId = async (pupilId) => {
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.${table}
+  `
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  const whereClause = 'WHERE pupil_id=@pupilId'
+  const sql = [select, whereClause].join(' ')
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
 
 module.exports = pupilAttendanceDataService

@@ -1,6 +1,7 @@
 const R = require('ramda')
 const moment = require('moment')
 const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
+const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
@@ -22,7 +23,8 @@ pupilStatusService.getStatus = async (pupil) => {
   }
 
   // Pupil not taking the check
-  if (pupil.attendanceCode) return getStatusDescription('NTC')
+  const pupilAttendance = await pupilAttendanceDataService.findByPupilId(pupil.id)
+  if (pupilAttendance && pupilAttendance.attendanceCode_id) return getStatusDescription('NTC')
   // Pupil has an ongoing restart
   const latestPupilRestart = await pupilRestartDataService.sqlFindLatestRestart(pupil.id)
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(pupil.id)

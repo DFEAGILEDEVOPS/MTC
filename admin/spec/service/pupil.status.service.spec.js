@@ -12,25 +12,30 @@ const pupilRestartMock = require('../mocks/pupil-restart')
 const startedCheckMock = require('../mocks/check-started')
 const completedCheckMock = require('../mocks/completed-check')
 const pupilStatusCodeDataService = require('../../services/data-access/pupil-status-code.data.service')
+const pupilAttendanceDataService = require('../../services/data-access/pupil-attendance.data.service')
 
 /* global describe, it, expect, spyOn */
 describe('pupil status service', () => {
   describe('getStatus', () => {
     it('returns not taking the Check if the pupil has got an attendance code', async () => {
       const pupil = Object.assign({}, pupilMock)
-      pupil.attendanceCode = {
+      const pupilAttendanceMock = {
         id: 'id',
-        dateRecorded: moment.utc(),
-        byUserName: 'test',
-        byUserEmail: 'test@email.com'
+        createdAt: moment.utc(),
+        updatedAt: moment.utc(),
+        recordedByUser_id: 1,
+        attendanceCode_id: 1,
+        pupil_id: 10
       }
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue(pupilAttendanceMock)
       const result = await pupilStatusService.getStatus(pupil)
       expect(result).toBe('Not taking the Check')
     })
     it('returns restart if pupil has an active restart and total started checks are equal to restarts', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
@@ -41,6 +46,7 @@ describe('pupil status service', () => {
     it('returns not started when pupil does not have an active pin and no check record', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(0)
@@ -52,6 +58,7 @@ describe('pupil status service', () => {
     it('returns pin generated when pupil has an active pin and no check record', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(0)
@@ -63,6 +70,7 @@ describe('pupil status service', () => {
     it('returns in progress when pupil has active pin but a check record with no check started timestamp', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(null)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(0)
@@ -75,6 +83,7 @@ describe('pupil status service', () => {
     it('returns check started when pupil does not have an active pin and a completed check record but a started check', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
       spyOn(checkDataService, 'sqlFindLastCheckByPupilId').and.returnValue(checkMock)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(null)
@@ -87,6 +96,7 @@ describe('pupil status service', () => {
     it('returns completed when a completed check that corresponds to the check code is found', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
       spyOn(checkDataService, 'sqlFindLastCheckByPupilId').and.returnValue(checkMock)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(null)
@@ -99,6 +109,7 @@ describe('pupil status service', () => {
     it('returns pin generated when new pin is generated after a restart', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
@@ -110,6 +121,7 @@ describe('pupil status service', () => {
     it('returns in progress when pupil logs-in after a restart', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(1)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
@@ -124,6 +136,7 @@ describe('pupil status service', () => {
     it('returns check started when pupil starts the check after a restart', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
@@ -138,6 +151,7 @@ describe('pupil status service', () => {
     it('returns completed when pupil completes the check after a restart', async () => {
       const pupil = Object.assign({}, pupilMock)
       spyOn(pupilStatusCodeDataService, 'sqlFindStatusCodes').and.returnValue(pupilStatusCodesMock)
+      spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue({})
       spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlFindLatestRestart').and.returnValue(pupilRestartMock)
       spyOn(pupilRestartDataService, 'sqlGetNumberOfRestartsByPupil').and.returnValue(1)
