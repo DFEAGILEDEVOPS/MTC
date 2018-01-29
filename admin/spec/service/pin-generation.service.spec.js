@@ -136,6 +136,27 @@ describe('pin-generation.service', () => {
         done()
       })
     })
+    describe('does not return pupils', () => {
+      it('who are flagged as not taking the check', async (done) => {
+        const pupil1 = Object.assign({}, pupilMock)
+        pupil1.pin = ''
+        const pupilAttendanceMock = {
+          id: 'id',
+          createdAt: moment.utc(),
+          updatedAt: moment.utc(),
+          recordedByUser_id: 1,
+          attendanceCode_id: 1,
+          pupil_id: 10
+        }
+        spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([pupil1])
+        spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
+        spyOn(restartService, 'canRestart').and.returnValue(false)
+        spyOn(pupilAttendanceDataService, 'findByPupilId').and.returnValue(pupilAttendanceMock)
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        expect(pupils.length).toBe(0)
+        done()
+      })
+    })
   })
 
   describe('updatePupilPins', () => {
