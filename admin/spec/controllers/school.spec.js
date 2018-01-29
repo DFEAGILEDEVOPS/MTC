@@ -12,10 +12,13 @@ const attendanceCodeDataService = require('../../services/data-access/attendance
 const attendanceCodesMock = require('../mocks/attendance-codes')
 const attendanceService = require('../../services/attendance.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
+const sortingAttributesService = require('../../services/sorting-attributes.service')
+const groupService = require('../../services/group.service')
 const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
-const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
+const groupsMock = require('../mocks/groups')
 
 describe('school controller:', () => {
   function getRes () {
@@ -69,33 +72,39 @@ describe('school controller:', () => {
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
+        spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(attendanceCodesMock)
         spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
         controller = require('../../controllers/school').getSelectPupilNotTakingCheck
       })
 
-      it('makes a call to get the attendance codes', async () => {
+      it('executes sortingAttributesService.getAttributes', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await controller(req, res, next)
+        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
+      })
+
+      it('executes attendanceCodeDataService.sqlFindAttendanceCodes', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(attendanceCodeDataService.sqlFindAttendanceCodes).toHaveBeenCalled()
       })
 
-      it('makes a call to get the pupils with reasons', async () => {
+      it('executes pupilDataService.sqlFindSortedPupilsWithAttendanceReasons', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(pupilDataService.sqlFindSortedPupilsWithAttendanceReasons).toHaveBeenCalled()
       })
 
-      it('should display reasons and pupils', async (done) => {
+      it('executes groupService.getGroups', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('Select pupil and reason')
-        expect(next).not.toHaveBeenCalled()
-        done()
+        expect(groupService.getGroups).toHaveBeenCalled()
       })
     })
 
@@ -128,8 +137,8 @@ describe('school controller:', () => {
 
     describe('#removePupilNotTakingCheck: Remove:  reason for pupil', () => {
       beforeEach(() => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(true)
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMock)
+        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
+        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
         controller = require('../../controllers/school').removePupilNotTakingCheck
       })
 
@@ -180,7 +189,7 @@ describe('school controller:', () => {
       })
 
       it('makes a call to get the pupils', async () => {
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
         const res = getRes()
         const req = getReq(
           {
