@@ -3,6 +3,7 @@
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
 const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
+const ncaToolsService = require('../services/nca-tools.service')
 
 /**
  * Decrypt and authenticate a data packet
@@ -168,29 +169,13 @@ function parseMessage (plaintext) {
 
   // Map the NCA Tools UserType to our own roles
   if (data.UserType) {
-    data.role = mapRole(data.UserType)
+    data.role = ncaToolsService.mapNcaRoleToMtcRole(data.UserType)
   }
 
   // Record the logon
   data.logonAt = Date.now()
 
   return data
-}
-
-function mapRole (ncaUserType) {
-  const mapping = {
-    SuperAdmin: 'ADMINISTRATOR',
-    SuperUser: 'HEADTEACHER',
-    SchoolSup: 'TEACHER',
-    SchoolNom: 'TEACHER',
-    Admin: 'HELPDESK'
-  }
-
-  if (mapping[ncaUserType]) {
-    return mapping[ncaUserType]
-  }
-
-  return 'TEACHER'
 }
 
 module.exports = authenticate

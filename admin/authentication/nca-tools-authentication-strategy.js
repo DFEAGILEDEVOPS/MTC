@@ -1,6 +1,8 @@
 'use strict'
 const ncaToolsAuthService = require('../lib/nca-tools-auth-service')
-const AdminLogonEvent = require('../models/admin-logon-event')
+const userDataService = require('../services/data-access/user.data.service')
+const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
+const ncaToolsService = require('../services/nca-tools.service')
 const config = require('../config')
 
 module.exports = async function (req, done) {
@@ -29,28 +31,40 @@ module.exports = async function (req, done) {
   /**
    * Store the logon attempt
    */
-  const logonEvent = new AdminLogonEvent({
+  const logonEvent = {
     sessionId: req.session.id,
     body: JSON.stringify(req.body),
     remoteIp: (req.headers['x-forwarded-for'] || req.connection.remoteAddress),
     userAgent: req.headers['user-agent'],
     loginMethod: 'nca-tools'
-  })
+  }
 
   try {
     const senderPublicKey = config.TSO_AUTH_PUBLIC_KEY
     const recipientPrivateKey = config.MTC_AUTH_PRIVATE_KEY
     const userData = await ncaToolsAuthService(encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey)
 
+    let userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
+    if (!userRecord) {
+      const user = {
+        identifier: userData.UserName,
+        school_id: userData.school,
+        role_id: ncaToolsService.mapNcaRoleToMtcRole(userData.UserType)
+      }
+      await userDataService.sqlCreate(user)
+      userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
+      if (!userRecord) {
+        throw new Error('unable to create user record')
+      }
+    }
+
     // auth success
+    logonEvent.user_id = userRecord.id
     logonEvent.isAuthenticated = true
-    logonEvent.ncaEmailAddress = userData.EmailAddress
-    logonEvent.ncaUserType = userData.UserType
     logonEvent.ncaUserName = userData.UserName
     logonEvent.ncaSessionToken = userData.SessionToken
-    logonEvent.school = userData.School
-    logonEvent.role = userData.role
-    await logonEvent.save()
+
+    await adminLogonEventDataService.sqlCreate(logonEvent)
 
     return done(null, userData)
   } catch (error) {
@@ -58,7 +72,7 @@ module.exports = async function (req, done) {
     logonEvent.isAuthenticated = false
     logonEvent.errorMsg = error.message
     try {
-      await logonEvent.save()
+      await adminLogonEventDataService.sqlCreate(logonEvent)
     } catch (error) {
       console.error('Failed to save Logon Event: ' + error.message)
     }
