@@ -52,11 +52,11 @@ describe('school controller:', () => {
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         controller = require('../../controllers/school').getPupilNotTakingCheck
       })
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -69,8 +69,8 @@ describe('school controller:', () => {
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
-        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(attendanceCodesMock)
+        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsMock)
         controller = require('../../controllers/school').getSelectPupilNotTakingCheck
       })
 
@@ -128,8 +128,8 @@ describe('school controller:', () => {
 
     describe('#removePupilNotTakingCheck: Remove:  reason for pupil', () => {
       beforeEach(() => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
-        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(true)
+        spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMock)
         controller = require('../../controllers/school').removePupilNotTakingCheck
       })
 
@@ -180,7 +180,7 @@ describe('school controller:', () => {
       })
 
       it('makes a call to get the pupils', async () => {
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsMock)
         const res = getRes()
         const req = getReq(
           {
