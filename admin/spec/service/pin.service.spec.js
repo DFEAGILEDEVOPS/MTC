@@ -6,6 +6,7 @@ const sinon = require('sinon')
 const checkDataService = require('../../services/data-access/check.data.service')
 const jwtService = require('../../services/jwt.service')
 const pinService = require('../../services/pin.service')
+const dateService = require('../../services/date.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilIdentificationFlagService = require('../../services/pupil-identification-flag.service')
@@ -39,12 +40,14 @@ describe('pin.service', () => {
     })
     it('makes a call to get the pupils with active pins', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
+      spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
       await service.getPupilsWithActivePins(dfeNumber)
       expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber)
     })
 
     it('Adds identification flags to the pupil when they have the same name', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
+      spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
       const data = await service.getPupilsWithActivePins(dfeNumber)
       // Because we used the pupil mock we expect the pupils to have the same name, so we need
