@@ -36,13 +36,27 @@ class PupilReasonPage < SitePrism::Page
     element :just_arrived_explanation, 'div', text: "Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities."
   end
 
-  def get_attendance_code
-    attend_hash = {'attendance-code-ABSNT' => 'attendance-code-1',
-                   'attendance-code-INCRG' => 'attendance-code-3',
-                   'attendance-code-LEFTT' => 'attendance-code-2',
-                   'attendance-code-NOACC' => 'attendance-code-5',
-                   'attendance-code-BLSTD' => 'attendance-code-6',
-                   'attendance-code-JSTAR' => 'attendance-code-7'
+
+  def attendance_code_mapping
+    {'attendance-code-ABSNT' => 'Absent',
+     'attendance-code-INCRG' => 'Incorrect registration',
+     'attendance-code-LEFTT' => 'Left school',
+     'attendance-code-NOACC' => 'Unable to access',
+     'attendance-code-BLSTD' => 'Working below expectation',
+     'attendance-code-JSTAR' => 'Just arrived with EAL'
     }
   end
+
+  def select_reason(reason)
+    mapping = attendance_code_mapping.find {|k, v| v == reason}
+    attendance_codes.find {|code| code['id'] == mapping.first}.click
+  end
+
+  def add_reason_for_pupil(name, reason)
+    row = pupil_list.rows.find {|row| row.name.text.include? name}
+    row.checkbox.click
+    select_reason(reason)
+    sticky_banner.confirm.click
+  end
+
 end
