@@ -61,7 +61,7 @@ Before("@no_pin") do
     pupil_with_pin = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
     pupil_with_pin.each do|pupil|
       pupil_lastname = pupil.split(',')[0]
-      pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+      pupil_firstname = pupil.split(',')[1].split('Date')[0].strip
       SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 2)
     end
   end
