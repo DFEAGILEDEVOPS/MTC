@@ -418,6 +418,8 @@ table.spacious {
   }
 
   th, td {
+    display: table-cell;
+
     &:first-child {
       white-space: nowrap;
     }
