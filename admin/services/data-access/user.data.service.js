@@ -31,6 +31,14 @@ const userDataService = {
    */
   sqlCreate: async (user) => {
     return sqlService.create('[user]', user)
+  },
+  sqlUpdateSchool: async (userId, newSchoolId) => {
+    return sqlService.update('[user]', [
+      {
+        id: userId,
+        school_id: newSchoolId
+      }
+    ])
   }
 }
 
