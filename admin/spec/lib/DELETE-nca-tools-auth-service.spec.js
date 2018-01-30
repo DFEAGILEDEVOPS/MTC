@@ -11,7 +11,7 @@ const NcaToolsAuthTokenMock = function () {
     })
   }
 }
-const ncaToolsAuthService = proxyquire('../../lib/nca-tools-auth-service', {'../models/nca-tools-auth-token': NcaToolsAuthTokenMock})
+const ncaToolsAuthService = proxyquire('../../lib/DELETE-nca-tools-auth-service', {'../models/nca-tools-auth-token': NcaToolsAuthTokenMock})
 
 const recipientFakePrivateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAv6UHh2iibgIBb9QSi7l7nSlx2bsyzYkRTHgleZ9bJrxwPAe7
@@ -224,5 +224,9 @@ describe('nca tools auth service', function () {
       expect(error.message).toBe('No session token provided')
       done()
     }
+  })
+
+  it('should be deleted as its now in a service', () => {
+    fail('delete service in lib and these tests')
   })
 })

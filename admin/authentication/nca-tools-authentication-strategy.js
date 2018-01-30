@@ -1,10 +1,8 @@
 'use strict'
-const ncaToolsAuthService = require('../lib/nca-tools-auth-service')
-const userDataService = require('../services/data-access/user.data.service')
+const ncaToolsAuthService = require('../services/nca-tools-auth.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
-const roleService = require('../services/role.service')
-const schoolDataService = require('../services/data-access/school.data.service')
 const config = require('../config')
+const ncaToolsUserService = require('../services/nca-tools-user.service')
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -41,44 +39,15 @@ module.exports = async function (req, done) {
   }
 
   try {
-    const senderPublicKey = config.TSO_AUTH_PUBLIC_KEY
-    const recipientPrivateKey = config.MTC_AUTH_PRIVATE_KEY
-    const userData = await ncaToolsAuthService(encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey)
-
-    let userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
-    if (!userRecord) {
-      const mtcRoleName = roleService.mapNcaRoleToMtcRole(userData.UserType)
-      const role = await roleService.findByTitle(mtcRoleName)
-      const school = await schoolDataService.sqlFindOneByDfeNumber(userData.School)
-      if (!school) {
-        throw new Error('Unknown School')
-      }
-      const user = {
-        identifier: userData.UserName,
-        school_id: school.id,
-        role_id: role.id
-      }
-      await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
-      if (!userRecord) {
-        throw new Error('unable to find user record')
-      }
-    } else {
-      // user exists - check requested school
-      const ncaSchool = schoolDataService.sqlFindOneByDfeNumber(userData.School)
-      if (!ncaSchool) {
-        throw new Error('Unknown School')
-      }
-      if (userRecord.school_id !== ncaSchool.id) {
-        userDataService.sqlUpdateSchool(userRecord.id, ncaSchool.id)
-      }
-    }
-
+    const ncaPublicKey = config.TSO_AUTH_PUBLIC_KEY
+    const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
+    const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
+    const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
+    // TODO potentially do not need mtcUser????
     // auth success
-    logonEvent.user_id = userRecord.id
+    logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true
-    logonEvent.authProviderSessionToken = userData.SessionToken
-
+    logonEvent.authProviderSessionToken = mtcUser.SessionToken
     await adminLogonEventDataService.sqlCreate(logonEvent)
 
     return done(null, userData)
