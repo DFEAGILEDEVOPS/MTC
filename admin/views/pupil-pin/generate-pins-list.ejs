@@ -9,14 +9,34 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+
         <header class="page-header">
             <h1 class="heading-xlarge">Select pupils to generate pupil PINs</h1>
         </header>
-    </div>
-</div>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+        <% if (groups && groups.length > 0) { %>
+        <div class="filter-header">
+            <div class="filter-label">Filter by groups</div>
+        </div>
+        <div class="hidden filter-content">
+            <ul id="filterByGroup">
+                <% groups.forEach((group) => { %>
+                <li>
+                    <input id="group-<%= group.id %>"
+                           class="pupils-not-taking-the-check"
+                           name="group"
+                           type="checkbox"
+                           value="<%= group.id %>"
+                           aria-label="Tick group <%= group.name %>."
+                           aria-checked="false"
+                           role="checkbox">
+                    <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
+                </li>
+                <% }) %>
+            </ul>
+        </div>
+        <% } %>
+
         <form method="post" action="/pupil-pin/generate-pins" method="post" autocomplete="off">
             <% if (pupils && pupils.length > 0) { %>
             <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
@@ -41,7 +61,7 @@
                 </thead>
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
-                <tr>
+                <tr<% if (pupil && pupil.group_id) { %> id="group-id-<%= pupil.group_id %>"<% } %>>
                     <td>
                         <label for="pupil-<%= pupil.id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>

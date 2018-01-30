@@ -4,6 +4,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')
+const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 
@@ -28,14 +29,19 @@ const getGeneratePinsList = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs('Generate pupil PINs', '/pupil-pin/generate-pins-overview')
   req.breadcrumbs(res.locals.pageTitle)
+
   let school
   let pupils
+  let groups = []
+
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
+
   // TODO: data service call should be moved to a service
   try {
+    groups = await groupService.getGroups(req.user.schoolId)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -44,9 +50,11 @@ const getGeneratePinsList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
+
   return res.render('pupil-pin/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
     pupils,
+    groups,
     htmlSortDirection,
     arrowSortDirection
   })
