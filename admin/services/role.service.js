@@ -1,5 +1,7 @@
 'use strict'
 
+const roleDataService = require('./data-access/role.data.service')
+
 const service = {
   /**
    * Provides mapping of NCA Tools 'UserType' string to MTC role.
@@ -20,6 +22,16 @@ const service = {
     }
 
     return 'TEACHER'
+  },
+  /**
+   * @param roleName required
+   * @returns undefined or single role
+   */
+  findByName: async (roleName) => {
+    if (!roleName) {
+      throw new Error('roleName is required')
+    }
+    return roleDataService.sqlFindOneByName(roleName)
   }
 }
 

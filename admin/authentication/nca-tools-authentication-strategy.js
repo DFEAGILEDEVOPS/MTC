@@ -46,10 +46,13 @@ module.exports = async function (req, done) {
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
     if (!userRecord) {
+      const mtcRoleName = roleService.mapNcaRoleToMtcRole(userData.UserType)
+      const role = await roleService.findByName(mtcRoleName)
+      const roleId = role.id
       const user = {
         identifier: userData.UserName,
         school_id: userData.school,
-        role_id: roleService.mapNcaRoleToMtcRole(userData.UserType)
+        role_id: roleId
       }
       await userDataService.sqlCreate(user)
       userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
