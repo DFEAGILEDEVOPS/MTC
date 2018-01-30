@@ -7,11 +7,12 @@ const service = {
    */
   mapNcaRoleToMtcRole: (ncaUserType) => {
     const mapping = {
-      SuperAdmin: 'ADMINISTRATOR',
+      SuperAdmin: 'SERVICE-MANAGER',
       SuperUser: 'HEADTEACHER',
       SchoolSup: 'TEACHER',
       SchoolNom: 'TEACHER',
-      Admin: 'HELPDESK'
+      Admin: 'HELPDESK',
+      DataAdmin: 'TEST-DEVELOPER'
     }
 
     if (mapping[ncaUserType]) {

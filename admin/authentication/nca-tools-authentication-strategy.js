@@ -2,7 +2,7 @@
 const ncaToolsAuthService = require('../lib/nca-tools-auth-service')
 const userDataService = require('../services/data-access/user.data.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
-const ncaToolsService = require('../services/nca-tools.service')
+const roleService = require('../services/role.service')
 const config = require('../config')
 
 module.exports = async function (req, done) {
@@ -49,7 +49,7 @@ module.exports = async function (req, done) {
       const user = {
         identifier: userData.UserName,
         school_id: userData.school,
-        role_id: ncaToolsService.mapNcaRoleToMtcRole(userData.UserType)
+        role_id: roleService.mapNcaRoleToMtcRole(userData.UserType)
       }
       await userDataService.sqlCreate(user)
       userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
