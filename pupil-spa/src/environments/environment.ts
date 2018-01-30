@@ -6,6 +6,8 @@
 export const environment = {
   apiURL: 'http://localhost:3001',
   production: false,
-  apiErrorDelay: 2000,
-  apiErrorMaxAttempts: 3
+  checkStartAPIErrorDelay: 2000,
+  checkStartAPIErrorMaxAttempts: 3,
+  checkSubmissionApiErrorDelay: 30000,
+  checkSubmissionAPIErrorMaxAttempts: 10
 };

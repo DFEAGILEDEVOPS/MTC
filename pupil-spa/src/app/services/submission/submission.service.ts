@@ -3,7 +3,7 @@ import { Http, RequestOptions, Headers } from '@angular/http';
 import { environment } from '../../../environments/environment';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
-import { CheckStartedAPICallFailed } from '../audit/auditEntry';
+import { CheckStartedAPICallFailed, CheckSubmissionAPIFailed } from '../audit/auditEntry';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/retryWhen';
@@ -15,7 +15,7 @@ export class SubmissionService {
   }
 
   async submitCheckStartData() {
-    const { apiErrorDelay, apiErrorMaxAttempts } = environment;
+    const { checkStartAPIErrorDelay, checkStartAPIErrorMaxAttempts } = environment;
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
@@ -26,35 +26,41 @@ export class SubmissionService {
       requestArgs)
       .retryWhen(errors =>
         errors
-          .delay(apiErrorDelay)
+          .delay(checkStartAPIErrorDelay)
           .scan((acc, error) => {
-            if (acc === apiErrorMaxAttempts) {
+            if (acc === checkStartAPIErrorMaxAttempts) {
               // throw the response error to audit log the last attempt
               throw error;
             }
             this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText }));
             return acc + 1;
           }, 1)
-        .take(apiErrorMaxAttempts)
+        .take(checkStartAPIErrorMaxAttempts)
       )
       .toPromise();
   }
 
   async submitData() {
+    const { checkSubmissionApiErrorDelay, checkSubmissionAPIErrorMaxAttempts } = environment;
     const localStorageData = this.storageService.getAllItems();
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
-    await this.http.post(`${environment.apiURL}/api/completed-check`,
+    await this.http.post(`${environment.apiURL}/api/completed-check1`,
       { ...localStorageData },
       requestArgs)
-      .toPromise()
-      .then((response) => {
-          if (response.status !== 201) {
-            return new Error('Submit Error:' + response.status + ':' + response.statusText);
-          }
-        },
-        (err) => { throw new Error(err); }
-        ).catch((err) => { throw new Error(err); });
+      .retryWhen(errors =>
+        errors
+          .delay(checkSubmissionApiErrorDelay)
+          .scan((acc, error) => {
+            if (acc === checkSubmissionAPIErrorMaxAttempts) {
+              throw error;
+            }
+            this.auditService.addEntry(new CheckSubmissionAPIFailed({ status: error.status, statusText: error.statusText }));
+            return acc + 1;
+          }, 1)
+          .take(checkSubmissionAPIErrorMaxAttempts)
+      )
+      .toPromise();
   }
 }

@@ -36,6 +36,8 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
+import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
+import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -70,7 +72,9 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     SpokenQuestionComponent,
-    SpokenPracticeQuestionComponent
+    SpokenPracticeQuestionComponent,
+    SubmissionPendingComponent,
+    SubmissionFailedComponent
   ],
   imports: [
     RouterModule.forRoot(

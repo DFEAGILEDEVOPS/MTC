@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckComplete, RefreshDetected } from '../services/audit/auditEntry';
+import { CheckSubmissionPending, CheckComplete, CheckSubmissionFailed, RefreshDetected } from '../services/audit/auditEntry';
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -27,7 +27,9 @@ export class CheckComponent implements OnInit {
   private static questionRe = /^Q(\d+)$/;
   private static spokenQuestionRe = /^SQ(\d+)$/;
   private static loadingRe = /^L(\d+)$/;
-  private static completeRe = /^complete$/;
+  private static submissionPendingRe = /^submission-pending$/;
+  private static checkCompleteRe = /^check-complete/;
+  private static submissionFailedRe = /^submission-failed'$/;
 
   public config: Config;
   public isWarmUp: boolean;
@@ -128,7 +130,7 @@ export class CheckComponent implements OnInit {
    * As there is a linear sequence of events the next state is determined by the
    * current state. No args required.
    */
-  private changeState() {
+  private async changeState() {
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
     this.state += 1; // increment state to next level - it's defined by an array
     // console.log(`changeState(): state is now set to ${this.state}`);
@@ -198,13 +200,41 @@ export class CheckComponent implements OnInit {
         this.viewState = 'spoken-question';
         break;
       }
-      case CheckComponent.completeRe.test(stateDesc):
+      case CheckComponent.submissionPendingRe.test(stateDesc): {
+        // Display pending screen
+        this.auditService.addEntry(new CheckSubmissionPending());
+        this.isWarmUp = false;
+        this.viewState = 'submission-pending';
+        const start = Date.now();
+        this.viewState = await Promise.resolve(this.submissionService.submitData()
+          .then(async () => {
+            // Display pending screen for the minimum configurable time
+            const end = Date.now();
+            const duration = end - start;
+            if (duration < 2000) {
+              const displaytime = 2000 - duration;
+              await this.sleep(displaytime);
+            }
+            return 'check-complete';
+          })
+          .catch(() => {
+            return 'submission-failed';
+          }));
+        break;
+      }
+      case CheckComponent.checkCompleteRe.test(stateDesc): {
         // Show the check complete screen
         this.auditService.addEntry(new CheckComplete());
-        this.submissionService.submitData().catch(error => new Error(error));
+        // this.submissionService.submitData().catch(error => new Error(error));
         this.isWarmUp = false;
-        this.viewState = 'complete';
         break;
+      }
+      case CheckComponent.submissionFailedRe.test(stateDesc): {
+        // Show the check complete failed screen
+        this.auditService.addEntry(new CheckSubmissionFailed());
+        this.isWarmUp = false;
+        break;
+      }
     }
   }
 
@@ -292,7 +322,9 @@ export class CheckComponent implements OnInit {
     }
 
     // Set up the final page
-    this.allowedStates.push('complete');
+    this.allowedStates.push('submission-pending');
+    this.allowedStates.push('submission-sent');
+    this.allowedStates.push('submission-failed');
     // console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 
@@ -385,5 +417,9 @@ export class CheckComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

@@ -1,6 +1,8 @@
 export const environment = {
   apiURL: 'API_URL',
   production: true,
-  apiErrorDelay: 2000,
-  apiErrorMaxAttempts: 3
+  checkStartAPIErrorDelay: 2000,
+  checkStartAPIErrorMaxAttempts: 3,
+  checkSubmissionApiErrorDelay: 30000,
+  checkSubmissionAPIErrorMaxAttempts: 10
 };
