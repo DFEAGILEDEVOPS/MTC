@@ -14,7 +14,7 @@ describe('WarmupCompleteComponent', () => {
   let submissionService;
   let auditEntryInserted: AuditEntry;
   let auditService;
-  let addEntrySpy
+  let addEntrySpy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

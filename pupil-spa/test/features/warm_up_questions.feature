@@ -7,9 +7,9 @@ Feature: Warm up questions
     Given I am on the warm up intro page
     Then I should see a warm up page heading
 
-  Scenario: Warm up page has a label
-    Given I am on the warm up intro page
-    Then I should see a warm up label
+#  Scenario: Warm up page has a label
+#    Given I am on the warm up intro page
+#    Then I should see a warm up label
 
   Scenario: Warm up page has intro text
     Given I am on the warm up intro page
@@ -19,13 +19,13 @@ Feature: Warm up questions
     Given I am on the warm up check page
     Then I should have 2 seconds before I see the first question
 
-  Scenario: Warm up check page has a label
-    Given I am on the warm up check page
-    Then I should see a warm up label
+#  Scenario: Warm up check page has a label
+#    Given I am on the warm up check page
+#    Then I should see a warm up label
 
-  Scenario: Warm up complete page has a label
-    Given I am on the warm up complete page
-    Then I should see a warm up label on the complete page
+#  Scenario: Warm up complete page has a label
+#    Given I am on the warm up complete page
+#    Then I should see a warm up label on the complete page
 
   Scenario: Warm up complete page has a heading
     Given I am on the warm up complete page
