@@ -8,9 +8,11 @@ end
 
 Given(/^I login with a real user$/) do
   sign_in_page.load
+  ct = Time.now
+  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   @pupil = SqlDbHelper.find_next_pupil
   @pin = 4.times.map {rand(2..9)}.join
-  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], @pin)
+  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time, @pin)
   current_time = Time.now + 86400
   new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
@@ -23,7 +25,7 @@ end
 Then(/^I should still have a valid pin$/) do
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
-  sign_in_page.login(@school['schoolPin'], @pin)
+  sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
   expect(confirmation_page).to be_displayed
 end
@@ -45,10 +47,10 @@ Then(/^I should have an expired pin$/) do
   time = Time.now
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
-  sign_in_page.login(@school['schoolPin'], @pin)
+  sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
   expect(sign_in_failure_page).to be_displayed
-  pupil = SqlDbHelper.find_pupil_from_school(@pupil['foreName'], @pupil['school'])
+  pupil = SqlDbHelper.find_pupil_from_school(@pupil['foreName'], @pupil['school_id'])
   expect(pupil['pin']).to be_nil
   expect(pupil['pinExpiresAt'].strftime('%d-%m-%Y %H')).to eql time.strftime('%d-%m-%Y %H')
 end

@@ -15,11 +15,11 @@ Before('@non_browserstack_compliant') do
 end
 
 After('@window_date_time_reset') do
-  original = MongoDbHelper.get_check_window_via_name('Summer 2017')
-  updated = original.each{ |key,str| original[@original_date_time.keys.first.to_s] = @original_date_time.values.first}
-  collection=CLIENT[:checkwindows]
-  collection.update_one({'_id' => original['_id']}, updated)
-  p "Returned #{@original_date_time.keys.first.to_s} to #{@original_date_time.values.first}"
+  original = SqlDbHelper.get_check_window_via_name('Development Phase')
+  check_end_date = (Time.now + 3*24*60*60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  check_start_date = (Time.now).strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.update_check_window(original['id'], 'checkEndDate', check_end_date)
+  SqlDbHelper.update_check_window(original['id'], 'checkStartDate', check_start_date)
 end
 
 After do |scenario|
