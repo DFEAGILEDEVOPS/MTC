@@ -81,6 +81,7 @@ $path: "../../assets/govuk_frontend_toolkit/images/";
 }
 
 /* General elements */
+
 legend {
   padding: 0;
 }
@@ -128,6 +129,45 @@ legend {
 
   @include media(tablet) {
     margin-top: 0;
+  }
+}
+
+.back-link-wrapper {
+  margin-top: 25px;
+}
+
+.back-link-wrapper + .page-header {
+  margin-top: 15px;
+}
+
+.back-link,
+.back-link:link,
+.back-link:active,
+.back-link:hover,
+.back-link:visited {
+  border-bottom: 1px solid $black;
+  color: $black;
+  display: inline-block;
+  font-size: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-left: 11px;
+  position: relative;
+  text-decoration: none;
+
+  &:before {
+    border-top: 5px solid transparent;
+    border-right: 6px solid $black;
+    border-bottom: 5px solid transparent;
+    content: '';
+    display: block;
+    font-size: 12px;
+    height: 0;
+    left: 0;
+    margin-top: -7px;
+    position: absolute;
+    top: 50%;
+    width: 0;
   }
 }
 

@@ -38,7 +38,7 @@ end
 Given(/^I attempt to login whilst the check window is not open as the start date is in the future$/) do
   original = SqlDbHelper.get_check_window_via_name('Development Phase')
   @original_date_time = {startDate: original['checkStartDate']}
-  check_start_date = (Time.now - 60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  check_start_date = (Time.now + 24*60*60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.update_check_window(original['id'], 'checkStartDate', check_start_date)
 
   step 'I have logged in'

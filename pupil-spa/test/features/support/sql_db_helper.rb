@@ -47,8 +47,8 @@ class SqlDbHelper
     result.do
   end
 
-  def self.reset_pin(forename,lastname,school_id,flag=nil)
-    sql = "UPDATE [mtc_admin].[pupil] set pin=#{flag} WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+  def self.reset_pin(forename,lastname,school_id,new_time,flag=nil)
+    sql = "UPDATE [mtc_admin].[pupil] set pin=#{flag}, pinExpiresAt= '#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
