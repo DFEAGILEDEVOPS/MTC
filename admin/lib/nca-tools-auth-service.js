@@ -3,7 +3,7 @@
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
 const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
-const ncaToolsService = require('../services/nca-tools.service')
+const roleService = require('../services/role.service')
 
 /**
  * Decrypt and authenticate a data packet
@@ -169,7 +169,7 @@ function parseMessage (plaintext) {
 
   // Map the NCA Tools UserType to our own roles
   if (data.UserType) {
-    data.role = ncaToolsService.mapNcaRoleToMtcRole(data.UserType)
+    data.role = roleService.mapNcaRoleToMtcRole(data.UserType)
   }
 
   // Record the logon
