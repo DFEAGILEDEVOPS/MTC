@@ -40,6 +40,7 @@ const service = {
         userDataService.sqlUpdateSchool(userRecord.id, ncaSchool.id)
       }
     }
+    userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType)
     return userRecord
   }
 }

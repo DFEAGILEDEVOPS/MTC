@@ -43,7 +43,7 @@ module.exports = async function (req, done) {
     const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
     const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
-    // TODO potentially do not need mtcUser????
+    userData.role = mtcUser.mtcRole
     // auth success
     logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true
