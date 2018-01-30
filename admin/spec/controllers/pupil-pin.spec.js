@@ -5,15 +5,16 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 require('sinon-mongoose')
 
+const checkStartService = require('../../services/check-start.service')
 const config = require('../../config')
+const dateService = require('../../services/date.service')
+const pinGenerationService = require('../../services/pin-generation.service')
+const pinService = require('../../services/pin.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const qrService = require('../../services/qr.service')
 const School = require('../../models/school')
 const schoolDataService = require('../../services/data-access/school.data.service')
-const pupilDataService = require('../../services/data-access/pupil.data.service')
-const pinService = require('../../services/pin.service')
-const pinGenerationService = require('../../services/pin-generation.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
-const dateService = require('../../services/date.service')
-const qrService = require('../../services/qr.service')
 
 describe('pupilPin controller:', () => {
   function getRes () {
@@ -135,7 +136,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('postGeneratePins route', () => {
-    let sandbox
     let next
     let goodReqParams = {
       method: 'POST',
@@ -149,31 +149,32 @@ describe('pupilPin controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
     })
 
-    afterEach(() => {
-      sandbox.restore()
-    })
     it('displays the generated pins list page after successful saving', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
+
+      spyOn(checkStartService, 'prepareCheck')
       spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(new School({ _id: 1, name: 'Test School' }))
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
       spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
+
       await controller(req, res, next)
       expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generated-pins-list')
       done()
     })
+
     it('displays the generate pins list page if no pupil list is provided', async (done) => {
       const res = getRes()
       const req = { body: {} }
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
+      spyOn(checkStartService, 'prepareCheck')
       spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
@@ -182,10 +183,12 @@ describe('pupilPin controller:', () => {
       expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generate-pins-list')
       done()
     })
+
     it('calls next with an error if school is not found', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/pupil-pin.js').postGeneratePins
+      spyOn(checkStartService, 'prepareCheck')
       spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)

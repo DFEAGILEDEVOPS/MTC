@@ -1,11 +1,11 @@
 'use strict'
 
+const apiResponse = require('./api-response')
 const checkFormService = require('../services/check-form.service')
 const checkStartService = require('../services/check-start.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
-const apiResponse = require('./api-response')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -41,9 +41,9 @@ const getQuestions = async (req, res) => {
 
   // start the check
   try {
-    const startCheckResponse = await checkStartService.startCheck(data.pupil.id)
-    questions = checkFormService.prepareQuestionData(startCheckResponse.checkForm)
-    pupilData.checkCode = startCheckResponse.checkCode
+    const checkData = await checkStartService.pupilLogin(data.pupil.id)
+    questions = checkFormService.prepareQuestionData(checkData.questions)
+    pupilData.checkCode = checkData.checkCode
   } catch (error) {
     return apiResponse.serverError(res)
   }
