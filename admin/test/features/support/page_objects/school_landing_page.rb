@@ -17,8 +17,10 @@ class SchoolLandingPage < SitePrism::Page
   element :restarts, 'a[href="/restart/overview"]'
   element :restarts_text, 'p', text: 'Select a pupil to restart because of an interrupted check'
   element :hdf, 'a', text: "Headteacher's declaration form"
+  element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
   element :hdf_text, 'p', text: "Complete headteacher's declaration form once pupil register has been submitted"
-  element :results, 'a[href="/school/results"]', text: 'Results'
+  element :hdf_disabled_text, 'p', text: "The HDF module is unavailable until the HDF feature update is complete"
+  element :results, '.disabled-link', text: 'Results'
   element :results_text, 'p', text: "View pupil results"
 
   element :teacher_name, '.signed-in-as'
