@@ -63,6 +63,15 @@ module.exports = async function (req, done) {
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
+    } else {
+      // user exists - check requested school
+      const ncaSchool = schoolDataService.sqlFindOneByDfeNumber(userData.School)
+      if (!ncaSchool) {
+        throw new Error('Unknown School')
+      }
+      if (userRecord.school_id !== ncaSchool.id) {
+        userDataService.sqlUpdateSchool(userRecord.id, ncaSchool.id)
+      }
     }
 
     // auth success
