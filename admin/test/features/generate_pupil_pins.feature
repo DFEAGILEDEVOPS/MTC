@@ -101,6 +101,7 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pin should be stored against the pupil
 
+  @no_pin @wip @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
@@ -110,6 +111,7 @@ Feature: Generate Pupil PINs
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
 
+  @wip
   Scenario: Pupil pin is unique across all of the school's pupil records at the time it is generated
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
@@ -137,3 +139,10 @@ Feature: Generate Pupil PINs
   Scenario: School Password must be generated from the specified pool of characters
     Given I have generated a pin for a pupil
     Then school password should be generated from the specified pool of characters
+
+  @wip @bug_18960
+  Scenario: Pin is expired when pupil is not taking the check
+    Given I have generated a pin for a pupil
+    When I decide the pupil should not be taking the check
+    Then the status of the pupil should be Not taking the Check
+    And the pin should be expired

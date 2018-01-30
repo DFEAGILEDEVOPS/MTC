@@ -49,7 +49,6 @@ Feature:
 
     Examples:
       | teacher  |
-      | teacher1 |
       | teacher2 |
       | teacher3 |
       | teacher4 |
@@ -62,7 +61,6 @@ Feature:
 
     Examples:
       | teacher  |
-      | teacher1 |
       | teacher2 |
       | teacher3 |
       | teacher4 |
@@ -118,13 +116,13 @@ Feature:
     And I should see the updated pupil on the hub page
 
     Examples:
-      | reason                                          |
-      | Incorrect registration                          |
-      | Absent                                          |
-      | Left school                                     |
-      | Unable to access                                |
-      | Working below the overall standard of the check |
-      | Just arrived                                    |
+      | reason                    |
+      | Incorrect registration    |
+      | Absent                    |
+      | Left school               |
+      | Unable to access          |
+      | Working below expectation |
+      | Just arrived with EAL     |
 
   @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
@@ -170,3 +168,8 @@ Feature:
     Given I am on the pupil not taking check page
     Then I should see a message stating there are no pupils not taking the check
 
+  @pupil_not_taking_check @no_pin
+  Scenario: Pupils who are not taking the check are not in the generate pupil pin list
+    Given I have previously added a reason for a pupil
+    When I am on the generate pupil pins page
+    Then I should not see the pupil in the list

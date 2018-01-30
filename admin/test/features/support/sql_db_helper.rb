@@ -17,7 +17,7 @@ class SqlDbHelper
   end
 
   def self.find_pupil_from_school(first_name, school_id)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -64,7 +64,7 @@ class SqlDbHelper
   end
 
   def self.reset_pin(forename,lastname,school_id,flag=nil)
-    sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename.gsub("'", "''")}' AND lastName='#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
