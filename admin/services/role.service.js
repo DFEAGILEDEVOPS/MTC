@@ -27,11 +27,11 @@ const service = {
    * @param roleName required
    * @returns undefined or single role
    */
-  findByName: async (roleName) => {
-    if (!roleName) {
-      throw new Error('roleName is required')
+  findByTitle: async (roleTitle) => {
+    if (!roleTitle) {
+      throw new Error('roleTitle is required')
     }
-    return roleDataService.sqlFindOneByName(roleName)
+    return roleDataService.sqlFindOneByTitle(roleTitle)
   }
 }
 

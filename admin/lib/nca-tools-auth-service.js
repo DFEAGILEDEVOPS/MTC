@@ -76,7 +76,8 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
     }
 
     // Check the token is new, and not being re-used
-    try {
+    // TODO re-implement in SQL
+/*     try {
       const token = new NcaToolsAuthToken({
         _id: data.SessionToken,
         logonDate: new Date(),
@@ -89,7 +90,7 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
       await token.save()
     } catch (error) {
       return reject(new Error('Failed to save SessionToken - possible replay attack: ' + error.message))
-    }
+    } */
 
     // Session saved, successful authentication,
     resolve(data)

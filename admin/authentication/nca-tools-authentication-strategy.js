@@ -3,6 +3,7 @@ const ncaToolsAuthService = require('../lib/nca-tools-auth-service')
 const userDataService = require('../services/data-access/user.data.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
 const roleService = require('../services/role.service')
+const schoolDataService = require('../services/data-access/school.data.service')
 const config = require('../config')
 
 module.exports = async function (req, done) {
@@ -47,25 +48,27 @@ module.exports = async function (req, done) {
     let userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
     if (!userRecord) {
       const mtcRoleName = roleService.mapNcaRoleToMtcRole(userData.UserType)
-      const role = await roleService.findByName(mtcRoleName)
-      const roleId = role.id
+      const role = await roleService.findByTitle(mtcRoleName)
+      const school = await schoolDataService.sqlFindOneByDfeNumber(userData.School)
+      if (!school) {
+        throw new Error('Unknown School')
+      }
       const user = {
         identifier: userData.UserName,
-        school_id: userData.school,
-        role_id: roleId
+        school_id: school.id,
+        role_id: role.id
       }
       await userDataService.sqlCreate(user)
       userRecord = await userDataService.sqlFindOneByIdentifier(userData.UserName)
       if (!userRecord) {
-        throw new Error('unable to create user record')
+        throw new Error('unable to find user record')
       }
     }
 
     // auth success
     logonEvent.user_id = userRecord.id
     logonEvent.isAuthenticated = true
-    logonEvent.ncaUserName = userData.UserName
-    logonEvent.ncaSessionToken = userData.SessionToken
+    logonEvent.authProviderSessionToken = userData.SessionToken
 
     await adminLogonEventDataService.sqlCreate(logonEvent)
 

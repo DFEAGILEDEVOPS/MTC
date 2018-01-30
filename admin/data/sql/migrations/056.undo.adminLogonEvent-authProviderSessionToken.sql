@@ -1,0 +1,1 @@
+ALTER TABLE mtc.mtc_admin.adminLogonEvent DROP COLUMN authProviderSessionToken
