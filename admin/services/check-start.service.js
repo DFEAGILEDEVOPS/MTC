@@ -8,6 +8,7 @@ const checkFormDataService = require('../services/data-access/check-form.data.se
 const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const pinGenerationService = require('../services/pin-generation.service')
+const pupilDataService = require('../services/pupil.service')
 
 const checkStartService = {}
 
@@ -17,7 +18,7 @@ const checkStartService = {}
  * @param pupilIds
  * @return {Promise<void>}
  */
-checkStartService.prepareCheck = async function (pupilIds) {
+checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
   // validate pupilsIds.  What do we do if a single pupil id is not found (or the user doesn't have the same School?)  Ignore or throw?
   // connection -> begin transaction
   // generate Pins
@@ -27,7 +28,14 @@ checkStartService.prepareCheck = async function (pupilIds) {
   // connection -> commit transaction
   // on error -> rollback transaction
 
-  // Find the check window we are working in
+  if (!dfeNumber) {
+    throw new Error('dfeNumber is required')
+  }
+
+  // Validate the incoming pupil list
+  // const pupils = await
+
+   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
 
   // Update the pins for each pupil

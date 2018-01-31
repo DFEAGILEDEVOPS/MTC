@@ -34,6 +34,7 @@ const preparedCheckMock = {
 
 describe('check-start.service', () => {
   const service = checkStartService
+  const dfeNumber = 9991999
 
   describe('#prepareCheck', () => {
     beforeEach(() => {
@@ -43,18 +44,27 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlCreateBatch')
     })
 
+    it('throws an error if dfeNumber is not provided', async () => {
+      try {
+        await service.prepareCheck([1, 2, 3])
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('dfeNumber is required')
+      }
+    })
+
     it('finds the current check window', async () => {
-      await service.prepareCheck([1, 2, 3])
+      await service.prepareCheck([1, 2, 3], dfeNumber)
       expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
     })
 
     it('calls initialiseCheck once per pupil', async () => {
-      await service.prepareCheck([1, 2, 3])
+      await service.prepareCheck([1, 2, 3], dfeNumber)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
     })
 
     it('calls sqlCreateBatch to save the checks', async () => {
-      await service.prepareCheck([1, 2, 3])
+      await service.prepareCheck([1, 2, 3], dfeNumber)
       expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
       const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
       expect(arg.length).toBe(3)

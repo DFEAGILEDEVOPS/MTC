@@ -60,7 +60,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await checkStartService.prepareCheck(pupilsList)
+    await checkStartService.prepareCheck(pupilsList, req.user.School)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
