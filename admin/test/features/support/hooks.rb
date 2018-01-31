@@ -61,20 +61,21 @@ Before("@no_pin") do
     pupil_with_pin = generate_pupil_pins_page.pupil_list.rows.map {|x| x.name.text}
     pupil_with_pin.each do|pupil|
       pupil_lastname = pupil.split(',')[0]
-      pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+      pupil_firstname = pupil.split(',')[1].split('Date')[0].strip
       SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 2)
     end
   end
   visit Capybara.app_host + '/sign-out'
 end
 
-After("@multiple_pupil_upload") do
-  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
-end
-
-After("@remove_all_groups") do
+Before("@remove_all_groups") do
   step 'I am on the groups page'
   group_pupils_page.remove_all_groups
+  visit Capybara.app_host + '/sign-out'
+end
+
+After("@multiple_pupil_upload") do
+  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
 After do |scenario|

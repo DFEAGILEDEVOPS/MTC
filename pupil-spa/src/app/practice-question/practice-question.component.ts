@@ -55,6 +55,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   public remainingTime: number;
 
+  /**
+   * Show 'practice' label on top left.
+   */
+  public isWarmUpQuestion: boolean;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -72,6 +77,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+    this.isWarmUpQuestion = true;
   }
 
   /**

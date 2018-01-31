@@ -196,7 +196,7 @@ Then(/^the pin should be stored against the pupil$/) do
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|
-  school_id = SqlDbHelper.find_teacher(teacher)[0]['school_id']
+  school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_password = SqlDbHelper.find_school(school_id)['pin']
   expect(generated_pins_page.school_password.text).to eql school_password
 end
@@ -219,4 +219,21 @@ end
 Then(/^the sticky banner should display the total pupil count on Generate Pin Page$/) do
   total_pupil_count = generate_pupil_pins_page.pupil_list.rows.count
   expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+end
+
+When(/^I decide the pupil should not be taking the check$/) do
+  pupil_reason_page.load
+  pupil_reason_page.add_reason_for_pupil(@pupil_name, 'Absent')
+end
+
+Then(/^the pin should be expired$/) do
+  generate_pupil_pins_page.load
+  pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+  expect(pupil_pins).to_not include @pupil_name
+end
+
+And(/^the status of the pupil should be (.+)$/) do |status|
+  pupil_register_page.load
+  pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
+  expect(pupil_row.result.text).to eql(status)
 end

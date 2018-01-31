@@ -30,6 +30,21 @@ describe('group.service', () => {
     })
   })
 
+  describe('#getGroupsAsArray', () => {
+    beforeEach(() => {
+      spyOn(groupDataService, 'sqlFindGroups').and.returnValue(groupsMock)
+    })
+
+    it('should return groups', async (done) => {
+      const schoolId = 1
+      const groups = await groupService.getGroupsAsArray(schoolId)
+      expect(groups[1]).toEqual('Test Group 1')
+      expect(groups[2]).toEqual('Test Group 2')
+      expect(groups[3]).toEqual('Test Group 3')
+      done()
+    })
+  })
+
   describe('#getPupils', () => {
     beforeEach(() => {
       spyOn(groupDataService, 'sqlFindPupils').and.returnValue(pupilsMock)
