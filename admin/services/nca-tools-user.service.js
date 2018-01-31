@@ -16,7 +16,7 @@ const service = {
     // TODO persist nca tools session token (best place might be adminLogonEvent?)
     const school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
     if (!school) {
-      throw new Error('Unknown School')
+      throw new Error(`Unknown School:${ncaUser.School}`)
     }
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.UserName)
@@ -36,7 +36,7 @@ const service = {
     } else {
       // user exists - check requested school
       if (userRecord.school_id !== school.id) {
-        userDataService.sqlUpdateSchool(userRecord.id, school.id)
+        await userDataService.sqlUpdateSchool(userRecord.id, school.id)
       }
     }
     userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType)

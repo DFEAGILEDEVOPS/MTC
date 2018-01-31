@@ -23,12 +23,13 @@ describe('nca-tools-user.service', () => {
     })
     it('throws an error if assigned school does not exist', async (done) => {
       spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve())
+      const ncaDfeNumber = 999
       try {
-        await ncaToolsUserService.mapNcaUserToMtcUser({ School: 999999 })
+        await ncaToolsUserService.mapNcaUserToMtcUser({ School: ncaDfeNumber })
         fail('expected error to be thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toBe('Unknown School')
+        expect(error.message).toBe(`Unknown School:${ncaDfeNumber}`)
         done()
       }
     })
