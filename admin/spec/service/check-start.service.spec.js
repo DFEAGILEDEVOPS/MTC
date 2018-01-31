@@ -3,13 +3,15 @@
 /* global describe it expect beforeEach spyOn fail */
 
 const moment = require('moment')
+const winston = require('winston')
 
 const checkDataService = require('../../services/data-access/check.data.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const checkFormService = require('../../services/check-form.service')
+const checkStartService = require('../../services/check-start.service')
 const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 const pinGenerationService = require('../../services/pin-generation.service')
-const checkStartService = require('../../services/check-start.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
 
 const checkWindowMock = require('../mocks/check-window-2')
 const checkFormMock = {
@@ -37,6 +39,14 @@ describe('check-start.service', () => {
   const dfeNumber = 9991999
 
   describe('#prepareCheck', () => {
+    const mockPupils = [
+      {id: 1},
+      {id: 2},
+      {id: 3}
+    ]
+    const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
+    const pupilIdsHackAttempt = ['1', '2', '3', '4']
+
     beforeEach(() => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(pinGenerationService, 'updatePupilPins')
@@ -44,30 +54,53 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlCreateBatch')
     })
 
-    it('throws an error if dfeNumber is not provided', async () => {
-      try {
-        await service.prepareCheck([1, 2, 3])
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('dfeNumber is required')
-      }
+    describe('pupil validation passes', () => {
+      beforeEach(() => {
+        spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+      })
+
+      it('throws an error if dfeNumber is not provided', async () => {
+        try {
+          await service.prepareCheck(pupilIds)
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('dfeNumber is required')
+        }
+      })
+
+      it('finds the current check window', async () => {
+        await service.prepareCheck(pupilIds, dfeNumber)
+        expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
+      })
+
+      it('calls initialiseCheck once per pupil', async () => {
+        await service.prepareCheck(pupilIds, dfeNumber)
+        expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
+      })
+
+      it('calls sqlCreateBatch to save the checks', async () => {
+        await service.prepareCheck(pupilIds, dfeNumber)
+        expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+        const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
+        expect(arg.length).toBe(3)
+      })
     })
 
-    it('finds the current check window', async () => {
-      await service.prepareCheck([1, 2, 3], dfeNumber)
-      expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
-    })
-
-    it('calls initialiseCheck once per pupil', async () => {
-      await service.prepareCheck([1, 2, 3], dfeNumber)
-      expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
-    })
-
-    it('calls sqlCreateBatch to save the checks', async () => {
-      await service.prepareCheck([1, 2, 3], dfeNumber)
-      expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
-      const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
-      expect(arg.length).toBe(3)
+    describe('pupil validation fails', () => {
+      beforeEach(() => {
+        spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+      })
+      it('validates the pupils against the database', async () => {
+        // This validation emits a winston.warn() as potentially it is serious, so let's
+        // shut it up for the test
+        spyOn(winston, 'warn')
+        try {
+          await service.prepareCheck(pupilIdsHackAttempt, dfeNumber)
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('Validation failed')
+        }
+      })
     })
   })
 
