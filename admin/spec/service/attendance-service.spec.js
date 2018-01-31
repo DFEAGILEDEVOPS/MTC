@@ -22,6 +22,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
+      spyOn(pinService, 'expireMultiplePins')
       await service.updatePupilAttendanceBySlug(slugs, code, userId)
       expect(pupilDataService.sqlFindPupilsByUrlSlug).toHaveBeenCalled()
       done()
@@ -48,6 +49,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
+      spyOn(pinService, 'expireMultiplePins')
       await service.updatePupilAttendanceBySlug(slugs, code, userId)
       expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(code)
       done()
@@ -74,6 +76,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
+      spyOn(pinService, 'expireMultiplePins')
       await service.updatePupilAttendanceBySlug(slugs, code, userId)
       expect(pupilAttendanceDataService.findByPupilIds).toHaveBeenCalled()
       done()
@@ -86,7 +89,7 @@ describe('attendanceService', () => {
       // Returning an empty array means there arent any pupils that already have a
       // pupilAttendance record, so all of them will be an update
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([]))
-
+      spyOn(pinService, 'expireMultiplePins')
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       await service.updatePupilAttendanceBySlug(slugs, code, userId)
@@ -102,6 +105,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(Promise.resolve([pupilAttendanceMock]))
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
+      spyOn(pinService, 'expireMultiplePins')
       await service.updatePupilAttendanceBySlug(slugs, code, userId)
       expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith([pupilMock.id], attendanceCodeMock.id, userId)
       expect(pupilAttendanceDataService.sqlInsertBatch).not.toHaveBeenCalled()
