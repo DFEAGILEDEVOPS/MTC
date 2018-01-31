@@ -28,3 +28,15 @@ Feature:
     And I choose to add a pupil by clicking Add Pupils link
     Then I should see the added pupil details on the pupil register page
 
+  @remove_all_groups
+  Scenario: Group coloumn is populated with group name when pupil is part of a group
+    Given I have a group of pupils
+    When I am on the Pupil Register page
+    Then I should see each pupil row have the group coloumn populated with the group name
+
+  @remove_all_groups
+  Scenario: Pupils with no group have no entry in the group coloumn
+    Given I have a group of pupils
+    When I am on the Pupil Register page
+    Then any pupils not part of a group should not have an entry for group
+
