@@ -11,6 +11,13 @@ class PupilReasonPage < SitePrism::Page
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
+  element :filter_label, '.filter-label', text: 'Filter by groups'
+  element :opened_filter, '.filter-label.active', text: 'Filter by groups'
+  sections :groups, '#filterByGroup li' do
+    element :checkbox, '.pupils-not-taking-the-check'
+    element :name, '.font-xsmall'
+  end
+
   element :select_all_pupils, '#selectAll'
   element :unselect_all_pupils, '#selectAll'
   section :pupil_list, 'tbody' do

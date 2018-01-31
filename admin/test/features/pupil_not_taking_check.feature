@@ -173,3 +173,19 @@ Feature:
     Given I have previously added a reason for a pupil
     When I am on the generate pupil pins page
     Then I should not see the pupil in the list
+
+  @remove_all_groups
+  Scenario: Pupils can be filtered by group
+    Given I have a group of pupils
+    When I choose to filter pupils via group on the pupil reason page
+    Then only those pupils from the group should be displayed
+
+  @remove_all_groups
+  Scenario: Group filter is not displayed when there are no groups
+    Given I am on the pupil reason page
+    Then I should not see the group filter
+
+  @remove_all_groups
+  Scenario: Group filter is not displayed when there are no groups
+    Given I have a group of pupils
+    Then the group filter should be closed by default

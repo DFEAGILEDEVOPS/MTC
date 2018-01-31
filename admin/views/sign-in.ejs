@@ -10,7 +10,7 @@
 
         <p class="lede" id="lead-paragraph">Sign-in to access the Check Development Service</p>
 
-        <form action="/sign-in" method="post" aria-label="Sign-in below" autocomplete="off">
+        <form action="/sign-in" method="post" aria-label="Sign-in below" autocomplete="off" autocapitalize="none">
             <div class="form-group">
                 <label for="username" class="form-label-bold"> Username </label>
                 <input class="form-control"
@@ -18,7 +18,9 @@
                        name="username"
                        type="text"
                        aria-required="true"
-                       aria-label="Enter your user name.">
+                       aria-label="Enter your user name."
+                       spellcheck="false"
+                       autocorrect="off">
             </div>
 
             <div class="form-group">
@@ -28,7 +30,9 @@
                        name="password"
                        type="password"
                        aria-required="true"
-                       aria-label="Enter your password.">
+                       aria-label="Enter your password."
+                       spellcheck="false"
+                       autocorrect="off">
             </div>
 
             <div class="form-group">
