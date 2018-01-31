@@ -228,8 +228,12 @@ end
 
 Then(/^the pin should be expired$/) do
   generate_pupil_pins_page.load
-  pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
-  expect(pupil_pins).to_not include @pupil_name
+  if generate_pupil_pins_page.has_pupil_list?
+    pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+    expect(pupil_pins).to_not include @pupil_name
+  else
+    expect(generate_pupil_pins_page).to have_no_pupil_list
+  end
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
