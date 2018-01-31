@@ -123,8 +123,9 @@ const saveCheckForm = async (req, res, next) => {
   let deleteDir
   let fileName
 
+  console.log('Upload file: ', uploadFile)
   // Various errors cause a page to be rendered instead, and it *needs* a title
-  if (!uploadFile) {
+  if (!(uploadFile && path.extname(uploadFile.filename.toLowerCase()) === '.csv')) {
     // Either it actually wasn't uploaded, or it failed one the busboy checks: e.g.
     // * mime-type needs to be text/csv (.csv)
     // * uploaded from the wrong path
