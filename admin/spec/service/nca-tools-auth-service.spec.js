@@ -1,17 +1,9 @@
 'use strict'
-/* global describe, it, expect */
+/* global describe, it, expect, fail */
 
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
-const proxyquire = require('proxyquire')
-const NcaToolsAuthTokenMock = function () {
-  this.save = function () {
-    return new Promise(function (resolve) {
-      resolve({_id: 111})
-    })
-  }
-}
-const ncaToolsAuthService = proxyquire('../../lib/nca-tools-auth-service', {'../models/nca-tools-auth-token': NcaToolsAuthTokenMock})
+const ncaToolsAuthService = require('../../services/nca-tools-auth.service')
 
 const recipientFakePrivateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAv6UHh2iibgIBb9QSi7l7nSlx2bsyzYkRTHgleZ9bJrxwPAe7
@@ -114,9 +106,9 @@ const data = 'SessionToken=abc-1234;UserName=Test User;UserType=SuperUser;School
 const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
 
 describe('nca tools auth service', function () {
-  it('authenticates a valid packet', async function (done) {
+  it('authenticates a valid packet', () => {
     try {
-      const result = await ncaToolsAuthService(
+      const result = ncaToolsAuthService.authenticate(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
@@ -126,56 +118,31 @@ describe('nca tools auth service', function () {
       )
       expect(result).toBeDefined()
       expect(result.SessionToken).toBeDefined()
-      expect(result.role).toBeDefined()
     } catch (error) {
       console.log(error)
-      done(error)
+      fail(error)
     }
-    done()
   })
 
-  it('maps to teacher for an unknown role', async function (done) {
+  it('throws an error if the key is missing', () => {
     try {
-      const data = 'SessionToken=abcd-1234;UserName=Test User;UserType=Batman;School=9991001;EmailAddress=example@example.com'
-      const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
-      const result = await ncaToolsAuthService(
-        encKeyBuf.toString('base64'),
+      ncaToolsAuthService.authenticate(
+        undefined,
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
         signatureB64,
         senderFakePublicKey,
         recipientFakePrivateKey
       )
-      expect(result).toBeDefined()
-      expect(result.role).toBeDefined()
-      expect(result.role).toBe('TEACHER')
-      expect(result.UserType).toBe('Batman')
-    } catch (error) {
-      console.log(error)
-      done(error)
-    }
-    done()
-  })
-
-  it('rejects a promise if the key is missing', async function (done) {
-    try {
-      await ncaToolsAuthService(
-        encIvBuf.toString('base64'),
-        encBuf.toString('base64'),
-        signatureB64,
-        senderFakePublicKey,
-        recipientFakePrivateKey
-      )
-      done('promise resolved instead of rejected')
+      fail('error should have been thrown for missing encKey parameter')
     } catch (error) {
       expect(error.message).toBe('Missing parameters')
-      done()
     }
   })
 
-  it('rejects a promise if the key is null', async function (done) {
+  it('throws an error if the key is null', () => {
     try {
-      await ncaToolsAuthService(
+      ncaToolsAuthService.authenticate(
         null,
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
@@ -183,16 +150,15 @@ describe('nca tools auth service', function () {
         senderFakePublicKey,
         recipientFakePrivateKey
       )
-      done('promise resolved instead of rejected')
+      fail('error should have been thrown due to null encKey parameter')
     } catch (error) {
       expect(error.message).toBe('Missing parameters')
-      done()
     }
   })
 
-  it('rejects a promise if the signature is invalid', async function (done) {
+  it('throws an error if the signature is invalid', () => {
     try {
-      await ncaToolsAuthService(
+      ncaToolsAuthService.authenticate(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
@@ -200,18 +166,17 @@ describe('nca tools auth service', function () {
         senderFakePublicKey,
         recipientFakePrivateKey
       )
-      done('promise resolved instead of rejected')
+      fail('error should have been thrown due to invalid signature')
     } catch (error) {
       expect(error.message).toBe('Signature failed verification')
-      done()
     }
   })
 
-  it('rejects a promise if the SessionToken is not provided', async function (done) {
+  it('throws an error if the SessionToken is not provided', () => {
     try {
       const data = 'UserName=Test User;UserType=SuperUser;School=9991001;EmailAddress=example@example.com'
       const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
-      await ncaToolsAuthService(
+      ncaToolsAuthService.authenticate(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
         encBuf.toString('base64'),
@@ -219,10 +184,9 @@ describe('nca tools auth service', function () {
         senderFakePublicKey,
         recipientFakePrivateKey
       )
-      done('promise resolved instead of rejected')
+      fail('error should have been thrown instead due to missing session token')
     } catch (error) {
       expect(error.message).toBe('No session token provided')
-      done()
     }
   })
 })
