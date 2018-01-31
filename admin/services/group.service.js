@@ -86,4 +86,19 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
   return newGroup.insertId
 }
 
+/**
+ * Find groups that have pupils that can get PINs assigned.
+ * @param schoolId
+ * @param pupils
+ * @returns {Promise<*>}
+ */
+groupService.filterGroupsByPupil = async (schoolId, pupils) => {
+  let pupilIds = ''
+  if (pupils.length > 0) {
+    pupils.map(p => { if (p.group_id) pupilIds += "'" + p.group_id + "', " })
+    pupilIds = pupilIds.length > 0 ? pupilIds.substr(0, pupilIds.length - 2) : ''
+  }
+  return groupDataService.sqlFindGroupsByIds(schoolId, pupilIds)
+}
+
 module.exports = groupService

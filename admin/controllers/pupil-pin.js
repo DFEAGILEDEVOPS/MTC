@@ -4,6 +4,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')
+const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 
@@ -45,7 +46,7 @@ const getGeneratePinsList = async (req, res, next) => {
       return next(Error(`School [${req.user.school}] not found`))
     }
     pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
-    groups = await pinGenerationService.filterGroups(req.user.schoolId, pupils)
+    groups = await groupService.filterGroupsByPupil(req.user.schoolId, pupils)
   } catch (error) {
     return next(error)
   }
