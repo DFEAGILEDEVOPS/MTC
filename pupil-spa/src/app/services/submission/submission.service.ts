@@ -46,7 +46,7 @@ export class SubmissionService {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const requestArgs = new RequestOptions({headers: headers});
-    await this.http.post(`${environment.apiURL}/api/completed-check1`,
+    await this.http.post(`${environment.apiURL}/api/completed-check`,
       { ...localStorageData },
       requestArgs)
       .retryWhen(errors =>

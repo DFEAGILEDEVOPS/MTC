@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
+import { environment } from '../../environments/environment';
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -211,9 +212,10 @@ export class CheckComponent implements OnInit {
             // Display pending screen for the minimum configurable time
             const end = Date.now();
             const duration = end - start;
-            if (duration < 2000) {
-              const displaytime = 2000 - duration;
-              await this.sleep(displaytime);
+            const minDisplay = environment.submissionPendingViewMinDisplay;
+            if (duration < minDisplay) {
+              const displayTime = minDisplay - duration;
+              await this.sleep(displayTime);
             }
             return 'check-complete';
           })
