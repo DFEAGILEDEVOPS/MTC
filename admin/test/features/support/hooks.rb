@@ -68,13 +68,14 @@ Before("@no_pin") do
   visit Capybara.app_host + '/sign-out'
 end
 
-After("@multiple_pupil_upload") do
-  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
-end
-
-After("@remove_all_groups") do
+Before("@remove_all_groups") do
   step 'I am on the groups page'
   group_pupils_page.remove_all_groups
+  visit Capybara.app_host + '/sign-out'
+end
+
+After("@multiple_pupil_upload") do
+  FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
 After do |scenario|
