@@ -139,8 +139,7 @@ Feature: Generate Pupil PINs
   Scenario: School Password must be generated from the specified pool of characters
     Given I have generated a pin for a pupil
     Then school password should be generated from the specified pool of characters
-
-  @wip @bug_18960
+    
   Scenario: Pin is expired when pupil is not taking the check
     Given I have generated a pin for a pupil
     When I decide the pupil should not be taking the check
