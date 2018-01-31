@@ -9,6 +9,7 @@ $(function () {
     var $formElement = $('#upload-form')
     var $removeElement = $('#removeUploadedFile')
     var $uploadButton = $('#upload-form-submit')
+    var isSubmitted = false
 
     $removeElement.on('click', function (e) {
       $removeElement.css('visibility', 'hidden')
@@ -25,8 +26,12 @@ $(function () {
     })
 
     $formElement.submit(function () {
+      if (isSubmitted) {
+        return false
+      }
       $formElement.val('Sending...')
-      $(this).attr('disabled', 'disabled')
+      isSubmitted = true
+      return true
     })
   }
 
