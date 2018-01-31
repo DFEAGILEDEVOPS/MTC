@@ -213,8 +213,9 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     }
   ]
   const insertSql = []
-  for (let index = 0; index < pupilIds.length; index++) {
-    const pupilId = pupilIds[index]
+  const pupilIdValues = Object.values(pupilIds)
+  for (let index = 0; index < pupilIdValues.length; index++) {
+    const pupilId = pupilIdValues[index]
     insertSql.push(`(@pg${index},@pp${index})`)
     params.push({
       name: `pg${index}`,
@@ -232,7 +233,6 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
-
   return sqlService.modifyWithTransaction(sql, params)
 }
 
