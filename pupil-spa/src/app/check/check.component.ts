@@ -1,10 +1,9 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
-import { environment } from '../../environments/environment';
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckSubmissionPending, CheckComplete, CheckSubmissionFailed, RefreshDetected } from '../services/audit/auditEntry';
+import { CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -29,8 +28,6 @@ export class CheckComponent implements OnInit {
   private static spokenQuestionRe = /^SQ(\d+)$/;
   private static loadingRe = /^L(\d+)$/;
   private static submissionPendingRe = /^submission-pending$/;
-  private static checkCompleteRe = /^check-complete/;
-  private static submissionFailedRe = /^submission-failed'$/;
 
   public config: Config;
   public isWarmUp: boolean;
@@ -206,35 +203,6 @@ export class CheckComponent implements OnInit {
         this.auditService.addEntry(new CheckSubmissionPending());
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
-        const start = Date.now();
-        this.viewState = await Promise.resolve(this.submissionService.submitData()
-          .then(async () => {
-            // Display pending screen for the minimum configurable time
-            const end = Date.now();
-            const duration = end - start;
-            const minDisplay = environment.submissionPendingViewMinDisplay;
-            if (duration < minDisplay) {
-              const displayTime = minDisplay - duration;
-              await this.sleep(displayTime);
-            }
-            return 'check-complete';
-          })
-          .catch(() => {
-            return 'submission-failed';
-          }));
-        break;
-      }
-      case CheckComponent.checkCompleteRe.test(stateDesc): {
-        // Show the check complete screen
-        this.auditService.addEntry(new CheckComplete());
-        // this.submissionService.submitData().catch(error => new Error(error));
-        this.isWarmUp = false;
-        break;
-      }
-      case CheckComponent.submissionFailedRe.test(stateDesc): {
-        // Show the check complete failed screen
-        this.auditService.addEntry(new CheckSubmissionFailed());
-        this.isWarmUp = false;
         break;
       }
     }
@@ -323,10 +291,8 @@ export class CheckComponent implements OnInit {
       }
     }
 
-    // Set up the final page
+    // Set up the submission stage
     this.allowedStates.push('submission-pending');
-    this.allowedStates.push('submission-sent');
-    this.allowedStates.push('submission-failed');
     // console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 
@@ -419,9 +385,5 @@ export class CheckComponent implements OnInit {
       return false;
     }
     return true;
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

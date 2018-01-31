@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
-import { environment } from '../environments/environment';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -48,7 +47,9 @@ const appRoutes: Routes = [
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent}
+  {path: 'sign-in-failure', component: LoginFailureComponent },
+  {path: 'check-complete', component: CheckCompleteComponent },
+  {path: 'submission-failed', component: SubmissionFailedComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
