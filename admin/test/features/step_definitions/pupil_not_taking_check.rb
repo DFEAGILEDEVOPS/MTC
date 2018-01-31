@@ -287,3 +287,25 @@ Then(/^I should not see the pupil in the list$/) do
   pupil_list = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
   expect(pupil_list).to_not include @pupil_lastname + ', ' + @pupil_forename
 end
+
+When(/^I choose to filter pupils via group on the pupil reason page$/) do
+  pupil_reason_page.load
+  pupil_reason_page.filter_label.click
+  group = pupil_reason_page.groups.find {|group| group.name.text == @group_name}
+  group.checkbox.click
+end
+
+Then(/^only those pupils from the group should be displayed$/) do
+  filtered_pupils = pupil_reason_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(filtered_pupils.sort).to eql @pupil_group_array.sort
+end
+
+Then(/^I should not see the group filter$/) do
+  expect(pupil_reason_page).to have_no_filter_label
+end
+
+Then(/^the group filter should be closed by default$/) do
+  pupil_reason_page.load
+  expect(pupil_reason_page).to have_filter_label
+  expect(pupil_reason_page).to have_no_opened_filter
+end
