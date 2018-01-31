@@ -8,7 +8,10 @@
       "type": "node",
       "request": "launch",
       "name": "Node Debugger",
-      "program": "${workspaceFolder}/server.js"
+      "program": "${workspaceFolder}/server.js",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ]
 }
