@@ -148,7 +148,9 @@ busboy.extend(app, {
   path: 'data/files',
   allowedPath: (url) => allowedPath(url),
   mimeTypeLimit: [
-    'text/csv'
+    'text/csv',
+    'text/plain',
+    'application/octet-stream'
   ]
 })
 
