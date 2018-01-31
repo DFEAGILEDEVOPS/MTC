@@ -33,10 +33,10 @@ Then(/^I should see a heading on the page$/) do
 end
 
 Then(/^I should see set of reasons I can choose$/) do
-  expected_reason_hash = SqlDbHelper.get_attendance_codes['reason']
-  attend_hash = pupil_reason_page.get_attendance_code
-  pupil_reason_page.attendance_codes.each_with_index {|c| actual_reason_hash = find("label[for=#{attend_hash[c['id']]}]").text}
-  expect(actual_reason_hash).to eql expected_reason_hash
+  expected_reason_hash = SqlDbHelper.get_attendance_codes.map{|code| code['reason']}
+  expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map{|code| code['id']}.sort
+  actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
+  expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
 end
 
 Then(/^I should see a back to top option$/) do
@@ -58,8 +58,8 @@ When(/^I want to add a reason for pupils not taking a check$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
-  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
-  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
+  school_id = SqlDbHelper.find_teacher(@teacher)['school_id']
+  pupils_from_db = SqlDbHelper.list_of_pupils_from_school(school_id)
   expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
@@ -87,8 +87,8 @@ And(/^I want to sort the surnames in to desecending order$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname in descending order$/) do
-  school_id = MongoDbHelper.find_teacher(@teacher).first['school']
-  pupils_from_db = MongoDbHelper.list_of_pupils_from_school(school_id)
+  school_id = SqlDbHelper.find_teacher(@teacher)['school_id']
+  pupils_from_db = SqlDbHelper.list_of_pupils_from_school(school_id)
   expect(pupils_from_db.map {|pupil| pupil['lastName'] + ', ' + pupil['foreName']}.sort.reverse).to eql pupil_reason_page.pupil_list.rows.map {|t| t.name.text}
 end
 
@@ -133,10 +133,10 @@ Then(/^my selections are cleared$/) do
 end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
-  attend_hash = pupil_reason_page.get_attendance_code
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == reason}.click
+  pupil_reason_page.select_reason(reason)
   @pupil_row = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupil_forename = @pupil_row.name.text.split(',')[1].strip
+  @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
   @pupil_row.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
 end
@@ -181,8 +181,7 @@ end
 
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
-  attend_hash = pupil_reason_page.get_attendance_code
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
+  pupil_reason_page.select_reason(@reason)
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
@@ -216,10 +215,10 @@ Given(/^I have previously added a reason for a pupil$/) do
 end
 
 But(/^I decide to change it$/) do
+  @updated_reason = 'Just arrived with EAL'
   pupils_not_taking_check_page.add_reason.click
   page.execute_script "window.scrollBy(0,500)"
-  attend_hash = pupil_reason_page.get_attendance_code
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == 'Just arrived'}.click
+  pupil_reason_page.select_reason(@updated_reason)
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_forename}
   pupil.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
@@ -231,7 +230,7 @@ Then(/^the updated reason should be stored$/) do
   pupil = SqlDbHelper.find_pupil_from_school(@pupil_forename, SqlDbHelper.find_teacher(teacher.strip)['school_id'])
   pupil_attendance_code = SqlDbHelper.get_attendance_code_for_a_pupil(pupil['id'])
   @attendance_code = SqlDbHelper.check_attendance_code(pupil_attendance_code['attendanceCode_id'])
-  expect(@attendance_code['reason']).to eql 'Just arrived'
+  expect(@attendance_code['reason']).to eql @updated_reason
 end
 
 When(/^I have navigated away and then return to the pupil not taking check page$/) do
@@ -267,8 +266,7 @@ end
 
 When(/^I select multiple pupils with the (.+) reason$/) do |reason|
   @reason = reason
-  attend_hash = pupil_reason_page.get_attendance_code
-  pupil_reason_page.attendance_codes.find {|c| find("label[for=#{attend_hash[c['id']]}]").text == @reason}.click
+  pupil_reason_page.select_reason(@reason)
   @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
@@ -281,4 +279,33 @@ end
 Then(/^the sticky banner should display the total pupil count for pupil not taking the check$/) do
   total_pupil_count = pupils_not_taking_check_page.pupil_list.rows.count
   expect(@page.sticky_banner.selected_pupil_count.text).to eql total_pupil_count.to_s
+end
+
+Then(/^I should not see the pupil in the list$/) do
+  generate_pupil_pins_page.generate_pin_btn.click if generate_pupil_pins_page.displayed?
+  generated_pins_page.generate_more_pin_btn.click if generated_pins_page.displayed?
+  pupil_list = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+  expect(pupil_list).to_not include @pupil_lastname + ', ' + @pupil_forename
+end
+
+When(/^I choose to filter pupils via group on the pupil reason page$/) do
+  pupil_reason_page.load
+  pupil_reason_page.filter_label.click
+  group = pupil_reason_page.groups.find {|group| group.name.text == @group_name}
+  group.checkbox.click
+end
+
+Then(/^only those pupils from the group should be displayed$/) do
+  filtered_pupils = pupil_reason_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(filtered_pupils.sort).to eql @pupil_group_array.sort
+end
+
+Then(/^I should not see the group filter$/) do
+  expect(pupil_reason_page).to have_no_filter_label
+end
+
+Then(/^the group filter should be closed by default$/) do
+  pupil_reason_page.load
+  expect(pupil_reason_page).to have_filter_label
+  expect(pupil_reason_page).to have_no_opened_filter
 end

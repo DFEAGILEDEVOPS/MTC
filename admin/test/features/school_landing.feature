@@ -56,7 +56,7 @@ Feature:
 
   Scenario: School landing page has option to complete the hdf
     Given I am on the school landing page
-    Then I should see an option to complete the hdf
+    Then I should see a disabled option for the hdf
 
   Scenario: School landing page has option to view results of the check
     Given I am on the school landing page
