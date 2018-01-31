@@ -31,7 +31,8 @@ checkDataService.sqlFindOneByCheckCode = async function (checkCode) {
       type: TYPES.UniqueIdentifier
     }
   ]
-  return sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
+  const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
+  return R.head(result)
 }
 
 /**
