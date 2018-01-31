@@ -12,9 +12,9 @@ const pinGenerationService = require('../../services/pin-generation.service')
 const pinService = require('../../services/pin.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const qrService = require('../../services/qr.service')
-const School = require('../../models/school')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
+const schoolMock = require('../mocks/school')
 
 describe('pupilPin controller:', () => {
   function getRes () {
@@ -95,7 +95,7 @@ describe('pupilPin controller:', () => {
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(new School({ name: 'Test School' }))
+        sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil-pin.js', {
           '../../services/data-access/school.data.service': schoolDataService
         }).getGeneratePinsList
@@ -160,7 +160,7 @@ describe('pupilPin controller:', () => {
       spyOn(checkStartService, 'prepareCheck')
       spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
-      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(new School({ _id: 1, name: 'Test School' }))
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
       spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue({ schoolPin: '', pinExpiresAt: '' })
       spyOn(schoolDataService, 'sqlUpdate').and.returnValue(null)
       spyOn(res, 'redirect').and.returnValue(null)
