@@ -49,7 +49,7 @@
         <% } %>
 
         <h1 class="heading-xlarge">Upload new form</h1>
-        <h2 class="heading-medium top-padding-30"><a name="csv-guidance">Download example</h2>
+        <h2 class="heading-medium top-padding-30"><a name="csv-guidance">Download example</a></h2>
 
         <ol class="numeric-list">
             <li>
@@ -67,13 +67,13 @@
 
         <h2 class="heading-medium">Upload file(s)</h2>
 
-        <form action="/test-developer/upload-new-form" method="post" enctype="multipart/form-data" id="upload-form">
+        <form action="/test-developer/upload-new-form" method="post" enctype="multipart/form-data" encoding="multipart/form-data" id="upload-form">
             <div class="form-group<% if (err) { %> form-group-error<% } %>">
                 <% if (err) { %>
                 <label class="error-message"><%= err.message %></label>
                 <% } %>
                 <div class="font-xsmall">
-                    <input type="file" name="csvFile" id="file-upload" accept="text/csv" aria-label="Choose a file to upload" />
+                    <input type="file" name="csvFile" id="file-upload" accept=".csv" aria-label="Choose a file to upload" />
                 </div>
                 <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file." />
             </div>
