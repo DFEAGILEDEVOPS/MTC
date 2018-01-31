@@ -128,7 +128,7 @@ export class CheckComponent implements OnInit {
    * As there is a linear sequence of events the next state is determined by the
    * current state. No args required.
    */
-  private async changeState() {
+  private changeState() {
     // console.log(`check.component: changeState() called. Current state is ${this.state}`);
     this.state += 1; // increment state to next level - it's defined by an array
     // console.log(`changeState(): state is now set to ${this.state}`);
