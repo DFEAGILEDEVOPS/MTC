@@ -8,7 +8,6 @@ class WarmUpPage < SitePrism::Page
   element :start_warm_up_questions, '#start-now-button'
   element :welcome_message, '.lede', text: "There will be 3 practice questions"
   element :start_now, '#start-now-button'
-  # element :warm_up_label, '.warm-up-questions-label'
 
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 
