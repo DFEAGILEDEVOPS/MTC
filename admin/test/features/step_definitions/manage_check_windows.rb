@@ -31,8 +31,8 @@ Then(/^I should see a option to view the progress report$/) do
 end
 
 Then(/^windows in the past cannot be removed$/) do
-  expired_window = manage_check_window_page.find_check_row('Check Window Test A')
-  expired_window_greyed_out = manage_check_window_page.find_expired_check_row('Check Window Test A')
+  expired_window = manage_check_window_page.find_check_row('Past Development Phase')
+  expired_window_greyed_out = manage_check_window_page.find_expired_check_row('Past Development Phase')
   expect(expired_window).to_not have_remove
   expect(expired_window_greyed_out).to have_check_name
   expect(expired_window_greyed_out).to have_admin_start_date

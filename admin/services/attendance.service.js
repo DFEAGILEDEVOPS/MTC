@@ -5,6 +5,7 @@ const R = require('ramda')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
+const pinService = require('./pin.service')
 
 const attendanceService = {}
 
@@ -32,6 +33,8 @@ attendanceService.updatePupilAttendanceBySlug = async (slugs, code, userId) => {
   if (inserts && inserts.length) {
     await pupilAttendanceDataService.sqlInsertBatch(inserts, attendanceCode.id, userId)
   }
+
+  await pinService.expireMultiplePins(ids)
 }
 
 /**

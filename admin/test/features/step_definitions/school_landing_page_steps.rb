@@ -1,5 +1,5 @@
 Then(/^I should see (.*)'s school name$/) do |teacher|
-  school_id = SqlDbHelper.find_teacher(teacher)[0]['school_id']
+  school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_name = SqlDbHelper.find_school(school_id)['name']
   expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
 end
@@ -82,4 +82,9 @@ end
 Then(/^I should see an option to complete the hdf$/) do
   expect(school_landing_page).to have_hdf
   expect(school_landing_page).to have_hdf_text
+end
+
+Then(/^I should see a disabled option for the hdf$/) do
+  expect(school_landing_page).to have_hdf_disabled
+  expect(school_landing_page).to have_hdf_disabled_text
 end

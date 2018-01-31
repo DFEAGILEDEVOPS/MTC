@@ -76,8 +76,10 @@ end
 
 Given(/^I have attempted to enter a school I do not attend upon login$/) do
   sign_in_page.load
-  SqlDbHelper.expire_pin("Automated","Account",1,false)
-  SqlDbHelper.reset_pin("Automated","Account",1,"9999")
+  ct = Time.now
+  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.expire_pin("Standard","Pupil",1,false)
+  SqlDbHelper.reset_pin("Standard","Pupil",1,new_time,"9999")
   @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
   schools = SqlDbHelper.get_list_of_schools.delete_if{|a| a['id'] == @pupil_information['school_id']}
   sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])

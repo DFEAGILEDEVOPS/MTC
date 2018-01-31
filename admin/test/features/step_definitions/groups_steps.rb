@@ -286,3 +286,19 @@ Then(/^I should the group stored in the DB$/) do
   pupils_names_from_db = SqlDbHelper.pupils_assigned_to_group(pupil_ids_array)
   expect(pupils_names_from_db).to eql @pupil_names
 end
+
+Given(/^I have a group of pupils$/) do
+  step 'I am on the create group page'
+  step 'I enter a valid group name'
+  @pupil_group_array = []
+  add_edit_groups_page.pupil_list.rows[0].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[0].name.text
+  page.execute_script "window.scrollBy(0,500)"
+  add_edit_groups_page.pupil_list.rows[1].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[1].name.text
+  add_edit_groups_page.pupil_list.rows[2].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[2].name.text
+  add_edit_groups_page.pupil_list.rows[3].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[3].name.text
+  add_edit_groups_page.sticky_banner.confirm.click
+end

@@ -1,21 +1,20 @@
 'use strict'
 
-const crypto = require('crypto')
 const iconv = require('iconv-lite')
-const NcaToolsAuthToken = require('../models/nca-tools-auth-token')
+const crypto = require('crypto')
 
-/**
- * Decrypt and authenticate a data packet
+const service = {
+  /**
+   * @description decrypt and validate nca tools request payload
  * @param {String} encKey  (base64 encoded)
  * @param {String} encIv   (base64 encoded)
  * @param {String} encData (base64 encoded)
  * @param {String} encSignature (base64 encoded)
- * @return {Promise} plain object if ok: Example output: { School: 999, EmailAddress: me@mydomain.com, ... }
+ * @return {object} Example output: { School: 999, EmailAddress: me@mydomain.com, ... }
  */
-const authenticate = function (encKey, encIv, encData, encSignature, senderPublicKey, recipientPrivateKey) {
-  return new Promise(async function (resolve, reject) {
-    if (!(encKey && encIv && encData && encSignature && senderPublicKey && recipientPrivateKey)) {
-      return reject(new Error('Missing parameters'))
+  authenticate: (encKey, encIv, encData, encSignature, ncaToolsPublicKey, mtcPrivateKey) => {
+    if (!(encKey && encIv && encData && encSignature && ncaToolsPublicKey && mtcPrivateKey)) {
+      throw new Error('Missing parameters')
     }
 
     /**
@@ -25,75 +24,36 @@ const authenticate = function (encKey, encIv, encData, encSignature, senderPubli
     const isVerified = verifySignature(
       Buffer.from(encSignature, 'base64'),
       Buffer.from(encData, 'base64'),
-      senderPublicKey
+      ncaToolsPublicKey
     )
 
     if (!isVerified) {
       // the signature does not verify, so the user cannot be logged in.
       // There is no point continuing.
-      return reject(new Error('Signature failed verification'))
+      throw new Error('Signature failed verification')
     }
 
-    /**
-     *
-     * @type {Buffer}
-     */
-    const key = rsaDecrypt(Buffer.from(encKey, 'base64'), recipientPrivateKey)
+    const key = rsaDecrypt(Buffer.from(encKey, 'base64'), mtcPrivateKey)
+    const iv = rsaDecrypt(Buffer.from(encIv, 'base64'), mtcPrivateKey)
 
-    /**
-     *
-     * @type {Buffer}
-     */
-    const iv = rsaDecrypt(Buffer.from(encIv, 'base64'), recipientPrivateKey)
-
-    /**
-     * Decrypt the message data, which was encrypted with the key and IV
-     * @type {String}
-     */
+    // Decrypt the message data, which was encrypted with the key and IV
     const plaintext = decryptMessage(Buffer.from(encData, 'base64'), key, iv)
 
     if (!plaintext) {
-      return reject(new Error('Failed to decrypt message'))
+      throw new Error('Failed to decrypt message')
     }
 
-    /**
-     * Object containing properties and values
-     * @type {Object}
-     *
-     * E.g.
-     *
-     * { School: '9989998',
-       UserName: 'Mr John Smith',
-       UserType: 'Admin',
-       SessionToken: 'd61cbae7-0508-4251-ad90-ec0a3c6b8150',
-       EmailAddress: 'example@example.com' }
-     */
     const data = parseMessage(plaintext)
 
     if (!data.SessionToken) {
-      return reject(new Error('No session token provided'))
+      throw new Error('No session token provided')
     }
 
-    // Check the token is new, and not being re-used
-    try {
-      const token = new NcaToolsAuthToken({
-        _id: data.SessionToken,
-        logonDate: new Date(),
-        ncaUserName: data.UserName,
-        ncaUserType: data.UserType,
-        ncaEmailAddress: data.EmailAddress,
-        roleGiven: data.role,
-        school: data.School
-      })
-      await token.save()
-    } catch (error) {
-      return reject(new Error('Failed to save SessionToken - possible replay attack: ' + error.message))
-    }
-
-    // Session saved, successful authentication,
-    resolve(data)
-  })
+    return data
+  }
 }
+
+module.exports = service
 
 /**
  * Verify the provided signature is valid.
@@ -166,31 +126,8 @@ function parseMessage (plaintext) {
     data.School = parseInt(data.School, 10)
   }
 
-  // Map the NCA Tools UserType to our own roles
-  if (data.UserType) {
-    data.role = mapRole(data.UserType)
-  }
-
   // Record the logon
   data.logonAt = Date.now()
 
   return data
 }
-
-function mapRole (ncaUserType) {
-  const mapping = {
-    SuperAdmin: 'ADMINISTRATOR',
-    SuperUser: 'HEADTEACHER',
-    SchoolSup: 'TEACHER',
-    SchoolNom: 'TEACHER',
-    Admin: 'HELPDESK'
-  }
-
-  if (mapping[ncaUserType]) {
-    return mapping[ncaUserType]
-  }
-
-  return 'TEACHER'
-}
-
-module.exports = authenticate
