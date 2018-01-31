@@ -55,11 +55,11 @@ describe('school controller:', () => {
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
+        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         controller = require('../../controllers/school').getPupilNotTakingCheck
       })
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsFormattedMock))
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
@@ -73,9 +73,9 @@ describe('school controller:', () => {
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
         spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
-        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(Promise.resolve(attendanceCodesMock))
-        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(groupService, 'getGroups').and.returnValue(Promise.resolve(groupsMock))
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(attendanceCodesMock)
+        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
         controller = require('../../controllers/school').getSelectPupilNotTakingCheck
       })
 

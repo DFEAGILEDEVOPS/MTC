@@ -12,6 +12,24 @@ groupService.getGroups = async function (schoolId) {
 }
 
 /**
+ * Get groups and format them as an array.
+ * @param schoolId
+ * @returns {Promise<*>}
+ */
+groupService.getGroupsAsArray = async function (schoolId) {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  let groupsIndex = []
+  let groups
+  groups = await groupDataService.sqlFindGroups(schoolId)
+  if (groups.length > 0) {
+    groups.map((obj) => { groupsIndex[obj.id] = obj.name })
+  }
+  return groupsIndex
+}
+
+/**
  * Get pupils filtered by schoolId and groupId.
  * @param schoolId required.  the school context
  * @param groupIdToExclude optionally exclude a single group from the returned set
@@ -27,6 +45,7 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
 /**
  * Get group by id.
  * @param groupId
+ * @param schoolId
  * @returns {Promise<*>}
  */
 groupService.getGroupById = async function (groupId, schoolId) {
@@ -40,6 +59,7 @@ groupService.getGroupById = async function (groupId, schoolId) {
  * Update group (group and pupils assigned to groups).
  * @param id
  * @param group
+ * @param schoolId
  * @returns {Promise<boolean>}
  */
 groupService.update = async (id, group, schoolId) => {
@@ -54,6 +74,7 @@ groupService.update = async (id, group, schoolId) => {
  * Create group.
  * @param groupName
  * @param groupPupils
+ * @param schoolId
  * @returns {number} id of inserted group
  */
 groupService.create = async (groupName, groupPupils, schoolId) => {

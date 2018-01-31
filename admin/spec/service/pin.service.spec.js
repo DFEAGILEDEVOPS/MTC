@@ -53,7 +53,9 @@ describe('pin.service', () => {
       // Because we used the pupil mock we expect the pupils to have the same name, so we need
       // show the dob to differentiate.
       expect(data[0].showDoB).toBe(true)
+      expect(data[0].dateOfBirth).toBe('9 Sep 2008')
       expect(data[1].showDoB).toBe(true)
+      expect(data[1].dateOfBirth).toBe('9 Sep 2008')
     })
 
     it('does not add identification flags to the pupil when they have different names', async () => {

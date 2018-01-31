@@ -44,15 +44,18 @@ const getPupils = async (req, res, next) => {
   const order = JSON.parse(sortOrder)
   res.locals.sortOrder = typeof order === 'boolean' ? !order : true
   res.locals.sortClass = order === false ? 'sort up' : 'sort'
+
   let pupilsFormatted
+  let groupsIndex = []
+
   try {
+    groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
     const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
       const { foreName, lastName } = p
       const dob = dateService.formatShortGdsDate(p.dateOfBirth)
       const outcome = await pupilStatusService.getStatus(p)
-      // TODO: Fetch pupil's group when it's implemented
-      const group = 'N/A'
+      const group = groupsIndex[p.group_id] || '-'
       return {
         urlSlug: p.urlSlug,
         foreName,
@@ -65,6 +68,7 @@ const getPupils = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+
   pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
   pupilsFormatted.map((p, i) => {
     if (pupilsFormatted[ i + 1 ] === undefined) return
@@ -74,12 +78,14 @@ const getPupils = async (req, res, next) => {
       pupilsFormatted[ i + 1 ].showDoB = true
     }
   })
+
   req.breadcrumbs(res.locals.pageTitle)
   let { hl } = req.query
   if (hl) {
     hl = JSON.parse(hl)
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
+
   res.render('school/pupil-register', {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
