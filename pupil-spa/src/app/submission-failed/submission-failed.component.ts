@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CheckSubmissionFailed } from '../services/audit/auditEntry';
+import { AuditService } from '../services/audit/audit.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-submission-failed',
@@ -7,9 +10,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SubmissionFailedComponent implements OnInit {
 
-  constructor() { }
+  public supportNumber: string;
+
+  constructor(private auditService: AuditService) {
+    this.supportNumber = environment.supportNumber;
+  }
 
   ngOnInit() {
+    this.auditService.addEntry(new CheckSubmissionFailed());
   }
 
 }
