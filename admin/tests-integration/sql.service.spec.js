@@ -56,8 +56,8 @@ describe('sql.service:integration', () => {
     expect(row.id).toBeDefined()
     expect(row.id).toBe(1)
     expect(row.loadingTimeLimit).toBeDefined()
-    expect(row.loadingTimeLimit).toBe(5)
-    expect(row.questionTimeLimit).toBeDefined()
+    expect(row.loadingTimeLimit).toBe(2)
+    expect(row.questionTimeLimit).toBe(5)
   })
 
   it('should omit the version column from returned set', async () => {
