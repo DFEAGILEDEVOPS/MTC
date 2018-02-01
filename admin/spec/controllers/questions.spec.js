@@ -5,6 +5,8 @@ const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
 
+const pupilLoginEventService = require('../../services/pupil-logon-event.service')
+
 const pupilMockOrig = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 const pupilMock = {}
@@ -30,6 +32,7 @@ describe('Questions controller', () => {
 
   beforeEach(() => {
     res = httpMocks.createResponse()
+    spyOn(pupilLoginEventService, 'storeLogonEvent')
 
     goodReq = httpMocks.createRequest({
       method: 'POST',
@@ -138,6 +141,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -155,6 +159,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -172,6 +177,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -189,6 +195,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -207,6 +214,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(401)
       expect(data.error).toBe('Unauthorised')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -225,6 +233,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -243,6 +252,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -261,6 +271,7 @@ describe('Questions controller', () => {
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
   })
