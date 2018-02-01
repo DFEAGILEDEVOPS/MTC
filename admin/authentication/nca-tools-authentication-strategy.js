@@ -56,7 +56,7 @@ module.exports = async function (req, done) {
   } catch (error) {
     // auth failed
     logonEvent.isAuthenticated = false
-    logonEvent.errorMsg = error.message
+    logonEvent.errorMsg = `${error.message}\nline ${error.lineNumber}\n${error.fileName}\n${error.stack}`
     try {
       await adminLogonEventDataService.sqlCreate(logonEvent)
     } catch (error) {
