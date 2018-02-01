@@ -1,12 +1,14 @@
 'use strict'
-/* global describe beforeAll it expect fail xit */
+/* global describe beforeAll it expect fail xit spyOn */
+
+const moment = require('moment')
+const R = require('ramda')
+const TYPES = require('tedious').TYPES
+const winston = require('winston')
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
 const sqlPool = require('../services/data-access/sql.pool.service')
-const TYPES = require('tedious').TYPES
-const moment = require('moment')
-const R = require('ramda')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
@@ -212,6 +214,157 @@ describe('sql.service:integration', () => {
       const school2 = await sql.findOneById('[school]', 1)
       expect(school2.pin).toBe(pin)
       expect(school2.pinExpiresAt.toISOString()).toBe(expiry.toISOString())
+    })
+  })
+
+  describe('data type handling', () => {
+    const table = '[integrationTest]'
+
+    it('allows a decimal type to be set manually', async () => {
+      const value = 3.14
+      const params = [{
+        name: 'tDecimal',
+        value: value,
+        type: TYPES.Decimal,
+        precision: 5,
+        scale: 2
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tDecimal) 
+         VALUES (@tDecimal);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tDecimal).toEqual(value)
+    })
+
+    it('allows a decimal type to be set automatically on create', async () => {
+      const data = { tDecimal: 6.02 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tDecimal).toEqual(data.tDecimal)
+    })
+
+    it('allows a decimal type to be set automatically on update', async () => {
+      const data = { tDecimal: 6.99 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tDecimal: 7.01 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tDecimal).toEqual(7.01)
+    })
+
+    it('allows a numeric type to be set manually', async () => {
+      const value = 96.486
+      const params = [{
+        name: 'tNumeric',
+        value: value,
+        type: TYPES.Numeric,
+        precision: 5,
+        scale: 3
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tNumeric) 
+         VALUES (@tNumeric);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tNumeric).toEqual(value)
+    })
+
+    it('allows a numeric type to be set automatically on create', async () => {
+      const data = { tNumeric: 1.660 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tNumeric).toEqual(data.tNumeric)
+    })
+
+    it('allows a numeric type to be set automatically on update', async () => {
+      const data = { tNumeric: 1.380 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tNumeric: 2.381 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tNumeric).toEqual(2.381)
+    })
+
+    it('allows a float type to be set manually', async () => {
+      const value = 9.80665
+      const params = [{
+        name: 'tFloat',
+        value: value,
+        type: TYPES.Float
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tFloat) 
+         VALUES (@tFloat);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tFloat).toBeCloseTo(value, 5)
+    })
+
+    it('allows a float type to be set automatically on create', async () => {
+      const data = { tFloat: 9.80665 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tFloat).toBeCloseTo(data.tFloat, 5)
+    })
+
+    it('allows a float type to be set automatically on update', async () => {
+      const data = { tFloat: 9.80665 }
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      await sql.update(table, { id: t.id, tFloat: 10.12345 })
+      const t2 = await sql.findOneById(table, t.id)
+      expect(t2.tFloat).toBeCloseTo(10.12345, 5)
+    })
+
+    it('allows a nvarchar to set manually', async () => {
+      const value = 'the quick' // 9 chars, col length is 10
+      const params = [{
+        name: 'tNvarchar',
+        value: value,
+        type: TYPES.NVarChar
+      }]
+      const insertResult = await sql.modify(`
+         INSERT into ${table} (tNvarchar) 
+         VALUES (@tNvarchar);
+         SELECT @@IDENTITY;`,
+        params)
+      if (!insertResult.insertId) {
+        return fail('insertId expected')
+      }
+      const t = await sql.findOneById(table, insertResult.insertId)
+      expect(t.tNvarchar).toBe('the quick')
+    })
+
+    it('allows a nvarchar to be set automatically on create', async () => {
+      const data = { tNvarchar: 'brown fox' } // 9 chars col length is 10
+      const res = await sql.create(table, data)
+      const t = await sql.findOneById(table, res.insertId)
+      expect(t.tNvarchar).toBe(data.tNvarchar)
+    })
+
+    it('raises an error on CREATE when the nvarchar provided is too long', async () => {
+      const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
+      // This will generate a warning because of the error, we can shut that up for this test
+      spyOn(winston, 'warn')
+      try {
+        await sql.create(table, data)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('String or binary data would be truncated.') // vendor message
+      }
     })
   })
 })
