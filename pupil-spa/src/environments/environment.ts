@@ -6,12 +6,17 @@
 export const environment = {
   apiURL: 'http://localhost:3001',
   production: false,
-  // Delay and max attempts for /api/completed-check api post method
+  // api/check-started
+  // Delay (ms) during retries
   checkStartAPIErrorDelay: 2000,
+  // Max attempts
   checkStartAPIErrorMaxAttempts: 3,
-  // Delay and max attempts for /api/check-started api post method
+  // api/completed-check
+  // Delay (ms) during retries
   checkSubmissionApiErrorDelay: 30000,
+  // Max attempts
   checkSubmissionAPIErrorMaxAttempts: 10,
+  // Minimum display time for submission pending view
   submissionPendingViewMinDisplay: 2000,
   // Contact number in case check submission fails
   supportNumber: '0345 278 8080'
