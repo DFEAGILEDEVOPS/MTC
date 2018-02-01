@@ -3,6 +3,7 @@ const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
+const groupDataService = require('../services/data-access/group.data.service')
 const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
@@ -40,6 +41,7 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
       return {
         id: p.id,
         pin: p.pin,
+        group_id: p.group_id,
         dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth),
         foreName: p.foreName,
         lastName: p.lastName,
@@ -52,6 +54,21 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
   // determine if more than one pupil has same full name
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   return pupils
+}
+
+/**
+ * Find groups that have pupils that can get PINs assigned.
+ * @param schoolId
+ * @param pupils
+ * @returns {Promise<*>}
+ */
+pinGenerationService.filterGroups = async (schoolId, pupils) => {
+  let pupilIds = ''
+  if (pupils.length > 0) {
+    pupils.map(p => { if (p.group_id) pupilIds += "'" + p.group_id + "', " })
+    pupilIds = pupilIds.length > 0 ? pupilIds.substr(0, pupilIds.length - 2) : ''
+  }
+  return groupDataService.sqlFindGroupsByIds(schoolId, pupilIds)
 }
 
 /**

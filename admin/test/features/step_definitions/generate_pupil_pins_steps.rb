@@ -228,12 +228,84 @@ end
 
 Then(/^the pin should be expired$/) do
   generate_pupil_pins_page.load
-  pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
-  expect(pupil_pins).to_not include @pupil_name
+  if generate_pupil_pins_page.has_pupil_list?
+    pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+    expect(pupil_pins).to_not include @pupil_name
+  else
+    expect(generate_pupil_pins_page).to have_no_pupil_list
+  end
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
+end
+
+When(/^I choose to filter via group on the generate pins page$/) do
+  generated_pins_page.load
+  generated_pins_page.generate_more_pin_btn.click
+  generate_pupil_pins_page.filter_label.click
+  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  group.checkbox.click
+end
+
+Then(/^I should only see pupils from the group$/) do
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(filtered_pupils.sort).to eql @pupil_group_array.sort
+end
+
+And(/^I should be able to generate pins for all pupils in this group$/) do
+  generate_pupil_pins_page.select_all_pupils.click
+  generate_pupil_pins_page.sticky_banner.confirm.click
+  pupils_with_pins  = generate_pupil_pins_page.pupil_list.rows.select{|row| row.has_pin?}
+  names = pupils_with_pins.map{|row| row.name.text}
+  expect(@pupil_group_array - [@excluded_pupil].sort - names).to be_empty
+end
+
+And(/^that pupil is apart of a group$/) do
+  add_edit_groups_page.load(add_or_edit: 'add')
+  step 'I enter a valid group name'
+  @excluded_pupil = @pupil_lastname + ", " + @pupil_forename
+  excluded_pupil = add_edit_groups_page.pupil_list.rows.find {|row| row.name.text == @excluded_pupil}
+  @pupil_group_array = []
+  excluded_pupil.checkbox.click
+  @pupil_group_array << excluded_pupil.name.text
+  add_edit_groups_page.pupil_list.rows[2].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[2].name.text
+  add_edit_groups_page.pupil_list.rows[3].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[3].name.text
+  add_edit_groups_page.sticky_banner.confirm.click
+end
+
+Then(/^I should only see pupils available for taking the check$/) do
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(@pupil_group_array - [@excluded_pupil]).to eql filtered_pupils
+end
+
+Given(/^I have generated pins for all pupils in a group$/) do
+  step 'I have a group of pupils'
+  step 'I choose to filter via group on the generate pins page'
+  step 'I should only see pupils from the group'
+  step 'I should be able to generate pins for all pupils in this group'
+end
+
+Then(/^I can no longer use this group to filter on the generate pins page$/) do
+  generated_pins_page.load
+  generated_pins_page.generate_more_pin_btn.click
+  expect(generate_pupil_pins_page).to have_no_filter_label
+end
+
+When(/^a pupil becomes available for pin generation again$/) do
+  SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
+end
+
+Then(/^I should be able to filter by groups on the generate pins page$/) do
+  generated_pins_page.load
+  generated_pins_page.generate_more_pin_btn.click
+  generate_pupil_pins_page.filter_label.click
+  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  group.checkbox.click
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(filtered_pupils).to eql [@pupil_group_array.first]
 end
