@@ -276,7 +276,6 @@ describe('Questions controller', () => {
       try {
         await controller.getQuestions(req, res)
       } catch (error) {
-        console.log(error)
         expect('questions controller not to').toBe('error')
         done()
       }
