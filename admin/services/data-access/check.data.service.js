@@ -142,8 +142,10 @@ checkDataService.count = async function (query) {
  * @return {Promise.<*>}
  */
 checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) {
-  const sql = `SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
-  WHERE pupil_id=@pupilId AND startedAt IS NOT NULL
+  const sql = `
+  SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
+  WHERE pupil_id=@pupilId 
+  AND startedAt IS NOT NULL
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
     {
