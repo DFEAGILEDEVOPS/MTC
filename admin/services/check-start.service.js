@@ -20,14 +20,7 @@ const checkStartService = {}
  * @return {Promise<void>}
  */
 checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
-  // validate pupilsIds.  What do we do if a single pupil id is not found (or the user doesn't have the same School?)  Ignore or throw?
-  // connection -> begin transaction
-  // generate Pins
-  // find out all previous check forms by pupil for the current check window
-  // allocate a check form to each pupil randomly (in memory)
-  // save all the check forms
-  // connection -> commit transaction
-  // on error -> rollback transaction
+  // TODO: add transaction wrapper around the service calls to generate pins and checks
 
   if (!dfeNumber) {
     throw new Error('dfeNumber is required')
