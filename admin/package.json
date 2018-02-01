@@ -96,12 +96,13 @@
       "assets/javascripts/modernizr-custom.js",
       "bin/**/*",
       "coverage/**/*",
-      "data/migrations/",
+      "data/**/*",
       "gulpfile.js",
       "public/govuk_template/**/*",
       "public/javascripts/app.js",
       "server.js",
-      "spec/mocks/*"
+      "spec/mocks/*",
+      "tests-integration/*"
     ],
     "all": true,
     "cache": true
