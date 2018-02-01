@@ -6,7 +6,7 @@ import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
-
+import 'rxjs/add/operator/toPromise';
 
 describe('WarmupCompleteComponent', () => {
   let component: WarmupCompleteComponent;
@@ -45,7 +45,7 @@ describe('WarmupCompleteComponent', () => {
       beforeEach(() => {
         submissionService = fixture.debugElement.injector.get(SubmissionService);
         spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue(Promise.resolve());
+          .and.returnValue({ toPromise: () => Promise.resolve() });
       });
       it('successfully calls submission service and audit service', async (() => {
         component.clickEvent.subscribe(g => {
@@ -64,7 +64,7 @@ describe('WarmupCompleteComponent', () => {
       beforeEach(() => {
         submissionService = fixture.debugElement.injector.get(SubmissionService);
         spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue(Promise.reject(new Error('Error')));
+          .and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
       });
       it('throws the error and logs in audit service the failure', async(() => {
         component.clickEvent.subscribe(g => {

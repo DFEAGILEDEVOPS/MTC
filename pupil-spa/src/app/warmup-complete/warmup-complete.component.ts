@@ -4,7 +4,6 @@ import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered,
   CheckStartedApiCalled,
   CheckStartedAPICallSucceeded,
-  CheckStartedAPICallFailed,
   CheckStarted } from '../services/audit/auditEntry';
 import { SubmissionService } from '../services/submission/submission.service';
 
@@ -38,14 +37,12 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
     // console.log(`warmup-complete(): onClick called()`);
     this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
-
-    this.submissionService.submitCheckStartData()
+    this.submissionService.submitCheckStartData().toPromise()
       .then(() => {
         this.auditService.addEntry(new CheckStartedAPICallSucceeded());
         this.auditService.addEntry(new CheckStartedApiCalled());
       })
       .catch((error) => {
-        this.auditService.addEntry(new CheckStartedAPICallFailed({ status: error.status, statusText: error.statusText }));
         this.auditService.addEntry(new CheckStartedApiCalled());
       });
   }

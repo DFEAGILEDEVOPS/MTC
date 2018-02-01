@@ -1,7 +1,7 @@
 export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'CheckStartedApiCalled' |
-  'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' | 'CheckComplete'
-  | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' |
-  'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded';
+  'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' | 'CheckSubmissionApiCalled' |
+  'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckComplete' | 'CheckSubmissionFailed' | 'CheckStarted' |
+  'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded';
 
 export abstract class AuditEntry {
 
@@ -77,15 +77,27 @@ export class CheckSubmissionPending extends AuditEntry {
   }
 }
 
-export class CheckComplete extends AuditEntry {
+export class CheckSubmissionApiCalled extends AuditEntry {
   constructor(data?: any) {
-    super('CheckComplete', new Date(), data);
+    super('CheckSubmissionApiCalled', new Date(), data);
+  }
+}
+
+export class CheckSubmissionAPICallSucceeded extends AuditEntry {
+  constructor(data?: any) {
+    super('CheckSubmissionAPICallSucceeded', new Date(), data);
   }
 }
 
 export class CheckSubmissionAPIFailed extends AuditEntry {
   constructor(data?: any) {
-    super('CheckSubmissionFailed', new Date(), data);
+    super('CheckSubmissionAPIFailed', new Date(), data);
+  }
+}
+
+export class CheckComplete extends AuditEntry {
+  constructor(data?: any) {
+    super('CheckComplete', new Date(), data);
   }
 }
 
