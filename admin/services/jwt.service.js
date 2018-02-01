@@ -21,8 +21,7 @@ const jwtService = {
     }
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
-    pupil.token = jwtSecret
-    await pupilDataService.sqlUpdate(R.assoc('id', pupil.id, pupil))
+    await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
 
     // TODO: for additional security add in a device Id
     const payload = {
