@@ -245,8 +245,8 @@ end
 When(/^I choose to filter via group on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.filter_label.click
-  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  generate_pupil_pins_page.group_filter.filter_label.click
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text == @group_name}
   group.checkbox.click
 end
 
@@ -293,7 +293,7 @@ end
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  expect(generate_pupil_pins_page).to have_no_filter_label
+  expect(generate_pupil_pins_page.group_filter).to have_no_filter_label
 end
 
 When(/^a pupil becomes available for pin generation again$/) do
@@ -303,8 +303,8 @@ end
 Then(/^I should be able to filter by groups on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.filter_label.click
-  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  generate_pupil_pins_page.group_filter.filter_label.click
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text == @group_name}
   group.checkbox.click
   filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils).to eql [@pupil_group_array.first]

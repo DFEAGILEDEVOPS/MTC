@@ -302,3 +302,15 @@ Given(/^I have a group of pupils$/) do
   @pupil_group_array << add_edit_groups_page.pupil_list.rows[3].name.text
   add_edit_groups_page.sticky_banner.confirm.click
 end
+
+When(/^I add these pupils to a group$/) do
+  school_landing_page.load
+  school_landing_page.group_pupils.click
+  group_pupils_page.create_group.click
+  step 'I enter a valid group name'
+  current_window_size = page.driver.browser.manage.window.size
+  page.driver.browser.manage.window.resize_to(current_window_size.width,2000)
+  @pupil_names_arr.each {|pupil| add_edit_groups_page.pupil_list.rows.find{|row| row.checkbox.click if row.name.text == pupil}}
+  page.driver.browser.manage.window.resize_to(current_window_size.width,current_window_size.height)
+  add_edit_groups_page.sticky_banner.confirm.click
+end

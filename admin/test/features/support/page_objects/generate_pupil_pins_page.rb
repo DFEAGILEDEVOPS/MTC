@@ -6,12 +6,7 @@ class GeneratePupilPinsPage < SitePrism::Page
   elements :info_message, '.list-number li'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
 
-  element :filter_label, '.filter-label', text: 'Filter by groups'
-  element :opened_filter, '.filter-label.active', text: 'Filter by groups'
-  sections :groups, '#filterByGroup li' do
-    element :checkbox, '.pupils-not-taking-the-check'
-    element :name, '.font-xsmall'
-  end
+  section :group_filter, GroupFilter, '.column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'

@@ -102,7 +102,6 @@ end
 
 Given(/^I have multiple pupils for restart$/) do
   step 'I have generated pins for multiple pupils'
-
   ct = Time.now
   new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
   @pupil_names_arr.each do|pupil|
@@ -114,7 +113,6 @@ Given(/^I have multiple pupils for restart$/) do
     pupil_id = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
     SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
   end
-
   step 'I am on the Restarts Page'
 end
 
@@ -210,4 +208,26 @@ Given(/^pupil has started a check$/) do
   step 'I am on the add pupil page'
   step 'I have submitted valid pupil details'
   step 'Pupil has taken a 2nd check'
+end
+
+When(/^they become eligable for a restart$/) do
+  ct = Time.now
+  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  @pupil_names_arr.each do|pupil|
+    pupil_lastname = pupil.split(',')[0]
+    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
+    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
+    SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 2)
+    pupil_id = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
+  end
+  step 'I am on the Restarts Page'
+end
+
+Then(/^I should be able to filter the pupil list by the group$/) do
+  restarts_page.group_filter.filter_label.click
+  group = restarts_page.group_filter.groups.find {|group| group.name.text == @group_name}
+  group.checkbox.click
+  filtered_pupils = restarts_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(filtered_pupils.sort).to eql @pupil_names_arr.sort
 end

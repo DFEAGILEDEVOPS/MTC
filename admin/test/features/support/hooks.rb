@@ -68,6 +68,13 @@ Before("@no_pin") do
   visit Capybara.app_host + '/sign-out'
 end
 
+Before("@reset_pin_restart_check") do
+  SqlDbHelper.reset_all_pins
+  SqlDbHelper.reset_all_pin_expiry_times
+  SqlDbHelper.delete_all_checks
+  SqlDbHelper.delete_all_restarts
+end
+
 Before("@remove_all_groups") do
   step 'I am on the groups page'
   group_pupils_page.remove_all_groups

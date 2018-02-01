@@ -1,4 +1,4 @@
-@generate_pupil_pins
+@generate_pupil_pins @reset_pin_restart_check
 Feature: Generate Pupil PINs
 
   @no_pin
