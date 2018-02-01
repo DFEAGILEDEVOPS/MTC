@@ -43,7 +43,7 @@ module.exports = async function (req, done) {
     } catch (error) {
       throw new Error('Failed to save NCA Tools Session Data - possible replay attack: ' + error.message)
     }
-    
+
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
     userData.role = mtcUser.mtcRole
     // auth success
