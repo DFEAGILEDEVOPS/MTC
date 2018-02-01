@@ -60,8 +60,8 @@ pupilStatusService.getStatus = async (pupil) => {
  * @returns {String}
  */
 pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPupilRestart) => {
-  const initialLogIn = pupilRestartsCount === 0 && !!latestCheck
-  const restartLogIn = pupilRestartsCount > 0 && latestCheck && latestPupilRestart &&
+  const initialLogIn = pupilRestartsCount === 0 && !!(latestCheck && latestCheck.pupilLoginDate)
+  const restartLogIn = pupilRestartsCount > 0 && latestCheck && latestCheck.pupilLoginDate && latestPupilRestart &&
     moment(latestCheck.pupilLoginDate).isAfter(latestPupilRestart.createdAt)
   return initialLogIn || restartLogIn
 }
