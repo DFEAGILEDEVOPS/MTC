@@ -61,6 +61,7 @@ groupDataService.getGroup = async function (query) {
 /**
  * Get group by id.
  * @param groupId
+ * @param schoolId
  * @returns {Promise<void>}
  */
 groupDataService.sqlFindOneById = async (groupId, schoolId) => {
@@ -88,6 +89,7 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
 /**
  * Get group by name.
  * @param groupName
+ * @param schoolId
  * @returns {Promise<void>}
  */
 groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
@@ -165,6 +167,7 @@ groupDataService.update = async function (id, data) {
  * Update group.
  * @param id
  * @param name
+ * @param schoolId
  * @returns {Promise}
  */
 groupDataService.sqlUpdate = async (id, name, schoolId) => {
@@ -210,8 +213,9 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     }
   ]
   const insertSql = []
-  for (let index = 0; index < pupilIds.length; index++) {
-    const pupilId = pupilIds[index]
+  const pupilIdValues = Object.values(pupilIds)
+  for (let index = 0; index < pupilIdValues.length; index++) {
+    const pupilId = pupilIdValues[index]
     insertSql.push(`(@pg${index},@pp${index})`)
     params.push({
       name: `pg${index}`,
@@ -229,7 +233,6 @@ groupDataService.sqlAssignPupilsToGroup = async (groupId, pupilIds) => {
     DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
     INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
     VALUES ${insertSql.join(',')};`
-
   return sqlService.modifyWithTransaction(sql, params)
 }
 
@@ -296,6 +299,22 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
   const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
   UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
   return sqlService.modifyWithTransaction(sql, params)
+}
+
+/**
+ * Find groups by ids and school id.
+ * @param schoolId
+ * @param groupIds
+ * @returns {Promise<*>}
+ */
+groupDataService.sqlFindGroupsByIds = async (schoolId, groupIds) => {
+  if (!schoolId || !groupIds || groupIds.length < 3) return false
+  const sql = `SELECT id, name 
+    FROM ${sqlService.adminSchema}.[group] 
+    WHERE school_id=${schoolId} 
+    AND id IN (${groupIds})`
+  const params = []
+  return sqlService.query(sql, params)
 }
 
 module.exports = groupDataService

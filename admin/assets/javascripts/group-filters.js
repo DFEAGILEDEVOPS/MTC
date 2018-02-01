@@ -24,7 +24,7 @@ $(function () {
   }
 
   function tableRowVisibility (groupIds) {
-    var sel = '#pupilsList > tbody > tr'
+    var sel = '.spacious > tbody > tr'
     if (groupIds.length < 1) {
       $(sel).removeClass('hidden')
     } else {
