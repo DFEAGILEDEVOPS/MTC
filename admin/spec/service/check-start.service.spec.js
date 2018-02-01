@@ -1,5 +1,4 @@
 'use strict'
-const moment = require('moment')
 
 /* global describe it expect beforeEach spyOn */
 
@@ -20,7 +19,7 @@ describe('check-start.service', () => {
           id: 12345
         })
         spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
-          id: 45678, checkStartDate: moment.utc()
+          id: 45678
         })
         spyOn(checkDataService, 'sqlCreate').and.returnValue(Promise.resolve())
         try {
@@ -31,24 +30,6 @@ describe('check-start.service', () => {
         } catch (error) {
           // we are not expecting the happy path to throw
           expect(error).toBeUndefined()
-        }
-        done()
-      })
-    })
-    describe('unhappy path', () => {
-      it('throws an error if check start date is tomorrow', async (done) => {
-        spyOn(checkFormService, 'allocateCheckForm').and.returnValue({
-          id: 12345
-        })
-        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
-          id: 45678, checkStartDate: moment.utc().add(1, 'days')
-        })
-        spyOn(checkDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-        try {
-          await service.startCheck(789)
-          expect(checkDataService.sqlCreate).not.toHaveBeenCalled()
-        } catch (error) {
-          expect(error.message).toBe('Check start date cannot be in the future')
         }
         done()
       })

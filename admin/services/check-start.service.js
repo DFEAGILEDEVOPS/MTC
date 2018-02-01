@@ -21,10 +21,6 @@ const checkStartService = {
     const checkForm = await checkFormService.allocateCheckForm()
     const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
 
-    if (checkWindow && moment(checkWindow.checkStartDate).isAfter(moment.utc())) {
-      throw new Error('Check start date cannot be in the future')
-    }
-
     // Generate a new CheckCode for this unique check
     const checkCode = uuidv4()
     // TODO: the hard coded values below are in place until check form and window move to SQL
