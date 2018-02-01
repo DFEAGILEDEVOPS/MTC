@@ -33,7 +33,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
     this.auditService.addEntry(new WarmupCompleteRendered());
   }
 
-  onClick() {
+  async onClick() {
     // console.log(`warmup-complete(): onClick called()`);
     this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);

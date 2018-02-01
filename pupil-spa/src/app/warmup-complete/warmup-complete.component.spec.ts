@@ -5,7 +5,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
-import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
+import { WarmupCompleteRendered, AuditEntry, CheckStartedApiCalled } from '../services/audit/auditEntry';
 import 'rxjs/add/operator/toPromise';
 
 describe('WarmupCompleteComponent', () => {
@@ -47,15 +47,16 @@ describe('WarmupCompleteComponent', () => {
         spyOn(submissionService, 'submitCheckStartData')
           .and.returnValue({ toPromise: () => Promise.resolve() });
       });
-      it('successfully calls submission service and audit service', async (() => {
+      it('successfully calls submission service and audit service', async (async() => {
         component.clickEvent.subscribe(g => {
           expect(g).toBe(null);
         });
-        component.onClick();
+        await component.onClick();
         fixture.whenStable().then(() => {
           fixture.detectChanges();
           expect(auditService.addEntry).toHaveBeenCalledTimes(4);
           expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallSucceeded');
+          expect(addEntrySpy.calls.all()[3].args[0].type).toEqual('CheckStartedApiCalled');
         });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
@@ -66,16 +67,16 @@ describe('WarmupCompleteComponent', () => {
         spyOn(submissionService, 'submitCheckStartData')
           .and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
       });
-      it('throws the error and logs in audit service the failure', async(() => {
+      it('throws the error and logs in audit service the failure', (async () => {
         component.clickEvent.subscribe(g => {
           expect(g).toBe(null);
         });
-        component.onClick();
-        fixture.whenStable().catch(() => {
-          fixture.detectChanges();
-          expect(auditService.addEntry).toHaveBeenCalledTimes(2);
-          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallFailed');
-        });
+        await component.onClick();
+        fixture.whenStable()
+          .then(() => {
+            expect(auditService.addEntry).toHaveBeenCalledTimes(3);
+            expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedApiCalled');
+          });
         expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
       }));
     });
