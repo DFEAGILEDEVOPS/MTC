@@ -315,8 +315,6 @@ sqlService.generateInsertStatement = async (table, data) => {
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT @@IDENTITY`
-
-  winston.debug('sql.service: SQL ', sql)
   return { sql, params }
 }
 
@@ -335,7 +333,6 @@ sqlService.generateUpdateStatement = async (table, data) => {
     generateSetStatements(R.omit(['id'], data)),
     'WHERE id=@id'
   ])
-  winston.debug('sql.service: SQL ', sql)
   return { sql, params }
 }
 
@@ -352,7 +349,6 @@ sqlService.create = async (tableName, data) => {
   winston.debug('sql.service: params: ' + params.map(p => p.value).join(', '))
   try {
     const res = await sqlService.modify(sql, params)
-    winston.debug('sql.service: INSERT RESULT: ', res)
     return res
   } catch (error) {
     winston.warn('sql.service: Failed to INSERT', error)
@@ -402,7 +398,6 @@ sqlService.update = async function (tableName, data) {
   const { sql, params } = await sqlService.generateUpdateStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params)
-    winston.debug('sql.service: UPDATE RESULT: ', res)
     return res
   } catch (error) {
     winston.warn('sql.service: Failed to UPDATE', error)
