@@ -23,10 +23,9 @@ module.exports = async function (req, done) {
     userAgent: req.headers['user-agent'],
     loginMethod: 'nca-tools'
   }
-
+  const ncaPublicKey = config.TSO_AUTH_PUBLIC_KEY
+  const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
   try {
-    const ncaPublicKey = config.TSO_AUTH_PUBLIC_KEY
-    const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
     const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
 
     try {
@@ -56,7 +55,7 @@ module.exports = async function (req, done) {
   } catch (error) {
     // auth failed
     logonEvent.isAuthenticated = false
-    logonEvent.errorMsg = `${error.message}\nline ${error.lineNumber}\n${error.fileName}\n${error.stack}`
+    logonEvent.errorMsg = `${error.message}\n${error.stack}\n${ncaPublicKey}\n${mtcPrivateKey}`
     try {
       await adminLogonEventDataService.sqlCreate(logonEvent)
     } catch (error) {
