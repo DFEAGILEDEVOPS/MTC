@@ -148,7 +148,10 @@ busboy.extend(app, {
   path: 'data/files',
   allowedPath: (url) => allowedPath(url),
   mimeTypeLimit: [
-    'text/csv'
+    'text/csv', // correct
+    'text/plain', // IE8 sends this for csv
+    'application/octet-stream', // Google Chrome can send this for csv
+    'application/vnd.ms-excel' // Windows with Office installed sends this for csv
   ]
 })
 
