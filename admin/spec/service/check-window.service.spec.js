@@ -189,5 +189,31 @@ describe('check-window.service', () => {
       expect(result.toString).toBe(expected.toString)
       expect(result).toBeTruthy()
     })
+    describe('#isLogInAllowed', () => {
+      it('should allow pupil to login if within range', async (done) => {
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
+          checkStartDate: moment.utc().subtract(1, 'days'),
+          checkEndDate: moment.utc().add(1, 'days')
+        })
+        try {
+          await service.isLogInAllowed()
+        } catch (error) {
+          fail('not expected to throw')
+        }
+        done()
+      })
+      it('should disallow pupil to login if outside of range', async (done) => {
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
+          checkStartDate: moment.utc().add(1, 'days'),
+          checkEndDate: moment.utc().subtract(1, 'days')
+        })
+        try {
+          await service.isLogInAllowed()
+        } catch (error) {
+          expect(error.message).toBe('Pupil not allowed to log in')
+        }
+        done()
+      })
+    })
   })
 })

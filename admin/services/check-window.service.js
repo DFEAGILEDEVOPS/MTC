@@ -100,6 +100,17 @@ const checkWindowService = {
   },
   assignFormsToWindow: async (checkWindowId, checkFormIds) => {
     return checkWindowDataService.sqlAssignFormsToWindow(checkWindowId, checkFormIds)
+  },
+  /**
+   * Check if pupil is allowed to log in
+   */
+  isLogInAllowed: async () => {
+    const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
+    const isAllowed = checkWindow && moment.utc().isAfter(checkWindow.checkStartDate) &&
+      moment(moment.utc()).isBefore(checkWindow.checkEndDate)
+    if (!isAllowed) {
+      throw new Error('Pupil not allowed to log in')
+    }
   }
 }
 
