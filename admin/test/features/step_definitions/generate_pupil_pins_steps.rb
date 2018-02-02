@@ -195,6 +195,13 @@ Then(/^the pin should be stored against the pupil$/) do
   expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
 
+Then(/^check form should be assigned to the pupil$/) do
+  pupil_upn = @stored_pupil_details['upn'].to_s
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  check_entry = SqlDbHelper.check_details(pupil_id)
+  expect(check_entry['checkForm_id'].nil?).to be_falsey, "Check Form is not assigned to the Pupil when pin is generated"
+end
+
 Then(/^I should see the school password for (.*)$/) do |teacher|
   school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_password = SqlDbHelper.find_school(school_id)['pin']
