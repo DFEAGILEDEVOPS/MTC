@@ -30,7 +30,7 @@ const service = {
         role_id: role.id
       }
       await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.UserName)
+      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
