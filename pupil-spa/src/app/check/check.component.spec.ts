@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
-import { AuditEntry, RefreshDetected } from '../services/audit/auditEntry';
+import { AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { CheckComplete } from '../services/audit/auditEntry';
@@ -226,8 +226,8 @@ describe('CheckComponent', () => {
     it('shows the question when the state is "Q<digit>"', () => {
       testStateChange('Q1', 'question', false);
     });
-    it('shows the check complete screen when the state is "complete"', () => {
-      testStateChange('complete', 'complete', false);
+    it('shows the submission pending screen when the state is "submission-pending"', () => {
+      testStateChange('submission-pending', 'submission-pending', false);
     });
   });
 
@@ -242,13 +242,13 @@ describe('CheckComponent', () => {
     });
     it('is adding an audit entry for checkComplete', () => {
       // test setup
-      component['allowedStates'] = ['Q25', 'complete'];
+      component['allowedStates'] = ['Q25', 'submission-pending'];
       component['state'] = 0;
       // call changeState()
       component['changeState']();
 
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
-      expect(auditEntryInserted instanceof CheckComplete).toBeTruthy();
+      expect(auditEntryInserted instanceof CheckSubmissionPending).toBeTruthy();
     });
   });
 
@@ -347,9 +347,9 @@ describe('CheckComponent', () => {
       expect(component['state']).toBe(state);
     });
 
-    it('state stays the same if a page refresh happens on the check complete screen', () => {
+    it('state stays the same if a page refresh happens on the submission pending screen', () => {
       // find the state for complete
-      const state = component['allowedStates'].indexOf('complete');
+      const state = component['allowedStates'].indexOf('submission-pending');
       checkStateMock = state;
       component.ngOnInit();
       expect(component['state']).toBe(state);

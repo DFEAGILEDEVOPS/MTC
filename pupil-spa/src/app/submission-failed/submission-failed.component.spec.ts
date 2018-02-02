@@ -1,26 +1,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CheckCompleteComponent } from './check-complete.component';
+import { SubmissionFailedComponent } from './submission-failed.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 
-describe('CheckCompleteComponent', () => {
-  let component: CheckCompleteComponent;
-  let fixture: ComponentFixture<CheckCompleteComponent>;
+describe('SubmissionFailedComponent', () => {
+  let component: SubmissionFailedComponent;
+  let fixture: ComponentFixture<SubmissionFailedComponent>;
   let auditService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CheckCompleteComponent ],
+      declarations: [ SubmissionFailedComponent ],
       providers: [
-        { provide: AuditService, useClass: AuditServiceMock },
+        { provide: AuditService, useClass: AuditServiceMock }
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckCompleteComponent);
+    fixture = TestBed.createComponent(SubmissionFailedComponent);
     component = fixture.componentInstance;
     auditService = fixture.debugElement.injector.get(AuditService);
   });

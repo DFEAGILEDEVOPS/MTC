@@ -1,6 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpModule, Response, ResponseOptions, XHRBackend } from '@angular/http';
+import { XHRBackend } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { MockBackend } from '@angular/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
 
 import { SubmissionService } from './submission.service';
 import { StorageService } from '../storage/storage.service';
@@ -15,9 +19,13 @@ const shouldNotExecute = () => {
 };
 
 describe('SubmissionService', () => {
+  let http: HttpClient;
+  let service: SubmissionService;
+  let auditService: AuditService;
+
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [ HttpClientTestingModule ],
       providers: [
         SubmissionService,
         { provide: XHRBackend, useClass: MockBackend },
@@ -26,60 +34,84 @@ describe('SubmissionService', () => {
       ]
     });
     storageService = injector.get(StorageService);
-    submissionService = injector.get(SubmissionService);
+    auditService = injector.get(AuditService);
+    submissionService = TestBed.get(SubmissionService);
     mockBackend = injector.get(XHRBackend);
+    service = TestBed.get(SubmissionService);
+    service.checkStartAPIErrorDelay = 10;
+    service.checkStartAPIErrorMaxAttempts = 3;
+    service.checkSubmissionApiErrorDelay = 10;
+    service.checkSubmissionAPIErrorMaxAttempts = 4;
+    http = TestBed.get(HttpClient);
   });
 
-  it('should be created', inject([SubmissionService], (service: SubmissionService) => {
+  it('should be created', inject([SubmissionService], () => {
     expect(service).toBeTruthy();
   }));
-
-  it('submitCheckStartData function should call storageService getItem', inject([SubmissionService], (service: SubmissionService) => {
-    mockBackend.connections.subscribe((connection) => {
-      connection.mockRespond(new Response(new ResponseOptions({
-        body: JSON.stringify({isSaved: true}),
-        status: 200
-      })));
-    });
-    spyOn(storageService , 'getItem').and.returnValues({});
-    submissionService.submitCheckStartData().then(() => {
-      expect(storageService.getItem).toHaveBeenCalledWith('pupil');
-      expect(storageService.getItem).toHaveBeenCalledWith('access_token');
-    });
-  }));
-
-  it('submitData function should call storageService getAllItems', inject([SubmissionService], (service: SubmissionService) => {
-    mockBackend.connections.subscribe((connection) => {
-      connection.mockRespond(new Response(new ResponseOptions({
-        body: JSON.stringify({isSaved: true}),
-        status: 200
-      })));
-    });
-    spyOn(storageService , 'getAllItems').and.returnValues({});
-    submissionService.submitData().then(() => {
-      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-    });
-  }));
-
-  it('returns error on invalid status code', () => {
-    mockBackend.connections.subscribe((connection) => {
-      return connection.mockError((new Response(new ResponseOptions({
-        body: {
-          'error': 'Unauthorised'
-        },
-        status: 401,
-      }))));
-    });
-
-    submissionService.submitData().then(
-      () => {
-        shouldNotExecute();
-      },
-      (err) => {
-        expect(err).toBeTruthy();
+  it( 'submitCheckStartData returns response when successful', async (done) => {
+    spyOn(storageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'pupil') {
+        return { checkCode: null };
+      } else {
+        return null;
       }
-    ).catch(() => {
-      shouldNotExecute();
     });
+    spyOn(http, 'post').and.returnValue(Observable.of('ok'));
+    spyOn(auditService, 'addEntry').and.returnValue({});
+    service.submitCheckStartData().subscribe(res => {
+        expect(storageService.getItem).toHaveBeenCalledTimes(2);
+        expect(storageService.getItem).toHaveBeenCalledWith('pupil');
+        expect(storageService.getItem).toHaveBeenCalledWith('access_token');
+        expect(auditService.addEntry).toHaveBeenCalledTimes(0);
+        expect(res).toEqual('ok');
+        done();
+      },
+      (error) => {}
+    );
+  });
+  it( 'submitCheckStartData retries until the max threshold attempts have been reached', async (done) => {
+    spyOn(storageService, 'getItem').and.callFake((arg) => {
+      if (arg === 'pupil') {
+        return { checkCode: null };
+      } else {
+        return null;
+      }
+    });
+    spyOn(http, 'post').and.returnValue(Observable.throw({status: 503}));
+    spyOn(auditService, 'addEntry').and.returnValue({});
+    service.submitCheckStartData().subscribe(res => {},
+      (error) => {
+        expect(storageService.getItem).toHaveBeenCalledTimes(2);
+        expect(storageService.getItem).toHaveBeenCalledWith('pupil');
+        expect(storageService.getItem).toHaveBeenCalledWith('access_token');
+        expect(auditService.addEntry).toHaveBeenCalledTimes(4);
+        expect(error.message).toEqual('Max 3 retries reached');
+        done();
+      });
+  });
+  it( 'submitData returns response when successful', async (done) => {
+    spyOn(storageService , 'getAllItems').and.returnValues({});
+    spyOn(http, 'post').and.returnValue(Observable.of('ok'));
+    spyOn(auditService, 'addEntry').and.returnValue({});
+    service.submitData().subscribe(res => {
+        expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+        expect(auditService.addEntry).toHaveBeenCalledTimes(0);
+        expect(res).toEqual('ok');
+        done();
+      },
+      (error) => {}
+      );
+  });
+  it( 'submitData retries until the max threshold attempts have been reached', async (done) => {
+    spyOn(storageService , 'getAllItems').and.returnValues({});
+    spyOn(http, 'post').and.returnValue(Observable.throw({status: 503}));
+    spyOn(auditService, 'addEntry').and.returnValue({});
+    service.submitData().subscribe(res => {},
+      (error) => {
+        expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+        expect(error.message).toEqual('Max 4 retries reached');
+        expect(auditService.addEntry).toHaveBeenCalledTimes(5);
+        done();
+      });
   });
 });

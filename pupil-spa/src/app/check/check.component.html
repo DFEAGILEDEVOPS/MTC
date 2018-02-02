@@ -48,5 +48,6 @@
                   (timeoutEvent)="questionTimeoutHandler($event)"
                   (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-spoken-question>
-    <app-check-complete *ngSwitchCase="'complete'"></app-check-complete>
+  <app-submission-pending *ngSwitchCase="'submission-pending'">
+  </app-submission-pending>
 </div>
