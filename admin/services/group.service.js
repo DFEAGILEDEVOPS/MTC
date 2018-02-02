@@ -94,7 +94,7 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
  */
 groupService.findGroupsByPupil = async (schoolId, pupils) => {
   if (pupils.length < 1) {
-    return false
+    throw new Error('schoolId and pupils are required')
   }
   return groupDataService.sqlFindGroupsByIds(schoolId, pupils)
 }
