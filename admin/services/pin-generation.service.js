@@ -62,11 +62,11 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
  * @param pupils
  * @returns {Promise<*>}
  */
-pinGenerationService.filterGroups = async (schoolId, pupils) => {
-  if (pupils.length < 1) {
+pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
+  if (pupilIds.length < 1) {
     return false
   }
-  return groupDataService.sqlFindGroupsByIds(schoolId, pupils)
+  return groupDataService.sqlFindGroupsByIds(schoolId, pupilIds)
 }
 
 /**

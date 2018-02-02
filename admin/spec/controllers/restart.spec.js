@@ -90,7 +90,7 @@ describe('restart controller:', () => {
       spyOn(res, 'render').and.returnValue(null)
       spyOn(restartService, 'getPupils').and.returnValue(null)
       spyOn(restartService, 'getReasons').and.returnValue(null)
-      spyOn(groupService, 'filterGroupsByPupil').and.returnValue(null)
+      spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()

@@ -237,7 +237,7 @@ describe('group.service', () => {
     })
   })
 
-  describe('#filterGroupsByPupil', () => {
+  describe('#findGroupsByPupil', () => {
     beforeEach(() => {
       spyOn(groupDataService, 'sqlFindGroupsByIds').and.returnValue(groupsMock)
     })
@@ -245,7 +245,7 @@ describe('group.service', () => {
     it('should return groups that have pupils', async (done) => {
       const schoolId = 1
       const pupilIds = [1, 2, 3, 4]
-      const groups = await groupService.filterGroupsByPupil(schoolId, pupilIds)
+      const groups = await groupService.findGroupsByPupil(schoolId, pupilIds)
       expect(groups).toEqual(groupsMock)
       done()
     })

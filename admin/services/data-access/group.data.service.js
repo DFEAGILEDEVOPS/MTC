@@ -304,19 +304,24 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
 /**
  * Find groups by ids and school id.
  * @param schoolId
- * @param groupIds
+ * @param pupilIds
  * @returns {Promise<*>}
  */
-groupDataService.sqlFindGroupsByIds = async (schoolId, groupIds) => {
-  if (!schoolId || !groupIds || groupIds.length < 3) return false
+groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
+  if (!schoolId || !pupilIds || pupilIds.length < 3) return false
 
   let sql = `SELECT id, name 
     FROM ${sqlService.adminSchema}.[group] 
-    WHERE school_id=${schoolId}`
+    WHERE school_id=@schoolId`
 
   let whereClause = ' AND id IN ('
-  const params = []
-  const ids = Object.values(groupIds)
+  const params = [{
+    name: 'schoolId',
+    value: schoolId,
+    type: TYPES.Int
+  }]
+  const ids = Object.values(pupilIds)
+
   for (let index = 0; index < ids.length; index++) {
     if (ids[index].group_id) {
       whereClause = whereClause + `@p${index}`
@@ -330,8 +335,8 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, groupIds) => {
       })
     }
   }
-  whereClause = whereClause + ')'
-  sql = sql + whereClause
+  whereClause += ')'
+  sql += whereClause
   return sqlService.query(sql, params)
 }
 

@@ -46,7 +46,7 @@ const getGeneratePinsList = async (req, res, next) => {
       return next(Error(`School [${req.user.school}] not found`))
     }
     pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
-    groups = await groupService.filterGroupsByPupil(req.user.schoolId, pupils)
+    groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
   } catch (error) {
     return next(error)
   }

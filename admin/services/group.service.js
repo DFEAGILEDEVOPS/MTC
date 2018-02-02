@@ -92,11 +92,10 @@ groupService.create = async (groupName, groupPupils, schoolId) => {
  * @param pupils
  * @returns {Promise<*>}
  */
-groupService.filterGroupsByPupil = async (schoolId, pupils) => {
+groupService.findGroupsByPupil = async (schoolId, pupils) => {
   if (pupils.length < 1) {
     return false
   }
-  console.log('------ PUPILS', pupils)
   return groupDataService.sqlFindGroupsByIds(schoolId, pupils)
 }
 
