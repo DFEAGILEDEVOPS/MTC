@@ -28,7 +28,7 @@ const getPupilDataFoSpaMock = {
 describe('Questions controller', () => {
   let goodReq, res, startCheckSpy, authenticateSpy,
     getPupilDataForSpaSpy, getConfigSpy, jwtSpy,
-    prepareQuestionDataSpy, isLogInAllowedSpy
+    prepareQuestionDataSpy, isLoginAllowedSpy
 
   beforeEach(() => {
     res = httpMocks.createResponse()
@@ -65,8 +65,8 @@ describe('Questions controller', () => {
     if (!options['pupil-authentication.service.getPupilDataForSpa']) {
       options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataFoSpaMock }
     }
-    if (!options['check-window.service.isLogInAllowed']) {
-      options['check-window.service.isLogInAllowed'] = function () { return }
+    if (!options['check-window.service.isLoginAllowed']) {
+      options['check-window.service.isLoginAllowed'] = function () {}
     }
 
     // Spy setup
@@ -76,7 +76,7 @@ describe('Questions controller', () => {
     getConfigSpy = jasmine.createSpy().and.callFake(options['config.service.getConfig'])
     jwtSpy = jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
-    isLogInAllowedSpy = jasmine.createSpy().and.callFake(options['check-window.service.isLogInAllowed'])
+    isLoginAllowedSpy = jasmine.createSpy().and.callFake(options['check-window.service.isLoginAllowed'])
 
     return proxyquire('../../controllers/questions', {
       '../services/pupil-authentication.service': {
@@ -84,7 +84,7 @@ describe('Questions controller', () => {
         getPupilDataForSpa: getPupilDataForSpaSpy
       },
       '../services/check-window.service': {
-        isLogInAllowed: isLogInAllowedSpy
+        isLoginAllowed: isLoginAllowedSpy
       },
       '../services/config.service': {
         getConfig: getConfigSpy
@@ -271,7 +271,7 @@ describe('Questions controller', () => {
     it('returns error if the checkWindow service throws', async (done) => {
       const req = goodReq
       const controller = setupController({
-        'check-window.service.isLogInAllowed': function () { return Promise.reject(new Error('a mock')) }
+        'check-window.service.isLoginAllowed': function () { return Promise.reject(new Error('a mock')) }
       })
       try {
         await controller.getQuestions(req, res)

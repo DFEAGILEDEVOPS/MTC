@@ -104,7 +104,7 @@ const checkWindowService = {
   /**
    * Check if pupil is allowed to log in
    */
-  isLogInAllowed: async () => {
+  isLoginAllowed: async () => {
     const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
     const isAllowed = checkWindow && moment.utc().isAfter(checkWindow.checkStartDate) &&
       moment(moment.utc()).isBefore(checkWindow.checkEndDate)

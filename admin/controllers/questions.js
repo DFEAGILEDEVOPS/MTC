@@ -26,7 +26,7 @@ const getQuestions = async (req, res) => {
   }
 
   try {
-    await checkWindowService.isLogInAllowed()
+    await checkWindowService.isLoginAllowed()
   } catch (error) {
     return apiResponse.sendJson(res, 'Forbidden', 403)
   }
