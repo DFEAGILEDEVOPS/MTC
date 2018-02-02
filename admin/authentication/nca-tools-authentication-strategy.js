@@ -23,8 +23,11 @@ module.exports = async function (req, done) {
     userAgent: req.headers['user-agent'],
     loginMethod: 'nca-tools'
   }
-  const ncaPublicKey = config.TSO_AUTH_PUBLIC_KEY
-  const mtcPrivateKey = config.MTC_AUTH_PRIVATE_KEY
+
+  // TODO get certificates
+
+  const ncaPublicKey = config.Certificates.Local.NcaToolsPublicKey
+  const mtcPrivateKey = config.Certificates.Local.MtcPrivateKey
   try {
     const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
 
