@@ -104,13 +104,13 @@ const checkWindowService = {
   /**
    * Check if pupil is allowed to log in
    */
+
   isLoginAllowed: async () => {
     const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-    const isAllowed = checkWindow && moment.utc().isAfter(checkWindow.checkStartDate) &&
-      moment(moment.utc()).isBefore(checkWindow.checkEndDate)
-    if (!isAllowed) {
-      throw new Error('Pupil not allowed to log in')
-    }
+    const hasCheckWindowStarted = checkWindow && moment.utc().isAfter(checkWindow.checkStartDate)
+    if (!hasCheckWindowStarted) throw new Error('Check window has not started')
+    const hasCheckWindowNotEnded = checkWindow && moment(moment.utc()).isBefore(checkWindow.checkEndDate)
+    if (!hasCheckWindowNotEnded) throw new Error('Check window has expired')
   }
 }
 

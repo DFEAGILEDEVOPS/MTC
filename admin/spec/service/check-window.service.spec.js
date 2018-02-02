@@ -211,7 +211,7 @@ describe('check-window.service', () => {
           await service.isLoginAllowed()
           fail('not expected to throw')
         } catch (error) {
-          expect(error.message).toBe('Pupil not allowed to log in')
+          expect(error.message).toBe('Check window has not started')
         }
         done()
       })
@@ -224,7 +224,7 @@ describe('check-window.service', () => {
           await service.isLoginAllowed()
           fail('not expected to throw')
         } catch (error) {
-          expect(error.message).toBe('Pupil not allowed to log in')
+          expect(error.message).toBe('Check window has expired')
         }
         done()
       })
