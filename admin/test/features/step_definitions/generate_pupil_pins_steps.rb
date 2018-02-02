@@ -200,6 +200,7 @@ Then(/^check form should be assigned to the pupil$/) do
   pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   expect(check_entry['checkForm_id'].nil?).to be_falsey, "Check Form is not assigned to the Pupil when pin is generated"
+  expect(SqlDbHelper.check_form_details_using_id(check_entry['checkForm_id'])['isDeleted']).to be_falsey
 end
 
 Then(/^I should see the school password for (.*)$/) do |teacher|

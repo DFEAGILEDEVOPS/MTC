@@ -197,4 +197,12 @@ class SqlDbHelper
     @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}" }
   end
 
+  def self.check_form_details_using_id(check_form_id)
+    sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE id = #{check_form_id}"
+    result = SQL_CLIENT.execute(sql)
+    chk_form_res = result.first
+    result.cancel
+    chk_form_res
+  end
+
 end
