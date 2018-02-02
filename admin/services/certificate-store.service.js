@@ -1,19 +1,19 @@
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
 const config = require('../config')
 
-let tsoPublicKey, mtcPrivateKey
+let ncaPublicKey, mtcPrivateKey
 
 const service = {
-  getTsoPublicKey: async () => {
+  getNcaPublicKey: async () => {
     // cache after first call
-    if (tsoPublicKey) {
-      return tsoPublicKey
+    if (ncaPublicKey) {
+      return ncaPublicKey
     }
 
     if (config.Certificates.Azure.BlobContainer) {
       const file = await azureBlobDataService.getBlobText(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.NcaToolsPublicKeyName)
-      tsoPublicKey = file
-      return tsoPublicKey
+      ncaPublicKey = file
+      return ncaPublicKey
     }
     return config.Certificates.Local.NcaToolsPublicKey
   },

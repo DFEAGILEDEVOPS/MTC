@@ -27,7 +27,7 @@ module.exports = async function (req, done) {
 
   let ncaPublicKey, mtcPrivateKey
   try {
-    ncaPublicKey = await certificateService.getTsoPublicKey()
+    ncaPublicKey = await certificateService.getNcaPublicKey()
     mtcPrivateKey = await certificateService.getMtcPrivateKey()
   } catch (error) {
     winston.error('unable to retrieve certificates:', error)
