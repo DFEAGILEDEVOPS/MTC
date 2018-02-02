@@ -1,8 +1,9 @@
 'use strict'
 const ncaToolsAuthService = require('../services/nca-tools-auth.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
-const config = require('../config')
 const ncaToolsUserService = require('../services/nca-tools-user.service')
+const certificateService = require('../services/certificate-store.service')
+const winston = require('winston')
 
 module.exports = async function (req, done) {
   // Post fields from NCA Tools, all fields are Base64 encoded.
@@ -24,10 +25,15 @@ module.exports = async function (req, done) {
     loginMethod: 'nca-tools'
   }
 
-  // TODO get certificates
+  let ncaPublicKey, mtcPrivateKey
+  try {
+    ncaPublicKey = await certificateService.getTsoPublicKey()
+    mtcPrivateKey = await certificateService.getMtcPrivateKey()
+  } catch (error) {
+    winston.error('unable to retrieve certificates:', error)
+    return done(null, false)
+  }
 
-  const ncaPublicKey = config.Certificates.Local.NcaToolsPublicKey
-  const mtcPrivateKey = config.Certificates.Local.MtcPrivateKey
   try {
     const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
 
@@ -45,7 +51,7 @@ module.exports = async function (req, done) {
     } catch (error) {
       throw new Error('Failed to save NCA Tools Session Data - possible replay attack: ' + error.message)
     }
-    
+
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
     userData.role = mtcUser.mtcRole
     // auth success
@@ -57,14 +63,15 @@ module.exports = async function (req, done) {
     return done(null, userData)
   } catch (error) {
     // auth failed
+    winston.error(error)
     logonEvent.isAuthenticated = false
-    logonEvent.errorMsg = `${error.message}\n${error.stack}\n${ncaPublicKey}\n${mtcPrivateKey}`
+    logonEvent.errorMsg = error.message
     try {
       await adminLogonEventDataService.sqlCreate(logonEvent)
     } catch (error) {
-      console.error('Failed to save Logon Event: ' + error.message)
+      winston.error('Failed to save Logon Event: ' + error.message)
     }
-    console.error('Authentication error: ', error)
+    winston.error('Authentication error: ', error)
     return done(null, false)
   }
 }
