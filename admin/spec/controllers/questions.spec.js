@@ -1,9 +1,11 @@
 'use strict'
-/* global describe, beforeEach, it, expect, jasmine */
+/* global describe, beforeEach, it, expect, jasmine, fail, spyOn */
 
 const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
+
+const pupilLoginEventService = require('../../services/pupil-logon-event.service')
 
 const pupilMockOrig = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
@@ -16,22 +18,23 @@ const configMock = require('../mocks/config')
 const questionsMock = require('../mocks/check-form.service.getQuestions')
 const checkStartResponseMock = {
   checkCode: uuidv4(),
-  checkForm: require('../mocks/check-form')
+  questions: require('../mocks/check-form').questions
 }
 
-const getPupilDataFoSpaMock = {
+const getPupilDataForSpaMock = {
   firstName: 'Test',
   lastName: 'User',
   dob: '1 January 2000'
 }
 
 describe('Questions controller', () => {
-  let goodReq, res, startCheckSpy, authenticateSpy,
+  let goodReq, res, pupilCheckSpy, authenticateSpy,
     getPupilDataForSpaSpy, getConfigSpy, jwtSpy,
     prepareQuestionDataSpy, isLoginAllowedSpy
 
   beforeEach(() => {
     res = httpMocks.createResponse()
+    spyOn(pupilLoginEventService, 'storeLogonEvent')
 
     goodReq = httpMocks.createRequest({
       method: 'POST',
@@ -59,18 +62,18 @@ describe('Questions controller', () => {
     if (!options['jwt.service.createToken']) {
       options['jwt.service.createToken'] = function () { return Promise.resolve(jwtTokenMock) }
     }
-    if (!options['check-start.service.startCheck']) {
-      options['check-start.service.startCheck'] = function () { return Promise.resolve(checkStartResponseMock) }
+    if (!options['check-start.service.pupilLogin']) {
+      options['check-start.service.pupilLogin'] = function () { return Promise.resolve(checkStartResponseMock) }
     }
     if (!options['pupil-authentication.service.getPupilDataForSpa']) {
-      options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataFoSpaMock }
+      options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataForSpaMock }
     }
     if (!options['check-window.service.isLoginAllowed']) {
       options['check-window.service.isLoginAllowed'] = function () {}
     }
 
     // Spy setup
-    startCheckSpy = jasmine.createSpy().and.callFake(options['check-start.service.startCheck'])
+    pupilCheckSpy = jasmine.createSpy().and.callFake(options['check-start.service.pupilLogin'])
     authenticateSpy = jasmine.createSpy().and.callFake(options['pupil-authentication.service.authenticate'])
     getPupilDataForSpaSpy = jasmine.createSpy().and.callFake(options['pupil-authentication.service.getPupilDataForSpa'])
     getConfigSpy = jasmine.createSpy().and.callFake(options['config.service.getConfig'])
@@ -93,7 +96,7 @@ describe('Questions controller', () => {
         createToken: jwtSpy
       },
       '../services/check-start.service': {
-        startCheck: startCheckSpy
+        pupilLogin: pupilCheckSpy
       },
       '../services/check-form.service': {
         prepareQuestionData: prepareQuestionDataSpy
@@ -113,12 +116,16 @@ describe('Questions controller', () => {
         done()
       }
       const data = JSON.parse(res._getData())
+      const q1 = data.questions[0]
+      expect(q1.hasOwnProperty('factor1')).toBeTruthy()
+      expect(q1.hasOwnProperty('factor2')).toBeTruthy()
+      expect(q1.hasOwnProperty('order')).toBeTruthy()
       expect(res.statusCode).toBe(200)
       expect(data.questions.length).toBe(20)
       expect(data.pupil.firstName).toBe('Test')
       expect(data.school.name).toBe('Example School One')
       expect(data.config.questionTime).toBe(6)
-      expect(startCheckSpy).toHaveBeenCalledTimes(1)
+      expect(pupilCheckSpy).toHaveBeenCalledTimes(1)
       expect(authenticateSpy).toHaveBeenCalledTimes(1)
       expect(getPupilDataForSpaSpy).toHaveBeenCalledTimes(1)
       expect(getConfigSpy).toHaveBeenCalledTimes(1)
@@ -137,12 +144,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -154,12 +162,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -171,12 +180,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -188,12 +198,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(400)
       expect(data.error).toBe('Bad request')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -206,12 +217,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(401)
       expect(data.error).toBe('Unauthorised')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -224,12 +236,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
@@ -242,30 +255,32 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+        fail('not expected to throw')
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
 
     it('returns server error if the checkStart service throws', async (done) => {
       const req = goodReq
       const controller = setupController({
-        'check-start.service.startCheck': function () { return Promise.reject(new Error('a mock')) }
+        'check-start.service.pupilLogin': function () { return Promise.reject(new Error('a mock')) }
       })
       try {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
+
         done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
+      expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
       done()
     })
     it('returns error if the checkWindow service throws', async (done) => {
