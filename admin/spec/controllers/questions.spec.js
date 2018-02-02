@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, it, expect, jasmine, fail */
+/* global describe, beforeEach, it, expect, jasmine, fail, spyOn */
 
 const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()

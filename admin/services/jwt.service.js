@@ -1,6 +1,5 @@
 'use strict'
 const Promise = require('bluebird')
-const R = require('ramda')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
