@@ -48,10 +48,9 @@ const checkFormService = {
 
   /**
    * Extract the questions from the check-form, and add an `order` property.
-   * @param checkForm
+   * @param questions
    */
-  prepareQuestionData: function (checkForm) {
-    const questions = JSON.parse(checkForm.formData)
+  prepareQuestionData: function (questions) {
     return questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
   },
 
