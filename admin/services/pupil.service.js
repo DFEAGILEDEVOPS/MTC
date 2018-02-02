@@ -1,4 +1,3 @@
-const winston = require('winston')
 const errorConverter = require('../lib/error-converter')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
