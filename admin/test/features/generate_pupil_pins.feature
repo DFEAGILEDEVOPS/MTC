@@ -171,3 +171,7 @@ Feature: Generate Pupil PINs
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again
     Then I should be able to filter by groups on the generate pins page
+
+  Scenario: Check Form is assigned to pupil when pin is generated
+    Given I have generated a pin for a pupil
+    Then check form should be assigned to the pupil
