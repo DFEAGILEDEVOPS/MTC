@@ -10,6 +10,7 @@ const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const setValidationService = require('../services/set-validation.service')
 
 const checkStartService = {}
 
@@ -29,12 +30,9 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
   // Validate the incoming pupil list to ensure that the pupils are real ids
   // and that they belong to the user's school
   const pupils = await pupilDataService.sqlFindByIdAndDfeNumber(pupilIds, dfeNumber)
-  const providedSet = new Set(pupilIds)
-  const databaseSet = new Set(pupils.map(p => p.id.toString())) // the incoming form params are stringified numbers
-  const difference = new Set([...providedSet].filter(x => !databaseSet.has(x)))
-
+  const difference = setValidationService.validate(pupilIds.map(x => parseInt(x, 10)), pupils)
   if (difference.size > 0) {
-    winston.warn(`Incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
+    winston.warn(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
     throw new Error('Validation failed')
   }
 
