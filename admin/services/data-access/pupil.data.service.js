@@ -310,7 +310,7 @@ pupilDataService.sqlCreate = async (data) => {
  * @return {Promise<*>}
  */
 pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
-  winston.debug('sqlFindPupilsWithActivePins: called with [${dfeNumber]')
+  winston.debug(`sqlFindPupilsWithActivePins: called with [${dfeNumber}]`)
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
   SELECT p.*
@@ -369,6 +369,25 @@ pupilDataService.sqlFindByIds = async (ids) => {
   }
   whereClause = `${whereClause})`
   sql = sql + whereClause + ' ORDER BY lastName'
+  return sqlService.query(sql, params)
+}
+
+/**
+ * Find pupils by ids and dfeNumber
+ * @param ids
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
+  const select = `
+      SELECT p.*    
+      FROM 
+      ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
+      `
+  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const whereClause = 'WHERE p.id IN (' + paramIdentifiers.join(', ') + ')'
+  const andClause = 'AND s.dfeNumber = @dfeNumber'
+  params.push({name: 'dfeNumber', value: dfeNumber, type: TYPES.Int})
+  const sql = [select, whereClause, andClause].join(' ')
   return sqlService.query(sql, params)
 }
 

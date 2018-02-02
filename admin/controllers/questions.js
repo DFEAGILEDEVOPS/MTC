@@ -1,11 +1,12 @@
 'use strict'
 
+const apiResponse = require('./api-response')
 const checkFormService = require('../services/check-form.service')
 const checkStartService = require('../services/check-start.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
-const apiResponse = require('./api-response')
+const pupilLogonEventService = require('../services/pupil-logon-event.service')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -16,11 +17,18 @@ const apiResponse = require('./api-response')
 
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
-  if (!pupilPin || !schoolPin) return apiResponse.badRequest(res)
+
+  if (!pupilPin || !schoolPin) {
+    await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 400, 'Bad request')
+    return apiResponse.badRequest(res)
+  }
+
   let config, data, questions, token
+
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
+    await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
     return apiResponse.unauthorised(res)
   }
   const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
@@ -31,22 +39,27 @@ const getQuestions = async (req, res) => {
   try {
     config = await configService.getConfig(data.pupil)
   } catch (error) {
+    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: config')
     return apiResponse.serverError(res)
   }
   try {
     token = await jwtService.createToken(data.pupil)
   } catch (error) {
+    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
     return apiResponse.serverError(res)
   }
 
   // start the check
   try {
-    const startCheckResponse = await checkStartService.startCheck(data.pupil.id)
-    questions = checkFormService.prepareQuestionData(startCheckResponse.checkForm)
-    pupilData.checkCode = startCheckResponse.checkCode
+    const checkData = await checkStartService.pupilLogin(data.pupil.id)
+    questions = checkFormService.prepareQuestionData(checkData.questions)
+    pupilData.checkCode = checkData.checkCode
   } catch (error) {
+    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: check data')
     return apiResponse.serverError(res)
   }
+
+  await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, true, 200)
 
   const responseData = {
     questions,
