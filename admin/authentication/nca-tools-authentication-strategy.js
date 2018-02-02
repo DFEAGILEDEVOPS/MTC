@@ -71,7 +71,7 @@ module.exports = async function (req, done) {
     } catch (error) {
       winston.error('Failed to save Logon Event: ' + error.message)
     }
-    winston.error('Authentication error: ', error)
+    winston.error(error)
     return done(null, false)
   }
 }
