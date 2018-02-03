@@ -190,7 +190,7 @@ describe('check-window.service', () => {
       expect(result).toBeTruthy()
     })
     describe('#isLoginAllowed', () => {
-      it('should allow pupil to login if within range', async (done) => {
+      it('should allow pupil to login if within range of active check window', async (done) => {
         spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
           checkStartDate: moment.utc().subtract(1, 'days'),
           checkEndDate: moment.utc().add(1, 'days')
@@ -202,29 +202,39 @@ describe('check-window.service', () => {
         }
         done()
       })
-      it('should disallow pupil to login if checkStartDate is in the future', async (done) => {
-        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
-          checkStartDate: moment.utc().add(1, 'days'),
-          checkEndDate: moment.utc().add(2, 'days')
-        })
+      it('should disallow pupil to login if there is now active window', async (done) => {
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve({}))
         try {
           await service.isLoginAllowed()
           fail('not expected to throw')
         } catch (error) {
-          expect(error.message).toBe('Check window has not started')
+          expect(error.message).toBe('There is no active check window')
+        }
+        done()
+      })
+      it('should disallow pupil to login if checkStartDate is in the future', async (done) => {
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve({
+          checkStartDate: moment.utc().add(1, 'days'),
+          checkEndDate: moment.utc().add(2, 'days')
+        }))
+        try {
+          await service.isLoginAllowed()
+          fail('not expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('The active check window has not started')
         }
         done()
       })
       it('should disallow pupil to login if checkEndDate is in the past', async (done) => {
-        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue({
+        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve({
           checkStartDate: moment.utc().subtract(3, 'days'),
           checkEndDate: moment.utc().subtract(2, 'days')
-        })
+        }))
         try {
           await service.isLoginAllowed()
           fail('not expected to throw')
         } catch (error) {
-          expect(error.message).toBe('Check window has expired')
+          expect(error.message).toBe('The active check window has expired')
         }
         done()
       })
