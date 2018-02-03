@@ -126,6 +126,15 @@ class SqlDbHelper
     chk_form_res
   end
 
+  def self.check_details(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id = '#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_res = result.first
+    result.cancel
+    chk_res
+  end
+
+
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
@@ -186,6 +195,14 @@ class SqlDbHelper
       result.cancel
     end
     @array_of_pupils.map {|pupil| "#{pupil['lastName']}, #{pupil['foreName']}" }
+  end
+
+  def self.check_form_details_using_id(check_form_id)
+    sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE id = #{check_form_id}"
+    result = SQL_CLIENT.execute(sql)
+    chk_form_res = result.first
+    result.cancel
+    chk_form_res
   end
 
 end
