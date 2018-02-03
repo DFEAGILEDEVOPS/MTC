@@ -8,9 +8,6 @@ let azureBlobDataService
 
 describe('certificate store', () => {
   beforeEach(() => {
-/*     Object.keys(require.cache).forEach((key) => {
-      delete require.cache[key]
-    }) */
     certStoreService = require('../../services/certificate-store.service')
     config = require('../../config')
     azureBlobDataService = require('../../services/data-access/azure-blob.data.service')
