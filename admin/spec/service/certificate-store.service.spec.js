@@ -36,6 +36,7 @@ describe('certificate store', () => {
     })
 
     it('returns globally cached value after 1st retrieval', async (done) => {
+      azureBlobDataService = require('../../services/data-access/azure-blob.data.service')
       config.Certificates.Azure.BlobContainer = 'theContainerName'
       const certStoreReturnValue = 'the public key in PEM format'
       spyOn(azureBlobDataService, 'getBlobText')
