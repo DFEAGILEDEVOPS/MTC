@@ -2,7 +2,7 @@
 
 const iconv = require('iconv-lite')
 const crypto = require('crypto')
-const winston = require('winston')
+const moment = require('moment')
 
 const service = {
   /**
@@ -71,7 +71,6 @@ module.exports = service
  * @return {boolean} - true is the sig is verified, false otherwise
  */
 function verifySignature (sig, data, senderPublicKey) {
-  winston.debug('sender public key is:\n', senderPublicKey)
   const verify = crypto.createVerify('RSA-SHA1')
   verify.update(data)
   return verify.verify(senderPublicKey, sig)
@@ -129,7 +128,7 @@ function parseMessage (plaintext) {
   }
 
   // Record the logon
-  data.logonAt = Date.now()
+  data.logonAt = moment.utc()
 
   return data
 }
