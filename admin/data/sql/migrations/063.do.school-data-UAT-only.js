@@ -3,7 +3,7 @@
 const config = require('../../../config')
 
 module.exports.generateSql = function () {
-  if (config.Environment === ('Azure-UAT' || 'Azure-Feb-Trial')) {
+  if (config.Environment === 'Azure-UAT' || config.Environment === 'Azure-Feb-Trial') {
     let schoolId, foreName, lastName, gender, dateOfBirth, upn
     const insertStatements = []
     const pupilPerSchoolCount = 60
