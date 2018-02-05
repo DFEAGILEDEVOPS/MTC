@@ -314,13 +314,13 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
     FROM ${sqlService.adminSchema}.[group] 
     WHERE school_id=@schoolId`
 
-  let whereClause = ' AND id IN ('
   const params = [{
     name: 'schoolId',
     value: schoolId,
     type: TYPES.Int
   }]
   const ids = Object.values(pupilIds)
+  let whereClause = ''
 
   for (let index = 0; index < ids.length; index++) {
     if (ids[index].group_id) {
@@ -335,8 +335,10 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
       })
     }
   }
-  whereClause += ')'
-  sql += whereClause
+
+  if (whereClause.length > 0) {
+    sql += ` AND id IN (${whereClause})`
+  }
   return sqlService.query(sql, params)
 }
 
