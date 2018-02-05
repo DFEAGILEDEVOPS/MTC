@@ -41,6 +41,7 @@
     "helmet": "^3.9.0",
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.1.1",
+    "logdna": "^1.4.2",
     "migrate-mongo": "^2.2.1",
     "moment": "^2.20.1",
     "mongoose": "^4.13.7",
