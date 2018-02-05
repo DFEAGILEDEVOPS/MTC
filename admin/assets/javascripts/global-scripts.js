@@ -261,7 +261,7 @@ $(function () {
     updateSortingLink: function (action, groupId) {
       var sortingLink = $('#sortingLink')
       var insertGroupId = groupId + ','
-      if (sortingLink) {
+      if (sortingLink.length > 0) {
         if (action === 'add') {
           if (sortingLink.attr('href').indexOf('groupIds=') === -1) {
             sortingLink.attr('href', sortingLink.attr('href') + 'groupIds=')

@@ -33,11 +33,14 @@ controller.getSelectRestartList = async (req, res, next) => {
   let pupils
   let reasons
   let groups = []
+  let groupIds = req.params.groupIds || ''
 
   try {
     pupils = await restartService.getPupils(req.user.School)
     reasons = await restartService.getReasons()
-    groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+    if (pupils.length > 0) {
+      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+    }
   } catch (error) {
     return next(error)
   }
@@ -46,6 +49,7 @@ controller.getSelectRestartList = async (req, res, next) => {
     pupils,
     reasons,
     groups,
+    groupIds,
     error: new ValidationError()
   })
 }
@@ -64,11 +68,14 @@ controller.postSubmitRestartList = async (req, res, next) => {
     let pupils
     let reasons
     let groups = []
+    let groupIds = req.params.groupIds || ''
 
     try {
       pupils = await restartService.getPupils(req.user.School)
       reasons = await restartService.getReasons()
-      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+      if (pupils.length > 0) {
+        groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+      }
     } catch (error) {
       return next(error)
     }
@@ -77,6 +84,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
       pupils,
       reasons,
       groups,
+      groupIds,
       error: validationError
     })
   }

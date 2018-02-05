@@ -6,6 +6,7 @@ const restartValidator = require('../../lib/validator/restart-validator')
 const groupService = require('../../services/group.service')
 const ValidationError = require('../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
+const pupilsMock = require('../mocks/pupils')
 
 require('sinon-mongoose')
 
@@ -88,7 +89,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getPupils').and.returnValue(null)
+      spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       await controller(req, res, next)
