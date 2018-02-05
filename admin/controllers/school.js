@@ -37,6 +37,7 @@ const getHome = async (req, res, next) => {
   })
 }
 
+// TODO: rename this pupil-register?  Create a pupil-register service?
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
   const { sortColumn, sortOrder } = req.params

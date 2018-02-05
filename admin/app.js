@@ -24,17 +24,25 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+/**
+ * Logging
+ * use LogDNA transport for winston if configuration setting available
+ */
 const winston = require('winston')
+let logdna
+if (config.Logging.LogDna.key) {
+  logdna = require('logdna')
+  const options = config.Logging.LogDna
+  // Defaults to false, when true ensures meta object will be searchable
+  options.index_meta = true
+  // Only add this line in order to track exceptions
+  options.handleExceptions = true
+  winston.add(winston.transports.Logdna, options)
+  winston.info(`logdna transport enabled for ${options.hostname}`)
+}
 
 if (process.env.NODE_ENV !== 'production') {
   winston.level = 'debug'
-}
-
-if (config.Logging.LogDna.hostname) {
-  const options = config.Logging.LogDna
-  options.index_meta = true
-  options.handleExceptions = true
-  winston.add(winston.transports.logDna, options)
 }
 
 azure.startInsightsIfConfigured()

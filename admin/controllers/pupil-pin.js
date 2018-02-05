@@ -7,6 +7,7 @@ const pinGenerationService = require('../services/pin-generation.service')
 const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
+const checkStartService = require('../services/check-start.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
@@ -69,7 +70,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await pinGenerationService.updatePupilPins(pupilsList)
+    await checkStartService.prepareCheck(pupilsList, req.user.School)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))

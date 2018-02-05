@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -9,7 +10,6 @@ import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
-import { environment } from '../environments/environment';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -36,6 +36,8 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
+import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
+import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -46,7 +48,9 @@ const appRoutes: Routes = [
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent}
+  {path: 'sign-in-failure', component: LoginFailureComponent },
+  {path: 'check-complete', component: CheckCompleteComponent },
+  {path: 'submission-failed', component: SubmissionFailedComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -70,7 +74,9 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     SpokenQuestionComponent,
-    SpokenPracticeQuestionComponent
+    SpokenPracticeQuestionComponent,
+    SubmissionPendingComponent,
+    SubmissionFailedComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -79,7 +85,8 @@ const appRoutes: Routes = [
     ),
     FormsModule,
     BrowserModule,
-    HttpModule
+    HttpModule,
+    HttpClientModule,
   ],
   providers: [
     AnswerService,

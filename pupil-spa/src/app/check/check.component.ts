@@ -3,7 +3,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckComplete, RefreshDetected } from '../services/audit/auditEntry';
+import { CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -27,7 +27,7 @@ export class CheckComponent implements OnInit {
   private static questionRe = /^Q(\d+)$/;
   private static spokenQuestionRe = /^SQ(\d+)$/;
   private static loadingRe = /^L(\d+)$/;
-  private static completeRe = /^complete$/;
+  private static submissionPendingRe = /^submission-pending$/;
 
   public config: Config;
   public isWarmUp: boolean;
@@ -198,13 +198,13 @@ export class CheckComponent implements OnInit {
         this.viewState = 'spoken-question';
         break;
       }
-      case CheckComponent.completeRe.test(stateDesc):
-        // Show the check complete screen
-        this.auditService.addEntry(new CheckComplete());
-        this.submissionService.submitData().catch(error => new Error(error));
+      case CheckComponent.submissionPendingRe.test(stateDesc): {
+        // Display pending screen
+        this.auditService.addEntry(new CheckSubmissionPending());
         this.isWarmUp = false;
-        this.viewState = 'complete';
+        this.viewState = 'submission-pending';
         break;
+      }
     }
   }
 
@@ -291,8 +291,8 @@ export class CheckComponent implements OnInit {
       }
     }
 
-    // Set up the final page
-    this.allowedStates.push('complete');
+    // Set up the submission stage
+    this.allowedStates.push('submission-pending');
     // console.log('check.component: initStates(): states set to: ', this.allowedStates);
   }
 
