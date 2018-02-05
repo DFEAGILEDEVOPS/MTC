@@ -51,7 +51,7 @@ module.exports = {
   Logging: {
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
-      hostname: `process.env.LOGDNA_ENV_NAME:${os.hostname()}`,
+      hostname: `${process.env.LOGDNA_ENV_NAME}:${os.hostname()}`,
       ip: undefined,
       mac: undefined,
       app: 'MTC Admin',
