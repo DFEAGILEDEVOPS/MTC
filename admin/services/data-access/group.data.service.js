@@ -337,8 +337,9 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   }
 
   if (whereClause.length > 0) {
-    sql += ` AND id IN (${whereClause})`
+    sql += ` AND id IN (${whereClause.substr(0, whereClause.length - 1)})`
   }
+
   return sqlService.query(sql, params)
 }
 
