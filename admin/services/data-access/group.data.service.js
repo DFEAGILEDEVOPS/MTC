@@ -325,9 +325,8 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   for (let index = 0; index < ids.length; index++) {
     if (ids[index].group_id) {
       whereClause = whereClause + `@p${index}`
-      if (index < ids.length - 1) {
-        whereClause += ','
-      }
+      console.log('+++++ index', index)
+      whereClause += ','
       params.push({
         name: `p${index}`,
         value: ids[index].group_id,
@@ -340,6 +339,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
     sql += ` AND id IN (${whereClause.substr(0, whereClause.length - 1)})`
   }
 
+  console.log('===== query', sql)
   return sqlService.query(sql, params)
 }
 

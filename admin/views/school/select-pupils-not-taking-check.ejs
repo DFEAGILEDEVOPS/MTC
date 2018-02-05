@@ -99,7 +99,7 @@
                 </thead>
                 <tbody>
                     <% pupilsList.forEach(pupil => { %>
-                    <tr<% if (pupil.group_id) { %> id="group-id-<%= pupil.group_id %>"<% } %>>
+                    <tr<% if (pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
                         <td>
                             <label for="pupil-<%= pupil.urlSlug %>">
                                 <%= pupil.lastName %>, <%= pupil.foreName %>

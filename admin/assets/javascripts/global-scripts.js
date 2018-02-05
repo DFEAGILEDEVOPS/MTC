@@ -223,7 +223,7 @@ $(function () {
       } else {
         $(sel).addClass('hidden')
         groupIds.map(function (gId) {
-          $(sel + '#group-id-' + gId).removeClass('hidden')
+          $(sel + '.group-id-' + gId).removeClass('hidden')
         })
         $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
       }
