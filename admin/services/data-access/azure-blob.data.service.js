@@ -12,10 +12,10 @@ const service = {
   getBlobText: async (containerName, blobName) => {
     return new Promise((resolve, reject) => {
       if (!blobService) {
-        reject(new Error('Azure Storage Connection String required'))
+        return reject(new Error('Azure Storage Connection String required'))
       }
       blobService.getBlobToText(containerName, blobName, (error, text) => {
-        if (error) reject(error)
+        if (error) return reject(error)
         return resolve(text)
       })
     })

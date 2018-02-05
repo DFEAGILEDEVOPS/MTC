@@ -31,7 +31,7 @@ module.exports = async function (req, done) {
     mtcPrivateKey = await certificateService.getMtcPrivateKey()
   } catch (error) {
     winston.error('unable to retrieve certificates:', error)
-    return done(null, false)
+    return done(error, null)
   }
 
   try {
@@ -59,7 +59,6 @@ module.exports = async function (req, done) {
     logonEvent.isAuthenticated = true
     logonEvent.authProviderSessionToken = mtcUser.SessionToken
     await adminLogonEventDataService.sqlCreate(logonEvent)
-
     return done(null, userData)
   } catch (error) {
     // auth failed
@@ -72,6 +71,6 @@ module.exports = async function (req, done) {
       winston.error('Failed to save Logon Event: ' + error.message)
     }
     winston.error(error)
-    return done(null, false)
+    return done(error, null)
   }
 }
