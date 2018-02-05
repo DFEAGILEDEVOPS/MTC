@@ -6,6 +6,7 @@ const sortingAttributesService = require('../services/sorting-attributes.service
 const pinGenerationService = require('../services/pin-generation.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
+const checkStartService = require('../services/check-start.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
@@ -28,12 +29,16 @@ const getGeneratePinsList = async (req, res, next) => {
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs('Generate pupil PINs', '/pupil-pin/generate-pins-overview')
   req.breadcrumbs(res.locals.pageTitle)
+
   let school
   let pupils
+  let groups = []
+
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
   const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
+
   // TODO: data service call should be moved to a service
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
@@ -41,12 +46,15 @@ const getGeneratePinsList = async (req, res, next) => {
       return next(Error(`School [${req.user.school}] not found`))
     }
     pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
+    groups = await pinGenerationService.filterGroups(req.user.schoolId, pupils)
   } catch (error) {
     return next(error)
   }
+
   return res.render('pupil-pin/generate-pins-list', {
     breadcrumbs: req.breadcrumbs(),
     pupils,
+    groups,
     htmlSortDirection,
     arrowSortDirection
   })
@@ -59,7 +67,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await pinGenerationService.updatePupilPins(pupilsList)
+    await checkStartService.prepareCheck(pupilsList, req.user.School)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))

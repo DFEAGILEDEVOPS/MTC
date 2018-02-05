@@ -139,10 +139,39 @@ Feature: Generate Pupil PINs
   Scenario: School Password must be generated from the specified pool of characters
     Given I have generated a pin for a pupil
     Then school password should be generated from the specified pool of characters
-
-  @wip @bug_18960
+    
   Scenario: Pin is expired when pupil is not taking the check
     Given I have generated a pin for a pupil
     When I decide the pupil should not be taking the check
     Then the status of the pupil should be Not taking the Check
     And the pin should be expired
+
+  @no_pin @remove_all_groups
+  Scenario: Pupils can be filtered by group
+    Given I have a group of pupils
+    When I choose to filter via group on the generate pins page
+    Then I should only see pupils from the group
+    And I should be able to generate pins for all pupils in this group
+
+  @no_pin @remove_all_groups @pupil_not_taking_check
+  Scenario: Pupils not taking the check should not be in filtered group list
+    Given I have a pupil not taking the check
+    And that pupil is apart of a group
+    When I choose to filter via group on the generate pins page
+    Then I should only see pupils available for taking the check
+    And I should be able to generate pins for all pupils in this group
+
+  @no_pin @remove_all_groups
+  Scenario: Group is no longer present in the filter when all pupils in the group have had a pin generated
+    Given I have generated pins for all pupils in a group
+    Then I can no longer use this group to filter on the generate pins page
+
+  @no_pin @remove_all_groups
+  Scenario: Groups reappear when their are available pupils for pin generation
+    Given I have generated pins for all pupils in a group
+    When a pupil becomes available for pin generation again
+    Then I should be able to filter by groups on the generate pins page
+
+  Scenario: Check Form is assigned to pupil when pin is generated
+    Given I have generated a pin for a pupil
+    Then check form should be assigned to the pupil

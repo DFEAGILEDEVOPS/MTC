@@ -110,14 +110,22 @@ async function generateParams (tableName, data) {
   const params = []
   for (const p of pairs) {
     const [column, value] = p
-    const type = await sqlService.lookupDataTypeForColumn(tableName, column)
-    if (!type) {
+    const cacheData = await sqlService.getCacheEntryForColumn(tableName, column)
+    if (!cacheData) {
       throw new Error(`Column '${column}' not found in table '${tableName}'`)
     }
+    const options = {}
+    // Construct the options array for params generated used `create()` or `update()`
+    if (cacheData.dataType === 'Decimal' || cacheData.dataType === 'Numeric') {
+      options.precision = cacheData.precision
+      options.scale = cacheData.scale
+    }
+    winston.debug(`sql.service: generateParams: options set for [${column}]`, options)
     params.push({
       name: column,
       value,
-      type
+      type: R.prop(findTediousDataType(cacheData.dataType), TYPES),
+      options
     })
   }
   return params
@@ -220,7 +228,7 @@ sqlService.modify = (sql, params) => {
     const con = await sqlPoolService.getConnection()
     const response = {}
     const output = []
-    var request = new Request(sql, function (err, rowCount) {
+    const request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
         return reject(err)
@@ -240,11 +248,20 @@ sqlService.modify = (sql, params) => {
           return reject(new Error('parameter type invalid'))
         }
         const options = {}
-        if (param.precision) {
-          options.scale = param.scale
-          options.precision = param.precision
+        if (R.pathEq(['type', 'name'], 'Decimal', param) ||
+          R.pathEq(['type', 'name'], 'Numeric', param)) {
+          options.precision = param.precision || 28
+          options.scale = param.scale || 5
         }
-        request.addParameter(param.name, param.type, param.value, options)
+        const opts = param.options ? param.options : options
+        winston.debug('sql.service: modify(): opts to addParameter are: ', opts)
+
+        request.addParameter(
+          param.name,
+          param.type,
+          param.value,
+          opts
+        )
       }
     }
 
@@ -288,8 +305,9 @@ sqlService.findOneById = async (table, id) => {
  * @param {string} table
  * @param {string} column
  * @return {TYPE}
+ *
  */
-sqlService.lookupDataTypeForColumn = async function (table, column) {
+sqlService.getCacheEntryForColumn = async function (table, column) {
   const key = cacheKey(table, column)
   if (R.isEmpty(cache)) {
     // This will cache all data-types once on the first sql request
@@ -299,8 +317,10 @@ sqlService.lookupDataTypeForColumn = async function (table, column) {
     winston.debug(`sql.service: cache miss for ${key}`)
     return undefined
   }
+  const cacheData = cache[key]
   winston.debug(`sql.service: cache hit for ${key}`)
-  return R.prop(R.prop(key, cache), TYPES)
+  winston.debug('sql.service: cache', cacheData)
+  return cacheData
 }
 
 /**
@@ -315,8 +335,6 @@ sqlService.generateInsertStatement = async (table, data) => {
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
   SELECT @@IDENTITY`
-
-  winston.debug('sql.service: SQL ', sql)
   return { sql, params }
 }
 
@@ -335,7 +353,6 @@ sqlService.generateUpdateStatement = async (table, data) => {
     generateSetStatements(R.omit(['id'], data)),
     'WHERE id=@id'
   ])
-  winston.debug('sql.service: SQL ', sql)
   return { sql, params }
 }
 
@@ -352,7 +369,6 @@ sqlService.create = async (tableName, data) => {
   winston.debug('sql.service: params: ' + params.map(p => p.value).join(', '))
   try {
     const res = await sqlService.modify(sql, params)
-    winston.debug('sql.service: INSERT RESULT: ', res)
     return res
   } catch (error) {
     winston.warn('sql.service: Failed to INSERT', error)
@@ -366,7 +382,13 @@ sqlService.create = async (tableName, data) => {
  */
 sqlService.updateDataTypeCache = async function () {
   const sql =
-    `SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE
+    `SELECT  
+      TABLE_NAME, 
+      COLUMN_NAME, 
+      DATA_TYPE, 
+      NUMERIC_PRECISION, 
+      NUMERIC_SCALE, 
+      CHARACTER_MAXIMUM_LENGTH
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_SCHEMA = @schema
     `
@@ -375,12 +397,14 @@ sqlService.updateDataTypeCache = async function () {
   cache = {}
   const rows = await sqlService.query(sql, [paramSchema])
   rows.forEach((row) => {
-    const table = row.TABLE_NAME
-    const column = row.COLUMN_NAME
-    const type = row.DATA_TYPE
-    const key = cacheKey(table, column)
+    const key = cacheKey(row.TABLE_NAME, row.COLUMN_NAME)
     // add the datatype to the cache
-    cache[key] = findTediousDataType(type)
+    cache[key] = {
+      dataType: findTediousDataType(row.DATA_TYPE),
+      precision: row.NUMERIC_PRECISION,
+      scale: row.NUMERIC_SCALE,
+      maxLength: row.CHARACTER_MAX_LENGTH
+    }
   })
   winston.debug('sql.service: updateDataTypeCache() complete')
 }
@@ -402,7 +426,6 @@ sqlService.update = async function (tableName, data) {
   const { sql, params } = await sqlService.generateUpdateStatement(tableName, preparedData)
   try {
     const res = await sqlService.modify(sql, params)
-    winston.debug('sql.service: UPDATE RESULT: ', res)
     return res
   } catch (error) {
     winston.warn('sql.service: Failed to UPDATE', error)

@@ -5,6 +5,7 @@ const R = require('ramda')
 const Check = require('../../models/check')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const table = '[check]'
 
 const checkDataService = {}
 
@@ -141,8 +142,10 @@ checkDataService.count = async function (query) {
  * @return {Promise.<*>}
  */
 checkDataService.sqlFindNumberOfChecksStartedByPupil = async function (pupilId) {
-  const sql = `SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
-  WHERE pupil_id=@pupilId AND startedAt IS NOT NULL
+  const sql = `
+  SELECT COUNT(*) AS [cnt] FROM ${sqlService.adminSchema}.[check]
+  WHERE pupil_id=@pupilId 
+  AND startedAt IS NOT NULL
   AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
   const params = [
     {
@@ -274,6 +277,60 @@ checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
   ]
   const result = await sqlService.query(sql, params)
   return R.head(result)
+}
+
+/**
+ * Create minimal multiple new checks
+ * @param checks
+ * @return {Promise}
+ */
+checkDataService.sqlCreateBatch = async function (checks) {
+  const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
+    pupil_id,
+    checkWindow_id,
+    checkForm_id
+  )  VALUES`
+
+  const params = []
+  const insertClauses = []
+
+  checks.forEach((c, i) => {
+    params.push({name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int})
+    params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
+    params.push({name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int})
+    insertClauses.push(`(@pupil_id${i}, @checkWindow_id${i}, @checkForm_id${i})`)
+  })
+
+  const sql = [insert, insertClauses.join(', ')].join(' ')
+  return sqlService.modify(sql, params)
+}
+
+/**
+ * Retrieve the latest check during pupil authentication from the pupil app.
+ * @param pupilId
+ * @return {Promise<void>}
+ */
+checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
+  const sql = `
+  SELECT TOP 1 * 
+  FROM ${sqlService.adminSchema}.${table}
+  WHERE data IS NULL 
+  AND startedAt IS NULL
+  AND pupil_id = @pupilId
+  ORDER BY createdAt DESC 
+  `
+  const params = [{name: 'pupilId', value: pupilId, type: TYPES.Int}]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
+/**
+ * Update: pass in an object with the id and the modified fields
+ * @param checkData
+ * @return {Promise<*>}
+ */
+checkDataService.sqlUpdate = async function (checkData) {
+  return sqlService.update('[check]', checkData)
 }
 
 module.exports = checkDataService
