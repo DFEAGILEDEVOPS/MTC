@@ -2,6 +2,7 @@
 
 const iconv = require('iconv-lite')
 const crypto = require('crypto')
+const moment = require('moment')
 
 const service = {
   /**
@@ -127,7 +128,7 @@ function parseMessage (plaintext) {
   }
 
   // Record the logon
-  data.logonAt = Date.now()
+  data.logonAt = moment.utc()
 
   return data
 }
