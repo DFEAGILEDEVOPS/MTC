@@ -13,7 +13,7 @@ const service = {
       SuperUser: 'HEADTEACHER',
       SchoolSup: 'TEACHER',
       SchoolNom: 'TEACHER',
-      Admin: 'HELPDESK',
+      Admin: 'TEACHER', // TODO will fix in #17331
       DataAdmin: 'TEST-DEVELOPER'
     }
 
