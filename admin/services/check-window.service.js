@@ -105,7 +105,7 @@ const checkWindowService = {
    * Check if pupil is allowed to log in
    */
 
-  isLoginAllowed: async () => {
+  hasActiveCheckWindow: async () => {
     const activeCheckWindows = await checkWindowDataService.sqlFindActiveCheckWindows()
     const hasActiveCheckWindows = activeCheckWindows && activeCheckWindows.length > 0
     if (!hasActiveCheckWindows) throw new Error('There is no open check window')

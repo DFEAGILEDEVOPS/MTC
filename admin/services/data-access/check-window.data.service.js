@@ -237,7 +237,10 @@ const checkWindowDataService = {
    */
   sqlFindActiveCheckWindows: async () => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
-    WHERE isDeleted=0 AND @currentTimeStamp >= checkStartDate AND @currentTimeStamp <= checkEndDate`
+    WHERE isDeleted=0 
+    AND @currentTimeStamp >= checkStartDate 
+    AND @currentTimeStamp <= checkEndDate`
+
     const currentTimestamp = moment.utc().toDate()
     const params = [
       {

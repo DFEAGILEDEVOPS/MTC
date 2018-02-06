@@ -68,8 +68,8 @@ describe('Questions controller', () => {
     if (!options['pupil-authentication.service.getPupilDataForSpa']) {
       options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataForSpaMock }
     }
-    if (!options['check-window.service.isLoginAllowed']) {
-      options['check-window.service.isLoginAllowed'] = function () {}
+    if (!options['check-window.service.hasActiveCheckWindow']) {
+      options['check-window.service.hasActiveCheckWindow'] = function () {}
     }
 
     // Spy setup
@@ -79,7 +79,7 @@ describe('Questions controller', () => {
     getConfigSpy = jasmine.createSpy().and.callFake(options['config.service.getConfig'])
     jwtSpy = jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
-    isLoginAllowedSpy = jasmine.createSpy().and.callFake(options['check-window.service.isLoginAllowed'])
+    isLoginAllowedSpy = jasmine.createSpy().and.callFake(options['check-window.service.hasActiveCheckWindow'])
 
     return proxyquire('../../controllers/questions', {
       '../services/pupil-authentication.service': {
@@ -87,7 +87,7 @@ describe('Questions controller', () => {
         getPupilDataForSpa: getPupilDataForSpaSpy
       },
       '../services/check-window.service': {
-        isLoginAllowed: isLoginAllowedSpy
+        hasActiveCheckWindow: isLoginAllowedSpy
       },
       '../services/config.service': {
         getConfig: getConfigSpy
@@ -286,7 +286,7 @@ describe('Questions controller', () => {
     it('returns error if the checkWindow service throws', async (done) => {
       const req = goodReq
       const controller = setupController({
-        'check-window.service.isLoginAllowed': function () { return Promise.reject(new Error('a mock')) }
+        'check-window.service.hasActiveCheckWindow': function () { return Promise.reject(new Error('a mock')) }
       })
       try {
         await controller.getQuestions(req, res)

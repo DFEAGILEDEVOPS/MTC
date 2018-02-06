@@ -189,11 +189,11 @@ describe('check-window.service', () => {
       expect(result.toString).toBe(expected.toString)
       expect(result).toBeTruthy()
     })
-    describe('#isLoginAllowed', () => {
+    describe('#hasActiveCheckWindow', () => {
       it('should allow pupil to login if there are active check windows', async (done) => {
         spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue([checkWindowsMock])
         try {
-          await service.isLoginAllowed()
+          await service.hasActiveCheckWindow()
         } catch (error) {
           fail('not expected to throw')
         }
@@ -202,7 +202,7 @@ describe('check-window.service', () => {
       it('it should disallow pupil to login if there are no active windows', async () => {
         spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue([])
         try {
-          await service.isLoginAllowed()
+          await service.hasActiveCheckWindow()
           fail('not expected to throw')
         } catch (error) {
           expect(error.message).toBe('There is no open check window')
