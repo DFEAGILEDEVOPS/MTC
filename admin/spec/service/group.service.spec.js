@@ -1,8 +1,7 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach afterEach it expect jasmine spyOn fail */
 
-const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
 
 const groupService = require('../../services/group.service')
@@ -49,6 +48,7 @@ describe('group.service', () => {
         const schoolId = null
         try {
           await groupService.getGroupsAsArray(schoolId)
+          fail('error not thrown')
         } catch (error) {
           expect(error.message).toEqual('schoolId is required')
         }
@@ -75,6 +75,7 @@ describe('group.service', () => {
       const groupIdToExclude = 1
       try {
         await groupService.getPupils(schoolId, groupIdToExclude)
+        fail('error not thrown')
       } catch (error) {
         expect(error.message).toEqual('schoolId is required')
       }
@@ -100,6 +101,7 @@ describe('group.service', () => {
       const schoolId = null
       try {
         await groupService.getGroupById(groupId, schoolId)
+        fail('error not thrown')
       } catch (error) {
         expect(error.message).toEqual('schoolId and groupId are required')
       }
@@ -137,6 +139,7 @@ describe('group.service', () => {
         const schoolId = null
         try {
           await service.update(1, groupMock, schoolId)
+          fail('error not thrown')
         } catch (error) {
           expect(error.message).toEqual('id, group.name and schoolId are required')
         }
@@ -146,21 +149,19 @@ describe('group.service', () => {
 
     describe('unhappy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlUpdate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('TEST ERROR')) }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.reject(new Error('Failed to update group')))
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should not update group', async (done) => {
         try {
           const schoolId = 123
           const group = await service.update(1, groupMock, schoolId)
+          fail('error not thrown')
           expect(group).toEqual(groupMock)
         } catch (error) {
-          expect(error.message).toBe('TEST ERROR')
+          expect(error.message).toBe('Failed to update group')
         }
         done()
       })
@@ -172,12 +173,9 @@ describe('group.service', () => {
 
     describe('happy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.resolve({'insertId': 1}) }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({'insertId': 1}))
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should create group', async (done) => {
@@ -190,18 +188,16 @@ describe('group.service', () => {
 
     describe('unhappy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.resolve({'insertId': 1}) }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({'insertId': 1}))
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should return an error if groupName or schoolId are missing', async (done) => {
         const schoolId = null
         try {
           await service.create(groupMock.name, [6, 2, 3], schoolId)
+          fail('error not thrown')
         } catch (error) {
           expect(error.message).toEqual('groupName and schoolId are required')
         }
@@ -211,18 +207,16 @@ describe('group.service', () => {
 
     describe('unhappy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlCreate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('Failed to create group')) }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.reject(new Error('Failed to create group')))
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should fail to create a group', async (done) => {
         try {
           const schoolId = 123
           await service.create(groupMock, [6, 2, 3], schoolId)
+          fail('error not thrown')
         } catch (error) {
           expect(error.message).toBe('Failed to create group')
         }
@@ -250,6 +244,7 @@ describe('group.service', () => {
 
       try {
         await groupService.findGroupsByPupil(schoolId, pupilIds)
+        fail('error not thrown')
       } catch (error) {
         expect(error.message).toEqual('schoolId and pupils are required')
       }

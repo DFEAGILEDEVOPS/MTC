@@ -144,6 +144,7 @@ describe('restart controller:', () => {
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
+      spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
