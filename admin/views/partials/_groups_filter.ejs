@@ -14,7 +14,7 @@
                    aria-label="Tick group <%= group.name %>."
                    aria-checked="false"
                    role="checkbox">
-            <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
+            <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %> <span class="group-count" id="group-id-<%= group.id %>"></span></label>
         </li>
         <% }) %>
     </ul>
