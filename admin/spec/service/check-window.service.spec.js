@@ -3,14 +3,16 @@
 
 const checkFormMock = require('../mocks/check-form')
 const checkWindowsMock = require('../mocks/check-windows')
+const checkMock = require('../mocks/check')
 const moment = require('moment')
 
 describe('check-window.service', () => {
-  let service, checkWindowDataService, checkFormDataService
+  let service, checkWindowDataService, checkFormDataService, checkDataService
   beforeEach(() => {
     service = require('../../services/check-window.service')
     checkWindowDataService = require('../../services/data-access/check-window.data.service')
     checkFormDataService = require('../../services/data-access/check-form.data.service')
+    checkDataService = require('../../services/data-access/check.data.service')
   })
 
   describe('formatCheckWindowDocuments', () => {
@@ -190,19 +192,31 @@ describe('check-window.service', () => {
       expect(result).toBeTruthy()
     })
     describe('#hasActiveCheckWindow', () => {
+      const pupilId = 1
       it('should allow pupil to login if there are active check windows', async (done) => {
-        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue([checkWindowsMock])
+        spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(checkMock)
+        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue(checkWindowsMock)
         try {
-          await service.hasActiveCheckWindow()
+          await service.hasActiveCheckWindow(pupilId)
         } catch (error) {
           fail('not expected to throw')
         }
         done()
       })
-      it('it should disallow pupil to login if there are no active windows', async () => {
-        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue([])
+      it('it should disallow pupil to login if there is no related check to the pupil', async () => {
+        spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue()
         try {
-          await service.hasActiveCheckWindow()
+          await service.hasActiveCheckWindow(pupilId)
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('There is no check record for pupil id 1')
+        }
+      })
+      it('it should disallow pupil to login if there are no active windows', async () => {
+        spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(checkMock)
+        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue({})
+        try {
+          await service.hasActiveCheckWindow(pupilId)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('There is no open check window')

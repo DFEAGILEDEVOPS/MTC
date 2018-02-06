@@ -34,7 +34,7 @@ const getQuestions = async (req, res) => {
   }
 
   try {
-    await checkWindowService.hasActiveCheckWindow()
+    await checkWindowService.hasActiveCheckWindow(data.pupil.id)
   } catch (error) {
     return apiResponse.sendJson(res, 'Forbidden', 403)
   }

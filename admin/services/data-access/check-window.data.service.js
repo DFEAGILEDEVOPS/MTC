@@ -233,11 +233,13 @@ const checkWindowDataService = {
   },
   /**
    * Find active check windows
+   * @param checkWindowId
    * @return {Object}
    */
-  sqlFindActiveCheckWindows: async () => {
+  sqlFindActiveCheckWindows: async (checkWindowId) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
-    WHERE isDeleted=0 
+    WHERE isDeleted = 0
+    AND id = @checkWindowId
     AND @currentTimeStamp >= checkStartDate 
     AND @currentTimeStamp <= checkEndDate`
 
@@ -247,9 +249,15 @@ const checkWindowDataService = {
         name: 'currentTimestamp',
         value: currentTimestamp,
         type: TYPES.DateTimeOffset
+      },
+      {
+        name: 'checkWindowId',
+        value: checkWindowId,
+        type: TYPES.Int
       }
     ]
-    return sqlService.query(sql, params)
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
   }
 }
 
