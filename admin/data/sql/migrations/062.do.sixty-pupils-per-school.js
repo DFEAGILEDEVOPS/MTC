@@ -5,7 +5,7 @@ const config = require('../../../config')
 const moment = require('moment')
 
 module.exports.generateSql = function () {
-  const targetEnvironments = ['Azure-UAT']
+  const targetEnvironments = ['Azure-UAT', 'Local-Dev']
   if (R.contains(config.Environment, targetEnvironments)) {
     let foreName, lastName, gender, dateOfBirth, upn
     const insertStatements = []
@@ -17,7 +17,8 @@ module.exports.generateSql = function () {
         const upnNumber = upnBase.toString().padStart(11, '0')
         upn = `A${upnNumber}A`
         upnBase++
-        foreName = `Pupil ${pupilIndex + 1}`
+        const pupilNumber = (pupilIndex + 1).toString().padStart(2, '0')
+        foreName = `Pupil ${pupilNumber}`
         lastName = `School ${schoolId}`
         gender = 'M'
         dateOfBirth = moment('2000-01-01').add(pupilIndex, 'days').format('YYYY-MM-DD').toString()
