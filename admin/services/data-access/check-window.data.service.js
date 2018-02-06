@@ -236,7 +236,7 @@ const checkWindowDataService = {
    * @param checkWindowId
    * @return {Object}
    */
-  sqlFindActiveCheckWindows: async (checkWindowId) => {
+  sqlFindOneActiveCheckWindow: async (checkWindowId) => {
     const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
     WHERE isDeleted = 0
     AND id = @checkWindowId

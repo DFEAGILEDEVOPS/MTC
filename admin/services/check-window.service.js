@@ -111,7 +111,7 @@ const checkWindowService = {
     const currentCheck = await checkDataService.sqlFindOneForPupilLogin(pupilId)
     const hasCheck = currentCheck && Object.keys(currentCheck).length > 0
     if (!hasCheck) throw new Error(`There is no check record for pupil id ${pupilId}`)
-    const activeCheckWindow = await checkWindowDataService.sqlFindActiveCheckWindows(currentCheck.checkWindow_id)
+    const activeCheckWindow = await checkWindowDataService.sqlFindOneActiveCheckWindow(currentCheck.checkWindow_id)
     const hasActiveCheckWindow = activeCheckWindow && Object.keys(activeCheckWindow).length > 0
     if (!hasActiveCheckWindow) throw new Error('There is no open check window')
   }

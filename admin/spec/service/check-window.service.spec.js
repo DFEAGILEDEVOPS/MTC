@@ -195,7 +195,7 @@ describe('check-window.service', () => {
       const pupilId = 1
       it('should allow pupil to login if there are active check windows', async (done) => {
         spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(checkMock)
-        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue(checkWindowsMock)
+        spyOn(checkWindowDataService, 'sqlFindOneActiveCheckWindow').and.returnValue(checkWindowsMock)
         try {
           await service.hasActiveCheckWindow(pupilId)
         } catch (error) {
@@ -214,7 +214,7 @@ describe('check-window.service', () => {
       })
       it('it should disallow pupil to login if there are no active windows', async () => {
         spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(checkMock)
-        spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue({})
+        spyOn(checkWindowDataService, 'sqlFindOneActiveCheckWindow').and.returnValue({})
         try {
           await service.hasActiveCheckWindow(pupilId)
           fail('expected to throw')
