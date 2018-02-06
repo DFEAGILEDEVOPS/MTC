@@ -7,6 +7,9 @@ const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
+const checkWindowService = require('../services/check-window.service')
+const R = require('ramda')
+const winston = require('winston')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -51,6 +54,18 @@ const getQuestions = async (req, res) => {
 
   // start the check
   try {
+    if (data.pupil.isTestAccount) {
+      // prepare a check instance on the fly for test accounts
+      const currentWindows = await checkWindowService.getCurrentCheckWindowsAndCountForms()
+      const firstWindow = R.head(currentWindows)
+      if (!firstWindow) {
+        const errorMessage = 'test account unable to login as no current check window available'
+        winston.warn(errorMessage)
+        await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
+        return apiResponse.serverError(res)
+      }
+      await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber)
+    }
     const checkData = await checkStartService.pupilLogin(data.pupil.id)
     questions = checkFormService.prepareQuestionData(checkData.questions)
     pupilData.checkCode = checkData.checkCode
