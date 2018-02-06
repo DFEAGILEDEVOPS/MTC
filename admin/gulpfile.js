@@ -14,8 +14,6 @@ const jsBundleFiles = [
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js',
   './assets/javascripts/custom-file-upload.js'
-  // ,
-  // './assets/javascripts/group-filters.js'
 ]
 
 gulp.task('watch', function () {
