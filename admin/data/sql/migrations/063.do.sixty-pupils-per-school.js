@@ -5,7 +5,7 @@ const config = require('../../../config')
 const moment = require('moment')
 
 module.exports.generateSql = function () {
-  const targetEnvironments = ['Azure-UAT', 'Azure-Feb-Trial', 'Local-Dev']
+  const targetEnvironments = ['Azure-UAT', 'Local-Dev']
   if (R.contains(config.Environment, targetEnvironments)) {
     let foreName, lastName, gender, dateOfBirth, upn
     const insertStatements = []
