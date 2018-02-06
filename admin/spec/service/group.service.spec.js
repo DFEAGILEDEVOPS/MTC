@@ -146,12 +146,9 @@ describe('group.service', () => {
 
     describe('unhappy path', () => {
       beforeEach(() => {
-        service = proxyquire('../../services/group.service', {
-          '../services/data-access/group.data.service': {
-            sqlUpdate: jasmine.createSpy().and.callFake(function () { return Promise.reject(new Error('TEST ERROR')) }),
-            sqlAssignPupilsToGroup: jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-          }
-        })
+        service = require('../../services/group.service')
+        spyOn(groupDataService, 'sqlUpdate').and.returnValue(Promise.reject(new Error('Failed to update group')))
+        spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
       it('should not update group', async (done) => {
@@ -160,7 +157,7 @@ describe('group.service', () => {
           const group = await service.update(1, groupMock, schoolId)
           expect(group).toEqual(groupMock)
         } catch (error) {
-          expect(error.message).toBe('TEST ERROR')
+          expect(error.message).toBe('Failed to update group')
         }
         done()
       })
