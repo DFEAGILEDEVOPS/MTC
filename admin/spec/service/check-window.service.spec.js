@@ -203,7 +203,7 @@ describe('check-window.service', () => {
         spyOn(checkWindowDataService, 'sqlFindActiveCheckWindows').and.returnValue([])
         try {
           await service.hasActiveCheckWindow()
-          fail('not expected to throw')
+          fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('There is no open check window')
         }
