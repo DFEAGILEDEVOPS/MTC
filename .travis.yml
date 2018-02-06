@@ -58,6 +58,7 @@ install:
 before_script:
   - docker-compose up --build -d && sleep 10
   - docker info
+  - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 
 script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
