@@ -5,7 +5,7 @@ const config = require('../../../config')
 const moment = require('moment')
 
 module.exports.generateSql = function () {
-  const targetEnvironments = ['Azure-UAT', 'Local-Dev']
+  const targetEnvironments = ['Azure-UAT']
   if (R.contains(config.Environment, targetEnvironments)) {
     let foreName, lastName, gender, dateOfBirth, upn
     const insertStatements = []
@@ -27,6 +27,7 @@ module.exports.generateSql = function () {
     }
     return insertStatements.join('\n')
   } else {
-    return `SELECT 'This migration is not being run in ${config.Environment}`
+    console.log(`migration 63 is not configured to run in ${config.Environment}`)
+    return ''
   }
 }
