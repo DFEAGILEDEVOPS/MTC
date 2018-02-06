@@ -46,7 +46,8 @@ before_install:
 #  - "$CXX --version"
   - sudo apt-get --allow-unauthenticated upgrade
   - rvm reload && rvm use ruby 2.4.1
-  - sudo apt-get install google-chrome-stable freetds-dev
+  - sudo apt-get install google-chrome-stable
+  - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
 
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
