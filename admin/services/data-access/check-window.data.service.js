@@ -230,6 +230,23 @@ const checkWindowDataService = {
       ))
     }
     return Promise.all(inserts)
+  },
+  /**
+   * Find active check windows
+   * @return {Object}
+   */
+  sqlFindActiveCheckWindows: async () => {
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table}
+    WHERE isDeleted=0 AND @currentTimeStamp >= checkStartDate AND @currentTimeStamp <= checkEndDate`
+    const currentTimestamp = moment.utc().toDate()
+    const params = [
+      {
+        name: 'currentTimestamp',
+        value: currentTimestamp,
+        type: TYPES.DateTimeOffset
+      }
+    ]
+    return sqlService.query(sql, params)
   }
 }
 

@@ -106,13 +106,9 @@ const checkWindowService = {
    */
 
   isLoginAllowed: async () => {
-    const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-    const hasActiveCheckWindow = checkWindow && Object.keys(checkWindow).length > 0
-    if (!hasActiveCheckWindow) throw new Error('There is no open check window')
-    const hasCheckWindowStarted = moment.utc().isAfter(checkWindow.checkStartDate)
-    if (!hasCheckWindowStarted) throw new Error('The active check window has not started')
-    const hasCheckWindowNotEnded = moment(moment.utc()).isBefore(checkWindow.checkEndDate)
-    if (!hasCheckWindowNotEnded) throw new Error('The active check window has expired')
+    const activeCheckWindows = await checkWindowDataService.sqlFindActiveCheckWindows()
+    const hasActiveCheckWindows = activeCheckWindows && activeCheckWindows.length > 0
+    if (!hasActiveCheckWindows) throw new Error('There is no open check window')
   }
 }
 
