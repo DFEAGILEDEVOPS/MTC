@@ -265,7 +265,7 @@ describe('Questions controller', () => {
       done()
     })
 
-    it('returns server error if the checkStart service throws', async (done) => {
+    it('returns server error if the checkStart service throws', async () => {
       const req = goodReq
       const controller = setupController({
         'check-start.service.pupilLogin': function () { return Promise.reject(new Error('a mock')) }
@@ -274,16 +274,13 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-
-        done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
       expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
-      done()
     })
-    it('returns error if the checkWindow service throws', async (done) => {
+    it('returns error if the checkWindow service throws', async () => {
       const req = goodReq
       const controller = setupController({
         'check-window.service.hasActiveCheckWindow': function () { return Promise.reject(new Error('a mock')) }
@@ -291,13 +288,11 @@ describe('Questions controller', () => {
       try {
         await controller.getQuestions(req, res)
       } catch (error) {
-        expect('questions controller not to').toBe('error')
-        done()
+        fail('not expected to throw')
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(403)
       expect(data).toBe('Forbidden')
-      done()
     })
   })
 })
