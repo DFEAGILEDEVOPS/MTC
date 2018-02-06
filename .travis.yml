@@ -56,7 +56,8 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
 
 before_script:
-  - docker-compose up --build -d
+  - docker-compose up --build -d && sleep 10
+  - docker info
 
 script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
