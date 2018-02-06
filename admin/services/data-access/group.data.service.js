@@ -310,36 +310,23 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
 groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   if (!schoolId || !pupilIds || pupilIds.length < 3) return false
 
-  let sql = `SELECT id, name 
-    FROM ${sqlService.adminSchema}.[group] 
-    WHERE school_id=@schoolId`
+  let ids = []
+  pupilIds.map((p) => { ids.push(p.id) })
 
-  const params = [{
+  let sqlInit = `SELECT DISTINCT p.group_id as id, g.name 
+    FROM ${sqlService.adminSchema}.[pupilGroup] p 
+    JOIN ${sqlService.adminSchema}.[group] g
+      ON g.id = p.group_id `
+  let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
+
+  params.push({
     name: 'schoolId',
     value: schoolId,
     type: TYPES.Int
-  }]
-  const ids = Object.values(pupilIds)
-  let whereClause = ''
+  })
 
-  for (let index = 0; index < ids.length; index++) {
-    if (ids[index].group_id) {
-      whereClause = whereClause + `@p${index}`
-      console.log('+++++ index', index)
-      whereClause += ','
-      params.push({
-        name: `p${index}`,
-        value: ids[index].group_id,
-        type: TYPES.Int
-      })
-    }
-  }
-
-  if (whereClause.length > 0) {
-    sql += ` AND id IN (${whereClause.substr(0, whereClause.length - 1)})`
-  }
-
-  console.log('===== query', sql)
+  const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')})`
+  const sql = [sqlInit, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
 
