@@ -51,7 +51,7 @@ module.exports = {
   Logging: {
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
-      hostname: `${process.env.LOGDNA_ENV_NAME}:${os.hostname()}`,
+      hostname: `${process.env.ENVIRONMENT_NAME}:${os.hostname()}`,
       ip: undefined,
       mac: undefined,
       app: 'MTC Admin',
@@ -69,5 +69,6 @@ module.exports = {
       NcaToolsPublicKey: process.env.TSO_AUTH_PUBLIC_KEY,
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
-  }
+  },
+  Environment: process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
