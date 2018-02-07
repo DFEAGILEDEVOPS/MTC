@@ -40,7 +40,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
 
   // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(pupilIds)
+  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber)
 
   // Create the check for each pupil
   const checks = []

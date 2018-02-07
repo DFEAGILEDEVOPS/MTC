@@ -1,5 +1,6 @@
 const moment = require('moment')
 const bluebird = require('bluebird')
+const R = require('ramda')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -23,7 +24,10 @@ const pinExpiryTime = () => {
   return fourPmToday
 }
 
-const pinGenerationService = {}
+const pinGenerationService = {
+  pinSubmissionMaxAttempts: config.pinSubmissionMaxAttempts,
+  pinSubmissionAttempts: 0
+}
 const chars = '23456789'
 
 /**
@@ -88,19 +92,37 @@ pinGenerationService.isValid = async (p) => {
 /**
  * Generate pupils pins
  * @param pupilsList
+ * @param dfeNumber
  * @returns {Array}
  */
-pinGenerationService.updatePupilPins = async (pupilsList) => {
-  const ids = Object.values(pupilsList || null)
+pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber) => {
+  let ids = Object.values(pupilsList || null)
+  ids = ids.map(i => parseInt(i))
   const pupils = await pupilDataService.sqlFindByIds(ids)
-  pupils.forEach(async pupil => {
+  pupils.forEach(pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
       pupil.pinExpiresAt = pinExpiryTime()
     }
   })
   const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
-  return pupilDataService.sqlUpdatePinsBatch(data)
+  try {
+    await pupilDataService.sqlUpdatePinsBatch(data)
+  } catch (error) {
+    // Handle duplicate pins
+    if (error.message.indexOf('duplicate key row') > 0 &&
+      pinGenerationService.pinSubmissionAttempts < pinGenerationService.pinSubmissionMaxAttempts) {
+      pinGenerationService.pinSubmissionAttempts += 1
+      const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+      const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
+      const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
+      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber)
+    } else {
+      pinGenerationService.pinSubmissionAttempts = 0
+      throw new Error(`${pinGenerationService.pinSubmissionMaxAttempts} allowed attempts 
+      for pin generation resubmission have been reached`)
+    }
+  }
 }
 
 /**
