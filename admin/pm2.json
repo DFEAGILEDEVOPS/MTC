@@ -1,0 +1,8 @@
+{
+  "apps" : [{
+    "name"        : "MTC Admin",
+    "script"      : "server.js",
+    "watch"       : false,
+    "instances"   : -1
+  }]
+}
