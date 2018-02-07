@@ -29,7 +29,7 @@ const server = http.createServer(app)
 server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
-winston.info('Server listening on port ' + port)
+winston.info(`${config.Environment} server listening on port ${port}`)
 
 /**
  * Normalize a port into a number, string, or false.

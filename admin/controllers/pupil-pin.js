@@ -66,8 +66,23 @@ const getGeneratePinsList = async (req, res, next) => {
 }
 
 const postGeneratePins = async (req, res, next) => {
-  const { pupil: pupilsList } = req.body
-  if (!pupilsList) {
+  let pupilsList
+  // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
+  // busboy provides either an array of values, or, sometimes an object where the key is the
+  // array prefix.  The scalar check here is just to be safe.
+  if (Array.isArray(req.body.pupil)) {
+    pupilsList = req.body.pupil
+  } else if (typeof req.body.pupil === 'object') {
+    pupilsList = Object.values(req.body.pupil)
+  } else {
+    if (req.body.pupil) {
+      pupilsList = [req.body.pupil]
+    } else {
+      pupilsList = []
+    }
+  }
+
+  if (!Array.isArray(pupilsList) || pupilsList.length === 0) {
     return res.redirect('/pupil-pin/generate-pins-list')
   }
   let school
