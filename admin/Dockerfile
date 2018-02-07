@@ -10,6 +10,7 @@ COPY . /usr/src/app
 RUN rm -rf ./node_modules
 RUN yarn install --ignore-engines
 RUN ./node_modules/.bin/gulp build
+RUN yarn global add pm2
 
 # ------------------------
 # SSH Server support
@@ -27,4 +28,5 @@ RUN ./node_modules/.bin/gulp build
 # -------------------------
 
 EXPOSE 3001
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
+CMD ["pm2-docker", "start", "pm2.json" ]
