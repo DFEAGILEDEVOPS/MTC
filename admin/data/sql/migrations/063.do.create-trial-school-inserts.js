@@ -11,7 +11,7 @@ const pupilPerSchoolCount = 60
 let upnBase = 1
 
 const sqlGenerator = () => {
-  if (config.Environment !== 'Azure-Feb-Trial') return ''
+  if (config.Environment !== 'Azure-Feb-Trial') return 'SELECT 42'
 
   const csvPath = path.join(__dirname, '../../files/feb-trial-schools.csv')
   const csvStream = fs.createReadStream(csvPath)
@@ -36,7 +36,7 @@ const sqlGenerator = () => {
 }
 
 function createSchoolInsert (data) {
-  return `INSERT INTO [mtc_admin].[school] ([name], [urn], [dfeNumber] VALUES ('${makeStringSqlSafe(data.name)}', ${data.dfeNumber}, ${data.dfeNumber})`
+  return `INSERT INTO [mtc_admin].[school] ([name], [urn], [dfeNumber], [estabCode] VALUES ('${makeStringSqlSafe(data.name)}', ${data.dfeNumber}, ${data.dfeNumber}, 'FEB-TRIAL')`
 }
 
 function createSixtyPupilsInsertForSchool () {
@@ -51,7 +51,7 @@ function createSixtyPupilsInsertForSchool () {
     gender = ~~(Math.random() * 2) ? 'M' : 'F'
     dateOfBirth = moment('2000-01-01').add(pupilIndex, 'days').format('YYYY-MM-DD').toString()
     pupilInserts.push(`INSERT [mtc_admin].[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
-    VALUES (@schoolId, '${foreName}', CAST(@schoolId as NVARCHAR), '${gender}', '${dateOfBirth}', '${upn}')`)
+    VALUES (@schoolId, '${foreName}', 'Trial-' + CAST(@schoolId as NVARCHAR), '${gender}', '${dateOfBirth}', '${upn}')`)
   }
   return pupilInserts.join('\n')
 }
