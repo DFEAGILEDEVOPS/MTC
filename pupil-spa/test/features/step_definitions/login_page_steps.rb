@@ -92,7 +92,7 @@ Then(/^I should all the correct pupil details$/) do
   expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
   expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
   expect(confirmation_page.school_name.text).to  eql "School: #{school}"
-  expect(confirmation_page.dob.text).to  eql "Date of Birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
+  expect(confirmation_page.dob.text).to  eql "Date of birth: #{@pupil_information['dateOfBirth'].strftime("%-d %B %Y")}"
 end
 
 

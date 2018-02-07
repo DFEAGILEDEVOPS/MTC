@@ -14,6 +14,7 @@ Feature:
     Given I have completed the check with a real user using the numpad
     Then I should see a check started event in the audit log
 
+  @wip
   Scenario: Check start failure event is recorded in to the audit log
     Given I have lost my local storage
     When I completed the check anyway
