@@ -133,4 +133,10 @@ class SqlDbHelper
     chk_form_res
   end
 
+  def self.create_check(updatedime, createdTime, pupil_id)
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1)"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
 end
