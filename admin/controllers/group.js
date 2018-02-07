@@ -46,13 +46,13 @@ const manageGroupPage = async (req, res, next) => {
   res.locals.pageTitle = 'Create group'
 
   if (req.params.groupId) {
+    action = 'edit'
+    res.locals.pageTitle = 'Edit group'
     try {
       group = await groupService.getGroupById(req.params.groupId, req.user.schoolId)
     } catch (error) {
       return next(error)
     }
-    action = 'edit'
-    res.locals.pageTitle = 'Edit group'
   }
 
   try {
