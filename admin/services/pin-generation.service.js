@@ -25,7 +25,7 @@ const pinExpiryTime = () => {
 }
 
 const pinGenerationService = {
-  pinSubmissionMaxAttempts: config.pinSubmissionMaxAttempts,
+  pinSubmissionMaxAttempts: config.Data.pinSubmissionMaxAttempts,
   pinSubmissionAttempts: 0
 }
 const chars = '23456789'
@@ -110,7 +110,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber) => {
     await pupilDataService.sqlUpdatePinsBatch(data)
   } catch (error) {
     // Handle duplicate pins
-    if (error.message.indexOf('duplicate key row') > 0 &&
+    if (error.number === 2601 &&
       pinGenerationService.pinSubmissionAttempts < pinGenerationService.pinSubmissionMaxAttempts) {
       pinGenerationService.pinSubmissionAttempts += 1
       const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)

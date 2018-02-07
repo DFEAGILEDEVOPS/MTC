@@ -170,8 +170,17 @@ describe('pin-generation.service', () => {
         pupil.pinExpiresAt = undefined
         pupilArray.push(pupil)
       }
-      duplicateKeyError = `Cannot insert duplicate key row in object 'mtc_admin.pupil' 
-        with unique index 'pupil_school_id_pin_uindex'.`
+      duplicateKeyError = {
+        message: `Cannot insert duplicate key row in object 'mtc_admin.pupil' 
+        with unique index 'pupil_school_id_pin_uindex'.`,
+        code: 'EREQUEST',
+        number: 2601,
+        state: 1,
+        class: 14,
+        serverName: '2bc0b49d251c',
+        procName: '',
+        lineNumber: 4
+      }
     })
     describe('should generate pin and execute update', () => {
       it('when pin has not been generated', async () => {
@@ -192,7 +201,7 @@ describe('pin-generation.service', () => {
         sqlFindByIdsSpy.and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
         const sqlUpdatePinsBatchSpy = spyOn(pupilDataService, 'sqlUpdatePinsBatch')
         // sqlUpdatePins fails the first time and then succeed
-        sqlUpdatePinsBatchSpy.and.returnValues(Promise.reject(new Error(duplicateKeyError)), Promise.resolve('ok'))
+        sqlUpdatePinsBatchSpy.and.returnValues(Promise.reject(duplicateKeyError), Promise.resolve('ok'))
         const storedPupilsWithPins = pupilArray.filter(p => p.id <= 3).map((p, i) => {
           p.pin = i * 1111
           return p
@@ -201,7 +210,11 @@ describe('pin-generation.service', () => {
         const unsavedPupilIdsMock = unsavedPupilsMock.map(p => p.id)
         spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(storedPupilsWithPins)
         const submittedIds = pupilArray.map(p => p.id)
-        await pinGenerationService.updatePupilPins(submittedIds, 9991999)
+        try {
+          await pinGenerationService.updatePupilPins(submittedIds, 9991999)
+        } catch (error) {
+          fail('not expected to throw')
+        }
         expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(2)
         expect(sqlFindByIdsSpy.calls.all()[1].args[0]).toEqual(unsavedPupilIdsMock)
         const updateArgs = sqlUpdatePinsBatchSpy.calls.all()[1].args[0]
@@ -219,9 +232,9 @@ describe('pin-generation.service', () => {
         const sqlUpdatePinsBatchSpy = spyOn(pupilDataService, 'sqlUpdatePinsBatch')
         // sqlUpdatePins fails 3 times
         sqlUpdatePinsBatchSpy.and.returnValues(
-          Promise.reject(new Error(duplicateKeyError)),
-          Promise.reject(new Error(duplicateKeyError)),
-          Promise.reject(new Error(duplicateKeyError))
+          Promise.reject(duplicateKeyError),
+          Promise.reject(duplicateKeyError),
+          Promise.reject(duplicateKeyError)
         )
         const storedPupilsWithPins = (max) => pupilArray.filter(p => p.id <= max).map((p, i) => {
           p.pin = i * 1111
