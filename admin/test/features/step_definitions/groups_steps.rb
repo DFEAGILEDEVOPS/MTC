@@ -172,7 +172,7 @@ end
 
 Given(/^I want to edit a previously added group$/) do
   step 'I have created a group'
-  previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
+  previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}
   previoulsy_created_group.group_name.click
 end
 
@@ -239,7 +239,7 @@ end
 Then(/^I should be able to remove the group$/) do
   group_pupils_page.remove_group(@group_name)
   if group_pupils_page.has_group_list?
-    expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to be_nil
+    expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}).to be_nil
   else
     expect(group_pupils_page).to have_no_group_list
   end
@@ -247,7 +247,7 @@ Then(/^I should be able to remove the group$/) do
 end
 
 When(/^I choose to remove the group$/) do
-  row = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
+  row = group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}
   row.remove.click
 end
 
@@ -256,7 +256,7 @@ But(/^decide against it and cancel$/) do
 end
 
 Then(/^the group should not be removed$/) do
-  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to_not be_nil
+  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.include? @group_name}).to_not be_nil
 end
 
 Then(/^I should see the number of pupils in that group on the group hub page$/) do

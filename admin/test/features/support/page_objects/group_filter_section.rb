@@ -5,6 +5,7 @@ class GroupFilter < SitePrism::Section
   sections :groups, '#filterByGroup li' do
     element :checkbox, '.pupils-not-taking-the-check'
     element :name, '.font-xsmall'
+    element :count, '.group-count'
   end
 
 end
