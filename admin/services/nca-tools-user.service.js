@@ -20,12 +20,12 @@ const service = {
       throw new Error(`Unknown School:${ncaUser.School}`)
     }
 
-    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.UserName)
+    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
     if (!userRecord) {
       const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType)
       const role = await roleService.findByTitle(mtcRoleName)
       const user = {
-        identifier: ncaUser.UserName,
+        identifier: ncaUser.EmailAddress,
         school_id: school.id,
         role_id: role.id
       }
