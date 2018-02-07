@@ -9,11 +9,12 @@ const moment = require('moment')
 const pupilPerSchoolCount = 60
 let upnBase = 1
 
-const generateSql = async () => {
+const sqlGenerator = () => {
   const csvPath = path.join(__dirname, '../../files/feb-trial-schools.csv')
   const csvStream = fs.createReadStream(csvPath)
   const schoolInserts = ['DECLARE @schoolId int']
-  csv.fromStream(csvStream, { headers: true })
+  return new Promise((resolve, reject) => {
+    csv.fromStream(csvStream, { headers: true })
   .on('data', (data) => {
     const schoolInsert = createSchoolInsert(data)
     schoolInserts.push(schoolInsert)
@@ -22,10 +23,12 @@ const generateSql = async () => {
   })
   .on('end', () => {
     const inserts = schoolInserts.join('\n')
-    winston.info(inserts)
+    resolve(inserts)
   })
   .on('error', (error) => {
     winston.error(`error processing ${csvPath} for school inserts...\n${error}`)
+    reject(error)
+  })
   })
 }
 
@@ -54,4 +57,4 @@ function makeStringSqlSafe (str) {
   return str.replace('\'', '')
 }
 
-generateSql()
+module.exports.generateSql = sqlGenerator
