@@ -5,11 +5,14 @@ const fs = require('fs')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
+const config = require('../../../config')
 
 const pupilPerSchoolCount = 60
 let upnBase = 1
 
 const sqlGenerator = () => {
+  if (config.Environment !== 'Azure-Feb-Trial') return ''
+
   const csvPath = path.join(__dirname, '../../files/feb-trial-schools.csv')
   const csvStream = fs.createReadStream(csvPath)
   const schoolInserts = ['DECLARE @schoolId int']
