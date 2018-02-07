@@ -3,6 +3,10 @@ const os = require('os')
 const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
+const getEnvironment = () => {
+  return process.env.ENVIRONMENT_NAME || 'Local-Dev'
+}
+
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   AZURE_STORAGE_LOGGING_ENABLED: process.env.AZURE_STORAGE_LOGGING_ENABLED,
@@ -51,7 +55,7 @@ module.exports = {
   Logging: {
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
-      hostname: `${process.env.ENVIRONMENT_NAME}:${os.hostname()}`,
+      hostname: `${getEnvironment()}:${os.hostname()}`,
       ip: undefined,
       mac: undefined,
       app: 'MTC Admin',
@@ -70,5 +74,5 @@ module.exports = {
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
   },
-  Environment: process.env.ENVIRONMENT_NAME || 'Local-Dev'
+  Environment: getEnvironment() // process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
