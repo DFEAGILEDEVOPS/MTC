@@ -3,7 +3,6 @@
 const apiResponse = require('./api-response')
 const checkFormService = require('../services/check-form.service')
 const checkStartService = require('../services/check-start.service')
-const checkWindowService = require('../services/check-window.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
