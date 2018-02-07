@@ -54,6 +54,7 @@ module.exports = async function (req, done) {
 
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
     userData.role = mtcUser.mtcRole
+    userData.schoolId = mtcUser.school_id
     // auth success
     logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true
