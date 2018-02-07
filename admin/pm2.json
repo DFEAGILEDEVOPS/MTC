@@ -3,6 +3,7 @@
     "name"        : "MTC Admin",
     "script"      : "server.js",
     "watch"       : false,
-    "instances"   : -1
+    "instances"   : "max",
+    "exec_mode"   : "cluster"
   }]
 }
