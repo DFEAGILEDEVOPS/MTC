@@ -5,7 +5,7 @@ const randomNumber = require('random-number-csprng')
 
 const random = {
   /**
-   * @brief Returns a random string
+   * @description Returns a random string
    * @param {int} length - length of random string to generate
    * @param {string} chars - string of allowable characters
    * @return {string}
@@ -35,7 +35,7 @@ const random = {
   },
 
   /**
-   * @brief Get a cryptographically secure random number in a range (inclusive)
+   * @description Get a cryptographically secure random number in a range (inclusive)
    * By wrapping this function we also make it testable
    * It can also be swapped out for other implementations
    * @param {int} min - minimum integer in the range inclusive
