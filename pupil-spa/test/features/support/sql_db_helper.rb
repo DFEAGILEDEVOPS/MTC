@@ -66,6 +66,12 @@ class SqlDbHelper
     result.do
   end
 
+  def self.set_shcool_pin(school_id, new_time, school_pin)
+  sql = "UPDATE [mtc_admin].[school] set pin='#{school_pin}', pinExpiresAt='#{new_time}' WHERE id='#{school_id}'"
+  result = SQL_CLIENT.execute(sql)
+  result.do
+  end
+
   def self.get_pupil_check_metadata(check_code)
     sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}'"
     result = SQL_CLIENT.execute(sql)
@@ -131,6 +137,12 @@ class SqlDbHelper
     chk_form_res = result.first
     result.cancel
     chk_form_res
+  end
+
+  def self.create_check(updatedime, createdTime, pupil_id)
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1)"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
   end
 
 end
