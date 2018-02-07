@@ -2,7 +2,7 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe xdescribe beforeEach it expect jasmine spyOn fail */
+/* global describe xdescribe beforeEach it expect spyOn fail */
 
 const fs = require('fs-extra')
 
@@ -12,7 +12,6 @@ const random = require('../../lib/random-generator')
 const checkFormsMock = require('../mocks/check-forms')
 const checkWindowByForm = require('../mocks/check-window-by-form')
 const checkWindowMock = require('../mocks/check-window-2')
-
 
 const checkFormMock = {
   id: 100,
