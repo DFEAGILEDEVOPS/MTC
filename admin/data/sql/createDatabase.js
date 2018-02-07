@@ -59,6 +59,7 @@ const main = () => {
     const connection = new Connection(adminConfig)
     connection.on('connect', (err) => {
       if (err) {
+        winston.error(`Connection error: ${err.message}`)
         reject(err)
         return
       }
