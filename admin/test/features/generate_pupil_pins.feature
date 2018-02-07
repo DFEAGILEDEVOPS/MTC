@@ -1,4 +1,4 @@
-@generate_pupil_pins @reset_pin_restart_check
+@generate_pupil_pins @no_pin
 Feature: Generate Pupil PINs
 
   @no_pin
@@ -146,7 +146,7 @@ Feature: Generate Pupil PINs
     Then the status of the pupil should be Not taking the Check
     And the pin should be expired
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @pupil_not_taking_check
   Scenario: Pupils can be filtered by group
     Given I have a group of pupils
     When I choose to filter via group on the generate pins page
@@ -167,7 +167,7 @@ Feature: Generate Pupil PINs
     Given I have generated pins for all pupils in a group
     Then I can no longer use this group to filter on the generate pins page
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @pupil_not_taking_check
   Scenario: Groups reappear when their are available pupils for pin generation
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again

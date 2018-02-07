@@ -125,10 +125,14 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   # check = completed_checks.select {|check| check['data']['pupil']['sessionId'] == storage_pupil['sessionId']}.last
   storage_answers.each {|answer| expect(check['data']['answers']).to include answer}
   storage_inputs.each {|input| expect(check['data']['inputs']).to include input}
-  storage_audit.each {|audit| expect(check['data']['audit']).to include audit}
   expect(check['data']['access_token']).to eql storage_access_token
   [storage_school].each {|audit| expect(check['data']['school']).to include audit}
   [storage_config].each {|audit| expect(check['data']['config']).to include audit}
   storage_questions.each {|audit| expect(check['data']['questions']).to include audit}
   [storage_pupil].each {|audit| expect(check['data']['pupil']).to include audit}
+  storage_audit.each do|audit|
+    if !((audit['type'].eql?('CheckSubmissionAPICallSucceeded')) || (audit['type'].eql?('CheckSubmissionApiCalled')) || (audit['type'].eql?('CheckComplete')))
+      expect(check['data']['audit']).to include audit
+    end
+  end
 end
