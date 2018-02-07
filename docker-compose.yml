@@ -14,18 +14,4 @@ services:
         SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
         ACCEPT_EULA: "Y"
         HOMEBREW_NO_ENV_FILTERING: 1
-  admin-app:
-    build: ./admin
-    container_name: mtc_admin
-    ports:
-    - "3001:3001"
-    environment:
-      MONGO_CONNECTION_STRING: "mongodb://mtc_db/mtc"
-      LOGDNA_API_KEY: "d9090f15fa9c47cf839f00ea19bb61bf"
-      ENVIRONMENT_NAME: "docker-pm2"
-    depends_on:
-    - sqldb
-    - mongo
-    links:
-    - sqldb
-    - mongo
+
