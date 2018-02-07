@@ -338,7 +338,7 @@ checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
     f.id,
     f.name,
     c.pupil_id     
-  FROM ${sqlService.adminSchema}.${table} c JOIN
+  FROM ${sqlService.adminSchema}.${table} c INNER JOIN
     ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
   WHERE
     f.isDeleted <> 1  
