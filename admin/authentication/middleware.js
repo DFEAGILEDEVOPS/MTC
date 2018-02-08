@@ -3,7 +3,6 @@
 const winston = require('winston')
 
 function isAuthenticated (role) {
-  winston.debug('entering /authentication/middleware.js:isAuthenticated with role:', role)
   return function (req, res, next) {
     if (req.isAuthenticated()) {
       winston.debug('user authenticated:', req.user)
@@ -12,6 +11,7 @@ function isAuthenticated (role) {
       if (role === undefined || (role !== undefined && userRole && role === userRole)) {
         return next()
       } else {
+        winston.debug(`could not authorise ${role} against userRole:${userRole}`)
         return res.redirect('/unauthorised')
       }
     }
