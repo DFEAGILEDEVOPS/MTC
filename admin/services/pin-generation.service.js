@@ -24,10 +24,7 @@ const pinExpiryTime = () => {
   return fourPmToday
 }
 
-const pinGenerationService = {
-  pinSubmissionMaxAttempts: config.Data.pinSubmissionMaxAttempts,
-  pinSubmissionAttempts: 0
-}
+const pinGenerationService = {}
 const chars = '23456789'
 
 /**
@@ -93,9 +90,13 @@ pinGenerationService.isValid = async (p) => {
  * Generate pupils pins
  * @param pupilsList
  * @param dfeNumber
- * @returns {Array}
+ * @param maxAttempts
+ * @param attemptsRemaining
  */
-pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber) => {
+pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining) => {
+  if (!Array.isArray(pupilsList)) {
+    throw new Error('Received list of pupils is not an array')
+  }
   let ids = Object.values(pupilsList || null)
   ids = ids.map(i => parseInt(i))
   const pupils = await pupilDataService.sqlFindByIds(ids)
@@ -110,16 +111,14 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber) => {
     await pupilDataService.sqlUpdatePinsBatch(data)
   } catch (error) {
     // Handle duplicate pins
-    if (error.number === 2601 &&
-      pinGenerationService.pinSubmissionAttempts < pinGenerationService.pinSubmissionMaxAttempts) {
-      pinGenerationService.pinSubmissionAttempts += 1
+    if (error.number === 2601 && attemptsRemaining !== 0) {
+      attemptsRemaining -= 1
       const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
       const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
-      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber)
+      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining)
     } else {
-      pinGenerationService.pinSubmissionAttempts = 0
-      throw new Error(`${pinGenerationService.pinSubmissionMaxAttempts} allowed attempts 
+      throw new Error(`${maxAttempts} allowed attempts 
       for pin generation resubmission have been reached`)
     }
   }
