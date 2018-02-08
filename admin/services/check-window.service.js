@@ -4,6 +4,7 @@ const moment = require('moment')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const dateService = require('../services/date.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
+const checkDataService = require('./data-access/check.data.service')
 
 const checkWindowService = {
   /**
@@ -100,6 +101,17 @@ const checkWindowService = {
   },
   assignFormsToWindow: async (checkWindowId, checkFormIds) => {
     return checkWindowDataService.sqlAssignFormsToWindow(checkWindowId, checkFormIds)
+  },
+  /**
+   * Check if pupil is allowed to log in
+   * @param pupilId
+   */
+
+  hasActiveCheckWindow: async (pupilId) => {
+    const currentCheck = await checkDataService.sqlFindOneForPupilLogin(pupilId)
+    if (!currentCheck) throw new Error(`There is no check record for pupil id ${pupilId}`)
+    const activeCheckWindow = await checkWindowDataService.sqlFindOneActiveCheckWindow(currentCheck.checkWindow_id)
+    if (!activeCheckWindow) throw new Error('There is no open check window')
   }
 }
 
