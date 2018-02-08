@@ -89,7 +89,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getPupils').and.returnValue(null)
+      spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       await controller(req, res, next)
