@@ -26,10 +26,14 @@
                     "schoolPin": "{{ schoolPin }}",
                     "pupilPin": "{{ pupilPin }}"
                   },
-                  "capture": {
+                  "capture": [{
                      "json": "$.access_token",
                      "as": "jwt"
-                  }
+                  },
+                  {
+                    "json": "$.pupil.checkCode",
+                    "as": "checkCode"
+                  }]
                }
             },
             {
