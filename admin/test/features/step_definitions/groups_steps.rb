@@ -284,7 +284,7 @@ end
 Then(/^I should the group stored in the DB$/) do
   pupil_ids_array = SqlDbHelper.get_pupil_ids_from_group(@group_name)
   pupils_names_from_db = SqlDbHelper.pupils_assigned_to_group(pupil_ids_array)
-  expect(pupils_names_from_db).to eql @pupil_names
+  expect(pupils_names_from_db.sort).to eql @pupil_names.sort
 end
 
 Given(/^I have a group of pupils$/) do

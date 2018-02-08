@@ -34,6 +34,12 @@ const getQuestions = async (req, res) => {
     await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
     return apiResponse.unauthorised(res)
   }
+
+  try {
+    await checkWindowService.hasActiveCheckWindow(data.pupil.id)
+  } catch (error) {
+    return apiResponse.sendJson(res, 'Forbidden', 403)
+  }
   const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
   const schoolData = {
     id: data.school.id,
