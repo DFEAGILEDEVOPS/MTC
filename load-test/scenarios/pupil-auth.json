@@ -1,0 +1,112 @@
+{
+   "config": {
+      "target": "http://localhost:3001",
+      "phases": [
+         {
+            "duration": 60,
+            "arrivalRate": 5
+         }
+      ],
+      "payload": {
+         "path": "./data/pupilLogins.csv",
+         "fields": [
+            "schoolPin",
+            "pupilPin"
+         ]
+      }
+   },
+   "scenarios": [
+      {
+         "name": "pupil login",
+         "flow": [
+            {
+               "post": {
+                  "url": "/api/questions",
+                  "json": {
+                    "schoolPin": "{{ schoolPin }}",
+                    "pupilPin": "{{ pupilPin }}"
+                  },
+                  "capture": {
+                     "json": "$.access_token",
+                     "as": "jwt"
+                  }
+               }
+            },
+            {
+               "think": 3
+            },
+            {
+               "post": {
+                  "url": "/api/completed-check",
+                  "json": {
+                     "access_token": "{{ jwt }}",
+                     "answers": [
+                      {
+                        "factor1": 2,
+                        "factor2": 5,
+                        "answer": "10"
+                      }
+                    ],
+                    "audit": [
+                      {
+                        "type": "WarmupStarted",
+                        "clientTimestamp": "2018-01-19T09:10:13.822Z"
+                      }
+                    ],
+                    "checkstate": 28,
+                    "config": {
+                      "questionTime": 2,
+                      "loadingTime": 5,
+                      "speechSynthesis": false
+                    },
+                    "inputs": [
+                      [
+                        {
+                          "input": "1",
+                          "eventType": "keydown",
+                          "clientInputDate": "2018-01-19T09:10:40.460Z",
+                          "question": 1
+                        },
+                        {
+                          "input": "0",
+                          "eventType": "keydown",
+                          "clientInputDate": "2018-01-19T09:10:40.651Z",
+                          "question": 1
+                        },
+                        {
+                          "input": "Enter",
+                          "eventType": "keydown",
+                          "clientInputDate": "2018-01-19T09:10:40.831Z",
+                          "question": 1
+                        }
+                      ]
+                    ],
+                    "pupil": {
+                      "firstName": "Load",
+                      "lastName": "Test",
+                      "dob": "1 January 2000",
+                      "checkCode": "{{ checkCode }}"
+                    },
+                    "questions": [
+                      {
+                        "order": 1,
+                        "factor1": 2,
+                        "factor2": 5
+                      },
+                      {
+                        "order": 2,
+                        "factor1": 11,
+                        "factor2": 2
+                      }
+                    ],
+                    "school": {
+                      "id": 9991999,
+                      "name": "Test school"
+                    }
+                  }
+               }
+            }
+         ]
+      }
+   ]
+}
