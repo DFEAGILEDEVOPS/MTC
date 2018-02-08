@@ -20,4 +20,5 @@ CREATE TABLE [mtc_admin].[psychometricianReportCache] (
 );
 
 -- There should only be one report cache entry per check
-CREATE UNIQUE INDEX psychometricianReportCache_check_id_uindex ON [mtc_admin].[psychometricianReportCache](check_id);
+CREATE UNIQUE INDEX psychometricianReportCache_check_id_uindex
+  ON [mtc_admin].[psychometricianReportCache] (check_id);
