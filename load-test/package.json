@@ -1,0 +1,12 @@
+{
+  "name": "load-test",
+  "version": "1.0.0",
+  "description": "load test the school admin application",
+  "main": "app.js",
+  "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "artillery": "^1.6.0-12"
+  }
+}
