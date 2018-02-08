@@ -204,14 +204,25 @@ describe('pin-generation.service', () => {
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data)
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
     })
-    describe('should retry generating existing pins', () => {
+
+    describe('retry generating existing pins process', () => {
       let sqlFindByIdsSpy, sqlUpdatePinsBatchSpy
       beforeEach(() => {
         sqlFindByIdsSpy = spyOn(pupilDataService, 'sqlFindByIds')
         sqlFindByIdsSpy.and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
         sqlUpdatePinsBatchSpy = spyOn(pupilDataService, 'sqlUpdatePinsBatch')
       })
-      it('when sqlUpdatePinsBatch throws duplicate key error and max attempts are not reached', async () => {
+      it('should not occur when the error is not related to pin duplication', async () => {
+        const error = { number: 1, message: 'test' }
+        sqlUpdatePinsBatchSpy.and.returnValue(Promise.reject(error))
+        try {
+          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100)
+          fail('expected to throw')
+        } catch (error) {
+          expect(sqlUpdatePinsBatchSpy).toHaveBeenCalledTimes(1)
+        }
+      })
+      it('should occur when sqlUpdatePinsBatch throws duplicate key error and max attempts are not reached', async () => {
         // sqlUpdatePins fails the first time, second time and then succeeds
         sqlUpdatePinsBatchSpy.and.returnValues(
           Promise.reject(duplicateKeyError),
@@ -240,7 +251,7 @@ describe('pin-generation.service', () => {
         expect(updateArgsIds(2)).toEqual(unsavedPupilIdsMock(5))
         expect(updateArgsPins(2).length).toBe(unsavedPupilsMock(5).length)
       })
-      it('when sqlUpdatePinsBatch throws duplicate key error and throw another error when max attempts are reached', async () => {
+      it('should occur when sqlUpdatePinsBatch throws duplicate key error and throw another error when max attempts are reached', async () => {
         const sqlUpdatePinsBatchReturnValues = Array(101).fill(Promise.reject(duplicateKeyError))
         sqlUpdatePinsBatchSpy.and.returnValues(...sqlUpdatePinsBatchReturnValues)
         const sqlFindPupilsWithActivePinsValues = Array(100).fill(storedPupilsWithPins(4))

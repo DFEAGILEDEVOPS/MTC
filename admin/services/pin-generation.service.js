@@ -110,6 +110,10 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
   try {
     await pupilDataService.sqlUpdatePinsBatch(data)
   } catch (error) {
+    if (attemptsRemaining === 0) {
+      throw new Error(`${maxAttempts} allowed attempts 
+      for pin generation resubmission have been reached`)
+    }
     // Handle duplicate pins
     if (error.number === 2601 && attemptsRemaining !== 0) {
       attemptsRemaining -= 1
@@ -118,8 +122,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
       await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining)
     } else {
-      throw new Error(`${maxAttempts} allowed attempts 
-      for pin generation resubmission have been reached`)
+      throw new Error(error)
     }
   }
 }
