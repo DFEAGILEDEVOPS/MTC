@@ -2,10 +2,10 @@
 const csv = require('fast-csv')
 const R = require('ramda')
 
-const psReportCacheDataService = require('./data-access/ps-report-cache.data.service')
-const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
+const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
+const psReportCacheDataService = require('./data-access/ps-report-cache.data.service')
 const psUtilService = require('./psychometrician-util.service')
 // const winston = require('winston')
 
