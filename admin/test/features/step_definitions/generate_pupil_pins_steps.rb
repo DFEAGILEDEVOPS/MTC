@@ -301,7 +301,8 @@ end
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  expect(generate_pupil_pins_page.group_filter).to have_no_filter_label
+  expect(generate_pupil_pins_page.group_filter).to have_no_closed_filter
+  expect(generate_pupil_pins_page.group_filter).to have_no_opened_filter
 end
 
 When(/^a pupil becomes available for pin generation again$/) do

@@ -301,7 +301,8 @@ Then(/^only those pupils from the group should be displayed$/) do
 end
 
 Then(/^I should not see the group filter$/) do
-  expect(pupil_reason_page.group_filter).to have_no_filter_label
+  expect(pupil_reason_page.group_filter).to have_no_closed_filter
+  expect(pupil_reason_page.group_filter).to have_no_opened_filter
 end
 
 Then(/^the group filter should be opened by default$/) do
