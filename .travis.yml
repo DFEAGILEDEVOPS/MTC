@@ -47,6 +47,7 @@ before_install:
   - sudo apt-get --allow-unauthenticated upgrade
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
+  - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
 
 install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
@@ -55,14 +56,17 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
 
 before_script:
-  - docker-compose up --build -d
+  - docker-compose up --build -d && sleep 10
+  - docker info
+  - docker-compose logs
+  - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 
 script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test2.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/admin && ./test3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
+#  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test.sh; fi
+#  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/pupil-spa && ./test2.sh; fi
 
 after_script:
   - docker-compose down
