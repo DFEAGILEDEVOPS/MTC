@@ -304,10 +304,10 @@ Then(/^I should not see the group filter$/) do
   expect(pupil_reason_page.group_filter).to have_no_filter_label
 end
 
-Then(/^the group filter should be closed by default$/) do
+Then(/^the group filter should be opened by default$/) do
   pupil_reason_page.load
-  expect(pupil_reason_page.group_filter).to have_filter_label
-  expect(pupil_reason_page.group_filter).to have_no_opened_filter
+  expect(pupil_reason_page.group_filter).to have_opened_filter
+  expect(pupil_reason_page.group_filter).to have_no_closed_filter
 end
 
 And(/^I should be able to see a count of pupils in the group$/) do
