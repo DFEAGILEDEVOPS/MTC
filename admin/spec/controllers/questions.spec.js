@@ -28,7 +28,9 @@ const getPupilDataForSpaMock = {
 }
 
 describe('Questions controller', () => {
-  let goodReq, res, pupilCheckSpy, authenticateSpy, getPupilDataForSpaSpy, getConfigSpy, jwtSpy, prepareQuestionDataSpy
+  let goodReq, res, pupilCheckSpy, authenticateSpy,
+    getPupilDataForSpaSpy, getConfigSpy, jwtSpy,
+    prepareQuestionDataSpy, isLoginAllowedSpy
 
   beforeEach(() => {
     res = httpMocks.createResponse()
@@ -66,6 +68,9 @@ describe('Questions controller', () => {
     if (!options['pupil-authentication.service.getPupilDataForSpa']) {
       options['pupil-authentication.service.getPupilDataForSpa'] = function () { return getPupilDataForSpaMock }
     }
+    if (!options['check-window.service.hasActiveCheckWindow']) {
+      options['check-window.service.hasActiveCheckWindow'] = function () {}
+    }
 
     // Spy setup
     pupilCheckSpy = jasmine.createSpy().and.callFake(options['check-start.service.pupilLogin'])
@@ -74,11 +79,15 @@ describe('Questions controller', () => {
     getConfigSpy = jasmine.createSpy().and.callFake(options['config.service.getConfig'])
     jwtSpy = jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
+    isLoginAllowedSpy = jasmine.createSpy().and.callFake(options['check-window.service.hasActiveCheckWindow'])
 
     return proxyquire('../../controllers/questions', {
       '../services/pupil-authentication.service': {
         authenticate: authenticateSpy,
         getPupilDataForSpa: getPupilDataForSpaSpy
+      },
+      '../services/check-window.service': {
+        hasActiveCheckWindow: isLoginAllowedSpy
       },
       '../services/config.service': {
         getConfig: getConfigSpy
@@ -256,7 +265,7 @@ describe('Questions controller', () => {
       done()
     })
 
-    it('returns server error if the checkStart service throws', async (done) => {
+    it('returns server error if the checkStart service throws', async () => {
       const req = goodReq
       const controller = setupController({
         'check-start.service.pupilLogin': function () { return Promise.reject(new Error('a mock')) }
@@ -265,14 +274,25 @@ describe('Questions controller', () => {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-
-        done()
       }
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
       expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
-      done()
+    })
+    it('returns error if the checkWindow service throws', async () => {
+      const req = goodReq
+      const controller = setupController({
+        'check-window.service.hasActiveCheckWindow': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        fail('not expected to throw')
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(403)
+      expect(data).toBe('Forbidden')
     })
   })
 })
