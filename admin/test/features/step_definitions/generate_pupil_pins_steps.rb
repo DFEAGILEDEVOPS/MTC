@@ -253,7 +253,7 @@ end
 When(/^I choose to filter via group on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.group_filter.filter_label.click
+  generate_pupil_pins_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
@@ -311,7 +311,7 @@ end
 Then(/^I should be able to filter by groups on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.group_filter.filter_label.click
+  generate_pupil_pins_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)

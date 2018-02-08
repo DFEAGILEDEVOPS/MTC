@@ -290,7 +290,7 @@ end
 
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
-  pupil_reason_page.group_filter.filter_label.click
+  pupil_reason_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end

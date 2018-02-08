@@ -256,7 +256,7 @@ But(/^decide against it and cancel$/) do
 end
 
 Then(/^the group should not be removed$/) do
-  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.include? @group_name}).to_not be_nil
+  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}).to_not be_nil
 end
 
 Then(/^I should see the number of pupils in that group on the group hub page$/) do
