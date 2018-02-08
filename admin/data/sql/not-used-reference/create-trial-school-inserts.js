@@ -10,33 +10,8 @@ const config = require('../../../config')
 const pupilPerSchoolCount = 60
 let upnBase = 1
 
-const sqlGenerator = () => {
-  if (config.Environment !== 'Azure-Feb-Trial') return 'SELECT 42'
-
-  const csvPath = path.join(__dirname, '../../files/feb-trial-schools.csv')
-  const csvStream = fs.createReadStream(csvPath)
-  const schoolInserts = ['DECLARE @schoolId int']
-  return new Promise((resolve, reject) => {
-    csv.fromStream(csvStream, { headers: true })
-  .on('data', (data) => {
-    const schoolInsert = createSchoolInsert(data)
-    schoolInserts.push(schoolInsert)
-    schoolInserts.push('SELECT @schoolId = SCOPE_IDENTITY()')
-    schoolInserts.push(createSixtyPupilsInsertForSchool())
-  })
-  .on('end', () => {
-    const inserts = schoolInserts.join('\n')
-    resolve(inserts)
-  })
-  .on('error', (error) => {
-    winston.error(`error processing ${csvPath} for school inserts...\n${error}`)
-    reject(error)
-  })
-  })
-}
-
 function createSchoolInsert (data) {
-  return `INSERT INTO [mtc_admin].[school] ([name], [urn], [dfeNumber], [estabCode] VALUES ('${makeStringSqlSafe(data.name)}', ${data.dfeNumber}, ${data.dfeNumber}, 'FEB-TRIAL')`
+  return `INSERT INTO [mtc_admin].[school] ([name], [urn], [dfeNumber], [estabCode]) VALUES ('${makeStringSqlSafe(data.name)}', ${data.dfeNumber}, ${data.dfeNumber}, 'FEB-TRIAL')`
 }
 
 function createSixtyPupilsInsertForSchool () {
@@ -60,4 +35,24 @@ function makeStringSqlSafe (str) {
   return str.replace('\'', '')
 }
 
-module.exports.generateSql = sqlGenerator
+const generateSql = () => {
+  const csvPath = path.join(__dirname, '../../files/feb-trial-schools.csv')
+  const csvStream = fs.createReadStream(csvPath)
+  const schoolInserts = ['DECLARE @schoolId int']
+  csv.fromStream(csvStream, { headers: true })
+    .on('data', (data) => {
+      const schoolInsert = createSchoolInsert(data)
+      schoolInserts.push(schoolInsert)
+      schoolInserts.push('SELECT @schoolId = SCOPE_IDENTITY()')
+      schoolInserts.push(createSixtyPupilsInsertForSchool())
+    })
+    .on('end', () => {
+      const inserts = schoolInserts.join('\n')
+      winston.info(inserts)
+    })
+    .on('error', (error) => {
+      winston.error(`error processing ${csvPath} for school inserts...\n${error}`)
+    })
+}
+
+generateSql()
