@@ -1,6 +1,8 @@
 Given(/^I am on the add pupil page$/) do
-  step 'I am on the Pupil Register page'
-  pupil_register_page.add_pupil.click
+  # step 'I am on the Pupil Register page'
+  # pupil_register_page.add_pupil.click
+  # feb trial
+  add_pupil_page.load
   @page = add_pupil_page
 end
 
