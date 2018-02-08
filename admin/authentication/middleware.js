@@ -5,9 +5,9 @@ const winston = require('winston')
 function isAuthenticated (role) {
   return function (req, res, next) {
     if (req.isAuthenticated()) {
-      winston.debug('user authenticated:', req.user)
+      winston.debug('req.user', req.user)
       const userRole = ((req.user).role || {})
-      winston.debug('role:', userRole)
+      winston.debug('userRole:', userRole)
       if (role === undefined || (role !== undefined && userRole && role === userRole)) {
         return next()
       } else {
