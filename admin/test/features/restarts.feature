@@ -113,4 +113,6 @@ Feature: Restarts
     When I add these pupils to a group
     And they become eligable for a restart
     Then I should be able to filter the pupil list by the group
+    And I should be able to see the number of pupils in the group
+
 
