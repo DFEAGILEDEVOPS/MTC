@@ -103,7 +103,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Add group')
+          expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
@@ -142,7 +142,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Add group')
+          expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
@@ -182,7 +182,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBeUndefined()
+          expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
@@ -205,7 +205,7 @@ describe('group controller', () => {
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBeUndefined()
+          expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
@@ -293,7 +293,7 @@ describe('group controller', () => {
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Add group')
+          expect(res.locals.pageTitle).toBe('Create group')
           expect(validationError.hasError()).toBeTruthy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
@@ -324,7 +324,7 @@ describe('group controller', () => {
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
 
-          expect(res.locals.pageTitle).toBe('Add group')
+          expect(res.locals.pageTitle).toBe('Create group')
           expect(validationError.hasError()).toBeTruthy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
