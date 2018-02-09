@@ -55,11 +55,11 @@ module.exports = {
   Logging: {
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
-      hostname: `${getEnvironment()}:${os.hostname()}`,
+      hostname: `${os.hostname()}:${process.pid}`,
       ip: undefined,
       mac: undefined,
-      app: 'MTC Admin',
-      env: process.env.LOGDNA_ENV_NAME
+      app: `MTCAdmin:${getEnvironment()}`,
+      env: `${getEnvironment()}`
     }
   },
   OverridePinExpiry: process.env.OVERRIDE_PIN_EXPIRY || false,
