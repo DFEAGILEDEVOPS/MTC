@@ -316,3 +316,8 @@ Then(/^I should be able to filter by groups on the generate pins page$/) do
   expect(generate_pupil_pins_page.group_filter).to have_filter_label
   expect(filtered_pupils).to eql [@pupil_group_array.first]
 end
+
+And(/^I should be able to see a count of pupils$/) do
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
+end

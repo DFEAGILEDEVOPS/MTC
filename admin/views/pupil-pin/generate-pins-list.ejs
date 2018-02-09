@@ -22,7 +22,7 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a href="/pupil-pin/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>">
+                        <a id="sortingLink" href="/pupil-pin/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>/<%= groupIds %>">
                             Pupil <span class="<%= arrowSortDirection.lastName %>"></span>
                         </a>
                     </th>
@@ -40,7 +40,7 @@
                 </thead>
                 <tbody>
                 <% pupils.forEach( (pupil, index) => { %>
-                <tr<% if (pupil && pupil.group_id) { %> id="group-id-<%= pupil.group_id %>"<% } %>>
+                <tr<% if (pupil && pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
                     <td>
                         <label for="pupil-<%= pupil.id %>">
                             <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
@@ -84,13 +84,3 @@
         </form>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
