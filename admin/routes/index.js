@@ -110,7 +110,7 @@ router.post('/auth',
   },
   passport.authenticate('custom', {
     failureRedirect: '/sign-in-failure'
-  }), (req, res) => postAuth(req, res)
+  }), (req, res) => postSignIn(req, res)
 )
 
 module.exports = router
