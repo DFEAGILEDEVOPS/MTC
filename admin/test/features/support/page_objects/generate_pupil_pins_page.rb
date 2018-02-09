@@ -6,12 +6,7 @@ class GeneratePupilPinsPage < SitePrism::Page
   elements :info_message, '.list-number li'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
 
-  element :filter_label, '.filter-label', text: 'Filter by groups'
-  element :opened_filter, '.filter-label.active', text: 'Filter by groups'
-  sections :groups, '#filterByGroup li' do
-    element :checkbox, '.pupils-not-taking-the-check'
-    element :name, '.font-xsmall'
-  end
+  section :group_filter, GroupFilter, '.column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
@@ -37,6 +32,7 @@ class GeneratePupilPinsPage < SitePrism::Page
 
   def generate_pin_for_multiple_pupils(number_of_pupils)
     pupils_with_no_pin = pupil_list.rows.select {|row| row.has_no_selected?}
+    pupils_with_no_pin = pupils_with_no_pin.reject{|row| row.name.text.include? 'áàâãäåāæéèêēëíìîïī' or row.name.text.include? 'ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ'}
     pupil_array = pupils_with_no_pin[0..number_of_pupils.to_i]
     pupil_names = pupil_array.map {|pupil| pupil.name.text}
     pupil_array.each {|pupil| pupil.checkbox.click}
