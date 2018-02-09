@@ -225,7 +225,7 @@ When(/^they become eligable for a restart$/) do
 end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
-  restarts_page.group_filter.filter_label.click
+  restarts_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   filtered_pupils = restarts_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
