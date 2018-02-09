@@ -1,4 +1,4 @@
-@add_multiple_pupil_validation
+@add_multiple_pupil_validation @wip
 Feature: Add Multiple Pupil validation Error
 
   Background:

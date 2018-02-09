@@ -16,12 +16,14 @@ Feature:
     When I click on the Name heading
     Then I should see on the Pupil Register page that all pupils are displayed in descending order of lastname
 
+  @wip
   Scenario: Add single pupil link takes to add pupil page
     Given I am logged in
     When I am on the Pupil Register page
     And I click the Add Pupils link from Pupil Register page
     Then I should be taken to the add pupil page
 
+  @wip
   Scenario: Adding a pupil will appear in the list
     Given I am logged in
     When I am on the Pupil Register page

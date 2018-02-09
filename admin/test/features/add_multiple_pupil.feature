@@ -1,4 +1,4 @@
-@add_multiple_pupils
+@add_multiple_pupils @wip
 Feature: Add Multiple Pupil
 
   Background:

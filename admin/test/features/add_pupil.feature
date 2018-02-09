@@ -1,4 +1,4 @@
-@add_pupil
+@add_pupil @wip
 Feature:
   As part of test development
   I want to be able to add a pupil

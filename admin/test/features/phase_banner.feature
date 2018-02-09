@@ -25,12 +25,14 @@ Feature:
     Then I should see that we are in the beta development phase on the pupil_register page
     And I should see a new tab open when i want to provide feedback link from the pupil_register page
 
+  @wip
   Scenario: Development phase and the feedback link are displayed at the top of the add pupil page
     Given I am logged in
     When I am on the add pupil page
     Then I should see that we are in the beta development phase on the add_pupil page
     And I should see a new tab open when i want to provide feedback link from the add_pupil page
 
+  @wip
   Scenario: Development phase and the feedback link are displayed at the top of the edit pupil page
     Given I want to edit a previously added pupil
     Then I should see that we are in the beta development phase on the edit_pupil page
