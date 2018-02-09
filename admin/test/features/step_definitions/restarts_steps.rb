@@ -226,8 +226,13 @@ end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
   restarts_page.group_filter.filter_label.click
-  group = restarts_page.group_filter.groups.find {|group| group.name.text == @group_name}
+  group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   filtered_pupils = restarts_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils.sort).to eql @pupil_names_arr.sort
+end
+
+And(/^I should be able to see the number of pupils in the group$/) do
+  group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_names_arr.size
 end

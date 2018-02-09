@@ -179,6 +179,7 @@ Feature:
     Given I have a group of pupils
     When I choose to filter pupils via group on the pupil reason page
     Then only those pupils from the group should be displayed
+    And I should be able to see a count of pupils in the group
 
   @remove_all_groups
   Scenario: Group filter is not displayed when there are no groups

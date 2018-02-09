@@ -42,15 +42,17 @@ const manageGroupPage = async (req, res, next) => {
   let pupilsList
   let selectedPupils = []
   let group
-  let action = 'Add'
+  let action = 'add'
+  res.locals.pageTitle = 'Create group'
 
   if (req.params.groupId) {
+    action = 'edit'
+    res.locals.pageTitle = 'Edit group'
     try {
       group = await groupService.getGroupById(req.params.groupId, req.user.schoolId)
     } catch (error) {
       return next(error)
     }
-    action = 'Edit'
   }
 
   try {
@@ -60,11 +62,11 @@ const manageGroupPage = async (req, res, next) => {
     return next(error)
   }
 
-  res.locals.pageTitle = `${action} group`
   req.breadcrumbs('Group pupils', '/school/group-pupils')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/manage-group.ejs', {
     breadcrumbs: req.breadcrumbs(),
+    actionTitle: res.locals.pageTitle,
     action,
     group,
     selectedPupils,
@@ -112,12 +114,13 @@ const addGroup = async (req, res, next) => {
 
     req.body.pupils = req.body.pupil
     req.breadcrumbs('Group pupils', '/school/group-pupils')
-    res.locals.pageTitle = 'Add group'
+    res.locals.pageTitle = 'Create group'
     req.breadcrumbs(res.locals.pageTitle)
 
     return res.render('groups/manage-group.ejs', {
       breadcrumbs: req.breadcrumbs(),
-      action: 'Add',
+      actionTitle: res.locals.pageTitle,
+      action: 'add',
       group: req.body,
       validation: validationError.errors,
       pupilsList,
@@ -187,7 +190,8 @@ const editGroup = async (req, res, next) => {
 
     return res.render('groups/manage-group.ejs', {
       breadcrumbs: req.breadcrumbs(),
-      action: 'Edit',
+      actionTitle: res.locals.pageTitle,
+      action: 'edit',
       group,
       validation: validationError.errors,
       pupilsList,

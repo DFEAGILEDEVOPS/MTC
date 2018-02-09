@@ -34,6 +34,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let school
   let pupils
   let groups = []
+  let groupIds = req.params.groupIds || ''
 
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
@@ -58,6 +59,7 @@ const getGeneratePinsList = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pupils,
     groups,
+    groupIds,
     htmlSortDirection,
     arrowSortDirection
   })
