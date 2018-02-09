@@ -3,8 +3,10 @@
 const httpMocks = require('node-mocks-http')
 const restartService = require('../../services/restart.service')
 const restartValidator = require('../../lib/validator/restart-validator')
+const groupService = require('../../services/group.service')
 const ValidationError = require('../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
+const pupilsMock = require('../mocks/pupils')
 
 require('sinon-mongoose')
 
@@ -72,7 +74,8 @@ describe('restart controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
       user: {
-        School: 9991001
+        School: 9991001,
+        schoolId: 1
       }
     }
 
@@ -82,16 +85,19 @@ describe('restart controller:', () => {
 
     it('displays the restart pupils list page', async (done) => {
       const res = getRes()
+
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getPupils').and.returnValue(null)
+      spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
+      spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
       expect(res.render).toHaveBeenCalled()
       done()
     })
+
     it('calls next if an error occurs within restart service', async (done) => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -138,6 +144,7 @@ describe('restart controller:', () => {
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
+      spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
       const controller = require('../../controllers/restart').postSubmitRestartList
       await controller(req, res, next)
