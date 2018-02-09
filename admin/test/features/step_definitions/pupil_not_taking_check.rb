@@ -290,8 +290,8 @@ end
 
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
-  pupil_reason_page.filter_label.click
-  group = pupil_reason_page.groups.find {|group| group.name.text == @group_name}
+  pupil_reason_page.group_filter.filter_label.click
+  group = pupil_reason_page.group_filter.groups.find {|group| group.name.text == @group_name}
   group.checkbox.click
 end
 
@@ -301,11 +301,11 @@ Then(/^only those pupils from the group should be displayed$/) do
 end
 
 Then(/^I should not see the group filter$/) do
-  expect(pupil_reason_page).to have_no_filter_label
+  expect(pupil_reason_page.group_filter).to have_no_filter_label
 end
 
 Then(/^the group filter should be closed by default$/) do
   pupil_reason_page.load
-  expect(pupil_reason_page).to have_filter_label
-  expect(pupil_reason_page).to have_no_opened_filter
+  expect(pupil_reason_page.group_filter).to have_filter_label
+  expect(pupil_reason_page.group_filter).to have_no_opened_filter
 end

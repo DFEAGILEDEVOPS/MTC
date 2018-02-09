@@ -456,7 +456,7 @@ table.spacious-two-column {
 }
 
 table.spacious.reduced-top-margin {
-  margin-top: 10px;
+  margin-top: pem(15px);
 }
 
 .column-narrow {
@@ -472,6 +472,7 @@ table.spacious.reduced-top-margin {
 .panel-no-border {
   @extend .panel;
   border-left: 0;
+  padding-left: pem(20);
 }
 
 .panel.panel-border-wide.short {
@@ -482,6 +483,20 @@ table.spacious.reduced-top-margin {
 
 .panel, .warning-panel, .panel-no-border {
   margin-bottom: 0;
+}
+
+.panel-list {
+  margin-top: 0;
+  padding-left: 0;
+
+  li {
+    margin-bottom: 15px;
+
+    ul > li {
+      list-style-type: disc;
+      margin-bottom: 5px;
+    }
+  }
 }
 
 a.disabled-link {
