@@ -9,7 +9,7 @@ class SqlDbHelper
   end
 
   def self.pupil_details_using_names(firstname, lastname)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName=N'#{firstname}' AND lastName=N'#{lastname}'"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -64,7 +64,31 @@ class SqlDbHelper
   end
 
   def self.reset_pin(forename,lastname,school_id,flag=nil)
-    sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName='#{forename.gsub("'", "''")}' AND lastName='#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'"
+    sql = "UPDATE [mtc_admin].[pupil] set pin=null WHERE foreName=N'#{forename.gsub("'", "''")}' AND lastName=N'#{lastname.gsub("'", "''")}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.reset_all_pins
+    sql = "UPDATE [mtc_admin].[pupil] set pin=null"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.reset_all_pin_expiry_times
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt=null"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_all_checks
+    sql = "DELETE FROM [mtc_admin].[check]"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_all_restarts
+    sql = "DELETE FROM [mtc_admin].[pupilRestart]"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -76,7 +100,7 @@ class SqlDbHelper
   end
 
   def self.set_pupil_pin_expiry(forename,lastname,school_id,new_time)
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
+    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt='#{new_time}' WHERE foreName=N'#{forename}' AND lastName=N'#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -158,9 +182,7 @@ class SqlDbHelper
     chk_att_code_res = result.first
     result.cancel
     chk_att_code_res
-
   end
-
 
   def self.create_check(updatedime, createdTime, pupil_id, pupilLoginDate, checkStartedTime)
     sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, pupilLoginDate, startedAt) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{pupilLoginDate}', '#{checkStartedTime}' )"
