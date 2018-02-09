@@ -254,12 +254,12 @@ When(/^I choose to filter via group on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
   generate_pupil_pins_page.group_filter.filter_label.click
-  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text == @group_name}
   group.checkbox.click
 end
 
 Then(/^I should only see pupils from the group$/) do
-  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text.split('Date').first}.compact.map{|pupil| pupil.strip}
   expect(filtered_pupils.sort).to eql @pupil_group_array.sort
 end
 
@@ -268,7 +268,7 @@ And(/^I should be able to generate pins for all pupils in this group$/) do
   generate_pupil_pins_page.sticky_banner.confirm.click
   pupils_with_pins  = generate_pupil_pins_page.pupil_list.rows.select{|row| row.has_pin?}
   names = pupils_with_pins.map{|row| row.name.text}
-  expect(@pupil_group_array - [@excluded_pupil].sort - names).to be_empty
+  expect(@pupil_group_array - [@excluded_pupil].sort - names.map{|name| name.split(' Date')[0]}).to be_empty
 end
 
 And(/^that pupil is apart of a group$/) do
@@ -306,15 +306,13 @@ end
 
 When(/^a pupil becomes available for pin generation again$/) do
   SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
+  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.group_filter.filter_label.click
-  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
-  group.checkbox.click
-  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  expect(generate_pupil_pins_page.group_filter).to have_filter_label
   expect(filtered_pupils).to eql [@pupil_group_array.first]
 end
 
