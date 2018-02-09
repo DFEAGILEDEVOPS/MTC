@@ -4,8 +4,6 @@ const winston = require('winston')
 const rolesConfig = require('../roles-config')
 
 const home = (req, res) => {
-  winston.debug('navigating to home')
-  winston.debug('redirecting for role:', req.user.role)
   if (req.isAuthenticated()) {
     switch (req.user.role) {
       case 'TEACHER':
