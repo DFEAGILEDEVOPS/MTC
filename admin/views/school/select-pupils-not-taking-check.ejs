@@ -75,28 +75,7 @@
             <a name="pupil-list"></a>
             <h2 class="top-padding-30">2. Select pupil(s)</h2>
 
-            <% if (groups && groups.length > 0) { %>
-            <div class="filter-header">
-                <div class="filter-label">Filter by groups</div>
-            </div>
-            <div class="hidden filter-content">
-                <ul id="filterByGroup">
-                    <% groups.forEach((group) => { %>
-                    <li>
-                        <input id="group-<%= group.id %>"
-                               class="pupils-not-taking-the-check"
-                               name="group"
-                               type="checkbox"
-                               value="<%= group.id %>"
-                               aria-label="Tick group <%= group.name %>."
-                               aria-checked="false"
-                               role="checkbox">
-                        <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
-            <% } %>
+            <%- partial('partials/_groups_filter', { groups: groups }) %>
 
             <% if (pupilsList && pupilsList.length > 0) { %>
             <table class="spacious reduced-top-margin" id="pupilsList" role="listbox" aria-label="Select pupils.">
