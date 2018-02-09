@@ -291,7 +291,7 @@ end
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
   pupil_reason_page.group_filter.filter_label.click
-  group = pupil_reason_page.group_filter.groups.find {|group| group.name.text == @group_name}
+  group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
@@ -308,4 +308,9 @@ Then(/^the group filter should be closed by default$/) do
   pupil_reason_page.load
   expect(pupil_reason_page.group_filter).to have_filter_label
   expect(pupil_reason_page.group_filter).to have_no_opened_filter
+end
+
+And(/^I should be able to see a count of pupils in the group$/) do
+  group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
