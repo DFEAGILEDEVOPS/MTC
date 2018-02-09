@@ -56,7 +56,7 @@ if ENV['MONGO_CONNECTION_STRING']
 else
   CLIENT = Mongo::Client.new('mongodb://localhost/mtc')
 end
-
+sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
