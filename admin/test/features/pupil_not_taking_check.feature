@@ -187,6 +187,6 @@ Feature:
     Then I should not see the group filter
 
   @remove_all_groups
-  Scenario: Group filter is open by default
+  Scenario: Group filter is not displayed when there are no groups
     Given I have a group of pupils
-    Then the group filter should be opened by default
+    Then the group filter should be closed by default

@@ -45,10 +45,6 @@ sudo: required
 
 before_install:
 #  - "$CXX --version"
-<<<<<<< HEAD
-=======
-#  - sudo apt-get --allow-unauthenticated upgrade
->>>>>>> a684e8db2db422671df064020f7988d5e64643b4
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
