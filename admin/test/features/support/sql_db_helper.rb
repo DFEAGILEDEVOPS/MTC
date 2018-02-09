@@ -93,30 +93,6 @@ class SqlDbHelper
     result.do
   end
 
-  def self.reset_all_pins
-    sql = "UPDATE [mtc_admin].[pupil] set pin=null"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
-  def self.reset_all_pin_expiry_times
-    sql = "UPDATE [mtc_admin].[pupil] set pinExpiresAt=null"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
-  def self.delete_all_checks
-    sql = "DELETE FROM [mtc_admin].[check]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
-  def self.delete_all_restarts
-    sql = "DELETE FROM [mtc_admin].[pupilRestart]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
   def self.set_pupil_pin(forename, lastname, school_id, newPin)
     sql = "UPDATE [mtc_admin].[pupil] set pin='#{newPin}' WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)

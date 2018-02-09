@@ -264,6 +264,7 @@ Then(/^I should only see pupils from the group$/) do
 end
 
 And(/^I should be able to generate pins for all pupils in this group$/) do
+
   generate_pupil_pins_page.select_all_pupils.click
   generate_pupil_pins_page.sticky_banner.confirm.click
   pupils_with_pins  = generate_pupil_pins_page.pupil_list.rows.select{|row| row.has_pin?}
