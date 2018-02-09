@@ -4,7 +4,7 @@ dist: trusty
 
 branches:
   only:
-    - master
+    - bug/travis
 
 cache:
   yarn: true
