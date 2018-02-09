@@ -1,4 +1,5 @@
 'use strict'
+
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
@@ -14,7 +15,9 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const qrService = require('../../services/qr.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
+const groupService = require('../../services/group.service')
 const schoolMock = require('../mocks/school')
+const groupsMock = require('../mocks/groups')
 
 describe('pupilPin controller:', () => {
   function getRes () {
@@ -110,6 +113,7 @@ describe('pupilPin controller:', () => {
             htmlSortDirection: { lastName: 'asc' },
             arrowSortDirection: { lastName: 'sort' }
           })
+        spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
         expect(res.locals.pageTitle).toBe('Select pupils')
