@@ -37,13 +37,11 @@ addons:
       - g++-4.8
 
 services:
- # - mongodb
   - docker
 
 sudo: required
 
 before_install:
-#  - "$CXX --version"
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
