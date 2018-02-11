@@ -99,20 +99,24 @@ completedCheckDataService.sqlFindOne = async (checkCode) => {
 
 /**
  *
- * @param {Promise.<[object]>} batchIds array of integers
+ * @param {Array<object>} batchIds array of integers
+ * @return {Promise<Array>}
  */
 completedCheckDataService.sqlFindByIds = async (batchIds) => {
-  let sql = `SELECT * FROM [mtc_admin].[check] WHERE id IN (`
-  const params = []
-  for (let index = 0; index < batchIds.length; index++) {
-    sql = sql + `@p${index}`
-    params.push({
-      name: `p${index}`,
-      value: batchIds[index],
-      type: TYPES.Int
-    })
-  }
-  return sqlService.query(sql, params)
+  let select = `SELECT * FROM [mtc_admin].[check]`
+  const where = sqlService.buildParameterList(batchIds, TYPES.Int)
+  const sql = [select, 'WHERE id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
+  // Populate the JSON data structure which is stored as a string in the SQL DB
+  const results = await sqlService.query(sql, where.params)
+  const parsed = results.map(x => {
+    console.log('parsing ', x)
+    if (!x.data) {
+      return R.clone(x)
+    }
+    const d = JSON.parse(x.data)
+    return R.assoc('data', d.data, x)
+  })
+  return parsed
 }
 
 /**
@@ -174,8 +178,9 @@ completedCheckDataService.sqlFindUnmarked = async function (batchSize) {
   if (!batchSize) {
     throw new Error('Missing argument: batchSize')
   }
+  const safeBatchSize = parseInt(batchSize, 10)
 
-  const sql = `SELECT id FROM [mtc_admin].[check] WHERE markedAt IS NULL`
+  const sql = `SELECT TOP ${safeBatchSize} id FROM [mtc_admin].[check] WHERE markedAt IS NULL`
   const results = await sqlService.query(sql)
   return results.map(r => r.id)
 }
