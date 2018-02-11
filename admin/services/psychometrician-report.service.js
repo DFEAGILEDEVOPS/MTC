@@ -2,12 +2,14 @@
 const csv = require('fast-csv')
 const R = require('ramda')
 
-const checkDataService = require('./data-access/check.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
-const psReportCacheDataService = require('./data-access/ps-report-cache.data.service')
 const psUtilService = require('./psychometrician-util.service')
-// const winston = require('winston')
+const pupilDataService = require('./data-access/pupil.data.service')
+const checkFormDataService = require('./data-access/check-form.data.service')
+const checkWindowDataService = require('./data-access/check-window.data.service')
+const schoolDataService = require('./data-access/school.data.service')
+const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 
 const psychometricianReportService = {}
 
@@ -17,10 +19,10 @@ const psychometricianReportService = {}
  */
 psychometricianReportService.generateReport = async function () {
   // Read data from the cache
-  const data = await psReportCacheDataService.find({})
+  const results = await psychometricianReportCacheDataService.sqlFindAll()
   const output = []
-  for (const obj of data) {
-    output.push(obj.data)
+  for (const obj of results) {
+    output.push(obj.jsonData)
   }
 
   return new Promise((resolve, reject) => {
@@ -41,10 +43,10 @@ psychometricianReportService.generateReport = async function () {
  */
 psychometricianReportService.generateScoreReport = async function () {
   // Read data from the cache
-  const data = await psReportCacheDataService.find({})
+  const results = await psychometricianReportCacheDataService.sqlFindAll()
   const output = []
-  for (const obj of data) {
-    output.push(scoreFilter(obj.data))
+  for (const obj of results) {
+    output.push(scoreFilter(obj.jsonData))
   }
 
   return new Promise((resolve, reject) => {
@@ -70,37 +72,25 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
 
-  // Address some deficiencies in the data model by adding in data required for the report
-  // additional data is added as a side-effect to the completedChecks objects
-  await this.populateWithCheck(completedChecks)
+  // Fetch all pupils, checkForms, checkWindows or the checks
+  const pupils = await pupilDataService.sqlFindByIds(completedChecks.map(x => x.pupil_id))
+  const checkForms = await checkFormDataService.sqlFindByIds(completedChecks.map(x => x.checkForm_id))
+  const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
+  // const checkWindows = await checkWindowDataService.sqlFindByIds(completedChecks.map(x => x.check))
+
+  const psReportData = []
 
   for (let check of completedChecks) {
-    await this.produceCacheData(check)
-  }
-}
-
-psychometricianReportService.produceCacheData = async function (completedCheck) {
-  if (!completedCheck) {
-    throw new Error('Missing argument: completedCheck')
-  }
-
-  if (!(typeof completedCheck === 'object' && completedCheck._id)) {
-    throw new Error('Invalid argument: completedCheck')
+    const pupil = pupils.find(x => x.id === check.pupil_id)
+    const checkForm = checkForms.find(x => x.id === check.checkForm_id)
+    const school = schools.find(x => x.id === pupil.school_id)
+    // Generate one line of the report
+    const data = this.produceReportData(check, pupil, checkForm, school)
+    psReportData.push({ check_id: check.id, jsonData: data })
   }
 
-  // Generate one line of the report
-  const psData = this.produceReportData(completedCheck)
-
-  // Save the data.  We need the psreportcache.check to be unique - so that each check has only one entry in `psereportcache`
-  // so we re-use the check._id as the psreportcache._id.  If Cosmos ever supports secondary unique indexes
-  // we can just use those instead.  This allows us to use replaceOne (as we already know the _id) and overwrite
-  // an existing record if it exists.
-
-  await psReportCacheDataService.save({
-    _id: completedCheck.check._id,
-    data: psData,
-    check: completedCheck.check._id
-  })
+  // save psReportData
+  await psychometricianReportCacheDataService.sqlInsertMany(psReportData)
 }
 
 /**
@@ -109,77 +99,65 @@ psychometricianReportService.produceCacheData = async function (completedCheck) 
  * @param completedChecks
  * @return {Promise.<void>}
  */
-psychometricianReportService.populateWithCheck = async function (completedChecks) {
-  const checkCodes = completedChecks.map(c => c.data.pupil.checkCode)
-  const checks = await checkDataService.sqlFindFullyPopulated(checkCodes)
-  // winston.info('checks > pupil > school', checks[0].pupilId.school)
-  const checksByCheckCode = new Map()
-  // populate the map
-  checks.map(c => checksByCheckCode.set(c.checkCode, c))
-  // splice it in
-  for (const cc of completedChecks) {
-    cc.check = checksByCheckCode.get(cc.data.pupil.checkCode)
-  }
-}
 
 /**
- * Generate the ps report from the populated completedCheck object
- * CompletedCheck: completedCheck + the Check object fully populated with pupil (+ school), checkWindow
+ * Generate the ps report from the populated check object
+ * CompletedCheck: check + the Check object fully populated with pupil (+ school), checkWindow
  * and checkForm
- * @param completedCheck
+ * @param check
  * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
  */
-psychometricianReportService.produceReportData = function (completedCheck) {
+psychometricianReportService.produceReportData = function (check, pupil, checkForm, school) {
   const psData = {
-    'Surname': psUtilService.getSurname(completedCheck),
-    'Forename': psUtilService.getForename(completedCheck),
-    'MiddleNames': psUtilService.getMiddleNames(completedCheck),
-    'DOB': dateService.formatUKDate(completedCheck.check.pupilId.dob),
-    'Gender': completedCheck.check.pupilId.gender,
-    'PupilId': completedCheck.check.pupilId.upn,
+    'Surname': psUtilService.getSurname(pupil),
+    'Forename': psUtilService.getForename(pupil),
+    'MiddleNames': psUtilService.getMiddleNames(pupil),
+    'DOB': dateService.formatUKDate(pupil.dateOfBirth),
+    'Gender': pupil.gender,
+    'PupilId': pupil.upn,
 
-    'FormMark': psUtilService.getMark(completedCheck),
+    'FormMark': psUtilService.getMark(check),
 
-    'School Name': completedCheck.check.pupilId.school.name,
-    'Estab': completedCheck.check.pupilId.school.estabCode,
-    'School URN': psUtilService.getSchoolURN(completedCheck),
-    'LA Num': completedCheck.check.pupilId.school.leaCode,
+    'School Name': school.name,
+    'Estab': school.estabCode,
+    'School URN': school.urn || '',
+    'LA Num': school.leaCode,
 
-    'AttemptId': completedCheck.check.checkCode,
-    'Form ID': completedCheck.check.checkFormId.name,
-    'TestDate': dateService.reverseFormatNoSeparator(completedCheck.check.pupilLoginDate),
+    'AttemptId': check.checkCode,
+    'Form ID': `${checkForm.name} (ID ${checkForm.id})`,
+    'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
 
     // TimeStart should be when the user clicked the Start button.  This is not logged in the Audit log yet.
     'TimeStart': '',
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
     'TimeComplete': dateService.formatTimeWithSeconds(
-      psUtilService.getClientTimestampFromAuditEvent('CheckComplete', completedCheck)
+      psUtilService.getClientTimestampFromAuditEvent('CheckComplete', check)
     ),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
     'TimeTaken': 'n/a'
   }
 
-  // Add information for each question asked
-  const p = (idx) => 'Q' + (idx + 1).toString()
-  completedCheck.data.answers.forEach((ans, idx) => {
-    const qInputs = R.pathOr([], ['data', 'inputs', idx], completedCheck)
-    psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
-    psData[p(idx) + 'Response'] = ans.answer
-    psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
-    psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
-    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
-    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
-    psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
-    psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, ans)
-    psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
-    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
-    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
-    psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
-    psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
-  })
+  // // Add information for each question asked
+  // const p = (idx) => 'Q' + (idx + 1).toString()
+  // check.data.answers.forEach((ans, idx) => {
+  //   const qInputs = R.pathOr([], ['data', 'inputs', idx], check)
+  //   psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
+  //   psData[p(idx) + 'Response'] = ans.answer
+  //   psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
+  //   psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
+  //   psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
+  //   psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
+  //   psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
+  //   psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, ans)
+  //   psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
+  //   psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
+  //   psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
+  //   psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
+  //   psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
+  //   psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
+  //   psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
+  // })
 
   return psData
 }

@@ -109,7 +109,6 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
   // Populate the JSON data structure which is stored as a string in the SQL DB
   const results = await sqlService.query(sql, where.params)
   const parsed = results.map(x => {
-    console.log('parsing ', x)
     if (!x.data) {
       return R.clone(x)
     }

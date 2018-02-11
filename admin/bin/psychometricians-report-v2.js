@@ -24,7 +24,6 @@ async function main () {
     winston.info('main: Processing the completed checks')
     // Make sure all completed checks are marked and ps-report data cached
     await completedCheckProcessingService.process()
-    console.log('checks marked')
 
     const report = await psychometricianReportService.generateReport()
     const filename = 'mtc-check.csv'
@@ -32,10 +31,10 @@ async function main () {
     winston.info('Generated psychometric report: ' + filename)
 
     // Also generate a filtered version of the report, suitable for our customers
-  //   const scoreReport = await psychometricianReportService.generateScoreReport()
-  //   const filename2 = 'mtc-scores.csv'
-  //   fs.writeFileSync(filename2, scoreReport)
-  //   winston.info('Generated score report: ' + filename2)
+    //   const scoreReport = await psychometricianReportService.generateScoreReport()
+    //   const filename2 = 'mtc-scores.csv'
+    //   fs.writeFileSync(filename2, scoreReport)
+    //   winston.info('Generated score report: ' + filename2)
   } catch (error) {
     winston.error(error)
   }
