@@ -155,7 +155,17 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFindCurrent: async (sortBy, sortDirection) => {
-    return checkWindowDataService.sqlFind(sortBy, sortDirection, false, true)
+    const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
+                  FROM ${sqlService.adminSchema}.[checkWindow] WHERE isDeleted=0 AND
+                  (adminStartDate <=@currentTimestamp AND checkEndDate >=@currentTimestamp)`
+    const params = [
+      {
+        name: 'currentTimestamp',
+        type: TYPES.DateTimeOffset,
+        value: moment.utc()
+      }
+    ]
+    return sqlService.query(sql, params)
   },
   /**
    * Find a single current check window.  If multiple windows are concurrently running it takes the first.
