@@ -114,7 +114,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
 }
 
 /**
- * Returns the timerstamp as a string of the first input from the user
+ * Returns the client timestamp as a string of the first input from the user
  * @param inputs
  * @return {String}
  */
