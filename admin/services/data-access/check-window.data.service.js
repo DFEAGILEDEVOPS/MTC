@@ -93,47 +93,6 @@ const checkWindowDataService = {
       .sort(sorting)
       .exec()
   },
-    /**
-   * Fetch check windows by status, sort by, sort direction and date (current or past).
-   * @param isDeleted
-   * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
-   * @param sortDirection valid values are [asc|desc]
-   * @param isCurrent
-   * @returns {Promise.<void>}
-   */
-  sqlFind: async (sortBy, sortDirection, isDeleted, isCurrent) => {
-    const currentTimestamp = moment.utc().toDate()
-    let criteria = isDeleted ? 'isDeleted=1' : 'isDeleted=0'
-
-    if (isCurrent === true) {
-      criteria += ` AND checkEndDate >= @currentTimestamp`
-    } else {
-      criteria += ` AND checkEndDate <= @currentTimestamp`
-    }
-    sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
-    switch (sortBy) {
-      case 'checkWindowName':
-        sortBy = 'name'
-        break
-      case 'adminStartDate':
-      case 'checkStartDate':
-      // are acceptable as-is
-        break
-      default:
-      // anything else should default to checkWindow name
-        sortBy = 'name'
-    }
-
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE ${criteria} ORDER BY ${sortBy} ${sortDirection}`
-    const params = [
-      {
-        name: 'currentTimestamp',
-        value: currentTimestamp,
-        type: TYPES.DateTimeOffset
-      }
-    ]
-    return sqlService.query(sql, params)
-  },
   /**
    * Fetch (one) check window for present date.
    * @deprecated use sqlFetchCurrentCheckWindow
