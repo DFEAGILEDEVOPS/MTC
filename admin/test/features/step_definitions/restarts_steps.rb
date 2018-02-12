@@ -1,11 +1,10 @@
-
 Given(/^I am on the Restarts Page$/) do
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   @page = restarts_page
 end
 
-When(/^I navigate to Restarts page$/)do
+When(/^I navigate to Restarts page$/) do
   school_landing_page.restarts.click
 end
 
@@ -104,7 +103,7 @@ Given(/^I have multiple pupils for restart$/) do
   step 'I have generated pins for multiple pupils'
   ct = Time.now
   new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil_names_arr.each do|pupil|
+  @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
     SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
@@ -132,8 +131,8 @@ Then(/^I should see the error message for further information for 'Did not compl
   expect(restarts_page.error_summary).to be_all_there
 end
 
-Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'$/) do|restart_status|
-  hightlighted_row = restarts_page.restarts_pupil_list.rows.find{|row| row.has_highlighted_pupil?}
+Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'$/) do |restart_status|
+  hightlighted_row = restarts_page.restarts_pupil_list.rows.find {|row| row.has_highlighted_pupil?}
   expect(hightlighted_row.text).to include("#{@pupil_name}")
   expect(hightlighted_row.status.text).to include(restart_status)
 end
@@ -176,7 +175,7 @@ And(/^Pupil has taken a 3rd check$/) do
   step 'Pupil has taken a 2nd check'
 end
 
-Then(/^I should see the Restart Status '(.*)' for the pupil$/) do|restart_status|
+Then(/^I should see the Restart Status '(.*)' for the pupil$/) do |restart_status|
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
   expect(pupil_row.status.text).to include(restart_status)
 end
@@ -213,7 +212,7 @@ end
 When(/^they become eligable for a restart$/) do
   ct = Time.now
   new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil_names_arr.each do|pupil|
+  @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
     SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
@@ -225,10 +224,10 @@ When(/^they become eligable for a restart$/) do
 end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
-  restarts_page.group_filter.filter_label.click
+  restarts_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  filtered_pupils = restarts_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = restarts_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils.sort).to eql @pupil_names_arr.sort
 end
 

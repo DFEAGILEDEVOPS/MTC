@@ -56,7 +56,7 @@ Then(/^I can see the status for the pupil is '(.*)' for pupil not taking the che
 end
 
 Then(/^I should see each pupil row have the group coloumn populated with the group name$/) do
-  pupils_with_group = pupil_register_page.pupil_list.pupil_row.map! {|row| row.names.text if row.group.text == @group_name}.compact
+  pupils_with_group = pupil_register_page.pupil_list.pupil_row.map! {|row| row.names.text.split(' Date')[0] if row.group.text == @group_name}.compact
   expect(pupils_with_group.sort).to eql @pupil_group_array.sort
 end
 
