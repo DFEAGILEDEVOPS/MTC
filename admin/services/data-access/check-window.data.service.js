@@ -114,9 +114,23 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFindCurrent: async (sortBy, sortDirection) => {
+    sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+    switch (sortBy) {
+      case 'checkWindowName':
+        sortBy = 'name'
+        break
+      case 'adminStartDate':
+      case 'checkStartDate':
+      // are acceptable as-is
+        break
+      default:
+      // anything else should default to checkWindow name
+        sortBy = 'name'
+    }
     const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
                   FROM ${sqlService.adminSchema}.[checkWindow] WHERE isDeleted=0 AND
-                  (adminStartDate <=@currentTimestamp AND checkEndDate >=@currentTimestamp)`
+                  (adminStartDate <=@currentTimestamp AND checkEndDate >=@currentTimestamp)
+                  ORDER BY ${sortBy} ${sortDirection}`
     const params = [
       {
         name: 'currentTimestamp',
