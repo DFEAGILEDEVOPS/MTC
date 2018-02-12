@@ -256,7 +256,7 @@ But(/^decide against it and cancel$/) do
 end
 
 Then(/^the group should not be removed$/) do
-  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.include? @group_name}).to_not be_nil
+  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}).to_not be_nil
 end
 
 Then(/^I should see the number of pupils in that group on the group hub page$/) do
@@ -300,18 +300,6 @@ Given(/^I have a group of pupils$/) do
   @pupil_group_array << add_edit_groups_page.pupil_list.rows[6].name.text
   add_edit_groups_page.pupil_list.rows[7].checkbox.click
   @pupil_group_array << add_edit_groups_page.pupil_list.rows[7].name.text
-  add_edit_groups_page.sticky_banner.confirm.click
-end
-
-When(/^I add these pupils to a group$/) do
-  school_landing_page.load
-  school_landing_page.group_pupils.click
-  group_pupils_page.create_group.click
-  step 'I enter a valid group name'
-  current_window_size = page.driver.browser.manage.window.size
-  page.driver.browser.manage.window.resize_to(current_window_size.width,2000)
-  @pupil_names_arr.each {|pupil| add_edit_groups_page.pupil_list.rows.find{|row| row.checkbox.click if row.name.text == pupil}}
-  page.driver.browser.manage.window.resize_to(current_window_size.width,current_window_size.height)
   add_edit_groups_page.sticky_banner.confirm.click
 end
 

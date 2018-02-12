@@ -23,7 +23,7 @@ raise 'Please pass a BASE_URL with the cucumber command.' unless ENV['BASE_URL']
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
   config.app_host = ENV["BASE_URL"]
-  config.exact_options = true
+  config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
 end
