@@ -2,6 +2,8 @@
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
+const momentDurationFormatSetup = require('moment-duration-format')
+momentDurationFormatSetup(moment)
 
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
@@ -138,10 +140,12 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
       moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
     ),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
-    'TimeTaken': moment.utc(
-      moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
+    'TimeTaken':
+      moment.duration(
+        moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
         .diff(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)))
-      ).format('hh:mm:ss')
+      ).format('HH:mm:ss', {trim: false})
+
   }
 
   // // Add information for each question asked
