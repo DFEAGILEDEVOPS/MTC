@@ -11,6 +11,7 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the Test Developer homepage
 
+  @wip
   Scenario: Verify breadcrumb on add pupil page
     Given I am logged in
     And I am on the add pupil page
@@ -32,6 +33,7 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
+  @wi[
   Scenario: Verify breadcrumb on edit pupil page
     Given I am logged in
     When I click Pupil Register link
