@@ -112,9 +112,6 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  */
 psychometricianReportService.produceReportData = function (check, pupil, checkForm, school) {
   const psData = {
-    'Surname': psUtilService.getSurname(pupil),
-    'Forename': psUtilService.getForename(pupil),
-    'MiddleNames': psUtilService.getMiddleNames(pupil),
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
     'Gender': pupil.gender,
     'PupilId': pupil.upn,

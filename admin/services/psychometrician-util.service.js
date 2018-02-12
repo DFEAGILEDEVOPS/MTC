@@ -6,18 +6,6 @@ const winston = require('winston')
 
 const psUtilService = {}
 
-psUtilService.getSurname = function (pupil) {
-  return pupil.lastName.substr(0, 35)
-}
-
-psUtilService.getForename = function (pupil) {
-  return pupil.foreName.substr(0, 35)
-}
-
-psUtilService.getMiddleNames = function (pupil) {
-  return R.pathOr('', ['middleNames'], pupil).substr(0, 35)
-}
-
 psUtilService.getMark = function getMark (completedCheck) {
   return R.pathOr('error', ['mark'], completedCheck)
 }
