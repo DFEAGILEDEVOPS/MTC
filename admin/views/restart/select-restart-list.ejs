@@ -12,8 +12,8 @@
         <div class="column-two-thirds">
             <% if (error.hasError()) { %>
             <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing</h2>
-                <p>See highlighted errors below</p>
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+                <p>See highlighted errors below.</p>
                 <ul class="error-summary-list">
                     <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
                     <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
