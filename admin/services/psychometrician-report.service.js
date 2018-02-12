@@ -1,6 +1,7 @@
 'use strict'
 const csv = require('fast-csv')
 const R = require('ramda')
+const moment = require('moment')
 
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
@@ -127,15 +128,20 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
     'Form ID': `${checkForm.name} (ID ${checkForm.id})`,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
 
-    // TimeStart should be when the user clicked the Start button.  This is not logged in the Audit log yet.
-    'TimeStart': '',
+    // TimeStart should be when the user clicked the Start button.
+    'TimeStart': dateService.formatTimeWithSeconds(
+      moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))
+    ),
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
     'TimeComplete': dateService.formatTimeWithSeconds(
-      psUtilService.getClientTimestampFromAuditEvent('CheckComplete', check)
+      moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
     ),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
-    'TimeTaken': 'n/a'
+    'TimeTaken': moment.utc(
+      moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
+        .diff(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)))
+      ).format('hh:mm:ss')
   }
 
   // // Add information for each question asked
