@@ -162,7 +162,7 @@ const checkWindowDataService = {
       {
         name: 'currentTimestamp',
         type: TYPES.DateTimeOffset,
-        value: moment.utc()
+        value: moment.utc().toDate()
       }
     ]
     return sqlService.query(sql, params)
@@ -182,7 +182,16 @@ const checkWindowDataService = {
    * @returns {Promise.<*|Promise.<void>>}
    */
   sqlFindPast: async (sortBy, sortDirection) => {
-    return checkWindowDataService.sqlFind(sortBy, sortDirection, false, false)
+    const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
+    FROM ${sqlService.adminSchema}.[checkWindow] WHERE isDeleted=0 AND checkEndDate < @currentTimestamp`
+    const params = [
+      {
+        name: 'currentTimestamp',
+        type: TYPES.DateTimeOffset,
+        value: moment.utc().toDate()
+      }
+    ]
+    return sqlService.query(sql, params)
   },
   /**
    * Save check window
