@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 // import { NGXLogger } from 'ngx-logger';
 
 @Component({
@@ -14,4 +15,5 @@ export class AppComponent {
   // constructor(private logger: NGXLogger) {
   //   this.logger.debug('Your log message goes here');
   // };
+  constructor(angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {}
 }

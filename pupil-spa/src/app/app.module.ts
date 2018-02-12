@@ -5,6 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
@@ -87,6 +90,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     HttpClientModule,
+    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
   ],
   providers: [
     AnswerService,
