@@ -5,7 +5,6 @@ const fs = require('fs')
 const path = require('path')
 const winston = require('winston')
 const moment = require('moment')
-const config = require('../../../config')
 
 const pupilPerSchoolCount = 60
 let upnBase = 1
