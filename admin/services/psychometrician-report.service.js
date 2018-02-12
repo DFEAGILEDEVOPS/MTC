@@ -124,7 +124,7 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
     'LA Num': school.leaCode,
 
     'AttemptId': check.checkCode,
-    'Form ID': `${checkForm.name} (ID ${checkForm.id})`,
+    'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
 
     // TimeStart should be when the user clicked the Start button.
@@ -145,26 +145,26 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
 
   }
 
-  // // Add information for each question asked
-  // const p = (idx) => 'Q' + (idx + 1).toString()
-  // check.data.answers.forEach((ans, idx) => {
-  //   const qInputs = R.pathOr([], ['data', 'inputs', idx], check)
-  //   psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
-  //   psData[p(idx) + 'Response'] = ans.answer
-  //   psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
-  //   psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
-  //   psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
-  //   psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
-  //   psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
-  //   psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, ans)
-  //   psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
-  //   psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
-  //   psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
-  //   psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
-  //   psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
-  //   psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
-  //   psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
-  // })
+  // Add information for each question asked
+  const p = (idx) => 'Q' + (idx + 1).toString()
+  check.data.answers.forEach((ans, idx) => {
+    const qInputs = R.pathOr([], ['data', 'inputs', idx], check)
+    psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
+    psData[p(idx) + 'Response'] = ans.answer
+    psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
+    psData[p(idx) + 'Sco'] = ans.isCorrect ? 1 : 0
+    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
+    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
+    psData[p(idx) + 'TimeOut0'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
+    psData[p(idx) + 'TimeOut1'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, ans)
+    psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly
+    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
+    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
+    psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
+    psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
+    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
+    psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
+  })
 
   return psData
 }
