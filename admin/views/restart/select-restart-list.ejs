@@ -7,25 +7,21 @@
     </div>
 </div>
 
-<% if (error.hasError()) { %>
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing</h2>
-            <p>See highlighted errors below</p>
-            <ul class="error-summary-list">
-                <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
-                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                <% }); %>
-            </ul>
-        </div>
-    </div>
-</div>
-<% } %>
-
-<form method="post" action="/restart/submit-restart-list" autocomplete="off">
-    <div class="grid-row" id="select-pupils-restart" aria-describedby="heading-xlarge">
+<div class="grid-row" id="select-pupils-restart" aria-describedby="heading-xlarge">
+    <form method="post" action="/restart/submit-restart-list" autocomplete="off">
         <div class="column-two-thirds">
+            <% if (error.hasError()) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing</h2>
+                <p>See highlighted errors below</p>
+                <ul class="error-summary-list">
+                    <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
+                    <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                    <% }); %>
+                </ul>
+            </div>
+            <% } %>
+
             <h1 class="heading-xlarge" id="heading-xlarge">Select pupils for restart</h1>
             <br />
             <h2>1. Select reason for restart</h2>
@@ -111,8 +107,11 @@
             </div>
 
             <h2 class="top-padding-30">2. Select pupil(s)</h2>
+
+            <%- partial('partials/_groups_filter', { groups: groups }) %>
+
             <% if (pupils && pupils.length > 0) { %>
-            <table class="spacious sorting" id="pupilsRestartList" role="listbox" aria-label="Select pupils.">
+            <table class="spacious reduced-top-margin" id="pupilsRestartList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
@@ -131,36 +130,36 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% pupils.forEach( (pupil, index) => { %>
-                <tr>
-                    <td class="font-small">
-                        <label for="pupil-<%= pupil.id %>">
-                            <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
-                        </label>
-                        <% if (pupil.showDoB) { %>
-                        <div class="font-greyed-out font-xsmall">
-                            Date of birth: <%= pupil.dateOfBirth %>
-                        </div>
-                        <% } %>
-                    </td>
-                    <td>
-                        <div class="multiple-choice-mtc">
-                            <input id="pupil-<%= pupil.id %>"
-                                   name="pupil[<%= index %>]"
-                                   type="checkbox"
-                                   value="<%= pupil.id %>"
-                                   aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
-                                   aria-checked="false"
-                                   role="checkbox">
-                            <div></div>
-                        </div>
-                    </td>
-                </tr>
-                <% }) %>
+                    <% pupils.forEach( (pupil, index) => { %>
+                    <tr<% if (pupil && pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
+                        <td class="font-small">
+                            <label for="pupil-<%= pupil.id %>">
+                                <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
+                            </label>
+                            <% if (pupil.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= pupil.dateOfBirth %>
+                            </div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <div class="multiple-choice-mtc">
+                                <input id="pupil-<%= pupil.id %>"
+                                       name="pupil[<%= index %>]"
+                                       type="checkbox"
+                                       value="<%= pupil.id %>"
+                                       aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                       aria-checked="false"
+                                       role="checkbox">
+                                <div></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
                 </tbody>
             </table>
             <% } else { %>
-            <br class="clearfix"/>
+            <br class="clearfix" />
             <p>No pupils found.</p>
             <% } %>
 
@@ -170,13 +169,13 @@
                 <a href="#top">Back to top</a>
             </div>
         </div>
-    </div>
-    <%- partial('partials/_sticky_confirmation_banner',
+        <%- partial('partials/_sticky_confirmation_banner',
             {
                 cancelLabel: 'Cancel',
                 cancelLink: '/restart/overview',
                 submitLabel: 'Confirm',
                 isSubmitDisabled: true
             })
-    %>
-</form>
+        %>
+    </form>
+</div>

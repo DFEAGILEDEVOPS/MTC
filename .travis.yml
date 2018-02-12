@@ -4,7 +4,7 @@ dist: trusty
 
 branches:
   only:
-    - master
+    - bug/travis
 
 cache:
   yarn: true
@@ -19,6 +19,7 @@ env:
   - TEST_TYPE=admin-e2e-3
   - TEST_TYPE=pupil-e2e-1
   - TEST_TYPE=pupil-e2e-2
+  - OVERRIDE_PIN_EXPIRY="true"
 global:
   - STD_LOG_FILE="./build.log"
   - CXX=g++-4.8
@@ -44,7 +45,6 @@ sudo: required
 
 before_install:
 #  - "$CXX --version"
-#  - sudo apt-get --allow-unauthenticated upgrade
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
