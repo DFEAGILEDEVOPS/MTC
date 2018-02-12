@@ -30,6 +30,7 @@ When(/^I decide to logout$/) do
 end
 
 Then(/^I am taken back to the login page$/) do
+  p current_url
   expect(sign_in_page).to be_displayed
 end
 

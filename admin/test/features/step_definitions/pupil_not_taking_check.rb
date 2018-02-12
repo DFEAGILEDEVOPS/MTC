@@ -134,7 +134,8 @@ end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
   pupil_reason_page.select_reason(reason)
-  @pupil_row = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  pupils = pupil_reason_page.pupil_list.rows.reject{|row| row.name.text.include? 'áàâãäåāæéèêēëíìîïī' or row.name.text.include? 'ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ'}
+  @pupil_row = pupils.reject.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
   @pupil_forename = @pupil_row.name.text.split(',')[1].strip
   @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
   @pupil_row.checkbox.click
@@ -290,7 +291,7 @@ end
 
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
-  pupil_reason_page.group_filter.filter_label.click
+  pupil_reason_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
   group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
@@ -301,13 +302,14 @@ Then(/^only those pupils from the group should be displayed$/) do
 end
 
 Then(/^I should not see the group filter$/) do
-  expect(pupil_reason_page.group_filter).to have_no_filter_label
+  expect(pupil_reason_page.group_filter).to have_no_closed_filter
+  expect(pupil_reason_page.group_filter).to have_no_opened_filter
 end
 
-Then(/^the group filter should be closed by default$/) do
+Then(/^the group filter should be opened by default$/) do
   pupil_reason_page.load
-  expect(pupil_reason_page.group_filter).to have_filter_label
-  expect(pupil_reason_page.group_filter).to have_no_opened_filter
+  expect(pupil_reason_page.group_filter).to have_opened_filter
+  expect(pupil_reason_page.group_filter).to have_no_closed_filter
 end
 
 And(/^I should be able to see a count of pupils in the group$/) do

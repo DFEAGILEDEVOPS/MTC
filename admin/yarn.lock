@@ -392,7 +392,7 @@ aws4@^1.2.1, aws4@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
 
-azure-storage@^2.7.0:
+azure-storage@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/azure-storage/-/azure-storage-2.8.0.tgz#3ad0d90f475ff9209d6565af3e0ec9c5641304a4"
   dependencies:
@@ -3165,7 +3165,7 @@ jasmine-core@~2.99.0:
   version "2.99.1"
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.99.1.tgz#e6400df1e6b56e130b61c4bcd093daa7f6e8ca15"
 
-jasmine@^2.9.0:
+jasmine@^2.99.0:
   version "2.99.0"
   resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-2.99.0.tgz#8ca72d102e639b867c6489856e0e18a9c7aa42b7"
   dependencies:
@@ -3909,7 +3909,7 @@ mongoose-uuid2@^2.0.1:
     mongoose "^4.1.5"
     node-uuid "^1.4.3"
 
-mongoose@^4.1.5, mongoose@^4.13.7:
+mongoose@^4.1.5, mongoose@^4.13.11:
   version "4.13.11"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.13.11.tgz#da6edf8e399054e12836016316999519a358db43"
   dependencies:
@@ -4115,7 +4115,7 @@ node-uuid@^1.4.3:
   version "1.4.8"
   resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.8.tgz#b040eb0923968afabf8d32fb1f17f1167fdab907"
 
-nodemon@^1.14.1:
+nodemon@^1.14.12:
   version "1.14.12"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-1.14.12.tgz#fe059424b15ebdb107696287a558d9cf53a63999"
   dependencies:
@@ -6064,7 +6064,7 @@ validate@^3.0.1:
     eivindfjeldstad-dot "0.0.1"
     typecast "0.0.1"
 
-validator@^9.2.0:
+validator@^9.4.0:
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-9.4.0.tgz#c503ef88f7e6b8fb7688599267b309482d81ae60"
 
