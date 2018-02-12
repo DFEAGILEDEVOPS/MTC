@@ -1,4 +1,3 @@
-
 And(/^I am on the generate pupil pins page$/) do
   generate_pupil_pins_page.load
 end
@@ -144,13 +143,13 @@ Then(/^the pin should consist of (\d+) characters$/) do |size|
   expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
-Then(/^the school password should consist of (\d+) characters$/) do|size|
+Then(/^the school password should consist of (\d+) characters$/) do |size|
   expect(generated_pins_page.school_password.text.size).to eql size.to_i
 end
 
 Then(/^the school password should not contain charachter 'q'$/) do
   school_pwd = generated_pins_page.school_password.text
-   school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
+  school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
 end
 
 Then(/^all pupil pins should be generated from the specified pool of characters$/) do
@@ -170,7 +169,7 @@ Given(/^I have generated pins for multiple pupils$/) do
 
   ct = Time.now
   new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil_names_arr.each do|pupil|
+  @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
     SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
@@ -190,7 +189,7 @@ end
 
 Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  wait_until{!(SqlDbHelper.pupil_details(pupil_upn)['pin']).nil?}
+  wait_until {!(SqlDbHelper.pupil_details(pupil_upn)['pin']).nil?}
   pupil_pin = SqlDbHelper.pupil_details(pupil_upn)['pin']
   expect(generate_pupil_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
@@ -212,8 +211,8 @@ end
 Then(/^I should see information for Pupil pin and School password$/) do
   cd = Time.now
   str1 = "#{cd.strftime('%A')} #{cd.strftime('%-d')} #{cd.strftime('%B')}"
-  expect(generated_pins_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy,  "Expected:'Pupil PINs and school password generated' -- not found"
-  expect(generated_pins_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy,  "Expected: 'Valid only until 4pm, #{str1}' -- not found"
+  expect(generated_pins_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy, "Expected:'Pupil PINs and school password generated' -- not found"
+  expect(generated_pins_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy, "Expected: 'Valid only until 4pm, #{str1}' -- not found"
 end
 
 Then(/^I should see link to download all pupil pins$/) do
@@ -237,7 +236,7 @@ end
 Then(/^the pin should be expired$/) do
   generate_pupil_pins_page.load
   if generate_pupil_pins_page.has_pupil_list?
-    pupil_pins = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+    pupil_pins = generate_pupil_pins_page.pupil_list.rows.map {|row| row.name.text}
     expect(pupil_pins).to_not include @pupil_name
   else
     expect(generate_pupil_pins_page).to have_no_pupil_list
@@ -253,22 +252,22 @@ end
 When(/^I choose to filter via group on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.filter_label.click
-  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  generate_pupil_pins_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
 Then(/^I should only see pupils from the group$/) do
-  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
   expect(filtered_pupils.sort).to eql @pupil_group_array.sort
 end
 
 And(/^I should be able to generate pins for all pupils in this group$/) do
   generate_pupil_pins_page.select_all_pupils.click
   generate_pupil_pins_page.sticky_banner.confirm.click
-  pupils_with_pins  = generate_pupil_pins_page.pupil_list.rows.select{|row| row.has_pin?}
-  names = pupils_with_pins.map{|row| row.name.text}
-  expect(@pupil_group_array - [@excluded_pupil].sort - names).to be_empty
+  pupils_with_pins = generate_pupil_pins_page.pupil_list.rows.select {|row| row.has_pin?}
+  names = pupils_with_pins.map {|row| row.name.text}
+  expect(@pupil_group_array - [@excluded_pupil].sort - names.map {|name| name.split(' Date')[0]}).to be_empty
 end
 
 And(/^that pupil is apart of a group$/) do
@@ -287,7 +286,7 @@ And(/^that pupil is apart of a group$/) do
 end
 
 Then(/^I should only see pupils available for taking the check$/) do
-  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map {|row| row.name.text.split(' Date')[0]}.compact
   expect(@pupil_group_array - [@excluded_pupil]).to eql filtered_pupils
 end
 
@@ -301,19 +300,26 @@ end
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  expect(generate_pupil_pins_page).to have_no_filter_label
+  expect(generate_pupil_pins_page.group_filter).to have_no_closed_filter
+  expect(generate_pupil_pins_page.group_filter).to have_no_opened_filter
 end
 
 When(/^a pupil becomes available for pin generation again$/) do
   SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
+  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
   generated_pins_page.load
   generated_pins_page.generate_more_pin_btn.click
-  generate_pupil_pins_page.filter_label.click
-  group = generate_pupil_pins_page.groups.find {|group| group.name.text == @group_name}
+  generate_pupil_pins_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = generate_pupil_pins_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils).to eql [@pupil_group_array.first]
+end
+
+And(/^I should be able to see a count of pupils$/) do
+  group = generate_pupil_pins_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end

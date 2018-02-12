@@ -172,7 +172,7 @@ end
 
 Given(/^I want to edit a previously added group$/) do
   step 'I have created a group'
-  previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
+  previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}
   previoulsy_created_group.group_name.click
 end
 
@@ -239,7 +239,7 @@ end
 Then(/^I should be able to remove the group$/) do
   group_pupils_page.remove_group(@group_name)
   if group_pupils_page.has_group_list?
-    expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to be_nil
+    expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}).to be_nil
   else
     expect(group_pupils_page).to have_no_group_list
   end
@@ -247,7 +247,7 @@ Then(/^I should be able to remove the group$/) do
 end
 
 When(/^I choose to remove the group$/) do
-  row = group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}
+  row = group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}
   row.remove.click
 end
 
@@ -256,7 +256,7 @@ But(/^decide against it and cancel$/) do
 end
 
 Then(/^the group should not be removed$/) do
-  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text == @group_name}).to_not be_nil
+  expect(group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}).to_not be_nil
 end
 
 Then(/^I should see the number of pupils in that group on the group hub page$/) do
@@ -291,14 +291,26 @@ Given(/^I have a group of pupils$/) do
   step 'I am on the create group page'
   step 'I enter a valid group name'
   @pupil_group_array = []
-  add_edit_groups_page.pupil_list.rows[0].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[0].name.text
+  add_edit_groups_page.pupil_list.rows[4].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[4].name.text
   page.execute_script "window.scrollBy(0,500)"
-  add_edit_groups_page.pupil_list.rows[1].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[1].name.text
-  add_edit_groups_page.pupil_list.rows[2].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[2].name.text
-  add_edit_groups_page.pupil_list.rows[3].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[3].name.text
+  add_edit_groups_page.pupil_list.rows[5].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[5].name.text
+  add_edit_groups_page.pupil_list.rows[6].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[6].name.text
+  add_edit_groups_page.pupil_list.rows[7].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[7].name.text
+  add_edit_groups_page.sticky_banner.confirm.click
+end
+
+When(/^I add these pupils to a group$/) do
+  school_landing_page.load
+  school_landing_page.group_pupils.click
+  group_pupils_page.create_group.click
+  step 'I enter a valid group name'
+  current_window_size = page.driver.browser.manage.window.size
+  page.driver.browser.manage.window.resize_to(current_window_size.width,2000)
+  @pupil_names_arr.each {|pupil| add_edit_groups_page.pupil_list.rows.find{|row| row.checkbox.click if row.name.text == pupil}}
+  page.driver.browser.manage.window.resize_to(current_window_size.width,current_window_size.height)
   add_edit_groups_page.sticky_banner.confirm.click
 end

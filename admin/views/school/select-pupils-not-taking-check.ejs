@@ -41,67 +41,48 @@
             <div class="master-detail text">
                 <details>
                     <summary><span class="summary"> What do these reasons mean? </span></summary>
-                    <ul class="panel-no-border attendance-reasons">
-                        <li>
-                            <div><strong>Incorrect registration</strong></div>
-                            <div>Pupil has been incorrectly added to the Pupil Register. They may have been added by the school, or incorrectly included in the pre-populated list.</div>
-                        </li>
-                        <li>
-                            <div><strong>Absent</strong></div>
-                            <div>Pupil has not taken the check due to absence.</div>
-                        </li>
-                        <li>
-                            <div><strong>Left school</strong></div>
-                            <div>Pupil has left the school.</div>
-                        </li>
-                        <li>
-                            <div><strong>Unable to access</strong></div>
-                            <div>Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.</div>
-                        </li>
-                        <li>
-                            <div><strong>Working below expectation</strong></div>
-                            <div>Pupil is considered unable to answer the easiest questions or is working below year 2 in multiplication tables.</div>
-                        </li>
-                        <li>
-                            <div><strong>Just arrived with EAL</strong></div>
-                            <div>Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities.</div>
-                        </li>
-                    </ul>
+                    <div class="panel panel-no-border">
+                        <ul class="panel-list">
+                            <li>
+                                <div><strong>Incorrect registration</strong></div>
+                                <div>Pupil has been incorrectly added to the Pupil Register. They may have been added by the school, or incorrectly included in the pre-populated list.</div>
+                            </li>
+                            <li>
+                                <div><strong>Absent</strong></div>
+                                <div>Pupil has not taken the check due to absence.</div>
+                            </li>
+                            <li>
+                                <div><strong>Left school</strong></div>
+                                <div>Pupil has left the school.</div>
+                            </li>
+                            <li>
+                                <div><strong>Unable to access</strong></div>
+                                <div>Pupil is unable to access the check. This may be due to a physical disability or behavioural, emotional or social difficulties.</div>
+                            </li>
+                            <li>
+                                <div><strong>Working below expectation</strong></div>
+                                <div>Pupil is considered unable to answer the easiest questions or is working below year 2 in multiplication tables.</div>
+                            </li>
+                            <li>
+                                <div><strong>Just arrived with EAL</strong></div>
+                                <div>Pupil with English as an additional language (EAL) has just arrived in school from overseas during the check window and there isn't enough time to establish their abilities.</div>
+                            </li>
+                        </ul>
+                    </div>
                 </details>
             </div>
 
             <a name="pupil-list"></a>
             <h2 class="top-padding-30">2. Select pupil(s)</h2>
 
-            <% if (groups && groups.length > 0) { %>
-            <div class="filter-header">
-                <div class="filter-label">Filter by groups</div>
-            </div>
-            <div class="hidden filter-content">
-                <ul id="filterByGroup">
-                    <% groups.forEach((group) => { %>
-                    <li>
-                        <input id="group-<%= group.id %>"
-                               class="pupils-not-taking-the-check"
-                               name="group"
-                               type="checkbox"
-                               value="<%= group.id %>"
-                               aria-label="Tick group <%= group.name %>."
-                               aria-checked="false"
-                               role="checkbox">
-                        <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
-            <% } %>
+            <%- partial('partials/_groups_filter', { groups: groups }) %>
 
             <% if (pupilsList && pupilsList.length > 0) { %>
             <table class="spacious reduced-top-margin" id="pupilsList" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a href="/school/pupils-not-taking-check/select-pupils/name/<%= htmlSortDirection.name %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
+                        <a id="sortingLink" href="/school/pupils-not-taking-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
                         <a href="/school/pupils-not-taking-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
@@ -120,7 +101,7 @@
                 </thead>
                 <tbody>
                     <% pupilsList.forEach(pupil => { %>
-                    <tr<% if (pupil.group_id) { %> id="group-id-<%= pupil.group_id %>"<% } %>>
+                    <tr<% if (pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
                         <td>
                             <label for="pupil-<%= pupil.urlSlug %>">
                                 <%= pupil.lastName %>, <%= pupil.foreName %>

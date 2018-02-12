@@ -4,6 +4,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')
+const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
@@ -33,6 +34,7 @@ const getGeneratePinsList = async (req, res, next) => {
   let school
   let pupils
   let groups = []
+  let groupIds = req.params.groupIds || ''
 
   const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
   let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
@@ -46,7 +48,9 @@ const getGeneratePinsList = async (req, res, next) => {
       return next(Error(`School [${req.user.school}] not found`))
     }
     pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
-    groups = await pinGenerationService.filterGroups(req.user.schoolId, pupils)
+    if (pupils.length > 0) {
+      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+    }
   } catch (error) {
     return next(error)
   }
@@ -55,6 +59,7 @@ const getGeneratePinsList = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pupils,
     groups,
+    groupIds,
     htmlSortDirection,
     arrowSortDirection
   })

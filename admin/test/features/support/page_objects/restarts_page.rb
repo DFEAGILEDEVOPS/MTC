@@ -22,6 +22,8 @@ class RestartsPage < SitePrism::Page
     end
   end
 
+  section :group_filter, GroupFilter, '.column-two-thirds'
+
   section :restarts_pupil_list, '#submitted-restarts tbody' do
     sections :rows, 'tr' do
       element :name, 'td:nth-child(1)'

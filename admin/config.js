@@ -19,7 +19,6 @@ module.exports = {
   QUESTION_TIME_LIMIT: 5,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  STD_LOG_FILE: process.env.STD_LOG_FILE,
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
   Data: {
@@ -55,11 +54,11 @@ module.exports = {
   Logging: {
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
-      hostname: `${getEnvironment()}:${os.hostname()}`,
+      hostname: `${os.hostname()}:${process.pid}`,
       ip: undefined,
       mac: undefined,
-      app: 'MTC Admin',
-      env: process.env.LOGDNA_ENV_NAME
+      app: `MTCAdmin:${getEnvironment()}`,
+      env: `${getEnvironment()}`
     }
   },
   OverridePinExpiry: process.env.OVERRIDE_PIN_EXPIRY || false,
