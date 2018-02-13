@@ -75,6 +75,10 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
 
+  if (!completedChecks || !Array.isArray(completedChecks) || !completedChecks.length) {
+    throw new Error('Failed to find any checks')
+  }
+
   // Fetch all pupils, checkForms, checkWindows or the checks
   const pupils = await pupilDataService.sqlFindByIds(completedChecks.map(x => x.pupil_id))
   const checkForms = await checkFormDataService.sqlFindByIds(completedChecks.map(x => x.checkForm_id))

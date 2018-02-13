@@ -1,223 +1,118 @@
 'use strict'
-/* global describe, expect, it, beforeEach, afterEach, fail */
+/* global describe, expect, it, beforeEach, afterEach, fail, spyOn */
 
-const sinon = require('sinon')
-require('sinon-mongoose')
-const proxyquire = require('proxyquire').noCallThru()
 const winston = require('winston')
 
-const psReportCacheDataService = require('../../services/data-access/ps-report-cache.data.service')
-const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const checkDataService = require('../../services/data-access/check.data.service')
+const checkFormDataService = require('../../services/data-access/check-form.data.service')
+const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
+const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
+const pupilDataService = require('../../services/data-access/pupil.data.service')
+const schoolDataService = require('../../services/data-access/school.data.service')
 
 // Get a marked check mock
-const checkMockOrig = require('../mocks/check-with-results')
+// const checkMockOrig = require('../mocks/check-with-results')
 
-// and a completedCheck that has been marked
-const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-const pupilMockOrig = require('../mocks/pupil')
-const schoolMockOrig = require('../mocks/school')
-
-const completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
-const checkMock = Object.assign({}, checkMockOrig)
-const pupilMock = Object.assign({}, pupilMockOrig)
-const schoolMock = Object.assign({}, schoolMockOrig)
-completedCheckMock.check = checkMock
-pupilMock.school = schoolMock
-completedCheckMock.check.pupilId = pupilMock
+// // and a completedCheck that has been marked
+// const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+// const pupilMockOrig = require('../mocks/pupil')
+// const schoolMockOrig = require('../mocks/school')
+//
+// const completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
+// const checkMock = Object.assign({}, checkMockOrig)
+// const pupilMock = Object.assign({}, pupilMockOrig)
+// const schoolMock = Object.assign({}, schoolMockOrig)
+// completedCheckMock.check = checkMock
+// pupilMock.school = schoolMock
+// completedCheckMock.check.pupilId = pupilMock
 
 describe('psychometricians-report.service', () => {
-  let sandbox, service
+  const service = require('../../services/psychometrician-report.service')
 
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => {
-    sandbox.restore()
-  })
-
-  describe('#batchProduceCacheData', () => {
-    let completedCheckDataServiceStub, serviceProduceCacheStub, servicePopulateWithCheck
-
+  fdescribe('#batchProduceCacheData', () => {
     beforeEach(() => {
-      completedCheckDataServiceStub = sandbox.stub(completedCheckDataService, 'sqlFindByIds')
-
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/completed-check.data.service': completedCheckDataService,
-        './data-access/ps-report-cache.data.service': psReportCacheDataService
-      })
-
-      // We don't actually want to call these internal methods as is not under test for this describe block
-      serviceProduceCacheStub = sandbox.stub(service, 'produceCacheData')
-      servicePopulateWithCheck = sandbox.stub(service, 'populateWithCheck')
+      spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
+        {id: 9, pupil_id: 1, checkForm_id: 2},
+        {id: 10, pupil_id: 2, checkForm_id: 3},
+        {id: 11, pupil_id: 3, checkForm_id: 4}
+      ])
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([
+        {id: 1, school_id: 5},
+        {id: 2, school_id: 6},
+        {id: 3, school_id: 7}
+      ])
+      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
+        {id: 2},
+        {id: 3},
+        {id: 4}
+      ])
+      spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
+        {id: 5},
+        {id: 6},
+        {id: 7}
+      ])
+      spyOn(service, 'produceReportData')
+      spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })
 
-    it('throws an error if not provided with an argument', async (done) => {
+    it('throws an error if not provided with an argument', async () => {
       try {
         await service.batchProduceCacheData()
         fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Missing argument: batchIds')
       }
-      done()
     })
 
-    it('throws an error if not provided with a array of positive length', async (done) => {
+    it('throws an error if not provided with a array of positive length', async () => {
       try {
         await service.batchProduceCacheData(123)
         fail('expected to be thrown')
       } catch (error) {
         expect(error.message).toBe('Invalid arg: batchIds')
       }
-      done()
     })
 
-    it('retrieves all the batchIds in one go', async (done) => {
-      completedCheckDataServiceStub.resolves([
-        {mock: 'object'},
-        {mock: 'object'},
-        {mock: 'object'}
-      ])
+    it('throws an error out if checks are not found', async () => {
+      completedCheckDataService.sqlFindByIds.and.returnValue(undefined)
       try {
         await service.batchProduceCacheData([1, 2, 3])
-        expect(completedCheckDataServiceStub.callCount).toBe(1)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Failed to find any checks')
+      }
+    })
+
+    it('retrieves all the batchIds in one go', async () => {
+      try {
+        await service.batchProduceCacheData([1, 2, 3])
+        expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
       } catch (error) {
         fail(error)
       }
-      done()
     })
 
-    it('calls populateWithCheck() to ensure ensure all check information is available', async (done) => {
-      completedCheckDataServiceStub.resolves([
-        {mock: 'object'},
-        {mock: 'object'},
-        {mock: 'object'}
-      ])
+    it('calls produceReportData for each check with the right arguments', async () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
-        expect(servicePopulateWithCheck.callCount).toBe(1)
+        expect(service.produceReportData).toHaveBeenCalledTimes(3)
+        const args = service.produceReportData.calls.argsFor(0)
+        expect(args[0].id).toBe(9) // check
+        expect(args[1].id).toBe(1) // pupil
+        expect(args[2].id).toBe(2) // checkForm
       } catch (error) {
         fail(error)
       }
-      done()
-    })
-
-    it('calls produceCacheData for each check', async (done) => {
-      completedCheckDataServiceStub.resolves([
-        {mock: 'object'},
-        {mock: 'object'},
-        {mock: 'object'}
-      ])
-      try {
-        await service.batchProduceCacheData([1, 2, 3])
-        expect(serviceProduceCacheStub.callCount).toBe(3)
-      } catch (error) {
-        fail(error)
-      }
-      done()
     })
   })
 
-  describe('#produceCacheData', () => {
-    let psReportCacheDataServiceStub, serviceProduceReportDataStub
-
-    beforeEach(() => {
-      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'save')
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/ps-report-cache.data.service': psReportCacheDataService
-      })
-      // stub out the produceReportData method
-      serviceProduceReportDataStub = sandbox.stub(service, 'produceReportData')
-    })
-
-    it('throws an error if not called with an argument', async (done) => {
-      try {
-        await service.produceCacheData()
-        fail('expected to be thrown')
-      } catch (error) {
-        expect(error.message).toBe('Missing argument: completedCheck')
-      }
-      done()
-    })
-
-    it('throws an error if not called with a completedCheck as an argument', async (done) => {
-      try {
-        await service.produceCacheData(123)
-        fail('expected to be thrown')
-      } catch (error) {
-        expect(error.message).toBe('Invalid argument: completedCheck')
-      }
-      done()
-    })
-
-    it('generates the report data', async (done) => {
-      try {
-        await service.produceCacheData(completedCheckMock)
-        expect(serviceProduceReportDataStub.callCount).toBe(1)
-      } catch (error) {
-        fail(error)
-      }
-      done()
-    })
-
-    it('saves the data in the db', async (done) => {
-      try {
-        await service.produceCacheData(completedCheckMock)
-        expect(psReportCacheDataServiceStub.callCount).toBe(1)
-      } catch (error) {
-        fail(error)
-      }
-      done()
-    })
-  })
-
-  describe('#produceReportData', () => {
-    let service
-    beforeEach(() => {
-      service = require('../../services/psychometrician-report.service')
-    })
+  fdescribe('#produceReportData', () => {
     it('returns the data', () => {
-      sandbox.stub(winston, 'info')
+      spyOn(winston, 'info')
       const data = service.produceReportData(completedCheckMock)
       expect(data).toBeTruthy()
       expect(data.Surname).toBeTruthy()
       expect(data.Forename).toBeTruthy()
-    })
-  })
-
-  describe('#populateWithCheck', () => {
-    let checkDataServiceStub
-
-    beforeEach(() => {
-      checkDataServiceStub = sandbox.stub(checkDataService, 'sqlFindFullyPopulated')
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/check.data.service': checkDataService
-      })
-    })
-
-    it('calls the checkDataService to retrieve the checks', async (done) => {
-      try {
-        checkDataServiceStub.resolves([checkMockOrig])
-        await service.populateWithCheck([completedCheckMock])
-        expect(checkDataServiceStub.callCount).toBe(1)
-      } catch (error) {
-        fail(error)
-      }
-      done()
-    })
-
-    it('splices the check into the completedCheck object', async (done) => {
-      try {
-        checkDataServiceStub.resolves([checkMockOrig])
-        const completedChecks = [completedCheckMock]
-        await service.populateWithCheck(completedChecks)
-        expect(completedChecks[0].check).toBeDefined()
-        expect(completedChecks[0].check.results.marks).toBe(7)
-      } catch (error) {
-        fail(error)
-      }
-      done()
     })
   })
 
