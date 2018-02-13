@@ -1,92 +1,131 @@
 'use strict'
-/* global describe xdescribe beforeEach afterEach it expect jasmine spyOn fail */
+/**
+ * @file Unit tests for check form service
+ */
+/* global describe xdescribe beforeEach it expect spyOn fail */
 
 const fs = require('fs-extra')
-const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
-require('sinon-mongoose')
-const checkFormService = require('../../services/check-form.service')
+
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
-const CheckForm = require('../../models/check-form')
+const random = require('../../lib/random-generator')
+
+const checkFormsMock = require('../mocks/check-forms')
+const checkWindowByForm = require('../mocks/check-window-by-form')
+const checkWindowMock = require('../mocks/check-window-2')
+
 const checkFormMock = {
   id: 100,
   name: 'MTC0100',
   isDeleted: false,
-  formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11,"f2" : 2    }]'
+  formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11, "f2" : 2    }]'
 }
-const checkFormsMock = require('../mocks/check-forms')
-const checkWindowMock = require('../mocks/check-window-2')
-const checkWindowByForm = require('../mocks/check-window-by-form')
 
 describe('check-form.service', () => {
-  let service
-  let sandbox
+  const service = require('../../services/check-form.service')
 
-  beforeEach(() => { sandbox = sinon.sandbox.create() })
-  afterEach(() => { sandbox.restore() })
+  describe('#allocateCheckForm ', () => {
+    const availableForms = [
+      { id: 1, name: 'Form 1' },
+      { id: 2, name: 'Form 2' },
+      { id: 3, name: 'Form 3' }
+    ]
+    const seenForms = [ 2 ]
 
-  function setupService (cb) {
-    return proxyquire('../../services/check-form.service', {
-      '../services/data-access/check-form.data.service': {
-        sqlFindActiveForm: jasmine.createSpy().and.callFake(cb),
-        getActiveFormPlain: jasmine.createSpy().and.callFake(cb),
-        findCheckFormByName: jasmine.createSpy().and.callFake(cb),
-        isRowCountValid: jasmine.createSpy().and.callFake(cb)
-      },
-      '../models/check-form': CheckForm
-    })
-  }
-
-  describe('#allocateCheckForm - Happy path', () => {
-    beforeEach(() => {
-      service = require('../../services/check-form.service')
-      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue(Promise.resolve([checkFormMock]))
-    })
-
-    it('should return a check-form', async (done) => {
+    it('it should return a check-form', async () => {
       try {
-        const checkForm = await service.allocateCheckForm()
-        expect(checkForm).toEqual(checkFormMock)
+        const checkForm = await service.allocateCheckForm(availableForms, seenForms)
+        expect(typeof checkForm).toBe('object')
+        expect(checkForm.hasOwnProperty('id')).toBe(true)
+        expect(checkForm.hasOwnProperty('name')).toBe(true)
       } catch (error) {
         fail(error)
       }
-      done()
     })
 
-    describe('#prepareQuestionData()', () => {
-      it('should prepare the question data', async (done) => {
-        try {
-          const checkForm = await service.allocateCheckForm()
-          const questions = service.prepareQuestionData(JSON.parse(checkForm.formData))
-          expect(Array.isArray(questions)).toBeTruthy()
-          expect(questions.length).toBe(2)
-          questions.forEach((q) => {
-            expect(q.hasOwnProperty('order')).toBeTruthy()
-            expect(q.hasOwnProperty('factor1')).toBeTruthy()
-            expect(q.hasOwnProperty('factor2')).toBeTruthy()
-          })
-        } catch (error) {
-          fail(error)
-        }
-        done()
-      })
+    it('should throw when available form param is not an array', async () => {
+      try {
+        await service.allocateCheckForm({}, seenForms)
+      } catch (error) {
+        expect(error.message).toBe('availableForms is not an array')
+      }
+    })
+
+    it('should throw when available form param is not an array', async () => {
+      try {
+        await service.allocateCheckForm(null, seenForms)
+      } catch (error) {
+        expect(error.message).toBe('availableForms is not an array')
+      }
+    })
+
+    it('should throw when the used forms param is not an array', async () => {
+      try {
+        await service.allocateCheckForm(availableForms, undefined)
+      } catch (error) {
+        expect(error.message).toBe('usedFormIds is not an array')
+      }
+    })
+
+    it('should throw when the used forms param is not an array', async () => {
+      try {
+        await service.allocateCheckForm(availableForms)
+      } catch (error) {
+        expect(error.message).toBe('usedFormIds is not an array')
+      }
+    })
+
+    it('should throw when the available forms param is an empty array', async () => {
+      try {
+        await service.allocateCheckForm([], [])
+      } catch (error) {
+        expect(error.message).toBe('There must be at least one form to select')
+      }
+    })
+
+    it('randomly selects a form if there are two or more unseen forms to choose', async () => {
+      const f = await service.allocateCheckForm(availableForms, seenForms)
+      expect(f.name).toMatch(/^Form (1|3)$/)
+    })
+
+    it('selects the last unseen form if there is only 1 unseen form to choose from', async () => {
+      const f = await service.allocateCheckForm(availableForms, [2, 3])
+      expect(f.name).toBe('Form 1') // the only unseen form in the available forms
+    })
+
+    it('randomly chooses a seen form if there are no unseen forms', async () => {
+      const f = await service.allocateCheckForm(availableForms, [1, 2, 3])
+      expect(f.name).toMatch(/^Form (1|2|3)$/)
+    })
+
+    it('selects the only seen form available when there is only one form provided', async () => {
+      const f = await service.allocateCheckForm([{id: 1, name: 'Form 1'}], [1])
+      expect(f.name).toBe('Form 1')
+    })
+
+    it('throws a meaningful error if the underlying library throws', async () => {
+      spyOn(random, 'getRandomIntInRange').and.throwError('a mock throw')
+      try {
+        await service.allocateCheckForm(availableForms, seenForms)
+      } catch (error) {
+        expect(error.message).toBe('Error allocating checkForm: a mock throw')
+      }
     })
   })
 
-  describe('#allocateCheckForm() - Unhappy path', () => {
-    beforeEach(() => {
-      service = setupService(function () { return Promise.resolve(null) })
-    })
-
-    it('should throw when the check-form is not found', async (done) => {
+  describe('#prepareQuestionData()', () => {
+    it('should prepare the question data', async () => {
       try {
-        await service.allocateCheckForm()
-        fail('expected to throw')
+        const questions = service.prepareQuestionData(JSON.parse(checkFormMock.formData))
+        expect(Array.isArray(questions)).toBeTruthy()
+        expect(questions.length).toBe(2)
+        questions.forEach((q) => {
+          expect(q.hasOwnProperty('order')).toBeTruthy()
+          expect(q.hasOwnProperty('factor1')).toBeTruthy()
+          expect(q.hasOwnProperty('factor2')).toBeTruthy()
+        })
       } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('CheckForm not found')
+        fail(error)
       }
-      done()
     })
   })
 
@@ -111,17 +150,10 @@ describe('check-form.service', () => {
   })
 
   describe('#unassignedCheckFormsFromCheckWindows()', () => {
-    beforeEach(() => {
-      service = proxyquire('../../services/check-form.service', {
-        '../../services/check-form.service': checkFormService
-      })
-    })
-
-    it('should return a promise', async (done) => {
+    it('should return a promise', async () => {
       const result = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
       expect(checkWindowByForm[checkWindowMock._id].length).toBe(1)
       expect(result).toBeTruthy()
-      done()
     })
   })
 
@@ -149,11 +181,10 @@ describe('check-form.service', () => {
   })
 
   describe('#buildFormName()', () => {
-    it('should return a valid form name', async (done) => {
+    it('should return a valid form name', async () => {
       const result = await service.buildFormName('MTC0100.csv')
       expect(result).toBe('MTC0100')
       expect(result).toBeTruthy()
-      done()
     })
 
     it('should return a false if the name is invalid', async (done) => {
@@ -226,13 +257,12 @@ describe('check-form.service', () => {
       spyOn(checkFormDataService, 'sqlFetchSortedActiveFormsNotAssignedToWindowByName').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
     })
 
-    it('should return a list of unassigned check forms ids', async (done) => {
+    it('should return a list of unassigned check forms ids', async () => {
       const existingAssignedForms = [101, 102]
       const result = await service.getUnassignedFormsForCheckWindow(existingAssignedForms)
       expect(result[0]._id).toBe(100)
       expect(result[0].name).toBe('MTC0100')
       expect(result).toBeTruthy()
-      done()
     })
   })
 
@@ -241,11 +271,10 @@ describe('check-form.service', () => {
       spyOn(checkFormDataService, 'sqlFetchSortedActiveFormsByName').and.returnValue(checkFormsMock) // Mock has ids 100, 101 and 102
     })
 
-    it('should return a list of assigned check forms id', async (done) => {
+    it('should return a list of assigned check forms id', async () => {
       const result = await service.getAssignedFormsForCheckWindow(1)
       expect(result).toBeTruthy()
       expect(result.length).toBe(checkFormsMock.length)
-      done()
     })
   })
 })
