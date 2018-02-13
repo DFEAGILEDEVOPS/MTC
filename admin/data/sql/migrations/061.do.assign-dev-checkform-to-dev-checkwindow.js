@@ -6,8 +6,7 @@ module.exports.generateSql = () => {
         VALUES (
           (SELECT id FROM [mtc_admin].[checkForm] WHERE name = 'MTC0100'),
           (SELECT id FROM [mtc_admin].[checkWindow] WHERE name = 'Development Phase')
-        )
-  `
+        )`
   }
   return ''
 }
