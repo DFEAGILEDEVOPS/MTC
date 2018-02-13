@@ -11,6 +11,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const setValidationService = require('../services/set-validation.service')
+const config = require('../config')
 
 const checkStartService = {}
 
@@ -39,9 +40,11 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
 
    // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-
+  // TODO: Remove maxAttempts and reintroduce it within pin generation service once verified that travis can successfully use node env variables
+  const maxAttempts = config.Data.pinSubmissionMaxAttempts
+  const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
   // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(pupilIds)
+  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining)
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
