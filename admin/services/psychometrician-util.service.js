@@ -6,24 +6,8 @@ const winston = require('winston')
 
 const psUtilService = {}
 
-psUtilService.getSurname = function (completedCheck) {
-  return completedCheck.check.pupilId.lastName.substr(0, 35)
-}
-
-psUtilService.getForename = function (completedCheck) {
-  return completedCheck.check.pupilId.foreName.substr(0, 35)
-}
-
-psUtilService.getMiddleNames = function (completedCheck) {
-  return R.pathOr('', ['check', 'pupilId', 'middleNames'], completedCheck).substr(0, 35)
-}
-
 psUtilService.getMark = function getMark (completedCheck) {
-  return R.pathOr('error', ['check', 'results', 'marks'], completedCheck)
-}
-
-psUtilService.getSchoolURN = function (completedCheck) {
-  return R.pathOr('n/a', ['check', 'pupilId', 'school', 'urn'], completedCheck)
+  return R.pathOr('error', ['mark'], completedCheck)
 }
 
 psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, completedCheck) {
@@ -130,7 +114,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
 }
 
 /**
- * Returns the timerstamp as a string of the first input from the user
+ * Returns the client timestamp as a string of the first input from the user
  * @param inputs
  * @return {String}
  */

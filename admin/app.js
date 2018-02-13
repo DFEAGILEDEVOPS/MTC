@@ -29,9 +29,8 @@ const azure = require('./azure')
  * use LogDNA transport for winston if configuration setting available
  */
 const winston = require('winston')
-let logdna
 if (config.Logging.LogDna.key) {
-  logdna = require('logdna')
+  require('logdna')
   const options = config.Logging.LogDna
   // Defaults to false, when true ensures meta object will be searchable
   options.index_meta = true
