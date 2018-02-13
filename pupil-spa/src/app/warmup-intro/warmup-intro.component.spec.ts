@@ -4,6 +4,7 @@ import { WarmupIntroComponent } from './warmup-intro.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { WarmupIntroRendered, AuditEntry } from '../services/audit/auditEntry';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('WarmupIntroComponent', () => {
   let component: WarmupIntroComponent;
@@ -13,7 +14,10 @@ describe('WarmupIntroComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ WarmupIntroComponent ],
-      providers: [ { provide: AuditService, useClass: AuditServiceMock} ]
+      providers: [
+        { provide: AuditService, useClass: AuditServiceMock},
+        WindowRefService,
+      ]
     })
     .compileComponents();
   }));
