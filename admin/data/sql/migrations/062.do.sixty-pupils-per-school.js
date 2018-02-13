@@ -28,7 +28,6 @@ module.exports.generateSql = function () {
     }
     return insertStatements.join('\n')
   } else {
-    console.log(`migration 63 is not configured to run in ${config.Environment}`)
     return ''
   }
 }
