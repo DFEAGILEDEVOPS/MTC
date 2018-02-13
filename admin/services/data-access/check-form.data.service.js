@@ -111,9 +111,16 @@ const checkFormDataService = {
     const params = []
     let sql = ''
     if (windowId) {
-      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 
-      AND [id] IN (SELECT checkForm_id FROM checkFormWindow 
-        WHERE checkWindow_id=@windowId)  ORDER BY [name] ${sortOrder}`
+      sql = `
+      SELECT * 
+      FROM ${sqlService.adminSchema}.[checkForm] 
+      WHERE isDeleted=0 
+      AND [id] IN (
+        SELECT checkForm_id 
+        FROM checkFormWindow 
+        WHERE checkWindow_id=@windowId
+      )
+      ORDER BY [name] ${sortOrder}`
       params.push({
         name: 'windowId',
         value: windowId,
