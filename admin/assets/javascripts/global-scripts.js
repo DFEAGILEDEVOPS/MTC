@@ -475,6 +475,11 @@ $(function () {
       groupFilters.tableRowVisibility(groupIds)
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
       stickyBanner.stickyBannerPositioning()
+      if (pupilsNotTakingCheck.isCheckboxChecked()) {
+        stickyBanner.toggle(true)
+      } else {
+        stickyBanner.toggle(false)
+      }
     })
 
     $('.filter-header').on('click', function (e) {
