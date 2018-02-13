@@ -28,78 +28,22 @@ describe('psychometrician-util.service', () => {
     completedCheckMock.check.pupilId = pupilMock
   })
 
-  describe('#getSurname', () => {
-    it('retrieves a surname', () => {
-      expect(service.getSurname(completedCheckMock)).toBe('One')
-    })
-
-    it('truncates to 35 chars long', () => {
-      completedCheckMock.check.pupilId.lastName = 's'.repeat(40)
-      expect(service.getSurname(completedCheckMock).length).toBe(35)
-    })
-  })
-
-  describe('#getForename', () => {
-    it('retrieves a forename', () => {
-      expect(service.getForename(completedCheckMock)).toBe('Pupil')
-    })
-
-    it('truncates to 35 chars long', () => {
-      completedCheckMock.check.pupilId.foreName = 'f'.repeat(40)
-      expect(service.getForename(completedCheckMock).length).toBe(35)
-    })
-  })
-
-  describe('#getMiddleNames', () => {
-    it('retrieves all the middlenames', () => {
-      completedCheckMock.check.pupilId.middleNames = 'Peter John Luke'
-      expect(service.getMiddleNames(completedCheckMock)).toBe('Peter John Luke')
-    })
-
-    it('truncates to 35 chars long', () => {
-      completedCheckMock.check.pupilId.middleNames = 'm'.repeat(40)
-      expect(service.getMiddleNames(completedCheckMock).length).toBe(35)
-    })
-
-    it('handles empty middlenames', () => {
-      completedCheckMock.check.pupilId.middleNames = undefined
-      expect(service.getMiddleNames(completedCheckMock)).toBe('')
-    })
-  })
-
   describe('#getMark', () => {
     it('returns the number of mark applied to the check', () => {
-      completedCheckMock.check.results.marks = 42
+      completedCheckMock.mark = 42
       expect(service.getMark(completedCheckMock)).toBe(42)
     })
 
     it('returns "error" if the check has not been marked', () => {
-      delete completedCheckMock.check.results
+      completedCheckMock.mark = null
       expect(service.getMark(completedCheckMock)).toBe('error')
-    })
-  })
-
-  describe('#getSchoolURN', () => {
-    it('returns the school URN when it exists', () => {
-      completedCheckMock.check.pupilId.school.urn = 'SCH999'
-      expect(service.getSchoolURN(completedCheckMock)).toBe('SCH999')
-    })
-
-    it('returns "error" if the check has not been marked', () => {
-      delete completedCheckMock.check.results
-      expect(service.getMark(completedCheckMock)).toBe('error')
-    })
-
-    it('returns "n/a" if the school URN is not present', () => {
-      completedCheckMock.check.pupilId.school.urn = undefined
-      expect(service.getSchoolURN(completedCheckMock)).toBe('n/a')
     })
   })
 
   describe('#getClientTimestamp from AuditEvent', () => {
     it('returns the clientTimestamp from an audit event', () => {
-      const ts = service.getClientTimestampFromAuditEvent('CheckComplete', completedCheckMock)
-      expect(ts).toBe('2017-10-17T18:21:29.297Z')
+      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheckMock)
+      expect(ts).toBe('2018-02-11T15:43:26.772Z')
     })
 
     it('returns "error" if the clientTimestamp is missing', () => {
