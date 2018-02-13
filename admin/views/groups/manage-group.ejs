@@ -26,9 +26,9 @@
         <% if (typeof validation !== 'undefined') { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                You need to fix the errors on this page before continuing
+                You need to fix the errors on this page before continuing.
             </h2>
-            <p>See highlighted errors below</p>
+            <p>See highlighted errors below.</p>
             <ul class="error-summary-list">
                 <% if (typeof validation !== 'undefined' && validation.name) { %>
                 <li><a href="#group-name"><%= validation.name %></a></li>
@@ -37,14 +37,14 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge"><%= action %> group</h1>
+        <h1 class="heading-xlarge"><%= actionTitle %> group</h1>
         <br>
 
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
-        <form method="post" action="/school/group-pupils/<%= action.toLowerCase() %>">
+        <form method="post" action="/school/group-pupils/<%= action %>">
             <div class="form-group <%= typeof validation !== 'undefined' && validation.name ? 'form-group-error' : '' %>">
                 <label for="name" class="form-label-bold">
-                    <span class="bold-medium">1. New group name</span><a name="group-name"></a>
+                    <span class="bold-medium">1. Group name</span><a name="group-name"></a>
                 </label>
                 <span class="form-hint">For example, Class 4A</span>
                 <% if (typeof validation !== 'undefined' && validation.name) { %>

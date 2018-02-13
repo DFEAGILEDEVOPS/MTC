@@ -2,6 +2,7 @@
 
 const winston = require('winston')
 const rolesConfig = require('../roles-config')
+const config = require('../config')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
@@ -50,7 +51,11 @@ const getSignOut = (req, res) => {
   req.logout()
   req.session.regenerate(function () {
     // session has been regenerated
-    res.redirect('/')
+    if (config.NCA_TOOLS_AUTH_URL && config.NCA_TOOLS_AUTH_URL.length > 0) {
+      res.redirect(config.NCA_TOOLS_AUTH_URL)
+    } else {
+      res.redirect('/')
+    }
   })
 }
 
@@ -61,15 +66,19 @@ const getSignInFailure = (req, res) => {
 
 const postAuth = (req, res) => {
   // Please leave this in until we are confident we have identified all the NCA Tools roles.
-  winston.info(req.user)
+  winston.debug('executing postAuth for user in role:', req.user.role)
   // Schools roles should redirect to school-home:
   // no mapping provided yet.
   return res.redirect(rolesConfig.HOME_TEACHER)
 }
 
 const getUnauthorised = (req, res) => {
-  res.locals.pageTitle = 'Access Unauthorised'
-  res.render('unauthorised')
+  if (config.NCA_TOOLS_AUTH_URL && config.NCA_TOOLS_AUTH_URL.length > 0) {
+    res.redirect(config.NCA_TOOLS_AUTH_URL)
+  } else {
+    res.locals.pageTitle = 'Access Unauthorised'
+    res.render('unauthorised')
+  }
 }
 
 module.exports = {

@@ -1,5 +1,6 @@
 const moment = require('moment')
 const bluebird = require('bluebird')
+const R = require('ramda')
 const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -59,15 +60,11 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
 /**
  * Find groups that have pupils that can get PINs assigned.
  * @param schoolId
- * @param pupils
+ * @param pupilsIds
  * @returns {Promise<*>}
  */
-pinGenerationService.filterGroups = async (schoolId, pupils) => {
-  let pupilIds = ''
-  if (pupils.length > 0) {
-    pupils.map(p => { if (p.group_id) pupilIds += "'" + p.group_id + "', " })
-    pupilIds = pupilIds.length > 0 ? pupilIds.substr(0, pupilIds.length - 2) : ''
-  }
+pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
+  if (pupilIds.length < 1) return []
   return groupDataService.sqlFindGroupsByIds(schoolId, pupilIds)
 }
 
@@ -88,19 +85,42 @@ pinGenerationService.isValid = async (p) => {
 /**
  * Generate pupils pins
  * @param pupilsList
- * @returns {Array}
+ * @param dfeNumber
+ * @param maxAttempts
+ * @param attemptsRemaining
  */
-pinGenerationService.updatePupilPins = async (pupilsList) => {
-  const ids = Object.values(pupilsList || null)
+pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining) => {
+  if (!Array.isArray(pupilsList)) {
+    throw new Error('Received list of pupils is not an array')
+  }
+  let ids = Object.values(pupilsList || null)
+  ids = ids.map(i => parseInt(i))
   const pupils = await pupilDataService.sqlFindByIds(ids)
-  pupils.forEach(async pupil => {
+  pupils.forEach(pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
       pupil.pinExpiresAt = pinExpiryTime()
     }
   })
   const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
-  return pupilDataService.sqlUpdatePinsBatch(data)
+  try {
+    await pupilDataService.sqlUpdatePinsBatch(data)
+  } catch (error) {
+    if (attemptsRemaining === 0) {
+      throw new Error(`${maxAttempts} allowed attempts 
+      for pin generation resubmission have been reached`)
+    }
+    // Handle duplicate pins
+    if (error.number === 2601 && attemptsRemaining !== 0) {
+      attemptsRemaining -= 1
+      const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+      const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
+      const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
+      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining)
+    } else {
+      throw new Error(error)
+    }
+  }
 }
 
 /**

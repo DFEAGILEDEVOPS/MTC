@@ -1,4 +1,5 @@
 const restartService = require('../services/restart.service')
+const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const ValidationError = require('../lib/validation-error')
 
@@ -31,9 +32,15 @@ controller.getSelectRestartList = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let reasons
+  let groups = []
+  let groupIds = req.params.groupIds || ''
+
   try {
     pupils = await restartService.getPupils(req.user.School)
     reasons = await restartService.getReasons()
+    if (pupils.length > 0) {
+      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+    }
   } catch (error) {
     return next(error)
   }
@@ -41,6 +48,8 @@ controller.getSelectRestartList = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pupils,
     reasons,
+    groups,
+    groupIds,
     error: new ValidationError()
   })
 }
@@ -58,9 +67,15 @@ controller.postSubmitRestartList = async (req, res, next) => {
     req.breadcrumbs(pageTitle)
     let pupils
     let reasons
+    let groups = []
+    let groupIds = req.params.groupIds || ''
+
     try {
       pupils = await restartService.getPupils(req.user.School)
       reasons = await restartService.getReasons()
+      if (pupils.length > 0) {
+        groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+      }
     } catch (error) {
       return next(error)
     }
@@ -68,6 +83,8 @@ controller.postSubmitRestartList = async (req, res, next) => {
       breadcrumbs: req.breadcrumbs(),
       pupils,
       reasons,
+      groups,
+      groupIds,
       error: validationError
     })
   }
