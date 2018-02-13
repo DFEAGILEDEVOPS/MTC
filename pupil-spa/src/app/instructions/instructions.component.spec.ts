@@ -9,6 +9,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
@@ -26,7 +27,8 @@ describe('InstructionsComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: AuditService, useValue: auditServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock }
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        WindowRefService
       ]
     })
       .compileComponents();

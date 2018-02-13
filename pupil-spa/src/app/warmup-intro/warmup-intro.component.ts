@@ -21,13 +21,13 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
 
   constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
     this.window = windowRefService.nativeWindow;
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/warmup-intro'
-    });
   }
 
   ngOnInit() {
+    this.window.ga('send', {
+      hitType: 'pageview',
+      page: '/practice-questions'
+    });
   }
 
   ngAfterViewInit() {

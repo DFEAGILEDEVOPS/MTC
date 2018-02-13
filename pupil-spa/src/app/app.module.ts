@@ -90,7 +90,13 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     HttpClientModule,
-    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics]),
+    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics], {
+      pageTracking: {
+        excludedRoutes: [
+          'check',
+        ]
+      }
+    }),
   ],
   providers: [
     AnswerService,
