@@ -12,7 +12,6 @@ const whitelist = [
   'NEW_RELIC_LICENSE_KEY',
   'PUPIL_APP_URL',
   'RESTART_MAX_ATTEMPTS',
-  'STD_LOG_FILE',
   'TSO_AUTH_PUBLIC_KEY',
   'OverridePinExpiry'
 ]
