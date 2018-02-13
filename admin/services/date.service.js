@@ -1,5 +1,6 @@
 'use strict'
 const moment = require('moment')
+const winston = require('winston')
 
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
@@ -35,6 +36,7 @@ const dateService = {
 
   checkAndFormat: function (date, format) {
     if (!(date instanceof Date || date instanceof moment)) {
+      winston.warn(`Date parameter is not a Date or Moment object: ${date}`)
       return ''
     }
     const m = moment(date)
