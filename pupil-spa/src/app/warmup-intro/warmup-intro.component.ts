@@ -29,7 +29,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.window.ga('create', environment.googleAnalyticsTrackingCode, 'auto');
   }
 
   ngAfterViewInit() {
