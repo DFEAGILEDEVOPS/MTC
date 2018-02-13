@@ -2,7 +2,6 @@ import { Component, OnInit, EventEmitter, Output, AfterViewInit } from '@angular
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-warmup-intro',
