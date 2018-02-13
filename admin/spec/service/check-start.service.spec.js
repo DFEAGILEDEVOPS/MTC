@@ -52,9 +52,11 @@ describe('check-start.service', () => {
       spyOn(pinGenerationService, 'updatePupilPins')
       spyOn(checkStartService, 'initialisePupilCheck')
       spyOn(checkDataService, 'sqlCreateBatch')
+      spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
+      spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
     })
 
-    describe('pupil validation passes', () => {
+    describe('pupil validation', () => {
       beforeEach(() => {
         spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
       })
