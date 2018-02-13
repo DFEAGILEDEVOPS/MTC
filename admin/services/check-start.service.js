@@ -18,8 +18,8 @@ const checkStartService = {}
 /**
  * Create a check entry for a pupil, generate a pin, and allocate a form
  * Called from the admin app when the teacher generates a pin
- * @param {Array} pupilIds
- * @param dfeNumber
+ * @param {Array.<number>} pupilIds
+ * @param {number} dfeNumber
  * @return {Promise<void>}
  */
 checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
@@ -46,22 +46,38 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
   // Update the pins for each pupil
   await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining)
 
+  // Find all used forms for each pupil, so we make sure they do not
+  // get allocated the same form twice
+  const allForms = await checkFormService.getAllFormsForCheckWindow(checkWindow.id)
+  const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
+
   // Create the check for each pupil
   const checks = []
-  for (let id of pupilIds) {
-    const c = await checkStartService.initialisePupilCheck(id, checkWindow)
+  for (let pid of pupilIds) {
+    const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
+    const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds)
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
 }
 
-// Return a new pupil check object
-checkStartService.initialisePupilCheck = async function (pupilId, checkWindow) {
-  const checkForm = await checkFormService.allocateCheckForm()
+/**
+ * Return a new pupil check object. Saving the data is handled in a batch process by the caller
+ * @private
+ * @param {number} pupilId
+ * @param {object} checkWindow
+ * @param {Array.<Object>} availableForms
+ * @param {Array.<number>} usedFormIds
+ * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
+ */
+checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds) {
+  const checkForm = await checkFormService.allocateCheckForm(availableForms, usedFormIds)
 
   if (!checkForm) {
     throw new Error('CheckForm not allocated')
   }
+
+  winston.debug(`checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`)
 
   const checkData = {
     pupil_id: pupilId,
@@ -69,7 +85,6 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow) {
     checkForm_id: checkForm.id
   }
 
-  // Save the details to the `Check` table
   return checkData
 }
 
