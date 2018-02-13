@@ -151,6 +151,7 @@ Feature: Generate Pupil PINs
     Given I have a group of pupils
     When I choose to filter via group on the generate pins page
     Then I should only see pupils from the group
+    And I should be able to see a count of pupils
     And I should be able to generate pins for all pupils in this group
 
   @reset_all_pins @remove_all_groups @pupil_not_taking_check

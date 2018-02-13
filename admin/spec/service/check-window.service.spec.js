@@ -173,11 +173,11 @@ describe('check-window.service', () => {
 
   describe('#getCurrentCheckWindowsAndCountForms', () => {
     it('should return an object with id, checkWindowName and totalForms items', async (done) => {
-      spyOn(checkWindowDataService, 'sqlFindCurrent').and.returnValue(checkWindowsMock)
+      spyOn(checkWindowDataService, 'sqlFindCurrentAndFutureWithFormCount').and.returnValue(checkWindowsMock)
       const result = await service.getCurrentCheckWindowsAndCountForms()
       expect(result).toBeTruthy()
       expect(result.length).toBe(3)
-      expect(checkWindowDataService.sqlFindCurrent).toHaveBeenCalledTimes(1)
+      expect(checkWindowDataService.sqlFindCurrentAndFutureWithFormCount).toHaveBeenCalledTimes(1)
       done()
     })
   })

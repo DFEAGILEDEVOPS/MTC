@@ -2,7 +2,7 @@
 <div class="filter-header">
     <div class="filter-label">Filter by groups</div>
 </div>
-<div class="hidden filter-content">
+<div id="filter-content" class="filter-content">
     <ul id="filterByGroup">
         <% groups.forEach((group) => { %>
         <li>
@@ -14,7 +14,7 @@
                    aria-label="Tick group <%= group.name %>."
                    aria-checked="false"
                    role="checkbox">
-            <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %></label>
+            <label for="group-<%= group.id %>" class="font-xsmall"><%= group.name %> <span class="group-count" id="group-id-<%= group.id %>"></span></label>
         </li>
         <% }) %>
     </ul>
