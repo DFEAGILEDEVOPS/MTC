@@ -331,7 +331,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
  * @return {Promise<*>}
  */
 pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
-  if (!Array.isArray(slugs) && slugs.length > 0) {
+  if (!(Array.isArray(slugs) && slugs.length > 0)) {
     throw new Error('No slugs provided')
   }
   const select = `
@@ -350,25 +350,17 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
  * @return {Promise<void>}
  */
 pupilDataService.sqlFindByIds = async (ids) => {
-  let sql = `
-      SELECT *    
-      FROM ${sqlService.adminSchema}.${table}
-      `
-  let whereClause = ' WHERE id IN ('
-  const params = []
-  for (let index = 0; index < ids.length; index++) {
-    whereClause = whereClause + `@p${index}`
-    if (index < ids.length - 1) {
-      whereClause += ','
-    }
-    params.push({
-      name: `p${index}`,
-      value: ids[index],
-      type: TYPES.Int
-    })
+  if (!(Array.isArray(ids) && ids.length > 0)) {
+    throw new Error('No ids provided')
   }
-  whereClause = `${whereClause})`
-  sql = sql + whereClause + ' ORDER BY lastName'
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.${table}
+  `
+  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
+  const orderClause = 'ORDER BY lastName'
+  const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)
 }
 
