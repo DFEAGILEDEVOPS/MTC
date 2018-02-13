@@ -21,16 +21,15 @@ const { home,
 router.get('/', (req, res) => home(req, res))
 /* Login page */
 router.get('/sign-in', (req, res) => getSignIn(req, res))
+
 /* Login validation */
+const passportStrategy = config.NCA_TOOLS_AUTH_URL && config.NCA_TOOLS_AUTH_URL.length > 0 ? 'custom' : 'local'
 router.post('/sign-in', (req, res, next) => {
-  // Only allow post requests if NCA TOOLS is disabled
-  if (config.NCA_TOOLS_AUTH_URL) {
-    return res.status(404).send('Not found')
-  }
   next()
-}, passport.authenticate('local', { failureRedirect: '/sign-in-failure' }),
+}, passport.authenticate(passportStrategy, { failureRedirect: '/sign-in-failure' }),
   (req, res) => postSignIn(req, res)
 )
+
 /* Sign out */
 router.get('/sign-out', isAuthenticated(), (req, res) => getSignOut(req, res))
 /* Sign in failure */
