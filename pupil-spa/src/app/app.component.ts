@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { WindowRefService } from './services/window-ref/window-ref.service';
+import { environment } from '../environments/environment';
+
 // import { NGXLogger } from 'ngx-logger';
 
 @Component({
@@ -15,5 +18,13 @@ export class AppComponent {
   // constructor(private logger: NGXLogger) {
   //   this.logger.debug('Your log message goes here');
   // };
-  constructor(angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {}
+
+  protected window: any;
+
+  constructor(protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics, protected windowRefService: WindowRefService) {
+    this.window = windowRefService.nativeWindow;
+    if (environment.googleAnalyticsTrackingCode) {
+      this.window.ga('create', environment.googleAnalyticsTrackingCode, 'auto');
+    }
+  }
 }
