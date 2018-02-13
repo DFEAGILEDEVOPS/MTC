@@ -13,8 +13,7 @@ const jsBundleFiles = [
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js',
-  './assets/javascripts/custom-file-upload.js',
-  './assets/javascripts/group-filters.js'
+  './assets/javascripts/custom-file-upload.js'
 ]
 
 gulp.task('watch', function () {

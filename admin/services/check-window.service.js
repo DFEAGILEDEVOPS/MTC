@@ -70,7 +70,7 @@ const checkWindowService = {
    */
   getCurrentCheckWindowsAndCountForms: async () => {
     let checkWindowsList = null
-    let checkWindowsListData = await checkWindowDataService.sqlFindCurrent('', '')
+    let checkWindowsListData = await checkWindowDataService.sqlFindCurrentAndFutureWithFormCount()
     if (checkWindowsListData) {
       checkWindowsList = checkWindowsListData.map((cw) => {
         return {

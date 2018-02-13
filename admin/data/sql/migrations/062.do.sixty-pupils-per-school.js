@@ -20,7 +20,7 @@ module.exports.generateSql = function () {
         const pupilNumber = (pupilIndex + 1).toString().padStart(2, '0')
         foreName = `Pupil ${pupilNumber}`
         lastName = `School ${schoolId}`
-        gender = 'M'
+        gender = ~~(Math.random() * 2) ? 'M' : 'F'
         dateOfBirth = moment('2000-01-01').add(pupilIndex, 'days').format('YYYY-MM-DD').toString()
         insertStatements.push(`INSERT [mtc_admin].[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
         VALUES (${schoolId}, '${foreName}', '${lastName}', '${gender}', '${dateOfBirth}', '${upn}')`)
@@ -28,7 +28,6 @@ module.exports.generateSql = function () {
     }
     return insertStatements.join('\n')
   } else {
-    console.log(`migration 63 is not configured to run in ${config.Environment}`)
     return ''
   }
 }

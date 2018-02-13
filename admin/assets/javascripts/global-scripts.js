@@ -158,13 +158,6 @@ $(function () {
     countCheckboxes: function (checkboxParent) {
       var el = $((checkboxParent || '.multiple-choice-mtc') + ' > input:checkbox').not('#tickAllCheckboxes')
       return el.length
-    },
-
-    /**
-     * @param totalCount
-     */
-    outputCheckedCheckboxes: function (totalCount) {
-      $('#totalPupilsSelected').text(totalCount)
     }
   }
 
@@ -177,12 +170,106 @@ $(function () {
      * @param status
      */
     toggle: function (status) {
-      stickyBannerPositioning()
+      stickyBanner.stickyBannerPositioning()
       if (status === false) {
         $('#stickyBanner').removeClass('show')
       } else {
-        inputStatus.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
+        stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
         $('#stickyBanner').addClass('show')
+      }
+    },
+
+    /**
+     * Sticky banner positioning.
+     */
+    stickyBannerPositioning: function () {
+      var windowHeight = $(window).height()
+      var documentHeight = $(document).height()
+      var footerHeight = $('#footer').height()
+      var distance = documentHeight - windowHeight - footerHeight - 10
+      var stickyBanner = $('#stickyBanner')
+
+      $(document).scroll(function () {
+        var y = $(this).scrollTop()
+        if (y > distance) {
+          stickyBanner.css({ bottom: y - distance })
+        } else {
+          stickyBanner.css({ bottom: 0 })
+        }
+      })
+    },
+
+    /**
+     * @param totalCount
+     */
+    outputCheckedCheckboxes: function (totalCount) {
+      $('#totalPupilsSelected').text(totalCount)
+    }
+  }
+
+  /**
+   * Group filters methods.
+   * @type {{tableRowVisibility: tableRowVisibility, findActiveGroups: findActiveGroups, checkGroupCheckbox: checkGroupCheckbox, updateSortingLink: updateSortingLink}}
+   */
+  var groupFilters = {
+    /**
+     * Table row visibility.
+     * @param groupIds
+     */
+    tableRowVisibility: function (groupIds) {
+      var sel = '.spacious > tbody > tr'
+      if (groupIds.length < 1 || groupIds[0].length < 1) {
+        $(sel).removeClass('hidden')
+      } else {
+        $(sel).addClass('hidden')
+        groupIds.map(function (gId) {
+          $(sel + '.group-id-' + gId).removeClass('hidden')
+        })
+        $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
+      }
+    },
+
+    /**
+     * Find active groups from URL.
+     * @returns {string}
+     */
+    findActiveGroups: function () {
+      var url = window.location.href
+      if (url.lastIndexOf('/groupIds=') > 0) {
+        return url.substr(url.lastIndexOf('/groupIds=') + 10, url.length)
+      }
+    },
+
+    /**
+     * Change checkbox status to 'checked' for passed groupIds.
+     * @param groupIds
+     * @returns {boolean}
+     */
+    checkGroupCheckbox: function (groupIds) {
+      if (!groupIds) { return false }
+      $('input[name="group"]').prop('checked', false).attr('data-checked', false)
+      $(groupIds).each(function (key, value) {
+        $('input[id="group-' + value + '"]').prop('checked', true).attr('data-checked', true)
+      })
+    },
+
+    /**
+     * Update sorting link to include active group ids.
+     * @param action
+     * @param groupId
+     */
+    updateSortingLink: function (action, groupId) {
+      var sortingLink = $('#sortingLink')
+      var insertGroupId = groupId + ','
+      if (sortingLink.length > 0) {
+        if (action === 'add') {
+          if (sortingLink.attr('href').indexOf('groupIds=') === -1) {
+            sortingLink.attr('href', sortingLink.attr('href') + 'groupIds=')
+          }
+          sortingLink.attr('href', sortingLink.attr('href') + insertGroupId)
+        } else if (action === 'remove') {
+          sortingLink.attr('href', sortingLink.attr('href').replace(insertGroupId, ''))
+        }
       }
     }
   }
@@ -308,26 +395,6 @@ $(function () {
   }
 
   /**
-   * Sticky banner positioning.
-   */
-  function stickyBannerPositioning () {
-    var windowHeight = $(window).height()
-    var documentHeight = $(document).height()
-    var footerHeight = $('#footer').height()
-    var distance = documentHeight - windowHeight - footerHeight - 10
-    var stickyBanner = $('#stickyBanner')
-
-    $(document).scroll(function () {
-      var y = $(this).scrollTop()
-      if (y > distance) {
-        stickyBanner.css({ bottom: y - distance })
-      } else {
-        stickyBanner.css({ bottom: 0 })
-      }
-    })
-  }
-
-  /**
    * Page based implementations.
    */
   if ($('#attendanceList').length > 0) {
@@ -376,5 +443,53 @@ $(function () {
     if (pupilGroups.validateForm()) {
       stickyBanner.toggle(true)
     }
+  }
+
+  /**
+   * Filtering pupils by group.
+   */
+  if ($('#filterByGroup').length > 0) {
+    var groupIds = []
+    var activeGroupsIds = groupFilters.findActiveGroups()
+
+    if (activeGroupsIds) {
+      $('#filter-content').removeClass('hidden')
+      var groupIdsArr = decodeURIComponent(activeGroupsIds).split(',')
+      groupIdsArr.map(function (g) {
+        groupIds.push(g)
+      })
+      groupFilters.checkGroupCheckbox(groupIdsArr)
+      groupFilters.tableRowVisibility(groupIdsArr)
+    }
+
+    $('#filterByGroup input:checkbox').on('click', function (e) {
+      if ($(this).is(':checked')) {
+        $(this).attr('data-checked', true)
+        groupIds.push($(this).val())
+        groupFilters.updateSortingLink('add', $(this).val())
+      } else {
+        $(this).attr('data-checked', false)
+        groupIds.splice($.inArray($(this).val(), groupIds), 1)
+        groupFilters.updateSortingLink('remove', $(this).val())
+      }
+      groupFilters.tableRowVisibility(groupIds)
+      stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
+      stickyBanner.stickyBannerPositioning()
+      if (pupilsNotTakingCheck.isCheckboxChecked()) {
+        stickyBanner.toggle(true)
+      } else {
+        stickyBanner.toggle(false)
+      }
+    })
+
+    $('.filter-header').on('click', function (e) {
+      $('.filter-label').toggleClass('active')
+      $('#filter-content').toggleClass('hidden')
+    })
+
+    $('.group-count').each(function () {
+      var totalPupils = $('.' + $(this).context.id).length
+      $('#' + $(this).context.id).text('(' + totalPupils + ' pupil' + (totalPupils > 1 ? 's' : '') + ')')
+    })
   }
 })
