@@ -14,7 +14,7 @@ const schoolDataService = require('../../services/data-access/school.data.servic
 // const checkMockOrig = require('../mocks/check-with-results')
 
 // // and a completedCheck that has been marked
-// const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+const completedCheckMockOrig = require('../mocks/completed-check-with-results')
 // const pupilMockOrig = require('../mocks/pupil')
 // const schoolMockOrig = require('../mocks/school')
 //
@@ -109,7 +109,25 @@ describe('psychometricians-report.service', () => {
   fdescribe('#produceReportData', () => {
     it('returns the data', () => {
       spyOn(winston, 'info')
-      const data = service.produceReportData(completedCheckMock)
+      const check = {
+        id: 1,
+        pupil_id: 10,
+        checkCode: 'ABC-DEF',
+        checkWindow_id: 20,
+        checkForm_id: 30,
+        mark: 10,
+        maxMark: 30,
+        data: {
+
+        }
+      }
+      const pupil = {
+
+      }
+      const checkForm = {
+
+      }
+      const data = service.produceReportData(check, pupil, checkForm)
       expect(data).toBeTruthy()
       expect(data.Surname).toBeTruthy()
       expect(data.Forename).toBeTruthy()
