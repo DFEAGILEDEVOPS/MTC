@@ -10,7 +10,7 @@ const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
-const checkWindowDataService = require('./data-access/check-window.data.service')
+// const checkWindowDataService = require('./data-access/check-window.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 
@@ -148,7 +148,6 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
       ).format('HH:mm:ss', {trim: false})
   }
 
-
   // Add information for each question asked
   const p = (idx) => 'Q' + (idx + 1).toString()
   check.data.answers.forEach((ans, idx) => {
@@ -168,7 +167,6 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
     psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
     psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
     psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
-
   })
 
   return psData

@@ -125,7 +125,6 @@ describe('psychometricians-report.service', () => {
   })
 
   describe('#generateReport', () => {
-
     beforeEach(() => {
       spyOn(psychometricianReportCacheDataService, 'sqlFindAll').and.returnValue([
         {jsonData: {PupilId: 'valOne', propTwo: 1}},
