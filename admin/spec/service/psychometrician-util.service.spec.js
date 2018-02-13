@@ -35,15 +35,15 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns "error" if the check has not been marked', () => {
-      delete completedCheckMock.check.results
+      completedCheckMock.mark = null
       expect(service.getMark(completedCheckMock)).toBe('error')
     })
   })
 
   describe('#getClientTimestamp from AuditEvent', () => {
     it('returns the clientTimestamp from an audit event', () => {
-      const ts = service.getClientTimestampFromAuditEvent('CheckComplete', completedCheckMock)
-      expect(ts).toBe('2017-10-17T18:21:29.297Z')
+      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheckMock)
+      expect(ts).toBe('2018-02-11T15:43:26.772Z')
     })
 
     it('returns "error" if the clientTimestamp is missing', () => {

@@ -146,8 +146,8 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
         moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
         .diff(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)))
       ).format('HH:mm:ss', {trim: false})
-
   }
+
 
   // Add information for each question asked
   const p = (idx) => 'Q' + (idx + 1).toString()
@@ -168,6 +168,7 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
     psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
     psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
     psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
+
   })
 
   return psData
@@ -178,7 +179,7 @@ psychometricianReportService.produceReportData = function (check, pupil, checkFo
  * @return {Object}
  */
 function scoreFilter (obj) {
-  const props = ['Surname', 'Forename', 'MiddleNames', 'FormMark', 'TestDate']
+  const props = ['PupilId', 'FormMark', 'TestDate']
   const matchesScoreProp = (key) => /(ID|Response|Sco)+$/.test(key)
   const scoreProps = R.filter(matchesScoreProp, R.keys(obj))
   return R.pick(R.concat(props, scoreProps), obj)

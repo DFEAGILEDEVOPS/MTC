@@ -1,35 +1,22 @@
 'use strict'
-/* global describe, expect, it, beforeEach, afterEach, fail, spyOn */
+/* global describe, expect, it, beforeEach, fail, spyOn */
 
+const moment = require('moment')
 const winston = require('winston')
 
-const checkDataService = require('../../services/data-access/check.data.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 
-// Get a marked check mock
-// const checkMockOrig = require('../mocks/check-with-results')
-
-// // and a completedCheck that has been marked
+// A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
-// const pupilMockOrig = require('../mocks/pupil')
-// const schoolMockOrig = require('../mocks/school')
-//
-// const completedCheckMock = Object.assign({ check: {} }, completedCheckMockOrig)
-// const checkMock = Object.assign({}, checkMockOrig)
-// const pupilMock = Object.assign({}, pupilMockOrig)
-// const schoolMock = Object.assign({}, schoolMockOrig)
-// completedCheckMock.check = checkMock
-// pupilMock.school = schoolMock
-// completedCheckMock.check.pupilId = pupilMock
 
 describe('psychometricians-report.service', () => {
   const service = require('../../services/psychometrician-report.service')
 
-  fdescribe('#batchProduceCacheData', () => {
+  describe('#batchProduceCacheData', () => {
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {id: 9, pupil_id: 1, checkForm_id: 2},
@@ -106,77 +93,67 @@ describe('psychometricians-report.service', () => {
     })
   })
 
-  fdescribe('#produceReportData', () => {
+  describe('#produceReportData', () => {
     it('returns the data', () => {
       spyOn(winston, 'info')
-      const check = {
-        id: 1,
-        pupil_id: 10,
-        checkCode: 'ABC-DEF',
-        checkWindow_id: 20,
-        checkForm_id: 30,
-        mark: 10,
-        maxMark: 30,
-        data: {
-
-        }
-      }
       const pupil = {
-
+        id: 12,
+        foreName: 'Mocky',
+        middleNames: 'Mockable',
+        lastName: 'McMock',
+        dateOfBirth: moment().subtract(8, 'years'),
+        upn: 'F673001000200',
+        gender: 'M'
       }
       const checkForm = {
-
+        id: 42,
+        name: 'MtcMock99'
       }
-      const data = service.produceReportData(check, pupil, checkForm)
+      const school = {
+        id: 99,
+        name: 'Schooly McSchool',
+        leaCode: '999',
+        estabCode: 1999,
+        dfeNumber: 9991999,
+        urn: 'URN99'
+      }
+      const data = service.produceReportData(completedCheckMockOrig, pupil, checkForm, school)
       expect(data).toBeTruthy()
-      expect(data.Surname).toBeTruthy()
-      expect(data.Forename).toBeTruthy()
+      expect(data.PupilId).toBeTruthy()
+      expect(data.TestDate).toBe('20180211')
     })
   })
 
   describe('#generateReport', () => {
-    let service, psReportCacheDataServiceStub
 
     beforeEach(() => {
-      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'find').resolves([
-        {data: {propOne: 'valOne', propTwo: 1}},
-        {data: {propOne: 'ValTwo', propTwo: 2}},
-        {data: {propOne: 'valThree', propTwo: null}}
+      spyOn(psychometricianReportCacheDataService, 'sqlFindAll').and.returnValue([
+        {jsonData: {PupilId: 'valOne', propTwo: 1}},
+        {jsonData: {Mark: 'ValTwo', propTwo: 2}},
+        {jsonData: {Response: 'valThree', propTwo: null}}
       ])
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/ps-report-cache.data.service': psReportCacheDataService
-      })
     })
 
-    it('returns a csv string', async (done) => {
+    it('returns a csv string', async () => {
       const res = await service.generateReport()
       expect(res).toBeTruthy()
-      expect(res.substr(0, 7)).toBe('propOne')
-      expect(psReportCacheDataServiceStub.callCount).toBe(1)
-      done()
+      expect(res.substr(0, 7)).toBe('PupilId')
     })
   })
 
   describe('#generateScoreReport', () => {
-    let service, psReportCacheDataServiceStub
-
-    beforeEach(() => {
-      psReportCacheDataServiceStub = sandbox.stub(psReportCacheDataService, 'find').resolves([
-        {data: {Surname: 'valOne', propTwo: 1}},
-        {data: {Forename: 'ValTwo', propTwo: 2}},
-        {data: {MiddleNames: 'valThree', propTwo: null}}
+    beforeEach(async () => {
+      spyOn(psychometricianReportCacheDataService, 'sqlFindAll').and.returnValue([
+        {jsonData: {PupilId: 'valOne', propTwo: 1}},
+        {jsonData: {Mark: 'ValTwo', propTwo: 2}},
+        {jsonData: {Response: 'valThree', propTwo: null}}
       ])
-      service = proxyquire('../../services/psychometrician-report.service', {
-        './data-access/ps-report-cache.data.service': psReportCacheDataService
-      })
     })
 
-    it('returns a csv string', async (done) => {
+    it('returns a csv string', async () => {
       const res = await service.generateReport()
       expect(res).toBeTruthy()
-      expect(res.substr(0, 7)).toBe('Surname')
-      expect(psReportCacheDataServiceStub.callCount).toBe(1)
-      done()
+      expect(res.substr(0, 7)).toBe('PupilId')
     })
   })
 })
