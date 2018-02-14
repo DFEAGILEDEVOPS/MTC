@@ -1,0 +1,441 @@
+{
+  "config": {
+    "target": "http://localhost:3001",
+    "phases": [
+      {
+        "duration": 15,
+        "arrivalRate": 5
+      }
+    ],
+    "payload": {
+      "path": "./data/pupilLogins.csv",
+      "fields": [
+        "schoolPin",
+        "pupilPin"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "pupil login",
+      "flow": [
+        {
+          "post": {
+            "url": "/api/questions",
+            "json": {
+              "schoolPin": "{{ schoolPin }}",
+              "pupilPin": "{{ pupilPin }}"
+            },
+            "capture": [
+              {
+                "json": "$.access_token",
+                "as": "jwt"
+              },
+              {
+                "json": "$.pupil.checkCode",
+                "as": "checkCode"
+              }
+            ]
+          }
+        },
+        {
+          "think": 5
+        },
+        {
+          "post": {
+            "url": "api/check-started",
+            "json": {
+              "accessToken": "{{ jwt }}",
+              "checkCode": "{{ checkCode }}"
+            }
+          }
+        },
+        {
+          "think": 5
+        },
+        {
+          "post": {
+            "url": "/api/completed-check",
+            "json": {
+              "data": {
+                "access_token": "{{ jwt }}",
+                "answers": [
+                  {
+                    "factor1": 2,
+                    "factor2": 5,
+                    "answer": "6"
+                  },
+                  {
+                    "factor1": 11,
+                    "factor2": 2,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 5,
+                    "factor2": 10,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 4,
+                    "factor2": 4,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 3,
+                    "factor2": 9,
+                    "answer": "6541"
+                  },
+                  {
+                    "factor1": 2,
+                    "factor2": 4,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 3,
+                    "factor2": 3,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 4,
+                    "factor2": 9,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 6,
+                    "factor2": 5,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 12,
+                    "factor2": 12,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 2,
+                    "factor2": 5,
+                    "answer": "6"
+                  },
+                  {
+                    "factor1": 11,
+                    "factor2": 2,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 5,
+                    "factor2": 10,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 4,
+                    "factor2": 4,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 3,
+                    "factor2": 9,
+                    "answer": "6541"
+                  },
+                  {
+                    "factor1": 2,
+                    "factor2": 4,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 3,
+                    "factor2": 3,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 4,
+                    "factor2": 9,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 6,
+                    "factor2": 5,
+                    "answer": ""
+                  },
+                  {
+                    "factor1": 12,
+                    "factor2": 12,
+                    "answer": ""
+                  }
+                ],
+                "audit": [
+                  {
+                    "type": "WarmupStarted",
+                    "clientTimestamp": "2018-02-05T14:31:29.729Z"
+                  },
+                  {
+                    "type": "WarmupIntroRendered",
+                    "clientTimestamp": "2018-02-05T14:31:29.736Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:31:30.716Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:31:32.720Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:31:38.196Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:31:41.343Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:31:46.380Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:31:49.160Z"
+                  },
+                  {
+                    "type": "WarmupCompleteRendered",
+                    "clientTimestamp": "2018-02-05T14:31:54.167Z"
+                  },
+                  {
+                    "type": "CheckStarted",
+                    "clientTimestamp": "2018-02-05T14:32:36.605Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:32:36.608Z"
+                  },
+                  {
+                    "type": "CheckStartedAPICallSucceeded",
+                    "clientTimestamp": "2018-02-05T14:32:36.866Z"
+                  },
+                  {
+                    "type": "CheckStartedApiCalled",
+                    "clientTimestamp": "2018-02-05T14:32:36.866Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:32:38.614Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:32:43.617Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:32:46.142Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:32:51.367Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:32:54.322Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:32:59.380Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:02.206Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:07.208Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:09.215Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:14.224Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:16.227Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:21.332Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:24.215Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:29.315Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:32.215Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:37.441Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:40.115Z"
+                  },
+                  {
+                    "type": "PauseRendered",
+                    "clientTimestamp": "2018-02-05T14:33:45.415Z"
+                  },
+                  {
+                    "type": "QuestionRendered",
+                    "clientTimestamp": "2018-02-05T14:33:48.167Z"
+                  },
+                  {
+                    "type": "CheckComplete",
+                    "clientTimestamp": "2018-02-05T14:33:53.173Z"
+                  }
+                ],
+                "config": {
+                  "questionTime": 5,
+                  "loadingTime": 2,
+                  "speechSynthesis": false
+                },
+                "inputs": [
+                  [
+                    {
+                      "input": "left click",
+                      "eventType": "mousedown",
+                      "clientInputDate": "2018-02-05T14:32:42.069Z",
+                      "question": 1
+                    },
+                    {
+                      "input": "6",
+                      "eventType": "click",
+                      "clientInputDate": "2018-02-05T14:32:42.075Z",
+                      "question": 1
+                    }
+                  ],
+                  null,
+                  null,
+                  null,
+                  [
+                    {
+                      "input": "left click",
+                      "eventType": "mousedown",
+                      "clientInputDate": "2018-02-05T14:33:10.084Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "6",
+                      "eventType": "click",
+                      "clientInputDate": "2018-02-05T14:33:10.090Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "left click",
+                      "eventType": "mousedown",
+                      "clientInputDate": "2018-02-05T14:33:10.793Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "5",
+                      "eventType": "click",
+                      "clientInputDate": "2018-02-05T14:33:10.799Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "left click",
+                      "eventType": "mousedown",
+                      "clientInputDate": "2018-02-05T14:33:11.859Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "4",
+                      "eventType": "click",
+                      "clientInputDate": "2018-02-05T14:33:11.864Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "left click",
+                      "eventType": "mousedown",
+                      "clientInputDate": "2018-02-05T14:33:13.396Z",
+                      "question": 5
+                    },
+                    {
+                      "input": "1",
+                      "eventType": "click",
+                      "clientInputDate": "2018-02-05T14:33:13.406Z",
+                      "question": 5
+                    }
+                  ]
+                ],
+                "pupil": {
+                  "firstName": "Load",
+                  "lastName": "Test",
+                  "dob": "6 July 2008",
+                  "checkCode": "{{ checkCode }}"
+                },
+                "questions": [
+                  {
+                    "order": 1,
+                    "factor1": 2,
+                    "factor2": 5
+                  },
+                  {
+                    "order": 2,
+                    "factor1": 11,
+                    "factor2": 2
+                  },
+                  {
+                    "order": 3,
+                    "factor1": 5,
+                    "factor2": 10
+                  },
+                  {
+                    "order": 4,
+                    "factor1": 4,
+                    "factor2": 4
+                  },
+                  {
+                    "order": 5,
+                    "factor1": 3,
+                    "factor2": 9
+                  },
+                  {
+                    "order": 6,
+                    "factor1": 2,
+                    "factor2": 4
+                  },
+                  {
+                    "order": 7,
+                    "factor1": 3,
+                    "factor2": 3
+                  },
+                  {
+                    "order": 8,
+                    "factor1": 4,
+                    "factor2": 9
+                  },
+                  {
+                    "order": 9,
+                    "factor1": 6,
+                    "factor2": 5
+                  },
+                  {
+                    "order": 10,
+                    "factor1": 12,
+                    "factor2": 12
+                  }
+                ],
+                "school": {
+                  "id": 3,
+                  "name": "Load Test"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
