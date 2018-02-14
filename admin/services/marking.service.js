@@ -46,7 +46,6 @@ markingService.mark = async function (completedCheck) {
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
-  console.log('completedCheck', completedCheck)
 
   for (let answer of completedCheck.data.answers) {
     const data = R.clone(answer)
