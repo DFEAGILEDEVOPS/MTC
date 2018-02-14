@@ -20,5 +20,5 @@ export const environment = {
   submissionPendingViewMinDisplay: 2000,
   // Contact number in case check submission fails
   supportNumber: '0345 278 8080',
-  googleAnalyticsTrackingCode: 'UA-92976848-11'
+  googleAnalyticsTrackingCode: null
 };
