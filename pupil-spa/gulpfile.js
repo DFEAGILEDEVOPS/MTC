@@ -9,9 +9,7 @@ gulp.task('setAppEnvironmentVariables', () => {
       .pipe(replace('API_URL', process.env.API_URL))
       .pipe(gulp.dest('./src/environments/'))
   }
-  if (process.env.GA_CODE) {
-    gulp.src(['./src/environments/environment.prod.ts'])
-      .pipe(replace('GA_CODE', process.env.GA_CODE))
-      .pipe(gulp.dest('./src/environments/'))
-  }
+  gulp.src(['./src/environments/environment.prod.ts'])
+    .pipe(replace('GA_CODE', process.env.GA_CODE || ''))
+    .pipe(gulp.dest('./src/environments/'))
 })
