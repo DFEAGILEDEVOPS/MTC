@@ -221,7 +221,7 @@ sqlService.query = (sql, params = []) => {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = (sql, params) => {
+sqlService.modify = (sql, params = []) => {
   winston.debug('sql.service: modify: SQL: ' + sql)
   return new Promise(async (resolve, reject) => {
     const isInsert = isInsertStatement(sql)

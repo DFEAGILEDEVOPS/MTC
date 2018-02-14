@@ -147,7 +147,6 @@ describe('pupil controller:', () => {
           res.end('mock doc')
           return Promise.resolve()
         })
-        // console.log('controller', controller)
         await controller.postAddPupil(req, res, nextSpy)
         expect(controller.getAddPupil.called).toBeTruthy()
         expect(res.statusCode).toBe(200)

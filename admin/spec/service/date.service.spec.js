@@ -1,24 +1,29 @@
 'use strict'
-/* global describe it expect */
+/* global describe it expect spyOn */
 
 const dateService = require('../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
 const moment = require('moment')
+const winston = require('winston')
 
 function invalidInputTests (method) {
   it('returns an empty string if the parameter is an empty string', () => {
+    spyOn(winston, 'warn')
     expect(dateService[method]('')).toBe('')
   })
 
   it('returns an empty string if the parameter is missing', () => {
+    spyOn(winston, 'warn')
     expect(dateService[method]()).toBe('')
   })
 
   it('returns an empty string if the parameter is null', () => {
+    spyOn(winston, 'warn')
     expect(dateService[method](null)).toBe('')
   })
 
   it('returns an empty string if the date is invalid', () => {
+    spyOn(winston, 'warn')
     expect(dateService[method]('rotten-input')).toBe('')
   })
 }
