@@ -5,7 +5,7 @@ CREATE TABLE [mtc_admin].answer (
   [version]       [rowversion],
   check_id        [int] NOT NULL,
   questionNumber  [smallint] NOT NULL,
-  response        nvarshar(60) NOT NULL DEFAULT '',
+  response        [nvarchar](60) NOT NULL DEFAULT '',
   factor1         [smallint] NOT NULL,
   factor2         [smallint] NOT NULL,
   isCorrect       [bit] NOT NULL,
