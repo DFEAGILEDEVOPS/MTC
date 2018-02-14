@@ -193,7 +193,12 @@ checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
 }
 
 checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode`
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] 
+  SET mark=@mark, 
+  maxMark=@maxMark, 
+  markedAt=@markedAt 
+  WHERE checkCode=@checkCode`
+
   const params = [
     {
       name: 'checkCode',
