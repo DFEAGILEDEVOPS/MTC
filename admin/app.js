@@ -2,6 +2,7 @@
 
 require('dotenv').config()
 
+const os = require('os')
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
@@ -24,20 +25,27 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+const winstonLogger = require('./winstonLogger')
+
 /**
  * Logging
  * use LogDNA transport for winston if configuration setting available
  */
 const winston = require('winston')
 if (config.Logging.LogDna.key) {
-  require('logdna')
-  const options = config.Logging.LogDna
-  // Defaults to false, when true ensures meta object will be searchable
-  options.index_meta = true
-  // Only add this line in order to track exceptions
-  options.handleExceptions = true
-  winston.add(winston.transports.Logdna, options)
-  winston.info(`logdna transport enabled for ${options.hostname}`)
+  const adminLogger = winstonLogger({
+    app: `MTC-ADMIN-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+    hostname: `${os.hostname()}:${process.pid}`,
+    key: config.Logging.LogDna.key
+  })
+  adminLogger.info('ADMIN TEST ABC123')
+
+  const apiLogger = winstonLogger({
+    app: `MTC-API-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+    hostname: `${os.hostname()}:${process.pid}`,
+    key: config.Logging.LogDna.key
+  })
+  apiLogger.info('API TESTS 123ABC')
 }
 
 if (process.env.NODE_ENV !== 'production') {
