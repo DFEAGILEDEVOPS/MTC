@@ -12,6 +12,7 @@ gulp.task('setApiURL', () => {
 })
 
 gulp.task('setGaCode', () => {
+  console.log('env.GA_CODE is:', process.env.GA_CODE)
   gulp.src(['./src/environments/environment.prod.ts'])
     .pipe(replace('GA_CODE', process.env.GA_CODE || ''))
     .pipe(gulp.dest('./src/environments/'))
