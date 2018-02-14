@@ -25,8 +25,8 @@ const getSignIn = (req, res) => {
   if (req.isAuthenticated()) {
     res.redirect('/school/school-home')
   } else {
-    if (rolesConfig.NCA_TOOLS_AUTH_URL) {
-      res.redirect(rolesConfig.NCA_TOOLS_AUTH_URL)
+    if (config.NCA_TOOLS_AUTH_URL) {
+      res.redirect(config.NCA_TOOLS_AUTH_URL)
     } else {
       res.render('sign-in')
     }
