@@ -382,7 +382,7 @@ $(function () {
      * @returns {boolean}
      */
     isGroupNameComplete: function () {
-      var elName = $('input#name').val()
+      var elName = $('input#name').val().trim()
       return elName.length > 0
     },
     /**
