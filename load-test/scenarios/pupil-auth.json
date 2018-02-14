@@ -3,8 +3,8 @@
       "target": "http://localhost:3001",
       "phases": [
          {
-            "duration": 60,
-            "arrivalRate": 5
+            "duration": 15,
+            "arrivalRate": 10
          }
       ],
       "payload": {
