@@ -29,10 +29,10 @@ let pool = null
 
 const sqlPoolService = {}
 
-  /**
-   * Initialise the connection pool.  Called once per application instance
-   * @return {Promise}
-   */
+/**
+ * Initialise the connection pool.  Called once per application instance
+ * @return {Promise}
+ */
 sqlPoolService.init = () => {
   if (pool !== null) return
   pool = new ConnectionPool(poolConfig, connectionConfig)
@@ -41,10 +41,10 @@ sqlPoolService.init = () => {
   })
 }
 
-  /**
-   * Get a connection from the pool.
-   * @return {Promise}
-   */
+/**
+ * Get a connection from the pool.
+ * @return {Promise}
+ */
 sqlPoolService.getConnection = () => {
   return new Promise((resolve, reject) => {
     if (pool === null) {
@@ -58,6 +58,13 @@ sqlPoolService.getConnection = () => {
       resolve(connection)
     })
   })
+}
+
+/**
+ * Disconnect all pool connections
+ */
+sqlPoolService.drain = () => {
+  return pool.drain()
 }
 
 module.exports = sqlPoolService
