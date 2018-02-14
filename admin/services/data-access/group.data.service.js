@@ -308,7 +308,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
  * @returns {Promise<*>}
  */
 groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
-  if (!schoolId || !pupilIds || pupilIds.length < 3) return false
+  if (!schoolId || !pupilIds || pupilIds.length < 1) return false
 
   let ids = []
   pupilIds.map((p) => { ids.push(p.id) })
