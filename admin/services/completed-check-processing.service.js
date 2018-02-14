@@ -30,12 +30,18 @@ completedCheckProcessingService.process = async function () {
 
 completedCheckProcessingService.markAndProcess = async function (batchSize) {
   const batchIds = await completedCheckDataService.sqlFindUnmarked(batchSize)
+
   if (batchIds.length === 0) {
-    winston.info('No documents IDs found')
+    winston.info('No IDs found')
     return false
   }
+
+  // Mark the check
   await markingService.batchMark(batchIds)
+
+  // Produce and cache the Pschometrician data
   await psychometricianReportService.batchProduceCacheData(batchIds)
+
   winston.info('Processed %d completed checks', batchIds.length)
   return true
 }
