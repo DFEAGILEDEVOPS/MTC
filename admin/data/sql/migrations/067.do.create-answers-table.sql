@@ -5,9 +5,9 @@ CREATE TABLE [mtc_admin].answer (
   [version]       [rowversion],
   check_id        [int] NOT NULL,
   questionNumber  [smallint] NOT NULL,
-  response        [nvarchar](60) NOT NULL DEFAULT '',
   factor1         [smallint] NOT NULL,
   factor2         [smallint] NOT NULL,
+  answer          [nvarchar](60) NOT NULL DEFAULT '',
   isCorrect       [bit] NOT NULL,
   CONSTRAINT [PK_answers] PRIMARY KEY CLUSTERED ([id] ASC)
   WITH (
