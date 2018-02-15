@@ -55,11 +55,11 @@ module.exports = {
   Logging: {
     // @TODO: Remove hardcoded key
     LogDna: {
-      key: '5a3d75a421e412afe3139e4a02a6ce19', // process.env.LOGDNA_API_KEY,
+      key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
       ip: undefined,
       mac: undefined,
-      app: `MTC-${getEnvironment()}`,
+      app: `MTCAdmin:${getEnvironment()}`,
       env: `${getEnvironment()}`
     }
   },
