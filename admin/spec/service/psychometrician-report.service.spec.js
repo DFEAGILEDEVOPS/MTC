@@ -4,6 +4,7 @@
 const moment = require('moment')
 const winston = require('winston')
 
+const answerDataService = require('../../services/data-access/answer.data.service')
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
@@ -38,6 +39,12 @@ describe('psychometricians-report.service', () => {
         {id: 6},
         {id: 7}
       ])
+      spyOn(answerDataService, 'sqlFindByCheckIds').and.returnValue({
+        9: [],
+        10: [],
+        11: []
+        }
+      )
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })
@@ -85,8 +92,9 @@ describe('psychometricians-report.service', () => {
         expect(service.produceReportData).toHaveBeenCalledTimes(3)
         const args = service.produceReportData.calls.argsFor(0)
         expect(args[0].id).toBe(9) // check
-        expect(args[1].id).toBe(1) // pupil
-        expect(args[2].id).toBe(2) // checkForm
+        expect(typeof args[1]).toBe('object') // answers
+        expect(args[2].id).toBe(1) // pupil
+        expect(args[3].id).toBe(2) // checkForm
       } catch (error) {
         fail(error)
       }
@@ -117,10 +125,25 @@ describe('psychometricians-report.service', () => {
         dfeNumber: 9991999,
         urn: 'URN99'
       }
-      const data = service.produceReportData(completedCheckMockOrig, pupil, checkForm, school)
+      const markedAnswers = [
+        {id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1},
+        {id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1},
+        {id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0},
+        {id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1},
+        {id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1},
+        {id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1},
+        {id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1},
+        {id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1},
+        {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
+        {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
+      ]
+      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')
+      expect(data.Q1Sco).toBe(1)
+      expect(data.Q3Sco).toBe(0)
+      expect(data.Q10Sco).toBe(1)
     })
   })
 
