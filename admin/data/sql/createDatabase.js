@@ -15,7 +15,7 @@ const adminConfig = {
     encrypt: config.Sql.Encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
     port: config.Sql.Port,
-    connectTimeout: 30000
+    connectTimeout: config.Sql.Migrator.Timeout
   }
 }
 
@@ -55,7 +55,7 @@ const createDatabase = async (connection) => {
 
 const main = () => {
   return new Promise((resolve, reject) => {
-    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} `)
+    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
     const connection = new Connection(adminConfig)
     connection.on('connect', (err) => {
       if (err) {
