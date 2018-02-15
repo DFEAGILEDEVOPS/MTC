@@ -60,7 +60,7 @@
     "ramda": "^0.25.0",
     "random-number-csprng": "^1.0.2",
     "serve-favicon": "^2.4.5",
-    "tedious": "^2.3.1",
+    "tedious": "2.2.4",
     "tedious-connection-pool": "^1.0.5",
     "uuid": "^3.1.0",
     "validate": "^3.0.1",
