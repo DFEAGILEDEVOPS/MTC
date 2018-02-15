@@ -98,7 +98,7 @@ $(function () {
         } else {
           $($(this)).attr('data-checked', null)
           stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
-          if (countCheckedCheckboxes === 0) {
+          if (countCheckedCheckboxes === 0 || countCheckedCheckboxes < countAllCheckboxes) {
             $('#deselectAll').addClass('all-hide')
             $('#selectAll').removeClass('all-hide')
             $('#tickAllCheckboxes').prop('checked', false)
@@ -136,7 +136,7 @@ $(function () {
     textFieldStatus: function (sel, validation) {
       if (!sel) { return false }
       $(sel).on('change keyup', function (e) {
-        if (e.currentTarget.value.trim().length > 0 && validation()) {
+        if ($.trim(e.currentTarget.value).length > 0 && validation()) {
           stickyBanner.toggle(true)
         } else {
           stickyBanner.toggle(false)
@@ -382,7 +382,7 @@ $(function () {
      * @returns {boolean}
      */
     isGroupNameComplete: function () {
-      var elName = $('input#name').val()
+      var elName = $.trim($('input#name').val())
       return elName.length > 0
     },
     /**
@@ -473,13 +473,18 @@ $(function () {
         groupFilters.updateSortingLink('remove', $(this).val())
       }
       groupFilters.tableRowVisibility(groupIds)
+
+      /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
       stickyBanner.stickyBannerPositioning()
-      if (pupilsNotTakingCheck.isCheckboxChecked()) {
-        stickyBanner.toggle(true)
-      } else {
-        stickyBanner.toggle(false)
+      var displayStickyBanner = false
+      if ($('#pupils-not-taking-checks').length > 0) {
+        displayStickyBanner = pupilsNotTakingCheck.isCheckboxChecked()
       }
+      if ($('#pupilsRestartList').length > 0) {
+        displayStickyBanner = restarts.validateForm()
+      }
+      stickyBanner.toggle(displayStickyBanner)
     })
 
     $('.filter-header').on('click', function (e) {
