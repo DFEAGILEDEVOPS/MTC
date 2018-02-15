@@ -178,6 +178,8 @@ sqlService.adminSchema = '[mtc_admin]'
  * @return {Promise<*>}
  */
 sqlService.query = (sql, params = []) => {
+  winston.debug(`sql.service.query(): ${sql}`)
+  winston.debug('sql.service.query(): Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   return new Promise(async (resolve, reject) => {
     let con
     try {
@@ -188,7 +190,7 @@ sqlService.query = (sql, params = []) => {
     }
     let results = []
     // http://tediousjs.github.io/tedious/api-request.html
-    winston.debug(`sql.service: SQL: ${sql}`)
+
     var request = new Request(sql, function (err, rowCount) {
       con.release()
       if (err) {
@@ -365,8 +367,6 @@ sqlService.generateUpdateStatement = async (table, data) => {
 sqlService.create = async (tableName, data) => {
   const preparedData = convertMomentToJsDate(data)
   const { sql, params } = await sqlService.generateInsertStatement(tableName, preparedData)
-  winston.debug('sql.service: sql: ' + sql)
-  winston.debug('sql.service: params: ' + params.map(p => p.value).join(', '))
   try {
     const res = await sqlService.modify(sql, params)
     return res
