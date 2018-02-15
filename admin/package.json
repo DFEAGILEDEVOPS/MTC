@@ -7,7 +7,6 @@
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
     "postinstall": "gulp build",
-    "prestart": "cd data/migrations && ../../node_modules/.bin/migrate-mongo up && cd ../.. && yarn migrate-sql ",
     "sasswatch": "gulp watch",
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
