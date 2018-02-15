@@ -57,6 +57,27 @@ const answerDataService = {
     })
     const sql = [insertSql, inserts.join(', \n')].join(' ')
     return sqlService.modify(sql, params)
+  },
+
+  /**
+   * Find all answers that match the supplied array of checkIds
+   * Used in processing the psychometric report
+   * @param checkIds
+   * @return {Promise<*>}
+   */
+  sqlFindByCheckIds: async (checkIds) => {
+    const select = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE check_id IN`
+    const whereParams = sqlService.buildParameterList(checkIds, TYPES.Int)
+    const sql = [select, '(', whereParams.paramIdentifiers, ')'].join(' ')
+    const results = await sqlService.query(sql, whereParams.params)
+    const byCheckId = {}
+    results.forEach((answer, idx) => {
+      if (!byCheckId[answer.check_id]) {
+        byCheckId[answer.check_id] = []
+      }
+      byCheckId[answer.check_id].push(answer)
+    })
+    return byCheckId
   }
 }
 
