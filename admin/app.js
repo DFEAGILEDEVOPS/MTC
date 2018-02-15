@@ -34,14 +34,14 @@ const winstonLogger = require('./winstonLogger')
 const winston = require('winston')
 if (config.Logging.LogDna.key) {
   const adminLogger = winstonLogger({
-    app: `MTC-ADMIN-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+    app: `MTC-ADMIN-${process.env.ENVIRONMENT_NAME || 'Local-Admin-Dev'}`,
     hostname: `${os.hostname()}:${process.pid}`,
     key: config.Logging.LogDna.key
   })
   adminLogger.info('ADMIN TEST ABC123')
 
   const apiLogger = winstonLogger({
-    app: `MTC-API-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+    app: `MTC-API-${process.env.ENVIRONMENT_NAME || 'Local-API-Dev'}`,
     hostname: `${os.hostname()}:${process.pid}`,
     key: config.Logging.LogDna.key
   })
