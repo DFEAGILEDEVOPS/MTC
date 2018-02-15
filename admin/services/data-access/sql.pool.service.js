@@ -31,7 +31,6 @@ const sqlPoolService = {}
 
 /**
  * Initialise the connection pool.  Called once per application instance
- * @return {Promise}
  */
 sqlPoolService.init = () => {
   if (pool !== null) return
