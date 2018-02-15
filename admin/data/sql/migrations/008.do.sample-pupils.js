@@ -2,7 +2,7 @@
 
 const moment = require('moment')
 const upnService = require('../../../services/upn.service')
-const pupilsData = require('../../migrations/migrations/data/users.json')
+const pupilsData = require('../../fixtures/dummy-users.json')
 
 function generatePupils () {
   const pupils = []
