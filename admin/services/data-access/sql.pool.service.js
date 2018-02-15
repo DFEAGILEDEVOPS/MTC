@@ -63,7 +63,7 @@ sqlPoolService.getConnection = () => {
  * Disconnect all pool connections
  */
 sqlPoolService.drain = () => {
-  return pool.drain()
+  pool.drain()
 }
 
 module.exports = sqlPoolService
