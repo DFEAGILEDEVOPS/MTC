@@ -24,10 +24,10 @@
                             <span class="fullname"><%= `${pupils[i].foreName} ${pupils[i].showMiddleNames ? pupils[i].middleNames : ''} ${pupils[i].lastName}`%>
                             </span>
                             <% if (pupils[i].showDoB) { %>
-                            <div class="dob">Date of birth: <%= pupils[i].dob %></div>
+                            <div class="dob">Date of birth: <%= pupils[i].dateOfBirth %></div>
                             <% } %>
                         </div>
-                        <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.schoolPin %></span></div>
+                        <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.pin %></span></div>
                         <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i].pin %></span></div>
                         <% if (qrDataURL) { %>
                         <div class="qr"><img src="<%= qrDataURL %>" /></div>
@@ -40,10 +40,10 @@
                             <span class="fullname"><%= `${pupils[i+1].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} ${pupils[i+1].lastName}`%>
                             </span>
                             <% if (pupils[i+1].showDoB) { %>
-                            <div class="dob">Date of birth: <%= pupils[i+1].dob %></div>
+                            <div class="dob">Date of birth: <%= pupils[i+1].dateOfBirth %></div>
                             <% } %>
                         </div>
-                        <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.schoolPin %></span></div>
+                        <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.pin %></span></div>
                         <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i + 1].pin %></span></div>
                         <% if (qrDataURL) { %>
                         <div class="qr"><img src="<%= qrDataURL %>" /></div>

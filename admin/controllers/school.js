@@ -347,6 +347,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let attendanceCodes
   let pupils
   let groups = []
+  let groupIds = req.params.groupIds || ''
 
   // Sorting
   const sortingOptions = [
@@ -379,7 +380,8 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
     htmlSortDirection,
     arrowSortDirection,
     highlight: [],
-    groups
+    groups,
+    groupIds
   })
 }
 

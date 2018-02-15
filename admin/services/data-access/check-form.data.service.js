@@ -1,9 +1,12 @@
 'use strict'
 
-const CheckForm = require('../../models/check-form')
-const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const winston = require('winston')
+
+const CheckForm = require('../../models/check-form')
+const sqlService = require('./sql.service')
+
+const table = '[checkForm]'
 
 const checkFormDataService = {
   /**
@@ -111,9 +114,16 @@ const checkFormDataService = {
     const params = []
     let sql = ''
     if (windowId) {
-      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 
-      AND [id] IN (SELECT checkForm_id FROM checkFormWindow 
-        WHERE checkWindow_id=@windowId)  ORDER BY [name] ${sortOrder}`
+      sql = `
+      SELECT * 
+      FROM ${sqlService.adminSchema}.[checkForm] 
+      WHERE isDeleted=0 
+      AND [id] IN (
+        SELECT checkForm_id 
+        FROM checkFormWindow 
+        WHERE checkWindow_id=@windowId
+      )
+      ORDER BY [name] ${sortOrder}`
       params.push({
         name: 'windowId',
         value: windowId,
@@ -278,6 +288,17 @@ const checkFormDataService = {
       }
     ]
     return sqlService.modify(`UPDATE ${sqlService.adminSchema}.[checkForm] SET isDeleted=1 WHERE [id]=@formId`, params)
+  },
+
+  sqlFindByIds: async function (ids) {
+    const select = `
+    SELECT *
+    FROM ${sqlService.adminSchema}.${table}
+    `
+    const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+    const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
+    const sql = [select, whereClause].join(' ')
+    return sqlService.query(sql, params)
   }
 }
 

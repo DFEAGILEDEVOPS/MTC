@@ -92,4 +92,18 @@ schoolDataService.sqlUpdate = async function (update) {
   return sqlService.update(table, update)
 }
 
+schoolDataService.sqlFindByIds = async function (ids) {
+  if (!(Array.isArray(ids) && ids.length > 0)) {
+    throw new Error('No ids provided')
+  }
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.${table}
+  `
+  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
+  const sql = [select, whereClause].join(' ')
+  return sqlService.query(sql, params)
+}
+
 module.exports = schoolDataService

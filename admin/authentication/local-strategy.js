@@ -78,17 +78,15 @@ async function saveInvalidLogonEvent (logonEvent, message) {
     logonEvent.isAuthenticated = false
     await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.warn('Failed to save logon event: ' + error.message)
+    winston.warn('Failed to save invalid logon event: ' + error.message)
   }
 }
 
 async function saveValidLogonEvent (logonEvent, session) {
   try {
     logonEvent.isAuthenticated = true
-    logonEvent.ncaEmailAddress = session.EmailAddress
-    logonEvent.ncaUserName = session.UserName
     await adminLogonEventDataService.sqlCreate(logonEvent)
   } catch (error) {
-    winston.warn('Failed to save logon event: ' + error.message)
+    winston.warn('Failed to save valid logon event: ' + error.message)
   }
 }

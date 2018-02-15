@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spyOn xit */
+/* global describe beforeEach it expect spy   spyOn xit */
 
 const jwtService = require('../../services/jwt.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')

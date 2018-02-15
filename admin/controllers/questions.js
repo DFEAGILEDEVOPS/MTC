@@ -34,6 +34,29 @@ const getQuestions = async (req, res) => {
     await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
     return apiResponse.unauthorised(res)
   }
+
+  try {
+    if (data.pupil.isTestAccount) {
+      // prepare a check instance on the fly for test accounts
+      const currentWindows = await checkWindowService.getCurrentCheckWindowsAndCountForms()
+      const firstWindow = R.head(currentWindows)
+      if (!firstWindow) {
+        const errorMessage = 'test account unable to login as no current check window available'
+        winston.warn(errorMessage)
+        await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
+        return apiResponse.serverError(res)
+      }
+      await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber)
+    }
+  } catch (error) {
+    return apiResponse.serverError(res)
+  }
+
+  try {
+    await checkWindowService.hasActiveCheckWindow(data.pupil.id)
+  } catch (error) {
+    return apiResponse.sendJson(res, 'Forbidden', 403)
+  }
   const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
   const schoolData = {
     id: data.school.id,
@@ -54,18 +77,6 @@ const getQuestions = async (req, res) => {
 
   // start the check
   try {
-    if (data.pupil.isTestAccount) {
-      // prepare a check instance on the fly for test accounts
-      const currentWindows = await checkWindowService.getCurrentCheckWindowsAndCountForms()
-      const firstWindow = R.head(currentWindows)
-      if (!firstWindow) {
-        const errorMessage = 'test account unable to login as no current check window available'
-        winston.warn(errorMessage)
-        await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
-        return apiResponse.serverError(res)
-      }
-      await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber)
-    }
     const checkData = await checkStartService.pupilLogin(data.pupil.id)
     questions = checkFormService.prepareQuestionData(checkData.questions)
     pupilData.checkCode = checkData.checkCode

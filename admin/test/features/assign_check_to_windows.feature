@@ -26,7 +26,7 @@ Feature:
     Then the check form should be displayed as being assigned to the check window
     And should show what form is assigned on the upload and view forms pge
 
-  @create_new_window
+  @create_new_window @wip
   Scenario: Users can assign a form to multiple check windows
     Given I have uploaded a check form
     When I have assigned the check form to multiple check windows

@@ -193,7 +193,12 @@ checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
 }
 
 checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.[check] SET mark=@mark, maxMark=@maxMark, markedAt=@markedAt WHERE checkCode=@checkCode`
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] 
+  SET mark=@mark, 
+  maxMark=@maxMark, 
+  markedAt=@markedAt 
+  WHERE checkCode=@checkCode`
+
   const params = [
     {
       name: 'checkCode',
@@ -331,6 +336,31 @@ checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
  */
 checkDataService.sqlUpdate = async function (checkData) {
   return sqlService.update('[check]', checkData)
+}
+
+checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
+  const select = `SELECT 
+    f.id,
+    f.name,
+    c.pupil_id     
+  FROM ${sqlService.adminSchema}.${table} c INNER JOIN
+    ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
+  WHERE
+    f.isDeleted <> 1  
+  `
+  const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
+  const andClause = 'AND pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
+  const sql = [select, andClause].join(' ')
+  const results = await sqlService.query(sql, where.params)
+  const byPupil = {}
+  results.forEach(x => {
+    if (byPupil[x.pupil_id]) {
+      byPupil[x.pupil_id].push(x)
+    } else {
+      byPupil[x.pupil_id] = [x]
+    }
+  })
+  return byPupil
 }
 
 module.exports = checkDataService
