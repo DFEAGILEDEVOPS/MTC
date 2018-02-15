@@ -1,18 +1,20 @@
 'use strict'
 
 const os = require('os')
+const config = require('./config')
 const winston = require('winston')
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
+const winstonLogger = {}
+
 /**
- * Create a winston + logdna logger
- * Options are: 'app' and 'hostname'.
+ * Winston + LogDNA logger.
  * @param options
  * @returns {*}
  */
-module.exports = (options) => {
+winstonLogger.logger = (options) => {
   require('logdna')
   if (!options || !options.key) { return false }
   return new winston.Logger({
@@ -43,3 +45,29 @@ module.exports = (options) => {
     exitOnError: false
   })
 }
+
+/**
+ * Admin logger.
+ * @returns {*}
+ */
+// winstonLogger.adminLogger = () => {
+//   return winstonLogger.logger({
+//     app: `MTC-ADMIN-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+//     hostname: `${os.hostname()}:${process.pid}`,
+//     key: config.Logging.LogDna.key
+//   })
+// }
+
+/**
+ * API logger.
+ * @returns {*}
+ */
+winstonLogger.apiLogger = () => {
+  return winstonLogger.logger({
+    app: `MTC-API-${process.env.ENVIRONMENT_NAME || 'Local-Dev'}`,
+    hostname: `${os.hostname()}:${process.pid}`,
+    key: config.Logging.LogDna.key
+  })
+}
+
+module.exports = winstonLogger
