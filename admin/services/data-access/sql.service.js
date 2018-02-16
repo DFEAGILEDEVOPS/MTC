@@ -179,7 +179,7 @@ sqlService.adminSchema = '[mtc_admin]'
  */
 sqlService.query = (sql, params = []) => {
   winston.debug(`sql.service.query(): ${sql}`)
-  winston.debug('sql.service.query(): Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
+  winston.debug('sql.service.query(): Params ', R.map(R.pick(['name', 'value']), params))
   return new Promise(async (resolve, reject) => {
     let con
     try {
@@ -225,7 +225,7 @@ sqlService.query = (sql, params = []) => {
  */
 sqlService.modify = (sql, params = []) => {
   winston.debug('sql.service.modify(): SQL: ' + sql)
-  winston.debug('sql.service.modify(): params: ' + params.map(p => p.value).join(', '))
+  winston.debug('sql.service.modify(): Params ', R.map(R.pick(['name', 'value']), params))
 
   return new Promise(async (resolve, reject) => {
     const isInsert = isInsertStatement(sql)
