@@ -4,7 +4,6 @@ const { postCheck } = require('../controllers/completed-check')
 const winston = require('winston')
 
 router.route('/').all((req, res) => {
-  winston.info(`MTC-API: ${req.url} reached`)
   if (req.method !== 'POST') {
     winston.error(`MTC-API: ${req.url}: req.method is not POST - res.sendStatus(405) - ${JSON.stringify(req.method)} `)
     return res.sendStatus(405)
