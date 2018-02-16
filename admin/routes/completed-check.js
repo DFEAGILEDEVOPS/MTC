@@ -9,7 +9,7 @@ router.route('/').all((req, res) => {
     return res.sendStatus(405)
   }
   postCheck(req, res)
-  winston.info(`MTC-API: ${req.url}: request.body: ${JSON.stringify(req.body && req.body.length > 200 ? req.body.substring(0, 199) : '')}`)
+  winston.info(`MTC-API: ${req.url}: request.body: ${JSON.stringify(req.body && req.body.length > 0 ? req.body.substring(0, 199) : '')}`)
 })
 
 module.exports = router
