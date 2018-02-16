@@ -3,12 +3,6 @@
 # exit on error
 set -e
 
-#run migrations
-echo '###### Running migrations'
-yarn migrate-sql
-echo '##### Finished migrations'
-
-
 # start admin app
 cd ../admin && npm start > server.admin.log 2>&1 &
 
