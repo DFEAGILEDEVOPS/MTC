@@ -172,10 +172,6 @@ ansi-wrap@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/ansi-wrap/-/ansi-wrap-0.1.0.tgz#a82250ddb0015e9a27ca82e82ea603bbfa45efaf"
 
-any-promise@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/any-promise/-/any-promise-1.3.0.tgz#abc6afeedcea52e809cdc0376aed3ce39635d17f"
-
 anymatch@^1.3.0:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-1.3.2.tgz#553dcb8f91e3c889845dfdba34c77721b90b9d7a"
@@ -361,12 +357,6 @@ async-foreach@^0.1.3:
 async@2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/async/-/async-2.1.4.tgz#2d2160c7788032e4dd6cbe2502f1f9a2c8f6cde4"
-  dependencies:
-    lodash "^4.14.0"
-
-async@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.1.5.tgz#e587c68580994ac67fc56ff86d3ac56bdbe810bc"
   dependencies:
     lodash "^4.14.0"
 
@@ -658,7 +648,7 @@ buffer-equal-constant-time@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
 
-buffer-shims@^1.0.0, buffer-shims@~1.0.0:
+buffer-shims@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
 
@@ -852,12 +842,6 @@ cli-cursor@^1.0.1:
   dependencies:
     restore-cursor "^1.0.1"
 
-cli-table@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/cli-table/-/cli-table-0.3.1.tgz#f53b05266a8b1a0b934b3d0821e6e2dc5914ae23"
-  dependencies:
-    colors "1.0.3"
-
 cli-width@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
@@ -947,7 +931,7 @@ color-support@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/color-support/-/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
 
-colors@1.0.3, colors@1.0.x:
+colors@1.0.x:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
@@ -960,12 +944,6 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.5.tgz#938370a57b4a51dea2c77c15d5c5fdf895164009"
   dependencies:
     delayed-stream "~1.0.0"
-
-commander@2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
-  dependencies:
-    graceful-readlink ">= 1.0.0"
 
 commander@^2.9.0, commander@~2.14.1:
   version "2.14.1"
@@ -2106,13 +2084,6 @@ from@~0:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/from/-/from-0.1.7.tgz#83c60afc58b9c56997007ed1a768b3ab303a44fe"
 
-fs-extra@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-2.1.1.tgz#f8a34cc890522fc233896f34944ff2e35948959f"
-  dependencies:
-    graceful-fs "^4.1.2"
-    jsonfile "^2.1.0"
-
 fs-extra@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-4.0.3.tgz#0d852122e5bc5beb453fb028e9c0c9bf36340c94"
@@ -2403,10 +2374,6 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
 graceful-fs@~1.2.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-1.2.3.tgz#15a4806a57547cb2d2dbf27f42e89a8c3451b364"
-
-"graceful-readlink@>= 1.0.0":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
 gulp-clean@^0.4.0:
   version "0.4.0"
@@ -3244,12 +3211,6 @@ json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
-jsonfile@^2.1.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-2.4.0.tgz#3736a2b428b87bbda0cc83b53fa3d633a35c2ae8"
-  optionalDependencies:
-    graceful-fs "^4.1.6"
-
 jsonfile@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-4.0.0.tgz#8771aae0799b64076b76640fca058f9c10e33ecb"
@@ -3571,10 +3532,6 @@ lodash@3.x:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@4.17.4:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
 lodash@^4.0.0, lodash@^4.12.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.16.0, lodash@^4.17.4, lodash@^4.3.0, lodash@~4.17.4:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
@@ -3774,19 +3731,6 @@ micromatch@^3.0.4, micromatch@^3.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-migrate-mongo@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/migrate-mongo/-/migrate-mongo-2.2.1.tgz#233dd0b0b54950a56f54fd224da5adebb7efa242"
-  dependencies:
-    async "2.1.5"
-    cli-table "0.3.1"
-    commander "2.9.0"
-    fs-extra "2.1.1"
-    lodash "4.17.4"
-    moment "2.17.1"
-    mongodb "2.2.24"
-    shifting "1.2.5"
-
 mime-db@~1.30.0:
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.30.0.tgz#74c643da2dd9d6a45399963465b26d5ca7d71f01"
@@ -3861,10 +3805,6 @@ moment-duration-format@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/moment-duration-format/-/moment-duration-format-2.2.1.tgz#b9ce5e5051a15282a0a6c361f0c05685c7ead47c"
 
-moment@2.17.1:
-  version "2.17.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
-
 moment@^2.20.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
@@ -3876,27 +3816,12 @@ mongodb-core@2.1.18:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb-core@2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.8.tgz#b33e0370d0a59d97b6cb1ec610527be9e95ca2c0"
-  dependencies:
-    bson "~1.0.4"
-    require_optional "~1.0.0"
-
 mongodb-core@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.0.2.tgz#914896092dd45427d9a4f98a7997a0bfb81d163b"
   dependencies:
     bson "~1.0.4"
     require_optional "^1.0.1"
-
-mongodb@2.2.24:
-  version "2.2.24"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.24.tgz#80f40d6ec5bdec0ddecf0f9ce0144e794c46449a"
-  dependencies:
-    es6-promise "3.2.1"
-    mongodb-core "2.1.8"
-    readable-stream "2.1.5"
 
 mongodb@2.2.34, mongodb@^2.0.36:
   version "2.2.34"
@@ -4897,18 +4822,6 @@ readable-stream@1.1.x, readable-stream@~1.1.9:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.1.5.tgz#66fa8b720e1438b364681f2ad1a63c618448c9d0"
-  dependencies:
-    buffer-shims "^1.0.0"
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "~1.0.0"
-    process-nextick-args "~1.0.6"
-    string_decoder "~0.10.x"
-    util-deprecate "~1.0.1"
-
 readable-stream@2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.2.7.tgz#07057acbe2467b22042d36f98c5ad507054e95b1"
@@ -5373,12 +5286,6 @@ shelljs@^0.7.5:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
-shifting@1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/shifting/-/shifting-1.2.5.tgz#24b8b370586bb661a353c10a3e18e4a85abf5053"
-  dependencies:
-    any-promise "^1.3.0"
-
 sigmund@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
@@ -5762,6 +5669,17 @@ tedious-connection-pool@^1.0.5:
   dependencies:
     tedious "^1.14.0"
 
+tedious@2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.2.4.tgz#e429341090b7e99ca653af0850218c857821a763"
+  dependencies:
+    babel-runtime "^6.26.0"
+    big-number "0.3.1"
+    bl "^1.2.0"
+    iconv-lite "^0.4.11"
+    readable-stream "^2.2.6"
+    sprintf "0.1.5"
+
 tedious@^1.14.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
@@ -5774,7 +5692,7 @@ tedious@^1.14.0:
     readable-stream "^2.0.2"
     sprintf "0.1.5"
 
-tedious@^2.0.0, tedious@^2.3.1:
+tedious@^2.0.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.3.1.tgz#56e5008ab32a6245b5040e7d6fbb09d4fc0df664"
   dependencies:
