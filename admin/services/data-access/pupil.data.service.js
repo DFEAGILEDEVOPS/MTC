@@ -267,7 +267,7 @@ pupilDataService.sqlFindOneByIdAndSchool = async (id, schoolId) => {
  * @return {Promise<void>}
  */
 pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
-  const paramPupilPin = { name: 'pin', type: TYPES.Int, value: pin }
+  const paramPupilPin = { name: 'pin', type: TYPES.NVarChar, value: pin }
   const paramSchool = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const sql = `
       SELECT TOP 1 
@@ -391,7 +391,7 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
     params.push({
       name: `pin${i}`,
       value: p.pin,
-      type: TYPES.SmallInt
+      type: TYPES.NVarChar
     })
     params.push({
       name: `pinExpiredAt${i}`,
