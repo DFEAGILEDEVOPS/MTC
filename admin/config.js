@@ -53,7 +53,6 @@ module.exports = {
     }
   },
   Logging: {
-    // @TODO: Remove hardcoded key
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,

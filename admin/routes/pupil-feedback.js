@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { setPupilFeedback } = require('../controllers/pupil-feedback')
-const winston = require('winstonLogger')
+const winston = require('winston')
 
 router.route('/').all((req, res) => {
   if (req.method !== 'POST') {
@@ -9,7 +9,7 @@ router.route('/').all((req, res) => {
     return res.sendStatus(405)
   }
   setPupilFeedback(req, res)
-  winston.info(`MTC-API: ${req.url}: request.body: ${JSON.stringify(req.body)}`)
+  winston.info(`MTC-API: ${req.url}: request.body: ${JSON.stringify(req.body.substring(0, 199))}`)
 })
 
 module.exports = router
