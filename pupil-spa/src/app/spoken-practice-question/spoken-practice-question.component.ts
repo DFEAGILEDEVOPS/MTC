@@ -38,7 +38,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
    */
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
-      sequenceNumber: this.sequenceNumber,
+      practiseSequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
     this.speechService.speak(`${this.factor1} times ${this.factor2}?`);

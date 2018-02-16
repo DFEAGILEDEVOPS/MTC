@@ -204,4 +204,29 @@ psUtilService.getScore = function (markedAnswer) {
   return markedAnswer.isCorrect ? 1 : 0
 }
 
+psUtilService.getLoadTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionRendered', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
+psUtilService.getOverallTime = function (tLastKey, tLoad) {
+  if (!tLastKey || !tLoad) {
+    return ''
+  }
+  const m1 = moment(tLastKey)
+  if (!m1.isValid()) {
+    return ''
+  }
+  const m2 = moment(tLoad)
+  if (!m2.isValid()) {
+    return ''
+  }
+  return m1.diff(m2) / 1000
+}
+
 module.exports = psUtilService

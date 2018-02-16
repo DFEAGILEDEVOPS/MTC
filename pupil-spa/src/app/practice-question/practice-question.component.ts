@@ -91,7 +91,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
-      sequenceNumber: this.sequenceNumber,
+      practiseSequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
     // Start the countdown and page timeout timers

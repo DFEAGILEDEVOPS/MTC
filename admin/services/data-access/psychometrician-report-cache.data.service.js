@@ -71,6 +71,7 @@ const psychometricianReportCacheDataService = {
       FROM ${sqlService.adminSchema}.${table} p 
       RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
       WHERE p.check_id IS NULL
+      AND c.data IS NOT NULL
       `
     return sqlService.query(sql)
   }
