@@ -1,5 +1,10 @@
 #!/bin/bash -x
 
+#run migrations
+echo '###### Running migrations'
+yarn migrate-sql
+echo '##### Finished migrations'
+
 npm start > server.log 2>&1 &
 PID=$!
 
