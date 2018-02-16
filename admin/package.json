@@ -10,6 +10,7 @@
     "sasswatch": "gulp watch",
     "start": "node ./server.js",
     "startn": "nodemon ./server.js",
+    "startd": "yarn migrate-sql && node ./server.js",
     "test": "nyc -r html ./run-jasmine.js",
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
     "migrate-sql": "node ./data/sql/migrate-sql.js"
@@ -41,7 +42,6 @@
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.1.1",
     "logdna": "^1.4.2",
-    "migrate-mongo": "^2.2.1",
     "moment": "^2.20.1",
     "moment-duration-format": "^2.2.1",
     "mongoose": "^4.13.11",
