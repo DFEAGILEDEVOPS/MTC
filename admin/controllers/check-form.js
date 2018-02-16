@@ -322,7 +322,19 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 const saveAssignCheckFormsToWindow = async (req, res, next) => {
-  const postedFormIds = req.body.checkForm
+  let postedFormIds
+
+  // fix for non-array scenarios
+  if (typeof req.body.checkForm === 'object') {
+    if (Array.isArray(req.body.checkForm)) {
+      postedFormIds = req.body.checkForm
+    } else {
+      postedFormIds = Object.values(req.body.checkForm)
+    }
+  } else if (typeof req.body.checkForm === 'string') {
+    postedFormIds = [ req.body.checkForm ]
+  }
+  // end fix
   const totalForms = Object.values(postedFormIds).length
   const checkWindowName = req.body.checkWindowName || 'N/A'
 
