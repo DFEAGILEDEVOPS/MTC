@@ -186,15 +186,22 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
 
 /**
  * Return 1 if the question timed out, and the correct answer was given. 0 otherwise.
- * @param inputs
- * @param ans
+ * @param inputs - inputs from the SPA data
+ * @param {answer} ans - marked answer from the `answer` table
  * @return {number}
  */
-psUtilService.getTimeoutWithCorrectAnswer = function (inputs, ans) {
-  if (this.getTimeoutFlag(inputs) === 1 && ans.isCorrect) {
+psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
+  if (this.getTimeoutFlag(inputs) === 1 && markedAnswer.isCorrect) {
     return 1
   }
   return 0
+}
+
+psUtilService.getScore = function (markedAnswer) {
+  if (!markedAnswer.hasOwnProperty('isCorrect')) {
+    return 'error'
+  }
+  return markedAnswer.isCorrect ? 1 : 0
 }
 
 module.exports = psUtilService
