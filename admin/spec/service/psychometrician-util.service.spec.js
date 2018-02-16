@@ -208,24 +208,24 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe('error')
     })
 
-    it('returns 1 (timeout with no response) when there is a timeout without an answer', () => {
+    it('returns 0 (timeout with no response) when there is a timeout without an answer', () => {
       const res = service.getTimeoutWithNoResponseFlag([], {answer: ''})
-      expect(res).toBe(1)
+      expect(res).toBe(0)
     })
 
-    it('returns 0 (timeout with a response) when there is a timeout with an answer', () => {
+    it('returns 1 (timeout with a response) when there is a timeout with an answer', () => {
       const res = service.getTimeoutWithNoResponseFlag([{
         'clientInputDate': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': '1'
       }], {answer: '1'})
-      expect(res).toBe(0)
+      expect(res).toBe(1)
     })
 
-    it('returns 0 (timeout with no response) when there isnt any input and there is an answer', () => {
+    it('returns 1 (timeout with no response) when there isnt any input and there is an answer', () => {
       // this would be a bug of some sort..., as any answer must have a corresponding input
       const res = service.getTimeoutWithNoResponseFlag([], {answer: '1'})
-      expect(res).toBe(0)
+      expect(res).toBe(1)
     })
   })
 
