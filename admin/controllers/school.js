@@ -7,6 +7,7 @@ const attendanceService = require('../services/attendance.service')
 const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 const pupilStatusService = require('../services/pupil.status.service')
@@ -15,7 +16,6 @@ const scoreService = require('../services/score.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const groupService = require('../services/group.service')
 const ValidationError = require('../lib/validation-error')
-const { sortRecords } = require('../utils')
 
 const getHome = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
@@ -40,18 +40,23 @@ const getHome = async (req, res, next) => {
 // TODO: rename this pupil-register?  Create a pupil-register service?
 const getPupils = async (req, res, next) => {
   res.locals.pageTitle = 'Pupil register'
-  const { sortColumn, sortOrder } = req.params
-  res.locals.sortColumn = sortColumn || 'lastName'
-  const order = JSON.parse(sortOrder)
-  res.locals.sortOrder = typeof order === 'boolean' ? !order : true
-  res.locals.sortClass = order === false ? 'sort up' : 'sort'
 
-  let pupilsFormatted
+  // Sorting
+  const sortingOptions = [
+    { 'key': 'name', 'value': 'asc' },
+    { 'key': 'status', 'value': 'asc' }
+  ]
+  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
+  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
+  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
+
+  let pupilsFormatted = []
   let groupsIndex = []
 
   try {
     groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
-    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School)
+    const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School, sortDirection)
+
     pupilsFormatted = await Promise.all(pupils.map(async (p) => {
       const { foreName, lastName } = p
       const dob = dateService.formatShortGdsDate(p.dateOfBirth)
@@ -70,7 +75,6 @@ const getPupils = async (req, res, next) => {
     next(error)
   }
 
-  pupilsFormatted = sortRecords(pupilsFormatted, res.locals.sortColumn, order)
   pupilsFormatted.map((p, i) => {
     if (pupilsFormatted[ i + 1 ] === undefined) return
     if (pupilsFormatted[ i ].foreName === pupilsFormatted[ i + 1 ].foreName &&
@@ -79,6 +83,11 @@ const getPupils = async (req, res, next) => {
       pupilsFormatted[ i + 1 ].showDoB = true
     }
   })
+
+  // If sorting by 'status', use custom method.
+  if (sortField === 'status') {
+    pupilsFormatted = pupilService.sortByStatus(pupilsFormatted, sortDirection)
+  }
 
   req.breadcrumbs(res.locals.pageTitle)
   let { hl } = req.query
@@ -90,7 +99,9 @@ const getPupils = async (req, res, next) => {
   res.render('school/pupil-register', {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    htmlSortDirection,
+    arrowSortDirection
   })
 }
 

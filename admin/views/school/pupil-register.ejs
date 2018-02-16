@@ -27,21 +27,13 @@
             <thead>
                 <tr>
                     <th scope="col" class="two-thirds">
-                        <a class="no-underline" href="<%= `/school/pupil-register/lastName/${sortOrder}` %>" >
-                            Pupil
-                            <span class="<%= sortColumn === 'lastName' ? sortClass : '' %>" ></span>
-                        </a>
+                        <a class="no-underline" id="sortingLink" href="/school/pupil-register/name/<%= htmlSortDirection.name %>">Pupil<span class="<%= arrowSortDirection.name %>"><span>Sort by pupil <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline">
-                            Group
-                        </a>
+                        <a class="no-underline">Group</a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline" href=<%= `/school/pupil-register/score/${sortOrder}` %> >
-                        Status
-                        <span class="<%= sortColumn === 'score' ? sortClass : '' %>" ></span>
-                        </a>
+                        <a class="no-underline" id="sortingLink" href="/school/pupil-register/status/<%= htmlSortDirection.status %>">Status<span class="<%= arrowSortDirection.status %>"><span>Sort by status <%= htmlSortDirection.status %></span></span></a>
                     </th>
                 </tr>
             </thead>
