@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spy   spyOn xit */
+/* global describe beforeEach it expect spyOn xit */
 
 const jwtService = require('../../services/jwt.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
@@ -37,6 +37,7 @@ describe('check-complete.service', () => {
       spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
       spyOn(markingService, 'mark').and.returnValue(Promise.resolve())
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
+      spyOn(completedCheckDataService, 'sqlFindOneByCheckCode')
     })
 
     it('clears pin and sets expiry when not test account', async (done) => {

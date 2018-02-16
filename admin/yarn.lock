@@ -5762,6 +5762,17 @@ tedious-connection-pool@^1.0.5:
   dependencies:
     tedious "^1.14.0"
 
+tedious@2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.2.4.tgz#e429341090b7e99ca653af0850218c857821a763"
+  dependencies:
+    babel-runtime "^6.26.0"
+    big-number "0.3.1"
+    bl "^1.2.0"
+    iconv-lite "^0.4.11"
+    readable-stream "^2.2.6"
+    sprintf "0.1.5"
+
 tedious@^1.14.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
@@ -5774,7 +5785,7 @@ tedious@^1.14.0:
     readable-stream "^2.0.2"
     sprintf "0.1.5"
 
-tedious@^2.0.0, tedious@^2.3.1:
+tedious@^2.0.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.3.1.tgz#56e5008ab32a6245b5040e7d6fbb09d4fc0df664"
   dependencies:
