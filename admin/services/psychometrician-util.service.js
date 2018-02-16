@@ -6,24 +6,8 @@ const winston = require('winston')
 
 const psUtilService = {}
 
-psUtilService.getSurname = function (completedCheck) {
-  return completedCheck.check.pupilId.lastName.substr(0, 35)
-}
-
-psUtilService.getForename = function (completedCheck) {
-  return completedCheck.check.pupilId.foreName.substr(0, 35)
-}
-
-psUtilService.getMiddleNames = function (completedCheck) {
-  return R.pathOr('', ['check', 'pupilId', 'middleNames'], completedCheck).substr(0, 35)
-}
-
 psUtilService.getMark = function getMark (completedCheck) {
-  return R.pathOr('error', ['check', 'results', 'marks'], completedCheck)
-}
-
-psUtilService.getSchoolURN = function (completedCheck) {
-  return R.pathOr('n/a', ['check', 'pupilId', 'school', 'urn'], completedCheck)
+  return R.pathOr('error', ['mark'], completedCheck)
 }
 
 psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, completedCheck) {
@@ -130,7 +114,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
 }
 
 /**
- * Returns the timerstamp as a string of the first input from the user
+ * Returns the client timestamp as a string of the first input from the user
  * @param inputs
  * @return {String}
  */
@@ -202,15 +186,22 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
 
 /**
  * Return 1 if the question timed out, and the correct answer was given. 0 otherwise.
- * @param inputs
- * @param ans
+ * @param inputs - inputs from the SPA data
+ * @param {answer} ans - marked answer from the `answer` table
  * @return {number}
  */
-psUtilService.getTimeoutWithCorrectAnswer = function (inputs, ans) {
-  if (this.getTimeoutFlag(inputs) === 1 && ans.isCorrect) {
+psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
+  if (this.getTimeoutFlag(inputs) === 1 && markedAnswer.isCorrect) {
     return 1
   }
   return 0
+}
+
+psUtilService.getScore = function (markedAnswer) {
+  if (!markedAnswer.hasOwnProperty('isCorrect')) {
+    return 'error'
+  }
+  return markedAnswer.isCorrect ? 1 : 0
 }
 
 module.exports = psUtilService

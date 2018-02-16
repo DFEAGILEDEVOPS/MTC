@@ -2,8 +2,12 @@
 
 const moment = require('moment')
 const winston = require('winston')
+const R = require('ramda')
+
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
+const answerDataService = require('./data-access/answer.data.service')
+
 const markingService = {}
 
 markingService.batchMark = async function (batchIds) {
@@ -39,17 +43,36 @@ markingService.mark = async function (completedCheck) {
     processedAt: moment.utc()
   }
 
+  // Store the mark for each answer
+  const answers = []
+  let questionNumber = 1
+
   for (let answer of completedCheck.data.answers) {
+    const data = R.clone(answer)
+    data.answer = R.slice(0, 60, answer.answer)
+    data.questionNumber = questionNumber
+    questionNumber += 1
+
     if (answer.factor1 * answer.factor2 === parseInt(answer.answer, 10)) {
-      answer.isCorrect = true
+      data.isCorrect = true
       results.marks += 1
     } else {
-      answer.isCorrect = false
+      data.isCorrect = false
     }
+
+    answers.push(data)
   }
 
   // update the check meta info
-  await checkDataService.sqlUpdateCheckWithResults(completedCheck.data.pupil.checkCode, results.marks, results.maxMarks, results.processedAt)
+  await checkDataService.sqlUpdateCheckWithResults(
+    completedCheck.checkCode,
+    results.marks,
+    results.maxMarks,
+    results.processedAt
+  )
+
+  // Update the answers table
+  await answerDataService.sqlUpdateWithResults(completedCheck.id, answers)
 }
 
 module.exports = markingService

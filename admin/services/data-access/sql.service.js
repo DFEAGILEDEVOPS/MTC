@@ -221,8 +221,10 @@ sqlService.query = (sql, params = []) => {
  * @param {array} params - Array of parameters for SQL statement
  * @return {Promise}
  */
-sqlService.modify = (sql, params) => {
-  winston.debug('sql.service: modify: SQL: ' + sql)
+sqlService.modify = (sql, params = []) => {
+  winston.debug('sql.service.modify(): SQL: ' + sql)
+  winston.debug('sql.service.modify(): params: ' + params.map(p => p.value).join(', '))
+
   return new Promise(async (resolve, reject) => {
     const isInsert = isInsertStatement(sql)
     const con = await sqlPoolService.getConnection()
@@ -254,7 +256,9 @@ sqlService.modify = (sql, params) => {
           options.scale = param.scale || 5
         }
         const opts = param.options ? param.options : options
-        winston.debug('sql.service: modify(): opts to addParameter are: ', opts)
+        if (opts && Object.keys(opts).length) {
+          winston.debug('sql.service: modify(): opts to addParameter are: ', opts)
+        }
 
         request.addParameter(
           param.name,
