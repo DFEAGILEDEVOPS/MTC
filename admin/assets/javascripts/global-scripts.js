@@ -136,7 +136,7 @@ $(function () {
     textFieldStatus: function (sel, validation) {
       if (!sel) { return false }
       $(sel).on('change keyup', function (e) {
-        if (e.currentTarget.value.trim().length > 0 && validation()) {
+        if ($.trim(e.currentTarget.value).length > 0 && validation()) {
           stickyBanner.toggle(true)
         } else {
           stickyBanner.toggle(false)
@@ -382,7 +382,7 @@ $(function () {
      * @returns {boolean}
      */
     isGroupNameComplete: function () {
-      var elName = $('input#name').val()
+      var elName = $.trim($('input#name').val())
       return elName.length > 0
     },
     /**
