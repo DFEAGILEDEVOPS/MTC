@@ -1,5 +1,5 @@
 module.exports = {
-  '_id': '59ce2f660cf13ba5b39dfdb7',
+  'id': 88,
   'data': {
     'school': {
       'name': 'Test school',
@@ -385,5 +385,5 @@ module.exports = {
     'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNVEMgQWRtaW4iLCJzdWIiOiI1OWNkZmVjYjg1MTgwYjk1NjFlNjcxMzQiLCJleHAiOjE1MDY2ODgzNTQsIm5iZiI6MTUwNjY4NDc1NCwiandpIjoiN2Q5MTA2NmMtY2ZiYi00MDA2LTgyYjktZTA1MTlkMDI4NDdlIiwiaWF0IjoxNTA2Njg0NzU0fQ.kg3cxhN-26YWTBmizgpXg-Zwg17ScxZvuWnrBUkoZfY'
   },
   'receivedByServerAt': '2017-09-29T11:32:54.245Z',
-  '__v': 0
+  'checkCode': 'b31de43f-87f1-47f3-94df-1ec608d2af3f'
 }

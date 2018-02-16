@@ -4,9 +4,8 @@
 require('dotenv').config()
 const fs = require('fs')
 const winston = require('winston')
+const poolService = require('../services/data-access/sql.pool.service')
 
-const completedCheckDataService = require('../services/data-access/completed-check.data.service')
-const completedCheckProcessingService = require('../services/completed-check-processing.service')
 const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 
@@ -14,16 +13,19 @@ async function main () {
   try {
     if (process.argv.length > 2) {
       if (process.argv[2] === '-f') {
-        // force the report to re-process all marks
+        // force the report to re-calculate the cached ps-report
         winston.info('force detected: re-processing all checks')
-        await completedCheckDataService.sqlSetAllUnmarked()
         await psychometricianReportCacheDataService.sqlDeleteAll()
       }
     }
 
     winston.info('main: Processing the completed checks')
-    // Make sure all completed checks are marked and ps-report data cached
-    await completedCheckProcessingService.process()
+
+    // Just process everything in one batch.
+    // TODO: batchify it in a service
+    const checks = await psychometricianReportCacheDataService.sqlFindUnprocessedChecks()
+    if (!checks || !checks.length) return
+    await psychometricianReportService.batchProduceCacheData(checks.map(c => c.id))
 
     const report = await psychometricianReportService.generateReport()
     const filename = 'mtc-check.csv'
@@ -38,7 +40,13 @@ async function main () {
   } catch (error) {
     winston.error(error)
   }
-  process.exit(0)
 }
 
 main()
+  .then(() => {
+    poolService.drain()
+  })
+  .catch(e => {
+    console.warn(e)
+    poolService.drain()
+  })

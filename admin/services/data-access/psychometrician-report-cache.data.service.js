@@ -60,7 +60,21 @@ const psychometricianReportCacheDataService = {
 
   sqlDeleteAll: async function () {
     return sqlService.modify(`DELETE FROM ${table}`)
+  },
+
+  /**
+   * Find checks that do not have entries in the psychometrician report cache table
+   * @return {Promise<*>}
+   */
+  sqlFindUnprocessedChecks: async function () {
+    const sql = `SELECT c.* 
+      FROM ${sqlService.adminSchema}.${table} p 
+      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
+      WHERE p.check_id IS NULL
+      `
+    return sqlService.query(sql)
   }
+
 }
 
 module.exports = psychometricianReportCacheDataService
