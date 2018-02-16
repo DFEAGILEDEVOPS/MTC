@@ -201,4 +201,24 @@ completedCheckDataService.sqlSetAllUnmarked = async () => {
   return sqlService.modify(sql)
 }
 
+/**
+ * Return a single check with the SPA data as an object
+ * @param checkCode
+ * @return {Promise<void>}
+ */
+completedCheckDataService.sqlFindOneByCheckCode = async function (checkCode) {
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  const result = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[check] WHERE checkCode=@checkCode`, params)
+
+  // Hydrate the JSON string in to an object
+  const first = R.head(result)
+  return R.assoc('data', (JSON.parse(first.data)).data, first)
+}
+
 module.exports = completedCheckDataService
