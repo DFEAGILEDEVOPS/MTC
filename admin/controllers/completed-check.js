@@ -1,3 +1,5 @@
+const winston = require('winston')
+
 const { verify } = require('../services/jwt.service')
 const checkCompleteService = require('../services/check-complete.service')
 const apiResponse = require('./api-response')
@@ -47,6 +49,7 @@ const postCheck = async (req, res) => {
       }
     })
   } catch (error) {
+    winston.error(error)
     return apiResponse.serverError(res)
   }
 
