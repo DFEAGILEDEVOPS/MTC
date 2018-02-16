@@ -1,4 +1,5 @@
 const restartService = require('../services/restart.service')
+const winston = require('winston')
 const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const ValidationError = require('../lib/validation-error')
@@ -90,6 +91,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let submittedRestarts
   try {
+    winston.debug(`restart controller: req.user.id: ${req.user.id}`)
     submittedRestarts = await restartService.restart(pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo, req.user.id)
   } catch (error) {
     return next(error)
