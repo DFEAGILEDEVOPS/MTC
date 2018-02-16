@@ -15,7 +15,7 @@ const adminConfig = {
     encrypt: config.Sql.Encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
     port: config.Sql.Port,
-    connectTimeout: 30000
+    connectTimeout: config.Sql.Migrator.Timeout
   }
 }
 
@@ -45,7 +45,8 @@ const createDatabase = async (connection) => {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
     winston.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
-    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
+    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') 
+    BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     const output = await executeRequest(connection, createDbSql)
     winston.info(output[0][0].value)
   } catch (error) {
@@ -55,7 +56,7 @@ const createDatabase = async (connection) => {
 
 const main = () => {
   return new Promise((resolve, reject) => {
-    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} `)
+    winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
     const connection = new Connection(adminConfig)
     connection.on('connect', (err) => {
       if (err) {
