@@ -1,0 +1,34 @@
+{
+  "config": {
+    "target": "http://localhost:3001",
+    "phases": [
+      {
+        "duration": 15,
+        "arrivalRate": 5
+      }
+    ],
+    "payload": {
+      "path": "./data/userLogins.csv",
+      "fields": [
+        "username",
+        "password"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "user login",
+      "flow": [
+        {
+          "post": {
+            "url": "/sign-in",
+            "json": {
+              "username": "{{ username }}",
+              "password": "{{ password }}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
