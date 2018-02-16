@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubmissionFailedComponent } from './submission-failed.component';
 import { AuditService } from '../services/audit/audit.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 
 describe('SubmissionFailedComponent', () => {
@@ -13,7 +14,8 @@ describe('SubmissionFailedComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionFailedComponent ],
       providers: [
-        { provide: AuditService, useClass: AuditServiceMock }
+        { provide: AuditService, useClass: AuditServiceMock },
+        WindowRefService
       ]
     })
     .compileComponents();

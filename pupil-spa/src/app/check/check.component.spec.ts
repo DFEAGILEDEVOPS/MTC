@@ -16,6 +16,7 @@ import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -47,7 +48,8 @@ describe('CheckComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: SubmissionService, useClass: SubmissionServiceMock },
-        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        WindowRefService,
       ]
     })
       .compileComponents();
