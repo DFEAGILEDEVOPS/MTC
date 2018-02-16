@@ -10,6 +10,7 @@ import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-check',
@@ -36,13 +37,16 @@ export class CheckComponent implements OnInit {
   public viewState: string;
   public allowedStates: Array<string> = [];
   public totalNumberOfQuestions: number;
+  protected window: any;
 
   constructor(private questionService: QuestionService,
               private answerService: AnswerService,
               private submissionService: SubmissionService,
               private warmupQuestionService: WarmupQuestionService,
               private auditService: AuditService,
-              private storageService: StorageService) {
+              private storageService: StorageService,
+              protected windowRefService: WindowRefService) {
+    this.window = windowRefService.nativeWindow;
   }
 
   /**
@@ -148,6 +152,10 @@ export class CheckComponent implements OnInit {
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.isWarmUp = true;
         this.viewState = 'warmup-preload';
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: `/practice-preload/${parseInt(matches[ 1 ], 10)}`
+        });
         break;
       }
       case CheckComponent.warmupQuestionRe.test(stateDesc): {
@@ -157,6 +165,10 @@ export class CheckComponent implements OnInit {
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'practice-question';
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: `/practice-question/${parseInt(matches[ 1 ], 10)}`
+        });
         break;
       }
       case CheckComponent.spokenWarmupQuestionRe.test(stateDesc): {
@@ -173,6 +185,10 @@ export class CheckComponent implements OnInit {
         this.isWarmUp = true;
         this.viewState = 'warmup-complete';
         this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: '/practice-complete'
+        });
         break;
       case CheckComponent.loadingRe.test(stateDesc): {
         // Show the loading screen
@@ -180,6 +196,10 @@ export class CheckComponent implements OnInit {
         const matches = CheckComponent.loadingRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: `/preload/${parseInt(matches[ 1 ], 10)}`
+        });
         break;
       }
       case CheckComponent.questionRe.test(stateDesc): {
@@ -188,6 +208,10 @@ export class CheckComponent implements OnInit {
         const matches = CheckComponent.questionRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: `/question/${parseInt(matches[ 1 ], 10)}`
+        });
         break;
       }
       case CheckComponent.spokenQuestionRe.test(stateDesc): {
@@ -203,6 +227,10 @@ export class CheckComponent implements OnInit {
         this.auditService.addEntry(new CheckSubmissionPending());
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
+        this.window.ga('send', {
+          hitType: 'pageview',
+          page: '/submission-pending'
+        });
         break;
       }
     }

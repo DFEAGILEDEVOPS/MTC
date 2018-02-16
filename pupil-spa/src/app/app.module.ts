@@ -2,8 +2,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
+import { Angulartics2Module } from 'angulartics2';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+
+import { GlobalErrorHandler } from './error-handler';
 
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
@@ -87,8 +92,16 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpModule,
     HttpClientModule,
+    Angulartics2Module.forRoot([Angulartics2GoogleAnalytics], {
+      pageTracking: {
+        excludedRoutes: [
+          'check',
+        ]
+      }
+    }),
   ],
   providers: [
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     AnswerService,
     AuditService,
     FeedbackService,
