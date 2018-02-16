@@ -3,7 +3,6 @@
 # exit on error
 set -e
 
-
 # start admin app
 cd ../admin && npm start > server.admin.log 2>&1 &
 
