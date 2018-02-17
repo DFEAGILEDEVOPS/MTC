@@ -83,4 +83,24 @@ pupilService.validatePupil = async (pupil, pupilData) => {
   return true
 }
 
+/**
+ * Sort pupil's array by status.
+ * @param pupilsList
+ * @param sortDirection
+ * @returns {Array}
+ */
+pupilService.sortByStatus = (pupilsList, sortDirection) => {
+  if (!pupilsList || pupilsList.length < 1) { return [] }
+  sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+  return pupilsList.sort((a, b) => {
+    if (a.outcome === b.outcome) {
+      return 0
+    } else if (sortDirection === 'asc') {
+      return a.outcome < b.outcome ? -1 : 1
+    } else {
+      return a.outcome < b.outcome ? 1 : -1
+    }
+  })
+}
+
 module.exports = pupilService
