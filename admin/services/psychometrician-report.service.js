@@ -179,8 +179,6 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     psData[p(idx) + 'tLastKey'] = tLastKey
     psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
     psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
-    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(inputs)
-    psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
   })
 
   return psData
