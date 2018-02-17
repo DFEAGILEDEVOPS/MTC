@@ -26,7 +26,7 @@ module.exports = {
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100
   },
   Sql: {
-    Enabled: process.env.SQL_ENABLED || true,
+    Enabled: true, // deprecated, to be removed
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
