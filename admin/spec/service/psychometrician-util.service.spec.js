@@ -250,4 +250,36 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe(0)
     })
   })
+
+  describe('#getRecallTime', () => {
+    const tLoad = '2018-02-16T20:04:49.339Z'
+    const tFirstKey = '2018-02-16T20:04:50.180Z'
+
+    it('returns the number of seconds between tLoad and tFirstKey', () => {
+      const res = service.getRecallTime(tLoad, tFirstKey)
+      expect(res).toBe(0.841)
+    })
+
+    it('returns an empty string if tLoad is empty', () => {
+      const res = service.getRecallTime('', tFirstKey)
+      expect(res).toBe('')
+    })
+
+    it('returns an empty string if tFirstKey is empty', () => {
+      const res = service.getRecallTime(tLoad, '')
+      expect(res).toBe('')
+    })
+
+    it('returns an empty string if tLoad is not a valid timestamp', () => {
+      spyOn(console, 'warn') // prevent moment warning from appearing complaining about the input
+      const res = service.getRecallTime('not-a-timestamp', tFirstKey)
+      expect(res).toBe('')
+    })
+
+    it('returns an empty string if tFirstKey is not a valid timestamp', () => {
+      spyOn(console, 'warn') // prevent moment warning from appearing complaining about the input
+      const res = service.getRecallTime(tLoad, 'not-a-timestamp')
+      expect(res).toBe('')
+    })
+  })
 })

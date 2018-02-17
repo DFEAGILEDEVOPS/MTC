@@ -230,4 +230,24 @@ psUtilService.getOverallTime = function (tLastKey, tLoad) {
   return m1.diff(m2) / 1000
 }
 
+/**
+ * Return the recall time: the difference in seconds between the question appearing and the first key pressed
+ * @param {string} tLoad - ISO8601 string e.g. "2018-02-16T20:06:30.700Z"
+ * @param {string} tFirstKey - ISO8601 string - ditto
+ */
+psUtilService.getRecallTime = function (tLoad, tFirstKey) {
+  if (!tLoad || !tFirstKey) {
+    return ''
+  }
+  const m1 = moment(tLoad)
+  if (!m1.isValid()) {
+    return ''
+  }
+  const m2 = moment(tFirstKey)
+  if (!m2.isValid()) {
+    return ''
+  }
+  return m2.diff(m1) / 1000
+}
+
 module.exports = psUtilService
