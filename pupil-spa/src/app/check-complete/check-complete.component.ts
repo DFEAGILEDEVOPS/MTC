@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { CheckComplete } from '../services/audit/auditEntry';
 
 @Component({
@@ -9,11 +10,18 @@ import { CheckComplete } from '../services/audit/auditEntry';
 })
 export class CheckCompleteComponent implements OnInit {
 
-  constructor(private auditService: AuditService) {
+  protected window: any;
+
+  constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
+    this.window = windowRefService.nativeWindow;
   }
 
   ngOnInit() {
     this.auditService.addEntry(new CheckComplete());
+    this.window.ga('send', {
+      hitType: 'pageview',
+      page: '/check-complete'
+    });
   }
 
 }

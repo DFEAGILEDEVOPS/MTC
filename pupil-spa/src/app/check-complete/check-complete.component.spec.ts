@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckCompleteComponent } from './check-complete.component';
 import { AuditService } from '../services/audit/audit.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 
 describe('CheckCompleteComponent', () => {
@@ -14,6 +15,7 @@ describe('CheckCompleteComponent', () => {
       declarations: [ CheckCompleteComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
+        WindowRefService
       ]
     })
     .compileComponents();

@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, AfterViewInit } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupIntroRendered } from '../services/audit/auditEntry';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-warmup-intro',
@@ -16,9 +17,17 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private auditService: AuditService) { }
+  protected window: any;
+
+  constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
+    this.window = windowRefService.nativeWindow;
+  }
 
   ngOnInit() {
+    this.window.ga('send', {
+      hitType: 'pageview',
+      page: '/practice-questions'
+    });
   }
 
   ngAfterViewInit() {

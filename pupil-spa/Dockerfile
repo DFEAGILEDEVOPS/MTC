@@ -18,7 +18,10 @@ RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
-RUN $(npm bin)/gulp setAppEnvironmentVariables
+ARG ga_code
+ENV GA_CODE=$ga_code
+RUN $(npm bin)/gulp setApiURL
+RUN $(npm bin)/gulp setGaCode
 
 ## Build the angular app in production mode and store the artifacts in dist folder
 RUN yarn remove @angular/cli
