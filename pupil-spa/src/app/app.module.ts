@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
+import { DeviceService } from './services/device/device.service';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
 import { FeedbackThanksComponent } from './feedback-thanks/feedback-thanks.component';
@@ -104,6 +105,7 @@ const appRoutes: Routes = [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     AnswerService,
     AuditService,
+    DeviceService,
     FeedbackService,
     LoggedInGuard,
     QuestionService,
