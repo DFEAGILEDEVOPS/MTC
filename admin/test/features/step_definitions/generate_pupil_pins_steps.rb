@@ -118,7 +118,7 @@ When(/^I have generated a pin for a pupil$/) do
   @pupil_name = generate_pupil_pins_page.generate_pin_using_name(name)
 
   ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  new_time = Time.new(ct.year, ct.mon, ct.day+1, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
   SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
@@ -168,7 +168,7 @@ Given(/^I have generated pins for multiple pupils$/) do
   @pupil_names_arr = generate_pupil_pins_page.generate_pin_for_multiple_pupils(2)
 
   ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  new_time = Time.new(ct.year, ct.mon, ct.day+1, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
