@@ -86,8 +86,13 @@ const getPupils = async (req, res, next) => {
   })
 
   // If sorting by 'status', use custom method.
-  if (sortField === 'status' || sortField === 'group') {
-    pupilsFormatted = pupilService.sortBy(pupilsFormatted, sortDirection, sortField)
+  if (sortField === 'status') {
+    pupilsFormatted = pupilService.sortByStatus(pupilsFormatted, sortDirection)
+  }
+
+  // If sorting by 'group', use custom method.
+  if (sortField === 'group') {
+    pupilsFormatted = pupilService.sortByGroup(pupilsFormatted, sortDirection)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
