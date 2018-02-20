@@ -1,5 +1,7 @@
 'use strict'
 const os = require('os')
+const toBool = require('to-bool')
+
 const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
@@ -21,6 +23,8 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
+  // AUTO_MARK: true | false - Automatically mark the check data when we receive it: boolean
+  AUTO_MARK: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100
