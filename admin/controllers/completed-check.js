@@ -22,7 +22,8 @@ const postCheck = async (req, res) => {
     pupil,
     school,
     access_token,
-    feedback
+    feedback,
+    device
   } = req.body
   if (!answers || !audit || !inputs) return apiResponse.badRequest(res)
 
@@ -45,7 +46,8 @@ const postCheck = async (req, res) => {
         pupil,
         questions,
         school,
-        session
+        session,
+        device
       }
     })
   } catch (error) {
