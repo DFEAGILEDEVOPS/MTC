@@ -208,6 +208,17 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe('error')
     })
 
+    it('returns an empty string if there was not a timeout', () => {
+      const input = [...touchInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      const res = service.getTimeoutWithNoResponseFlag(input)
+      expect(res).toBe('')
+    })
+
     it('returns 0 (timeout with no response) when there is a timeout without an answer', () => {
       const res = service.getTimeoutWithNoResponseFlag([], {answer: ''})
       expect(res).toBe(0)
@@ -230,23 +241,18 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getTimeoutWithCorrectAnser', () => {
+    it('returns an empty string if there was NOT a timeout', () => {
+      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true})
+      expect(res).toBe('')
+    })
+
     it('returns 1 if there was a timeout and the answer is correct', () => {
       const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: true})
       expect(res).toBe(1)
     })
 
-    it('returns 0 if there was NOT a timeout and the answer is correct', () => {
-      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true})
-      expect(res).toBe(0)
-    })
-
     it('returns 0 if there was a timeout and the answer is incorrect', () => {
       const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: false})
-      expect(res).toBe(0)
-    })
-
-    it('returns 0 if there was NOT a timeout and the answer is incorrect', () => {
-      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: false})
       expect(res).toBe(0)
     })
   })

@@ -177,6 +177,11 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
   if (!Array.isArray(inputs)) {
     return 'error'
   }
+  const timeout = this.getTimeoutFlag(inputs)
+  if (!timeout) {
+    return ''
+  }
+
   let timeoutNoResponse = 1
   const hasTimeout = psUtilService.getTimeoutFlag(inputs)
   if (hasTimeout === 1 && answer.answer === '') {
@@ -192,6 +197,10 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
  * @return {number}
  */
 psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
+  const timeout = this.getTimeoutFlag(inputs)
+  if (!timeout) {
+    return ''
+  }
   if (this.getTimeoutFlag(inputs) === 1 && markedAnswer.isCorrect) {
     return 1
   }
