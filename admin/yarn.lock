@@ -4656,8 +4656,8 @@ posix-character-classes@^0.1.0:
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
 
 postgrator@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/postgrator/-/postgrator-3.4.0.tgz#8723344e69c580f7ce10f75cd08435ed6ab5b98d"
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/postgrator/-/postgrator-3.5.0.tgz#67c02a4087bc3b325ae71a59661dfa55d6e0767e"
   dependencies:
     glob "^7.1.2"
     newline "0.0.3"
