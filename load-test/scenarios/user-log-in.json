@@ -22,10 +22,15 @@
         {
           "post": {
             "url": "/sign-in",
-            "json": {
+            "form": {
               "username": "{{ username }}",
               "password": "{{ password }}"
             }
+          }
+        },
+        {
+          "get": {
+            "url": "/school/school-home"
           }
         }
       ]
