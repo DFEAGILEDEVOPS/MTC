@@ -4,12 +4,12 @@ class SchoolLandingPage < SitePrism::Page
   element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
   element :heading, '.heading-xlarge'
-  element :pupil_register, 'a[href="/school/pupil-register/lastName/true"]'
-  element :pupil_register_text, 'p', text: 'Add, edit and review pupils'
+  element :pupil_register, 'a[href="/school/pupil-register/name/asc"]'
+  element :pupil_register_text, 'p', text: 'View pupils and their status'
   element :group_pupils, 'a[href="/school/group-pupils'
   element :group_pupils_text, 'p', text: 'Create groups'
   element :pupils_not_taking_check, 'a[href="/school/pupils-not-taking-check"]'
-  element :pupils_not_taking_check_text, 'p', text: 'Enter a reason for pupils who were unable to take the check'
+  element :pupils_not_taking_check_text, 'p', text: 'Enter a reason for pupils who are unable to take the check'
   element :access_arrangements, 'a', text: 'Access arrangements'
   element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-pins-overview"]'
@@ -19,7 +19,7 @@ class SchoolLandingPage < SitePrism::Page
   element :hdf, 'a', text: "Headteacher's declaration form"
   element :hdf_disabled, '.heading-small', text: "Headteacher's declaration form"
   element :hdf_text, 'p', text: "Complete headteacher's declaration form once pupil register has been submitted"
-  element :hdf_disabled_text, 'p', text: "The HDF module is unavailable until the HDF feature update is complete"
+  element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form after you have submitted your pupil register"
   element :results, '.disabled-link', text: 'Results'
   element :results_text, 'p', text: "View pupil results"
 

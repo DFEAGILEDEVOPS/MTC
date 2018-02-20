@@ -3,7 +3,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
 
   element :heading, '.heading-xlarge', text: 'Pupils not taking the check'
   element :info_text, 'p.lede', text: "All pupils should be considered for the multiplication tables check at the end of year 4. If pupil is not going to take the check, a reason must be provided."
-  element :add_reason, 'a', text: "Add reason for pupil"
+  element :add_reason, 'a', text: "Add reason"
   element :back_to_top, 'a', text: "Back to top"
   element :generate_pins, 'a', text: "Generate pupil PINs"
   element :flash_message, '.info-message'
