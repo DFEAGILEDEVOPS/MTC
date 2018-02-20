@@ -103,6 +103,17 @@ describe('nca-tools-user.service', () => {
       expect(user.mtcRole).toBe('TEACHER')
       done()
     })
+
+    it('does not look up school if not provided', async (done) => {
+      spyOn(schoolDataService, 'sqlFindOneByDfeNumber')
+      spyOn(userDataService, 'sqlFindOneByIdentifier').and.returnValue(Promise.resolve({ school_id: 999 }))
+      spyOn(userDataService, 'sqlUpdateSchool').and.returnValue(Promise.resolve())
+      spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
+      spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
+      await ncaToolsUserService.mapNcaUserToMtcUser({})
+      expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
+      done()
+    })
   })
 
   describe('recordLogonAttempt', () => {
