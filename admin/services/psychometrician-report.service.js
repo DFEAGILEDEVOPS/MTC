@@ -4,6 +4,7 @@ const R = require('ramda')
 const moment = require('moment')
 const momentDurationFormatSetup = require('moment-duration-format')
 momentDurationFormatSetup(moment)
+const useragent = require('useragent')
 
 // const checkWindowDataService = require('./data-access/check-window.data.service')
 const answerDataService = require('../services/data-access/answer.data.service')
@@ -119,12 +120,18 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
  */
 psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school) {
+
+  const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
+
   const psData = {
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
     'Gender': pupil.gender,
     'PupilId': pupil.upn,
 
     'FormMark': psUtilService.getMark(check),
+
+    'DeviceType': psUtilService.getDevice(userAgent),
+    'BrowserType': psUtilService.getBrowser(userAgent),
 
     'School Name': school.name,
     'Estab': school.estabCode,
