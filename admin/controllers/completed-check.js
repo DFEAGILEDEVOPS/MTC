@@ -13,17 +13,17 @@ const apiResponse = require('./api-response')
 
 const postCheck = async (req, res) => {
   const {
-    answers,
-    inputs,
-    session,
-    audit,
-    questions,
-    config,
-    pupil,
-    school,
     access_token,
+    answers,
+    audit,
+    config,
+    device,
     feedback,
-    device
+    inputs,
+    pupil,
+    questions,
+    school,
+    session
   } = req.body
   if (!answers || !audit || !inputs) return apiResponse.badRequest(res)
 
@@ -41,13 +41,13 @@ const postCheck = async (req, res) => {
         answers,
         audit,
         config,
+        device,
         feedback,
         inputs,
         pupil,
         questions,
         school,
-        session,
-        device
+        session
       }
     })
   } catch (error) {
