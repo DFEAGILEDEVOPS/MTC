@@ -6,7 +6,14 @@
         "duration": 15,
         "arrivalRate": 5
       }
-    ]
+    ],
+    "payload": {
+      "path": "./data/userLogins.csv",
+      "fields": [
+        "username",
+        "password"
+      ]
+    }
   },
   "scenarios": [
     {
