@@ -66,8 +66,13 @@ export class DeviceService {
    * @return {{hardwareConcurrancy: any}}
    */
   getCpuInformation() {
+    const processors = this.window.navigator.hardwareConcurrency;
+    if (!processors) {
+      return;
+    }
+
     return {
-      hardwareConcurrency: this.window.navigator.hardwareConcurrency
+      hardwareConcurrency: processors
     };
   }
 
