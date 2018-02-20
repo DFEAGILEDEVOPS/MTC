@@ -10,12 +10,34 @@
   },
   "scenarios": [
     {
-      "name": "user login",
+      "name": "user generates pins",
       "flow": [
         {
           "post": {
+            "url": "/sign-in",
+            "form": {
+              "username": "{{ username }}",
+              "password": "{{ password }}"
+            }
+          }
+        },
+        {
+          "get": {
+            "url": "/school/school-home"
+          }
+        },
+        {
+          "get": {
+            "url": "/pupil-pin/generate-pins-list/lastName/asc"
+          }
+        },
+        {
+          "think": 2
+        },
+        {
+          "post": {
             "url": "/pupil-pin/generate-pins",
-            "json": {
+            "form": {
               "allPupils": "on",
               "pupil[0]": 12,
               "pupil[1]": 9,
