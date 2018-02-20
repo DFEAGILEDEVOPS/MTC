@@ -17,6 +17,7 @@ const migratorConfig = {
   username: config.Sql.Migrator.Username,
   password: config.Sql.Migrator.Password,
   requestTimeout: config.Sql.Migrator.Timeout,
+  connectionTimeout: config.Sql.Migrator.Timeout,
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {
