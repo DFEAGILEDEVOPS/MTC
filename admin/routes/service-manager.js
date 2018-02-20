@@ -5,7 +5,7 @@ const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
 const rolesConfig = require('../roles-config')
 const serviceManagerController = require('../controllers/service-manager')
-const downloadFile = require('../controllers/downloadFile')
+const downloadFile = require('../controllers/download-file')
 
 /* Service Manager routing */
 router.get('/home', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getServiceManagerHome(req, res, next))
