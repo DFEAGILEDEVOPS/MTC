@@ -44,7 +44,8 @@ const getPupils = async (req, res, next) => {
   // Sorting
   const sortingOptions = [
     { 'key': 'name', 'value': 'asc' },
-    { 'key': 'status', 'value': 'asc' }
+    { 'key': 'status', 'value': 'asc' },
+    { 'key': 'group', 'value': 'asc' }
   ]
   const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
   const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
@@ -85,8 +86,8 @@ const getPupils = async (req, res, next) => {
   })
 
   // If sorting by 'status', use custom method.
-  if (sortField === 'status') {
-    pupilsFormatted = pupilService.sortByStatus(pupilsFormatted, sortDirection)
+  if (sortField === 'status' || sortField === 'group') {
+    pupilsFormatted = pupilService.sortBy(pupilsFormatted, sortDirection, sortField)
   }
 
   req.breadcrumbs(res.locals.pageTitle)
