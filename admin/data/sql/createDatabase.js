@@ -72,6 +72,9 @@ const main = () => {
       winston.error(`Connection error 2: ${error.message}`)
       return reject(error)
     })
+    connection.on('debug', (text) => {
+      winston.info(`connection debug: ${text}`)
+    })
   })
 }
 
