@@ -3,6 +3,7 @@ import { PracticeQuestionComponent } from '../practice-question/practice-questio
 import { AuditService } from '../services/audit/audit.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { QuestionRendered } from '../services/audit/auditEntry';
 
 @Component({
   selector: 'app-question',
@@ -25,6 +26,18 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+  }
+
+  /**
+   * Start the timer when the view is ready.
+   */
+  ngAfterViewInit() {
+    this.auditService.addEntry(new QuestionRendered({
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
+    // Start the countdown and page timeout timers
+    this.startTimer();
   }
 
   /**

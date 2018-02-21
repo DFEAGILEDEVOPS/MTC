@@ -167,22 +167,25 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
     const markedAnswer = markedAnswers.find(a => a.factor1 === ans.factor1 && a.factor2 === ans.factor2)
 
-    const qInputs = R.pathOr([], ['data', 'inputs', idx], check)
+    const inputs = R.pathOr([], ['data', 'inputs', idx], check)
+    const audits = R.pathOr([], ['data', 'audit'], check)
+
     psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     psData[p(idx) + 'Response'] = ans.answer
-    psData[p(idx) + 'K'] = psUtilService.getUserInput(qInputs)
+    psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
     psData[p(idx) + 'Sco'] = psUtilService.getScore(markedAnswer)
-    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(qInputs)
-    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(qInputs)
-    psData[p(idx) + 'TimeOutResponse'] = psUtilService.getTimeoutWithNoResponseFlag(qInputs, ans)
-    psData[p(idx) + 'TimeOutSco'] = psUtilService.getTimeoutWithCorrectAnswer(qInputs, markedAnswer)
-    psData[p(idx) + 'tLoad'] = '' // data structure should be made more analysis friendly // TODO: fix incoming array to make it filterable
-    psData[p(idx) + 'tFirstKey'] = psUtilService.getFirstInputTime(qInputs)
-    psData[p(idx) + 'tLastKey'] = psUtilService.getLastAnswerInputTime(qInputs)
-    psData[p(idx) + 'OverallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'RecallTime'] = '' // depends on tLoad
-    psData[p(idx) + 'TimeComplete'] = psUtilService.getLastAnswerInputTime(qInputs)
-    psData[p(idx) + 'TimeTaken'] = '' // depends on tLoad
+    psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(inputs)
+    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(inputs)
+    psData[p(idx) + 'TimeOutResponse'] = psUtilService.getTimeoutWithNoResponseFlag(inputs, ans)
+    psData[p(idx) + 'TimeOutSco'] = psUtilService.getTimeoutWithCorrectAnswer(inputs, markedAnswer)
+    const tLoad = psUtilService.getLoadTime(idx + 1, audits)
+    psData[p(idx) + 'tLoad'] = tLoad
+    const tFirstKey = psUtilService.getFirstInputTime(inputs)
+    psData[p(idx) + 'tFirstKey'] = tFirstKey
+    const tLastKey = psUtilService.getLastAnswerInputTime(inputs)
+    psData[p(idx) + 'tLastKey'] = tLastKey
+    psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
+    psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
   })
 
   return psData
