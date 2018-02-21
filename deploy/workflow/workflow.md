@@ -12,7 +12,7 @@ As per recent discussion, here is an outline of the proposed changes...
 
 ## Dev & QA work complete
 
-![dev-qa-complete](https://github.com/DFEAGILEDEVOPS/MTC/blob/cd3898d3cba00fd73f791341152b8a1abd8479c8/deploy/workflow/dev-qa-complete.png)
+![dev-qa-complete](https://github.com/DFEAGILEDEVOPS/MTC/blob/a45c8dbf90136695dec669bfe30f32280af93553/deploy/workflow/dev-qa-complete.png)
 
 ## Promotion to master & UAT
 
