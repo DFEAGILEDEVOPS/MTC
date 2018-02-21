@@ -16,7 +16,6 @@ Feature: Add Multiple Pupil validation Error
     And I Upload a CSV file with 1 row to add Multiple Pupil
     Then I can see the error message for uploading multiple pupil 'Must contain at least two rows of data'
 
-
   Scenario: Upload button disabled when no csv is uploaded
     Then the upload button should be disabled
 

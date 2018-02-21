@@ -158,7 +158,6 @@ class SqlDbHelper
     chk_res
   end
 
-
   def self.get_attendance_codes
     @array_of_attCode = []
     sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
