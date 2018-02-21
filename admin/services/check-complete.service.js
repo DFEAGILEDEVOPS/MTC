@@ -28,7 +28,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   // store to data store
   await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck)
 
-  if (config.AUTO_MARK) {
+  if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
     const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
     await markingService.mark(check)
