@@ -6,6 +6,7 @@ const completedCheckDataService = require('./data-access/completed-check.data.se
 const jwtService = require('../services/jwt.service')
 const markingService = require('./marking.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const config = require('../config')
 
 const checkCompleteService = {}
 
@@ -27,9 +28,11 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   // store to data store
   await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck)
 
-  // HACK temporary way to mark checks until we move to a dedicated scheduled process
-  const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
-  await markingService.mark(check)
+  if (config.autoMark) {
+    // HACK temporary way to mark checks until we move to a dedicated scheduled process
+    const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
+    await markingService.mark(check)
+  }
 }
 
 module.exports = checkCompleteService
