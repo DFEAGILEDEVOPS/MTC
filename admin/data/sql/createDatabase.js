@@ -25,10 +25,9 @@ const executeRequest = (connection, sql) => {
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
       if (err) {
-        reject(err)
-        return
+        return reject(err)
       }
-      resolve(results)
+      return resolve(results)
     })
 
     request.on('row', function (cols) {
@@ -58,18 +57,19 @@ const main = () => {
   return new Promise((resolve, reject) => {
     winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
     const connection = new Connection(adminConfig)
-    connection.on('connect', (err) => {
+    connection.on('connect', async (err) => {
       if (err) {
         winston.error(`Connection error: ${err.message}`)
-        reject(err)
-        return
+        return reject(err)
       }
-      createDatabase(connection).then(() => {
-        connection.close()
-        resolve()
-      })
+      winston.info('About to create new database')
+      await createDatabase(connection)
+      winston.info('DB Created')
+      connection.close()
+      resolve()
     })
   })
 }
 
+// NB `main` return a Promise because it wraps the `connection.on()` call.  It CAN be awaited on.
 module.exports = main
