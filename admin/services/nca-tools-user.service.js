@@ -14,10 +14,14 @@ const service = {
     if (!ncaUser) {
       throw new Error('ncaUser argument required')
     }
-    // TODO persist nca tools session token (best place might be adminLogonEvent?)
-    const school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
-    if (!school) {
-      throw new Error(`Unknown School:${ncaUser.School}`)
+    // TODO persist nca tools session token (best place might be adminLogonEvent?
+
+    let school
+    if (ncaUser.School) {
+      school = await schoolDataService.sqlFindOneByDfeNumber(ncaUser.School)
+      if (!school) {
+        throw new Error(`Unknown School:${ncaUser.School}`)
+      }
     }
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
@@ -26,8 +30,10 @@ const service = {
       const role = await roleService.findByTitle(mtcRoleName)
       const user = {
         identifier: ncaUser.EmailAddress,
-        school_id: school.id,
         role_id: role.id
+      }
+      if (school) {
+        user.school_id = school.id
       }
       await userDataService.sqlCreate(user)
       userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
@@ -36,7 +42,7 @@ const service = {
       }
     } else {
       // user exists - check requested school
-      if (userRecord.school_id !== school.id) {
+      if (school && (userRecord.school_id !== school.id)) {
         await userDataService.sqlUpdateSchool(userRecord.id, school.id)
       }
     }
