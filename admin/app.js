@@ -48,7 +48,7 @@ azure.startInsightsIfConfigured()
 
 const unsetVars = []
 Object.keys(config).map((key) => {
-  if (!config[key] && !devWhitelist.includes(key)) {
+  if (config[key] === undefined && !devWhitelist.includes(key)) {
     unsetVars.push(`${key}`)
   }
 })
