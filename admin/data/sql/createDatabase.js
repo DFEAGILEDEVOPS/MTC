@@ -10,6 +10,7 @@ const adminConfig = {
   userName: config.Sql.Migrator.Username,
   password: config.Sql.Migrator.Password,
   server: config.Sql.Server,
+  debug: true,
   options: {
     database: 'master',
     encrypt: config.Sql.Encrypt,
