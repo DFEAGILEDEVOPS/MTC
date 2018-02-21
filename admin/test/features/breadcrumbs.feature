@@ -33,7 +33,7 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
-  @wi[
+  @wip
   Scenario: Verify breadcrumb on edit pupil page
     Given I am logged in
     When I click Pupil Register link

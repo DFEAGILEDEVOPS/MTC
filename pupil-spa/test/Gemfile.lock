@@ -107,6 +107,7 @@ GEM
       capybara (>= 2.1, < 3.0)
     slop (3.6.0)
     thread_safe (0.3.6)
+    tiny_tds (2.1.1)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     waitutil (0.2.1)
@@ -141,7 +142,8 @@ DEPENDENCIES
   settingslogic
   show_me_the_cookies
   site_prism
+  tiny_tds
   waitutil
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

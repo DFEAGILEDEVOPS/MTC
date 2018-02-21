@@ -4,7 +4,7 @@ dist: trusty
 
 branches:
   only:
-    - master
+    - support/feb-trial
 
 cache:
   yarn: true
