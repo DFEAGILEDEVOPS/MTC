@@ -59,7 +59,7 @@ const main = () => {
     const connection = new Connection(adminConfig)
     connection.on('connect', async (err) => {
       if (err) {
-        winston.error(`Connection error: ${err.message}`)
+        winston.error(`Connection error 1: ${err.message}`)
         return reject(err)
       }
       winston.info('About to create new database')
@@ -67,6 +67,10 @@ const main = () => {
       winston.info('DB Created')
       connection.close()
       resolve()
+    })
+    connection.on('error', (error) => {
+      winston.error(`Connection error 2: ${error.message}`)
+      return reject(error)
     })
   })
 }

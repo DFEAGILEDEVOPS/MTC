@@ -7,7 +7,6 @@ const Postgrator = require('postgrator')
 const path = require('path')
 const chalk = require('chalk')
 const createDatabaseIfNotExists = require('./createDatabase')
-const sqlPool = require('../../services/data-access/sql.pool.service')
 
 const migratorConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
@@ -29,6 +28,7 @@ const migratorConfig = {
 
 const runMigrations = async () => {
   await createDatabaseIfNotExists()
+
   const postgrator = new Postgrator(migratorConfig)
   // subscribe to useful events
   postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
@@ -60,8 +60,12 @@ winston.info('Preparing migrations...')
 
 try {
   runMigrations()
-    .then(sqlPool.drain())
+    .then(() => {
+      winston.info(chalk.green('all done'))
+    },
+    (error) => {
+      winston.info(chalk.red(error.message))
+    })
 } catch (error) {
   winston.error(`Error caught: ${error.message}`)
-  sqlPool.drain()
 }
