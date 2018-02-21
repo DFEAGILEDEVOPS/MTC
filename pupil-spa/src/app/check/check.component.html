@@ -1,52 +1,56 @@
 <div [ngSwitch]="viewState">
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
-                      (clickEvent)="warmupIntroClickHandler()">
+        (clickEvent)="warmupIntroClickHandler()">
     </app-warmup-intro>
     <app-warmup-loading *ngSwitchCase="'warmup-preload'"
-                 [question]="question.sequenceNumber"
-                 [loadingTimeout]="config.loadingTime"
-                 (timeoutEvent)="loadingTimeoutHandler($event)"
-                 [total]="totalNumberOfQuestions">
+        [question]="question.sequenceNumber"
+        [loadingTimeout]="config.loadingTime"
+        (timeoutEvent)="loadingTimeoutHandler($event)"
+        [total]="totalNumberOfQuestions">
     </app-warmup-loading>
     <app-warmup-complete *ngSwitchCase="'warmup-complete'"
-                       (clickEvent)="warmupCompleteClickHandler()">
+        (clickEvent)="warmupCompleteClickHandler()">
     </app-warmup-complete>
     <app-loading *ngSwitchCase="'preload'"
-                 [question]="question.sequenceNumber"
-                 [loadingTimeout]="config.loadingTime"
-                 (timeoutEvent)="loadingTimeoutHandler($event)"
-                 [total]="totalNumberOfQuestions">
+        [question]="question.sequenceNumber"
+        [loadingTimeout]="config.loadingTime"
+        (timeoutEvent)="loadingTimeoutHandler($event)"
+        [total]="totalNumberOfQuestions">
     </app-loading>
     <app-practice-question
-            *ngSwitchCase="'practice-question'"
-            [factor1]="question.factor1"
-            [factor2]="question.factor2"
-            [questionTimeoutSecs]="config.questionTime"
-            (timeoutEvent)="questionTimeoutHandler($event)"
-            (manualSubmitEvent)="manualSubmitHandler($event)">
+        *ngSwitchCase="'practice-question'"
+        [factor1]="question.factor1"
+        [factor2]="question.factor2"
+        [sequenceNumber]="question.sequenceNumber"
+        [questionTimeoutSecs]="config.questionTime"
+        (timeoutEvent)="questionTimeoutHandler($event)"
+        (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-practice-question>
     <app-spoken-practice-question
-            *ngSwitchCase="'spoken-practice-question'"
-            [factor1]="question.factor1"
-            [factor2]="question.factor2"
-            [questionTimeoutSecs]="config.questionTime"
-            (timeoutEvent)="questionTimeoutHandler($event)"
-            (manualSubmitEvent)="manualSubmitHandler($event)">
+        *ngSwitchCase="'spoken-practice-question'"
+        [factor1]="question.factor1"
+        [factor2]="question.factor2"
+        [sequenceNumber]="question.sequenceNumber"
+        [questionTimeoutSecs]="config.questionTime"
+        (timeoutEvent)="questionTimeoutHandler($event)"
+        (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-spoken-practice-question>
 
     <app-question *ngSwitchCase="'question'"
-                  [factor1]="question.factor1"
-                  [factor2]="question.factor2"
-                  [questionTimeoutSecs]="config.questionTime"
-                  (timeoutEvent)="questionTimeoutHandler($event)"
-                  (manualSubmitEvent)="manualSubmitHandler($event)">
+        [factor1]="question.factor1"
+        [factor2]="question.factor2"
+        [sequenceNumber]="question.sequenceNumber"
+        [questionTimeoutSecs]="config.questionTime"
+        (timeoutEvent)="questionTimeoutHandler($event)"
+        (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-question>
     <app-spoken-question *ngSwitchCase="'spoken-question'"
-                  [factor1]="question.factor1"
-                  [factor2]="question.factor2"
-                  [questionTimeoutSecs]="config.questionTime"
-                  (timeoutEvent)="questionTimeoutHandler($event)"
-                  (manualSubmitEvent)="manualSubmitHandler($event)">
+        [factor1]="question.factor1"
+        [factor2]="question.factor2"
+        [sequenceNumber]="question.sequenceNumber"
+        [questionTimeoutSecs]="config.questionTime"
+        (timeoutEvent)="questionTimeoutHandler($event)"
+        (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-spoken-question>
   <app-submission-pending *ngSwitchCase="'submission-pending'">
   </app-submission-pending>
