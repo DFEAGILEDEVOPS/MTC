@@ -40,7 +40,10 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
    * Start the timer when the view is ready.
    */
   ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionRendered());
+    this.auditService.addEntry(new QuestionRendered({
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
     this.speechService.speak(`${this.factor1} times ${this.factor2}?`);
   }
 
