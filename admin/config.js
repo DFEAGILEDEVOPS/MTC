@@ -1,5 +1,7 @@
 'use strict'
 const os = require('os')
+const toBool = require('to-bool')
+
 const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
@@ -21,6 +23,8 @@ module.exports = {
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
   TIME_BETWEEN_QUESTIONS: 2,
   LINES_PER_CHECK_FORM: 25,
+  // autoMark true | false - Automatically mark the check data when we receive it: boolean
+  autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100
@@ -31,7 +35,7 @@ module.exports = {
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
-    Encrypt: process.env.SQL_ENCRYPT || true,
+    Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
@@ -40,7 +44,7 @@ module.exports = {
     Pooling: {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
-      LoggingEnabled: process.env.SQL_POOL_LOG_ENABLED
+      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
@@ -65,7 +69,7 @@ module.exports = {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     }
   },
-  OverridePinExpiry: process.env.OVERRIDE_PIN_EXPIRY || false,
+  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   Certificates: {
     Azure: {
       BlobContainer: process.env.CERT_BLOB_CONTAINER,
