@@ -49,7 +49,7 @@ const psychometricianReportCacheDataService = {
    * @return {Promise<*>}
    */
   sqlFindAll: async function () {
-    const sql = `select * from ${table}`
+    const sql = `select * from ${sqlService.adminSchema}.${table}`
     const results = await sqlService.query(sql)
     const parsed = results.map(x => {
       const d = JSON.parse(x.jsonData)
@@ -59,7 +59,7 @@ const psychometricianReportCacheDataService = {
   },
 
   sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${table}`)
+    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
   },
 
   /**
