@@ -6,7 +6,7 @@ const util = require('util')
 const poolService = require('../services/data-access/sql.pool.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
 
-let usage = function () {
+const usage = function () {
   return console.log(`
     Usage: <script> checkCode [answers|audit|config|inputs|pupil|questions]
     E.g. inspect-spa-data.js C367DCE8-150B-4FFD-A92C-74F766C42004 audit
