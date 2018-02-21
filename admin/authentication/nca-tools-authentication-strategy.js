@@ -37,19 +37,8 @@ module.exports = async function (req, done) {
   try {
     const userData = await ncaToolsAuthService.authenticate(encKey, encIv, encData, encSignature, ncaPublicKey, mtcPrivateKey)
 
-    try {
-      if (userData.School) {
-        userData.School = parseInt(userData.School, 10)
-      }
-      /* await ncaToolsUserService.recordLogonAttempt({
-        sessionToken: userData.SessionToken,
-        userName: userData.UserName,
-        userType: userData.UserType,
-        emailAddress: userData.EmailAddress,
-        dfeSchoolNumber: userData.School
-      }) */
-    } catch (error) {
-      throw new Error('Failed to save NCA Tools Session Data - possible replay attack: ' + error.message)
+    if (userData.School) {
+      userData.School = parseInt(userData.School, 10)
     }
     winston.debug(userData)
     const mtcUser = await ncaToolsUserService.mapNcaUserToMtcUser(userData)
