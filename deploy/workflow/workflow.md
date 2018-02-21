@@ -1,6 +1,6 @@
 # Proposed Workflow Changes
 
-As per recent discussion, here is an outline of the proposed changes.
+As per recent discussion, here is an outline of the proposed changes...
 
 ## Developer starts work on feature/bug
 
