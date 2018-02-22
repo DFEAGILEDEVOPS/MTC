@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine spyOn fail */
+/* global describe beforeEach afterEach it expect spyOn fail */
 
 const sinon = require('sinon')
 

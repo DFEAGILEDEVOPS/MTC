@@ -43,8 +43,7 @@ describe('psychometricians-report.service', () => {
         9: [],
         10: [],
         11: []
-        }
-      )
+      })
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })

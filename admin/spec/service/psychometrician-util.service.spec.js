@@ -288,4 +288,56 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe('')
     })
   })
+
+  describe('#getDevice', () => {
+    // NB - UA strings are from `useragent`
+    it('returns the device type for a MBP', () => {
+      const device = service.getDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
+      expect(device).toBe('Other')
+    })
+    it('returns the device type for an 10.5 inch iPad Pro running iOS 11.2', () => {
+      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
+      expect(device).toBe('iPad')
+    })
+    it('returns the device type for an iPad Air running iOS 10.3.1', () => {
+      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1')
+      expect(device).toBe('iPad')
+    })
+    it('returns the device type for an Nexus 7 running android', () => {
+      const device = service.getDevice('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30D) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Safari/537.36')
+      expect(device).toBe('Asus Nexus 7')
+    })
+    it('returns an empty string if the useragent string is not provided', () => {
+      const device = service.getDevice(null)
+      expect(device).toBe('')
+    })
+  })
+
+  describe('#getBrowser', () => {
+    // NB - UA strings are from `useragent`
+    it('returns the correct browser type for a MBP running Safari', () => {
+      const browser = service.getBrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
+      expect(browser).toBe('Safari 11.0.3 / Mac OS X 10.13.3')
+    })
+    it('returns the correct browser type for FireFox 58 on OSX', () => {
+      const browser = service.getBrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:58.0) Gecko/20100101 Firefox/58.0')
+      expect(browser).toBe('Firefox 58.0.0 / Mac OS X 10.13.0')
+    })
+    it('returns the correct browser type for an 10.5 inch iPad Pro running iOS 11.2', () => {
+      const browser = service.getBrowser('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
+      expect(browser).toBe('Mobile Safari 11.0.0 / iOS 11.2.0')
+    })
+    it('returns the correct browser type for Edge on Window 10', () => {
+      const browser = service.getBrowser('Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42..2311.135 Safari/537.36 Edge/12.10136')
+      expect(browser).toBe('Edge 12.10136.0 / Windows 10.0.0')
+    })
+    it('returns the correct browser type for Chrome on Window 10', () => {
+      const browser = service.getBrowser('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36')
+      expect(browser).toBe('Chrome 64.0.3282 / Windows 10.0.0')
+    })
+    it('returns an empty string if the uyseragent string is not provided', () => {
+      const browser = service.getBrowser()
+      expect(browser).toBe('')
+    })
+  })
 })

@@ -64,6 +64,7 @@
     "tedious": "2.2.4",
     "tedious-connection-pool": "^1.0.5",
     "to-bool": "^0.0.1",
+    "useragent": "^2.3.0",
     "uuid": "^3.1.0",
     "validate": "^3.0.1",
     "validator": "^9.4.0",
