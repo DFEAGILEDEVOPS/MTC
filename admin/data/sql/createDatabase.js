@@ -10,6 +10,7 @@ const adminConfig = {
   userName: config.Sql.Migrator.Username,
   password: config.Sql.Migrator.Password,
   server: config.Sql.Server,
+  debug: true,
   options: {
     database: 'master',
     encrypt: config.Sql.Encrypt,
@@ -25,10 +26,9 @@ const executeRequest = (connection, sql) => {
     // http://tediousjs.github.io/tedious/api-request.html
     var request = new Request(sql, function (err, rowCount) {
       if (err) {
-        reject(err)
-        return
+        return reject(err)
       }
-      resolve(results)
+      return resolve(results)
     })
 
     request.on('row', function (cols) {
@@ -58,18 +58,32 @@ const main = () => {
   return new Promise((resolve, reject) => {
     winston.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
     const connection = new Connection(adminConfig)
-    connection.on('connect', (err) => {
+    connection.on('connect', async (err) => {
       if (err) {
-        winston.error(`Connection error: ${err.message}`)
-        reject(err)
-        return
+        winston.error(`Connection error 1: ${err.message}`)
+        return reject(err)
       }
-      createDatabase(connection).then(() => {
-        connection.close()
-        resolve()
-      })
+      winston.info('About to create new database')
+      await createDatabase(connection)
+      winston.info('DB Created')
+      connection.close()
+      resolve()
+    })
+    connection.on('error', (error) => {
+      winston.error(`Connection error 2: ${error.message}`)
+      return reject(error)
+    })
+    connection.on('debug', (text) => {
+      winston.info(`connection debug: ${text}`)
+    })
+    connection.on('infoMessage', (info) => {
+      winston.info(`server info message: ${info.message}`)
+    })
+    connection.on('errorMessage', (info) => {
+      winston.info(`server error message: ${info.message}`)
     })
   })
 }
 
+// NB `main` return a Promise because it wraps the `connection.on()` call.  It CAN be awaited on.
 module.exports = main
