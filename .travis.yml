@@ -48,7 +48,7 @@ install:
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
 
 before_script:
-  - docker-compose up --build -d && sleep 10
+  - docker-compose up --build -d && sleep 30
   - docker info
   - docker-compose logs
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
