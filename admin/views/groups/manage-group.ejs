@@ -37,7 +37,7 @@
         </div>
         <% } %>
 
-        <h1 class="heading-xlarge"><%= actionTitle %> group</h1>
+        <h1 class="heading-xlarge"><%= actionTitle %></h1>
         <br>
 
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
@@ -96,7 +96,7 @@
                                            value="<%= pupil.id %>"
                                            aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
                                            aria-checked="false"
-                                           <% if (selectedPupils && selectedPupils[pupil.id]) { %>checked="true"<% } %>
+                                           <% if (selectedPupils && selectedPupils[pupil.id]) { %>checked="checked"<% } %>
                                            role="checkbox">
                                     <div></div>
                                 </div>

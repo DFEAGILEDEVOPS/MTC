@@ -53,7 +53,7 @@ $(function () {
     var modalBox = $('#js-modal-box')
     if (modalBox.hasClass('show')) {
       modalBox.removeClass('show')
-      $('#js-modal-link').focus()
+      $(['id^=modal-link']).focus()
     } else {
       modalBox.addClass('show')
       $('#js-modal-cancel-button').focus()

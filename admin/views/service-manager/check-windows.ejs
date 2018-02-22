@@ -57,7 +57,7 @@
                     <td><%= checkWindow.checkDates %></td>
                     <td>
                         <% if (checkWindow.canRemove) { %>
-                        <a href="/service-manager/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link">Remove</a>
+                        <a href="/service-manager/check-windows/remove/<%= checkWindow.id %>" class="modal-link" id="js-modal-link-<%= checkWindow.id %>">Remove</a>
                         <% } %>
                     </td>
                 </tr>

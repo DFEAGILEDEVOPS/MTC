@@ -14,7 +14,8 @@
     display: block;
   }
 
-  #content {
+  #sticky-content {
+    @extend #content;
     padding: 0;
 
     .grid-row {
