@@ -48,7 +48,7 @@ azure.startInsightsIfConfigured()
 
 const unsetVars = []
 Object.keys(config).map((key) => {
-  if (!config[key] && !devWhitelist.includes(key)) {
+  if (config[key] === undefined && !devWhitelist.includes(key)) {
     unsetVars.push(`${key}`)
   }
 })
@@ -90,25 +90,29 @@ const restart = require('./routes/restart')
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
 
-/**
- * Express logging to winston
- */
-const expressWinston = require('express-winston')
-app.use(expressWinston.logger({
-  transports: [
-    new winston.transports.Console({
-      json: true,
-      colorize: true
-    })
-  ],
-  meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-  // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-  expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-  colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-  ignoreRoute: function (req, res) {
-    return false
-  } // optional: allows to skip some log messages based on request and/or response
-}))
+if (config.Logging.Express.UseWinston === 'true') {
+  /**
+   * Express logging to winston
+   */
+  const expressWinston = require('express-winston')
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console({
+        json: true,
+        colorize: true
+      })
+    ],
+    meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+    // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+    colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+    ignoreRoute: function (req, res) {
+      return false
+    } // optional: allows to skip some log messages based on request and/or response
+  }))
+} else {
+  app.use(morgan('dev'))
+}
 
 /* Security Directives */
 
@@ -169,7 +173,6 @@ app.set('view engine', 'ejs')
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 app.use(partials())
-// app.use(morgan('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
