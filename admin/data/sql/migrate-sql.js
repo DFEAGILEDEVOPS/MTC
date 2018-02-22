@@ -65,9 +65,9 @@ try {
     },
     (error) => {
       winston.info(chalk.red(error.message))
-      process.exit(1)
+      process.exitCode = 1
     })
 } catch (error) {
   winston.error(`Error caught: ${error.message}`)
-  process.exit(1)
+  process.exitCode = 1
 }
