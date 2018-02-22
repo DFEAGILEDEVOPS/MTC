@@ -60,7 +60,7 @@
                         <td><%= formatGdsDate(form.createdAt) %></td>
                         <td class="align-right">
                             <% if (form.removeLink == true) { %>
-                            <a href="/test-developer/delete-form/<%= form.id %>" class="modal-link" id="js-modal-link">Remove</a>
+                            <a href="/test-developer/delete-form/<%= form.id %>" class="modal-link" id="js-modal-link-<%= form.id %>">Remove</a>
                             <% } %>
                         </td>
                     </tr>

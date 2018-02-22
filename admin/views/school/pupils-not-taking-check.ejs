@@ -37,9 +37,7 @@
                 <% pupilsList.forEach( (pupil, index) => { %>
                 <tr>
                     <td<% if (highlight.indexOf(pupil.urlSlug) !== -1) { %> class="highlight-item"<% } %>>
-                        <label for="pupil-<%= pupil.urlSlug %>">
-                            <%= pupil.lastName %>, <%= pupil.foreName %>
-                        </label>
+                        <%= pupil.lastName %>, <%= pupil.foreName %>
                     </td>
                     <td class="wrap-text">
                         <%= pupil.reason %>

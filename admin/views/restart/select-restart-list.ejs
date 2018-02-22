@@ -53,7 +53,7 @@
                             <div class="hide">
                                 <div class="panel panel-border-wide">
                                     <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
-                                        <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
+                                        <label class="form-label" for="didNotCompleteInfo">Please specify:</label>
                                         <% if (error.isError('didNotCompleteInfo')) { %>
                                         <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
                                         <% } %>
@@ -74,9 +74,9 @@
             </div>
 
             <div class="form-group">
-                <div class="form-label" for="restartFurtherInfo">
+                <label class="form-label" for="restartFurtherInfo">
                     If necessary, please provide further information:
-                </div>
+                </label>
                 <textarea class="form-control form-control-3-4" name="restartFurtherInfo" id="restartFurtherInfo" rows="5" maxlength="1000"></textarea>
             </div>
 
