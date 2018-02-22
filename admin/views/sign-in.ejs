@@ -10,7 +10,8 @@
 
         <p class="lede" id="lead-paragraph">Sign-in to access the Check Development Service</p>
 
-        <form action="/sign-in" method="post" aria-label="Sign-in below" autocomplete="off">
+        <!-- Attributes 'autocapitalize' and 'autocorrect' may not validate but are needed for our current solution -->
+        <form action="/sign-in" method="post" aria-label="Sign-in below" autocomplete="off" autocapitalize="none">
             <div class="form-group">
                 <label for="username" class="form-label-bold"> Username </label>
                 <input class="form-control"
@@ -20,7 +21,8 @@
                        aria-required="true"
                        aria-label="Enter your user name."
                        spellcheck="false"
-                       autocomplete="off">
+                       autocomplete="off"
+                       autocorrect="off">
             </div>
 
             <div class="form-group">
@@ -32,7 +34,8 @@
                        aria-required="true"
                        aria-label="Enter your password."
                        spellcheck="false"
-                       autocomplete="off">
+                       autocomplete="off"
+                       autocorrect="off">
             </div>
 
             <div class="form-group">
