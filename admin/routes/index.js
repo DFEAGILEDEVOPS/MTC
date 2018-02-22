@@ -14,7 +14,6 @@ const { home,
   postSignIn,
   getSignOut,
   getSignInFailure,
-  postAuth,
   getUnauthorised } = require('../controllers/authentication')
 
 /* GET home page. */

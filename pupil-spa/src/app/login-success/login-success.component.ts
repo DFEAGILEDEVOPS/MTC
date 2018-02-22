@@ -3,6 +3,7 @@ import { Pupil } from '../pupil';
 import { School } from '../school';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { DeviceService } from '../services/device/device.service';
 
 @Component({
   selector: 'app-login-success',
@@ -14,7 +15,9 @@ export class LoginSuccessComponent implements OnInit {
   pupil: Pupil;
   school: School;
 
-  constructor(private router: Router, private storageService: StorageService) {
+  constructor(private router: Router,
+              private storageService: StorageService,
+              private deviceService: DeviceService) {
     const pupilData = storageService.getItem('pupil');
     const schoolData = storageService.getItem('school');
     this.pupil = new Pupil;
@@ -25,7 +28,9 @@ export class LoginSuccessComponent implements OnInit {
     this.school.name = schoolData.name;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Store various browser props in localStorage to be sent back to the server at the end of the check.
+    await this.deviceService.capture();
   }
 
   onClick() {
