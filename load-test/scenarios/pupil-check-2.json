@@ -43,7 +43,7 @@
         },
         {
           "post": {
-            "url": "api/check-started",
+            "url": "/api/check-started",
             "json": {
               "accessToken": "{{ jwt }}",
               "checkCode": "{{ checkCode }}"
