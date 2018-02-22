@@ -6,7 +6,7 @@ services:
     ports:
     - "27017:27017"
   sqldb:
-    image: "microsoft/mssql-server-linux:2017-latest"
+    image: "microsoft/mssql-server-linux:2017-GDR"
     container_name: mtc_mssql
     ports:
     - "1433:1433"
