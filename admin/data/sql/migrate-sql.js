@@ -52,12 +52,6 @@ const runMigrations = async () => {
 
 winston.info('Preparing migrations...')
 
-// const migrationWaitTime = config.Sql.Migrator.WaitTime
-// if (migrationWaitTime > 0) {
-//   winston.info('Running migrations in %s seconds...', migrationWaitTime / 1000)
-// }
-// setTimeout(runMigrations, migrationWaitTime)
-
 try {
   runMigrations()
     .then(() => {
