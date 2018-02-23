@@ -11,10 +11,8 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  AZURE_STORAGE_LOGGING_ENABLED: process.env.AZURE_STORAGE_LOGGING_ENABLED,
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc',
-  MTC_SERVICE: process.env.MTC_SERVICE,
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
