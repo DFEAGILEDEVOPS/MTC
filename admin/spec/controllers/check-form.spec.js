@@ -12,7 +12,6 @@ const sortingAttributesService = require('../../services/sorting-attributes.serv
 const checkFormMock = require('../mocks/check-form')
 const checkFormsMock = require('../mocks/check-forms')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
-const checkFormsByWindowMock = require('../mocks/check-window-by-form')
 const checkWindowsMock = require('../mocks/check-windows')
 
 describe('check-form controller:', () => {
@@ -380,7 +379,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - checkFormDataService.getActiveFormPlain fails', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'getCheckForm').and.returnValue(Promise.reject(new Error('Error')))
-          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue(checkFormsByWindowMock)
+          spyOn(checkWindowService, 'getCheckWindowsAssignedToForms').and.returnValue([])
           spyOn(checkFormService, 'checkWindowNames').and.returnValue('Check Window 1')
           spyOn(checkFormService, 'canDelete').and.returnValue(false)
           controller = require('../../controllers/check-form').displayCheckForm

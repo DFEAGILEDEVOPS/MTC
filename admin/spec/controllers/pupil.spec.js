@@ -1,10 +1,7 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
-const mongoose = require('mongoose')
-mongoose.Promomise = global.Promise
 const sinon = require('sinon')
-require('sinon-mongoose')
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')

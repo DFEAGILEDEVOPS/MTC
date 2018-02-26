@@ -3,7 +3,6 @@
 /* global describe it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
-require('sinon-mongoose')
 
 describe('contact page simple controller', () => {
   it('should render the initial groups page', async (done) => {

@@ -2,7 +2,6 @@
 
 /* global beforeEach, afterEach, describe, it, expect, spyOn */
 const sinon = require('sinon')
-require('sinon-mongoose')
 
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
