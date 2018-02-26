@@ -4,7 +4,6 @@
 const proxyquire = require('proxyquire')
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
-require('sinon-mongoose')
 
 const checkStartService = require('../../services/check-start.service')
 const config = require('../../config')

@@ -8,8 +8,6 @@ const ValidationError = require('../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
 
-require('sinon-mongoose')
-
 describe('restart controller:', () => {
   function getRes () {
     const res = httpMocks.createResponse()
