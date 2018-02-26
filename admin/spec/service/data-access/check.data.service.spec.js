@@ -3,7 +3,6 @@
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
-const Check = require('../../../models/check')
 const checkMock = require('../../mocks/check')
 const sqlService = require('../../../services/data-access/sql.service')
 
