@@ -2,7 +2,6 @@
 /* global describe beforeEach afterEach it expect */
 
 const sinon = require('sinon')
-require('sinon-mongoose')
 const proxyquire = require('proxyquire')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')

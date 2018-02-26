@@ -5,8 +5,6 @@ const sinon = require('sinon')
 const jwtService = require('../../services/jwt.service')
 const pinService = require('../../services/pin.service')
 
-require('sinon-mongoose')
-
 describe('check started controller', () => {
   function getRes () {
     const res = httpMocks.createResponse()

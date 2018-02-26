@@ -1,11 +1,7 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-
 const sinon = require('sinon')
-require('sinon-mongoose')
 const httpMocks = require('node-mocks-http')
 
 const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')

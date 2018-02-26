@@ -2,9 +2,7 @@
 /* global describe beforeEach afterEach it expect */
 
 const sinon = require('sinon')
-require('sinon-mongoose')
 const pupilNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
-
 const attendanceCodesMock = require('../mocks/attendance-codes')
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')

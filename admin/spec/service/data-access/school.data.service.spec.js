@@ -3,7 +3,6 @@
 
 const proxyquire = require('proxyquire').noCallThru()
 const sinon = require('sinon')
-require('sinon-mongoose')
 const moment = require('moment')
 const schoolMock = require('../../mocks/school')
 const sqlService = require('../../../services/data-access/sql.service')
