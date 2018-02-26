@@ -2,28 +2,10 @@
 
 const TYPES = require('tedious').TYPES
 const winston = require('winston')
-
-const CheckForm = require('../../models/check-form')
 const sqlService = require('./sql.service')
-
 const table = '[checkForm]'
 
 const checkFormDataService = {
-  /**
-   * Get form by id (if passed), when isDeleted is false.
-   * Return Mongoose object.
-   * @deprecated use sqlFindActiveForm
-   * @param id
-   */
-  getActiveForm: (id) => {
-    winston.warn('check-form.data.service.getActiveForm is deprecated')
-    let query = {'isDeleted': false}
-    if (id) {
-      query = Object.assign(query, {'_id': id})
-    }
-    return CheckForm.findOne(query).exec()
-  },
-
     /**
    * Get active forms
    * This will be deprecated when the form choice algorithm is introduced
@@ -63,42 +45,6 @@ const checkFormDataService = {
     }
     return sqlService.query(sql, params)
   },
-
-  /**
-   * Get check form when isDeleted is false.
-   * Return plain javascript object.
-   * This method will not be refactored as all calls should be repointed to sqlFindActiveFormById.
-   * @deprecated use sqlFindActiveFormById
-   * @returns {Promise}
-   */
-  getActiveFormPlain: (id) => {
-    winston.warn('check-form.data.service.getActiveFormPlain is deprecated')
-    let query = {'isDeleted': false}
-    if (id) {
-      query = Object.assign(query, {'_id': id})
-    }
-    return CheckForm.findOne(query).lean().exec()
-  },
-
-  /**
-   * Fetch active forms (forms not soft-deleted)
-   * @param query
-   * @param sortField
-   * @param sortDirection
-   * @deprecated use sqlFetchSortedActiveFormsByName
-   * @returns {Promise.<void>}
-   */
-  fetchSortedActiveForms: async (query, sortField, sortDirection) => {
-    let sort = {}
-    let q = query
-    winston.warn('check-form.data.service.fetchSortedActiveForms is deprecated')
-    if (sortField && sortDirection) {
-      sort[sortField] = sortDirection
-    }
-    q.isDeleted = false
-    return CheckForm.find(q).sort(sort).lean().exec()
-  },
-
   /**
    * Fetch active forms (not deleted)
    * sorted by name
@@ -182,20 +128,6 @@ const checkFormDataService = {
     }
     return sqlService.query(sql, params)
   },
-
-  /**
-   * Create.
-   * @param data
-   * @deprecated use sqlCreate
-   * @returns {Promise<*>}
-   */
-  create: async (data) => {
-    winston.warn('check-form.data.service.create is deprecated')
-    const checkForm = new CheckForm(data)
-    await checkForm.save()
-    return checkForm.toObject()
-  },
-
     /**
    * Create check form
    * @param checkForm
@@ -204,19 +136,6 @@ const checkFormDataService = {
   sqlCreate: (checkForm) => {
     return sqlService.create('[checkForm]', checkForm)
   },
-
-  /**
-   * Find check form by name.
-   * @param formName
-   * @deprecated use sqlFindCheckFormByName
-   * @returns {Promise|*}
-   */
-  findCheckFormByName: (formName) => {
-    winston.warn('check-form.data.service.findCheckFormByName is deprecated')
-    let query = { 'isDeleted': false, 'name': formName }
-    return CheckForm.findOne(query).lean().exec()
-  },
-
     /**
    * Find check form by name.
    * @param formName

@@ -1,28 +1,9 @@
 'use strict'
 
-const Group = require('../../models/group')
 const groupDataService = {}
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
-
-/**
- * Get groups filtered by query.
- * @deprecated use sqlFindGroups
- * @param query
- * @returns {Promise<Promise|*>}
- */
-groupDataService.getGroups = async function (query) {
-  const q = query || {}
-  q.isDeleted = false
-  return Group
-    .find(q)
-    // @TODO: Collation won't work in Cosmos - This when migrating to SQL.
-    // .collation({ locale: 'en', strength: 2 })
-    .sort({ name: 'asc' })
-    .lean()
-    .exec()
-}
 
 /**
  * Get active groups (non-soft-deleted).

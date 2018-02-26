@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const CheckWindow = require('../../models/check-window')
 const winston = require('winston')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
@@ -9,16 +8,6 @@ const R = require('ramda')
 const table = '[checkWindow]'
 
 const checkWindowDataService = {
-  /**
-   * Fetch check window document by id.
-   * @param id
-   * @deprecated use sqlFindOneById
-   * @returns {Promise.<*>}
-   */
-  fetchCheckWindow: async (id) => {
-    winston.warn('check-window.data.service.fetchCheckWindow is deprecated')
-    return CheckWindow.findOne({'_id': id, 'isDeleted': false}).exec()
-  },
   /**
    * Fetch check window document by id.
    * @param id
@@ -38,16 +27,6 @@ const checkWindowDataService = {
   },
   /**
    * Set check window as deleted.
-   * @deprecated use sqlDeleteCheckWindow
-   * @param id
-   * @returns {Promise.<void>}
-   */
-  setDeletedCheckWindow: async (id) => {
-    winston.warn('check-window.data.service.setDeletedCheckWindow is deprecated')
-    return CheckWindow.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
-  },
-  /**
-   * Set check window as deleted.
    * @param id
    * @returns {Promise.<void>}
    */
@@ -61,51 +40,6 @@ const checkWindowDataService = {
     ]
     const sql = `UPDATE ${sqlService.adminSchema}.${table} SET isDeleted=1 WHERE id=@id`
     return sqlService.modify(sql, params)
-  },
-  /**
-   * Fetch check windows by status, sort by, sort direction and date (current or past).
-   * @param isDeleted
-   * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
-   * @param sortDirection valid values are [asc|desc]
-   * @param isCurrent
-   * @deprecated use sqlFind
-   * @returns {Promise.<*>}
-   */
-  fetchCheckWindows: async (sortBy, sortDirection, isDeleted, isCurrent) => {
-    let sorting = {}
-    let query = {}
-
-    const currentTimestamp = moment.utc(Date.now()).format('YYYY-MM-D 00:00:00')
-
-    query.isDeleted = !isDeleted ? false : isDeleted
-    if (isCurrent === true) {
-      query.checkEndDate = {$gte: currentTimestamp}
-    } else {
-      query.checkEndDate = {$lte: currentTimestamp}
-    }
-
-    if (sortBy && sortDirection) {
-      sorting[sortBy] = sortDirection
-    }
-
-    return CheckWindow
-      .find(query)
-      .sort(sorting)
-      .exec()
-  },
-  /**
-   * Fetch (one) check window for present date.
-   * @deprecated use sqlFetchCurrentCheckWindow
-   * @returns {Promise.<*>}
-   */
-  fetchCurrentCheckWindow: async () => {
-    winston.warn('deprecated. use check-window.data.service.sqlFindCurrent')
-    const now = new Date()
-    const checkWindow = await CheckWindow.findOne({startDate: {$lte: now}, endDate: {$gte: now}}).exec()
-    if (!checkWindow) {
-      throw new Error('No check-window is currently available')
-    }
-    return checkWindow
   },
   /**
    * Fetch check windows by status, sort by, sort direction and date (current or past).
