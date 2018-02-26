@@ -30,16 +30,6 @@ groupDataService.sqlFindGroups = async (schoolId) => {
 }
 
 /**
- * Get group document by _id.
- * @deprecated use sqlFindGroup
- * @param query
- * @returns {Promise<*>}
- */
-groupDataService.getGroup = async function (query) {
-  return Group.findOne(query).lean().exec()
-}
-
-/**
  * Get group by id.
  * @param groupId
  * @param schoolId
@@ -98,50 +88,12 @@ groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
 }
 
 /**
- * Save group.
- * @deprecated use sqlCreate
- * @param data
- * @returns {Promise<*>}
- */
-groupDataService.create = async function (data) {
-  const group = new Group(data)
-  await group.save()
-  return group.toObject()
-}
-
-/**
  * Create 'group' record.
  * @param group
  * @returns {Promise}
  */
 groupDataService.sqlCreate = (group) => {
   return sqlService.create('[group]', group)
-}
-
-/**
- * Update 'group' record.
- * @deprecated use sqlUpdate
- * @param id
- * @param data
- * @returns {Promise<void>}
- */
-groupDataService.update = async function (id, data) {
-  return new Promise((resolve, reject) => {
-    Group.findByIdAndUpdate(
-      id,
-      {
-        '$set': {
-          'name': data.name,
-          'pupils': data.pupils
-        }
-      }, function (error) {
-        if (error) {
-          return reject(error)
-        }
-      }
-    )
-    return resolve(data)
-  })
 }
 
 /**
@@ -252,16 +204,6 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
   sql += ') ORDER BY lastName ASC, foreName ASC'
 
   return sqlService.query(sql, params)
-}
-
-/**
- * Soft-deletes a group.
- * @deprecated use sqlMarkGroupAsDeleted
- * @param id
- * @returns {Promise<void>}
- */
-groupDataService.delete = async function (id) {
-  return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
 }
 
 /**
