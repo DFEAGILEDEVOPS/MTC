@@ -1,6 +1,5 @@
 'use strict'
 
-const SettingLog = require('../../models/setting-log')
 const sqlService = require('../data-access/sql.service')
 const TYPES = require('tedious').TYPES
 
@@ -38,17 +37,6 @@ settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTime
     }
   ]
   return sqlService.modify(sql, params)
-}
-
-/**
- * Create a new settingLog record in the DB
- * @param data
- * @return {Promise.<*>}
- */
-settingLogDataService.create = async function (data) {
-  const sl = new SettingLog(data)
-  await sl.save()
-  return sl.toObject()
 }
 
 module.exports = settingLogDataService

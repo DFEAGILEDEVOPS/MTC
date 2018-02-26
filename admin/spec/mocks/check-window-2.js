@@ -1,5 +1,3 @@
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
 const moment = require('moment')
 
 module.exports = {

@@ -319,7 +319,6 @@ describe('group controller', () => {
 
           spyOn(groupValidator, 'validate').and.returnValue(validationError)
           spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
-          spyOn(groupDataService, 'create').and.returnValue(Promise.resolve(groupMock))
 
           controller = require('../../controllers/group').addGroup
           await controller(req, res, next)
@@ -328,7 +327,6 @@ describe('group controller', () => {
           expect(validationError.hasError()).toBeTruthy()
           expect(groupValidator.validate).toHaveBeenCalled()
           expect(groupService.getPupils).toHaveBeenCalled()
-          expect(groupDataService.create).not.toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           expect(res.statusCode).toBe(200)
           done()
