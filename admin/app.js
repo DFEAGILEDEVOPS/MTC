@@ -104,9 +104,9 @@ app.use(helmet.contentSecurityPolicy({
     defaultSrc: ["'self'"],
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
     fontSrc: ["'self'", 'data:'],
-    styleSrc: ["'self'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
     imgSrc: ["'self'", 'https://www.google-analytics.com', 'data:'],
-    connectSrc: ["'self'"],
+    connectSrc: ["'self'", 'https://www.google-analytics.com'],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],
     childSrc: ["'none'"]
