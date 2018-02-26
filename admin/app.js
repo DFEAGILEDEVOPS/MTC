@@ -8,8 +8,6 @@ const path = require('path')
 const morgan = require('morgan')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
-const mongoose = require('mongoose')
-const autoIncrement = require('mongoose-auto-increment')
 const uuidV4 = require('uuid/v4')
 const expressValidator = require('express-validator')
 const passport = require('passport')
@@ -58,23 +56,6 @@ if (unsetVars.length > 0) {
   process.exitCode = 1
   throw new Error(error)
 }
-
-mongoose.promise = global.Promise
-
-if (process.env.NODE_ENV !== 'production') {
-  mongoose.set('debug', true)
-}
-
-const connectionString = config.MONGO_CONNECTION_STRING
-mongoose.connect(connectionString, {
-  keepAlive: true,
-  reconnectTries: 120,
-  // set the delay between every retry (milliseconds)
-  reconnectInterval: 1000,
-  useMongoClient: true
-})
-
-autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
@@ -188,10 +169,6 @@ busboy.extend(app, {
 const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url)
 
-const mongoStoreOptions = {
-  mongooseConnection: mongoose.connection,
-  collection: 'adminsessions'
-}
 const sessionOptions = {
   name: 'staff-app.sid',
   secret: config.SESSION_SECRET,
@@ -199,7 +176,10 @@ const sessionOptions = {
   rolling: true,
   saveUninitialized: false,
   cookie: {maxAge: 1200000}, // Expire after 20 minutes inactivity
-  store: new MongoStore(mongoStoreOptions)
+  store: new MongoStore({
+    url: config.MONGO_CONNECTION_STRING,
+    collection: 'adminsessions'
+  })
 }
 app.use(session(sessionOptions))
 app.use(passport.initialize())
