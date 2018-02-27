@@ -24,31 +24,6 @@ const pupilsNotTakingCheckService = {
       }
     })
     return sortedPupilsList
-  },
-  /**
-   * Fetch list of pupils that have reasons.
-   * @param attendanceCodes
-   * @param pupils
-   * @param highlight
-   * @returns {Promise.<Promise.<T>|Promise|Promise<any>|*>}
-   */
-  formatPupilsWithReasons: async (attendanceCodes, pupils, highlight) => {
-    return Promise.all(pupils.map(async (p) => {
-      p.reason = 'N/A'
-      p.highlight = false
-      if (p.attendanceCode !== undefined && p.attendanceCode._id !== undefined) {
-        let accCode = attendanceCodes.filter(ac => JSON.stringify(ac._id) === JSON.stringify(p.attendanceCode._id))
-        if (accCode.length > 0) {
-          p.reason = accCode[0].reason
-        }
-        if (highlight) {
-          p.highlight = (highlight.filter(pp => JSON.stringify(pp) === JSON.stringify(p._id))).length > 0
-        }
-      }
-      return p
-    })).catch((error) => {
-      throw new Error(error)
-    })
   }
 }
 

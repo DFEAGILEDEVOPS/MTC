@@ -6,8 +6,6 @@ const sinon = require('sinon')
 const generateErrorCSVService = require('../../services/generate-error-csv.service')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 
-require('sinon-mongoose')
-
 describe('generate-error-csv.service', () => {
   let sandbox
 
