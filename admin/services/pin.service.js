@@ -4,6 +4,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const groupService = require('../services/group.service')
 const jwtService = require('../services/jwt.service')
 const dateService = require('../services/date.service')
 const pinValidator = require('../lib/validator/pin-validator')
@@ -12,12 +13,18 @@ const pinService = {}
 /**
  * Get pupils with active pins
  * @param dfeNumber
- * @returns {Array}
+ * @param schoolId (optional, defaults to null)
+ * @returns {Promise<*>}
  */
-pinService.getPupilsWithActivePins = async (dfeNumber) => {
+pinService.getPupilsWithActivePins = async (dfeNumber, schoolId = null) => {
   let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+  let groups = []
+  if (schoolId) {
+    groups = await groupService.getGroupsAsArray(schoolId)
+  }
   pupils = pupils.map(p => {
     p.dateOfBirth = dateService.formatShortGdsDate(p.dateOfBirth)
+    p.group = groups[p.group_id] || ''
     return p
   })
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)

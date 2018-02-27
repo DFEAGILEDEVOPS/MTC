@@ -122,6 +122,13 @@ const getGeneratedPinsList = async (req, res, next) => {
   })
 }
 
+/**
+ * Get Print PINs.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
 const getPrintPins = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
   let pupils
@@ -129,7 +136,7 @@ const getPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, req.user.schoolId)
     school = await pinService.getActiveSchool(req.user.School)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
