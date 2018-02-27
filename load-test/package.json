@@ -1,7 +1,7 @@
 {
   "name": "load-test",
   "version": "1.0.0",
-  "description": "load test the school admin application",
+  "description": "Performance load testing for both school admin and pupil applications",
   "main": "app.js",
   "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
   "author": "Guy Harwood",
