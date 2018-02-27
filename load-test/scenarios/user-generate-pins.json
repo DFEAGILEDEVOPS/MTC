@@ -1,0 +1,130 @@
+{
+  "config": {
+    "target": "http://localhost:3001",
+    "phases": [
+      {
+        "duration": 15,
+        "arrivalRate": 5
+      }
+    ],
+    "payload": {
+      "path": "./data/userLogins.csv",
+      "fields": [
+        "username",
+        "password"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "user generates pins",
+      "flow": [
+        {
+          "post": {
+            "url": "/sign-in",
+            "form": {
+              "username": "{{ username }}",
+              "password": "{{ password }}"
+            }
+          }
+        },
+        {
+          "get": {
+            "url": "/school/school-home"
+          }
+        },
+        {
+          "get": {
+            "url": "/pupil-pin/generate-pins-list/lastName/asc"
+          }
+        },
+        {
+          "think": 2
+        },
+        {
+          "post": {
+            "url": "/pupil-pin/generate-pins",
+            "form": {
+              "allPupils": "on",
+              "pupil[0]": 12,
+              "pupil[1]": 9,
+              "pupil[2]": 16,
+              "pupil[3]": 13,
+              "pupil[4]": 14,
+              "pupil[5]": 5,
+              "pupil[6]": 11,
+              "pupil[7]": 17,
+              "pupil[8]": 3,
+              "pupil[9]": 7,
+              "pupil[10]": 288,
+              "pupil[11]": 289,
+              "pupil[12]": 290,
+              "pupil[13]": 291,
+              "pupil[14]": 292,
+              "pupil[15]": 293,
+              "pupil[16]": 294,
+              "pupil[17]": 295,
+              "pupil[18]": 296,
+              "pupil[19]": 297,
+              "pupil[20]": 298,
+              "pupil[21]": 299,
+              "pupil[22]": 300,
+              "pupil[23]": 301,
+              "pupil[24]": 302,
+              "pupil[25]": 303,
+              "pupil[26]": 304,
+              "pupil[27]": 305,
+              "pupil[28]": 306,
+              "pupil[29]": 307,
+              "pupil[30]": 308,
+              "pupil[31]": 309,
+              "pupil[32]": 310,
+              "pupil[33]": 311,
+              "pupil[34]": 312,
+              "pupil[35]": 313,
+              "pupil[36]": 314,
+              "pupil[37]": 315,
+              "pupil[38]": 316,
+              "pupil[39]": 317,
+              "pupil[40]": 318,
+              "pupil[41]": 319,
+              "pupil[42]": 320,
+              "pupil[43]": 321,
+              "pupil[44]": 322,
+              "pupil[45]": 323,
+              "pupil[46]": 324,
+              "pupil[47]": 325,
+              "pupil[48]": 326,
+              "pupil[49]": 327,
+              "pupil[50]": 328,
+              "pupil[51]": 329,
+              "pupil[52]": 330,
+              "pupil[53]": 331,
+              "pupil[54]": 332,
+              "pupil[55]": 333,
+              "pupil[56]": 334,
+              "pupil[57]": 335,
+              "pupil[58]": 336,
+              "pupil[59]": 337,
+              "pupil[60]": 338,
+              "pupil[61]": 339,
+              "pupil[62]": 340,
+              "pupil[63]": 341,
+              "pupil[64]": 342,
+              "pupil[65]": 343,
+              "pupil[66]": 344,
+              "pupil[67]": 345,
+              "pupil[68]": 346,
+              "pupil[69]": 347,
+              "pupil[70]": 10,
+              "pupil[71]": 6,
+              "pupil[72]": 8,
+              "pupil[73]": 15,
+              "pupil[74]": 4
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
