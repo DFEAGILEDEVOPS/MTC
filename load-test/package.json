@@ -7,6 +7,9 @@
   "author": "Guy Harwood",
   "license": "GPL-3.0",
   "dependencies": {
-    "artillery": "^1.6.0-12"
+    "artillery": "^1.6.0-12",
+    "fast-csv": "^2.4.1",
+    "ramda": "^0.25.0",
+    "winston": "^2.4.0"
   }
 }
