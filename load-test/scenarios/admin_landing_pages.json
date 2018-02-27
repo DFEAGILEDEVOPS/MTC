@@ -1,0 +1,59 @@
+{
+  "config": {
+    "target": "http://localhost:3001",
+    "phases": [
+      {
+        "duration": 15,
+        "arrivalRate": 5
+      }
+    ],
+    "payload": {
+      "path": "./data/admin_load_test_data.csv",
+      "fields": [
+        "username",
+        "password"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "Landing Pages",
+      "flow": [
+        {
+          "post": {
+            "url": "/sign-in",
+            "form": {
+              "username": "{{ username }}",
+              "password": "{{ password }}"
+            }
+          }
+        },
+        {
+          "get": {
+            "url": "/school/school-home"
+          }
+        },
+        {
+          "get": {
+            "url": "/school/group-pupils"
+          }
+        },
+        {
+          "get": {
+            "url": "/school/pupil-register/name/asc"
+          }
+        },
+        {
+          "get": {
+            "url": "/school/pupils-not-taking-check"
+          }
+        },
+        {
+          "get": {
+            "url": "/restart/overview"
+          }
+        }
+      ]
+    }
+  ]
+}
