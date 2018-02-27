@@ -3,6 +3,7 @@
 const R = require('ramda')
 const moment = require('moment')
 const winston = require('winston')
+const useragent = require('useragent')
 
 const psUtilService = {}
 
@@ -212,6 +213,22 @@ psUtilService.getScore = function (markedAnswer) {
     return 'error'
   }
   return markedAnswer.isCorrect ? 1 : 0
+}
+
+psUtilService.getDevice = function (userAgent) {
+  if (!userAgent) {
+    return ''
+  }
+  const agent = useragent.parse(userAgent)
+  return agent.device.toString().replace('0.0.0', '').trim()
+}
+
+psUtilService.getBrowser = function (userAgent) {
+  if (!userAgent) {
+    return ''
+  }
+  const agent = useragent.parse(userAgent)
+  return agent.toString()
 }
 
 psUtilService.getLoadTime = function (questionNumber, audits) {

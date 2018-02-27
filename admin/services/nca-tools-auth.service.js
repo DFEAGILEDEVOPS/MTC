@@ -123,7 +123,7 @@ function parseMessage (plaintext) {
     data[k] = v
   })
 
-  // Change the School value to be a Number, so we can pass it directly to Mongoose
+  // Change the School value to be a Number, so we can pass it directly to data store
   if (data.School) {
     data.School = parseInt(data.School, 10)
   }

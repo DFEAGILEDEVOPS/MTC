@@ -6,8 +6,6 @@ const sinon = require('sinon')
 const singlePupilValidationCSVService = require('../../services/single-pupil-validation.service')
 const PupilValidator = require('../../lib/validator/pupil-validator')
 
-require('sinon-mongoose')
-
 describe('single-pupil-validation.service', () => {
   let sandbox
 

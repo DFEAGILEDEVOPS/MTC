@@ -9,7 +9,6 @@ const checkDataService = require('../../services/data-access/check.data.service'
 const pupilFeedbackDataService = require('../../services/data-access/pupil-feedback.data.service')
 const checkMock = require('../mocks/check')
 
-require('sinon-mongoose')
 let sandbox
 let jwtPromiseHelper
 let mockCheckData

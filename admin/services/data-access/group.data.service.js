@@ -1,28 +1,9 @@
 'use strict'
 
-const Group = require('../../models/group')
 const groupDataService = {}
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
-
-/**
- * Get groups filtered by query.
- * @deprecated use sqlFindGroups
- * @param query
- * @returns {Promise<Promise|*>}
- */
-groupDataService.getGroups = async function (query) {
-  const q = query || {}
-  q.isDeleted = false
-  return Group
-    .find(q)
-    // @TODO: Collation won't work in Cosmos - This when migrating to SQL.
-    // .collation({ locale: 'en', strength: 2 })
-    .sort({ name: 'asc' })
-    .lean()
-    .exec()
-}
 
 /**
  * Get active groups (non-soft-deleted).
@@ -46,16 +27,6 @@ groupDataService.sqlFindGroups = async (schoolId) => {
     }
   ]
   return sqlService.query(sql, params)
-}
-
-/**
- * Get group document by _id.
- * @deprecated use sqlFindGroup
- * @param query
- * @returns {Promise<*>}
- */
-groupDataService.getGroup = async function (query) {
-  return Group.findOne(query).lean().exec()
 }
 
 /**
@@ -117,50 +88,12 @@ groupDataService.sqlFindOneByName = async (groupName, schoolId) => {
 }
 
 /**
- * Save group.
- * @deprecated use sqlCreate
- * @param data
- * @returns {Promise<*>}
- */
-groupDataService.create = async function (data) {
-  const group = new Group(data)
-  await group.save()
-  return group.toObject()
-}
-
-/**
  * Create 'group' record.
  * @param group
  * @returns {Promise}
  */
 groupDataService.sqlCreate = (group) => {
   return sqlService.create('[group]', group)
-}
-
-/**
- * Update 'group' record.
- * @deprecated use sqlUpdate
- * @param id
- * @param data
- * @returns {Promise<void>}
- */
-groupDataService.update = async function (id, data) {
-  return new Promise((resolve, reject) => {
-    Group.findByIdAndUpdate(
-      id,
-      {
-        '$set': {
-          'name': data.name,
-          'pupils': data.pupils
-        }
-      }, function (error) {
-        if (error) {
-          return reject(error)
-        }
-      }
-    )
-    return resolve(data)
-  })
 }
 
 /**
@@ -271,16 +204,6 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
   sql += ') ORDER BY lastName ASC, foreName ASC'
 
   return sqlService.query(sql, params)
-}
-
-/**
- * Soft-deletes a group.
- * @deprecated use sqlMarkGroupAsDeleted
- * @param id
- * @returns {Promise<void>}
- */
-groupDataService.delete = async function (id) {
-  return Group.updateOne({'_id': id}, {$set: {'isDeleted': true}}).exec()
 }
 
 /**

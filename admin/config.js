@@ -11,10 +11,8 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  AZURE_STORAGE_LOGGING_ENABLED: process.env.AZURE_STORAGE_LOGGING_ENABLED,
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc',
-  MTC_SERVICE: process.env.MTC_SERVICE,
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
@@ -49,8 +47,7 @@ module.exports = {
     Migrator: {
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
-      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds,
-      WaitTime: process.env.SQL_MIGRATION_WAIT_TIME || 0
+      Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE

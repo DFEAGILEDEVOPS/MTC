@@ -18,7 +18,7 @@ const controller = {}
 controller.getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
-    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/name/asc')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-pupil', {
       formData: req.body,
@@ -48,7 +48,7 @@ controller.postAddPupil = async (req, res, next) => {
     const pupil = await pupilAddService.addPupil(pupilData)
     req.flash('info', '1 new pupil has been added')
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
-    res.redirect(`/school/pupil-register/lastName/true?hl=${highlight}`)
+    res.redirect(`/school/pupil-register/name/asc?hl=${highlight}`)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return controller.getAddPupil(req, res, next, error)
@@ -62,7 +62,7 @@ controller.getAddMultiplePupils = (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
   try {
-    req.breadcrumbs('Pupil Register', '/school/pupil-register/lastName/true')
+    req.breadcrumbs('Pupil Register', '/school/pupil-register/name/asc')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
@@ -110,7 +110,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
     const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
-    res.redirect(`/school/pupil-register/lastName/true?hl=${qp}`)
+    res.redirect(`/school/pupil-register/name/asc?hl=${qp}`)
   }
 }
 
@@ -205,7 +205,7 @@ controller.postEditPupil = async (req, res, next) => {
 
   // pupil saved - redirect and highlight the saved pupil
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
-  res.redirect(`/school/pupil-register/lastName/true?hl=${highlight}`)
+  res.redirect(`/school/pupil-register/name/asc?hl=${highlight}`)
 }
 
 /**

@@ -1,15 +1,10 @@
 'use strict'
 /* global describe beforeEach afterEach it expect jasmine spyOn */
 
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
-
 const sinon = require('sinon')
-require('sinon-mongoose')
 const httpMocks = require('node-mocks-http')
 
 const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
-const attendanceCodesMock = require('../mocks/attendance-codes')
 const attendanceService = require('../../services/attendance.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
@@ -73,7 +68,7 @@ describe('school controller:', () => {
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
         spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
-        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(attendanceCodesMock)
+        spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue([])
         spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
         controller = require('../../controllers/school').getSelectPupilNotTakingCheck

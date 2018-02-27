@@ -45,9 +45,6 @@
     "logdna": "^1.4.2",
     "moment": "^2.20.1",
     "moment-duration-format": "^2.2.1",
-    "mongoose": "^4.13.11",
-    "mongoose-auto-increment": "^5.0.1",
-    "mongoose-uuid2": "^2.0.1",
     "morgan": "~1.9.0",
     "mssql": "^4.1.0",
     "node-gyp": "^3.6.1",
@@ -64,6 +61,7 @@
     "tedious": "2.2.4",
     "tedious-connection-pool": "^1.0.5",
     "to-bool": "^0.0.1",
+    "useragent": "^2.3.0",
     "uuid": "^3.1.0",
     "validate": "^3.0.1",
     "validator": "^9.4.0",
@@ -88,7 +86,6 @@
     "nyc": "^11.5.0",
     "proxyquire": "^1.8.0",
     "sinon": "^4.2.2",
-    "sinon-mongoose": "^2.0.2",
     "standard": "^10.0.2"
   },
   "nyc": {
