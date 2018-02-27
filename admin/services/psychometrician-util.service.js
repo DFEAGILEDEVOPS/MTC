@@ -3,6 +3,7 @@
 const R = require('ramda')
 const moment = require('moment')
 const winston = require('winston')
+const useragent = require('useragent')
 
 const psUtilService = {}
 
@@ -174,27 +175,105 @@ psUtilService.getTimeoutFlag = function (inputs) {
  * @return {*}
  */
 psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
-  let timeout = 0
-  if (!(inputs && Array.isArray(inputs))) {
+  if (!Array.isArray(inputs)) {
     return 'error'
   }
-  if (inputs.length === 0 && answer.answer === '') {
-    timeout = 1
+  const timeout = this.getTimeoutFlag(inputs)
+  if (!timeout) {
+    return ''
   }
-  return timeout
+
+  let timeoutNoResponse = 1
+  const hasTimeout = psUtilService.getTimeoutFlag(inputs)
+  if (hasTimeout === 1 && answer.answer === '') {
+    timeoutNoResponse = 0
+  }
+  return timeoutNoResponse
 }
 
 /**
  * Return 1 if the question timed out, and the correct answer was given. 0 otherwise.
- * @param inputs
- * @param ans
+ * @param inputs - inputs from the SPA data
+ * @param {answer} ans - marked answer from the `answer` table
  * @return {number}
  */
-psUtilService.getTimeoutWithCorrectAnswer = function (inputs, ans) {
-  if (this.getTimeoutFlag(inputs) === 1 && ans.isCorrect) {
+psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
+  const timeout = this.getTimeoutFlag(inputs)
+  if (!timeout) {
+    return ''
+  }
+  if (this.getTimeoutFlag(inputs) === 1 && markedAnswer.isCorrect) {
     return 1
   }
   return 0
+}
+
+psUtilService.getScore = function (markedAnswer) {
+  if (!markedAnswer.hasOwnProperty('isCorrect')) {
+    return 'error'
+  }
+  return markedAnswer.isCorrect ? 1 : 0
+}
+
+psUtilService.getDevice = function (userAgent) {
+  if (!userAgent) {
+    return ''
+  }
+  const agent = useragent.parse(userAgent)
+  return agent.device.toString().replace('0.0.0', '').trim()
+}
+
+psUtilService.getBrowser = function (userAgent) {
+  if (!userAgent) {
+    return ''
+  }
+  const agent = useragent.parse(userAgent)
+  return agent.toString()
+}
+
+psUtilService.getLoadTime = function (questionNumber, audits) {
+  const entry = audits.find(e => {
+    if (R.propEq('type', 'QuestionRendered', e) &&
+      R.path(['data', 'sequenceNumber'], e) === questionNumber) {
+      return true
+    }
+  })
+  return R.propOr('', 'clientTimestamp', entry || {})
+}
+
+psUtilService.getOverallTime = function (tLastKey, tLoad) {
+  if (!tLastKey || !tLoad) {
+    return ''
+  }
+  const m1 = moment(tLastKey)
+  if (!m1.isValid()) {
+    return ''
+  }
+  const m2 = moment(tLoad)
+  if (!m2.isValid()) {
+    return ''
+  }
+  return m1.diff(m2) / 1000
+}
+
+/**
+ * Return the recall time: the difference in seconds between the question appearing and the first key pressed
+ * @param {string} tLoad - ISO8601 string e.g. "2018-02-16T20:06:30.700Z"
+ * @param {string} tFirstKey - ISO8601 string - ditto
+ */
+psUtilService.getRecallTime = function (tLoad, tFirstKey) {
+  if (!tLoad || !tFirstKey) {
+    return ''
+  }
+  const m1 = moment(tLoad)
+  if (!m1.isValid()) {
+    return ''
+  }
+  const m2 = moment(tFirstKey)
+  if (!m2.isValid()) {
+    return ''
+  }
+  return m2.diff(m1) / 1000
 }
 
 module.exports = psUtilService

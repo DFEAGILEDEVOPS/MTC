@@ -4,7 +4,7 @@ class SchoolLandingPage < SitePrism::Page
   element :home, '#content > .page-header > .breadcrumbs a', text: 'Home'
   element :breadcrumb, '#content > .page-header > .breadcrumbs'
   element :heading, '.heading-xlarge'
-  element :pupil_register, 'a[href="/school/pupil-register/lastName/true"]'
+  element :pupil_register, 'a[href="/school/pupil-register/name/asc"]'
   element :pupil_register_text, 'p', text: 'Add, edit and review pupils'
   element :group_pupils, 'a[href="/school/group-pupils'
   element :group_pupils_text, 'p', text: 'Create groups'

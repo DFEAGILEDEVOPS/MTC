@@ -5,11 +5,9 @@ require('dotenv').config()
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
-const logger = require('morgan')
+const morgan = require('morgan')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
-const mongoose = require('mongoose')
-const autoIncrement = require('mongoose-auto-increment')
 const uuidV4 = require('uuid/v4')
 const expressValidator = require('express-validator')
 const passport = require('passport')
@@ -48,7 +46,7 @@ azure.startInsightsIfConfigured()
 
 const unsetVars = []
 Object.keys(config).map((key) => {
-  if (!config[key] && !devWhitelist.includes(key)) {
+  if (config[key] === undefined && !devWhitelist.includes(key)) {
     unsetVars.push(`${key}`)
   }
 })
@@ -58,23 +56,6 @@ if (unsetVars.length > 0) {
   process.exitCode = 1
   throw new Error(error)
 }
-
-mongoose.promise = global.Promise
-
-if (process.env.NODE_ENV !== 'production') {
-  mongoose.set('debug', true)
-}
-
-const connectionString = config.MONGO_CONNECTION_STRING
-mongoose.connect(connectionString, {
-  keepAlive: true,
-  reconnectTries: 120,
-  // set the delay between every retry (milliseconds)
-  reconnectInterval: 1000,
-  useMongoClient: true
-})
-
-autoIncrement.initialize(mongoose.connection)
 
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
@@ -87,8 +68,32 @@ const completedCheck = require('./routes/completed-check')
 const pupilPin = require('./routes/pupil-pin')
 const restart = require('./routes/restart')
 
-if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
+if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
+
+if (config.Logging.Express.UseWinston === 'true') {
+  /**
+   * Express logging to winston
+   */
+  const expressWinston = require('express-winston')
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console({
+        json: true,
+        colorize: true
+      })
+    ],
+    meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+    // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+    colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+    ignoreRoute: function (req, res) {
+      return false
+    } // optional: allows to skip some log messages based on request and/or response
+  }))
+} else {
+  app.use(morgan('dev'))
+}
 
 /* Security Directives */
 
@@ -99,9 +104,9 @@ app.use(helmet.contentSecurityPolicy({
     defaultSrc: ["'self'"],
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
     fontSrc: ["'self'", 'data:'],
-    styleSrc: ["'self'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
     imgSrc: ["'self'", 'https://www.google-analytics.com', 'data:'],
-    connectSrc: ["'self'"],
+    connectSrc: ["'self'", 'https://www.google-analytics.com'],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],
     childSrc: ["'none'"]
@@ -149,7 +154,6 @@ app.set('view engine', 'ejs')
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 app.use(partials())
-app.use(logger('dev'))
 busboy.extend(app, {
   upload: true,
   path: 'data/files',
@@ -165,18 +169,17 @@ busboy.extend(app, {
 const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url)
 
-const mongoStoreOptions = {
-  mongooseConnection: mongoose.connection,
-  collection: 'adminsessions'
-}
 const sessionOptions = {
   name: 'staff-app.sid',
   secret: config.SESSION_SECRET,
   resave: false,
   rolling: true,
   saveUninitialized: false,
-  cookie: { maxAge: 1200000 }, // Expire after 20 minutes inactivity
-  store: new MongoStore(mongoStoreOptions)
+  cookie: {maxAge: 1200000}, // Expire after 20 minutes inactivity
+  store: new MongoStore({
+    url: config.MONGO_CONNECTION_STRING,
+    collection: 'adminsessions'
+  })
 }
 app.use(session(sessionOptions))
 app.use(passport.initialize())
@@ -206,7 +209,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    { passReqToCallback: true },
+    {passReqToCallback: true},
     require('./authentication/local-strategy')
   )
 )

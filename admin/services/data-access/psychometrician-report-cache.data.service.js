@@ -49,7 +49,7 @@ const psychometricianReportCacheDataService = {
    * @return {Promise<*>}
    */
   sqlFindAll: async function () {
-    const sql = `select * from ${table}`
+    const sql = `select * from ${sqlService.adminSchema}.${table}`
     const results = await sqlService.query(sql)
     const parsed = results.map(x => {
       const d = JSON.parse(x.jsonData)
@@ -59,8 +59,23 @@ const psychometricianReportCacheDataService = {
   },
 
   sqlDeleteAll: async function () {
-    return sqlService.modify(`DELETE FROM ${table}`)
+    return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
+  },
+
+  /**
+   * Find checks that do not have entries in the psychometrician report cache table
+   * @return {Promise<*>}
+   */
+  sqlFindUnprocessedChecks: async function () {
+    const sql = `SELECT c.* 
+      FROM ${sqlService.adminSchema}.${table} p 
+      RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
+      WHERE p.check_id IS NULL
+      AND c.data IS NOT NULL
+      `
+    return sqlService.query(sql)
   }
+
 }
 
 module.exports = psychometricianReportCacheDataService

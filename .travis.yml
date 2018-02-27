@@ -42,14 +42,12 @@ before_install:
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
 
 install:
+  - docker-compose up --build -d && sleep 30
+  - docker info
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/admin/test && gem install bundler --conservative && bundle install
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa/test && gem install bundler --conservative && bundle install
-
-before_script:
-  - docker-compose up --build -d && sleep 10
-  - docker info
   - docker-compose logs
   - cd ${TRAVIS_BUILD_DIR}/admin && yarn migrate-sql
 

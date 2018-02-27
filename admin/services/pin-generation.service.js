@@ -15,13 +15,13 @@ const config = require('../config')
 
 const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
 
-const fourPmToday = moment().startOf('day').add(16, 'hours')
+const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 
 const pinExpiryTime = () => {
   if (config.OverridePinExpiry === 'true') {
     return moment().endOf('day')
   }
-  return fourPmToday
+  return fourPmToday()
 }
 
 const pinGenerationService = {}

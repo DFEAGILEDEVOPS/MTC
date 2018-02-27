@@ -51,23 +51,27 @@ Simple: `yarn start`
 
 Complex: `DEBUG=mtc-app* PORT=3001 NODE_ENV=development yarn start`
 
+Developer: `yarn startd` will run the sql migrations and then start the app
+
 Both will launch the app in development mode on http://localhost:3001/
 
 #### Environment Variables
 
-dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application, if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
+dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application, 
+if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
-* MONGO_CONNECTION_STRING - defaults to `mongodb://localhost/mtc`
+* AUTO_MARK - boolean - defaults to `true` to automatically mark the checks when they are submitted, to override 
+  this:`AUTO_MARK=false yarn start`
 * AZURE_STORAGE_CONNECTION_STRING - Blob storage account for upload file storage.  Upload only happens for production 
-  envs, but the connection string is required for all.
-* SESSION_SECRET - random string; required for session support
-* TSO_AUTH_PUBLIC_KEY - Third party Public RSA key in PEM format used during Authorisation
+    envs, but the connection string is required for all.
+* GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there 
+    is a tracking code and in production mode, eg `NODE_ENV=production`
+* MONGO_CONNECTION_STRING - defaults to `mongodb://localhost/mtc`
 * MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
-* GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there is
-  a tracking code and in production mode, eg `NODE_ENV=production`
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
-  
+* SESSION_SECRET - random string; required for session support
+* TSO_AUTH_PUBLIC_KEY - Third party Public RSA key in PEM format used during Authorisation
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool

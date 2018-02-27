@@ -7,7 +7,6 @@ const jwtService = require('../../services/jwt.service')
 const checkCompleteService = require('../../services/check-complete.service')
 const {audit, inputs, answers} = require('../mocks/check-complete')
 
-require('sinon-mongoose')
 const validToken = 'good_token'
 let sandbox
 let jwtPromiseHelper

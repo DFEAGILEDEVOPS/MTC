@@ -93,7 +93,7 @@ Feature: Generate Pupil PINs
     When I choose to cancel
     Then I should be taken to Generated Pins Page
 
-  Scenario: Pupil pins should consist of 5 characters
+  Scenario: Pupil pins should consist of 4 characters
     Given I have generated a pin for a pupil
     Then the pin should consist of 4 characters
 
@@ -101,7 +101,7 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pin should be stored against the pupil
 
-  @reset_all_pins @wip @bug_18993
+  @reset_all_pins @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
