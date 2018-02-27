@@ -5,6 +5,7 @@ const moment = require('moment')
 const R = require('ramda')
 const TYPES = require('tedious').TYPES
 const winston = require('winston')
+const dateService = require('../services/date.service')
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
@@ -70,14 +71,13 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  xit('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
+  it('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
     const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
     const britishSummerTimeValue = moment(fullDateFormat)
-    console.log('moment.format:', britishSummerTimeValue.format(fullDateFormat))
     const updatedAtParam = {
       name: 'updatedAt',
       type: TYPES.NVarChar,
-      value: britishSummerTimeValue.format(fullDateFormat)
+      value: dateService.formatIso8601(britishSummerTimeValue)
     }
     const idParam = {
       name: 'id',
@@ -103,20 +103,14 @@ describe('sql.service:integration', () => {
       expect(results.length).toBe(1)
       const row = results[0]
       expect(row.updatedAt).toBeDefined()
-      console.log('raw stored date:', row.updatedAt)
       const actualDateTime = moment(row.updatedAt)
-      console.log('stored date to string:', actualDateTime.toString())
       const utcOffset = moment.parseZone(actualDateTime).utcOffset()
       expect(utcOffset).toBe(60)
       expect(actualDateTime.milliseconds()).toBe(123)
+      expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString())
     } catch (err) {
       fail(err)
     }
-
-    /* console.log('utcOffset:', utcOffset)
-    console.log('actual:', actualDateTime)
-    console.log('expected:', britishSummerTimeValue)
-    expect(actualDateTime.toISOString()).toBe(britishSummerTimeValue.toISOString()) */
   })
 
   xit('should store the timezone offset with the datetime value', async () => {
