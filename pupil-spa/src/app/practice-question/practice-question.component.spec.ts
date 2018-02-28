@@ -141,6 +141,16 @@ describe('PractiseQuestionComponent', () => {
       expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(5);
     });
 
+    it('keyboard calls deleteChar when pressing "Del"', () => {
+      spyOn(component, 'handleKeyboardEvent').and.callThrough();
+      spyOn(component, 'deleteChar').and.callThrough();
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '0' });
+      expect(component.answer).toBe('10');
+      dispatchKeyEvent({ key: 'Del' });
+      expect(component.answer).toBe('1');
+    });
+
     it('keyboard calls OnSubmit() when Enter is pressed (if there is an answer)', () => {
       spyOn(component, 'handleKeyboardEvent').and.callThrough();
       spyOn(component, 'onSubmit').and.returnValue(null);

@@ -229,6 +229,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     switch (key) {
       case 'Backspace':
       case 'Delete':
+      case 'Del':
         this.deleteChar();
         break;
       case 'Enter':
