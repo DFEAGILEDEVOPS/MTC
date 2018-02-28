@@ -52,6 +52,21 @@
           "get": {
             "url": "/restart/overview"
           }
+        },
+        {
+          "get": {
+            "url": "/pupil-pin/generate-pins-overview"
+          }
+        },
+        {
+          "get": {
+            "url": "/restart/select-restart-list?"
+          }
+        },
+        {
+          "get": {
+            "url": "/pupil-pin/generate-pins-list/lastName/asc?"
+          }
         }
       ]
     }
