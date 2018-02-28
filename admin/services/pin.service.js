@@ -13,18 +13,12 @@ const pinService = {}
 /**
  * Get pupils with active pins
  * @param dfeNumber
- * @param schoolId (optional, defaults to null)
  * @returns {Promise<*>}
  */
-pinService.getPupilsWithActivePins = async (dfeNumber, schoolId = null) => {
+pinService.getPupilsWithActivePins = async (dfeNumber) => {
   let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
-  let groups = []
-  if (schoolId) {
-    groups = await groupService.getGroupsAsArray(schoolId)
-  }
   pupils = pupils.map(p => {
     p.dateOfBirth = dateService.formatShortGdsDate(p.dateOfBirth)
-    p.group = groups[p.group_id] || ''
     return p
   })
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)

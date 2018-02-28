@@ -131,12 +131,20 @@ const getGeneratedPinsList = async (req, res, next) => {
  */
 const getPrintPins = async (req, res, next) => {
   res.locals.pageTitle = 'Print pupils'
+  let groups
   let pupils
   let school
   let qrDataURL
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, req.user.schoolId)
+    groups = await groupService.getGroupsAsArray(req.user.schoolId)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    if (pupils.length > 0 && groups.length > 0) {
+      pupils = pupils.map(p => {
+        p.group = groups[p.group_id] || ''
+        return p
+      })
+    }
     school = await pinService.getActiveSchool(req.user.School)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
