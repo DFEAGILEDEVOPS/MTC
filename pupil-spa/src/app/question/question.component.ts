@@ -71,6 +71,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     switch (key) {
       case 'Backspace':
       case 'Delete':
+      case 'Del':
         this.deleteChar();
         break;
       case 'Enter':
