@@ -9,6 +9,7 @@ const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 const contactPage = require('../controllers/contact')
 const { getServiceManagerHome } = require('../controllers/service-manager')
+const checkFormController = require('../controllers/check-form')
 const { home,
   getSignIn,
   postSignIn,
@@ -36,7 +37,7 @@ router.get('/sign-in-failure', (req, res) => getSignInFailure(req, res))
 /* Unauthorised */
 router.get('/unauthorised', (req, res) => getUnauthorised(req, res))
 /* Test developer routing */
-router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => getServiceManagerHome(req, res, next))
+router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
 /* Service manager routing */
 router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
