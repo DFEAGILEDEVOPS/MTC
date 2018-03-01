@@ -78,5 +78,6 @@ module.exports = {
       MtcPrivateKey: process.env.MTC_AUTH_PRIVATE_KEY
     }
   },
-  Environment: getEnvironment() // process.env.ENVIRONMENT_NAME || 'Local-Dev'
+  Environment: getEnvironment(),
+  AssetPath: process.env.ASSET_PATH || 'https://guy/assets/'
 }

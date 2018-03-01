@@ -6,6 +6,8 @@ const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
 const winston = require('winston')
+const sassVariables = require('gulp-sass-variables')
+const config = require('./config')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
@@ -68,6 +70,9 @@ gulp.task('build', ['sass', 'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
+    .pipe(sassVariables({
+      $assetPath: config.AssetPath
+    }))
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })

@@ -32,8 +32,8 @@ const formatFullGdsDate = function (date) {
 
 module.exports = function (app) {
   'use strict'
-  if (typeof app === 'undefined') throw new Error('Please pass an app to this module!')
-  app.locals.assetPath = '/'
+  if (typeof app === 'undefined') throw new Error('express application object required')
+  app.locals.assetPath = config.AssetPath
   app.locals.bodyClasses = ''
   app.locals.formatPageTitle = formatPageTitle
   app.locals.govukRoot = 'https://gov.uk'

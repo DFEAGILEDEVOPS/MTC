@@ -2402,6 +2402,13 @@ gulp-concat@^2.6.1:
     through2 "^2.0.0"
     vinyl "^2.0.0"
 
+gulp-sass-variables@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/gulp-sass-variables/-/gulp-sass-variables-1.1.1.tgz#95921590f8a1b84a687ebcb3ecbc30a74bcef44d"
+  dependencies:
+    gulp-util "^3.0.7"
+    through2 "^2.0.1"
+
 gulp-sass@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/gulp-sass/-/gulp-sass-3.1.0.tgz#53dc4b68a1f5ddfe4424ab4c247655269a8b74b7"
@@ -2424,7 +2431,7 @@ gulp-uglify@^3.0.0:
     uglify-js "^3.0.5"
     vinyl-sourcemaps-apply "^0.2.0"
 
-gulp-util@^3.0, gulp-util@^3.0.0:
+gulp-util@^3.0, gulp-util@^3.0.0, gulp-util@^3.0.7:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
