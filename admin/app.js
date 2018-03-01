@@ -104,10 +104,9 @@ const styleSources = ["'self'", "'unsafe-inline'"]
 const imgSources = ["'self'", 'https://www.google-analytics.com', 'data:']
 if (config.AssetPath !== '/') {
   // add CSP policy for assets domain
-  const assetsDomain = config.AssetPath.split('/')[0]
-  scriptSources.push(assetsDomain)
-  styleSources.push(assetsDomain)
-  imgSources.push(assetsDomain)
+  scriptSources.push(config.AssetPath)
+  styleSources.push(config.AssetPath)
+  imgSources.push(config.AssetPath)
 }
 app.use(helmet.contentSecurityPolicy({
   directives: {
