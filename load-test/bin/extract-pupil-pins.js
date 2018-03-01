@@ -5,10 +5,13 @@ const csv = require('fast-csv')
 const fs = require('fs')
 const path = require('path')
 const winston = require('winston')
+const fs = require('fs-extra')
 const R = require('ramda')
 const sqlService = require('../../admin/services/data-access/sql.service')
 
 async function main () {
+  winston.info('Create Jmeter reports directory if not present...')
+  fs.ensureDir('../Jmeter/reports')
   winston.info('Fetching all existing pins...')
   try {
     let sql = `SELECT  s.[pin] AS schoolPin, p.[pin] AS pupilPin
