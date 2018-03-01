@@ -160,12 +160,14 @@ pupilDataService.sqlCreate = async (data) => {
  * @return {Promise<*>}
  */
 pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
-  winston.debug(`sqlFindPupilsWithActivePins: called with [${dfeNumber}]`)
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
-  SELECT p.*
-  FROM ${sqlService.adminSchema}.${table} p INNER JOIN ${sqlService.adminSchema}.[school] s
+  SELECT p.*, g.group_id 
+  FROM ${sqlService.adminSchema}.${table} p 
+  INNER JOIN ${sqlService.adminSchema}.[school] s
     ON p.school_id = s.id
+  LEFT JOIN  ${sqlService.adminSchema}.[pupilGroup] g
+    ON g.pupil_id = p.id 
   WHERE p.pin IS NOT NULL
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL

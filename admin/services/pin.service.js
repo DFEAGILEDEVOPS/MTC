@@ -4,6 +4,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
+const groupService = require('../services/group.service')
 const jwtService = require('../services/jwt.service')
 const dateService = require('../services/date.service')
 const pinValidator = require('../lib/validator/pin-validator')
@@ -12,7 +13,7 @@ const pinService = {}
 /**
  * Get pupils with active pins
  * @param dfeNumber
- * @returns {Array}
+ * @returns {Promise<*>}
  */
 pinService.getPupilsWithActivePins = async (dfeNumber) => {
   let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
