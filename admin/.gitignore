@@ -48,6 +48,7 @@ public/images
 public/images/*
 public/CSVs
 public/CSVs/*
+public/govuk_template/stylesheets
 
 #Ignore cucumber screenshots
 test/screenshots
