@@ -99,13 +99,22 @@ if (config.Logging.Express.UseWinston === 'true') {
 
 app.use(cors())
 app.use(helmet())
+const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com']
+const styleSources = ["'self'", "'unsafe-inline'"]
+const imgSources = ["'self'", 'https://www.google-analytics.com', 'data:']
+if (config.AssetPath !== '/') {
+  // add CSP policy for assets domain
+  scriptSources.push(config.AssetPath)
+  styleSources.push(config.AssetPath)
+  imgSources.push(config.AssetPath)
+}
 app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com'],
+    scriptSrc: scriptSources,
     fontSrc: ["'self'", 'data:'],
-    styleSrc: ["'self'", "'unsafe-inline'"],
-    imgSrc: ["'self'", 'https://www.google-analytics.com', 'data:'],
+    styleSrc: styleSources,
+    imgSrc: imgSources,
     connectSrc: ["'self'", 'https://www.google-analytics.com'],
     objectSrc: ["'none'"],
     mediaSrc: ["'none'"],

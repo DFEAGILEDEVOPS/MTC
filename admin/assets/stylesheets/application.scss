@@ -1,6 +1,6 @@
 // Path to assets for use with the file-url function
 // in the govuk frontend toolkit's url-helpers partial
-$path: '/govuk_template/stylesheets/images/';
+$path: '#{$assetPath}/govuk_template/stylesheets/images/';
 
 // Base GDS Toolkit
 // Settings (variables)
