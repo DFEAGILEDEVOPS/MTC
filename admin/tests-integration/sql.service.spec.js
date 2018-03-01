@@ -71,13 +71,13 @@ describe('sql.service:integration', () => {
     expect(row.version).toBeUndefined()
   })
 
-  it('dates should be stored as UTC and preserve up to 3 millseconds', async () => {
+  it('dates should be stored as UTC and preserve up to 3 milliseconds', async () => {
     const fullDateFormat = '2017-07-16T14:01:02.123+01:00'
     const britishSummerTimeValue = moment(fullDateFormat)
     const updatedAtParam = {
       name: 'updatedAt',
-      type: TYPES.NVarChar,
-      value: dateService.formatIso8601(britishSummerTimeValue)
+      type: TYPES.DateTimeOffset,
+      value: britishSummerTimeValue
     }
     const idParam = {
       name: 'id',
