@@ -192,7 +192,9 @@ $(function () {
       // Initial positioning.
       var footerPosition = $('#footer').position()
       var finalPosition = windowHeight - Math.round(footerPosition.top)
-      stickyBanner.css({ bottom: finalPosition })
+      if (finalPosition > 0) {
+        stickyBanner.css({bottom: finalPosition})
+      }
 
       // Re-calculate position on scrolling.
       $(document).scroll(function () {
