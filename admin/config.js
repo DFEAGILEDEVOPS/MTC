@@ -80,5 +80,5 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  AssetPath: process.env.hasOwnProperty('ASSET_PATH') ? process.env.ASSET_PATH : '/'
+  AssetPath: process.env.ASSET_PATH || '/'
 }
