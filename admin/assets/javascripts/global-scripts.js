@@ -189,6 +189,12 @@ $(function () {
       var distance = documentHeight - windowHeight - footerHeight - 10
       var stickyBanner = $('#stickyBanner')
 
+      // Initial positioning.
+      var footerPosition = $('#footer').position()
+      var finalPosition = windowHeight - Math.round(footerPosition.top)
+      stickyBanner.css({ bottom: finalPosition })
+
+      // Re-calculate position on scrolling.
       $(document).scroll(function () {
         var y = $(this).scrollTop()
         if (y > distance) {
@@ -196,6 +202,14 @@ $(function () {
         } else {
           stickyBanner.css({ bottom: 0 })
         }
+      })
+
+      // Re-calculating position on window resize.
+      $(window).resize(function () {
+        var windowHeight = $(window).height()
+        var footerPosition = $('#footer').position()
+        var finalPosition = windowHeight - Math.round(footerPosition.top)
+        stickyBanner.css({ bottom: finalPosition })
       })
     },
 
