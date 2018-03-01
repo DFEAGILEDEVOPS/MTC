@@ -18,7 +18,7 @@
   padding-right: .5em;
 
   &:before {
-    background-image: url('/images/icon-printer.png');
+    background-image: url('#{$assetPath}images/icon-printer.png');
     background-repeat: no-repeat;
     content: " ";
     margin-left: .5em;
@@ -62,7 +62,7 @@
   display:inline-block;
   white-space: nowrap;
   &:before {
-    background-image: url('/images/custom-download.png');
+    background-image: url('${assetPath}images/custom-download.png');
     background-repeat: no-repeat;
     background-size: 25px 25px;
     content: " ";
@@ -76,4 +76,13 @@
 
 .school-pin-pin {
   padding-top: 10px;
+}
+
+.pupil-print-table .pupil-group strong {
+  font-size: small;
+}
+
+.pupil-group {
+  font-size: small;
+  display: block;
 }

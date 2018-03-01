@@ -265,6 +265,7 @@ describe('pupilPin controller:', () => {
     })
 
     it('returns data for the print page', async (done) => {
+      spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
       spyOn(dateService, 'formatDayAndDate').and.returnValue('')
       spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
       spyOn(pinService, 'getActiveSchool').and.returnValue({})

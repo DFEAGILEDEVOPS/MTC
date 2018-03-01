@@ -50,10 +50,20 @@ schoolDataService.sqlFindOneByDfeNumber = async function (dfeNumber) {
   return R.head(rows)
 }
 
+/**
+ * Update school.
+ * @param update
+ * @returns {Promise<*>}
+ */
 schoolDataService.sqlUpdate = async function (update) {
   return sqlService.update(table, update)
 }
 
+/**
+ * Find school by array of ids.
+ * @param ids
+ * @returns {Promise<*>}
+ */
 schoolDataService.sqlFindByIds = async function (ids) {
   if (!(Array.isArray(ids) && ids.length > 0)) {
     throw new Error('No ids provided')

@@ -12,7 +12,7 @@ When(/^I have updated the question time limit to (\d+) seconds$/) do |limit|
 end
 
 Then(/^I should see that question time limit is set to (\d+) seconds$/) do |limit|
-  expect(check_settings_page.question_time_limit.value).to eql limit
+  expect(check_settings_page.question_time_limit.value).to eql limit.to_s
 end
 
 When(/^I attempt to enter question time limit as (.*) seconds$/) do |limit|
@@ -27,11 +27,11 @@ end
 
 When(/^I have updated the question time limit to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
   step 'I am on the check settings page'
-  check_settings_page.update_question_time_limit(whole_number+'.'+decimal)
+  check_settings_page.update_question_time_limit(whole_number.to_s+'.'+decimal.to_s)
 end
 
 Then(/^I should see that question time limit is set to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
-  expect(check_settings_page.question_time_limit.value).to eql(whole_number+'.'+decimal)
+  expect(check_settings_page.question_time_limit.value).to eql(whole_number.to_s+'.'+decimal.to_s)
 end
 
 When(/^I update the question time limit from (\d+) to (\d+) seconds$/) do |limit, new_limit|
@@ -50,12 +50,12 @@ Then(/^I should see a historic record appended for question Time limit change to
 end
 
 Then(/^I should see that time between questions is set to (\d+) seconds$/) do |limit|
-  expect(check_settings_page.loading_time_limit.value).to eql limit
+  expect(check_settings_page.loading_time_limit.value).to eql limit.to_s
 end
 
 When(/^I have updated the time between questions to (\d+) seconds$/) do |limit|
   step 'I am on the check settings page'
-  check_settings_page.update_loading_time_limit(limit)
+  check_settings_page.update_loading_time_limit(limit.to_s)
 end
 
 When(/^I attempt to enter time between questions as (.*) seconds$/) do |limit|
@@ -70,11 +70,11 @@ end
 
 And(/^I have updated the time between questions to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
   step 'I am on the check settings page'
-  check_settings_page.update_loading_time_limit(whole_number+'.'+decimal)
+  check_settings_page.update_loading_time_limit(whole_number.to_s+'.'+decimal.to_s)
 end
 
 Then(/^I should see that time between questions is set to (\d+)\.(\d+) seconds$/) do |whole_number, decimal|
-  expect(check_settings_page.loading_time_limit.value).to eql(whole_number+'.'+decimal)
+  expect(check_settings_page.loading_time_limit.value).to eql(whole_number.to_s+'.'+decimal.to_s)
 end
 
 When(/^I update the time between questions from (\d+) to (\d+) seconds$/) do |limit, new_limit|
@@ -90,4 +90,12 @@ end
 
 Then(/^I should see a historic record appended for Time between questions change to (\d+) in the database$/) do |arg|
   wait_until{SqlDbHelper.latest_setting_log['loadingTimeLimit'] == arg.to_i}
+end
+
+And(/^I click cancel$/) do
+  check_settings_page.cancel.click
+end
+
+Then(/^I should be returned to the admin page$/) do
+  expect(admin_page).to be_displayed
 end
