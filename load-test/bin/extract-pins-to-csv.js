@@ -2,10 +2,9 @@
 'use strict'
 
 const csv = require('fast-csv')
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const winston = require('winston')
-const fs = require('fs-extra')
 const R = require('ramda')
 const sqlService = require('../../admin/services/data-access/sql.service')
 
