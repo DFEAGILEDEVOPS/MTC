@@ -26,7 +26,7 @@
     * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing: `node extract-pins-to-csv.js`
     
 ## Execute pupil load test    
-While in `load-test/jmeter` directory execute the following command to run JMeter pupil check load test in CLI mode:
+Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter pupil check load test in CLI mode:
 
 `` jmeter -n -t ../scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -Jhost=localhost -Jthreads=3600 -Jramp=50
 ``
