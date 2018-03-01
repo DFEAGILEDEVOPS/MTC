@@ -79,5 +79,5 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  AssetPath: process.env.ASSET_PATH || 'https://guy/assets/'
+  AssetPath: process.env.ASSET_PATH || '/'
 }

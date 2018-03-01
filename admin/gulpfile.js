@@ -9,6 +9,7 @@ const winston = require('winston')
 const sassVariables = require('gulp-sass-variables')
 const config = require('./config')
 const replace = require('gulp-replace')
+require('dotenv').config()
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
@@ -67,7 +68,7 @@ gulp.task('realclean', ['clean'], function () {
     .pipe(clean())
 })
 
-gulp.task('build', ['sass', 'govcss', 'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'])
+gulp.task('build', ['sass',  'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'])
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
@@ -83,9 +84,6 @@ gulp.task('govcss', () => {
     .pipe(replace('images/', function (match) {
       console.log('match found:', match)
       return config.AssetPath + 'images/'
-    }))
-    .pipe(replace('javascripts/', function (match) {
-      return config.AssetPath + 'javascripts/'
     }))
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./public/govuk_template/stylesheets'))
