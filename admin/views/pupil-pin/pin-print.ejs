@@ -23,6 +23,9 @@
                         <div class="pupil-content">
                             <span class="fullname"><%= `${pupils[i].foreName} ${pupils[i].showMiddleNames ? pupils[i].middleNames : ''} ${pupils[i].lastName}`%>
                             </span>
+                            <% if (pupils[i].group) { %>
+                            <div class="pupil-group">Group: <strong><%= pupils[i].group %></strong></div>
+                            <% } %>
                             <% if (pupils[i].showDoB) { %>
                             <div class="dob">Date of birth: <%= pupils[i].dateOfBirth %></div>
                             <% } %>
@@ -39,6 +42,9 @@
                         <div class="pupil-content">
                             <span class="fullname"><%= `${pupils[i+1].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} ${pupils[i+1].lastName}`%>
                             </span>
+                            <% if (pupils[i+1].group) { %>
+                            <div class="pupil-group">Group: <strong><%= pupils[i+1].group %></strong></div>
+                            <% } %>
                             <% if (pupils[i+1].showDoB) { %>
                             <div class="dob">Date of birth: <%= pupils[i+1].dateOfBirth %></div>
                             <% } %>
