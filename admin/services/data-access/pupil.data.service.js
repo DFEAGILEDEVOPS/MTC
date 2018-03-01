@@ -160,7 +160,6 @@ pupilDataService.sqlCreate = async (data) => {
  * @return {Promise<*>}
  */
 pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
-  winston.debug(`sqlFindPupilsWithActivePins: called with [${dfeNumber}]`)
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
   SELECT p.*, g.group_id 
