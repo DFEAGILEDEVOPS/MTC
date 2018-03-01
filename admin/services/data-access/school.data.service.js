@@ -68,4 +68,23 @@ schoolDataService.sqlFindByIds = async function (ids) {
   return sqlService.query(sql, params)
 }
 
+/**
+ * Find schools by DfeNumbers
+ * @param {Array} dfeNumbers
+ * @return {Promise<void>}
+ */
+schoolDataService.sqlFindByDfeNumbers = async function (dfeNumbers) {
+  if (!(Array.isArray(dfeNumbers) && dfeNumbers.length > 0)) {
+    throw new Error('No dfeNumbers provided')
+  }
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.${table}
+  `
+  const {params, paramIdentifiers} = sqlService.buildParameterList(dfeNumbers, TYPES.Int)
+  const whereClause = 'WHERE dfeNumber IN (' + paramIdentifiers.join(', ') + ')'
+  const sql = [select, whereClause].join(' ')
+  return sqlService.query(sql, params)
+}
+
 module.exports = schoolDataService
