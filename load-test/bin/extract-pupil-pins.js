@@ -31,7 +31,7 @@ async function main () {
     const writableStream = fs.createWriteStream(path.join(__dirname, '../scenarios/data/pupilLogins.csv'))
 
     writableStream.on('finish', function () {
-      console.log('DONE!')
+      console.log('DONE')
       process.exit(0)
     })
 

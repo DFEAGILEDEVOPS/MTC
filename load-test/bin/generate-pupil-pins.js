@@ -10,7 +10,6 @@ const pinGenerationService = require('../../admin/services/pin-generation.servic
 const checkStartService = require('../../admin/services/check-start.service')
 
 async function main () {
-  winston.level = 'debug'
   try {
     const schoolLength = parseInt(process.argv[2])
     if (!schoolLength) {
