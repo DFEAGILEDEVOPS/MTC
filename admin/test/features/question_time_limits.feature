@@ -1,5 +1,5 @@
 #These tests are having issues with travis
-@timer_reset @question_time_limits @wip
+@timer_reset @question_time_limits
 Feature: Question time limit tests
   I want to be able to vary the time limit used for the questions in an MTC check
   As a STA Researcher
@@ -38,3 +38,8 @@ Feature: Question time limit tests
   Scenario: A historic record is appended for every change of Question time limit
     When I update the question time limit from 5 to 7 seconds
     Then I should see a historic record appended for question Time limit change to 7 in the database
+
+  Scenario: Cancel returns user to service manager home page
+    When I am on the check settings page
+    And I click cancel
+    Then I should be returned to the admin page
