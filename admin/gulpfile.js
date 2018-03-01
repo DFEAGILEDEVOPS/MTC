@@ -78,13 +78,3 @@ gulp.task('sass', function () {
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
-
-/* gulp.task('govcss', () => {
-  return gulp.src('./public/gov_style_src/*.css')
-    .pipe(replace('images/', function (match) {
-      console.log('match found:', match)
-      return config.AssetPath + 'images/'
-    }))
-    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-    .pipe(gulp.dest('./public/govuk_template/stylesheets'))
-}) */
