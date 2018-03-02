@@ -141,8 +141,8 @@ And(/^Pupil has taken a 2nd check$/) do
 
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
-  @page = generate_pupil_pins_page
-  @pupil_name = generate_pupil_pins_page.generate_pin_using_name(@details_hash[:first_name])
+  @page = generate_pins_overview_page
+  @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 
   ct = Time.now
   new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
@@ -224,7 +224,7 @@ When(/^they become eligable for a restart$/) do
 end
 
 Then(/^I should be able to filter the pupil list by the group$/) do
-  restarts_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
+  restarts_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   filtered_pupils = restarts_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
