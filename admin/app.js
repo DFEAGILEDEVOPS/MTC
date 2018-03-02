@@ -35,7 +35,7 @@ const environmentName = config.Environment
 let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
 let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
-  featureTogglesSpecificPath = './config/feature-toggles-' + environmentName
+  featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
   featureTogglesDefaultPath = './config/feature-toggles-default'
   featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
   featureTogglesDefault = require(featureTogglesDefaultPath)
