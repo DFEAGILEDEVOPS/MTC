@@ -2,6 +2,7 @@
 
 require('dotenv').config()
 
+const fs = require('fs')
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
@@ -23,13 +24,40 @@ const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
 const featureToggles = require('feature-toggles')
-featureToggles.load(require('./config/feature-toggles'))
+const winston = require('winston')
+
+winston.info('ENVIRONMENT_NAME : ' + process.env.ENVIRONMENT_NAME)
+const environmentName = process.env.ENVIRONMENT_NAME
+
+/**
+ * Load feature toggles
+ */
+let featureTogglesSpecific, featureTogglesDefault
+let featureTogglesSpecificPath, featureTogglesDefaultPath
+try {
+  featureTogglesSpecificPath = './config/feature-toggles-' + environmentName
+  featureTogglesDefaultPath = './config/feature-toggles-default'
+  featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
+  featureTogglesDefault = require(featureTogglesDefaultPath)
+} catch (error) {
+}
+
+if (featureTogglesSpecific) {
+  winston.info(`Loading environment-specific feature toggles from '${featureTogglesSpecificPath}' : `, featureTogglesSpecific)
+  featureToggles.load(featureTogglesSpecific)
+} else {
+  winston.info(`Loading default feature toggles from: '${featureTogglesDefaultPath}' : `, featureTogglesDefault)
+  if (featureTogglesDefault) {
+    featureToggles.load(featureTogglesDefault)
+  } else {
+    winston.error('Unable to load default feature-toggles')
+  }
+}
 
 /**
  * Logging
  * use LogDNA transport for winston if configuration setting available
  */
-const winston = require('winston')
 if (config.Logging.LogDna.key) {
   require('logdna')
   const options = config.Logging.LogDna
