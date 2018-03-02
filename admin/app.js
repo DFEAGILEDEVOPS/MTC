@@ -22,6 +22,9 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+const featureToggles = require('feature-toggles')
+featureToggles.load(require('./config/feature-toggles'))
+
 /**
  * Logging
  * use LogDNA transport for winston if configuration setting available
@@ -70,6 +73,9 @@ const restart = require('./routes/restart')
 
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
+
+// Use the feature toggle middleware to enable it in res.locals
+app.use(featureToggles.middleware)
 
 if (config.Logging.Express.UseWinston === 'true') {
   /**

@@ -33,9 +33,16 @@
         <p class="lede" id="lead-paragraph">
             Organise pupils into groups if you are planning to administer the check to smaller cohorts.
         </p>
+
+
         <div class="button-wrapper">
+            <% if (isFeatureEnabled('groupCreate')) { %>
             <a class="button button-primary" href="/school/group-pupils/add">Create new group</a>
+            <% } else { %>
+            <a class="button button-primary" disabled="disabled" href="#">Create new group</a>
+            <% } %>
         </div>
+
 
         <% if (Array.isArray(groups) && groups.length > 0) { %>
         <div class="group">
