@@ -2,7 +2,6 @@
 
 require('dotenv').config()
 
-const fs = require('fs')
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
