@@ -36,28 +36,21 @@ let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
 let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
   featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
-  featureTogglesDefaultPath = './config/feature-toggles-default'
   featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
-  featureTogglesDefault = require(featureTogglesDefaultPath)
-  if (featureTogglesSpecific && featureTogglesDefault) {
-    featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
-  }
-} catch (error) {
+} catch (err) {
 }
+
+try {
+  featureTogglesDefaultPath = './config/feature-toggles.default'
+  featureTogglesDefault = require(featureTogglesDefaultPath)
+} catch (err) {
+}
+
+featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
 
 if (featureTogglesMerged) {
   winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
   featureToggles.load(featureTogglesMerged)
-} else if (featureTogglesSpecific) {
-  winston.info(`Loading environment-specific feature toggles from '${featureTogglesSpecificPath}' : `, featureTogglesSpecific)
-  featureToggles.load(featureTogglesSpecific)
-} else {
-  winston.info(`Loading default feature toggles from: '${featureTogglesDefaultPath}' : `, featureTogglesDefault)
-  if (featureTogglesDefault) {
-    featureToggles.load(featureTogglesDefault)
-  } else {
-    winston.error('Unable to load default feature-toggles')
-  }
 }
 
 /**
