@@ -283,15 +283,15 @@ Then(/^the sticky banner should display the total pupil count for pupil not taki
 end
 
 Then(/^I should not see the pupil in the list$/) do
-  generate_pupil_pins_page.generate_pin_btn.click if generate_pupil_pins_page.displayed?
+  generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.displayed?
   generated_pins_page.generate_more_pin_btn.click if generated_pins_page.displayed?
-  pupil_list = generate_pupil_pins_page.pupil_list.rows.map{|row| row.name.text}
+  pupil_list = generate_pins_overview_page.pupil_list.rows.map{|row| row.name.text}
   expect(pupil_list).to_not include @pupil_lastname + ', ' + @pupil_forename
 end
 
 When(/^I choose to filter pupils via group on the pupil reason page$/) do
   pupil_reason_page.load
-  pupil_reason_page.group_filter.closed_filter.click unless generate_pupil_pins_page.group_filter.has_opened_filter?
+  pupil_reason_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
