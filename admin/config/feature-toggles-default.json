@@ -1,4 +1,7 @@
 {
   "groupCreate": true,
-  "groupRemove": true
+  "groupRemove": true,
+  "pupilAdd": true,
+  "pupilEdit": true,
+  "pupilUpload": true
 }

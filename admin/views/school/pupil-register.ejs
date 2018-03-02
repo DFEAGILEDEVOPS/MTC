@@ -19,8 +19,17 @@
                 This list uses anonymous pupil data in the format Pupil 1, Pupil 2, etc. If you need to add more pupils please follow this pattern. Do not use real pupil data. To withdraw pupils, go to <a href="/school/pupils-not-taking-check">Pupils not taking the check</a>.
             </p>
             <div class="button-wrapper">
+                <% if (isFeatureEnabled('pupilAdd')) { %>
                 <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
+                <% } else { %>
+                <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
+                <% } %>
+
+                <% if (isFeatureEnabled('pupilUpload')) { %>
                 <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
+                <% } else { %>
+                <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
+                <% } %>
             </div>
         </div>
         <table id="register-pupils" class="spacious">
@@ -42,13 +51,19 @@
                 <tr>
                     <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper">
-                            <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
-                                <%= `${p.lastName}, ${p.foreName}` %>
-                            </a>
+                            <% if (isFeatureEnabled('pupilEdit')) { %>
+                                <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
+                                    <%= `${p.lastName}, ${p.foreName}` %>
+                                </a>
+                                <% } else { %>
+                                <span class="bold-small truncate">
+                                    <%= `${p.lastName}, ${p.foreName}` %>
+                                </span>
+                            <% } %>
                             <% if (p.showDoB) { %>
-                            <div class="font-greyed-out font-xsmall">
-                                Date of birth: <%= p.dob %>
-                            </div>
+                                <div class="font-greyed-out font-xsmall">
+                                    Date of birth: <%= p.dob %>
+                                </div>
                             <% } %>
                         </div>
                     </td>
