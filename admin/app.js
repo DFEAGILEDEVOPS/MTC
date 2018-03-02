@@ -25,8 +25,8 @@ const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 
-winston.info('ENVIRONMENT_NAME : ' + process.env.ENVIRONMENT_NAME)
-const environmentName = process.env.ENVIRONMENT_NAME
+winston.info('ENVIRONMENT_NAME : ' + config.Environment)
+const environmentName = config.Environment
 
 /**
  * Load feature toggles
