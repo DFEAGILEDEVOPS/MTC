@@ -335,6 +335,10 @@ input {
   @include media(tablet) {
     margin-top: 0;
   }
+
+  &.disabled-link {
+    color: $grey-1;
+  }
 }
 
 .button-single {
