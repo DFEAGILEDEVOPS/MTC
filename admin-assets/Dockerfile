@@ -1,6 +1,9 @@
 
 FROM nginx:1.13.3-alpine
 
+## Copy our default nginx config
+COPY nginx/default.conf /etc/nginx/conf.d/
+
 # delete default webroot
 RUN rm -rf /usr/share/nginx/html
 # copy in public assets from admin app
