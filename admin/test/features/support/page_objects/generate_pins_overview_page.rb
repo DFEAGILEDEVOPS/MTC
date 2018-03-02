@@ -1,4 +1,4 @@
-class GeneratePupilPinsPage < SitePrism::Page
+class GeneratePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-pins-overview'
 
   element :heading, '.heading-xlarge'
