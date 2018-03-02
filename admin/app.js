@@ -24,6 +24,7 @@ const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
+const R = require('ramda')
 
 winston.info('ENVIRONMENT_NAME : ' + config.Environment)
 const environmentName = config.Environment
@@ -31,17 +32,23 @@ const environmentName = config.Environment
 /**
  * Load feature toggles
  */
-let featureTogglesSpecific, featureTogglesDefault
+let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
 let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
   featureTogglesSpecificPath = './config/feature-toggles-' + environmentName
   featureTogglesDefaultPath = './config/feature-toggles-default'
   featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
   featureTogglesDefault = require(featureTogglesDefaultPath)
+  if (featureTogglesSpecific && featureTogglesDefault) {
+    featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
+  }
 } catch (error) {
 }
 
-if (featureTogglesSpecific) {
+if (featureTogglesMerged) {
+  winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
+  featureToggles.load(featureTogglesMerged)
+} else if (featureTogglesSpecific) {
   winston.info(`Loading environment-specific feature toggles from '${featureTogglesSpecificPath}' : `, featureTogglesSpecific)
   featureToggles.load(featureTogglesSpecific)
 } else {
