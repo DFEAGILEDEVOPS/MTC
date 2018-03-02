@@ -61,7 +61,11 @@
                             <strong><a href="/school/group-pupils/edit/<%= group.id %>"><%= group.name %></a></strong> <span class="font-xsmall">(<%= group.pupilCount %> pupils)</span>
                         </td>
                         <td class="align-right">
+                            <% if (isFeatureEnabled('groupRemove')) { %>
                             <a href="/school/group-pupils/delete/<%= group.id %>" class="modal-link font-xsmall" id="js-modal-link">Remove</a>
+                            <% } else { %>
+                            <span class="font-greyed-out font-xsmall">Remove</span>
+                            <% } %>
                         </td>
                     </tr>
                     <% }) %>
