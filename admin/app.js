@@ -22,11 +22,41 @@ const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
+const featureToggles = require('feature-toggles')
+const winston = require('winston')
+const R = require('ramda')
+
+winston.info('ENVIRONMENT_NAME : ' + config.Environment)
+const environmentName = config.Environment
+
+/**
+ * Load feature toggles
+ */
+let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
+let featureTogglesSpecificPath, featureTogglesDefaultPath
+try {
+  featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
+  featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
+} catch (err) {
+}
+
+try {
+  featureTogglesDefaultPath = './config/feature-toggles.default'
+  featureTogglesDefault = require(featureTogglesDefaultPath)
+} catch (err) {
+}
+
+featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
+
+if (featureTogglesMerged) {
+  winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
+  featureToggles.load(featureTogglesMerged)
+}
+
 /**
  * Logging
  * use LogDNA transport for winston if configuration setting available
  */
-const winston = require('winston')
 if (config.Logging.LogDna.key) {
   require('logdna')
   const options = config.Logging.LogDna
@@ -70,6 +100,9 @@ const restart = require('./routes/restart')
 
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
+
+// Use the feature toggle middleware to enable it in res.locals
+app.use(featureToggles.middleware)
 
 if (config.Logging.Express.UseWinston === 'true') {
   /**
