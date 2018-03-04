@@ -8,6 +8,6 @@ class ConfirmationPage < SitePrism::Page
   element :school_name, "#school"
   element :dob, "#dob"
   element :back_sign_in_page, "a[href='/sign-out']"
-  element :read_instructions,"button", text: 'Read Instructions'
+  element :read_instructions,"button", text: 'Next'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 end
