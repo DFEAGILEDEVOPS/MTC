@@ -15,6 +15,7 @@ Feature:
     Given I am on the instructions page
     Then I should see a start button
 
-  Scenario: Instructions page should display the timings between questions dynamically
-    Given I am on the instructions page
-    Then I should see the timings between questions
+# Removed for the March trial
+#  Scenario: Instructions page should display the timings between questions dynamically
+#    Given I am on the instructions page
+#    Then I should see the timings between questions
