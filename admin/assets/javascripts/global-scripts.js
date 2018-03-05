@@ -170,7 +170,7 @@ $(function () {
      * @param status
      */
     toggle: function (status) {
-      stickyBanner.stickyBannerPositioning()
+      stickyBanner.positioning()
       if (status === false) {
         $('#stickyBanner').removeClass('show')
       } else {
@@ -182,20 +182,40 @@ $(function () {
     /**
      * Sticky banner positioning.
      */
-    stickyBannerPositioning: function () {
-      var windowHeight = $(window).height()
+    positioning: function () {
       var documentHeight = $(document).height()
-      var footerHeight = $('#footer').height()
-      var distance = documentHeight - windowHeight - footerHeight - 10
       var stickyBanner = $('#stickyBanner')
-
-      $(document).scroll(function () {
+      var calculatePosition = function () {
+        var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
         var y = $(this).scrollTop()
         if (y > distance) {
           stickyBanner.css({ bottom: y - distance })
         } else {
           stickyBanner.css({ bottom: 0 })
         }
+      }
+
+      // Initial position.
+      calculatePosition()
+
+      // Re-calculate position on scrolling.
+      $(document).scroll(function () {
+        calculatePosition()
+        // if (y > distance) {
+        //   stickyBanner.css({ bottom: y - distance })
+        // } else {
+        //   stickyBanner.css({ bottom: 0 })
+        // }
+      })
+
+      // Re-calculating position on window resize.
+      $(window).resize(function () {
+        calculatePosition()
+        // if (y > distance) {
+        //   stickyBanner.css({ bottom: y - distance })
+        // } else {
+        //   stickyBanner.css({ bottom: 0 })
+        // }
       })
     },
 
@@ -476,7 +496,7 @@ $(function () {
 
       /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
-      stickyBanner.stickyBannerPositioning()
+      stickyBanner.positioning()
       var displayStickyBanner = false
       if ($('#pupils-not-taking-checks').length > 0) {
         displayStickyBanner = pupilsNotTakingCheck.isCheckboxChecked()
