@@ -18,7 +18,7 @@ const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWor
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 
 const pinExpiryTime = () => {
-  if (config.OverridePinExpiry === 'true') {
+  if (config.OverridePinExpiry) {
     return moment().endOf('day')
   }
   return fourPmToday()
