@@ -21,8 +21,15 @@ const getGeneratePinsOverview = async (req, res, next) => {
   if (pupils && pupils.length > 0) {
     return res.redirect('/pupil-pin/generated-pins-list')
   }
+  let error
+  try {
+    error = await pinService.getPinsOverviewError()
+  } catch (err) {
+    return next(err)
+  }
   return res.render('pupil-pin/generate-pins-overview', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    error
   })
 }
 
@@ -107,10 +114,12 @@ const getGeneratedPinsList = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
   let school
+  let error
   const date = dateService.formatDayAndDate(new Date())
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School)
     school = await pinService.getActiveSchool(req.user.School)
+    error = await pinService.getPinsOverviewError()
   } catch (error) {
     return next(error)
   }
@@ -118,7 +127,8 @@ const getGeneratedPinsList = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
-    date
+    date,
+    error
   })
 }
 

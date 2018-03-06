@@ -57,6 +57,7 @@ describe('pupilPin controller:', () => {
       const controller = require('../../controllers/pupil-pin').getGeneratePinsOverview
       spyOn(res, 'render').and.returnValue(null)
       spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+      spyOn(pinService, 'getPinsOverviewError')
       await controller(req, res)
       expect(res.locals.pageTitle).toBe('Generate pupil PINs')
       expect(res.render).toHaveBeenCalled()
@@ -226,6 +227,7 @@ describe('pupilPin controller:', () => {
       const controller = require('../../controllers/pupil-pin.js').getGeneratedPinsList
       spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(null)
       spyOn(pinService, 'getActiveSchool').and.returnValue(null)
+      spyOn(pinService, 'getPinsOverviewError')
       spyOn(res, 'render').and.returnValue(null)
       await controller(req, res, next)
       expect(res.render).toHaveBeenCalled()
