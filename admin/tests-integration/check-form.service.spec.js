@@ -4,7 +4,7 @@
  * @file Integration Tests for Check Form Service
  */
 
-/* global describe expect it beforeAll jasmine */
+/* global describe xdescribe expect it beforeAll jasmine */
 
 // This test may take some time to complete
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
@@ -18,7 +18,7 @@ describe('check-form.service', () => {
   const availableForms = []
   const seenForms = []
 
-  describe('in-memory tests of check-form.service.allocateCheckForm', () => {
+  xdescribe('in-memory tests of check-form.service.allocateCheckForm', () => {
     beforeAll(async () => {
       const form1 = await checkFormService.getCheckForm(1)
       for (let i = 1; i < 21; i++) {
