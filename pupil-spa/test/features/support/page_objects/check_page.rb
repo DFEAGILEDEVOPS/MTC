@@ -24,7 +24,7 @@ class CheckPage < SitePrism::Page
 
   def wait_for_question(time=15)
     Timeout.timeout(time){sleep 0.5 until question_container.visible?}
-    Capybara.page.not_to have_css('.question-container')
+    Capybara.page.to have_css('.question-container')
     Timeout.timeout(time){sleep 0.5 until question.visible?}
   end
 
