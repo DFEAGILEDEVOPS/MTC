@@ -1,4 +1,4 @@
-const pinsOverviewErrorMessages = require('../errors/pins-overview')
+const serviceManagerErrorMessages = require('../errors/service-manager')
 
 /**
  * Validate check window and related check forms
@@ -10,12 +10,12 @@ module.exports.validate = (checkWindow, allForms) => {
   const hasCheckWindow = !!checkWindow
   const hasCheckForms = allForms && allForms.length > 0
   if (!hasCheckWindow && !hasCheckForms) {
-    return pinsOverviewErrorMessages.noCheckWindowAndForms
+    return serviceManagerErrorMessages.noCheckWindowAndForms
   }
   if (!hasCheckWindow) {
-    return pinsOverviewErrorMessages.noCurrentCheckWindow
+    return serviceManagerErrorMessages.noCurrentCheckWindow
   }
   if (!hasCheckForms) {
-    return pinsOverviewErrorMessages.noCheckFormsAssigned
+    return serviceManagerErrorMessages.noCheckFormsAssigned
   }
 }
