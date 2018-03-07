@@ -36,7 +36,7 @@ dialog.modal-box {
     padding: 12px 12px 10px 12px;
 
     &:before {
-      background-image: url('#{$assetPath}images/icon-warning-white.png');
+      background-image: url('/images/icon-warning-white.png');
       background-repeat: no-repeat;
       background-size: 25px 25px;
       content: " ";
