@@ -26,33 +26,6 @@ const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
 
-winston.info('ENVIRONMENT_NAME : ' + config.Environment)
-const environmentName = config.Environment
-
-/**
- * Load feature toggles
- */
-let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
-let featureTogglesSpecificPath, featureTogglesDefaultPath
-try {
-  featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
-  featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
-} catch (err) {
-}
-
-try {
-  featureTogglesDefaultPath = './config/feature-toggles.default'
-  featureTogglesDefault = require(featureTogglesDefaultPath)
-} catch (err) {
-}
-
-featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
-
-if (featureTogglesMerged) {
-  winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
-  featureToggles.load(featureTogglesMerged)
-}
-
 /**
  * Logging
  * use LogDNA transport for winston if configuration setting available
@@ -85,6 +58,32 @@ if (unsetVars.length > 0) {
   const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
   process.exitCode = 1
   throw new Error(error)
+}
+
+/**
+ * Load feature toggles
+ */
+winston.info('ENVIRONMENT_NAME : ' + config.Environment)
+const environmentName = config.Environment
+let featureTogglesSpecific, featureTogglesDefault, featureTogglesMerged
+let featureTogglesSpecificPath, featureTogglesDefaultPath
+try {
+  featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
+  featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
+} catch (err) {
+}
+
+try {
+  featureTogglesDefaultPath = './config/feature-toggles.default'
+  featureTogglesDefault = require(featureTogglesDefaultPath)
+} catch (err) {
+}
+
+featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
+
+if (featureTogglesMerged) {
+  winston.info(`Loading merged feature toggles from '${featureTogglesSpecificPath}', '${featureTogglesDefaultPath}': `, featureTogglesMerged)
+  featureToggles.load(featureTogglesMerged)
 }
 
 const index = require('./routes/index')
