@@ -4,6 +4,7 @@ const moment = require('moment')
 const converter = require('number-to-words')
 const R = require('ramda')
 const sqlService = require('../../admin/services/data-access/sql.service')
+const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
 const schoolDataService = require('../../admin/services/data-access/school.data.service')
 const pupilDataService = require('../../admin/services/data-access/pupil.data.service')
 const pinGenerationService = require('../../admin/services/pin-generation.service')
@@ -87,10 +88,11 @@ async function main () {
       await checkStartService.prepareCheck(pupilsList, s.dfeNumber)
     }))
     winston.info('DONE')
-    process.exit(0)
+    sqlPoolService.drain()
   } catch (error) {
     winston.info(error)
-    process.exit(1)
+    process.exitCode = 1
+    sqlPoolService.drain()
   }
 }
 

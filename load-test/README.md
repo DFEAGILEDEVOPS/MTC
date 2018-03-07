@@ -32,12 +32,15 @@ Assuming `jmeter` directory is placed within the load-test directory, execute th
 ``
 
 This command above takes the following arguments:
-* Test file in jmx format
-* Report to be stored in csv format
-* Generated HTML Report with visual outputs of the test
-* Admin app Host URL
-* Number of Threads
-* Ramp-up period
+* -n Run in CLI mode
+* -t Test file in jmx format
+* -l Report to be stored in csv format
+* -D Overwrites the jmeter system properties. In above command we are overwriting the property to save report in csv format
+* -e Generate HTML report after load test finishes
+* -o Generated HTML Report with visual outputs of the test
+* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
+* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
+* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
 
 ## Execute Admin load test    
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter Admin load test in CLI mode:
@@ -46,12 +49,12 @@ Assuming `jmeter` directory is placed within the load-test directory, execute th
 ``
 
 This command above takes the following arguments:
-* -n - tells Jmeter to run in Non-GUI mode
-* -t - Test file in jmx format
+* -n Run in CLI mode
+* -t Test file in jmx format
 * -l Report to be stored in csv format
-* -D - it over-write the jemer system properties. in above command we are overwriting the property to save report in csv format
-* -e - tells Jmeter to generate html report after load test finishes
+* -D Overwrites the jmeter system properties. in above command we are overwriting the property to save report in csv format
+* -e Generate HTML report after load test finishes
 * -o Generated HTML Report with visual outputs of the test
-* -jhost - Admin app Host URL (host is the variable name used in jmeter host field)
-* -Jthreads - Number of Threads(users) (threads is the variable name used in thread field)
-* -Jramp - Ramp-up period (ramp is the variable name used for ramp up field)
+* -jhost Admin app Host URL (host is the variable name used in jmeter host field)
+* -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
+* -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
