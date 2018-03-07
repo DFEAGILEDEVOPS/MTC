@@ -84,6 +84,25 @@ describe('date service', () => {
     invalidInputTests('formatTimeWithSeconds')
   })
 
+  describe('#formatIso8601', () => {
+    it('only accept a moment date as the parameter', () => {
+      expect(() => dateService.formatIso8601(new Date())).toThrowError('Parameter must be of type Moment')
+    })
+
+    it('checks the moment param to make sure it is valid and throws if it isnt', () => {
+      // Moment will output a warning because of the deliberately bad arg
+      spyOn(console, 'warn')
+      expect(() => dateService.formatIso8601(moment('garbage'))).toThrowError('Not a valid date')
+    })
+
+    it('returns the expected ISO date as a String', () => {
+      const s = '2017-07-16T14:01:02.123+01:00'
+      const m = moment(s)
+      const res = dateService.formatIso8601(m)
+      expect(res).toBe(s)
+    })
+  })
+
   describe('#formatDayAndDate', () => {
     it('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
