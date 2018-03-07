@@ -5,7 +5,7 @@ class ManageCheckWindowPage < SitePrism::Page
   element :page_instructions, '.lede', text: 'Create, edit or remove check windows. Test development will be responsible for assigning check forms to the check windows created here.'
   element :create_new_window, 'a[href="/service-manager/check-windows/add"]'
   element :panel, '.panel-border-wide', text: 'Check will be available for schools on weekdays from 8am to 3:30pm'
-  element :guidance, 'aside.support-column nav li a[href="/service-manager/download-guidance"]', text: 'Guidance'
+  element :guidance, 'aside.support-column nav li a[href="/pdfs/mtc-administration-guidance-2018-03.pdf"]', text: 'Guidance'
   element :adjust_timings, 'aside.support-column nav li a', text: 'Settings on pupil check'
   element :progress_report, '.disabled-link', text: 'View progress report'
   element :info_message, '.info-message', text: 'Changes have been saved'

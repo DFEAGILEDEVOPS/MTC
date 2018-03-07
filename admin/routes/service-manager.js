@@ -20,6 +20,5 @@ router.post('/check-windows/edit', isAuthenticated(rolesConfig.ROLE_SERVICE_MANA
 router.get('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
 router.get('/check-settings/:status', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
 router.post('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.setUpdateTiming(req, res, next))
-router.get('/download-guidance', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => downloadFile(req, res, next))
 
 module.exports = router
