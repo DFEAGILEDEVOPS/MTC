@@ -31,6 +31,9 @@ export class LoginComponent implements OnInit {
    * Handler for the login form submit action
    */
   onSubmit(schoolPin, pupilPin) {
+    if (!schoolPin || !pupilPin) {
+      return false;
+    }
     if (this.submitted === true) {
       return;
     }
