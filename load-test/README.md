@@ -22,7 +22,7 @@
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
 * While in `load-test/bin` directory:
-    * The following command will execute a node script which takes total schools required as an argument and will generate 60 pupils for each school: `node bin/generate-pupil-load-test-data.js 60`
+    * The following command will execute a node script which takes total schools required as an argument and will generate 60 pupils for each school: `OVERRIDE_PIN_EXPIRY=true node generate-pupil-load-test-data.js 60`
     * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing: `node extract-pins-to-csv.js`
     
 ## Execute pupil load test    
@@ -41,6 +41,8 @@ This command above takes the following arguments:
 * -jhost Admin app Host URL (host is the variable name used in jmeter host field)
 * -Jthreads Number of Threads(users) (threads is the variable name used in thread field)
 * -Jramp Ramp-up period (ramp is the variable name used for ramp up field)
+
+In order to rerun the test execute `undo-generate-pupil-load-test-data.sql` as SA to undo the test data population.
 
 ## Execute Admin load test    
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter Admin load test in CLI mode:
