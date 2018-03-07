@@ -6,6 +6,7 @@ const winston = require('winston')
 // winston.level = 'debug'
 
 const sqlPoolService = require('./sql.pool.service')
+const dateService = require('../date.service')
 const moment = require('moment')
 let cache = {}
 
@@ -76,13 +77,6 @@ const generateSetStatements = R.compose(
 )
 
 /**
- * Calls `toDate()` which returns the Javascript Date object wrapped by the Moment object
- * @param {Moment} v
- * @return {Date}
- */
-const convertToDate = (v) => v.toDate()
-
-/**
  * Returns a bool indicating the supplied object is a Moment object
  * @param v
  * @return {boolean}
@@ -93,11 +87,13 @@ const isMoment = (v) => moment.isMoment(v)
  * Given an object will convert all Moment values to Javascript Date
  * Useful for converting Data during UPDATES and INSERTS
  */
-const convertMomentToJsDate = R.map(R.ifElse(
-  isMoment,
-  convertToDate,
-  R.identity)
-)
+const convertMomentToJsDate = (m) => {
+  if (!isMoment(m)) {
+    return m
+  }
+  const iso = dateService.formatIso8601(m)
+  return new Date(iso)
+}
 
 /**
  * Return a list of parameters given a table and an object whose keys are column names
@@ -245,7 +241,7 @@ sqlService.modify = (sql, params = []) => {
     if (params) {
       for (let index = 0; index < params.length; index++) {
         let param = params[index]
-        param = convertMomentToJsDate(param)
+        param.value = convertMomentToJsDate(param.value)
         // TODO add support for other options
         if (!param.type) {
           con.release()
