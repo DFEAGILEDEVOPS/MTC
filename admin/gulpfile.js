@@ -72,9 +72,6 @@ gulp.task('build', ['sass', 'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
-/*     .pipe(sassVariables({
-      $assetPath: config.AssetPath
-    })) */
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
