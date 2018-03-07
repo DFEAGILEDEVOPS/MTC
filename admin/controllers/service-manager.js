@@ -320,6 +320,8 @@ const saveCheckWindows = async (req, res, next) => {
     checkWindow.checkStartDate = dateService.formatDateFromRequest(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
   }
   checkWindow.checkEndDate = dateService.formatDateFromRequest(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
+  // Ensure check end date time is set to the last minute of the particular day
+  checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
 
   // Auditing? Question for BAs.
 
