@@ -115,7 +115,7 @@ controller.postAddMultiplePupils = async (req, res, next) => {
 }
 
 controller.getAddMultiplePupilsCSVTemplate = async (req, res) => {
-  const file = 'public/CSVs/MTC-Pupil-details-template-Sheet-1.csv'
+  const file = 'public/csvs/mtc-pupil-details-template-sheet-1.csv'
   res.download(file)
 }
 
