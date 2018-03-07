@@ -15,7 +15,6 @@ const { getHome,
   savePupilNotTakingCheck,
   removePupilNotTakingCheck,
   viewPupilsNotTakingTheCheck } = require('../controllers/school')
-const downloadFile = require('../controllers/download-file')
 const group = require('../controllers/group.js')
 
 const school = (router) => {

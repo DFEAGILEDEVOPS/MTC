@@ -5,7 +5,6 @@ const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
 const rolesConfig = require('../roles-config')
 const checkFormController = require('../controllers/check-form')
-const downloadFile = require('../controllers/download-file')
 
 router.get('/', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
 router.get('/home', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getTestDeveloperHomePage(req, res, next))
