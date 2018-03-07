@@ -267,6 +267,7 @@ describe('pupilPin controller:', () => {
     it('returns data for the print page', async (done) => {
       spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
       spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+      spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
       spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
       spyOn(pinService, 'getActiveSchool').and.returnValue({})
       spyOn(qrService, 'getDataURL').and.returnValue('')
@@ -279,6 +280,7 @@ describe('pupilPin controller:', () => {
         pupils: [],
         school: {},
         date: '',
+        pinCardDate: '',
         qrDataURL: '',
         url: config.PUPIL_APP_URL
       })

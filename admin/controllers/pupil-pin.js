@@ -136,6 +136,7 @@ const getPrintPins = async (req, res, next) => {
   let school
   let qrDataURL
   const date = dateService.formatDayAndDate(new Date())
+  const pinCardDate = dateService.formatFullGdsDate(new Date())
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School)
@@ -154,6 +155,7 @@ const getPrintPins = async (req, res, next) => {
     pupils,
     school,
     date,
+    pinCardDate,
     qrDataURL,
     url: config.PUPIL_APP_URL
   })
