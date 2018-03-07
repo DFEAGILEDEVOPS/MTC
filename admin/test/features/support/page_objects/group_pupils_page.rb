@@ -5,7 +5,7 @@ class GroupPupilsPage < SitePrism::Page
   element :intro, '#lead-paragraph', text: 'Organise pupils into groups if you are planning to administer the check to smaller cohorts.'
   element :create_group, "a[href='/school/group-pupils/add']"
   element :related_heading, ".heading-medium", text: 'Related'
-  element :guidance, "a[href='/PDFs/MTC_CAG_Feb_2018_Trial.pdf']", text: 'Guidance'
+  element :guidance, "a[href='/pdfs/mtc_cag_feb_2018_trial.pdf']", text: 'Guidance'
   element :pupil_register, "a[href='#']", text: 'Pupil register'
   element :generate_pins, "a[href='#']", text: 'Generate pupil PINs'
   element :info_message, '.info-message'
