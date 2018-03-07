@@ -17,7 +17,7 @@
 .icon-download {
   &:before {
     content: " ";
-    background-image: url('#{$assetPath}govuk_template/stylesheets/images/icon-file-download.png');
+    background-image: url('/govuk_template/stylesheets/images/icon-file-download.png');
     background-size: 21px 26px;
     background-repeat: no-repeat;
     display: inline-block;
