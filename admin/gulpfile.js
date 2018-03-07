@@ -22,10 +22,10 @@ const jsBundleFiles = [
 
 gulp.task('watch', function () {
   gulp.watch('./assets/**/*.scss', ['sass'])
-  gulp.watch('./assets/**/*.js', ['bundleJs'])
+  gulp.watch('./assets/**/*.js', ['bundle-js'])
 })
 
-gulp.task('bundleJs', function () {
+gulp.task('bundle-js', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
     .pipe(uglify({
@@ -45,22 +45,22 @@ gulp.task('clean', function () {
     .pipe(clean())
 })
 
-gulp.task('copyImages', function () {
+gulp.task('copy-images', function () {
   gulp
     .src(['./assets/images/*'])
     .pipe(gulp.dest('public/images'))
 })
 
-gulp.task('copyPDFs', function () {
+gulp.task('copy-pdfs', function () {
   gulp
-    .src(['./assets/PDFs/*'])
-    .pipe(gulp.dest('public/PDFs'))
+    .src(['./assets/pdfs/*'])
+    .pipe(gulp.dest('public/pdfs'))
 })
 
-gulp.task('copyCsvFiles', function () {
+gulp.task('copy-csv-files', function () {
   gulp
-    .src(['./assets/CSVs/*'])
-    .pipe(gulp.dest('public/CSVs'))
+    .src(['./assets/csvs/*'])
+    .pipe(gulp.dest('public/csvs'))
 })
 
 gulp.task('realclean', ['clean'], function () {
@@ -68,13 +68,10 @@ gulp.task('realclean', ['clean'], function () {
     .pipe(clean())
 })
 
-gulp.task('build', ['sass', 'bundleJs', 'copyImages', 'copyPDFs', 'copyCsvFiles'])
+gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-pdfs', 'copy-csv-files'])
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
-    .pipe(sassVariables({
-      $assetPath: config.AssetPath
-    }))
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
