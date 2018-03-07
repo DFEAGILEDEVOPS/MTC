@@ -43,11 +43,11 @@ check-development-app.iml
 # Derived files
 public/stylesheets/application*.css
 public/javascripts/app.js
-public/PDFs
+public/pdfs
 public/images
 public/images/*
-public/CSVs
-public/CSVs/*
+public/csvs
+public/csvs/*
 
 #Ignore cucumber screenshots
 test/screenshots
