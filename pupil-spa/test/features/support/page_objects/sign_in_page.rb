@@ -13,8 +13,8 @@ class SignInPage < SitePrism::Page
   element :day, '#dob-day'
   element :month, '#dob-month'
   element :pin, '.pin-entry'
-  element :school_pin, '#school-pin'
-  element :pupil_pin, '#pupil-pin'
+  element :school_pin, '#schoolPin'
+  element :pupil_pin, '#pupilPin'
   element :sign_in_button, '.button-start'
   element :auto_complete_off, "form[autocomplete='off']"
 

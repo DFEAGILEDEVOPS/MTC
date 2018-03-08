@@ -113,3 +113,36 @@ end
 Given(/^I am logged in with a user who does not need speech synthesis$/) do
   step 'I have logged in'
 end
+
+Then(/^the sign in button should be disabled$/) do
+  expect(sign_in_page.sign_in_button).to be_disabled
+end
+
+
+Given(/^I have entered a school password$/) do
+  step 'I am on the sign in page'
+  sign_in_page.school_pin.set 'abc12345'
+end
+
+
+But(/^the sign in button is still disabled$/) do
+  step 'the sign in button should be disabled'
+end
+
+When(/^I enter a pupil pin$/) do
+  sign_in_page.pupil_pin.set '9999'
+end
+
+Then(/^I should see the sign in button enabled$/) do
+  expect(sign_in_page.sign_in_button).to_not be_disabled
+end
+
+
+Given(/^I have entered a pupil pin$/) do
+  step 'I am on the sign in page'
+  sign_in_page.pupil_pin.set '9999'
+end
+
+When(/^I enter a school password$/) do
+  sign_in_page.school_pin.set 'abc12345'
+end

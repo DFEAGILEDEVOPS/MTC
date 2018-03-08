@@ -71,3 +71,18 @@ Feature: Login page
     Given I am logged in with a user who does not need speech synthesis
     Then I should see speech synthesis set to false in the local storage
 
+  Scenario: Sign in button is disabled by default
+    Given I am on the sign in page
+    Then the sign in button should be disabled
+
+  Scenario: Sign in button is disabled until school password and pupil pin are entered
+    Given I have entered a school password
+    But the sign in button is still disabled
+    When I enter a pupil pin
+    Then I should see the sign in button enabled
+
+  Scenario: Sign in button is disabled until pupil pin and school password are entered
+    Given I have entered a pupil pin
+    But the sign in button is still disabled
+    When I enter a school password
+    Then I should see the sign in button enabled
