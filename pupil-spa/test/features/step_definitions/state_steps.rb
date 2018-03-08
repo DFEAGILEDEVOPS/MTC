@@ -18,8 +18,8 @@ end
 Given(/^I have refreshed through the warm up questions$/) do
   step 'I am on the warm up check page'
   3.times do
-    warm_up_page.wait_for_preload
-    warm_up_page.wait_for_question(2)
+    check_page.wait_for_preload
+    check_page.wait_for_question(2)
     visit current_url
   end
 end
