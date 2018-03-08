@@ -1,4 +1,5 @@
 const serviceManagerErrorMessages = require('../errors/service-manager')
+const testDeveloperErrorMessages = require('../errors/test-developer')
 
 /**
  * Validate check window and related check forms
@@ -16,6 +17,6 @@ module.exports.validate = (checkWindow, allForms) => {
     return serviceManagerErrorMessages.noCurrentCheckWindow
   }
   if (!hasCheckForms) {
-    return serviceManagerErrorMessages.noCheckFormsAssigned
+    return testDeveloperErrorMessages.noCheckFormsAssigned
   }
 }

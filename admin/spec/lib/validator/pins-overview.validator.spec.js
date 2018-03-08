@@ -2,6 +2,7 @@
 /* global describe, it, expect */
 const pinsOverviewValidator = require('../../../lib/validator/pins-overview-validator')
 const serviceManagerErrorMessages = require('../../../lib/errors/service-manager')
+const testDeveloperErrorMessages = require('../../../lib/errors/test-developer')
 const checkWindowMock = require('../../mocks/check-window')
 const checkFormMock = require('../../mocks/check-form')
 
@@ -16,7 +17,7 @@ describe('pins-overview-validator', () => {
     const checkWindow = checkWindowMock
     const allForms = []
     const error = pinsOverviewValidator.validate(checkWindow, allForms)
-    expect(error).toBe(serviceManagerErrorMessages.noCheckFormsAssigned)
+    expect(error).toBe(testDeveloperErrorMessages.noCheckFormsAssigned)
   })
   it('returns noCheckWindowAndForms error if there are no check forms assigned and there is no active checkwindow', () => {
     const checkWindow = null
