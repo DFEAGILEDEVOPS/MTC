@@ -176,3 +176,9 @@ Feature: Generate Pupil PINs
   Scenario: Check Form is assigned to pupil when pin is generated
     Given I have generated a pin for a pupil
     Then check form should be assigned to the pupil
+
+  @no_active_check_window @local
+  Scenario: Generate Pin Overview page display error if there is no active check window
+    Given I have signed in with teacher2
+    When I navigate to generate pupil pins page
+    Then I should not see an error message to contact helpdesk

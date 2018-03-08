@@ -100,6 +100,18 @@ Before("@remove_all_groups") do
   visit Capybara.app_host + '/sign-out'
 end
 
+Before("@no_active_check_window ") do
+  today_date = Date.today
+  check_end_date = today_date - 35
+  SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
+end
+
+After("@no_active_check_window ") do
+  today_date = Date.today
+  check_end_date = today_date + 35
+  SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
+end
+
 After("@multiple_pupil_upload") do
   FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end

@@ -1,5 +1,11 @@
 Before do
-  page.current_window.resize_to(1270,768)
+  # page.current_window.resize_to(1270,768)
+end
+
+Before do
+  today_date = Date.today
+  check_end_date = today_date + 35
+  SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
 Before('@4_digit') do

@@ -227,4 +227,10 @@ class SqlDbHelper
     chk_form_res
   end
 
+  def self.activate_or_deactivate_active_check_window(check_end_date)
+    sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
 end
