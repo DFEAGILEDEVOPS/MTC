@@ -8,6 +8,7 @@ const UKFormat = 'DD/MM/YYYY'
 const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
 const dayAndDateFormat = 'dddd D MMMM'
+const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
 const dateService = {
   formatFullGdsDate: function (date) {
@@ -32,6 +33,16 @@ const dateService = {
 
   formatTimeWithSeconds: function (date) {
     return this.checkAndFormat(date, timeFormatWithSeconds)
+  },
+
+  formatIso8601: function (momentDate) {
+    if (!(momentDate instanceof moment)) {
+      throw new Error('Parameter must be of type Moment')
+    }
+    if (!momentDate.isValid()) {
+      throw new Error('Not a valid date')
+    }
+    return momentDate.format(iso8601WithMsPrecisionAndTimeZone)
   },
 
   checkAndFormat: function (date, format) {
