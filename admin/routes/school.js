@@ -15,7 +15,6 @@ const { getHome,
   savePupilNotTakingCheck,
   removePupilNotTakingCheck,
   viewPupilsNotTakingTheCheck } = require('../controllers/school')
-const downloadFile = require('../controllers/download-file')
 const group = require('../controllers/group.js')
 
 const school = (router) => {
@@ -42,7 +41,6 @@ const school = (router) => {
   router.post('/group-pupils/add', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.addGroup(req, res, next))
   router.post('/group-pupils/edit', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.editGroup(req, res, next))
   router.get('/group-pupils/delete/:groupId', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => group.removeGroup(req, res, next))
-  router.get('/download-guidance', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => downloadFile(req, res, next))
 }
 
 module.exports = school
