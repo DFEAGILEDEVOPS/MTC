@@ -125,6 +125,8 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
     'Gender': pupil.gender,
     'PupilId': pupil.upn,
+    'Forename': pupil.foreName,
+    'Surname': pupil.lastName,
 
     'FormMark': psUtilService.getMark(check),
 

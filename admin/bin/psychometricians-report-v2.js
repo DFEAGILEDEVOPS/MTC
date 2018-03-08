@@ -6,8 +6,10 @@ const fs = require('fs')
 const winston = require('winston')
 const poolService = require('../services/data-access/sql.pool.service')
 
+const completedCheckProcessingService = require('../services/completed-check-processing.service')
 const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
+let requiresMarking = false
 
 async function main () {
   try {
@@ -17,15 +19,23 @@ async function main () {
         winston.info('force detected: re-processing all checks')
         await psychometricianReportCacheDataService.sqlDeleteAll()
       }
+      if (process.argv[2] === '-m' || process.argv[3] === '-m') {
+        requiresMarking = true
+      }
     }
 
     winston.info('main: Processing the completed checks')
+    // Make sure all completed checks are marked and ps-report data cached
 
-    // Just process everything in one batch.
-    // TODO: batchify it in a service
-    const checks = await psychometricianReportCacheDataService.sqlFindUnprocessedChecks()
-    if (!checks || !checks.length) return
-    await psychometricianReportService.batchProduceCacheData(checks.map(c => c.id))
+    if (requiresMarking) {
+      await completedCheckProcessingService.process()
+    } else {
+      // Just process everything in one batch.
+      // TODO: batchify it in a service
+      const checks = await psychometricianReportCacheDataService.sqlFindUnprocessedChecks()
+      if (!checks || !checks.length) return
+      await psychometricianReportService.batchProduceCacheData(checks.map(c => c.id))
+    }
 
     const report = await psychometricianReportService.generateReport()
     const filename = 'mtc-check.csv'
