@@ -18,11 +18,19 @@ const winston = require('winston')
  * @returns { object }
  */
 
+const storeLogonEvent = async (pupilId, schoolPin, pupilPin, isAuthenticated, httpStatusCode, httpErrorMessage = null) => {
+  try {
+    await pupilLogonEventService.storeLogonEvent(pupilId, schoolPin, pupilPin, isAuthenticated, httpStatusCode, httpErrorMessage)
+  } catch (error) {
+    winston.error('unable to record pupil logon event:', error)
+  }
+}
+
 const getQuestions = async (req, res) => {
   const {pupilPin, schoolPin} = req.body
 
   if (!pupilPin || !schoolPin) {
-    await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 400, 'Bad request')
+    await storeLogonEvent(null, schoolPin, pupilPin, false, 400, 'Bad request')
     return apiResponse.badRequest(res)
   }
 
@@ -31,7 +39,7 @@ const getQuestions = async (req, res) => {
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
-    await pupilLogonEventService.storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
+    await storeLogonEvent(null, schoolPin, pupilPin, false, 401, 'Unauthorised')
     return apiResponse.unauthorised(res)
   }
 
@@ -43,7 +51,7 @@ const getQuestions = async (req, res) => {
       if (!firstWindow) {
         const errorMessage = 'test account unable to login as no current check window available'
         winston.warn(errorMessage)
-        await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
+        await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
         return apiResponse.serverError(res)
       }
       await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber)
@@ -65,13 +73,13 @@ const getQuestions = async (req, res) => {
   try {
     config = await configService.getConfig(data.pupil)
   } catch (error) {
-    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: config')
+    await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: config')
     return apiResponse.serverError(res)
   }
   try {
     token = await jwtService.createToken(data.pupil)
   } catch (error) {
-    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
+    await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
     return apiResponse.serverError(res)
   }
 
@@ -81,11 +89,11 @@ const getQuestions = async (req, res) => {
     questions = checkFormService.prepareQuestionData(checkData.questions)
     pupilData.checkCode = checkData.checkCode
   } catch (error) {
-    await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: check data')
+    await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: check data')
     return apiResponse.serverError(res)
   }
 
-  await pupilLogonEventService.storeLogonEvent(data.pupil.id, schoolPin, pupilPin, true, 200)
+  await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, true, 200)
 
   const responseData = {
     questions,
