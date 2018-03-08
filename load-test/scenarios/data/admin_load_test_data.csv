@@ -1,0 +1,6 @@
+username,password,groupName,pupil0,pupil1,pupil2,pupilnot1,groupId,groupName
+teacher1,password,TestGroup1,12,9,16,B44344FC-22EA-44A5-8152-0F5A69110A17,735,LoadTesting
+teacher2,password,TestGroup1,44,27,36,78825909-F332-4E5F-A38B-71699515ECAA,736.LoadTesting
+teacher3,password,TestGroup1,74,57,66,E47EA615-729E-4D16-9E9E-72EE5315EC55,737,LoadTesting
+teacher4,password,TestGroup1,136,128,119,7155B69B-43DD-483D-8E00-9213C165B1E2,738,LoadTesting
+teacher5,password,TestGroup1,44,27,36,FE5617FA-106C-4EAB-8622-686666BE666B,739,LoadTesting
