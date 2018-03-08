@@ -15,18 +15,18 @@
         <p class="lede">
             Enter your school password and pupil PIN, then click <span class="nowrap">‘Sign in’</span>
         </p>
-        <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" autocomplete="off" autocapitalize="none">
+        <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off" autocapitalize="none">
             <div class="form-group">
-                <label for="school-pin" class="form-label-bold"> School password </label>
-                <input #schoolPin id="school-pin" class="form-control" spellcheck="false" autocorrect="off">
+                <label for="schoolPin" class="form-label-bold"> School password </label>
+                <input #schoolPin id="schoolPin" class="form-control" required minlength="8" maxlength="8" [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
             </div>
             <div class="form-group">
-                <label for="pupil-pin" class="form-label-bold"> Pupil PIN </label>
-                <input #pupilPin id="pupil-pin" class="form-control" spellcheck="false" autocorrect="off">
+                <label for="pupilPin" class="form-label-bold"> Pupil PIN </label>
+                <input #pupilPin id="pupilPin" class="form-control" required minlength="4" maxlength="4" [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off">
             </div>
             <div class="form-group">
                 <p>
-                    <input class="button button-start" type="submit" value="Sign in">
+                    <input class="button button-start" type="submit" value="Sign in" [disabled]="!loginForm.form.valid">
                 </p>
             </div>
         </form>

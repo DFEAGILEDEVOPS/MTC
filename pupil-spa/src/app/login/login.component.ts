@@ -5,6 +5,7 @@ import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { Login } from './login.model';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { RegisterInputService } from '../services/register-input/registerInput.s
 export class LoginComponent implements OnInit {
 
   private submitted: boolean;
+  public loginModel = new Login('', '');
 
   constructor(
     private userService: UserService,
@@ -31,9 +33,6 @@ export class LoginComponent implements OnInit {
    * Handler for the login form submit action
    */
   onSubmit(schoolPin, pupilPin) {
-    if (!schoolPin || !pupilPin) {
-      return false;
-    }
     if (this.submitted === true) {
       return;
     }
