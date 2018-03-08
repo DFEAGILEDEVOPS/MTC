@@ -18,11 +18,11 @@
         <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off" autocapitalize="none">
             <div class="form-group">
                 <label for="schoolPin" class="form-label-bold"> School password </label>
-                <input #schoolPin id="schoolPin" class="form-control" required minlength="8" maxlength="8" [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
+                <input #schoolPin id="schoolPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
             </div>
             <div class="form-group">
                 <label for="pupilPin" class="form-label-bold"> Pupil PIN </label>
-                <input #pupilPin id="pupilPin" class="form-control" required minlength="4" maxlength="4" [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off">
+                <input #pupilPin id="pupilPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off">
             </div>
             <div class="form-group">
                 <p>
