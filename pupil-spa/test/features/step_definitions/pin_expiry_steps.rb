@@ -17,7 +17,7 @@ Given(/^I login with a real user$/) do
   new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
   SqlDbHelper.create_check(new_time, new_time, @pupil['id'])
-  SqlDbHelper.set_shcool_pin(@pupil['school_id'], new_time, 'abc35def')
+  SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
   @school = SqlDbHelper.find_school(@pupil['school_id'])
   sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
