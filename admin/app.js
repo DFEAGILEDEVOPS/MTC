@@ -148,7 +148,7 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: styleSources,
     imgSrc: imgSources,
     connectSrc: ["'self'", 'https://www.google-analytics.com'],
-    objectSrc: ["'none'"],
+    objectSrc: ["'self'"],
     mediaSrc: ["'none'"],
     childSrc: ["'none'"]
   }
