@@ -8,6 +8,7 @@ const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
+const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
@@ -23,7 +24,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   }
   let error
   try {
-    error = await pinService.getPinsOverviewError()
+    error = await checkWindowSanityCheckService.check()
   } catch (err) {
     return next(err)
   }
@@ -119,7 +120,7 @@ const getGeneratedPinsList = async (req, res, next) => {
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School)
     school = await pinService.getActiveSchool(req.user.School)
-    error = await pinService.getPinsOverviewError()
+    error = await checkWindowSanityCheckService.check()
   } catch (error) {
     return next(error)
   }

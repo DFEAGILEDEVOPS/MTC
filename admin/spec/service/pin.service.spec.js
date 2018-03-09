@@ -9,16 +9,11 @@ const pinService = require('../../services/pin.service')
 const dateService = require('../../services/date.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
-const checkFormService = require('../../services/check-form.service')
-const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../../services/pupil-identification-flag.service')
-const pinsOverviewValidator = require('../../lib/validator/pins-overview-validator')
 
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
-const checkWindowMock = require('../mocks/check-window')
-const checkFormMock = require('../mocks/check-form')
 
 /* global describe, it, expect, beforeEach, afterEach, spyOn */
 
@@ -168,23 +163,6 @@ describe('pin.service', () => {
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
       await pinService.expireMultiplePins([ pupil._id ])
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
-    })
-
-    describe('getPinsOverviewErrors', () => {
-      it('calls pinsOverviewValidator when checkwindow and check forms exist', async () => {
-        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(checkWindowMock)
-        spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue([checkFormMock])
-        spyOn(pinsOverviewValidator, 'validate')
-        await pinService.getPinsOverviewError()
-        expect(pinsOverviewValidator.validate).toHaveBeenCalled()
-      })
-      it('calls pinsOverviewValidator when checkwindow and check forms do not exist', async () => {
-        spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(null)
-        spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue([])
-        spyOn(pinsOverviewValidator, 'validate')
-        await pinService.getPinsOverviewError()
-        expect(pinsOverviewValidator.validate).toHaveBeenCalled()
-      })
     })
   })
 })
