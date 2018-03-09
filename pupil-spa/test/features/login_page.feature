@@ -20,12 +20,12 @@ Feature: Login page
   Scenario: Users cannot login with just a school pin
     Given I am on the sign in page
     When I attempt to login with just a school pin
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Users cannot login with just a pupil pin
     Given I am on the sign in page
     When I attempt to login with just a pupil pin
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Users can login with valid credentials
     Given I have logged in
@@ -35,7 +35,7 @@ Feature: Login page
   Scenario: Error is displayed when no details are entered
     Given I am on the sign in page
     When I have not entered any sign in details
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Login failure page allows users to try again
     Given I am on the login failure page
@@ -71,3 +71,18 @@ Feature: Login page
     Given I am logged in with a user who does not need speech synthesis
     Then I should see speech synthesis set to false in the local storage
 
+  Scenario: Sign in button is disabled by default
+    Given I am on the sign in page
+    Then the sign in button should be disabled
+
+  Scenario: Sign in button is disabled until school password and pupil pin are entered
+    Given I have entered a school password
+    But the sign in button is still disabled
+    When I enter a pupil pin
+    Then I should see the sign in button enabled
+
+  Scenario: Sign in button is disabled until pupil pin and school password are entered
+    Given I have entered a pupil pin
+    But the sign in button is still disabled
+    When I enter a school password
+    Then I should see the sign in button enabled
