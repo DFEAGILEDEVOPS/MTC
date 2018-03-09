@@ -1,5 +1,5 @@
 Before do
-  # page.current_window.resize_to(1270,768)
+  page.current_window.resize_to(1270,768)
 end
 
 Before do
