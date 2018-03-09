@@ -324,6 +324,6 @@ And(/^I should be able to see a count of pupils$/) do
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
 
-Then(/^I should not see an error message to contact helpdesk$/) do
+Then(/^I should see an error message to contact helpdesk$/) do
   expect(generate_pins_overview_page.error_summary).to be_all_there
 end
