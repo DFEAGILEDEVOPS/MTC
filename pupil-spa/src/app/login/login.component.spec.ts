@@ -1,8 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-
+import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
+import { Login } from './login.model';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -18,6 +20,7 @@ describe('LoginComponent', () => {
   let mockQuestionService;
   let mockWarmupQuestionService;
   let mockRegisterInputService;
+  let mockLoginModel;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -41,7 +44,9 @@ describe('LoginComponent', () => {
 
     const injector = TestBed.configureTestingModule({
       declarations: [LoginComponent],
+      imports: [FormsModule],
       providers: [
+        { provide: Login, useValue: mockLoginModel },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
@@ -52,6 +57,7 @@ describe('LoginComponent', () => {
     mockQuestionService = injector.get(QuestionService);
     mockWarmupQuestionService = injector.get(WarmupQuestionService);
     mockRegisterInputService = injector.get(RegisterInputService);
+    mockLoginModel = injector.get(Login);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
@@ -70,8 +76,8 @@ describe('LoginComponent', () => {
 
   it('should render schoolPin and pupil pin input boxes', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('#school-pin')).toBeTruthy();
-    expect(compiled.querySelector('#pupil-pin')).toBeTruthy();
+    expect(compiled.querySelector('#schoolPin')).toBeTruthy();
+    expect(compiled.querySelector('#pupilPin')).toBeTruthy();
   });
 
   describe('on successful login', () => {
