@@ -2,8 +2,13 @@
 
 const https = require('https')
 const ciEnabledLabelId = 861719997
-// 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557'
-const pullRequestId = process.argv[2] || 557
+// Example Github API Pull Request URL - 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557'
+const pullRequestId = process.argv[2]
+
+if (!pullRequestId) {
+  console.log('Missing argument: pull request id')
+  process.exit(1)
+}
 
 const options = {
   hostname: 'api.github.com',
