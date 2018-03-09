@@ -63,7 +63,7 @@ Before("@create_new_window") do
   visit Capybara.app_host + '/sign-out'
 end
 
-Before("~@poltergeist") do
+Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
