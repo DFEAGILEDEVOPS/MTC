@@ -44,12 +44,10 @@ const parseResponse = (res) => {
 https.get(options, (response) => {
   let data = ''
 
-  // A chunk of data has been received.
   response.on('data', (chunk) => {
     data += chunk
   })
 
-  // The whole response has been received. Print out the result.
   response.on('end', () => {
     parseResponse(data)
   })
