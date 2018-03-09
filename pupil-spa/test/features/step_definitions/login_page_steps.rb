@@ -82,7 +82,9 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
   SqlDbHelper.reset_pin("Standard","Pupil",1,new_time,"9999")
   @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
   schools = SqlDbHelper.get_list_of_schools.delete_if{|a| a['id'] == @pupil_information['school_id']}
-  sign_in_page.login(schools.first['schoolPin'],@pupil_information['pin'])
+  pin = 'tes23mo'
+  SqlDbHelper.set_school_pin(schools.first['id'], new_time, pin)
+  sign_in_page.login(pin,@pupil_information['pin'])
   sign_in_page.sign_in_button.click
 end
 
@@ -112,4 +114,37 @@ end
 
 Given(/^I am logged in with a user who does not need speech synthesis$/) do
   step 'I have logged in'
+end
+
+Then(/^the sign in button should be disabled$/) do
+  expect(sign_in_page.sign_in_button).to be_disabled
+end
+
+
+Given(/^I have entered a school password$/) do
+  step 'I am on the sign in page'
+  sign_in_page.school_pin.set 'abc12345'
+end
+
+
+But(/^the sign in button is still disabled$/) do
+  step 'the sign in button should be disabled'
+end
+
+When(/^I enter a pupil pin$/) do
+  sign_in_page.pupil_pin.set '9999'
+end
+
+Then(/^I should see the sign in button enabled$/) do
+  expect(sign_in_page.sign_in_button).to_not be_disabled
+end
+
+
+Given(/^I have entered a pupil pin$/) do
+  step 'I am on the sign in page'
+  sign_in_page.pupil_pin.set '9999'
+end
+
+When(/^I enter a school password$/) do
+  sign_in_page.school_pin.set 'abc12345'
 end
