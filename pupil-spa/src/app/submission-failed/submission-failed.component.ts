@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CheckSubmissionFailed } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 
@@ -15,7 +16,7 @@ export class SubmissionFailedComponent implements OnInit {
   public supportNumber: string;
   protected window: any;
 
-  constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
+  constructor(private auditService: AuditService, protected windowRefService: WindowRefService, private router: Router) {
     this.supportNumber = environment.supportNumber;
     this.window = windowRefService.nativeWindow;
   }
@@ -26,6 +27,10 @@ export class SubmissionFailedComponent implements OnInit {
       hitType: 'pageview',
       page: '/submission-failed'
     });
+  }
+
+  onSubmit() {
+    return this.router.navigate([`/check`]);
   }
 
 }

@@ -6,5 +6,12 @@
     <div class="panel panel-border-wide">
       Please contact the helpline on {{supportNumber}} for advice on how to upload the check.
     </div>
+    <form (ngSubmit)="onSubmit()" autocomplete="off" autocapitalize="none">
+      <div class="form-group">
+        <p>
+          <input class="button" type="submit" value="Retry">
+        </p>
+      </div>
+    </form>
   </div>
 </div>
