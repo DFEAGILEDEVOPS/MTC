@@ -67,7 +67,7 @@ const psychometricianReportCacheDataService = {
    * @return {Promise<*>}
    */
   sqlFindUnprocessedChecks: async function () {
-    const sql = `SELECT c.* 
+    const sql = `SELECT TOP 250 c.* 
       FROM ${sqlService.adminSchema}.${table} p 
       RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
       WHERE p.check_id IS NULL
