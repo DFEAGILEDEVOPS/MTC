@@ -13,6 +13,8 @@ const checkWindowSanityCheckService = require('../services/check-window-sanity-c
 const getGeneratePinsOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
   req.breadcrumbs(res.locals.pageTitle)
+
+  const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School)
@@ -30,7 +32,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
   }
   return res.render('pupil-pin/generate-pins-overview', {
     breadcrumbs: req.breadcrumbs(),
-    error
+    error,
+    helplineNumber
   })
 }
 
@@ -113,6 +116,8 @@ const postGeneratePins = async (req, res, next) => {
 const getGeneratedPinsList = async (req, res, next) => {
   res.locals.pageTitle = 'Generate pupil PINs'
   req.breadcrumbs(res.locals.pageTitle)
+
+  const helplineNumber = config.Data.helplineNumber
   let pupils
   let school
   let error
@@ -129,7 +134,8 @@ const getGeneratedPinsList = async (req, res, next) => {
     school,
     pupils,
     date,
-    error
+    error,
+    helplineNumber
   })
 }
 
