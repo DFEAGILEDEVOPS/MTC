@@ -248,7 +248,7 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
     type: TYPES.Int
   })
 
-  const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')})`
+  const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
   const sql = [sqlInit, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
