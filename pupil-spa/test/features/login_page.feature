@@ -20,12 +20,12 @@ Feature: Login page
   Scenario: Users cannot login with just a school pin
     Given I am on the sign in page
     When I attempt to login with just a school pin
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Users cannot login with just a pupil pin
     Given I am on the sign in page
     When I attempt to login with just a pupil pin
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Users can login with valid credentials
     Given I have logged in
@@ -35,7 +35,7 @@ Feature: Login page
   Scenario: Error is displayed when no details are entered
     Given I am on the sign in page
     When I have not entered any sign in details
-    Then I should be taken to the sign in failure page
+    Then the sign in button should be disabled
 
   Scenario: Login failure page allows users to try again
     Given I am on the login failure page
