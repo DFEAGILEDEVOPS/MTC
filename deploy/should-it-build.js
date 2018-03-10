@@ -24,20 +24,20 @@ const parseResponse = (res) => {
   try {
     labels = JSON.parse(res).labels
     if (!labels || labels.length === 0) {
-      console.log('no labels found attached to PR')
+      console.log(`no labels found attached to PR ${pullRequestId}`)
       process.exit(1)
     }
   } catch (err) {
-    console.error('error parsing labels')
+    console.error(`error parsing labels for PR ${pullRequestId}`)
     console.error(err)
     process.exit(1)
   }
   const ciEnabledLabel = labels.find(item => item.id === ciEnabledLabelId)
   if (ciEnabledLabel) {
-    console.log('CI enabled label found on pull request ', pullRequestId)
+    console.log(`CI enabled label found on PR ${pullRequestId}`)
     process.exit(0)
   }
-  console.log('CI Enabled label not found on pull request', pullRequestId)
+  console.log(`CI Enabled label not found on PR ${pullRequestId}`)
   process.exit(1)
 }
 
