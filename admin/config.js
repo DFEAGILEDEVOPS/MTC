@@ -26,7 +26,8 @@ module.exports = {
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
-    pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100
+    pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
+    helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080'
   },
   Sql: {
     Enabled: true, // deprecated, to be removed
