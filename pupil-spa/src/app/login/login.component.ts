@@ -5,6 +5,7 @@ import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { CheckRecoveryService } from '../services/check-recovery/check-recovery.service';
 import { Login } from './login.model';
 
 @Component({
@@ -22,10 +23,15 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private questionService: QuestionService,
     private warmupQuestionService: WarmupQuestionService,
-    private registerInputService: RegisterInputService
+    private registerInputService: RegisterInputService,
+    private checkRecoveryService: CheckRecoveryService
   ) { }
 
   ngOnInit() {
+    const hasUnfinishedCheck = this.checkRecoveryService.hasUnfinishedCheck();
+    if (hasUnfinishedCheck) {
+      this.router.navigate(['check']);
+    }
     this.submitted = false;
   }
 

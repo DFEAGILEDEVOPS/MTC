@@ -44,6 +44,7 @@ import { SpokenQuestionComponent } from './spoken-question/spoken-question.compo
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
+import { CheckRecoveryService } from './services/check-recovery/check-recovery.service';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -115,7 +116,8 @@ const appRoutes: Routes = [
     SubmissionService,
     UserService,
     WarmupQuestionService,
-    WindowRefService
+    WindowRefService,
+    CheckRecoveryService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user/user.service';
@@ -10,6 +9,8 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { CheckRecoveryServiceMock } from '../services/check-recovery/check-recovery.service.mock';
+import { CheckRecoveryService } from '../services/check-recovery/check-recovery.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -20,7 +21,9 @@ describe('LoginComponent', () => {
   let mockQuestionService;
   let mockWarmupQuestionService;
   let mockRegisterInputService;
+  let mockCheckRecoveryService;
   let mockLoginModel;
+  let hasUnfinishedCheckSpy;
 
   beforeEach(async(() => {
     mockRouter = {
@@ -51,17 +54,21 @@ describe('LoginComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock }
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        { provide: CheckRecoveryService, useClass: CheckRecoveryServiceMock }
       ]
     });
     mockQuestionService = injector.get(QuestionService);
     mockWarmupQuestionService = injector.get(WarmupQuestionService);
     mockRegisterInputService = injector.get(RegisterInputService);
     mockLoginModel = injector.get(Login);
+    mockCheckRecoveryService = injector.get(CheckRecoveryService);
 
     spyOn(mockQuestionService, 'initialise');
     spyOn(mockWarmupQuestionService, 'initialise');
     spyOn(mockRegisterInputService, 'initialise');
+    hasUnfinishedCheckSpy = spyOn(mockCheckRecoveryService, 'hasUnfinishedCheck');
+    hasUnfinishedCheckSpy.and.returnValue(false);
   }));
 
   beforeEach(() => {
@@ -123,6 +130,17 @@ describe('LoginComponent', () => {
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-failure']);
       });
+    });
+  });
+  describe('ngOnInit', () => {
+    it('should navigate to check path if an unfinished check is detected', () => {
+      hasUnfinishedCheckSpy.and.returnValue(true);
+      component.ngOnInit();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
+    });
+    it('should not navigate to check path if a completed check is detected', () => {
+      component.ngOnInit();
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
     });
   });
 });
