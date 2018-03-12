@@ -14,7 +14,7 @@ class UploadAndViewFormsPage < SitePrism::Page
   element :check_form_title_column_heading, '#checkFormsList thead tr th:nth-child(1) a'
   element :back_to_home, '.breadcrumbs a[href="/"]'
 
-  element :upload_form_message, '#lead-paragraph'
+  element :upload_form_message, '#lead-paragraph', text: 'View, upload or remove check forms.'
   element :upload_new_form, 'a', text: 'Upload new form'
   section :phase_banner, PhaseBanner, '.phase-banner'
 
