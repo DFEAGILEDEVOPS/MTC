@@ -1,5 +1,4 @@
 module.exports = {
-  _id: 100,
   id: 100,
   name: 'MTC0100',
   isDeleted: false,
