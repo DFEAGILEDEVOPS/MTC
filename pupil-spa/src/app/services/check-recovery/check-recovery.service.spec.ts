@@ -24,6 +24,11 @@ describe('CheckRecoveryService', () => {
     const hasUnfinishedCheck = checkRecoveryService.hasUnfinishedCheck();
     expect(hasUnfinishedCheck).toBeTruthy();
   });
+  it('hasUnfinishedCheck should return false if there are no audit entries', () => {
+    spyOn(storageService, 'getItem');
+    const hasUnfinishedCheck = checkRecoveryService.hasUnfinishedCheck();
+    expect(hasUnfinishedCheck).toBeFalsy();
+  });
   it('hasUnfinishedCheck should return false if there CheckComplete entry in the audit', () => {
     spyOn(storageService, 'getItem').and.returnValue(auditSuccessResponseMock);
     const hasUnfinishedCheck = checkRecoveryService.hasUnfinishedCheck();
