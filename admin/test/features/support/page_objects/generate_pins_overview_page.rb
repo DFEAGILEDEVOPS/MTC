@@ -22,6 +22,11 @@ class GeneratePinsOverviewPage < SitePrism::Page
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
+  section :error_summary, '.error-summary' do
+    element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'
+    element :error_info, 'p', text: 'Multiplication tables check helpline'
+  end
+
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)
     name = pupil.name.text
