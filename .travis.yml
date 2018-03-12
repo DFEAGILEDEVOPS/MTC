@@ -37,6 +37,7 @@ services:
 sudo: required
 
 before_install:
+  - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
   - rvm reload && rvm use ruby 2.4.1
   - sudo apt-get install google-chrome-stable
   - ${TRAVIS_BUILD_DIR}/admin/bin/install-freetds.sh
