@@ -21,7 +21,7 @@
                 <tr class="page">
                     <td>
                         <div class="pupil-content">
-                            <span class="fullname"><%= `${pupils[i].foreName} ${pupils[i].showMiddleNames ? pupils[i].middleNames : ''} ${pupils[i].lastName}`%>
+                            <span class="fullname"><%= `${pupils[i].lastName}, ${pupils[i].foreName} ${pupils[i].showMiddleNames ? pupils[i].middleNames : ''}`%>
                             </span>
                             <% if (pupils[i].group) { %>
                             <div class="pupil-group">Group: <strong><%= pupils[i].group %></strong></div>
@@ -41,7 +41,7 @@
                     <% if (pupils[i + 1]) { %>
                     <td>
                         <div class="pupil-content">
-                            <span class="fullname"><%= `${pupils[i+1].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} ${pupils[i+1].lastName}`%>
+                            <span class="fullname"><%= `${pupils[i+1].lastName}, ${pupils[i+1].foreName} ${pupils[i+1].showMiddleNames ? pupils[i+1].middleNames : ''} `%>
                             </span>
                             <% if (pupils[i+1].group) { %>
                             <div class="pupil-group">Group: <strong><%= pupils[i+1].group %></strong></div>
