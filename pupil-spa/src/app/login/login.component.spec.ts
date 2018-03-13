@@ -136,7 +136,7 @@ describe('LoginComponent', () => {
     it('should navigate to check path if an unfinished check is detected', () => {
       hasUnfinishedCheckSpy.and.returnValue(true);
       component.ngOnInit();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
     });
     it('should not navigate to check path if a completed check is detected', () => {
       component.ngOnInit();

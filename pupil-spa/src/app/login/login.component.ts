@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     const hasUnfinishedCheck = this.checkRecoveryService.hasUnfinishedCheck();
     if (hasUnfinishedCheck) {
-      this.router.navigate(['check']);
+      this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
     this.submitted = false;
   }
