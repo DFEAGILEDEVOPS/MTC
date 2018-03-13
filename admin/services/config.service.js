@@ -20,7 +20,7 @@ const configService = {
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
     const timeSettings = await settingDataService.sqlFindOne()
-    const group = await groupDataService.sqlFindOneBySchoolId(pupil.school_id)
+    const group = await groupDataService.sqlFindOneGroupByPupilId(pupil.id)
     const hasGroupTimeLimits = group && group.loadingTimeLimit && group.questionTimeLimit
     if (hasGroupTimeLimits) {
       loadingTime = group.loadingTimeLimit

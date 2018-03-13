@@ -13,7 +13,7 @@ describe('config service', () => {
         loadingTimeLimit: 20,
         questionTimeLimit: 50
       })
-      spyOn(groupDataService, 'sqlFindOneBySchoolId')
+      spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
     })
 
     it('returns timings from the config table when group values are missing', async () => {
@@ -34,7 +34,7 @@ describe('config service', () => {
         loadingTimeLimit: 20,
         questionTimeLimit: 50
       })
-      spyOn(groupDataService, 'sqlFindOneBySchoolId').and.returnValue({
+      spyOn(groupDataService, 'sqlFindOneGroupByPupilId').and.returnValue({
         loadingTimeLimit: 40,
         questionTimeLimit: 60
       })
@@ -50,7 +50,7 @@ describe('config service', () => {
   describe('database values do not exist', () => {
     it('returns timings from the config file', async () => {
       spyOn(settingDataService, 'sqlFindOne')
-      spyOn(groupDataService, 'sqlFindOneBySchoolId')
+      spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
       const config = await configService.getConfig(pupilMock)
       expect(config.loadingTime).toBe(2)
       expect(config.questionTime).toBe(5)

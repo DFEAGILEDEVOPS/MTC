@@ -58,28 +58,6 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
 }
 
 /**
- * Get group by school id.
- * @param schoolId
- * @returns {Promise<void>}
- */
-groupDataService.sqlFindOneBySchoolId = async (schoolId) => {
-  const sql = `SELECT * 
-    FROM ${sqlService.adminSchema}.[group]
-    WHERE school_id=@schoolId`
-
-  const params = [
-    {
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    }
-  ]
-
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
-}
-
-/**
  * Get group by name.
  * @param groupName
  * @param schoolId
@@ -273,6 +251,30 @@ groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
   const sql = [sqlInit, whereClause].join(' ')
   return sqlService.query(sql, params)
+}
+
+/**
+ * Find group by pupil id
+ * @param pupilId
+ * @return {Object}
+ */
+groupDataService.sqlFindOneGroupByPupilId = async (pupilId) => {
+  if (!pupilId) return false
+
+  const sql = `SELECT * FROM mtc_admin.group g
+  INNER JOIN mtc_admin.pupilGroup pg ON g.id = pg.group_id
+  WHERE pg.pupil_id = @pupilId AND g.isDeleted = 0`
+
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
 }
 
 module.exports = groupDataService
