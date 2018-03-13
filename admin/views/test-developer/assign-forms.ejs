@@ -27,7 +27,11 @@
             <h1 class="heading-xlarge">Assign forms</h1>
             <div class="panel panel-border-wide">
                 <p>
+                    <% if (checkFormsList && checkFormsList.length) {%>
                     Assign forms to <%= checkWindowName %>
+                    <% } else if (checkFormsList && checkFormsList.length === 0) { %>
+                    All available forms have been assigned
+                    <% }%>
                 </p>
             </div>
 
