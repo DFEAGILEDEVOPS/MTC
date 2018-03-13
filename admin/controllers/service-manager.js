@@ -314,12 +314,12 @@ const saveCheckWindows = async (req, res, next) => {
 
   checkWindow.name = req.body['checkWindowName']
   if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
-    checkWindow.adminStartDate = dateService.formatDateFromRequest(req.body, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
+    checkWindow.adminStartDate = dateService.createLocalTimeFromDayMonthYear(req.body['adminStartDay'], req.body['adminStartMonth'], req.body['adminStartYear'])
   }
   if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
-    checkWindow.checkStartDate = dateService.formatDateFromRequest(req.body, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
+    checkWindow.checkStartDate = dateService.createLocalTimeFromDayMonthYear(req.body['checkStartDay'], req.body['checkStartMonth'], req.body['checkStartYear'])
   }
-  checkWindow.checkEndDate = dateService.formatDateFromRequest(req.body, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
+  checkWindow.checkEndDate = dateService.createLocalTimeFromDayMonthYear(req.body['checkEndDay'], req.body['checkEndMonth'], req.body['checkEndYear'])
   // Ensure check end date time is set to the last minute of the particular day
   checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
 

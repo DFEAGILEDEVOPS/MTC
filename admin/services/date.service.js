@@ -95,7 +95,24 @@ const dateService = {
    * @param {number|string} year
    * @returns {Moment}
    */
-  createFromDayMonthYear: function (day, month, year) {
+  createLocalTimeFromDayMonthYear: function (day, month, year) {
+    const paddedDay = (+day).toString().padStart(2, '0')
+    const paddedMonth = (+month).toString().padStart(2, '0')
+    const data = paddedDay + '/' + paddedMonth + '/' + (+year).toString()
+    const date = moment(data, 'DD/MM/YYYY', true)
+    if (!date.isValid()) {
+      return null
+    }
+    return date
+  },
+  /**
+   * Return a UTC-mode moment object from the a day, month and year. The time component will be zeroed out. Returns null if invalid.
+   * @param {number|string} day
+   * @param {number|string} month
+   * @param {number|string} year
+   * @returns {Moment}
+   */
+  createUTCFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
     const paddedMonth = (+month).toString().padStart(2, '0')
     const data = paddedDay + '/' + paddedMonth + '/' + (+year).toString()
