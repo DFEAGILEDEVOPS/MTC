@@ -21,7 +21,18 @@ const options = {
 
 const parseResponse = (res) => {
   let labels
+  let payload
   try {
+    try {
+      payload = JSON.parse(res)
+    } catch (error) {
+      console.error(`error parsing response:${error.message}`)
+      process.exit(1)
+    }
+    if (!payload) {
+      console.error('null payload')
+      process.exit(1)
+    }
     labels = JSON.parse(res).labels
     if (!labels || labels.length === 0) {
       console.log(`no labels found attached to PR ${pullRequestId}`)
