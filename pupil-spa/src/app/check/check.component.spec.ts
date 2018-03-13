@@ -7,7 +7,6 @@ import { AnswerService } from '../services/answer/answer.service';
 import { AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { CheckComplete } from '../services/audit/auditEntry';
 import { CheckComponent } from './check.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';

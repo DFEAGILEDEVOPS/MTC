@@ -8,10 +8,7 @@ export class CheckRecoveryService {
   }
 
   hasUnfinishedCheck(): boolean {
-    const audits = this.storageService.getItem('audit');
-    if (!audits || audits.length === 0) {
-      return false;
-    }
-    return !audits.find(a => a.type === 'CheckComplete');
+    const localStorage = this.storageService.getAllItems();
+    return localStorage && Object.keys(localStorage).length > 0;
   }
 }
