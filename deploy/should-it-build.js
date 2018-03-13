@@ -33,9 +33,10 @@ const parseResponse = (res) => {
       console.error('null payload')
       process.exit(1)
     }
-    labels = JSON.parse(res).labels
+    labels = payload.labels
     if (!labels || labels.length === 0) {
       console.log(`no labels found attached to PR ${pullRequestId}`)
+      console.log(payload)
       process.exit(1)
     }
   } catch (err) {
