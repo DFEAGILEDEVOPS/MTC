@@ -21,14 +21,27 @@ const options = {
 
 const parseResponse = (res) => {
   let labels
+  let payload
   try {
-    labels = JSON.parse(res).labels
+    try {
+      payload = JSON.parse(res)
+    } catch (error) {
+      console.error(`error parsing response:${error.message}`)
+      process.exit(1)
+    }
+    if (!payload) {
+      console.error('null payload')
+      process.exit(1)
+    }
+    labels = payload.labels
     if (!labels || labels.length === 0) {
       console.log(`no labels found attached to PR ${pullRequestId}`)
+      console.log(payload)
       process.exit(1)
     }
   } catch (err) {
     console.error(`error parsing labels for PR ${pullRequestId}`)
+    console.log(payload)
     console.error(err)
     process.exit(1)
   }
@@ -38,6 +51,7 @@ const parseResponse = (res) => {
     process.exit(0)
   }
   console.log(`CI Enabled label not found on PR ${pullRequestId}`)
+  console.log(payload)
   process.exit(1)
 }
 
