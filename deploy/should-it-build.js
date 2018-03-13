@@ -41,6 +41,7 @@ const parseResponse = (res) => {
     }
   } catch (err) {
     console.error(`error parsing labels for PR ${pullRequestId}`)
+    console.log(payload)
     console.error(err)
     process.exit(1)
   }
@@ -50,6 +51,7 @@ const parseResponse = (res) => {
     process.exit(0)
   }
   console.log(`CI Enabled label not found on PR ${pullRequestId}`)
+  console.log(payload)
   process.exit(1)
 }
 
