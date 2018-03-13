@@ -63,7 +63,7 @@ Before("@create_new_window") do
   visit Capybara.app_host + '/sign-out'
 end
 
-Before("~@poltergeist") do
+Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
@@ -98,6 +98,18 @@ Before("@remove_all_groups") do
   step 'I am on the groups page'
   group_pupils_page.remove_all_groups
   visit Capybara.app_host + '/sign-out'
+end
+
+Before("@no_active_check_window ") do
+  today_date = Date.today
+  check_end_date = today_date - 35
+  SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
+end
+
+After("@no_active_check_window ") do
+  today_date = Date.today
+  check_end_date = today_date + 35
+  SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
 After("@multiple_pupil_upload") do

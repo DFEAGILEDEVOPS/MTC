@@ -194,7 +194,7 @@ controller.postEditPupil = async (req, res, next) => {
     lastName: req.body.lastName,
     upn: trimAndUppercase(R.pathOr('', ['body', 'upn'], req)),
     gender: req.body.gender,
-    dateOfBirth: dateService.createFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
+    dateOfBirth: dateService.createUTCFromDayMonthYear(req.body['dob-day'], req.body['dob-month'], req.body['dob-year'])
   }
   try {
     await pupilDataService.sqlUpdate(update)

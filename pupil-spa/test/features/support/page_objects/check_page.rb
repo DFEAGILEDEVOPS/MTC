@@ -1,10 +1,14 @@
 class CheckPage < SitePrism::Page
+
+  include RSpec::Matchers
+
   set_url '/check/question/{number}{?query*}'
 
   element :preload, '.preload'
   element :timer, '.remaining-time'
   element :question, 'span.question'
   element :answer, '#js-answer'
+  element :question_container, '.question-container'
 
   section :number_pad, NumberPadSection, '.numpad'
 
@@ -18,8 +22,20 @@ class CheckPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
 
-  def wait_for_question(time=15)
-    sleep 1
+  def wait_for_question(time=300)
+    i = 0
+    while i < 300
+      if(has_question_container?)
+        puts "Question container is visible : #{has_question_container?}"
+        break
+      else
+        puts "waiting for Question container to be visible : #{has_question_container?}"
+        sleep 0.5
+        i = i + 1
+      end
+    end
+    # wait_until {question_container.visible?}
+    # Capybara.page.should have_css('.question-container')
     Timeout.timeout(time){sleep 0.5 until question.visible?}
   end
 

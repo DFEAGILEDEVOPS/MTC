@@ -18,10 +18,13 @@
 
         <h1 class="heading-xlarge" id="heading-xlarge">Pupils not taking the check</h1>
 
-        <p class="lede">All pupils should be considered for the multiplication tables check at the end of year 4. If pupil is not going to take the check, a reason must be provided.</p>
+        <p class="lede">
+            All pupils should be considered for the Multiplication Tables Check at the end of year 4.
+            If a pupil is not going to take the check, a reason must be provided.
+        </p>
 
         <div class="button-wrapper">
-            <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason for pupil</a>
+            <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason</a>
         </div>
 
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -52,7 +55,7 @@
             </tbody>
         </table>
         <% } else { %>
-        <p class="top-padding-30">No pupils with reason for not taking check.</p>
+        <p class="top-padding-30">No pupils added</p>
         <% } %>
 
         <br class="clearfix"/>
@@ -68,7 +71,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%= assetPath %>pdfs/mtc_cag_feb_2018_trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a></li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a></li>
                     <li>
                         <a href="#">Access arrangements</a>
                     </li>

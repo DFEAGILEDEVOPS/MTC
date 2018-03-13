@@ -9,9 +9,10 @@ const pinService = require('../../services/pin.service')
 const dateService = require('../../services/date.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
-const pupilIdentificationFlagService = require('../../services/pupil-identification-flag.service')
-const pupilMock = require('../mocks/pupil')
 const schoolDataService = require('../../services/data-access/school.data.service')
+const pupilIdentificationFlagService = require('../../services/pupil-identification-flag.service')
+
+const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 
 /* global describe, it, expect, beforeEach, afterEach, spyOn */
@@ -19,7 +20,9 @@ const schoolMock = require('../mocks/school')
 describe('pin.service', () => {
   let sandbox
 
-  beforeEach(() => { sandbox = sinon.sandbox.create() })
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create()
+  })
 
   afterEach(() => sandbox.restore())
 
@@ -46,27 +49,27 @@ describe('pin.service', () => {
     })
 
     it('Adds identification flags to the pupil when they have the same name', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([pupil1, pupil2]))
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([ pupil1, pupil2 ]))
       spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
       const data = await service.getPupilsWithActivePins(dfeNumber)
       // Because we used the pupil mock we expect the pupils to have the same name, so we need
       // show the dob to differentiate.
-      expect(data[0].showDoB).toBe(true)
-      expect(data[0].dateOfBirth).toBe('9 Sep 2008')
-      expect(data[1].showDoB).toBe(true)
-      expect(data[1].dateOfBirth).toBe('9 Sep 2008')
+      expect(data[ 0 ].showDoB).toBe(true)
+      expect(data[ 0 ].dateOfBirth).toBe('9 Sep 2008')
+      expect(data[ 1 ].showDoB).toBe(true)
+      expect(data[ 1 ].dateOfBirth).toBe('9 Sep 2008')
     })
 
     it('does not add identification flags to the pupil when they have different names', async () => {
       const p1 = R.clone(pupilMock)
       const p2 = R.clone(pupilMock)
       p2.lastName = 'Sherlock'
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([p1, p2]))
+      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([ p1, p2 ]))
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.callThrough()
       const data = await service.getPupilsWithActivePins(dfeNumber)
-      expect(data[0].showDoB).toBeUndefined()
-      expect(data[1].showDoB).toBeUndefined()
+      expect(data[ 0 ].showDoB).toBeUndefined()
+      expect(data[ 1 ].showDoB).toBeUndefined()
     })
   })
 
@@ -149,16 +152,16 @@ describe('pin.service', () => {
       const pupil = Object.assign({}, pupilMock)
       pupil.pin = null
       pupil.pinExpiresAt = null
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([ pupil ])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([pupil._id])
+      await pinService.expireMultiplePins([ pupil._id ])
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(0)
     })
     it('it calls updateMultiple method if not empty pin is found', async () => {
       const pupil = Object.assign({}, pupilMock)
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([pupil])
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue([ pupil ])
       spyOn(pupilDataService, 'sqlUpdatePinsBatch').and.returnValue(null)
-      await pinService.expireMultiplePins([pupil._id])
+      await pinService.expireMultiplePins([ pupil._id ])
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
     })
   })
