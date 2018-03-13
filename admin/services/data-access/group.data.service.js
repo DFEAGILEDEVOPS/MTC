@@ -58,6 +58,28 @@ groupDataService.sqlFindOneById = async (groupId, schoolId) => {
 }
 
 /**
+ * Get group by school id.
+ * @param schoolId
+ * @returns {Promise<void>}
+ */
+groupDataService.sqlFindOneBySchoolId = async (schoolId) => {
+  const sql = `SELECT * 
+    FROM ${sqlService.adminSchema}.[group]
+    WHERE school_id=@schoolId`
+
+  const params = [
+    {
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    }
+  ]
+
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
+/**
  * Get group by name.
  * @param groupName
  * @param schoolId

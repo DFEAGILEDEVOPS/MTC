@@ -3,6 +3,7 @@
 const R = require('ramda')
 
 const settingDataService = require('./data-access/setting.data.service')
+const groupDataService = require('./data-access/group.data.service')
 const {QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS} = require('../config')
 
 /** @namespace */
@@ -19,8 +20,12 @@ const configService = {
     let loadingTime = TIME_BETWEEN_QUESTIONS
 
     const timeSettings = await settingDataService.sqlFindOne()
-
-    if (timeSettings) {
+    const group = await groupDataService.sqlFindOneBySchoolId(pupil.school_id)
+    const hasGroupTimeLimits = group && group.loadingTimeLimit && group.questionTimeLimit
+    if (hasGroupTimeLimits) {
+      loadingTime = group.loadingTimeLimit
+      questionTime = group.questionTimeLimit
+    } else if (timeSettings) {
       loadingTime = timeSettings.loadingTimeLimit
       questionTime = timeSettings.questionTimeLimit
     }
