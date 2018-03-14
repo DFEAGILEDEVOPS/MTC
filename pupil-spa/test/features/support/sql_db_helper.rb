@@ -66,7 +66,7 @@ class SqlDbHelper
     result.do
   end
 
-  def self.set_shcool_pin(school_id, new_time, school_pin)
+  def self.set_school_pin(school_id, new_time, school_pin)
   sql = "UPDATE [mtc_admin].[school] set pin='#{school_pin}', pinExpiresAt='#{new_time}' WHERE id='#{school_id}'"
   result = SQL_CLIENT.execute(sql)
   result.do
@@ -144,5 +144,12 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
+
+  def self.activate_or_deactivate_active_check_window(check_end_date)
+    sql = "UPDATE [mtc_admin].[checkWindow] set checkEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
 
 end

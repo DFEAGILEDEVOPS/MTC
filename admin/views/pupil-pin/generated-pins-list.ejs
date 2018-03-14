@@ -9,6 +9,16 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (error) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                <%= error %>
+            </h2>
+            <p>Multiplication tables check helpline<br>
+                <%= helplineNumber %>
+            </p>
+        </div>
+        <% } %>
         <h1 class="heading-xlarge">Generate pupil PINs</h1>
 
         <div class="govuk-box-highlight">
@@ -30,7 +40,11 @@
         </div>
 
         <div class="button-wrapper">
+            <% if (error) { %>
+            <a class="button button-secondary" disabled >Generate more PINs</a>
+            <% } else { %>
             <a href="/pupil-pin/generate-pins-list/lastName/asc" class="button button-secondary">Generate more PINs</a>
+            <% } %>
         </div>
 
         <br />
@@ -92,7 +106,7 @@
             <nav role="navigation">
                 <ul class="list">
                     <li>
-                        <a href="<%= assetPath %>pdfs/mtc_cag_feb_2018_trial.pdf" target="_blank" rel="noopener noreferrer">Guidance</a>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
                     </li>
                     <li>
                         <a href="">Group pupils</a>
