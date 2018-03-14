@@ -1,5 +1,6 @@
 'use strict'
 const Promise = require('bluebird')
+const moment = require('moment')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
@@ -12,21 +13,25 @@ const jwtService = {
   /**
    *
    * @param pupil
+   * @param checkWindowEndDate
    * @return {*}
    */
-  createToken: async (pupil) => {
+  createToken: async (pupil, checkWindowEndDate) => {
     if (!(pupil && pupil.id)) {
       throw new Error('Pupil is required')
+    }
+    if (!checkWindowEndDate) {
+      throw new Error('Check window end date is required')
     }
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
     await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
-
+    const tokenExpiration = Math.round(moment.duration(checkWindowEndDate))
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin',                                       // Issuer
       sub: pupil.id,                                         // Subject
-      exp: Math.floor(Date.now() / 1000) + (60 * 60),         // Expiry
+      exp: tokenExpiration,                                  // Expiry
       nbf: Math.floor(Date.now() / 1000),                     // Not before
       jwi: jwtId                                              // JWT token ID
     }
