@@ -8,7 +8,7 @@ const table = '[role]'
 
 const roleDataService = {
   /**
-   * Find a School by the id
+   * Find a Role by the id
    * number -> {School} || undefined
    * @param {number} id
    * @return {Promise<object>} School
