@@ -18,7 +18,7 @@
             <p class="lede">
                 During the trial pupils will take the check anonymously. Below is a list of 36 pre-populated pupil records.
                 <ul>
-                    <li><a href="https://irp0dn.axshare.com/prototype/login/irp0dn/#PupilReg=default&CSUM=1">As per Prototype</a></li>
+                    <li><a href="https://irp0dn.axshare.com/prototype/login/irp0dn/#PupilReg=default&amp;CSUM=1">As per Prototype</a></li>
                     <li>Prototype Password: Tim3s</li>
                 </ul>
                 <!--
@@ -31,13 +31,11 @@
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
                 <% } %>
-                <!--
                 <% if (isFeatureEnabled('pupilUpload')) { %>
                 <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
                 <% } %>
-                -->
             </div>
         </div>
         <table id="register-pupils" class="spacious">
@@ -60,13 +58,10 @@
                     <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit')) { %>
-                                <span class="bold-small truncate"><%= `${p.lastName}, ${p.foreName}` %></span>
-                                <!--
                                 <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.lastName}, ${p.foreName}` %>
                                 </a>
-                                -->
-                                <% } else { %>
+                            <% } else { %>
                                 <span class="bold-small truncate">
                                     <%= `${p.lastName}, ${p.foreName}` %>
                                 </span>
