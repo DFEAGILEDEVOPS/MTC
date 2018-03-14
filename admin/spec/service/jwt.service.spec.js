@@ -24,7 +24,7 @@ describe('JWT service', () => {
       lastName: 'Test',
       foreName: 'TestForename'
     }
-    checkWindowEndDate = moment().add(1, 'day').unix()
+    checkWindowEndDate = moment().add(1, 'day').toDate()
   })
 
   describe('#createToken', () => {

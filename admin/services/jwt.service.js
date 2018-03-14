@@ -26,12 +26,11 @@ const jwtService = {
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
     await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
-    const tokenExpiration = Math.round(moment.duration(checkWindowEndDate))
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin',                                       // Issuer
       sub: pupil.id,                                         // Subject
-      exp: tokenExpiration,                                  // Expiry
+      exp: moment(checkWindowEndDate).unix(),                // Expiry
       nbf: Math.floor(Date.now() / 1000),                     // Not before
       jwi: jwtId                                              // JWT token ID
     }
