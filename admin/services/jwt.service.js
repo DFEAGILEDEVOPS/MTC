@@ -12,8 +12,8 @@ const pupilDataService = require('./data-access/pupil.data.service')
 const jwtService = {
   /**
    *
-   * @param pupil
-   * @param checkWindowEndDate
+   * @param pupil {‌Object}
+   * @param checkWindowEndDate {‌Object}
    * @return {*}
    */
   createToken: async (pupil, checkWindowEndDate) => {
