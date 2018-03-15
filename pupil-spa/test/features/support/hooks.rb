@@ -9,6 +9,7 @@ Before do
 end
 
 Before do
+  step 'I am on the sign in page'
   begin
     JSON.parse(page.evaluate_script('window.localStorage.clear();'))
   rescue TypeError
