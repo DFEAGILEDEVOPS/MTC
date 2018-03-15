@@ -195,7 +195,7 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
  * Return 1 if the question timed out, and the correct answer was given. 0 otherwise.
  * @param inputs - inputs from the SPA data
  * @param {answer} ans - marked answer from the `answer` table
- * @return {number}
+ * @return {number||string}
  */
 psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
   const timeout = this.getTimeoutFlag(inputs)
@@ -274,6 +274,51 @@ psUtilService.getRecallTime = function (tLoad, tFirstKey) {
     return ''
   }
   return m2.diff(m1) / 1000
+}
+
+psUtilService.getInputMethod = function (inputs) {
+  if (!inputs) {
+    return ''
+  }
+  if (!Array.isArray(inputs)) {
+    return ''
+  }
+  const types = {
+    key: 0,
+    mouse: 0,
+    touch: 0
+  }
+  inputs.forEach((input) => {
+    const eventType = R.prop('eventType', input)
+    switch (eventType) {
+      case 'keydown':
+        types['key'] += 1
+        break
+      case 'touch':
+        types['touch'] += 1
+        break
+      case 'mousedown':
+      case 'click':
+        types['mouse'] += 1
+        break
+      default:
+        if (eventType) {
+          console.log('UNKNOWN event type' + eventType)
+        }
+    }
+  })
+
+  if (types['key'] && !types['mouse'] && !types['touch']) {
+    return 'k'
+  } else if (types['mouse'] && !types['key'] && !types['touch']) {
+    return 'm'
+  } else if (types['touch'] && !types['key'] && !types['mouse']) {
+    return 't'
+  } else if (!types['key'] && !types['mouse'] && !types['touch']) {
+    return ''
+  } else {
+    return 'x' // combination
+  }
 }
 
 module.exports = psUtilService

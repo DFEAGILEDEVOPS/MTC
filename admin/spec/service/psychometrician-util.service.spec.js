@@ -340,4 +340,35 @@ describe('psychometrician-util.service', () => {
       expect(browser).toBe('')
     })
   })
+
+  describe('#getInputMethod', () => {
+    const mouseInput = [{eventType: 'mousedown'}]
+    const keyInput = [{eventType: 'keydown'}]
+    const touchInput = [{eventType: 'touch'}]
+    const mixedInput = [{eventType: 'keydown'}, {eventType: 'mousedown'}, {eventType: 'touch'}]
+    it('returns "t" for touch input', () => {
+      const inputMethod = service.getInputMethod(touchInput)
+      expect(inputMethod).toBe('t')
+    })
+
+    it('returns "k" for key input', () => {
+      const inputMethod = service.getInputMethod(keyInput)
+      expect(inputMethod).toBe('k')
+    })
+
+    it('returns "m" for mouse input', () => {
+      const inputMethod = service.getInputMethod(mouseInput)
+      expect(inputMethod).toBe('m')
+    })
+
+    it('returns "" for no input', () => {
+      const inputMethod = service.getInputMethod([])
+      expect(inputMethod).toBe('')
+    })
+
+    it('returns "x" for mixed input', () => {
+      const inputMethod = service.getInputMethod(mixedInput)
+      expect(inputMethod).toBe('x')
+    })
+  })
 })
