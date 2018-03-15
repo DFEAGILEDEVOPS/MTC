@@ -303,7 +303,7 @@ psUtilService.getInputMethod = function (inputs) {
         break
       default:
         if (eventType) {
-          console.log('UNKNOWN event type' + eventType)
+          winston.info('UNKNOWN event type' + eventType)
         }
     }
   })
