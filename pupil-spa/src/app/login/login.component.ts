@@ -5,7 +5,7 @@ import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
-import { CheckRecoveryService } from '../services/check-recovery/check-recovery.service';
+import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
 
 @Component({
@@ -24,11 +24,11 @@ export class LoginComponent implements OnInit {
     private questionService: QuestionService,
     private warmupQuestionService: WarmupQuestionService,
     private registerInputService: RegisterInputService,
-    private checkRecoveryService: CheckRecoveryService
+    private checkStatusService: CheckStatusService
   ) { }
 
   ngOnInit() {
-    const hasUnfinishedCheck = this.checkRecoveryService.hasUnfinishedCheck();
+    const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }

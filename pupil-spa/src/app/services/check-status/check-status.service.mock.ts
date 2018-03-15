@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class CheckRecoveryServiceMock {
+export class CheckStatusServiceMock {
   hasUnfinishedCheck() {
   }
 }

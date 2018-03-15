@@ -249,6 +249,7 @@ describe('CheckComponent', () => {
       component['changeState']();
 
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(storageService.setItem).toHaveBeenCalledWith(  'pending_submission', true );
       expect(auditEntryInserted instanceof CheckSubmissionPending).toBeTruthy();
     });
   });
