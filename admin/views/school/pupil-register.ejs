@@ -16,21 +16,25 @@
         <div>
             <h1 class="heading-xlarge">Pupil register</h1>
             <p class="lede">
+                During the trial pupils will take the check anonymously. Below is a list of 36 pre-populated pupil records.
+                <!--
                 This list uses anonymous pupil data in the format Pupil 1, Pupil 2, etc. If you need to add more pupils please follow this pattern. Do not use real pupil data. To withdraw pupils, go to <a href="/school/pupils-not-taking-check">Pupils not taking the check</a>.
+                -->
             </p>
+            <!--
             <div class="button-wrapper">
                 <% if (isFeatureEnabled('pupilAdd')) { %>
                 <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
                 <% } %>
-
                 <% if (isFeatureEnabled('pupilUpload')) { %>
                 <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
                 <% } %>
             </div>
+            -->
         </div>
         <table id="register-pupils" class="spacious">
             <thead>
@@ -55,7 +59,7 @@
                                 <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.lastName}, ${p.foreName}` %>
                                 </a>
-                                <% } else { %>
+                            <% } else { %>
                                 <span class="bold-small truncate">
                                     <%= `${p.lastName}, ${p.foreName}` %>
                                 </span>
