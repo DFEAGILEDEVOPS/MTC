@@ -2,7 +2,7 @@
 
 const https = require('https')
 const ciEnabledLabelId = 861719997
-// Example Github API Pull Request URL - 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557'
+// Example call: 'https://api.github.com/repos/dfeagiledevops/mtc/pulls/557?client_id=xxxx&client_secret=yyyy'
 const pullRequestId = process.argv[2]
 
 if (!pullRequestId) {
@@ -12,7 +12,7 @@ if (!pullRequestId) {
 
 const options = {
   hostname: 'api.github.com',
-  path: `/repos/dfeagiledevops/mtc/pulls/${pullRequestId}`,
+  path: `/repos/dfeagiledevops/mtc/pulls/${pullRequestId}?client_id=${process.env.GITHUB_API_CLIENTID}&client_secret=${process.env.GITHUB_API_SECRET}`,
   method: 'GET',
   headers: {
     'User-Agent': 'node/https'
