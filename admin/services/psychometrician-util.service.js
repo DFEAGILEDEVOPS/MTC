@@ -106,6 +106,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
+
   for (let i = inputs.length - 1; i >= 0; i--) {
     const input = R.pathOr('', [i, 'input'], inputs)
     if (input.toUpperCase() !== 'ENTER') {
@@ -288,7 +289,7 @@ psUtilService.getInputMethod = function (inputs) {
     mouse: 0,
     touch: 0
   }
-  inputs.forEach((input) => {
+  inputs.map(this.cleanUpTouchEvents).forEach((input) => {
     const eventType = R.prop('eventType', input)
     switch (eventType) {
       case 'keydown':
