@@ -18,25 +18,26 @@
     "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements"
   },
   "dependencies": {
-    "@angular/animations": "^4.4.6",
-    "@angular/common": "^4.4.6",
-    "@angular/compiler": "^4.4.6",
-    "@angular/core": "^4.4.6",
-    "@angular/forms": "^4.4.6",
-    "@angular/http": "^4.4.6",
-    "@angular/platform-browser": "^4.4.6",
-    "@angular/platform-browser-dynamic": "^4.4.6",
-    "@angular/router": "^4.4.6",
+    "@angular/animations": "^5.0.0",
+    "@angular/common": "^5.0.0",
+    "@angular/compiler": "^5.0.0",
+    "@angular/core": "^5.0.0",
+    "@angular/forms": "^5.0.0",
+    "@angular/http": "^5.0.0",
+    "@angular/platform-browser": "^5.0.0",
+    "@angular/platform-browser-dynamic": "^5.0.0",
+    "@angular/platform-server": "^5.0.0",
+    "@angular/router": "^5.0.0",
     "angulartics2": "4.6.3",
     "core-js": "^2.5.3",
-    "ngx-logger": "^0.2.6",
-    "rxjs": "^5.5.6",
+    "ngx-logger": "^2.0.2",
+    "rxjs": "^5.5.2",
     "zone.js": "^0.8.20"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.8",
-    "@angular/compiler-cli": "^4.4.6",
-    "@angular/language-service": "^4.4.6",
+    "@angular/cli": "^1.7.3",
+    "@angular/compiler-cli": "^5.0.0",
+    "@angular/language-service": "^5.2.9",
     "@types/jasmine": "^2.8.6",
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^8.9.0",
@@ -58,9 +59,9 @@
     "node-sass-utils": "^1.1.2",
     "protractor": "^5.3.0",
     "replace-in-file": "^3.1.0",
-    "sass-loader": "^6.0.6",
+    "sass-loader": "^6.0.7",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
-    "typescript": "~2.3.3"
+    "typescript": "2.4.2"
   }
 }
