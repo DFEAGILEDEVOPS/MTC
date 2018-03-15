@@ -8,6 +8,13 @@ Before do
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
+Before do
+  begin
+    JSON.parse(page.evaluate_script('window.localStorage.clear();'))
+  rescue TypeError
+  end
+end
+
 Before('@4_digit') do
   skip_this_scenario if AUTH == '5'
 end
