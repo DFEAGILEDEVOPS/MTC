@@ -120,6 +120,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  */
 psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school) {
   const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
+  const config = R.path(['data', 'config'], check)
 
   const psData = {
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
@@ -129,6 +130,9 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'Surname': pupil.lastName,
 
     'FormMark': psUtilService.getMark(check),
+    'GroupTiming': R.pathOr('n/a', ['questionTime'], config),
+    'PauseLength': R.pathOr('n/a', ['loadingTime'], config),
+    'SpeechSynthesis': R.pathOr('n/a', ['speechSynthesis'], config),
 
     'DeviceType': psUtilService.getDevice(userAgent),
     'BrowserType': psUtilService.getBrowser(userAgent),
@@ -172,6 +176,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
 
     psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
     psData[p(idx) + 'Response'] = ans.answer
+    psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
     psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
     psData[p(idx) + 'Sco'] = psUtilService.getScore(markedAnswer)
     psData[p(idx) + 'ResponseTime'] = psUtilService.getResponseTime(inputs)
