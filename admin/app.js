@@ -134,11 +134,14 @@ app.use(helmet())
 const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com']
 const styleSources = ["'self'", "'unsafe-inline'"]
 const imgSources = ["'self'", 'https://www.google-analytics.com', 'data:']
+const objectSources = ["'self'"]
+
 if (config.AssetPath !== '/') {
   // add CSP policy for assets domain
   scriptSources.push(config.AssetPath)
   styleSources.push(config.AssetPath)
   imgSources.push(config.AssetPath)
+  objectSources.push(config.AssetPath)
 }
 app.use(helmet.contentSecurityPolicy({
   directives: {
@@ -148,7 +151,7 @@ app.use(helmet.contentSecurityPolicy({
     styleSrc: styleSources,
     imgSrc: imgSources,
     connectSrc: ["'self'", 'https://www.google-analytics.com'],
-    objectSrc: ["'self'"],
+    objectSrc: objectSources,
     mediaSrc: ["'none'"],
     childSrc: ["'none'"]
   }

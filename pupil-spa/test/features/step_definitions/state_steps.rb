@@ -61,6 +61,7 @@ But(/^the next question has loaded so I continue with the check$/) do
     expect(check_page.question.text).to eql @question_strings[@number]
     check_page.complete_check_with_correct_answers(@question_strings.size - @number, 'numpad')
   end
+  sleep(6)
   expect(complete_page).to have_completion_text
 end
 

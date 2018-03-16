@@ -73,4 +73,4 @@ jspm_packages
 
 *.log
 
-.env
+.env*
