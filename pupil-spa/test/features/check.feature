@@ -59,7 +59,7 @@ Feature: Check questions
     Given I am on the check loading page
     Then I should see the number of the next questions
 
-  @non_parallel
+  @non_parallel @local_storage
   Scenario: Complete check data is submitted to the DB
     Given I am on the complete page
     Then I should see all the data from the check stored in the DB
