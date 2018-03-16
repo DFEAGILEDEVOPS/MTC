@@ -12,7 +12,7 @@ export const environment = {
   // Max attempts
   checkSubmissionAPIErrorMaxAttempts: 10,
   // Minimum display time for submission pending view
-  submissionPendingViewMinDisplay: 2000,
+  submissionPendingViewMinDisplay: 6000,
   // Contact number in case check submission fails
   supportNumber: '0345 278 8080',
   googleAnalyticsTrackingCode: 'GA_CODE'
