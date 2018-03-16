@@ -13,10 +13,11 @@ describe('role.service', () => {
 
     it('correctly maps all known roles', () => {
       expect(roleService.mapNcaRoleToMtcRole('SuperAdmin')).toBe('SERVICE-MANAGER')
+      expect(roleService.mapNcaRoleToMtcRole('SuperAdmin', 9991234)).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('SuperUser')).toBe('HEADTEACHER')
       expect(roleService.mapNcaRoleToMtcRole('SchoolSup')).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('SchoolNom')).toBe('TEACHER')
-      expect(roleService.mapNcaRoleToMtcRole('Admin', 42)).toBe('TEACHER')
+      expect(roleService.mapNcaRoleToMtcRole('Admin', 9991234)).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('DataAdmin')).toBe('TEST-DEVELOPER')
     })
   })
