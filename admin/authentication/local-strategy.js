@@ -10,6 +10,8 @@ const roleDataService = require('../services/data-access/role.data.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
 
 module.exports = async function (req, email, password, done) {
+  let dfeNumber
+
   /**
    * Store the logon attempt
    */
@@ -22,9 +24,27 @@ module.exports = async function (req, email, password, done) {
   }
 
   try {
+    // Local helpdesk user can logon with with `helpdesk:1234567` to impersonate a teacher for
+    // school with dfeNumber 1234567
+    const matches = email.match(/^(helpdesk):(\d{7})$/)
+    if (matches) {
+      email = matches[1]
+      dfeNumber = matches[2]
+    }
+
     const user = await userDataService.sqlFindOneByIdentifier(email)
-    const schoolPromise = schoolDataService.sqlFindOneById(R.prop('school_id', user))
-    const rolePromise = roleDataService.sqlFindOneById(R.prop('role_id', user))
+
+    let schoolPromise, rolePromise
+    if (dfeNumber) {
+      // Login as a help desk user impersonating a school user, so they get a TEACHER role
+      schoolPromise = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
+      rolePromise = roleDataService.sqlFindOneByTitle('TEACHER')
+    } else {
+      // Normal login
+      schoolPromise = schoolDataService.sqlFindOneById(R.prop('school_id', user))
+      rolePromise = roleDataService.sqlFindOneById(R.prop('role_id', user))
+    }
+
     const [school, role] = await Promise.all([schoolPromise, rolePromise])
 
     if (!user || !role || !school) {

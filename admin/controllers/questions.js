@@ -34,7 +34,7 @@ const getQuestions = async (req, res) => {
     return apiResponse.badRequest(res)
   }
 
-  let config, data, questions, token
+  let config, data, questions, token, checkWindow
 
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
@@ -61,7 +61,7 @@ const getQuestions = async (req, res) => {
   }
 
   try {
-    await checkWindowService.hasActiveCheckWindow(data.pupil.id)
+    checkWindow = await checkWindowService.getActiveCheckWindow(data.pupil.id)
   } catch (error) {
     return apiResponse.sendJson(res, 'Forbidden', 403)
   }
@@ -77,7 +77,8 @@ const getQuestions = async (req, res) => {
     return apiResponse.serverError(res)
   }
   try {
-    token = await jwtService.createToken(data.pupil)
+    const checkWindowEndDate = checkWindow && checkWindow.checkEndDate
+    token = await jwtService.createToken(data.pupil, checkWindowEndDate)
   } catch (error) {
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
     return apiResponse.serverError(res)

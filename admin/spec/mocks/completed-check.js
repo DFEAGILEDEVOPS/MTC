@@ -344,10 +344,6 @@ module.exports = {
       {
         'clientTimestamp': '2017-09-29T11:32:54.225Z',
         'type': 'QuestionAnswered'
-      },
-      {
-        'clientTimestamp': '2017-09-29T11:32:54.226Z',
-        'type': 'CheckComplete'
       }
     ],
     'answers': [

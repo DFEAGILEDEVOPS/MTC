@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CheckCompleteComponent } from './check-complete.component';
-import { AuditService } from '../services/audit/audit.service';
+import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 
 describe('CheckCompleteComponent', () => {
   let component: CheckCompleteComponent;
   let fixture: ComponentFixture<CheckCompleteComponent>;
-  let auditService;
+  let storageService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CheckCompleteComponent ],
       providers: [
-        { provide: AuditService, useClass: AuditServiceMock },
+        { provide: StorageService, useClass: StorageServiceMock },
         WindowRefService
       ]
     })
@@ -24,13 +24,13 @@ describe('CheckCompleteComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckCompleteComponent);
     component = fixture.componentInstance;
-    auditService = fixture.debugElement.injector.get(AuditService);
+    storageService = fixture.debugElement.injector.get(StorageService);
   });
 
   it('should be created', () => {
-    spyOn(auditService, 'addEntry');
+    spyOn(storageService, 'clear');
     expect(component).toBeTruthy();
     component.ngOnInit();
-    expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+    expect(storageService.clear).toHaveBeenCalledTimes(1);
   });
 });

@@ -39,10 +39,6 @@
             {
                 "clientTimestamp" : "2017-09-14T23:52:30.684Z",
                 "type" : "PauseRendered"
-            }, 
-            {
-                "clientTimestamp" : "2017-09-14T23:55:45.021Z",
-                "type" : "CheckComplete"
             }
         ],
         "inputs" : [
