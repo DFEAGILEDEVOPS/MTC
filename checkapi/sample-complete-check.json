@@ -206,10 +206,6 @@
             {
                 "clientTimestamp" : "2017-09-29T09:59:56.272Z",
                 "type" : "QuestionRendered"
-            }, 
-            {
-                "clientTimestamp" : "2017-09-29T10:00:02.271Z",
-                "type" : "CheckComplete"
             }
         ],
         "inputs" : [ 

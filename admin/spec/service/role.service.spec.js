@@ -16,7 +16,7 @@ describe('role.service', () => {
       expect(roleService.mapNcaRoleToMtcRole('SuperUser')).toBe('HEADTEACHER')
       expect(roleService.mapNcaRoleToMtcRole('SchoolSup')).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('SchoolNom')).toBe('TEACHER')
-      expect(roleService.mapNcaRoleToMtcRole('Admin')).toBe('TEACHER')
+      expect(roleService.mapNcaRoleToMtcRole('Admin', 42)).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('DataAdmin')).toBe('TEST-DEVELOPER')
     })
   })

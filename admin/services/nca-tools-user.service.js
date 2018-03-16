@@ -26,7 +26,7 @@ const service = {
 
     let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
     if (!userRecord) {
-      const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType)
+      const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
       const role = await roleService.findByTitle(mtcRoleName)
       const user = {
         identifier: ncaUser.EmailAddress,
@@ -46,7 +46,7 @@ const service = {
         await userDataService.sqlUpdateSchool(userRecord.id, school.id)
       }
     }
-    userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType)
+    userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
     return userRecord
   },
   recordLogonAttempt: async (logonData) => {
