@@ -28,9 +28,9 @@ describe('CheckCompleteComponent', () => {
   });
 
   it('should be created', () => {
-    spyOn(storageService, 'clear');
+    spyOn(storageService, 'setItem');
     expect(component).toBeTruthy();
     component.ngOnInit();
-    expect(storageService.clear).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   });
 });
