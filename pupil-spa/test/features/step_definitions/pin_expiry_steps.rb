@@ -41,6 +41,7 @@ Given(/^I have completed the check with a real user(?: using the (.+))?$/) do |i
   warm_up_complete_page.start_check.click
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
+  sleep(6)
   expect(complete_page).to have_completion_text
 end
 
