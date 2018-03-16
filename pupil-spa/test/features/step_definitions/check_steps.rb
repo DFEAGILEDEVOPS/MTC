@@ -80,6 +80,7 @@ end
 Then(/^I should be able to use the on screen keyboard to complete the test$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   @answers = check_page.complete_check_with_correct_answers(questions.size,'numpad')
+  sleep(6)
   expect(complete_page).to have_completion_text
 end
 

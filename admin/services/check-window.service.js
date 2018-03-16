@@ -105,13 +105,15 @@ const checkWindowService = {
   /**
    * Check if pupil is allowed to log in
    * @param pupilId
+   * @returns {Object}
    */
 
-  hasActiveCheckWindow: async (pupilId) => {
+  getActiveCheckWindow: async (pupilId) => {
     const currentCheck = await checkDataService.sqlFindOneForPupilLogin(pupilId)
     if (!currentCheck) throw new Error(`There is no check record for pupil id ${pupilId}`)
     const activeCheckWindow = await checkWindowDataService.sqlFindOneActiveCheckWindow(currentCheck.checkWindow_id)
     if (!activeCheckWindow) throw new Error('There is no open check window')
+    return activeCheckWindow
   }
 }
 
