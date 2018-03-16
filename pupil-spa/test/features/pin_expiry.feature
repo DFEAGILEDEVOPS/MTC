@@ -10,6 +10,7 @@ Feature:
     Given I have completed the check with a real user using the numpad
     Then I should have an expired pin
 
+  @local_storage
   Scenario: Check started event is recorded in the Audit log
     Given I have completed the check with a real user using the numpad
     Then I should see a check started event in the audit log

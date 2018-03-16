@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { SubmissionService } from '../services/submission/submission.service';
 import { AuditService } from '../services/audit/audit.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CheckSubmissionApiCalled, CheckSubmissionAPICallSucceeded } from '../services/audit/auditEntry';
 
 @Component({
@@ -15,12 +15,17 @@ export class SubmissionPendingComponent implements OnInit {
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
+  public title;
   constructor(private submissionService: SubmissionService,
               private auditService: AuditService,
-              private router: Router) {
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
   async ngOnInit() {
+    const queryParams = this.route.snapshot.queryParams;
+    this.title = queryParams && queryParams.unfinishedCheck ?
+      'Uploading previous check' : 'You have finished the check';
     const start = Date.now();
     await this.submissionService.submitData().toPromise()
       .then(async () => {

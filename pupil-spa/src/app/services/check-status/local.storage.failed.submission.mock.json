@@ -1,0 +1,785 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNVEMgQWRtaW4iLCJzdWIiOjEsImV4cCI6MTUyMDkwNTU1NiwibmJmIjoxNTIwOTAxOTU2LCJqd2kiOiJhM2VlNTc0Yy01YWU3LTQyNTItOTYxZC0xMTA1YWRjZDE0YWEiLCJpYXQiOjE1MjA5MDE5NTZ9.MZXQt77uzQataU641BWrfVxjVQn8DsdRywwgzcSm_N4",
+  "answers": [
+    {
+      "factor1": 2,
+      "factor2": 5,
+      "answer": "8"
+    },
+    {
+      "factor1": 11,
+      "factor2": 2,
+      "answer": "55"
+    },
+    {
+      "factor1": 5,
+      "factor2": 10,
+      "answer": ""
+    },
+    {
+      "factor1": 4,
+      "factor2": 4,
+      "answer": "5"
+    },
+    {
+      "factor1": 3,
+      "factor2": 9,
+      "answer": "5"
+    },
+    {
+      "factor1": 2,
+      "factor2": 4,
+      "answer": "5"
+    },
+    {
+      "factor1": 3,
+      "factor2": 3,
+      "answer": "5"
+    },
+    {
+      "factor1": 4,
+      "factor2": 9,
+      "answer": "5"
+    },
+    {
+      "factor1": 6,
+      "factor2": 5,
+      "answer": "5"
+    },
+    {
+      "factor1": 12,
+      "factor2": 12,
+      "answer": "5"
+    }
+  ],
+  "audit": [
+    {
+      "type": "WarmupStarted",
+      "clientTimestamp": "2018-03-13T00:45:58.649Z"
+    },
+    {
+      "type": "WarmupIntroRendered",
+      "clientTimestamp": "2018-03-13T00:45:58.656Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:45:59.375Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:01.381Z",
+      "data": {
+        "practiseSequenceNumber": 1,
+        "question": "1x7"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:03.005Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:03.007Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:05.012Z",
+      "data": {
+        "practiseSequenceNumber": 2,
+        "question": "3x10"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:06.867Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:06.868Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:08.878Z",
+      "data": {
+        "practiseSequenceNumber": 3,
+        "question": "2x6"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:09.252Z"
+    },
+    {
+      "type": "WarmupCompleteRendered",
+      "clientTimestamp": "2018-03-13T00:46:09.254Z"
+    },
+    {
+      "type": "CheckStarted",
+      "clientTimestamp": "2018-03-13T00:46:10.661Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:10.666Z"
+    },
+    {
+      "type": "CheckStartedAPICallSucceeded",
+      "clientTimestamp": "2018-03-13T00:46:10.720Z"
+    },
+    {
+      "type": "CheckStartedApiCalled",
+      "clientTimestamp": "2018-03-13T00:46:10.721Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:12.675Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:16.347Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:16.349Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:18.354Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:22.803Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:22.805Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:24.815Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10"
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:29.821Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:31.828Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "4x4"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:32.554Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:32.556Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:34.563Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:35.403Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:35.405Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:37.413Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:38.202Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:38.203Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:40.207Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:41.578Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:41.580Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:43.587Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:43.954Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:43.956Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:45.962Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:46.915Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2018-03-13T00:46:46.916Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2018-03-13T00:46:48.921Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12"
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2018-03-13T00:46:49.786Z"
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2018-03-13T00:46:49.786Z"
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:46:49.815Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:46:51.826Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:46:53.841Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2018-03-13T00:46:55.847Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T00:46:55.852Z"
+    },
+    {
+      "type": "RefreshDetected",
+      "clientTimestamp": "2018-03-13T00:47:00.473Z"
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2018-03-13T00:47:00.474Z"
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:47:00.544Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:47:02.560Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T00:47:04.572Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2018-03-13T00:47:06.575Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T00:47:06.579Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T08:51:34.850Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T08:51:40.150Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:18:17.581Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:32:34.620Z"
+    },
+    {
+      "type": "RefreshDetected",
+      "clientTimestamp": "2018-03-13T10:35:05.093Z"
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2018-03-13T10:35:05.093Z"
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:05.218Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:07.234Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:09.249Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2018-03-13T10:35:11.254Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:35:11.258Z"
+    },
+    {
+      "type": "RefreshDetected",
+      "clientTimestamp": "2018-03-13T10:35:44.491Z"
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2018-03-13T10:35:44.491Z"
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:44.546Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:46.562Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:35:48.577Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2018-03-13T10:35:50.582Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:35:50.586Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:50:14.171Z"
+    },
+    {
+      "type": "RefreshDetected",
+      "clientTimestamp": "2018-03-13T10:50:33.586Z"
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2018-03-13T10:50:33.588Z"
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:50:33.632Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:50:35.645Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionAPIFailed",
+      "clientTimestamp": "2018-03-13T10:50:37.659Z",
+      "data": {
+        "status": 404,
+        "statusText": "Not Found"
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2018-03-13T10:50:39.661Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T10:50:39.666Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T11:05:54.085Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T11:11:38.425Z"
+    },
+    {
+      "type": "CheckSubmissionFailed",
+      "clientTimestamp": "2018-03-13T11:20:12.353Z"
+    }
+  ],
+  "checkstate": 28,
+  "config": {
+    "questionTime": 5,
+    "loadingTime": 2,
+    "speechSynthesis": false
+  },
+  "device": {
+    "battery": {
+      "isCharging": true,
+      "levelPercent": 100,
+      "chargingTime": 0,
+      "dischargingTime": null
+    },
+    "cpu": {
+      "hardwareConcurrency": 8
+    },
+    "navigator": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
+      "platform": "MacIntel",
+      "language": "en-US",
+      "cookieEnabled": true,
+      "doNotTrack": null
+    },
+    "networkConnection": {
+      "downlink": 2.85,
+      "effectiveType": "4g",
+      "rtt": 0
+    },
+    "screen": {
+      "screenWidth": 1440,
+      "screenHeight": 900,
+      "outerWidth": 1440,
+      "outerHeight": 804,
+      "innerWith": 437,
+      "innerHeight": 804,
+      "colorDepth": 24,
+      "orientation": "landscape-primary"
+    }
+  },
+  "inputs": [
+    [
+      {
+        "input": "left click",
+        "eventType": "mousedown",
+        "clientInputDate": "2018-03-13T00:46:15.112Z",
+        "question": 1
+      },
+      {
+        "input": "left click",
+        "eventType": "mousedown",
+        "clientInputDate": "2018-03-13T00:46:15.643Z",
+        "question": 1
+      },
+      {
+        "input": "8",
+        "eventType": "click",
+        "clientInputDate": "2018-03-13T00:46:15.759Z",
+        "question": 1
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:16.347Z",
+        "question": 1
+      }
+    ],
+    [
+      {
+        "input": "left click",
+        "eventType": "mousedown",
+        "clientInputDate": "2018-03-13T00:46:21.172Z",
+        "question": 2
+      },
+      {
+        "input": "left click",
+        "eventType": "mousedown",
+        "clientInputDate": "2018-03-13T00:46:21.892Z",
+        "question": 2
+      },
+      {
+        "input": "5",
+        "eventType": "click",
+        "clientInputDate": "2018-03-13T00:46:22.016Z",
+        "question": 2
+      },
+      {
+        "input": "left click",
+        "eventType": "mousedown",
+        "clientInputDate": "2018-03-13T00:46:22.358Z",
+        "question": 2
+      },
+      {
+        "input": "5",
+        "eventType": "click",
+        "clientInputDate": "2018-03-13T00:46:22.465Z",
+        "question": 2
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:22.803Z",
+        "question": 2
+      }
+    ],
+    null,
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:32.330Z",
+        "question": 4
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:32.554Z",
+        "question": 4
+      }
+    ],
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:35.275Z",
+        "question": 5
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:35.402Z",
+        "question": 5
+      }
+    ],
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:38.058Z",
+        "question": 6
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:38.202Z",
+        "question": 6
+      }
+    ],
+    [
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:41.105Z",
+        "question": 7
+      },
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:41.402Z",
+        "question": 7
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:41.578Z",
+        "question": 7
+      }
+    ],
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:43.691Z",
+        "question": 8
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:43.954Z",
+        "question": 8
+      }
+    ],
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:46.354Z",
+        "question": 9
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:46.915Z",
+        "question": 9
+      }
+    ],
+    [
+      {
+        "input": "5",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:49.282Z",
+        "question": 10
+      },
+      {
+        "input": "Enter",
+        "eventType": "keydown",
+        "clientInputDate": "2018-03-13T00:46:49.786Z",
+        "question": 10
+      }
+    ]
+  ],
+  "pupil": {
+    "firstName": "Standard",
+    "lastName": "Pupil",
+    "dob": "1 January 2000",
+    "checkCode": "80E460EE-F0B4-4CFB-95B4-3C4EF82937A2"
+  },
+  "questions": [
+    {
+      "order": 1,
+      "factor1": 2,
+      "factor2": 5
+    },
+    {
+      "order": 2,
+      "factor1": 11,
+      "factor2": 2
+    },
+    {
+      "order": 3,
+      "factor1": 5,
+      "factor2": 10
+    },
+    {
+      "order": 4,
+      "factor1": 4,
+      "factor2": 4
+    },
+    {
+      "order": 5,
+      "factor1": 3,
+      "factor2": 9
+    },
+    {
+      "order": 6,
+      "factor1": 2,
+      "factor2": 4
+    },
+    {
+      "order": 7,
+      "factor1": 3,
+      "factor2": 3
+    },
+    {
+      "order": 8,
+      "factor1": 4,
+      "factor2": 9
+    },
+    {
+      "order": 9,
+      "factor1": 6,
+      "factor2": 5
+    },
+    {
+      "order": 10,
+      "factor1": 12,
+      "factor2": 12
+    }
+  ],
+  "school": {
+    "id": 1,
+    "name": "Test School"
+  }
+}

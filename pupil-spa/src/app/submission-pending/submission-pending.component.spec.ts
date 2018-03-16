@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SubmissionPendingComponent } from './submission-pending.component';
@@ -14,17 +14,20 @@ describe('SubmissionPendingComponent', () => {
   let auditService;
   let component;
   let router: Router;
+  let activatedRoute: ActivatedRoute;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionPendingComponent ],
       imports: [    RouterTestingModule.withRoutes([])],
       providers: [
         { provide: SubmissionService, useClass: SubmissionServiceMock },
-        { provide: AuditService, useClass: AuditServiceMock }
+        { provide: AuditService, useClass: AuditServiceMock },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
       ]
     })
     .compileComponents();
     router = TestBed.get(Router);
+    activatedRoute = TestBed.get(ActivatedRoute);
   }));
 
   beforeEach(() => {
@@ -47,6 +50,7 @@ describe('SubmissionPendingComponent', () => {
       expect(submissionService.submitData).toHaveBeenCalled();
       expect(component.loadComponent).toHaveBeenCalledWith(true);
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
+      expect(component.title).toBe('You have finished the check');
       expect(auditService.addEntry).toHaveBeenCalledTimes(2);
     });
     it('calls loadComponent method when data submission throws an error', async () => {
@@ -61,6 +65,16 @@ describe('SubmissionPendingComponent', () => {
       expect(component.loadComponent).toHaveBeenCalledWith(false);
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+    });
+    it('provides an appropriate title when a previous check is detected though a URL param', async () => {
+      submissionService = fixture.debugElement.injector.get(SubmissionService);
+      auditService = fixture.debugElement.injector.get(AuditService);
+      spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
+      spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
+      spyOn(component, 'sleep').and.returnValue(Promise.resolve());
+      activatedRoute.snapshot.queryParams.unfinishedCheck = true;
+      await component.ngOnInit();
+      expect(component.title).toBe('Uploading previous check');
     });
   });
   describe('loadComponent()', () => {
