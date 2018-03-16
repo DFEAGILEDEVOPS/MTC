@@ -1,4 +1,4 @@
-@event_auditing @local_storage_dependant
+@event_auditing
 Feature: Event Auditing
 
   Scenario: Events are recorded into local storage

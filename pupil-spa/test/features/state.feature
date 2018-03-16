@@ -26,7 +26,7 @@ Feature:
     When I attempt to refresh the page
     Then I should remain on the warm up complete page
 
-  @local_storage @local_storage_dependant
+  @local_storage
   Scenario Outline: Next question is loaded if user refreshes on the question page
     Given I am on question <number> of the check
     And I attempt to refresh the page
