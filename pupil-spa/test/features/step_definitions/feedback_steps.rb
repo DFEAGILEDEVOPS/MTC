@@ -1,6 +1,5 @@
 
 Given(/^I choose to give feedback$/) do
-  binding.pry
   complete_page.feedback.click
 end
 
