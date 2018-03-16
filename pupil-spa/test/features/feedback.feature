@@ -60,7 +60,7 @@ Feature: Feedback page
     Then I should be logged out
     And I should be taken to the sign in page
 
-  @non_parallel
+  @non_parallel @local_storage_dependant
   Scenario: Feedback is saved
     Given I am on the feedback thanks page
     Then my feedback should be saved
