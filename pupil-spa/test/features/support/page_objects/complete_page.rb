@@ -10,7 +10,7 @@ class CompletePage < SitePrism::Page
 
   def wait_for_complete_page
     i = 0
-    while i < 300
+    while i < 20
       if(has_completion_text?)
         puts "Complete Page is visible."
         break
