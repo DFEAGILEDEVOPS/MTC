@@ -16,7 +16,7 @@ export class CheckCompleteComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.storageService.clear();
+    this.storageService.setItem('pending_submission', false);
     this.window.ga('send', {
       hitType: 'pageview',
       page: '/check-complete'
