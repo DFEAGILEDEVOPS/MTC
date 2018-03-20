@@ -30,7 +30,8 @@
                     <% reasons.forEach( (reason, index) => { %>
                     <li>
                         <div class="multiple-choice">
-                            <% if (error.isError('didNotCompleteInfo') && reason.code === 'DNC') { %>
+                            <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
+                                            (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
                             <input id="restart-reason-<%= index %>"
                                    type="radio"
                                    role="radio"
@@ -49,6 +50,24 @@
                             >
                             <% } %>
                             <label for="restart-reason-<%= index %>"><%= reason.description %></label>
+                            <% if (reason.code === 'CLD') { %>
+                            <div class="hide">
+                                <div class="panel panel-border-wide">
+                                    <div class="form-group <%= error.isError('classDisruptionInfo') ? 'form-group-error' : '' %>">
+                                        <div class="form-label" for="classDisruptionInfo">Please specify:</div>
+                                        <% if (error.isError('classDisruptionInfo')) { %>
+                                        <span class="error-message"> <%= error.get('classDisruptionInfo') %></span>
+                                        <% } %>
+                                        <textarea
+                                                class="form-control form-control-3-4 restartReasonInfo <%= error.isError('classDisruptionInfo') ? 'form-control-error' : '' %>"
+                                                name="classDisruptionInfo"
+                                                id="classDisruptionInfo"
+                                                rows="1"
+                                                maxlength="100"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
                             <% if (reason.code === 'DNC') { %>
                             <div class="hide">
                                 <div class="panel panel-border-wide">
@@ -58,7 +77,7 @@
                                         <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
                                         <% } %>
                                         <textarea
-                                                class="form-control form-control-3-4 <%= error.isError('didNotCompleteInfo') ? 'form-control-error' : '' %>"
+                                                class="form-control form-control-3-4 restartReasonInfo <%= error.isError('didNotCompleteInfo') ? 'form-control-error' : '' %>"
                                                 name="didNotCompleteInfo"
                                                 id="didNotCompleteInfo"
                                                 rows="1"
