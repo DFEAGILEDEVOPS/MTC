@@ -8,5 +8,6 @@ module.exports = {
   'checkCode': '60f05fd2-5dac-4665-b17b-78c3f8a5dc20',
   'checkWindow_id': 1,
   'checkForm_id': 100,
-  'pupilLoginDate': '2017-09-28T15:40:00.548Z'
+  'pupilLoginDate': '2017-09-28T15:40:00.548Z',
+  'startedAt': '2017-09-28T15:41:00.123Z'
 }
