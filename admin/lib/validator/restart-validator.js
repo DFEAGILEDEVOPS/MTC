@@ -1,5 +1,6 @@
 const ValidationError = require('../validation-error')
 const restartErrorMessages = require('../errors/restart')
+const config = require('../../config')
 const restartValidator = {}
 
 /**
@@ -9,13 +10,13 @@ const restartValidator = {}
  * @returns {Boolean}
  */
 restartValidator.validateReason = (reason, specifyReason) => {
+  const { validationRestartCodes } = config.Data
   const validationError = new ValidationError()
-  if (reason === 'DNC' && specifyReason.length === 0) {
-    validationError.addError('didNotCompleteInfo', restartErrorMessages.errorMessage)
-  }
-  if (reason === 'CLD' && specifyReason.length === 0) {
-    validationError.addError('classDisruptionInfo', restartErrorMessages.errorMessage)
-  }
+  validationRestartCodes.map(v => {
+    if (v.type === reason && specifyReason.length === 0) {
+      validationError.addError(v.field, restartErrorMessages.errorMessage)
+    }
+  })
   return validationError
 }
 

@@ -27,7 +27,17 @@ module.exports = {
   Data: {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
-    helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080'
+    helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080',
+    validationRestartCodes: [
+      {
+        type: 'CLD',
+        field: 'classDisruptionInfo'
+      },
+      {
+        type: 'DNC',
+        field: 'didNotCompleteInfo'
+      }
+    ]
   },
   Sql: {
     Enabled: true, // deprecated, to be removed
