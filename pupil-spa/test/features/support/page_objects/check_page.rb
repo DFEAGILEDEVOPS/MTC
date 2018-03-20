@@ -24,7 +24,7 @@ class CheckPage < SitePrism::Page
 
   def wait_for_question(time=300)
     i = 0
-    while i < 300
+    while i < 360
       if(has_question_container?)
         puts "Question container is visible : #{has_question_container?}"
         break
