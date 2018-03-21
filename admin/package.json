@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "chalk": "^2.3.0",
+    "command-line-args": "^5.0.2",
     "govuk-elements-sass": "^3.1.2",
     "govuk_template_ejs": "^0.23.0",
     "gulp": "^3.9.1",
