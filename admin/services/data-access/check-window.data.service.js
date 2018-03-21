@@ -165,17 +165,6 @@ const checkWindowDataService = {
     return sqlService.query(sql, params)
   },
   /**
-   * Save check window
-   * @param data
-   * @deprecated use sqlCreate
-   * @return {Promise.<*>}
-   */
-  create: async (data) => {
-    const cw = new CheckWindow(data)
-    await cw.save()
-    return cw.toObject()
-  },
-  /**
    * Create a new check window
    * @param data
    * @return {Promise.<*>}
