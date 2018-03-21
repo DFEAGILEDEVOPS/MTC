@@ -30,7 +30,8 @@
                     <% reasons.forEach( (reason, index) => { %>
                     <li>
                         <div class="multiple-choice">
-                            <% if (error.isError('didNotCompleteInfo') && reason.code === 'DNC') { %>
+                            <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
+                                            (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
                             <input id="restart-reason-<%= index %>"
                                    type="radio"
                                    role="radio"
@@ -49,18 +50,19 @@
                             >
                             <% } %>
                             <label for="restart-reason-<%= index %>"><%= reason.description %></label>
-                            <% if (reason.code === 'DNC') { %>
+                            <% if (reason.code === 'DNC' || reason.code === 'CLD') { %>
+                            <% const errorType = reason.code === 'DNC' ? 'didNotCompleteInfo': 'classDisruptionInfo' %>
                             <div class="hide">
                                 <div class="panel panel-border-wide">
-                                    <div class="form-group <%= error.isError('didNotCompleteInfo') ? 'form-group-error' : '' %>">
-                                        <div class="form-label" for="didNotCompleteInfo">Please specify:</div>
-                                        <% if (error.isError('didNotCompleteInfo')) { %>
-                                        <span class="error-message"> <%= error.get('didNotCompleteInfo') %></span>
+                                    <div class="form-group <%= error.isError(errorType) ? 'form-group-error' : '' %>">
+                                        <div class="form-label" for=<%= errorType %>>Please specify:</div>
+                                        <% if (error.isError(errorType)) { %>
+                                        <span class="error-message"> <%= error.get(errorType) %></span>
                                         <% } %>
                                         <textarea
-                                                class="form-control form-control-3-4 <%= error.isError('didNotCompleteInfo') ? 'form-control-error' : '' %>"
-                                                name="didNotCompleteInfo"
-                                                id="didNotCompleteInfo"
+                                                class="form-control form-control-3-4 restart-reason-info <%= error.isError(errorType) ? 'form-control-error' : '' %>"
+                                                name=<%= errorType %>
+                                                id= <%= errorType %>
                                                 rows="1"
                                                 maxlength="100"></textarea>
                                     </div>

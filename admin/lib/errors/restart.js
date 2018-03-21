@@ -1,5 +1,5 @@
 'use strict'
 
 module.exports = {
-  didNotCompleteInfo: 'Enter an explanation'
+  errorMessage: 'Enter an explanation'
 }

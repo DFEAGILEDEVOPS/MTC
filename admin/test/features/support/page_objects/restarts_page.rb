@@ -6,6 +6,8 @@ class RestartsPage < SitePrism::Page
   element :select_pupil_to_restart_btn, 'input[value="Select pupils to restart"]'
   element :reasons_list, '.restart-list'
   element :reason_1, '.restart-list #restart-reason-0'
+  element :reason_3, '.restart-list #restart-reason-2'
+  element :reason_3_textbox, '#classDisruptionInfo'
   element :reason_4, '.restart-list #restart-reason-3'
   element :reason4_explanation_input, '#did-not-complete-textarea'
   element :restart_further_info_input, '#restart-further-textarea'
