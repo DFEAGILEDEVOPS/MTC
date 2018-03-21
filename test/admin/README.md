@@ -79,8 +79,3 @@ Options available:
 `rake features OPTS='features/prototype.feature' DRIVER=XXXX`
 
 Note: if no `DRIVER` is passed in, the default driver will be used
-
-
-### Docker setup
-
-when building run `docker build --network="host" -t ruby-admin .` to ensure container uses local network for `localhost`
