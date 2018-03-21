@@ -1,22 +1,23 @@
 const ValidationError = require('../validation-error')
 const restartErrorMessages = require('../errors/restart')
-const config = require('../../config')
+const pupilRestartReasons = require('../consts/pupil-restart-reasons')
 const restartValidator = {}
 
 /**
  * Validate restart reason
- * @param reason
- * @param specifyReason
+ * @param {String} restartCode
+ * @param {String} reason
  * @returns {Boolean}
  */
-restartValidator.validateReason = (reason, specifyReason) => {
-  const { validationRestartCodes } = config.Data
+restartValidator.validateReason = (restartCode, reason) => {
   const validationError = new ValidationError()
-  validationRestartCodes.map(v => {
-    if (v.type === reason && specifyReason.length === 0) {
-      validationError.addError(v.field, restartErrorMessages.errorMessage)
-    }
-  })
+  if (reason.length > 0) return validationError
+  if (restartCode === pupilRestartReasons.classroomDisruption) {
+    validationError.addError('classDisruptionInfo', restartErrorMessages.errorMessage)
+  }
+  if (restartCode === pupilRestartReasons.didNotComplete) {
+    validationError.addError('didNotCompleteInfo', restartErrorMessages.errorMessage)
+  }
   return validationError
 }
 
