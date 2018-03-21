@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const winston = require('winston')
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')

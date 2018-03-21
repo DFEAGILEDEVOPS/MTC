@@ -6,7 +6,6 @@ const moment = require('moment')
 
 const poolService = require('../services/data-access/sql.pool.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
-const dateService = require('../services/date.service')
 
 const optionDefinitions = [
   { name: 'verbose', alias: 'v', type: Boolean },
