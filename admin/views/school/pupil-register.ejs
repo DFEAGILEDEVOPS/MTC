@@ -53,16 +53,16 @@
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit')) { %>
                                 <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
-                                    <%= `${p.lastName}, ${p.foreName}` %>
+                                    <%= `${p.fullName}` %>
                                 </a>
                                 <% } else { %>
                                 <span class="bold-small truncate">
-                                    <%= `${p.lastName}, ${p.foreName}` %>
+                                    <%= `${p.fullName}` %>
                                 </span>
                             <% } %>
                             <% if (p.showDoB) { %>
                                 <div class="font-greyed-out font-xsmall">
-                                    Date of birth: <%= p.dob %>
+                                    Date of birth: <%= p.dateOfBirth %>
                                 </div>
                             <% } %>
                         </div>

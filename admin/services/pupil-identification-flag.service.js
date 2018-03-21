@@ -1,3 +1,4 @@
+const dateService = require('../services/date.service')
 const pupilIdentificationFlag = {}
 
 /**
@@ -10,15 +11,18 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
     const currentPupil = pupils[ i ]
     const nextPupil = pupils[ i + 1 ]
     if (nextPupil === undefined) return
-    if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil) &&
-      currentPupil.dateOfBirth === nextPupil.dateOfBirth) {
-      currentPupil.showMiddleNames = true
-      nextPupil.showMiddleNames = true
-    }
     if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil)) {
+      currentPupil.dateOfBirth = dateService.formatShortGdsDate(currentPupil.dateOfBirth)
       currentPupil.showDoB = true
       nextPupil.showDoB = true
+      nextPupil.dateOfBirth = dateService.formatShortGdsDate(nextPupil.dateOfBirth)
+      if (currentPupil.dateOfBirth.toString() === nextPupil.dateOfBirth.toString()) {
+        currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName} ${currentPupil.middleNames}`
+        nextPupil.fullName = `${nextPupil.lastName}, ${nextPupil.foreName} ${nextPupil.middleNames}`
+      }
     }
+    currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
+    nextPupil.fullName = !nextPupil.fullName ? `${nextPupil.lastName}, ${nextPupil.foreName}` : nextPupil.fullName
   })
   return pupils
 }

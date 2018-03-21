@@ -1,6 +1,5 @@
 'use strict'
 
-const winston = require('winston')
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const pupilDataService = {}
@@ -172,7 +171,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
-  ORDER BY p.lastName ASC, p.foreName ASC
+  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC
   `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -287,7 +286,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   }
   let sqlSort
   if (sortField === 'name') {
-    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}, p.middleNames ${sortDirection}`
   } else if (sortField === 'reason') {
     sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
   }
@@ -361,9 +360,8 @@ pupilDataService.sqlInsertMany = async (pupils) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
-  const res = await sqlService.modify(sql, params)
+  return sqlService.modify(sql, params)
   // E.g. { insertId: [1, 2], rowsModified: 4 }
-  return res
 }
 
 module.exports = pupilDataService

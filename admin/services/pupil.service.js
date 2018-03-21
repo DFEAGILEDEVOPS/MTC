@@ -1,6 +1,3 @@
-const errorConverter = require('../lib/error-converter')
-const pupilValidator = require('../lib/validator/pupil-validator')
-const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
@@ -22,8 +19,8 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
  * @param schoolId
  * @returns {Promise.<*>}
  */
-pupilService.fetchOnePupilBySlug = async (slug, schoolId) => {
-  return pupilDataService.sqlFindOneBySlugAndSchool(slug, schoolId)
+pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
+  return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
 }
 
 /**

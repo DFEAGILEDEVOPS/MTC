@@ -30,10 +30,10 @@ restartService.getPupils = async (dfeNumber) => {
     if (isPupilEligible) return p
   }), p => !!p)
   if (pupils.length === 0) return []
-  pupils = pupils.map(({ id, pin, dob, foreName, middleNames, lastName, group_id }) =>
-    ({ id, pin, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName, group_id })
-  )
   pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
+  pupils = pupils.map(({ id, pin, dateOfBirth, dob, foreName, middleNames, lastName, group_id }) =>
+    ({ id, pin, dateOfBirth, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName, group_id })
+  )
   return pupils
 }
 
@@ -150,7 +150,7 @@ restartService.getSubmittedRestarts = async schoolId => {
         foreName: p.foreName,
         lastName: p.lastName,
         middleNames: p.middleNames,
-        dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth)
+        dateOfBirth: p.dateOfBirth
       })
     }
   }))

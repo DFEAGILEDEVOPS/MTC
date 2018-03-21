@@ -9,7 +9,8 @@ const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
+const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
@@ -58,16 +59,16 @@ const getPupils = async (req, res, next) => {
     groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
     const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School, sortDirection)
 
-    pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-      const { foreName, lastName } = p
-      const dob = dateService.formatShortGdsDate(p.dateOfBirth)
+    pupilsFormatted = await Promise.all(pupils.map(async (p, i) => {
+      const { foreName, lastName, middleNames, dateOfBirth, urlSlug } = p
       const outcome = await pupilStatusService.getStatus(p)
       const group = groupsIndex[p.group_id] || '-'
       return {
-        urlSlug: p.urlSlug,
+        urlSlug,
         foreName,
         lastName,
-        dob,
+        middleNames,
+        dateOfBirth,
         group,
         outcome
       }
@@ -76,14 +77,7 @@ const getPupils = async (req, res, next) => {
     next(error)
   }
 
-  pupilsFormatted.map((p, i) => {
-    if (pupilsFormatted[ i + 1 ] === undefined) return
-    if (pupilsFormatted[ i ].foreName === pupilsFormatted[ i + 1 ].foreName &&
-      pupilsFormatted[ i ].lastName === pupilsFormatted[ i + 1 ].lastName) {
-      pupilsFormatted[ i ].showDoB = true
-      pupilsFormatted[ i + 1 ].showDoB = true
-    }
-  })
+  pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
 
   // If sorting by 'status', use custom method.
   if (sortField === 'status') {
@@ -337,7 +331,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   try {
     // Get pupils for active school
-    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
+    const pupils = await pupilsNotTakingCheckService.pupilsWithReasons(req.user.School)
     return res.render('school/pupils-not-taking-check', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList: pupils,
@@ -377,7 +371,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   try {
     attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
-    pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(req.user.School, sortField, sortDirection)
+    pupils = await pupilsNotTakingCheckService.pupils(req.user.School, sortField, sortDirection)
   } catch (error) {
     return next(error)
   }
@@ -488,7 +482,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
   try {
-    const pupilsList = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
+    const pupilsList = await pupilsNotTakingCheckService.pupilsWithReasons(req.user.School)
     return res.render('school/pupils-not-taking-check', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
