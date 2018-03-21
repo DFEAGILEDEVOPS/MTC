@@ -235,3 +235,21 @@ And(/^I should be able to see the number of pupils in the group$/) do
   group = restarts_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_names_arr.size
 end
+
+When(/^I submit the pupil for restart with a reason 'Classroom disruption' for restarts$/) do
+  restarts_page.reason_3.click
+  step 'I select a pupil for restarts'
+  restarts_page.sticky_banner.confirm.click
+end
+
+Then(/^I should see the error message for further information for 'Classroom disruption' reason$/) do
+  expect(restarts_page.error_summary).to be_all_there
+end
+
+Given(/^I submitted pupils for Restart using reason Classroom disruption$/) do
+  step 'I have single pupils for restart'
+  step 'I select a pupil for restarts'
+  restarts_page.reason_3.click
+  restarts_page.reason_3_textbox.set 'Noisy classroom'
+  restarts_page.sticky_banner.confirm.click
+end
