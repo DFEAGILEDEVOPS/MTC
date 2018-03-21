@@ -26,7 +26,7 @@ module.exports = async function (req, email, password, done) {
   try {
     // Local helpdesk or service-manager users can logon with with `helpdesk:1234567` to impersonate a teacher for
     // school with dfeNumber 1234567.
-    // NOTE that this is not a generic implementation: you actually need to be called 'helpdesk' or 'service-manbager'
+    // NOTE that this is not a generic implementation: you actually need to be called 'helpdesk' or 'service-manager'
     // rather than simply have the role.  This is fine - it's only for local-dev
     const matches = email.match(/^(helpdesk|service-manager):(\d{7})$/)
     if (matches) {
