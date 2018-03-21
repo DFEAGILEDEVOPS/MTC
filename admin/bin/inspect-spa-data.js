@@ -17,7 +17,7 @@ const optionDefinitions = [
 
 const usage = function () {
   return console.log(`
-    Usage: <script> --check <checkCode> --filter [answers|audit|config|inputs|pupil|questions]
+    Usage: <script> --check <checkCode> --filter [answers|audit|config|device|inputs|pupil|questions]
     E.g. inspect-spa-data.js -c C367DCE8-150B-4FFD-A92C-74F766C42004 audit
     
     Fancy pants stuff
