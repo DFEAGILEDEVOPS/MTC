@@ -3,7 +3,7 @@ Then(/^I should see a complete page heading$/) do
 end
 
 Then(/^I should see some text stating i have completed the check$/) do
-  sleep(6)
+  complete_page.wait_for_complete_page
   expect(complete_page).to have_completion_text
 end
 

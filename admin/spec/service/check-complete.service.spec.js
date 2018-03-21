@@ -1,11 +1,13 @@
 'use strict'
 /* global describe beforeEach it expect spyOn xit */
+const moment = require('moment')
 
 const jwtService = require('../../services/jwt.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
-const moment = require('moment')
+const checkDataService = require('../../services/data-access/check.data.service')
+const checkMock = require('../mocks/check')
 
 describe('check-complete.service', () => {
   describe('happy path', () => {
@@ -38,6 +40,7 @@ describe('check-complete.service', () => {
       spyOn(markingService, 'mark').and.returnValue(Promise.resolve())
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
       spyOn(completedCheckDataService, 'sqlFindOneByCheckCode')
+      spyOn(checkDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(checkMock))
     })
 
     it('clears pin and sets expiry when not test account', async (done) => {

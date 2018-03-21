@@ -1,12 +1,15 @@
 'use strict'
 
 const moment = require('moment')
+const winston = require('winston')
 
+const checkDataService = require('./data-access/check.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
+const config = require('../config')
 const jwtService = require('../services/jwt.service')
 const markingService = require('./marking.service')
+const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const config = require('../config')
 
 const checkCompleteService = {}
 
@@ -24,6 +27,18 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   // Timestamp the request
   // TODO: This timestamp should be recorded in the application service tier instead
   completedCheck.receivedByServerAt = moment.utc()
+
+  const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
+  if (!existingCheck.startedAt) {
+    winston.debug('Check submission for a check that does not have a startedAt date')
+    // determine the check started time from the audit log - CAUTION this is client data
+    const startedAt = moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', completedCheck))
+    if (startedAt.isValid()) {
+      await checkDataService.sqlUpdateCheckStartedAt(completedCheck.data.pupil.checkCode, startedAt)
+    } else {
+      winston.debug('StartedAt date is not valid')
+    }
+  }
 
   // store to data store
   await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck)
