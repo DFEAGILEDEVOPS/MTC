@@ -19,6 +19,10 @@ const service = {
 
     let role = mapping[ncaUserType]
 
+    if (!role) {
+      throw new Error(`Unknown ncaUserType ${ncaUserType}`)
+    }
+
     if (role === 'HELPDESK' && !school) {
       // There is no provision for helpdesk users to log on as themselves
       throw new Error('Helpdesk users must impersonate a school to sign-in')
@@ -29,7 +33,7 @@ const service = {
       role = 'TEACHER'
     }
 
-    return role || 'TEACHER'
+    return role
   },
   /**
    * @param roleName required

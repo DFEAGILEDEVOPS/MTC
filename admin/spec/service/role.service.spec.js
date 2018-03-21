@@ -6,11 +6,6 @@ const roleService = require('../../services/role.service')
 
 describe('role.service', () => {
   describe('mapNcaRoleToMtcRole', () => {
-    it('default to teacher when nca tools user type is not found', () => {
-      const actual = roleService.mapNcaRoleToMtcRole('batman')
-      expect(actual).toBe('TEACHER')
-    })
-
     it('correctly maps all known roles', () => {
       expect(roleService.mapNcaRoleToMtcRole('SuperAdmin')).toBe('SERVICE-MANAGER')
       expect(roleService.mapNcaRoleToMtcRole('SuperAdmin', 9991234)).toBe('TEACHER')
@@ -19,6 +14,10 @@ describe('role.service', () => {
       expect(roleService.mapNcaRoleToMtcRole('SchoolNom')).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('Admin', 9991234)).toBe('TEACHER')
       expect(roleService.mapNcaRoleToMtcRole('DataAdmin')).toBe('TEST-DEVELOPER')
+    })
+
+    it('throws an exception if the ncaUserType does not map to a known role', () => {
+      expect(function () { roleService.mapNcaRoleToMtcRole('Batman') }).toThrowError('Unknown ncaUserType Batman')
     })
   })
 
