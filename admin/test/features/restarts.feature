@@ -78,6 +78,15 @@ Feature: Restarts
     When I submit the pupil for restart with a reason 'Did not complete' for restarts
     Then I should see the error message for further information for 'Did not complete' reason
 
+  Scenario: Error message is displayed if no info is provided for the reason Classroom disruption
+    Given I have single pupils for restart
+    When I submit the pupil for restart with a reason 'Classroom disruption' for restarts
+    Then I should see the error message for further information for 'Classroom disruption' reason
+
+  Scenario: Pupil added to the restart list after Pupil is submitted using reason Classroom disruption
+    Given I submitted pupils for Restart using reason Classroom disruption
+    Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
+
   Scenario: Pupil added to the restart list after Pupil is submitted successfully for Restarts
     Given I submitted pupils for Restart
     Then I should see pupil is added to the pupil restarts list with status 'Remove restart'
