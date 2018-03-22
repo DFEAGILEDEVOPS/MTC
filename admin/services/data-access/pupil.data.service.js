@@ -17,7 +17,7 @@ const sqlService = require('./sql.service')
 pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirection) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   sortDirection = sortDirection === 'asc' ? 'asc' : 'desc'
-  const sortBy = `lastName ${sortDirection}, middleNames ${sortDirection}, foreName ${sortDirection}, dateOfBirth ${sortDirection}`
+  const sortBy = `lastName ${sortDirection}, foreName ${sortDirection}, middleNames ${sortDirection}, dateOfBirth ${sortDirection}`
 
   const sql = `
       SELECT p.*, g.group_id 
@@ -171,7 +171,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
-  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC
+  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -210,7 +210,7 @@ pupilDataService.sqlFindByIds = async (ids) => {
   `
   const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
-  const orderClause = 'ORDER BY lastName'
+  const orderClause = 'ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
   const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)
 }
@@ -286,7 +286,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   }
   let sqlSort
   if (sortField === 'name') {
-    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}, p.middleNames ${sortDirection}`
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}, p.middleNames ${sortDirection}, p.dateOfBirth ${sortDirection}`
   } else if (sortField === 'reason') {
     sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
   }
