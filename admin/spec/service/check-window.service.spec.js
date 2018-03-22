@@ -16,11 +16,9 @@ describe('check-window.service', () => {
     checkDataService = require('../../services/data-access/check.data.service')
   })
 
-  describe('formatCheckWindowDocuments', () => {
-    it('should return dates correctly formatted', () => {
-      const isCurrent = true
-      const canRemove = false
-      const checkWindows = [
+  describe('getAllCheckWindows', () => {
+    it('should return dates correctly formatted', async () => {
+      spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
         {
           id: 1,
           checkEndDate: moment('2018-01-20 00:00:00'),
@@ -30,102 +28,82 @@ describe('check-window.service', () => {
           formCount: 2,
           isDeleted: false
         }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
+      ])
+      const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
 
-      expect(result[0].checkWindowName).toBe('Test window 3')
-      expect(result[0].adminStartDate).toBe('18 Oct 2017')
-      expect(result[0].checkDates).toBe('10 Jan to 20 Jan 2018')
+      expect(checkWindows[0].name).toBe('Test window 3')
+      expect(checkWindows[0].adminStartDate).toBe('18 Oct 2017')
+      expect(checkWindows[0].checkDates).toBe('10 Jan to 20 Jan 2018')
     })
 
-    it('should respect passed in value of canRemove when false', () => {
-      const isCurrent = false
-      const canRemove = false
-      const checkWindows = [
+    it('should set canRemove to false and isCurrent to false when checkwindow is in the past', async () => {
+      spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
         {
           id: 1,
-          checkEndDate: moment('2018-01-20 00:00:00'),
-          checkStartDate: moment('2018-01-10 00:00:00'),
-          adminStartDate: moment('2017-10-18 00:00:00'),
+          checkEndDate: moment().subtract(1, 'day'),
+          checkStartDate: moment().subtract(2, 'day'),
+          adminStartDate: moment().subtract(3, 'day'),
           name: 'Test window 3',
           formCount: 2,
           isDeleted: false
         }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
-      expect(result[0].canRemove).toBe(canRemove)
+      ])
+      const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
+      expect(checkWindows[0].canRemove).toBeFalsy()
+      expect(checkWindows[0].isCurrent).toBeFalsy()
     })
 
-    it('should respect passed in value of canRemove when true', () => {
-      const isCurrent = false
-      const canRemove = true
-      const checkWindows = [
+    it('should set canRemove to true and isCurrent to false when checkwindow is in the future', async () => {
+      spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
         {
           id: 1,
-          checkEndDate: moment('2018-01-20 00:00:00'),
-          checkStartDate: moment('2018-01-10 00:00:00'),
-          adminStartDate: moment('2017-10-18 00:00:00'),
+          checkEndDate: moment().add(3, 'day'),
+          checkStartDate: moment().add(2, 'day'),
+          adminStartDate: moment().add(1, 'day'),
           name: 'Test window 3',
           formCount: 2,
           isDeleted: false
         }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent, canRemove)
-      expect(result[0].canRemove).toBe(canRemove)
+      ])
+      const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
+      expect(checkWindows[0].canRemove).toBeTruthy()
+      expect(checkWindows[0].isCurrent).toBeFalsy()
     })
 
-    it('should set canRemove to true when checkStartDate is greater than today', () => {
-      const isCurrent = false
-      const checkWindows = [
+    it('should set canRemove to false and isCurrent to true when checkwindow starts today', async () => {
+      spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
         {
           id: 1,
-          checkEndDate: moment().add(7, 'days'),
-          checkStartDate: moment().add(2, 'days'),
-          adminStartDate: moment().subtract(5, 'days'),
-          name: 'Future Test Window',
+          checkEndDate: moment().add(7, 'day'),
+          checkStartDate: moment(),
+          adminStartDate: moment().subtract(5, 'day'),
+          name: 'Today window',
           formCount: 2,
           isDeleted: false
         }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
-      expect(result[0].canRemove).toBe(true)
+      ])
+      const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
+      expect(checkWindows[0].canRemove).toBeFalsy()
+      expect(checkWindows[0].isCurrent).toBeTruthy()
     })
-
-    it('should set canRemove to true when checkStartDate is today', () => {
-      const dateService = require('../../services/date.service')
-      const today = moment('2017-09-01')
-      spyOn(dateService, 'utcNowAsMoment').and.returnValue(today)
-      const isCurrent = false
-      const checkWindows = [
+    it('should throw an error if a check window start date is after check window end date', async () => {
+      spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
         {
           id: 1,
-          checkEndDate: today.add(7, 'days'),
-          checkStartDate: today,
-          adminStartDate: today.subtract(5, 'days'),
-          name: 'Future Test Window',
+          checkEndDate: moment(),
+          checkStartDate: moment().add(7, 'day'),
+          adminStartDate: moment().subtract(5, 'day'),
+          name: 'Today window',
           formCount: 2,
           isDeleted: false
         }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
-      expect(result[0].canRemove).toBe(true)
-    })
-
-    it('should set canRemove to false when checkStartDate is before today', () => {
-      const isCurrent = false
-      const checkWindows = [
-        {
-          id: 1,
-          checkEndDate: moment().add(7, 'days'),
-          checkStartDate: moment().subtract(2, 'days'),
-          adminStartDate: moment().subtract(5, 'days'),
-          name: 'Future Test Window',
-          formCount: 2,
-          isDeleted: false
-        }
-      ]
-      const result = service.formatCheckWindowDocuments(checkWindows, isCurrent)
-      expect(result[0].canRemove).toBe(false)
+      ])
+      try {
+        const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check start date is after check end date')
+      }
     })
   })
 

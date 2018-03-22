@@ -7,28 +7,6 @@ const checkFormDataService = require('./data-access/check-form.data.service')
 const checkDataService = require('./data-access/check.data.service')
 
 const checkWindowService = {
-  /**
-   * Format check windows document, prepare to parse in view.
-   * @param checkWindows
-   * @param isCurrent
-   * @param canRemove
-   */
-  formatCheckWindowDocuments: (checkWindows, isCurrent, canRemove) => {
-    return checkWindows.map(cw => {
-      const adminStartDateMo = moment(cw.adminStartDate)
-      const checkStartDateMo = moment(cw.checkStartDate)
-      const checkEndDateMo = moment(cw.checkEndDate)
-
-      return {
-        id: cw.id,
-        checkWindowName: cw.name,
-        adminStartDate: adminStartDateMo.format('D MMM YYYY'),
-        checkDates: dateService.formatCheckPeriod(checkStartDateMo, checkEndDateMo),
-        canRemove: typeof canRemove === 'boolean' ? canRemove : moment(cw.checkStartDate).isSameOrAfter(dateService.utcNowAsMoment()),
-        isCurrent: isCurrent
-      }
-    })
-  },
 
   /**
    * Retrieve all check window names, sorted by date for a set of forms.
@@ -114,6 +92,44 @@ const checkWindowService = {
     const activeCheckWindow = await checkWindowDataService.sqlFindOneActiveCheckWindow(currentCheck.checkWindow_id)
     if (!activeCheckWindow) throw new Error('There is no open check window')
     return activeCheckWindow
+  },
+
+  /**
+   * Get all check windows
+   * @param {String} sortField
+   * @param {String} sortDirection
+   * @returns {Object}
+   */
+  getAllCheckWindows: async(sortField, sortDirection) => {
+    // fetch past current and future check windows
+    const checkWindows = await checkWindowDataService.sqlFindAllCheckWindows(sortField, sortDirection)
+    return checkWindows.map(cw => {
+      const adminStartDate = moment(cw.adminStartDate)
+      const checkStartDate = moment(cw.checkStartDate)
+      const checkEndDate = moment(cw.checkEndDate)
+
+      if (moment(checkStartDate).isAfter(moment(checkEndDate))) {
+        throw new Error('Check start date is after check end date')
+      }
+
+      const inPast = moment(checkEndDate).isBefore(moment.now())
+      const isCurrent = moment(checkStartDate).isSameOrBefore(moment.now()) && moment(checkEndDate).isSameOrAfter(moment.now())
+      const inFuture = moment(checkStartDate).isAfter(moment.now())
+
+      let canRemove
+      if (inPast) canRemove = false
+      if (isCurrent) canRemove = false
+      if (inFuture) canRemove = true
+
+      return {
+        id: cw.id,
+        name: cw.name,
+        adminStartDate: adminStartDate.format('D MMM YYYY'),
+        checkDates: dateService.formatCheckPeriod(checkStartDate, checkEndDate),
+        isCurrent,
+        canRemove
+      }
+    })
   }
 }
 

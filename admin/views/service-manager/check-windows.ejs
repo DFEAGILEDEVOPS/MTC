@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                <% checkWindowList.forEach( (checkWindow, index) => { %>
+                <% checkWindowList.forEach( (checkWindow) => { %>
                 <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
                     <td>
                         <% if (checkWindow.isCurrent) { %>
