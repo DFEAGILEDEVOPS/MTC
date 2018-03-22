@@ -30,13 +30,13 @@ pupilsNotTakingCheckService.sortPupilsByReason = (pupilsList, sortDirection) => 
   return sortedPupilsList
 }
 
-pupilsNotTakingCheckService.pupils = async (schoolId, sortField, sortDirection) => {
+pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber = async (schoolId, sortField, sortDirection) => {
   const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId, sortField, sortDirection)
   pupilIdentificationFlag.addIdentificationFlags(pupils)
   return pupils
 }
 
-pupilsNotTakingCheckService.pupilsWithReasons = async (schoolId) => {
+pupilsNotTakingCheckService.getPupilsWithReasons = async (schoolId) => {
   const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId)
   pupilIdentificationFlag.addIdentificationFlags(pupils)
   return pupils
