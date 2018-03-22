@@ -216,13 +216,14 @@ pupilDataService.sqlFindByIds = async (ids) => {
 }
 
 /**
- * Find pupils by ids and dfeNumber
+ * Find pupils by ids and dfeNumber.
  * @param ids
- * @return {Promise<void>}
+ * @param dfeNumber
+ * @returns {Promise<*>}
  */
 pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
   const select = `
-      SELECT p.*    
+      SELECT p.* 
       FROM 
       ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
       `
