@@ -23,7 +23,7 @@ const getHome = async (req, res, next) => {
   let schoolName = ''
 
   try {
-    // TODO: extract this dataservice call to a service
+    // TODO: extract this data-service call to a service
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
@@ -331,7 +331,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
 
   try {
     // Get pupils for active school
-    const pupils = await pupilsNotTakingCheckService.pupilsWithReasons(req.user.School)
+    const pupils = await pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber(req.user.School)
     return res.render('school/pupils-not-taking-check', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList: pupils,
@@ -371,7 +371,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   try {
     attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
-    pupils = await pupilsNotTakingCheckService.pupils(req.user.School, sortField, sortDirection)
+    pupils = await pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber(req.user.School, sortField, sortDirection)
   } catch (error) {
     return next(error)
   }
@@ -482,7 +482,7 @@ const viewPupilsNotTakingTheCheck = async (req, res, next) => {
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
   try {
-    const pupilsList = await pupilsNotTakingCheckService.pupilsWithReasons(req.user.School)
+    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.School)
     return res.render('school/pupils-not-taking-check', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
