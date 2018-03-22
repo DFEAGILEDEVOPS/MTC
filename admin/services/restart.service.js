@@ -62,12 +62,13 @@ restartService.isPupilEligible = async (p) => {
  * @param pupilsList
  * @param restartReasonCode
  * @param didNotCompleteInfo
+ * @param classDisruptionInfo
  * @param restartFurtherInfo
  * @param userName
  * @returns {Promise.<void>}
  */
 
-restartService.restart = async (pupilsList, restartReasonCode, didNotCompleteInfo, restartFurtherInfo, userName) => {
+restartService.restart = async (pupilsList, restartReasonCode, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, userName) => {
   await pinService.expireMultiplePins(pupilsList)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
@@ -80,6 +81,7 @@ restartService.restart = async (pupilsList, restartReasonCode, didNotCompleteInf
       pupil_id: pupilId,
       recordedByUser_id: userName,
       pupilRestartReason_id: restartReasonId,
+      classDisruptionInformation: classDisruptionInfo,
       didNotCompleteInformation: didNotCompleteInfo,
       furtherInformation: restartFurtherInfo,
       createdAt: moment.utc()
