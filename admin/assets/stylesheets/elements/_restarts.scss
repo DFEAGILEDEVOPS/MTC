@@ -59,9 +59,12 @@ input[type=radio]:checked ~ .hide {
   }
 }
 
-#didNotCompleteInfo {
-  padding-bottom: pem(5px);
+.restart-reason-info {
   min-width:pem(380px);
+}
+
+#classDisruptionInfo {
+  margin-bottom: pem(20px);
 }
 
 .link-button {

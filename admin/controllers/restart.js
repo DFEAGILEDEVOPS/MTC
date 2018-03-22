@@ -55,11 +55,12 @@ controller.getSelectRestartList = async (req, res, next) => {
 }
 
 controller.postSubmitRestartList = async (req, res, next) => {
-  const { pupil: pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo } = req.body
+  const { pupil: pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo } = req.body
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
-  const validationError = restartValidator.validateReason(restartReason, didNotCompleteInfo)
+  const info = classDisruptionInfo || didNotCompleteInfo
+  const validationError = restartValidator.validateReason(restartReason, info)
   if (validationError.hasError()) {
     const pageTitle = 'Select pupils for restart'
     res.locals.pageTitle = `Error: ${pageTitle}`
@@ -90,7 +91,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let submittedRestarts
   try {
-    submittedRestarts = await restartService.restart(pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo, req.user.id)
+    submittedRestarts = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id)
   } catch (error) {
     return next(error)
   }
