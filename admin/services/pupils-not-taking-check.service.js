@@ -30,16 +30,45 @@ pupilsNotTakingCheckService.sortPupilsByReason = (pupilsList, sortDirection) => 
   return sortedPupilsList
 }
 
+/**
+ * Get pupils with and without reasons assigned.
+ * @param schoolId
+ * @param sortField
+ * @param sortDirection
+ * @returns {Promise<*>}
+ */
 pupilsNotTakingCheckService.pupils = async (schoolId, sortField, sortDirection) => {
   const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId, sortField, sortDirection)
-  pupilIdentificationFlag.addIdentificationFlags(pupils)
-  return pupils
+  return pupilIdentificationFlag.addIdentificationFlags(pupils)
 }
 
+/**
+ * Get pupils only with reasons.
+ * @param schoolId
+ * @returns {Promise<*>}
+ */
 pupilsNotTakingCheckService.pupilsWithReasons = async (schoolId) => {
   const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId)
-  pupilIdentificationFlag.addIdentificationFlags(pupils)
-  return pupils
+  return pupilIdentificationFlag.addIdentificationFlags(pupils)
+}
+
+/**
+ * Build the pupil slug based on the body object.a
+ * @param reqBody
+ * @returns {string}
+ */
+pupilsNotTakingCheckService.getPupilSlugs = (reqBody) => {
+  let postedPupilSlugs = ''
+  if (typeof reqBody === 'object') {
+    if (Array.isArray(reqBody)) {
+      postedPupilSlugs = reqBody
+    } else {
+      postedPupilSlugs = Object.values(reqBody)
+    }
+  } else if (typeof reqBody === 'string') {
+    postedPupilSlugs = [ reqBody ]
+  }
+  return postedPupilSlugs
 }
 
 module.exports = pupilsNotTakingCheckService

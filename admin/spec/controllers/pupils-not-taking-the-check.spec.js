@@ -7,6 +7,7 @@ const httpMocks = require('node-mocks-http')
 const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
 const attendanceService = require('../../services/attendance.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
+const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
 const sortingAttributesService = require('../../services/sorting-attributes.service')
 const groupService = require('../../services/group.service')
@@ -15,7 +16,7 @@ const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-form
 const pupilsWithReasonsMock = require('../mocks/pupils-with-reason-2')
 const groupsMock = require('../mocks/groups')
 
-describe('school controller:', () => {
+describe('pupils-not-taking-the-check controller:', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -50,8 +51,8 @@ describe('school controller:', () => {
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
-        spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
-        controller = require('../../controllers/school').getPupilNotTakingCheck
+        spyOn(pupilsNotTakingCheckService, 'pupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
+        controller = require('../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
       })
 
       it('should display \'pupils not taking the check\' initial page', async (done) => {
@@ -69,9 +70,9 @@ describe('school controller:', () => {
       beforeEach(() => {
         spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue([])
-        spyOn(pupilDataService, 'sqlFindSortedPupilsWithAttendanceReasons').and.returnValue(pupilsWithReasonsMock)
+        spyOn(pupilsNotTakingCheckService, 'pupils').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-        controller = require('../../controllers/school').getSelectPupilNotTakingCheck
+        controller = require('../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
       })
 
       it('executes sortingAttributesService.getAttributes', async () => {
@@ -92,7 +93,7 @@ describe('school controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(pupilDataService.sqlFindSortedPupilsWithAttendanceReasons).toHaveBeenCalled()
+        expect(pupilsNotTakingCheckService.pupils).toHaveBeenCalled()
       })
 
       it('executes groupService.getGroups', async () => {
@@ -106,7 +107,7 @@ describe('school controller:', () => {
     describe('#savePupilNotTakingCheck: Save reason for pupil', () => {
       beforeEach(() => {
         spyOn(attendanceService, 'updatePupilAttendanceBySlug')
-        controller = require('../../controllers/school').savePupilNotTakingCheck
+        controller = require('../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
       })
 
       it('should save and redirect', async (done) => {
@@ -134,7 +135,7 @@ describe('school controller:', () => {
       beforeEach(() => {
         spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
         spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
-        controller = require('../../controllers/school').removePupilNotTakingCheck
+        controller = require('../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
       })
 
       it('should redirect to the select pupils page if pupilId is not supplied', async () => {
@@ -180,7 +181,7 @@ describe('school controller:', () => {
 
     describe('#viewPupilsNotTakingTheCheck', () => {
       beforeEach(() => {
-        controller = require('../../controllers/school').viewPupilsNotTakingTheCheck
+        controller = require('../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
       })
 
       it('makes a call to get the pupils', async () => {
