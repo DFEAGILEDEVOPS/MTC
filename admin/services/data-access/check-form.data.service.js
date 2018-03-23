@@ -1,7 +1,6 @@
 'use strict'
 
 const TYPES = require('tedious').TYPES
-const winston = require('winston')
 const sqlService = require('./sql.service')
 const table = '[checkForm]'
 
