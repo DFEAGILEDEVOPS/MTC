@@ -20,7 +20,7 @@ const getHome = async (req, res, next) => {
   let schoolName = ''
 
   try {
-    // TODO: extract this dataservice call to a service
+    // TODO: extract this data-service call to a service
     const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(new Error(`School not found: ${req.user.School}`))
@@ -253,7 +253,7 @@ const postSubmitAttendance = async (req, res, next) => {
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-//  const data = Object.values(req.body[ 'attendee' ] || [])
+// const data = Object.values(req.body[ 'attendee' ] || [])
   // TODO consider removal as part of HDF refresh
   return res.redirect('/school/declaration-form')
 }
