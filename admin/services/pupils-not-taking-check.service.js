@@ -32,14 +32,12 @@ pupilsNotTakingCheckService.sortPupilsByReason = (pupilsList, sortDirection) => 
 
 pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber = async (schoolId, sortField, sortDirection) => {
   const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId, sortField, sortDirection)
-  pupilIdentificationFlag.addIdentificationFlags(pupils)
-  return pupils
+  return pupilIdentificationFlag.addIdentificationFlags(pupils)
 }
 
 pupilsNotTakingCheckService.getPupilsWithReasons = async (schoolId) => {
   const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId)
-  pupilIdentificationFlag.addIdentificationFlags(pupils)
-  return pupils
+  return pupilIdentificationFlag.addIdentificationFlags(pupils)
 }
 
 module.exports = pupilsNotTakingCheckService
