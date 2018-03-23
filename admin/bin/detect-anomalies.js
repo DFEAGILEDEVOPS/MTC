@@ -21,8 +21,13 @@ function detectAnomalies (check) {
   detectWrongNumberOfAnswers(check)
   detectPageRefresh(check)
   detectWrongNumberOfInputs(check)
-  detectLowBattery(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
+  detectMissingAudits(check)
+
+  // Navigator checks
+  detectLowBattery(check)
+  detectInsufficientVerticalHeight(check)
+  detectLowColourDisplays(check)
 }
 
 function detectWrongNumberOfAnswers (check) {
@@ -70,7 +75,7 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
   questions.forEach(question => {
     const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
-      return report(check.checkCode, 'QuestionRenderedEvent not found', '', question.order)
+      return report(check.checkCode, `QuestionRenderedEvent not found for Q${question.order}`)
     }
     const questionShownAt = moment(questionRenderedEvent.clientTimestamp)
     if (!questionShownAt.isValid()) {
@@ -102,6 +107,63 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
       }
     })
   })
+}
+
+function detectMissingAudits (check) {
+  // We expect to see a QuestionRendered and a PauseRendered event for each Question
+  const numberOfQuestions = check.data.questions.length
+  const questionRenderedAudits = check.data.audit.filter(audit => audit.type === 'QuestionRendered')
+  const numberOfPractiseQuestions = 3
+  if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
+    report(check.checkCode, 'Wrong number of QuestionRendered audits', questionRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
+  }
+
+  const pauseRenderedAudits = check.data.audit.filter(audit => audit.type === 'PauseRendered')
+  if (pauseRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
+    report(check.checkCode, 'Wrong number of PauseRendered audits', pauseRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
+  }
+
+  const detectMissingSingleAudit = function (auditType) {
+    // Detect events should occur only once
+    const audit = check.data.audit.find(audit => audit.type === auditType)
+    if (!audit) {
+      report(check.checkCode, `Missing audit ${auditType}`)
+    }
+  }
+  const singleMandatoryAuditEvents = [
+    'WarmupStarted',
+    'WarmupIntroRendered',
+    'WarmupCompleteRendered',
+    'CheckStarted',
+    'CheckStartedApiCalled',
+    'CheckSubmissionPending'
+  ]
+
+  singleMandatoryAuditEvents.map(arg => detectMissingSingleAudit(arg))
+}
+
+function detectInsufficientVerticalHeight (check) {
+  const height = check.data.device.screen.innerHeight
+  const width = check.data.device.screen.innerWith || check.data.device.screen.innerWidth
+
+  // The vertical height required depends on the width, as we have 3 breakpoints
+  if (width <= 640 && height < 558) {
+    report(check.checkCode, 'Insufficient browser vertical height', height, '> 558 pixels')
+  } else if (width > 640 && width < 769 && height < 700) {
+    report(check.checkCode, 'Insufficient browser vertical height', height, '> 700 pixels')
+  } else if (width > 769 && height < 660) {
+    report(check.checkCode, 'Insufficient browser vertical height', height, '> 660 pixels')
+  }
+}
+
+function detectLowColourDisplays (check) {
+  const colourDepth = check.data.device.screen.colorDepth
+  if (colourDepth < 24) {
+    report(check.checkCode, 'Low colour display', colourDepth, '24')
+  }
+  if (colourDepth > 24) {
+    report(check.checkCode, 'Overly colourful display', colourDepth, '24')
+  }
 }
 
 function report (checkCode, message, testedValue = null, expectedValue = null) {
