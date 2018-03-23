@@ -17,22 +17,23 @@ const service = {
       DataAdmin: 'TEST-DEVELOPER'
     }
 
-    if (mapping[ncaUserType]) {
-      let role = mapping[ncaUserType]
+    let role = mapping[ncaUserType]
 
-      if (role === 'HELPDESK') {
-        if (school) {
-          // The helpdesk user is logging on as a school
-          role = 'TEACHER'
-        } else {
-          // There is no provision for helpdesk users to log on as themselves
-          throw new Error('Helpdesk users must impersonate a school to sign-in')
-        }
-      }
-      return role
+    if (!role) {
+      throw new Error(`Unknown ncaUserType ${ncaUserType}`)
     }
 
-    return 'TEACHER'
+    if (role === 'HELPDESK' && !school) {
+      // There is no provision for helpdesk users to log on as themselves
+      throw new Error('Helpdesk users must impersonate a school to sign-in')
+    }
+
+    if ((role === 'HELPDESK' || role === 'SERVICE-MANAGER') && school) {
+      // The user is logging on as a school
+      role = 'TEACHER'
+    }
+
+    return role
   },
   /**
    * @param roleName required

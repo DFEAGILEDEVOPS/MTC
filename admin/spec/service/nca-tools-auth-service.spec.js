@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect, fail */
+/* global describe, it, expect, fail, xit */
 
 const crypto = require('crypto')
 const iconv = require('iconv-lite')
