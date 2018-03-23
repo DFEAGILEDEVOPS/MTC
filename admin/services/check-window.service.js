@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const R = require('ramda')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const dateService = require('../services/date.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
@@ -103,7 +104,9 @@ const checkWindowService = {
   getAllCheckWindows: async(sortField, sortDirection) => {
     // fetch past current and future check windows
     const checkWindows = await checkWindowDataService.sqlFindAllCheckWindows(sortField, sortDirection)
-    return checkWindows.map(cw => {
+    const pastCheckWindows = []
+    const newCheckWindows = []
+    checkWindows.map(cw => {
       const adminStartDate = moment(cw.adminStartDate)
       const checkStartDate = moment(cw.checkStartDate)
       const checkEndDate = moment(cw.checkEndDate)
@@ -112,24 +115,33 @@ const checkWindowService = {
         throw new Error('Check start date is after check end date')
       }
 
-      const inPast = moment(checkEndDate).isBefore(moment.now())
+      const isPast = moment(checkEndDate).isBefore(moment.now())
       const isCurrent = moment(checkStartDate).isSameOrBefore(moment.now()) && moment(checkEndDate).isSameOrAfter(moment.now())
-      const inFuture = moment(checkStartDate).isAfter(moment.now())
+      const isFuture = moment(checkStartDate).isAfter(moment.now())
 
-      let canRemove
-      if (inPast) canRemove = false
-      if (isCurrent) canRemove = false
-      if (inFuture) canRemove = true
-
-      return {
+      const checkWindow = {
         id: cw.id,
         name: cw.name,
         adminStartDate: adminStartDate.format('D MMM YYYY'),
         checkDates: dateService.formatCheckPeriod(checkStartDate, checkEndDate),
-        isCurrent,
-        canRemove
+        isPast
+      }
+
+      if (isPast) {
+        checkWindow.canRemove = false
+        pastCheckWindows.push(checkWindow)
+      }
+      if (isCurrent) {
+        checkWindow.canRemove = false
+        newCheckWindows.push(checkWindow)
+      }
+      if (isFuture) {
+        checkWindow.canRemove = true
+        newCheckWindows.push(checkWindow)
       }
     })
+
+    return R.concat(newCheckWindows, pastCheckWindows)
   }
 }
 

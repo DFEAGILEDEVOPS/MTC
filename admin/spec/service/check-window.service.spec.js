@@ -50,7 +50,7 @@ describe('check-window.service', () => {
       ])
       const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
       expect(checkWindows[0].canRemove).toBeFalsy()
-      expect(checkWindows[0].isCurrent).toBeFalsy()
+      expect(checkWindows[0].isPast).toBeTruthy()
     })
 
     it('should set canRemove to true and isCurrent to false when checkwindow is in the future', async () => {
@@ -67,7 +67,7 @@ describe('check-window.service', () => {
       ])
       const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
       expect(checkWindows[0].canRemove).toBeTruthy()
-      expect(checkWindows[0].isCurrent).toBeFalsy()
+      expect(checkWindows[0].isPast).toBeFalsy()
     })
 
     it('should set canRemove to false and isCurrent to true when checkwindow starts today', async () => {
@@ -84,7 +84,7 @@ describe('check-window.service', () => {
       ])
       const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
       expect(checkWindows[0].canRemove).toBeFalsy()
-      expect(checkWindows[0].isCurrent).toBeTruthy()
+      expect(checkWindows[0].isPast).toBeFalsy()
     })
     it('should throw an error if a check window start date is after check window end date', async () => {
       spyOn(checkWindowDataService, 'sqlFindAllCheckWindows').and.returnValue([
@@ -99,7 +99,7 @@ describe('check-window.service', () => {
         }
       ])
       try {
-        const checkWindows = await service.getAllCheckWindows('checkWindowName', 'asc')
+        await service.getAllCheckWindows('checkWindowName', 'asc')
         fail()
       } catch (error) {
         expect(error.message).toBe('Check start date is after check end date')
