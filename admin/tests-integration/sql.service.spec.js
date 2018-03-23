@@ -5,7 +5,6 @@ const moment = require('moment')
 const R = require('ramda')
 const TYPES = require('tedious').TYPES
 const winston = require('winston')
-const dateService = require('../services/date.service')
 
 require('dotenv').config()
 const sql = require('../services/data-access/sql.service')
