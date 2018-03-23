@@ -46,7 +46,6 @@ const controller = {
     res.locals.pageTitle = 'Settings on pupil check'
     let settings
     const successfulPost = req.params.status || false
-    console.log('session:', req.session)
     try {
       const settingsRecord = await settingService.get() // settingDataService.sqlFindOne()
       if (settingsRecord) {
