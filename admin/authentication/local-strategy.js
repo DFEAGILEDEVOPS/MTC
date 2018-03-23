@@ -24,9 +24,11 @@ module.exports = async function (req, email, password, done) {
   }
 
   try {
-    // Local helpdesk user can logon with with `helpdesk:1234567` to impersonate a teacher for
-    // school with dfeNumber 1234567
-    const matches = email.match(/^(helpdesk):(\d{7})$/)
+    // Local helpdesk or service-manager users can logon with with `helpdesk:1234567` to impersonate a teacher for
+    // school with dfeNumber 1234567.
+    // NOTE that this is not a generic implementation: you actually need to be called 'helpdesk' or 'service-manager'
+    // rather than simply have the role.  This is fine - it's only for local-dev
+    const matches = email.match(/^(helpdesk|service-manager):(\d{7})$/)
     if (matches) {
       email = matches[1]
       dfeNumber = matches[2]
@@ -36,7 +38,7 @@ module.exports = async function (req, email, password, done) {
 
     let schoolPromise, rolePromise
     if (dfeNumber) {
-      // Login as a help desk user impersonating a school user, so they get a TEACHER role
+      // Login as a help desk or service-manager user impersonating a school user, so they get a TEACHER role
       schoolPromise = schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
       rolePromise = roleDataService.sqlFindOneByTitle('TEACHER')
     } else {

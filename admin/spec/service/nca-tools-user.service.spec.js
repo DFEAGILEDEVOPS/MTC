@@ -44,7 +44,7 @@ describe('nca-tools-user.service', () => {
       spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
       await ncaToolsUserService.mapNcaUserToMtcUser({
         School: 999999,
-        UserType: 'batman',
+        UserType: 'SchoolNom',
         UserName: 'robin'
       })
       expect(userDataService.sqlCreate).toHaveBeenCalled()
@@ -62,7 +62,7 @@ describe('nca-tools-user.service', () => {
       try {
         await ncaToolsUserService.mapNcaUserToMtcUser({
           School: 999999,
-          UserType: 'batman',
+          UserType: 'SchoolNom',
           UserName: 'robin'
         })
         fail('expected error to be thrown')
@@ -81,7 +81,7 @@ describe('nca-tools-user.service', () => {
       spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
       await ncaToolsUserService.mapNcaUserToMtcUser({
         School: 999999,
-        UserType: 'batman',
+        UserType: 'SchoolNom',
         UserName: 'robin'
       })
       expect(userDataService.sqlUpdateSchool).toHaveBeenCalled()
@@ -96,7 +96,7 @@ describe('nca-tools-user.service', () => {
       spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
       const user = await ncaToolsUserService.mapNcaUserToMtcUser({
         School: 999999,
-        UserType: 'batman',
+        UserType: 'SchoolNom',
         UserName: 'robin'
       })
       expect(user).toBeDefined()
@@ -110,7 +110,7 @@ describe('nca-tools-user.service', () => {
       spyOn(userDataService, 'sqlUpdateSchool')
       spyOn(roleService, 'findByTitle').and.returnValue(Promise.resolve({ id: 1 }))
       spyOn(userDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-      await ncaToolsUserService.mapNcaUserToMtcUser({})
+      await ncaToolsUserService.mapNcaUserToMtcUser({UserType: 'SchoolNom'})
       expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
       expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
     })
