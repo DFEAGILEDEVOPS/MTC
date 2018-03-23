@@ -51,7 +51,7 @@ describe('school controller:', () => {
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
       beforeEach(() => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsFormattedMock)
+        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
         controller = require('../../controllers/school').getPupilNotTakingCheck
       })
 
@@ -60,6 +60,7 @@ describe('school controller:', () => {
         const req = getReq(goodReqParams)
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
+        expect(pupilsNotTakingCheckService.getPupilsWithReasons).toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('Pupils not taking the check')
         expect(next).not.toHaveBeenCalled()
         done()
