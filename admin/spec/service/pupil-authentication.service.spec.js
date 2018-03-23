@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach spyOn it expect */
+/* global describe beforeEach spyOn it expect fail */
 
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')

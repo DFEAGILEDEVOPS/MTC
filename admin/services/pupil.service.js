@@ -1,6 +1,3 @@
-const errorConverter = require('../lib/error-converter')
-const pupilValidator = require('../lib/validator/pupil-validator')
-const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 

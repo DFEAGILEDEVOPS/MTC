@@ -74,3 +74,48 @@ Feature:
   Scenario: Before you start section has option to view some guidance
     Given I am on the school landing page
     Then I should see option to view guidance in the before you start section
+
+  Scenario Outline: Helpdesk school is displayed
+    Given I have signed in with <helpdesk>
+    Then I should see the school name corresponding to that <dfenumber>
+
+    Examples:
+      | helpdesk         | dfenumber |
+      | helpdesk:9991001 | 9991001   |
+      | helpdesk:9991002 | 9991002   |
+      | helpdesk:9991003 | 9991003   |
+      | helpdesk:9991004 | 9991004   |
+
+  Scenario Outline: Helpdesk sees their name on the school homepage
+    Given I have signed in with <helpdesk>
+    Then I should see helpdesk's name
+
+    Examples:
+      | helpdesk         |
+      | helpdesk:9991001 |
+      | helpdesk:9991002 |
+      | helpdesk:9991003 |
+      | helpdesk:9991004 |
+
+  Scenario Outline: Service-manager school persona school is displayed
+    Given I have signed in with <helpdesk>
+    Then I should see the school name corresponding to that <dfenumber>
+
+
+    Examples:
+      | helpdesk                | dfenumber |
+      | service-manager:9991001 | 9991001   |
+      | service-manager:9991002 | 9991002   |
+      | service-manager:9991003 | 9991003   |
+      | service-manager:9991004 | 9991004   |
+
+  Scenario Outline: Service-manager school persona sees their name on the school homepage
+    Given I have signed in with <helpdesk>
+    Then I should see service-manager's name
+
+    Examples:
+      | helpdesk                |
+      | service-manager:9991001 |
+      | service-manager:9991002 |
+      | service-manager:9991003 |
+      | service-manager:9991004 |
