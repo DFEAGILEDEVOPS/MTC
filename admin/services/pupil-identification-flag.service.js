@@ -11,7 +11,7 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
     const currentPupil = pupils[ i ]
     const nextPupil = pupils[ i + 1 ]
     if (nextPupil === undefined) {
-      currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName}`
+      currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
       return pupils
     }
     if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil)) {
