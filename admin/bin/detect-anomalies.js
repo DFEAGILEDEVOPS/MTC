@@ -161,9 +161,6 @@ function detectLowColourDisplays (check) {
   if (colourDepth < 24) {
     report(check.checkCode, 'Low colour display', colourDepth, '24')
   }
-  if (colourDepth > 24) {
-    report(check.checkCode, 'Overly colourful display', colourDepth, '24')
-  }
 }
 
 function report (checkCode, message, testedValue = null, expectedValue = null) {
