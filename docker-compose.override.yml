@@ -21,9 +21,11 @@ services:
     depends_on:
     - pupil-app
     - sqldb
+    - admin-app
     links:
     - pupil-app
     - sqldb
+    - admin-app
     volumes:
     - ./test-output/pupil/screenshots:/usr/src/app/screenshots
     - ./test-output/pupil/reports:/usr/src/app/reports
