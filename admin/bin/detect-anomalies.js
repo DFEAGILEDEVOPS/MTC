@@ -200,7 +200,7 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
   check.data.answers.forEach((answer, idx) => {
     const answerFromInputs = reconstructAnswerFromInputs(check.data.inputs[idx])
     if (answer.answer !== answerFromInputs) {
-      report(check.checkCode, 'Inputs do not correspond to given answer', check.data.device.navigator.userAgent, answerFromInputs, answer.answer, `Q${idx + 1}`)
+      report(check.checkCode, 'Answer from inputs captured does not equal given answer', check.data.device.navigator.userAgent, answerFromInputs, answer.answer, `Q${idx + 1}`)
     }
   })
 }
