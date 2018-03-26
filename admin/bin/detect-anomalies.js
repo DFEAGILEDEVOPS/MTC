@@ -61,8 +61,8 @@ function detectPageRefresh (check) {
 function detectLowBattery (check) {
   const battery = check.data.device.battery
   if (!battery) { return }
-  if (battery.levelPercent < 20) {
-    report(check.checkCode, 'Low battery', '' + battery.levelPercent + '%', '> 20%')
+  if (battery.levelPercent < 20 && !battery.isCharging) {
+    report(check.checkCode, 'Low battery', '' + battery.levelPercent + '%' + ' charging ' + battery.isCharging, '> 20%')
   }
 }
 
