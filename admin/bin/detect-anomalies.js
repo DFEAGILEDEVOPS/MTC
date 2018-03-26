@@ -12,6 +12,7 @@ const moment = require('moment')
 const dateService = require('../services/date.service')
 const poolService = require('../services/data-access/sql.pool.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
+const psUtilService = require('../services/psychometrician-util.service')
 
 const outputFilename = 'anomalies.csv'
 let anomalyCount = 0
@@ -23,6 +24,7 @@ function detectAnomalies (check) {
   detectWrongNumberOfInputs(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
+  detectChecksThatTookLongerThanTheTheoreticalMax(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -70,7 +72,6 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
   // For each question we need to check that the inputs were not
   // received before the question was shown, or after the question
   // should have been closed.
-  // const questionTimeLimit = check.data.config.questionTimeLimit
   const questions = check.data.questions
   questions.forEach(question => {
     const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
@@ -160,6 +161,36 @@ function detectLowColourDisplays (check) {
   const colourDepth = check.data.device.screen.colorDepth
   if (colourDepth < 24) {
     report(check.checkCode, 'Low colour display', colourDepth, '24')
+  }
+}
+
+function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
+  const numberOfQuestions = check.data.questions.length
+  const config = check.data.config
+
+  // Calculate the max total time allowed for the check
+  const maxCheckSeconds = (numberOfQuestions * config.loadingTime) + (numberOfQuestions * config.questionTime)
+
+  // Calculate the time the check actually took
+  const checkStart = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)
+  const checkComplete = psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check)
+  if (!checkStart || !checkComplete) {
+    return report(check.checkCode, 'Missing audit event ' + (checkStart ? 'CheckStarted' : 'CheckSubmissionPending'))
+  }
+  if (checkStart === 'error' || checkComplete === 'error') {
+    return report(check.checkCode, 'Timestamp error ' + (checkStart === 'error' ? 'CheckStarted' : 'CheckSubmissionPending'))
+  }
+  const checkStartDate = moment(checkStart)
+  const checkCompleteDate = moment(checkComplete)
+  if (!checkStartDate.isValid()) {
+    return report(check.checkCode, 'Invalid CheckStarted date', checkStart)
+  }
+  if (!checkCompleteDate.isValid()) {
+    return report(check.checkCode, 'Invalid CheckSubmissionPending date', checkComplete)
+  }
+  const totalCheckSeconds = checkCompleteDate.diff(checkStartDate, 'seconds')
+  if (totalCheckSeconds > maxCheckSeconds) {
+    report(check.checkCode, 'Check took too long', totalCheckSeconds, maxCheckSeconds)
   }
 }
 
