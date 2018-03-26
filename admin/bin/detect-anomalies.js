@@ -58,7 +58,7 @@ function detectPageRefresh (check) {
     }
   })
   if (pageRefreshCount) {
-    report(check.checkCode, 'Page refresh detected', pageRefreshCount, 0)
+    report(check.checkCode, 'Page refresh detected', check.data.device.navigator.userAgent, pageRefreshCount, 0)
   }
 }
 
