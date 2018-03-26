@@ -7,6 +7,9 @@ services:
     - mongo
     - sqldb
     - admin-app
+    volumes:
+    - ./test-output/screenshots:/usr/src/app/admin/screenshots
+    - ./test-output/reports:/usr/src/app/admin/reports
     links:
     - sqldb
     - admin-app
@@ -18,14 +21,18 @@ services:
     container_name: mtc_admin
     ports:
     - "3001:3001"
-    volumes:
-    - ./admin:/usr/src/app
     environment:
       SQL_SERVER: "sqldb"
       MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
     depends_on:
     - sqldb
     - mongo
+  pupil-app:
+    build: ./pupil-spa
+    container_name: mtc_pupil
+    ports:
+    - "80:80"
+    depends_on:
+    - admin-app
     links:
-    - sqldb
-    - mongo
+    - admin-app
