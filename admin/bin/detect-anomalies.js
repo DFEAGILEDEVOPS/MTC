@@ -248,6 +248,7 @@ function report (check, message, testedValue = null, expectedValue = null, quest
   reportedAnomalies.push([
     check.checkCode,
     checkDate,
+    `${check.mark} out of ${check.maxMark}`,
     agent.device.toString().replace('0.0.0', ''),
     agent.toString(),
     message,
@@ -270,7 +271,7 @@ function writeCsv (data) {
 
 async function main () {
   const ws = fs.createWriteStream(outputFilename, { flags: 'w' })
-  ws.write('Check Code,Date,Device,Agent,Message,Tested value,Expected value,Question number\n')
+  ws.write('Check Code,Date,Mark,Device,Agent,Message,Tested value,Expected value,Question number\n')
   ws.end()
   const checkInfo = await completedCheckDataService.sqlFindMeta()
   winston.info(checkInfo)
