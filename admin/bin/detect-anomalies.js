@@ -77,7 +77,7 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
   questions.forEach(question => {
     const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
-      return report(check.checkCode, `QuestionRenderedEvent not found for Q${question.order}`)
+      return report(check.checkCode, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
     }
     const questionShownAt = moment(questionRenderedEvent.clientTimestamp)
     if (!questionShownAt.isValid()) {
@@ -101,11 +101,11 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
       }
       const inputTimeStamp = moment(input.clientInputDate)
       if (inputTimeStamp.isBefore(questionShownAt)) {
-        report(check.checkCode, `Input received before Question ${question.order} shown`, input.clientInputDate, questionRenderedEvent.clientTimestamp)
+        report(check.checkCode, 'Input received before Question shown', input.clientInputDate, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
       }
       // We shouldn't have any input after the QuestionRendered ts + the question time-limit
       if (inputTimeStamp.isAfter(questionCutoffAt)) {
-        report(check.checkCode, `Input received after Question ${question.order} cut-off`, input.clientInputDate, dateService.formatIso8601(questionCutoffAt))
+        report(check.checkCode, 'Input received after cut-off', input.clientInputDate, dateService.formatIso8601(questionCutoffAt), `Q${question.order}`)
       }
     })
   })
@@ -199,7 +199,7 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
   check.data.answers.forEach((answer, idx) => {
     const answerFromInputs = reconstructAnswerFromInputs(check.data.inputs[idx])
     if (answer.answer !== answerFromInputs) {
-      report(check.checkCode, `Inputs do not correspond to given answer: Q${idx + 1}`, answerFromInputs, answer.answer)
+      report(check.checkCode, 'Inputs do not correspond to given answer', answerFromInputs, answer.answer, `Q${idx + 1}`)
     }
   })
 }
@@ -228,9 +228,9 @@ function reconstructAnswerFromInputs (events) {
   return ans
 }
 
-function report (checkCode, message, testedValue = null, expectedValue = null) {
+function report (checkCode, message, testedValue = null, expectedValue = null, questionNumber = null) {
   anomalyCount += 1
-  reportedAnomalies.push([checkCode, message, testedValue, expectedValue])
+  reportedAnomalies.push([checkCode, message, testedValue, expectedValue, questionNumber])
 }
 
 function writeCsv (data) {
@@ -246,7 +246,7 @@ function writeCsv (data) {
 
 async function main () {
   const ws = fs.createWriteStream(outputFilename, { flags: 'w' })
-  ws.write('Check Code,Message,Tested value,Expected value\n')
+  ws.write('Check Code,Message,Tested value,Expected value,Question number\n')
   ws.end()
   const checkInfo = await completedCheckDataService.sqlFindMeta()
   winston.info(checkInfo)
