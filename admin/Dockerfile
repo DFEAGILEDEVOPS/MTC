@@ -29,4 +29,4 @@ RUN yarn global add pm2
 
 EXPOSE 3001
 # CMD [ "npm", "start" ]
-CMD ["pm2-docker", "start", "pm2.json" ]
+CMD ["./docker-start.sh" ]

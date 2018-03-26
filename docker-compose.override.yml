@@ -22,6 +22,7 @@ services:
     - pupil-app
     - sqldb
     - admin-app
+    - admin-tests
     links:
     - pupil-app
     - sqldb
@@ -39,6 +40,7 @@ services:
     environment:
       SQL_SERVER: "sqldb"
       MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
+      MIGRATE: 1
     depends_on:
     - sqldb
     - mongo
@@ -54,3 +56,5 @@ services:
     - admin-app
     links:
     - admin-app
+    environment:
+      API_URL: "http://admin-app:3001"
