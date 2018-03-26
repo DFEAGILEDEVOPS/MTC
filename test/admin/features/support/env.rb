@@ -36,14 +36,19 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
 end
 
-Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-  chromeOptions: { args: %w(headless)}
-  )
+# Capybara.register_driver :headless_chrome do |app|
+#   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+#   chromeOptions: { args: %w(headless)}
+#   )
+#
+#   Capybara::Selenium::Driver.new app,
+#   browser: :chrome,
+#   desired_capabilities: capabilities
+# end
 
-  Capybara::Selenium::Driver.new app,
-  browser: :chrome,
-  desired_capabilities: capabilities
+Capybara.register_driver :headless_chrome do |app|
+  args = ["--window-size=1280,1696", "--disable-infobars", "--disable-notifications", "--no-sandbox", "--headless", "--disable-gpu"]
+  Capybara::Selenium::Driver.new(app, {:browser => :chrome, :args => args})
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
