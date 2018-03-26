@@ -1,20 +1,34 @@
 version: '3'
 services:
   admin-tests:
-    build: ./test
+    build: ./test/admin
     container_name: admin_tests
     depends_on:
-    - mongo
     - sqldb
     - admin-app
     volumes:
-    - ./test-output/screenshots:/usr/src/app/admin/screenshots
-    - ./test-output/reports:/usr/src/app/admin/reports
+    - ./test-output/admin/screenshots:/usr/src/app/screenshots
+    - ./test-output/admin/reports:/usr/src/app/reports
     links:
     - sqldb
     - admin-app
     environment:
       BASE_URL: "http://admin-app:3001"
+      SQL_SERVER: "sqldb"
+  pupil-tests:
+    build: ./test/pupil
+    container_name: pupil_tests
+    depends_on:
+    - pupil-app
+    - sqldb
+    links:
+    - pupil-app
+    - sqldb
+    volumes:
+    - ./test-output/pupil/screenshots:/usr/src/app/screenshots
+    - ./test-output/pupil/reports:/usr/src/app/reports
+    environment:
+      BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
   admin-app:
     build: ./admin
@@ -25,6 +39,9 @@ services:
       SQL_SERVER: "sqldb"
       MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
     depends_on:
+    - sqldb
+    - mongo
+    links:
     - sqldb
     - mongo
   pupil-app:

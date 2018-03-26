@@ -38,9 +38,9 @@ RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-ke
     apt-get -yqq install google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/app/admin
+WORKDIR /usr/src/app
 
-COPY /admin .
+COPY . .
 
 RUN bundle install
 
