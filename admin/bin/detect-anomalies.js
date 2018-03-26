@@ -25,6 +25,7 @@ function detectAnomalies (check) {
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
+  detectInputThatDoesNotCorrespondToAnswers(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -192,6 +193,39 @@ function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
   if (totalCheckSeconds > maxCheckSeconds) {
     report(check.checkCode, 'Check took too long', totalCheckSeconds, maxCheckSeconds)
   }
+}
+
+function detectInputThatDoesNotCorrespondToAnswers (check) {
+  check.data.answers.forEach((answer, idx) => {
+    const answerFromInputs = reconstructAnswerFromInputs(check.data.inputs[idx])
+    if (answer.answer !== answerFromInputs) {
+      report(check.checkCode, `Inputs do not correspond to given answer: Q${idx + 1}`, answerFromInputs, answer.answer)
+    }
+  })
+}
+
+function reconstructAnswerFromInputs (events) {
+  let ans = ''
+  if (!Array.isArray(events)) {
+    return ans
+  }
+  events.forEach(event => {
+    if (event.eventType !== 'click' && event.eventType !== 'keydown') {
+      return
+    }
+    const upper = event.input.toUpperCase()
+    if (upper === 'ENTER') {
+      return
+    }
+    if (upper === 'BACKSPACE' || upper === 'DELETE' || upper === 'DEL') {
+      if (ans.length > 0) {
+        ans = ans.substr(0, ans.length - 1)
+      }
+    } else if (event.input.match(/^[0-9]$/)) {
+      ans += event.input
+    }
+  })
+  return ans
 }
 
 function report (checkCode, message, testedValue = null, expectedValue = null) {
