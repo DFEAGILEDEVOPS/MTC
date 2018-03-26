@@ -232,7 +232,15 @@ function reconstructAnswerFromInputs (events) {
 function report (checkCode, message, userAgent, testedValue = null, expectedValue = null, questionNumber = null) {
   anomalyCount += 1
   const agent = useragent.lookup(userAgent)
-  reportedAnomalies.push([checkCode, agent.device.toString().replace('0.0.0', ''), agent.toString(), message, testedValue, expectedValue, questionNumber])
+  reportedAnomalies.push([
+    checkCode,
+    agent.device.toString().replace('0.0.0', ''),
+    agent.toString(),
+    message,
+    testedValue,
+    expectedValue,
+    questionNumber
+  ])
 }
 
 function writeCsv (data) {
