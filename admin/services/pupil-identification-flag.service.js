@@ -16,9 +16,9 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
     }
     if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil)) {
       currentPupil.dateOfBirth = dateService.formatShortGdsDate(currentPupil.dateOfBirth)
+      nextPupil.dateOfBirth = dateService.formatShortGdsDate(nextPupil.dateOfBirth)
       currentPupil.showDoB = true
       nextPupil.showDoB = true
-      nextPupil.dateOfBirth = dateService.formatShortGdsDate(nextPupil.dateOfBirth)
       if (currentPupil.dateOfBirth.toString() === nextPupil.dateOfBirth.toString()) {
         currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName} ${currentPupil.middleNames}`
         nextPupil.fullName = `${nextPupil.lastName}, ${nextPupil.foreName} ${nextPupil.middleNames}`
