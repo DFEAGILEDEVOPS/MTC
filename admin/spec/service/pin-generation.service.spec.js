@@ -128,6 +128,13 @@ describe('pin-generation.service', () => {
         expect(pupils[ 1 ].showDoB).toBeTruthy()
         done()
       })
+      it('should display middle names', async (done) => {
+        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        expect(pupils.length).toBe(2)
+        expect(pupils[ 0 ].middleNames).toBeTruthy()
+        expect(pupils[ 0 ].fullName).toBe('One, Pupil Middle')
+        done()
+      })
     })
     describe('does not return pupils', () => {
       it('who are flagged as not taking the check', async (done) => {

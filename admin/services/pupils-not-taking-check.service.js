@@ -49,8 +49,7 @@ const pupilsNotTakingCheckService = {
    */
   getPupilsWithReasons: async (schoolId) => {
     const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId)
-    pupilIdentificationFlag.addIdentificationFlags(pupils)
-    return pupils
+    return pupilIdentificationFlag.addIdentificationFlags(pupils)
   },
 
   /**
