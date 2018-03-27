@@ -33,11 +33,11 @@
                     <span class="error-message"><%= error.checkWindowName %></span>
                     <% } %>
                 </label>
-                <input class="form-control <%= error.checkWindowName ? 'form-control-error' : '' %>"
+                <input class="form-control <%= typeof error !== 'undefined' && error.checkWindowName ? 'form-control-error' : '' %>"
                        id="checkWindowName"
                        name="checkWindowName"
                        type="text"
-                       value="<%= checkWindowData.checkWindowName %>"
+                       value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
                        aria-required="true"
                        aria-label="Check window name.">
             </div>
@@ -67,11 +67,11 @@
                 <div class="form-date">
                     <div class="form-group form-group-day">
                         <label class="form-label" for="adminStartDay">Day</label>
-                        <input class="form-control <%= error.adminStartDay ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.adminStartDay ? 'form-control-error' : '' %>"
                                id="adminStartDay"
                                name="adminStartDay"
                                type="number"
-                               value="<%= checkWindowData.adminStartDay %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartDay %>"
                                aria-required="true"
                                aria-label="Administration start day."
                                <% if (adminIsDisabled > 0) { %>
@@ -80,11 +80,11 @@
                     </div>
                     <div class="form-group form-group-month">
                         <label class="form-label" for="adminStartMonth">Month</label>
-                        <input class="form-control <%= error.adminStartMonth ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.adminStartMonth ? 'form-control-error' : '' %>"
                                id="adminStartMonth"
                                name="adminStartMonth"
                                type="number"
-                               value="<%= checkWindowData.adminStartMonth %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartMonth %>"
                                aria-required="true"
                                aria-label="Administration start month."
                                <% if (adminIsDisabled > 0) { %>
@@ -93,11 +93,11 @@
                     </div>
                     <div class="form-group form-group-year">
                         <label class="form-label" for="adminStartYear">Year</label>
-                        <input class="form-control <%= error.adminStartYear ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.adminStartYear ? 'form-control-error' : '' %>"
                                id="adminStartYear"
                                name="adminStartYear"
                                type="number"
-                               value="<%= checkWindowData.adminStartYear %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartYear %>"
                                aria-required="true"
                                aria-label="Administration start year."
                                <% if (adminIsDisabled > 0) { %>
@@ -135,11 +135,11 @@
                 <div class="form-date">
                     <div class="form-group form-group-day">
                         <label class="form-label" for="checkStartDay">Day</label>
-                        <input class="form-control <%= error.checkStartDay ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkStartDay ? 'form-control-error' : '' %>"
                                id="checkStartDay"
                                name="checkStartDay"
                                type="number"
-                               value="<%= checkWindowData.checkStartDay %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartDay %>"
                                aria-required="true"
                                aria-label="Check start day."
                                <% if (checkStartIsDisabled > 0) { %>
@@ -148,11 +148,11 @@
                     </div>
                     <div class="form-group form-group-month">
                         <label class="form-label" for="checkStartMonth">Month</label>
-                        <input class="form-control <%= error.checkStartMonth ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkStartMonth ? 'form-control-error' : '' %>"
                                id="checkStartMonth"
                                name="checkStartMonth"
                                type="number"
-                               value="<%= checkWindowData.checkStartMonth %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartMonth %>"
                                aria-required="true"
                                aria-label="Check start month."
                                <% if (checkStartIsDisabled > 0) { %>
@@ -161,11 +161,11 @@
                     </div>
                     <div class="form-group form-group-year">
                         <label class="form-label" for="checkStartYear">Year</label>
-                        <input class="form-control <%= error.checkStartYear ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkStartYear ? 'form-control-error' : '' %>"
                                id="checkStartYear"
                                name="checkStartYear"
                                type="number"
-                               value="<%= checkWindowData.checkStartYear %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartYear %>"
                                aria-required="true"
                                aria-label="Check start year."
                                <% if (checkStartIsDisabled > 0) { %>
@@ -201,40 +201,40 @@
                 <div class="form-date">
                     <div class="form-group form-group-day">
                         <label class="form-label" for="checkEndDay">Day</label>
-                        <input class="form-control <%= error.checkEndDay ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkEndDay ? 'form-control-error' : '' %>"
                                id="checkEndDay"
                                name="checkEndDay"
                                type="number"
-                               value="<%= checkWindowData.checkEndDay %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndDay %>"
                                aria-required="true"
                                aria-label="Check end day.">
                     </div>
                     <div class="form-group form-group-month">
                         <label class="form-label" for="checkEndMonth">Month</label>
-                        <input class="form-control <%= error.checkEndMonth ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkEndMonth ? 'form-control-error' : '' %>"
                                id="checkEndMonth"
                                name="checkEndMonth"
                                type="number"
-                               value="<%= checkWindowData.checkEndMonth %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndMonth %>"
                                aria-required="true"
                                aria-label="Check end month.">
                     </div>
                     <div class="form-group form-group-year">
                         <label class="form-label" for="checkEndYear">Year</label>
-                        <input class="form-control <%= error.checkEndYear ? 'form-control-error' : '' %>"
+                        <input class="form-control <%= typeof error !== 'undefined' && error.checkEndYear ? 'form-control-error' : '' %>"
                                id="checkEndYear"
                                name="checkEndYear"
                                type="number"
-                               value="<%= checkWindowData.checkEndYear %>"
+                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndYear %>"
                                aria-required="true"
                                aria-label="Check end day.">
                     </div>
                 </div>
                 <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
                 <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
-                <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId %>">
-                <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
-                <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
+                <input type="hidden" name="checkWindowId" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkWindowId ? checkWindowData.checkWindowId : '' %>">
+                <input type="hidden" name="existingAdminStartDate" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.existingAdminStartDate %>">
+                <input type="hidden" name="existingCheckStartDate" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.existingCheckStartDate %>">
             </div>
 
             <div class="form-buttons">

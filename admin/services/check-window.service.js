@@ -142,6 +142,39 @@ const checkWindowService = {
     })
 
     return R.concat(newCheckWindows, pastCheckWindows)
+  },
+
+  /**
+   * Get editable check window
+   * @param {Number} id
+   * @returns {Object}
+   */
+  getEditableCheckWindow: async(id) => {
+    if (!id) {
+      throw new Error('Check window id not provided')
+    }
+    const checkWindow = await checkWindowDataService.sqlFindOneById(id)
+    const currentDate = moment().format('YYYY-MM-D')
+    const adminStartDate = moment(checkWindow.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
+    const checkStartDate = moment(checkWindow.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
+
+    return {
+      checkWindowId: id,
+      checkWindowName: checkWindow.name,
+      adminStartDay: moment(checkWindow.adminStartDate).format('D'),
+      adminStartMonth: moment(checkWindow.adminStartDate).format('MM'),
+      adminStartYear: moment(checkWindow.adminStartDate).format('YYYY'),
+      checkStartDay: moment(checkWindow.checkStartDate).format('D'),
+      checkStartMonth: moment(checkWindow.checkStartDate).format('MM'),
+      checkStartYear: moment(checkWindow.checkStartDate).format('YYYY'),
+      checkEndDay: moment(checkWindow.checkEndDate).format('D'),
+      checkEndMonth: moment(checkWindow.checkEndDate).format('MM'),
+      checkEndYear: moment(checkWindow.checkEndDate).format('YYYY'),
+      existingAdminStartDate: adminStartDate,
+      existingCheckStartDate: checkStartDate,
+      adminIsDisabled: moment(currentDate).isAfter(adminStartDate) ? 1 : 0,
+      checkStartIsDisabled: moment(currentDate).isAfter(checkStartDate) ? 1 : 0
+    }
   }
 }
 
