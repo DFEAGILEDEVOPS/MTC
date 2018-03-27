@@ -1,5 +1,31 @@
 version: '3'
 services:
+  admin-app:
+    build: ./admin
+    container_name: mtc_admin
+    ports:
+    - "3001:3001"
+    environment:
+      SQL_SERVER: "sqldb"
+      MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
+      MIGRATE: 1
+    depends_on:
+    - sqldb
+    - mongo
+    links:
+    - sqldb
+    - mongo
+  pupil-app:
+    build: ./pupil-spa
+    container_name: mtc_pupil
+    ports:
+    - "80:80"
+    depends_on:
+    - admin-app
+    links:
+    - admin-app
+    environment:
+      API_URL: "http://admin-app:3001"
   admin-tests:
     build: ./test/admin
     container_name: admin_tests
@@ -32,29 +58,3 @@ services:
     environment:
       BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
-  admin-app:
-    build: ./admin
-    container_name: mtc_admin
-    ports:
-    - "3001:3001"
-    environment:
-      SQL_SERVER: "sqldb"
-      MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
-      MIGRATE: 1
-    depends_on:
-    - sqldb
-    - mongo
-    links:
-    - sqldb
-    - mongo
-  pupil-app:
-    build: ./pupil-spa
-    container_name: mtc_pupil
-    ports:
-    - "80:80"
-    depends_on:
-    - admin-app
-    links:
-    - admin-app
-    environment:
-      API_URL: "http://admin-app:3001"
