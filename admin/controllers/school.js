@@ -1,4 +1,5 @@
 'use strict'
+
 const csv = require('fast-csv')
 const moment = require('moment')
 
@@ -10,22 +11,25 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolService = require('../services/school.service')
 const scoreService = require('../services/score.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const groupService = require('../services/group.service')
 const ValidationError = require('../lib/validation-error')
 
-const getHome = async (req, res, next) => {
+/**
+ * School landing page.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
+const getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   let schoolName = ''
 
   try {
-    // TODO: extract this data-service call to a service
-    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
-    if (!school) {
-      return next(new Error(`School not found: ${req.user.School}`))
-    }
-    schoolName = school.name
+    schoolName = await schoolService.findOneByDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -316,7 +320,7 @@ const getHDFSubmitted = async (req, res, next) => {
 }
 
 module.exports = {
-  getHome,
+  getSchoolLandingPage,
   getPupils,
   getResults,
   downloadResults,

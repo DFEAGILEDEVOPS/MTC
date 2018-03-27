@@ -8,7 +8,6 @@ const pupilRestartDataService = require('../services/data-access/pupil-restart.d
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pinService = require('../services/pin.service')
 const pinValidator = require('../lib/validator/pin-validator')
-const dateService = require('../services/date.service')
 const config = require('../config')
 
 const restartService = {}
@@ -25,15 +24,11 @@ restartService.getPupils = async (dfeNumber) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) throw new Error(`School [${dfeNumber}] not found`)
   let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, 'lastName', 'asc')
+  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
   pupils = await bluebird.filter(pupils.map(async p => {
     const isPupilEligible = await restartService.isPupilEligible(p)
     if (isPupilEligible) return p
   }), p => !!p)
-  if (pupils.length === 0) return []
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  pupils = pupils.map(({ id, pin, dateOfBirth, dob, foreName, middleNames, lastName, group_id }) =>
-    ({ id, pin, dateOfBirth, dob: dateService.formatShortGdsDate(dob), foreName, middleNames, lastName, group_id })
-  )
   return pupils
 }
 

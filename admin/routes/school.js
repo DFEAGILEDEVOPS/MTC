@@ -1,7 +1,7 @@
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 
-const { getHome,
+const { getSchoolLandingPage,
   getPupils,
   getResults,
   downloadResults,
@@ -16,7 +16,7 @@ const school = (router) => {
   router.get(
     '/school-home',
     isAuthenticated(rolesConfig.ROLE_TEACHER),
-    (req, res, next) => getHome(req, res, next)
+    (req, res, next) => getSchoolLandingPage(req, res, next)
   )
   router.get(
     '/pupil-register/:sortField/:sortDirection',
