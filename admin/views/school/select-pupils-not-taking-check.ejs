@@ -104,8 +104,13 @@
                     <tr<% if (pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
                         <td>
                             <label for="pupil-<%= pupil.urlSlug %>">
-                                <%= pupil.lastName %>, <%= pupil.foreName %>
+                                <%= pupil.fullName %>
                             </label>
+                            <% if (pupil.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= pupil.dateOfBirth %>
+                            </div>
+                            <% } %>
                         </td>
                         <td>
                             <%= pupil.reason || 'N/A' %>

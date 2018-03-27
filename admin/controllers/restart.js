@@ -1,3 +1,4 @@
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
@@ -73,6 +74,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
 
     try {
       pupils = await restartService.getPupils(req.user.School)
+      pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
       reasons = await restartService.getReasons()
       if (pupils.length > 0) {
         groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
