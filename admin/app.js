@@ -96,6 +96,7 @@ const checkStarted = require('./routes/check-started')
 const completedCheck = require('./routes/completed-check')
 const pupilPin = require('./routes/pupil-pin')
 const restart = require('./routes/restart')
+const pupilsNotTakingTheCheck = require('./routes/pupils-not-taking-the-check')
 
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
@@ -158,7 +159,7 @@ app.use(helmet.contentSecurityPolicy({
 }))
 
 // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
-var oneYearInSeconds = 31536000
+const oneYearInSeconds = 31536000
 app.use(helmet.hsts({
   maxAge: oneYearInSeconds,
   includeSubDomains: false,
@@ -287,6 +288,7 @@ app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
 app.use('/school', admin)
 app.use('/pupil-pin', pupilPin)
+app.use('/pupils-not-taking-the-check', pupilsNotTakingTheCheck)
 app.use('/restart', restart)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)

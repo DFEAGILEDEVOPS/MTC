@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<form method="post" action="/school/pupils-not-taking-check/save-pupils">
+<form method="post" action="/pupils-not-taking-the-check/save-pupils">
 
     <div class="grid-row" id="pupils-not-taking-checks" aria-describedby="heading-xlarge">
 
@@ -82,10 +82,10 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a id="sortingLink" href="/school/pupils-not-taking-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
+                        <a id="sortingLink" href="/pupils-not-taking-the-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a href="/school/pupils-not-taking-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
+                        <a href="/pupils-not-taking-the-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
                     </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
@@ -150,7 +150,7 @@
     <%- partial('partials/_sticky_confirmation_banner',
             {
                 cancelLabel: 'Cancel',
-                cancelLink: '/school/pupils-not-taking-check',
+                cancelLink: '/pupils-not-taking-the-check',
                 submitLabel: 'Confirm',
                 isSubmitDisabled: true
             }) %>

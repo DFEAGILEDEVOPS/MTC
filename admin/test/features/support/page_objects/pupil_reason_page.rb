@@ -1,5 +1,5 @@
 class PupilReasonPage < SitePrism::Page
-  set_url '/school/pupils-not-taking-check/select-pupils'
+  set_url '/pupils-not-taking-the-check/select-pupils'
 
   element :heading, '.heading-xlarge', text: 'Select pupils not taking the check'
   element :select_reason_text, 'h2', '1. Select reason'
