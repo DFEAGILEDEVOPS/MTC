@@ -4,6 +4,7 @@ const httpMocks = require('node-mocks-http')
 const restartService = require('../../services/restart.service')
 const restartValidator = require('../../lib/validator/restart-validator')
 const groupService = require('../../services/group.service')
+const pupilIdentificationFlag = require('../../services/pupil-identification-flag.service')
 const ValidationError = require('../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
@@ -87,6 +88,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
+      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
       spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
@@ -139,6 +141,7 @@ describe('restart controller:', () => {
       }
       const validationError = new ValidationError()
       validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
+      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)

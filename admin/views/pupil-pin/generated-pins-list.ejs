@@ -75,7 +75,7 @@
             <tr>
                 <td>
                     <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
+                        <%= pupil.fullName %>
                     </label>
                     <% if (pupil.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
