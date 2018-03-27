@@ -6,6 +6,7 @@ module.exports = {
   'recordedBy': 2,
   'createdAt': '2017-09-28T15:44:00.550Z',
   'pupilRestartReason_id': '4',
+  'classDisruptionInformation': '',
   'didNotCompleteInformation': 'The reason',
   'furtherInformation': 'Further reason',
   'isDeleted': 0

@@ -6,9 +6,6 @@ const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
 const winston = require('winston')
-const sassVariables = require('gulp-sass-variables')
-const config = require('./config')
-const replace = require('gulp-replace')
 require('dotenv').config()
 
 // These files will get uglified and packaged into `app.js`

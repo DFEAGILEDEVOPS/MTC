@@ -1,6 +1,5 @@
 'use strict'
 
-const winston = require('winston')
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const pupilDataService = {}

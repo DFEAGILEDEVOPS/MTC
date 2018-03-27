@@ -8,14 +8,6 @@ Before do
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
-Before("not @event_auditing", "not @feedback", "not @local_storage") do
-  step 'I am on the sign in page'
-  begin
-    JSON.parse(page.evaluate_script('window.localStorage.clear();'))
-  rescue TypeError
-  end
-end
-
 Before('@4_digit') do
   skip_this_scenario if AUTH == '5'
 end
