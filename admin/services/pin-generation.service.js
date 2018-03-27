@@ -10,7 +10,6 @@ const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
-const dateService = require('../services/date.service')
 const config = require('../config')
 
 const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
@@ -43,9 +42,10 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
         id: p.id,
         pin: p.pin,
         group_id: p.group_id,
-        dateOfBirth: dateService.formatShortGdsDate(p.dateOfBirth),
+        dateOfBirth: p.dateOfBirth,
         foreName: p.foreName,
         lastName: p.lastName,
+        fullName: `${p.lastName}, ${p.foreName}`,
         middleNames: p.middleNames
       }
     }
@@ -60,7 +60,7 @@ pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => 
 /**
  * Find groups that have pupils that can get PINs assigned.
  * @param schoolId
- * @param pupilsIds
+ * @param pupilIds
  * @returns {Promise<*>}
  */
 pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
@@ -155,8 +155,7 @@ pinGenerationService.generateSchoolPassword = (school) => {
 pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
   const maxDec = 281474976710656
   const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
-  let result = Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)
-  return result
+  return Math.floor(randBytes / maxDec * (maximum - minimum + 1) + minimum)
 }
 
 /**

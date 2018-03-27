@@ -77,7 +77,7 @@
             <tr class="restart-pupil-name">
                 <td<% if (highlight && highlight.has(restart.id.toString())) { %> class="highlight-item"<% } %>>
                     <span id="pupil-<%= restart.id %>">
-                    <%= restart.lastName  %>, <%= restart.foreName %> <%= restart.showMiddleNames ? restart.middleNames : '' %>
+                    <%= restart.fullName %>
                     </span>
                     <% if (restart.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
