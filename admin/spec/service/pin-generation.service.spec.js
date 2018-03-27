@@ -45,7 +45,7 @@ describe('pin-generation.service', () => {
       it('with specific properties', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
-        expect(Object.keys(pupils[ 0 ]).length).toBe(7)
+        expect(Object.keys(pupils[ 0 ]).length).toBe(8)
         done()
       })
     })
@@ -131,8 +131,8 @@ describe('pin-generation.service', () => {
       it('should display middle names', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
         expect(pupils.length).toBe(2)
-        expect(pupils[ 0 ].showMiddleNames).toBeTruthy()
-        expect(pupils[ 1 ].showMiddleNames).toBeTruthy()
+        expect(pupils[ 0 ].middleNames).toBeTruthy()
+        expect(pupils[ 0 ].fullName).toBe('One, Pupil Middle')
         done()
       })
     })

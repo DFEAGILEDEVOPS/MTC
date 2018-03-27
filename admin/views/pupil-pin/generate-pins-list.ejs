@@ -43,7 +43,7 @@
                 <tr<% if (pupil && pupil.group_id) { %> class="group-id-<%= pupil.group_id %>"<% } %>>
                     <td>
                         <label for="pupil-<%= pupil.id %>">
-                            <%= pupil.lastName %>, <%= pupil.foreName %> <%= pupil.showMiddleNames ? pupil.middleNames : '' %>
+                            <%= pupil.fullName %>
                         </label>
                         <% if (pupil.showDoB) { %>
                         <div class="font-greyed-out font-xsmall">
@@ -57,7 +57,7 @@
                                    name="pupil[<%= index %>]"
                                    type="checkbox"
                                    value="<%= pupil.id %>"
-                                   aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                   aria-label="Tick pupil <%= pupil.fullName %>."
                                    aria-checked="false"
                                    role="checkbox">
                             <div></div>
