@@ -1,33 +1,35 @@
 'use strict'
+
 const csv = require('fast-csv')
 const moment = require('moment')
 
-const attendanceCodeDataService = require('../services/data-access/attendance-code.data.service')
-const attendanceService = require('../services/attendance.service')
 const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const pupilService = require('../services/pupil.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const pupilStatusService = require('../services/pupil.status.service')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolService = require('../services/school.service')
 const scoreService = require('../services/score.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const groupService = require('../services/group.service')
 const ValidationError = require('../lib/validation-error')
 
-const getHome = async (req, res, next) => {
+/**
+ * School landing page.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise<*>}
+ */
+const getSchoolLandingPage = async (req, res, next) => {
   res.locals.pageTitle = 'School Homepage'
   let schoolName = ''
 
   try {
-    // TODO: extract this dataservice call to a service
-    const school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
-    if (!school) {
-      return next(new Error(`School not found: ${req.user.School}`))
-    }
-    schoolName = school.name
+    schoolName = await schoolService.findOneByDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -58,16 +60,16 @@ const getPupils = async (req, res, next) => {
     groupsIndex = await groupService.getGroupsAsArray(req.user.schoolId)
     const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(req.user.School, sortDirection)
 
-    pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-      const { foreName, lastName } = p
-      const dob = dateService.formatShortGdsDate(p.dateOfBirth)
+    pupilsFormatted = await Promise.all(pupils.map(async (p, i) => {
+      const { foreName, lastName, middleNames, dateOfBirth, urlSlug } = p
       const outcome = await pupilStatusService.getStatus(p)
       const group = groupsIndex[p.group_id] || '-'
       return {
-        urlSlug: p.urlSlug,
+        urlSlug,
         foreName,
         lastName,
-        dob,
+        middleNames,
+        dateOfBirth,
         group,
         outcome
       }
@@ -76,14 +78,7 @@ const getPupils = async (req, res, next) => {
     next(error)
   }
 
-  pupilsFormatted.map((p, i) => {
-    if (pupilsFormatted[ i + 1 ] === undefined) return
-    if (pupilsFormatted[ i ].foreName === pupilsFormatted[ i + 1 ].foreName &&
-      pupilsFormatted[ i ].lastName === pupilsFormatted[ i + 1 ].lastName) {
-      pupilsFormatted[ i ].showDoB = true
-      pupilsFormatted[ i + 1 ].showDoB = true
-    }
-  })
+  pupilIdentificationFlag.addIdentificationFlags(pupilsFormatted)
 
   // If sorting by 'status', use custom method.
   if (sortField === 'status') {
@@ -262,7 +257,7 @@ const postSubmitAttendance = async (req, res, next) => {
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-//  const data = Object.values(req.body[ 'attendee' ] || [])
+// const data = Object.values(req.body[ 'attendee' ] || [])
   // TODO consider removal as part of HDF refresh
   return res.redirect('/school/declaration-form')
 }
@@ -324,184 +319,8 @@ const getHDFSubmitted = async (req, res, next) => {
   }
 }
 
-/**
- * Pupils not taking the check: initial page.
- * @param req
- * @param res
- * @param next
- * @returns {Promise.<void>}
- */
-const getPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Pupils not taking the check'
-  req.breadcrumbs(res.locals.pageTitle)
-
-  try {
-    // Get pupils for active school
-    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
-    return res.render('school/pupils-not-taking-check', {
-      breadcrumbs: req.breadcrumbs(),
-      pupilsList: pupils,
-      highlight: [],
-      messages: req.flash('info')
-    })
-  } catch (error) {
-    return next(error)
-  }
-}
-
-/**
- * Pupils not taking the check: pupil selection to add a new reason or change a reason
- * @param req
- * @param res
- * @param next
- * @returns {Promise.<*>}
- */
-const getSelectPupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Select pupil and reason'
-  req.breadcrumbs('Pupils not taking the check', '/school/pupils-not-taking-check')
-  req.breadcrumbs(res.locals.pageTitle)
-
-  let attendanceCodes
-  let pupils
-  let groups = []
-  let groupIds = req.params.groupIds || ''
-
-  // Sorting
-  const sortingOptions = [
-    { 'key': 'name', 'value': 'asc' },
-    { 'key': 'reason', 'value': 'asc' }
-  ]
-  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
-  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-
-  try {
-    attendanceCodes = await attendanceCodeDataService.sqlFindAttendanceCodes()
-    pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(req.user.School, sortField, sortDirection)
-  } catch (error) {
-    return next(error)
-  }
-
-  try {
-    groups = await groupService.getGroups(req.user.schoolId)
-  } catch (error) {
-    return next(error)
-  }
-
-  return res.render('school/select-pupils-not-taking-check', {
-    breadcrumbs: req.breadcrumbs(),
-    sortField,
-    sortDirection,
-    attendanceCodes,
-    pupilsList: pupils,
-    htmlSortDirection,
-    arrowSortDirection,
-    highlight: [],
-    groups,
-    groupIds
-  })
-}
-
-/**
- * Pupils not taking the check: save reason.
- * @param req
- * @param res
- * @param next
- * @returns {Promise.<*>}
- */
-const savePupilNotTakingCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'Save pupils not taking the check'
-  req.breadcrumbs(res.locals.pageTitle)
-
-  if (req.body.attendanceCode === undefined || req.body.pupil === undefined) {
-    return res.redirect('/school/pupils-not-taking-check/select-pupils')
-  }
-
-  // The req.body.pupil data is posted in 3 forms:
-  // 1: string: 'abc-def' (single selection)
-  // 2: array of strings: ['abc-def', 'foo-bar'] (multiple selection)
-  // 3: object with properties/values: { 0: 'abc-def, 1: 'foo-bar' } (using checkbox "Select all")
-  let postedPupilSlugs
-  if (typeof req.body.pupil === 'object') {
-    if (Array.isArray(req.body.pupil)) {
-      postedPupilSlugs = req.body.pupil
-    } else {
-      postedPupilSlugs = Object.values(req.body.pupil)
-    }
-  } else if (typeof req.body.pupil === 'string') {
-    postedPupilSlugs = [ req.body.pupil ]
-  }
-  try {
-    // Update the pupils with the attendanceCode
-    await attendanceService.updatePupilAttendanceBySlug(
-      postedPupilSlugs,
-      req.body.attendanceCode,
-      req.user.id)
-
-    const reasonText = postedPupilSlugs.length > 1 ? 'reasons' : 'reason'
-    req.flash('info', `${postedPupilSlugs.length} ${reasonText} updated`)
-
-    // Send the information required for highlighting
-    const highlight = JSON.stringify(postedPupilSlugs)
-    return res.redirect(`/school/pupils-not-taking-check/view?hl=${highlight}`)
-  } catch (error) {
-    return next(error)
-  }
-}
-
-/**
- * Remove an attendance code for a pupil
- * @param req
- * @param res
- * @param next
- * @returns {Promise.<*>}
- */
-const removePupilNotTakingCheck = async (req, res, next) => {
-  if (!req.params.pupilId || !req.user.School) {
-    return res.redirect('/school/pupils-not-taking-check/select-pupils')
-  }
-  const pupilSlug = req.params.pupilId
-  try {
-    await attendanceService.unsetAttendanceCode(pupilSlug, req.user.School)
-
-    // Update the flash message for the user on the next screen
-    const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, req.user.School)
-    req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
-
-    // Send the information required for highlighting
-    const highlight = JSON.stringify(pupilSlug)
-    return res.redirect(`/school/pupils-not-taking-check/view?hl=${highlight}`)
-  } catch (error) {
-    next(error)
-  }
-}
-
-/**
- * View the list of pupils that are not taking the check
- * @param req
- * @param res
- * @param next
- * @return {Promise<*>}
- */
-const viewPupilsNotTakingTheCheck = async (req, res, next) => {
-  res.locals.pageTitle = 'View pupils not taking the check'
-  req.breadcrumbs(res.locals.pageTitle)
-  const highlight = req.query.hl || []
-  try {
-    const pupilsList = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(req.user.School)
-    return res.render('school/pupils-not-taking-check', {
-      breadcrumbs: req.breadcrumbs(),
-      pupilsList,
-      messages: res.locals.messages,
-      highlight
-    })
-  } catch (error) {
-    return next(error)
-  }
-}
-
 module.exports = {
-  getHome,
+  getSchoolLandingPage,
   getPupils,
   getResults,
   downloadResults,
@@ -509,10 +328,5 @@ module.exports = {
   postSubmitAttendance,
   getDeclarationForm,
   postDeclarationForm,
-  getHDFSubmitted,
-  getPupilNotTakingCheck,
-  getSelectPupilNotTakingCheck,
-  savePupilNotTakingCheck,
-  removePupilNotTakingCheck,
-  viewPupilsNotTakingTheCheck
+  getHDFSubmitted
 }

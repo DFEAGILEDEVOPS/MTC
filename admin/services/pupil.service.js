@@ -19,8 +19,8 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
  * @param schoolId
  * @returns {Promise.<*>}
  */
-pupilService.fetchOnePupilBySlug = async (slug, schoolId) => {
-  return pupilDataService.sqlFindOneBySlugAndSchool(slug, schoolId)
+pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
+  return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
 }
 
 /**

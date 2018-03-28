@@ -201,7 +201,7 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
     sql += ` OR g.group_id=@groupId`
   }
 
-  sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC'
+  sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
 
   return sqlService.query(sql, params)
 }
