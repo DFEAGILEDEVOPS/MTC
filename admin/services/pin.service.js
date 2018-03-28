@@ -5,7 +5,6 @@ const checkDataService = require('../services/data-access/check.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const jwtService = require('../services/jwt.service')
-const dateService = require('../services/date.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
 
@@ -16,12 +15,7 @@ const pinService = {}
  */
 pinService.getPupilsWithActivePins = async (dfeNumber) => {
   let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
-  pupils = pupils.map(p => {
-    p.dateOfBirth = dateService.formatShortGdsDate(p.dateOfBirth)
-    return p
-  })
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  return pupils
+  return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 
 /**

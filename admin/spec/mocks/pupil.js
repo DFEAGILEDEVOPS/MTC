@@ -4,6 +4,7 @@ module.exports = {
   id: 42,
   school: 9991001,
   foreName: 'Pupil',
+  middleNames: 'Middle',
   lastName: 'One',
   pin: 4466,
   dateOfBirth: moment('2000-12-31T00:00:00Z'),

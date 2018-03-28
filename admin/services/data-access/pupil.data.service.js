@@ -17,7 +17,7 @@ const sqlService = require('./sql.service')
 pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirection) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   sortDirection = sortDirection === 'asc' ? 'asc' : 'desc'
-  const sortBy = `lastName ${sortDirection}, middleNames ${sortDirection}, foreName ${sortDirection}, dateOfBirth ${sortDirection}`
+  const sortBy = `lastName ${sortDirection}, foreName ${sortDirection}, middleNames ${sortDirection}, dateOfBirth ${sortDirection}`
 
   const sql = `
       SELECT p.*, g.group_id 
@@ -171,7 +171,7 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
   AND s.dfeNumber = @dfeNumber
   AND p.pinExpiresAt IS NOT NULL
   AND p.pinExpiresAt > GETUTCDATE()
-  ORDER BY p.lastName ASC, p.foreName ASC
+  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
   return sqlService.query(sql, [paramDfeNumber])
 }
@@ -210,19 +210,20 @@ pupilDataService.sqlFindByIds = async (ids) => {
   `
   const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
-  const orderClause = 'ORDER BY lastName'
+  const orderClause = 'ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
   const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)
 }
 
 /**
- * Find pupils by ids and dfeNumber
+ * Find pupils by ids and dfeNumber.
  * @param ids
- * @return {Promise<void>}
+ * @param dfeNumber
+ * @returns {Promise<*>}
  */
 pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
   const select = `
-      SELECT p.*    
+      SELECT p.* 
       FROM 
       ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
       `
@@ -286,7 +287,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
   }
   let sqlSort
   if (sortField === 'name') {
-    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}`
+    sqlSort = `p.lastName ${sortDirection}, p.foreName ${sortDirection}, p.middleNames ${sortDirection}, p.dateOfBirth ${sortDirection}`
   } else if (sortField === 'reason') {
     sqlSort = `CASE WHEN ac.reason IS NULL THEN 1 ELSE 0 END, ac.reason ${sortDirection}`
   }
@@ -360,9 +361,8 @@ pupilDataService.sqlInsertMany = async (pupils) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
-  const res = await sqlService.modify(sql, params)
+  return sqlService.modify(sql, params)
   // E.g. { insertId: [1, 2], rowsModified: 4 }
-  return res
 }
 
 module.exports = pupilDataService

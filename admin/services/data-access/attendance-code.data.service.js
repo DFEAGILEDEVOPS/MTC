@@ -6,11 +6,20 @@ const R = require('ramda')
 const sqlService = require('./sql.service')
 
 const attendanceCodeDataService = {
+  /**
+   * Find Attendance Codes.
+   * @returns {Promise<*>}
+   */
   sqlFindAttendanceCodes: async () => {
     const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
     return sqlService.query(sql)
   },
 
+  /**
+   * Find attendance code by code.
+   * @param code
+   * @returns {Promise<void>}
+   */
   sqlFindOneAttendanceCodeByCode: async (code) => {
     const sql = `
     SELECT 
