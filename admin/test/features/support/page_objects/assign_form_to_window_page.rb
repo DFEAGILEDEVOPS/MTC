@@ -21,7 +21,7 @@ class AssignFormToWindowPage < SitePrism::Page
 
   section :sticky_banner, '.sticky-banner-wrapper' do
     element :count, '.grid-row .column-half.first-half'
-    element :cancel, 'a[href="/school/pupils-not-taking-check"]'
+    element :cancel, 'a[href="/pupils-not-taking-the-check"]'
     element :confirm, 'input[value="Confirm"]'
   end
 
