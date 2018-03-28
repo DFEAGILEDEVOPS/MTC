@@ -270,7 +270,7 @@ psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
   if (!timeout) {
     return ''
   }
-  if (this.getTimeoutFlag(inputs) === 1 && markedAnswer.isCorrect) {
+  if (timeout === 1 && markedAnswer.isCorrect) {
     return 1
   }
   return 0
