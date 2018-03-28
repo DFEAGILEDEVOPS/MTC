@@ -24,7 +24,7 @@
         </p>
 
         <div class="button-wrapper">
-            <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason</a>
+            <a class="button" href="/pupils-not-taking-the-check/select-pupils">Add reason</a>
         </div>
 
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -40,15 +40,22 @@
                 <% pupilsList.forEach( (pupil, index) => { %>
                 <tr>
                     <td<% if (highlight.indexOf(pupil.urlSlug) !== -1) { %> class="highlight-item"<% } %>>
-                        <label for="pupil-<%= pupil.urlSlug %>">
-                            <%= pupil.lastName %>, <%= pupil.foreName %>
-                        </label>
+                        <div class="highlight-wrapper">
+                            <label for="pupil-<%= pupil.urlSlug %>">
+                                <%= pupil.fullName %>
+                                <% if (pupil.showDoB) { %>
+                                <div class="font-greyed-out font-xsmall">
+                                    Date of birth: <%= pupil.dateOfBirth %>
+                                </div>
+                                <% } %>
+                            </label>
+                        </div>
                     </td>
                     <td class="wrap-text">
-                        <%= pupil.reason %>
+                        <%= pupil.reason || 'N/A' %>
                     </td>
                     <td class="align-right">
-                        <a href="/school/pupils-not-taking-check/remove/<%= pupil.urlSlug %>">Remove</a>
+                        <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>">Remove</a>
                     </td>
                 </tr>
                 <% }) %>
