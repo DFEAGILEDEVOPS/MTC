@@ -130,4 +130,72 @@ completedCheckDataService.sqlFindOneByCheckCode = async function (checkCode) {
   return R.assoc('data', (JSON.parse(first.data)).data, first)
 }
 
+/**
+ * Retrieve a number of completed checks especially for use in a batch service
+ * @param lowCheckId
+ * @param batchSize
+ * @return {Promise}
+ */
+completedCheckDataService.sqlFind = async (lowCheckId, batchSize) => {
+  const safeBatchSize = parseInt(batchSize, 10)
+  if (isNaN(safeBatchSize)) {
+    throw new Error(`batchSize is not a number: ${batchSize}`)
+  }
+  if (safeBatchSize < 1) {
+    throw new Error('Batch size must be at least 1')
+  }
+  if (safeBatchSize > 250) {
+    // As the SQL has an ORDER BY clause we need to limit the number of rows ordered
+    // for performance reasons.
+    throw new Error(`batchSize too large`)
+  }
+  const sql = `
+    SELECT 
+      TOP ${safeBatchSize} *
+    FROM ${sqlService.adminSchema}.[check]
+    WHERE data IS NOT NULL
+    AND id >= @lowCheckId
+    ORDER BY ID ASC
+  `
+  const params = [
+    {
+      name: 'lowCheckId',
+      value: lowCheckId,
+      type: TYPES.Int
+    }
+  ]
+  const checks = await sqlService.query(sql, params)
+  return R.map(parseData, checks)
+}
+
+/**
+ * Return some meta information about the completed checks so a batch service can operate on it
+ * @return {Promise}
+ */
+completedCheckDataService.sqlFindMeta = async () => {
+  const sql = `
+    SELECT
+    min(id) as [min], max(id) as [max], count(id) as [count]
+    FROM [mtc_admin].[check]
+    WHERE data IS NOT NULL;
+  `
+  const res = await sqlService.query(sql)
+  return R.head(res)
+}
+
+function parseData (check) {
+  if (!check.data) {
+    return check
+  }
+
+  try {
+    const decoded = JSON.parse(check.data)
+    check.data = decoded.data
+  } catch (error) {
+    console.error(`Error: failed to decode JSON for check [${check.id}]: ${error.message}`)
+  }
+
+  return check
+}
+
 module.exports = completedCheckDataService
