@@ -8,7 +8,7 @@ class SchoolLandingPage < SitePrism::Page
   element :pupil_register_text, 'p', text: 'Add, edit and review pupils'
   element :group_pupils, 'a[href="/group/pupils-list'
   element :group_pupils_text, 'p', text: 'Create groups'
-  element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check"]'
+  element :pupils_not_taking_check, 'a[href="/pupils-not-taking-the-check/pupils-list"]'
   element :pupils_not_taking_check_text, 'p', text: 'Enter a reason for pupils who are unable to take the check'
   element :access_arrangements, 'a', text: 'Access arrangements'
   element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
