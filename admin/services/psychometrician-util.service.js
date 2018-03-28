@@ -230,7 +230,8 @@ psUtilService.getTimeoutFlag = function (inputs) {
     winston.info('invalid input: ', inputs)
     return 'error'
   }
-  if (R.pathOr('', ['input'], R.last(inputs)).toUpperCase() === 'ENTER') {
+  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
+  if (R.pathOr('', ['input'], R.last(normalisedInputs)).toUpperCase() === 'ENTER') {
     timeout = 0
   }
   return timeout

@@ -767,6 +767,23 @@ describe('psychometrician-util.service', () => {
       const res = service.getTimeoutFlag(input)
       expect(res).toBe(0)
     })
+
+    it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry, but with trailing input', () => {
+      const input = [...touchInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:45.001Z',
+        'eventType': 'touchstart',
+        'input': ''
+      })
+      const res = service.getTimeoutFlag(input)
+      expect(res).toBe(0)
+    })
+
   })
 
   describe('#getTimeoutWithNoResponseFlag', () => {
