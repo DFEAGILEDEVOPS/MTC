@@ -162,13 +162,15 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
+  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
 
-  for (let i = inputs.length - 1; i >= 0; i--) {
-    const input = R.pathOr('', [i, 'input'], inputs)
+  for (let i = normalisedInputs.length - 1; i >= 0; i--) {
+    const input = R.pathOr('', [i, 'input'], normalisedInputs)
     if (input.toUpperCase() !== 'ENTER') {
-      return R.pathOr('error', [i, 'clientInputDate'], inputs)
+      return R.pathOr('error', [i, 'clientInputDate'], normalisedInputs)
     }
   }
+  return ''
 }
 
 /**
