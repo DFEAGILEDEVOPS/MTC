@@ -600,7 +600,7 @@ describe('psychometrician-util.service', () => {
 
     it('returns the timestamp as a string from the last input', () => {
       const res = service.getLastAnswerInputTime(touchInput)
-      expect(res).toBe('2017-10-09T09:50:07.708Z')
+      expect(res).toBe('2017-10-09T09:50:07.099Z')
     })
 
     it('it ignores the last input if the last input is the user pressing enter on the virtual keypad', () => {
@@ -611,7 +611,44 @@ describe('psychometrician-util.service', () => {
         'input': 'Enter'
       })
       const res = service.getLastAnswerInputTime(mouseInput)
-      expect(res).toBe('2017-10-13T09:06:55.663Z')
+      expect(res).toBe('2017-10-13T09:06:55.234Z')
+    })
+
+    it('handles inputs such as all enter key presses', () => {
+      const allEnterKeys = [
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.565Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.566Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.567Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        }
+      ]
+      const res = service.getLastAnswerInputTime(allEnterKeys)
+      expect(res).toBe('') // enter key does not count
     })
   })
 
