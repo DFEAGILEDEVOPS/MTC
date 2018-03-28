@@ -24,7 +24,7 @@
         </p>
 
         <div class="button-wrapper">
-            <a class="button" href="/school/pupils-not-taking-check/select-pupils">Add reason</a>
+            <a class="button" href="/pupils-not-taking-the-check/select-pupils">Add reason</a>
         </div>
 
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -52,10 +52,10 @@
                         </div>
                     </td>
                     <td class="wrap-text">
-                        <%= pupil.reason %>
+                        <%= pupil.reason || 'N/A' %>
                     </td>
                     <td class="align-right">
-                        <a href="/school/pupils-not-taking-check/remove/<%= pupil.urlSlug %>">Remove</a>
+                        <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>">Remove</a>
                     </td>
                 </tr>
                 <% }) %>
