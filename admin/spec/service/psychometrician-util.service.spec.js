@@ -610,7 +610,7 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getLastAnswerInputTime(mouseInput)
+      const res = service.getLastAnswerInputTime(input)
       expect(res).toBe('2017-10-13T09:06:55.234Z')
     })
 
@@ -669,9 +669,46 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe('2017-10-17T18:20:44.447Z')
     })
 
-    it('returns "error" if the log is unparseable', () => {
-      const res = service.getFirstInputTime([{foo: 1, bar: 2, baz: 3}])
-      expect(res).toBe('error')
+    it('returns the timestamp from the first mouse input', () => {
+      const res = service.getFirstInputTime(mouseInput)
+      expect(res).toBe('2017-10-13T09:06:53.692Z')
+    })
+
+    it('handles inputs such as all enter key presses', () => {
+      const allEnterKeys = [
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.565Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.566Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.567Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        }
+      ]
+      const res = service.getFirstInputTime(allEnterKeys)
+      expect(res).toBe('') // enter key does not count
     })
   })
 

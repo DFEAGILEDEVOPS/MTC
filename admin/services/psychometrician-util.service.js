@@ -186,7 +186,16 @@ psUtilService.getFirstInputTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
-  return R.pathOr('error', [0, 'clientInputDate'], inputs)
+  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
+
+  // The first input can't be an Enter key press
+  const filtered = normalisedInputs.filter(event => event.input.toUpperCase() !== 'ENTER')
+
+  if (!filtered.length) {
+    return ''
+  }
+
+  return R.pathOr('error', [0, 'clientInputDate'], filtered)
 }
 
 /**
