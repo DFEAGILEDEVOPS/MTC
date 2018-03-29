@@ -14,4 +14,3 @@ services:
         SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
         ACCEPT_EULA: "Y"
         HOMEBREW_NO_ENV_FILTERING: 1
-

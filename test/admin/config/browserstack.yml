@@ -1,0 +1,74 @@
+server: "hub-cloud.browserstack.com"
+
+common_caps:
+  "browserstack.debug": true
+  "browserstack.local": true
+  "browserstack.ie.driver": "2.21"
+
+browser_caps:
+  sierra_chrome_58:
+    "os": "OS X"
+    "os_version": "Sierra"
+    "browser": "Chrome"
+    "browser_version": "58.0"
+    "resolution": "1024x768"
+  win7_chrome_57:
+    "os": "Windows"
+    "os_version": "7"
+    "browser": "Chrome"
+    "browser_version": "57.0"
+    "resolution": "1024x768"
+  win7_chrome_58:
+    "os": "Windows"
+    "os_version": "7"
+    "browser": "Chrome"
+    "browser_version": "58.0"
+    "resolution": "1024x768"
+  win7_ie_9:
+    "os": "Windows"
+    "os_version": "7"
+    "browser": "IE"
+    "browser_version": "9.0"
+    "resolution": "1024x768"
+  win7_ie_11:
+    "os": "Windows"
+    "os_version": "7"
+    "browser": "IE"
+    "browser_version": "11.0"
+    "resolution": "1024x768"
+  win_81_ie_11:
+    "os": "Windows"
+    "os_version": "8.1"
+    "browser": "IE"
+    "browser_version": "11.0"
+    "resolution": "1024x768"
+  win10_chrome_58:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "Chrome"
+    "browser_version": "58.0"
+    "resolution": "1024x768"
+  win10_ie_10:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "IE"
+    "browser_version": "11.0"
+    "resolution": "1024x768"
+  win10_edge_14:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "Edge"
+    "browser_version": "14.0"
+    "resolution": "1024x768"
+  capitan_chrome_58:
+    "os": "OS X"
+    "os_version": "El Capitan"
+    "browser": "Chrome"
+    "browser_version": "58.0"
+    "resolution": "1024x768"
+  sierra_safari_10:
+    "os": "OS X"
+    "os_version": "Sierra"
+    "browser": "Safari"
+    "browser_version": "10.1"
+    "resolution": "1024x768"
