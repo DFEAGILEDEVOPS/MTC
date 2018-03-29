@@ -4,7 +4,6 @@
 const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
-const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
 const attendanceCodeService = require('../../services/attendance.service')
 const attendanceService = require('../../services/attendance.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
