@@ -62,7 +62,7 @@ const manageGroupPage = async (req, res, next) => {
     return next(error)
   }
 
-  req.breadcrumbs('Group pupils', '/school/group-pupils')
+  req.breadcrumbs('Group pupils', '/group/pupils-list')
   req.breadcrumbs(res.locals.pageTitle)
   res.render('groups/manage-group.ejs', {
     breadcrumbs: req.breadcrumbs(),
@@ -84,7 +84,7 @@ const manageGroupPage = async (req, res, next) => {
 const addGroup = async (req, res, next) => {
   if (!req.body.name || !req.body.pupil) {
     req.flash('error', 'Missing fields.')
-    return res.redirect('/school/group-pupils/add')
+    return res.redirect('/group/pupils-list/add')
   }
 
   let validationError
@@ -113,7 +113,7 @@ const addGroup = async (req, res, next) => {
     selectedPupilsIds.map((s) => { selectedPupils[s] = true })
 
     req.body.pupils = req.body.pupil
-    req.breadcrumbs('Group pupils', '/school/group-pupils')
+    req.breadcrumbs('Group pupils', '/group/pupils-list')
     res.locals.pageTitle = 'Create group'
     req.breadcrumbs(res.locals.pageTitle)
 
@@ -137,7 +137,7 @@ const addGroup = async (req, res, next) => {
   req.flash('info', 'New group created')
   // TODO technical debt - do not use req.flash to pass data
   req.flash('groupId', groupId)
-  return res.redirect('/school/group-pupils')
+  return res.redirect('/group/pupils-list')
 }
 
 /**
@@ -150,7 +150,7 @@ const addGroup = async (req, res, next) => {
 const editGroup = async (req, res, next) => {
   if (!req.body.name || !req.body.pupil || !req.body.groupId) {
     req.flash('error', 'Missing fields.')
-    return res.redirect('/school/group-pupils/edit')
+    return res.redirect('/group/pupils-list/edit')
   }
 
   let group
@@ -184,7 +184,7 @@ const editGroup = async (req, res, next) => {
     selectedPupilIds = Object.values(req.body.pupil)
     selectedPupilIds.map((p) => { selectedPupils[p] = true })
 
-    req.breadcrumbs('Group pupils', '/school/group-pupils')
+    req.breadcrumbs('Group pupils', '/group/pupils-list')
     res.locals.pageTitle = 'Edit group'
     req.breadcrumbs(res.locals.pageTitle)
 
@@ -207,13 +207,13 @@ const editGroup = async (req, res, next) => {
 
   req.flash('info', `Changes made to '${req.body.name}'`)
   req.flash('groupId', encodeURIComponent(req.body.groupId))
-  return res.redirect('/school/group-pupils')
+  return res.redirect('/group/pupils-list')
 }
 
 const removeGroup = async (req, res, next) => {
   if (!req.params.groupId) {
     req.flash('error', 'Missing group id.')
-    return res.redirect('/school/group-pupils')
+    return res.redirect('/group/pupils-list')
   }
 
   try {
@@ -223,7 +223,7 @@ const removeGroup = async (req, res, next) => {
   }
 
   req.flash('deleted', 'Group deleted')
-  return res.redirect('/school/group-pupils')
+  return res.redirect('/group/pupils-list')
 }
 
 module.exports = {
