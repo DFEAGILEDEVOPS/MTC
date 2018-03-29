@@ -5,7 +5,6 @@ const pupilDataService = require('./data-access/pupil.data.service')
 const pupilsNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
 
 const pupilsNotTakingCheckService = {
-
   /**
    * Sort columns by reason asc/desc.
    * @param pupilsList
