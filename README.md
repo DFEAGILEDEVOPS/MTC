@@ -36,4 +36,12 @@ The MTC solution consists of the following projects...
 
 See each projects readme for app specifics.
 
+### Building Docker Images
+
+to build an individual docker image, navigate to the relevant app folder and run...
+
+`docker build -t <image name> .`
+
+where `<image-name>` is a friendly name that allows you to easily identify the image. 
+
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
