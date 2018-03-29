@@ -1,5 +1,5 @@
 class AddEditGroupsPage < SitePrism::Page
-  set_url '/school/group-pupils{/add_or_edit}'
+  set_url '/group/pupils-list{/add_or_edit}'
 
   element :group_name, '#name'
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'

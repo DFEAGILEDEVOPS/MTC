@@ -257,7 +257,7 @@ const postSubmitAttendance = async (req, res, next) => {
   if (!attendees) {
     return res.redirect('/school/submit-attendance')
   }
-// const data = Object.values(req.body[ 'attendee' ] || [])
+  // const data = Object.values(req.body[ 'attendee' ] || [])
   // TODO consider removal as part of HDF refresh
   return res.redirect('/school/declaration-form')
 }

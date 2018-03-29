@@ -38,7 +38,7 @@ describe('group controller', () => {
     let next
     let goodReqParams = {
       method: 'GET',
-      url: '/school/group-pupils'
+      url: '/group/pupils-list'
     }
 
     beforeEach(() => {
