@@ -214,7 +214,7 @@ busboy.extend(app, {
   ]
 })
 
-const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
+const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url)
 
 const sessionOptions = {
