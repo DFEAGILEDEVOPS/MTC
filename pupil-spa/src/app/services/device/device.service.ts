@@ -44,7 +44,7 @@ export class DeviceService {
       screenHeight: this.window.screen.height,
       outerWidth: this.window.outerWidth,
       outerHeight: this.window.innerHeight,
-      innerWith: this.window.innerWidth,
+      innerWidth: this.window.innerWidth,
       innerHeight: this.window.innerHeight,
       colorDepth: this.window.screen.colorDepth,
       orientation: this.getOrientation()
