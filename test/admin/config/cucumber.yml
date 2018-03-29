@@ -1,0 +1,5 @@
+#default: -t ~@wip -t ~@manual BASE_URL='http://localhost:3001' DRIVER='chrome' --format pretty --format html --out reports/report.html
+parallel_chrome: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' BASE_URL='http://admin-app:3001' DRIVER='chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+parallel: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download'  BASE_URL='http://admin-app:3001' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+default: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' -t '@local' BASE_URL='http://admin-app:3001' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
+download_csv: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' BASE_URL='http://admin-app:3001' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
