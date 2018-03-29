@@ -100,8 +100,7 @@ Feature:
   Scenario Outline: Service-manager school persona school is displayed
     Given I have signed in with <helpdesk>
     Then I should see the school name corresponding to that <dfenumber>
-
-
+    
     Examples:
       | helpdesk                | dfenumber |
       | service-manager:9991001 | 9991001   |
