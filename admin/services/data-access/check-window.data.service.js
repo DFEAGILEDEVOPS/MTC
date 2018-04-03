@@ -237,6 +237,32 @@ const checkWindowDataService = {
     ]
     const result = await sqlService.query(sql, params)
     return R.head(result)
+  },
+
+  /**
+   * Find all check windows
+   * @param sortBy
+   * @param sortDirection
+   * @return {Object}
+   */
+  sqlFindAllCheckWindows: async (sortBy, sortDirection) => {
+    sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+    switch (sortBy) {
+      case 'checkWindowName':
+        sortBy = 'name'
+        break
+      case 'adminStartDate':
+      case 'checkStartDate':
+        break
+      default:
+        sortBy = 'name'
+    }
+    const sql = `SELECT [id], [name], adminStartDate, checkStartDate, checkEndDate, isDeleted
+                FROM ${sqlService.adminSchema}.[checkWindow] 
+                WHERE isDeleted=0
+                ORDER BY ${sortBy} ${sortDirection}`
+    const params = []
+    return sqlService.query(sql, params)
   }
 }
 
