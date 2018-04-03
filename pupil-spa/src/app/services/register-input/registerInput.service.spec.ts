@@ -52,6 +52,17 @@ describe('RegisterInputService', () => {
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
     }));
 
+  it('StoreEntry will timestamp the input',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const eventValue = '1';
+      const eventType = 'keydown';
+      service.storeEntry(eventValue, eventType, questionNumber);
+      const args = mockStorageServiceSpy.calls.first().args;
+      const record = args[1][0];
+      expect(record.hasOwnProperty('clientTimestamp')).toBeTruthy();
+      expect(record.clientTimestamp instanceof Date).toBe(true)
+    }));
+
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f'};
@@ -65,7 +76,6 @@ describe('RegisterInputService', () => {
       service.addEntry(event, questionNumber);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
       const args = mockStorageServiceSpy.calls.first().args;
-      console.log('JHMS ARGS ', args)
       const record = args[1][0];
       expect(record['input']).toBe('left click');
     }));

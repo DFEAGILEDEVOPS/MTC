@@ -32,7 +32,7 @@ export class RegisterInputService {
     questionInputs.push({
       input: eventValue,
       eventType: eventType,
-      clientInputDate: new Date(),
+      clientTimestamp: new Date(),
       question: sequenceNumber
     });
 
