@@ -22,6 +22,7 @@ export class TestRegisterInputService extends RegisterInputService {
 
 describe('RegisterInputService', () => {
   let mockStorageServiceSpy;
+  const questionNumber = 3;
 
   beforeEach(() => {
     mockStorageService = new StorageServiceMock();
@@ -47,32 +48,33 @@ describe('RegisterInputService', () => {
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const eventValue = '0';
       const eventType = 'keydown';
-      service.storeEntry(eventValue, eventType);
+      service.storeEntry(eventValue, eventType, questionNumber);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
     }));
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f'};
-    service.addEntry(event);
+    service.addEntry(event, questionNumber);
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
 
   it('expects a left click event to be registered',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const event = {type: 'mousedown', which: 1};
-      service.addEntry(event);
+      service.addEntry(event, questionNumber);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
       const args = mockStorageServiceSpy.calls.first().args;
-      const record = args[1][0][0];
+      console.log('JHMS ARGS ', args)
+      const record = args[1][0];
       expect(record['input']).toBe('left click');
     }));
 
   it('calls the storage service', inject([TestRegisterInputService],
     (registerInputService: TestRegisterInputService) => {
       const event = {type: 'mousedown', which: 1};
-      registerInputService.addEntry(event);
-      registerInputService.addEntry(event);
+      registerInputService.addEntry(event, questionNumber);
+      registerInputService.addEntry(event, questionNumber);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(2);
     }));
 });

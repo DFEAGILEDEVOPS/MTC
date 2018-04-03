@@ -13,37 +13,27 @@ export class RegisterInputService {
     this.storageService.setItem(RegisterInputService.inputKey, []);
   }
 
-  public addEntry(event) {
+  public addEntry(event, sequenceNumber: number) {
     let eventValue;
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);
     }
     eventValue = eventValue || event.key || '';
-    this.storeEntry(eventValue, event.type);
+    this.storeEntry(eventValue, event.type, sequenceNumber);
   }
 
-  public storeEntry(eventValue, eventType) {
-    const currentQuestion = this.questionService.getCurrentQuestionNumber();
-
+  public storeEntry(eventValue, eventType, sequenceNumber) {
     let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
     if (!Array.isArray(questionInputs)) {
       questionInputs = [];
     }
 
-    // Generate the array index from the current question.  Q1 is stored in index 0, and so on.
-    const idx = currentQuestion - 1;
-
-    // Check we have an array to place the new object into
-    if (!Array.isArray(questionInputs[idx])) {
-      questionInputs[idx] = [];
-    }
-
     // Store the input
-    questionInputs[ currentQuestion - 1 ].push({
+    questionInputs.push({
       input: eventValue,
       eventType: eventType,
       clientInputDate: new Date(),
-      question: currentQuestion
+      question: sequenceNumber
     });
 
     this.storageService.setItem(RegisterInputService.inputKey, questionInputs);

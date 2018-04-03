@@ -45,7 +45,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    */
   @HostListener('document:mousedown', [ '$event' ])
   handleMouseEvent(event: MouseEvent) {
-    this.registerInputService.addEntry(event);
+    this.registerInputService.addEntry(event, this.sequenceNumber);
   }
 
   /**
@@ -65,7 +65,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
-    this.registerInputService.addEntry(event);
+    this.registerInputService.addEntry(event, this.sequenceNumber);
     const key = event.key;
     // register inputs
     switch (key) {
@@ -99,7 +99,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {number} number
    */
   onClickAnswer(number: number) {
-    this.registerInputService.storeEntry(number.toString(), 'click');
+    this.registerInputService.storeEntry(number.toString(), 'click', this.sequenceNumber);
     this.addChar(number.toString());
   }
 
@@ -107,7 +107,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    this.registerInputService.storeEntry('backspace', 'click');
+    this.registerInputService.storeEntry('backspace', 'click', this.sequenceNumber);
     this.deleteChar();
   }
 
@@ -115,7 +115,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    */
   onClickSubmit() {
-    this.registerInputService.storeEntry('enter', 'click');
+    this.registerInputService.storeEntry('enter', 'click', this.sequenceNumber);
     this.onSubmit();
   }
 }
