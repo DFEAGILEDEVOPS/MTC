@@ -230,7 +230,7 @@ describe('QuestionComponent', () => {
       spyOn(registerInputService, 'storeEntry');
       component.onClickSubmit();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('enter', 'click', 0);
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 0);
     });
 
     it('calls onSubmit()', () => {

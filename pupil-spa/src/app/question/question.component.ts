@@ -115,7 +115,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    */
   onClickSubmit() {
-    this.registerInputService.storeEntry('enter', 'click', this.sequenceNumber);
+    this.registerInputService.storeEntry('Enter', 'click', this.sequenceNumber);
     this.onSubmit();
   }
 }
