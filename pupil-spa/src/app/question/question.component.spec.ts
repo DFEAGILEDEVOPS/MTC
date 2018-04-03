@@ -214,7 +214,8 @@ describe('QuestionComponent', () => {
       spyOn(registerInputService, 'storeEntry');
       component.onClickBackspace();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('backspace', 'click');
+      // It defaults to question 0 - no question
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('backspace', 'click', 0);
     });
 
     it('deletes a char from the answer', () => {
@@ -229,7 +230,7 @@ describe('QuestionComponent', () => {
       spyOn(registerInputService, 'storeEntry');
       component.onClickSubmit();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('enter', 'click');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 0);
     });
 
     it('calls onSubmit()', () => {
