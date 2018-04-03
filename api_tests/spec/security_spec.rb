@@ -10,7 +10,7 @@ describe 'Security API spec' do
       expect(response.headers['x-download-options']).to eql 'noopen'
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-xss-protection']).to eql "1; mode=block"
-      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; font-src 'self' data:; style-src 'self'; img-src 'self' https://www.google-analytics.com data:; connect-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'"
+      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; font-src 'self' data:; style-src 'self' 'unsafe-inline'; img-src 'self' https://www.google-analytics.com data:; connect-src 'self' https://www.google-analytics.com; object-src 'self'; media-src 'none'; child-src 'none'"
     end
   end
 

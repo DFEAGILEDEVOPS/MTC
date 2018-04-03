@@ -44,13 +44,13 @@
                 </tr>
             </thead>
             <tbody>
-                <% checkWindowList.forEach( (checkWindow, index) => { %>
-                <tr<% if (!checkWindow.isCurrent) { %> class="font-greyed-out"<% } %>>
+                <% checkWindowList.forEach( (checkWindow) => { %>
+                <tr<% if (checkWindow.isPast)  { %> class="font-greyed-out"<% } %>>
                     <td>
-                        <% if (checkWindow.isCurrent) { %>
-                        <a href="/service-manager/check-windows/edit/<%= checkWindow.id %>" class="bold-small"><%= checkWindow.checkWindowName %></a>
+                        <% if (!checkWindow.isPast) { %>
+                        <a href="/service-manager/check-windows/edit/<%= checkWindow.id %>" class="bold-small"><%= checkWindow.name %></a>
                         <% } else { %>
-                        <span class="bold-small"><%= checkWindow.checkWindowName %></span>
+                        <span class="bold-small"><%= checkWindow.name %></span>
                         <% } %>
                     </td>
                     <td><%= checkWindow.adminStartDate %></td>
