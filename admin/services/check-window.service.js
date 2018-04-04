@@ -111,7 +111,7 @@ const checkWindowService = {
       const checkStartDate = moment(cw.checkStartDate)
       const checkEndDate = moment(cw.checkEndDate)
 
-      if (moment(checkStartDate).isAfter(moment(checkEndDate))) {
+      if (checkStartDate.isAfter(checkEndDate)) {
         throw new Error('Check start date is after check end date')
       }
 
@@ -172,8 +172,8 @@ const checkWindowService = {
       checkEndYear: moment(checkWindow.checkEndDate).format('YYYY'),
       existingAdminStartDate: adminStartDate,
       existingCheckStartDate: checkStartDate,
-      adminIsDisabled: moment(currentDate).isAfter(adminStartDate) ? 1 : 0,
-      checkStartIsDisabled: moment(currentDate).isAfter(checkStartDate) ? 1 : 0
+      adminIsDisabled: moment(currentDate).isAfter(adminStartDate),
+      checkStartIsDisabled: moment(currentDate).isAfter(checkStartDate)
     }
   }
 }

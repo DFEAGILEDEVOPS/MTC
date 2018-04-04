@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const winston = require('winston')
+const toBool = require('to-bool')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
@@ -163,8 +164,8 @@ const controller = {
       actionName: 'Create',
       urlActionName: 'add',
       currentYear: moment(Date.now()).format('YYYY'),
-      adminIsDisabled: 0,
-      checkStartIsDisabled: 0
+      adminIsDisabled: false,
+      checkStartIsDisabled: false
     })
   },
 
@@ -211,8 +212,8 @@ const controller = {
     let validationError = await checkWindowValidator.validate(req)
     let currentYear = moment.utc(moment.now()).format('YYYY')
     let flashMessage = req.body[ 'checkWindowName' ] + ' has been created'
-    let adminIsDisabled = req.body.adminIsDisabled
-    let checkStartIsDisabled = req.body.checkStartIsDisabled
+    let adminIsDisabled = toBool(req.body.adminIsDisabled)
+    let checkStartIsDisabled = toBool(req.body.checkStartIsDisabled)
 
     if (req.body.checkWindowId !== '') {
       actionName = 'Edit'
@@ -224,13 +225,13 @@ const controller = {
       res.locals.pageTitle = actionName + ' check window'
       req.breadcrumbs(res.locals.pageTitle)
 
-      if (!req.body[ 'adminStartDay' ] && !req.body[ 'adminStartMonth' ] && !req.body[ 'adminStartYear' ] && req.body[ 'existingAdminStartDate' ] && req.body[ 'adminIsDisabled' ] === '1') {
+      if (!req.body[ 'adminStartDay' ] && !req.body[ 'adminStartMonth' ] && !req.body[ 'adminStartYear' ] && req.body[ 'existingAdminStartDate' ] && req.body['adminIsDisabled']) {
         req.body.adminStartDay = moment(req.body[ 'existingAdminStartDate' ]).format('D')
         req.body.adminStartMonth = moment(req.body[ 'existingAdminStartDate' ]).format('MM')
         req.body.adminStartYear = moment(req.body[ 'existingAdminStartDate' ]).format('YYYY')
       }
 
-      if (!req.body[ 'checkStartDay' ] && !req.body[ 'checkStartMonth' ] && !req.body[ 'checkStartYear' ] && req.body[ 'existingCheckStartDate' ] && req.body[ 'checkStartIsDisabled' ] === '1') {
+      if (!req.body[ 'checkStartDay' ] && !req.body[ 'checkStartMonth' ] && !req.body[ 'checkStartYear' ] && req.body[ 'existingCheckStartDate' ] && req.body['checkStartIsDisabled']) {
         req.body.checkStartDay = moment(req.body[ 'existingCheckStartDate' ]).format('D')
         req.body.checkStartMonth = moment(req.body[ 'existingCheckStartDate' ]).format('MM')
         req.body.checkStartYear = moment(req.body[ 'existingCheckStartDate' ]).format('YYYY')

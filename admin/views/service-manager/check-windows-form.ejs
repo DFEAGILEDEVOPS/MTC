@@ -74,7 +74,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartDay %>"
                                aria-required="true"
                                aria-label="Administration start day."
-                               <% if (adminIsDisabled > 0) { %>
+                               <% if (adminIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -87,7 +87,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartMonth %>"
                                aria-required="true"
                                aria-label="Administration start month."
-                               <% if (adminIsDisabled > 0) { %>
+                               <% if (adminIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -100,7 +100,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartYear %>"
                                aria-required="true"
                                aria-label="Administration start year."
-                               <% if (adminIsDisabled > 0) { %>
+                               <% if (adminIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -142,7 +142,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartDay %>"
                                aria-required="true"
                                aria-label="Check start day."
-                               <% if (checkStartIsDisabled > 0) { %>
+                               <% if (checkStartIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -155,7 +155,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartMonth %>"
                                aria-required="true"
                                aria-label="Check start month."
-                               <% if (checkStartIsDisabled > 0) { %>
+                               <% if (checkStartIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
@@ -168,7 +168,7 @@
                                value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartYear %>"
                                aria-required="true"
                                aria-label="Check start year."
-                               <% if (checkStartIsDisabled > 0) { %>
+                               <% if (checkStartIsDisabled) { %>
                                disabled="disabled"
                                <% } %>>
                     </div>
