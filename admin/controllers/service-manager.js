@@ -13,6 +13,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const config = require('../config')
 const settingService = require('../services/setting.service')
+const ValidationError = require('../lib/validation-error')
 
 const controller = {
 
@@ -160,6 +161,7 @@ const controller = {
     req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
     res.locals.pageTitle = 'Create check window'
     res.render('service-manager/check-windows-form', {
+      error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
       actionName: 'Create',
       urlActionName: 'add',
@@ -187,6 +189,7 @@ const controller = {
       return next()
     }
     res.render('service-manager/check-windows-form', {
+      error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
       checkWindowData,
       successfulPost: false,
@@ -240,7 +243,7 @@ const controller = {
       return res.render('service-manager/check-windows-form', {
         action: urlActionName,
         checkWindowData: req.body,
-        error: validationError.errors,
+        error: validationError,
         errorMessage: checkWindowErrorMessages,
         currentYear,
         actionName,
