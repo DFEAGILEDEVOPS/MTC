@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach afterEach expect it spyOn */
+/* global describe beforeEach afterEach expect it spyOn fail */
 
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
@@ -93,7 +93,7 @@ describe('pupil-add-service', () => {
   it('does not save the pupil data if arguments are missing', async (done) => {
     service = getService(validationFunctionResolves)
     try {
-      await service.addPupil(pupilData)
+      await service.addPupil(pupilData, 1234)
       expect(saveSpy.calledOnce).toBeTruthy()
       const saveArg = saveSpy.args[0][0]
       // Check that the data of birth has been added
@@ -104,7 +104,7 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
     } catch (error) {
-      expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
+      fail('not expected to throw')
     }
     done()
   })
