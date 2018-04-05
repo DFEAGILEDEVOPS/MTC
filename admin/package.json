@@ -6,14 +6,15 @@
   "scripts": {
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard",
+    "migrate-sql": "node ./data/sql/migrate-sql.js",
     "postinstall": "gulp build",
     "sasswatch": "gulp watch",
-    "start": "node ./server.js",
-    "startn": "nodemon ./server.js",
-    "startd": "yarn migrate-sql && node ./server.js",
-    "test": "nyc -r html ./run-jasmine.js",
     "sql-integration-test": "nyc -r html ./tests-integration/run-jasmine-integration.js",
-    "migrate-sql": "node ./data/sql/migrate-sql.js"
+    "start": "node ./server.js",
+    "startd": "yarn migrate-sql && node ./server.js",
+    "startn": "nodemon ./server.js",
+    "test": "nyc -r html ./run-jasmine.js",
+    "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine"
   },
   "engines": {
     "node": ">= 8.4"

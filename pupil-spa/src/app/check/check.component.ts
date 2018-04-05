@@ -75,7 +75,7 @@ export class CheckComponent implements OnInit {
    * @return {boolean}
    */
   @HostListener('document:touchend', [ '$event' ])
-  handleTouchEndEvent(event: TouchEvent) {
+  handleTouchEndEvent(event) {
     event.preventDefault();
     event.target.dispatchEvent(new Event('click', { bubbles: true }));
     return false;

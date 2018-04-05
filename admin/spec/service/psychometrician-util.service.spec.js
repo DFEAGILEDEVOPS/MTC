@@ -61,6 +61,499 @@ describe('psychometrician-util.service', () => {
     })
   })
 
+  describe('#cleanupInputEvents', () => {
+    describe('simple', () => {
+      const simpleTouch = [
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:53:45.981Z',
+          question: 1
+        },
+        {
+          input: '8',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:53:46.068Z',
+          question: 1
+        }
+      ]
+
+      const simpleMouse = [
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-02-26T09:40:04.264Z',
+          question: 1
+        },
+        {
+          input: '8',
+          eventType: 'click',
+          clientInputDate: '2018-02-26T09:40:04.399Z',
+          question: 1
+        }
+      ]
+
+      const simpleKey = [
+        {
+          input: '1',
+          eventType: 'keydown',
+          clientInputDate: '2018-02-26T09:41:03.686Z',
+          question: 11
+        }
+      ]
+
+      describe('touch events', () => {
+        it('filters the touchstart and click events into a single object', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output.length).toBe(1)
+        })
+        it('uses the timestamp of the touchstart event', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[ 0 ].clientInputDate).toBe('2018-03-07T10:53:45.981Z')
+        })
+        it('sets the event type to "touch"', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[ 0 ].eventType).toBe('touch')
+        })
+        it('sets the input correctly', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[ 0 ].input).toBe('8')
+        })
+        it('sets the question correctly', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[ 0 ].question).toBe(1)
+        })
+      })
+
+      describe('mouse events', () => {
+        it('filters the mousedown and click events into a single object', () => {
+          const output = service.cleanUpInputEvents(simpleMouse)
+          expect(output.length).toBe(1)
+        })
+        it('uses the timestamp of the mousedown event', () => {
+          const output = service.cleanUpInputEvents(simpleMouse)
+          expect(output[ 0 ].clientInputDate).toBe('2018-02-26T09:40:04.264Z')
+        })
+        it('sets the event type to "click"', () => {
+          const output = service.cleanUpInputEvents(simpleMouse)
+          expect(output[ 0 ].eventType).toBe('click')
+        })
+        it('sets the input correctly', () => {
+          const output = service.cleanUpInputEvents(simpleMouse)
+          expect(output[ 0 ].input).toBe('8')
+        })
+        it('sets the question correctly', () => {
+          const output = service.cleanUpInputEvents(simpleMouse)
+          expect(output[ 0 ].question).toBe(1)
+        })
+      })
+
+      describe('key events', () => {
+        it('does not filter the events', () => {
+          const output = service.cleanUpInputEvents(simpleKey)
+          expect(output.length).toBe(1)
+        })
+        it('has an event type of "keydown"', () => {
+          const output = service.cleanUpInputEvents(simpleKey)
+          expect(output[ 0 ].eventType).toBe('keydown')
+        })
+        it('has the input correct', () => {
+          const output = service.cleanUpInputEvents(simpleKey)
+          expect(output[ 0 ].input).toBe('1')
+        })
+        it('has the question correct', () => {
+          const output = service.cleanUpInputEvents(simpleKey)
+          expect(output[ 0 ].question).toBe(11)
+        })
+        it('has the date and time correct', () => {
+          const output = service.cleanUpInputEvents(simpleKey)
+          expect(output[ 0 ].clientInputDate).toBe('2018-02-26T09:41:03.686Z')
+        })
+      })
+    })
+
+    describe('complex', () => {
+      const touchInput = [
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:53:51.697Z',
+          question: 2
+        },
+        {
+          input: '1',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:53:51.767Z',
+          question: 2
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:53:52.138Z',
+          question: 2
+        },
+        {
+          input: '5',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:53:52.216Z',
+          question: 2
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:53:52.486Z',
+          question: 2
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:53:52.583Z',
+          question: 2
+        }
+      ]
+      const mouseInput = [
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-03-05T14:05:30.563Z',
+          question: 2
+        },
+        {
+          input: '1',
+          eventType: 'click',
+          clientInputDate: '2018-03-05T14:05:30.787Z',
+          question: 2
+        },
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-03-05T14:05:31.565Z',
+          question: 2
+        },
+        {
+          input: '5',
+          eventType: 'click',
+          clientInputDate: '2018-03-05T14:05:31.733Z',
+          question: 2
+        },
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-03-05T14:05:32.377Z',
+          question: 2,
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-03-05T14:05:32.519Z',
+          question: 2
+        }
+      ]
+
+      describe('touch', () => {
+        it('filters out touchstart events', () => {
+          const output = service.cleanUpInputEvents(touchInput)
+          expect(output.length).toBe(3)
+        })
+        it('consolidates the inputs correctly', () => {
+          const output = service.cleanUpInputEvents(touchInput)
+          output.forEach(input => {
+            expect(input.eventType).toBe('touch')
+          })
+          expect(output[0].input).toBe('1')
+          expect(output[1].input).toBe('5')
+          expect(output[2].input).toBe('enter')
+        })
+      })
+
+      describe('mouse', () => {
+        it('filters out all mousedown events', () => {
+          const output = service.cleanUpInputEvents(mouseInput)
+          expect(output.length).toBe(3)
+        })
+        it('consolidates the inputs correctly', () => {
+          const output = service.cleanUpInputEvents(mouseInput)
+          output.forEach(input => {
+            expect(input.eventType).toBe('click')
+          })
+          expect(output[0].input).toBe('1')
+          expect(output[1].input).toBe('5')
+          expect(output[2].input).toBe('enter')
+        })
+      })
+    })
+
+    describe('hard', () => {
+      // This shows lots of touch events, but not all of them have corresponding inputs
+      const touchInput1 = [
+        {
+          input: '',
+          eventType: 'touchstart',
+          'clientInputDate': '2018-03-01T09:45:42.715Z',
+          'question': 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:42.716Z',
+          question: 12
+        },
+        {
+          input: '2',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:42.722Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:42.831Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:42.845Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:42.884Z',
+          question: 12
+        },
+        {
+          input: '6',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:42.915Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:43.014Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:43.056Z',
+          question: 12
+        },
+        {
+          input: '3',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:43.084Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:43.147Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:43.263Z',
+          question: 12
+        },
+        {
+          input: '2',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:43.277Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:43.691Z',
+          question: 12
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:43.747Z',
+          question: 12
+        }
+      ]
+
+      const missingTouchHeader = [
+        {
+          input: '1',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:42.702Z',
+          question: 12
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-01T09:45:42.716Z',
+          question: 12
+        },
+        {
+          input: '2',
+          eventType: 'click',
+          clientInputDate: '2018-03-01T09:45:42.722Z',
+          question: 12
+        }
+      ]
+
+      it('filters orphaned touchstart events providing the correct timestamps', () => {
+        const output = service.cleanUpInputEvents(touchInput1)
+        expect(output.length).toBe(5)
+        expect(output[0].input).toBe('2')
+        expect(output[0].clientInputDate).toBe('2018-03-01T09:45:42.716Z')
+        expect(output[1].input).toBe('6')
+        expect(output[1].clientInputDate).toBe('2018-03-01T09:45:42.884Z')
+        expect(output[2].input).toBe('3')
+        expect(output[2].clientInputDate).toBe('2018-03-01T09:45:43.056Z')
+        expect(output[3].input).toBe('2')
+        expect(output[3].clientInputDate).toBe('2018-03-01T09:45:43.263Z')
+        expect(output[4].input).toBe('enter')
+        expect(output[4].clientInputDate).toBe('2018-03-01T09:45:43.691Z')
+      })
+
+      it('handles missing touch headers gracefully', () => {
+        const output = service.cleanUpInputEvents(missingTouchHeader)
+        expect(output.length).toBe(2)
+        expect(output[0].input).toBe('1')
+        expect(output[0].clientInputDate).toBe('2018-03-01T09:45:42.702Z')
+        expect(output[0].eventType).toBe('touch')
+        expect(output[1].input).toBe('2')
+        expect(output[1].clientInputDate).toBe('2018-03-01T09:45:42.716Z')
+        expect(output[1].eventType).toBe('touch')
+      })
+    })
+
+    describe('mixed', () => {
+      const mixedMouseAndKey = [
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-02-26T13:53:19.711Z',
+          question: 2
+        },
+        {
+          input: '1',
+          eventType: 'click',
+          clientInputDate: '2018-02-26T13:53:22.739Z',
+          question: 2
+        },
+        {
+          input: '5',
+          eventType: 'keydown',
+          clientInputDate: '2018-02-26T13:53:23.404Z',
+          question: 2
+        }
+      ]
+      const mixedTouchAndMouse = [
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-03-07T10:52:41.981Z',
+          question: 1
+        },
+        {
+          input: '8',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:52:41.983Z',
+          question: 1
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:52:45.981Z',
+          question: 1
+        },
+        {
+          input: '9',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:52:46.068Z',
+          question: 1
+        }
+      ]
+
+      const mixedTriple = [
+        {
+          input: '5',
+          eventType: 'keydown',
+          clientInputDate: '2018-03-07T10:52:40.981Z',
+          question: 2
+        },
+        {
+          input: 'left click',
+          eventType: 'mousedown',
+          clientInputDate: '2018-03-07T10:52:41.981Z',
+          question: 1
+        },
+        {
+          input: '8',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:52:41.983Z',
+          question: 1
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientInputDate: '2018-03-07T10:52:45.981Z',
+          question: 1
+        },
+        {
+          input: '9',
+          eventType: 'click',
+          clientInputDate: '2018-03-07T10:52:46.068Z',
+          question: 1
+        },
+        {
+          input: '5',
+          eventType: 'keydown',
+          clientInputDate: '2018-03-07T10:52:47.951Z',
+          question: 2
+        }
+      ]
+
+      it('handles mixed mouse and key input', () => {
+        const output = service.cleanUpInputEvents(mixedMouseAndKey)
+        expect(output.length).toBe(2)
+        expect(output[0].input).toBe('1')
+        expect(output[0].eventType).toBe('click')
+        expect(output[0].clientInputDate).toBe('2018-02-26T13:53:19.711Z')
+        expect(output[1].input).toBe('5')
+        expect(output[1].eventType).toBe('keydown')
+        expect(output[1].clientInputDate).toBe('2018-02-26T13:53:23.404Z')
+      })
+
+      it('handles mixed touch and mouse input', () => {
+        const output = service.cleanUpInputEvents(mixedTouchAndMouse)
+        expect(output.length).toBe(2)
+        expect(output[0].input).toBe('8')
+        expect(output[0].eventType).toBe('click')
+        expect(output[0].clientInputDate).toBe('2018-03-07T10:52:41.981Z')
+        expect(output[1].input).toBe('9')
+        expect(output[1].eventType).toBe('touch')
+        expect(output[1].clientInputDate).toBe('2018-03-07T10:52:45.981Z')
+      })
+
+      it('handles mixed touch and mouse and key input', () => {
+        const output = service.cleanUpInputEvents(mixedTriple)
+        expect(output.length).toBe(4)
+        expect(output[0].input).toBe('5')
+        expect(output[0].eventType).toBe('keydown')
+        expect(output[0].clientInputDate).toBe('2018-03-07T10:52:40.981Z')
+        expect(output[1].input).toBe('8')
+        expect(output[1].eventType).toBe('click')
+        expect(output[1].clientInputDate).toBe('2018-03-07T10:52:41.981Z')
+        expect(output[2].input).toBe('9')
+        expect(output[2].eventType).toBe('touch')
+        expect(output[2].clientInputDate).toBe('2018-03-07T10:52:45.981Z')
+        expect(output[3].input).toBe('5')
+        expect(output[3].eventType).toBe('keydown')
+        expect(output[3].clientInputDate).toBe('2018-03-07T10:52:47.951Z')
+      })
+    })
+  })
+
   describe('#getUserInput', () => {
     beforeEach(() => {
       spyOn(winston, 'info')
@@ -81,7 +574,7 @@ describe('psychometrician-util.service', () => {
       expect(t).toBe('t[1], t[0]')
     })
 
-    it('returns shows "U" for any unknown event types', () => {
+    it('unknown event types get discarded', () => {
       const input = [
         {
           eventType: 'FuturisticEvent',
@@ -89,7 +582,7 @@ describe('psychometrician-util.service', () => {
         }
       ]
       const t = service.getUserInput(input)
-      expect(t).toBe('u[Y]')
+      expect(t).toBe('')
     })
   })
 
@@ -107,7 +600,7 @@ describe('psychometrician-util.service', () => {
 
     it('returns the timestamp as a string from the last input', () => {
       const res = service.getLastAnswerInputTime(touchInput)
-      expect(res).toBe('2017-10-09T09:50:07.708Z')
+      expect(res).toBe('2017-10-09T09:50:07.099Z')
     })
 
     it('it ignores the last input if the last input is the user pressing enter on the virtual keypad', () => {
@@ -117,8 +610,45 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getLastAnswerInputTime(mouseInput)
-      expect(res).toBe('2017-10-13T09:06:55.663Z')
+      const res = service.getLastAnswerInputTime(input)
+      expect(res).toBe('2017-10-13T09:06:55.234Z')
+    })
+
+    it('handles inputs such as all enter key presses', () => {
+      const allEnterKeys = [
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.565Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.566Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.567Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        }
+      ]
+      const res = service.getLastAnswerInputTime(allEnterKeys)
+      expect(res).toBe('') // enter key does not count
     })
   })
 
@@ -139,9 +669,46 @@ describe('psychometrician-util.service', () => {
       expect(res).toBe('2017-10-17T18:20:44.447Z')
     })
 
-    it('returns "error" if the log is unparseable', () => {
-      const res = service.getFirstInputTime([{foo: 1, bar: 2, baz: 3}])
-      expect(res).toBe('error')
+    it('returns the timestamp from the first mouse input', () => {
+      const res = service.getFirstInputTime(mouseInput)
+      expect(res).toBe('2017-10-13T09:06:53.692Z')
+    })
+
+    it('handles inputs such as all enter key presses', () => {
+      const allEnterKeys = [
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.565Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.566Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.567Z',
+          question: 16
+        },
+        {
+          input: 'enter',
+          eventType: 'click',
+          clientInputDate: '2018-02-28T11:44:08.564Z',
+          question: 16
+        }
+      ]
+      const res = service.getFirstInputTime(allEnterKeys)
+      expect(res).toBe('') // enter key does not count
     })
   })
 
@@ -200,6 +767,23 @@ describe('psychometrician-util.service', () => {
       const res = service.getTimeoutFlag(input)
       expect(res).toBe(0)
     })
+
+    it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry, but with trailing input', () => {
+      const input = [...touchInput]
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'eventType': 'click',
+        'input': 'Enter'
+      })
+      input.push({
+        'clientInputDate': '2017-10-17T18:20:45.001Z',
+        'eventType': 'touchstart',
+        'input': ''
+      })
+      const res = service.getTimeoutFlag(input)
+      expect(res).toBe(0)
+    })
+
   })
 
   describe('#getTimeoutWithNoResponseFlag', () => {
@@ -342,10 +926,17 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getInputMethod', () => {
-    const mouseInput = [{eventType: 'mousedown'}]
+    const mouseInput = [{eventType: 'mousedown'}, {eventType: 'click'}]
     const keyInput = [{eventType: 'keydown'}]
     const touchInput = [{eventType: 'touchstart'}, {eventType: 'click'}]
-    const mixedInput = [{eventType: 'keydown'}, {eventType: 'mousedown'}, {eventType: 'touch'}]
+    const mixedInput = [
+      {eventType: 'keydown'},
+      {eventType: 'mousedown'},
+      {eventType: 'click'},
+      {eventType: 'touchstart'},
+      {eventType: 'click'}
+    ]
+
     it('returns "t" for touch input', () => {
       const inputMethod = service.getInputMethod(touchInput)
       expect(inputMethod).toBe('t')
