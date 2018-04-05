@@ -154,26 +154,25 @@ const checkWindowService = {
       throw new Error('Check window id not provided')
     }
     const checkWindow = await checkWindowDataService.sqlFindOneById(id)
-    const currentDate = moment().format('YYYY-MM-D')
     const adminStartDate = moment(checkWindow.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
     const checkStartDate = moment(checkWindow.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
 
     return {
       checkWindowId: id,
       checkWindowName: checkWindow.name,
-      adminStartDay: moment(checkWindow.adminStartDate).format('D'),
-      adminStartMonth: moment(checkWindow.adminStartDate).format('MM'),
-      adminStartYear: moment(checkWindow.adminStartDate).format('YYYY'),
-      checkStartDay: moment(checkWindow.checkStartDate).format('D'),
-      checkStartMonth: moment(checkWindow.checkStartDate).format('MM'),
-      checkStartYear: moment(checkWindow.checkStartDate).format('YYYY'),
-      checkEndDay: moment(checkWindow.checkEndDate).format('D'),
-      checkEndMonth: moment(checkWindow.checkEndDate).format('MM'),
-      checkEndYear: moment(checkWindow.checkEndDate).format('YYYY'),
+      adminStartDay: checkWindow.adminStartDate.format('D'),
+      adminStartMonth: checkWindow.adminStartDate.format('MM'),
+      adminStartYear: checkWindow.adminStartDate.format('YYYY'),
+      checkStartDay: checkWindow.checkStartDate.format('D'),
+      checkStartMonth: checkWindow.checkStartDate.format('MM'),
+      checkStartYear: checkWindow.checkStartDate.format('YYYY'),
+      checkEndDay: checkWindow.checkEndDate.format('D'),
+      checkEndMonth: checkWindow.checkEndDate.format('MM'),
+      checkEndYear: checkWindow.checkEndDate.format('YYYY'),
       existingAdminStartDate: adminStartDate,
       existingCheckStartDate: checkStartDate,
-      adminIsDisabled: moment(currentDate).isAfter(adminStartDate),
-      checkStartIsDisabled: moment(currentDate).isAfter(checkStartDate)
+      adminIsDisabled: moment().isAfter(adminStartDate),
+      checkStartIsDisabled: moment().isAfter(checkStartDate)
     }
   }
 }
