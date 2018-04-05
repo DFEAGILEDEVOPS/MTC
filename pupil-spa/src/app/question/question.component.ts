@@ -53,7 +53,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {TouchEvent} event
    */
   @HostListener('document:touchstart', [ '$event' ])
-  handleTouchEvent(event: TouchEvent) {
+  handleTouchEvent(event) {
     this.registerInputService.addEntry(event);
   }
 
