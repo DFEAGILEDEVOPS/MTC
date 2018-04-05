@@ -37,7 +37,7 @@
                        id="checkWindowName"
                        name="checkWindowName"
                        type="text"
-                       value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
+                       value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
                        aria-required="true"
                        aria-label="Check window name.">
             </div>
@@ -71,7 +71,7 @@
                                id="adminStartDay"
                                name="adminStartDay"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartDay %>"
+                               value="<%= checkWindowData.adminStartDay %>"
                                aria-required="true"
                                aria-label="Administration start day."
                                <% if (adminIsDisabled) { %>
@@ -84,7 +84,7 @@
                                id="adminStartMonth"
                                name="adminStartMonth"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartMonth %>"
+                               value="<%= checkWindowData.adminStartMonth %>"
                                aria-required="true"
                                aria-label="Administration start month."
                                <% if (adminIsDisabled) { %>
@@ -97,7 +97,7 @@
                                id="adminStartYear"
                                name="adminStartYear"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.adminStartYear %>"
+                               value="<%= checkWindowData.adminStartYear %>"
                                aria-required="true"
                                aria-label="Administration start year."
                                <% if (adminIsDisabled) { %>
@@ -139,7 +139,7 @@
                                id="checkStartDay"
                                name="checkStartDay"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartDay %>"
+                               value="<%= checkWindowData.checkStartDay %>"
                                aria-required="true"
                                aria-label="Check start day."
                                <% if (checkStartIsDisabled) { %>
@@ -152,7 +152,7 @@
                                id="checkStartMonth"
                                name="checkStartMonth"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartMonth %>"
+                               value="<%= checkWindowData.checkStartMonth %>"
                                aria-required="true"
                                aria-label="Check start month."
                                <% if (checkStartIsDisabled) { %>
@@ -165,7 +165,7 @@
                                id="checkStartYear"
                                name="checkStartYear"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkStartYear %>"
+                               value="<%= checkWindowData.checkStartYear %>"
                                aria-required="true"
                                aria-label="Check start year."
                                <% if (checkStartIsDisabled) { %>
@@ -205,7 +205,7 @@
                                id="checkEndDay"
                                name="checkEndDay"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndDay %>"
+                               value="<%= checkWindowData.checkEndDay %>"
                                aria-required="true"
                                aria-label="Check end day.">
                     </div>
@@ -215,7 +215,7 @@
                                id="checkEndMonth"
                                name="checkEndMonth"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndMonth %>"
+                               value="<%= checkWindowData.checkEndMonth %>"
                                aria-required="true"
                                aria-label="Check end month.">
                     </div>
@@ -225,16 +225,16 @@
                                id="checkEndYear"
                                name="checkEndYear"
                                type="number"
-                               value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkEndYear %>"
+                               value="<%= checkWindowData.checkEndYear %>"
                                aria-required="true"
                                aria-label="Check end day.">
                     </div>
                 </div>
                 <input type="hidden" name="adminIsDisabled" value="<%= adminIsDisabled %>">
                 <input type="hidden" name="checkStartIsDisabled" value="<%= checkStartIsDisabled %>">
-                <input type="hidden" name="checkWindowId" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.checkWindowId ? checkWindowData.checkWindowId : '' %>">
-                <input type="hidden" name="existingAdminStartDate" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.existingAdminStartDate %>">
-                <input type="hidden" name="existingCheckStartDate" value="<%= typeof checkWindowData !== 'undefined' && checkWindowData.existingCheckStartDate %>">
+                <input type="hidden" name="checkWindowId" value="<%= checkWindowData.checkWindowId ? checkWindowData.checkWindowId : '' %>">
+                <input type="hidden" name="existingAdminStartDate" value="<%= checkWindowData.existingAdminStartDate %>">
+                <input type="hidden" name="existingCheckStartDate" value="<%= checkWindowData.existingCheckStartDate %>">
             </div>
 
             <div class="form-buttons">

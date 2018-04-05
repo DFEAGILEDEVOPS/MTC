@@ -161,11 +161,12 @@ const controller = {
     req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
     res.locals.pageTitle = 'Create check window'
     res.render('service-manager/check-windows-form', {
+      checkWindowData: {},
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
       actionName: 'Create',
       urlActionName: 'add',
-      currentYear: moment(Date.now()).format('YYYY'),
+      currentYear: moment().format('YYYY'),
       adminIsDisabled: false,
       checkStartIsDisabled: false
     })
