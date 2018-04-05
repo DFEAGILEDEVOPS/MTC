@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -60,6 +61,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   public isWarmUpQuestion: boolean;
 
+  /**
+   * Bool to determine if sounds should be played
+   */
+  public isSoundRequired: boolean;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -84,6 +90,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
     this.isWarmUpQuestion = true;
+    this.isSoundRequired = false;
   }
 
   /**

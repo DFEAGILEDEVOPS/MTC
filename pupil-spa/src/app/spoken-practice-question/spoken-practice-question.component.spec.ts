@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question.component';
 import { SpeechService } from '../services/speech/speech.service';
@@ -19,7 +20,8 @@ describe('SpokenPracticeQuestionComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         WindowRefService,
-      ]
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
     })
     .compileComponents();
   }));

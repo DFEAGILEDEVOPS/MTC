@@ -22,6 +22,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected zone: NgZone,
               protected speechService: SpeechService) {
     super(auditService, windowRefService, registerInputService);
+    this.isSoundRequired = true;
   }
 
   ngOnInit() {

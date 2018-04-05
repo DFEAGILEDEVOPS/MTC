@@ -20,6 +20,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected speechService: SpeechService,
               protected zone: NgZone) {
     super(auditService, windowRefService);
+    this.isSoundRequired = true;
   }
 
   ngOnInit() {

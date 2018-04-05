@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
 import { QuestionComponent } from './question.component';
@@ -7,14 +8,6 @@ import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
-import { QuestionService } from '../services/question/question.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { StorageService } from '../services/storage/storage.service';
-import { StorageServiceMock } from '../services/storage/storage.service.mock';
-import { SubmissionService } from '../services/submission/submission.service';
-import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
-import { SpeechService } from '../services/speech/speech.service';
-import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 
@@ -32,7 +25,8 @@ describe('QuestionComponent', () => {
         { provide: AuditService, useValue: auditServiceMock },
         WindowRefService,
         { provide: RegisterInputService, useClass: RegisterInputServiceMock }
-      ]
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
     }).compileComponents().catch(error => { console.error(error); });
   }));
 

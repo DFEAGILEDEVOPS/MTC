@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { PracticeQuestionComponent } from './practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
@@ -15,7 +16,8 @@ describe('PractiseQuestionComponent', () => {
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
         WindowRefService
-      ]
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
     })
     .compileComponents();
   }));
