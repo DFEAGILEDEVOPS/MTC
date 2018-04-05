@@ -240,7 +240,7 @@ describe('psychometrician-util.service', () => {
           input: 'left click',
           eventType: 'mousedown',
           clientInputDate: '2018-03-05T14:05:32.377Z',
-          question: 2,
+          question: 2
         },
         {
           input: 'enter',
@@ -783,7 +783,6 @@ describe('psychometrician-util.service', () => {
       const res = service.getTimeoutFlag(input)
       expect(res).toBe(0)
     })
-
   })
 
   describe('#getTimeoutWithNoResponseFlag', () => {
