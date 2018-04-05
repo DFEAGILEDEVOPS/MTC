@@ -25,8 +25,10 @@ checkCompleteService.completeCheck = async function (completedCheck) {
     await pupilDataService.sqlUpdate({ id: pupil.id, pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request
-  // TODO: This timestamp should be recorded in the application service tier instead
-  completedCheck.receivedByServerAt = moment.utc()
+  const receivedByServerAt = moment.utc()
+
+  // update receivedByServerAt request timestamp
+  await checkDataService.sqlUpdateCheckReceivedByServerAt(completedCheck.data.pupil.checkCode, receivedByServerAt)
 
   const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
   if (!existingCheck.startedAt) {

@@ -117,6 +117,23 @@ checkDataService.sqlUpdateCheckStartedAt = async (checkCode, startedAt) => {
   return sqlService.modify(sql, params)
 }
 
+checkDataService.sqlUpdateCheckReceivedByServerAt = async (checkCode, receivedByServerAt) => {
+  const sql = `UPDATE ${sqlService.adminSchema}.[check] SET receivedByServerAt=@receivedByServerAt WHERE checkCode=@checkCode`
+  const params = [
+    {
+      name: 'receivedByServerAt',
+      value: receivedByServerAt,
+      type: TYPES.DateTimeOffset
+    },
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+  return sqlService.modify(sql, params)
+}
+
 checkDataService.sqlUpdateCheckWithResults = async (checkCode, mark, maxMark, markedAt) => {
   const sql = `UPDATE ${sqlService.adminSchema}.[check] 
   SET mark=@mark, 
