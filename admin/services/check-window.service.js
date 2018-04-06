@@ -111,7 +111,7 @@ const checkWindowService = {
       const checkStartDate = moment(cw.checkStartDate)
       const checkEndDate = moment(cw.checkEndDate)
 
-      if (moment(checkStartDate).isAfter(moment(checkEndDate))) {
+      if (checkStartDate.isAfter(checkEndDate)) {
         throw new Error('Check start date is after check end date')
       }
 
@@ -142,6 +142,84 @@ const checkWindowService = {
     })
 
     return R.concat(newCheckWindows, pastCheckWindows)
+  },
+
+  /**
+   * Format unsaved data
+   * @param {Object} requestData
+   * @returns {Object}
+   */
+  formatUnsavedData: (requestData) => {
+    if (!requestData['adminStartDay'] && !requestData['adminStartMonth'] && !requestData['adminStartYear'] && requestData['existingAdminStartDate'] && requestData['adminIsDisabled']) {
+      requestData.adminStartDay = requestData['existingAdminStartDate'].format('D')
+      requestData.adminStartMonth = requestData['existingAdminStartDate'].format('MM')
+      requestData.adminStartYear = requestData['existingAdminStartDate'].format('YYYY')
+    }
+
+    if (!requestData['checkStartDay'] && !requestData['checkStartMonth'] && !requestData['checkStartYear'] && requestData['existingCheckStartDate'] && requestData['checkStartIsDisabled']) {
+      requestData.checkStartDay = requestData['existingCheckStartDate'].format('D')
+      requestData.checkStartMonth = requestData['existingCheckStartDate'].format('MM')
+      requestData.checkStartYear = requestData['existingCheckStartDate'].format('YYYY')
+    }
+    return requestData
+  },
+
+  /**
+   * Save check window
+   * @param {Object} requestData
+   */
+  save: async(requestData) => {
+    let checkWindow
+    if (requestData.checkWindowId) {
+      checkWindow = await checkWindowDataService.sqlFindOneById(requestData.checkWindowId)
+    }
+
+    if (!checkWindow) {
+      checkWindow = {}
+    }
+
+    checkWindow.name = requestData['checkWindowName']
+    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
+      checkWindow.adminStartDate =
+        dateService.createLocalTimeFromDayMonthYear(requestData['adminStartDay'], requestData['adminStartMonth'], requestData['adminStartYear'])
+    }
+    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
+      checkWindow.checkStartDate =
+        dateService.createLocalTimeFromDayMonthYear(requestData['checkStartDay'], requestData['checkStartMonth'], requestData['checkStartYear'])
+    }
+    checkWindow.checkEndDate =
+      dateService.createLocalTimeFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
+    // Ensure check end date time is set to the last minute of the particular day
+    checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
+    if (!checkWindow.id) {
+      await checkWindowDataService.sqlCreate(checkWindow)
+    } else {
+      await checkWindowDataService.sqlUpdate(checkWindow)
+    }
+  },
+
+  /**
+   * Mark check window as deleted
+   * @param {Object} id
+   * @returns {Object}
+   */
+  markDeleted: async(id) => {
+    const checkWindow = await checkWindowDataService.sqlFindOneById(id)
+    if (!checkWindow) {
+      throw new Error('Checkwindow for deletion not found')
+    }
+    if (moment(checkWindow.checkStartDate).isBefore(moment.now())) {
+      return {
+        type: 'error',
+        message: 'Deleting an active check window is not allowed.'
+      }
+    } else {
+      await checkWindowDataService.sqlDeleteCheckWindow(id)
+      return {
+        type: 'info',
+        message: 'Check window deleted.'
+      }
+    }
   }
 }
 
