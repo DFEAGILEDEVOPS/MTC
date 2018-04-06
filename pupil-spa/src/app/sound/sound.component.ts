@@ -16,7 +16,6 @@ export class SoundComponent implements OnInit {
   }
 
   playEndOfQuestionSound() {
-    console.log('Playing end of question sounds');
     this.endOfQuestionSound.nativeElement.play();
   }
 
