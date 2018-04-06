@@ -100,6 +100,19 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
+   */
+  preSendTimeoutEvent() {
+  }
+
+  /**
+   * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
+   * @param remainingTime
+   */
+  countdownIntervalHook(remainingTime) {
+  }
+
+  /**
    * Start the countdown timer on the page and set the time-out counter
    */
   startTimer() {
@@ -107,6 +120,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     // Set the amount of time the user can have on the question
     this.timeout = this.window.setTimeout(() => {
+      this.preSendTimeoutEvent();
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
 
@@ -118,6 +132,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
         timeLeft = 0;
       }
       this.remainingTime = Math.ceil(timeLeft);
+      this.countdownIntervalHook(this.remainingTime);
     }, 100);
   }
 

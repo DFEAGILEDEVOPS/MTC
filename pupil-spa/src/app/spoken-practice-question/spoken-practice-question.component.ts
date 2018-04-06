@@ -16,6 +16,12 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
   private subscription: Subscription;
 
   /**
+   * Set to true after the audible alert has played to indicate the end of the question time is near.
+   * @type {boolean}
+   */
+  private hasAudibleAlertPlayed = false;
+
+  /**
    * Reference to the Sound component
    */
   @Input() public soundComponent;
@@ -54,30 +60,20 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
   }
 
   /**
-   * Start the countdown timer on the page and set the time-out counter
+   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
-  startTimer() {
-    let alertPlayed = false;
-    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+  preSendTimeoutEvent() {
+    this.soundComponent.playEndOfQuestionSound();
+  }
 
-    // Set the amount of time the user can have on the question
-    this.timeout = this.window.setTimeout(() => {
-      this.soundComponent.playEndOfQuestionSound();
-      this.sendTimeoutEvent();
-    }, this.questionTimeoutSecs * 1000);
-
-    // Set the countdown timer on the page
-    this.countdownInterval = this.window.setInterval(() => {
-      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
-      if (timeLeft < 0) {
-        clearInterval(this.countdownInterval);
-        timeLeft = 0;
-      }
-      this.remainingTime = Math.ceil(timeLeft);
-      if (this.remainingTime === 2 && !alertPlayed) {
-        this.soundComponent.playTimeRunningOutAlertSound();
-        alertPlayed = true;
-      }
-    }, 100);
+  /**
+   * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
+   * @param remainingTime
+   */
+  countdownIntervalHook(remainingTime) {
+    if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
+      this.soundComponent.playTimeRunningOutAlertSound();
+      this.hasAudibleAlertPlayed = true;
+    }
   }
 }
