@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
 import { QuestionRendered } from '../services/audit/auditEntry';
@@ -15,6 +15,11 @@ import { Subscription } from 'rxjs/Subscription';
 export class SpokenQuestionComponent extends QuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscription: Subscription;
+
+  /**
+   * Reference to the Sound component
+   */
+  @Input() public soundComponent;
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -49,5 +54,33 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  /**
+   * Start the countdown timer on the page and set the time-out counter
+   */
+  startTimer() {
+    let alertPlayed = false;
+    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+
+    // Set the amount of time the user can have on the question
+    this.timeout = this.window.setTimeout(() => {
+      this.soundComponent.playEndOfQuestionSound();
+      this.sendTimeoutEvent();
+    }, this.questionTimeoutSecs * 1000);
+
+    // Set the countdown timer on the page
+    this.countdownInterval = this.window.setInterval(() => {
+      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
+      if (timeLeft < 0) {
+        clearInterval(this.countdownInterval);
+        timeLeft = 0;
+      }
+      this.remainingTime = Math.ceil(timeLeft);
+      if (this.remainingTime === 2 && !alertPlayed) {
+        this.soundComponent.playTimeRunningOutAlertSound();
+        alertPlayed = true;
+      }
+    }, 100);
   }
 }
