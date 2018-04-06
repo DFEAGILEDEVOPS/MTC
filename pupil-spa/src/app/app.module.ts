@@ -10,7 +10,6 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { GlobalErrorHandler } from './error-handler';
 
-import { SoundComponent } from './sound/sound.component';
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
@@ -31,22 +30,23 @@ import { LogoutComponent } from './logout/logout.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { RegisterInputService} from './services/register-input/registerInput.service';
+import { SoundComponent } from './sound/sound.component';
 import { SpeechService } from './services/speech/speech.service';
 import { StorageService } from './services/storage/storage.service';
 import { SubmissionService} from './services/submission/submission.service';
 import { UserService } from './services/user/user.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
 import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
-import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
+import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 
-import { PracticeQuestionComponent } from './practice-question/practice-question.component';
-import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
-import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
-import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
-import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { CheckStatusService } from './services/check-status/check-status.service';
+import { PracticeQuestionComponent } from './practice-question/practice-question.component';
+import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
+import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
+import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
+import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 
 
 const appRoutes: Routes = [
@@ -80,14 +80,14 @@ const appRoutes: Routes = [
     LogoutComponent,
     PracticeQuestionComponent,
     QuestionComponent,
+    SoundComponent,
+    SpokenPracticeQuestionComponent,
+    SpokenQuestionComponent,
+    SubmissionFailedComponent,
+    SubmissionPendingComponent,
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
-    SpokenQuestionComponent,
-    SpokenPracticeQuestionComponent,
-    SubmissionPendingComponent,
-    SubmissionFailedComponent,
-    SoundComponent
   ],
   imports: [
     RouterModule.forRoot(
