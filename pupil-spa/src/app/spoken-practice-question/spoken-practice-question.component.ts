@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
@@ -15,12 +15,16 @@ import { QuestionRendered } from '../services/audit/auditEntry';
 export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;
 
+  /**
+   * Reference to the Sound component
+   */
+  @Input() public soundComponent;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
               protected zone: NgZone) {
     super(auditService, windowRefService);
-    this.isSoundRequired = true;
   }
 
   ngOnInit() {
@@ -47,5 +51,33 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  /**
+   * Start the countdown timer on the page and set the time-out counter
+   */
+  startTimer() {
+    let alertPlayed = false;
+    this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
+
+    // Set the amount of time the user can have on the question
+    this.timeout = this.window.setTimeout(() => {
+      this.soundComponent.playEndOfQuestionSound();
+      this.sendTimeoutEvent();
+    }, this.questionTimeoutSecs * 1000);
+
+    // Set the countdown timer on the page
+    this.countdownInterval = this.window.setInterval(() => {
+      let timeLeft = (this.stopTime - (new Date().getTime())) / 1000;
+      if (timeLeft < 0) {
+        clearInterval(this.countdownInterval);
+        timeLeft = 0;
+      }
+      this.remainingTime = Math.ceil(timeLeft);
+      if (this.remainingTime === 2 && !alertPlayed) {
+        this.soundComponent.playTimeRunningOutAlertSound();
+        alertPlayed = true;
+      }
+    }, 100);
   }
 }
