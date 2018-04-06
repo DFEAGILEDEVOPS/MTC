@@ -10,6 +10,7 @@ import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { GlobalErrorHandler } from './error-handler';
 
+import { SoundComponent } from './sound/sound.component';
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
@@ -39,12 +40,14 @@ import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 import { WindowRefService } from './services/window-ref/window-ref.service';
+
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { CheckStatusService } from './services/check-status/check-status.service';
+
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -83,7 +86,8 @@ const appRoutes: Routes = [
     SpokenQuestionComponent,
     SpokenPracticeQuestionComponent,
     SubmissionPendingComponent,
-    SubmissionFailedComponent
+    SubmissionFailedComponent,
+    SoundComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -100,7 +104,7 @@ const appRoutes: Routes = [
           'check',
         ]
       }
-    }),
+    })
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
