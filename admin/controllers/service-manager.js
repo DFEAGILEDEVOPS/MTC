@@ -208,7 +208,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
   saveCheckWindow: async (req, res, next) => {
-    let requestData = req.body
+    const requestData = req.body
     const getValidationResult = req.getValidationResult
     const checkBody = req.checkBody
     const validationError = await checkWindowValidator.validate(requestData, checkBody, getValidationResult)
@@ -221,9 +221,9 @@ const controller = {
     if (validationError.hasError()) {
       res.locals.pageTitle = actionName + ' check window'
       req.breadcrumbs(res.locals.pageTitle)
-      requestData = checkWindowService.formatUnsavedData(requestData)
+      const checkWindowData = checkWindowService.formatUnsavedData(requestData)
       return res.render('service-manager/check-windows-form', {
-        checkWindowData: requestData,
+        checkWindowData: checkWindowData,
         error: validationError,
         errorMessage: checkWindowErrorMessages,
         currentYear: moment().format('YYYY'),
