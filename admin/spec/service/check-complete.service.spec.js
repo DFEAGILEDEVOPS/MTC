@@ -58,7 +58,6 @@ describe('check-complete.service', () => {
 
     it('passes a moment to receivedByServerAt', async (done) => {
       // override initial spyOn to callFake for parameter checking
-      completedCheckDataServiceSpy.and.callThrough()
       completedCheckDataServiceSpy.and.callFake((checkCode, completedCheck, receivedByServerAt) => {
         expect(moment.isMoment(receivedByServerAt)).toBe(true)
         return Promise.resolve()
