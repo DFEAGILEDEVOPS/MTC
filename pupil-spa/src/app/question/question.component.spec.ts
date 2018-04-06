@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpModule } from '@angular/http';
 
 import { QuestionComponent } from './question.component';
@@ -25,8 +24,7 @@ describe('QuestionComponent', () => {
         { provide: AuditService, useValue: auditServiceMock },
         WindowRefService,
         { provide: RegisterInputService, useClass: RegisterInputServiceMock }
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
+      ]
     }).compileComponents().catch(error => { console.error(error); });
   }));
 
