@@ -211,29 +211,29 @@ const controller = {
     const requestData = req.body
     const getValidationResult = req.getValidationResult
     const checkBody = req.checkBody
-    const validationError = await checkWindowValidator.validate(requestData, checkBody, getValidationResult)
-    const actionName = requestData.checkWindowId ? 'Edit' : 'Add'
-    const flashMessage = requestData.checkWindowId !== ''
-      ? 'Changes have been saved' : requestData['checkWindowName'] + ' has been created'
-    let adminIsDisabled = toBool(requestData.adminIsDisabled)
-    let checkStartIsDisabled = toBool(requestData.checkStartIsDisabled)
-
-    if (validationError.hasError()) {
-      res.locals.pageTitle = actionName + ' check window'
-      req.breadcrumbs(res.locals.pageTitle)
-      const checkWindowData = checkWindowService.formatUnsavedData(requestData)
-      return res.render('service-manager/check-windows-form', {
-        checkWindowData: checkWindowData,
-        error: validationError,
-        errorMessage: checkWindowErrorMessages,
-        currentYear: moment().format('YYYY'),
-        actionName,
-        breadcrumbs: req.breadcrumbs(),
-        adminIsDisabled,
-        checkStartIsDisabled
-      })
-    }
     try {
+      const validationError = await checkWindowValidator.validate(requestData, checkBody, getValidationResult)
+      const actionName = requestData.checkWindowId ? 'Edit' : 'Add'
+      const flashMessage = requestData.checkWindowId !== ''
+        ? 'Changes have been saved' : requestData[ 'checkWindowName' ] + ' has been created'
+      let adminIsDisabled = toBool(requestData.adminIsDisabled)
+      let checkStartIsDisabled = toBool(requestData.checkStartIsDisabled)
+
+      if (validationError.hasError()) {
+        res.locals.pageTitle = actionName + ' check window'
+        req.breadcrumbs(res.locals.pageTitle)
+        const checkWindowData = checkWindowService.formatUnsavedData(requestData)
+        return res.render('service-manager/check-windows-form', {
+          checkWindowData: checkWindowData,
+          error: validationError,
+          errorMessage: checkWindowErrorMessages,
+          currentYear: moment().format('YYYY'),
+          actionName,
+          breadcrumbs: req.breadcrumbs(),
+          adminIsDisabled,
+          checkStartIsDisabled
+        })
+      }
       await checkWindowService.save(requestData)
       req.flash('info', flashMessage)
     } catch (error) {
