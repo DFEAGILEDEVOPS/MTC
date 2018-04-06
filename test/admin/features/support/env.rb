@@ -88,4 +88,6 @@ SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
 
+
+sleep 10
 Capybara.visit Capybara.app_host

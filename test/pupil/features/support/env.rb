@@ -44,21 +44,29 @@ Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 Mongo::Logger.logger.level = ::Logger::FATAL
-ShowMeTheCookies.register_adapter(ENV['DRIVER'].to_sym, ShowMeTheCookies::Selenium) unless ENV['DRIVER'] == 'poltergeist'
-ShowMeTheCookies.register_adapter('poltergeist', ShowMeTheCookies::Selenium) if ENV['DRIVER'] == 'poltergeist'
 
+if ENV['MONGO_CONNECTION_STRING']
+  CLIENT = Mongo::Client.new(ENV['MONGO_CONNECTION_STRING'])
+else
+  CLIENT = Mongo::Client.new('mongodb://mongo/mtc')
+end
+sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
-server = ENV['SQL_SERVER'] || 'localhost'
+server = ENV['SQL_SERVER'] || 'sqldb'
 port =  ENV['SQL_PORT'] || 1433
 admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'
 
+begin
+  SQL_CLIENT = TinyTds::Client.new(username: admin_user,
+                                   password: admin_password,
+                                   host: server,
+                                   port: port,
+                                   database: database)
+rescue TinyTds::Error => e
+  abort 'Test run failed due to - ' + e.to_s
+end
 
-SQL_CLIENT = TinyTds::Client.new(username: admin_user,
-                                 password: admin_password,
-                                 host: server,
-                                 port: port,
-                                 database: database)
 SQL_CLIENT.execute('SET ANSI_NULLS ON').do
 SQL_CLIENT.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
 SQL_CLIENT.execute('SET ANSI_NULL_DFLT_ON ON').do
@@ -69,6 +77,3 @@ SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
 Capybara.visit Capybara.app_host
-AUTH='5'
-
-World(ShowMeTheCookies)
