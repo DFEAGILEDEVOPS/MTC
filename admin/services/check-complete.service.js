@@ -27,9 +27,6 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   // Timestamp the request
   const receivedByServerAt = moment.utc()
 
-  // update receivedByServerAt request timestamp
-  await checkDataService.sqlUpdateCheckReceivedByServerAt(completedCheck.data.pupil.checkCode, receivedByServerAt)
-
   const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
   if (!existingCheck.startedAt) {
     winston.debug('Check submission for a check that does not have a startedAt date')
@@ -43,7 +40,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   }
 
   // store to data store
-  await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck)
+  await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck, receivedByServerAt)
 
   if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process

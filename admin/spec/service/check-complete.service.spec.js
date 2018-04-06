@@ -36,7 +36,6 @@ describe('check-complete.service', () => {
       service = require('../../services/check-complete.service')
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
       spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(checkDataService, 'sqlUpdateCheckReceivedByServerAt').and.returnValue(Promise.resolve())
       spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
       spyOn(markingService, 'mark').and.returnValue(Promise.resolve())
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
