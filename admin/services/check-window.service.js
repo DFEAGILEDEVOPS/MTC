@@ -173,7 +173,6 @@ const checkWindowService = {
     if (requestData.checkWindowId) {
       checkWindow = await checkWindowDataService.sqlFindOneById(requestData.checkWindowId)
     }
-
     if (!checkWindow) {
       checkWindow = {}
     }
@@ -208,7 +207,7 @@ const checkWindowService = {
     if (!checkWindow) {
       throw new Error('Checkwindow for deletion not found')
     }
-    if (moment(checkWindow.checkStartDate).isBefore(moment.now())) {
+    if (checkWindow.checkStartDate.isBefore(moment.now()) && checkWindow.checkEndDate.isAfter(moment.now())) {
       return {
         type: 'error',
         message: 'Deleting an active check window is not allowed.'
