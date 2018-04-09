@@ -2,8 +2,8 @@ class PupilRegisterPage < SitePrism::Page
   set_url '/pupil-register/pupils-list/name/asc'
 
   element :heading, '.heading-xlarge', text: 'Pupil Register'
-  element :add_pupil, 'a[href="/school/pupil/add"]'
-  element :add_multiple_pupil, 'a[href="/school/pupil/add-batch-pupils"]'
+  element :add_pupil, 'a[href="/pupil-register/pupil/add"]'
+  element :add_multiple_pupil, 'a[href="/pupil-register/pupil/add-batch-pupils"]'
   element :info_message, '.info-message', text: 'Changes to pupil details have been saved'
   element :new_pupil_info_message, '.info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.info-message'
