@@ -3,12 +3,11 @@ let now = new Date();
 let currentYear = now.getFullYear();
 let createOrSave;
 if (formData.urlSlug) {
-    createOrSave = '/school/pupil/edit';
+    createOrSave = '/pupil-register/pupil/edit';
 } else {
-    createOrSave = '/school/pupil/add';
+    createOrSave = '/pupil-register/pupil/add';
 }
 %>
-
 
 <form action="<%= createOrSave %>" method="post" novalidate>
     <% if (formData.urlSlug) { %>
@@ -172,7 +171,7 @@ if (formData.urlSlug) {
 
     <div class="form-buttons">
         <input type="submit" class="button" value="<%= submitLabel %>"/>
-        <a href="/school/pupil-register/name/asc" class="button button-secondary">Cancel</a>
+        <a href="/pupil-register/pupils-list/name/asc" class="button button-secondary">Cancel</a>
     </div>
 </form>
 <div class="back-to-top-container">

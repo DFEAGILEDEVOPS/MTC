@@ -80,7 +80,7 @@ describe('pupil controller:', () => {
   })
 
   describe('#postAddPupil route', () => {
-    let sandbox, controller, nextSpy, pupilAddServiceSpy, schoolDataServiceSpy, req, res
+    let sandbox, controller, nextSpy, pupilAddServiceSpy, next, req, res
     let goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
@@ -100,7 +100,6 @@ describe('pupil controller:', () => {
 
     describe('the pupilData is saved', () => {
       beforeEach(() => {
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
         pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
         controller = proxyquire('../../controllers/pupil.js', {
           '../services/data-access/school.data.service': schoolDataService,
@@ -111,12 +110,6 @@ describe('pupil controller:', () => {
       it('calls pupilAddService to add a new pupil to the database', async (done) => {
         await controller(req, res, nextSpy)
         expect(pupilAddServiceSpy.callCount).toBe(1)
-        done()
-      })
-
-      it('calls schoolDataService to find the school', async (done) => {
-        await controller(req, res, nextSpy)
-        expect(schoolDataServiceSpy.callCount).toBe(1)
         done()
       })
 
@@ -131,10 +124,9 @@ describe('pupil controller:', () => {
       beforeEach(() => {
         const validationError = new ValidationError()
         validationError.addError('upn', 'Mock error')
+        next = jasmine.createSpy('next')
         pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').throws(validationError)
-        schoolDataServiceSpy = sandbox.stub(schoolDataService, 'sqlFindOneByDfeNumber').resolves(schoolMock)
         controller = proxyquire('../../controllers/pupil.js', {
-          '../services/data-access/school.data.service': schoolDataService,
           '../services/pupil-add-service': pupilAddService
         })
       })
@@ -145,7 +137,8 @@ describe('pupil controller:', () => {
           return Promise.resolve()
         })
         await controller.postAddPupil(req, res, nextSpy)
-        expect(controller.getAddPupil.called).toBeTruthy()
+        expect(pupilAddServiceSpy.callCount).toBe(1)
+        expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         done()
       })
@@ -309,40 +302,6 @@ describe('pupil controller:', () => {
         expect(res.statusCode).toBe(200)
         done()
       })
-    })
-  })
-
-  describe('getAddMultiplePupilsCSVTemplate route', () => {
-    let controller
-    let sandbox
-    let next
-    let goodReqParams = {
-      method: 'GET',
-      url: '/pupil/download-multiple-template',
-      session: {
-        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
-      }
-    }
-
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-      next = jasmine.createSpy('next')
-      controller = require('../../controllers/pupil.js').getAddMultiplePupilsCSVTemplate
-    })
-
-    afterEach(() => {
-      sandbox.restore()
-    })
-
-    it('calls express response download', async (done) => {
-      const res = getRes()
-      res.download = () => {}
-      spyOn(res, 'download').and.returnValue(null)
-      const req = getReq(goodReqParams)
-      await controller(req, res, next)
-      expect(res.statusCode).toBe(200)
-      expect(res.download).toHaveBeenCalledWith('public/csvs/mtc-pupil-details-template-sheet-1.csv')
-      done()
     })
   })
 
