@@ -9,7 +9,6 @@ const checkWindowValidator = require('../../lib/validator/check-window-validator
 const ValidationError = require('../../lib/validation-error')
 
 describe('service manager controller:', () => {
-  let sandbox
   let next
   function getRes () {
     const res = httpMocks.createResponse()
@@ -25,12 +24,7 @@ describe('service manager controller:', () => {
   }
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create()
     next = jasmine.createSpy('next')
-  })
-
-  afterEach(() => {
-    sandbox.restore()
   })
 
   describe('getServiceManagerHome', () => {
