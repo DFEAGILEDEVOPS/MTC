@@ -89,7 +89,7 @@ if (featureTogglesMerged) {
 const index = require('./routes/index')
 const testDeveloper = require('./routes/test-developer')
 const serviceManager = require('./routes/service-manager')
-const admin = require('./routes/admin')
+const school = require('./routes/school')
 const questions = require('./routes/questions')
 const pupilFeedback = require('./routes/pupil-feedback')
 const checkStarted = require('./routes/check-started')
@@ -98,6 +98,8 @@ const pupilPin = require('./routes/pupil-pin')
 const restart = require('./routes/restart')
 const pupilsNotTakingTheCheck = require('./routes/pupils-not-taking-the-check')
 const group = require('./routes/group')
+const pupilRegister = require('./routes/pupil-register')
+const attendance = require('./routes/attendance')
 
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
@@ -212,7 +214,7 @@ busboy.extend(app, {
   ]
 })
 
-const allowedPath = (url) => (/^\/school\/pupil\/add-batch-pupils$/).test(url) ||
+const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url)
 
 const sessionOptions = {
@@ -287,11 +289,13 @@ app.use(function (req, res, next) {
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
-app.use('/school', admin)
+app.use('/school', school)
 app.use('/pupil-pin', pupilPin)
 app.use('/pupils-not-taking-the-check', pupilsNotTakingTheCheck)
 app.use('/group', group)
 app.use('/restart', restart)
+app.use('/pupil-register', pupilRegister)
+app.use('/attendance', attendance)
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)
 app.use('/api/completed-check', completedCheck)
@@ -308,14 +312,14 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   let errorId = uuidV4()
   // set locals, only providing error in development
-  // TODO change this to a real logger with an error string that contains
+  // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
   winston.error('ERROR: ' + err.message + ' ID:' + errorId)
   winston.error(err.stack)
 
   // render the error page
-  // TODO provide an error code and phone number? for the user to call support
+  // @TODO: provide an error code and phone number? for the user to call support
   res.locals.message = 'An error occurred'
   res.locals.error = req.app.get('env') === 'development' ? err : {}
   res.locals.errorId = errorId
