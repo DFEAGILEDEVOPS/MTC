@@ -8,7 +8,6 @@ const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
-const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const settingService = require('../services/setting.service')
 const ValidationError = require('../lib/validation-error')
@@ -219,7 +218,6 @@ const controller = {
       await checkWindowService.save(requestData)
       req.flash('info', flashMessage)
     } catch (error) {
-      winston.error('Could not save check windows data.', error)
       return next(error)
     }
     return res.redirect('/service-manager/check-windows')
@@ -240,7 +238,7 @@ const controller = {
     try {
       result = await checkWindowService.markDeleted(req.params.checkWindowId)
     } catch (error) {
-      next(error)
+      return next(error)
     }
     const { type, message } = result
     req.flash(type, message)
