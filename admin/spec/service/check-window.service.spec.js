@@ -108,6 +108,27 @@ describe('check-window.service', () => {
     })
   })
 
+  describe('getEditableCheckWindow', () => {
+    it('should throw an error if id is not provided', async () => {
+      try {
+        await service.getEditableCheckWindow()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window id not provided')
+      }
+    })
+    it('should return check window data when id is provided', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(checkWindowMock)
+      let checkWindow
+      try {
+        checkWindow = await service.getEditableCheckWindow(1)
+      } catch (error) {
+        fail()
+      }
+      expect(checkWindow).toBeDefined()
+    })
+  })
+
   describe('markAsDeleted - happy path', () => {
     it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', async (done) => {
       spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])

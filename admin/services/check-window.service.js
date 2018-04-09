@@ -145,6 +145,38 @@ const checkWindowService = {
   },
 
   /**
+   * Get editable check window
+   * @param {Number} id
+   * @returns {Object}
+   */
+  getEditableCheckWindow: async(id) => {
+    if (!id) {
+      throw new Error('Check window id not provided')
+    }
+    const checkWindow = await checkWindowDataService.sqlFindOneById(id)
+    const adminStartDate = moment(checkWindow.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
+    const checkStartDate = moment(checkWindow.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
+
+    return {
+      checkWindowId: id,
+      checkWindowName: checkWindow.name,
+      adminStartDay: checkWindow.adminStartDate.format('D'),
+      adminStartMonth: checkWindow.adminStartDate.format('MM'),
+      adminStartYear: checkWindow.adminStartDate.format('YYYY'),
+      checkStartDay: checkWindow.checkStartDate.format('D'),
+      checkStartMonth: checkWindow.checkStartDate.format('MM'),
+      checkStartYear: checkWindow.checkStartDate.format('YYYY'),
+      checkEndDay: checkWindow.checkEndDate.format('D'),
+      checkEndMonth: checkWindow.checkEndDate.format('MM'),
+      checkEndYear: checkWindow.checkEndDate.format('YYYY'),
+      existingAdminStartDate: adminStartDate,
+      existingCheckStartDate: checkStartDate,
+      adminIsDisabled: moment().isAfter(adminStartDate),
+      checkStartIsDisabled: moment().isAfter(checkStartDate)
+    }
+  },
+
+  /**
    * Format unsaved data
    * @param {Object} requestData
    * @returns {Object}
