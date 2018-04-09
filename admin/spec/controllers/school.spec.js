@@ -42,13 +42,13 @@ describe('school controller:', () => {
 
     describe('#getSchoolLandingPage', () => {
       it('should display the \'school landing page\'', async (done) => {
-        spyOn(schoolService, 'findOneByDfeNumber').and.returnValue(schoolMock)
+        spyOn(schoolService, 'findSchoolByDfeNumber').and.returnValue(schoolMock)
         controller = require('../../controllers/school').getSchoolLandingPage
 
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(schoolService.findOneByDfeNumber).toHaveBeenCalled()
+        expect(schoolService.findSchoolByDfeNumber).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('School Homepage')
         expect(next).not.toHaveBeenCalled()

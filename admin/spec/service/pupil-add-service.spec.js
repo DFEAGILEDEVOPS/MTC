@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach afterEach expect it spyOn */
+/* global describe beforeEach afterEach expect it spyOn fail */
 
 const sinon = require('sinon')
 const proxyquire = require('proxyquire').noCallThru()
@@ -52,14 +52,10 @@ describe('pupil-add-service', () => {
     sandbox.restore()
   })
 
-  it('has a method to add a new pupil', () => {
-    service = require('../../services/pupil-add-service')
-    expect(typeof service.addPupil).toBe('function')
-  })
-
   it('validates the pupil data', async (done) => {
     service = getService(validationFunctionResolves)
-    await service.addPupil(pupilData)
+    const schoolId = 999001
+    await service.addPupil(pupilData, schoolId)
     expect(pupilValidatorSpy.called).toBeTruthy()
     done()
   })
@@ -70,7 +66,7 @@ describe('pupil-add-service', () => {
       await service.addPupil(pupilData)
       expect('this').toBe('thrown')
     } catch (error) {
-      expect(error.name).toBe('ValidationError')
+      expect(error.name).toBe('Error')
     }
     done()
   })
@@ -78,7 +74,26 @@ describe('pupil-add-service', () => {
   it('saves the pupil data', async (done) => {
     service = getService(validationFunctionResolves)
     try {
-      await service.addPupil(pupilData)
+      await service.addPupil(pupilData, 1234)
+      expect(saveSpy.calledOnce).toBeTruthy()
+      const saveArg = saveSpy.args[0][0]
+      // Check that the data of birth has been added
+      expect(saveArg.dateOfBirth).toBeDefined()
+      expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
+      // Check that the UI fields have been removed
+      expect(saveArg['dob-day']).toBeUndefined()
+      expect(saveArg['dob-month']).toBeUndefined()
+      expect(saveArg['dob-year']).toBeUndefined()
+    } catch (error) {
+      expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
+    }
+    done()
+  })
+
+  it('does not save the pupil data if arguments are missing', async (done) => {
+    service = getService(validationFunctionResolves)
+    try {
+      await service.addPupil(pupilData, 1234)
       expect(saveSpy.calledOnce).toBeTruthy()
       const saveArg = saveSpy.args[0][0]
       // Check that the data of birth has been added
@@ -89,7 +104,7 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
     } catch (error) {
-      expect('this not to be thrown').toBe(error)
+      fail('not expected to throw')
     }
     done()
   })

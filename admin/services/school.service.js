@@ -9,7 +9,7 @@ const schoolService = {
    * @param dfeNumber
    * @returns {Promise<void>}
    */
-  findOneByDfeNumber: async (dfeNumber) => {
+  findSchoolByDfeNumber: async (dfeNumber) => {
     const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
     if (!school) {
       throw new Error(`School [${dfeNumber}] not found`)
