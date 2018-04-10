@@ -183,15 +183,15 @@ const checkWindowService = {
    */
   formatUnsavedData: (requestData) => {
     if (!requestData['adminStartDay'] && !requestData['adminStartMonth'] && !requestData['adminStartYear'] && requestData['existingAdminStartDate'] && requestData['adminIsDisabled']) {
-      requestData.adminStartDay = requestData['existingAdminStartDate'].format('D')
-      requestData.adminStartMonth = requestData['existingAdminStartDate'].format('MM')
-      requestData.adminStartYear = requestData['existingAdminStartDate'].format('YYYY')
+      requestData.adminStartDay = moment(requestData['existingAdminStartDate']).format('D')
+      requestData.adminStartMonth = moment(requestData['existingAdminStartDate']).format('MM')
+      requestData.adminStartYear = moment(requestData['existingAdminStartDate']).format('YYYY')
     }
 
     if (!requestData['checkStartDay'] && !requestData['checkStartMonth'] && !requestData['checkStartYear'] && requestData['existingCheckStartDate'] && requestData['checkStartIsDisabled']) {
-      requestData.checkStartDay = requestData['existingCheckStartDate'].format('D')
-      requestData.checkStartMonth = requestData['existingCheckStartDate'].format('MM')
-      requestData.checkStartYear = requestData['existingCheckStartDate'].format('YYYY')
+      requestData.checkStartDay = moment(requestData['existingCheckStartDate']).format('D')
+      requestData.checkStartMonth = moment(requestData['existingCheckStartDate']).format('MM')
+      requestData.checkStartYear = moment(requestData['existingCheckStartDate']).format('YYYY')
     }
     return requestData
   },
