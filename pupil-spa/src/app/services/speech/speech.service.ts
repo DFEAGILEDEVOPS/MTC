@@ -66,6 +66,24 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
+   * Parse the source of a NativeElement and speak the text
+   * @param nativeElement
+   */
+  speakElement(nativeElement): void {
+    let speechText = '';
+
+    // get all elements containing text from the current component
+    let elements = nativeElement.querySelectorAll(
+      'h1, h2, h3, h4, h5, h6, p, button'
+    );
+
+    // add 'artificial' pauses to take visual newlines or spaces into account
+    elements.forEach((elem) => (speechText += elem.textContent + ' , '));
+
+    this.speak(speechText);
+  }
+
+  /**
    * Immediately stop speaking
    */
   cancel(): void {

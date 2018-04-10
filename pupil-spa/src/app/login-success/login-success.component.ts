@@ -41,21 +41,16 @@ export class LoginSuccessComponent implements OnInit {
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
-      let speechText = '';
-
-      // get all elements containing text from the current component
-      let elements = this.elRef.nativeElement.querySelectorAll(
-        'h1, h2, h3, h4, h5, h6, p, button'
-      );
-
-      // add 'artificial' pauses to take visual newlines or spaces into account
-      elements.forEach(elem => speechText += elem.textContent + ' , ');
-
-      this.speechService.speak(speechText);
+      this.speechService.speakElement(this.elRef.nativeElement);
     }
   }
 
   onClick() {
     this.router.navigate(['check-start']);
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
   }
 }
