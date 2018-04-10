@@ -70,15 +70,24 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   speakElement(nativeElement): void {
+    // clone the element in memory to make non-visible modifications
+    let clonedElement = nativeElement.cloneNode(true);
     let speechText = '';
 
     // get all elements containing text from the current component
-    let elements = nativeElement.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6, p, button'
+    let elements = clonedElement.querySelectorAll(
+      'h1, h2, h3, h4, h5, h6, p, li, button'
     );
 
     // add 'artificial' pauses to take visual newlines or spaces into account
-    elements.forEach((elem) => (speechText += elem.textContent + ' , '));
+    elements.forEach((elem) => {
+      elem.textContent += ' , ';
+
+      // fix for <buttons> inside <p> getting added twice
+      if (elem.tagName !== 'BUTTON' || (elem.parentNode !== null && elem.parentNode.tagName !== 'P')) {
+        speechText += elem.textContent;
+      }
+    });
 
     this.speak(speechText);
   }

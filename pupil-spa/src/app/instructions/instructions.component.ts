@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -23,7 +23,8 @@ export class InstructionsComponent implements OnInit {
     private questionService: QuestionService,
     private auditService: AuditService,
     private speechService: SpeechService,
-    protected windowRefService: WindowRefService) {
+    protected windowRefService: WindowRefService,
+    private elRef: ElementRef) {
     this.count = this.questionService.getNumberOfQuestions();
     const config = this.questionService.getConfig();
     this.loadingTime = config.loadingTime;
@@ -46,4 +47,15 @@ export class InstructionsComponent implements OnInit {
     this.router.navigate(['check']);
   }
 
+  // wait for the component to be rendered first, before parsing the text
+  ngAfterViewInit() {
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
+  }
 }

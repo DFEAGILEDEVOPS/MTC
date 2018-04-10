@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered,
@@ -6,6 +6,8 @@ import { WarmupCompleteRendered,
   CheckStartedAPICallSucceeded,
   CheckStarted } from '../services/audit/auditEntry';
 import { SubmissionService } from '../services/submission/submission.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-warmup-complete',
@@ -23,7 +25,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
 
   constructor(
     private auditService: AuditService,
-    private submissionService: SubmissionService
+    private submissionService: SubmissionService,
+    private questionService: QuestionService,
+    private speechService: SpeechService,
+    private elRef: ElementRef
   ) { }
 
   ngOnInit() {
@@ -31,6 +36,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.auditService.addEntry(new WarmupCompleteRendered());
+
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
   }
 
   async onClick() {
@@ -45,5 +54,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit {
       .catch((error) => {
         this.auditService.addEntry(new CheckStartedApiCalled());
       });
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
   }
 }

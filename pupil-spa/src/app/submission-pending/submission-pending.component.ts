@@ -1,9 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ElementRef } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { SubmissionService } from '../services/submission/submission.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CheckSubmissionApiCalled, CheckSubmissionAPICallSucceeded } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-submission-pending',
@@ -19,7 +21,10 @@ export class SubmissionPendingComponent implements OnInit {
   constructor(private submissionService: SubmissionService,
               private auditService: AuditService,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private questionService: QuestionService,
+              private speechService: SpeechService,
+              private elRef: ElementRef) {
   }
 
   async ngOnInit() {
@@ -54,7 +59,18 @@ export class SubmissionPendingComponent implements OnInit {
     return this.router.navigate([`/${path}`]);
   }
 
+  ngAfterViewInit() {
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
+  }
+
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
   }
 }

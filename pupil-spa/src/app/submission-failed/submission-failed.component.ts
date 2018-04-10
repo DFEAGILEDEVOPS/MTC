@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { CheckSubmissionFailed } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { environment } from '../../environments/environment';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 
 @Component({
@@ -15,7 +17,11 @@ export class SubmissionFailedComponent implements OnInit {
   public supportNumber: string;
   protected window: any;
 
-  constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
+  constructor(private auditService: AuditService,
+              protected windowRefService: WindowRefService,
+              private questionService: QuestionService,
+              private speechService: SpeechService,
+              private elRef: ElementRef) {
     this.supportNumber = environment.supportNumber;
     this.window = windowRefService.nativeWindow;
   }
@@ -28,4 +34,15 @@ export class SubmissionFailedComponent implements OnInit {
     });
   }
 
+  // wait for the component to be rendered first, before parsing the text
+  ngAfterViewInit() {
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
+  }
 }

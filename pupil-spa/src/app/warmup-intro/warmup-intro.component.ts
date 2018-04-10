@@ -1,7 +1,9 @@
-import { Component, OnInit, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, ElementRef, Output, AfterViewInit } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-warmup-intro',
@@ -19,7 +21,11 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
 
   protected window: any;
 
-  constructor(private auditService: AuditService, protected windowRefService: WindowRefService) {
+  constructor(private auditService: AuditService,
+              protected windowRefService: WindowRefService,
+              private questionService: QuestionService,
+              private speechService: SpeechService,
+              private elRef: ElementRef) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -32,10 +38,18 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.auditService.addEntry(new WarmupIntroRendered());
+
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
   }
 
   onClick() {
     this.clickEvent.emit(null);
   }
 
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
+  }
 }
