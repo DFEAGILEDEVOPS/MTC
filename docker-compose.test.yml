@@ -16,10 +16,25 @@ services:
     - sqldb
     - mongo
   pupil-app:
-    build: ./pupil-spa
+    build:
+      context: ./pupil-spa
+      args:
+        api_url: http://localhost:3001
     container_name: mtc_pupil
     ports:
     - "80:80"
+    depends_on:
+    - admin-app
+    links:
+    - admin-app
+    environment:
+      API_URL: "http://admin-app:3001"
+  pupil-app-test:
+    build:
+      context: ./pupil-spa
+      args:
+        api_url: http://admin-app:3001
+    container_name: mtc_pupil_test
     depends_on:
     - admin-app
     links:
@@ -45,12 +60,13 @@ services:
     build: ./test/pupil
     container_name: pupil_tests
     depends_on:
-    - pupil-app
+    - pupil-app-test
     - sqldb
     - admin-app
     - admin-tests
     links:
-    - pupil-app
+    - "pupil-app:pupil-app-test"
+    - admin-app
     - sqldb
     volumes:
     - ./test-output/pupil/screenshots:/usr/src/app/screenshots
