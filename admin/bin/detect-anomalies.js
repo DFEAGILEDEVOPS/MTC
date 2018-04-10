@@ -9,6 +9,7 @@ const fs = require('fs')
 winston.level = 'info'
 const moment = require('moment')
 const useragent = require('useragent')
+const R = require('ramda')
 
 const dateService = require('../services/date.service')
 const poolService = require('../services/data-access/sql.pool.service')
@@ -63,7 +64,7 @@ function detectPageRefresh (check) {
 }
 
 function detectLowBattery (check) {
-  const battery = check.data.device.battery
+  const battery = R.path(['data', 'device', 'battery'], check)
   if (!battery) { return }
   if (battery.levelPercent < 20 && !battery.isCharging) {
     report(check, 'Low battery', '' + battery.levelPercent + '%' + ' charging ' + battery.isCharging, '> 20%')
@@ -146,8 +147,8 @@ function detectMissingAudits (check) {
 }
 
 function detectInsufficientVerticalHeight (check) {
-  const height = check.data.device.screen.innerHeight
-  const width = check.data.device.screen.innerWith || check.data.device.screen.innerWidth
+  const height = R.path(['data', 'device', 'screen', 'innerHeight'], check)
+  const width = R.path(['data', 'device', 'screen', 'innerWidth'], check) || R.path(['data', 'device', 'screen', 'innerWith'], check)
 
   // The vertical height required depends on the width, as we have 3 breakpoints
   if (width <= 640 && height < 558) {
@@ -160,7 +161,7 @@ function detectInsufficientVerticalHeight (check) {
 }
 
 function detectLowColourDisplays (check) {
-  const colourDepth = check.data.device.screen.colorDepth
+  const colourDepth = R.path(['data', 'device', 'screen', 'colorDepth'], check)
   if (colourDepth < 24) {
     report(check, 'Low colour display', colourDepth, '24')
   }
@@ -242,7 +243,7 @@ function getCheckDate (check) {
 
 function report (check, message, testedValue = null, expectedValue = null, questionNumber = null) {
   anomalyCount += 1
-  const agent = useragent.lookup(check.data.device.navigator.userAgent)
+  const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
   const checkDate = getCheckDate(check)
 
   reportedAnomalies.push([
