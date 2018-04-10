@@ -1,5 +1,5 @@
 require 'cucumber/rake/task'
-require_relative '../test/features/support/browserstack_settings'
+require_relative 'features/support/browserstack_settings'
 require 'json'
 require 'pry'
 require 'parallel'
@@ -34,7 +34,7 @@ end
 def array_of_scenarios
   opts= ''
   opts = ENV['OPTS'].dup unless ENV['OPTS'].nil?
-  results = `bundle exec cucumber -d -f json #{opts} -r features/support/env -r features/step_definitions -r features/support/env.rb -t ~@non_parallel`
+  results = `bundle exec cucumber -d -f json #{opts} -r features/support/env -r features/step_definitions -r features/support/env.rb -t ~@non_parallel -t @mo`
   results = JSON.parse results
   results.map {|s| s['elements'].map {|e| s['uri'] + ':' + e['line'].to_s}}.flatten
 end
@@ -81,7 +81,7 @@ def run_parallel_scenarios
   end
   puts "\n####################################".light_green; puts "## Non Parallel scenario's output ##".green
   puts "####################################\n\n".light_green
-  run_non_parallel_scenarios
+  # run_non_parallel_scenarios
   output_files = Dir['reports/test_output_*']
   re_run_files = Dir['reports/rerun_fails_*']
   re_run_files.each do |file|

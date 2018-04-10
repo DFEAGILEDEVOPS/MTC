@@ -46,13 +46,12 @@ services:
     build: ./test/pupil
     container_name: pupil_tests
     depends_on:
-    - pupil-app-test
+    - pupil-app
     - sqldb
     - admin-app
     - admin-tests
     links:
-    - "pupil-app:pupil-app-test"
-    - admin-app
+    - pupil-app
     - sqldb
     volumes:
     - ./test-output/pupil/screenshots:/usr/src/app/screenshots

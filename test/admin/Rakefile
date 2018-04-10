@@ -7,7 +7,7 @@ require 'capybara'
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
 
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "--format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
+  t.cucumber_opts = "-t @mo --format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 
