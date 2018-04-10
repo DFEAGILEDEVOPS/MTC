@@ -200,7 +200,9 @@ function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
 function detectInputThatDoesNotCorrespondToAnswers (check) {
   check.data.answers.forEach((answer, idx) => {
     const answerFromInputs = reconstructAnswerFromInputs(check.data.inputs[idx])
-    if (answer.answer !== answerFromInputs) {
+    // The answer only stores the first 5 inputs, so there is no point in comparing more
+    // characters (the inputs stores all the characters entered)
+    if (answer.answer.substring(0, 5) !== answerFromInputs.substring(0, 5)) {
       report(check, 'Answer from inputs captured does not equal given answer', answerFromInputs, answer.answer, `Q${idx + 1}`)
     }
   })
