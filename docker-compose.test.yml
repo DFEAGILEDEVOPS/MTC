@@ -19,7 +19,7 @@ services:
     build:
       context: ./pupil-spa
       args:
-        api_url: http://localhost:3001
+        api_url: http://admin-app:3001
     container_name: mtc_pupil
     ports:
     - "80:80"
@@ -27,20 +27,6 @@ services:
     - admin-app
     links:
     - admin-app
-    environment:
-      API_URL: "http://admin-app:3001"
-  pupil-app-test:
-    build:
-      context: ./pupil-spa
-      args:
-        api_url: http://admin-app:3001
-    container_name: mtc_pupil_test
-    depends_on:
-    - admin-app
-    links:
-    - admin-app
-    environment:
-      API_URL: "http://admin-app:3001"
   admin-tests:
     build: ./test/admin
     container_name: admin_tests
