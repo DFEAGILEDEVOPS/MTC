@@ -56,6 +56,7 @@ const controller = {
       res.render('service-manager/check-settings', {
         settings,
         successfulPost,
+        error: new ValidationError(),
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
