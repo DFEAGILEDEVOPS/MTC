@@ -1,3 +1,5 @@
+<app-sound #sound></app-sound>
+
 <div [ngSwitch]="viewState">
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
         (clickEvent)="warmupIntroClickHandler()">
@@ -32,6 +34,7 @@
         [factor2]="question.factor2"
         [sequenceNumber]="question.sequenceNumber"
         [questionTimeoutSecs]="config.questionTime"
+        [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
         (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-spoken-practice-question>
@@ -49,6 +52,7 @@
         [factor2]="question.factor2"
         [sequenceNumber]="question.sequenceNumber"
         [questionTimeoutSecs]="config.questionTime"
+        [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
         (manualSubmitEvent)="manualSubmitHandler($event)">
     </app-spoken-question>
