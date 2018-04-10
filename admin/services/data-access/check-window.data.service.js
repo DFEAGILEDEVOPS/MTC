@@ -243,7 +243,7 @@ const checkWindowDataService = {
    * Find all check windows
    * @param sortBy
    * @param sortDirection
-   * @return {Object}
+   * @returns [{Object}]
    */
   sqlFindAllCheckWindows: async (sortBy, sortDirection) => {
     sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'

@@ -1,5 +1,5 @@
 class AddPupilPage < SitePrism::Page
-  set_url '/school/pupil/add'
+  set_url '/pupil-register/pupil/add'
 
   element :heading, '.heading-xlarge'
   element :message, '.heading-medium'
