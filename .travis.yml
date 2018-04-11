@@ -56,8 +56,8 @@ script:
   - if [[ "$TEST_TYPE" = admin-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_1.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_2.sh; fi
   - if [[ "$TEST_TYPE" = admin-e2e-3 ]]; then cd ${TRAVIS_BUILD_DIR}/test/admin && ./admin_tests_3.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-spa && ./pupil_spa_tests_1.sh; fi
-  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil-spa && ./pupil_spa_tests_2.sh; fi
+  - if [[ "$TEST_TYPE" = pupil-e2e-1 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil && ./pupil_spa_tests_1.sh; fi
+  - if [[ "$TEST_TYPE" = pupil-e2e-2 ]]; then cd ${TRAVIS_BUILD_DIR}/test/pupil && ./pupil_spa_tests_2.sh; fi
 
 after_script:
   - docker-compose down
