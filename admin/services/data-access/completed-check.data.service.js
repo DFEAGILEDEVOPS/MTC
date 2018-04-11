@@ -18,9 +18,10 @@ completedCheckDataService.sqlCreate = async function (data) {
  * Updates check record with results
  * @param checkCode
  * @param completedCheck the entire JSON payload submitted by the pupil
+ * @param receivedByServerAt the timestamp when data was received by the server
  * @return {Promise}
  */
-completedCheckDataService.sqlAddResult = async function (checkCode, completedCheck) {
+completedCheckDataService.sqlAddResult = async function (checkCode, completedCheck, receivedByServerAt) {
   const params = [
     {
       name: 'checkCode',
@@ -39,7 +40,8 @@ completedCheckDataService.sqlAddResult = async function (checkCode, completedChe
   const checkId = result.id
   const checkDataParams = {
     'id': checkId,
-    'data': JSON.stringify(completedCheck)
+    'data': JSON.stringify(completedCheck),
+    'receivedByServerAt': receivedByServerAt
   }
   return sqlService.update('[check]', checkDataParams)
 }
