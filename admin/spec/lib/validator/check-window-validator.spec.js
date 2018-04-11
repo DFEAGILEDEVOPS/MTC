@@ -64,14 +64,14 @@ describe('Test window validator', function () {
 
   describe('When creating a new check window', function () {
     it('should allow a valid request', async function (done) {
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(false)
       done()
     })
 
     it('should require a check window name', async function (done) {
       req.body.checkWindowName = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkWindowName')).toBe(true)
       expect(validationError.errors.checkWindowName).toBe(checkWindowValidatorMsgs.checkWindowNameLength)
@@ -80,7 +80,7 @@ describe('Test window validator', function () {
 
     it('should require a check window name with at least two characters', async function (done) {
       req.body.checkWindowName = 'x'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkWindowName')).toBe(true)
       expect(validationError.errors.checkWindowName).toBe(checkWindowValidatorMsgs.checkWindowNameLength)
@@ -89,7 +89,7 @@ describe('Test window validator', function () {
 
     it('should require an admin day', async function (done) {
       req.body.adminStartDay = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartDay')).toBe(true)
       expect(validationError.errors.adminStartDay).toBe(checkWindowValidatorMsgs.adminStartDayRequired)
@@ -98,7 +98,7 @@ describe('Test window validator', function () {
 
     it('should require an admin month', async function (done) {
       req.body.adminStartMonth = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartMonth')).toBe(true)
       expect(validationError.errors.adminStartMonth).toBe(checkWindowValidatorMsgs.adminStartMonthRequired)
@@ -107,7 +107,7 @@ describe('Test window validator', function () {
 
     it('should require an admin year', async function (done) {
       req.body.adminStartYear = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartYear')).toBe(true)
       expect(validationError.errors.adminStartYear).toBe(checkWindowValidatorMsgs.adminStartYearRequired)
@@ -116,7 +116,7 @@ describe('Test window validator', function () {
 
     it('should require a check start day', async function (done) {
       req.body.checkStartDay = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartDay')).toBe(true)
       expect(validationError.errors.checkStartDay).toBe(checkWindowValidatorMsgs.checkStartDayRequired)
@@ -125,7 +125,7 @@ describe('Test window validator', function () {
 
     it('should require a check start month', async function (done) {
       req.body.checkStartMonth = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartMonth')).toBe(true)
       expect(validationError.errors.checkStartMonth).toBe(checkWindowValidatorMsgs.checkStartMonthRequired)
@@ -134,7 +134,7 @@ describe('Test window validator', function () {
 
     it('should require a check start year', async function (done) {
       req.body.checkStartYear = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartYear')).toBe(true)
       expect(validationError.errors.checkStartYear).toBe(checkWindowValidatorMsgs.checkStartYearRequired)
@@ -143,7 +143,7 @@ describe('Test window validator', function () {
 
     it('should require a check end day', async function (done) {
       req.body.checkEndDay = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndDay')).toBe(true)
       expect(validationError.errors.checkEndDay).toBe(checkWindowValidatorMsgs.checkEndDayRequired)
@@ -152,7 +152,7 @@ describe('Test window validator', function () {
 
     it('should require a check end month', async function (done) {
       req.body.checkEndMonth = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndMonth')).toBe(true)
       expect(validationError.errors.checkEndMonth).toBe(checkWindowValidatorMsgs.checkEndMonthRequired)
@@ -161,7 +161,7 @@ describe('Test window validator', function () {
 
     it('should require a check end year', async function (done) {
       req.body.checkEndYear = ''
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndYear')).toBe(true)
       expect(validationError.errors.checkEndYear).toBe(checkWindowValidatorMsgs.checkEndYearRequired)
@@ -173,7 +173,7 @@ describe('Test window validator', function () {
     it('should require a check window name when editing', async function (done) {
       req.body.checkWindowName = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkWindowName')).toBe(true)
       expect(validationError.errors.checkWindowName).toBe(checkWindowValidatorMsgs.checkWindowNameLength)
@@ -183,7 +183,7 @@ describe('Test window validator', function () {
     it('should require an admin day when editing', async function (done) {
       req.body.adminStartDay = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartDay')).toBe(true)
       expect(validationError.errors.adminStartDay).toBe(checkWindowValidatorMsgs.adminStartDayRequired)
@@ -193,7 +193,7 @@ describe('Test window validator', function () {
     it('should require an admin month when editing', async function (done) {
       req.body.adminStartMonth = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartMonth')).toBe(true)
       expect(validationError.errors.adminStartMonth).toBe(checkWindowValidatorMsgs.adminStartMonthRequired)
@@ -203,7 +203,7 @@ describe('Test window validator', function () {
     it('should require an admin year when editing', async function (done) {
       req.body.adminStartYear = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('adminStartYear')).toBe(true)
       expect(validationError.errors.adminStartYear).toBe(checkWindowValidatorMsgs.adminStartYearRequired)
@@ -213,7 +213,7 @@ describe('Test window validator', function () {
     it('should require an check start day when editing', async function (done) {
       req.body.checkStartDay = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartDay')).toBe(true)
       expect(validationError.errors.checkStartDay).toBe(checkWindowValidatorMsgs.checkStartDayRequired)
@@ -223,7 +223,7 @@ describe('Test window validator', function () {
     it('should require an check start month when editing', async function (done) {
       req.body.checkStartMonth = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartMonth')).toBe(true)
       expect(validationError.errors.checkStartMonth).toBe(checkWindowValidatorMsgs.checkStartMonthRequired)
@@ -233,7 +233,7 @@ describe('Test window validator', function () {
     it('should require an check start year when editing', async function (done) {
       req.body.checkStartYear = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkStartYear')).toBe(true)
       expect(validationError.errors.checkStartYear).toBe(checkWindowValidatorMsgs.checkStartYearRequired)
@@ -243,7 +243,7 @@ describe('Test window validator', function () {
     it('should require an check end day when editing', async function (done) {
       req.body.checkEndDay = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndDay')).toBe(true)
       expect(validationError.errors.checkEndDay).toBe(checkWindowValidatorMsgs.checkEndDayRequired)
@@ -253,7 +253,7 @@ describe('Test window validator', function () {
     it('should require an check end month when editing', async function (done) {
       req.body.checkEndMonth = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndMonth')).toBe(true)
       expect(validationError.errors.checkEndMonth).toBe(checkWindowValidatorMsgs.checkEndMonthRequired)
@@ -263,7 +263,7 @@ describe('Test window validator', function () {
     it('should require an check end year when editing', async function (done) {
       req.body.checkEndYear = ''
       req.body.checkWindowId = 'abc123'
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.isError('checkEndYear')).toBe(true)
       expect(validationError.errors.checkEndYear).toBe(checkWindowValidatorMsgs.checkEndYearRequired)
@@ -273,7 +273,7 @@ describe('Test window validator', function () {
 
   describe('When custom validation is applied', function () {
     it('should returns false (no errors) when details are correct', async function (done) {
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(false)
       done()
     })
@@ -284,7 +284,7 @@ describe('Test window validator', function () {
       req.body.adminStartMonth = '11'
       req.body.adminStartYear = adminStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.adminDateInvalid).toBe(true)
       done()
@@ -296,7 +296,7 @@ describe('Test window validator', function () {
       req.body.adminStartMonth = adminStartDate.format('MM')
       req.body.adminStartYear = adminStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.adminDateInThePast).toBe(true)
       done()
@@ -308,7 +308,7 @@ describe('Test window validator', function () {
       req.body.checkStartMonth = checkStartDate.format('MM')
       req.body.checkStartYear = checkStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkDateBeforeAdminDate).toBe(true)
       done()
@@ -320,7 +320,7 @@ describe('Test window validator', function () {
       req.body.checkStartMonth = '11'
       req.body.checkStartYear = checkStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkStartDateInvalid).toBe(true)
       done()
@@ -332,7 +332,7 @@ describe('Test window validator', function () {
       req.body.checkStartMonth = checkStartDate.format('MM')
       req.body.checkStartYear = checkStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkStartDateAfterEndDate).toBe(true)
       done()
@@ -344,7 +344,7 @@ describe('Test window validator', function () {
       req.body.checkEndMonth = '11'
       req.body.checkEndYear = checkEndDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkEndDateInvalid).toBe(true)
       done()
@@ -356,7 +356,7 @@ describe('Test window validator', function () {
       req.body.checkEndMonth = checkEndDate.format('MM')
       req.body.checkEndYear = checkEndDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkEndDateBeforeStartDate).toBe(true)
       done()
@@ -368,7 +368,7 @@ describe('Test window validator', function () {
       req.body.checkStartMonth = checkStartDate.format('MM')
       req.body.checkStartYear = checkStartDate.format('YYYY')
 
-      const validationError = await checkWindowValidator.validate(req)
+      const validationError = await checkWindowValidator.validate(req.body, req.checkBody, req.getValidationResult)
       expect(validationError.hasError()).toBe(true)
       expect(validationError.errors.checkStartDateInThePast).toBe(true)
       done()
