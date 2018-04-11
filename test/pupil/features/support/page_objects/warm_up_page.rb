@@ -9,6 +9,7 @@ class WarmUpPage < SitePrism::Page
   element :welcome_message, '.lede', text: "There will be 3 practice questions"
   element :start_now, '#start-now-button'
   # element :warm_up_label, '.warm-up-questions-label'
+  element :question_container, '.question-container'
 
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 
@@ -25,7 +26,18 @@ class WarmUpPage < SitePrism::Page
   end
 
   def wait_for_question(time=15)
-    sleep 1
+    i = 0
+    while i < 300
+      if(has_question_container?)
+        puts "Question container is visible : #{has_question_container?}"
+        break
+      else
+        puts "waiting for Question container to be visible : #{has_question_container?}"
+        sleep 0.5
+        i = i + 1
+      end
+    end
+    # sleep 1
     Timeout.timeout(time){sleep 0.5 until question.visible?}
   end
 

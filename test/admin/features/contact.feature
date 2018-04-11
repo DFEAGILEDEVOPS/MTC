@@ -1,4 +1,4 @@
-@contact @mo
+@contact
 Feature:
   Contact
 

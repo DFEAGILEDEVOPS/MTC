@@ -27,7 +27,6 @@ Feature: Login page
     When I attempt to login with just a pupil pin
     Then the sign in button should be disabled
 
-  @mo
   Scenario: Users can login with valid credentials
     Given I have logged in
     Then I should be taken to the confirmation page
