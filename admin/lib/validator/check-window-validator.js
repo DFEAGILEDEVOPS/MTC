@@ -144,7 +144,7 @@ const checkWindowValidationSchemaCheckStart = {
   }
 }
 
-module.exports.validate = function (req) {
+module.exports.validate = function (requestData, checkBody, getValidationResult) {
   return new Promise(async function (resolve, reject) {
     let validationError = new ValidationError()
     let adminStartDate
@@ -152,33 +152,33 @@ module.exports.validate = function (req) {
     let checkEndDate
     const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
 
-    if (req.body['adminStartDay'] && req.body['adminStartMonth'] && req.body['adminStartYear']) {
+    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
       adminStartDate = moment.utc(
-        req.body['adminStartYear'] + '-' +
-        (req.body['adminStartMonth'].padStart(2, '0')) + '-' +
-        (req.body['adminStartDay']).padStart(2, '0'))
+        requestData['adminStartYear'] + '-' +
+        (requestData['adminStartMonth'].padStart(2, '0')) + '-' +
+        (requestData['adminStartDay']).padStart(2, '0'))
     }
-    if (req.body['checkStartDay'] && req.body['checkStartMonth'] && req.body['checkStartYear']) {
+    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
       checkStartDate = moment.utc(
-        req.body['checkStartYear'] + '-' +
-        (req.body['checkStartMonth'].padStart(2, '0')) + '-' +
-        (req.body['checkStartDay'].padStart(2, '0')))
+        requestData['checkStartYear'] + '-' +
+        (requestData['checkStartMonth'].padStart(2, '0')) + '-' +
+        (requestData['checkStartDay'].padStart(2, '0')))
     }
-    if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear']) {
+    if (requestData['checkEndDay'] && requestData['checkEndMonth'] && requestData['checkEndYear']) {
       checkEndDate = moment.utc(
-        req.body['checkEndYear'] + '-' +
-        (req.body['checkEndMonth'].padStart(2, '0')) + '-' +
-        (req.body['checkEndDay'].padStart(2, '0')))
+        requestData['checkEndYear'] + '-' +
+        (requestData['checkEndMonth'].padStart(2, '0')) + '-' +
+        (requestData['checkEndDay'].padStart(2, '0')))
     }
     try {
-      if (!req.body.checkWindowId) { // Adding
+      if (!requestData.checkWindowId) { // Adding
         checkWindowValidationSchema = Object.assign(
           checkWindowValidationSchema,
           checkWindowValidationSchemaAdminDate,
           checkWindowValidationSchemaCheckStart
         )
-        req.checkBody(checkWindowValidationSchema)
-        const result = await req.getValidationResult()
+        checkBody(checkWindowValidationSchema)
+        const result = await getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
         if (adminStartDate !== undefined && adminStartDate.isValid() === false) {
@@ -187,7 +187,7 @@ module.exports.validate = function (req) {
         if (checkStartDate !== undefined && checkStartDate.isValid() === false) {
           validationError.addError('checkStartDateInvalid', true)
         }
-        if (req.body['checkEndDay'] && req.body['checkEndMonth'] && req.body['checkEndYear'] && checkEndDate.isValid() === false) {
+        if (requestData['checkEndDay'] && requestData['checkEndMonth'] && requestData['checkEndYear'] && checkEndDate.isValid() === false) {
           validationError.addError('checkEndDateInvalid', true)
         }
         if (moment(currentDate).isAfter(adminStartDate)) {
@@ -220,8 +220,8 @@ module.exports.validate = function (req) {
           )
         }
 
-        req.checkBody(checkWindowValidationSchema)
-        const result = await req.getValidationResult()
+        checkBody(checkWindowValidationSchema)
+        const result = await getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
 
         if (adminStartDate !== undefined) {
@@ -237,7 +237,7 @@ module.exports.validate = function (req) {
           if (checkStartDate.isValid() === false) {
             validationError.addError('checkStartDateInvalid', true)
           }
-          adminStartDate = adminStartDate || req.body['existingAdminStartDate']
+          adminStartDate = adminStartDate || requestData['existingAdminStartDate']
           if (moment(adminStartDate).isAfter(checkStartDate)) {
             validationError.addError('checkDateBeforeAdminDate', true)
           }
@@ -254,7 +254,7 @@ module.exports.validate = function (req) {
       }
 
       if (checkEndDate !== undefined) {
-        checkStartDate = checkStartDate || req.body['existingCheckStartDate']
+        checkStartDate = checkStartDate || requestData['existingCheckStartDate']
         if (moment(checkEndDate).isBefore(checkStartDate)) {
           validationError.addError('checkEndDateBeforeStartDate', true)
         }
