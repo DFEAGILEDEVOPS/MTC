@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 import { AuditService } from '../audit/audit.service';
-import { UtteranceStarted, UtteranceEnded } from '../audit/auditEntry';
+import { UtteranceStarted, UtteranceEnded, QuestionReadingStarted, QuestionReadingEnded } from '../audit/auditEntry';
 import { WindowRefService } from '../window-ref/window-ref.service';
 
 @Injectable()
@@ -10,6 +10,8 @@ export class SpeechService implements OnDestroy {
   public static readonly speechStarted = 'start';
   public static readonly speechEnded = 'end';
   public static readonly speechReset = 'clear';
+  public static readonly questionSpeechStarted = 'questionstart';
+  public static readonly questionSpeechEnded = 'questionend';
   private speechStatusSource = new Subject<string>();
   protected synth;
 
@@ -39,6 +41,14 @@ export class SpeechService implements OnDestroy {
     this.speechStatusSource.next(SpeechService.speechReset);
   }
 
+  protected announceQuestionSpeechStarted() {
+    this.speechStatusSource.next(SpeechService.questionSpeechStarted);
+  }
+
+  protected announceQuestionSpeechEnded() {
+    this.speechStatusSource.next(SpeechService.questionSpeechEnded);
+  }
+
   isSupported(): boolean {
     return this.synth ? true : false;
   }
@@ -60,6 +70,28 @@ export class SpeechService implements OnDestroy {
     sayThis.onend = (event) => {
       this.audit.addEntry(new UtteranceEnded({ utterance }));
       this.announceSpeechEnded();
+      this.announceSpeechReset();
+    };
+    this.synth.speak(sayThis);
+  }
+
+  /**
+   * Add an question utterance to the underlying webspeech api
+   * @param utterance
+   */
+  speakQuestion(utterance: string): void {
+    if (!this.isSupported()) {
+      return;
+    }
+    this.cancel();
+    const sayThis = new SpeechSynthesisUtterance(utterance);
+    sayThis.onstart = (event) => {
+      this.announceQuestionSpeechStarted();
+      this.audit.addEntry(new QuestionReadingStarted({ utterance }));
+    };
+    sayThis.onend = (event) => {
+      this.audit.addEntry(new QuestionReadingEnded({ utterance }));
+      this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
     this.synth.speak(sayThis);

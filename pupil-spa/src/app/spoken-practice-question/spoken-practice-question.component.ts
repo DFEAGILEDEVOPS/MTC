@@ -6,6 +6,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionRendered } from '../services/audit/auditEntry';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-spoken-practice-question',
@@ -18,15 +19,16 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
-              protected zone: NgZone) {
-    super(auditService, windowRefService);
+              protected zone: NgZone,
+              protected questionService: QuestionService) {
+    super(auditService, windowRefService, questionService, speechService);
   }
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
     this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
-        if (speechStatus === SpeechService.speechEnded) {
+        if (speechStatus === SpeechService.questionSpeechEnded) {
           this.startTimer();
         }
       });
@@ -41,7 +43,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
       practiseSequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
-    this.speechService.speak(`${this.factor1} times ${this.factor2}?`);
+    this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`);
   }
 
   ngOnDestroy() {

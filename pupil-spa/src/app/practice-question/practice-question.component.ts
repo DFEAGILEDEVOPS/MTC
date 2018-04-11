@@ -2,6 +2,8 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostList
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-practice-question',
@@ -77,7 +79,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   @Output() public timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   constructor(protected auditService: AuditService,
-              protected windowRefService: WindowRefService) {
+              protected windowRefService: WindowRefService,
+              protected questionService: QuestionService,
+              protected speechService: SpeechService) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -202,6 +206,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   addChar(char: string) {
     // console.log(`addChar() called with ${char}`);
+    this.speechService.speak(char);
+
     if (this.answer.length < 5) {
       this.answer = this.answer.concat(char);
     }
