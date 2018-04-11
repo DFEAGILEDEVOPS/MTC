@@ -2,17 +2,14 @@
 
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const R = require('ramda')
 
 const settingDataService = {}
 
 settingDataService.sqlFindOne = async () => {
   const sql = 'SELECT TOP 1 * FROM Settings'
-
   const result = await sqlService.query(sql)
-  if (result && result.length > 0) {
-    return result[0]
-  }
-  return {}
+  return R.head(result)
 }
 
 /**
