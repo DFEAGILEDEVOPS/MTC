@@ -16,15 +16,15 @@
         </div>
         <% } %>
 
-        <% if (typeof error !== 'undefined') { %>
+        <% if (error.hasError()) { %>
         <div class="error-summary top-padding-30" role="group" aria-labelledby="error-summary-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-1">Check the settings details</h2>
             <p>Question time and time between questions are measured in seconds.</p>
 
-            <% if (typeof error === 'object') { %>
+            <% if (error.hasError()) { %>
             <ul class="error-summary-list">
             <% ['questionTimeLimit', 'loadingTimeLimit'].map(errorKey => { %>
-                <% if (error[errorKey]) { %>
+                <% if (error.isError(errorKey)) { %>
                 <li><a href="#errorKey"><%= errorMessage[errorKey] %></a></li>
                 <% } %>
             <% }) %>
@@ -42,8 +42,8 @@
                 <label for="questionTimeLimit" class="form-label-bold">
                     Question time limit
                     <span class="form-hint">For example, 5 for 5 seconds</span>
-                    <% if (typeof error !== 'undefined' &&  error.questionTimeLimit) { %>
-                    <span class="error-message"><%= errorMessage.questionTimeLimit %></span>
+                    <% if (error.isError('questionTimeLimit')) { %>
+                    <span class="error-message"><%= error.get('questionTimeLimit') %></span>
                     <% } %>
                 </label>
                 <input class="form-control narrow-width"
@@ -58,8 +58,8 @@
                 <label for="loadingTimeLimit" class="form-label-bold">
                     Time between questions
                     <span class="form-hint">For example, 2 for 2 seconds</span>
-                    <% if (typeof error !== 'undefined' &&  error.loadingTimeLimit) { %>
-                    <span class="error-message"><%= errorMessage.loadingTimeLimit %></span>
+                    <% if (error.isError('loadingTimeLimit')) { %>
+                    <span class="error-message"><%= error.get('loadingTimeLimit') %></span>
                     <% } %>
                 </label>
                 <input class="form-control narrow-width"

@@ -21,12 +21,18 @@ const settingsValidationSchema = {
   }
 }
 
-module.exports.validate = function (req) {
+/**
+ * Update time settings in DB.
+ * @param {Function} checkBody
+ * @param {Function} getValidationResult
+ * @returns {Promise.<*>}
+ */
+module.exports.validate = function (checkBody, getValidationResult) {
   return new Promise(async function (resolve, reject) {
     let validationError = new ValidationError()
     try {
-      req.checkBody(settingsValidationSchema)
-      const result = await req.getValidationResult()
+      checkBody(settingsValidationSchema)
+      const result = await getValidationResult()
       validationError = errorConverter.fromExpressValidator(result.mapped())
     } catch (error) {
       return reject(error)
