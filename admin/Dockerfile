@@ -1,5 +1,7 @@
 FROM node:8.4.0
 
+# Set the timezone to BST
+RUN mv /etc/localtime /etc/localtime.default && cp /usr/share/zoneinfo/Europe/London /etc/localtime
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY package.json /usr/src/app
