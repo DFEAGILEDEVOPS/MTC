@@ -17,12 +17,10 @@ require_relative '../../features/support/browserstack_driver_helper'
 require_relative 'helpers'
 include Helpers
 
-raise 'Please pass a BASE_URL with the cucumber command.' unless ENV['BASE_URL']
-
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
-  config.app_host = ENV["BASE_URL"]
-  config.exact_options = true
+  config.app_host = ENV["BASE_URL"] ||= 'http://localhost:4200'
+  config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
 end
@@ -52,7 +50,7 @@ else
 end
 sleep 20
 database = ENV['SQL_DATABASE'] || 'mtc'
-server = ENV['SQL_SERVER'] || 'sqldb'
+server = ENV['SQL_SERVER'] || 'localhost'
 port =  ENV['SQL_PORT'] || 1433
 admin_user = ENV['SQL_ADMIN_USER'] || 'sa'
 admin_password = ENV['SQL_ADMIN_USER_PASSWORD'] || 'Mtc-D3v.5ql_S3rv3r'

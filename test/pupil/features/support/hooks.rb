@@ -1,6 +1,5 @@
 Before do
   page.current_window.resize_to(1270,768)
-  page.save_screenshot("screenshots/time.png")
 end
 
 Before do

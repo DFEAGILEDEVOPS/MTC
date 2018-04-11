@@ -24,7 +24,6 @@ Cucumber::Rake::Task.new :failing_tests, 'Re-run failing tests from the rerun.tx
   t.cucumber_opts = "@rerun.txt -f pretty DRIVER=#{(Rake.application.top_level_tasks.first == 'features') ? 'headless_chrome' : Rake.application.top_level_tasks.first}"
 end
 
-
 desc "Runs test in"
 task(:parallel) do
   run_parallel_scenarios
@@ -34,7 +33,7 @@ end
 def array_of_scenarios
   opts= ''
   opts = ENV['OPTS'].dup unless ENV['OPTS'].nil?
-  results = `bundle exec cucumber -d -f json #{opts} -r features/support/env -r features/step_definitions -r features/support/env.rb -t ~@non_parallel -t @mo`
+  results = `bundle exec cucumber -d -f json #{opts} -r features/support/env -r features/step_definitions -r features/support/env.rb -t ~@non_parallel`
   results = JSON.parse results
   results.map {|s| s['elements'].map {|e| s['uri'] + ':' + e['line'].to_s}}.flatten
 end
@@ -81,7 +80,7 @@ def run_parallel_scenarios
   end
   puts "\n####################################".light_green; puts "## Non Parallel scenario's output ##".green
   puts "####################################\n\n".light_green
-  # run_non_parallel_scenarios
+  run_non_parallel_scenarios
   output_files = Dir['reports/test_output_*']
   re_run_files = Dir['reports/rerun_fails_*']
   re_run_files.each do |file|
