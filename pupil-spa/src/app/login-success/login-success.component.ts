@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './login-success.component.html',
   styleUrls: ['./login-success.component.css']
 })
-export class LoginSuccessComponent implements OnInit {
+export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   pupil: Pupil;
   school: School;

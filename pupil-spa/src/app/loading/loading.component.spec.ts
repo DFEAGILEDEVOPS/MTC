@@ -4,6 +4,12 @@ import { LoadingComponent } from './loading.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditEntry, PauseRendered } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -15,7 +21,11 @@ describe('LoadingComponent', () => {
     TestBed.configureTestingModule({
       declarations: [LoadingComponent],
       providers: [
-        { provide: AuditService, useValue: auditServiceMock }
+        { provide: AuditService, useValue: auditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
+        WindowRefService
       ]
     })
       .compileComponents();

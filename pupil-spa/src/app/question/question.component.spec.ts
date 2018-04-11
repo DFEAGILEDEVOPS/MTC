@@ -30,6 +30,9 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
         WindowRefService,
         { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]

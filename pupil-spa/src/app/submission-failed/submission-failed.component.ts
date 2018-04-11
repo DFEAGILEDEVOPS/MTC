@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { CheckSubmissionFailed } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -12,7 +12,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './submission-failed.component.html',
   styleUrls: ['./submission-failed.component.scss']
 })
-export class SubmissionFailedComponent implements OnInit {
+export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public supportNumber: string;
   protected window: any;

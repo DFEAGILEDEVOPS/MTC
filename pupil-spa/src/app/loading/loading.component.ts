@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
@@ -10,7 +10,7 @@ import { QuestionService } from '../services/question/question.service';
   styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent implements AfterViewInit {
+export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   public question = 0;

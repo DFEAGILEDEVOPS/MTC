@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -11,7 +11,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
   templateUrl: './instructions.component.html',
   styleUrls: ['./instructions.component.css']
 })
-export class InstructionsComponent implements OnInit {
+export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public count: number;
   public loadingTime: number;

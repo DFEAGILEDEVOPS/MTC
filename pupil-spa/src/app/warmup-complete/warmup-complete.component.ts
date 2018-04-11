@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered,
@@ -14,7 +14,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './warmup-complete.component.html',
   styles: []
 })
-export class WarmupCompleteComponent implements OnInit, AfterViewInit {
+export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Emit a click event when the user clicks the button

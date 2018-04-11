@@ -103,11 +103,11 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): void {
     // clone the element in memory to make non-visible modifications
-    let clonedElement = nativeElement.cloneNode(true);
+    const clonedElement = nativeElement.cloneNode(true);
     let speechText = '';
 
     // get all elements containing text from the current component
-    let elements = clonedElement.querySelectorAll(
+    const elements = clonedElement.querySelectorAll(
       'h1, h2, h3, h4, h5, h6, p, li, button'
     );
 

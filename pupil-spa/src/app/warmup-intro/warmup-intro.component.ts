@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ElementRef, Output, AfterViewInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, ElementRef, Output, AfterViewInit, OnDestroy } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -10,7 +10,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './warmup-intro.component.html',
   styles: []
 })
-export class WarmupIntroComponent implements OnInit, AfterViewInit {
+export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Emit when the user clicks the button

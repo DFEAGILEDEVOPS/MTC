@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ElementRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { SubmissionService } from '../services/submission/submission.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -12,7 +12,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './submission-pending.component.html',
   styleUrls: ['./submission-pending.component.scss']
 })
-export class SubmissionPendingComponent implements OnInit {
+export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();

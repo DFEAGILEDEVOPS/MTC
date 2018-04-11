@@ -8,6 +8,8 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenQuestionComponent } from './spoken-question.component';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
@@ -20,6 +22,7 @@ describe('SpokenQuestionComponent', () => {
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
         WindowRefService,
+        { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock }
       ]
@@ -34,7 +37,7 @@ describe('SpokenQuestionComponent', () => {
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
     // prevent SpeechServiceMock from calling 'end' by default
-    spyOn(speechService, 'speak');
+    spyOn(speechService, 'speakQuestion');
 
     fixture.detectChanges();
   });
@@ -44,7 +47,7 @@ describe('SpokenQuestionComponent', () => {
   });
 
   it('starts speaking the question straight away', ()  => {
-    expect(speechService.speak).toHaveBeenCalledTimes(1);
+    expect(speechService.speakQuestion).toHaveBeenCalledTimes(1);
   });
 
   describe ('the timer', () => {
@@ -54,7 +57,7 @@ describe('SpokenQuestionComponent', () => {
     });
 
     it('starts after the speech has ended', () => {
-      speechService.speechStatusSource.next(SpeechServiceMock.speechEnded);
+      speechService.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
       expect(component['timeout']).toBeDefined();
       expect(component['countdownInterval']).toBeTruthy();
     });

@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -9,7 +9,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './check-complete.component.html',
   styleUrls: ['./check-complete.component.css']
 })
-export class CheckCompleteComponent implements OnInit {
+export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
 
