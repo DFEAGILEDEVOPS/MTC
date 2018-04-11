@@ -45,7 +45,7 @@ end
 
 Then(/^I should see the questions exactly as intended$/) do
   expect(view_form_page).to be_displayed
-  expect(view_form_page.question_and_answers_on_page).to eql view_form_page.question_and_answers_from_csv(File.expand_path('../data/fixtures/check-form-1.csv'))
+  expect(view_form_page.question_and_answers_on_page).to eql view_form_page.question_and_answers_from_csv(File.expand_path('../../admin/data/fixtures/check-form-1.csv'))
 end
 
 Then(/^I should be given the option to delete the form$/) do
