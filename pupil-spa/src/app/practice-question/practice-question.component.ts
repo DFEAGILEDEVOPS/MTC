@@ -222,7 +222,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   addChar(char: string) {
     // console.log(`addChar() called with ${char}`);
-    this.speechService.speak(char);
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speak(char);
+    }
 
     if (this.answer.length < 5) {
       this.answer = this.answer.concat(char);
