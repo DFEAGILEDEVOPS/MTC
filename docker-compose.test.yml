@@ -49,7 +49,6 @@ services:
     - pupil-app
     - sqldb
     - admin-app
-    - admin-tests
     links:
     - pupil-app
     - sqldb

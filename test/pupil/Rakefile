@@ -109,10 +109,10 @@ at_exit do
   rescue Exception => e
     puts "#{e.class}: #{e.message}"
   end
-  colour = @exit_code == 0 ? 'green' : 'red'
-  puts "\n#################################".send(colour)
-  puts "## Exiting with status code: #{@exit_code} ##".send(colour)
-  puts "#################################\n\n".send(colour)
   exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
+  colour = exit_code == 0 ? 'green' : 'red'
+  puts "\n#################################".send(colour)
+  puts "## Exiting with status code: #{exit_code} ##".send(colour)
+  puts "#################################\n\n".send(colour)
   exit exit_code
 end
