@@ -44,8 +44,8 @@ When(/^I upload a csv file$/) do
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
   @file_name = "check-form-#{rand(234243234234234)}.csv"
-  @file_path = "../../admin/data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../../admin/data/fixtures/check-form-1.csv')) )
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../data/fixtures/check-form-1.csv')) )
   page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   upload_and_view_forms_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)
@@ -150,7 +150,7 @@ Given(/^I attempt to upload a csv containing quotes around the column values$/) 
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
   @file_name = "check-form-#{rand(234243234234234)}.csv"
-  @file_path = "../../admin/data/fixtures/#{@file_name}"
+  @file_path = "../data/fixtures/#{@file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/quotes-around-values.csv')) )
   page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   upload_and_view_forms_page.upload.click
@@ -161,7 +161,7 @@ Given(/^I attempt to upload a csv containing spaces around the column values$/) 
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
   @file_name = "check-form-#{rand(234243234234234)}.csv"
-  @file_path = "../../admin/data/fixtures/#{@file_name}"
+  @file_path = "../data/fixtures/#{@file_name}"
   upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/spaces.csv')) )
   page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   page.attach_file('csvFile', File.expand_path(@file_path))
@@ -170,7 +170,7 @@ end
 
 Given(/^I am ready to upload a csv file$/) do
   step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('../../admin/data/fixtures/check-form-1.csv'))
+  page.attach_file('csvFile', File.expand_path('../data/fixtures/check-form-1.csv'))
 end
 
 But(/^I have removed it$/) do
@@ -193,8 +193,8 @@ And(/^I attempt to upload the same csv again$/) do
     str = args.first.to_s
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
-  @file_path = "../../admin/data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../../admin/data/fixtures/check-form-1.csv')) )
+  @file_path = "../data/fixtures/#{@file_name}"
+  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('../data/fixtures/check-form-1.csv')) )
   page.attach_file('csvFile', File.expand_path("../fixtures/#{@file_path}"))
   upload_and_view_forms_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)

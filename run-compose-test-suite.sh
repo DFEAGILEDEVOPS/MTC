@@ -3,7 +3,7 @@ set -e
 
 
 docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d --build
-# get test container output while they run 
+# get test container output while they run
 docker logs -f admin_tests
 docker logs -f pupil_tests
 # capture test container exit codes

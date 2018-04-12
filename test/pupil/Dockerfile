@@ -44,4 +44,4 @@ COPY . .
 
 RUN bundle install
 
-CMD bundle exec rake parallel NODES=6 GROUP_SIZE=16
+CMD bundle exec rake features

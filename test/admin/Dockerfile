@@ -42,6 +42,6 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN bundle install
-
-CMD bundle exec rake features
+#RUN bundle install
+#
+#CMD bundle exec rake features

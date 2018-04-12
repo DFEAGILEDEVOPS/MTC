@@ -21,7 +21,7 @@ end
 
 desc 're run failing test'
 Cucumber::Rake::Task.new :failing_tests, 'Re-run failing tests from the rerun.txt file' do |t|
-  t.cucumber_opts = "@rerun.txt -f pretty DRIVER=#{(Rake.application.top_level_tasks.first == 'features') ? 'headless_chrome' : Rake.application.top_level_tasks.first}"
+  t.cucumber_opts = "@rerun.txt -f html -o #{'reports/rerun_output_' + Time.now.strftime('%I_%M_%S_%L') + '.html'} -f pretty DRIVER=#{(Rake.application.top_level_tasks.first == 'features') ? 'headless_chrome' : Rake.application.top_level_tasks.first}"
 end
 
 desc "Runs test in"
@@ -50,7 +50,7 @@ end
 
 def rerun_failing_scenarios(rerun_file)
   rerun_output_file = "reports/rerun_output_#{Time.now.strftime('%I_%M_%S_%L')}.txt"
-  command = "bundle exec cucumber -f pretty -o #{rerun_output_file} @#{rerun_file} -r features/step_definitions -r features/support #{ENV['OPTS']}"
+  command = "bundle exec cucumber -f html -o #{File.basename(rerun_output_file, ".*")+ '.html'} -f pretty -o #{rerun_output_file} @#{rerun_file} -r features/step_definitions -r features/support #{ENV['OPTS']}"
   sh command do
   end unless File.read(rerun_file).empty?
   @exitcodes_array << $?.exitstatus
@@ -113,5 +113,6 @@ at_exit do
   puts "\n#################################".send(colour)
   puts "## Exiting with status code: #{@exit_code} ##".send(colour)
   puts "#################################\n\n".send(colour)
-  exit @exit_code
+  exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
+  exit exit_code
 end
