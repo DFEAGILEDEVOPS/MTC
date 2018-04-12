@@ -30,7 +30,7 @@
                 Correct the errors and upload the updated file.
             </p>
             <div class="icon-file-download pupils-template"></div>
-            <b><a class="template-link" href="/school/pupil/download-error-csv">Pupil details file with errors</a></b> (CSV file)
+            <b><a class="template-link" href="/pupil-register/pupil/download-error-csv">Pupil details file with errors</a></b> (CSV file)
             <% } %>
         </div>
     </div>
@@ -47,7 +47,7 @@
         <ol class="list list-number">
             <li>Download the template
                 <div class="panel panel-border-wide short">
-                    <a href="/school/pupil/download-multiple-template" class="heading-small icon-download">Pupil details template</a> (CSV file)
+                    <a href="/csvs/mtc-pupil-details-template-sheet-1.csv" class="heading-small icon-download">Pupil details template</a> (CSV file)
                 </div>
             </li>
             <li>Open file in a programme like Excel, OpenOffice or Google Sheets</li>
@@ -60,7 +60,7 @@
     </div>
     <div class="column-two-thirds">
         <h3 class="heading-medium">Upload file</h3>
-        <form action="/school/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template" id="upload-form">
+        <form action="/pupil-register/pupil/add-batch-pupils" enctype="multipart/form-data" method="post" name="upload-template" id="upload-form">
             <div class="form-group<% if (fileErrors && fileErrors.hasError()) { %> form-group-error<% } %>">
                 <% if (fileErrors && fileErrors.hasError()) { %>
                 <label class="error-message">There is a problem with the form content</label>
@@ -72,7 +72,7 @@
             </div>
             <div class="form-buttons">
                 <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled" />
-                <a href="/school/pupil-register/name/asc" class="button button-secondary">Cancel</a>
+                <a href="/pupil-register/pupils-list/name/asc" class="button button-secondary">Cancel</a>
             </div>
         </form>
     </div>

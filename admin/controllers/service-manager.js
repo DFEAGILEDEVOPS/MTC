@@ -2,16 +2,15 @@
 
 const moment = require('moment')
 const winston = require('winston')
+const toBool = require('to-bool')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
 const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
-const dateService = require('../services/date.service')
-const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
-const config = require('../config')
 const settingService = require('../services/setting.service')
+const ValidationError = require('../lib/validation-error')
 
 const controller = {
 
@@ -44,18 +43,10 @@ const controller = {
    */
   getUpdateTiming: async (req, res, next) => {
     res.locals.pageTitle = 'Settings on pupil check'
-    let settings
     const successfulPost = req.params.status || false
+    let settings
     try {
-      const settingsRecord = await settingService.get() // settingDataService.sqlFindOne()
-      if (settingsRecord) {
-        settings = settingsRecord
-      } else {
-        settings = {
-          'questionTimeLimit': config.QUESTION_TIME_LIMIT,
-          'loadingTimeLimit': config.TIME_BETWEEN_QUESTIONS
-        }
-      }
+      settings = await settingService.get()
     } catch (error) {
       return next(error)
     }
@@ -65,6 +56,7 @@ const controller = {
       res.render('service-manager/check-settings', {
         settings,
         successfulPost,
+        error: new ValidationError(),
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
@@ -81,31 +73,21 @@ const controller = {
    */
   setUpdateTiming: async (req, res, next) => {
     res.locals.pageTitle = 'Settings on pupil check'
-    let settings
-
-    const settingsRecord = await settingService.get()
-    if (settingsRecord) {
-      settings = settingsRecord
-    } else {
-      settings = {}
-    }
-    settings.questionTimeLimit = Math.round(req.body.questionTimeLimit * 100) / 100
-    settings.loadingTimeLimit = Math.round(req.body.loadingTimeLimit * 100) / 100
-
-    let validationError = await settingsValidator.validate(req)
-    if (validationError.hasError()) {
-      res.locals.pageTitle = 'Settings on pupil check'
-      req.breadcrumbs(res.locals.pageTitle)
-      return res.render('service-manager/check-settings', {
-        settings: req.body,
-        error: validationError.errors,
-        errorMessage: settingsErrorMessages,
-        breadcrumbs: req.breadcrumbs()
-      })
-    }
-
     try {
-      await settingService.update(settings.loadingTimeLimit, settings.questionTimeLimit, req.user.id)
+      const getValidationResult = req.getValidationResult
+      const checkBody = req.checkBody
+      const validationError = await settingsValidator.validate(checkBody, getValidationResult)
+      if (validationError.hasError()) {
+        res.locals.pageTitle = 'Settings on pupil check'
+        req.breadcrumbs(res.locals.pageTitle)
+        return res.render('service-manager/check-settings', {
+          settings: req.body,
+          error: validationError,
+          errorMessage: settingsErrorMessages,
+          breadcrumbs: req.breadcrumbs()
+        })
+      }
+      await settingService.update(req.body.loadingTimeLimit, req.body.questionTimeLimit, req.user.id)
     } catch (error) {
       return next(error)
     }
@@ -152,70 +134,51 @@ const controller = {
    * Add window check form.
    * @param req
    * @param res
+   * @returns {Promise.<void>}
+   */
+
+  getCheckWindowForm: async (req, res) => {
+    req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
+    res.locals.pageTitle = 'Create check window'
+    res.render('service-manager/check-windows-form', {
+      checkWindowData: {},
+      error: new ValidationError(),
+      breadcrumbs: req.breadcrumbs(),
+      actionName: 'Create',
+      urlActionName: 'add',
+      currentYear: moment().format('YYYY'),
+      adminIsDisabled: false,
+      checkStartIsDisabled: false
+    })
+  },
+
+  /**
+   * Edit window check form.
+   * @param req
+   * @param res
    * @param next
    * @returns {Promise.<void>}
    */
-  checkWindowsForm: async (req, res, next) => {
-    let error = ''
-    let errorMessage = ''
-    let checkWindowData = ''
-    let successfulPost = false
-    let actionName = (req.params.action === 'add' && req.params.id === undefined) ? 'Create' : 'Edit'
-    let urlActionName = req.params.action
-    let currentYear = moment.utc(Date.now()).format('YYYY')
-    let adminIsDisabled = 0
-    let checkStartIsDisabled = 0
 
+  getEditableCheckWindowForm: async (req, res, next) => {
     req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
-    res.locals.pageTitle = actionName + ' check window'
-    req.breadcrumbs(res.locals.pageTitle)
-
-    if (req.params.id !== undefined) {
-      try {
-        checkWindowData = await checkWindowDataService.sqlFindOneById(req.params.id)
-
-        const adminStartDate = moment(checkWindowData.adminStartDate, 'D MM YYYY').format('YYYY-MM-D')
-        const checkStartDate = moment(checkWindowData.checkStartDate, 'D MM YYYY').format('YYYY-MM-D')
-
-        checkWindowData = {
-          checkWindowId: req.params.id,
-          checkWindowName: checkWindowData.name,
-          adminStartDay: moment(checkWindowData.adminStartDate).format('D'),
-          adminStartMonth: moment(checkWindowData.adminStartDate).format('MM'),
-          adminStartYear: moment(checkWindowData.adminStartDate).format('YYYY'),
-          checkStartDay: moment(checkWindowData.checkStartDate).format('D'),
-          checkStartMonth: moment(checkWindowData.checkStartDate).format('MM'),
-          checkStartYear: moment(checkWindowData.checkStartDate).format('YYYY'),
-          checkEndDay: moment(checkWindowData.checkEndDate).format('D'),
-          checkEndMonth: moment(checkWindowData.checkEndDate).format('MM'),
-          checkEndYear: moment(checkWindowData.checkEndDate).format('YYYY'),
-          existingAdminStartDate: adminStartDate,
-          existingCheckStartDate: checkStartDate
-        }
-
-        const currentDate = moment.utc(moment.now()).format('YYYY-MM-D')
-        if (moment(currentDate).isAfter(adminStartDate)) {
-          adminIsDisabled = 1
-        }
-        if (moment(currentDate).isAfter(checkStartDate)) {
-          checkStartIsDisabled = 1
-        }
-      } catch (error) {
-        return next()
-      }
+    res.locals.pageTitle = 'Edit check window'
+    let checkWindowData
+    try {
+      checkWindowData = await checkWindowService.getEditableCheckWindow(req.params.id)
+    } catch (error) {
+      return next()
     }
-
     res.render('service-manager/check-windows-form', {
+      error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
-      error,
-      errorMessage,
       checkWindowData,
-      successfulPost,
-      actionName,
-      urlActionName,
-      currentYear,
-      adminIsDisabled,
-      checkStartIsDisabled
+      successfulPost: false,
+      actionName: 'Create',
+      urlActionName: 'add',
+      currentYear: moment(Date.now()).format('YYYY'),
+      adminIsDisabled: checkWindowData.adminIsDisabled,
+      checkStartIsDisabled: checkWindowData.checkStartIsDisabled
     })
   },
 
@@ -226,92 +189,38 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  saveCheckWindows: async (req, res, next) => {
-    let actionName = 'Create'
-    let urlActionName = 'add'
-    let checkWindow
-    let validationError = await checkWindowValidator.validate(req)
-    let currentYear = moment.utc(moment.now()).format('YYYY')
-    let flashMessage = req.body[ 'checkWindowName' ] + ' has been created'
-    let adminIsDisabled = req.body.adminIsDisabled
-    let checkStartIsDisabled = req.body.checkStartIsDisabled
-
-    if (req.body.checkWindowId !== '') {
-      actionName = 'Edit'
-      urlActionName = 'edit'
-      flashMessage = 'Changes have been saved'
-    }
-
-    if (validationError.hasError()) {
-      res.locals.pageTitle = actionName + ' check window'
-      req.breadcrumbs(res.locals.pageTitle)
-
-      if (!req.body[ 'adminStartDay' ] && !req.body[ 'adminStartMonth' ] && !req.body[ 'adminStartYear' ] && req.body[ 'existingAdminStartDate' ] && req.body[ 'adminIsDisabled' ] === '1') {
-        req.body.adminStartDay = moment(req.body[ 'existingAdminStartDate' ]).format('D')
-        req.body.adminStartMonth = moment(req.body[ 'existingAdminStartDate' ]).format('MM')
-        req.body.adminStartYear = moment(req.body[ 'existingAdminStartDate' ]).format('YYYY')
-      }
-
-      if (!req.body[ 'checkStartDay' ] && !req.body[ 'checkStartMonth' ] && !req.body[ 'checkStartYear' ] && req.body[ 'existingCheckStartDate' ] && req.body[ 'checkStartIsDisabled' ] === '1') {
-        req.body.checkStartDay = moment(req.body[ 'existingCheckStartDate' ]).format('D')
-        req.body.checkStartMonth = moment(req.body[ 'existingCheckStartDate' ]).format('MM')
-        req.body.checkStartYear = moment(req.body[ 'existingCheckStartDate' ]).format('YYYY')
-      }
-
-      return res.render('service-manager/check-windows-form', {
-        action: urlActionName,
-        checkWindowData: req.body,
-        error: validationError.errors,
-        errorMessage: checkWindowErrorMessages,
-        currentYear,
-        actionName,
-        urlActionName,
-        breadcrumbs: req.breadcrumbs(),
-        adminIsDisabled,
-        checkStartIsDisabled
-      })
-    }
-
+  saveCheckWindow: async (req, res, next) => {
+    const requestData = req.body
+    const getValidationResult = req.getValidationResult
+    const checkBody = req.checkBody
     try {
-      if (req.body.checkWindowId) {
-        checkWindow = await checkWindowDataService.sqlFindOneById(req.body.checkWindowId)
+      const validationError = await checkWindowValidator.validate(requestData, checkBody, getValidationResult)
+      const actionName = requestData.checkWindowId ? 'Edit' : 'Add'
+      const flashMessage = requestData.checkWindowId !== ''
+        ? 'Changes have been saved' : requestData[ 'checkWindowName' ] + ' has been created'
+      let adminIsDisabled = toBool(requestData.adminIsDisabled)
+      let checkStartIsDisabled = toBool(requestData.checkStartIsDisabled)
+
+      if (validationError.hasError()) {
+        res.locals.pageTitle = actionName + ' check window'
+        req.breadcrumbs(res.locals.pageTitle)
+        const checkWindowData = checkWindowService.formatUnsavedData(requestData)
+        return res.render('service-manager/check-windows-form', {
+          checkWindowData: checkWindowData,
+          error: validationError,
+          errorMessage: checkWindowErrorMessages,
+          currentYear: moment().format('YYYY'),
+          actionName,
+          breadcrumbs: req.breadcrumbs(),
+          adminIsDisabled,
+          checkStartIsDisabled
+        })
       }
-    } catch (error) {
-      return next(error)
-    }
-
-    let insertNew = false
-
-    if (typeof checkWindow === 'undefined') {
-      insertNew = true
-      checkWindow = {}
-    }
-
-    checkWindow.name = req.body[ 'checkWindowName' ]
-    if (req.body[ 'adminStartDay' ] && req.body[ 'adminStartMonth' ] && req.body[ 'adminStartYear' ]) {
-      checkWindow.adminStartDate = dateService.createLocalTimeFromDayMonthYear(req.body[ 'adminStartDay' ], req.body[ 'adminStartMonth' ], req.body[ 'adminStartYear' ])
-    }
-    if (req.body[ 'checkStartDay' ] && req.body[ 'checkStartMonth' ] && req.body[ 'checkStartYear' ]) {
-      checkWindow.checkStartDate = dateService.createLocalTimeFromDayMonthYear(req.body[ 'checkStartDay' ], req.body[ 'checkStartMonth' ], req.body[ 'checkStartYear' ])
-    }
-    checkWindow.checkEndDate = dateService.createLocalTimeFromDayMonthYear(req.body[ 'checkEndDay' ], req.body[ 'checkEndMonth' ], req.body[ 'checkEndYear' ])
-    // Ensure check end date time is set to the last minute of the particular day
-    checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
-
-    // Auditing? Question for BAs.
-
-    try {
-      if (insertNew) {
-        await checkWindowDataService.sqlCreate(checkWindow)
-      } else {
-        await checkWindowDataService.sqlUpdate(checkWindow)
-      }
+      await checkWindowService.save(requestData)
       req.flash('info', flashMessage)
     } catch (error) {
-      winston.error('Could not save check windows data.', error)
       return next(error)
     }
-
     return res.redirect('/service-manager/check-windows')
   },
 
@@ -323,31 +232,18 @@ const controller = {
    * @returns {Promise.<*>}
    */
   removeCheckWindow: async (req, res, next) => {
-    let checkWindow
-
     if (!req.params.checkWindowId) {
       return res.redirect('/service-manager/check-windows')
     }
-
+    let result
     try {
-      checkWindow = await checkWindowDataService.sqlFindOneById(req.params.checkWindowId)
-    } catch (err) {
-      return next(err)
+      result = await checkWindowService.markDeleted(req.params.checkWindowId)
+    } catch (error) {
+      return next(error)
     }
-
-    if (checkWindow) {
-      if (Date.parse(checkWindow.checkStartDate) < moment.now()) {
-        req.flash('error', 'Deleting an active check window is not allowed.')
-      } else {
-        try {
-          await checkWindowDataService.sqlDeleteCheckWindow(req.params.checkWindowId)
-          req.flash('info', 'Check window deleted.')
-        } catch (error) {
-          req.flash('error', 'Error trying to delete check window.')
-        }
-      }
-      return res.redirect('/service-manager/check-windows')
-    }
+    const { type, message } = result
+    req.flash(type, message)
+    return res.redirect('/service-manager/check-windows')
   }
 }
 

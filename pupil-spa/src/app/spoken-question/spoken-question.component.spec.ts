@@ -34,6 +34,12 @@ describe('SpokenQuestionComponent', () => {
     fixture = TestBed.createComponent(SpokenQuestionComponent);
     component = fixture.componentInstance;
 
+    // Mock out the soundComponent that should be passed in as an Input
+    component.soundComponent = {
+      playEndOfQuestionSound() {},
+      playTimeRunningOutAlertSound() {}
+    };
+
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
     // prevent SpeechServiceMock from calling 'end' by default

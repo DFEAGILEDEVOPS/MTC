@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
 import { QuestionRendered } from '../services/audit/auditEntry';
@@ -16,6 +16,17 @@ import { QuestionService } from '../services/question/question.service';
 export class SpokenQuestionComponent extends QuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscription: Subscription;
+
+  /**
+   * Set to true after the audible alert has played to indicate the end of the question time is near.
+   * @type {boolean}
+   */
+  private hasAudibleAlertPlayed = false;
+
+  /**
+   * Reference to the Sound component
+   */
+  @Input() public soundComponent;
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -51,5 +62,23 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  /**
+   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
+   */
+  preSendTimeoutEvent() {
+    this.soundComponent.playEndOfQuestionSound();
+  }
+
+  /**
+   * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
+   * @param remainingTime
+   */
+  countdownIntervalHook(remainingTime) {
+    if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
+      this.soundComponent.playTimeRunningOutAlertSound();
+      this.hasAudibleAlertPlayed = true;
+    }
   }
 }

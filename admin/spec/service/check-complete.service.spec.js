@@ -11,7 +11,7 @@ const checkMock = require('../mocks/check')
 
 describe('check-complete.service', () => {
   describe('happy path', () => {
-    let service
+    let service, completedCheckDataServiceSpy
     const pupilMock = {
       id: 1,
       school: 9991001,
@@ -36,7 +36,7 @@ describe('check-complete.service', () => {
       service = require('../../services/check-complete.service')
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
       spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
+      completedCheckDataServiceSpy = spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
       spyOn(markingService, 'mark').and.returnValue(Promise.resolve())
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
       spyOn(completedCheckDataService, 'sqlFindOneByCheckCode')
@@ -53,6 +53,18 @@ describe('check-complete.service', () => {
       await service.completeCheck(completedCheck)
       expect(completedCheckDataService.sqlAddResult).toHaveBeenCalledTimes(1)
       expect(markingService.mark).toHaveBeenCalledTimes(1)
+      done()
+    })
+
+    it('passes a moment to receivedByServerAt', async (done) => {
+      // override initial spyOn to callFake for parameter checking
+      completedCheckDataServiceSpy.and.callFake((checkCode, completedCheck, receivedByServerAt) => {
+        expect(moment.isMoment(receivedByServerAt)).toBe(true)
+        return Promise.resolve()
+      })
+
+      await service.completeCheck(completedCheck)
+      expect(completedCheckDataService.sqlAddResult).toHaveBeenCalledTimes(1)
       done()
     })
 

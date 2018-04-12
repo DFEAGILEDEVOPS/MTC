@@ -16,17 +16,17 @@
         <div>
             <h1 class="heading-xlarge">Pupil register</h1>
             <p class="lede">
-                This list uses anonymous pupil data in the format Pupil 1, Pupil 2, etc. If you need to add more pupils please follow this pattern. Do not use real pupil data. To withdraw pupils, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
+                This list is pre-populated using information from your school's census. Review your list and add additional pupils, if required. If a pupil is not going to participate, go to <a href="/pupils-not-taking-the-check">Pupils not taking the check</a>.
             </p>
             <div class="button-wrapper">
                 <% if (isFeatureEnabled('pupilAdd')) { %>
-                <a class="button button-secondary" href="/school/pupil/add"> Add pupil </a>
+                <a class="button button-secondary" href="/pupil-register/pupil/add"> Add pupil </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add pupil </a>
                 <% } %>
 
                 <% if (isFeatureEnabled('pupilUpload')) { %>
-                <a class="button button-secondary" href="/school/pupil/add-batch-pupils"> Add multiple pupils </a>
+                <a class="button button-secondary" href="/pupil-register/pupil/add-batch-pupils"> Add multiple pupils </a>
                 <% } else { %>
                 <a class="button button-secondary disabled-link" href="#"> Add multiple pupils </a>
                 <% } %>
@@ -36,13 +36,13 @@
             <thead>
                 <tr>
                     <th scope="col" class="two-thirds">
-                        <a class="no-underline" id="sortingLink" href="/school/pupil-register/name/<%= htmlSortDirection.name %>">Pupil<span class="<%= arrowSortDirection.name %>"><span>Sort by pupil <%= htmlSortDirection.name %></span></span></a>
+                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/name/<%= htmlSortDirection.name %>">Pupil<span class="<%= arrowSortDirection.name %>"><span>Sort by pupil <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline" id="sortingLink" href="/school/pupil-register/group/<%= htmlSortDirection.group %>">Group<span class="<%= arrowSortDirection.group %>"><span>Sort by group <%= htmlSortDirection.group %></span></span></a>
+                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/group/<%= htmlSortDirection.group %>">Group<span class="<%= arrowSortDirection.group %>"><span>Sort by group <%= htmlSortDirection.group %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline" id="sortingLink" href="/school/pupil-register/status/<%= htmlSortDirection.status %>">Status<span class="<%= arrowSortDirection.status %>"><span>Sort by status <%= htmlSortDirection.status %></span></span></a>
+                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/status/<%= htmlSortDirection.status %>">Status<span class="<%= arrowSortDirection.status %>"><span>Sort by status <%= htmlSortDirection.status %></span></span></a>
                     </th>
                 </tr>
             </thead>
@@ -52,7 +52,7 @@
                     <td<% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="highlight-item"<% } %>>
                         <div class="highlight-wrapper">
                             <% if (isFeatureEnabled('pupilEdit')) { %>
-                                <a class="bold-small truncate" href="/school/pupil/edit/<%= p.urlSlug %>" >
+                                <a class="bold-small truncate" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" >
                                     <%= `${p.fullName}` %>
                                 </a>
                                 <% } else { %>
@@ -85,7 +85,7 @@
                     <li><a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a></li>
                     <li><a href="/group/pupils-list">Group pupils</a></li>
                     <li><a href="/pupils-not-taking-the-check">Pupils not taking the check</a></li>
-                    <li><a href="#">Access arrangements</a></li>
+                    <li><a class="disabled-link" href="#">Access arrangements</a></li>
                 </ul>
             </nav>
         </aside>
