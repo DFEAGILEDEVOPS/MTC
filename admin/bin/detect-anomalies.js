@@ -23,7 +23,6 @@ let reportedAnomalies = []
 function detectAnomalies (check) {
   detectWrongNumberOfAnswers(check)
   detectPageRefresh(check)
-  detectWrongNumberOfInputs(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
@@ -40,14 +39,6 @@ function detectWrongNumberOfAnswers (check) {
   const numberOfAnswers = check.data.answers.length
   if (numberOfAnswers !== numberOfQuestions) {
     report(check, 'Wrong number of answers', numberOfAnswers, numberOfQuestions)
-  }
-}
-
-function detectWrongNumberOfInputs (check) {
-  const numberOfQuestions = check.data.questions.length
-  const numberOfInputs = check.data.inputs.length
-  if (numberOfInputs !== numberOfQuestions) {
-    report(check, 'Wrong number of inputs', numberOfInputs, numberOfQuestions)
   }
 }
 
