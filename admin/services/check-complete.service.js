@@ -25,8 +25,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
     await pupilDataService.sqlUpdate({ id: pupil.id, pinExpiresAt: moment.utc(), pin: null })
   }
   // Timestamp the request
-  // TODO: This timestamp should be recorded in the application service tier instead
-  completedCheck.receivedByServerAt = moment.utc()
+  const receivedByServerAt = moment.utc()
 
   const existingCheck = await checkDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
   if (!existingCheck.startedAt) {
@@ -41,7 +40,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   }
 
   // store to data store
-  await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck)
+  await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck, receivedByServerAt)
 
   if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
