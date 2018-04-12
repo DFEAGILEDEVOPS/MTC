@@ -22,6 +22,7 @@ let reportedAnomalies = []
 
 function detectAnomalies (check) {
   detectWrongNumberOfAnswers(check)
+  detectAnswersAgainstQuestionsCorrespodance(check)
   detectPageRefresh(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
@@ -195,6 +196,15 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
       report(check, 'Answer from inputs captured does not equal given answer', answerFromInputs, answer.answer, `Q${idx + 1}`)
     }
   })
+}
+
+function detectAnswersAgainstQuestionsCorrespodance (check) {
+  const answerFactors = check.data.answers.map(answer => ({factor1: answer.factor1, factor2: answer.factor2}))
+  const questionFactors = check.data.questions.map(answer => ({factor1: answer.factor1, factor2: answer.factor2}))
+  const difference = R.difference(answerFactors, questionFactors)
+  if (difference.length > 0) {
+    report(check, 'Answer factors do not correspond to the question factors', difference.length, 0)
+  }
 }
 
 function reconstructAnswerFromInputs (events) {
