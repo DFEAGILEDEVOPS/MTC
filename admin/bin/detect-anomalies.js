@@ -28,6 +28,7 @@ function detectAnomalies (check) {
   detectMissingAudits(check)
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
   detectInputThatDoesNotCorrespondToAnswers(check)
+  detectQuestionsThatWereShownForTooLong(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -128,7 +129,7 @@ function detectMissingAudits (check) {
   }
 
   const detectMissingSingleAudit = function (auditType) {
-    // Detect events should occur only once
+    // Detect events that should occur only once
     const audit = check.data.audit.find(audit => audit.type === auditType)
     if (!audit) {
       report(check, `Missing audit ${auditType}`)
@@ -241,6 +242,76 @@ function getCheckDate (check) {
     checkDate = checkStartDate.isValid() ? dateService.formatUKDate(checkStartDate) : ''
   }
   return checkDate
+}
+
+function addRelativeTimings (elems) {
+  let lastTime, current
+  for (let elem of elems) {
+    if (!elem) {
+      continue
+    }
+
+    if (!elem.clientTimestamp) {
+      continue
+    }
+
+    current = moment(elem.clientTimestamp)
+    if (lastTime) {
+      const secondsDiff = (
+        current.valueOf() - lastTime.valueOf()
+      ) / 1000
+      elem.relativeTiming = secondsDiff
+    } else {
+      elem.relativeTiming = 0
+    }
+    lastTime = current
+  }
+}
+
+function detectQuestionsThatWereShownForTooLong (check) {
+  const audits = filterAllRealQuestionsAndPauses(check)
+  const config = check.data.config
+  const head = R.head(audits)
+  const tail = R.tail(audits)
+  if (head.type !== 'PauseRendered') {
+    throw new Error('First audit is NOT a pause')
+  }
+  // Add relative timings to each of the elements
+  addRelativeTimings(audits)
+  const expectedValue = config.questionTime * 1.05 // allow a 5% tolerance for computer processing
+
+  // To pick up the question number we have to look at the QuestionRendered event and no the following
+  // pause event.
+  let questionNumber
+
+  for (let audit of tail) {
+    if (audit.type === 'QuestionRendered') {
+      questionNumber = R.path(['data', 'sequenceNumber'], audit)
+    }
+    // We detect the relative timing of the pause, as the relative timing of this shows the time the question was shown
+    if (audit.type === 'PauseRendered' && audit.relativeTiming > expectedValue) {
+      report(check, 'Question was shown for too long', audit.relativeTiming, expectedValue, questionNumber)
+    }
+  }
+}
+
+function filterAllRealQuestionsAndPauses (check) {
+  let hasCheckStarted = false
+  const output = []
+  for (let audit of check.data.audit) {
+    if (audit.type === 'CheckStarted') {
+      hasCheckStarted = true
+    }
+    if (!hasCheckStarted) {
+      // Don't filter practise questions
+      continue
+    }
+    if (audit.type !== 'QuestionRendered' && audit.type !== 'PauseRendered') {
+      continue
+    }
+    output.push(audit)
+  }
+  return output
 }
 
 function report (check, message, testedValue = null, expectedValue = null, questionNumber = null) {
