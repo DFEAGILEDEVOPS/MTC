@@ -200,10 +200,10 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
 
 function detectAnswersAgainstQuestionsCorrespodance (check) {
   const answerFactors = check.data.answers.map(answer => ({factor1: answer.factor1, factor2: answer.factor2}))
-  const questionFactors = check.data.questions.map(answer => ({factor1: answer.factor1, factor2: answer.factor2}))
+  const questionFactors = check.data.questions.map(question => ({factor1: question.factor1, factor2: question.factor2}))
   const difference = R.difference(answerFactors, questionFactors)
   if (difference.length > 0) {
-    report(check, 'Answer factors do not correspond to the question factors', difference.length, 0)
+    report(check, 'Answers factors do not correspond to the questions factors', difference.length, 0)
   }
 }
 
