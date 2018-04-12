@@ -290,7 +290,7 @@ function detectQuestionsThatWereShownForTooLong (check) {
     }
     // We detect the relative timing of the pause, as the relative timing of this shows the time the question was shown
     if (audit.type === 'PauseRendered' && audit.relativeTiming > expectedValue) {
-      report(check, 'Question was shown for too long', audit.relativeTiming, expectedValue, questionNumber)
+      report(check, 'Question may have been shown for too long', audit.relativeTiming, expectedValue, questionNumber)
     }
   }
 }
