@@ -98,6 +98,28 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
+   * Add an single character utterance to the underlying webspeech api
+   * Don't cancel speech, let it queue inside synth
+   * @param utterance
+   */
+  speakChar(utterance: string): void {
+    if (!this.isSupported()) {
+      return;
+    }
+    const sayThis = new SpeechSynthesisUtterance(utterance);
+    sayThis.onstart = (event) => {
+      this.announceSpeechStarted();
+      this.audit.addEntry(new UtteranceStarted({ utterance }));
+    };
+    sayThis.onend = (event) => {
+      this.audit.addEntry(new UtteranceEnded({ utterance }));
+      this.announceSpeechEnded();
+      this.announceSpeechReset();
+    };
+    this.synth.speak(sayThis);
+  }
+
+  /**
    * Parse the source of a NativeElement and speak the text
    * @param nativeElement
    */
@@ -130,6 +152,14 @@ export class SpeechService implements OnDestroy {
   cancel(): void {
     // console.log('SpeechAPI cancel() called');
     this.synth.cancel();
+  }
+
+  isPending(): boolean {
+    return this.synth.pending;
+  }
+
+  isSpeaking(): boolean {
+    return this.synth.speaking;
   }
 
   /**
