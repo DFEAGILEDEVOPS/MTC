@@ -1,6 +1,6 @@
 #!/bin/bash -x
 cd ../admin
-yarn install
+npm install
 cd ../admin-assets
 rm -rf ./assets
 cp -a ../admin/public/. ./assets
