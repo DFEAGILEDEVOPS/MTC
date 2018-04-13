@@ -231,23 +231,26 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Waits for the end of pupils' input speech queue.
    * The input will be read out completely when the speechEnded event
-   * is triggered and there is nothing in the queue anymore AND nothing
-   * is currently being spoken - some speechSynthesis implementations
-   * set pending to false before the last item starts being read out
+   * is triggered and nothing is currently being spoken - although
+   * the speechSynthesis implementations appear to have a race condition
+   * when getting the speaking status so a small artificial delay
+   * has to be introduced
    */
   waitForEndOfSpeech(): Promise<any> {
     return new Promise(resolve => {
-      if (!this.speechService.isPending()) {
+      if (!this.speechService.isSpeaking()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
         // wait for the last speechEnded event to resolve()
         const subscription = this.speechService.speechStatus.subscribe(speechStatus => {
-        if (speechStatus === SpeechService.speechEnded
-            && !this.speechService.isPending()
-            && !this.speechService.isSpeaking()) {
-            resolve();
-            subscription.unsubscribe();
+          if (speechStatus === SpeechService.speechEnded) {
+            this.window.setTimeout(() => {
+              if (!this.speechService.isSpeaking()) {
+                resolve();
+                subscription.unsubscribe();
+              }
+            }, 100);
           }
         });
       }
@@ -260,21 +263,21 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * @param {string} char
    */
   addChar(char: string) {
-    if (this.remainingTime <= 0) {
+    if (this.submitted) {
         return;
     }
     // console.log(`addChar() called with ${char}`);
-    if (this.questionService.getConfig().speechSynthesis) {
-      // if user input interrupts the question being read out, stop the question
-      // and start the timer
-      if (!this.timeout) {
-        this.speechService.cancel();
-        this.startTimer();
-      }
-      this.speechService.speakChar(char);
-    }
-
     if (this.answer.length < 5) {
+      if (this.questionService.getConfig().speechSynthesis) {
+        // if user input interrupts the question being read out, stop the question
+        // and start the timer
+        if (!this.timeout) {
+          this.speechService.cancel();
+          this.startTimer();
+        }
+        this.speechService.speakChar(char);
+      }
+
       this.answer = this.answer.concat(char);
     }
   }
@@ -284,7 +287,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Return early and do nothing if the timer is up
    */
   deleteChar() {
-    if (this.remainingTime <= 0) {
+    if (this.submitted) {
       return;
     }
 

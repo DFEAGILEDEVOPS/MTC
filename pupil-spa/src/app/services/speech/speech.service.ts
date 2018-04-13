@@ -154,10 +154,9 @@ export class SpeechService implements OnDestroy {
     this.synth.cancel();
   }
 
-  isPending(): boolean {
-    return this.synth.pending;
-  }
-
+  /**
+   * Check if synth is still speaking utterances
+   */
   isSpeaking(): boolean {
     return this.synth.speaking;
   }
