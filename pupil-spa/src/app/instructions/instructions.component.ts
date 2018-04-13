@@ -41,9 +41,6 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onClick() {
     this.auditService.addEntry(new WarmupStarted());
-    if (this.questionService.getConfig().speechSynthesis) {
-      this.speechService.speak('Speech output is on.');
-    }
     this.router.navigate(['check']);
   }
 

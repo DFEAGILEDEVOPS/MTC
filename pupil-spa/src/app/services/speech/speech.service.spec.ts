@@ -41,6 +41,10 @@ describe('SpeechService', () => {
 
     it('calls the audit service on start and end', inject([SpeechService], (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
+      // Mock the setTimeout method to get the results instantly
+      spyOn(window, 'setTimeout').and.callFake((fun, time) => {
+        fun();
+      });
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
       spyOn(window.speechSynthesis, 'speak').and.callFake((utterance) => {
         // call the onstart and onend function if they exist
@@ -64,6 +68,10 @@ describe('SpeechService', () => {
 
     it('calls the audit service on start and end', inject([SpeechService], (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
+      // Mock the setTimeout method to get the results instantly
+      spyOn(window, 'setTimeout').and.callFake((fun, time) => {
+        fun();
+      });
       // We need to mock out the actual speech interface, as otherwise this test will emit speech
       spyOn(window.speechSynthesis, 'speak').and.callFake((utterance) => {
         // call the onstart and onend function if they exist

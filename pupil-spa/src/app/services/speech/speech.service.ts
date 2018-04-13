@@ -54,6 +54,17 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
+   * Chrome has problems with speaking immediately after .cancel()
+   * and an 'artificial delay' is needed
+   */
+  synthSpeak(sayThis: SpeechSynthesisUtterance) {
+    const _window = this.windowRefService.nativeWindow;
+    _window.setTimeout(() => {
+      this.synth.speak(sayThis);
+    }, 500);
+  }
+
+  /**
    * Add an utterance to the underlying webspeech api
    * @param utterance
    */
@@ -72,7 +83,7 @@ export class SpeechService implements OnDestroy {
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synth.speak(sayThis);
+    this.synthSpeak(sayThis);
   }
 
   /**
@@ -94,7 +105,7 @@ export class SpeechService implements OnDestroy {
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synth.speak(sayThis);
+    this.synthSpeak(sayThis);
   }
 
   /**
@@ -116,7 +127,7 @@ export class SpeechService implements OnDestroy {
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synth.speak(sayThis);
+    this.synthSpeak(sayThis);
   }
 
   /**
