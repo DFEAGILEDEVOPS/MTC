@@ -44,5 +44,5 @@ COPY . .
 
 RUN bundle install
 
-CMD bundle exec rake parallel NODES=6 GROUP_SIZE=16 OPTS='-t @check,@event_auditing,@feedback,@header_footer,@instructions'
-CMD bundle exec rake parallel NODES=6 GROUP_SIZE=16 OPTS='-t ~@check -t ~@event_auditing -t ~@feedback -t ~@header_footer -t ~@instructions'
+CMD bundle exec rake parallel NODES=6 GROUP_SIZE=6 OPTS='-t @check,@event_auditing,@feedback,@header_footer,@instructions'
+CMD bundle exec rake parallel NODES=6 GROUP_SIZE=6 OPTS='-t ~@check -t ~@event_auditing -t ~@feedback -t ~@header_footer -t ~@instructions'
