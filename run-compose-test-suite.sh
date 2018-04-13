@@ -4,8 +4,8 @@ set -e
 
 docker-compose -f docker-compose.yml -f docker-compose.test.yml build
 docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d pupil-app
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up pupil-tests
 docker-compose -f docker-compose.yml -f docker-compose.test.yml up admin-tests
+docker-compose -f docker-compose.yml -f docker-compose.test.yml up pupil-tests
 
 # capture test container exit codes
 ADMIN_RETURN_CODE=$(docker wait admin_tests)
