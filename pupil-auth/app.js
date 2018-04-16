@@ -1,0 +1,169 @@
+'use strict'
+
+require('dotenv').config()
+
+const express = require('express')
+const piping = require('piping')
+const path = require('path')
+const morgan = require('morgan')
+const uuidV4 = require('uuid/v4')
+const cors = require('cors')
+const helmet = require('helmet')
+const config = require('./config')
+const devWhitelist = require('./whitelist-dev')
+const azure = require('./azure')
+const winston = require('winston')
+const bodyParser = require('body-parser')
+
+if (process.env.NODE_ENV !== 'production') {
+  winston.level = 'debug'
+}
+
+const unsetVars = []
+Object.keys(config).map((key) => {
+  if (config[key] === undefined && !devWhitelist.includes(key)) {
+    unsetVars.push(`${key}`)
+  }
+})
+
+if (unsetVars.length > 0) {
+  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
+  process.exitCode = 1
+  throw new Error(error)
+}
+
+const index = require('./routes/index')
+
+if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
+const app = express()
+
+if (config.Logging.Express.UseWinston === 'true') {
+  /**
+   * Express logging to winston
+   */
+  const expressWinston = require('express-winston')
+  app.use(expressWinston.logger({
+    transports: [
+      new winston.transports.Console({
+        json: true,
+        colorize: true
+      })
+    ],
+    meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+    // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+    colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+    ignoreRoute: function (req, res) {
+      return false
+    } // optional: allows to skip some log messages based on request and/or response
+  }))
+} else {
+  app.use(morgan('dev'))
+}
+
+/* Security Directives */
+
+app.use(cors())
+app.use(helmet())
+const scriptSources = ["'self'", "'unsafe-inline'"]
+const styleSources = ["'self'", "'unsafe-inline'"]
+const imgSources = ["'self'", 'data:']
+const objectSources = ["'self'"]
+
+if (config.AssetPath !== '/') {
+  // add CSP policy for assets domain
+  scriptSources.push(config.AssetPath)
+  styleSources.push(config.AssetPath)
+  imgSources.push(config.AssetPath)
+  objectSources.push(config.AssetPath)
+}
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: scriptSources,
+    fontSrc: ["'self'", 'data:'],
+    styleSrc: styleSources,
+    imgSrc: imgSources,
+    connectSrc: ["'self'"],
+    objectSrc: objectSources,
+    mediaSrc: ["'none'"],
+    childSrc: ["'none'"]
+  }
+}))
+
+// Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
+const oneYearInSeconds = 31536000
+app.use(helmet.hsts({
+  maxAge: oneYearInSeconds,
+  includeSubDomains: false,
+  preload: false
+}))
+
+// azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
+// if production ensure x-forwarded-proto is https OR x-arr-ssl is present
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    app.enable('trust proxy')
+    req.headers['x-forwarded-proto'] = req.header('x-arr-ssl') ? 'https' : 'http'
+  }
+  next()
+})
+process.on('unhandledRejection', error => {
+    // Will print "unhandledRejection err is not defined"
+    console.log('unhandledRejection', error);
+});
+// force HTTPS in azure
+app.use((req, res, next) => {
+  if (azure.isAzure()) {
+    if (req.protocol !== 'https') {
+      res.redirect(`https://${req.header('host')}${req.url}`)
+    }
+  } else {
+    next()
+  }
+})
+
+/* END:Security Directives */
+
+require('./helpers')(app)
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+
+// uncomment after placing your favicon in /public
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+
+app.use(bodyParser.json())
+
+app.use('/', index)
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  let err = new Error('Not Found')
+  err.status = 404
+  next(err)
+})
+
+// error handler
+app.use(function (err, req, res, next) {
+  let errorId = uuidV4()
+  // set locals, only providing error in development
+  // @TODO: change this to a real logger with an error string that contains
+  // all pertinent information. Assume 2nd/3rd line support would pick this
+  // up from logging web interface (e.g. ELK / LogDNA)
+  winston.error('ERROR: ' + err.message + ' ID:' + errorId)
+  winston.error(err.stack)
+
+  // render the error page
+  // @TODO: provide an error code and phone number? for the user to call support
+  res.locals.message = 'An error occurred'
+  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.errorId = errorId
+  res.locals.errorCode = ''
+  res.status(err.status || 500)
+  res.locals.pageTitle = 'Error'
+  res.render('error')
+})
+
+module.exports = app
