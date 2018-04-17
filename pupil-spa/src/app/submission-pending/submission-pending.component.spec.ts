@@ -7,6 +7,10 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { AuditService } from '../services/audit/audit.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>;
@@ -22,6 +26,8 @@ describe('SubmissionPendingComponent', () => {
       providers: [
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
       ]
     })
