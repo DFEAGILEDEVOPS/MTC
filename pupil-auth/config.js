@@ -15,7 +15,7 @@ module.exports = {
   GOOGLE_TRACKING_ID: process.env.GOOGLE_TRACKING_ID,
   MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/mtc',
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
-  PORT: process.env.PORT || '3001',
+  PORT: process.env.PORT || '3002',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
   QUESTION_TIME_LIMIT: 5,
   RESTART_MAX_ATTEMPTS: 2,
