@@ -1,6 +1,8 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener, ElementRef, OnDestroy } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-loading',
@@ -8,7 +10,7 @@ import { PauseRendered } from '../services/audit/auditEntry';
   styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent implements AfterViewInit {
+export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   @Input()
   public question = 0;
@@ -22,7 +24,10 @@ export class LoadingComponent implements AfterViewInit {
   @Output()
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private auditService: AuditService) {
+  constructor(private auditService: AuditService,
+              protected questionService: QuestionService,
+              protected speechService: SpeechService,
+              protected elRef: ElementRef) {
   }
 
   /**
@@ -45,9 +50,19 @@ export class LoadingComponent implements AfterViewInit {
     setTimeout(() => {
       this.sendTimeoutEvent();
     }, this.loadingTimeout * 1000);
+
+    // wait for the component to be rendered first, before parsing the text
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.speakElement(this.elRef.nativeElement);
+    }
   }
 
   sendTimeoutEvent() {
     this.timeoutEvent.emit(null);
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    this.speechService.cancel();
   }
 }

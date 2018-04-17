@@ -6,6 +6,9 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { StorageService } from '../services/storage/storage.service';
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
@@ -18,6 +21,8 @@ describe('SpokenPracticeQuestionComponent', () => {
       providers: [
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
         WindowRefService,
       ]
     })
@@ -30,7 +35,7 @@ describe('SpokenPracticeQuestionComponent', () => {
 
     speechService = fixture.debugElement.injector.get(SpeechService);
     auditService = fixture.debugElement.injector.get(AuditService);
-    spyOn(speechService, 'speak');
+    spyOn(speechService, 'speakQuestion');
     spyOn(auditService, 'addEntry');
 
     fixture.detectChanges();
@@ -45,7 +50,7 @@ describe('SpokenPracticeQuestionComponent', () => {
   });
 
   it('should start speaking straight away', () => {
-    expect(speechService.speak).toHaveBeenCalledTimes(1);
+    expect(speechService.speakQuestion).toHaveBeenCalledTimes(1);
   });
 
   describe ('the timer', () => {
@@ -55,7 +60,7 @@ describe('SpokenPracticeQuestionComponent', () => {
     });
 
     it('starts after the speech has ended', () => {
-      speechService.speechStatusSource.next(SpeechServiceMock.speechEnded);
+      speechService.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
       expect(component['timeout']).toBeDefined();
       expect(component['countdownInterval']).toBeTruthy();
     });
