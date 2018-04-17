@@ -47,13 +47,22 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     // console.log('loading.component: after view init called');
     this.auditService.addEntry(new PauseRendered());
-    setTimeout(() => {
-      this.sendTimeoutEvent();
-    }, this.loadingTimeout * 1000);
-
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      const subscription = this.speechService.speechStatus.subscribe(speechStatus => {
+        this.zone.run(() => {
+          if (speechStatus === SpeechService.speechEnded) {
+            subscription.unsubscribe();
+            this.sendTimeoutEvent();
+          }
+        });
+      });
+    } else {
+      setTimeout(() => {
+        this.sendTimeoutEvent();
+      }, this.loadingTimeout * 1000);
     }
   }
 
