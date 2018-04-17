@@ -27,7 +27,6 @@ const storeLogonEvent = async (pupilId, schoolPin, pupilPin, isAuthenticated, ht
 }
 
 const getAuth = async (req, res) => {
-    console.log(req.body)
   const {pupilPin, schoolPin} = req.body
 
   if (!pupilPin || !schoolPin) {

@@ -39,7 +39,7 @@ describe('Questions controller', () => {
 
     goodReq = httpMocks.createRequest({
       method: 'POST',
-      url: '/api/questions',
+      url: '/auth',
       session: {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       },
@@ -82,7 +82,7 @@ describe('Questions controller', () => {
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
     getActiveCheckWindowSpy = jasmine.createSpy().and.callFake(options['check-window.service.getActiveCheckWindow'])
 
-    return proxyquire('../../controllers/questions', {
+    return proxyquire('../../controllers/auth', {
       '../services/pupil-authentication.service': {
         authenticate: authenticateSpy,
         getPupilDataForSpa: getPupilDataForSpaSpy
