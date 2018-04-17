@@ -5,6 +5,7 @@
 
 export const environment = {
   apiURL: 'http://localhost:3001',
+  authURL: 'http://localhost:3002',
   production: false,
   // api/check-started
   // Delay (ms) during retries

@@ -24,7 +24,7 @@ export class UserService {
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({headers: headers});
 
-      await this.http.post(`${environment.apiURL}/api/questions`,
+      await this.http.post(`${environment.authURL}/auth`,
         { schoolPin, pupilPin },
         requestArgs)
         .toPromise()
