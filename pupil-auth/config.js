@@ -81,5 +81,6 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  AssetPath: process.env.ASSET_PATH || '/'
+  AssetPath: process.env.ASSET_PATH || '/',
+  JwtSecret: process.env.JWT_SECRET || '0bd8fbdab903fb50455cb4cf7ba9fb5beed3f209687ed2644aa731ee8231e14c'
 }

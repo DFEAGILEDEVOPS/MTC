@@ -6,6 +6,7 @@ const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
+const config = require('../config');
 
 /** @namespace */
 
@@ -24,7 +25,7 @@ const jwtService = {
       throw new Error('Check window end date is required')
     }
     const jwtId = uuidv4()
-    const jwtSecret = await crypto.randomBytes(32).toString('hex')
+    const jwtSecret = config.JwtSecret;
     await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
     // TODO: for additional security add in a device Id
     const payload = {
