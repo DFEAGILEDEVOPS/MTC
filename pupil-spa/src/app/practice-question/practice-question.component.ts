@@ -187,7 +187,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.timeout) {
       // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
+    } else {
+      // timeout didn't start so nothing to submit
+      return false;
     }
+
     // Clear the interval timer
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
@@ -238,7 +242,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   waitForEndOfSpeech(): Promise<any> {
     return new Promise(resolve => {
-      if (!this.speechService.isSpeaking()) {
+      if (!this.speechService.isPending() && !this.speechService.isSpeaking()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
@@ -263,7 +267,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * @param {string} char
    */
   addChar(char: string) {
-    if (this.submitted) {
+    if (this.submitted || (!this.timeout && !this.speechService.isSpeaking())) {
         return;
     }
     // console.log(`addChar() called with ${char}`);

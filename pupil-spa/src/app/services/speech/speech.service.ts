@@ -173,6 +173,13 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
+   * Check if synth still has pending speaking utterances
+   */
+  isPending(): boolean {
+    return this.synth.pending;
+  }
+
+  /**
    * Ensure that we don't carry on speaking if the app is unloaded
    */
   ngOnDestroy(): void {

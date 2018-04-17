@@ -39,7 +39,7 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
     this.remainingTime = this.questionTimeoutSecs;
     this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
-        if (speechStatus === SpeechService.questionSpeechEnded) {
+        if (!this.timeout && speechStatus === SpeechService.questionSpeechEnded) {
           this.startTimer();
         }
       });
