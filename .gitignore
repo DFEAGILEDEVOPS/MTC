@@ -62,12 +62,12 @@ jspm_packages
 /pupil/public/*
 
 # pupil-spa
-test/pupil/test/reports/
-test/pupil/test/screenshots/*.png
+test/pupil/reports/
+test/pupil/screenshots/*.png
 test/pupil/test/screenshots/*.html
-test/pupil/test/reports/*
-test/pupil/test/*.png
-test/pupil/test/*.html
+test/pupil/reports/*
+test/pupil/*.png
+test/pupil/*.html
 /pupil-spa/src/public/styles/styles.css
 /pupil-spa/src/public/styles/helpers/helpers.css
 
