@@ -3,6 +3,8 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostList
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-practice-question',
@@ -78,7 +80,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   @Output() public timeoutEvent: EventEmitter<any> = new EventEmitter();
 
   constructor(protected auditService: AuditService,
-              protected windowRefService: WindowRefService) {
+              protected windowRefService: WindowRefService,
+              protected questionService: QuestionService,
+              protected speechService: SpeechService) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -191,8 +195,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     // console.log(`submitting answer ${this.answer}`);
     this.auditService.addEntry(new QuestionAnswered());
-    this.manualSubmitEvent.emit(this.answer);
     this.submitted = true;
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.waitForEndOfSpeech().then(() => {
+        this.manualSubmitEvent.emit(this.answer);
+      });
+    } else {
+      this.manualSubmitEvent.emit(this.answer);
+    }
     return true;
   }
 
@@ -208,25 +218,79 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       return false;
     }
     // console.log(`practice-question.component: sendTimeoutEvent(): ${this.answer}`);
-    this.timeoutEvent.emit(this.answer);
     this.submitted = true;
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.waitForEndOfSpeech().then(() => {
+        this.timeoutEvent.emit(this.answer);
+      });
+    } else {
+      this.timeoutEvent.emit(this.answer);
+    }
+  }
+
+  /**
+   * Waits for the end of pupils' input speech queue.
+   * The input will be read out completely when the speechEnded event
+   * is triggered and nothing is currently being spoken - although
+   * the speechSynthesis implementations appear to have a race condition
+   * when getting the speaking status so a small artificial delay
+   * has to be introduced
+   */
+  waitForEndOfSpeech(): Promise<any> {
+    return new Promise(resolve => {
+      if (!this.speechService.isSpeaking()) {
+        // if there is nothing in the queue, resolve() immediately
+        resolve();
+      } else {
+        // wait for the last speechEnded event to resolve()
+        const subscription = this.speechService.speechStatus.subscribe(speechStatus => {
+          if (speechStatus === SpeechService.speechEnded) {
+            this.window.setTimeout(() => {
+              if (!this.speechService.isSpeaking()) {
+                resolve();
+                subscription.unsubscribe();
+              }
+            }, 100);
+          }
+        });
+      }
+    });
   }
 
   /**
    * Add a character to the answer - up to a max of 5 which is all we can show
+   * Return early and do nothing if the timer is up
    * @param {string} char
    */
   addChar(char: string) {
+    if (this.submitted) {
+        return;
+    }
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
+      if (this.questionService.getConfig().speechSynthesis) {
+        // if user input interrupts the question being read out, stop the question
+        // and start the timer
+        if (!this.timeout) {
+          this.speechService.cancel();
+          this.startTimer();
+        }
+        this.speechService.speakChar(char);
+      }
+
       this.answer = this.answer.concat(char);
     }
   }
 
   /**
    * Delete a character from the end of the answer if there is one
+   * Return early and do nothing if the timer is up
    */
   deleteChar() {
+    if (this.submitted) {
+      return;
+    }
+
     if (this.answer.length > 0) {
       this.answer = this.answer.substr(0, this.answer.length - 1);
     }
