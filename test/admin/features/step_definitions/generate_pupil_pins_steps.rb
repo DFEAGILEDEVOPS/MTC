@@ -126,7 +126,7 @@ When(/^I have generated a pin for a pupil$/) do
 end
 
 When(/^I expired the pupil pin$/) do
-  ct = Time.now
+  ct = Time.now - 4000
   new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
   SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
 end
