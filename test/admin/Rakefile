@@ -13,7 +13,7 @@ end
 
 desc 're run failing test'
 Cucumber::Rake::Task.new :failing_tests, 'Re-run failing tests from the rerun.txt file' do |t|
-  t.cucumber_opts = "@rerun.txt -f pretty DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
+  t.cucumber_opts = "@rerun.txt -f html -o #{'reports/rerun_output_' + Time.now.strftime('%I_%M_%S_%L') + '.html'} -f pretty DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
 end
 
 at_exit do
