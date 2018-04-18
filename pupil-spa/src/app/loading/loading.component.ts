@@ -51,14 +51,11 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
 
-      const subscription = this.speechService.speechStatus.subscribe(speechStatus => {
-        this.zone.run(() => {
-          if (speechStatus === SpeechService.speechEnded) {
-            subscription.unsubscribe();
-            this.sendTimeoutEvent();
-          }
+      setTimeout(() => {
+        this.speechService.waitForEndOfSpeech().then(() => {
+          this.sendTimeoutEvent();
         });
-      });
+      }, this.loadingTimeout * 1000);
     } else {
       setTimeout(() => {
         this.sendTimeoutEvent();

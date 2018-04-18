@@ -167,6 +167,37 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
+   * Waits for the end of pupils' input speech queue.
+   * The input will be read out completely when the speechEnded event
+   * is triggered and nothing is currently being spoken - although
+   * the speechSynthesis implementations appear to have a race condition
+   * when getting the speaking status so a small artificial delay
+   * has to be introduced
+   */
+  waitForEndOfSpeech(): Promise<any> {
+    const _window = this.windowRefService.nativeWindow;
+    return new Promise(resolve => {
+      if (!this.isSpeaking()) {
+        // if there is nothing in the queue, resolve() immediately
+        resolve();
+      } else {
+        // wait for the last speechEnded event to resolve()
+        const subscription = this.speechStatus.subscribe(speechStatus => {
+          if (speechStatus === SpeechService.speechEnded) {
+            _window.setTimeout(() => {
+              if (!this.isSpeaking()) {
+                resolve();
+                subscription.unsubscribe();
+              }
+            }, 500);
+          }
+        });
+      }
+    });
+  }
+
+
+  /**
    * Check if synth is still speaking utterances
    */
   isSpeaking(): boolean {
