@@ -14,7 +14,7 @@ FETCH NEXT FROM db_cursor INTO @schema, @table
 WHILE @@FETCH_STATUS = 0
 BEGIN
   
-      SELECT @sql = 'CREATE TRIGGER ' + @schema + '.audit_' + @table + ' ON ' + @schema + '.' + @table + ' FOR UPDATE, INSERT, DELETE
+      SELECT @sql = 'CREATE TRIGGER ' + @schema + '.audit_' + @table + ' ON [' + @schema + '].[' + @table + '] FOR UPDATE, INSERT, DELETE
 AS
   BEGIN
     DECLARE @json nvarchar(max)
@@ -38,7 +38,7 @@ AS
     ELSE
       RETURN
 
-    INSERT INTO ' + @schema + '.audits (rowData, tableName, operation) VALUES (@json, ''' + @table + ''', @operation)
+    INSERT INTO ' + @schema + '.auditLog (rowData, tableName, operation) VALUES (@json, ''' + @table + ''', @operation)
   END'
   -- PRINT @sql
   EXEC sp_executeSql @sql
@@ -48,6 +48,3 @@ END
 
 CLOSE db_cursor
 DEALLOCATE db_cursor
-GO
-
-EXEC mtc_admin.spGenAuditTriggers
