@@ -141,15 +141,16 @@ export class SpeechService implements OnDestroy {
 
     // get all elements containing text from the current component
     const elements = clonedElement.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6, p, li, button'
+      'h1, h2, h3, h4, h5, h6, p, li, button, a'
     );
 
     // add 'artificial' pauses to take visual newlines or spaces into account
     elements.forEach((elem) => {
       elem.textContent += ' , ';
 
-      // fix for <buttons> inside <p> getting added twice
-      if (elem.tagName !== 'BUTTON' || (elem.parentNode !== null && elem.parentNode.tagName !== 'P')) {
+      // fix for <button> and <a> elements inside <p> getting added twice
+      if ((elem.tagName !== 'BUTTON' && elem.tagName !== 'A')
+        || (elem.parentNode !== null && elem.parentNode.tagName !== 'P')) {
         speechText += elem.textContent;
       }
     });
