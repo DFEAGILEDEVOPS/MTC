@@ -4,6 +4,11 @@ Then(/^I should see (.*)'s school name$/) do |teacher|
   expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
 end
 
+Then(/^I should see the school name corresponding to that (.*)$/) do |dfe_number|
+  school_name = SqlDbHelper.find_school_by_dfeNumber(dfe_number)['name']
+  expect(school_landing_page.heading.text).to eql "Multiplication tables check for " + school_name
+end
+
 Given(/^I am on the school landing page$/) do
   step "I am logged in"
   expect(school_landing_page).to be_displayed
