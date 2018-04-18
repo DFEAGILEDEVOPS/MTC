@@ -1,4 +1,4 @@
 #default: -t ~@wip -t ~@manual BASE_URL='http://localhost:3000' DRIVER='selenium_chrome' --format pretty --format html --out reports/report.html
-parallel_chrome: -t 'not @wip' -t 'not @manual' BASE_URL='http://pupil-app' DRIVER='selenium_chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-parallel: -t 'not @wip' -t 'not @manual' BASE_URL='http://pupil-app' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-default: -t 'not @wip' -t 'not @manual' BASE_URL='http://pupil-app' DRIVER='headless_chrome'
+parallel_chrome: -t 'not @wip' -t 'not @manual' DRIVER='selenium_chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+parallel: -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+default: -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome'

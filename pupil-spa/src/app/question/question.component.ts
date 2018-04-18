@@ -4,6 +4,8 @@ import { AuditService } from '../services/audit/audit.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionRendered } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-question',
@@ -19,8 +21,10 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService);
+              protected registerInputService: RegisterInputService,
+              protected questionService: QuestionService,
+              protected speechService: SpeechService) {
+    super(auditService, windowRefService, questionService, speechService);
     this.window = windowRefService.nativeWindow;
   }
 

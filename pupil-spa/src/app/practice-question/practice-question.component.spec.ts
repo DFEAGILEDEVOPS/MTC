@@ -3,6 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PracticeQuestionComponent } from './practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 describe('PractiseQuestionComponent', () => {
@@ -14,6 +19,9 @@ describe('PractiseQuestionComponent', () => {
       declarations: [ PracticeQuestionComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
         WindowRefService
       ]
     })
