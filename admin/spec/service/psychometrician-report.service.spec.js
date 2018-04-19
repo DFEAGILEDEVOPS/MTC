@@ -136,7 +136,9 @@ describe('psychometricians-report.service', () => {
         {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
         {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
       ]
-      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school)
+      const pupilAttendance = ''
+      const pupilRestart = { pupil_id: 12, description: 'IT issues', createdAt: '2018-04-19T10:25:06.597Z', count: 1 }
+      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school, pupilAttendance, pupilRestart)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')

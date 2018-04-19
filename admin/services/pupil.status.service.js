@@ -65,5 +65,19 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
     moment(latestCheck.pupilLoginDate).isAfter(latestPupilRestart.createdAt)
   return initialLogIn || restartLogIn
 }
+/**
+ * Fetch pupils status descriptions
+ * @param {Array} pupils
+ * @returns {Array}
+ */
+pupilStatusService.getPupilsStatus = async (pupils) => {
+  return Promise.all(pupils.map(async p => {
+    const pupilStatus = await pupilStatusService.getStatus(p)
+    return {
+      pupilId: p.id,
+      status: pupilStatus
+    }
+  }))
+}
 
 module.exports = pupilStatusService
