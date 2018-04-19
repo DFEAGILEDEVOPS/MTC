@@ -68,7 +68,7 @@ psychometricianReportService.generateScoreReport = async function () {
   })
 }
 
-psychometricianReportService.batchProduceCacheData = async function (batchIds, hasCompleteData) {
+psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   if (!batchIds) {
     throw new Error('Missing argument: batchIds')
   }
