@@ -148,7 +148,7 @@ export class SpeechService implements OnDestroy {
 
     // get all elements containing text from the current component
     const elements = clonedElement.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6, p, li, button, a'
+      'h1, h2, h3, h4, h5, h6, p, li, button, a, span'
     );
 
     // add 'artificial' pauses to take visual newlines or spaces into account
