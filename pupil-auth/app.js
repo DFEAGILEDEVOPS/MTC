@@ -102,10 +102,6 @@ app.use((req, res, next) => {
 
 require('./helpers')(app)
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
@@ -122,7 +118,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  let errorId = uuidV4()
+  const errorId = uuidV4()
   // set locals, only providing error in development
   // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
@@ -130,15 +126,15 @@ app.use(function (err, req, res, next) {
   winston.error('ERROR: ' + err.message + ' ID:' + errorId)
   winston.error(err.stack)
 
-  // render the error page
-  // @TODO: provide an error code and phone number? for the user to call support
-  res.locals.message = 'An error occurred'
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
-  res.locals.errorId = errorId
-  res.locals.errorCode = ''
-  res.status(err.status || 500)
-  res.locals.pageTitle = 'Error'
-  res.render('error')
+  // return the error as an JSON object
+  err.message = err.message || 'An error occurred'
+  err.errorId = errorId
+  err.status = err.status || 500
+  if (req.app.get('env') === 'development') {
+    res.status(err.status).json({error: err.message, errorId: errorId});
+  } else {
+    res.status(err.status).json({error: err.message});
+  }
 })
 
 module.exports = app
