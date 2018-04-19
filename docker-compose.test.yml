@@ -30,7 +30,7 @@ services:
     build: ./pupil-auth
     container_name: mtc_pupil_auth
     ports:
-    - "3002:3002"
+    - "3003:3003"
     environment:
       SQL_SERVER: "sqldb"
       MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
