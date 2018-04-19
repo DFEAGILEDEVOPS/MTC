@@ -100,8 +100,6 @@ app.use((req, res, next) => {
 
 /* END:Security Directives */
 
-require('./helpers')(app)
-
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
@@ -119,7 +117,7 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   const errorId = uuidV4()
-  // set locals, only providing error in development
+  // only providing error information in development
   // @TODO: change this to a real logger with an error string that contains
   // all pertinent information. Assume 2nd/3rd line support would pick this
   // up from logging web interface (e.g. ELK / LogDNA)
@@ -133,7 +131,7 @@ app.use(function (err, req, res, next) {
   if (req.app.get('env') === 'development') {
     res.status(err.status).json({error: err.message, errorId: errorId});
   } else {
-    res.status(err.status).json({error: err.message});
+    res.status(err.status).json({error: 'An error occurred'});
   }
 })
 
