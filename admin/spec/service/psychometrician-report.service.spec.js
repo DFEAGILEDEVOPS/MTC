@@ -110,7 +110,8 @@ describe('psychometricians-report.service', () => {
         lastName: 'McMock',
         dateOfBirth: moment().subtract(8, 'years'),
         upn: 'F673001000200',
-        gender: 'M'
+        gender: 'M',
+        status: 'Complete'
       }
       const checkForm = {
         id: 42,
@@ -136,7 +137,7 @@ describe('psychometricians-report.service', () => {
         {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
         {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
       ]
-      const pupilAttendance = ''
+      const pupilAttendance = null
       const pupilRestart = { pupil_id: 12, description: 'IT issues', createdAt: '2018-04-19T10:25:06.597Z', count: 1 }
       const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school, pupilAttendance, pupilRestart)
       expect(data).toBeTruthy()
@@ -145,6 +146,10 @@ describe('psychometricians-report.service', () => {
       expect(data.Q1Sco).toBe(1)
       expect(data.Q3Sco).toBe(0)
       expect(data.Q10Sco).toBe(1)
+      expect(data.PupilStatus).toBe('Complete')
+      expect(data.ReasonNotTakingCheck).toBeNull()
+      expect(data.RestartReason).toBe('IT issues')
+      expect(data.RestartNumber).toBe(1)
     })
   })
 
