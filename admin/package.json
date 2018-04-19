@@ -109,7 +109,8 @@
       "public/javascripts/app.js",
       "server.js",
       "spec/mocks/*",
-      "tests-integration/*"
+      "tests-integration/*",
+      "services/data-access"
     ],
     "all": true,
     "cache": true
