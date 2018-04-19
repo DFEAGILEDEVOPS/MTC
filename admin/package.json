@@ -110,7 +110,8 @@
       "server.js",
       "spec/mocks/*",
       "tests-integration/*",
-      "services/data-access"
+      "services/data-access",
+      "routes"
     ],
     "all": true,
     "cache": true
