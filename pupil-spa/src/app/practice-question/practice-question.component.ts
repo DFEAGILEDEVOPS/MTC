@@ -234,20 +234,17 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   /**
    * Add a character to the answer - up to a max of 5 which is all we can show
-   * Return early and do nothing if the timer is up
    * @param {string} char
    */
   addChar(char: string) {
-    if (this.submitted || (!this.timeout && !this.speechService.isSpeaking())) {
+    if (this.submitted) {
         return;
     }
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       if (this.questionService.getConfig().speechSynthesis) {
-        // if user input interrupts the question being read out, stop the question
-        // and start the timer
+        // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
-          this.speechService.cancel();
           this.startTimer();
         }
         this.speechService.speakChar(char);
