@@ -4,7 +4,6 @@ require('dotenv').config()
 
 const express = require('express')
 const piping = require('piping')
-const path = require('path')
 const morgan = require('morgan')
 const uuidV4 = require('uuid/v4')
 const cors = require('cors')
@@ -83,10 +82,7 @@ app.use((req, res, next) => {
   }
   next()
 })
-process.on('unhandledRejection', error => {
-    // Will print "unhandledRejection err is not defined"
-    console.log('unhandledRejection', error);
-});
+
 // force HTTPS in azure
 app.use((req, res, next) => {
   if (azure.isAzure()) {
@@ -99,9 +95,6 @@ app.use((req, res, next) => {
 })
 
 /* END:Security Directives */
-
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 app.use(bodyParser.json())
 
@@ -129,9 +122,9 @@ app.use(function (err, req, res, next) {
   err.errorId = errorId
   err.status = err.status || 500
   if (req.app.get('env') === 'development') {
-    res.status(err.status).json({error: err.message, errorId: errorId});
+    res.status(err.status).json({error: err.message, errorId: errorId})
   } else {
-    res.status(err.status).json({error: 'An error occurred'});
+    res.status(err.status).json({error: 'An error occurred'})
   }
 })
 

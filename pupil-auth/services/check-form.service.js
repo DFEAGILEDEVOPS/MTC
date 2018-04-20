@@ -1,10 +1,6 @@
 'use strict'
 
-const fs = require('fs')
-
 const checkFormDataService = require('../services/data-access/check-form.data.service')
-const checkWindowService = require('../services/check-window.service')
-const config = require('../config')
 const random = require('../lib/random-generator')
 
 const checkFormService = {
@@ -54,27 +50,6 @@ const checkFormService = {
     } catch (error) {
       throw new Error('Error allocating checkForm: ' + error.message)
     }
-  },
-
-  /**
-   * create a check form
-   * @param form the form as an object
-   */
-  create: async (form) => {
-    return checkFormDataService.sqlCreate(form)
-  },
-
-  /**
-   * Get a non-deleted form
-   * @param formId the id of the form
-   */
-  getCheckForm: async (formId) => {
-    let form = await checkFormDataService.sqlFindActiveForm(formId)
-    if (form && form.length > 0) {
-      form = form[0]
-      form.questions = JSON.parse(form.formData)
-    }
-    return form
   },
 
   /**

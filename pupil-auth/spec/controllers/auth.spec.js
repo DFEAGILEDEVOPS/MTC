@@ -104,7 +104,7 @@ describe('Questions controller', () => {
       }
     })
   }
-    
+
   describe('happy path', () => {
     it('returns a valid response', async (done) => {
       const req = goodReq

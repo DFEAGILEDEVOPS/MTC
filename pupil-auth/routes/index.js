@@ -3,7 +3,6 @@ const router = express.Router()
 const path = require('path')
 const fs = require('fs')
 
-const config = require('../config')
 const { getAuth } = require('../controllers/auth')
 
 /* Health check */
@@ -64,9 +63,8 @@ router.get('/ping', (req, res) => getPing(req, res))
 
 /* Pupil-auth microservice */
 router.route('/auth').all((req, res) => {
-    console.log(req.body)
-    if (req.method !== 'POST') return res.sendStatus(405)
-    getAuth(req, res)
+  if (req.method !== 'POST') return res.sendStatus(405)
+  getAuth(req, res)
 })
 
 module.exports = router
