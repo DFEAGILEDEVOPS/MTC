@@ -111,7 +111,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    this.registerInputService.storeEntry('backspace', 'click');
+    this.registerInputService.storeEntry('Backspace', 'click');
     this.deleteChar();
   }
 
@@ -119,7 +119,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    */
   onClickSubmit() {
-    this.registerInputService.storeEntry('enter', 'click');
+    this.registerInputService.storeEntry('Enter', 'click');
     this.onSubmit();
   }
 }
