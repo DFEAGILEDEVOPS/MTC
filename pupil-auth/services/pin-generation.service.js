@@ -1,6 +1,7 @@
 const moment = require('moment')
 const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
 const config = require('../config')
 
@@ -14,6 +15,7 @@ const pinExpiryTime = () => {
 }
 
 const pinGenerationService = {}
+const chars = '23456789'
 
 /**
  * Generate pupils pins
@@ -54,6 +56,15 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
       throw new Error(error)
     }
   }
+}
+
+/**
+ * Generate Pupil Pin
+ * @returns {String}
+ */
+pinGenerationService.generatePupilPin = () => {
+  const pupilPinLength = 4
+  return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
 module.exports = pinGenerationService

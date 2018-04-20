@@ -12,7 +12,7 @@ const checkFormDataService = {
    * @returns {Promise<*>}
    */
   sqlGetActiveForm: (id) => {
-    let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0`
+    let sql = `SELECT TOP 1 * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0`
     const params = []
     if (id) {
       sql += ' AND [id]=@id'
@@ -41,7 +41,7 @@ const checkFormDataService = {
     if (windowId) {
       sql = `
       SELECT * 
-      FROM ${sqlService.adminSchema}.[checkForm] 
+      FROM ${sqlService.adminSchema}.${table} 
       WHERE isDeleted=0 
       AND [id] IN (
         SELECT checkForm_id 
@@ -55,10 +55,10 @@ const checkFormDataService = {
         type: TYPES.Int
       })
     } else {
-      sql = `SELECT * FROM ${sqlService.adminSchema}.[checkForm] WHERE isDeleted=0 ORDER BY [name] ${sortOrder}`
+      sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 ORDER BY [name] ${sortOrder}`
     }
     return sqlService.query(sql, params)
-  },
+  }
 }
 
 module.exports = checkFormDataService

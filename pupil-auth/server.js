@@ -5,7 +5,7 @@
  */
 
 const app = require('./app')
-const debug = require('debug')('check-development-app:server')
+const debug = require('debug')('pupil-auth:server')
 const http = require('http')
 const config = require('./config')
 const winston = require('winston')

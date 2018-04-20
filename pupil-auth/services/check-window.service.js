@@ -1,7 +1,5 @@
 'use strict'
 
-const moment = require('moment')
-const R = require('ramda')
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkDataService = require('./data-access/check.data.service')
 
@@ -36,7 +34,7 @@ const checkWindowService = {
     const activeCheckWindow = await checkWindowDataService.sqlFindOneActiveCheckWindow(currentCheck.checkWindow_id)
     if (!activeCheckWindow) throw new Error('There is no open check window')
     return activeCheckWindow
-  },
+  }
 }
 
 module.exports = checkWindowService

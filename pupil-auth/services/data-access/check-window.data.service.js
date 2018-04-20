@@ -107,7 +107,7 @@ const checkWindowDataService = {
     ]
     const result = await sqlService.query(sql, params)
     return R.head(result)
-  },
+  }
 }
 
 module.exports = checkWindowDataService

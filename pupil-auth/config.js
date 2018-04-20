@@ -3,7 +3,6 @@ require('dotenv').config()
 const os = require('os')
 const toBool = require('to-bool')
 
-const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
 const getEnvironment = () => {
@@ -52,6 +51,7 @@ module.exports = {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     }
   },
+  OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   Environment: getEnvironment(),
   JwtSecret: process.env.JWT_SECRET || '0bd8fbdab903fb50455cb4cf7ba9fb5beed3f209687ed2644aa731ee8231e14c'
 }

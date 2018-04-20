@@ -65,7 +65,7 @@ const checkFormService = {
    */
   prepareQuestionData: function (questions) {
     return questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
-  },
+  }
 }
 
 module.exports = checkFormService
