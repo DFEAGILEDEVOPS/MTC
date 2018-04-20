@@ -1,0 +1,1 @@
+DROP PROCEDURE mtc_admin.spGenAuditTriggers
