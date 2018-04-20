@@ -14,14 +14,16 @@ const R = require('ramda')
 const dateService = require('../services/date.service')
 const poolService = require('../services/data-access/sql.pool.service')
 const completedCheckDataService = require('../services/data-access/completed-check.data.service')
+const checkFormDataService = require('../services/data-access/check-form.data.service')
 const psUtilService = require('../services/psychometrician-util.service')
 
 const outputFilename = 'anomalies.csv'
 let anomalyCount = 0
 let reportedAnomalies = []
 
-function detectAnomalies (check) {
+function detectAnomalies (check, checkForm) {
   detectWrongNumberOfAnswers(check)
+  detectAnswersAgainstQuestionsCorrespodance(check, checkForm)
   detectPageRefresh(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
@@ -200,6 +202,15 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
   })
 }
 
+function detectAnswersAgainstQuestionsCorrespodance (check, checkForm) {
+  const answerFactors = check.data.answers.map(answer => ({ f1: answer.factor1, f2: answer.factor2 }))
+  const formData = JSON.parse(checkForm.formData)
+  const difference = R.difference(answerFactors, formData)
+  if (difference.length > 0) {
+    report(check, 'Answers factors do not correspond to the questions factors', difference.length, 0)
+  }
+}
+
 function reconstructAnswerFromInputs (events) {
   let ans = ''
   if (!Array.isArray(events)) {
@@ -347,8 +358,11 @@ async function main () {
   while (lowCheckId < checkInfo.max) {
     winston.info(`Fetching ${batchSize} checks for processing starting at ID ${lowCheckId}`)
     const checks = await completedCheckDataService.sqlFind(lowCheckId, batchSize)
+    const checkFormIds = checks.map(check => check.checkForm_id)
+    const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
     checks.forEach(check => {
-      detectAnomalies(check)
+      const checkForm = checkForms.find(checkForm => checkForm.id === check.checkForm_id)
+      detectAnomalies(check, checkForm)
       count = count + 1
       lowCheckId = parseInt(check.id, 10) + 1
     })

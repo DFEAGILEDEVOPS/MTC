@@ -154,7 +154,7 @@ class CheckPage < SitePrism::Page
         @ans << {"input" => char.to_s, "eventType" => "click", "question"=>index + 1}
       end
       @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>index + 1}
-      @ans << {"input" => "enter", "eventType" => "click", "question"=>index + 1}
+      @ans << {"input" => "Enter", "eventType" => "click", "question"=>index + 1}
       @inputs_array << @ans
     end
     @inputs_array
