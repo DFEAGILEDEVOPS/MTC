@@ -183,7 +183,7 @@ pupilRestartDataService.sqlFindLatestRestartWithReason = async (pupilIds) => {
  */
 pupilRestartDataService.sqlFindRestartCounts = async (pupilIds) => {
   const ids = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const sql = `SELECT pr.pupil_id, COUNT(*)
+  const sql = `SELECT pr.pupil_id, COUNT(*) AS count
     FROM ${sqlService.adminSchema}.[pupilRestart] pr
     WHERE pr.isDeleted=0 AND pr.pupil_id IN (${ids.paramIdentifiers.join(', ')})
     GROUP BY pupil_id`

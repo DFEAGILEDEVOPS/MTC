@@ -104,10 +104,12 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     const checkForm = checkForms.find(x => x.id === check.checkForm_id)
     const school = schools.find(x => x.id === pupil.school_id)
     const pupilAttendance = pupilsAttendance.find(x => x.id === check.pupil_id)
+    const pupilAttendanceReason = pupilAttendance && pupilAttendance.reason
     const pupilRestart = pupilRestarts.find(x => x.pupil_id === check.pupil_id) || {}
-    pupilRestart.count = pupilRestartCounts.find(x => x.pupil_id === check.pupil_id)
+    const restartCountRecord = pupilRestartCounts.find(x => x.pupil_id === check.pupil_id)
+    pupilRestart.count = restartCountRecord && restartCountRecord.count
     // Generate one line of the report
-    const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school, pupilAttendance, pupilRestart)
+    const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school, pupilAttendanceReason, pupilRestart)
     psReportData.push({ check_id: check.id, jsonData: data })
   }
 
@@ -131,11 +133,11 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  * @param {Object} pupil
  * @param {Object} checkForm
  * @param {Object} school
- * @param {String} pupilAttendance
+ * @param {String} pupilAttendanceReason
  * @param {Object} pupilRestart
  * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
  */
-psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school, pupilAttendance, pupilRestart) {
+psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school, pupilAttendanceReason, pupilRestart) {
   const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
   const config = R.path(['data', 'config'], check)
 
@@ -163,7 +165,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
     'PupilStatus': pupil.status,
-    'ReasonNotTakingCheck': pupilAttendance,
+    'ReasonNotTakingCheck': pupilAttendanceReason,
     'RestartReason': pupilRestart.description,
     'RestartNumber': pupilRestart.count,
 

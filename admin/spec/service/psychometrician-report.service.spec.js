@@ -10,6 +10,9 @@ const completedCheckDataService = require('../../services/data-access/completed-
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
+const pupilsNotTakingTheCheckDataService = require('../../services/data-access/pupils-not-taking-check.data.service')
+const pupilRestartDataService = require('../../services/data-access/pupil-restart.data.service')
+const pupilStatusService = require('../../services/pupil.status.service')
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
@@ -46,6 +49,21 @@ describe('psychometricians-report.service', () => {
       })
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
+      spyOn(pupilStatusService, 'getPupilsStatus').and.returnValue([
+        {pupilId: 1, status: 'Not Started'},
+        {pupilId: 2, status: 'Not taking the Check'},
+        {pupilId: 3, status: 'Check Started'}
+      ])
+      spyOn(pupilsNotTakingTheCheckDataService, 'sqlFindPupilsWithReasonByIds').and.returnValue([
+        {id: 2, reason: 'Absent'}
+      ])
+      spyOn(pupilRestartDataService, 'sqlFindLatestRestartWithReason').and.returnValue([
+        {pupil_id: 1, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'},
+        {pupil_id: 3, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'}
+      ])
+      spyOn(pupilRestartDataService, 'sqlFindRestartCounts').and.returnValue([{
+        pupil_id: 3, count: 1}
+      ])
     })
 
     it('throws an error if not provided with an argument', async () => {
@@ -76,10 +94,17 @@ describe('psychometricians-report.service', () => {
       }
     })
 
-    it('retrieves all the batchIds in one go', async () => {
+    it('retrieves all data service data in one go', async () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(pupilStatusService.getPupilsStatus).toHaveBeenCalledTimes(1)
+        expect(checkFormDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(schoolDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(pupilsNotTakingTheCheckDataService.sqlFindPupilsWithReasonByIds).toHaveBeenCalledTimes(1)
+        expect(pupilRestartDataService.sqlFindLatestRestartWithReason).toHaveBeenCalledTimes(1)
+        expect(pupilRestartDataService.sqlFindRestartCounts).toHaveBeenCalledTimes(1)
+        expect(answerDataService.sqlFindByCheckIds).toHaveBeenCalledTimes(1)
       } catch (error) {
         fail(error)
       }
@@ -89,11 +114,17 @@ describe('psychometricians-report.service', () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(service.produceReportData).toHaveBeenCalledTimes(3)
-        const args = service.produceReportData.calls.argsFor(0)
-        expect(args[0].id).toBe(9) // check
-        expect(typeof args[1]).toBe('object') // answers
-        expect(args[2].id).toBe(1) // pupil
-        expect(args[3].id).toBe(2) // checkForm
+        const secondArgsSet = service.produceReportData.calls.argsFor(1)
+        expect(secondArgsSet[0].id).toBe(10) // check
+        expect(typeof secondArgsSet[1]).toBe('object') // answers
+        expect(secondArgsSet[2].id).toBe(2) // pupil
+        expect(secondArgsSet[3].id).toBe(3) // checkForm
+        expect(secondArgsSet[4].id).toBe(6) // school
+        expect(secondArgsSet[5]).toBe('Absent') // attendance
+        expect(secondArgsSet[6].count).toBeUndefined() // restart count
+        const thirdArgsSet = service.produceReportData.calls.argsFor(2)
+        expect(thirdArgsSet[6].description).toBe('IT issues') // restart reason
+        expect(thirdArgsSet[6].count).toBe(1) // restart count
       } catch (error) {
         fail(error)
       }
