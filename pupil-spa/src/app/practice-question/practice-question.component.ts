@@ -187,7 +187,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.timeout) {
       // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
+    } else {
+      // timeout didn't start so nothing to submit
+      return false;
     }
+
     // Clear the interval timer
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
@@ -197,7 +201,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.auditService.addEntry(new QuestionAnswered());
     this.submitted = true;
     if (this.questionService.getConfig().speechSynthesis) {
-      this.waitForEndOfSpeech().then(() => {
+      this.speechService.waitForEndOfSpeech().then(() => {
         this.manualSubmitEvent.emit(this.answer);
       });
     } else {
@@ -220,7 +224,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     // console.log(`practice-question.component: sendTimeoutEvent(): ${this.answer}`);
     this.submitted = true;
     if (this.questionService.getConfig().speechSynthesis) {
-      this.waitForEndOfSpeech().then(() => {
+      this.speechService.waitForEndOfSpeech().then(() => {
         this.timeoutEvent.emit(this.answer);
       });
     } else {
@@ -229,37 +233,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Waits for the end of pupils' input speech queue.
-   * The input will be read out completely when the speechEnded event
-   * is triggered and nothing is currently being spoken - although
-   * the speechSynthesis implementations appear to have a race condition
-   * when getting the speaking status so a small artificial delay
-   * has to be introduced
-   */
-  waitForEndOfSpeech(): Promise<any> {
-    return new Promise(resolve => {
-      if (!this.speechService.isSpeaking()) {
-        // if there is nothing in the queue, resolve() immediately
-        resolve();
-      } else {
-        // wait for the last speechEnded event to resolve()
-        const subscription = this.speechService.speechStatus.subscribe(speechStatus => {
-          if (speechStatus === SpeechService.speechEnded) {
-            this.window.setTimeout(() => {
-              if (!this.speechService.isSpeaking()) {
-                resolve();
-                subscription.unsubscribe();
-              }
-            }, 100);
-          }
-        });
-      }
-    });
-  }
-
-  /**
    * Add a character to the answer - up to a max of 5 which is all we can show
-   * Return early and do nothing if the timer is up
    * @param {string} char
    */
   addChar(char: string) {
@@ -269,10 +243,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       if (this.questionService.getConfig().speechSynthesis) {
-        // if user input interrupts the question being read out, stop the question
-        // and start the timer
+        // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
-          this.speechService.cancel();
           this.startTimer();
         }
         this.speechService.speakChar(char);
