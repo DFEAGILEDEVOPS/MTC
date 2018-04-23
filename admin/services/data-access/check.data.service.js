@@ -277,4 +277,36 @@ checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
   return byPupil
 }
 
+/**
+ * Find all the checks that have not been processed
+ * @return {Promise<*>}
+ */
+checkDataService.sqlHasUnprocessed = async function () {
+  const sql = `SELECT *
+  FROM ${sqlService.adminSchema}.${table} chk
+    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
+      ON chk.id = prc.check_id`
+
+  return sqlService.query(sql, [])
+}
+
+/**
+ * Returns an array of Ids: [1234, 5678, ...] of checks.  Used by the batch processor.
+ * @param batchSize the size of the batch to work with
+ * @returns {Array}
+ */
+checkDataService.sqlFindUnprocessed = async function (batchSize) {
+  if (!batchSize) {
+    throw new Error('Missing argument: batchSize')
+  }
+  const safeBatchSize = parseInt(batchSize, 10)
+
+  const sql = `SELECT TOP ${safeBatchSize} id 
+  FROM ${sqlService.adminSchema}.${table} chk
+    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
+      ON chk.id = prc.check_id`
+  const results = await sqlService.query(sql)
+  return results.map(r => r.id)
+}
+
 module.exports = checkDataService
