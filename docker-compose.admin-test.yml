@@ -15,18 +15,35 @@ services:
     links:
     - sqldb
     - mongo
+  pupil-auth:
+    build: ./pupil-auth
+    container_name: mtc_pupil_auth
+    ports:
+    - "3003:3003"
+    environment:
+      SQL_SERVER: "sqldb"
+      MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
+    depends_on:
+    - sqldb
+    - mongo
+    links:
+    - sqldb
+    - mongo
   pupil-app:
     build:
       context: ./pupil-spa
       args:
         api_url: http://admin-app:3001
+        auth_url: http://pupil-auth:3003
     container_name: mtc_pupil
     ports:
     - "80:80"
     depends_on:
     - admin-app
+    - pupil-auth
     links:
     - admin-app
+    - pupil-auth
   admin-tests:
     build: ./test/admin
     container_name: admin_tests
@@ -58,4 +75,3 @@ services:
     environment:
       BASE_URL: "http://pupil-app"
       SQL_SERVER: "sqldb"
-      
