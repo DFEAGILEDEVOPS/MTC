@@ -58,8 +58,8 @@ describe('psychometricians-report.service', () => {
         {id: 2, reason: 'Absent'}
       ])
       spyOn(pupilRestartDataService, 'sqlFindLatestRestartWithReason').and.returnValue([
-        {pupil_id: 1, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'},
-        {pupil_id: 3, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'}
+        {pupilId: 1, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'},
+        {pupilId: 3, description: 'IT issues', createdAt: '2018-04-18T10:25:06.597Z'}
       ])
       spyOn(pupilRestartDataService, 'sqlFindRestartCounts').and.returnValue([{
         pupil_id: 3, count: 1}

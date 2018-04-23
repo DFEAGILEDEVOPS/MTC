@@ -301,7 +301,7 @@ checkDataService.sqlFindUnprocessed = async function (batchSize) {
   }
   const safeBatchSize = parseInt(batchSize, 10)
 
-  const sql = `SELECT TOP ${safeBatchSize} id 
+  const sql = `SELECT TOP ${safeBatchSize} chk.id 
   FROM ${sqlService.adminSchema}.${table} chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
       ON chk.id = prc.check_id`

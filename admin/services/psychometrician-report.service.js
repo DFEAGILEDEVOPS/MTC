@@ -100,12 +100,13 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 
   for (let check of checks) {
     const pupil = pupils.find(x => x.id === check.pupil_id)
-    pupil.status = pupilsStatus.find(x => x.pupilId === check.pupil_id)
+    const pupilStatusRecord = pupilsStatus.find(x => x.pupilId === check.pupil_id)
+    pupil.status = pupilStatusRecord.status
     const checkForm = checkForms.find(x => x.id === check.checkForm_id)
     const school = schools.find(x => x.id === pupil.school_id)
     const pupilAttendance = pupilsAttendance.find(x => x.id === check.pupil_id)
     const pupilAttendanceReason = pupilAttendance && pupilAttendance.reason
-    const pupilRestart = pupilRestarts.find(x => x.pupil_id === check.pupil_id) || {}
+    const pupilRestart = pupilRestarts.find(x => x.pupilId === check.pupil_id) || {}
     const restartCountRecord = pupilRestartCounts.find(x => x.pupil_id === check.pupil_id)
     pupilRestart.count = restartCountRecord && restartCountRecord.count
     // Generate one line of the report
