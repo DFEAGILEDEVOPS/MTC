@@ -1,6 +1,6 @@
-CREATE TABLE [mtc_admin].[Sessions](
-  [Sid] varchar(255) NOT NULL
-    CONSTRAINT [PK_Sessions] PRIMARY KEY CLUSTERED ([Sid] ASC),
-  [Expires] datetimeoffset NOT NULL,
-  [Sess] nvarchar(MAX) NULL
+CREATE TABLE [mtc_admin].[sessions](
+  [sid] varchar(255) NOT NULL
+    CONSTRAINT [pk_sessions] PRIMARY KEY CLUSTERED ([sid] ASC),
+  [expires] datetimeoffset NOT NULL,
+  [sess] nvarchar(MAX) NULL
 )
