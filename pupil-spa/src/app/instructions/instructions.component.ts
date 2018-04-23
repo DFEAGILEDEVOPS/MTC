@@ -53,6 +53,8 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    this.speechService.cancel();
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.cancel();
+    }
   }
 }
