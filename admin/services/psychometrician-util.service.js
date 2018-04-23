@@ -154,7 +154,7 @@ psUtilService.getUserInput = function getUserInput (inputs) {
  * @param {Array} inputs
  * @return {String}
  */
-psUtilService.getLastAnswerInputTime = function (inputs) {
+psUtilService.getLastAnswerInputTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
     winston.info('Invalid param inputs')
     return 'error'
@@ -162,15 +162,21 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
-  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
 
-  for (let i = normalisedInputs.length - 1; i >= 0; i--) {
-    const input = R.pathOr('', [i, 'input'], normalisedInputs)
-    if (input.toUpperCase() !== 'ENTER') {
-      return R.pathOr('error', [i, 'clientInputDate'], normalisedInputs)
-    }
+  // We may have inputs, but no answer recorded.  E.g. 1,1,Backspace,Backspace
+  // In which case there was no response
+  if (!answer) {
+    return ''
   }
-  return ''
+
+  // Filter the inputs to only those that constitute the answer.  E.g. 0-9, Backspace
+  const filtered = this.filterInputsToAnswerKeys(inputs)
+
+  if (!filtered.length) {
+    return ''
+  }
+
+  return R.pathOr('error', ['clientInputDate'], R.last(filtered))
 }
 
 /**
@@ -178,7 +184,7 @@ psUtilService.getLastAnswerInputTime = function (inputs) {
  * @param inputs
  * @return {String}
  */
-psUtilService.getFirstInputTime = function (inputs) {
+psUtilService.getFirstInputTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
     winston.info('Invalid param inputs')
     return 'error'
@@ -186,16 +192,41 @@ psUtilService.getFirstInputTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
-  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
 
-  // The first input can't be an Enter key press
-  const filtered = normalisedInputs.filter(event => event.input.toUpperCase() !== 'ENTER')
+  // We may have inputs, but no answer recorded.  E.g. 1,1,Backspace,Backspace
+  // In which case there was no response
+  if (!answer) {
+    return ''
+  }
+
+  // Filter the inputs to only those that constitute the answer.  E.g. 0-9, Backspace
+  const filtered = this.filterInputsToAnswerKeys(inputs)
 
   if (!filtered.length) {
     return ''
   }
 
-  return R.pathOr('error', [0, 'clientInputDate'], filtered)
+  return R.pathOr('error', ['clientInputDate'], R.head(filtered))
+}
+
+psUtilService.filterInputsToAnswerKeys = function (inputs) {
+  const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
+  let answer = ''
+  const output = []
+  for (let event of normalisedInputs) {
+    if (event.input.match(/^[0-9]$/)) {
+      answer += event.input
+      output.push(event)
+      continue
+    }
+    if (event.input.toUpperCase() === 'BACKSPACE' && answer.length) {
+      answer = answer.slice(0, -1) // remove last char
+      output.push(event)
+    }
+    // All other inputs are ignored as they do not change the answer
+    // NB this currently counts inputs that are longer than 5 chars
+  }
+  return output
 }
 
 /**
@@ -203,7 +234,7 @@ psUtilService.getFirstInputTime = function (inputs) {
  * @param {Array} input
  * @return {*}
  */
-psUtilService.getResponseTime = function (inputs) {
+psUtilService.getResponseTime = function (inputs, answer) {
   if (!(inputs && Array.isArray(inputs))) {
     winston.info('Invalid param inputs')
     return 'error'
@@ -211,8 +242,9 @@ psUtilService.getResponseTime = function (inputs) {
   if (inputs.length === 0) {
     return ''
   }
-  const first = moment(this.getFirstInputTime(inputs))
-  const last = moment(this.getLastAnswerInputTime(inputs))
+  const first = moment(this.getFirstInputTime(inputs, answer))
+  const last = moment(this.getLastAnswerInputTime(inputs, answer))
+
   if (!(first.isValid() && last.isValid())) {
     return ''
   }
