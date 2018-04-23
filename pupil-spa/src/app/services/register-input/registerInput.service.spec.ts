@@ -47,20 +47,28 @@ describe('RegisterInputService', () => {
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const eventValue = '0';
       const eventType = 'keydown';
-      service.storeEntry(eventValue, eventType);
+      service.storeEntry(eventValue, eventType, 7, '2x3');
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
     }));
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f'};
-    service.addEntry(event);
+    service.addEntry(event, {sequenceNumber: 1, question: '1x3'});
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
 
   it('expects a left click event to be registered',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-      const event = {type: 'mousedown', which: 1};
+      const event = {
+        type: 'mousedown', which: 1, target: {
+          attributes: {
+            'data-sequence-number': { value: '1' },
+            'data-factor1': { value: '1' },
+            'data-factor2': { value: '2' }
+          }
+        }
+      };
       service.addEntry(event);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
       const args = mockStorageServiceSpy.calls.first().args;
@@ -70,7 +78,15 @@ describe('RegisterInputService', () => {
 
   it('calls the storage service', inject([TestRegisterInputService],
     (registerInputService: TestRegisterInputService) => {
-      const event = {type: 'mousedown', which: 1};
+      const event = {
+        type: 'mousedown', which: 1, target: {
+          attributes: {
+            'data-sequence-number': { value: '1' },
+            'data-factor1': { value: '1' },
+            'data-factor2': { value: '2' }
+          }
+        }
+      };
       registerInputService.addEntry(event);
       registerInputService.addEntry(event);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(2);
