@@ -3,11 +3,10 @@
 var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
 const winston = require('winston')
-// TODO add to config object
+
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
-  max: config.Sql.Pooling.MaxCount,
-  // log: config.Sql.Pooling.LoggingEnabled
+  max: config.Sql.Pooling.MaxCount
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js
