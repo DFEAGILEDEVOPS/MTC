@@ -3,7 +3,6 @@
 const roleService = require('./role.service')
 const schoolDataService = require('./data-access/school.data.service')
 const userDataService = require('./data-access/user.data.service')
-const ncaToolsDataService = require('./data-access/nca-tools-session.data.service')
 
 const service = {
   /**
@@ -49,12 +48,6 @@ const service = {
     userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
     return userRecord
   },
-  recordLogonAttempt: async (logonData) => {
-    if (!(logonData && logonData.sessionToken && logonData.userName)) {
-      throw new Error('missing arguments')
-    }
-    return ncaToolsDataService.sqlCreate(logonData)
-  }
 }
 
 module.exports = service
