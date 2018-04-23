@@ -24,7 +24,7 @@ class CheckPage < SitePrism::Page
 
   def wait_for_question(time=300)
     i = 0
-    while i < 300
+    while i < 360
       if(has_question_container?)
         puts "Question container is visible : #{has_question_container?}"
         break
@@ -34,9 +34,18 @@ class CheckPage < SitePrism::Page
         i = i + 1
       end
     end
-    # wait_until {question_container.visible?}
-    # Capybara.page.should have_css('.question-container')
-    Timeout.timeout(time){sleep 0.5 until question.visible?}
+    # Timeout.timeout(time){sleep 0.5 until question.visible?}
+    j = 0
+    while j < 120
+      if(has_question?)
+        puts "Question container is visible : #{has_question?}"
+        break
+      else
+        puts "waiting for Question container to be visible : #{has_question?}"
+        sleep 0.5
+        j = j + 1
+      end
+    end
   end
 
   def wait_for_answer(time=15)
@@ -145,7 +154,7 @@ class CheckPage < SitePrism::Page
         @ans << {"input" => char.to_s, "eventType" => "click", "question"=>index + 1}
       end
       @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>index + 1}
-      @ans << {"input" => "enter", "eventType" => "click", "question"=>index + 1}
+      @ans << {"input" => "Enter", "eventType" => "click", "question"=>index + 1}
       @inputs_array << @ans
     end
     @inputs_array

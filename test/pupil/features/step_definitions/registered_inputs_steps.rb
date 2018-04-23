@@ -39,7 +39,7 @@ end
 Then(/^I should see backspace numpad event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
-  expected = [{"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "1", "eventType" => "click", "question" => 1}, {"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "backspace", "eventType" => "click", "question" => 1}]
+  expected = [{"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "1", "eventType" => "click", "question" => 1}, {"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "Backspace", "eventType" => "click", "question" => 1}]
   expect([inputs[0], inputs[1], inputs[2], inputs[3]]).to eql expected
 end
 
