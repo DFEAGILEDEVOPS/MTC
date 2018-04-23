@@ -17,7 +17,7 @@ COPY . .
 RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
-ARG auth_url=http://localhost:3002
+ARG auth_url=http://localhost:3003
 ENV API_URL=$api_url
 ENV AUTH_URL=$auth_url
 ARG ga_code
