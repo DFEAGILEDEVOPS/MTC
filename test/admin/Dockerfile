@@ -44,4 +44,4 @@ COPY . .
 
 RUN bundle install
 
-CMD ["cucumber"]
+CMD bundle exec rake features

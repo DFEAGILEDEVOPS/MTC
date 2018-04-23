@@ -4,6 +4,8 @@ import { AuditService } from '../services/audit/audit.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionRendered } from '../services/audit/auditEntry';
+import { SpeechService } from '../services/speech/speech.service';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-question',
@@ -19,8 +21,10 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService);
+              protected registerInputService: RegisterInputService,
+              protected questionService: QuestionService,
+              protected speechService: SpeechService) {
+    super(auditService, windowRefService, questionService, speechService);
     this.window = windowRefService.nativeWindow;
   }
 
@@ -107,7 +111,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    this.registerInputService.storeEntry('backspace', 'click');
+    this.registerInputService.storeEntry('Backspace', 'click');
     this.deleteChar();
   }
 
@@ -115,7 +119,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    */
   onClickSubmit() {
-    this.registerInputService.storeEntry('enter', 'click');
+    this.registerInputService.storeEntry('Enter', 'click');
     this.onSubmit();
   }
 }

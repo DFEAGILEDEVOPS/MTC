@@ -5,6 +5,11 @@ import { QuestionComponent } from './question.component';
 import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { QuestionRendered, QuestionAnswered, AuditEntry } from '../services/audit/auditEntry';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { SpeechService } from '../services/speech/speech.service';
+import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -22,6 +27,9 @@ describe('QuestionComponent', () => {
       declarations: [ QuestionComponent ],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
         WindowRefService,
         { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]
@@ -206,7 +214,7 @@ describe('QuestionComponent', () => {
       spyOn(registerInputService, 'storeEntry');
       component.onClickBackspace();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('backspace', 'click');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click');
     });
 
     it('deletes a char from the answer', () => {
@@ -221,7 +229,7 @@ describe('QuestionComponent', () => {
       spyOn(registerInputService, 'storeEntry');
       component.onClickSubmit();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('enter', 'click');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click');
     });
 
     it('calls onSubmit()', () => {
