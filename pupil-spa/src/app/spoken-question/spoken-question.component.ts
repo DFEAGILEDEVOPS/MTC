@@ -41,7 +41,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
     this.remainingTime = this.questionTimeoutSecs;
     this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
-        if (speechStatus === SpeechService.questionSpeechEnded) {
+        if (!this.timeout && speechStatus === SpeechService.questionSpeechEnded) {
           // console.log('SpokenQuestionComponent: Starting the timer');
           this.startTimer();
         }
