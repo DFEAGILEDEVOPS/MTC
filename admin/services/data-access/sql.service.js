@@ -336,7 +336,7 @@ sqlService.generateInsertStatement = async (table, data) => {
   winston.debug('sql.service: Params ', R.compose(R.map(R.pick(['name', 'value'])))(params))
   const sql = `
   INSERT INTO ${sqlService.adminSchema}.${table} ( ${extractColumns(data)} ) VALUES ( ${createParamIdentifiers(data)} );
-  SELECT @@IDENTITY`
+  SELECT SCOPE_IDENTITY()`
   return { sql, params }
 }
 

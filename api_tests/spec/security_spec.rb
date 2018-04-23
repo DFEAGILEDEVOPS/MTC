@@ -26,7 +26,7 @@ describe 'Security API spec' do
       expect(response.headers['server']).to eql 'nginx'
       expect(response.headers['x-content-type-options']).to eql 'nosniff'
       expect(response.headers['x-xss-protection']).to eql "1; mode=block"
-      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'none'; object-src 'none'; connect-src *"
+      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; img-src 'self' data: https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
     end
   end
 
