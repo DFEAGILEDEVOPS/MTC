@@ -47,13 +47,19 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     // console.log('loading.component: after view init called');
     this.auditService.addEntry(new PauseRendered());
-    setTimeout(() => {
-      this.sendTimeoutEvent();
-    }, this.loadingTimeout * 1000);
-
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      setTimeout(() => {
+        this.speechService.waitForEndOfSpeech().then(() => {
+          this.sendTimeoutEvent();
+        });
+      }, this.loadingTimeout * 1000);
+    } else {
+      setTimeout(() => {
+        this.sendTimeoutEvent();
+      }, this.loadingTimeout * 1000);
     }
   }
 
@@ -63,6 +69,8 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    this.speechService.cancel();
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.cancel();
+    }
   }
 }
