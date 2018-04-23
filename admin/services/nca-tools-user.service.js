@@ -28,7 +28,8 @@ const service = {
       const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
       const role = await roleService.findByTitle(mtcRoleName)
       const user = {
-        identifier: ncaUser.EmailAddress,
+        identifier: ncaUser.externalAuthenticationId,
+        displayName: ncaUser.EmailAddress,
         role_id: role.id
       }
       if (school) {
