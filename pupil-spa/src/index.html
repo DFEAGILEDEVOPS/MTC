@@ -26,6 +26,10 @@
       var electron = '<scr' + 'ipt>require(__dirname + "/../../app.asar/lib/renderer");</scr' + 'ipt>';
       $('body').append(electron);
     }
+    // Disable Zoom out in Safari on iOS and macOS (reverse pinch)
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
   </script>
   <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
   <script>
