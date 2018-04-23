@@ -285,7 +285,8 @@ checkDataService.sqlHasUnprocessed = async function () {
   const sql = `SELECT *
   FROM ${sqlService.adminSchema}.${table} chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
-      ON chk.id = prc.check_id`
+      ON chk.id = prc.check_id
+      WHERE prc.check_id IS NULL`
 
   return sqlService.query(sql, [])
 }
@@ -304,7 +305,8 @@ checkDataService.sqlFindUnprocessed = async function (batchSize) {
   const sql = `SELECT TOP ${safeBatchSize} chk.id 
   FROM ${sqlService.adminSchema}.${table} chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
-      ON chk.id = prc.check_id`
+      ON chk.id = prc.check_id
+      WHERE prc.check_id IS NULL`
   const results = await sqlService.query(sql)
   return results.map(r => r.id)
 }

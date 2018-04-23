@@ -18,7 +18,7 @@ checkProcessingService.process = async function () {
     if (!hasWorkToDo) {
       winston.info('Processing: nothing to do')
     }
-    while (hasWorkToDo) {
+    while (Array.isArray(hasWorkToDo) && hasWorkToDo.length > 0) {
       await this.cachePsychometricanReportData(batchSize)
       hasWorkToDo = await checkDataService.sqlHasUnprocessed()
     }
