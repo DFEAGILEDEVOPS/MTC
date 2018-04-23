@@ -30,6 +30,12 @@
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
     });
+    // Disable Zoom on Chrome, Opera and FF on the touchpad
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey === true) {
+        e.preventDefault();
+      }
+    });
   </script>
   <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
   <script>
