@@ -14,7 +14,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const cors = require('cors')
 const flash = require('connect-flash')
@@ -70,14 +70,12 @@ let featureTogglesSpecificPath, featureTogglesDefaultPath
 try {
   featureTogglesSpecificPath = './config/feature-toggles.' + environmentName
   featureTogglesSpecific = environmentName ? require(featureTogglesSpecificPath) : null
-} catch (err) {
-}
+} catch (err) {}
 
 try {
   featureTogglesDefaultPath = './config/feature-toggles.default'
   featureTogglesDefault = require(featureTogglesDefaultPath)
-} catch (err) {
-}
+} catch (err) {}
 
 featureTogglesMerged = R.merge(featureTogglesDefault, featureTogglesSpecific)
 
@@ -164,7 +162,7 @@ app.use(helmet.contentSecurityPolicy({
 const oneYearInSeconds = 31536000
 app.use(helmet.hsts({
   maxAge: oneYearInSeconds,
-  includeSubDomains: false,
+  includeSubdomains: false,
   preload: false
 }))
 
@@ -223,9 +221,21 @@ const sessionOptions = {
   rolling: true,
   saveUninitialized: false,
   cookie: {maxAge: 1200000}, // Expire after 20 minutes inactivity
-  store: new MongoStore({
-    url: config.MONGO_CONNECTION_STRING,
-    collection: 'adminsessions'
+  store: new TediousSessionStore({
+    config: {
+      appName: config.Sql.Application.Name,
+      userName: config.Sql.Application.Username,
+      password: config.Sql.Application.Password,
+      server: config.Sql.Server,
+      options: {
+        port: config.Sql.Port,
+        database: config.Sql.Database,
+        encrypt: true,
+        requestTimeout: config.Sql.Timeout,
+        useUTC: false
+      }
+    },
+    tableName: '[mtc_admin].[sessions]'
   })
 }
 app.use(session(sessionOptions))
