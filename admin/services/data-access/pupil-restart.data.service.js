@@ -173,7 +173,7 @@ pupilRestartDataService.sqlFindLatestRestartWithReason = async (pupilIds) => {
       FROM ${sqlService.adminSchema}.pupilRestart prc 
       GROUP BY prc.pupil_id
     ) prc ON pr.pupil_id = prc.pupilId AND pr.createdAt = prc.maxDate
-    WHERE pr.pupil_id IN (${ids.paramIdentifiers.join(', ')})
+    WHERE pr.isDeleted=0 AND pr.pupil_id IN (${ids.paramIdentifiers.join(', ')})
     GROUP BY pr.pupil_id, prr.description, pr.createdAt`
   return sqlService.query(sql, ids.params)
 }
