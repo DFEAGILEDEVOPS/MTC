@@ -1039,6 +1039,16 @@ connect-mongo@^2.0.0:
   dependencies:
     mongodb "^2.0.36"
 
+connect-tedious@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/connect-tedious/-/connect-tedious-1.1.2.tgz#c69dab52bc0b2e10c5d1cd79e4fbc7ef06999001"
+  dependencies:
+    debug "^2.2.0"
+    node-connection-string-builder "^0.0.1"
+    retry "^0.9.0"
+    tedious "^1.13.2"
+    tedious-connection-pool "^0.3.9"
+
 console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
@@ -3979,6 +3989,10 @@ nocache@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/nocache/-/nocache-2.0.0.tgz#202b48021a0c4cbde2df80de15a17443c8b43980"
 
+node-connection-string-builder@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/node-connection-string-builder/-/node-connection-string-builder-0.0.1.tgz#b34ba85cd854d4ebbeb55a563616a341e99d5442"
+
 node-gyp@^3.3.1, node-gyp@^3.6.1:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/node-gyp/-/node-gyp-3.6.2.tgz#9bfbe54562286284838e750eac05295853fa1c60"
@@ -5072,6 +5086,10 @@ restore-cursor@^1.0.1:
     exit-hook "^1.0.0"
     onetime "^1.0.0"
 
+retry@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/retry/-/retry-0.9.0.tgz#6f697e50a0e4ddc8c8f7fb547a9b60dead43678d"
+
 right-align@^0.1.1:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/right-align/-/right-align-0.1.3.tgz#61339b722fe6a3515689210d24e14c96148613ef"
@@ -5625,6 +5643,12 @@ tar@^2.0.0, tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
+tedious-connection-pool@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-0.3.9.tgz#e99e52596ba7ca404dc7d3c21bc8007c239442c2"
+  dependencies:
+    tedious "^1.13.0"
+
 tedious-connection-pool@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/tedious-connection-pool/-/tedious-connection-pool-1.0.5.tgz#2d694a72a2f4773564ef2911e86e5fd622ca01c1"
@@ -5642,7 +5666,7 @@ tedious@2.2.4:
     readable-stream "^2.2.6"
     sprintf "0.1.5"
 
-tedious@^1.14.0:
+tedious@^1.13.0, tedious@^1.13.2, tedious@^1.14.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/tedious/-/tedious-1.15.0.tgz#9bda9e9798212c8fcd9438a70cb2a806abcae70a"
   dependencies:
