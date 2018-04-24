@@ -279,16 +279,18 @@ checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
 
 /**
  * Find all the checks that have not been processed
- * @return {Promise<*>}
+ * @returns {Boolean}
  */
 checkDataService.sqlHasUnprocessed = async function () {
-  const sql = `SELECT *
+  const sql = `SELECT TOP 1 *
   FROM ${sqlService.adminSchema}.${table} chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
       ON chk.id = prc.check_id
       WHERE prc.check_id IS NULL`
 
-  return sqlService.query(sql, [])
+  const result = await sqlService.query(sql, [])
+  return result.length > 0
+
 }
 
 /**

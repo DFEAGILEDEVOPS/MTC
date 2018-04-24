@@ -18,7 +18,7 @@ checkProcessingService.process = async function () {
     if (!hasWorkToDo) {
       winston.info('Processing: nothing to do')
     }
-    while (Array.isArray(hasWorkToDo) && hasWorkToDo.length > 0) {
+    while (hasWorkToDo) {
       await this.cachePsychometricanReportData(batchSize)
       hasWorkToDo = await checkDataService.sqlHasUnprocessed()
     }
@@ -40,7 +40,7 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
     winston.info('No IDs found')
     return false
   }
-  // Produce and cache the Pschometrician data
+  // Produce and cache the Psychometrician data
   await psychometricianReportService.batchProduceCacheData(batchIds)
 
   winston.info('Processed %d checks', batchIds.length)

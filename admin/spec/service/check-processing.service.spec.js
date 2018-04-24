@@ -27,7 +27,7 @@ describe('checkProcessingService', () => {
 
   describe('#process', () => {
     it('initially find out if there is any work to do', async (done) => {
-      spyOn(checkDataService, 'sqlHasUnprocessed').and.returnValue([])
+      spyOn(checkDataService, 'sqlHasUnprocessed').and.returnValue(false)
       spyOn(service, 'cachePsychometricanReportData').and.returnValue(true)
       await service.process()
       expect(checkDataService.sqlHasUnprocessed).toHaveBeenCalled()
@@ -36,7 +36,7 @@ describe('checkProcessingService', () => {
     })
 
     it('calls cachePsychometricanReportData to handle any work', async (done) => {
-      spyOn(checkDataService, 'sqlHasUnprocessed').and.returnValues([1])
+      spyOn(checkDataService, 'sqlHasUnprocessed').and.returnValues(true)
       spyOn(service, 'cachePsychometricanReportData').and.returnValue(true)
 
       await service.process()

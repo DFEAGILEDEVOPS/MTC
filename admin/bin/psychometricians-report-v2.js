@@ -7,7 +7,7 @@ const winston = require('winston')
 
 const poolService = require('../services/data-access/sql.pool.service')
 const commandLineArgs = require('command-line-args')
-const completedCheckProcessingService = require('../services/completed-check-processing.service')
+const markingService = require('../services/marking.service')
 const checkProcessingService = require('../services/check-processing.service')
 const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
@@ -39,15 +39,10 @@ async function main (options) {
     winston.info('main: Processing the completed checks')
     // Make sure all completed checks are marked and ps-report data cached
     if (requiresMarking) {
-      await completedCheckProcessingService.process()
-    } else if (requiresProcessing) {
+      await markingService.process()
+    }
+    if (requiresProcessing) {
       await checkProcessingService.process()
-    } else {
-      // Just process everything in one batch.
-      // TODO: batchify it in a service
-      const checks = await psychometricianReportCacheDataService.sqlFindUnprocessedChecks()
-      if (!checks || !checks.length) return
-      await psychometricianReportService.batchProduceCacheData(checks.map(c => c.id))
     }
 
     const report = await psychometricianReportService.generateReport()
