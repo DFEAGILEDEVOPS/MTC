@@ -1,10 +1,15 @@
 const R = require('ramda')
 const moment = require('moment')
+const Parallel = require('async-parallel')
 const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
+
+const concurrencyLimit = 10
+// Async actions running at the same time by default are limited by concurrencyLimit
+Parallel.setConcurrency(concurrencyLimit)
 
 const pupilStatusService = {}
 
@@ -71,13 +76,13 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
  * @returns {Array}
  */
 pupilStatusService.getPupilsStatus = async (pupils) => {
-  return Promise.all(pupils.map(async p => {
-    const pupilStatus = await pupilStatusService.getStatus(p)
+  return Parallel.map(pupils, async pupil => {
+    const pupilStatus = await pupilStatusService.getStatus(pupil)
     return {
-      pupilId: p.id,
+      pupilId: pupil.id,
       status: pupilStatus
     }
-  }))
+  })
 }
 
 module.exports = pupilStatusService

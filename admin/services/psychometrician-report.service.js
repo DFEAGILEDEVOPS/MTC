@@ -2,8 +2,6 @@
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
-const momentDurationFormatSetup = require('moment-duration-format')
-momentDurationFormatSetup(moment)
 
 // const checkWindowDataService = require('./data-access/check-window.data.service')
 const answerDataService = require('../services/data-access/answer.data.service')
@@ -171,19 +169,12 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'RestartNumber': pupilRestart.count,
 
     // TimeStart should be when the user clicked the Start button.
-    'TimeStart': check.data ? dateService.formatTimeWithSeconds(
-      moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))
-    ) : '',
+    'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
     // TimeComplete should be when the user presses Enter or the question Times out on the last question.
     // We log this as CheckComplete in the audit log
-    'TimeComplete': check.data ? dateService.formatTimeWithSeconds(
-      moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
-    ) : '',
+    'TimeComplete': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))),
     // TimeTaken should TimeComplete - TimeStart - but we don't know TimeStart yet
-    'TimeTaken': check.data ? moment.duration(
-        moment(psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check))
-        .diff(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)))
-      ).format('HH:mm:ss', {trim: false}) : ''
+    'TimeTaken': psUtilService.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', check)
   }
 
   // Add information for each question asked
