@@ -290,7 +290,6 @@ checkDataService.sqlHasUnprocessed = async function () {
 
   const result = await sqlService.query(sql, [])
   return result.length > 0
-
 }
 
 /**
