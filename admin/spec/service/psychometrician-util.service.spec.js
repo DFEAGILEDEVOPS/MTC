@@ -14,6 +14,10 @@ const schoolMockOrig = require('../mocks/school')
 const keyboardInput = require('../mocks/keyboard-input')
 const touchInput = require('../mocks/touch-input')
 const mouseInput = require('../mocks/mouse-input')
+const keyboardInput2 = require('../mocks/keyboard-input-2')
+const keyboardInput3 = require('../mocks/keyboard-input-3')
+const keyboardInput4 = require('../mocks/keyboard-input-4')
+const keyboardInput5 = require('../mocks/keyboard-input-5')
 
 describe('psychometrician-util.service', () => {
   let completedCheckMock
@@ -589,17 +593,17 @@ describe('psychometrician-util.service', () => {
   describe('#getLastAnswerInputTime', () => {
     it('returns "error" if not passed an array', () => {
       spyOn(winston, 'info')
-      const res = service.getLastAnswerInputTime(null)
+      const res = service.getLastAnswerInputTime(null, '')
       expect(res).toBe('error')
     })
 
     it('returns empty string if there arent any inputs', () => {
-      const res = service.getLastAnswerInputTime([])
+      const res = service.getLastAnswerInputTime([], '')
       expect(res).toBe('')
     })
 
     it('returns the timestamp as a string from the last input', () => {
-      const res = service.getLastAnswerInputTime(touchInput)
+      const res = service.getLastAnswerInputTime(touchInput, '10')
       expect(res).toBe('2017-10-09T09:50:07.099Z')
     })
 
@@ -610,7 +614,7 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getLastAnswerInputTime(input)
+      const res = service.getLastAnswerInputTime(input, '2')
       expect(res).toBe('2017-10-13T09:06:55.234Z')
     })
 
@@ -647,8 +651,18 @@ describe('psychometrician-util.service', () => {
           question: 16
         }
       ]
-      const res = service.getLastAnswerInputTime(allEnterKeys)
+      const res = service.getLastAnswerInputTime(allEnterKeys, '')
       expect(res).toBe('') // enter key does not count
+    })
+
+    it('reports Backspace events if they modify the input', () => {
+      const res = service.getLastAnswerInputTime(keyboardInput4, '1')
+      expect(res).toBe('2017-10-17T18:20:44.670Z')
+    })
+
+    it('ignores backspace events if there isnt any input', () => {
+      const res = service.getLastAnswerInputTime(keyboardInput5, '')
+      expect(res).toBe('')
     })
   })
 
@@ -660,17 +674,17 @@ describe('psychometrician-util.service', () => {
     })
 
     it('returns empty string if there arent any inputs', () => {
-      const res = service.getLastAnswerInputTime([])
+      const res = service.getLastAnswerInputTime([], '')
       expect(res).toBe('')
     })
 
-    it('returns the first timestamp', () => {
-      const res = service.getFirstInputTime(keyboardInput)
+    it('returns the first timestamp that affects the answer box', () => {
+      const res = service.getFirstInputTime(keyboardInput2, '10')
       expect(res).toBe('2017-10-17T18:20:44.447Z')
     })
 
     it('returns the timestamp from the first mouse input', () => {
-      const res = service.getFirstInputTime(mouseInput)
+      const res = service.getFirstInputTime(mouseInput, '2')
       expect(res).toBe('2017-10-13T09:06:53.692Z')
     })
 
@@ -707,8 +721,13 @@ describe('psychometrician-util.service', () => {
           question: 16
         }
       ]
-      const res = service.getFirstInputTime(allEnterKeys)
+      const res = service.getFirstInputTime(allEnterKeys, '')
       expect(res).toBe('') // enter key does not count
+    })
+
+    it('ignores backspaces that occur before any real input', () => {
+      const res = service.getFirstInputTime(keyboardInput3, '10')
+      expect(res).toBe('2017-10-17T18:20:44.447Z')
     })
   })
 
@@ -724,7 +743,7 @@ describe('psychometrician-util.service', () => {
     })
 
     it('calculates the response time in seconds and thousandths of a second', () => {
-      const res = service.getResponseTime(keyboardInput)
+      const res = service.getResponseTime(keyboardInput, '11')
       expect(res).toBe(0.111)
     })
   })
@@ -823,7 +842,7 @@ describe('psychometrician-util.service', () => {
     })
   })
 
-  describe('#getTimeoutWithCorrectAnser', () => {
+  describe('#getTimeoutWithCorrectAnswer', () => {
     it('returns an empty string if there was NOT a timeout', () => {
       const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true})
       expect(res).toBe('')

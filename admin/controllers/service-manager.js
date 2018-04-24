@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const winston = require('winston')
 const toBool = require('to-bool')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
