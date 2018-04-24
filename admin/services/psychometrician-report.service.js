@@ -206,9 +206,8 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
       psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
     })
-
-    return psData
   }
+  return psData
 }
 /**
  * Filter a psreportcache object to a minimal set of properties. Returns a new object.
