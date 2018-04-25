@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"        : "MTC Check Submission",
+    "script"      : "server.js",
+    "watch"       : false,
+    "instances"   : "max",
+    "exec_mode"   : "cluster"
+  }]
+}
