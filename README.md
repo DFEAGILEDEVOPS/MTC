@@ -15,7 +15,7 @@ There are 3 docker files...
 The default, which runs just SQL Server (main data store) and MongoDB (express session store)
 Stand up the database containers with: `docker-compose up`
 
-### docker-compose.admin-test.yml and docker-compose.admin-test.yml
+### docker-compose.admin-test.yml and docker-compose.pupil-test.yml
 Runs SQL Server, MongoDB, all web applications, and the pupil and admin test suites as separate containers.
 This compose file depends on `docker-compose.yml` and should not be run directly.
 To stand up the tests, app and db containers run either `./run-compose-admin-test-suite.sh` or `./run-compose-pupil-test-suite.sh`
