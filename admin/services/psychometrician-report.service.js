@@ -164,9 +164,9 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
     'PupilStatus': pupil.status,
-    'ReasonNotTakingCheck': pupilAttendanceReason,
-    'RestartReason': pupilRestart.description,
-    'RestartNumber': pupilRestart.count,
+    'ReasonNotTakingCheck': pupilAttendanceReason || '',
+    'RestartReason': pupilRestart.description || '',
+    'RestartNumber': pupilRestart.count || '',
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
