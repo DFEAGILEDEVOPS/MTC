@@ -231,8 +231,7 @@ const sessionOptions = {
         port: config.Sql.Port,
         database: config.Sql.Database,
         encrypt: true,
-        requestTimeout: config.Sql.Timeout,
-        useUTC: false
+        requestTimeout: config.Sql.Timeout
       }
     },
     tableName: '[mtc_admin].[sessions]'
