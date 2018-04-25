@@ -178,7 +178,7 @@ describe('psychometricians-report.service', () => {
       expect(data.Q3Sco).toBe(0)
       expect(data.Q10Sco).toBe(1)
       expect(data.PupilStatus).toBe('Complete')
-      expect(data.ReasonNotTakingCheck).toBeNull()
+      expect(data.ReasonNotTakingCheck).toBe('')
       expect(data.RestartReason).toBe('IT issues')
       expect(data.RestartNumber).toBe(1)
     })
