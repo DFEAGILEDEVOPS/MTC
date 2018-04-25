@@ -1,7 +1,7 @@
 'use strict'
 
 /* global describe, it, spyOn, expect, fail, beforeEach */
-let ncaToolsUserService, schoolDataService, userDataService, roleService, ncaToolsSessionDataService
+let ncaToolsUserService, schoolDataService, userDataService, roleService
 
 describe('nca-tools-user.service', () => {
   describe('mapNcaUserToMtcUser', () => {
@@ -113,53 +113,6 @@ describe('nca-tools-user.service', () => {
       await ncaToolsUserService.mapNcaUserToMtcUser({UserType: 'SchoolNom'})
       expect(schoolDataService.sqlFindOneByDfeNumber).not.toHaveBeenCalled()
       expect(userDataService.sqlUpdateSchool).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('recordLogonAttempt', () => {
-    beforeEach(() => {
-      ncaToolsUserService = require('../../services/nca-tools-user.service')
-      ncaToolsSessionDataService = require('../../services/data-access/nca-tools-session.data.service')
-    })
-    it('throws an error if logonData missing', async (done) => {
-      try {
-        await ncaToolsUserService.recordLogonAttempt()
-        fail('expected error to be thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('missing arguments')
-      }
-      done()
-    })
-    it('throws an error if logonData.sessionToken missing', async (done) => {
-      try {
-        await ncaToolsUserService.recordLogonAttempt({ userName: 'x' })
-        fail('expected error to be thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('missing arguments')
-      }
-      done()
-    })
-    it('throws an error if logonData.userName missing', async (done) => {
-      try {
-        await ncaToolsUserService.recordLogonAttempt({ sessionToken: 'x' })
-        fail('expected error to be thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('missing arguments')
-      }
-      done()
-    })
-    it('persists the logon data via data service', async (done) => {
-      try {
-        spyOn(ncaToolsSessionDataService, 'sqlCreate').and.returnValue(Promise.resolve())
-        await ncaToolsUserService.recordLogonAttempt({ userName: 'x', sessionToken: 'y' })
-        expect(ncaToolsSessionDataService.sqlCreate).toHaveBeenCalled()
-      } catch (error) {
-        fail('should succeed')
-      }
-      done()
     })
   })
 })
