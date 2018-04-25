@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>GOV.UK</title>
   <base href="/">
@@ -13,7 +13,6 @@
   <link rel="apple-touch-icon" sizes="152x152" href="assets/govuk_template/images/apple-touch-icon-152x152.png">
   <link rel="apple-touch-icon" href="assets/govuk_template/images/apple-touch-icon.png">
   <meta name="theme-color" content="#0b0c0c" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="og:image" content="public/govuk_template/images/opengraph-image.png">
   <meta name="build:number" content="#mtc.build#">
   <meta name="build:commitId" content="#mtc.commit#">
@@ -27,6 +26,16 @@
       var electron = '<scr' + 'ipt>require(__dirname + "/../../app.asar/lib/renderer");</scr' + 'ipt>';
       $('body').append(electron);
     }
+    // Disable Zoom out in Safari on iOS and macOS (reverse pinch)
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+    // Disable Zoom on Chrome, Opera and FF on the touchpad
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey === true) {
+        e.preventDefault();
+      }
+    });
   </script>
   <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
   <script>
