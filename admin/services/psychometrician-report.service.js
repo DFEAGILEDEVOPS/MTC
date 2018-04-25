@@ -30,10 +30,12 @@ psychometricianReportService.generateReport = async function () {
     output.push(obj.jsonData)
   }
 
+  const headers = psychometricianReportService.produceReportDataHeaders(results)
+
   return new Promise((resolve, reject) => {
     csv.writeToString(
       output,
-      {headers: true},
+      {headers: headers},
       function (err, data) {
         if (err) { reject(err) }
         resolve(data)
@@ -209,6 +211,22 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   }
   return psData
 }
+
+/**
+ * Returns the CSV headers
+ * @param {Array} results
+ * @returns {Array}
+ */
+psychometricianReportService.produceReportDataHeaders = function (results) {
+  // Fetch the first completed check to store the keys as headers
+  const completedCheck = results.find(c => c.jsonData.hasOwnProperty('Q1ID'))
+  if (completedCheck) {
+    return Object.keys(completedCheck.jsonData)
+  }
+  // Alternatively return the first check keys
+  return Object.keys(results[0].jsonData)
+}
+
 /**
  * Filter a psreportcache object to a minimal set of properties. Returns a new object.
  * @return {Object}

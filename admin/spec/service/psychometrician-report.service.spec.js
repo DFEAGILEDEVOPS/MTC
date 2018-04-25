@@ -215,4 +215,65 @@ describe('psychometricians-report.service', () => {
       expect(res.substr(0, 7)).toBe('PupilId')
     })
   })
+
+  describe('#produceReportDataHeaders', () => {
+    it('returns headers from a completed check when one exists', () => {
+      const results = [
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } },
+        {
+          jsonData: {
+            DOB: '06/03/2009',
+            Gender: 'F',
+            PupilId: 'N801200001014',
+            Forename: 'Gregory',
+            Surname: 'Duke',
+            FormMark: 0,
+            GroupTiming: 5,
+            PauseLength: 2,
+            SpeechSynthesis: false,
+            DeviceType: 'Other',
+            BrowserType: 'Chrome 65.0.3325 / Mac OS X 10.13.4',
+            'School Name': 'Example School One',
+            Estab: '1001',
+            'School URN': 89001,
+            'LA Num': 999,
+            AttemptId: 'A27BFE36-2EF2-4638-97C7-875F51CDA768',
+            'Form ID': 'MTC0100',
+            TestDate: '20180425',
+            PupilStatus: 'Completed',
+            ReasonNotTakingCheck: '',
+            RestartReason: '',
+            RestartNumber: '',
+            TimeStart: '12: 16: 49 pm',
+            TimeComplete: '12: 18: 05 pm',
+            TimeTaken: '00: 01: 17',
+            Q1ID: '2 x 5',
+            Q1Response: '2',
+            Q1InputMethod: 'k',
+            Q1K: 'k[2], k[Enter]',
+            Q1Sco: 0,
+            Q1ResponseTime: 0,
+            Q1TimeOut: 0,
+            Q1TimeOutResponse: '',
+            Q1TimeOutSco: '',
+            Q1tLoad: '2018-04-25T11: 16: 51.135Z',
+            Q1tFirstKey: '2018-04-25T11: 16: 51.831Z',
+            Q1tLastKey: '2018-04-25T11: 16: 51.831Z',
+            Q1OverallTime: 0.696,
+            Q1RecallTime: 0.696
+          }
+        }
+      ]
+      const headers = service.produceReportDataHeaders(results)
+      expect(headers.includes('Q1ID')).toBeTruthy()
+    })
+    it('returns headers from a check without question data if a completed check does not exist', () => {
+      const results = [
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } } ]
+      const headers = service.produceReportDataHeaders(results)
+      expect(headers.includes('Q1ID')).toBeFalsy()
+    })
+  })
 })
