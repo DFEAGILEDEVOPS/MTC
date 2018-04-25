@@ -11,6 +11,7 @@ momentDurationFormatSetup(moment)
 const psUtilService = {}
 
 psUtilService.getMark = function getMark (completedCheck) {
+  if (!completedCheck.data) return ''
   return R.pathOr('error', ['mark'], completedCheck)
 }
 
