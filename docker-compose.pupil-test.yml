@@ -28,7 +28,8 @@ services:
       context: ./pupil-spa
       args:
         api_url: http://admin-app:3001
-        auth_url: http://pupil-auth:3003
+        auth_url: http://admin-app:3001/api/questions
+        # auth_url: http://pupil-auth:3003/auth
     container_name: mtc_pupil_2
     ports:
     - "80:80"
