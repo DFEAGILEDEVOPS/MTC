@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ElementRef } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 
@@ -53,7 +53,7 @@ describe('RegisterInputService', () => {
 
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
-    const event = {type: 'keydown', key: 'f'};
+    const event = {type: 'keydown', key: 'f', currentTarget: null};
     service.addEntry(event, {sequenceNumber: 1, question: '1x3'});
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
@@ -61,31 +61,23 @@ describe('RegisterInputService', () => {
   it('expects a left click event to be registered',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const event = {
-        type: 'mousedown', which: 1, target: {
-          attributes: {
-            'data-sequence-number': { value: '1' },
-            'data-factor1': { value: '1' },
-            'data-factor2': { value: '2' }
-          }
-        }
+        type: 'mousedown', which: 1, currentTarget: null
       };
       service.addEntry(event);
       expect(mockStorageService.setItem).toHaveBeenCalledTimes(1);
       const args = mockStorageServiceSpy.calls.first().args;
-      const record = args[1][0][0];
+      // This `100` is tied to the missing question data,
+      // registeredInputService line 55, where the `idx` is set to 100 if the
+      // question data is missing.  It's missing here as the currentTarget on the event
+      // is not set.
+      const record = args[1][100][0];
       expect(record['input']).toBe('left click');
     }));
 
   it('calls the storage service', inject([TestRegisterInputService],
     (registerInputService: TestRegisterInputService) => {
       const event = {
-        type: 'mousedown', which: 1, target: {
-          attributes: {
-            'data-sequence-number': { value: '1' },
-            'data-factor1': { value: '1' },
-            'data-factor2': { value: '2' }
-          }
-        }
+        type: 'mousedown', which: 1, currentTarget: null
       };
       registerInputService.addEntry(event);
       registerInputService.addEntry(event);

@@ -12,26 +12,26 @@
                 <div class="numpad-container">
                     <table class="numpad" id="js-numpad">
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb1" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(1)">1</button></td>
-                            <td class="key js-key"><button type="button" id="kb2" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(2)">2</button></td>
-                            <td class="key js-key"><button type="button" id="kb3" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(3)">3</button></td>
+                            <td class="key js-key"><button type="button" id="kb1" (click)="onClickAnswer(1)">1</button></td>
+                            <td class="key js-key"><button type="button" id="kb2" (click)="onClickAnswer(2)">2</button></td>
+                            <td class="key js-key"><button type="button" id="kb3" (click)="onClickAnswer(3)">3</button></td>
                         </tr>
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb4" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(4)">4</button></td>
-                            <td class="key js-key"><button type="button" id="kb5" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(5)">5</button></td>
-                            <td class="key js-key"><button type="button" id="kb6" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(6)">6</button></td>
+                            <td class="key js-key"><button type="button" id="kb4" (click)="onClickAnswer(4)">4</button></td>
+                            <td class="key js-key"><button type="button" id="kb5" (click)="onClickAnswer(5)">5</button></td>
+                            <td class="key js-key"><button type="button" id="kb6" (click)="onClickAnswer(6)">6</button></td>
                         </tr>
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb7" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(7)">7</button></td>
-                            <td class="key js-key"><button type="button" id="kb8" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(8)">8</button></td>
-                            <td class="key js-key"><button type="button" id="kb9" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(9)">9</button></td>
+                            <td class="key js-key"><button type="button" id="kb7" (click)="onClickAnswer(7)">7</button></td>
+                            <td class="key js-key"><button type="button" id="kb8" (click)="onClickAnswer(8)">8</button></td>
+                            <td class="key js-key"><button type="button" id="kb9" (click)="onClickAnswer(9)">9</button></td>
                         </tr>
                         <tr>
                             <td class="key js-key">
-                                <button type="button" class="backspace-button" id="kb-backspace" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickBackspace()"></button>
+                                <button type="button" class="backspace-button" id="kb-backspace" (click)="onClickBackspace()"></button>
                             </td>
-                            <td class="key js-key"><button type="button" id="kb0" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickAnswer(0)">0</button></td>
-                            <td class="enter-key js-key"><button type="button" id="kb-enter" class="enter-key" [attr.data-factor1]="factor1" [attr.data-factor2]="factor2" [attr.data-sequence-number]="sequenceNumber" (click)="onClickSubmit()">Enter</button></td>
+                            <td class="key js-key"><button type="button" id="kb0" (click)="onClickAnswer(0)">0</button></td>
+                            <td class="enter-key js-key"><button type="button" id="kb-enter" class="enter-key" (click)="onClickSubmit()">Enter</button></td>
                         </tr>
                     </table>
                 </div>
