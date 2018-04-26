@@ -83,7 +83,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   @HostListener('document:keydown', [ '$event' ])
   handleKeyboardEvent(event: KeyboardEvent) {
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
-    this.registerInputService.addEntry(event, {sequenceNumber: this.sequenceNumber, question: `${this.factor1}x${this.factor2}`});
+    this.registerInputService.addEntry(event);
     const key = event.key;
     // register inputs
     switch (key) {

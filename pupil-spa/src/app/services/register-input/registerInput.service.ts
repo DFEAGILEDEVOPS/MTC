@@ -13,7 +13,7 @@ export class RegisterInputService {
     this.storageService.setItem(RegisterInputService.inputKey, []);
   }
 
-  public addEntry(event, data = null) {
+  public addEntry(event) {
     let eventValue;
     if (event.type === 'mousedown') {
       eventValue = this.getMouseButton(event);

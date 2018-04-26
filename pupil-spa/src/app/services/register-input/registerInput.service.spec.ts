@@ -54,7 +54,7 @@ describe('RegisterInputService', () => {
   it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
     spyOn(service, 'storeEntry');
     const event = {type: 'keydown', key: 'f', currentTarget: null};
-    service.addEntry(event, {sequenceNumber: 1, question: '1x3'});
+    service.addEntry(event);
     expect(service.storeEntry).toHaveBeenCalledTimes(1);
   }));
 
