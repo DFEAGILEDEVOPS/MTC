@@ -10,7 +10,6 @@ const getEnvironment = () => {
 }
 
 module.exports = {
-  AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
   PORT: process.env.PORT || '3003',
   QUESTION_TIME_LIMIT: 5,
   TIME_BETWEEN_QUESTIONS: 2,
@@ -32,9 +31,6 @@ module.exports = {
       MinCount: process.env.SQL_POOL_MIN_COUNT || 5,
       MaxCount: process.env.SQL_POOL_MAX_COUNT || 10,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
-    },
-    Azure: {
-      Scale: process.env.SQL_AZURE_SCALE
     }
   },
   Logging: {
@@ -43,7 +39,7 @@ module.exports = {
       hostname: `${os.hostname()}:${process.pid}`,
       ip: undefined,
       mac: undefined,
-      app: `MTCAdmin:${getEnvironment()}`,
+      app: `MTCPupilAuth:${getEnvironment()}`,
       env: `${getEnvironment()}`
     },
     Express: {

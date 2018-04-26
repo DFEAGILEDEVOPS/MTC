@@ -18,6 +18,8 @@ if (process.env.NODE_ENV !== 'production') {
   winston.level = 'debug'
 }
 
+azure.startInsightsIfConfigured()
+
 const unsetVars = []
 Object.keys(config).map((key) => {
   if (config[key] === undefined && !devWhitelist.includes(key)) {
