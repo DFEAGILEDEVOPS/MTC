@@ -7,14 +7,11 @@ services:
     - "3001:3001"
     environment:
       SQL_SERVER: "sqldb"
-      MONGO_CONNECTION_STRING: "mongodb://mongo/mtc"
       MIGRATE: 1
     depends_on:
     - sqldb
-    - mongo
     links:
     - sqldb
-    - mongo
   pupil-app:
     build:
       context: ./pupil-spa
