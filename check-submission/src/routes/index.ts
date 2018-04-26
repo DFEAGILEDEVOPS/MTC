@@ -1,14 +1,17 @@
-import {Router as Router, Request, Response, NextFunction} from 'express'
+'use strict'
+
+import winston from 'winston'
+import { Router as Router, Request, Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
 
-const { postCheck } = require('../../controllers/check-submission')
+const { postCheck } = require('../controllers/check-submission')
 
 export class IndexRouter {
   router: Router
 
   /**
-   * Initialize the HeroRouter
+   * Initialize the IndexRouter
    */
   constructor () {
     this.router = Router()
@@ -37,13 +40,13 @@ export class IndexRouter {
     try {
       buildNumber = await this.getBuildNumber()
     } catch (error) {
-
+      winston.error('ERROR: ' + error)
     }
 
     try {
       commitId = await this.getCommitId()
     } catch (error) {
-
+      winston.error('ERROR: ' + error)
     }
 
     res.setHeader('Content-Type', 'application/json')

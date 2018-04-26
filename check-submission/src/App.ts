@@ -1,3 +1,5 @@
+'use strict'
+
 import 'dotenv/config'
 
 import * as express from 'express'
@@ -8,8 +10,8 @@ import * as helmet from 'helmet'
 import * as uuidV4 from 'uuid/v4'
 import * as winston from 'winston'
 import * as expressWinston from 'express-winston'
-import * as azure from '../azure'
-import * as config from '../config'
+import * as azure from './azure'
+const config = require('./config')
 
 import IndexRouter from './routes/index'
 
@@ -84,7 +86,7 @@ class App {
     this.express.use((req, res, next) => {
       if (azure.isAzure()) {
         if (req.protocol !== 'https') {
-            res.redirect(`https://${req.header('host')}${req.url}`)
+          res.redirect(`https://${req.header('host')}${req.url}`)
         }
       } else {
         next()
@@ -96,11 +98,7 @@ class App {
 
   // Configure API endpoints.
   private routes (): void {
-    /* This is just to get up and running, and to make sure what we've got is
-     * working so far. This function will change when we start to add more
-     * API endpoints */
-    const router = express.Router()
-
+    /* API endpoints */
     this.express.use('/', IndexRouter)
 
     // catch 404 and forward to error handler
@@ -125,9 +123,9 @@ class App {
       err.errorId = errorId
       err.status = err.status || 500
       if (req.app.get('env') === 'development') {
-        res.status(err.status).json({error: err.message, errorId: errorId})
+        res.status(err.status).json({ error: err.message, errorId: errorId })
       } else {
-        res.status(err.status).json({error: 'An error occurred'})
+        res.status(err.status).json({ error: 'An error occurred' })
       }
     })
 

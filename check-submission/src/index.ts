@@ -1,7 +1,10 @@
+'use strict'
+
 import * as http from 'http'
 import * as debug from 'debug'
 import * as winston from 'winston'
-import * as config from '../config'
+
+const config = require('./config')
 
 import App from './App'
 
