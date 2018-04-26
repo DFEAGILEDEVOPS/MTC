@@ -28,13 +28,17 @@ services:
       context: ./pupil-spa
       args:
         api_url: http://admin-app:3001
+        check_started_url: http://admin-app:3001/api/check-started
+        # check_started_url: http://check-started:3004/submit
     container_name: mtc_pupil_2
     ports:
     - "80:80"
     depends_on:
     - admin-app
+    - check-started
     links:
     - admin-app
+    - check-started
   admin-tests:
     build: ./test/admin
     container_name: admin_tests
