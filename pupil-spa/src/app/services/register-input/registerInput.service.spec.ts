@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 
-import { StorageServiceMock } from '../storage/storage.service.mock';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { RegisterInputService } from './registerInput.service';
 import { StorageService } from '../storage/storage.service';
-import { QuestionService } from '../question/question.service';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 import { SubmissionService } from '../submission/submission.service';
 
 let mockStorageService: StorageServiceMock;
@@ -15,8 +14,8 @@ let mockQuestionService: QuestionServiceMock;
 @Injectable()
 export class TestRegisterInputService extends RegisterInputService {
 
-  constructor(protected storageService: StorageService, protected questionService: QuestionService) {
-    super(storageService, questionService);
+  constructor(protected storageService: StorageService) {
+    super(storageService);
   }
 }
 
@@ -33,7 +32,6 @@ describe('RegisterInputService', () => {
       providers: [
         TestRegisterInputService,
         SubmissionService,
-        {provide: QuestionService, useValue: mockQuestionService},
         {provide: StorageService, useValue: mockStorageService}
       ]
     });

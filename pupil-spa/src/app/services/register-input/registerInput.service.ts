@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
-import { QuestionService } from '../question/question.service';
 
 
 @Injectable()
 export class RegisterInputService {
   public static readonly inputKey = 'inputs';
 
-  constructor(protected storageService: StorageService, protected questionService: QuestionService) {}
+  constructor(protected storageService: StorageService) {}
 
   public initialise() {
     this.storageService.setItem(RegisterInputService.inputKey, []);
@@ -38,8 +37,6 @@ export class RegisterInputService {
   }
 
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string) {
-    // const currentQuestion = this.questionService.getCurrentQuestionNumber();
-
     let questionInputs = this.storageService.getItem(RegisterInputService.inputKey);
     if (!Array.isArray(questionInputs)) {
       questionInputs = [];
