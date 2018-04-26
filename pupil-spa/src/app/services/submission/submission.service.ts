@@ -56,7 +56,7 @@ export class SubmissionService {
 
   submitData() {
     const localStorageData = this.storageService.getAllItems();
-    return this.http.post(`${environment.apiURL}/api/completed-check`,
+    return this.http.post(`${environment.checkSubmissionURL}`,
       // Explanation for response type text
       // https://github.com/angular/angular/issues/21211
       {...localStorageData}, { responseType: 'text' })

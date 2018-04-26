@@ -18,9 +18,13 @@ RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
 ENV API_URL=$api_url
+ARG check_submission_url=http://localhost:3001/api/completed-check
+# ARG check_submission_url=http://localhost:3005/submit
+ENV CHECK_SUBMISSION_URL=$check_submission_url
 ARG ga_code
 ENV GA_CODE=$ga_code
 RUN $(npm bin)/gulp setApiURL
+RUN $(npm bin)/gulp setCheckSubmissionURL
 RUN $(npm bin)/gulp setGaCode
 
 ## Build the angular app in production mode and store the artifacts in dist folder

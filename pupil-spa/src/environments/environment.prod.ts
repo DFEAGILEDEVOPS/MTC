@@ -1,5 +1,6 @@
 export const environment = {
   apiURL: 'API_URL',
+  checkSubmissionURL: 'CHECK_SUBMISSION_URL',
   production: true,
   // api/check-started
   // Delay (ms) during retries

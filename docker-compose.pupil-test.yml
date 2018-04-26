@@ -12,18 +12,33 @@ services:
     - sqldb
     links:
     - sqldb
+  check-submission:
+    build: ./check-submission
+    container_name: mtc_check_submission_2
+    ports:
+    - "3005:3005"
+    environment:
+      SQL_SERVER: "sqldb"
+    depends_on:
+    - sqldb
+    links:
+    - sqldb
   pupil-app:
     build:
       context: ./pupil-spa
       args:
         api_url: http://admin-app:3001
+        check_submission_url: http://admin-app:3001/api/completed-check
+        # check_submission_url: http://check-submission:3005/submit
     container_name: mtc_pupil_2
     ports:
     - "80:80"
     depends_on:
     - admin-app
+    - check-submission
     links:
     - admin-app
+    - check-submission
   admin-tests:
     build: ./test/admin
     container_name: admin_tests

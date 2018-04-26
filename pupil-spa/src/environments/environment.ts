@@ -5,6 +5,8 @@
 
 export const environment = {
   apiURL: 'http://localhost:3001',
+  checkSubmissionURL: 'http://localhost:3001/api/completed-check',
+  // checkSubmissionURL: 'http://localhost:3005/submit',
   production: false,
   // api/check-started
   // Delay (ms) during retries
