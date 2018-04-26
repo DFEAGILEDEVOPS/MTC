@@ -1,4 +1,4 @@
-import { Injectable, ElementRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 
