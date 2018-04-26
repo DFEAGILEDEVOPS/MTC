@@ -1,6 +1,5 @@
 'use strict'
 
-import winston from 'winston'
 import { Router as Router, Request, Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -40,13 +39,13 @@ export class IndexRouter {
     try {
       buildNumber = await this.getBuildNumber()
     } catch (error) {
-      winston.error('ERROR: ' + error)
+      // error
     }
 
     try {
       commitId = await this.getCommitId()
     } catch (error) {
-      winston.error('ERROR: ' + error)
+      // error
     }
 
     res.setHeader('Content-Type', 'application/json')
