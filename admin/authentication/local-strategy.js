@@ -65,6 +65,7 @@ module.exports = async function (req, email, password, done) {
 
     const sessionData = {
       EmailAddress: email,
+      displayName: email,
       UserName: email,
       UserType: 'SchoolNom',
       School: school.dfeNumber,
