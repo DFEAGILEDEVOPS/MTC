@@ -12,6 +12,17 @@ services:
     - sqldb
     links:
     - sqldb
+  check-started:
+    build: ./check-started
+    container_name: mtc_check_started
+    ports:
+    - "3004:3004"
+    environment:
+      SQL_SERVER: "sqldb"
+    depends_on:
+    - sqldb
+    links:
+    - sqldb
   pupil-app:
     build:
       context: ./pupil-spa
