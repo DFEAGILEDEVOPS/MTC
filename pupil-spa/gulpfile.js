@@ -11,6 +11,16 @@ gulp.task('setApiURL', () => {
   }
 })
 
+gulp.task('setAuthURL', () => {
+  console.log('Attempting to update angular config from environment variables...')
+  console.log('env.AUTH_URL is:', process.env.AUTH_URL)
+  if (process.env.AUTH_URL) {
+    gulp.src(['./src/environments/environment.prod.ts'])
+      .pipe(replace('AUTH_URL', process.env.AUTH_URL))
+      .pipe(gulp.dest('./src/environments/'))
+  }
+})
+
 gulp.task('setGaCode', () => {
   console.log('env.GA_CODE is:', process.env.GA_CODE)
   gulp.src(['./src/environments/environment.prod.ts'])
