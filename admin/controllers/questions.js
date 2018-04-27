@@ -35,7 +35,6 @@ const getQuestions = async (req, res) => {
   }
 
   let config, data, questions, token, checkWindow
-
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
