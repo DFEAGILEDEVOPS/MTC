@@ -72,6 +72,43 @@ const psychometricianReportCacheDataService = {
       RIGHT OUTER JOIN ${sqlService.adminSchema}.[check] c ON p.check_id = c.id 
       WHERE p.check_id IS NULL`
     return sqlService.query(sql)
+  },
+
+  /**
+   * Find all the started checks that have not been processed
+   * @returns {Boolean}
+   */
+  sqlHasUnprocessedStartedChecks: async function () {
+    const sql = `SELECT TOP 1 *
+    FROM ${sqlService.adminSchema}.${table} chk
+    LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
+      ON chk.id = prc.check_id
+      WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL`
+
+    const result = await sqlService.query(sql, [])
+    return result.length > 0
+  },
+
+  /**
+   * Returns an array of Ids: [1234, 5678, ...] of started checks.  Used by the batch processor.
+   * @param batchSize the size of the batch to work with
+   * @returns {Array}
+   */
+  sqlFindUnprocessedStartedChecks: async function (batchSize) {
+    if (!batchSize) {
+      throw new Error('Missing argument: batchSize')
+    }
+    const safeBatchSize = parseInt(batchSize, 10)
+
+    const sql = `SELECT TOP ${safeBatchSize} chk.id 
+    FROM ${sqlService.adminSchema}.${table} chk
+      LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
+        ON chk.id = prc.check_id
+        WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL
+        ORDER BY chk.startedAt`
+
+    const results = await sqlService.query(sql)
+    return results.map(r => r.id)
   }
 
 }

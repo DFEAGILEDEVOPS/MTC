@@ -1,6 +1,6 @@
 'use strict'
 
-const checkDataService = require('./data-access/check.data.service')
+const psychometricianReportDataService = require('./data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('./psychometrician-report.service')
 const winston = require('winston')
 
@@ -14,13 +14,13 @@ const batchSize = 100
  */
 checkProcessingService.process = async function () {
   try {
-    let hasWorkToDo = await checkDataService.sqlHasUnprocessedStartedChecks()
+    let hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     if (!hasWorkToDo) {
       winston.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await this.cachePsychometricanReportData(batchSize)
-      hasWorkToDo = await checkDataService.sqlHasUnprocessedStartedChecks()
+      hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     }
   } catch (error) {
     console.error('Bailing out: ', error)
@@ -34,7 +34,7 @@ checkProcessingService.process = async function () {
  */
 
 checkProcessingService.cachePsychometricanReportData = async function (batchSize) {
-  const batchIds = await checkDataService.sqlFindUnprocessedStartedChecks(batchSize)
+  const batchIds = await psychometricianReportDataService.sqlFindUnprocessedStartedChecks(batchSize)
 
   if (batchIds.length === 0) {
     winston.info('No IDs found')
