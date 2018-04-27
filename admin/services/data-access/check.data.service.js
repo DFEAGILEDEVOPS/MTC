@@ -286,8 +286,7 @@ checkDataService.sqlHasUnprocessedStartedChecks = async function () {
   FROM ${sqlService.adminSchema}.${table} chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
       ON chk.id = prc.check_id
-      WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL
-      ORDER BY chk.startedAt`
+      WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL`
 
   const result = await sqlService.query(sql, [])
   return result.length > 0
