@@ -1,0 +1,281 @@
+'use strict'
+
+const sqlService = require('./sql.service')
+const TYPES = require('tedious').TYPES
+const R = require('ramda')
+
+const groupDataService = {
+  /**
+   * Get active groups (non-soft-deleted).
+   * @returns {Promise<*>}
+   */
+  sqlFindGroups: async (schoolId) => {
+    const sql = `
+  SELECT g.id, g.name, COUNT(pg.pupil_id) as pupilCount
+  FROM ${sqlService.adminSchema}.[group] g
+  LEFT OUTER JOIN ${sqlService.adminSchema}.pupilGroup pg
+  ON g.id = pg.group_id
+  WHERE g.isDeleted=0
+  AND g.school_id=@schoolId
+  GROUP BY g.id, g.name
+  ORDER BY name ASC`
+    const params = [
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.query(sql, params)
+  },
+
+  /**
+   * Get group by id.
+   * @param groupId
+   * @param schoolId
+   * @returns {Promise<void>}
+   */
+  sqlFindOneById: async (groupId, schoolId) => {
+    const sql = `SELECT id, [name]
+    FROM ${sqlService.adminSchema}.[group]
+    WHERE id=@groupId AND school_id=@schoolId`
+
+    const params = [
+      {
+        name: 'groupId',
+        value: groupId,
+        type: TYPES.Int
+      },
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
+  },
+
+  /**
+   * Get group by name.
+   * @param groupName
+   * @param schoolId
+   * @returns {Promise<void>}
+   */
+  sqlFindOneByName: async (groupName, schoolId) => {
+    const sql = `SELECT id, [name]
+    FROM ${sqlService.adminSchema}.[group]
+    WHERE isDeleted=0
+    AND school_id=@schoolId
+    AND name=@groupName`
+
+    const params = [
+      {
+        name: 'groupName',
+        value: groupName,
+        type: TYPES.NVarChar
+      },
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
+  },
+
+  /**
+   * Create 'group' record.
+   * @param group
+   * @returns {Promise}
+   */
+  sqlCreate: (group) => {
+    return sqlService.create('[group]', group)
+  },
+
+  /**
+   * Update group.
+   * @param id
+   * @param name
+   * @param schoolId
+   * @returns {Promise}
+   */
+  sqlUpdate: async (id, name, schoolId) => {
+    const params = [
+      {
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      },
+      {
+        name: 'name',
+        value: name,
+        type: TYPES.NVarChar
+      },
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.modify(
+      `UPDATE ${sqlService.adminSchema}.[group]
+    SET name=@name
+    WHERE [id]=@id AND school_id=@schoolId`,
+      params)
+  },
+
+  /**
+   * Update pupils assigned to group.
+   * @param groupId
+   * @param pupilIds
+   * @returns {Promise<boolean>}
+   */
+  sqlAssignPupilsToGroup: async (groupId, pupilIds) => {
+    if (pupilIds.length < 1) {
+      return false
+    }
+    const params = [
+      {
+        name: 'groupId',
+        value: groupId,
+        type: TYPES.Int
+      }
+    ]
+    const insertSql = []
+    const pupilIdValues = Object.values(pupilIds)
+    for (let index = 0; index < pupilIdValues.length; index++) {
+      const pupilId = pupilIdValues[index]
+      insertSql.push(`(@pg${index},@pp${index})`)
+      params.push({
+        name: `pg${index}`,
+        value: groupId,
+        type: TYPES.Int
+      })
+      params.push({
+        name: `pp${index}`,
+        value: pupilId,
+        type: TYPES.Int
+      })
+    }
+
+    const sql = `
+    DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+    INSERT ${sqlService.adminSchema}.[pupilGroup] (group_id, pupil_id)
+    VALUES ${insertSql.join(',')};`
+    return sqlService.modifyWithTransaction(sql, params)
+  },
+
+  /**
+   * Get pupils filtered by schoolId and/or groupId.
+   * and grouped by group_id.
+   * @param schoolId
+   * @param groupId
+   * @returns {Promise<*>}
+   */
+  sqlFindPupils: async (schoolId, groupId) => {
+    let params = [
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+
+    let sql = `SELECT p.[id], p.[foreName], p.[middleNames], p.[lastName], g.[group_id]
+    FROM ${sqlService.adminSchema}.[pupil] p
+    LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g
+      ON p.id = g.pupil_id
+    WHERE p.school_id=@schoolId
+    AND (g.group_id IS NULL`
+
+    if (groupId) {
+      params.push({
+        name: 'groupId',
+        value: groupId,
+        type: TYPES.Int
+      })
+      sql += ` OR g.group_id=@groupId`
+    }
+
+    sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
+
+    return sqlService.query(sql, params)
+  },
+
+  /**
+   * Soft deletes a group.
+   * @param {number} groupId the id of the group to mark as deleted
+   * @returns {Promise<*>}
+   */
+  sqlMarkGroupAsDeleted: async (groupId) => {
+    const params = [
+      {
+        name: 'groupId',
+        value: groupId,
+        type: TYPES.Int
+      }
+    ]
+    const sql = `DELETE ${sqlService.adminSchema}.[pupilGroup] WHERE group_id=@groupId;
+  UPDATE ${sqlService.adminSchema}.[group] SET isDeleted=1 WHERE id=@groupId`
+    return sqlService.modifyWithTransaction(sql, params)
+  },
+
+  /**
+   * Find groups by ids and school id.
+   * @param schoolId
+   * @param pupilIds
+   * @returns {Promise<*>}
+   */
+  sqlFindGroupsByIds: async (schoolId, pupilIds) => {
+    if (!schoolId || !pupilIds || pupilIds.length < 1) return false
+
+    let ids = []
+    pupilIds.map((p) => { ids.push(p.id) })
+
+    let sqlInit = `SELECT DISTINCT p.group_id as id, g.name
+    FROM ${sqlService.adminSchema}.[pupilGroup] p
+    JOIN ${sqlService.adminSchema}.[group] g
+      ON g.id = p.group_id `
+    let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
+
+    params.push({
+      name: 'schoolId',
+      value: schoolId,
+      type: TYPES.Int
+    })
+
+    const whereClause = `WHERE g.isDeleted = 0 AND school_id=@schoolId AND pupil_id IN (${paramIdentifiers.join(', ')}) ORDER BY g.name ASC`
+    const sql = [sqlInit, whereClause].join(' ')
+    return sqlService.query(sql, params)
+  },
+
+  /**
+   * Find group by pupil id
+   * @param pupilId
+   * @return {Object}
+   */
+  sqlFindOneGroupByPupilId: async (pupilId) => {
+    if (!pupilId) return false
+
+    const sql = `SELECT * FROM mtc_admin.[group] g
+  INNER JOIN mtc_admin.pupilGroup pg ON g.id = pg.group_id
+  WHERE pg.pupil_id = @pupilId AND g.isDeleted = 0`
+
+    const params = [
+      {
+        name: 'pupilId',
+        value: pupilId,
+        type: TYPES.Int
+      }
+    ]
+
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
+  }
+}
+
+export = groupDataService
