@@ -153,13 +153,24 @@ export class SpeechService implements OnDestroy {
 
     // add 'artificial' pauses to take visual newlines or spaces into account
     elements.forEach((elem) => {
-      elem.textContent += ' , ';
+      // remove all links and buttons inside the element to be spoken,
+      // in order to avoid duplication
+      elem.querySelectorAll('a, button').forEach(k => k.parentNode.removeChild(k));
 
-      // fix for <button> and <a> elements inside <p> getting added twice
-      if ((elem.tagName !== 'BUTTON' && elem.tagName !== 'A')
-        || (elem.parentNode !== null && elem.parentNode.tagName !== 'P')) {
-        speechText += elem.textContent;
+      // if there is no text to be spoken, return early
+      if (/\S/.test(elem.textContent) === false) {
+        return;
       }
+
+      if (elem.tagName === 'BUTTON') {
+        speechText += ' , Button: ';
+      } else if (elem.tagName === 'A') {
+        speechText += ' , Link: ';
+      } else {
+        speechText += ' , ';
+      }
+
+      speechText += elem.textContent;
     });
 
     this.speak(speechText);
