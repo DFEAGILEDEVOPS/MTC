@@ -158,39 +158,5 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   WHERE pupil_id = @pupilId`
   return sqlService.modify(sql, params)
 }
-/**
- * Find pupils latest restarts based on pupil ids
- * @param pupilIds
- * @return {Promise<*>}
- */
-pupilRestartDataService.sqlFindLatestRestartWithReason = async (pupilIds) => {
-  const ids = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const sql = `SELECT pr.pupil_id AS pupilId, prr.description, pr.createdAt
-  FROM ${sqlService.adminSchema}.pupilRestart pr
-    INNER JOIN ${sqlService.adminSchema}.pupilRestartReason prr ON pr.pupilRestartReason_id = prr.id
-    INNER JOIN (
-      SELECT prc.pupil_id AS pupilId, MAX(prc.createdAt) as maxDate 
-      FROM ${sqlService.adminSchema}.pupilRestart prc 
-      GROUP BY prc.pupil_id
-    ) prc ON pr.pupil_id = prc.pupilId AND pr.createdAt = prc.maxDate
-    WHERE pr.isDeleted=0 AND pr.pupil_id IN (${ids.paramIdentifiers.join(', ')})
-    GROUP BY pr.pupil_id, prr.description, pr.createdAt`
-  return sqlService.query(sql, ids.params)
-}
-
-/**
- * Find restart count based on pupilIds
- * @param pupilIds
- * @return {Promise<*>}
- */
-pupilRestartDataService.sqlFindRestartCounts = async (pupilIds) => {
-  const ids = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const sql = `SELECT pr.pupil_id, COUNT(*) AS count
-    FROM ${sqlService.adminSchema}.[pupilRestart] pr
-    WHERE pr.isDeleted=0 AND pr.pupil_id IN (${ids.paramIdentifiers.join(', ')})
-    GROUP BY pupil_id`
-
-  return sqlService.query(sql, ids.params)
-}
 
 module.exports = pupilRestartDataService

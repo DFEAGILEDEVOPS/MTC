@@ -14,13 +14,13 @@ const batchSize = 100
  */
 checkProcessingService.process = async function () {
   try {
-    let hasWorkToDo = await checkDataService.sqlHasUnprocessed()
+    let hasWorkToDo = await checkDataService.sqlHasUnprocessedStartedChecks()
     if (!hasWorkToDo) {
       winston.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
       await this.cachePsychometricanReportData(batchSize)
-      hasWorkToDo = await checkDataService.sqlHasUnprocessed()
+      hasWorkToDo = await checkDataService.sqlHasUnprocessedStartedChecks()
     }
   } catch (error) {
     console.error('Bailing out: ', error)
@@ -34,7 +34,7 @@ checkProcessingService.process = async function () {
  */
 
 checkProcessingService.cachePsychometricanReportData = async function (batchSize) {
-  const batchIds = await checkDataService.sqlFindUnprocessed(batchSize)
+  const batchIds = await checkDataService.sqlFindUnprocessedStartedChecks(batchSize)
 
   if (batchIds.length === 0) {
     winston.info('No IDs found')

@@ -12,9 +12,6 @@ const psUtilService = require('./psychometrician-util.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
-const pupilsNotTakingTheCheckDataService = require('./data-access/pupils-not-taking-check.data.service')
-const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
-const pupilStatusService = require('./pupil.status.service')
 
 const psychometricianReportService = {}
 
@@ -86,12 +83,8 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   // Fetch all pupils, checkForms, checkWindows or the checks
   const pupilIds = checks.map(x => x.pupil_id)
   const pupils = await pupilDataService.sqlFindByIds(pupilIds)
-  const pupilsStatus = await pupilStatusService.getPupilsStatus(pupils)
   const checkForms = await checkFormDataService.sqlFindByIds(checks.map(x => x.checkForm_id))
   const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
-  const pupilsAttendance = await pupilsNotTakingTheCheckDataService.sqlFindPupilsWithReasonByIds(pupilIds)
-  const pupilRestarts = await pupilRestartDataService.sqlFindLatestRestartWithReason(pupilIds)
-  const pupilRestartCounts = await pupilRestartDataService.sqlFindRestartCounts(pupilIds)
 
   // answers is an object with check.ids as keys and arrays of answers for that check as values
   const answers = await answerDataService.sqlFindByCheckIds(checks.map(x => x.id))
@@ -100,17 +93,15 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 
   for (let check of checks) {
     const pupil = pupils.find(x => x.id === check.pupil_id)
-    const pupilStatusRecord = pupilsStatus.find(x => x.pupilId === check.pupil_id)
-    pupil.status = pupilStatusRecord.status
     const checkForm = checkForms.find(x => x.id === check.checkForm_id)
     const school = schools.find(x => x.id === pupil.school_id)
-    const pupilAttendance = pupilsAttendance.find(x => x.id === check.pupil_id)
-    const pupilAttendanceReason = pupilAttendance && pupilAttendance.reason
-    const pupilRestart = pupilRestarts.find(x => x.pupilId === check.pupil_id) || {}
-    const restartCountRecord = pupilRestartCounts.find(x => x.pupil_id === check.pupil_id)
-    pupilRestart.count = restartCountRecord && restartCountRecord.count
+    // Fetch check ids based on pupil
+    const pupilChecks = checks.filter(c => c.pupil_id === pupil.id)
+    // Find check index from pupil's checks
+    check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
+    check.checkStatus = check.data && Object.keys(check.data).length > 0 ? 'Completed' : 'Started, not completed'
     // Generate one line of the report
-    const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school, pupilAttendanceReason, pupilRestart)
+    const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
   }
 
@@ -134,11 +125,9 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
  * @param {Object} pupil
  * @param {Object} checkForm
  * @param {Object} school
- * @param {String} pupilAttendanceReason
- * @param {Object} pupilRestart
  * @return {{Surname: string, Forename: string, MiddleNames: string, DOB: *, Gender, PupilId, FormMark: *, School Name, Estab, School URN: (School.urn|{type, trim, min}|*|any|string), LA Num: (number|School.leaCode|{type, required, trim, max, min}|leaCode|*), AttemptId, Form ID, TestDate: *, TimeStart: string, TimeComplete: *, TimeTaken: string}}
  */
-psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school, pupilAttendanceReason, pupilRestart) {
+psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school) {
   const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
   const config = R.path(['data', 'config'], check)
 
@@ -165,10 +154,8 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'AttemptId': check.checkCode,
     'Form ID': checkForm.name,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
-    'PupilStatus': pupil.status,
-    'ReasonNotTakingCheck': pupilAttendanceReason || '',
-    'RestartReason': pupilRestart.description || '',
-    'RestartNumber': pupilRestart.count || '',
+    'CheckStatus': check.checkStatus,
+    'CheckCount': check.checkCount,
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
