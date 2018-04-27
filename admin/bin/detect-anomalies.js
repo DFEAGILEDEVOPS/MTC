@@ -92,7 +92,7 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
 
     // Check the inputs to make sure they all the right question property
     inputs.forEach(input => {
-      if (input.question !== question.order) {
+      if (input.sequenceNumber !== question.order) {
         report(check, 'Input fails property check', input.question, question.order)
       }
       const inputTimeStamp = moment(input.clientInputDate)
