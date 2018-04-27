@@ -38,15 +38,15 @@ const executeRequest = (connection, sql) => {
   })
 }
 
-const createDatabase = async (connection) => {
+const createDatabase = async (connection, databaseName, azureScale) => {
   try {
     let azureOnlyScaleSetting = ''
-    if (config.Sql.Azure.Scale) {
-      azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
+    if (azureScale) {
+      azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${azureScale}')`
     }
-    winston.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
-    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}') 
-    BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
+    winston.info(`attempting to create database ${databaseName} ${azureOnlyScaleSetting} if it does not already exist...`)
+    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${databaseName}') 
+    BEGIN CREATE DATABASE [${databaseName}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
     const output = await executeRequest(connection, createDbSql)
     winston.info(output[0][0].value)
   } catch (error) {
@@ -64,8 +64,10 @@ const main = () => {
         return reject(err)
       }
       winston.info('About to create new database')
-      await createDatabase(connection)
-      winston.info('DB Created')
+      await createDatabase(connection, config.Sql.Database, config.Sql.Azure.Scale)
+      winston.info(`DB ${config.Sql.Database} Created`)
+      await createDatabase(connection, config.Sql.PupilChecksDb.Database, config.Sql.PupilChecksDb.Azure.Scale)
+      winston.info(`DB ${config.Sql.PupilChecksDb.Database} Created`)
       connection.close()
       resolve()
     })

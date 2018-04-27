@@ -4,13 +4,13 @@ var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
 const winston = require('winston')
 
-var poolConfig = {
+var mainPoolConfig = {
   min: config.Sql.Pooling.MinCount,
   max: config.Sql.Pooling.MaxCount
 }
 
 // full config details: https://github.com/tediousjs/tedious/blob/master/src/connection.js
-var connectionConfig = {
+const mainConnectionConfig = {
   appName: config.Sql.Application.Name,
   userName: config.Sql.Application.Username,
   password: config.Sql.Application.Password,
@@ -23,7 +23,21 @@ var connectionConfig = {
   }
 }
 
-let pool = null
+const checksConnectionConfig = {
+  appName: config.Sql.Application.Name,
+  userName: config.Sql.PupilChecksDb.Application.Username,
+  password: config.Sql.PupilChecksDb.Application.Password,
+  server: config.Sql.Server,
+  options: {
+    port: config.Sql.Port,
+    database: config.Sql.PupilChecksDb.Database,
+    encrypt: true,
+    requestTimeout: config.Sql.PupilChecksDb.Timeout
+  }
+}
+
+let mainPool = null
+let checksPool = null
 
 const sqlPoolService = {}
 
@@ -31,23 +45,44 @@ const sqlPoolService = {}
  * Initialise the connection pool.  Called once per application instance
  */
 sqlPoolService.init = () => {
-  if (pool !== null) return
-  pool = new ConnectionPool(poolConfig, connectionConfig)
-  pool.on('error', function (err) {
-    winston.error(err)
-  })
+  if (mainPool == null) {
+    mainPool = new ConnectionPool(mainPoolConfig, mainConnectionConfig)
+    mainPool.on('error', function (err) {
+      winston.error(err)
+    })
+  }
+  if (checksPool == null) {
+    checksPool = new ConnectionPool(checksPoolConfig, checksConnectionConfig)
+    checksPool.on('error', function (err) {
+      winston.error(err)
+    })
+  }
 }
 
 /**
  * Get a connection from the pool.
  * @return {Promise}
  */
-sqlPoolService.getConnection = () => {
+sqlPoolService.getConnection = (connectionName = null) => {
+  if (connectionName === 'checks') {
+    return new Promise((resolve, reject) => {
+      if (checksPool === null) {
+        sqlPoolService.init()
+      }
+      checksPool.acquire(function (err, connection) {
+        if (err) {
+          reject(err)
+          return
+        }
+        resolve(connection)
+      })
+    })
+  }
   return new Promise((resolve, reject) => {
-    if (pool === null) {
+    if (mainPool === null) {
       sqlPoolService.init()
     }
-    pool.acquire(function (err, connection) {
+    mainPool.acquire(function (err, connection) {
       if (err) {
         reject(err)
         return
@@ -61,8 +96,11 @@ sqlPoolService.getConnection = () => {
  * Disconnect all pool connections
  */
 sqlPoolService.drain = () => {
-  if (pool) {
-    pool.drain()
+  if (mainPool) {
+    mainPool.drain()
+  }
+  if (checksPool) {
+    checksPool.drain()
   }
 }
 
