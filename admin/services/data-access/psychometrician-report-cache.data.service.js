@@ -80,7 +80,7 @@ const psychometricianReportCacheDataService = {
    */
   sqlHasUnprocessedStartedChecks: async function () {
     const sql = `SELECT TOP 1 *
-    FROM ${sqlService.adminSchema}.${table} chk
+    FROM ${sqlService.adminSchema}.[check] chk
     LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
       ON chk.id = prc.check_id
       WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL`
@@ -101,7 +101,7 @@ const psychometricianReportCacheDataService = {
     const safeBatchSize = parseInt(batchSize, 10)
 
     const sql = `SELECT TOP ${safeBatchSize} chk.id 
-    FROM ${sqlService.adminSchema}.${table} chk
+    FROM ${sqlService.adminSchema}.[check] chk
       LEFT JOIN ${sqlService.adminSchema}.psychometricianReportCache prc
         ON chk.id = prc.check_id
         WHERE prc.check_id IS NULL AND chk.startedAt IS NOT NULL
