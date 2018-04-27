@@ -30,6 +30,7 @@ function detectAnomalies (check, checkForm) {
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
   detectInputThatDoesNotCorrespondToAnswers(check)
   detectQuestionsThatWereShownForTooLong(check)
+  detectInputsWithoutQuestionInformation(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -138,6 +139,26 @@ function detectMissingAudits (check) {
   ]
 
   singleMandatoryAuditEvents.map(arg => detectMissingSingleAudit(arg))
+}
+
+function detectInputsWithoutQuestionInformation (check) {
+  const inputs = check.data.inputs
+  if (!inputs) { return }
+
+  // Copy the inputs into a flat array
+  const flatInputs = R.flatten(inputs)
+
+  const eventsMissingInformation = flatInputs.filter(e => {
+    if (!e) { return false }
+    const sequenceNumber = parseInt(e.sequenceNumber)
+    if (sequenceNumber === -1 || isNaN(sequenceNumber)) {
+      return true
+    }
+    return false
+  })
+  if (eventsMissingInformation.length) {
+    report(check, 'One or more Input events missing question information', eventsMissingInformation.length, 0)
+  }
 }
 
 function detectInsufficientVerticalHeight (check) {
