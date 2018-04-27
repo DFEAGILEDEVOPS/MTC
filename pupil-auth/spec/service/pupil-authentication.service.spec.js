@@ -20,8 +20,7 @@ describe('pupil authentication service', () => {
 
     it('authenticates a pupil', async (done) => {
       spyOn(pinValidator, 'isActivePin').and.returnValue(true)
-      spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindOneByPinAndSchool').and.returnValue(pupilMock)
+      spyOn(pupilDataService, 'sqlFindOneByPinAndSchoolPin').and.returnValue({pupil: pupilMock, school: schoolMock})
       const data = await sut.authenticate('pupilPin', 'schoolPin')
       expect(data).toEqual({ pupil: pupilMock, school: schoolMock })
       done()

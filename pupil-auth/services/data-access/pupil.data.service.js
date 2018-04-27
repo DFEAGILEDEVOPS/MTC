@@ -28,6 +28,42 @@ pupilDataService.sqlFindOneByPinAndSchool = async (pin, schoolId) => {
 }
 
 /**
+ * Find a pupil by school pin and pupil pin
+ * @param {number} pupilPin
+ * @param {number} schoolPin
+ * @return {Promise<void>}
+ */
+pupilDataService.sqlFindOneByPinAndSchoolPin = async (pupilPin, schoolPin) => {
+  const paramPupilPin = { name: 'pupilPin', type: TYPES.NVarChar, value: pupilPin }
+  const paramSchoolPin = { name: 'schoolPin', type: TYPES.Char, value: schoolPin }
+
+  // dummy spaces as a way to get a separator between pupil and school columns
+  const sql = `
+      SELECT TOP 1
+        p.*, '' as pupil_school_delimiter, s.*
+      FROM ${sqlService.adminSchema}.${table} p
+      INNER JOIN ${sqlService.adminSchema}.[school] s
+      ON p.school_id = s.id
+      WHERE p.pin = @pupilPin and s.pin = @schoolPin
+    `
+  const sqlResults = await sqlService.query(sql, [paramPupilPin, paramSchoolPin])
+
+  const results = R.head(sqlResults)
+
+  const allColumns = R.keys(results)
+
+  // Get pupil columns as the first columns before pupil_school_delimiter and
+  // schoolColumns as the ones that are left. could be easier done with a schema.
+  const pupilColumns = R.takeWhile(col => col !== 'pupil_school_delimiter', allColumns)
+  const schoolColumns = R.without(['pupil_school_delimiter'], R.difference(allColumns, pupilColumns))
+
+  const pupil = R.pick(pupilColumns, results)
+  const school = R.pick(schoolColumns, results)
+
+  return { pupil, school }
+}
+
+/**
  * Update am existing pupil object.  Must provide the `id` field
  * @param update
  * @return {Promise<*>}
