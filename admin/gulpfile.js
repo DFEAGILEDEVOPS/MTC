@@ -56,8 +56,8 @@ gulp.task('copy-pdfs', function () {
 
 gulp.task('copy-csv-files', function () {
   gulp
-    .src(['./assets/csvs/*'])
-    .pipe(gulp.dest('public/csvs'))
+    .src(['./assets/csv/*'])
+    .pipe(gulp.dest('public/csv'))
 })
 
 gulp.task('realclean', ['clean'], function () {
