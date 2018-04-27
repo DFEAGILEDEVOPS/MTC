@@ -48,5 +48,5 @@ module.exports = {
   },
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
   Environment: getEnvironment(),
-  JwtSecret: process.env.JWT_SECRET || '0bd8fbdab903fb50455cb4cf7ba9fb5beed3f209687ed2644aa731ee8231e14c'
+  JwtSecret: process.env.JWT_SECRET || 'dev-token'.padEnd(64, '-')
 }
