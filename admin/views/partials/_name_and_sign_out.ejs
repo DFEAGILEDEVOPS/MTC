@@ -3,6 +3,6 @@
     <a href="/sign-out">Sign out</a>
 </div>
 <% if (typeof user != 'undefined') { %>
-<div class="signed-in-as">Signed in as <%= user.UserName %></div>
+<div class="signed-in-as">Signed in as <%= user.displayName %></div>
 <% } %>
 <% } %>
