@@ -3,6 +3,7 @@
 import { Router as Router, Request, Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
+const moment = require('moment')
 
 const { postCheck } = require('../controllers/check-submission')
 
@@ -52,7 +53,7 @@ export class IndexRouter {
     let obj = {
       'Build': buildNumber,
       'Commit': commitId,
-      'CurrentServerTime': Date.now()
+      'CurrentServerTime': moment().toISOString()
     }
     return res.status(200).send(obj)
   }
