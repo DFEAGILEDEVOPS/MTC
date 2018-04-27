@@ -1,10 +1,15 @@
 'use strict'
 
-var ConnectionPool = require('tedious-connection-pool')
+const ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
 const winston = require('winston')
 
-var mainPoolConfig = {
+const mainPoolConfig = {
+  min: config.Sql.Pooling.MinCount,
+  max: config.Sql.Pooling.MaxCount
+}
+
+const checksPoolConfig = {
   min: config.Sql.Pooling.MinCount,
   max: config.Sql.Pooling.MaxCount
 }
