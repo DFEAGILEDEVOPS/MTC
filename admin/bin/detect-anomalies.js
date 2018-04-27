@@ -355,7 +355,7 @@ async function main () {
   let lowCheckId = checkInfo.min // starting Check ID
   let count = 0
 
-  while (lowCheckId < checkInfo.max) {
+  while (lowCheckId <= checkInfo.max) {
     winston.info(`Fetching ${batchSize} checks for processing starting at ID ${lowCheckId}`)
     const checks = await completedCheckDataService.sqlFind(lowCheckId, batchSize)
     const checkFormIds = checks.map(check => check.checkForm_id)
