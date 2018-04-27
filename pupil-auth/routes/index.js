@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const path = require('path')
 const fs = require('fs')
+const moment = require('moment')
 
 const { getAuth } = require('../controllers/auth')
 
@@ -27,7 +28,7 @@ async function getPing (req, res) {
   let obj = {
     'Build': buildNumber,
     'Commit': commitId,
-    'CurrentServerTime': Date.now()
+    'CurrentServerTime': moment().toISOString()
   }
   return res.status(200).send(obj)
 }
