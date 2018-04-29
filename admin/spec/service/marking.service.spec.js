@@ -5,7 +5,9 @@ const winston = require('winston')
 const checkDataService = require('../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const answerDataService = require('../../services/data-access/answer.data.service')
+const checkFormDataService = require('../../services//data-access/check-form.data.service')
 const completedCheckMock = require('../mocks/completed-check-with-results')
+const checkFormMock = require('../mocks/check-form')
 
 describe('markingService', () => {
   let service = require('../../services/marking.service')
@@ -38,10 +40,31 @@ describe('markingService', () => {
       }
     })
 
+    it('throws an error if check form is not found', async () => {
+      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue([])
+      try {
+        await service.mark(completedCheckMock)
+        fail('expected to be thrown')
+      } catch (err) {
+        expect(err.message).toBe('check form data missing or not found')
+      }
+    })
+
+    it('throws an error if check form is not found', async () => {
+      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue([{ formData: {} }])
+      try {
+        await service.mark(completedCheckMock)
+        fail('expected to be thrown')
+      } catch (err) {
+        expect(err.message).toBe('check form data missing or not found')
+      }
+    })
+
     it('marks the answers and sets datetime of marking', async () => {
+      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults').and.callFake((checkCode, marks, maxMarks, processedAt) => {
-        expect(marks).toBe(9)
+        expect(marks).toBe(7)
         expect(maxMarks).toBe(10)
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
@@ -51,6 +74,7 @@ describe('markingService', () => {
     })
 
     it('stores the number of marks applied to each answer in the db', async () => {
+      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
       await service.mark(completedCheckMock)

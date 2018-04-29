@@ -152,6 +152,7 @@ psUtilService.getUserInput = function getUserInput (inputs) {
 /**
  * Get the time of the user's last input that is not enter
  * @param {Array} inputs
+ * @param {Object} answer
  * @return {String}
  */
 psUtilService.getLastAnswerInputTime = function (inputs, answer) {
@@ -181,7 +182,8 @@ psUtilService.getLastAnswerInputTime = function (inputs, answer) {
 
 /**
  * Returns the client timestamp as a string of the first input from the user
- * @param inputs
+ * @param {Array} inputs
+ * @param {Object} answer
  * @return {String}
  */
 psUtilService.getFirstInputTime = function (inputs, answer) {

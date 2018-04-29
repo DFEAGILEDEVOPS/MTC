@@ -13,6 +13,7 @@ const schoolDataService = require('../../services/data-access/school.data.servic
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+const checkFormMock = require('../mocks/check-form')
 
 describe('psychometricians-report.service', () => {
   const service = require('../../services/psychometrician-report.service')
@@ -112,10 +113,6 @@ describe('psychometricians-report.service', () => {
         upn: 'F673001000200',
         gender: 'M'
       }
-      const checkForm = {
-        id: 42,
-        name: 'MtcMock99'
-      }
       const school = {
         id: 99,
         name: 'Schooly McSchool',
@@ -136,13 +133,14 @@ describe('psychometricians-report.service', () => {
         {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
         {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
       ]
-      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school)
+      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkFormMock, school)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')
       expect(data.Q1Sco).toBe(1)
-      expect(data.Q3Sco).toBe(0)
-      expect(data.Q10Sco).toBe(1)
+      expect(data.Q2Sco).toBe(1)
+      expect(data.Q4Sco).toBe('n/a')
+      expect(data.Q5Sco).toBe(1)
     })
   })
 

@@ -2,7 +2,7 @@ module.exports = {
   id: 100,
   name: 'MTC0100',
   isDeleted: false,
-  questions: [
+  formData: [
     {
       f1: 2,
       f2: 5
