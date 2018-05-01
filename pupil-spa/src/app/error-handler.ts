@@ -14,6 +14,5 @@ export class GlobalErrorHandler implements ErrorHandler {
       hitType: 'pageview',
       page: '/error'
     });
-    throw error;
   }
 }
