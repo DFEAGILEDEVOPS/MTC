@@ -2,7 +2,7 @@ module.exports = {
   id: 100,
   name: 'MTC0100',
   isDeleted: false,
-  formData: [
+  formData: JSON.stringify([
     {
       f1: 2,
       f2: 5
@@ -83,5 +83,5 @@ module.exports = {
       f1: 12,
       f2: 12
     }
-  ]
+  ])
 }

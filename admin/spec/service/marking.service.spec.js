@@ -41,7 +41,7 @@ describe('markingService', () => {
     })
 
     it('throws an error if check form is not found', async () => {
-      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue([])
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue([])
       try {
         await service.mark(completedCheckMock)
         fail('expected to be thrown')
@@ -51,7 +51,7 @@ describe('markingService', () => {
     })
 
     it('throws an error if check form is not found', async () => {
-      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue([{ formData: {} }])
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue([{ formData: {} }])
       try {
         await service.mark(completedCheckMock)
         fail('expected to be thrown')
@@ -61,7 +61,7 @@ describe('markingService', () => {
     })
 
     it('marks the answers and sets datetime of marking', async () => {
-      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue(checkFormMock)
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults').and.callFake((checkCode, marks, maxMarks, processedAt) => {
         expect(marks).toBe(7)
@@ -74,7 +74,7 @@ describe('markingService', () => {
     })
 
     it('stores the number of marks applied to each answer in the db', async () => {
-      spyOn(checkFormDataService, 'sqlFindActiveForm').and.returnValue(checkFormMock)
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
       await service.mark(completedCheckMock)

@@ -94,6 +94,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   for (let check of completedChecks) {
     const pupil = pupils.find(x => x.id === check.pupil_id)
     const checkForm = checkForms.find(x => x.id === check.checkForm_id)
+    checkForm.formData = JSON.parse(checkForm.formData)
     const school = schools.find(x => x.id === pupil.school_id)
     // Generate one line of the report
     const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)

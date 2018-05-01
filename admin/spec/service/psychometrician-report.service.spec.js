@@ -31,9 +31,9 @@ describe('psychometricians-report.service', () => {
         {id: 3, school_id: 7}
       ])
       spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
-        {id: 2},
-        {id: 3},
-        {id: 4}
+        {id: 2, formData: checkFormMock.formData},
+        {id: 3, formData: checkFormMock.formData},
+        {id: 4, formData: checkFormMock.formData}
       ])
       spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
         {id: 5},
@@ -133,7 +133,9 @@ describe('psychometricians-report.service', () => {
         {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
         {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
       ]
-      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkFormMock, school)
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')

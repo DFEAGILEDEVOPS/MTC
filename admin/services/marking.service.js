@@ -44,20 +44,19 @@ markingService.mark = async function (completedCheck) {
     processedAt: moment.utc()
   }
 
-  const checkForm = await checkFormDataService.sqlFindActiveForm(completedCheck.checkForm_id)
+  const checkForm = await checkFormDataService.sqlFindOneById(completedCheck.checkForm_id)
 
   if (!checkForm || !checkForm.formData) {
     throw new Error('check form data missing or not found')
   }
 
-  const { formData } = checkForm
+  const formData = JSON.parse(checkForm.formData)
 
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
 
   for (let question of formData) {
-
     const currentIndex = questionNumber - 1
     const answer = completedCheck.data.answers[currentIndex]
     const currentAnswer = answer && answer.answer
