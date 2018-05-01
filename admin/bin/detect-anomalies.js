@@ -30,6 +30,7 @@ function detectAnomalies (check, checkForm) {
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
   detectInputThatDoesNotCorrespondToAnswers(check)
   detectQuestionsThatWereShownForTooLong(check)
+  detectApplicationErrors(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -294,6 +295,14 @@ function detectQuestionsThatWereShownForTooLong (check) {
     if (audit.type === 'PauseRendered' && audit.relativeTiming > expectedValue) {
       report(check, 'Question may have been shown for too long', audit.relativeTiming, expectedValue, questionNumber)
     }
+  }
+}
+
+function detectApplicationErrors (check) {
+  const audits = check.data.audit
+  const appErrors = audits.filter(c => c.type === 'AppError')
+  if (appErrors.length) {
+    report(check, 'Check has Application Errors', appErrors.length, 0)
   }
 }
 
