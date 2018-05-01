@@ -7,7 +7,9 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
 const checkDataService = require('../../services/data-access/check.data.service')
+const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const checkMock = require('../mocks/check')
+const checkFormMock = require('../mocks/check-form')
 
 describe('check-complete.service', () => {
   describe('happy path', () => {
@@ -41,6 +43,7 @@ describe('check-complete.service', () => {
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
       spyOn(completedCheckDataService, 'sqlFindOneByCheckCode')
       spyOn(checkDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(checkMock))
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(checkFormMock))
     })
 
     it('clears pin and sets expiry when not test account', async (done) => {

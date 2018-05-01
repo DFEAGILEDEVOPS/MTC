@@ -20,10 +20,12 @@ markingService.batchMark = async function (batchIds) {
   }
 
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
-
+  const checkFormIds = completedChecks.map(c => c.checkForm_id)
+  const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
   for (let cc of completedChecks) {
     try {
-      await this.mark(cc)
+      const checkForm = checkForms.find(cf => cc.checkForm_id === cf.id)
+      await this.mark(cc, checkForm)
     } catch (error) {
       winston.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
@@ -32,8 +34,8 @@ markingService.batchMark = async function (batchIds) {
   }
 }
 
-markingService.mark = async function (completedCheck) {
-  if (!(completedCheck && completedCheck.data && completedCheck.data.answers)) {
+markingService.mark = async function (completedCheck, checkForm) {
+  if (!completedCheck || !completedCheck.data || !completedCheck.data.answers || !checkForm || !checkForm.formData) {
     throw new Error('missing or invalid argument')
   }
 
@@ -42,12 +44,6 @@ markingService.mark = async function (completedCheck) {
     maxMarks: completedCheck.data.answers.length,
     // TODO date service?
     processedAt: moment.utc()
-  }
-
-  const checkForm = await checkFormDataService.sqlFindOneById(completedCheck.checkForm_id)
-
-  if (!checkForm || !checkForm.formData) {
-    throw new Error('check form data missing or not found')
   }
 
   const formData = JSON.parse(checkForm.formData)
@@ -63,7 +59,7 @@ markingService.mark = async function (completedCheck) {
     const data = R.clone(answer)
     // Immediately break when answer is not found based on question index
     if (!data) break
-    data.answer = currentAnswer ? R.slice(0, 60, currentAnswer) : 'n/a'
+    data.answer = currentAnswer ? R.slice(0, 60, currentAnswer) : ''
     data.questionNumber = questionNumber
     questionNumber += 1
 

@@ -40,28 +40,25 @@ describe('markingService', () => {
       }
     })
 
-    it('throws an error if check form is not found', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue([])
+    it('throws an error if check form is not defined', async () => {
       try {
-        await service.mark(completedCheckMock)
+        await service.mark(completedCheckMock, {})
         fail('expected to be thrown')
       } catch (err) {
-        expect(err.message).toBe('check form data missing or not found')
+        expect(err.message).toBe('missing or invalid argument')
       }
     })
 
-    it('throws an error if check form is not found', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue([{ formData: {} }])
+    it('throws an error if check form does not have formData', async () => {
       try {
-        await service.mark(completedCheckMock)
+        await service.mark(completedCheckMock, { checkForm: {} })
         fail('expected to be thrown')
       } catch (err) {
-        expect(err.message).toBe('check form data missing or not found')
+        expect(err.message).toBe('missing or invalid argument')
       }
     })
 
     it('marks the answers and sets datetime of marking', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults').and.callFake((checkCode, marks, maxMarks, processedAt) => {
         expect(marks).toBe(7)
@@ -69,7 +66,7 @@ describe('markingService', () => {
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
       })
-      await service.mark(completedCheckMock)
+      await service.mark(completedCheckMock, checkFormMock)
       expect(checkDataService.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
@@ -77,7 +74,7 @@ describe('markingService', () => {
       spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
-      await service.mark(completedCheckMock)
+      await service.mark(completedCheckMock, checkFormMock)
       expect(answerDataService.sqlUpdateWithResults).toHaveBeenCalled()
     })
   })
@@ -108,6 +105,9 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
+      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
+        {}, {}, {}
+      ])
       await service.batchMark([1, 2, 3])
       expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1, 2, 3])
       done()
@@ -115,6 +115,9 @@ describe('markingService', () => {
 
     it('ignores errors from mark() and carries on processing', async (done) => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
+        {}, {}, {}
+      ])
+      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
       // As we know this will output a warning lets shut it up during the test
