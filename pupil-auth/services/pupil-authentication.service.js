@@ -13,13 +13,13 @@ const pupilAuthenticationService = {
    */
   authenticate: async (pupilPin, schoolPin) => {
 
-    const { pupil, school } = await pupilDataService.sqlFindOneByPinAndSchoolPin(pupilPin, schoolPin)
+    const data = await pupilDataService.sqlFindOneByPinAndSchoolPin(pupilPin, schoolPin)
 
-    if (!school || !pupil || !pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
+    if (!data || !data.school || !data.pupil || !pinValidator.isActivePin(data.pupil.pin, data.pupil.pinExpiresAt)) {
       throw new Error('Authentication failure')
     }
 
-    return { pupil, school }
+    return data
   },
 
   getPupilDataForSpa: (pupil) => {
