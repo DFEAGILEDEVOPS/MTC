@@ -57,19 +57,27 @@ export class SpeechService implements OnDestroy {
   /**
    * Chrome has problems with speaking immediately after .cancel()
    * and an 'artificial delay' is needed
+   *
+   * @param addDelay - determines whether to add delay or not
    */
-  synthSpeak(sayThis: SpeechSynthesisUtterance) {
-    const _window = this.windowRefService.nativeWindow;
-    _window.setTimeout(() => {
+  synthSpeak(sayThis: SpeechSynthesisUtterance, addDelay: boolean) {
+    if (!addDelay) {
       this.synth.speak(sayThis);
-    }, 500);
+    } else {
+      const _window = this.windowRefService.nativeWindow;
+      _window.setTimeout(() => {
+        this.synth.speak(sayThis);
+      }, 500);
+    }
   }
 
   /**
    * Add an utterance to the underlying webspeech api
+   *
    * @param utterance
+   * @param addDelay - determines whether to add delay or not, add by default
    */
-  speak(utterance: string): void {
+  speak(utterance: string, addDelay: boolean = true): void {
     if (!this.isSupported()) {
       return;
     }
@@ -86,7 +94,8 @@ export class SpeechService implements OnDestroy {
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synthSpeak(sayThis);
+
+    this.synthSpeak(sayThis, addDelay);
   }
 
   /**
@@ -110,7 +119,7 @@ export class SpeechService implements OnDestroy {
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synthSpeak(sayThis);
+    this.synthSpeak(sayThis, false);
   }
 
   /**
@@ -142,6 +151,14 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   speakElement(nativeElement): void {
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
+
+    nativeElement
+      .querySelectorAll(elementsToSpeak)
+      .forEach(elem => elem.addEventListener('focus', (event) => {
+        this.speakFocusedElement(event.target);
+      }));
+
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
     let speechText = '';
@@ -162,18 +179,35 @@ export class SpeechService implements OnDestroy {
         return;
       }
 
-      if (elem.tagName === 'BUTTON') {
-        speechText += ' , Button: ';
-      } else if (elem.tagName === 'A') {
-        speechText += ' , Link: ';
-      } else {
-        speechText += ' , ';
-      }
-
-      speechText += elem.textContent;
+      speechText += ' , ' + this.addTextBeforeSpeakingElement(elem) + elem.textContent;
     });
 
     this.speak(speechText);
+  }
+
+  /**
+   * Speak a specific, focused element
+   */
+  speakFocusedElement(nativeElement): void {
+    const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
+
+    this.cancel();
+    this.speak(speechText, false);
+  }
+
+  /**
+   * Speak text before specific elements, return null
+   * if nothing to add.
+   * @param nativeElement
+   */
+  addTextBeforeSpeakingElement(nativeElement): string {
+    if (nativeElement.tagName === 'BUTTON') {
+      return 'Button: ';
+    } else if (nativeElement.tagName === 'A') {
+      return 'Link: ';
+    } else {
+      return '';
+    }
   }
 
   /**
