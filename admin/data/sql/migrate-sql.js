@@ -7,10 +7,7 @@ const Postgrator = require('postgrator')
 const path = require('path')
 const chalk = require('chalk')
 const createDatabasesIfTheyDontExist = require('./createDatabase')
-const argv = require('yargs')
-  .default('migrateMain', 'max')
-  .default('migrateChecks', 'max')
-  .argv
+const yargs = require('yargs').argv
 
 const mainDbMigrationConfig = {
   migrationDirectory: path.join(__dirname, '/migrations'),
@@ -57,7 +54,7 @@ const runMigrations = async () => {
   postgrator.on('error', error => winston.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
-  const version = isNaN(argv.migrateMain) ? 'max' : argv.migrateMain
+  const version = yargs.migrateMain || 'max'
   winston.info(chalk.green('Migrating Main DB to version:'), chalk.green.bold(version))
 
   try {
@@ -77,7 +74,7 @@ const runMigrations = async () => {
   checksMigrator.on('error', error => winston.error(error.message))
 
   // Migrate to 'max' version or user-specified e.g. '008'
-  const checksVersion = isNaN(argv.migrateMain) ? 'max' : argv.migrateMain
+  const checksVersion =yargs.migrateChecks || 'max'
   winston.info(chalk.green('Migrating Checks DB to version:'), chalk.green.bold(checksVersion))
 
   try {
