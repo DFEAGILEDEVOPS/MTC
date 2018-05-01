@@ -55,15 +55,13 @@ markingService.mark = async function (completedCheck, checkForm) {
   for (let question of formData) {
     const currentIndex = questionNumber - 1
     const answerRecord = completedCheck.data.answers[currentIndex]
-    const answer = answerRecord && answerRecord.answer
-    let data = R.clone(answerRecord)
-    // If questions exceed the number of answers store empty answers
-    if (!data) {
-      data = { answer: '' }
-    } else {
-      data.answer = answer ? R.slice(0, 60, answer) : ''
+    const answer = (answerRecord && answerRecord.answer) || ''
+    const data = {
+      questionNumber,
+      factor1: question.factor1,
+      factor2: question.factor2,
+      answer: R.slice(0, 60, answer)
     }
-    data.questionNumber = questionNumber
     questionNumber += 1
 
     if (answer && question.f1 * question.f2 === parseInt(answer, 10)) {
