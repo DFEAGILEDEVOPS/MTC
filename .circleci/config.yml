@@ -18,7 +18,6 @@ jobs:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - restore_cache:
           key: v1-node-pupil-auth-deps-{{ checksum "pupil-auth/yarn.lock" }}
-      - restore_cache:
       - run: cd admin; yarn install
       - run: cd pupil-spa; yarn install
       - run: cd pupil-auth; yarn install
