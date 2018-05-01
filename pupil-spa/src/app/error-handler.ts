@@ -2,7 +2,7 @@ import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AuditService } from './services/audit/audit.service';
 import { AppError } from './services/audit/auditEntry';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
+import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 
 
 @Injectable()
