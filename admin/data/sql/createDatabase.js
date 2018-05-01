@@ -63,7 +63,7 @@ const main = () => {
         winston.error(`Connection error 1: ${err.message}`)
         return reject(err)
       }
-      winston.info('About to create new database')
+      winston.info('creating databases...')
       await createDatabase(connection, config.Sql.Database, config.Sql.Azure.Scale)
       winston.info(`DB ${config.Sql.Database} Created`)
       await createDatabase(connection, config.Sql.PupilChecksDb.Database, config.Sql.PupilChecksDb.Azure.Scale)

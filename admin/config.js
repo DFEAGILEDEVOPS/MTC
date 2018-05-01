@@ -52,11 +52,11 @@ module.exports = {
       Timeout: process.env.SQL_MIGRATION_TIMEOUT || twoMinutesInMilliseconds
     },
     Azure: {
-      Scale: process.env.SQL_AZURE_SCALE || 'S1'
+      Scale: process.env.SQL_AZURE_SCALE
     },
     PupilChecksDb: {
       Azure: {
-        Scale: process.env.SQL_AZURE_CHECKS_SCALE || 'S1'
+        Scale: process.env.SQL_AZURE_CHECKS_SCALE
       },
       Database: process.env.SQL_DATABASE || 'mtc-pupil-checks',
       Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
