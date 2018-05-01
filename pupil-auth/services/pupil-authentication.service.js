@@ -1,6 +1,5 @@
 'use strict'
 const dateService = require('../services/date.service')
-const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 
@@ -12,7 +11,6 @@ const pupilAuthenticationService = {
    * @return {object}
    */
   authenticate: async (pupilPin, schoolPin) => {
-
     const data = await pupilDataService.sqlFindOneByPinAndSchoolPin(pupilPin, schoolPin)
 
     if (!data || !data.school || !data.pupil || !pinValidator.isActivePin(data.pupil.pin, data.pupil.pinExpiresAt)) {

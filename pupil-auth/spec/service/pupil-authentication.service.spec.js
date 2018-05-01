@@ -1,7 +1,6 @@
 'use strict'
 /* global describe beforeEach spyOn it expect fail */
 
-const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const schoolMock = require('../mocks/school')
