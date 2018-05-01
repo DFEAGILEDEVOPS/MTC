@@ -1,1 +1,1 @@
-DROP TABLE mtc_check.readyChecks
+DROP TABLE mtc_check.preparedCheck

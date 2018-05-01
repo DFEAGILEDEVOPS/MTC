@@ -1,4 +1,4 @@
-create table mtc_check.readyChecks
+create table mtc_check.preparedCheck
 (
 	id bigint identity
 		primary key,
@@ -12,6 +12,6 @@ create table mtc_check.readyChecks
 )
 go
 
-create unique index readyChecks__pinIndex
-	on mtc_check.readyChecks (pupilPin, schoolPin)
+create unique index preparedCheck__pinIndex
+	on mtc_check.preparedCheck (pupilPin, schoolPin)
 go
