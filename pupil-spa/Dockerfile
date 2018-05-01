@@ -17,7 +17,10 @@ COPY . .
 RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
+ARG auth_url=http://localhost:3001/api/questions
+# ARG auth_url=http://localhost:3003/auth
 ENV API_URL=$api_url
+<<<<<<< HEAD
 ARG check_started_url=http://localhost:3001/api/check-started
 # ARG check_started_url=http://localhost:3004/submit
 ENV CHECK_STARTED_URL=$check_started_url
@@ -25,6 +28,13 @@ ARG ga_code
 ENV GA_CODE=$ga_code
 RUN $(npm bin)/gulp setApiURL
 RUN $(npm bin)/gulp setCheckStartedURL
+=======
+ENV AUTH_URL=$auth_url
+ARG ga_code
+ENV GA_CODE=$ga_code
+RUN $(npm bin)/gulp setApiURL
+RUN $(npm bin)/gulp setAuthURL
+>>>>>>> master
 RUN $(npm bin)/gulp setGaCode
 
 ## Build the angular app in production mode and store the artifacts in dist folder

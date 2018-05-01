@@ -1,6 +1,10 @@
 export const environment = {
   apiURL: 'API_URL',
+<<<<<<< HEAD
   checkStartedURL: 'CHECK_STARTED_URL',
+=======
+  authURL: 'AUTH_URL',
+>>>>>>> master
   production: true,
   // api/check-started
   // Delay (ms) during retries

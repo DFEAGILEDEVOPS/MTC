@@ -5,8 +5,13 @@
 
 export const environment = {
   apiURL: 'http://localhost:3001',
+<<<<<<< HEAD
   checkStartedURL: 'http://localhost:3001/api/check-started',
   // checkStartedURL: 'http://localhost:3004/submit',
+=======
+  authURL: 'http://localhost:3001/api/questions',
+  // authURL: 'http://localhost:3003/auth',
+>>>>>>> master
   production: false,
   // api/check-started
   // Delay (ms) during retries
