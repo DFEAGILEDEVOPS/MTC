@@ -45,11 +45,11 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getClientTimestampDiffFromAuditEvents  calculates the difference from two AuditEvents', () => {
-    it('returns undefined if the check is not completed', () => {
+    it('returns empty string if the check is not completed', () => {
       const completedCheck = Object.assign({}, completedCheckMock)
       completedCheck.data = undefined
       const ts = service.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', completedCheck)
-      expect(ts).toBeUndefined()
+      expect(ts).toBe('')
     })
     it('returns the difference between two AuditEvents timestamps', () => {
       const completedCheck = Object.assign({}, completedCheckMock)
@@ -65,11 +65,11 @@ describe('psychometrician-util.service', () => {
       expect(ts).toBe('2018-02-11T15:43:26.772Z')
     })
 
-    it('returns undefined if the check is not completed', () => {
+    it('returns empty string if the check is not completed', () => {
       const completedCheck = Object.assign({}, completedCheckMock)
       completedCheck.data = undefined
       const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheck)
-      expect(ts).toBeUndefined()
+      expect(ts).toBe('')
     })
 
     it('returns "error" if the clientTimestamp is missing', () => {

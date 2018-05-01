@@ -16,7 +16,7 @@ psUtilService.getMark = function getMark (completedCheck) {
 }
 
 psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, completedCheck) {
-  if (!completedCheck.data) return
+  if (!completedCheck.data) return ''
   const logEntries = completedCheck.data.audit.filter(logEntry => logEntry.type === auditEventType)
   if (!logEntries.length) {
     return 'error'
@@ -29,7 +29,7 @@ psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, compl
 }
 
 psUtilService.getClientTimestampDiffFromAuditEvents = function (firstAuditEventType, secondAuditEventType, completedCheck) {
-  if (!completedCheck.data) return
+  if (!completedCheck.data) return ''
 
   return moment.duration(
     moment(psUtilService.getClientTimestampFromAuditEvent(secondAuditEventType, completedCheck))
