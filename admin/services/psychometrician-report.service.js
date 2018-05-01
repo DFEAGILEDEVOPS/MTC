@@ -139,9 +139,9 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'Surname': pupil.lastName,
 
     'FormMark': psUtilService.getMark(check),
-    'GroupTiming': R.pathOr('n/a', ['questionTime'], config),
-    'PauseLength': R.pathOr('n/a', ['loadingTime'], config),
-    'SpeechSynthesis': R.pathOr('n/a', ['speechSynthesis'], config),
+    'GroupTiming': R.pathOr('', ['questionTime'], config),
+    'PauseLength': R.pathOr('', ['loadingTime'], config),
+    'SpeechSynthesis': R.pathOr('', ['speechSynthesis'], config),
 
     'DeviceType': psUtilService.getDevice(userAgent),
     'BrowserType': psUtilService.getBrowser(userAgent),
