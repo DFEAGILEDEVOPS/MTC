@@ -30,8 +30,9 @@ function detectAnomalies (check, checkForm) {
   detectChecksThatTookLongerThanTheTheoreticalMax(check)
   detectInputThatDoesNotCorrespondToAnswers(check)
   detectQuestionsThatWereShownForTooLong(check)
+  detectInputsWithoutQuestionInformation(check)
   detectApplicationErrors(check)
-
+  
   // Navigator checks
   detectLowBattery(check)
   detectInsufficientVerticalHeight(check)
@@ -93,7 +94,7 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
 
     // Check the inputs to make sure they all the right question property
     inputs.forEach(input => {
-      if (input.question !== question.order) {
+      if (input.sequenceNumber !== question.order) {
         report(check, 'Input fails property check', input.question, question.order)
       }
       const inputTimeStamp = moment(input.clientInputDate)
@@ -139,6 +140,26 @@ function detectMissingAudits (check) {
   ]
 
   singleMandatoryAuditEvents.map(arg => detectMissingSingleAudit(arg))
+}
+
+function detectInputsWithoutQuestionInformation (check) {
+  const inputs = check.data.inputs
+  if (!inputs) { return }
+
+  // Copy the inputs into a flat array
+  const flatInputs = R.flatten(inputs)
+
+  const eventsMissingInformation = flatInputs.filter(e => {
+    if (!e) { return false }
+    const sequenceNumber = parseInt(e.sequenceNumber)
+    if (sequenceNumber === -1 || isNaN(sequenceNumber)) {
+      return true
+    }
+    return false
+  })
+  if (eventsMissingInformation.length) {
+    report(check, 'One or more Input events missing question information', eventsMissingInformation.length, 0)
+  }
 }
 
 function detectInsufficientVerticalHeight (check) {
@@ -365,7 +386,7 @@ async function main () {
   let lowCheckId = checkInfo.min // starting Check ID
   let count = 0
 
-  while (lowCheckId < checkInfo.max) {
+  while (lowCheckId <= checkInfo.max) {
     winston.info(`Fetching ${batchSize} checks for processing starting at ID ${lowCheckId}`)
     const checks = await completedCheckDataService.sqlFind(lowCheckId, batchSize)
     const checkFormIds = checks.map(check => check.checkForm_id)
