@@ -32,7 +32,7 @@ function detectAnomalies (check, checkForm) {
   detectQuestionsThatWereShownForTooLong(check)
   detectInputsWithoutQuestionInformation(check)
   detectApplicationErrors(check)
-  
+
   // Navigator checks
   detectLowBattery(check)
   detectInsufficientVerticalHeight(check)
@@ -302,7 +302,9 @@ function detectQuestionsThatWereShownForTooLong (check) {
   }
   // Add relative timings to each of the elements
   addRelativeTimings(audits)
-  const expectedValue = config.questionTime * 1.05 // allow a 5% tolerance for computer processing
+  // Expected question time: allow a 5% tolerance for computer processing, and 2.5s for the speech to be read out (if configured)
+  // NB: ticket 20864 will replace the 2.5 seconds with something accurate
+  const expectedValue = (config.questionTime * 1.05) + (config.speechSynthesis ? 2.5 : 0)
 
   // To pick up the question number we have to look at the QuestionRendered event and no the following
   // pause event.
