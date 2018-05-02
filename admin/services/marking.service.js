@@ -22,9 +22,13 @@ markingService.batchMark = async function (batchIds) {
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
   const checkFormIds = completedChecks.map(c => c.checkForm_id)
   const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
+  const checkFormsHashMap = checkForms.reduce((obj, item) => {
+    obj[ item.id ] = item
+    return obj
+  }, {})
   for (let cc of completedChecks) {
     try {
-      const checkForm = checkForms.find(cf => cc.checkForm_id === cf.id)
+      const checkForm = checkFormsHashMap[cc.checkForm_id]
       await this.mark(cc, checkForm)
     } catch (error) {
       winston.error('Error marking document: ', error)
@@ -58,8 +62,8 @@ markingService.mark = async function (completedCheck, checkForm) {
     const answer = (answerRecord && answerRecord.answer) || ''
     const data = {
       questionNumber,
-      factor1: question.factor1,
-      factor2: question.factor2,
+      factor1: question.f1,
+      factor2: question.f2,
       answer: R.slice(0, 60, answer)
     }
     questionNumber += 1
