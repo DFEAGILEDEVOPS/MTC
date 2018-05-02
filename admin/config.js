@@ -53,6 +53,18 @@ module.exports = {
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
+    },
+    PupilChecksDb: {
+      Azure: {
+        Scale: process.env.SQL_AZURE_CHECKS_SCALE
+      },
+      Database: process.env.SQL_DATABASE || 'mtc-pupil-checks',
+      Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
+      Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
+      Application: {
+        Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
+        Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
+      }
     }
   },
   Logging: {

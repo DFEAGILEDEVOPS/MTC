@@ -1,5 +1,5 @@
 {
-  "name": "check-development-app",
+  "name": "mtc-admin-app",
   "version": "0.3.0",
   "private": false,
   "license": "GPL-3.0",
@@ -69,7 +69,8 @@
     "validate": "^3.0.1",
     "validator": "^9.4.0",
     "winston": "^2.4.0",
-    "xregexp": "^3.2.0"
+    "xregexp": "^3.2.0",
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "chalk": "^2.3.0",
