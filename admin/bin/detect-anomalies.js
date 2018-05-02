@@ -188,7 +188,9 @@ function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
   const config = check.data.config
 
   // Calculate the max total time allowed for the check
-  const maxCheckSeconds = (numberOfQuestions * config.loadingTime) + (numberOfQuestions * config.questionTime)
+  const maxCheckSeconds = (numberOfQuestions * config.loadingTime) +
+    (numberOfQuestions * config.questionTime) +
+    (config.speechSynthesis ? numberOfQuestions * 2.5 : 0)
 
   // Calculate the time the check actually took
   const checkStart = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)
