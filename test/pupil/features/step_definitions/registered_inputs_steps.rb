@@ -7,9 +7,10 @@ Given(/^I have used all the keys on the on screen keyboard to complete the check
 end
 
 Then(/^I should see all my number pad inputs recorded$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
-  inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}
-  expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers).flatten
+  inputs = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
+  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
+  inputs = inputs.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}
+  expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers, questions).flatten
 end
 
 Given(/^I have used the physical screen keyboard to complete the check$/) do
@@ -23,7 +24,8 @@ end
 Then(/^I should see all my keyboard inputs recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}
-  expect(inputs.flatten).to eql check_page.array_of_inputs_from_keyboard(@answers).flatten
+  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
+  expect(inputs.flatten).to eql check_page.array_of_inputs_from_keyboard(@answers,questions).flatten
 end
 
 
@@ -33,13 +35,16 @@ Given(/^I have used backspace to correct my answer using the on screen keyboard$
   check_page.number_pad.one.click
   check_page.number_pad.backspace.click
   check_page.complete_question('12345', 'numpad')
-  check_page.complete_check_with_correct_answers(8, 'numpad')
+  check_page.complete_check_with_correct_answers(9, 'numpad')
 end
 
 Then(/^I should see backspace numpad event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
-  expected = [{"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "1", "eventType" => "click", "question" => 1}, {"input" => "left click", "eventType" => "mousedown", "question" => 1}, {"input" => "Backspace", "eventType" => "click", "question" => 1}]
+  expected = [{"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
+              {"input"=>"1", "eventType"=>"click", "question"=>"2x5", "sequenceNumber"=>1},
+              {"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
+              {"input"=>"Backspace", "eventType"=>"click", "question"=>"2x5", "sequenceNumber"=>1}]
   expect([inputs[0], inputs[1], inputs[2], inputs[3]]).to eql expected
 end
 
@@ -49,12 +54,14 @@ Given(/^I have used backspace to correct my answer using the physical keyboard$/
   check_page.number_pad.one.send_keys(:numpad1)
   check_page.number_pad.one.send_keys(:backspace)
   check_page.complete_question('12345', 'keyboard')
-  check_page.complete_check_with_correct_answers(8, 'numpad')
+  check_page.complete_check_with_correct_answers(9, 'numpad')
 end
 
 Then(/^I should see backspace keyboard event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
-  expected = [{"input" => "1", "eventType" => "keydown", "question" => 1}, {"input" => "Backspace", "eventType" => "keydown", "question" => 1}]
+  expected = [{"input"=>"1", "eventType"=>"keydown", "question"=>"2x5",
+               "sequenceNumber"=>1}, {"input"=>"Backspace", "eventType"=>"keydown",
+                                      "question"=>"2x5", "sequenceNumber"=>1}]
   expect([inputs[0], inputs[1]]).to eql expected
 end

@@ -39,6 +39,13 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+
+    // Add attributes to the <body> tag to reflect the current question
+    const bodyTag = <Element>window.document[ 'body' ];
+    bodyTag.setAttribute('data-sequence-number', this.sequenceNumber.toString());
+    bodyTag.setAttribute('data-factor1', this.factor1.toString());
+    bodyTag.setAttribute('data-factor2', this.factor2.toString());
+
     this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
       this.zone.run(() => {
         if (!this.timeout && speechStatus === SpeechService.questionSpeechEnded) {
@@ -62,6 +69,12 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+
+    // Remove attributes from the <body> tag to reflect the current lack of a question
+    const bodyTag = <Element>window.document[ 'body' ];
+    bodyTag.removeAttribute('data-sequence-number');
+    bodyTag.removeAttribute('data-factor1');
+    bodyTag.removeAttribute('data-factor2');
   }
 
   /**

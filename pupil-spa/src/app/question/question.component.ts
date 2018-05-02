@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
@@ -12,7 +12,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
 })
-export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
+export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * Do not show 'practice' label on top left.
@@ -30,6 +30,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+
+    // Add attributes to the <body> tag to reflect the current question
+    const bodyTag = <Element>window.document[ 'body' ];
+    bodyTag.setAttribute('data-sequence-number', this.sequenceNumber.toString());
+    bodyTag.setAttribute('data-factor1', this.factor1.toString());
+    bodyTag.setAttribute('data-factor2', this.factor2.toString());
   }
 
   /**
@@ -42,6 +48,14 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     }));
     // Start the countdown and page timeout timers
     this.startTimer();
+  }
+
+  ngOnDestroy() {
+    // Remove attributes from the <body> tag to reflect the current lack of a question
+    const bodyTag = <Element>window.document[ 'body' ];
+    bodyTag.removeAttribute('data-sequence-number');
+    bodyTag.removeAttribute('data-factor1');
+    bodyTag.removeAttribute('data-factor2');
   }
 
   /**
@@ -103,7 +117,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * @param {number} number
    */
   onClickAnswer(number: number) {
-    this.registerInputService.storeEntry(number.toString(), 'click');
+    this.registerInputService.storeEntry(number.toString(), 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
     this.addChar(number.toString());
   }
 
@@ -111,7 +125,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    */
   onClickBackspace() {
-    this.registerInputService.storeEntry('Backspace', 'click');
+    this.registerInputService.storeEntry('Backspace', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
     this.deleteChar();
   }
 
@@ -119,7 +133,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    */
   onClickSubmit() {
-    this.registerInputService.storeEntry('Enter', 'click');
+    this.registerInputService.storeEntry('Enter', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
     this.onSubmit();
   }
 }
