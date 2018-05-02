@@ -212,9 +212,12 @@ describe('QuestionComponent', () => {
   describe('#onClickBackspace', () => {
     it('calls registerInputService', () => {
       spyOn(registerInputService, 'storeEntry');
+      component.sequenceNumber = 1;
+      component.factor1 = 1;
+      component.factor2 = 2;
       component.onClickBackspace();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click', 1, '1x2');
     });
 
     it('deletes a char from the answer', () => {
@@ -224,12 +227,15 @@ describe('QuestionComponent', () => {
     });
   });
 
-  describe('#onClickSubnmit', () => {
+  describe('#onClickSubmit', () => {
     it('calls registerInputService', () => {
       spyOn(registerInputService, 'storeEntry');
+      component.sequenceNumber = 1;
+      component.factor1 = 1;
+      component.factor2 = 2;
       component.onClickSubmit();
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click');
+      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 1, '1x2');
     });
 
     it('calls onSubmit()', () => {
