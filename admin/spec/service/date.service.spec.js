@@ -97,7 +97,7 @@ describe('date service', () => {
 
     it('returns the expected ISO date as a String', () => {
       const s = '2017-07-16T14:01:02.123+01:00'
-      const m = moment(s)
+      const m = moment(s).utcOffset('+0100')
       const res = dateService.formatIso8601(m)
       expect(res).toBe(s)
     })

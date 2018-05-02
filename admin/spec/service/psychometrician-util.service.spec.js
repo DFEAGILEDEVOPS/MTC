@@ -44,22 +44,46 @@ describe('psychometrician-util.service', () => {
     })
   })
 
+  describe('#getClientTimestampDiffFromAuditEvents  calculates the difference from two AuditEvents', () => {
+    it('returns empty string if the check is not completed', () => {
+      const completedCheck = Object.assign({}, completedCheckMock)
+      completedCheck.data = undefined
+      const ts = service.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', completedCheck)
+      expect(ts).toBe('')
+    })
+    it('returns the difference between two AuditEvents timestamps', () => {
+      const completedCheck = Object.assign({}, completedCheckMock)
+      const ts = service.getClientTimestampDiffFromAuditEvents('CheckStarted', 'CheckSubmissionPending', completedCheck)
+      expect(ts).toBe('00:00:48')
+    })
+  })
+
   describe('#getClientTimestamp from AuditEvent', () => {
     it('returns the clientTimestamp from an audit event', () => {
-      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheckMock)
+      const completedCheck = Object.assign({}, completedCheckMock)
+      const ts = service.getClientTimestampFromAuditEvent('CheckSubmissionPending', completedCheck)
       expect(ts).toBe('2018-02-11T15:43:26.772Z')
     })
 
+    it('returns empty string if the check is not completed', () => {
+      const completedCheck = Object.assign({}, completedCheckMock)
+      completedCheck.data = undefined
+      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheck)
+      expect(ts).toBe('')
+    })
+
     it('returns "error" if the clientTimestamp is missing', () => {
-      completedCheckMock.data.audit.push({
+      const completedCheck = Object.assign({}, completedCheckMock)
+      completedCheck.data.audit.push({
         'type': 'CheckCompleteMissingTS'
       })
-      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheckMock)
+      const ts = service.getClientTimestampFromAuditEvent('CheckCompleteMissingTS', completedCheck)
       expect(ts).toBe('error')
     })
 
     it('returns "error" if there arent any logEntries', () => {
-      completedCheckMock.data.audit = []
+      const completedCheck = Object.assign({}, completedCheckMock)
+      completedCheck.data.audit = []
       const ts = service.getClientTimestampFromAuditEvent('AnyEvent', completedCheckMock)
       expect(ts).toBe('error')
     })

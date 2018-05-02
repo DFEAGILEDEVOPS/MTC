@@ -2,16 +2,21 @@
 
 const R = require('ramda')
 const moment = require('moment')
+const momentDurationFormatSetup = require('moment-duration-format')
 const winston = require('winston')
 const useragent = require('useragent')
+
+momentDurationFormatSetup(moment)
 
 const psUtilService = {}
 
 psUtilService.getMark = function getMark (completedCheck) {
+  if (!completedCheck.data) return ''
   return R.pathOr('error', ['mark'], completedCheck)
 }
 
 psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, completedCheck) {
+  if (!completedCheck.data) return ''
   const logEntries = completedCheck.data.audit.filter(logEntry => logEntry.type === auditEventType)
   if (!logEntries.length) {
     return 'error'
@@ -21,6 +26,15 @@ psUtilService.getClientTimestampFromAuditEvent = function (auditEventType, compl
     return 'error'
   }
   return logEntry.clientTimestamp
+}
+
+psUtilService.getClientTimestampDiffFromAuditEvents = function (firstAuditEventType, secondAuditEventType, completedCheck) {
+  if (!completedCheck.data) return ''
+
+  return moment.duration(
+    moment(psUtilService.getClientTimestampFromAuditEvent(secondAuditEventType, completedCheck))
+      .diff(moment(psUtilService.getClientTimestampFromAuditEvent(firstAuditEventType, completedCheck)))
+  ).format('HH:mm:ss', {trim: false})
 }
 
 /**
