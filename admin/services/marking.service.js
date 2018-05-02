@@ -10,6 +10,44 @@ const answerDataService = require('./data-access/answer.data.service')
 const checkFormDataService = require('./data-access/check-form.data.service')
 
 const markingService = {}
+const batchSize = 100
+
+/**
+ * A process that runs until all completedChecks have been marked
+ * @return {Promise.<void>}
+ */
+markingService.process = async function () {
+  try {
+    let hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
+    if (!hasWorkToDo) {
+      winston.info('Processing: nothing to do')
+    }
+    while (hasWorkToDo) {
+      await this.applyMarking(batchSize)
+      hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
+    }
+  } catch (error) {
+    console.error('Bailing out: ', error)
+  }
+}
+/**
+ * Apply marking for unmarked checks limited by batchSize
+ * @param {Number} batchSize
+ * @return {Boolean}
+ */
+markingService.applyMarking = async function (batchSize) {
+  const batchIds = await completedCheckDataService.sqlFindUnmarked(batchSize)
+
+  if (batchIds.length === 0) {
+    winston.info('No IDs found')
+    return false
+  }
+
+  await markingService.batchMark(batchIds)
+
+  winston.info('Processed %d completed checks', batchIds.length)
+  return true
+}
 
 markingService.batchMark = async function (batchIds) {
   if (!batchIds) {

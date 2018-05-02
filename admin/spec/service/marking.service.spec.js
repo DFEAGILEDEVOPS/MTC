@@ -134,4 +134,42 @@ describe('markingService', () => {
       done()
     })
   })
+
+  describe('#applyMarking', () => {
+    it('bails out early if the array is empty', async (done) => {
+      spyOn(completedCheckDataService, 'sqlFindUnmarked').and.returnValue([])
+      spyOn(service, 'batchMark')
+      const res = await service.applyMarking(10)
+      expect(res).toBeFalsy()
+      expect(service.batchMark).not.toHaveBeenCalled()
+      done()
+    })
+
+    it('it calls the marking service and returns true', async (done) => {
+      spyOn(completedCheckDataService, 'sqlFindUnmarked').and.returnValue([1, 2, 3])
+      spyOn(service, 'batchMark')
+      const res = await service.applyMarking(10)
+      expect(service.batchMark).toHaveBeenCalled()
+      expect(res).toBeTruthy()
+      done()
+    })
+  })
+
+  describe('#process', () => {
+    it('initially find out if there is any work to do', async () => {
+      spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValue(false)
+      spyOn(service, 'applyMarking').and.returnValue(true)
+      await service.process()
+      expect(completedCheckDataService.sqlHasUnmarked).toHaveBeenCalled()
+      expect(service.applyMarking).not.toHaveBeenCalled()
+    })
+
+    it('calls applyMarking to handle any work', async () => {
+      spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValues(true, false)
+      spyOn(service, 'applyMarking').and.returnValue(true)
+      await service.process()
+      expect(completedCheckDataService.sqlHasUnmarked).toHaveBeenCalled()
+      expect(service.applyMarking).toHaveBeenCalledTimes(1)
+    })
+  })
 })

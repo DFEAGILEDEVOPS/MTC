@@ -21,7 +21,7 @@ describe('psychometricians-report.service', () => {
   describe('#batchProduceCacheData', () => {
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
-        {id: 9, pupil_id: 1, checkForm_id: 2},
+        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} } },
         {id: 10, pupil_id: 2, checkForm_id: 3},
         {id: 11, pupil_id: 3, checkForm_id: 4}
       ])
@@ -48,7 +48,6 @@ describe('psychometricians-report.service', () => {
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })
-
     it('throws an error if not provided with an argument', async () => {
       try {
         await service.batchProduceCacheData()
@@ -77,10 +76,13 @@ describe('psychometricians-report.service', () => {
       }
     })
 
-    it('retrieves all the batchIds in one go', async () => {
+    it('retrieves all data service data in one go', async () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(checkFormDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(schoolDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(answerDataService.sqlFindByCheckIds).toHaveBeenCalledTimes(1)
       } catch (error) {
         fail(error)
       }
@@ -90,11 +92,16 @@ describe('psychometricians-report.service', () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(service.produceReportData).toHaveBeenCalledTimes(3)
-        const args = service.produceReportData.calls.argsFor(0)
-        expect(args[0].id).toBe(9) // check
-        expect(typeof args[1]).toBe('object') // answers
-        expect(args[2].id).toBe(1) // pupil
-        expect(args[3].id).toBe(2) // checkForm
+        const firstArgsSet = service.produceReportData.calls.argsFor(0)
+        const secondArgsSet = service.produceReportData.calls.argsFor(1)
+        expect(secondArgsSet[0].id).toBe(10) // check
+        expect(typeof secondArgsSet[1]).toBe('object') // answers
+        expect(secondArgsSet[2].id).toBe(2) // pupil
+        expect(secondArgsSet[3].id).toBe(3) // checkForm
+        expect(secondArgsSet[4].id).toBe(6) // school
+        expect(secondArgsSet[0].checkCount).toBe(1)
+        expect(firstArgsSet[0].checkStatus).toBe('Completed')
+        expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
       } catch (error) {
         fail(error)
       }
@@ -111,7 +118,8 @@ describe('psychometricians-report.service', () => {
         lastName: 'McMock',
         dateOfBirth: moment().subtract(8, 'years'),
         upn: 'F673001000200',
-        gender: 'M'
+        gender: 'M',
+        status: 'Complete'
       }
       const school = {
         id: 99,
@@ -135,14 +143,19 @@ describe('psychometricians-report.service', () => {
       ]
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      const data = service.produceReportData(completedCheckMockOrig, markedAnswers, pupil, checkForm, school)
+      const completedCheck = Object.assign({}, completedCheckMockOrig)
+      completedCheck.checkCount = 1
+      completedCheck.checkStatus = 'Complete'
+      const data = service.produceReportData(completedCheck, markedAnswers, pupil, checkForm, school)
       expect(data).toBeTruthy()
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')
       expect(data.Q1Sco).toBe(1)
       expect(data.Q2Sco).toBe(1)
-      expect(data.Q4Sco).toBe('n/a')
+      expect(data.Q4Sco).toBe('')
       expect(data.Q5Sco).toBe(1)
+      expect(data.CheckCount).toBe(1)
+      expect(data.CheckStatus).toBe('Complete')
     })
   })
 
@@ -175,6 +188,67 @@ describe('psychometricians-report.service', () => {
       const res = await service.generateReport()
       expect(res).toBeTruthy()
       expect(res.substr(0, 7)).toBe('PupilId')
+    })
+  })
+
+  describe('#produceReportDataHeaders', () => {
+    it('returns headers from a completed check when one exists', () => {
+      const results = [
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } },
+        {
+          jsonData: {
+            DOB: '06/03/2009',
+            Gender: 'F',
+            PupilId: 'N801200001014',
+            Forename: 'Gregory',
+            Surname: 'Duke',
+            FormMark: 0,
+            GroupTiming: 5,
+            PauseLength: 2,
+            SpeechSynthesis: false,
+            DeviceType: 'Other',
+            BrowserType: 'Chrome 65.0.3325 / Mac OS X 10.13.4',
+            'School Name': 'Example School One',
+            Estab: '1001',
+            'School URN': 89001,
+            'LA Num': 999,
+            AttemptId: 'A27BFE36-2EF2-4638-97C7-875F51CDA768',
+            'Form ID': 'MTC0100',
+            TestDate: '20180425',
+            PupilStatus: 'Completed',
+            ReasonNotTakingCheck: '',
+            RestartReason: '',
+            RestartNumber: '',
+            TimeStart: '12: 16: 49 pm',
+            TimeComplete: '12: 18: 05 pm',
+            TimeTaken: '00: 01: 17',
+            Q1ID: '2 x 5',
+            Q1Response: '2',
+            Q1InputMethod: 'k',
+            Q1K: 'k[2], k[Enter]',
+            Q1Sco: 0,
+            Q1ResponseTime: 0,
+            Q1TimeOut: 0,
+            Q1TimeOutResponse: '',
+            Q1TimeOutSco: '',
+            Q1tLoad: '2018-04-25T11: 16: 51.135Z',
+            Q1tFirstKey: '2018-04-25T11: 16: 51.831Z',
+            Q1tLastKey: '2018-04-25T11: 16: 51.831Z',
+            Q1OverallTime: 0.696,
+            Q1RecallTime: 0.696
+          }
+        }
+      ]
+      const headers = service.produceReportDataHeaders(results)
+      expect(headers.includes('Q1ID')).toBeTruthy()
+    })
+    it('returns headers from a check without question data if a completed check does not exist', () => {
+      const results = [
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } } ]
+      const headers = service.produceReportDataHeaders(results)
+      expect(headers.includes('Q1ID')).toBeFalsy()
     })
   })
 })
