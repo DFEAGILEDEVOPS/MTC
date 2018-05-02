@@ -37,6 +37,8 @@ describe('check-complete.service', () => {
     }
     beforeEach(() => {
       service = require('../../services/check-complete.service')
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
       spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(pupilMock))
       completedCheckDataServiceSpy = spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
@@ -44,7 +46,7 @@ describe('check-complete.service', () => {
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
       spyOn(completedCheckDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(completedCheckMock))
       spyOn(checkDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(checkMock))
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(checkFormMock))
+      spyOn(checkFormDataService, 'sqlFindOneParsedById').and.returnValue(Promise.resolve(checkForm))
     })
 
     it('clears pin and sets expiry when not test account', async (done) => {

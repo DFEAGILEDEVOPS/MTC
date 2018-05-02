@@ -236,6 +236,27 @@ const checkFormDataService = {
     ]
     const rows = await sqlService.query(sql, params)
     return R.head(rows)
+  },
+
+  /**
+   * Fetch check form with parsed check form data by id.
+   * @param id
+   * @returns {Promise.<void>}
+   */
+  sqlFindOneParsedById: async (id) => {
+    const params = [
+      {
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      }
+    ]
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
+
+    const result = await sqlService.query(sql, params)
+
+    const first = R.head(result)
+    return R.assoc('formData', (JSON.parse(first.formData)), first)
   }
 }
 

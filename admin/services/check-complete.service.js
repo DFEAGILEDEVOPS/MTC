@@ -46,7 +46,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
     const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
-    const checkForm = await checkFormDataService.sqlFindOneById(check.checkForm_id)
+    const checkForm = await checkFormDataService.sqlFindOneParsedById(check.checkForm_id)
     await markingService.mark(check, checkForm)
   }
 }

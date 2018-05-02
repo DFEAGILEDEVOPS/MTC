@@ -277,4 +277,20 @@ describe('check-form.service', () => {
       expect(result.length).toBe(checkFormsMock.length)
     })
   })
+
+  describe('getParsedCheckForms', () => {
+    it('throws an error if check form ids list is empty', async () => {
+      try {
+        await service.getParsedCheckForms()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('batchIds list empty or not defined')
+      }
+    })
+    it('returns parsed check forms', async () => {
+      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
+      const result = await service.getParsedCheckForms([1])
+      expect(typeof result[0].formData).toBe('object')
+    })
+  })
 })

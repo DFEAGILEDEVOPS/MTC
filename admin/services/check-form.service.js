@@ -332,6 +332,23 @@ const checkFormService = {
 
   removeWindowAssignment: async (formId, windowId) => {
     return checkFormDataService.sqlRemoveWindowAssignment(formId, windowId)
+  },
+
+  getParsedCheckForms: async (batchIds) => {
+    if (!batchIds || !Array.isArray((batchIds))) {
+      throw new Error('batchIds list empty or not defined')
+    }
+    let checkForms
+    try {
+      checkForms = await checkFormDataService.sqlFindByIds(batchIds)
+      checkForms = checkForms.map(cf => {
+        cf.formData = JSON.parse(cf.formData)
+        return cf
+      })
+    } catch (error) {
+      throw new Error(error)
+    }
+    return checkForms
   }
 }
 

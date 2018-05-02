@@ -7,7 +7,7 @@ const R = require('ramda')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const answerDataService = require('./data-access/answer.data.service')
-const checkFormDataService = require('./data-access/check-form.data.service')
+const checkFormService = require('./check-form.service')
 
 const markingService = {}
 const batchSize = 100
@@ -59,9 +59,9 @@ markingService.batchMark = async function (batchIds) {
 
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
   const checkFormIds = completedChecks.map(c => c.checkForm_id)
-  const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
+  const checkForms = await checkFormService.getParsedCheckForms(checkFormIds)
   const checkFormsHashMap = checkForms.reduce((obj, item) => {
-    obj[ item.id ] = item
+    obj[item.id] = item
     return obj
   }, {})
   for (let cc of completedChecks) {
@@ -88,13 +88,11 @@ markingService.mark = async function (completedCheck, checkForm) {
     processedAt: moment.utc()
   }
 
-  const formData = JSON.parse(checkForm.formData)
-
   // Store the mark for each answer
   const answers = []
   let questionNumber = 1
 
-  for (let question of formData) {
+  for (let question of checkForm.formData) {
     const currentIndex = questionNumber - 1
     const answerRecord = completedCheck.data.answers[currentIndex]
     const answer = (answerRecord && answerRecord.answer) || ''

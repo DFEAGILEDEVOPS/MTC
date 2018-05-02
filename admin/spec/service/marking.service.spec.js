@@ -5,7 +5,7 @@ const winston = require('winston')
 const checkDataService = require('../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const answerDataService = require('../../services/data-access/answer.data.service')
-const checkFormDataService = require('../../services//data-access/check-form.data.service')
+const checkFormService = require('../../services/check-form.service')
 const completedCheckMock = require('../mocks/completed-check-with-results')
 const checkFormMock = require('../mocks/check-form')
 
@@ -66,15 +66,18 @@ describe('markingService', () => {
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
       })
-      await service.mark(completedCheckMock, checkFormMock)
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      await service.mark(completedCheckMock, checkForm)
       expect(checkDataService.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
     it('stores the number of marks applied to each answer in the db', async () => {
-      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(checkFormMock)
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
-      await service.mark(completedCheckMock, checkFormMock)
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      await service.mark(completedCheckMock, checkForm)
       expect(answerDataService.sqlUpdateWithResults).toHaveBeenCalled()
     })
   })
@@ -105,7 +108,7 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
         {}, {}, {}
       ])
       await service.batchMark([1, 2, 3])
@@ -117,13 +120,13 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
         {}, {}, {}
       ])
       // As we know this will output a warning lets shut it up during the test
       spyOn(winston, 'error')
       let callCount = 0
-      spyOn(service, 'mark').and.callFake((completedCheck) => {
+      spyOn(service, 'mark').and.callFake(() => {
         callCount++
         if (callCount === 2) {
           throw new Error('error')
