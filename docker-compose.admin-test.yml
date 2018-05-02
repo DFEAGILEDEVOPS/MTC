@@ -23,6 +23,17 @@ services:
     - sqldb
     links:
     - sqldb
+  check-started:
+    build: ./check-started
+    container_name: mtc_check_started
+    ports:
+    - "3004:3004"
+    environment:
+      SQL_SERVER: "sqldb"
+    depends_on:
+    - sqldb
+    links:
+    - sqldb    
   pupil-app:
     build:
       context: ./pupil-spa
@@ -30,15 +41,19 @@ services:
         api_url: http://admin-app:3001
         auth_url: http://admin-app:3001/api/questions
         # auth_url: http://pupil-auth:3003/auth
+        check_started_url: http://admin-app:3001/api/check-started
+        # check_started_url: http://check-started:3004/submit
     container_name: mtc_pupil
     ports:
     - "80:80"
     depends_on:
     - admin-app
     - pupil-auth
+    - check-started
     links:
     - admin-app
     - pupil-auth
+    - check-started
   admin-tests:
     build: ./test/admin
     container_name: admin_tests
