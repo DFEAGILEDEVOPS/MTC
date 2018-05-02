@@ -60,7 +60,7 @@ export class SpeechService implements OnDestroy {
    *
    * @param addDelay - determines whether to add delay or not
    */
-  synthSpeak(sayThis: SpeechSynthesisUtterance, addDelay: boolean) {
+  synthSpeak(sayThis: SpeechSynthesisUtterance, addDelay: boolean = true) {
     if (!addDelay) {
       this.synth.speak(sayThis);
     } else {
@@ -153,20 +153,12 @@ export class SpeechService implements OnDestroy {
   speakElement(nativeElement): void {
     const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
 
-    nativeElement
-      .querySelectorAll(elementsToSpeak)
-      .forEach(elem => elem.addEventListener('focus', (event) => {
-        this.speakFocusedElement(event.target);
-      }));
-
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
     let speechText = '';
 
     // get all elements containing text from the current component
-    const elements = clonedElement.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6, p, li, button, a, span'
-    );
+    const elements = clonedElement.querySelectorAll(elementsToSpeak);
 
     // add 'artificial' pauses to take visual newlines or spaces into account
     elements.forEach((elem) => {
@@ -191,7 +183,6 @@ export class SpeechService implements OnDestroy {
   speakFocusedElement(nativeElement): void {
     const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
 
-    this.cancel();
     this.speak(speechText, false);
   }
 

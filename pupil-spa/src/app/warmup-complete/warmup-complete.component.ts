@@ -15,6 +15,7 @@ import { QuestionService } from '../services/question/question.service';
   styles: []
 })
 export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
+  private speechListenerEvent: any;
 
   /**
    * Emit a click event when the user clicks the button
@@ -39,6 +40,10 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -60,6 +65,8 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }
