@@ -192,7 +192,7 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   addTextBeforeSpeakingElement(nativeElement): string {
-    if (nativeElement.tagName === 'BUTTON') {
+    if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
       return 'Button: ';
     } else if (nativeElement.tagName === 'A') {
       return 'Link: ';
