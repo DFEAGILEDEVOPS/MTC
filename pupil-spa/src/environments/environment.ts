@@ -5,6 +5,8 @@
 
 export const environment = {
   apiURL: 'http://localhost:3001',
+  authURL: 'http://localhost:3001/api/questions',
+  // authURL: 'http://localhost:3003/auth',
   checkStartedURL: 'http://localhost:3001/api/check-started',
   // checkStartedURL: 'http://localhost:3004/submit',
   production: false,

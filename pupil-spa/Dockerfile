@@ -17,13 +17,17 @@ COPY . .
 RUN yarn run postinstall
 RUN yarn run sass
 ARG api_url=http://localhost:3001
-ENV API_URL=$api_url
+ARG auth_url=http://localhost:3001/api/questions
+# ARG auth_url=http://localhost:3003/auth
 ARG check_started_url=http://localhost:3001/api/check-started
 # ARG check_started_url=http://localhost:3004/submit
+ENV API_URL=$api_url
+ENV AUTH_URL=$auth_url
 ENV CHECK_STARTED_URL=$check_started_url
 ARG ga_code
 ENV GA_CODE=$ga_code
 RUN $(npm bin)/gulp setApiURL
+RUN $(npm bin)/gulp setAuthURL
 RUN $(npm bin)/gulp setCheckStartedURL
 RUN $(npm bin)/gulp setGaCode
 

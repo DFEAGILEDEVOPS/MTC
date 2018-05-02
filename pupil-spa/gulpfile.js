@@ -11,6 +11,16 @@ gulp.task('setApiURL', () => {
   }
 })
 
+gulp.task('setAuthURL', () => {
+  console.log('Attempting to update angular config from environment variables...')
+  console.log('env.AUTH_URL is:', process.env.AUTH_URL)
+  if (process.env.AUTH_URL) {
+    gulp.src(['./src/environments/environment.prod.ts'])
+      .pipe(replace('AUTH_URL', process.env.AUTH_URL))
+      .pipe(gulp.dest('./src/environments/'))
+  }
+})
+
 gulp.task('setCheckStartedURL', () => {
   console.log('Attempting to update angular config from environment variables...')
   console.log('env.CHECK_STARTED_URL is:', process.env.CHECK_STARTED_URL)
