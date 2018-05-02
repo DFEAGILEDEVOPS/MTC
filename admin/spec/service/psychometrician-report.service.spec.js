@@ -5,7 +5,7 @@ const moment = require('moment')
 const winston = require('winston')
 
 const answerDataService = require('../../services/data-access/answer.data.service')
-const checkFormDataService = require('../../services/data-access/check-form.data.service')
+const checkFormService = require('../../services/check-form.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
@@ -19,9 +19,11 @@ describe('psychometricians-report.service', () => {
   const service = require('../../services/psychometrician-report.service')
 
   describe('#batchProduceCacheData', () => {
+    const checkMock = Object.assign({}, checkFormMock)
+    checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
-        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} } },
+        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} }},
         {id: 10, pupil_id: 2, checkForm_id: 3},
         {id: 11, pupil_id: 3, checkForm_id: 4}
       ])
@@ -30,10 +32,10 @@ describe('psychometricians-report.service', () => {
         {id: 2, school_id: 6},
         {id: 3, school_id: 7}
       ])
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
-        {id: 2, formData: checkFormMock.formData},
-        {id: 3, formData: checkFormMock.formData},
-        {id: 4, formData: checkFormMock.formData}
+      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
+        {id: 2, formData: checkMock.formData},
+        {id: 3, formData: checkMock.formData},
+        {id: 4, formData: checkMock.formData}
       ])
       spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
         {id: 5},
@@ -80,7 +82,7 @@ describe('psychometricians-report.service', () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
-        expect(checkFormDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(checkFormService.getParsedCheckForms).toHaveBeenCalledTimes(1)
         expect(schoolDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
         expect(answerDataService.sqlFindByCheckIds).toHaveBeenCalledTimes(1)
       } catch (error) {

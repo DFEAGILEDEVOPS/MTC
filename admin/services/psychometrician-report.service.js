@@ -5,7 +5,7 @@ const moment = require('moment')
 
 // const checkWindowDataService = require('./data-access/check-window.data.service')
 const answerDataService = require('../services/data-access/answer.data.service')
-const checkFormDataService = require('./data-access/check-form.data.service')
+const checkFormService = require('./check-form.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
@@ -83,7 +83,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   // Fetch all pupils, checkForms, checkWindows or the checks
   const pupilIds = checks.map(x => x.pupil_id)
   const pupils = await pupilDataService.sqlFindByIds(pupilIds)
-  const checkForms = await checkFormDataService.sqlFindByIds(checks.map(x => x.checkForm_id))
+  const checkForms = await checkFormService.getParsedCheckForms(checks.map(x => x.checkForm_id))
   const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
 
   // answers is an object with check.ids as keys and arrays of answers for that check as values
@@ -94,7 +94,6 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   for (let check of checks) {
     const pupil = pupils.find(x => x.id === check.pupil_id)
     const checkForm = checkForms.find(x => x.id === check.checkForm_id)
-    checkForm.formData = JSON.parse(checkForm.formData)
     const school = schools.find(x => x.id === pupil.school_id)
     // Fetch check ids based on pupil
     const pupilChecks = checks.filter(c => c.pupil_id === pupil.id)
@@ -169,33 +168,35 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
 
   // Add information for each question asked
   const p = (idx) => 'Q' + (idx + 1).toString()
-  checkForm.formData.forEach((question, idx) => {
-    // We don't store the questionNumber in the pupil answer data in the SPA so we have to look up the
-    // question using factor1 and factor2.
-    // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
-    const markedAnswer = markedAnswers.find(a => a.factor1 === question.f1 && a.factor2 === question.f2)
+  if (check.data && Object.keys(check.data).length > 0) {
+    checkForm.formData.forEach((question, idx) => {
+      // We don't store the questionNumber in the pupil answer data in the SPA so we have to look up the
+      // question using factor1 and factor2.
+      // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
+      const markedAnswer = markedAnswers.find(a => a.factor1 === question.f1 && a.factor2 === question.f2)
 
-    const inputs = R.pathOr([], ['data', 'inputs', idx], check)
-    const audits = R.pathOr([], ['data', 'audit'], check)
-    const ans = check.data.answers[idx]
-    psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
-    psData[p(idx) + 'Response'] = ans ? ans.answer : ''
-    psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
-    psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
-    psData[p(idx) + 'Sco'] = markedAnswer ? psUtilService.getScore(markedAnswer) : ''
-    psData[p(idx) + 'ResponseTime'] = ans ? psUtilService.getResponseTime(inputs, ans.answer) : ''
-    psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(inputs)
-    psData[p(idx) + 'TimeOutResponse'] = ans ? psUtilService.getTimeoutWithNoResponseFlag(inputs, ans) : ''
-    psData[p(idx) + 'TimeOutSco'] = markedAnswer ? psUtilService.getTimeoutWithCorrectAnswer(inputs, markedAnswer) : ''
-    const tLoad = psUtilService.getLoadTime(idx + 1, audits)
-    psData[p(idx) + 'tLoad'] = tLoad
-    const tFirstKey = ans ? psUtilService.getFirstInputTime(inputs, ans.answer) : ''
-    psData[p(idx) + 'tFirstKey'] = tFirstKey
-    const tLastKey = ans ? psUtilService.getLastAnswerInputTime(inputs, ans.answer) : ''
-    psData[p(idx) + 'tLastKey'] = tLastKey
-    psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
-    psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
-  })
+      const inputs = R.pathOr([], ['data', 'inputs', idx], check)
+      const audits = R.pathOr([], ['data', 'audit'], check)
+      const ans = check.data.answers[idx]
+      psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
+      psData[p(idx) + 'Response'] = ans ? ans.answer : ''
+      psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
+      psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
+      psData[p(idx) + 'Sco'] = markedAnswer ? psUtilService.getScore(markedAnswer) : ''
+      psData[p(idx) + 'ResponseTime'] = ans ? psUtilService.getResponseTime(inputs, ans.answer) : ''
+      psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(inputs)
+      psData[p(idx) + 'TimeOutResponse'] = ans ? psUtilService.getTimeoutWithNoResponseFlag(inputs, ans) : ''
+      psData[p(idx) + 'TimeOutSco'] = markedAnswer ? psUtilService.getTimeoutWithCorrectAnswer(inputs, markedAnswer) : ''
+      const tLoad = psUtilService.getLoadTime(idx + 1, audits)
+      psData[p(idx) + 'tLoad'] = tLoad
+      const tFirstKey = ans ? psUtilService.getFirstInputTime(inputs, ans.answer) : ''
+      psData[p(idx) + 'tFirstKey'] = tFirstKey
+      const tLastKey = ans ? psUtilService.getLastAnswerInputTime(inputs, ans.answer) : ''
+      psData[p(idx) + 'tLastKey'] = tLastKey
+      psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
+      psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
+    })
+  }
 
   return psData
 }
