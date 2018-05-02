@@ -41,7 +41,7 @@ services:
         api_url: http://admin-app:3001
         auth_url: http://admin-app:3001/api/questions
         # auth_url: http://pupil-auth:3003/auth
-      	check_started_url: http://admin-app:3001/api/check-started
+        check_started_url: http://admin-app:3001/api/check-started
         # check_started_url: http://check-started:3004/submit
     container_name: mtc_pupil_2
     ports:
