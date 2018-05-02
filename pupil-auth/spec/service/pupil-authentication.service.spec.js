@@ -1,7 +1,6 @@
 'use strict'
 /* global describe beforeEach spyOn it expect fail */
 
-const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pinValidator = require('../../lib/validator/pin-validator')
 const schoolMock = require('../mocks/school')
@@ -40,7 +39,7 @@ describe('pupil authentication service', () => {
     })
 
     it('throws when the school is not found', async (done) => {
-      spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(undefined)
+      spyOn(pupilDataService, 'sqlFindOneByPinAndSchoolPin').and.returnValue(pupilMock)
       try {
         await sut.authenticate('pupilPin', 'badPin')
         fail('expected error to be thrown')
@@ -58,8 +57,7 @@ describe('pupil authentication service', () => {
     })
 
     it('throws when pupil is not found', async (done) => {
-      spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(schoolMock)
-      spyOn(pupilDataService, 'sqlFindOneByPinAndSchool').and.returnValue(undefined)
+      spyOn(pupilDataService, 'sqlFindOneByPinAndSchoolPin').and.returnValue(schoolMock)
       try {
         await sut.authenticate('badPin', 'schoolPin')
         fail('expect method to throw error')
@@ -77,7 +75,7 @@ describe('pupil authentication service', () => {
     })
 
     it('throws when both pupil and school are not found', async (done) => {
-      spyOn(schoolDataService, 'sqlFindOneBySchoolPin').and.returnValue(undefined)
+      spyOn(pupilDataService, 'sqlFindOneByPinAndSchoolPin').and.returnValue(undefined)
       try {
         await sut.authenticate('badPin', 'badPin')
         fail('expect method to throw error')
