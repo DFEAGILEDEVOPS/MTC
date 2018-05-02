@@ -32,7 +32,7 @@ export class SubmissionService {
   submitCheckStartData() {
     const {checkCode} = this.storageService.getItem('pupil');
     const accessToken = this.storageService.getItem('access_token');
-    return this.http.post(`${environment.apiURL}/api/check-started`,
+    return this.http.post(`${environment.checkStartedURL}`,
       // Explanation for response type text
       // https://github.com/angular/angular/issues/21211
       {checkCode, accessToken}, { responseType: 'text' })
