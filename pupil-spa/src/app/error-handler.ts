@@ -13,6 +13,10 @@ export class GlobalErrorHandler implements ErrorHandler {
   constructor(private injector: Injector) { }
 
   handleError(error) {
+    if (console && console.log) {
+      console.log('Global error handler: ', error);
+    }
+
     // Pick up our dependencies.  Don't use dependency injection - so this module can be loaded first.
     const auditService = this.injector.get(AuditService);
     const windowRefService = this.injector.get(WindowRefService);
