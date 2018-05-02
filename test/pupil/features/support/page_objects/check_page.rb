@@ -90,6 +90,7 @@ class CheckPage < SitePrism::Page
       number_pad.enter.click if input_type == 'numpad'
       number_pad.one.send_keys(:enter) if input_type == 'keyboard'
     end
+    p @array_of_answers
     @array_of_answers
   end
 
@@ -145,29 +146,29 @@ class CheckPage < SitePrism::Page
     array_of_answers
   end
 
-  def array_of_inputs_from_numpad(array_of_answers)
+  def array_of_inputs_from_numpad(array_of_answers,questions)
     @inputs_array = []
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>index + 1}
-        @ans << {"input" => char.to_s, "eventType" => "click", "question"=>index + 1}
+        @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>questions[index], "sequenceNumber"=>index+1}
+        @ans << {"input" => char.to_s, "eventType" => "click", "question"=>questions[index], "sequenceNumber"=>index+1}
       end
-      @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>index + 1}
-      @ans << {"input" => "Enter", "eventType" => "click", "question"=>index + 1}
+      @ans << {"input" => "left click", "eventType" => "mousedown", "question"=>questions[index], "sequenceNumber"=>index+1}
+      @ans << {"input" => "Enter", "eventType" => "click", "question"=>questions[index], "sequenceNumber"=>index+1}
       @inputs_array << @ans
     end
     @inputs_array
   end
 
-  def array_of_inputs_from_keyboard(array_of_answers)
+  def array_of_inputs_from_keyboard(array_of_answers,questions)
     @inputs_array = []
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => char.to_s, "eventType" => "keydown", "question"=>index + 1}
+        @ans << {"input" => char.to_s, "eventType" => "keydown", "question"=>questions[index], "sequenceNumber"=>index+1}
       end
-      @ans << {"input" => "Enter", "eventType" => "keydown", "question"=>index + 1}
+      @ans << {"input" => "Enter", "eventType" => "keydown", "question"=>questions[index], "sequenceNumber"=>index+1}
       @inputs_array << @ans
     end
     @inputs_array
