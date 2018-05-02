@@ -2,6 +2,7 @@
 /* global describe, beforeEach, it, expect spyOn */
 
 const pupilMock = require('../../mocks/pupil')
+const schoolMock = require('../../mocks/school')
 const sqlResponseMock = require('../../mocks/sql-modify-response')
 const sqlService = require('../../../services/data-access/sql.service')
 
@@ -37,16 +38,17 @@ describe('pupil.data.service', () => {
       expect(sqlService.query).toHaveBeenCalled()
     })
   })
-  describe('#sqlFindOneByPinAndSchool', () => {
+
+  describe('#sqlFindOneByPinAndSchoolPin', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([ pupilMock ]))
+      spyOn(sqlService, 'query').and.returnValue(Promise.resolve({ pupil: pupilMock, school: schoolMock }))
       service = require('../../../services/data-access/pupil.data.service')
     })
 
     it('it makes the expected calls', async () => {
       const dfeNumber = 9991001
       const pupil = pupilMock
-      await service.sqlFindOneByPinAndSchool(pupil.pin, dfeNumber)
+      await service.sqlFindOneByPinAndSchoolPin(pupil.pin, dfeNumber)
       expect(sqlService.query).toHaveBeenCalled()
     })
   })
