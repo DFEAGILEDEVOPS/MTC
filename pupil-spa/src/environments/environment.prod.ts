@@ -1,5 +1,7 @@
 export const environment = {
   apiURL: 'API_URL',
+  checkStartedURL: 'CHECK_STARTED_URL',
+  authURL: 'AUTH_URL',
   checkSubmissionURL: 'CHECK_SUBMISSION_URL',
   production: true,
   // api/check-started
