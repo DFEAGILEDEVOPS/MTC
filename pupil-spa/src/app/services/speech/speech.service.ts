@@ -173,7 +173,7 @@ export class SpeechService implements OnDestroy {
       speechText += elem.textContent;
     });
 
-    this.speak(speechText);
+    this.speak(speechText.replace(/[\n\r]+/g, ' '));
   }
 
   /**
