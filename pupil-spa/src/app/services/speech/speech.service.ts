@@ -162,7 +162,7 @@ export class SpeechService implements OnDestroy {
         return;
       }
 
-      if (elem.tagName === 'BUTTON') {
+      if (elem.tagName === 'BUTTON' || elem.classList.contains('button')) {
         speechText += ' , Button: ';
       } else if (elem.tagName === 'A') {
         speechText += ' , Link: ';
