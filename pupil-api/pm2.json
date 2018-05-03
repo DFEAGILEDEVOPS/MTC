@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"        : "MTC Check Started",
+    "script"      : "dist/index.js",
+    "watch"       : false,
+    "instances"   : "max",
+    "exec_mode"   : "cluster"
+  }]
+}
