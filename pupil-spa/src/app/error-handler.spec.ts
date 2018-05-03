@@ -6,8 +6,6 @@ import { AuditService } from './services/audit/audit.service';
 import { AuditServiceMock } from './services/audit/audit.service.mock';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 
-
-
 describe('error-handler', () => {
   let errorHandler: GlobalErrorHandler;
   let auditServiceMock: AuditServiceMock;
@@ -31,7 +29,7 @@ describe('error-handler', () => {
     expect(errorHandler).toBeTruthy();
   });
 
-  it ('handleError calls he audit service to persist the error', () => {
+  it ('handleError calls the audit service to persist the error', () => {
     spyOn(auditServiceMock, 'addEntry');
     errorHandler.handleError(new Error('a mock error from unit testing'));
     expect(auditServiceMock.addEntry).toHaveBeenCalled();
