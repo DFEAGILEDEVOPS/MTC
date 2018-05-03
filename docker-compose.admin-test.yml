@@ -12,9 +12,9 @@ services:
     - sqldb
     links:
     - sqldb
-  pupil-auth:
-    build: ./pupil-auth
-    container_name: mtc_pupil_auth
+  pupil-api:
+    build: ./pupil-api
+    container_name: mtc_pupil_app
     ports:
     - "3003:3003"
     environment:
@@ -22,40 +22,15 @@ services:
     depends_on:
     - sqldb
     links:
-    - sqldb
-  check-started:
-    build: ./check-started
-    container_name: mtc_check_started
-    ports:
-    - "3004:3004"
-    environment:
-      SQL_SERVER: "sqldb"
-    depends_on:
-    - sqldb
-    links:
-    - sqldb    
-  check-submission:
-    build: ./check-submission
-    container_name: mtc_check_submission
-    ports:
-    - "3005:3005"
-    environment:
-      SQL_SERVER: "sqldb"
-    depends_on:
-    - sqldb
-    links:
-    - sqldb
+    - sqldb   
   pupil-app:
     build:
       context: ./pupil-spa
       args:
-        api_url: http://admin-app:3001
-        auth_url: http://admin-app:3001/api/questions
-        # auth_url: http://pupil-auth:3003/auth
-        check_started_url: http://admin-app:3001/api/check-started
-        # check_started_url: http://check-started:3004/submit
-        check_submission_url: http://admin-app:3001/api/completed-check
-        # check_submission_url: http://check-submission:3005/submit
+        api_url: http://pupil-api:3003
+        auth_url: http://pupil-api:3003/api/questions
+        check_started_url: http://pupil-api:3003/api/check-started
+        check_submission_url: http://pupil-api:3003/api/completed-check
     container_name: mtc_pupil
     ports:
     - "80:80"
