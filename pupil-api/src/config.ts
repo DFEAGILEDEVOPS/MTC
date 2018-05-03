@@ -37,5 +37,11 @@ export = {
     }
   },
   Environment: getEnvironment(),
-  JwtSecret: process.env.JWT_SECRET || 'dev-token'.padEnd(64, '-')
+  JwtSecret: process.env.JWT_SECRET || 'dev-token'.padEnd(64, '-'),
+  Endpoints: {
+    Auth: process.env.API_AUTH || false,
+    CheckStart: process.env.API_CHECK_START || false,
+    CheckSubmit: process.env.API_CHECK_SUBMIT || false,
+    Feedback: process.env.API_FEEDBACK || false
+  }
 }

@@ -5,31 +5,18 @@ import * as path from 'path'
 import * as fs from 'fs'
 const moment = require('moment')
 
-const { postCheck } = require('../controllers/check-submission')
+const { postCheck } = require('../controllers/ping')
 
-export class IndexRouter {
+export class PingRouter {
   router: Router
 
-  /**
-   * Initialize the IndexRouter
-   */
   constructor () {
     this.router = Router()
     this.init()
   }
 
-  /**
-   * Take each handler, and attach to one of the Express.Router's
-   * endpoints.
-   */
   public init () {
     this.router.get('/ping', (req: Request, res: Response) => this.getPing(req, res))
-
-    /* check-started microservice */
-    this.router.route('/submit').all((req: Request, res: Response) => {
-      if (req.method !== 'POST') return res.sendStatus(405)
-      postCheck(req, res)
-    })
   }
 
   private async getPing (req: Request, res: Response) {
@@ -88,8 +75,7 @@ export class IndexRouter {
   }
 }
 
-// Create the HeroRouter, and export its configured Express.Router
-const indexRoutes = new IndexRouter()
-indexRoutes.init()
+const pingRouter = new PingRouter()
+pingRouter.init()
 
-export default indexRoutes.router
+export default pingRouter.router

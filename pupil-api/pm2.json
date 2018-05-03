@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"        : "MTC Check Submission",
+    "name"        : "MTC Pupil API",
     "script"      : "dist/index.js",
     "watch"       : false,
     "instances"   : "max",

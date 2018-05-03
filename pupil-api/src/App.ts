@@ -13,7 +13,10 @@ import * as expressWinston from 'express-winston'
 import * as azure from './azure'
 const config = require('./config')
 
-import IndexRouter from './routes/index'
+import authRoutes from './routes/auth'
+import checkSubmitRoutes from './routes/check-submit'
+import checkStartRoutes from './routes/check-started'
+import pingRoute from './routes/ping'
 
 if (process.env.NODE_ENV !== 'production') {
   winston.level = 'debug'
@@ -99,7 +102,20 @@ class App {
   // Configure API endpoints.
   private routes (): void {
     /* API endpoints */
-    this.express.use('/', IndexRouter)
+    this.express.use('/ping', pingRoute)
+
+    if (config.Endpoints.Auth) {
+      this.express.use('/auth', authRoutes)
+    }
+    if (config.Endpoints.CheckStart) {
+      this.express.use('/start', checkStartRoutes)
+    }
+    if (config.Endpoints.CheckSubmit) {
+      this.express.use('/submit', checkSubmitRoutes)
+    }
+    if (config.Endpoints.Feedback) {
+      this.express.use('/feedback', feedbackRoutes)
+    }
 
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {
