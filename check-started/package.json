@@ -6,7 +6,7 @@
   "scripts": {
     "build": "gulp scripts",
     "coverage": "npm run build && nyc -r text -r html ./run-jasmine.js",
-    "lint": "tslint --project .",
+    "lint": "standard && tslint --project .",
     "start": "npm run build && node ./dist/index.js",
     "test": "npm run build && nyc -r html ./run-jasmine.js"
   },
@@ -49,6 +49,7 @@
     "nyc": "^11.5.0",
     "proxyquire": "^2.0.1",
     "sinon": "^4.4.8",
+    "standard": "^10.0.2",
     "tslint": "^5.9.1",
     "tslint-config-standard": "^7.0.0",
     "typescript": "^2.8.3"
