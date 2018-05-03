@@ -12,7 +12,7 @@ export class PingRouter {
   }
 
   public init () {
-    this.router.get('/ping', (req: Request, res: Response) => ping(req, res))
+    this.router.get('/', (req: Request, res: Response) => ping(req, res))
   }
 }
 
