@@ -80,9 +80,9 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
  * @description returns a boolean indicating whether there are unmarked checks in the database
  */
 completedCheckDataService.sqlHasUnmarked = async () => {
-  const sql = `SELECT COUNT(*) as [unmarkedCount] FROM [mtc_admin].[check] 
-    WHERE markedAt IS NULL 
-    AND [data] IS NOT NULL`
+  const sql = `SELECT COUNT(*) as [unmarkedCount]
+  FROM ${sqlService.adminSchema}.[check] chk
+  WHERE chk.markedAt IS NULL AND chk.data IS NOT NULL`
   const result = await sqlService.query(sql)
   return result[0].unmarkedCount > 0
 }

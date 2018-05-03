@@ -46,7 +46,7 @@ const dateService = {
   },
 
   checkAndFormat: function (date, format) {
-    if (!(date instanceof Date || date instanceof moment)) {
+    if (!(date instanceof Date || moment.isMoment(date))) {
       winston.warn(`Date parameter is not a Date or Moment object: ${date}`)
       return ''
     }
