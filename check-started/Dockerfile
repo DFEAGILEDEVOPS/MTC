@@ -6,6 +6,7 @@ COPY package.json /usr/src/app
 RUN yarn install --ignore-engines
 
 COPY . .
+RUN yarn build
 RUN yarn global add pm2
 
 EXPOSE 3004
