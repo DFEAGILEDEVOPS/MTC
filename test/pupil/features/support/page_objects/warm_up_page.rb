@@ -29,10 +29,8 @@ class WarmUpPage < SitePrism::Page
     i = 0
     while i < 300
       if(has_question_container?)
-        puts "Question container is visible : #{has_question_container?}"
         break
       else
-        puts "waiting for Question container to be visible : #{has_question_container?}"
         sleep 0.5
         i = i + 1
       end
