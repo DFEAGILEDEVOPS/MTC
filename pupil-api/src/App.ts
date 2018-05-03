@@ -114,7 +114,8 @@ class App {
       this.express.use('/submit', checkSubmitRoutes)
     }
     if (config.Endpoints.Feedback) {
-      this.express.use('/feedback', feedbackRoutes)
+      throw new Error('Not yet implemented')
+      // this.express.use('/feedback', feedbackRoutes)
     }
 
     // catch 404 and forward to error handler
