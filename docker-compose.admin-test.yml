@@ -14,11 +14,14 @@ services:
     - sqldb
   pupil-api:
     build: ./pupil-api
-    container_name: mtc_pupil_app
+    container_name: mtc_pupil_api
     ports:
     - "3003:3003"
     environment:
       SQL_SERVER: "sqldb"
+      API_AUTH: "true"
+      API_CHECK_START: "true"
+      API_CHECK_SUBMIT: "true"
     depends_on:
     - sqldb
     links:
@@ -36,14 +39,10 @@ services:
     - "80:80"
     depends_on:
     - admin-app
-    - pupil-auth
-    - check-started
-    - check-submission
+    - pupil-api
     links:
     - admin-app
-    - pupil-auth
-    - check-started
-    - check-submission
+    - pupil-api
   admin-tests:
     build: ./test/admin
     container_name: admin_tests

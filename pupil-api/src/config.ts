@@ -10,7 +10,7 @@ const getEnvironment = () => {
 }
 
 export = {
-  PORT: process.env.PORT || '3005',
+  PORT: process.env.PORT || '3003',
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Sql: {
