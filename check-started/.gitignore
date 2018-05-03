@@ -54,3 +54,6 @@ data/files/*
 # dotenv files
 .env
 *.env
+
+# ignore dist
+dist
