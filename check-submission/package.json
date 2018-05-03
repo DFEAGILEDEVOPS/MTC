@@ -6,7 +6,7 @@
   "scripts": {
     "build": "gulp scripts",
     "coverage": "nyc -r text -r html ./run-jasmine.js",
-    "lint": "tslint --project .",
+    "lint": "standard && tslint --project .",
     "start": "npm run build && node ./dist/index.js",
     "test": "npm run build && nyc -r html ./run-jasmine.js"
   },
