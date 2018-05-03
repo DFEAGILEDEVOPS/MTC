@@ -8,7 +8,9 @@
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard && tslint --project .",
     "start": "npm run build && node ./dist/index.js",
-    "test": "npm run build && nyc -r html ./run-jasmine.js"
+    "test": "npm run build && nyc -r html ./run-jasmine.js",
+    "migrate-sql": "node ./data/sql/migrate-sql.js",
+    "startd": "yarn migrate-sql && npm run build && node ./dist/index.js"
   },
   "engines": {
     "node": ">= 8.4"
