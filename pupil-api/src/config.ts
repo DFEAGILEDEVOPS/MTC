@@ -14,14 +14,14 @@ export = {
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
   autoMark: process.env.hasOwnProperty('AUTO_MARK') ? toBool(process.env.AUTO_MARK) : true,
   Sql: {
-    Enabled: true, // deprecated, to be removed
-    Database: process.env.SQL_DATABASE || 'mtc',
+    DefaultSchema: process.env.SQL_SCHEMA || '[mtc_check]',
+    Database: process.env.SQL_DATABASE || 'mtcPupil',
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
     Encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
     Application: {
-      Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
+      Name: process.env.SQL_APP_NAME || 'mtc-pupil-api-local',
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
       Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
     },
