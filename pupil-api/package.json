@@ -27,6 +27,7 @@
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
     "ramda": "^0.25.0",
+    "random-number-csprng": "^1.0.2",
     "tedious": "^2.3.1",
     "tedious-connection-pool": "^1.0.5",
     "to-bool": "0.0.1",

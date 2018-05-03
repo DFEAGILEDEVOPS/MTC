@@ -1,6 +1,6 @@
 'use strict'
 
-const checkFormDataService = require('../services/data-access/check-form.data.service')
+const checkFormDataService = require('./data-access/check-form.data.service')
 const random = require('../lib/random-generator')
 
 const checkFormService = {
