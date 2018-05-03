@@ -108,7 +108,7 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
-      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
         {}, {}, {}
       ])
       await service.batchMark([1, 2, 3])
@@ -120,7 +120,7 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
-      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
         {}, {}, {}
       ])
       // As we know this will output a warning lets shut it up during the test

@@ -32,7 +32,7 @@ describe('psychometricians-report.service', () => {
         {id: 2, school_id: 6},
         {id: 3, school_id: 7}
       ])
-      spyOn(checkFormService, 'getParsedCheckForms').and.returnValue([
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
         {id: 2, formData: checkMock.formData},
         {id: 3, formData: checkMock.formData},
         {id: 4, formData: checkMock.formData}
@@ -82,7 +82,7 @@ describe('psychometricians-report.service', () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
-        expect(checkFormService.getParsedCheckForms).toHaveBeenCalledTimes(1)
+        expect(checkFormService.getCheckFormsByIds).toHaveBeenCalledTimes(1)
         expect(schoolDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
         expect(answerDataService.sqlFindByCheckIds).toHaveBeenCalledTimes(1)
       } catch (error) {

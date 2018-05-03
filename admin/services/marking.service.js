@@ -59,7 +59,7 @@ markingService.batchMark = async function (batchIds) {
 
   const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
   const checkFormIds = completedChecks.map(c => c.checkForm_id)
-  const checkForms = await checkFormService.getParsedCheckForms(checkFormIds)
+  const checkForms = await checkFormService.getCheckFormsByIds(checkFormIds)
   const checkFormsHashMap = checkForms.reduce((obj, item) => {
     obj[item.id] = item
     return obj
