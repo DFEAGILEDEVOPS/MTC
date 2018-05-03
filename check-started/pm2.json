@@ -1,7 +1,7 @@
 {
   "apps" : [{
     "name"        : "MTC Check Started",
-    "script"      : "server.js",
+    "script"      : "dist/index.js",
     "watch"       : false,
     "instances"   : "max",
     "exec_mode"   : "cluster"
