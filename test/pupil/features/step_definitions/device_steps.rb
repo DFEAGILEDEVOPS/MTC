@@ -1,10 +1,6 @@
 Then(/^I should see device information populated in local storage$/) do
   device_info = JSON.parse(page.evaluate_script('window.localStorage.getItem("device");'))
-  expect(device_info['battery'].keys).to eql ["isCharging", "levelPercent", "chargingTime", "dischargingTime"]
-  expect(device_info['cpu'].keys).to eql ["hardwareConcurrency"]
-  expect(device_info['navigator'].keys).to eql ["userAgent", "platform", "language", "cookieEnabled", "doNotTrack"]
-  expect(device_info['networkConnection'].keys).to eql ["downlink", "effectiveType", "rtt"]
-  expect(device_info['screen'].keys).to eql ["screenWidth", "screenHeight", "outerWidth", "outerHeight", "innerWidth", "innerHeight", "colorDepth", "orientation"]
+  check_device_information(device_info)
 end
 
 Then(/^the device information should be persisted to the DB$/) do
