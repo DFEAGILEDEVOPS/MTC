@@ -14,4 +14,12 @@ module Helpers
     array_of_question_strings
   end
 
+  def check_device_information(device_info)
+    device_info['battery'].nil? ? (p "Battery information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['battery'].keys).to eql ["isCharging", "levelPercent", "chargingTime", "dischargingTime"])
+    device_info['cpu'].nil? ? (p "CPU information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['cpu'].keys).to eql ["hardwareConcurrency"])
+    device_info['navigator'].nil? ? (p "Navigator information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['navigator'].keys).to eql ["userAgent", "platform", "language", "cookieEnabled", "doNotTrack"])
+    device_info['networkConnection'].nil? ? (p "Network connection information not available with current driver: #{Capybara.current_driver}") :  (expect(device_info['networkConnection'].keys).to eql ["downlink", "effectiveType", "rtt"])
+    device_info['screen'].nil? ? (p "Screen information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['screen'].keys).to eql ["screenWidth", "screenHeight", "outerWidth", "outerHeight", "innerWidth", "innerHeight", "colorDepth", "orientation"])
+  end
+
 end
