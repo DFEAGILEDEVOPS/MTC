@@ -13,6 +13,7 @@ export class SpeechService implements OnDestroy {
   public static readonly questionSpeechStarted = 'questionstart';
   public static readonly questionSpeechEnded = 'questionend';
   private speaking = false;
+  private cancelTimeout;
   private speechStatusSource = new Subject<string>();
   protected synth;
 
@@ -55,33 +56,18 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
-   * Chrome has problems with speaking immediately after .cancel()
-   * and an 'artificial delay' is needed
-   *
-   * @param addDelay - determines whether to add delay or not
-   */
-  synthSpeak(sayThis: SpeechSynthesisUtterance, addDelay: boolean = true) {
-    if (!addDelay) {
-      this.synth.speak(sayThis);
-    } else {
-      const _window = this.windowRefService.nativeWindow;
-      _window.setTimeout(() => {
-        this.synth.speak(sayThis);
-      }, 500);
-    }
-  }
-
-  /**
    * Add an utterance to the underlying webspeech api
    *
    * @param utterance
-   * @param addDelay - determines whether to add delay or not, add by default
+   * @param cancelBeforeSpeaking
    */
-  speak(utterance: string, addDelay: boolean = true): void {
+  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
-    this.cancel();
+    if (cancelBeforeSpeaking) {
+      await this.cancel();
+    }
     const sayThis = new SpeechSynthesisUtterance(utterance);
     sayThis.onstart = (event) => {
       this.speaking = true;
@@ -95,18 +81,18 @@ export class SpeechService implements OnDestroy {
       this.announceSpeechReset();
     };
 
-    this.synthSpeak(sayThis, addDelay);
+    this.synth.speak(sayThis);
   }
 
   /**
    * Add an question utterance to the underlying webspeech api
    * @param utterance
    */
-  speakQuestion(utterance: string): void {
+  async speakQuestion(utterance: string): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
-    this.cancel();
+    await this.cancel();
     const sayThis = new SpeechSynthesisUtterance(utterance);
     sayThis.onstart = (event) => {
       this.speaking = true;
@@ -119,7 +105,7 @@ export class SpeechService implements OnDestroy {
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synthSpeak(sayThis, false);
+    this.synth.speak(sayThis);
   }
 
   /**
@@ -128,22 +114,7 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    */
   speakChar(utterance: string): void {
-    if (!this.isSupported()) {
-      return;
-    }
-    const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = (event) => {
-      this.speaking = true;
-      this.announceSpeechStarted();
-      this.audit.addEntry(new UtteranceStarted({ utterance }));
-    };
-    sayThis.onend = (event) => {
-      this.speaking = false;
-      this.audit.addEntry(new UtteranceEnded({ utterance }));
-      this.announceSpeechEnded();
-      this.announceSpeechReset();
-    };
-    this.synthSpeak(sayThis);
+    this.speak(utterance, false);
   }
 
   /**
@@ -183,7 +154,7 @@ export class SpeechService implements OnDestroy {
   speakFocusedElement(nativeElement): void {
     const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
 
-    this.speak(speechText, false);
+    this.speak(speechText);
   }
 
   /**
@@ -202,12 +173,26 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
-   * Immediately stop speaking
+   * Immediately stop speaking, then return a promise that
+   * waits a safe delay for browsers which do cancel asynchronously
+   * so they can start speaking immediately.
+   *
+   * Delete previous timeout to ensure previous speech doesn't
+   * happen if it's being cancelled here.
    */
-  cancel(): void {
+  cancel(): any {
     // console.log('SpeechAPI cancel() called');
-    this.synth.cancel();
-    this.speaking = false;
+    const _window = this.windowRefService.nativeWindow;
+    _window.clearTimeout(this.cancelTimeout);
+
+    return new Promise((resolve, reject) => {
+      this.synth.cancel();
+      this.speaking = false;
+
+      this.cancelTimeout = _window.setTimeout(() => {
+        resolve();
+      }, 300);
+    });
   }
 
   /**
@@ -226,7 +211,7 @@ export class SpeechService implements OnDestroy {
   waitForEndOfSpeech(): Promise<any> {
     const _window = this.windowRefService.nativeWindow;
     return new Promise(resolve => {
-      if (!this.isSpeaking()) {
+      if (!this.isSpeaking() && !this.isPending()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
@@ -236,7 +221,7 @@ export class SpeechService implements OnDestroy {
         subscription = this.speechStatus.subscribe(speechStatus => {
           if (speechStatus === SpeechService.speechEnded) {
             _window.setTimeout(() => {
-              if (!this.isSpeaking()) {
+              if (!this.isSpeaking() && !this.isPending()) {
                 subscription.unsubscribe();
                 clearTimeout(timeout);
                 resolve();
