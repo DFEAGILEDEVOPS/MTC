@@ -60,3 +60,6 @@ Feature: Warm up questions
     Given I am on the warm up intro page
     Then I should see the total number of warm up questions
 
+  Scenario: Warm up complete page has total number of questions
+    Given I am on the warm up complete page
+    Then I should see the total number of warm up questions on the complete page

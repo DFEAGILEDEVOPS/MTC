@@ -59,3 +59,9 @@ end
 Then(/^I should see the total number of warm up questions$/) do
   expect(warm_up_page.welcome_message.text.scan(/\d+/).first.to_i).to eql 3
 end
+
+
+Then(/^I should see the total number of warm up questions on the complete page$/) do
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  expect(warm_up_complete_page.completion_text.text.scan(/\d+/).first.to_i).to eql questions.size
+end
