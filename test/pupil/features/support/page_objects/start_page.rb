@@ -5,5 +5,6 @@ class StartPage < SitePrism::Page
   elements :bulleted_list_instructions, '.list-bullet li'
   element :start_warm_up, '#start-now-button'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
+  element :number_of_questions, 'li strong'
 
 end

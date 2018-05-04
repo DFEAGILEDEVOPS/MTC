@@ -6,11 +6,6 @@ end
 
 Then(/^I should see a warm up page heading$/) do
   expect(warm_up_page).to have_heading
-  expect(warm_up_page).to have_welcome_message
-end
-
-Then(/^I should see some warm up page intro text$/) do
-  expect(warm_up_page).to have_welcome_message
 end
 
 Given(/^I am on the warm up check page$/) do
@@ -62,5 +57,5 @@ Given(/^I am on the warm up loading page$/) do
 end
 
 Then(/^I should see the total number of warm up questions$/) do
-  expect(check_page.preload.text).to eql 'Practice question 1…'
+  expect(warm_up_page.welcome_message.text.scan(/\d+/).first.to_i).to eql 3
 end
