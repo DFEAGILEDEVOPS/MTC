@@ -9,8 +9,8 @@
     "lint": "standard && tslint --project .",
     "start": "npm run build && node ./dist/index.js",
     "test": "npm run build && nyc -r html ./run-jasmine.js",
-    "migrate-sql": "node ./data/sql/migrate-sql.js",
-    "startd": "yarn migrate-sql && npm run build && node ./dist/index.js"
+    "migrate-sql": "yarn build && node ./dist/migrator/migrate-sql.js",
+    "startd": "yarn migrate-sql && yarn start"
   },
   "engines": {
     "node": ">= 8.4"
@@ -28,6 +28,8 @@
     "jsonwebtoken": "^8.2.1",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
+    "mssql": "^4.1.0",
+    "postgrator": "^3.6.0",
     "ramda": "^0.25.0",
     "random-number-csprng": "^1.0.2",
     "tedious": "^2.3.1",

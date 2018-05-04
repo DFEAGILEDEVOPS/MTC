@@ -8,7 +8,9 @@ create table mtc_pupil.preparedCheck
 	pupilPin char(5) not null,
 	schoolPin char(8) not null,
 	checkData nvarchar(max) not null,
-	obtainedAt datetimeoffset
+	authenticatedAt datetimeoffset null,
+	startedAt datetimeoffset null,
+	checkCode uniqueidentifier not null
 )
 go
 

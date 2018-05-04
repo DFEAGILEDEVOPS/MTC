@@ -2,7 +2,7 @@
 
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
-const config = require('../../config')
+const config = require('../config')
 const winston = require('winston')
 
 const adminConfig = {

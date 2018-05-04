@@ -1,7 +1,7 @@
 'use strict'
 
 require('dotenv').config()
-const config = require('../../config')
+const config = require('../config')
 const winston = require('winston')
 const Postgrator = require('postgrator')
 const path = require('path')
@@ -9,7 +9,7 @@ const chalk = require('chalk')
 const createDatabaseIfNotExists = require('./createDatabase')
 
 const migratorConfig = {
-  migrationDirectory: path.join(__dirname, '/migrations'),
+  migrationDirectory: path.join(__dirname, '../../sql/migrations'),
   driver: 'mssql',
   host: config.Sql.Server,
   port: config.Sql.Port,
