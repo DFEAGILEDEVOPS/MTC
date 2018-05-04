@@ -26,10 +26,8 @@ class CheckPage < SitePrism::Page
     i = 0
     while i < 360
       if(has_question_container?)
-        puts "Question container is visible : #{has_question_container?}"
         break
       else
-        puts "waiting for Question container to be visible : #{has_question_container?}"
         sleep 0.5
         i = i + 1
       end
@@ -38,10 +36,8 @@ class CheckPage < SitePrism::Page
     j = 0
     while j < 120
       if(has_question?)
-        puts "Question container is visible : #{has_question?}"
         break
       else
-        puts "waiting for Question container to be visible : #{has_question?}"
         sleep 0.5
         j = j + 1
       end
@@ -90,7 +86,6 @@ class CheckPage < SitePrism::Page
       number_pad.enter.click if input_type == 'numpad'
       number_pad.one.send_keys(:enter) if input_type == 'keyboard'
     end
-    p @array_of_answers
     @array_of_answers
   end
 

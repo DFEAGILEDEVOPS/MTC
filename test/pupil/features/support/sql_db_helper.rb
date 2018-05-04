@@ -151,5 +151,12 @@ class SqlDbHelper
     result.do
   end
 
+  def self.get_check_data(check_code)
+    sql = "SELECT data FROM [mtc_admin].[check] WHERE checkCode='#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
 
 end
