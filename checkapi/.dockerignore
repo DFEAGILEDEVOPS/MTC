@@ -1,8 +1,0 @@
-node_modules
-npm-debug.log
-
-.env
-
-spec/**
-.nyc_output/**
-coverage/**
