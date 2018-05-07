@@ -62,9 +62,10 @@ pinService.expireMultiplePins = async (pupilIds) => {
     if (p.pin || p.pinExpiresAt) pupilData.push(p)
   })
   if (pupilData.length === 0) return
+  const currentTimeStamp = moment.utc()
   pupilData = pupilData.map(p => {
     p.pin = null
-    p.pinExpiresAt = null
+    p.pinExpiresAt = currentTimeStamp
     return p
   })
   const data = pupilData.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
