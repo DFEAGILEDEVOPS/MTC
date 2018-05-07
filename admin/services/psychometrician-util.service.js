@@ -90,17 +90,17 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
 }
 
 /**
- * Function used in `cleanUpInputEvents()`  add the clientInputDate to the click event
+ * Function used in `cleanUpInputEvents()`  add the clientTimestamp to the click event
  * @param touchOrMouseEvent
  * @param clickEvent
- * @return {{input, eventType: string, clientInputDate: *, question}}
+ * @return {{input, eventType: string, clientTimestamp: *, question}}
  */
 function mergeEvents (touchOrMouseEvent, clickEvent) {
-  const clientInputDate = touchOrMouseEvent ? touchOrMouseEvent.clientInputDate : clickEvent.clientInputDate
+  const clientTimestamp = touchOrMouseEvent ? touchOrMouseEvent.clientTimestamp : clickEvent.clientTimestamp
   const newEvent = {
     input: clickEvent.input,
     eventType: touchOrMouseEvent.eventType === 'touchstart' ? 'touch' : 'click',
-    clientInputDate,
+    clientTimestamp,
     question: clickEvent.question
   }
   return newEvent
@@ -190,7 +190,7 @@ psUtilService.getLastAnswerInputTime = function (inputs, answer) {
     return ''
   }
 
-  return R.pathOr('error', ['clientInputDate'], R.last(filtered))
+  return R.pathOr('error', ['clientTimestamp'], R.last(filtered))
 }
 
 /**
@@ -220,7 +220,7 @@ psUtilService.getFirstInputTime = function (inputs, answer) {
     return ''
   }
 
-  return R.pathOr('error', ['clientInputDate'], R.head(filtered))
+  return R.pathOr('error', ['clientTimestamp'], R.head(filtered))
 }
 
 psUtilService.filterInputsToAnswerKeys = function (inputs) {
