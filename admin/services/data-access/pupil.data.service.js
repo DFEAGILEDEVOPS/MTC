@@ -302,7 +302,7 @@ pupilDataService.sqlFindSortedPupilsWithAttendanceReasons = async (dfeNumber, so
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
     LEFT OUTER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id 
     LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilGroup] pg ON pg.pupil_id = p.id 
-  WHERE s.dfeNumber = @dfeNumber
+  WHERE s.dfeNumber = @dfeNumber AND (pa.isDeleted IS NULL OR pa.isDeleted = 0)
   ORDER BY ${sqlSort}
   `
   return sqlService.query(sql, params)

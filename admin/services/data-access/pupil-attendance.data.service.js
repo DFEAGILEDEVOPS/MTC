@@ -44,7 +44,7 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
   ]
 
   const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
+  const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ') AND isDeleted=0'
   const sql = [update, whereClause].join(' ')
   return sqlService.modify(sql, R.concat(params, where.params))
 }
@@ -54,7 +54,8 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
     throw new Error('pupilId is required for a DELETE')
   }
   const sql = `
-  DELETE FROM ${sqlService.adminSchema}.${table}
+  UPDATE ${sqlService.adminSchema}.${table}
+  SET isDeleted=1
   WHERE pupil_id = @pupilId`
   const param = { name: 'pupilId', value: pupilId, type: TYPES.Int }
   return sqlService.modify(sql, [param])
@@ -66,7 +67,7 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
   FROM ${sqlService.adminSchema}.${table}
   `
   const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ')'
+  const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ') AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
@@ -87,7 +88,7 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
       type: TYPES.Int
     }
   ]
-  const whereClause = 'WHERE pupil_id=@pupilId'
+  const whereClause = 'WHERE pupil_id=@pupilId AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
   const result = await sqlService.query(sql, params)
   return R.head(result)
