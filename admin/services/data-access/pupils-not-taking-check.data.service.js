@@ -16,7 +16,7 @@ const pupilsNotTakingCheckDataService = {
         INNER JOIN ${sqlService.adminSchema}.[school] s ON p.school_id = s.id
         INNER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON p.id = pa.pupil_id 
         INNER JOIN ${sqlService.adminSchema}.[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      WHERE s.dfeNumber = @dfeNumber AND (pa.isDeleted = 0 or pa.isDeleted IS NULL)
+      WHERE s.dfeNumber = @dfeNumber AND pa.isDeleted = 0
       ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC`
 
     const params = [{
@@ -42,7 +42,7 @@ const pupilsNotTakingCheckDataService = {
       `
 
     const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
-    const sql = [select, 'WHERE (pa.isDeleted = 0 OR pa.isDeleted IS NULL) AND p.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
+    const sql = [select, 'WHERE pa.isDeleted = 0 AND p.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
     return sqlService.query(sql, where.params)
   }
 }

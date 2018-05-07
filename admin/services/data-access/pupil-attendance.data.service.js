@@ -44,7 +44,7 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
   ]
 
   const where = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ') AND isDeleted=0'
+  const whereClause = 'WHERE pupil_id IN (' + where.paramIdentifiers.join(', ') + ')'
   const sql = [update, whereClause].join(' ')
   return sqlService.modify(sql, R.concat(params, where.params))
 }
