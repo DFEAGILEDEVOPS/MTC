@@ -68,7 +68,7 @@ describe('RegisterInputService', () => {
       // registeredInputService line 55, where the `idx` is set to 100 if the
       // question data is missing.  It's missing here as the currentTarget on the event
       // is not set.
-      const record = args[1][100][0];
+      const record = args[1][0];
       expect(record['input']).toBe('left click');
     }));
 

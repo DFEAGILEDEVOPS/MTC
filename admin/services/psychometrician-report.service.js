@@ -174,7 +174,11 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       // question using factor1 and factor2.
       // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
       const markedAnswer = markedAnswers.find(a => a.factor1 === ans.factor1 && a.factor2 === ans.factor2)
-      const inputs = R.pathOr([], ['data', 'inputs', idx], check)
+      const inputs = R.filter(
+        i => i.sequenceNumber === (idx + 1) &&
+        i.question === `${ans.factor1}x${ans.factor2}`,
+        R.pathOr([], ['data', 'inputs'], check))
+
       const audits = R.pathOr([], ['data', 'audit'], check)
 
       psData[p(idx) + 'ID'] = ans.factor1 + ' x ' + ans.factor2
