@@ -48,7 +48,7 @@ const service = {
     }
     userRecord.mtcRole = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
     return userRecord
-  },
+  }
 }
 
 module.exports = service
