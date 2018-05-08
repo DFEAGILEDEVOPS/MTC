@@ -19,7 +19,7 @@ const onCSVReadComplete = async (csvDataArray, school) => {
   const csvHasErrors = csvData.some(p => p[6])
   if (csvHasErrors) {
     const csvBlob = await generateErrorCSVService.generate(school, headers, csvData)
-    if (csvBlob.hasError) return (csvBlob.error)
+    if (csvBlob.hasError) return csvBlob
     return ({
       csvErrorFile: csvBlob.file.name,
       hasValidationError: true

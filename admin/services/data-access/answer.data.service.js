@@ -71,7 +71,7 @@ const answerDataService = {
     const sql = [select, '(', whereParams.paramIdentifiers, ')'].join(' ')
     const results = await sqlService.query(sql, whereParams.params)
     const byCheckId = {}
-    results.forEach((answer, idx) => {
+    results.forEach((answer) => {
       if (!byCheckId[answer.check_id]) {
         byCheckId[answer.check_id] = []
       }
