@@ -2,9 +2,17 @@ const azure = require('azure-storage')
 const config = require('../../config')
 const blobService = config.AZURE_STORAGE_CONNECTION_STRING ? azure.createBlobService() : {
   createBlockBlobFromText: () => { return { name: 'test_error.csv' } },
-  getBlobToText: () => 'text' }
+  getBlobToText: () => 'text',
+  createContainerIfNotExists: () => {}
+}
 
 const azureUploadFile = async (container, remoteFilename, text, streamLength) => {
+  await new Promise((resolve, reject) => {
+    blobService.createContainerIfNotExists(container, null, (error) => {
+      if (error) reject(error)
+      resolve()
+    })
+  })
   const pr = await new Promise((resolve, reject) => {
     blobService.createBlockBlobFromText(container, remoteFilename, text, streamLength,
       (error, result) => {
@@ -28,10 +36,10 @@ const azureDownloadFile = async(container, blob) => {
   return file
 }
 
-config.AZURE_STORAGE_CONNECTION_STRING ? module.exports = {
+module.exports = config.AZURE_STORAGE_CONNECTION_STRING ? {
   azureUploadFile,
   azureDownloadFile
-} : module.exports = {
+} : {
   azureUploadFile: () => {
     return { name: 'test_error.csv' }
   },
