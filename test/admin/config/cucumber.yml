@@ -2,4 +2,4 @@
 parallel_chrome: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 parallel: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 default: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty
-download_csv: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
+download_csv: -t 'not @wip' -t 'not @manual' -t '@multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
