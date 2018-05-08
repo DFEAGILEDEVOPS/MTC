@@ -1,6 +1,7 @@
 'use strict'
 
 const TYPES = require('tedious').TYPES
+const R = require('ramda')
 const sqlService = require('./sql.service')
 const table = '[checkForm]'
 
@@ -217,6 +218,45 @@ const checkFormDataService = {
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
+  },
+
+  /**
+   * Fetch check form by id.
+   * @param id
+   * @returns {Promise.<void>}
+   */
+  sqlFindOneById: async (id) => {
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
+    const params = [
+      {
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      }
+    ]
+    const rows = await sqlService.query(sql, params)
+    return R.head(rows)
+  },
+
+  /**
+   * Fetch check form with parsed check form data by id.
+   * @param id
+   * @returns {Promise.<void>}
+   */
+  sqlFindOneParsedById: async (id) => {
+    const params = [
+      {
+        name: 'id',
+        value: id,
+        type: TYPES.Int
+      }
+    ]
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND id=@id`
+
+    const result = await sqlService.query(sql, params)
+
+    const first = R.head(result)
+    return R.assoc('formData', (JSON.parse(first.formData)), first)
   }
 }
 
