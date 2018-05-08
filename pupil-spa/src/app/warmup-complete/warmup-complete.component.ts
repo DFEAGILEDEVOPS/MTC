@@ -23,13 +23,17 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
+  public count: number;
+
   constructor(
     private auditService: AuditService,
     private submissionService: SubmissionService,
     private questionService: QuestionService,
     private speechService: SpeechService,
     private elRef: ElementRef
-  ) { }
+  ) {
+    this.count = this.questionService.getNumberOfQuestions();
+  }
 
   ngOnInit() {
   }
