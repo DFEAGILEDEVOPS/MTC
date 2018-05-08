@@ -204,139 +204,139 @@ module.exports = {
       [{
         input: '1',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:42.191Z',
+        clientTimestamp: '2018-02-11T15:42:42.191Z',
         question: 1
       }, {
         input: '0',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:42.300Z',
+        clientTimestamp: '2018-02-11T15:42:42.300Z',
         question: 1
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:42.514Z',
+        clientTimestamp: '2018-02-11T15:42:42.514Z',
         question: 1
       }],
       [{
         input: '2',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:45.546Z',
+        clientTimestamp: '2018-02-11T15:42:45.546Z',
         question: 2
       }, {
         input: '2',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:45.705Z',
+        clientTimestamp: '2018-02-11T15:42:45.705Z',
         question: 2
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:45.963Z',
+        clientTimestamp: '2018-02-11T15:42:45.963Z',
         question: 2
       }], null, [{
         input: '1',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:56.498Z',
+        clientTimestamp: '2018-02-11T15:42:56.498Z',
         question: 4
       }, {
         input: '6',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:56.611Z',
+        clientTimestamp: '2018-02-11T15:42:56.611Z',
         question: 4
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:42:57.082Z',
+        clientTimestamp: '2018-02-11T15:42:57.082Z',
         question: 4
       }],
       [{
         input: '2',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:00.753Z',
+        clientTimestamp: '2018-02-11T15:43:00.753Z',
         question: 5
       }, {
         input: '7',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:00.867Z',
+        clientTimestamp: '2018-02-11T15:43:00.867Z',
         question: 5
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:01.165Z',
+        clientTimestamp: '2018-02-11T15:43:01.165Z',
         question: 5
       }],
       [{
         input: '8',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:06.827Z',
+        clientTimestamp: '2018-02-11T15:43:06.827Z',
         question: 6
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:07.396Z',
+        clientTimestamp: '2018-02-11T15:43:07.396Z',
         question: 6
       }],
       [{
         input: '9',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:11.797Z',
+        clientTimestamp: '2018-02-11T15:43:11.797Z',
         question: 7
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:12.250Z',
+        clientTimestamp: '2018-02-11T15:43:12.250Z',
         question: 7
       }],
       [{
         input: '3',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:18.171Z',
+        clientTimestamp: '2018-02-11T15:43:18.171Z',
         question: 8
       }, {
         input: '6',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:18.634Z',
+        clientTimestamp: '2018-02-11T15:43:18.634Z',
         question: 8
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:19.203Z',
+        clientTimestamp: '2018-02-11T15:43:19.203Z',
         question: 8
       }],
       [{
         input: '3',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:22.729Z',
+        clientTimestamp: '2018-02-11T15:43:22.729Z',
         question: 9
       }, {
         input: '0',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:22.835Z',
+        clientTimestamp: '2018-02-11T15:43:22.835Z',
         question: 9
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:23.263Z',
+        clientTimestamp: '2018-02-11T15:43:23.263Z',
         question: 9
       }],
       [{
         input: '1',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:26.101Z',
+        clientTimestamp: '2018-02-11T15:43:26.101Z',
         question: 10
       }, {
         input: '4',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:26.458Z',
+        clientTimestamp: '2018-02-11T15:43:26.458Z',
         question: 10
       }, {
         input: '4',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:26.633Z',
+        clientTimestamp: '2018-02-11T15:43:26.633Z',
         question: 10
       }, {
         input: 'Enter',
         eventType: 'keydown',
-        clientInputDate: '2018-02-11T15:43:26.771Z',
+        clientTimestamp: '2018-02-11T15:43:26.771Z',
         question: 10
       }]
     ],
