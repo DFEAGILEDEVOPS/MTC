@@ -5,7 +5,7 @@ const moment = require('moment')
 const winston = require('winston')
 
 const answerDataService = require('../../services/data-access/answer.data.service')
-const checkFormDataService = require('../../services/data-access/check-form.data.service')
+const checkFormService = require('../../services/check-form.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
@@ -13,14 +13,17 @@ const schoolDataService = require('../../services/data-access/school.data.servic
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+const checkFormMock = require('../mocks/check-form')
 
 describe('psychometricians-report.service', () => {
   const service = require('../../services/psychometrician-report.service')
 
   describe('#batchProduceCacheData', () => {
+    const checkMock = Object.assign({}, checkFormMock)
+    checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
-        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} } },
+        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} }},
         {id: 10, pupil_id: 2, checkForm_id: 3},
         {id: 11, pupil_id: 3, checkForm_id: 4}
       ])
@@ -29,10 +32,10 @@ describe('psychometricians-report.service', () => {
         {id: 2, school_id: 6},
         {id: 3, school_id: 7}
       ])
-      spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([
-        {id: 2},
-        {id: 3},
-        {id: 4}
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
+        {id: 2, formData: checkMock.formData},
+        {id: 3, formData: checkMock.formData},
+        {id: 4, formData: checkMock.formData}
       ])
       spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
         {id: 5},
@@ -79,7 +82,7 @@ describe('psychometricians-report.service', () => {
       try {
         await service.batchProduceCacheData([1, 2, 3])
         expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
-        expect(checkFormDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
+        expect(checkFormService.getCheckFormsByIds).toHaveBeenCalledTimes(1)
         expect(schoolDataService.sqlFindByIds).toHaveBeenCalledTimes(1)
         expect(answerDataService.sqlFindByCheckIds).toHaveBeenCalledTimes(1)
       } catch (error) {
@@ -120,10 +123,6 @@ describe('psychometricians-report.service', () => {
         gender: 'M',
         status: 'Complete'
       }
-      const checkForm = {
-        id: 42,
-        name: 'MtcMock99'
-      }
       const school = {
         id: 99,
         name: 'Schooly McSchool',
@@ -144,6 +143,8 @@ describe('psychometricians-report.service', () => {
         {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
         {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
       ]
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
       const completedCheck = Object.assign({}, completedCheckMockOrig)
       completedCheck.checkCount = 1
       completedCheck.checkStatus = 'Complete'
@@ -152,8 +153,9 @@ describe('psychometricians-report.service', () => {
       expect(data.PupilId).toBeTruthy()
       expect(data.TestDate).toBe('20180211')
       expect(data.Q1Sco).toBe(1)
-      expect(data.Q3Sco).toBe(0)
-      expect(data.Q10Sco).toBe(1)
+      expect(data.Q2Sco).toBe(1)
+      expect(data.Q4Sco).toBe('')
+      expect(data.Q5Sco).toBe(1)
       expect(data.CheckCount).toBe(1)
       expect(data.CheckStatus).toBe('Complete')
     })
