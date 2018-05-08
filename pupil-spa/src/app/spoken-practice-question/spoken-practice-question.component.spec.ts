@@ -9,6 +9,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
+import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
@@ -32,12 +33,11 @@ describe('SpokenPracticeQuestionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SpokenPracticeQuestionComponent);
     component = fixture.componentInstance;
-
     speechService = fixture.debugElement.injector.get(SpeechService);
     auditService = fixture.debugElement.injector.get(AuditService);
     spyOn(speechService, 'speakQuestion');
     spyOn(auditService, 'addEntry');
-
+    component.soundComponent = new SoundComponentMock();
     fixture.detectChanges();
   });
 
@@ -60,9 +60,13 @@ describe('SpokenPracticeQuestionComponent', () => {
     });
 
     it('starts after the speech has ended', () => {
-      speechService.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
-      expect(component['timeout']).toBeDefined();
-      expect(component['countdownInterval']).toBeTruthy();
+      try {
+        speechService.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
+        expect(component['timeout']).toBeDefined();
+        expect(component['countdownInterval']).toBeTruthy();
+      } catch (error) {
+        fail(error);
+      }
     });
   });
 });
