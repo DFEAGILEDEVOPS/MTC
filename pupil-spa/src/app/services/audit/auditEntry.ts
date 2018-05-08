@@ -2,7 +2,7 @@ export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCo
   'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' | 'CheckSubmissionApiCalled' |
   'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' |
   'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' |
-  'QuestionReadingStarted' | 'QuestionReadingEnded';
+  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled';
 
 export abstract class AuditEntry {
 
@@ -129,5 +129,23 @@ export class QuestionReadingStarted extends AuditEntry {
 export class QuestionReadingEnded extends AuditEntry {
   constructor(data?: any) {
     super('QuestionReadingEnded', new Date(), data);
+  }
+}
+
+export class QuestionTimerStarted extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerStarted', new Date(), data);
+  }
+}
+
+export class QuestionTimerEnded extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerEnded', new Date(), data);
+  }
+}
+
+export class QuestionTimerCancelled extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerCancelled', new Date(), data);
   }
 }

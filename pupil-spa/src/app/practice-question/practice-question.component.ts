@@ -1,7 +1,13 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
-import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
+import {
+  QuestionRendered,
+  QuestionAnswered,
+  QuestionTimerStarted,
+  QuestionTimerEnded,
+  QuestionTimerCancelled
+} from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -120,6 +126,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Start the countdown timer on the page and set the time-out counter
    */
   startTimer() {
+    this.auditService.addEntry(new QuestionTimerStarted({
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
     // Set the amount of time the user can have on the question
@@ -194,6 +204,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     // Clear the interval timer
     if (this.countdownInterval) {
+      this.auditService.addEntry(new QuestionTimerCancelled({
+        sequenceNumber: this.sequenceNumber,
+        question: `${this.factor1}x${this.factor2}`
+      }));
       clearInterval(this.countdownInterval);
     }
 
@@ -222,6 +236,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       return false;
     }
     // console.log(`practice-question.component: sendTimeoutEvent(): ${this.answer}`);
+    this.auditService.addEntry(new QuestionTimerEnded({
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
     this.submitted = true;
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.waitForEndOfSpeech().then(() => {
