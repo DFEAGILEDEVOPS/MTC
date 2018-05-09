@@ -10,6 +10,7 @@ const jwtService = require('../services/jwt.service')
 const markingService = require('./marking.service')
 const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const checkFormDataService = require('../services/data-access/check-form.data.service')
 
 const checkCompleteService = {}
 
@@ -45,7 +46,8 @@ checkCompleteService.completeCheck = async function (completedCheck) {
   if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
     const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
-    await markingService.mark(check)
+    const checkForm = await checkFormDataService.sqlFindOneParsedById(check.checkForm_id)
+    await markingService.mark(check, checkForm)
   }
 }
 
