@@ -174,7 +174,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       const markedAnswer = markedAnswers.find(a => a.factor1 === question.f1 && a.factor2 === question.f2)
       const inputs = R.filter(
         i => i.sequenceNumber === (idx + 1) &&
-        i.question === `${question.f1}x${question.f1}`,
+        i.question === `${question.f1}x${question.f2}`,
         R.pathOr([], ['data', 'inputs'], check))
       const audits = R.pathOr([], ['data', 'audit'], check)
       const ans = check.data.answers[idx]
