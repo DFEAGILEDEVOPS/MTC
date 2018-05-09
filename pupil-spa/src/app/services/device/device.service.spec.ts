@@ -2,12 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { WindowRefService } from '../window-ref/window-ref.service';
-import { AppCountService } from '../app-count/app-count.service';
+import { AppUsageService } from '../app-usage/app-usage.service';
+
 
 import { DeviceService } from './device.service';
 
 describe('DeviceService', () => {
-  let service, storageService, appCountService;
+  let service, storageService, appUsageService;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
@@ -16,16 +17,16 @@ describe('DeviceService', () => {
         DeviceService,
         {provide: StorageService, useValue: storageService},
         WindowRefService,
-        AppCountService
+        AppUsageService
       ]
     });
-    appCountService = injector.get(AppCountService);
+    appUsageService = injector.get(AppUsageService);
     service = new DeviceService(
       storageService,
       injector.get(WindowRefService),
-      appCountService
+      appUsageService
     );
-    spyOn(appCountService, 'getCounterValue');
+    spyOn(appUsageService, 'getCounterValue');
   });
 
   it('should be created', () => {
@@ -35,7 +36,7 @@ describe('DeviceService', () => {
   it('captures device info to localStorage',  async () => {
     await service.capture();
     const deviceInfo = storageService.getItem('device');
-    expect(appCountService.getCounterValue).toHaveBeenCalledTimes(1);
+    expect(appUsageService.getCounterValue).toHaveBeenCalledTimes(1);
     expect(deviceInfo).toBeTruthy();
   });
 });
