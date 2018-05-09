@@ -11,14 +11,14 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { AppCountService } from '../services/app-count/app-count.service';
+import { AppUsageService } from '../services/app-usage/app-usage.service';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
   let fixture: ComponentFixture<LoginSuccessComponent>;
   let store: {};
   let mockRouter;
-  let appCountService;
+  let appUsageService;
 
   beforeEach(() => {
     mockRouter = {
@@ -35,11 +35,11 @@ describe('LoginSuccessComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         AuditService,
         WindowRefService,
-        AppCountService
+        AppUsageService
       ]
     });
     const storageService = injector.get(StorageService);
-    appCountService = injector.get(AppCountService);
+    appUsageService = injector.get(AppUsageService);
     injector.compileComponents();
 
     store = {};
@@ -53,7 +53,7 @@ describe('LoginSuccessComponent', () => {
     spyOn(storageService, 'clear').and.callFake(function () {
       store = {};
     });
-    spyOn(appCountService, 'increment');
+    spyOn(appUsageService, 'increment');
   });
 
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe('LoginSuccessComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
-    expect(appCountService.increment).toHaveBeenCalledTimes(1);
+    expect(appUsageService.increment).toHaveBeenCalledTimes(1);
   });
 
   it('asks the user to confirm their details', () => {

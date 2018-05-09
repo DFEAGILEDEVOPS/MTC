@@ -11,7 +11,6 @@ import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { AppCountService } from '../services/app-count/app-count.service';
 
 @Component({
   selector: 'app-check',
@@ -46,8 +45,7 @@ export class CheckComponent implements OnInit {
               private warmupQuestionService: WarmupQuestionService,
               private auditService: AuditService,
               private storageService: StorageService,
-              protected windowRefService: WindowRefService,
-              protected appCountService: AppCountService) {
+              protected windowRefService: WindowRefService) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -334,7 +332,6 @@ export class CheckComponent implements OnInit {
     const stateDesc = this.getStateDescription();
     console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
     this.auditService.addEntry(new RefreshDetected());
-    this.appCountService.reset();
 
     // Lets say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case

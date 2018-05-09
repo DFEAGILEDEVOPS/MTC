@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class AppCountService {
+export class AppUsageService {
 
   private appUsageCounter;
 
@@ -11,10 +11,6 @@ export class AppCountService {
 
   increment(): void {
     this.appUsageCounter += 1;
-  }
-
-  reset(): void {
-    this.appUsageCounter = 0;
   }
 
   getCounterValue(): number {

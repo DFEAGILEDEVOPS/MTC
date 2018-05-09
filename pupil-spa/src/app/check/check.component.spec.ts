@@ -16,7 +16,6 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { AppCountService } from '../services/app-count/app-count.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -49,8 +48,7 @@ describe('CheckComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        WindowRefService,
-        AppCountService
+        WindowRefService
       ]
     })
       .compileComponents();
@@ -260,7 +258,6 @@ describe('CheckComponent', () => {
     let auditEntryInserted: AuditEntry;
     let auditService: AuditService;
     let answerService: AnswerService;
-    let appCountService: AppCountService;
     let answerInserted: Answer;
 
     beforeEach(() => {
@@ -282,8 +279,6 @@ describe('CheckComponent', () => {
       spyOn(answerService, 'setAnswer').and.callFake((ans) => {
         answerInserted = ans;
       });
-      appCountService = fixture.debugElement.injector.get(AppCountService);
-      spyOn(appCountService, 'reset');
     });
 
     it('calls refreshDetected during init when the checkstate is found', () => {
@@ -296,7 +291,6 @@ describe('CheckComponent', () => {
       component.refreshDetected();
       // check the spy was called
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
-      expect(appCountService.reset).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof RefreshDetected).toBeTruthy();
     });
 
