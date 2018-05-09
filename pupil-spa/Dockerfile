@@ -8,7 +8,7 @@ COPY yarn.lock .
 COPY /tools /tools/
 
 ## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
-RUN yarn install --ignore-engines && mkdir /ng-app && cp -R ./node_modules ./ng-app
+RUN yarn install --frozen-lockfile --ignore-engines && mkdir /ng-app && cp -R ./node_modules ./ng-app
 
 WORKDIR /ng-app
 
@@ -36,8 +36,6 @@ RUN $(npm bin)/gulp setCheckSubmissionURL
 RUN $(npm bin)/gulp setGaCode
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN yarn remove @angular/cli
-RUN yarn add @angular/cli
 RUN $(npm bin)/ng build --prod
 
 ### STAGE 2: Setup ###

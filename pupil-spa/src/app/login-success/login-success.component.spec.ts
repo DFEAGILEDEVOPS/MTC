@@ -38,6 +38,8 @@ describe('LoginSuccessComponent', () => {
     const storageService = injector.get(StorageService);
     injector.compileComponents();
 
+    store = {};
+
     spyOn(storageService, 'getItem').and.callFake(function (key) {
       return JSON.stringify(responseMock);
     });
