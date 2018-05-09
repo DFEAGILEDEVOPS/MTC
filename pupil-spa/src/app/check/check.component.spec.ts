@@ -16,6 +16,7 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { AppCountService } from '../services/app-count/app-count.service';
 
 describe('CheckComponent', () => {
   let component: CheckComponent;
@@ -49,6 +50,7 @@ describe('CheckComponent', () => {
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         WindowRefService,
+        AppCountService
       ]
     })
       .compileComponents();
@@ -258,6 +260,7 @@ describe('CheckComponent', () => {
     let auditEntryInserted: AuditEntry;
     let auditService: AuditService;
     let answerService: AnswerService;
+    let appCountService: AppCountService;
     let answerInserted: Answer;
 
     beforeEach(() => {
@@ -279,6 +282,8 @@ describe('CheckComponent', () => {
       spyOn(answerService, 'setAnswer').and.callFake((ans) => {
         answerInserted = ans;
       });
+      appCountService = fixture.debugElement.injector.get(AppCountService);
+      spyOn(appCountService, 'reset');
     });
 
     it('calls refreshDetected during init when the checkstate is found', () => {
@@ -286,11 +291,12 @@ describe('CheckComponent', () => {
       expect(component.refreshDetected).toHaveBeenCalledTimes(1);
     });
 
-    it('logs an audit entry to say the page was refreshed', () => {
+    it('logs an audit entry to say the page was refreshed and resets app usage counter ', () => {
       // set up test spy on Audit Service
       component.refreshDetected();
       // check the spy was called
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
+      expect(appCountService.reset).toHaveBeenCalledTimes(1);
       expect(auditEntryInserted instanceof RefreshDetected).toBeTruthy();
     });
 

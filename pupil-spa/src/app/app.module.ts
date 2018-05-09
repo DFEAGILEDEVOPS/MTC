@@ -40,6 +40,7 @@ import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WindowRefService } from './services/window-ref/window-ref.service';
+import { AppCountService } from './services/app-count/app-count.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -121,7 +122,8 @@ const appRoutes: Routes = [
     UserService,
     WarmupQuestionService,
     WindowRefService,
-    CheckStatusService
+    CheckStatusService,
+    AppCountService
   ],
   bootstrap: [AppComponent]
 })

@@ -6,6 +6,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { DeviceService } from '../services/device/device.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { AppCountService } from '../services/app-count/app-count.service';
 
 @Component({
   selector: 'app-login-success',
@@ -22,6 +23,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
               private deviceService: DeviceService,
               private questionService: QuestionService,
               private speechService: SpeechService,
+              private appCountService: AppCountService,
               private elRef: ElementRef) {
     const pupilData = storageService.getItem('pupil');
     const schoolData = storageService.getItem('school');
@@ -31,6 +33,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pupil.dob = pupilData.dob;
     this.school = new School;
     this.school.name = schoolData.name;
+    this.appCountService.increment();
   }
 
   async ngOnInit() {
