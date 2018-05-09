@@ -31,6 +31,7 @@ function detectAnomalies (check, checkForm) {
   detectInputThatDoesNotCorrespondToAnswers(check)
   detectQuestionsThatWereShownForTooLong(check)
   detectInputsWithoutQuestionInformation(check)
+  detectApplicationErrors(check)
 
   // Navigator checks
   detectLowBattery(check)
@@ -187,7 +188,9 @@ function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
   const config = check.data.config
 
   // Calculate the max total time allowed for the check
-  const maxCheckSeconds = (numberOfQuestions * config.loadingTime) + (numberOfQuestions * config.questionTime)
+  const maxCheckSeconds = (numberOfQuestions * config.loadingTime) +
+    (numberOfQuestions * config.questionTime) +
+    (config.speechSynthesis ? numberOfQuestions * 2.5 : 0)
 
   // Calculate the time the check actually took
   const checkStart = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)
@@ -301,7 +304,9 @@ function detectQuestionsThatWereShownForTooLong (check) {
   }
   // Add relative timings to each of the elements
   addRelativeTimings(audits)
-  const expectedValue = config.questionTime * 1.05 // allow a 5% tolerance for computer processing
+  // Expected question time: allow a 5% tolerance for computer processing, and 2.5s for the speech to be read out (if configured)
+  // NB: ticket 20864 will replace the 2.5 seconds with something accurate
+  const expectedValue = (config.questionTime * 1.05) + (config.speechSynthesis ? 2.5 : 0)
 
   // To pick up the question number we have to look at the QuestionRendered event and no the following
   // pause event.
@@ -315,6 +320,14 @@ function detectQuestionsThatWereShownForTooLong (check) {
     if (audit.type === 'PauseRendered' && audit.relativeTiming > expectedValue) {
       report(check, 'Question may have been shown for too long', audit.relativeTiming, expectedValue, questionNumber)
     }
+  }
+}
+
+function detectApplicationErrors (check) {
+  const audits = check.data.audit
+  const appErrors = audits.filter(c => c.type === 'AppError')
+  if (appErrors.length) {
+    report(check, 'Check has Application Errors', appErrors.length, 0)
   }
 }
 
@@ -345,6 +358,7 @@ function report (check, message, testedValue = null, expectedValue = null, quest
   reportedAnomalies.push([
     check.checkCode,
     checkDate,
+    check.data.config.speechSynthesis,
     `${check.mark} out of ${check.maxMark}`,
     agent.device.toString().replace('0.0.0', ''),
     agent.toString(),
@@ -368,7 +382,7 @@ function writeCsv (data) {
 
 async function main () {
   const ws = fs.createWriteStream(outputFilename, { flags: 'w' })
-  ws.write('Check Code,Date,Mark,Device,Agent,Message,Tested value,Expected value,Question number\n')
+  ws.write('Check Code,Date,Speech Synthesis,Mark,Device,Agent,Message,Tested value,Expected value,Question number\n')
   ws.end()
   const checkInfo = await completedCheckDataService.sqlFindMeta()
   winston.info(checkInfo)
