@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import { AppCountService } from '../app-count/app-count.service';
 
 @Injectable()
 export class DeviceService {
@@ -8,7 +9,8 @@ export class DeviceService {
   private window;
 
   constructor(private storageService: StorageService,
-              private windowRefService: WindowRefService) {
+              private windowRefService: WindowRefService,
+              private appCountService: AppCountService) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -23,7 +25,8 @@ export class DeviceService {
         cpu: this.getCpuInformation(),
         navigator: this.getNavigatorProperties(),
         networkConnection: this.getNetworkInformation(),
-        screen: this.getScreenProperties()
+        screen: this.getScreenProperties(),
+        appUsageCounter: this.appCountService.getCounterValue()
       });
   }
 
