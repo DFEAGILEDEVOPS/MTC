@@ -286,7 +286,7 @@ describe('CheckComponent', () => {
       expect(component.refreshDetected).toHaveBeenCalledTimes(1);
     });
 
-    it('logs an audit entry to say the page was refreshed and resets app usage counter ', () => {
+    it('logs an audit entry to say the page was refreshed', () => {
       // set up test spy on Audit Service
       component.refreshDetected();
       // check the spy was called
