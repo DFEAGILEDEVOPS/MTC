@@ -2,7 +2,7 @@
 And(/^I Upload a CSV file with four columns to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", @upn]
 
   @upn2 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/22/2010", "M", @upn2]
@@ -14,7 +14,7 @@ end
 And(/^I Upload a CSV file with wrong gender format to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "FEMALE", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
@@ -26,7 +26,7 @@ end
 And(/^I Upload a CSV file with empty first name and last name to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["", "", @pupil_name, "03/12/2005", "FEMALE", @upn]
+  pupil_detail_array = ["", "", @pupil_name, "03/12/2010", "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
@@ -38,7 +38,7 @@ end
 And(/^I Upload a CSV file with special character in first name and last name to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "03/12/2005", "FEMALE", @upn]
+  pupil_detail_array = ["#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "03/12/2010", "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
@@ -100,7 +100,7 @@ And(/^I Upload a CSV file with duplicate UPN from attendance register to add Mul
   pupil_register_page.add_multiple_pupil.click
   @page = add_multiple_pupil_page
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2007", "F", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "F", @upn]
 
   @upn3 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn3]
@@ -112,7 +112,7 @@ end
 And(/^I Upload a CSV file with duplicate UPN within uploaded file to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", @upn]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
@@ -123,7 +123,7 @@ end
 And(/^I Upload a CSV file with empty UPN to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F", ""]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", ""]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
@@ -134,7 +134,7 @@ end
 And(/^I Upload a CSV file with wrong letter for at 1st Char for UPN to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F",  "X938021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F",  "X938021200020"]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
@@ -145,7 +145,7 @@ end
 And(/^I Upload a CSV file with wrong LA code for UPN to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F", "D136021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D136021200020"]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
@@ -156,7 +156,7 @@ end
 And(/^I Upload a CSV file with wrong 6th char for UPN to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F", "D93802X200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D93802X200020"]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
@@ -167,7 +167,7 @@ end
 And(/^I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2005", "F", "D93802120002I"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D93802120002I"]
 
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
 
