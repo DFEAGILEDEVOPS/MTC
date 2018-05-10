@@ -13,6 +13,7 @@ export class SpeechService implements OnDestroy {
   public static readonly questionSpeechStarted = 'questionstart';
   public static readonly questionSpeechEnded = 'questionend';
   private speaking = false;
+  private cancelTimeout;
   private speechStatusSource = new Subject<string>();
   protected synth;
 
@@ -55,25 +56,18 @@ export class SpeechService implements OnDestroy {
   }
 
   /**
-   * Chrome has problems with speaking immediately after .cancel()
-   * and an 'artificial delay' is needed
-   */
-  synthSpeak(sayThis: SpeechSynthesisUtterance) {
-    const _window = this.windowRefService.nativeWindow;
-    _window.setTimeout(() => {
-      this.synth.speak(sayThis);
-    }, 500);
-  }
-
-  /**
    * Add an utterance to the underlying webspeech api
+   *
    * @param utterance
+   * @param cancelBeforeSpeaking
    */
-  speak(utterance: string): void {
+  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
-    this.cancel();
+    if (cancelBeforeSpeaking) {
+      await this.cancel();
+    }
     const sayThis = new SpeechSynthesisUtterance(utterance);
     sayThis.onstart = (event) => {
       this.speaking = true;
@@ -86,18 +80,19 @@ export class SpeechService implements OnDestroy {
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synthSpeak(sayThis);
+
+    this.synth.speak(sayThis);
   }
 
   /**
    * Add an question utterance to the underlying webspeech api
    * @param utterance
    */
-  speakQuestion(utterance: string): void {
+  async speakQuestion(utterance: string): Promise<void> {
     if (!this.isSupported()) {
       return;
     }
-    this.cancel();
+    await this.cancel();
     const sayThis = new SpeechSynthesisUtterance(utterance);
     sayThis.onstart = (event) => {
       this.speaking = true;
@@ -110,7 +105,7 @@ export class SpeechService implements OnDestroy {
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
-    this.synthSpeak(sayThis);
+    this.synth.speak(sayThis);
   }
 
   /**
@@ -119,22 +114,7 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    */
   speakChar(utterance: string): void {
-    if (!this.isSupported()) {
-      return;
-    }
-    const sayThis = new SpeechSynthesisUtterance(utterance);
-    sayThis.onstart = (event) => {
-      this.speaking = true;
-      this.announceSpeechStarted();
-      this.audit.addEntry(new UtteranceStarted({ utterance }));
-    };
-    sayThis.onend = (event) => {
-      this.speaking = false;
-      this.audit.addEntry(new UtteranceEnded({ utterance }));
-      this.announceSpeechEnded();
-      this.announceSpeechReset();
-    };
-    this.synthSpeak(sayThis);
+    this.speak(utterance, false);
   }
 
   /**
@@ -142,14 +122,14 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   speakElement(nativeElement): void {
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
+
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
     let speechText = '';
 
     // get all elements containing text from the current component
-    const elements = clonedElement.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6, p, li, button, a, span'
-    );
+    const elements = clonedElement.querySelectorAll(elementsToSpeak);
 
     // add 'artificial' pauses to take visual newlines or spaces into account
     elements.forEach((elem) => {
@@ -162,27 +142,57 @@ export class SpeechService implements OnDestroy {
         return;
       }
 
-      if (elem.tagName === 'BUTTON' || elem.classList.contains('button')) {
-        speechText += ' , Button: ';
-      } else if (elem.tagName === 'A') {
-        speechText += ' , Link: ';
-      } else {
-        speechText += ' , ';
-      }
-
-      speechText += elem.textContent;
+      speechText += ' , ' + this.addTextBeforeSpeakingElement(elem) + elem.textContent;
     });
 
     this.speak(speechText.replace(/[\n\r]+/g, ' '));
   }
 
   /**
-   * Immediately stop speaking
+   * Speak a specific, focused element
    */
-  cancel(): void {
+  speakFocusedElement(nativeElement): void {
+    const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
+
+    this.speak(speechText);
+  }
+
+  /**
+   * Speak text before specific elements, return null
+   * if nothing to add.
+   * @param nativeElement
+   */
+  addTextBeforeSpeakingElement(nativeElement): string {
+    if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
+      return 'Button: ';
+    } else if (nativeElement.tagName === 'A') {
+      return 'Link: ';
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * Immediately stop speaking, then return a promise that
+   * waits a safe delay for browsers which do cancel asynchronously
+   * so they can start speaking immediately.
+   *
+   * Delete previous timeout to ensure previous speech doesn't
+   * happen if it's being cancelled here.
+   */
+  cancel(): any {
     // console.log('SpeechAPI cancel() called');
-    this.synth.cancel();
-    this.speaking = false;
+    const _window = this.windowRefService.nativeWindow;
+    _window.clearTimeout(this.cancelTimeout);
+
+    return new Promise((resolve, reject) => {
+      this.synth.cancel();
+      this.speaking = false;
+
+      this.cancelTimeout = _window.setTimeout(() => {
+        resolve();
+      }, 300);
+    });
   }
 
   /**
@@ -201,7 +211,7 @@ export class SpeechService implements OnDestroy {
   waitForEndOfSpeech(): Promise<any> {
     const _window = this.windowRefService.nativeWindow;
     return new Promise(resolve => {
-      if (!this.isSpeaking()) {
+      if (!this.isSpeaking() && !this.isPending()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
@@ -211,7 +221,7 @@ export class SpeechService implements OnDestroy {
         subscription = this.speechStatus.subscribe(speechStatus => {
           if (speechStatus === SpeechService.speechEnded) {
             _window.setTimeout(() => {
-              if (!this.isSpeaking()) {
+              if (!this.isSpeaking() && !this.isPending()) {
                 subscription.unsubscribe();
                 clearTimeout(timeout);
                 resolve();
