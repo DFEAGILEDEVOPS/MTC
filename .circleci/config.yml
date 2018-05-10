@@ -17,17 +17,13 @@ jobs:
       - restore_cache:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - restore_cache:
-          key: v1-node-pupil-auth-deps-{{ checksum "pupil-auth/yarn.lock" }}
-      - restore_cache:
-          key: v1-node-check-submission-deps-{{ checksum "check-submission/yarn.lock" }}
+          key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
       - run: cd admin; yarn install
       - run: cd pupil-spa; yarn install
-      - run: cd pupil-auth; yarn install
-      - run: cd check-submission; yarn install
+      - run: cd pupil-api; yarn install
       - run: cd admin; yarn test
       - run: cd pupil-spa; yarn run test-single
-      - run: cd pupil-auth; yarn run test
-      - run: cd check-submission; yarn run test
+      - run: cd pupil-api; yarn run test
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
@@ -37,13 +33,9 @@ jobs:
           paths:
             - ~/repo/pupil-spa/node_modules
       - save_cache:
-          key: v1-node-pupil-auth-deps-{{ checksum "pupil-auth/yarn.lock" }}
+          key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
           paths:
-            - ~/repo/pupil-auth/node_modules
-      - save_cache:
-          key: v1-node-check-submission-deps-{{ checksum "check-submission/yarn.lock" }}
-          paths:
-            - ~/repo/check-submission/node_modules
+            - ~/repo/pupil-api/node_modules
 
 workflows:
   version: 2
