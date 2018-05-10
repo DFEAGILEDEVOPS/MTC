@@ -19,6 +19,7 @@ const onCSVReadComplete = async (csvDataArray, school) => {
   const csvHasErrors = csvData.some(p => p[6])
   if (csvHasErrors) {
     const csvBlob = await generateErrorCSVService.generate(school, headers, csvData)
+    console.log('JMS DEBUG csvData', csvData)
     if (csvBlob.hasError) return csvBlob
     return ({
       csvErrorFile: csvBlob.file.name,
