@@ -3,32 +3,32 @@ module.exports = {
     null,
     [
       {
-        'clientInputDate': '2017-08-29T14:02:06.407Z',
+        'clientTimestamp': '2017-08-29T14:02:06.407Z',
         'eventType': 'mousedown',
         'input': 'left click'
       },
       {
-        'clientInputDate': '2017-08-29T14:02:06.504Z',
+        'clientTimestamp': '2017-08-29T14:02:06.504Z',
         'eventType': 'click',
         'input': '1'
       },
       {
-        'clientInputDate': '2017-08-29T14:02:07.177Z',
+        'clientTimestamp': '2017-08-29T14:02:07.177Z',
         'eventType': 'mousedown',
         'input': 'left click'
       },
       {
-        'clientInputDate': '2017-08-29T14:02:07.274Z',
+        'clientTimestamp': '2017-08-29T14:02:07.274Z',
         'eventType': 'click',
         'input': '0'
       },
       {
-        'clientInputDate': '2017-08-29T14:02:07.739Z',
+        'clientTimestamp': '2017-08-29T14:02:07.739Z',
         'eventType': 'mousedown',
         'input': 'left click'
       },
       {
-        'clientInputDate': '2017-08-29T14:02:07.827Z',
+        'clientTimestamp': '2017-08-29T14:02:07.827Z',
         'eventType': 'click',
         'input': 'enter'
       }
