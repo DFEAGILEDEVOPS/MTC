@@ -88,7 +88,7 @@ module.exports.validate = async (pupilData) => {
     }
   }
   // Gender Validation
-  if (!(/^(M|F)$/).test(pupilData['gender'])) {
+  if (!(/^(m|f)$/i).test(pupilData['gender'])) {
     validationError.addError('gender', addPupilErrorMessages.genderRequired)
   }
   // UPN Validation
