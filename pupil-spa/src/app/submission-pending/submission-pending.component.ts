@@ -13,6 +13,7 @@ import { QuestionService } from '../services/question/question.service';
   styleUrls: ['./submission-pending.component.scss']
 })
 export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDestroy {
+  private speechListenerEvent: any;
 
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
@@ -62,6 +63,10 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -73,6 +78,8 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }

@@ -21,6 +21,8 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected window: any;
 
+  private speechListenerEvent: any;
+
   constructor(private auditService: AuditService,
               protected windowRefService: WindowRefService,
               private questionService: QuestionService,
@@ -41,6 +43,10 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -52,6 +58,8 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }
