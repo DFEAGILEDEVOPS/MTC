@@ -12,9 +12,9 @@ CUCUMBER_EXIT_CODE=$?
 
 kill -9 $PID
 
-echo "************"
-echo " SERVER LOG "
-echo "*************"
-cd ../../admin && cat server.log
+#echo "************"
+#echo " SERVER LOG "
+#echo "*************"
+#cd ../../admin && cat server.log
 
 exit $CUCUMBER_EXIT_CODE
