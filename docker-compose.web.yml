@@ -1,3 +1,4 @@
+# This does NOT work in combination with the *-test.yml files.  Use it only with the base compose file.
 version: '3'
 services:
   admin-app:
