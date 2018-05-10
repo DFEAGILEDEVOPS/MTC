@@ -31,226 +31,226 @@ module.exports = {
       null,
       [
         {
-          'clientInputDate': '2017-09-29T11:25:31.990Z',
+          'clientTimestamp': '2017-09-29T11:25:31.990Z',
           'eventType': 'mousedown',
           'input': 'left click'
         },
         {
-          'clientInputDate': '2017-09-29T11:25:32.076Z',
+          'clientTimestamp': '2017-09-29T11:25:32.076Z',
           'eventType': 'click',
           'input': '7'
         },
         {
-          'clientInputDate': '2017-09-29T11:25:32.473Z',
+          'clientTimestamp': '2017-09-29T11:25:32.473Z',
           'eventType': 'mousedown',
           'input': 'left click'
         },
         {
-          'clientInputDate': '2017-09-29T11:25:32.542Z',
+          'clientTimestamp': '2017-09-29T11:25:32.542Z',
           'eventType': 'click',
           'input': 'enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:49.706Z',
+          'clientTimestamp': '2017-09-29T11:28:49.706Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:49.863Z',
+          'clientTimestamp': '2017-09-29T11:28:49.863Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:33.859Z',
+          'clientTimestamp': '2017-09-29T11:31:33.859Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:33.934Z',
+          'clientTimestamp': '2017-09-29T11:31:33.934Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:49.296Z',
+          'clientTimestamp': '2017-09-29T11:32:49.296Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:49.410Z',
-          'eventType': 'keydown',
-          'input': 'Enter'
-        }
-      ],
-      [
-        {
-          'clientInputDate': '2017-09-29T11:25:34.885Z',
-          'eventType': 'keydown',
-          'input': '1'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:25:35.015Z',
-          'eventType': 'keydown',
-          'input': 'Enter'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:28:52.106Z',
-          'eventType': 'keydown',
-          'input': '1'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:28:52.258Z',
-          'eventType': 'keydown',
-          'input': 'Enter'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:31:36.217Z',
-          'eventType': 'keydown',
-          'input': '1'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:31:36.324Z',
-          'eventType': 'keydown',
-          'input': 'Enter'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:32:51.741Z',
-          'eventType': 'keydown',
-          'input': '1'
-        },
-        {
-          'clientInputDate': '2017-09-29T11:32:51.874Z',
+          'clientTimestamp': '2017-09-29T11:32:49.410Z',
           'eventType': 'keydown',
           'input': 'Enter'
         }
       ],
       [
         {
-          'clientInputDate': '2017-09-29T11:25:37.304Z',
+          'clientTimestamp': '2017-09-29T11:25:34.885Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:25:37.422Z',
+          'clientTimestamp': '2017-09-29T11:25:35.015Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:36.886Z',
+          'clientTimestamp': '2017-09-29T11:28:52.106Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:37.030Z',
+          'clientTimestamp': '2017-09-29T11:28:52.258Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:39.304Z',
+          'clientTimestamp': '2017-09-29T11:31:36.217Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:39.386Z',
+          'clientTimestamp': '2017-09-29T11:31:36.324Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:41.664Z',
+          'clientTimestamp': '2017-09-29T11:32:51.741Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:41.799Z',
+          'clientTimestamp': '2017-09-29T11:32:51.874Z',
+          'eventType': 'keydown',
+          'input': 'Enter'
+        }
+      ],
+      [
+        {
+          'clientTimestamp': '2017-09-29T11:25:37.304Z',
+          'eventType': 'keydown',
+          'input': '1'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:25:37.422Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:54.566Z',
+          'clientTimestamp': '2017-09-29T11:28:36.886Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:28:54.681Z',
+          'clientTimestamp': '2017-09-29T11:28:37.030Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:24.784Z',
+          'clientTimestamp': '2017-09-29T11:28:39.304Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:25.149Z',
+          'clientTimestamp': '2017-09-29T11:28:39.386Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:27.453Z',
+          'clientTimestamp': '2017-09-29T11:28:41.664Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:27.558Z',
+          'clientTimestamp': '2017-09-29T11:28:41.799Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:29.830Z',
+          'clientTimestamp': '2017-09-29T11:28:54.566Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:29.966Z',
+          'clientTimestamp': '2017-09-29T11:28:54.681Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:38.674Z',
+          'clientTimestamp': '2017-09-29T11:31:24.784Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:31:38.795Z',
+          'clientTimestamp': '2017-09-29T11:31:25.149Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:40.619Z',
+          'clientTimestamp': '2017-09-29T11:31:27.453Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:40.711Z',
+          'clientTimestamp': '2017-09-29T11:31:27.558Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:42.994Z',
+          'clientTimestamp': '2017-09-29T11:31:29.830Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:43.099Z',
+          'clientTimestamp': '2017-09-29T11:31:29.966Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:45.399Z',
+          'clientTimestamp': '2017-09-29T11:31:38.674Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:45.517Z',
+          'clientTimestamp': '2017-09-29T11:31:38.795Z',
           'eventType': 'keydown',
           'input': 'Enter'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:54.133Z',
+          'clientTimestamp': '2017-09-29T11:32:40.619Z',
           'eventType': 'keydown',
           'input': '1'
         },
         {
-          'clientInputDate': '2017-09-29T11:32:54.225Z',
+          'clientTimestamp': '2017-09-29T11:32:40.711Z',
+          'eventType': 'keydown',
+          'input': 'Enter'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:42.994Z',
+          'eventType': 'keydown',
+          'input': '1'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:43.099Z',
+          'eventType': 'keydown',
+          'input': 'Enter'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:45.399Z',
+          'eventType': 'keydown',
+          'input': '1'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:45.517Z',
+          'eventType': 'keydown',
+          'input': 'Enter'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:54.133Z',
+          'eventType': 'keydown',
+          'input': '1'
+        },
+        {
+          'clientTimestamp': '2017-09-29T11:32:54.225Z',
           'eventType': 'keydown',
           'input': 'Enter'
         }

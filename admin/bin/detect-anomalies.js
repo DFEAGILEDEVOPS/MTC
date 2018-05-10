@@ -102,13 +102,13 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
 
     // Check the inputs to make sure they all the right question property
     inputs.forEach(input => {
-      const inputTimeStamp = moment(input.clientInputDate)
+      const inputTimeStamp = moment(input.clientTimestamp)
       if (inputTimeStamp.isBefore(questionShownAt)) {
-        report(check, 'Input received before Question shown', input.clientInputDate, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
+        report(check, 'Input received before Question shown', input.clientTimestamp, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
       }
       // We shouldn't have any input after the QuestionRendered ts + the question time-limit
       if (inputTimeStamp.isAfter(questionCutoffAt)) {
-        report(check, 'Input received after cut-off', input.clientInputDate, dateService.formatIso8601(questionCutoffAt), `Q${question.order}`)
+        report(check, 'Input received after cut-off', input.clientTimestamp, dateService.formatIso8601(questionCutoffAt), `Q${question.order}`)
       }
     })
   })

@@ -95,13 +95,13 @@ describe('psychometrician-util.service', () => {
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:53:45.981Z',
+          clientTimestamp: '2018-03-07T10:53:45.981Z',
           question: 1
         },
         {
           input: '8',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:53:46.068Z',
+          clientTimestamp: '2018-03-07T10:53:46.068Z',
           question: 1
         }
       ]
@@ -110,13 +110,13 @@ describe('psychometrician-util.service', () => {
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-02-26T09:40:04.264Z',
+          clientTimestamp: '2018-02-26T09:40:04.264Z',
           question: 1
         },
         {
           input: '8',
           eventType: 'click',
-          clientInputDate: '2018-02-26T09:40:04.399Z',
+          clientTimestamp: '2018-02-26T09:40:04.399Z',
           question: 1
         }
       ]
@@ -125,7 +125,7 @@ describe('psychometrician-util.service', () => {
         {
           input: '1',
           eventType: 'keydown',
-          clientInputDate: '2018-02-26T09:41:03.686Z',
+          clientTimestamp: '2018-02-26T09:41:03.686Z',
           question: 11
         }
       ]
@@ -137,7 +137,7 @@ describe('psychometrician-util.service', () => {
         })
         it('uses the timestamp of the touchstart event', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output[ 0 ].clientInputDate).toBe('2018-03-07T10:53:45.981Z')
+          expect(output[ 0 ].clientTimestamp).toBe('2018-03-07T10:53:45.981Z')
         })
         it('sets the event type to "touch"', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
@@ -160,7 +160,7 @@ describe('psychometrician-util.service', () => {
         })
         it('uses the timestamp of the mousedown event', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
-          expect(output[ 0 ].clientInputDate).toBe('2018-02-26T09:40:04.264Z')
+          expect(output[ 0 ].clientTimestamp).toBe('2018-02-26T09:40:04.264Z')
         })
         it('sets the event type to "click"', () => {
           const output = service.cleanUpInputEvents(simpleMouse)
@@ -195,7 +195,7 @@ describe('psychometrician-util.service', () => {
         })
         it('has the date and time correct', () => {
           const output = service.cleanUpInputEvents(simpleKey)
-          expect(output[ 0 ].clientInputDate).toBe('2018-02-26T09:41:03.686Z')
+          expect(output[ 0 ].clientTimestamp).toBe('2018-02-26T09:41:03.686Z')
         })
       })
     })
@@ -205,37 +205,37 @@ describe('psychometrician-util.service', () => {
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:53:51.697Z',
+          clientTimestamp: '2018-03-07T10:53:51.697Z',
           question: 2
         },
         {
           input: '1',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:53:51.767Z',
+          clientTimestamp: '2018-03-07T10:53:51.767Z',
           question: 2
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:53:52.138Z',
+          clientTimestamp: '2018-03-07T10:53:52.138Z',
           question: 2
         },
         {
           input: '5',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:53:52.216Z',
+          clientTimestamp: '2018-03-07T10:53:52.216Z',
           question: 2
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:53:52.486Z',
+          clientTimestamp: '2018-03-07T10:53:52.486Z',
           question: 2
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:53:52.583Z',
+          clientTimestamp: '2018-03-07T10:53:52.583Z',
           question: 2
         }
       ]
@@ -243,37 +243,37 @@ describe('psychometrician-util.service', () => {
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-03-05T14:05:30.563Z',
+          clientTimestamp: '2018-03-05T14:05:30.563Z',
           question: 2
         },
         {
           input: '1',
           eventType: 'click',
-          clientInputDate: '2018-03-05T14:05:30.787Z',
+          clientTimestamp: '2018-03-05T14:05:30.787Z',
           question: 2
         },
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-03-05T14:05:31.565Z',
+          clientTimestamp: '2018-03-05T14:05:31.565Z',
           question: 2
         },
         {
           input: '5',
           eventType: 'click',
-          clientInputDate: '2018-03-05T14:05:31.733Z',
+          clientTimestamp: '2018-03-05T14:05:31.733Z',
           question: 2
         },
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-03-05T14:05:32.377Z',
+          clientTimestamp: '2018-03-05T14:05:32.377Z',
           question: 2
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-03-05T14:05:32.519Z',
+          clientTimestamp: '2018-03-05T14:05:32.519Z',
           question: 2
         }
       ]
@@ -317,91 +317,91 @@ describe('psychometrician-util.service', () => {
         {
           input: '',
           eventType: 'touchstart',
-          'clientInputDate': '2018-03-01T09:45:42.715Z',
+          'clientTimestamp': '2018-03-01T09:45:42.715Z',
           'question': 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:42.716Z',
+          clientTimestamp: '2018-03-01T09:45:42.716Z',
           question: 12
         },
         {
           input: '2',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:42.722Z',
+          clientTimestamp: '2018-03-01T09:45:42.722Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:42.831Z',
+          clientTimestamp: '2018-03-01T09:45:42.831Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:42.845Z',
+          clientTimestamp: '2018-03-01T09:45:42.845Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:42.884Z',
+          clientTimestamp: '2018-03-01T09:45:42.884Z',
           question: 12
         },
         {
           input: '6',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:42.915Z',
+          clientTimestamp: '2018-03-01T09:45:42.915Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:43.014Z',
+          clientTimestamp: '2018-03-01T09:45:43.014Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:43.056Z',
+          clientTimestamp: '2018-03-01T09:45:43.056Z',
           question: 12
         },
         {
           input: '3',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:43.084Z',
+          clientTimestamp: '2018-03-01T09:45:43.084Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:43.147Z',
+          clientTimestamp: '2018-03-01T09:45:43.147Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:43.263Z',
+          clientTimestamp: '2018-03-01T09:45:43.263Z',
           question: 12
         },
         {
           input: '2',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:43.277Z',
+          clientTimestamp: '2018-03-01T09:45:43.277Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:43.691Z',
+          clientTimestamp: '2018-03-01T09:45:43.691Z',
           question: 12
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:43.747Z',
+          clientTimestamp: '2018-03-01T09:45:43.747Z',
           question: 12
         }
       ]
@@ -410,19 +410,19 @@ describe('psychometrician-util.service', () => {
         {
           input: '1',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:42.702Z',
+          clientTimestamp: '2018-03-01T09:45:42.702Z',
           question: 12
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-01T09:45:42.716Z',
+          clientTimestamp: '2018-03-01T09:45:42.716Z',
           question: 12
         },
         {
           input: '2',
           eventType: 'click',
-          clientInputDate: '2018-03-01T09:45:42.722Z',
+          clientTimestamp: '2018-03-01T09:45:42.722Z',
           question: 12
         }
       ]
@@ -431,25 +431,25 @@ describe('psychometrician-util.service', () => {
         const output = service.cleanUpInputEvents(touchInput1)
         expect(output.length).toBe(5)
         expect(output[0].input).toBe('2')
-        expect(output[0].clientInputDate).toBe('2018-03-01T09:45:42.716Z')
+        expect(output[0].clientTimestamp).toBe('2018-03-01T09:45:42.716Z')
         expect(output[1].input).toBe('6')
-        expect(output[1].clientInputDate).toBe('2018-03-01T09:45:42.884Z')
+        expect(output[1].clientTimestamp).toBe('2018-03-01T09:45:42.884Z')
         expect(output[2].input).toBe('3')
-        expect(output[2].clientInputDate).toBe('2018-03-01T09:45:43.056Z')
+        expect(output[2].clientTimestamp).toBe('2018-03-01T09:45:43.056Z')
         expect(output[3].input).toBe('2')
-        expect(output[3].clientInputDate).toBe('2018-03-01T09:45:43.263Z')
+        expect(output[3].clientTimestamp).toBe('2018-03-01T09:45:43.263Z')
         expect(output[4].input).toBe('enter')
-        expect(output[4].clientInputDate).toBe('2018-03-01T09:45:43.691Z')
+        expect(output[4].clientTimestamp).toBe('2018-03-01T09:45:43.691Z')
       })
 
       it('handles missing touch headers gracefully', () => {
         const output = service.cleanUpInputEvents(missingTouchHeader)
         expect(output.length).toBe(2)
         expect(output[0].input).toBe('1')
-        expect(output[0].clientInputDate).toBe('2018-03-01T09:45:42.702Z')
+        expect(output[0].clientTimestamp).toBe('2018-03-01T09:45:42.702Z')
         expect(output[0].eventType).toBe('touch')
         expect(output[1].input).toBe('2')
-        expect(output[1].clientInputDate).toBe('2018-03-01T09:45:42.716Z')
+        expect(output[1].clientTimestamp).toBe('2018-03-01T09:45:42.716Z')
         expect(output[1].eventType).toBe('touch')
       })
     })
@@ -459,19 +459,19 @@ describe('psychometrician-util.service', () => {
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-02-26T13:53:19.711Z',
+          clientTimestamp: '2018-02-26T13:53:19.711Z',
           question: 2
         },
         {
           input: '1',
           eventType: 'click',
-          clientInputDate: '2018-02-26T13:53:22.739Z',
+          clientTimestamp: '2018-02-26T13:53:22.739Z',
           question: 2
         },
         {
           input: '5',
           eventType: 'keydown',
-          clientInputDate: '2018-02-26T13:53:23.404Z',
+          clientTimestamp: '2018-02-26T13:53:23.404Z',
           question: 2
         }
       ]
@@ -479,25 +479,25 @@ describe('psychometrician-util.service', () => {
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-03-07T10:52:41.981Z',
+          clientTimestamp: '2018-03-07T10:52:41.981Z',
           question: 1
         },
         {
           input: '8',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:52:41.983Z',
+          clientTimestamp: '2018-03-07T10:52:41.983Z',
           question: 1
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:52:45.981Z',
+          clientTimestamp: '2018-03-07T10:52:45.981Z',
           question: 1
         },
         {
           input: '9',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:52:46.068Z',
+          clientTimestamp: '2018-03-07T10:52:46.068Z',
           question: 1
         }
       ]
@@ -506,37 +506,37 @@ describe('psychometrician-util.service', () => {
         {
           input: '5',
           eventType: 'keydown',
-          clientInputDate: '2018-03-07T10:52:40.981Z',
+          clientTimestamp: '2018-03-07T10:52:40.981Z',
           question: 2
         },
         {
           input: 'left click',
           eventType: 'mousedown',
-          clientInputDate: '2018-03-07T10:52:41.981Z',
+          clientTimestamp: '2018-03-07T10:52:41.981Z',
           question: 1
         },
         {
           input: '8',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:52:41.983Z',
+          clientTimestamp: '2018-03-07T10:52:41.983Z',
           question: 1
         },
         {
           input: '',
           eventType: 'touchstart',
-          clientInputDate: '2018-03-07T10:52:45.981Z',
+          clientTimestamp: '2018-03-07T10:52:45.981Z',
           question: 1
         },
         {
           input: '9',
           eventType: 'click',
-          clientInputDate: '2018-03-07T10:52:46.068Z',
+          clientTimestamp: '2018-03-07T10:52:46.068Z',
           question: 1
         },
         {
           input: '5',
           eventType: 'keydown',
-          clientInputDate: '2018-03-07T10:52:47.951Z',
+          clientTimestamp: '2018-03-07T10:52:47.951Z',
           question: 2
         }
       ]
@@ -546,10 +546,10 @@ describe('psychometrician-util.service', () => {
         expect(output.length).toBe(2)
         expect(output[0].input).toBe('1')
         expect(output[0].eventType).toBe('click')
-        expect(output[0].clientInputDate).toBe('2018-02-26T13:53:19.711Z')
+        expect(output[0].clientTimestamp).toBe('2018-02-26T13:53:19.711Z')
         expect(output[1].input).toBe('5')
         expect(output[1].eventType).toBe('keydown')
-        expect(output[1].clientInputDate).toBe('2018-02-26T13:53:23.404Z')
+        expect(output[1].clientTimestamp).toBe('2018-02-26T13:53:23.404Z')
       })
 
       it('handles mixed touch and mouse input', () => {
@@ -557,10 +557,10 @@ describe('psychometrician-util.service', () => {
         expect(output.length).toBe(2)
         expect(output[0].input).toBe('8')
         expect(output[0].eventType).toBe('click')
-        expect(output[0].clientInputDate).toBe('2018-03-07T10:52:41.981Z')
+        expect(output[0].clientTimestamp).toBe('2018-03-07T10:52:41.981Z')
         expect(output[1].input).toBe('9')
         expect(output[1].eventType).toBe('touch')
-        expect(output[1].clientInputDate).toBe('2018-03-07T10:52:45.981Z')
+        expect(output[1].clientTimestamp).toBe('2018-03-07T10:52:45.981Z')
       })
 
       it('handles mixed touch and mouse and key input', () => {
@@ -568,16 +568,16 @@ describe('psychometrician-util.service', () => {
         expect(output.length).toBe(4)
         expect(output[0].input).toBe('5')
         expect(output[0].eventType).toBe('keydown')
-        expect(output[0].clientInputDate).toBe('2018-03-07T10:52:40.981Z')
+        expect(output[0].clientTimestamp).toBe('2018-03-07T10:52:40.981Z')
         expect(output[1].input).toBe('8')
         expect(output[1].eventType).toBe('click')
-        expect(output[1].clientInputDate).toBe('2018-03-07T10:52:41.981Z')
+        expect(output[1].clientTimestamp).toBe('2018-03-07T10:52:41.981Z')
         expect(output[2].input).toBe('9')
         expect(output[2].eventType).toBe('touch')
-        expect(output[2].clientInputDate).toBe('2018-03-07T10:52:45.981Z')
+        expect(output[2].clientTimestamp).toBe('2018-03-07T10:52:45.981Z')
         expect(output[3].input).toBe('5')
         expect(output[3].eventType).toBe('keydown')
-        expect(output[3].clientInputDate).toBe('2018-03-07T10:52:47.951Z')
+        expect(output[3].clientTimestamp).toBe('2018-03-07T10:52:47.951Z')
       })
     })
   })
@@ -634,7 +634,7 @@ describe('psychometrician-util.service', () => {
     it('it ignores the last input if the last input is the user pressing enter on the virtual keypad', () => {
       const input = [...mouseInput]
       input.push({
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': 'Enter'
       })
@@ -647,31 +647,31 @@ describe('psychometrician-util.service', () => {
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.564Z',
+          clientTimestamp: '2018-02-28T11:44:08.564Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.565Z',
+          clientTimestamp: '2018-02-28T11:44:08.565Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.566Z',
+          clientTimestamp: '2018-02-28T11:44:08.566Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.567Z',
+          clientTimestamp: '2018-02-28T11:44:08.567Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.564Z',
+          clientTimestamp: '2018-02-28T11:44:08.564Z',
           question: 16
         }
       ]
@@ -717,31 +717,31 @@ describe('psychometrician-util.service', () => {
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.564Z',
+          clientTimestamp: '2018-02-28T11:44:08.564Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.565Z',
+          clientTimestamp: '2018-02-28T11:44:08.565Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.566Z',
+          clientTimestamp: '2018-02-28T11:44:08.566Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.567Z',
+          clientTimestamp: '2018-02-28T11:44:08.567Z',
           question: 16
         },
         {
           input: 'enter',
           eventType: 'click',
-          clientInputDate: '2018-02-28T11:44:08.564Z',
+          clientTimestamp: '2018-02-28T11:44:08.564Z',
           question: 16
         }
       ]
@@ -792,7 +792,7 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last mouse-click entry', () => {
       const input = [...mouseInput]
       input.push({
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': 'Enter'
       })
@@ -803,7 +803,7 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry', () => {
       const input = [...touchInput]
       input.push({
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': 'Enter'
       })
@@ -814,12 +814,12 @@ describe('psychometrician-util.service', () => {
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last touch-click entry, but with trailing input', () => {
       const input = [...touchInput]
       input.push({
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': 'Enter'
       })
       input.push({
-        'clientInputDate': '2017-10-17T18:20:45.001Z',
+        'clientTimestamp': '2017-10-17T18:20:45.001Z',
         'eventType': 'touchstart',
         'input': ''
       })
@@ -837,7 +837,7 @@ describe('psychometrician-util.service', () => {
     it('returns an empty string if there was not a timeout', () => {
       const input = [...touchInput]
       input.push({
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': 'Enter'
       })
@@ -852,7 +852,7 @@ describe('psychometrician-util.service', () => {
 
     it('returns 1 (timeout with a response) when there is a timeout with an answer', () => {
       const res = service.getTimeoutWithNoResponseFlag([{
-        'clientInputDate': '2017-10-17T18:20:44.999Z',
+        'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': '1'
       }], {answer: '1'})

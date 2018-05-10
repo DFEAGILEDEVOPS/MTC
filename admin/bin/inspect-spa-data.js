@@ -35,11 +35,11 @@ function addRelativeTimingsToInputs (inputs) {
     }
 
     for (let input of inputsByQuestion) {
-      if (!input.clientInputDate) {
+      if (!input.clientTimestamp) {
         continue
       }
 
-      current = moment(input.clientInputDate)
+      current = moment(input.clientTimestamp)
       if (lastTime) {
         const secondsDiff = (
           current.valueOf() - lastTime.valueOf()
@@ -96,7 +96,7 @@ function addRelativeTimingsToAudits (audits) {
 
 function addRelativeTimings (check) {
   // Add relative timings to all objects with clientTimestamps
-  // inputs have clientInputDate
+  // inputs have clientTimestamp
   // audits have clientTimestamp
   addRelativeTimingsToInputs(check.data.inputs)
   addRelativeTimingsToAudits(check.data.audit)
