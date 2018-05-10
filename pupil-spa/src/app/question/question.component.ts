@@ -3,7 +3,7 @@ import { PracticeQuestionComponent } from '../practice-question/practice-questio
 import { AuditService } from '../services/audit/audit.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { QuestionRendered } from '../services/audit/auditEntry';
+import { QuestionRendered, QuestionAnswered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
@@ -135,5 +135,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   onClickSubmit() {
     this.registerInputService.storeEntry('Enter', 'click', this.sequenceNumber, `${this.factor1}x${this.factor2}`);
     this.onSubmit();
+  }
+
+  addQuestionAnsweredEvent() {
+    this.auditService.addEntry(new QuestionAnswered({
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
   }
 }
