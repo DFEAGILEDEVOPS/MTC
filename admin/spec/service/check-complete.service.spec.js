@@ -7,7 +7,10 @@ const pupilDataService = require('../../services/data-access/pupil.data.service'
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const markingService = require('../../services/marking.service')
 const checkDataService = require('../../services/data-access/check.data.service')
+const checkFormDataService = require('../../services/data-access/check-form.data.service')
 const checkMock = require('../mocks/check')
+const checkFormMock = require('../mocks/check-form')
+const completedCheckMock = require('../mocks/completed-check')
 
 describe('check-complete.service', () => {
   describe('happy path', () => {
@@ -34,13 +37,16 @@ describe('check-complete.service', () => {
     }
     beforeEach(() => {
       service = require('../../services/check-complete.service')
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
       spyOn(pupilDataService, 'sqlUpdate').and.returnValue(Promise.resolve())
       spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(pupilMock))
       completedCheckDataServiceSpy = spyOn(completedCheckDataService, 'sqlAddResult').and.returnValue(Promise.resolve())
       spyOn(markingService, 'mark').and.returnValue(Promise.resolve())
       spyOn(jwtService, 'decode').and.returnValue({ sub: 1 })
-      spyOn(completedCheckDataService, 'sqlFindOneByCheckCode')
+      spyOn(completedCheckDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(completedCheckMock))
       spyOn(checkDataService, 'sqlFindOneByCheckCode').and.returnValue(Promise.resolve(checkMock))
+      spyOn(checkFormDataService, 'sqlFindOneParsedById').and.returnValue(Promise.resolve(checkForm))
     })
 
     it('clears pin and sets expiry when not test account', async (done) => {

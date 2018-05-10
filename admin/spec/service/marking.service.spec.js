@@ -5,7 +5,9 @@ const winston = require('winston')
 const checkDataService = require('../../services/data-access/check.data.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
 const answerDataService = require('../../services/data-access/answer.data.service')
+const checkFormService = require('../../services/check-form.service')
 const completedCheckMock = require('../mocks/completed-check-with-results')
+const checkFormMock = require('../mocks/check-form')
 
 describe('markingService', () => {
   let service = require('../../services/marking.service')
@@ -38,22 +40,44 @@ describe('markingService', () => {
       }
     })
 
+    it('throws an error if check form is not defined', async () => {
+      try {
+        await service.mark(completedCheckMock, {})
+        fail('expected to be thrown')
+      } catch (err) {
+        expect(err.message).toBe('missing or invalid argument')
+      }
+    })
+
+    it('throws an error if check form does not have formData', async () => {
+      try {
+        await service.mark(completedCheckMock, { checkForm: {} })
+        fail('expected to be thrown')
+      } catch (err) {
+        expect(err.message).toBe('missing or invalid argument')
+      }
+    })
+
     it('marks the answers and sets datetime of marking', async () => {
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults').and.callFake((checkCode, marks, maxMarks, processedAt) => {
-        expect(marks).toBe(9)
+        expect(marks).toBe(7)
         expect(maxMarks).toBe(10)
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
       })
-      await service.mark(completedCheckMock)
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      await service.mark(completedCheckMock, checkForm)
       expect(checkDataService.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
     it('stores the number of marks applied to each answer in the db', async () => {
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
-      await service.mark(completedCheckMock)
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      await service.mark(completedCheckMock, checkForm)
       expect(answerDataService.sqlUpdateWithResults).toHaveBeenCalled()
     })
   })
@@ -84,6 +108,9 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
+        {}, {}, {}
+      ])
       await service.batchMark([1, 2, 3])
       expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1, 2, 3])
       done()
@@ -93,10 +120,13 @@ describe('markingService', () => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
         {}, {}, {}
       ])
+      spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
+        {}, {}, {}
+      ])
       // As we know this will output a warning lets shut it up during the test
       spyOn(winston, 'error')
       let callCount = 0
-      spyOn(service, 'mark').and.callFake((completedCheck) => {
+      spyOn(service, 'mark').and.callFake(() => {
         callCount++
         if (callCount === 2) {
           throw new Error('error')

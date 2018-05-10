@@ -15,6 +15,10 @@ Feature:
     Given I am on the instructions page
     Then I should see a start button
 
+  Scenario: Instructions page tells pupils the number of questions in the check
+    Given I am on the instructions page
+    Then I should see the total number of questions in the check
+
 # Removed for the March trial
 #  Scenario: Instructions page should display the timings between questions dynamically
 #    Given I am on the instructions page
