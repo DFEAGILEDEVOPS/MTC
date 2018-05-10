@@ -1,7 +1,7 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-const { checkStarted } = require('../controllers/check-started')
+import * as checkStartController from '../controllers/check-start.controller'
 
 export class CheckStartedRouter {
   router: Router
@@ -17,7 +17,7 @@ export class CheckStartedRouter {
   public init () {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
-      checkStarted(req, res)
+      checkStartController.postCheckStart(req, res)
     })
   }
 }

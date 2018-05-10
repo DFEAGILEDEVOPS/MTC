@@ -1,7 +1,7 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-import * as ping from '../controllers/ping'
+import * as pingController from '../controllers/ping.controller'
 
 export class PingRouter {
   router: Router
@@ -12,7 +12,7 @@ export class PingRouter {
   }
 
   public init () {
-    this.router.get('/', (req: Request, res: Response) => ping(req, res))
+    this.router.get('/', (req: Request, res: Response) => pingController.getPing(req, res))
   }
 }
 

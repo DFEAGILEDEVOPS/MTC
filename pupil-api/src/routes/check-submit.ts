@@ -1,7 +1,7 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-const { postCheck } = require('../controllers/check-submission')
+import * as checkSubmitController from '../controllers/check-submit.controller')
 
 export class CheckSubmitRouter {
   router: Router
@@ -14,7 +14,7 @@ export class CheckSubmitRouter {
   public init () {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
-      postCheck(req, res)
+      checkSubmitController.postSubmit(req, res)
     })
   }
 }

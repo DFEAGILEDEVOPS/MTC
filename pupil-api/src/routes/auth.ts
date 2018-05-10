@@ -1,7 +1,7 @@
 'use strict'
 
 import { Router as Router, Request, Response } from 'express'
-const { auth } = require('../controllers/auth')
+import * as authController from '../controllers/auth.controller'
 
 export class AuthRouter {
   router: Router
@@ -14,7 +14,7 @@ export class AuthRouter {
   public init () {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
-      auth(req, res)
+      authController.postAuth(req, res)
     })
   }
 }
