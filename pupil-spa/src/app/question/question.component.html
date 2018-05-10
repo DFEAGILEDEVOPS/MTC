@@ -7,7 +7,7 @@
 
 <div class="question-container">
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div class="question-and-answer"><span class="question">{{ factor1 }} &times; {{ factor2 }} = </span>
+        <div class="question-and-answer"><span class="question" *ngIf="shouldShowQuestion">{{ factor1 }} &times; {{ factor2 }} = </span>
             <div class="answer-container"><span class="answer" id="js-answer" [innerText]="answer"></span>
                 <div class="numpad-container">
                     <table class="numpad" id="js-numpad">
