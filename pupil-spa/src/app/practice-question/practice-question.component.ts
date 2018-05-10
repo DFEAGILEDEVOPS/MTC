@@ -197,8 +197,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       clearInterval(this.countdownInterval);
     }
 
-    // console.log(`submitting answer ${this.answer}`);
-    this.auditService.addEntry(new QuestionAnswered());
+    this.addQuestionAnsweredEvent();
     this.submitted = true;
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.waitForEndOfSpeech().then(() => {
@@ -208,6 +207,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       this.manualSubmitEvent.emit(this.answer);
     }
     return true;
+  }
+
+  addQuestionAnsweredEvent() {
+    this.auditService.addEntry(new QuestionAnswered({
+      practiseSequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`
+    }));
   }
 
   /**

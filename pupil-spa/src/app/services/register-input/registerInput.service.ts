@@ -42,24 +42,11 @@ export class RegisterInputService {
       questionInputs = [];
     }
 
-    // Generate the array index from the current question.  Q1 is stored in index 0, and so on.
-    let idx = questionNumber - 1;
-
-    // TODO: remove the need for this hack, by removing the requirement to store events in a sub-array
-    if (idx < 0) {
-      idx = 100; // make it nice and easy to see that the context is wrong.
-    }
-
-    // Check we have an array to place the new object into
-    if (!Array.isArray(questionInputs[ idx ])) {
-      questionInputs[ idx ] = [];
-    }
-
     // Store the input
-    questionInputs[ idx ].push({
+    questionInputs.push({
       input: eventValue,
       eventType: eventType,
-      clientInputDate: new Date(),
+      clientTimestamp: new Date(),
       question: question,
       sequenceNumber: questionNumber
     });
