@@ -11,13 +11,13 @@ const getPing: any = async (req: Request, res: Response) => {
   let buildNumber: object | string = 'NOT FOUND'
   let commitId: object | string = 'NOT FOUND'
   try {
-    buildNumber = await this.getBuildNumber()
+    buildNumber = await getBuildNumber()
   } catch (error) {
     // error
   }
 
   try {
-    commitId = await this.getCommitId()
+    commitId = await getCommitId()
   } catch (error) {
     // error
   }

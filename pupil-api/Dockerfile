@@ -9,5 +9,5 @@ COPY . .
 RUN yarn build
 RUN yarn global add pm2
 
-EXPOSE 3005
+EXPOSE 3003
 CMD ["./docker-start.sh" ]
