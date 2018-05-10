@@ -23,7 +23,7 @@ let reportedAnomalies = []
 
 function detectAnomalies (check, checkForm) {
   detectWrongNumberOfAnswers(check)
-  detectAnswersAgainstQuestionsCorrespodance(check, checkForm)
+  detectAnswersCorrespondToQuestions(check, checkForm)
   detectPageRefresh(check)
   detectInputBeforeOrAfterTheQuestionIsShown(check)
   detectMissingAudits(check)
@@ -67,6 +67,14 @@ function detectLowBattery (check) {
   }
 }
 
+function filterInputsForQuestion (questionNumber, factor1, factor2, inputs) {
+  const filteredInputs = R.filter(
+    i => i.sequenceNumber === questionNumber &&
+      i.question === `${factor1}x${factor2}`,
+    inputs)
+  return filteredInputs
+}
+
 function detectInputBeforeOrAfterTheQuestionIsShown (check) {
   // For each question we need to check that the inputs were not
   // received before the question was shown, or after the question
@@ -82,7 +90,7 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
       return report(check, 'QuestionRendered Timestamp is not valid', questionRenderedEvent.clientTimestamp, 'Valid ts')
     }
     // If there are any inputs before `questionShownAt` it's an anomaly
-    const inputs = check.data.inputs[question.order - 1]
+    const inputs = filterInputsForQuestion(question.order, question.factor1, question.factor2, R.pathOr([], ['data', 'inputs'], check))
     if (!inputs) {
       return
     }
@@ -94,9 +102,6 @@ function detectInputBeforeOrAfterTheQuestionIsShown (check) {
 
     // Check the inputs to make sure they all the right question property
     inputs.forEach(input => {
-      if (input.sequenceNumber !== question.order) {
-        report(check, 'Input fails property check', input.question, question.order)
-      }
       const inputTimeStamp = moment(input.clientTimestamp)
       if (inputTimeStamp.isBefore(questionShownAt)) {
         report(check, 'Input received before Question shown', input.clientTimestamp, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
@@ -146,10 +151,7 @@ function detectInputsWithoutQuestionInformation (check) {
   const inputs = check.data.inputs
   if (!inputs) { return }
 
-  // Copy the inputs into a flat array
-  const flatInputs = R.flatten(inputs)
-
-  const eventsMissingInformation = flatInputs.filter(e => {
+  const eventsMissingInformation = inputs.filter(e => {
     if (!e) { return false }
     const sequenceNumber = parseInt(e.sequenceNumber)
     if (sequenceNumber === -1 || isNaN(sequenceNumber)) {
@@ -217,7 +219,9 @@ function detectChecksThatTookLongerThanTheTheoreticalMax (check) {
 
 function detectInputThatDoesNotCorrespondToAnswers (check) {
   check.data.answers.forEach((answer, idx) => {
-    const answerFromInputs = reconstructAnswerFromInputs(check.data.inputs[idx])
+    const questionNumber = idx + 1
+    const inputs = filterInputsForQuestion(questionNumber, answer.factor1, answer.factor2, check.data.inputs)
+    const answerFromInputs = reconstructAnswerFromInputs(inputs)
     // The answer only stores the first 5 inputs, so there is no point in comparing more
     // characters (the inputs stores all the characters entered)
     if (answer.answer.substring(0, 5) !== answerFromInputs.substring(0, 5)) {
@@ -226,7 +230,7 @@ function detectInputThatDoesNotCorrespondToAnswers (check) {
   })
 }
 
-function detectAnswersAgainstQuestionsCorrespodance (check, checkForm) {
+function detectAnswersCorrespondToQuestions (check, checkForm) {
   const answerFactors = check.data.answers.map(answer => ({ f1: answer.factor1, f2: answer.factor2 }))
   const formData = JSON.parse(checkForm.formData)
   const difference = R.difference(answerFactors, formData)
@@ -295,7 +299,7 @@ function addRelativeTimings (elems) {
 }
 
 function detectQuestionsThatWereShownForTooLong (check) {
-  const audits = filterAllRealQuestionsAndPauses(check)
+  const audits = filterAllRealQuestionsAndPauseAudits(check)
   const config = check.data.config
   const head = R.head(audits)
   const tail = R.tail(audits)
@@ -331,7 +335,7 @@ function detectApplicationErrors (check) {
   }
 }
 
-function filterAllRealQuestionsAndPauses (check) {
+function filterAllRealQuestionsAndPauseAudits (check) {
   let hasCheckStarted = false
   const output = []
   for (let audit of check.data.audit) {

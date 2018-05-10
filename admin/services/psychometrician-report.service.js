@@ -170,12 +170,12 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
   const p = (idx) => 'Q' + (idx + 1).toString()
   if (check.data && Object.keys(check.data).length > 0) {
     checkForm.formData.forEach((question, idx) => {
-      // We don't store the questionNumber in the pupil answer data in the SPA so we have to look up the
-      // question using factor1 and factor2.
       // TODO: allocate questionNumber or QuestionId in the SPA answer data packet
       const markedAnswer = markedAnswers.find(a => a.factor1 === question.f1 && a.factor2 === question.f2)
-
-      const inputs = R.pathOr([], ['data', 'inputs', idx], check)
+      const inputs = R.filter(
+        i => i.sequenceNumber === (idx + 1) &&
+        i.question === `${question.f1}x${question.f2}`,
+        R.pathOr([], ['data', 'inputs'], check))
       const audits = R.pathOr([], ['data', 'audit'], check)
       const ans = check.data.answers[idx]
       psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
@@ -197,7 +197,6 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
     })
   }
-
   return psData
 }
 
