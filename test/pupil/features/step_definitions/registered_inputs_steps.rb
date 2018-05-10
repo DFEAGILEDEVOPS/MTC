@@ -9,7 +9,8 @@ end
 Then(/^I should see all my number pad inputs recorded$/) do
   inputs = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
-  inputs = inputs.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}
+  inputs1 = inputs.compact
+  inputs = inputs1.each {|a| a.delete('clientInputDate')}
   expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers, questions).flatten
 end
 
@@ -23,7 +24,8 @@ end
 
 Then(/^I should see all my keyboard inputs recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
-  inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}
+  inputs1 = local_storage.compact
+  inputs = inputs1.each {|a| a.delete('clientInputDate')}
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
   expect(inputs.flatten).to eql check_page.array_of_inputs_from_keyboard(@answers,questions).flatten
 end
@@ -40,7 +42,8 @@ end
 
 Then(/^I should see backspace numpad event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
-  inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
+  inputs1 = local_storage.compact
+  inputs = inputs1.each {|a| a.delete('clientInputDate')}
   expected = [{"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
               {"input"=>"1", "eventType"=>"click", "question"=>"2x5", "sequenceNumber"=>1},
               {"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
@@ -59,7 +62,8 @@ end
 
 Then(/^I should see backspace keyboard event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
-  inputs = local_storage.compact.each {|b| b.each {|a| a.delete('clientInputDate')}}[0]
+  inputs1 = local_storage.compact
+  inputs = inputs1.each {|a| a.delete('clientInputDate')}
   expected = [{"input"=>"1", "eventType"=>"keydown", "question"=>"2x5",
                "sequenceNumber"=>1}, {"input"=>"Backspace", "eventType"=>"keydown",
                                       "question"=>"2x5", "sequenceNumber"=>1}]
