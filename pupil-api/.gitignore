@@ -55,5 +55,5 @@ data/files/*
 .env
 *.env
 
-# ignore dist
+# ignore typescript output folder
 dist
