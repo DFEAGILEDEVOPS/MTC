@@ -27,4 +27,10 @@ export class SpeechServiceMock {
   speakQuestion (arg) {
     this.speechStatusSource.next(SpeechServiceMock.questionSpeechEnded);
   }
+
+  speakFocusedElement (arg) {
+    this.speechStatusSource.next(SpeechServiceMock.speechEnded);
+  }
+
+  speakElement (arg) {}
 }
