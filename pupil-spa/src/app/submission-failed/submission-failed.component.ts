@@ -16,6 +16,7 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
 
   public supportNumber: string;
   protected window: any;
+  private speechListenerEvent: any;
 
   constructor(private auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -38,6 +39,10 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -45,6 +50,8 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }
