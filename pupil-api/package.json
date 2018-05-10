@@ -7,16 +7,15 @@
     "build": "gulp scripts",
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard && tslint --project .",
-    "start": "npm run build && node ./dist/index.js",
-    "test": "npm run build && nyc -r html ./run-jasmine.js",
     "migrate-sql": "yarn build && node ./dist/migrator/migrate-sql.js",
-    "startd": "yarn migrate-sql && yarn start"
+    "start": "npm run build && node ./dist/index.js",
+    "startd": "yarn migrate-sql && yarn start",
+    "test": "npm run build && nyc -r html ./run-jasmine.js"
   },
   "engines": {
     "node": ">= 8.4"
   },
   "dependencies": {
-    "@types/ramda": "^0.25.24",
     "applicationinsights": "^1.0.2",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
@@ -46,6 +45,7 @@
     "@types/morgan": "^1.7.35",
     "@types/node": "^9.6.6",
     "@types/proxyquire": "^1.3.28",
+    "@types/ramda": "^0.25.24",
     "@types/string": "0.0.29",
     "gulp": "^3.9.1",
     "gulp-typescript": "^4.0.2",

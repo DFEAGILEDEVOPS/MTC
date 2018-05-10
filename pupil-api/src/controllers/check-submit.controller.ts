@@ -1,5 +1,4 @@
 
-import * as apiResponse from './api-response'
 import { Request, Response } from 'express'
 
 class CheckSubmitController {

@@ -4,6 +4,10 @@
     "module": "commonjs",
     "outDir": "dist",
     "allowJs": true,
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*.ts",

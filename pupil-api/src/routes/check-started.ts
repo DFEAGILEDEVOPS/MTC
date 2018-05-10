@@ -17,7 +17,7 @@ export class CheckStartedRouter {
   public init () {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
-      checkStartController.default.postStartCheck(req, res)
+      return checkStartController.default.postStartCheck(req, res)
     })
   }
 }
