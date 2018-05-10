@@ -10,7 +10,7 @@ Then(/^I should see all my number pad inputs recorded$/) do
   inputs = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
   inputs1 = inputs.compact
-  inputs = inputs1.each {|a| a.delete('clientInputDate')}
+  inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers, questions).flatten
 end
 
@@ -25,7 +25,7 @@ end
 Then(/^I should see all my keyboard inputs recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs1 = local_storage.compact
-  inputs = inputs1.each {|a| a.delete('clientInputDate')}
+  inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
   expect(inputs.flatten).to eql check_page.array_of_inputs_from_keyboard(@answers,questions).flatten
 end
@@ -43,7 +43,7 @@ end
 Then(/^I should see backspace numpad event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs1 = local_storage.compact
-  inputs = inputs1.each {|a| a.delete('clientInputDate')}
+  inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expected = [{"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
               {"input"=>"1", "eventType"=>"click", "question"=>"2x5", "sequenceNumber"=>1},
               {"input"=>"left click", "eventType"=>"mousedown", "question"=>"2x5", "sequenceNumber"=>1},
@@ -63,7 +63,7 @@ end
 Then(/^I should see backspace keyboard event recorded$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("inputs");'))
   inputs1 = local_storage.compact
-  inputs = inputs1.each {|a| a.delete('clientInputDate')}
+  inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expected = [{"input"=>"1", "eventType"=>"keydown", "question"=>"2x5",
                "sequenceNumber"=>1}, {"input"=>"Backspace", "eventType"=>"keydown",
                                       "question"=>"2x5", "sequenceNumber"=>1}]
