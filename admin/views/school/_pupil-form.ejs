@@ -148,7 +148,7 @@ if (formData.urlSlug) {
                        aria-checked="false"
                        name="gender"
                        value="F"
-                       <% if (formData['gender'].toUpperCase() === 'F') { %>checked="checked"
+                       <% if (formData['gender'] && formData['gender'].toUpperCase() === 'F') { %>checked="checked"
                         <% } %>
                 />
                 <label for="gender-female">Female</label>
@@ -161,7 +161,7 @@ if (formData.urlSlug) {
                        aria-checked="false"
                        name="gender"
                        value="M"
-                       <% if (formData['gender'].toUpperCase() === 'M') { %>checked="checked"
+                       <% if (formData['gender'] && formData['gender'].toUpperCase() === 'M') { %>checked="checked"
                         <% } %>
                 />
                 <label for="gender-male">Male</label>
