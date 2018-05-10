@@ -17,6 +17,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
   public loadingTime: number;
   public questionTime: number;
   protected window: any;
+  private speechListenerEvent: any;
 
   constructor(
     private router: Router,
@@ -48,6 +49,10 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -55,6 +60,8 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }
