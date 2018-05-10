@@ -132,18 +132,21 @@ export class SpeechService implements OnDestroy {
     const elements = clonedElement.querySelectorAll(elementsToSpeak);
 
     // add 'artificial' pauses to take visual newlines or spaces into account
-    elements.forEach((elem) => {
+    for (let i = 0; i < elements.length; i++) {
       // remove all links and buttons inside the element to be spoken,
       // in order to avoid duplication
-      elem.querySelectorAll('a, button').forEach(k => k.parentNode.removeChild(k));
-
-      // if there is no text to be spoken, return early
-      if (/\S/.test(elem.textContent) === false) {
-        return;
+      const elem = elements[i].querySelectorAll('a, button');
+      for (let j = 0; j < elem.length; j++) {
+        elem[j].parentNode.removeChild(elem[j]);
       }
 
-      speechText += ' , ' + this.addTextBeforeSpeakingElement(elem) + elem.textContent;
-    });
+      // if there is no text to be spoken, skip this element
+      if (/\S/.test(elements[i].textContent) === false) {
+        continue;
+      }
+
+      speechText += ' , ' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
+    }
 
     this.speak(speechText.replace(/[\n\r]+/g, ' '));
   }
