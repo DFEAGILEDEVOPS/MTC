@@ -17,6 +17,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   pupil: Pupil;
   school: School;
+  private speechListenerEvent: any;
 
   constructor(private router: Router,
               private storageService: StorageService,
@@ -45,6 +46,10 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+        this.speechService.speakFocusedElement(event.target);
+      }, true);
     }
   }
 
@@ -56,6 +61,8 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 }

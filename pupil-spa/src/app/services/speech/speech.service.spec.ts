@@ -39,7 +39,7 @@ describe('SpeechService', () => {
       expect(typeof service.speak).toBe('function');
     }));
 
-    it('calls the audit service on start and end', inject([SpeechService], (service: SpeechService) => {
+    it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
       spyOn(window, 'setTimeout').and.callFake((fun, time) => {
@@ -55,7 +55,8 @@ describe('SpeechService', () => {
           utterance.onend();
         }
       });
-      service.speak('9 times 9');
+      await service.speak('9 times 9');
+      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
@@ -66,7 +67,7 @@ describe('SpeechService', () => {
       expect(typeof service.speakQuestion).toBe('function');
     }));
 
-    it('calls the audit service on start and end', inject([SpeechService], (service: SpeechService) => {
+    it('calls the audit service on start and end', inject([SpeechService], async (service: SpeechService) => {
       spyOn(auditServiceMock, 'addEntry').and.callThrough();
       // Mock the setTimeout method to get the results instantly
       spyOn(window, 'setTimeout').and.callFake((fun, time) => {
@@ -82,7 +83,8 @@ describe('SpeechService', () => {
           utterance.onend();
         }
       });
-      service.speak('9 times 9');
+      await service.speak('9 times 9');
+      expect(window.setTimeout).toHaveBeenCalledTimes(1);
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2);
       expect(window.speechSynthesis.speak).toHaveBeenCalledTimes(1);
     }));
