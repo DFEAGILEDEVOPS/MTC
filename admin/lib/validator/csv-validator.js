@@ -13,11 +13,6 @@ module.exports.validate = (dataSet, header, element) => {
   if (dataSet.some(r => r.length !== 6)) {
     errorArr.push(addBatchFileErrorMessages.not6Columns)
   }
-  const upnList = []
-  dataSet.map(r => upnList.push(r[5]))
-  if (upnList.some((val, i) => upnList.indexOf(val) !== i)) {
-    errorArr.push(addBatchFileErrorMessages.duplicateUPN)
-  }
   if (dataSet.length < 2) errorArr.push(addBatchFileErrorMessages.hasOneRow)
   if (dataSet.length >= 300) errorArr.push(addBatchFileErrorMessages.exceedsAllowedRows)
   if (errorArr.length > 0) {
