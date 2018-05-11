@@ -232,10 +232,10 @@ describe('JWT service', () => {
     it('denies a token that has expired 1 hour ago', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000) - (60 * 60),         // Expires an hour ago
-        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000) - (60 * 60), // Expires an hour ago
+        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2 // Not before
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)
@@ -252,10 +252,10 @@ describe('JWT service', () => {
     it('denies a token that has expired 1 second ago', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000) - 1,                 // Expires 1s ago
-        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2        // Not before
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000) - 1, // Expires 1s ago
+        nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2 // Not before
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)
@@ -272,10 +272,10 @@ describe('JWT service', () => {
     it('denies a token that is not yet active, but has not yet expired', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
-        nbf: Math.floor(Date.now() / 1000) + 60                 // Not before: becomes active in 60s
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000) + 120, // Expires in 120s
+        nbf: Math.floor(Date.now() / 1000) + 60 // Not before: becomes active in 60s
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)
@@ -292,10 +292,10 @@ describe('JWT service', () => {
     it('denies a token that is almost active, but has not yet expired', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000) + 120,               // Expires in 120s
-        nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000) + 120, // Expires in 120s
+        nbf: Math.floor(Date.now() / 1000) + 1 // Not before: becomes active in 1s
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)
@@ -312,10 +312,10 @@ describe('JWT service', () => {
     it('denies a token that not active, and has expired', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000) - 1,                 // Expired 1s ago
-        nbf: Math.floor(Date.now() / 1000) + 1                  // Not before: becomes active in 1s
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000) - 1, // Expired 1s ago
+        nbf: Math.floor(Date.now() / 1000) + 1 // Not before: becomes active in 1s
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)
@@ -332,10 +332,10 @@ describe('JWT service', () => {
     it('denies a weird token', async (done) => {
       // Setup
       const payload = {
-        iss: 'MTC Admin',                                       // Issuer
-        sub: pupilId,                                    // Subject
-        exp: Math.floor(Date.now() / 1000),                     // Expired now
-        nbf: Math.floor(Date.now() / 1000)                      // Not before: becomes active mow
+        iss: 'MTC Admin', // Issuer
+        sub: pupilId, // Subject
+        exp: Math.floor(Date.now() / 1000), // Expired now
+        nbf: Math.floor(Date.now() / 1000) // Not before: becomes active mow
       }
       pupil.token = 'testing123'
       const token = jwt.sign(payload, pupil.token)

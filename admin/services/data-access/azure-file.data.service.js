@@ -24,7 +24,7 @@ const azureUploadFile = async (container, remoteFilename, text, streamLength) =>
   return pr
 }
 
-const azureDownloadFile = async(container, blob) => {
+const azureDownloadFile = async (container, blob) => {
   const file = await new Promise((resolve, reject) => {
     blobService.getBlobToText(container, blob,
       (error, result) => {
