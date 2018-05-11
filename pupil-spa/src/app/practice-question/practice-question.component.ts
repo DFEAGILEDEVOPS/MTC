@@ -63,6 +63,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   public isWarmUpQuestion: boolean;
 
+  public shouldShowQuestion: boolean;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -84,6 +86,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
               protected questionService: QuestionService,
               protected speechService: SpeechService) {
     this.window = windowRefService.nativeWindow;
+    this.shouldShowQuestion = true;
   }
 
   ngOnInit() {
@@ -252,6 +255,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
+          this.shouldShowQuestion = true;
         }
         this.speechService.speakChar(char);
       }

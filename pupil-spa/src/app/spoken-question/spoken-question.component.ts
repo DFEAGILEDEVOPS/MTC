@@ -39,6 +39,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
+    this.shouldShowQuestion = false;
 
     // Add attributes to the <body> tag to reflect the current question
     const bodyTag = <Element>window.document[ 'body' ];
@@ -51,6 +52,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
         if (!this.timeout && speechStatus === SpeechService.questionSpeechEnded) {
           // console.log('SpokenQuestionComponent: Starting the timer');
           this.startTimer();
+          this.shouldShowQuestion = true;
         }
       });
     });
