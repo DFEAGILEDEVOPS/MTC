@@ -1,6 +1,7 @@
 const ValidationError = require('../validation-error')
 const addBatchFileErrorMessages = require('../errors/csv-pupil-upload')
 const R = require('ramda')
+const arrayUtils = require('../array-utils')
 
 const validateHeader = (header) => header[0] === 'Surname' && header[1] === 'Forename' && header[2] === 'Middle name(s)' &&
   header[3] === 'Date of birth' && header[4] === 'Gender' && header[5] === 'UPN'
@@ -34,7 +35,7 @@ function countNonEmptyRows (dataSet) {
     throw new Error('dataSet is not an Array')
   }
   return R.reduce((accumulator, data) => {
-    if (arrayIsEmpty(data)) {
+    if (arrayUtils.isEmptyArray(data)) {
       // Array with nothing in the elements; we expect strings here
       // ['', '', '', '', '', '']
       return accumulator
@@ -42,13 +43,4 @@ function countNonEmptyRows (dataSet) {
 
     return accumulator + 1
   }, 0, dataSet)
-}
-
-/**
- * Return true if the array is comprised only of empty elements, false otherwise
- * @param {Array} data
- * @return Boolean
- */
-function arrayIsEmpty (data) {
-  return R.all(R.isEmpty)(data)
 }
