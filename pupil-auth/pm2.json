@@ -1,9 +1,0 @@
-{
-  "apps" : [{
-    "name"        : "MTC Pupil Auth",
-    "script"      : "server.js",
-    "watch"       : false,
-    "instances"   : "max",
-    "exec_mode"   : "cluster"
-  }]
-}
