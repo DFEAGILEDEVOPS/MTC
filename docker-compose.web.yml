@@ -1,0 +1,45 @@
+# This does NOT work in combination with the *-test.yml files.  Use it only with the base compose file.
+version: '3'
+services:
+  admin-app:
+    build: ./admin
+    container_name: mtc_admin
+    ports:
+    - "3001:3001"
+    environment:
+      SQL_SERVER: "sqldb"
+      MIGRATE: 1
+    depends_on:
+    - sqldb
+    links:
+    - sqldb
+  pupil-api:
+    container_name: mtc_pupil_api
+    build: ./pupil-api
+    ports:
+    - "3003:3003"
+    environment:
+      SQL_SERVER: "sqldb"
+      API_AUTH: "true"
+      API_CHECK_START: "true"
+      API_CHECK_SUBMIT: "true"
+    depends_on:
+    - sqldb
+    - admin-app
+    links:
+    - sqldb   
+  pupil-app:
+    container_name: mtc_pupil
+    build:
+      context: ./pupil-spa
+      args:
+        api_url: http://pupil-api:3003
+        auth_url: http://pupil-api:3003/auth
+        check_started_url: http://pupil-api:3003/check-start
+        check_submission_url: http://pupil-api:3003/submit
+    ports:
+    - "80:80"
+    depends_on:
+    - pupil-api
+    links:
+    - pupil-api
