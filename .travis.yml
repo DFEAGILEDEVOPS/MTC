@@ -11,7 +11,7 @@ cache:
   directories:
     - /home/travis/.rvm/
     - ${TRAVIS_BUILD_DIR}/admin/node_modules
-    - ${TRAVIS_BUILD_DIR}/pupil-auth/node_modules
+#    - ${TRAVIS_BUILD_DIR}/pupil-api/node_modules
     - ${TRAVIS_BUILD_DIR}/pupil-spa/node_modules
 
 env:
@@ -48,7 +48,7 @@ install:
   - docker info
   - cd ${TRAVIS_BUILD_DIR}/pupil-spa && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/admin && travis_retry yarn install --frozen-lockfile
-  - cd ${TRAVIS_BUILD_DIR}/pupil-auth && travis_retry yarn install --frozen-lockfile
+# - cd ${TRAVIS_BUILD_DIR}/pupil-api && travis_retry yarn install --frozen-lockfile
   - cd ${TRAVIS_BUILD_DIR}/test/admin && gem install bundler --conservative && bundle install
   - cd ${TRAVIS_BUILD_DIR}/test/pupil && gem install bundler --conservative && bundle install
   - docker-compose logs
