@@ -3,6 +3,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { Question } from '../services/question/question.model';
 
 @Component({
   selector: 'app-loading',
@@ -13,7 +14,7 @@ import { QuestionService } from '../services/question/question.service';
 export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   @Input()
-  public question = 0;
+  public question: Question = new Question(0, 0, 0);
 
   @Input()
   public total = 0;
@@ -24,7 +25,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   @Output()
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
-  constructor(private auditService: AuditService,
+  constructor(protected auditService: AuditService,
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef) {
@@ -46,7 +47,10 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     // console.log('loading.component: after view init called');
-    this.auditService.addEntry(new PauseRendered());
+    this.auditService.addEntry(new PauseRendered({
+      sequenceNumber: this.question.sequenceNumber,
+      question: `${this.question.factor1}x${this.question.factor2}`
+    }));
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
