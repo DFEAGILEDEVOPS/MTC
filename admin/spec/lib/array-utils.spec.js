@@ -39,4 +39,32 @@ describe('arrayUtils', () => {
       expect(cleaned[ 2 ][ 1 ]).toBe('line2B')
     })
   })
+
+  describe('countNonEmptyRows', () => {
+    it('counts arrays that are not empty according to isEmptyArray()', () => {
+      const input = [
+        ['a', 'non', 'empty', 'array'],
+        ['', '', ''], // empty
+        ['another', 'line'],
+        ['', '', '', ''] // empty
+      ]
+      const i = arrayUtils.countNonEmptyRows(input)
+      expect(i).toBe(2)
+    })
+    it('throws an error if passed a string as argument', () => {
+      expect(() => { arrayUtils.countNonEmptyRows('string') }).toThrow()
+    })
+    it('throws an error if passed null as an argument', () => {
+      expect(() => { arrayUtils.countNonEmptyRows(null) }).toThrow()
+    })
+    it('throws an error if passed undefined as an argument', () => {
+      expect(() => { arrayUtils.countNonEmptyRows(undefined) }).toThrow()
+    })
+    it('throws an error if passed a number as an argument', () => {
+      expect(() => { arrayUtils.countNonEmptyRows(9) }).toThrow()
+    })
+    it('throws an error if passed an object as an argument', () => {
+      expect(() => { arrayUtils.countNonEmptyRows({foo: 'bar'}) }).toThrow()
+    })
+  })
 })

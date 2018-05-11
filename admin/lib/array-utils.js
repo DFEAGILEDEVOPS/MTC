@@ -24,5 +24,25 @@ module.exports = {
       output.push(ary)
     }
     return output
+  },
+
+  /**
+   * Count arrays (of strings) in an array that fail the isEmptyArray() check
+   * @param {Array} dataSet Array of Arrays of strings
+   * @return {number}
+   */
+  countNonEmptyRows: function (dataSet) {
+    if (!Array.isArray(dataSet)) {
+      throw new Error('dataSet is not an Array')
+    }
+    return R.reduce((accumulator, data) => {
+      if (this.isEmptyArray(data)) {
+        // Array with nothing in the elements; we expect strings here
+        // ['', '', '', '', '', '']
+        return accumulator
+      }
+
+      return accumulator + 1
+    }, 0, dataSet)
   }
 }

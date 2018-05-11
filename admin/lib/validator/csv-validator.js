@@ -15,7 +15,8 @@ module.exports.validate = (dataSet, header, element) => {
   if (dataSet.some(r => r.length !== 6)) {
     errorArr.push(addBatchFileErrorMessages.not6Columns)
   }
-  const dataSetCount = countNonEmptyRows(dataSet)
+  // Excel may add several empty lines to CSVs.  This count will ignore them.
+  const dataSetCount = arrayUtils.countNonEmptyRows(dataSet)
   if (dataSetCount < 2) errorArr.push(addBatchFileErrorMessages.hasOneRow)
   if (dataSetCount >= 300) errorArr.push(addBatchFileErrorMessages.exceedsAllowedRows)
   if (errorArr.length > 0) {
@@ -24,23 +25,3 @@ module.exports.validate = (dataSet, header, element) => {
   return validationError
 }
 
-/**
- * Count non-empty lines in the data
- * NB Excel may add several empty lines to CSVs.  This count will ignore them.
- * @param {Array} dataSet Array of Arrays
- * @return {number}
- */
-function countNonEmptyRows (dataSet) {
-  if (!Array.isArray(dataSet)) {
-    throw new Error('dataSet is not an Array')
-  }
-  return R.reduce((accumulator, data) => {
-    if (arrayUtils.isEmptyArray(data)) {
-      // Array with nothing in the elements; we expect strings here
-      // ['', '', '', '', '', '']
-      return accumulator
-    }
-
-    return accumulator + 1
-  }, 0, dataSet)
-}
