@@ -12,13 +12,23 @@ Administer the Multiplication Table Check
 
 This is a node / express server and Javascript on the client. 
 
+Simple developer steps:
+* `yarn install`
+* `docker-compose up`
+* `yarn startd`
+
+The app will now be available on `http://localhost:3001`
+
 ### Dependencies
 
-You need to have node installed and access to an instance of SQL Server and MongoDB.  MongoDB is being phased out, and SQL Server phased in.
+You need to have node installed and access to an instance of SQL Server.
 
 - [node](https://nodejs.org/) - Node javascript runtime 
-- [mongo](https://www.mongodb.com/) - NoSQL datastore
 - [SQL Server](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) - Relational datastore
+- [NPM packages](https://www.npmjs.org) installed globally (for developers): `yarn` 
+- [Docker](https://www.docker.com/get-docker) - Docker to run containers
+
+We recommend developers manage their `node` and `npm` packages using [nvm](http://nvm.sh)
 
 Installation notes for SQL Server & MongoDB are documented below.
 
@@ -33,17 +43,12 @@ The server will need write access to the public/stylesheets/ folder to write the
 
 See the [package.json](./package.json) file for the full list of npm dependencies.
 
-#### Installing Mongo
-
-Use the docker official image:
-
-```bash
-docker run --name mongo -d  -p 27017:27017 mongo
-```
 
 #### Installing SQL Server
 
 Use the [official docker image](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker), or provision a SQL Azure instance.
+
+`docker-compose up` will bring up the official docker image
 
 ### Running the application
 
@@ -66,7 +71,6 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
     envs, but the connection string is required for all.
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there 
     is a tracking code and in production mode, eg `NODE_ENV=production`
-* MONGO_CONNECTION_STRING - defaults to `mongodb://localhost/mtc`
 * MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
@@ -102,43 +106,9 @@ Example usage can be found [here](./sql.usage.example.js)
 
 ### Running SQL Server migrations
 
-We use postgrator to run database migrations.  The configuration file and migrations are located under `/admin/data/sql/`
-NB - the migration name is limited to 32 characters [(PR submitted to change this)](https://github.com/rickbergfalk/postgrator/pull/44).  Names larges than this will cause an SQL Server error message to be
-generated that is hard to track down:
+We use postgrator to run database migrations. 
 
-`String or binary data would be truncated.`
-
-There is a request to Microsoft to [fix this](https://connect.microsoft.com/SQLServer/feedback/details/339410/please-fix-the-string-or-binary-data-would-be-truncated-message-to-give-the-column-name)
-but it was opened in 2008.
-
-We could also consider making a request to Postgrator to increase the size of the .
-
-### Running mongo migrations
-
-You will need a local mongo datastore.  SQL Server migrations are yet to be added at this stage.
-
-This project uses [migrate-mongo](https://www.npmjs.com/package/migrate-mongo) to run the database migrations.  To 
-ensure your local mongo database is up-to-date:
-
-```bash
-cd data/migrations
-../../node_modules/.bin/migrate-mongo up
-```
-
-You can also perform a downward migration:
-
-```bash
-../../node_modules/.bin/migrate-mongo down
-```
-
-## Create a new migration
-
-```bash
-cd data/migrations
- ../../node_modules/.bin/migrate-mongo create 'my new feature'
-```
-You can then edit the skeleton file created with the required `up` and `down` migrations. 
-
+`yarn migrate-sql` to migrate to the latest or `yarn migrate-sql 123` to migrate to a particular version
 
 ## Live reloading on change
 
