@@ -183,18 +183,28 @@ describe('QuestionComponent', () => {
       });
     });
     it('is added on question rendered', () => {
+      component.sequenceNumber = 1;
+      component.factor1 = 2;
+      component.factor2 = 3;
       component.ngAfterViewInit();
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2); // two times, timer event + render event
       expect(auditEntryInserted instanceof QuestionRendered
             || auditEntryInserted instanceof QuestionTimerStarted).toBeTruthy();
+      expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
+      expect((<any> auditEntryInserted.data).question).toBe('2x3');
     });
 
     it('is added on answer submitted', () => {
+      component.sequenceNumber = 1;
+      component.factor1 = 2;
+      component.factor2 = 3;
       component.answer = '42';
       component.onSubmit();
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(2); // two times, timer event + answer event
       expect(auditEntryInserted instanceof QuestionAnswered
             || auditEntryInserted instanceof QuestionTimerCancelled).toBeTruthy();
+      expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
+      expect((<any> auditEntryInserted.data).question).toBe('2x3');
     });
   });
 

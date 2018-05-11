@@ -554,25 +554,25 @@
       {
         "input": "left click",
         "eventType": "mousedown",
-        "clientInputDate": "2018-03-13T00:46:15.112Z",
+        "clientTimestamp": "2018-03-13T00:46:15.112Z",
         "question": 1
       },
       {
         "input": "left click",
         "eventType": "mousedown",
-        "clientInputDate": "2018-03-13T00:46:15.643Z",
+        "clientTimestamp": "2018-03-13T00:46:15.643Z",
         "question": 1
       },
       {
         "input": "8",
         "eventType": "click",
-        "clientInputDate": "2018-03-13T00:46:15.759Z",
+        "clientTimestamp": "2018-03-13T00:46:15.759Z",
         "question": 1
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:16.347Z",
+        "clientTimestamp": "2018-03-13T00:46:16.347Z",
         "question": 1
       }
     ],
@@ -580,37 +580,37 @@
       {
         "input": "left click",
         "eventType": "mousedown",
-        "clientInputDate": "2018-03-13T00:46:21.172Z",
+        "clientTimestamp": "2018-03-13T00:46:21.172Z",
         "question": 2
       },
       {
         "input": "left click",
         "eventType": "mousedown",
-        "clientInputDate": "2018-03-13T00:46:21.892Z",
+        "clientTimestamp": "2018-03-13T00:46:21.892Z",
         "question": 2
       },
       {
         "input": "5",
         "eventType": "click",
-        "clientInputDate": "2018-03-13T00:46:22.016Z",
+        "clientTimestamp": "2018-03-13T00:46:22.016Z",
         "question": 2
       },
       {
         "input": "left click",
         "eventType": "mousedown",
-        "clientInputDate": "2018-03-13T00:46:22.358Z",
+        "clientTimestamp": "2018-03-13T00:46:22.358Z",
         "question": 2
       },
       {
         "input": "5",
         "eventType": "click",
-        "clientInputDate": "2018-03-13T00:46:22.465Z",
+        "clientTimestamp": "2018-03-13T00:46:22.465Z",
         "question": 2
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:22.803Z",
+        "clientTimestamp": "2018-03-13T00:46:22.803Z",
         "question": 2
       }
     ],
@@ -619,13 +619,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:32.330Z",
+        "clientTimestamp": "2018-03-13T00:46:32.330Z",
         "question": 4
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:32.554Z",
+        "clientTimestamp": "2018-03-13T00:46:32.554Z",
         "question": 4
       }
     ],
@@ -633,13 +633,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:35.275Z",
+        "clientTimestamp": "2018-03-13T00:46:35.275Z",
         "question": 5
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:35.402Z",
+        "clientTimestamp": "2018-03-13T00:46:35.402Z",
         "question": 5
       }
     ],
@@ -647,13 +647,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:38.058Z",
+        "clientTimestamp": "2018-03-13T00:46:38.058Z",
         "question": 6
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:38.202Z",
+        "clientTimestamp": "2018-03-13T00:46:38.202Z",
         "question": 6
       }
     ],
@@ -661,19 +661,19 @@
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:41.105Z",
+        "clientTimestamp": "2018-03-13T00:46:41.105Z",
         "question": 7
       },
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:41.402Z",
+        "clientTimestamp": "2018-03-13T00:46:41.402Z",
         "question": 7
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:41.578Z",
+        "clientTimestamp": "2018-03-13T00:46:41.578Z",
         "question": 7
       }
     ],
@@ -681,13 +681,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:43.691Z",
+        "clientTimestamp": "2018-03-13T00:46:43.691Z",
         "question": 8
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:43.954Z",
+        "clientTimestamp": "2018-03-13T00:46:43.954Z",
         "question": 8
       }
     ],
@@ -695,13 +695,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:46.354Z",
+        "clientTimestamp": "2018-03-13T00:46:46.354Z",
         "question": 9
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:46.915Z",
+        "clientTimestamp": "2018-03-13T00:46:46.915Z",
         "question": 9
       }
     ],
@@ -709,13 +709,13 @@
       {
         "input": "5",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:49.282Z",
+        "clientTimestamp": "2018-03-13T00:46:49.282Z",
         "question": 10
       },
       {
         "input": "Enter",
         "eventType": "keydown",
-        "clientInputDate": "2018-03-13T00:46:49.786Z",
+        "clientTimestamp": "2018-03-13T00:46:49.786Z",
         "question": 10
       }
     ]
