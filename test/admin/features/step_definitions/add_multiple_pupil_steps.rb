@@ -29,7 +29,7 @@ end
 When(/^I Upload a valid CSV file to add Multiple Pupil$/) do
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2011", "F", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2011", "f", @upn]
 
   @upn2 = UpnGenerator.generate
   pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
