@@ -30,8 +30,6 @@ You need to have node installed and access to an instance of SQL Server.
 
 We recommend developers manage their `node` and `npm` packages using [nvm](http://nvm.sh)
 
-Installation notes for SQL Server & MongoDB are documented below.
-
 #### Packages
 
 You _can_ use npm to install application packages, but we prefer [yarn](https://yarnpkg.com/lang/en/)
