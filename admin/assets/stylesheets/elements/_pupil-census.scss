@@ -1,0 +1,8 @@
+.pupil-census-uploaded-file {
+  border-top: 1px solid $grey-2;
+  border-bottom: 1px solid $grey-2;
+  > dd {
+    padding-top: pem(10px);
+    padding-bottom: pem(10px);
+  }
+}
