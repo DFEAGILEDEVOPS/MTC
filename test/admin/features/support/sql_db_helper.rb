@@ -169,7 +169,7 @@ class SqlDbHelper
   end
 
   def self.get_attendance_code_for_a_pupil(pupil_id)
-    sql = "SELECT * FROM [mtc_admin].[pupilAttendance] WHERE pupil_id = '#{pupil_id}'"
+    sql = "SELECT * FROM [mtc_admin].[pupilAttendance] WHERE pupil_id = '#{pupil_id}' and isDeleted = 'false'"
     result = SQL_CLIENT.execute(sql)
     pupil_att_code_res = result.first
     result.cancel
