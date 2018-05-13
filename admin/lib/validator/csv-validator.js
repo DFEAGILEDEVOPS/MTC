@@ -1,6 +1,5 @@
 const ValidationError = require('../validation-error')
 const addBatchFileErrorMessages = require('../errors/csv-pupil-upload')
-const R = require('ramda')
 const arrayUtils = require('../array-utils')
 
 const validateHeader = (header) => header[0] === 'Surname' && header[1] === 'Forename' && header[2] === 'Middle name(s)' &&
@@ -24,4 +23,3 @@ module.exports.validate = (dataSet, header, element) => {
   }
   return validationError
 }
-
