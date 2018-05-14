@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"        : "MTC Pupil API",
+    "script"      : "dist/index.js",
+    "watch"       : false,
+    "instances"   : "max",
+    "exec_mode"   : "cluster"
+  }]
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "outDir": "dist",
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
+    "checkJs": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*.ts",
+    ".env"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
