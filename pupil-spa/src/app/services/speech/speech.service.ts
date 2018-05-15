@@ -16,15 +16,36 @@ export class SpeechService implements OnDestroy {
   private cancelTimeout;
   private speechStatusSource = new Subject<string>();
   protected synth;
+  private userActionEvents = ['keydown', 'mousedown']; // touchstart should work as well in theory, doesn't in practice
 
   // Observable string stream
   speechStatus = this.speechStatusSource.asObservable();
+
+  // Written like this instead of adding (this) binding to handle
+  // inside the added eventlisteners
+  private removeAutoplayRestrictions = () => {
+    const _window = this.windowRefService.nativeWindow;
+
+    // speak an empty string on the first useraction to remove 'restrictions'
+    // on autoplay in the future, speech and audio
+    this.speak('');
+
+    for (let i = 0; i < this.userActionEvents.length; i++) {
+      _window.removeEventListener(this.userActionEvents[i], this.removeAutoplayRestrictions);
+    }
+  }
 
   constructor(protected audit: AuditService, protected windowRefService: WindowRefService) {
     const _window = windowRefService.nativeWindow;
     if (_window.speechSynthesis) {
       console.log('Speech synthesis detected');
       this.synth = _window.speechSynthesis;
+
+      // create events that speak a null string on the first user action
+      // to avoid autoplay limitations on different devices
+      for (let i = 0; i < this.userActionEvents.length; i++) {
+        _window.addEventListener(this.userActionEvents[i], this.removeAutoplayRestrictions);
+      }
     } else {
       console.log('Speech synthesis API not supported');
     }
