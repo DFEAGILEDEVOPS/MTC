@@ -2,7 +2,7 @@ export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCo
   'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' | 'CheckSubmissionApiCalled' |
   'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' |
   'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' |
-  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'AppError';
+  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'AppError' | 'DuplicateAnswerError';
 
 export abstract class AuditEntry {
 
@@ -135,5 +135,11 @@ export class QuestionReadingEnded extends AuditEntry {
 export class AppError extends AuditEntry {
   constructor(data?: any) {
     super('AppError', new Date(), data);
+  }
+}
+
+export class DuplicateAnswerError extends AuditEntry {
+  constructor(data?: any) {
+    super('DuplicateAnswerError', new Date(), data);
   }
 }
