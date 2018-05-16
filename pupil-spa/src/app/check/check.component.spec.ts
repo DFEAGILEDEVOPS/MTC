@@ -48,7 +48,7 @@ describe('CheckComponent', () => {
         { provide: StorageService, useClass: StorageServiceMock },
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        WindowRefService,
+        WindowRefService
       ]
     })
       .compileComponents();
