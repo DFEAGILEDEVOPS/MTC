@@ -23,7 +23,7 @@ export class DeviceService {
         cpu: this.getCpuInformation(),
         navigator: this.getNavigatorProperties(),
         networkConnection: this.getNetworkInformation(),
-        screen: this.getScreenProperties()
+        screen: this.getScreenProperties(),
       });
   }
 
