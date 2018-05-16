@@ -14,7 +14,7 @@ describe('DeviceService', () => {
       providers: [
         DeviceService,
         {provide: StorageService, useValue: storageService},
-        WindowRefService
+        WindowRefService,
       ]
     });
     service = new DeviceService(
