@@ -184,6 +184,11 @@ And(/^I Upload a CSV file with 1 row to add Multiple Pupil$/) do
   add_multiple_pupil_page.save.click
 end
 
+And(/I Upload a CSV file with more than 300 rows/) do
+  add_multiple_pupil_page.upload_multiple_pupil_with_moreThan300Rows
+  add_multiple_pupil_page.save.click
+end
+
 Then(/^I can see the error message for uploading multiple pupil '(.*)'$/) do|msg|
   expect(add_multiple_pupil_page.error_message.text.include?(msg)).to be_truthy, "Expected: #{msg}...Got the message: #{add_multiple_pupil_page.error_message.text}"
 end
@@ -222,6 +227,10 @@ end
 
 And(/^I can see the validation error for duplicate UPN from attendance register for multiple pupil upload$/) do
   expect(@hashed_data[0][:errors].to_s.include?('UPN is a duplicate of a pupil already in your register')).to be_truthy, "Expected: 'UPN is a duplicate of a pupil already in your register'... But Got: #{@hashed_data[0][:errors].to_s}"
+end
+
+And(/I can see the validation error for duplicate UPN in the spreadsheet for multiple pupil upload/) do
+  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.')).to be_truthy, "Expected: 'Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.'... But Got: #{@hashed_data[0][:errors].to_s}"
 end
 
 And(/^I can see the validation error for empty UPN for multiple pupil upload$/) do
