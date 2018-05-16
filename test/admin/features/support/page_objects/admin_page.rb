@@ -6,6 +6,8 @@ class AdminPage < SitePrism::Page
   element :heading, '.heading-xlarge', text: 'Multiplication tables check for service managers'
   element :manage_check_windows, 'a', text: 'Manage check windows'
   element :manage_check_windows_text, 'p', text: 'Create and edit check administration windows'
+  element :upload_pupil_census, 'a', text: 'Upload pupil census'
+  element :upload_pupil_census_text, 'p', text: 'Upload pupil data into the active check window'
   element :pupil_check_settings, "a[href='/service-manager/check-settings']", text: 'Settings on pupil check'
   element :pupil_check_settings_text, 'p', text: 'Change the settings within the pupil check'
   element :school_page_settings, "a", text: 'Settings on school pages'

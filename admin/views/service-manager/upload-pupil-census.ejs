@@ -1,0 +1,38 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<header class="page-header">
+    <h1 class="heading-xlarge">Upload pupil census</h1>
+</header>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <br>
+        <form action="#" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
+            <div class="form-group">
+                <div class="font-xsmall">
+                    <input type="file" name="csvTemplateFile" id="file-upload" accept="text/csv"
+                           aria-label="Choose a file to upload"/>
+                </div>
+                <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
+                       aria-label="Remove uploaded file."/>
+            </div>
+            <div class="form-buttons">
+                <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled"/>
+                <a href="/service-manager/home" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <span class="bold-small">Uploaded file</span>
+        <dl class="pupil-census-uploaded-file">
+            <dd>No file uploaded
+            </dd>
+        </dl>
+    </div>
+</div>
