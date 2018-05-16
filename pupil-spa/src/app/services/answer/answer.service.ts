@@ -19,23 +19,32 @@ export class AnswerService {
     }
 
     // Check for duplicates - we can only store one answer for each question
-    const isAlreadyAnswered = answers.filter(
-      x => {
-        if (x.sequenceNumber === answer.sequenceNumber
-        && x.factor1 === answer.factor1
-        && x.factor2 === answer.factor2) {
-          return true;
-        }
-        return false;
-      });
+    const previousAnswers = this.getPreviousAnswers(answer, answers);
 
-    if (isAlreadyAnswered.length) {
+    if (previousAnswers.length > 0) {
       // Log this error
       this.auditService.addEntry(new DuplicateAnswerError(answer));
       return;
     }
-
     answers.push(answer);
     this.storageService.setItem('answers', answers);
+  }
+
+  /**
+   * Find a previous answer in the answers array
+   * @param {Answer} answer - the current answer to be stored
+   * @param [Answer] answers - the list of previously stored answers
+   * @return [Answer?] - empty array or array of answers
+   */
+  private getPreviousAnswers(answer: Answer, answers) {
+    return answers.filter(
+      x => {
+        if (x.sequenceNumber === answer.sequenceNumber
+          && x.factor1 === answer.factor1
+          && x.factor2 === answer.factor2) {
+          return true;
+        }
+        return false;
+      });
   }
 }

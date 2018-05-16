@@ -72,15 +72,15 @@ describe('AnswerService', () => {
   it('logs the attempted duplication to the audit log', () => {
     const answer = new Answer(9, 8, '1', 20);
     spyOn(storageService, 'setItem');
-    spyOn(auditService, 'addEntry');
+    const auditServiceAddEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getItem').and.returnValues(
       [], // 1st call
       [ answer ] // 2nd call
     );
     service.setAnswer(answer);
     service.setAnswer(answer);
-    expect(auditService.addEntry).toHaveBeenCalled();
-    const auditArg = auditService.addEntry.calls.mostRecent().args[0];
+    expect(auditServiceAddEntrySpy).toHaveBeenCalled();
+    const auditArg = auditServiceAddEntrySpy.calls.mostRecent().args[0];
     expect(auditArg.type).toBe('DuplicateAnswerError');
     expect(auditArg.data.factor1).toBe(9);
     expect(auditArg.data.factor2).toBe(8);
