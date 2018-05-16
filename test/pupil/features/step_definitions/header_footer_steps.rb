@@ -16,7 +16,6 @@ end
 
 Given(/^I have logged in$/) do
   sign_in_page.load
-  sign_in_page.load
   ct = Time.now
   new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
 
@@ -25,7 +24,6 @@ Given(/^I have logged in$/) do
   @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
   sign_in_page.login("abc12345","9999")
   sign_in_page.sign_in_button.click
-
 end
 
 Given(/^I am on the welcome page$/) do
