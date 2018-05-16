@@ -20,10 +20,12 @@ module.exports.process = async (csvDataArray, school) => {
 
   const cleanCsvData = arrayUtils.omitEmptyArrays(csvDataArray)
 
+  singlePupilValidationService.init()
   const csvData = await Promise.all(cleanCsvData.map(async (p) => {
     const { pupil, single } = await singlePupilValidationService.validate(p, school)
     pupils.push(pupil)
     return single
   }))
+  singlePupilValidationService.init() // tidy up as we're done
   return { pupils, csvData, headers }
 }

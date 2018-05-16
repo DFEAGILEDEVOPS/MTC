@@ -1,33 +1,58 @@
 const pupilValidator = require('../lib/validator/pupil-validator')
 const moment = require('moment')
+const R = require('ramda')
+const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
 
-/**
- *
- * @param single
- * @param {object} school
- * @return {Promise<{pupil: {school_id, upn: string, foreName: *, lastName: *, middleNames: *, gender: *, dateOfBirth: Date}, single: *}>}
- */
-module.exports.validate = async (single, school) => {
-  const pupil = ({
-    school_id: school.id,
-    upn: single[ 5 ].trim().toUpperCase(),
-    foreName: single[ 1 ],
-    lastName: single[ 0 ],
-    middleNames: single[ 2 ],
-    gender: single[ 4 ],
-    dateOfBirth: moment(single[ 3 ], 'DD/MM/YYYY').toDate()
-  })
-  const dob = single[ 3 ].split('/')
-  const pupilData = Object.assign({
-    'dob-day': dob[ 0 ] || '',
-    'dob-month': dob[ 1 ] || '',
-    'dob-year': dob[ 2 ] || ''
-  }, pupil)
-  const validationError = await pupilValidator.validate(pupilData)
-  if (validationError.hasError()) {
-    single[ 6 ] = []
-    Object.keys(validationError.errors).forEach((e) => single[ 6 ].push(validationError.errors[ e ]))
-    single[ 6 ] = single[ 6 ].filter((err, i, arr) => arr.indexOf(err) === i).join(', ')
+// Warning: some state is built up in this variable.  Please be sure to call `init()` before calling `validate()`
+let seenUpns = {}
+
+module.exports = {
+
+  /**
+   * Initialise the state to get a clean run - NB always call this function before `validate()`
+   */
+  init: () => {
+    seenUpns = {}
+  },
+
+  /**
+   * Validate a single pupil record
+   * @param {Array} pupilCsvData - pupilCsvData pupil row data from csv.  ['lastName', 'foreName', 'middleNames', 'dateOfBirth', 'gender', 'upn']
+   * @param {object} school
+   * @return {Promise<{pupil: {school_id, upn: string, foreName: *, lastName: *, middleNames: *, gender: *, dateOfBirth: Date}, pupilCsvData: *}>}
+   */
+  validate: async (pupilCsvData, school) => {
+    const p = ({
+      school_id: school.id,
+      upn: pupilCsvData[ 5 ].trim().toUpperCase(),
+      foreName: pupilCsvData[ 1 ],
+      lastName: pupilCsvData[ 0 ],
+      middleNames: pupilCsvData[ 2 ],
+      gender: pupilCsvData[ 4 ],
+      dateOfBirth: moment(pupilCsvData[ 3 ], 'DD/MM/YYYY').toDate()
+    })
+    const dob = pupilCsvData[ 3 ].split('/')
+    const pupil = Object.assign({
+      'dob-day': dob[ 0 ] || '',
+      'dob-month': dob[ 1 ] || '',
+      'dob-year': dob[ 2 ] || ''
+    }, p)
+    const validationError = await pupilValidator.validate(pupil)
+
+    // Check for duplicate UPNs with the batch file
+    if (R.prop(p.upn, seenUpns)) {
+      // Duplicate UPN
+      validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
+    }
+
+    // Store the UPN so we can check for duplicates
+    seenUpns[p.upn] = true
+
+    if (validationError.hasError()) {
+      pupilCsvData[ 6 ] = []
+      Object.keys(validationError.errors).forEach((e) => pupilCsvData[ 6 ].push(validationError.errors[ e ]))
+      pupilCsvData[ 6 ] = pupilCsvData[ 6 ].filter((err, i, arr) => arr.indexOf(err) === i).join(', ')
+    }
+    return { pupil: p, single: pupilCsvData }
   }
-  return { pupil, single }
 }
