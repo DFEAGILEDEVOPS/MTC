@@ -42,7 +42,7 @@ module.exports = {
     // Check for duplicate UPNs with the batch file
     if (R.prop(p.upn, seenUpns)) {
       // Duplicate UPN
-      validationError.addError('upn', addPupilErrorMessages.upnDuplicate)
+      validationError.addError('upn', addPupilErrorMessages.upnDuplicateInFile)
     }
 
     // Store the UPN so we can check for duplicates

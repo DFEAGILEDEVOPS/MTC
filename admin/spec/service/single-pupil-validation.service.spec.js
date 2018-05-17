@@ -33,7 +33,7 @@ describe('single-pupil-validation.service', () => {
       await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
       // 2 line - with the duplicate
       const {single} = await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
-      expect(single[6]).toBe('UPN is a duplicate of a pupil already in your register')
+      expect(single[6]).toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet')
     })
   })
 
