@@ -4,6 +4,7 @@
 const singlePupilValidationCSVService = require('../../services/single-pupil-validation.service')
 const PupilValidator = require('../../lib/validator/pupil-validator')
 const ValidationError = require('../../lib/validation-error')
+const schoolMock = require('../mocks/school')
 
 describe('single-pupil-validation.service', () => {
   describe('generate with valid arguments', () => {
@@ -20,6 +21,19 @@ describe('single-pupil-validation.service', () => {
       expect(single).toBeDefined()
       expect(single[6]).toBeUndefined()
       done()
+    })
+
+    it('detects duplicate upns in the upload file', async () => {
+      const pupilCsvData = [
+        ['surname', 'firstname', 'middlename', '21/11/2000', 'm', 'Y308212001120'],
+        ['surname2', 'firstname2', 'middlename2', '22/11/2001', 'm', 'Y308212001120'] // dup upn!
+      ]
+      singlePupilValidationCSVService.init()
+      // 1st line
+      await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
+      // 2 line - with the duplicate
+      const {single} = await singlePupilValidationCSVService.validate(pupilCsvData[0], schoolMock)
+      expect(single[6]).toBe('UPN is a duplicate of a pupil already in your register')
     })
   })
 
