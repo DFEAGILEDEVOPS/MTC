@@ -75,3 +75,10 @@ Feature:
     Then I should see the breadcrumb as "Home > Restarts"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
+
+  Scenario: Verify breadcrumb for upload pupil census page
+    Given I am logged in with a service manager
+    When I navigate to the upload pupil census page
+    Then I should see the breadcrumb as "Home > Upload pupil census"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the admin page
