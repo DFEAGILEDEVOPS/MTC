@@ -230,7 +230,7 @@ And(/^I can see the validation error for duplicate UPN from attendance register 
 end
 
 And(/I can see the validation error for duplicate UPN in the spreadsheet for multiple pupil upload/) do
-  expect(@hashed_data[0][:errors].to_s.include?('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.')).to be_truthy, "Expected: 'Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.'... But Got: #{@hashed_data[0][:errors].to_s}"
+  expect(@hashed_data[1][:errors].to_s.include?('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet')).to be_truthy, "Expected: 'Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.'... But Got: #{@hashed_data[0][:errors].to_s}"
 end
 
 And(/^I can see the validation error for empty UPN for multiple pupil upload$/) do
