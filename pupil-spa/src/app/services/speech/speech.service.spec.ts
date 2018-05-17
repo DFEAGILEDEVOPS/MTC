@@ -18,9 +18,27 @@ describe('SpeechService', () => {
     });
   });
 
-  it('should be created', inject([SpeechService], (service: SpeechService) => {
-    expect(service).toBeTruthy();
-  }));
+  describe('constructor', () => {
+    beforeEach(() => {
+      spyOn(window, 'addEventListener');
+    });
+
+    it('should be created', inject([SpeechService], (service: SpeechService) => {
+      expect(service).toBeTruthy();
+      expect(window.addEventListener).toHaveBeenCalledTimes(2);
+    }));
+  });
+
+  describe('#removeAutoplayRestrictions', () => {
+    beforeEach(() => {
+      spyOn(window, 'addEventListener').and.callFake((event, fun) => fun());
+      spyOn(window, 'removeEventListener');
+    });
+
+    it('should remove its event listeners', inject([SpeechService], (service: SpeechService) => {
+      expect(window.removeEventListener).toHaveBeenCalledTimes(2 * 2);
+    }));
+  });
 
   describe('#isSupported', () => {
     it('returns true if the api is supported', inject([SpeechService], (service: SpeechService) => {
