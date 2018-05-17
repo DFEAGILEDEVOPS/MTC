@@ -130,6 +130,22 @@ const controller = {
   },
 
   /**
+   * View upload pupil census.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getUploadPupilCensus: async (req, res) => {
+    res.locals.pageTitle = 'Upload pupil census'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    res.render('service-manager/upload-pupil-census', {
+      breadcrumbs: req.breadcrumbs()
+    })
+  },
+
+  /**
    * Add window check form.
    * @param req
    * @param res

@@ -13,6 +13,10 @@ Feature: Service manager homepage
     Given I am logged in with a service manager
     Then I should be given the option to manage check windows
 
+  Scenario: Service manager should be given the option to upload pupil census data
+    Given I am logged in with a service manager
+    Then I should be given the option to upload pupil census data
+
   Scenario: Service manager should be given the option to adjust settings on pupil check
     Given I am logged in with a service manager
     Then I should be given the option to adjust settings on pupil check
