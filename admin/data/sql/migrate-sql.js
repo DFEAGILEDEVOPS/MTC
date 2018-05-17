@@ -47,6 +47,7 @@ const runMigrations = async () => {
     error.appliedMigrations.forEach(migration => {
       winston.error(migration.name)
     })
+    throw new Error(error)
   }
 }
 
@@ -59,9 +60,9 @@ try {
     },
     (error) => {
       winston.info(chalk.red(error.message))
-      process.exitCode = 1
+      process.exit(1)
     })
 } catch (error) {
   winston.error(`Error caught: ${error.message}`)
-  process.exitCode = 1
+  process.exit(1)
 }
