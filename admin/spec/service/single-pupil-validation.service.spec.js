@@ -1,24 +1,15 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe, beforeEach, it, expect, spyOn */
 
-const sinon = require('sinon')
 const singlePupilValidationCSVService = require('../../services/single-pupil-validation.service')
 const PupilValidator = require('../../lib/validator/pupil-validator')
 const ValidationError = require('../../lib/validation-error')
 
 describe('single-pupil-validation.service', () => {
-  let sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.sandbox.create()
-  })
-
-  afterEach(() => sandbox.restore())
-
   describe('generate with valid arguments', () => {
     beforeEach(() => {
       // An empty validation error - indicating no errors at all
-      sandbox.mock(PupilValidator).expects('validate').resolves(new ValidationError())
+      spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
     })
 
     it('returns a pupil with no errors', async (done) => {
@@ -40,7 +31,7 @@ describe('single-pupil-validation.service', () => {
       .addError('dob-month', 'Date of birth can\'t be in the future')
 
     beforeEach(() => {
-      sandbox.mock(PupilValidator).expects('validate').resolves(validationError)
+      spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(validationError))
     })
 
     it('returns a pupil with errors', async (done) => {
