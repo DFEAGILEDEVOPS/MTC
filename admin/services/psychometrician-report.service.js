@@ -177,14 +177,14 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
         i.question === `${question.f1}x${question.f2}`,
         R.pathOr([], ['data', 'inputs'], check))
       const audits = R.pathOr([], ['data', 'audit'], check)
-      const ans = check.data.answers[idx]
+      const ans = check.data.answers.find(x => x.sequenceNumber === (idx + 1) && question.f1 === x.factor1 && question.f2 === x.factor2)
       psData[p(idx) + 'ID'] = question.f1 + ' x ' + question.f2
       psData[p(idx) + 'Response'] = ans ? ans.answer : ''
       psData[p(idx) + 'InputMethod'] = psUtilService.getInputMethod(inputs)
       psData[p(idx) + 'K'] = psUtilService.getUserInput(inputs)
       psData[p(idx) + 'Sco'] = markedAnswer ? psUtilService.getScore(markedAnswer) : ''
       psData[p(idx) + 'ResponseTime'] = ans ? psUtilService.getResponseTime(inputs, ans.answer) : ''
-      psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(inputs)
+      psData[p(idx) + 'TimeOut'] = psUtilService.getTimeoutFlag(ans.answer, inputs)
       psData[p(idx) + 'TimeOutResponse'] = ans ? psUtilService.getTimeoutWithNoResponseFlag(inputs, ans) : ''
       psData[p(idx) + 'TimeOutSco'] = markedAnswer ? psUtilService.getTimeoutWithCorrectAnswer(inputs, markedAnswer) : ''
       const tLoad = psUtilService.getLoadTime(idx + 1, audits)

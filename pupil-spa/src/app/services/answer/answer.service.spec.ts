@@ -9,9 +9,6 @@ let storageService: StorageService;
 
 describe('AnswerService', () => {
 
-  const shouldNotExecute = () => {
-    expect('this code not').toBe('executed');
-  };
   const toPoJo = (answer) => JSON.parse(JSON.stringify(answer));
 
   beforeEach(() => {
