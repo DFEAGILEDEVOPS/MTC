@@ -216,7 +216,7 @@ const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).tes
   (/^\/test-developer\/upload-new-form$/).test(url)
 
 const sessionOptions = {
-  name: 'staff-app.sid',
+  name: 'mtc-admin.sessionid',
   secret: config.SESSION_SECRET,
   resave: false,
   rolling: true,
