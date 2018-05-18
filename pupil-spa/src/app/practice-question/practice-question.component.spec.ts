@@ -63,6 +63,21 @@ describe('PractiseQuestionComponent', () => {
     });
   });
 
+  describe('hasStartedAnswering', () => {
+    it('returns false before input was added', () => {
+      expect(component.hasStartedAnswering()).toBeFalsy();
+    });
+    it('returns true after input was added', () => {
+      component.addChar('1');
+      expect(component.hasStartedAnswering()).toBeTruthy();
+    });
+    it('returns true after input was added and deleted', () => {
+      component.addChar('1');
+      component.deleteChar();
+      expect(component.hasStartedAnswering()).toBeTruthy();
+    });
+  });
+
   describe('onClickAnswer', () => {
     it('adds the input to the answer if there is room', () => {
       component.answer = '12';

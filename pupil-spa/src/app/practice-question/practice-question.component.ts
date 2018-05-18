@@ -73,6 +73,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   public answer = '';
 
   /**
+   * Flag to indicate that there was an input to the question
+   */
+  protected startedAnswering = false;
+
+  /**
    * The remaining time in seconds until the answer is automatically submitted
    * Used in the template.
    */
@@ -195,6 +200,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Check if there was an input to the question.
+   * @return {boolean}
+   */
+  hasStartedAnswering() {
+    return this.startedAnswering;
+  }
+
+  /**
    * Called from clicking a number button on the virtual keypad
    * @param {number} number
    */
@@ -300,6 +313,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.submitted) {
         return;
     }
+    this.startedAnswering = true;
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       if (this.config.speechSynthesis) {
@@ -329,6 +343,21 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Repeat the question for webspeech users when pressing tab
+   * Return early and do nothing if the user already started answering
+   * or the user doesn't have the speech flag on.
+   */
+  repeatQuestion() {
+    if (this.hasStartedAnswering()) {
+      return;
+    }
+    if (!this.questionService.getConfig().speechSynthesis) {
+      return;
+    }
+
+    this.speechService.speakQuestion(this.factor1 + ' times ' + this.factor2);
+  }
+  /**
    * Handle key presses
    * @param {KeyboardEvent} event
    * @return {boolean}
@@ -343,6 +372,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       case 'Delete':
       case 'Del':
         this.deleteChar();
+        break;
+      case 'Tab':
+        this.repeatQuestion();
         break;
       case 'Enter':
         this.onSubmit();
