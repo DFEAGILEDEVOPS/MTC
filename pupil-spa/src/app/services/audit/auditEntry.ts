@@ -3,7 +3,7 @@ export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCo
   'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' |
   'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' |
   'QuestionReadingStarted' | 'QuestionReadingEnded' | 'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' |
-  'AppError';
+  'AppError' | 'DuplicateAnswerError';
 
 export abstract class AuditEntry {
 
@@ -154,5 +154,11 @@ export class QuestionTimerCancelled extends AuditEntry {
 export class AppError extends AuditEntry {
   constructor(data?: any) {
     super('AppError', new Date(), data);
+  }
+}
+
+export class DuplicateAnswerError extends AuditEntry {
+  constructor(data?: any) {
+    super('DuplicateAnswerError', new Date(), data);
   }
 }
