@@ -9,6 +9,7 @@ const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const settingService = require('../services/setting.service')
+const pupilCensusService = require('../services/pupil-census.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -141,8 +142,27 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
 
     res.render('service-manager/upload-pupil-census', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      messages: res.locals.messages
     })
+  },
+
+  /**
+   * Submit pupil census.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  postUploadPupilCensus: async (req, res, next) => {
+    const uploadFile = req.files && req.files.csvPupilCensusFile
+    try {
+      await pupilCensusService.upload(uploadFile)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', `File has been uploaded successfully`)
+    res.redirect('/service-manager/upload-pupil-census')
   },
 
   /**

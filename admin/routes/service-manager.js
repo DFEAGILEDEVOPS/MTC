@@ -19,5 +19,6 @@ router.get('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER),
 router.get('/check-settings/:status', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
 router.post('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.setUpdateTiming(req, res, next))
 router.get('/upload-pupil-census', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res) => serviceManagerController.getUploadPupilCensus(req, res))
+router.post('/upload-pupil-census/upload', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.postUploadPupilCensus(req, res, next))
 
 module.exports = router

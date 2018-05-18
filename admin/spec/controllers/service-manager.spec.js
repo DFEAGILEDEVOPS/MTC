@@ -3,6 +3,7 @@ const httpMocks = require('node-mocks-http')
 const controller = require('../../controllers/service-manager')
 const settingService = require('../../services/setting.service')
 const checkWindowService = require('../../services/check-window.service')
+const pupilCensusService = require('../../services/pupil-census.service')
 const settingsValidator = require('../../lib/validator/settings-validator')
 const checkWindowValidator = require('../../lib/validator/check-window-validator')
 const ValidationError = require('../../lib/validation-error')
@@ -272,6 +273,34 @@ describe('service manager controller:', () => {
       spyOn(res, 'render')
       await controller.getUploadPupilCensus(req, res)
       expect(res.render).toHaveBeenCalled()
+    })
+    describe('postUploadPupilCensus', () => {
+      let goodReqParams = {
+        method: 'POST',
+        url: '/service-manager/upload-pupil-census/upload',
+        files: {
+          csvPupilCensusFile: null
+        }
+      }
+
+      it('redirects to pupil census page when successfully uploaded a csv file', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'redirect')
+        spyOn(pupilCensusService, 'upload')
+        await controller.postUploadPupilCensus(req, res, next)
+        expect(res.redirect).toHaveBeenCalled()
+        expect(req.flash).toHaveBeenCalled()
+      })
+      it('calls next when upload is rejected', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        spyOn(res, 'redirect')
+        spyOn(pupilCensusService, 'upload').and.returnValue(Promise.reject(new Error('error')))
+        await controller.postUploadPupilCensus(req, res, next)
+        expect(res.redirect).toHaveBeenCalledTimes(0)
+        expect(next).toHaveBeenCalled()
+      })
     })
   })
 })
