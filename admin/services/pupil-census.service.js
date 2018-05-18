@@ -3,12 +3,12 @@ const uuidv4 = require('uuid/v4')
 const moment = require('moment')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
-const { promisify } = require('bluebird')
 
-// const writeToString = promisify(csv.writeToString)
-
+const config = require('../config')
 const azureFileDataService = require('./data-access/azure-file.data.service')
+const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 
+const pupilCensusMaxSize = config.Data.pupilCensusMaxSize
 const pupilCensusService = {}
 
 /**
@@ -29,8 +29,14 @@ pupilCensusService.upload = async (uploadFile) => {
       })
       .on('end', async () => {
         try {
-          const response = await pupilCensusService.uploadToBlobStorage(csvDataArray)
-          return resolve(response)
+          const blobResult = await pupilCensusService.uploadToBlobStorage(csvDataArray)
+          const pupilCensusRecord = {
+            name: uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, ''),
+            blobFileName: blobResult && blobResult.name,
+            status: 'Processing pending'
+          }
+          await pupilCensusDataService.sqlCreate(pupilCensusRecord)
+          return resolve(uploadFile.filename)
         } catch (error) {
           reject(error)
         }
@@ -45,10 +51,18 @@ pupilCensusService.upload = async (uploadFile) => {
  */
 pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
   // Limit to 100 MB
-  const streamLength = 100 * 1024 * 1024
+  const streamLength = pupilCensusMaxSize
   const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
   const csvFileStream = uploadFile.join('\n')
   return azureFileDataService.azureUploadFile('censusupload', remoteFilename, csvFileStream, streamLength)
+}
+
+/**
+ * Get existing pupil census file
+ * @return {Object}
+ */
+pupilCensusService.getUploadedFile = async () => {
+  return pupilCensusDataService.sqlFindOne()
 }
 
 module.exports = pupilCensusService

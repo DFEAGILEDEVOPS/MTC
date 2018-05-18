@@ -32,10 +32,19 @@
             </div>
         </form>
 
-        <span class="bold-small">Uploaded file</span>
+        <span class="bold-small">
+            <span>Uploaded file</span>
+            <span class="col2">Status</span>
+        </span>
         <dl class="pupil-census-uploaded-file">
-            <dd>No file uploaded
+            <% if (pupilCensus) { %>
+            <dd>
+                <span><%= pupilCensus.name %></span>
+                <span class="col2"><%= pupilCensus.status %></span>
             </dd>
+            <% } else { %>
+            <dd>No file uploaded</dd>
+            <% } %>
         </dl>
     </div>
 </div>

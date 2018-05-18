@@ -2,6 +2,7 @@
 /* global spyOn, describe, it, expect, fail */
 
 const pupilCensusService = require('../../services/pupil-census.service')
+const pupilCensusDataService = require('../../services/data-access/pupil-census.data.service')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 
 const pupilCensusMock = {
@@ -19,6 +20,7 @@ describe('pupilCensusService', () => {
   describe('upload', () => {
     it('calls uploadToBlobStorage when reading is done', async () => {
       spyOn(pupilCensusService, 'uploadToBlobStorage')
+      spyOn(pupilCensusDataService, 'sqlCreate')
       await pupilCensusService.upload(pupilCensusMock)
       expect(pupilCensusService.uploadToBlobStorage).toHaveBeenCalled()
     })
@@ -37,6 +39,13 @@ describe('pupilCensusService', () => {
       spyOn(azureFileDataService, 'azureUploadFile')
       await pupilCensusService.uploadToBlobStorage([])
       expect(azureFileDataService.azureUploadFile).toHaveBeenCalled()
+    })
+  })
+  describe('getUploadedFile', () => {
+    it('calls sqlFindOne method to fetch the pupil census record', async () => {
+      spyOn(pupilCensusDataService, 'sqlFindOne')
+      await pupilCensusService.getUploadedFile()
+      expect(pupilCensusDataService.sqlFindOne).toHaveBeenCalled()
     })
   })
 })

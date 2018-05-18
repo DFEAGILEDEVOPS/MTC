@@ -1,4 +1,4 @@
-/* global jasmine describe expect it beforeEach spyOn */
+/* global jasmine describe expect it beforeEach spyOn fail */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../controllers/service-manager')
 const settingService = require('../../services/setting.service')
@@ -271,8 +271,25 @@ describe('service manager controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(res, 'render')
-      await controller.getUploadPupilCensus(req, res)
+      spyOn(pupilCensusService, 'getUploadedFile')
+      await controller.getUploadPupilCensus(req, res, next)
+      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
+    })
+
+    it('throws an error if fetching existing pupil census fails', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'render')
+      spyOn(pupilCensusService, 'getUploadedFile').and.returnValue(Promise.reject(new Error('error')))
+      try {
+        await controller.getUploadPupilCensus(req, res, next)
+      } catch (error) {
+        expect(error).toBe('error')
+      }
+      expect(next).toHaveBeenCalled()
+      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
     })
     describe('postUploadPupilCensus', () => {
       let goodReqParams = {

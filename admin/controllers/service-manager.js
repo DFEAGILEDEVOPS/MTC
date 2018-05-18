@@ -137,13 +137,19 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getUploadPupilCensus: async (req, res) => {
+  getUploadPupilCensus: async (req, res, next) => {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
-
+    let pupilCensus
+    try {
+      pupilCensus = await pupilCensusService.getUploadedFile()
+    } catch (error) {
+      return next(error)
+    }
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
-      messages: res.locals.messages
+      messages: res.locals.messages,
+      pupilCensus: pupilCensus
     })
   },
 
@@ -161,7 +167,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `File has been uploaded successfully`)
+    req.flash('info', `File has been uploaded`)
     res.redirect('/service-manager/upload-pupil-census')
   },
 
