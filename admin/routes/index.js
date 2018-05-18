@@ -24,9 +24,11 @@ router.get('/sign-in', (req, res) => getSignIn(req, res))
 
 /* Login validation */
 const passportStrategy = config.NCA_TOOLS_AUTH_URL && config.NCA_TOOLS_AUTH_URL.length > 0 ? 'custom' : 'local'
-router.post('/sign-in', (req, res, next) => {
-  next()
-}, passport.authenticate(passportStrategy, { failureRedirect: '/sign-in-failure' }),
+router.post('/sign-in',
+  (req, res, next) => {
+    next()
+  },
+  passport.authenticate(passportStrategy, { failureRedirect: '/sign-in-failure' }),
   (req, res) => postSignIn(req, res)
 )
 
