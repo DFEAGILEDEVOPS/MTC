@@ -10,10 +10,10 @@ describe('Test window validator', function () {
   let req = null
 
   function getBody (checkWindowName,
-                    adminStartDate,
-                    checkStartDate,
-                    checkEndDate,
-                    checkWindowId) {
+    adminStartDate,
+    checkStartDate,
+    checkEndDate,
+    checkWindowId) {
     return {
       checkWindowName: checkWindowName,
       adminStartDay: adminStartDate.format('D'),
