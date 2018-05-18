@@ -226,7 +226,7 @@ describe('sql.service:integration', () => {
          INSERT into ${table} (tDecimal) 
          VALUES (@tDecimal);
          SELECT @@IDENTITY;`,
-        params)
+      params)
       if (!insertResult.insertId) {
         return fail('insertId expected')
       }
@@ -263,7 +263,7 @@ describe('sql.service:integration', () => {
          INSERT into ${table} (tNumeric) 
          VALUES (@tNumeric);
          SELECT @@IDENTITY;`,
-        params)
+      params)
       if (!insertResult.insertId) {
         return fail('insertId expected')
       }
@@ -298,7 +298,7 @@ describe('sql.service:integration', () => {
          INSERT into ${table} (tFloat) 
          VALUES (@tFloat);
          SELECT @@IDENTITY;`,
-        params)
+      params)
       if (!insertResult.insertId) {
         return fail('insertId expected')
       }
@@ -333,7 +333,7 @@ describe('sql.service:integration', () => {
          INSERT into ${table} (tNvarchar) 
          VALUES (@tNvarchar);
          SELECT @@IDENTITY;`,
-        params)
+      params)
       if (!insertResult.insertId) {
         return fail('insertId expected')
       }

@@ -19,15 +19,36 @@ export class SpeechService implements OnDestroy {
   // Garbage Collector hack for Chrome implementations of the speech API..
   // See https://bugs.chromium.org/p/chromium/issues/detail?id=509488 for why this is necessary
   private utterancesGC = [];
+  private userActionEvents = ['keydown', 'mousedown']; // touchstart should work as well in theory, doesn't in practice
 
   // Observable string stream
   speechStatus = this.speechStatusSource.asObservable();
+
+  // Written like this instead of adding (this) binding to handle
+  // inside the added eventlisteners
+  private removeAutoplayRestrictions = () => {
+    const _window = this.windowRefService.nativeWindow;
+
+    // speak an empty string on the first useraction to remove 'restrictions'
+    // on autoplay in the future, speech and audio
+    this.speak('');
+
+    for (let i = 0; i < this.userActionEvents.length; i++) {
+      _window.removeEventListener(this.userActionEvents[i], this.removeAutoplayRestrictions);
+    }
+  }
 
   constructor(protected audit: AuditService, protected windowRefService: WindowRefService) {
     const _window = windowRefService.nativeWindow;
     if (_window.speechSynthesis) {
       console.log('Speech synthesis detected');
       this.synth = _window.speechSynthesis;
+
+      // create events that speak a null string on the first user action
+      // to avoid autoplay limitations on different devices
+      for (let i = 0; i < this.userActionEvents.length; i++) {
+        _window.addEventListener(this.userActionEvents[i], this.removeAutoplayRestrictions);
+      }
     } else {
       console.log('Speech synthesis API not supported');
     }
@@ -138,20 +159,29 @@ export class SpeechService implements OnDestroy {
     const elements = clonedElement.querySelectorAll(elementsToSpeak);
 
     // add 'artificial' pauses to take visual newlines or spaces into account
-    elements.forEach((elem) => {
+    for (let i = 0; i < elements.length; i++) {
       // remove all links and buttons inside the element to be spoken,
       // in order to avoid duplication
-      elem.querySelectorAll('a, button').forEach(k => k.parentNode.removeChild(k));
-
-      // if there is no text to be spoken, return early
-      if (/\S/.test(elem.textContent) === false) {
-        return;
+      const elem = elements[i].querySelectorAll('a, button');
+      for (let j = 0; j < elem.length; j++) {
+        elem[j].parentNode.removeChild(elem[j]);
       }
 
-      speechText += ' , ' + this.addTextBeforeSpeakingElement(elem) + elem.textContent;
-    });
+      // if there is no text to be spoken, skip this element
+      if (/\S/.test(elements[i].textContent) === false) {
+        continue;
+      }
 
-    this.speak(speechText.replace(/[\n\r]+/g, ' '));
+      speechText += ' , ' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
+    }
+
+    this.speak(speechText
+               // remove unnecessary newlines
+               .replace(/[\n\r]+/g, ' ')
+               // remove the leading comma, if there is any
+               .replace(/^ , /g, ' ')
+               // remove commas that appear after a period without text inbetween
+               .replace(/\.\s*,/g, '. '));
   }
 
   /**

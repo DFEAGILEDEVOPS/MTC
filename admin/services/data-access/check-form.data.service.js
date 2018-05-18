@@ -6,7 +6,7 @@ const sqlService = require('./sql.service')
 const table = '[checkForm]'
 
 const checkFormDataService = {
-    /**
+  /**
    * Get active forms
    * This will be deprecated when the form choice algorithm is introduced
    * @param id
@@ -93,7 +93,7 @@ const checkFormDataService = {
     return sqlService.query(sql, params)
   },
 
-    /**
+  /**
    * Fetch active forms (not deleted)
    * sorted by window
    * @returns {Promise<*>}
@@ -128,7 +128,7 @@ const checkFormDataService = {
     }
     return sqlService.query(sql, params)
   },
-    /**
+  /**
    * Create check form
    * @param checkForm
    * @returns {Promise<*>}
@@ -136,7 +136,7 @@ const checkFormDataService = {
   sqlCreate: (checkForm) => {
     return sqlService.create('[checkForm]', checkForm)
   },
-    /**
+  /**
    * Find check form by name.
    * @param formName
    * @returns {Promise|*}
