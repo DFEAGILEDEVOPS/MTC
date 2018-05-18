@@ -38,16 +38,6 @@ describe('CSV validator', function () {
       expect(validationError.get('template-upload')[1]).toBe('Rows must contain exactly 5 commas / 6 columns')
       done()
     })
-    it('detected duplicate UPN on the input data', async function (done) {
-      headers = [ 'Surname', 'Forename', 'Middle name(s)', 'Date of birth', 'Gender', 'UPN' ]
-      dataSet = [ [ 'Smith', 'John', 'Lawrence', '5/22/1005', 'M', 'X822200014001' ],
-        [ 'Brown', 'Maria', 'Stella', '7/15/2005', 'F', 'X822200014001' ] ]
-      const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
-      expect(validationError.hasError()).toBe(true)
-      expect(validationError.get('template-upload')[0])
-        .toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.')
-      done()
-    })
     it('detected only one data row', async function (done) {
       headers = [ 'Surname', 'Forename', 'Middle name(s)', 'Date of birth', 'Gender', 'UPN' ]
       dataSet = [ [ 'Smith', 'John', 'Lawrence', '5/22/1005', 'M', 'X822200014001' ] ]
@@ -66,7 +56,7 @@ describe('CSV validator', function () {
       const validationError = await csvValidator.validate(dataSet, headers, 'template-upload')
       expect(validationError.hasError()).toBe(true)
       expect(validationError.get('template-upload')[0])
-        .toBe('Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.')
+        .toBe('Upload a file with no more than 300 rows of data.')
       done()
     })
   })

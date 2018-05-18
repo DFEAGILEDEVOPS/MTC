@@ -11,7 +11,7 @@ module.exports.generate = async (school, headers, csvData) => {
   csvData.forEach((p) => errorsCsv.push(p))
   const writeToString = promisify(csv.writeToString)
   const csvStr = await writeToString(errorsCsv, { headers: true })
-// Upload csv to Azure
+  // Upload csv to Azure
   let file
   try {
     const remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`

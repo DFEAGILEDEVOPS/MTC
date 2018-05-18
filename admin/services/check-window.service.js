@@ -101,7 +101,7 @@ const checkWindowService = {
    * @param {String} sortDirection
    * @returns {Object}
    */
-  getAllCheckWindows: async(sortField, sortDirection) => {
+  getAllCheckWindows: async (sortField, sortDirection) => {
     // fetch past current and future check windows
     const checkWindows = await checkWindowDataService.sqlFindAllCheckWindows(sortField, sortDirection)
     const pastCheckWindows = []
@@ -149,7 +149,7 @@ const checkWindowService = {
    * @param {Number} id
    * @returns {Object}
    */
-  getEditableCheckWindow: async(id) => {
+  getEditableCheckWindow: async (id) => {
     if (!id) {
       throw new Error('Check window id not provided')
     }
@@ -200,7 +200,7 @@ const checkWindowService = {
    * Save check window
    * @param {Object} requestData
    */
-  save: async(requestData) => {
+  save: async (requestData) => {
     let checkWindow
     if (requestData.checkWindowId) {
       checkWindow = await checkWindowDataService.sqlFindOneById(requestData.checkWindowId)
@@ -234,7 +234,7 @@ const checkWindowService = {
    * @param {Object} id
    * @returns {Object}
    */
-  markDeleted: async(id) => {
+  markDeleted: async (id) => {
     const checkWindow = await checkWindowDataService.sqlFindOneById(id)
     if (!checkWindow) {
       throw new Error('Checkwindow for deletion not found')
