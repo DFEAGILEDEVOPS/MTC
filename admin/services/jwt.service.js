@@ -28,11 +28,11 @@ const jwtService = {
     await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
     // TODO: for additional security add in a device Id
     const payload = {
-      iss: 'MTC Admin',                                       // Issuer
-      sub: pupil.id,                                         // Subject
-      exp: moment(checkWindowEndDate).unix(),                // Expiry
-      nbf: Math.floor(Date.now() / 1000),                     // Not before
-      jwi: jwtId                                              // JWT token ID
+      iss: 'MTC Admin', // Issuer
+      sub: pupil.id, // Subject
+      exp: moment(checkWindowEndDate).unix(), // Expiry
+      nbf: Math.floor(Date.now() / 1000), // Not before
+      jwi: jwtId // JWT token ID
     }
 
     // Construct a JWT token

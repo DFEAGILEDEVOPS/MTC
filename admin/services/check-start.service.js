@@ -38,7 +38,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
     throw new Error('Validation failed')
   }
 
-   // Find the check window we are working in
+  // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
   // TODO: Remove maxAttempts and reintroduce it within pin generation service once verified that travis can successfully use node env variables
   const maxAttempts = config.Data.pinSubmissionMaxAttempts

@@ -21,4 +21,8 @@ class AddMultiplePupilPage < SitePrism::Page
     page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"))
   end
 
+  def upload_multiple_pupil_with_moreThan300Rows()
+    page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template_moreThan300Rows.csv"))
+  end
+
 end

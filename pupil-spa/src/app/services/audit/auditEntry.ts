@@ -2,7 +2,8 @@ export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCo
   'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' | 'CheckSubmissionApiCalled' |
   'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' |
   'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' |
-  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'AppError';
+  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' |
+  'AppError' | 'DuplicateAnswerError';
 
 export abstract class AuditEntry {
 
@@ -132,8 +133,32 @@ export class QuestionReadingEnded extends AuditEntry {
   }
 }
 
+export class QuestionTimerStarted extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerStarted', new Date(), data);
+  }
+}
+
+export class QuestionTimerEnded extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerEnded', new Date(), data);
+  }
+}
+
+export class QuestionTimerCancelled extends AuditEntry {
+  constructor(data?: any) {
+    super('QuestionTimerCancelled', new Date(), data);
+  }
+}
+
 export class AppError extends AuditEntry {
   constructor(data?: any) {
     super('AppError', new Date(), data);
+  }
+}
+
+export class DuplicateAnswerError extends AuditEntry {
+  constructor(data?: any) {
+    super('DuplicateAnswerError', new Date(), data);
   }
 }

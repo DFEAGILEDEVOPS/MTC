@@ -57,7 +57,7 @@ describe('completed check controller', () => {
       controller = setupController()
     })
 
-    it('returns bad request if request payload is not provided', async(done) => {
+    it('returns bad request if request payload is not provided', async (done) => {
       const req = httpMocks.createRequest({
         method: 'POST',
         url: '/api/completed-check',

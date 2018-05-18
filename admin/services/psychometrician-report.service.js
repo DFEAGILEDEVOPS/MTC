@@ -193,7 +193,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
       psData[p(idx) + 'tFirstKey'] = tFirstKey
       const tLastKey = ans ? psUtilService.getLastAnswerInputTime(inputs, ans.answer) : ''
       psData[p(idx) + 'tLastKey'] = tLastKey
-      psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad)  // seconds
+      psData[p(idx) + 'OverallTime'] = psUtilService.getOverallTime(tLastKey, tLoad) // seconds
       psData[p(idx) + 'RecallTime'] = psUtilService.getRecallTime(tLoad, tFirstKey)
     })
   }
