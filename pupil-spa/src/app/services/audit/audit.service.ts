@@ -9,9 +9,12 @@ export class AuditService {
 
   addEntry(auditEntry: AuditTypes.WarmupIntroRendered |
     AuditTypes.CheckStarted |
-    AuditTypes.QuestionRendered |
-    AuditTypes.PauseRendered |
     AuditTypes.QuestionAnswered |
+    AuditTypes.QuestionRendered |
+    AuditTypes.QuestionTimerStarted |
+    AuditTypes.QuestionTimerEnded |
+    AuditTypes.QuestionTimerCancelled |
+    AuditTypes.PauseRendered |
     AuditTypes.RefreshDetected |
     AuditTypes.UtteranceStarted |
     AuditTypes.UtteranceEnded): void {
