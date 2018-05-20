@@ -775,17 +775,17 @@ describe('psychometrician-util.service', () => {
   describe('#getTimeOutFlag', () => {
     it('throws an error if not passed an Array', () => {
       spyOn(winston, 'info')
-      const res = service.getTimeoutFlag(null)
+      const res = service.getTimeoutFlag('', null)
       expect(res).toBe('error')
     })
 
     it('returns 1 (indicating a timeout) when passed an empty array', () => {
-      const res = service.getTimeoutFlag([])
+      const res = service.getTimeoutFlag('', [])
       expect(res).toBe(1)
     })
 
     it('returns 0 (indicating NO timeout) when passed an array with Enter as the last keyboard entry', () => {
-      const res = service.getTimeoutFlag(keyboardInput)
+      const res = service.getTimeoutFlag('10', keyboardInput)
       expect(res).toBe(0)
     })
 
@@ -796,7 +796,7 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getTimeoutFlag(input)
+      const res = service.getTimeoutFlag('25', input)
       expect(res).toBe(0)
     })
 
@@ -807,7 +807,7 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getTimeoutFlag(input)
+      const res = service.getTimeoutFlag('10', input)
       expect(res).toBe(0)
     })
 
@@ -823,8 +823,54 @@ describe('psychometrician-util.service', () => {
         'eventType': 'touchstart',
         'input': ''
       })
-      const res = service.getTimeoutFlag(input)
+      const res = service.getTimeoutFlag('10', input)
       expect(res).toBe(0)
+    })
+
+    it('returns 1 - indicating a timeout - if the only input is the Enter key', () => {
+      const input = [ {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.558Z',
+        'eventType': 'keydown',
+        'input': '0'
+      },
+      {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.678Z',
+        'eventType': 'keydown',
+        'input': 'Enter'
+      } ]
+      const res = service.getTimeoutFlag('', input)
+      expect(res).toBe(1)
+    })
+
+    it('returns 1 - indicating a timeout - if the only input is non-numeric', () => {
+      const input = [ {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.558Z',
+        'eventType': 'keydown',
+        'input': '0'
+      },
+      {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.678Z',
+        'eventType': 'keydown',
+        'input': 'a'
+      },
+      {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.558Z',
+        'eventType': 'keydown',
+        'input': '0'
+      },
+      {
+        'question': 1,
+        'clientTimestamp': '2017-10-17T18:20:44.678Z',
+        'eventType': 'keydown',
+        'input': 'a'
+      } ]
+      const res = service.getTimeoutFlag('', input)
+      expect(res).toBe(1)
     })
   })
 
@@ -841,7 +887,8 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const res = service.getTimeoutWithNoResponseFlag(input)
+      const markedAnswerMock = {answer: '10'}
+      const res = service.getTimeoutWithNoResponseFlag(input, markedAnswerMock)
       expect(res).toBe('')
     })
 
@@ -868,17 +915,17 @@ describe('psychometrician-util.service', () => {
 
   describe('#getTimeoutWithCorrectAnswer', () => {
     it('returns an empty string if there was NOT a timeout', () => {
-      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true})
+      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true, answer: '10'})
       expect(res).toBe('')
     })
 
     it('returns 1 if there was a timeout and the answer is correct', () => {
-      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: true})
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: true, answer: '2'})
       expect(res).toBe(1)
     })
 
     it('returns 0 if there was a timeout and the answer is incorrect', () => {
-      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: false})
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: false, answer: '2'})
       expect(res).toBe(0)
     })
   })

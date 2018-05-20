@@ -269,17 +269,26 @@ psUtilService.getResponseTime = function (inputs, answer) {
 
 /**
  * A flag to determine if the question timed out (rather than the user pressing Enter)
- * @param inputs
+ * @param {String} answer - the answer provided
+ * @param {[Object]} inputs
  * @return {string|number}
  */
-psUtilService.getTimeoutFlag = function (inputs) {
+psUtilService.getTimeoutFlag = function (answer, inputs) {
   let timeout = 1
   if (!(inputs && Array.isArray(inputs))) {
     winston.info('invalid input: ', inputs)
     return 'error'
   }
+
   const normalisedInputs = psUtilService.cleanUpInputEvents(inputs)
-  if (R.pathOr('', ['input'], R.last(normalisedInputs)).toUpperCase() === 'ENTER') {
+
+  // There can only be a timeout if there is an answer
+  const isEnterKey = R.compose(
+    R.propEq('input', 'ENTER'),
+    R.evolve({ input: R.toUpper })
+  )
+
+  if (R.length(answer) > 0 && isEnterKey(R.last(normalisedInputs))) {
     timeout = 0
   }
   return timeout
@@ -295,7 +304,7 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
   if (!Array.isArray(inputs)) {
     return 'error'
   }
-  const hasTimeout = this.getTimeoutFlag(inputs)
+  const hasTimeout = this.getTimeoutFlag(answer.answer, inputs)
   if (!hasTimeout) {
     return ''
   }
@@ -314,7 +323,7 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
  * @return {number||string}
  */
 psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
-  const timeout = this.getTimeoutFlag(inputs)
+  const timeout = this.getTimeoutFlag(markedAnswer.answer, inputs)
   if (!timeout) {
     return ''
   }
