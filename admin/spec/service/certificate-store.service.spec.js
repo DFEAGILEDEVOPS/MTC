@@ -18,7 +18,7 @@ describe('certificate store', () => {
       config.Certificates.Azure.BlobContainer = 'theContainerName'
       const certStoreReturnValue = 'the public key in PEM format'
       spyOn(azureBlobDataService, 'getBlobText')
-      .and.returnValue(certStoreReturnValue)
+        .and.returnValue(certStoreReturnValue)
       const tsoPublicKey = await certStoreService.getNcaPublicKey()
       expect(azureBlobDataService.getBlobText).toHaveBeenCalledWith(config.Certificates.Azure.BlobContainer, config.Certificates.Azure.NcaToolsPublicKeyName)
       expect(tsoPublicKey).toBe(certStoreReturnValue)
@@ -75,7 +75,7 @@ describe('certificate store', () => {
       config.Certificates.Azure.BlobContainer = 'theContainerName'
       const certStoreReturnValue = 'the private key in PEM format'
       spyOn(azureBlobDataService, 'getBlobText')
-      .and.returnValue(certStoreReturnValue)
+        .and.returnValue(certStoreReturnValue)
       const mtcPrivateKey = await certStoreService.getMtcPrivateKey()
       await certStoreService.getMtcPrivateKey()
       expect(azureBlobDataService.getBlobText).toHaveBeenCalledTimes(1)

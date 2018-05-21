@@ -167,7 +167,7 @@ const sqlService = {}
 // Name of the admin database
 sqlService.adminSchema = '[mtc_admin]'
 
-  /**
+/**
  * Query data from the SQL Server Database
  * @param {string} sql - The SELECT statement to execute
  * @param {array} params - Array of parameters for SQL statement
@@ -213,7 +213,7 @@ sqlService.query = (sql, params = []) => {
   })
 }
 
- /**
+/**
  * Modify data in the SQL Server Database.
  * @param {string} sql - The INSERT/UPDATE/DELETE statement to execute
  * @param {array} params - Array of parameters for SQL statement

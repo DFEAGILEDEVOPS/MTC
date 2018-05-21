@@ -248,7 +248,7 @@ const checkFormService = {
    * @param checkWindows
    * @returns {Array}
    */
-    // TODO why is there functionality for check windows in the check form service?????
+  // TODO why is there functionality for check windows in the check form service?????
   checkWindowNames: (checkWindows) => {
     let checkWindowsName = []
     checkWindows.forEach(cw => {

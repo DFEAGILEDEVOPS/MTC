@@ -7,7 +7,7 @@ module.exports = {
   pupil_id: 12,
   checkCode: '763AD270-278D-4221-886C-23FF7E5E5736',
   checkWindow_id: 1,
-  checkForm_id: 1,
+  checkForm_id: 100,
   pupilLoginDate: moment('2018-02-11T15:42:18.062'),
   mark: 9,
   maxMark: 10,
@@ -18,43 +18,53 @@ module.exports = {
     answers: [ {
       factor1: 2,
       factor2: 5,
-      answer: '10'
+      answer: '10',
+      sequenceNumber: 1
     }, {
       factor1: 11,
       factor2: 2,
-      answer: '22'
+      answer: '22',
+      sequenceNumber: 2
     }, {
       factor1: 5,
       factor2: 10,
-      answer: ''
+      answer: '',
+      sequenceNumber: 3
     }, {
       factor1: 4,
       factor2: 4,
-      answer: '16'
+      answer: '16',
+      sequenceNumber: 4
     }, {
       factor1: 3,
       factor2: 9,
-      answer: '27'
+      answer: '27',
+      sequenceNumber: 5
     }, {
       factor1: 2,
       factor2: 4,
-      answer: '8'
+      answer: '8',
+      sequenceNumber: 6
     }, {
       factor1: 3,
       factor2: 3,
-      answer: '9'
+      answer: '9',
+      sequenceNumber: 7
     }, {
       factor1: 4,
       factor2: 9,
-      answer: '36'
+      answer: '36',
+      sequenceNumber: 8
     }, {
       factor1: 6,
       factor2: 5,
-      answer: '30'
+      answer: '30',
+      sequenceNumber: 9
     }, {
       factor1: 12,
       factor2: 12,
-      answer: '144'
+      answer: '144',
+      sequenceNumber: 10
     } ],
     audit: [ {
       type: 'WarmupStarted',

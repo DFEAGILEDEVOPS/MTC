@@ -16,15 +16,18 @@ Feature: Add Multiple Pupil validation Error
     And I Upload a CSV file with 1 row to add Multiple Pupil
     Then I can see the error message for uploading multiple pupil 'Must contain at least two rows of data'
 
+  Scenario: Uploading a CSV file with only more than 300 rows
+    And I Upload a CSV file with more than 300 rows
+    Then I can see the error message for uploading multiple pupil 'Upload a file with no more than 300 rows of data.'
 
   Scenario: Upload button disabled when no csv is uploaded
     Then the upload button should be disabled
 
-  @multiple_pupil_upload
+  @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with duplicate UPN from the uploaded file
     And I Upload a CSV file with duplicate UPN within uploaded file to add Multiple Pupil
-    Then I can see the error message for uploading multiple pupil 'Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet.'
-
+    When I download the Multiple Pupil upload CSV file with error
+    Then I can see the validation error for duplicate UPN in the spreadsheet for multiple pupil upload
 
   @multiple_pupil_upload @multiple_pupil_csv_download
   Scenario: Uploading a CSV file with wrong Gender format
