@@ -7,3 +7,4 @@ CREATE TABLE [mtc_admin].[pupilCensus] (
   createdAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE(),
   updatedAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE()
 );
+EXEC [mtc_admin].[spGenAuditTriggers]
