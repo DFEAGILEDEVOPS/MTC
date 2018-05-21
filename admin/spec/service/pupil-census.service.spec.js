@@ -20,17 +20,24 @@ describe('pupilCensusService', () => {
   describe('upload', () => {
     it('calls uploadToBlobStorage when reading is done', async () => {
       spyOn(pupilCensusService, 'uploadToBlobStorage')
-      spyOn(pupilCensusDataService, 'sqlCreate')
+      spyOn(pupilCensusService, 'create')
       await pupilCensusService.upload(pupilCensusMock)
       expect(pupilCensusService.uploadToBlobStorage).toHaveBeenCalled()
+      expect(pupilCensusService.create).toHaveBeenCalled()
     })
-    xit('rejects if uploadToBlobStorage fails', async () => {
-      spyOn(pupilCensusService, 'uploadToBlobStorage').and.returnValue(Promise.reject(new Error('error')))
+    it('rejects if uploadToBlobStorage fails', async () => {
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
+      }
+      const rejection = unsafeReject(Promise.reject(new Error('Mock error')))
+      spyOn(pupilCensusService, 'uploadToBlobStorage').and.returnValue(rejection)
+      spyOn(pupilCensusService, 'create')
       try {
         await pupilCensusService.upload(pupilCensusMock)
         fail()
       } catch (error) {
-        expect(error.message).toBe('error')
+        expect(error.message).toBe('Mock error')
       }
     })
   })
@@ -46,6 +53,14 @@ describe('pupilCensusService', () => {
       spyOn(pupilCensusDataService, 'sqlFindOne')
       await pupilCensusService.getUploadedFile()
       expect(pupilCensusDataService.sqlFindOne).toHaveBeenCalled()
+    })
+  })
+  describe('create', () => {
+    it('calls sqlCreate method to create the pupil census record', async () => {
+      spyOn(pupilCensusDataService, 'sqlCreate')
+      const blobResultMock = { name: 'blobFile' }
+      await pupilCensusService.create(pupilCensusMock, blobResultMock)
+      expect(pupilCensusDataService.sqlCreate).toHaveBeenCalled()
     })
   })
 })
