@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect, spyOn, fail */
+/* global describe, beforeEach, it, expect, spyOn, fail */
 
 const winston = require('winston')
 const checkDataService = require('../../services/data-access/check.data.service')
@@ -61,7 +61,7 @@ describe('markingService', () => {
     it('marks the answers and sets datetime of marking', async () => {
       spyOn(answerDataService, 'sqlUpdateWithResults')
       spyOn(checkDataService, 'sqlUpdateCheckWithResults').and.callFake((checkCode, marks, maxMarks, processedAt) => {
-        expect(marks).toBe(7)
+        expect(marks).toBe(9)
         expect(maxMarks).toBe(10)
         expect(checkCode).toBe('763AD270-278D-4221-886C-23FF7E5E5736')
         expect(processedAt).toBeTruthy()
@@ -139,6 +139,9 @@ describe('markingService', () => {
   })
 
   describe('#applyMarking', () => {
+    beforeEach(() => {
+      spyOn(winston, 'info')
+    })
     it('bails out early if the array is empty', async (done) => {
       spyOn(completedCheckDataService, 'sqlFindUnmarked').and.returnValue([])
       spyOn(service, 'batchMark')
@@ -159,6 +162,9 @@ describe('markingService', () => {
   })
 
   describe('#process', () => {
+    beforeEach(() => {
+      spyOn(winston, 'info')
+    })
     it('initially find out if there is any work to do', async () => {
       spyOn(completedCheckDataService, 'sqlHasUnmarked').and.returnValue(false)
       spyOn(service, 'applyMarking').and.returnValue(true)
