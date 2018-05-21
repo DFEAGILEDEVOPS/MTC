@@ -9,6 +9,7 @@ import 'rxjs/add/observable/throw';
 import { SubmissionService } from './submission.service';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
+import { AppUsageService} from '../app-usage/app-usage.service';
 
 let mockBackend: MockBackend;
 let submissionService: SubmissionService;
@@ -22,6 +23,7 @@ describe('SubmissionService', () => {
   let http: HttpClient;
   let service: SubmissionService;
   let auditService: AuditService;
+  let appUsageService: AppUsageService;
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
@@ -30,12 +32,14 @@ describe('SubmissionService', () => {
         SubmissionService,
         { provide: XHRBackend, useClass: MockBackend },
         StorageService,
-        AuditService
+        AuditService,
+        AppUsageService
       ]
     });
     storageService = injector.get(StorageService);
     auditService = injector.get(AuditService);
     submissionService = TestBed.get(SubmissionService);
+    appUsageService = TestBed.get(AppUsageService);
     mockBackend = injector.get(XHRBackend);
     service = TestBed.get(SubmissionService);
     service.checkStartAPIErrorDelay = 10;
@@ -90,11 +94,13 @@ describe('SubmissionService', () => {
       });
   });
   it( 'submitData returns response when successful', async (done) => {
-    spyOn(storageService , 'getAllItems').and.returnValues({});
+    spyOn(storageService , 'getAllItems').and.returnValues({ device: {} });
+    spyOn(appUsageService , 'getCounterValue');
     spyOn(http, 'post').and.returnValue(Observable.of('ok'));
     spyOn(auditService, 'addEntry').and.returnValue({});
     service.submitData().subscribe(res => {
         expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
+        expect(appUsageService.getCounterValue).toHaveBeenCalledTimes(1);
         expect(auditService.addEntry).toHaveBeenCalledTimes(0);
         expect(res).toEqual('ok');
         done();
@@ -103,7 +109,8 @@ describe('SubmissionService', () => {
       );
   });
   it( 'submitData retries until the max threshold attempts have been reached', async (done) => {
-    spyOn(storageService , 'getAllItems').and.returnValues({});
+    spyOn(storageService , 'getAllItems').and.returnValues({ device: {} });
+    spyOn(appUsageService , 'getCounterValue');
     spyOn(http, 'post').and.returnValue(Observable.throw({status: 503}));
     spyOn(auditService, 'addEntry').and.returnValue({});
     service.submitData().subscribe(res => {},

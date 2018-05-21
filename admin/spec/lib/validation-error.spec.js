@@ -93,7 +93,7 @@ describe('validation error class', function () {
     let sorted = ValidationError.sortByFieldOrder(arrayToBeSorted, sortOrder)
     expect(sorted[0]).toBe('three')
     expect(sorted[1]).toBe('four')
-    expect(sorted[2]).toBe('two')  // unsorted position
+    expect(sorted[2]).toBe('two') // unsorted position
     expect(sorted[3]).toBe('nine') // unsorted position
   })
 })

@@ -66,3 +66,12 @@ Then(/^I should be given the option to manage restart requests$/) do
   expect(admin_page).to have_manage_restart_requests
   expect(admin_page).to have_manage_restart_requests_text
 end
+
+Then(/^I should be given the option to upload pupil census data$/) do
+  expect(admin_page).to have_upload_pupil_census
+  expect(admin_page).to have_upload_pupil_census_text
+end
+
+When(/^I navigate to the upload pupil census page$/) do
+  admin_page.upload_pupil_census.click
+end

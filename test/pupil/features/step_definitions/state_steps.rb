@@ -66,9 +66,9 @@ But(/^the next question has loaded so I continue with the check$/) do
 end
 
 Then(/^the audit and inputs recorded should reflect this$/) do
-  refresh_audit_index = 17
+  refresh_audit_index = 24
   question_index = @number - 1
-  audit_location_index = (question_index * 3) + refresh_audit_index
+  audit_location_index = (question_index * 5) + refresh_audit_index
   expect(JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))[audit_location_index]['type']).to eql 'RefreshDetected'
 end
 
