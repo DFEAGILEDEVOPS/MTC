@@ -7,6 +7,7 @@ import { DeviceService } from '../services/device/device.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-login-success',
@@ -25,9 +26,23 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
               private questionService: QuestionService,
               private speechService: SpeechService,
               private appUsageService: AppUsageService,
+              private userService: UserService,
               private elRef: ElementRef) {
     const pupilData = storageService.getItem('pupil');
     const schoolData = storageService.getItem('school');
+
+    // if the user comes back to this component after his personal data
+    // was deleted (direct access through link or the back button in browser)
+    // redirect him according to his status - logged in or not
+    if (pupilData === null || schoolData === null) {
+      if (this.userService.isLoggedIn()) {
+        router.navigate(['check-start']);
+      } else {
+        router.navigate(['sign-in']);
+      }
+      return;
+    }
+
     this.pupil = new Pupil;
     this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;
@@ -54,10 +69,16 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick() {
+    // remove pupil and school data from local storage after confirming identity
+    this.storageService.removeItem('pupil');
+    this.storageService.removeItem('school');
     this.router.navigate(['check-start']);
   }
 
   ngOnDestroy(): void {
+    // remove pupil and school data from memory once component is destroyed
+    this.pupil = undefined;
+    this.school = undefined;
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
