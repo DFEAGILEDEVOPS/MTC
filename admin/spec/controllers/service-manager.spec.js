@@ -292,11 +292,19 @@ describe('service manager controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
     })
     describe('postUploadPupilCensus', () => {
-      let goodReqParams = {
+      const goodReqParams = {
         method: 'POST',
         url: '/service-manager/upload-pupil-census/upload',
         files: {
-          csvPupilCensusFile: null
+          csvPupilCensusFile: { name: 'test'}
+        }
+      }
+
+      const badReqParams = {
+        method: 'POST',
+        url: '/service-manager/upload-pupil-census/upload',
+        files: {
+          csvPupilCensusFile: {}
         }
       }
 
@@ -315,7 +323,15 @@ describe('service manager controller:', () => {
         spyOn(res, 'redirect')
         spyOn(pupilCensusService, 'upload').and.returnValue(Promise.reject(new Error('error')))
         await controller.postUploadPupilCensus(req, res, next)
-        expect(res.redirect).toHaveBeenCalledTimes(0)
+        expect(res.redirect).not.toHaveBeenCalled()
+        expect(next).toHaveBeenCalled()
+      })
+      it('calls next when there is no file to upload', async () => {
+        const res = getRes()
+        const req = getReq(badReqParams)
+        spyOn(res, 'redirect')
+        await controller.postUploadPupilCensus(req, res, next)
+        expect(res.redirect).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
       })
     })

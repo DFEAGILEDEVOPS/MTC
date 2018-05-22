@@ -162,6 +162,7 @@ const controller = {
    */
   postUploadPupilCensus: async (req, res, next) => {
     const uploadFile = req.files && req.files.csvPupilCensusFile
+    if (!uploadFile) return next('No file to upload')
     try {
       await pupilCensusService.upload(uploadFile)
     } catch (error) {
