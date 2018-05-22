@@ -322,7 +322,7 @@ const checkFormService = {
       throw new Error(`Invalid checkWindow ID: [${windowId}]`)
     }
 
-    // CheckForms can only be unassigned if the check window is not yet started
+    // CheckForms can only be unassigned if the check window has not yet started
     if (checkWindow.checkStartDate.isBefore(moment())) {
       throw new Error('Forms cannot be unassigned from an active check window')
     }
