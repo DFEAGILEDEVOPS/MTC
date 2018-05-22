@@ -15,9 +15,9 @@ When(/^I have assigned the check form to a check window$/) do
 end
 
 Then(/^the check form should be displayed as being assigned to the check window$/) do
-  expect(assign_form_to_window_page.flash_message.text).to eql "1 forms have been assigned to #{@check_window_hash[:check_name]}"
+  expect(assign_form_to_window_page.flash_message.text).to eql "1 form has been assigned to #{@check_window_hash[:check_name]}"
   window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
-  expect(window.name_of_window.text).to eql "#{@check_window_hash[:check_name]} (1 forms)"
+  expect(window.name_of_window.text).to eql "#{@check_window_hash[:check_name]} (1 form)"
 end
 
 Given(/^I previously assigned a check form to a check window$/) do
