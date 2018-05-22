@@ -149,14 +149,6 @@ describe('check-form.service', () => {
     })
   })
 
-  describe('#unassignedCheckFormsFromCheckWindows()', () => {
-    it('should return a promise', async () => {
-      const result = await service.unassignedCheckFormsFromCheckWindows(checkWindowMock, checkWindowByForm)
-      expect(checkWindowByForm[checkWindowMock._id].length).toBe(1)
-      expect(result).toBeTruthy()
-    })
-  })
-
   describe('#checkWindowNames()', () => {
     it('should return a string value', (done) => {
       const formData = {

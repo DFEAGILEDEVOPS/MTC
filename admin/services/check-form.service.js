@@ -208,30 +208,6 @@ const checkFormService = {
   },
 
   /**
-   * Un-assign check forms from check windows.
-   * @param CheckWindow
-   * @param CheckWindowsByForm
-   * @returns {Promise.<*>}
-   */
-  // WARN this expects a CheckWindow but is passed a check form in controllers/check-form.js
-  unassignedCheckFormsFromCheckWindows: async (CheckWindow, CheckWindowsByForm) => {
-    if (CheckWindowsByForm[CheckWindow._id]) {
-      // Array of CheckWindows models, each with a forms array
-      let modifiedCheckWindows = []
-      CheckWindowsByForm[CheckWindow._id].forEach(cw => {
-        const index = cw.forms.indexOf(CheckWindow._id)
-        if (index > -1) {
-          cw.forms.splice(index, 1)
-          modifiedCheckWindows.push(cw)
-        }
-      })
-      // Update any changed check windows
-      const promises = modifiedCheckWindows.map(cw => { cw.save() })
-      return Promise.all(promises)
-    }
-  },
-
-  /**
    * Un-assign check form from check window.
    * @param formId the check form to remove
    * @returns {Promise.<void>}
