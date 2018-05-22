@@ -5,6 +5,7 @@ const fs = require('fs')
 const moment = require('moment')
 
 const checkFormDataService = require('../services/data-access/check-form.data.service')
+const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const checkWindowService = require('../services/check-window.service')
 const config = require('../config')
 const random = require('../lib/random-generator')
@@ -307,6 +308,25 @@ const checkFormService = {
   },
 
   removeWindowAssignment: async (formId, windowId) => {
+    const promises = [
+      checkFormDataService.sqlFindOneById(formId),
+      checkWindowDataService.sqlFindOneById(windowId)
+    ]
+
+    const [checkForm, checkWindow] = await Promise.all(promises)
+
+    if (!checkForm) {
+      throw new Error(`Invalid checkForm ID: [${formId}]`)
+    }
+    if (!checkWindow) {
+      throw new Error(`Invalid checkWindow ID: [${windowId}]`)
+    }
+
+    // CheckForms can only be unassigned if the check window is not yet started
+    if (checkWindow.checkStartDate.isBefore(moment())) {
+      throw new Error('Forms cannot be unassigned from an active check window')
+    }
+
     return checkFormDataService.sqlRemoveWindowAssignment(formId, windowId)
   },
 

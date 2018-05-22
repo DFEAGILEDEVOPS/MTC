@@ -2,11 +2,14 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe xdescribe beforeEach it expect spyOn fail */
+/* global describe xdescribe beforeEach it expect spyOn fail jasmine */
 
 const fs = require('fs-extra')
+const R = require('ramda')
+const moment = require('moment')
 
 const checkFormDataService = require('../../services/data-access/check-form.data.service')
+const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 const random = require('../../lib/random-generator')
 
 const checkFormsMock = require('../mocks/check-forms')
@@ -19,6 +22,9 @@ const checkFormMock = {
   isDeleted: false,
   formData: '[ { "f1" : 2, "f2" : 5},{"f1" : 11, "f2" : 2    }]'
 }
+
+const resolve = (x) => Promise.resolve(x)
+const reject = (x) => Promise.reject(x)
 
 describe('check-form.service', () => {
   const service = require('../../services/check-form.service')
@@ -252,7 +258,7 @@ describe('check-form.service', () => {
     it('should return a list of unassigned check forms ids', async () => {
       const existingAssignedForms = [101, 102]
       const result = await service.getUnassignedFormsForCheckWindow(existingAssignedForms)
-      expect(result[0]._id).toBe(100)
+      expect(result[0].id).toBe(100)
       expect(result[0].name).toBe('MTC0100')
       expect(result).toBeTruthy()
     })
@@ -283,6 +289,64 @@ describe('check-form.service', () => {
       spyOn(checkFormDataService, 'sqlFindByIds').and.returnValue([checkFormMock])
       const result = await service.getCheckFormsByIds([1])
       expect(typeof result[0].formData).toBe('object')
+    })
+  })
+
+  describe('removeWindowAssignment', () => {
+    it('throws an error if the checkForm ID is not found in the DB', async () => {
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(reject(new Error('mock error')))
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock))
+      try {
+        await service.removeWindowAssignment(1, 2)
+        fail('should have thrown')
+      } catch (error) {
+        expect(error.message).toBe('mock error')
+      }
+    })
+
+    it('throws an error if the checkWindow ID is not found in the DB', async () => {
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(reject(new Error('mock error')))
+      try {
+        await service.removeWindowAssignment(1, 2)
+        fail('should have thrown')
+      } catch (error) {
+        expect(error.message).toBe('mock error')
+      }
+    })
+
+    it('throws an error if the checkWindow.checkStartDate has already passed', async () => {
+      // Set up a checkWindow that started 1 day ago
+      let today = moment('2018-06-02T09:00:00').toDate()
+      const checkWindowMock2 = R.assoc('checkStartDate', moment('2018-06-01T12:15:30'), checkFormMock)
+      jasmine.clock().mockDate(today)
+
+      // mock out the db calls
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock2))
+
+      try {
+        await service.removeWindowAssignment(1, 2)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Forms cannot be unassigned from an active check window')
+      }
+      jasmine.clock().uninstall()
+    })
+
+    // happy path
+    it('calls the data layer method to unassign forms', async () => {
+      // mock out the db calls
+      spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock))
+      spyOn(checkFormDataService, 'sqlRemoveWindowAssignment').and.returnValue(resolve({}))
+
+      try {
+        await service.removeWindowAssignment(1, 2)
+        expect(checkFormDataService.sqlRemoveWindowAssignment).toHaveBeenCalledTimes(1)
+      } catch (error) {
+        fail(error)
+      }
     })
   })
 })
