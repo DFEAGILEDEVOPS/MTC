@@ -50,5 +50,3 @@ END
 
 CLOSE db_cursor
 DEALLOCATE db_cursor
-go
-
