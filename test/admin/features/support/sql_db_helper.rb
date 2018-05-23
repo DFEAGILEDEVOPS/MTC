@@ -137,7 +137,7 @@ class SqlDbHelper
 
   def self.update_check_window_start_date(name,start_date)
     check_window = check_window_details(name)
-    sql = "UPDATE [mtc_admin].[checkWindow] set checkStartDate='2018-05-21 00:00:00 +01:00' WHERE id=#{check_window['id']};"
+    sql = "UPDATE [mtc_admin].[checkWindow] set checkStartDate='#{start_date}' WHERE id=#{check_window['id']};"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
