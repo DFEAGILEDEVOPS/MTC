@@ -55,9 +55,6 @@ describe('LoginSuccessComponent', () => {
     spyOn(storageService, 'setItem').and.callFake(function (key, value) {
       return store[key] = value + '';
     });
-    spyOn(storageService, 'removeItem').and.callFake(function (key, value) {
-      return store[key] = undefined;
-    });
     spyOn(storageService, 'clear').and.callFake(function () {
       store = {};
     });
@@ -80,10 +77,10 @@ describe('LoginSuccessComponent', () => {
     expect(compiled.querySelector('p.lede').textContent).toMatch(/Check your details are correct/);
   });
 
-  it('redirects to warm up introduction page and removes pupil and school data', () => {
+  it('redirects to warm up introduction page and removes pupil data', () => {
     component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
-    expect(storageService.removeItem).toHaveBeenCalledTimes(2);
+    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   });
 
 });
