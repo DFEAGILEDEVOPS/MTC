@@ -6,7 +6,7 @@ const receive = require('./receive')
 const port = 3000
 
 const requestHandler = (request, response) => {
-  if (request.url.includes('favicon')) {
+  if (!request.url || request.url.includes('favicon')) {
     response.end()
   }
   console.log(`processing request for ${request.url}`)

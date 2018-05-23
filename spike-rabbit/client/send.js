@@ -2,14 +2,14 @@
 
 const amqp = require('amqp')
 const queueName = 'speak'
+const amqpHost = process.env.AMQP_HOST || 'amqp://localhost:5672'
 
 const send = (message) => {
   console.log('opening AMQP connection to service bus...')
 
-  var connection = amqp.createConnection({ host: process.env.AMQP_HOST }, {reconnect: false})
+  var connection = amqp.createConnection({ host: amqpHost }, {reconnect: false})
 
   console.log('Connection Created. Waiting for connection be ready...')
-
 
   // Wait for connection to become established.
   connection.on('ready', function () {

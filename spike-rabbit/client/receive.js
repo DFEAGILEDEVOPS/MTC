@@ -2,11 +2,12 @@
 
 const amqp = require('amqp')
 const queueName = 'speak'
+const amqpHost = process.env.AMQP_HOST || 'amqp://localhost:5672'
 
 const receive = () => {
   console.log('Starting to connect to Rabbit MQ...')
 
-  var connection = amqp.createConnection({ host: process.env.AMQP_HOST }, {reconnect: false})
+  var connection = amqp.createConnection({ host: amqpHost }, {reconnect: false})
 
   console.log('Connection Created. Waiting for connection be ready...')
 
