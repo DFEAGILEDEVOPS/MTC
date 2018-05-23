@@ -3,8 +3,8 @@ CREATE TABLE [mtc_admin].[jobStatus] (
   createdAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
-  jobStatus nvarchar(50) NOT NULL,
-  code char(3) NOT NULL,
+  description nvarchar(50) NOT NULL,
+  [code] char(3) NOT NULL,
   CONSTRAINT [PK_jobStatusCode] PRIMARY KEY CLUSTERED ([id] ASC)
     WITH (
       PAD_INDEX = OFF,

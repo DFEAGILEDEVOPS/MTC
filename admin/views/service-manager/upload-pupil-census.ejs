@@ -34,13 +34,13 @@
 
         <span class="bold-small">
             <span>Uploaded file</span>
-            <span class="col2">Status</span>
+            <span class="job-status">Status</span>
         </span>
         <dl class="pupil-census-uploaded-file">
             <% if (pupilCensus) { %>
             <dd>
                 <span><%= pupilCensus.name %></span>
-                <span class="col2"><%= pupilCensus.status %></span>
+                <span class="job-status"><%= pupilCensus.jobStatus %></span>
             </dd>
             <% } else { %>
             <dd>No file uploaded</dd>

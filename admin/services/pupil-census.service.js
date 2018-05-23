@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 const config = require('../config')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
+const jobStatusDataService = require('./data-access/job-status.data.service')
 
 const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
@@ -61,7 +62,7 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
   const pupilCensusRecord = {
     name: uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, ''),
     blobFileName: blobResult && blobResult.name,
-    jobStatus_id: 1
+    jobStatusCode: 'SUB'
   }
   await pupilCensusDataService.sqlCreate(pupilCensusRecord)
 }
@@ -71,7 +72,15 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
  * @return {Object}
  */
 pupilCensusService.getUploadedFile = async () => {
-  return pupilCensusDataService.sqlFindOne()
+  const pupilCensus = await pupilCensusDataService.sqlFindOne()
+  if (!pupilCensus) return
+  const jobStatusCode = pupilCensus.jobStatusCode
+  if (!jobStatusCode) {
+    throw new Error('Pupil census record does not have a job status reference')
+  }
+  const jobStatus = await jobStatusDataService.sqlFindOneByCode(jobStatusCode)
+  pupilCensus.jobStatus = jobStatus && jobStatus.description
+  return pupilCensus
 }
 
 module.exports = pupilCensusService
