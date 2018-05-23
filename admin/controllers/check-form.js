@@ -357,7 +357,7 @@ const saveAssignCheckFormsToWindow = async (req, res, next) => {
     return next(error)
   }
 
-  req.flash('info', `${totalForms} forms have been assigned to ${checkWindowName}`)
+  req.flash('info', `${totalForms} ${totalForms === 1 ? 'form has' : 'forms have'} been assigned to ${checkWindowName}`)
   req.flash('checkWindowId', checkWindowId)
   res.redirect('/test-developer/assign-form-to-window')
 }

@@ -50,7 +50,7 @@
                     <td<% if (messages && messages.checkWindowId && messages.checkWindowId.toString() === checkWindow.id.toString()) { %> class="highlight-item" <% } %>>
                         <% if (checkWindow.totalForms > 0 && totalFormsAvailable > 0) { %>
                         <a href="/test-developer/unassign-forms/<%= checkWindow.id %>" class="bold"><%= checkWindow.checkWindowName %></a> <% } else { %> <%= checkWindow.checkWindowName %> <% } %>
-                        (<%= checkWindow.totalForms %> forms)
+                        (<%= `${checkWindow.totalForms} ${checkWindow.totalForms === 1 ? 'form' : 'forms'}` %>)
                     </td>
                     <td class="align-right">
                         <% if (totalFormsAvailable > checkWindow.totalForms && totalFormsAvailable > 0) { %>
