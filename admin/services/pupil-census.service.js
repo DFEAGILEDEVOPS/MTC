@@ -45,7 +45,6 @@ pupilCensusService.upload = async (uploadFile) => {
  * @return {Promise<void>}
  */
 pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
-  // Limit to 100 MB
   const streamLength = pupilCensusMaxSize
   const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
   const csvFileStream = uploadFile.join('\n')
@@ -62,7 +61,7 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
   const pupilCensusRecord = {
     name: uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, ''),
     blobFileName: blobResult && blobResult.name,
-    status: 'Processing pending'
+    jobStatus_id: 1
   }
   await pupilCensusDataService.sqlCreate(pupilCensusRecord)
 }
