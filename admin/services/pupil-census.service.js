@@ -8,7 +8,7 @@ const config = require('../config')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 
-const pupilCensusMaxSize = config.Data.pupilCensusMaxSize
+const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
 
 /**
@@ -45,7 +45,7 @@ pupilCensusService.upload = async (uploadFile) => {
  * @return {Promise<void>}
  */
 pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
-  const streamLength = pupilCensusMaxSize
+  const streamLength = pupilCensusMaxSizeFileUploadMb
   const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
   const csvFileStream = uploadFile.join('\n')
   return azureFileDataService.azureUploadFile('censusupload', remoteFilename, csvFileStream, streamLength)
