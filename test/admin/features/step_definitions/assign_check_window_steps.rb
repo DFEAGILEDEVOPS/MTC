@@ -15,7 +15,7 @@ Then(/^I should see check windows$/) do
 end
 
 And(/^the check window has started$/) do
-  SqlDbHelper.update_check_window_start_date( @check_window_hash[:check_name],(Time.now - 86400).to_s)
+  SqlDbHelper.update_check_window_start_date_to_past( @check_window_hash[:check_name])
 end
 
 Then(/^I should not be able to remove the check from the window$/) do
