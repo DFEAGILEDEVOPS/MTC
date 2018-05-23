@@ -16,3 +16,5 @@ REFERENCES [mtc_admin].[jobStatus] ([code])
 
 ALTER TABLE [mtc_admin].[job] WITH CHECK ADD CONSTRAINT [FK_job_jobType_code] FOREIGN KEY([jobTypeCode])
 REFERENCES [mtc_admin].[jobType] ([code])
+
+EXEC mtc_admin.spGenAuditTriggers
