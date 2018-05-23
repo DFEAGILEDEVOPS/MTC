@@ -6,7 +6,7 @@ const fs = require('fs-extra')
 
 const config = require('../config')
 const azureFileDataService = require('./data-access/azure-file.data.service')
-const pupilCensusDataService = require('./data-access/pupil-census.data.service')
+const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 
 const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
@@ -59,12 +59,17 @@ pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
  * @return {Object}
  */
 pupilCensusService.create = async (uploadFile, blobResult) => {
+  let dataInput = []
+  const csvName = uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, '')
+  const blobFileName = blobResult && blobResult.name
+  dataInput.push(csvName, blobFileName)
+  dataInput = JSON.stringify(dataInput.join(','))
   const pupilCensusRecord = {
-    name: uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, ''),
-    blobFileName: blobResult && blobResult.name,
-    jobStatusCode: 'SUB'
+    input: dataInput,
+    jobStatusCode: 'SUB',
+    jobTypeCode: 'CEN'
   }
-  await pupilCensusDataService.sqlCreate(pupilCensusRecord)
+  await jobDataService.sqlCreate(pupilCensusRecord)
 }
 
 /**
@@ -72,14 +77,16 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
  * @return {Object}
  */
 pupilCensusService.getUploadedFile = async () => {
-  const pupilCensus = await pupilCensusDataService.sqlFindOne()
+  const pupilCensus = await jobDataService.sqlFindLatestByType('CEN')
   if (!pupilCensus) return
   const jobStatusCode = pupilCensus.jobStatusCode
   if (!jobStatusCode) {
     throw new Error('Pupil census record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneByCode(jobStatusCode)
+  const dataInput = pupilCensus.input && JSON.parse(pupilCensus.input)
   pupilCensus.jobStatus = jobStatus && jobStatus.description
+  pupilCensus.csvName = dataInput.split(',')[0]
   return pupilCensus
 }
 

@@ -2,7 +2,7 @@
 /* global spyOn, describe, it, expect, fail */
 
 const pupilCensusService = require('../../services/pupil-census.service')
-const pupilCensusDataService = require('../../services/data-access/pupil-census.data.service')
+const jobDataService = require('../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../services/data-access/job-status.data.service')
 const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 
@@ -19,8 +19,9 @@ const pupilCensusUploadMock = {
 
 const pupilCensusMock = {
   id: 1,
+  input: JSON.stringify(['csv', 'blob'].join(',')),
   jobStatusCode: 'SUB',
-  isDeleted: 0
+  jobTypeCode: 'CEN',
 }
 
 const jobStatusMock = {
@@ -63,22 +64,22 @@ describe('pupilCensusService', () => {
   })
   describe('getUploadedFile', () => {
     it('fetches a pupil census record and related status', async () => {
-      spyOn(pupilCensusDataService, 'sqlFindOne').and.returnValue(pupilCensusMock)
+      spyOn(jobDataService, 'sqlFindLatestByType').and.returnValue(pupilCensusMock)
       spyOn(jobStatusDataService, 'sqlFindOneByCode').and.returnValue(jobStatusMock)
       await pupilCensusService.getUploadedFile()
-      expect(pupilCensusDataService.sqlFindOne).toHaveBeenCalled()
+      expect(jobDataService.sqlFindLatestByType).toHaveBeenCalled()
     })
     it('returns if no pupil census record is found', async () => {
-      spyOn(pupilCensusDataService, 'sqlFindOne')
+      spyOn(jobDataService, 'sqlFindLatestByType')
       spyOn(jobStatusDataService, 'sqlFindOneByCode')
       await pupilCensusService.getUploadedFile()
-      expect(pupilCensusDataService.sqlFindOne).toHaveBeenCalled()
+      expect(jobDataService.sqlFindLatestByType).toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByCode).not.toHaveBeenCalled()
     })
     it('throws an error pupil census record does not have a job status code', async () => {
       const errorPupilCensusMock = Object.assign({}, pupilCensusMock)
       errorPupilCensusMock.jobStatusCode = undefined
-      spyOn(pupilCensusDataService, 'sqlFindOne').and.returnValue(errorPupilCensusMock)
+      spyOn(jobDataService, 'sqlFindLatestByType').and.returnValue(errorPupilCensusMock)
       spyOn(jobStatusDataService, 'sqlFindOneByCode')
       try {
         await pupilCensusService.getUploadedFile()
@@ -87,16 +88,16 @@ describe('pupilCensusService', () => {
       catch (error) {
         expect(error.message).toBe('Pupil census record does not have a job status reference')
       }
-      expect(pupilCensusDataService.sqlFindOne).toHaveBeenCalled()
+      expect(jobDataService.sqlFindLatestByType).toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByCode).not.toHaveBeenCalled()
     })
   })
   describe('create', () => {
     it('calls sqlCreate method to create the pupil census record', async () => {
-      spyOn(pupilCensusDataService, 'sqlCreate')
+      spyOn(jobDataService, 'sqlCreate')
       const blobResultMock = { name: 'blobFile' }
       await pupilCensusService.create(pupilCensusMock, blobResultMock)
-      expect(pupilCensusDataService.sqlCreate).toHaveBeenCalled()
+      expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })
 })
