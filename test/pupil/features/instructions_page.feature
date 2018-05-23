@@ -19,6 +19,10 @@ Feature:
     Given I am on the instructions page
     Then I should see the total number of questions in the check
 
+  Scenario: Pupil Name is removed from Local storage after successful login and when pupil navigate to instruction page
+    Given I am on the instructions page
+    Then pupil name is removed from local storage
+
 # Removed for the March trial
 #  Scenario: Instructions page should display the timings between questions dynamically
 #    Given I am on the instructions page
