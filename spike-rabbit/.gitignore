@@ -1,5 +1,5 @@
 # rabbit mq data directories, generated when using docker compose instance of rabbit MQ for local dev
-rabbitmq
+rabbitmq/data
 
 # Logs
 logs

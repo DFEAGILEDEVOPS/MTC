@@ -7,7 +7,10 @@ const amqpHost = process.env.AMQP_HOST || 'amqp://localhost:5672'
 const send = (message) => {
   console.log('opening AMQP connection to service bus...')
 
-  var connection = amqp.createConnection({ host: amqpHost }, {reconnect: false})
+  const connection = amqp.createConnection({ host: amqpHost }, {reconnect: false})
+  connection.on('error', function (e) {
+    console.log('Error from amqp: ', e)
+  })
 
   console.log('Connection Created. Waiting for connection be ready...')
 

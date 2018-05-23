@@ -1,13 +1,26 @@
 'use strict'
 
+require('dotenv').config()
+
 const amqp = require('amqp')
 const queueName = 'speak'
-const amqpHost = process.env.AMQP_HOST || 'amqp://localhost:5672'
+const busConfig = {
+  host: process.env.ServiceBusHost,
+  queueName: process.env.ServiceBusQueueName,
+  user: process.env.ServiceBusUsername, // Azure: SASKeyName
+  password: process.env.ServiceBusPassword, // Azure: SASKey
+  protocol: process.env.ServiceBusProtocol || 'amqps'
+}
+
+const uri = busConfig.protocol + '://' + encodeURIComponent(busConfig.user) + ':' + encodeURIComponent(busConfig.password) + '@' + busConfig.host
 
 const receive = () => {
   console.log('Starting to connect to Rabbit MQ...')
 
-  var connection = amqp.createConnection({ host: amqpHost }, {reconnect: false})
+  const connection = amqp.createConnection({ host: uri }, {reconnect: false})
+  connection.on('error', function (e) {
+    console.log('Error from amqp: ', e)
+  })
 
   console.log('Connection Created. Waiting for connection be ready...')
 

@@ -9,12 +9,13 @@ services:
     volumes:
     - "$PWD/rabbitmq/data/log:/data/log"
     - "$PWD/rabbitmq/data/mnesia:/data/mnesia"
-  node:
-    build: ./client
-    container_name: node
-    ports:
-    - "3001:3001"
-    depends_on:
-    - rabbit
-    links:
-    - rabbit
+    - "$PWD/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+  #node:
+  #  build: ./client
+  #  container_name: node
+  #  ports:
+  #  - "3001:3001"
+  #  depends_on:
+  #  - rabbit
+  #  links:
+  #  - rabbit

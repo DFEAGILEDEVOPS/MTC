@@ -1,8 +1,8 @@
 'use strict'
 
 const http = require('http')
-const send = require('./send')
-const receive = require('./receive')
+const send = require('./amqp/send')
+const receive = require('./amqp/receive')
 const port = 3000
 
 const requestHandler = (request, response) => {
