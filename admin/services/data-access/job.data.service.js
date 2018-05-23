@@ -24,7 +24,7 @@ jobDataService.sqlCreate = async (data) => {
 jobDataService.sqlFindLatestByType = async (jobTypeCode) => {
   const sql = `SELECT TOP 1 * 
   FROM ${sqlService.adminSchema}.${table}
-  WHERE TYPE=@jobTypeCode 
+  WHERE jobTypeCode=@jobTypeCode 
   ORDER BY createdAt DESC`
   const params = [
     {
