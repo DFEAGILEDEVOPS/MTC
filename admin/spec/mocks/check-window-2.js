@@ -1,11 +1,11 @@
 const moment = require('moment')
 
 module.exports = {
-  _id: 29,
-  id: 23,
+  id: 29,
   name: 'MTC0061',
-  updatedAt: moment.utc('2017-11-21 15:21:40').toDate(),
-  createdAt: moment.utc('2017-11-21T15:21:40').toDate(),
+  checkStartDate: moment.utc('2018-06-01 08:00:00'),
+  updatedAt: moment.utc('2017-11-21 15:21:40'),
+  createdAt: moment.utc('2017-11-21T15:21:40'),
   questions: [
     { f1: 1, f2: 8 },
     { f1: 3, f2: 4 },
