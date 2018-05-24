@@ -39,5 +39,12 @@ export class GlobalErrorHandler implements ErrorHandler {
       hitType: 'pageview',
       page: '/error'
     });
+
+    window.ga('send', {
+      hitType: 'event',
+      eventCategory: 'error',
+      eventAction: url,
+      eventLabel: errorMessage
+    });
   }
 }
