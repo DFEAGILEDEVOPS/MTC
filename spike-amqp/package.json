@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "amqp10": "^3.6.0",
+    "azure-sb": "^0.10.6",
+    "dotenv": "^5.0.1"
+  }
+}
