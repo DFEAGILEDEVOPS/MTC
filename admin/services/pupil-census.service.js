@@ -8,6 +8,7 @@ const config = require('../config')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
+const jobTypeDataService = require('./data-access/job-type.data.service')
 
 const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
@@ -64,10 +65,12 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
   const blobFileName = blobResult && blobResult.name
   dataInput.push(csvName, blobFileName)
   dataInput = JSON.stringify(dataInput.join(','))
+  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
   const pupilCensusRecord = {
     input: dataInput,
-    jobStatusCode: 'SUB',
-    jobTypeCode: 'CEN'
+    jobType_id: jobType.id,
+    jobStatus_id: jobStatus.id
   }
   await jobDataService.sqlCreate(pupilCensusRecord)
 }
@@ -77,13 +80,14 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
  * @return {Object}
  */
 pupilCensusService.getUploadedFile = async () => {
-  const pupilCensus = await jobDataService.sqlFindLatestByType('CEN')
+  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
+  const pupilCensus = await jobDataService.sqlFindLatestByTypeId(jobType.id)
   if (!pupilCensus) return
-  const jobStatusCode = pupilCensus.jobStatusCode
-  if (!jobStatusCode) {
+  const jobStatusId = pupilCensus.jobStatus_id
+  if (!jobStatusId) {
     throw new Error('Pupil census record does not have a job status reference')
   }
-  const jobStatus = await jobStatusDataService.sqlFindOneByCode(jobStatusCode)
+  const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
   const dataInput = pupilCensus.input && JSON.parse(pupilCensus.input)
   pupilCensus.jobStatus = jobStatus && jobStatus.description
   pupilCensus.csvName = dataInput.split(',')[0]

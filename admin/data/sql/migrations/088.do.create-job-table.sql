@@ -5,16 +5,16 @@ CREATE TABLE [mtc_admin].[job] (
   createdAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE(),
   updatedAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
-  jobStatusCode char(3) NOT NULL,
-  jobTypeCode char(3) NOT NULL,
+  jobStatus_id int NOT NULL,
+  jobType_id int NOT NULL,
   [output]    [nvarchar](MAX),
   [errorOutput]    [nvarchar](MAX),
 );
 
-ALTER TABLE [mtc_admin].[job] WITH CHECK ADD CONSTRAINT [FK_job_jobStatus_code] FOREIGN KEY([jobStatusCode])
-REFERENCES [mtc_admin].[jobStatus] ([code])
+ALTER TABLE [mtc_admin].[job] WITH CHECK ADD CONSTRAINT [FK_job_jobStatus_id] FOREIGN KEY([jobStatus_id])
+REFERENCES [mtc_admin].[jobStatus] ([id])
 
-ALTER TABLE [mtc_admin].[job] WITH CHECK ADD CONSTRAINT [FK_job_jobType_code] FOREIGN KEY([jobTypeCode])
-REFERENCES [mtc_admin].[jobType] ([code])
+ALTER TABLE [mtc_admin].[job] WITH CHECK ADD CONSTRAINT [FK_job_jobType_id] FOREIGN KEY([jobType_id])
+REFERENCES [mtc_admin].[jobType] ([id])
 
 EXEC mtc_admin.spGenAuditTriggers
