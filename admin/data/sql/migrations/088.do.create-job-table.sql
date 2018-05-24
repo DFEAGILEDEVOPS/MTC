@@ -7,7 +7,7 @@ CREATE TABLE [mtc_admin].[job] (
   version rowversion,
   jobStatus_id int NOT NULL,
   jobType_id int NOT NULL,
-  [output]    [nvarchar](MAX),
+  [jobOutput]    [nvarchar](MAX),
   [errorOutput]    [nvarchar](MAX),
 );
 

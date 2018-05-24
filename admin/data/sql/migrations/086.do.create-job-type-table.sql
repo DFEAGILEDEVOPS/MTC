@@ -5,7 +5,7 @@ CREATE TABLE [mtc_admin].[jobType] (
   version rowversion,
   description nvarchar(50) NOT NULL,
   [code] char(3) NOT NULL,
-  CONSTRAINT [PK_jobTypeCode] PRIMARY KEY CLUSTERED ([id] ASC)
+  CONSTRAINT [PK_jobType] PRIMARY KEY CLUSTERED ([id] ASC)
     WITH (
       PAD_INDEX = OFF,
       STATISTICS_NORECOMPUTE = OFF,

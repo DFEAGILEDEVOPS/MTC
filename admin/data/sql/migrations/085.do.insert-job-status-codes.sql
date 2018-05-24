@@ -3,4 +3,4 @@ INSERT INTO [mtc_admin].[jobStatus] (description, code) VALUES
   ('Processing', 'PRC'),
   ('Completed', 'COM'),
   ('Completed with errors', 'CWR'),
-  ('FAILED', 'FLD')
+  ('Failed', 'FLD')
