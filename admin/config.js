@@ -81,5 +81,11 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  AssetPath: process.env.ASSET_PATH || '/'
+  AssetPath: process.env.ASSET_PATH || '/',
+  Messaging: {
+    host: process.env.ESB_HOST || 'localhost',
+    username: process.env.ESB_USER || 'guest',
+    password: process.env.ESB_PASSWORK || 'guest',
+    protocol: process.env.ESB_PROTOCOL || 'amqp' // Azure requires amqps
+  }
 }

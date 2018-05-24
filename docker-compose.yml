@@ -9,3 +9,12 @@ services:
         SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
         ACCEPT_EULA: "Y"
         HOMEBREW_NO_ENV_FILTERING: 1
+  rabbit:
+    image: "rabbitmq"
+    container_name: rabbit
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+    volumes:
+    - "$PWD/rabbitmq/data/log:/data/log"
+    - "$PWD/rabbitmq/data/mnesia:/data/mnesia"

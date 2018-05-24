@@ -88,3 +88,6 @@ test-output/*/*
 .env*
 
 /test-output
+
+# rabbit mq data directories, generated when using docker compose instance of rabbit MQ for local dev
+rabbitmq/data
