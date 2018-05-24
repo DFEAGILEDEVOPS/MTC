@@ -30,7 +30,6 @@ module.exports = {
     helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080'
   },
   Sql: {
-    Enabled: true, // deprecated, to be removed
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,

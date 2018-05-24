@@ -1,6 +1,11 @@
 {
   "dependencies": {
     "amqp10": "^3.6.0",
-    "dotenv": "^5.0.1"
+    "dotenv": "^5.0.1",
+    "fast-csv": "^2.4.1",
+    "logdna": "^2.0.2",
+    "node-stopwatch": "^0.0.1",
+    "tedious": "^2.6.1",
+    "winston": "^2.4.2"
   }
 }
