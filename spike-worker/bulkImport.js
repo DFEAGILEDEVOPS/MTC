@@ -45,7 +45,7 @@ const doBulkInsert = async (csvPayload) => {
   bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
   bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
 
-  // Fetch all school ids for pupil records
+  // Fetch all school for pupil records
   const schoolDfeNumbers = csvPayload.map(r => `${r[0]}${r[1]}`)
   const schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
 
