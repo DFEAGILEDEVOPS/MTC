@@ -82,7 +82,8 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
   const checkData = {
     pupil_id: pupilId,
     checkWindow_id: checkWindow.id,
-    checkForm_id: checkForm.id
+    checkForm_id: checkForm.id,
+    checkForms: `[${checkForm.id}]`
   }
 
   return checkData
