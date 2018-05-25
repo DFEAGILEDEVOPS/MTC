@@ -18,3 +18,4 @@ services:
     volumes:
     - "$PWD/rabbitmq/data/log:/data/log"
     - "$PWD/rabbitmq/data/mnesia:/data/mnesia"
+    - "$PWD/rabbit_enabled_plugins:/etc/rabbitmq/enabled_plugins"
