@@ -101,12 +101,11 @@ checkStartService.pupilLogin = async function (pupilId) {
   }
   
   const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
-  const res = await checkFormService.allocateCheckForm(allForms, JSON.parse(check.checkForms))
+  const checkForm = await checkFormService.allocateCheckForm(allForms, JSON.parse(check.checkForms))
   
-  if (!res) {
+  if (!checkForm) {
     throw new Error('CheckForm not found: ' + check.checkForm_id)
   }
-  const checkForm = R.head(res)
   const checkData = {
     id: check.id,
     checkForm_id: checkForm.id,
