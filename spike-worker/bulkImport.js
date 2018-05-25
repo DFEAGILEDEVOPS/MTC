@@ -46,7 +46,9 @@ const doBulkInsert = async (csvPayload) => {
   bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
 
   // Fetch all school for pupil records
-  const schoolDfeNumbers = csvPayload.map(r => `${r[0]}${r[1]}`)
+  let schoolDfeNumbers = csvPayload.map(r => `${r[0]}${r[1]}`)
+  // filter duplicate entries
+  schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => self.indexOf(item) === pos)
   const schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
 
   for (let index = 0; index < csvPayload.length; index++) {
