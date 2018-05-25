@@ -3,6 +3,8 @@
 const TYPES = require('tedious').TYPES
 const Connection = require('tedious').Connection
 const config = require('./config')
+const moment = require('moment')
+const { promisify } = require('bluebird')
 
 const schoolDataService = require('../admin/services/data-access/school.data.service')
 
@@ -53,29 +55,35 @@ const doBulkInsert = async (csvPayload) => {
 
   for (let index = 0; index < csvPayload.length; index++) {
     const csvRow = csvPayload[index]
-    // TODO map all fields into the object
+    const dfeNumber = `${csvRow[0]}${csvRow[1]}`
+    const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
+    const schoolId = school && school.id
+    if (!schoolId) {
+      console.error(`School id not found for DfeNumber ${dfeNumber}`)
+      process.exit(1)
+    }
     bulkLoad.addRow({
-      school_id: schools.find(s => s.dfeNumber === parseInt(`${csvRow[0]}${csvRow[1]}`)),
+      school_id: schoolId,
       upn: csvRow[2],
       lastName: csvRow[3],
       foreName: csvRow[4],
       middleNames: csvRow[5],
       gender: csvRow[6],
-      dateOfBirth: csvRow[7]
+      dateOfBirth: moment(csvRow[7]).toDate()
     })
   }
   // execute
   connection.execBulkLoad(bulkLoad)
 }
 
-module.exports = (csvPayload) => {
+module.exports = async (csvPayload) => {
   connection = new Connection(dbConfig)
-
-  connection.on('connect', async function (error) {
-    if (error) {
-      console.error(error)
-    }
+  const connect = promisify(connection.connect)
+  try {
+    connect()
     await doBulkInsert(csvPayload)
-    console.log('import complete')
-  })
+  } catch (error) {
+    console.error(error)
+  }
+  console.log('import complete')
 }
