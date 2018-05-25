@@ -65,6 +65,14 @@ Then(/^local storage should be populated with questions and pupil metadata$/) do
   expect(JSON.parse page.evaluate_script('window.localStorage.getItem("access_token");')).to_not be_nil
 end
 
+Then(/^pupil name is removed from local storage$/) do
+  stored_pupil_metadata = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  expect(stored_pupil_metadata['checkCode']).to_not be_nil
+  expect(stored_pupil_metadata['firstName']).to be_nil
+  expect(stored_pupil_metadata['lastName']).to be_nil
+  expect(stored_pupil_metadata['dob']).to be_nil
+end
+
 When(/^I have chosen that the details are not correct$/) do
   confirmation_page.back_sign_in_page.click
 end
