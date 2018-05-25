@@ -11,14 +11,14 @@ const table = '[jobType]'
  * Find job type by type code.
  * @return {Object}
  */
-jobTypeDataService.sqlFindOneByTypeCode = async (code) => {
+jobTypeDataService.sqlFindOneByTypeCode = async (jobTypeCode) => {
   const sql = `SELECT * 
   FROM ${sqlService.adminSchema}.${table}
-  WHERE code=@code`
+  WHERE jobTypeCode=@jobTypeCode`
   const params = [
     {
-      name: 'code',
-      value: code,
+      name: 'jobTypeCode',
+      value: jobTypeCode,
       type: TYPES.Char
     }
   ]

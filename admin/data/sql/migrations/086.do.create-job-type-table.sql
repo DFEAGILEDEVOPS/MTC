@@ -4,7 +4,7 @@ CREATE TABLE [mtc_admin].[jobType] (
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
   description nvarchar(50) NOT NULL,
-  [code] char(3) NOT NULL,
+  [jobTypeCode] char(3) NOT NULL,
   CONSTRAINT [PK_jobType] PRIMARY KEY CLUSTERED ([id] ASC)
     WITH (
       PAD_INDEX = OFF,
@@ -13,5 +13,5 @@ CREATE TABLE [mtc_admin].[jobType] (
       ALLOW_ROW_LOCKS = ON,
       ALLOW_PAGE_LOCKS = ON
     ),
-  CONSTRAINT [jobType_code_uindex] UNIQUE([code])
+  CONSTRAINT [jobType_code_uindex] UNIQUE([jobTypeCode])
 )

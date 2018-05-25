@@ -68,7 +68,7 @@ pupilCensusService.create = async (uploadFile, blobResult) => {
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
   const pupilCensusRecord = {
-    input: dataInput,
+    jobInput: dataInput,
     jobType_id: jobType.id,
     jobStatus_id: jobStatus.id
   }
@@ -88,7 +88,7 @@ pupilCensusService.getUploadedFile = async () => {
     throw new Error('Pupil census record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  const dataInput = pupilCensus.input && JSON.parse(pupilCensus.input)
+  const dataInput = pupilCensus.jobInput && JSON.parse(pupilCensus.jobInput)
   pupilCensus.jobStatus = jobStatus && jobStatus.description
   pupilCensus.csvName = dataInput.split(',')[0]
   return pupilCensus

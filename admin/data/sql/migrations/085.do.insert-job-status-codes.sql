@@ -1,4 +1,4 @@
-INSERT INTO [mtc_admin].[jobStatus] (description, code) VALUES
+INSERT INTO [mtc_admin].[jobStatus] (description, jobStatusCode) VALUES
   ('Submitted', 'SUB'),
   ('Processing', 'PRC'),
   ('Completed', 'COM'),

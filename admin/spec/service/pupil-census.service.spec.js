@@ -20,7 +20,7 @@ const pupilCensusUploadMock = {
 
 const pupilCensusMock = {
   id: 1,
-  input: JSON.stringify(['csv', 'blob'].join(',')),
+  jobInput: JSON.stringify(['csv', 'blob'].join(',')),
   jobType_id: 1,
   jobStatus_id: 1
 }
@@ -28,13 +28,13 @@ const pupilCensusMock = {
 const jobStatusMock = {
   id: 1,
   description: 'Submitted',
-  code: 'SUB'
+  jobStatusCode: 'SUB'
 }
 
 const jobTypeMock = {
   id: 1,
   description: 'Pupil Census',
-  code: 'CEN'
+  jobTypeCode: 'CEN'
 }
 
 describe('pupilCensusService', () => {

@@ -1,7 +1,7 @@
 CREATE TABLE [mtc_admin].[job] (
   id        INT IDENTITY (1, 1) NOT NULL,
   urlSlug [uniqueidentifier] NOT NULL DEFAULT (newid()),
-  input      [nvarchar](MAX) NOT NULL,
+  jobInput      [nvarchar](MAX) NOT NULL,
   createdAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE(),
   updatedAt DATETIMEOFFSET(3)   NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
