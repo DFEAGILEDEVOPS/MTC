@@ -76,14 +76,20 @@ const doBulkInsert = async (csvPayload) => {
   connection.execBulkLoad(bulkLoad)
 }
 
+function doWork (csvPayload) {
+  return new Promise((resolve, reject) => {
+    connection = new Connection(dbConfig)
+    connection.on('connect', async function (error) {
+      if (error) {
+        reject(error)
+      }
+      await doBulkInsert(csvPayload)
+      resolve()
+    })
+  })
+}
+
 module.exports = async (csvPayload) => {
-  connection = new Connection(dbConfig)
-  const connect = promisify(connection.connect)
-  try {
-    await connect()
-    await doBulkInsert(csvPayload)
-  } catch (error) {
-    console.error(error)
-  }
+  await doWork(csvPayload)
   console.log('import complete')
 }
