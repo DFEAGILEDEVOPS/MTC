@@ -80,7 +80,7 @@ module.exports = async (csvPayload) => {
   connection = new Connection(dbConfig)
   const connect = promisify(connection.connect)
   try {
-    connect()
+    await connect()
     await doBulkInsert(csvPayload)
   } catch (error) {
     console.error(error)
