@@ -511,6 +511,10 @@ tedious@^2.6.1:
     readable-stream "^2.2.6"
     sprintf-js "^1.1.1"
 
+to-bool@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/to-bool/-/to-bool-0.0.1.tgz#367c686599bb1539cfe4af9faf02669a16f174e8"
+
 tough-cookie@~2.3.3:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.4.tgz#ec60cee38ac675063ffc97a5c18970578ee83655"
