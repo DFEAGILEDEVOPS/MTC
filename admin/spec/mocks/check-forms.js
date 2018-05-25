@@ -1,6 +1,6 @@
 module.exports = [
   {
-    _id: 100,
+    id: 100,
     name: 'MTC0100',
     isDeleted: false,
     questions: [
@@ -19,7 +19,7 @@ module.exports = [
     ]
   },
   {
-    _id: 101,
+    id: 101,
     name: 'MTC0101',
     isDeleted: false,
     questions: [
@@ -38,7 +38,7 @@ module.exports = [
     ]
   },
   {
-    _id: 102,
+    id: 102,
     name: 'MTC0102',
     isDeleted: false,
     questions: [
