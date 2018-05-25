@@ -99,14 +99,17 @@ checkStartService.pupilLogin = async function (pupilId) {
   if (!check) {
     throw new Error('Unable to find a prepared check for pupil: ' + pupilId)
   }
-
-  const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
+  
+  const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
+  const res = await checkFormService.allocateCheckForm(allForms, JSON.parse(check.checkForms))
+  
   if (!res) {
     throw new Error('CheckForm not found: ' + check.checkForm_id)
   }
   const checkForm = R.head(res)
   const checkData = {
     id: check.id,
+    checkForm_id: checkForm.id,
     pupilLoginDate: moment.utc()
   }
 
