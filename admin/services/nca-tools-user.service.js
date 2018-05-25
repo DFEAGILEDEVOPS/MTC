@@ -23,7 +23,7 @@ const service = {
       }
     }
 
-    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
+    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
     if (!userRecord) {
       const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
       const role = await roleService.findByTitle(mtcRoleName)
