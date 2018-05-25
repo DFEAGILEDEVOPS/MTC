@@ -24,7 +24,6 @@ function writeCsv (data) {
   csv
     .write(data, {headers: headers})
     .pipe(ws)
-  ws.write('\n')
 }
 
 function main (options) {
