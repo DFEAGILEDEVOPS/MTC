@@ -29,14 +29,19 @@ function writeCsv (data) {
 function main (options) {
   const { recordsLength } = options
   const csvData = []
-  const baseUpn = '801500001'
+  let baseUpn = '702500001'
   for (let i = 0; i < recordsLength; i++) {
-    const pupilIdx = i + 1
+    let pupilIdx = i + 1
+    if (pupilIdx > 999) {
+      baseUpn = (parseInt(baseUpn) + 1000).toString()
+      pupilIdx = 1
+    }
     const serial = pupilIdx.toString().padStart(3, '0')
+    const upn = upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
     const record = [
       '999', // LEA
       '1001', // Estab
-      upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial,
+      upn,
       faker.name.lastName(), // Surname
       faker.name.firstName(), // Forename
       i % 100 === 0 ? faker.name.firstName() : '', // Middlenames

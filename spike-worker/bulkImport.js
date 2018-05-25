@@ -4,7 +4,6 @@ const TYPES = require('tedious').TYPES
 const Connection = require('tedious').Connection
 const config = require('./config')
 const moment = require('moment')
-const { promisify } = require('bluebird')
 
 const schoolDataService = require('../admin/services/data-access/school.data.service')
 
@@ -41,9 +40,9 @@ const doBulkInsert = async (csvPayload) => {
   // TODO add all fields that are being imported to this list
   bulkLoad.addColumn('school_id', TYPES.Int, { nullable: false })
   bulkLoad.addColumn('upn', TYPES.Char, { length: 13, nullable: false })
-  bulkLoad.addColumn('lastName', TYPES.NVarChar, { nullable: false })
-  bulkLoad.addColumn('foreName', TYPES.NVarChar, { nullable: false })
-  bulkLoad.addColumn('middleNames', TYPES.NVarChar, { nullable: true })
+  bulkLoad.addColumn('lastName', TYPES.NVarChar, { length: 'max', nullable: false })
+  bulkLoad.addColumn('foreName', TYPES.NVarChar, { length: 'max', nullable: false })
+  bulkLoad.addColumn('middleNames', TYPES.NVarChar, { length: 'max', nullable: true })
   bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
   bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
 

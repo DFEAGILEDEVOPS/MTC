@@ -36,7 +36,13 @@ async function loadAndImportCsv () {
   console.log(`bulk import took ${stopwatch.ms / 1000} seconds`)
 }
 
-loadAndImportCsv()
+(async () => {
+  try {
+    await loadAndImportCsv()
+  } catch (e) {
+    console.log(e)
+  }
+})()
 
 /**
  * Read data from csv
