@@ -35,7 +35,7 @@ function main (options) {
     const serial = pupilIdx.toString().padStart(3, '0')
     const record = [
       '999', // LEA
-      '1000', // Estab
+      '1001', // Estab
       upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial,
       faker.name.lastName(), // Surname
       faker.name.firstName(), // Forename
