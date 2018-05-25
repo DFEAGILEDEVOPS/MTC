@@ -36,7 +36,7 @@ const service = {
         user.school_id = school.id
       }
       await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
+      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
