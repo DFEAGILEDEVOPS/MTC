@@ -27,7 +27,7 @@ function writeCsv (data) {
   ws.write('\n')
 }
 
-async function main (options) {
+function main (options) {
   const { recordsLength } = options
   const csvData = []
   const baseUpn = '801500001'
