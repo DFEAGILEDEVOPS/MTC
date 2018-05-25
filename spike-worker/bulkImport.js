@@ -4,6 +4,8 @@ const TYPES = require('tedious').TYPES
 const Connection = require('tedious').Connection
 const config = require('./config')
 
+const schoolDataService = require('../admin/services/data-access/school.data.service')
+
 const dbConfig = {
   userName: config.Sql.Username,
   password: config.Sql.Password,
@@ -16,7 +18,7 @@ const dbConfig = {
 
 let connection
 
-const doBulkInsert = (csvPayload) => {
+const doBulkInsert = async (csvPayload) => {
   if (!connection) {
     throw new Error('connection not initialised')
   }
@@ -35,14 +37,30 @@ const doBulkInsert = (csvPayload) => {
 
   // setup your columns - always indicate whether the column is nullable
   // TODO add all fields that are being imported to this list
-  bulkLoad.addColumn('firstName', TYPES.Int, { nullable: false })
-  bulkLoad.addColumn('lastName', TYPES.NVarChar, { length: 50, nullable: true })
-  // etc....
+  bulkLoad.addColumn('school_id', TYPES.Int, { nullable: false })
+  bulkLoad.addColumn('upn', TYPES.Char, { length: 13, nullable: false })
+  bulkLoad.addColumn('lastName', TYPES.NVarChar, { nullable: false })
+  bulkLoad.addColumn('foreName', TYPES.NVarChar, { nullable: false })
+  bulkLoad.addColumn('middleNames', TYPES.NVarChar, { nullable: true })
+  bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
+  bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
+
+  // Fetch all school ids for pupil records
+  const schoolDfeNumbers = csvPayload.map(r => `${r[0]}${r[1]}`)
+  const schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
 
   for (let index = 0; index < csvPayload.length; index++) {
     const csvRow = csvPayload[index]
     // TODO map all fields into the object
-    bulkLoad.addRow({ firstName: csvRow.firstName, lastName: csvRow.lastName })
+    bulkLoad.addRow({
+      school_id: schools.find(s => s.dfeNumber === parseInt(`${csvRow[0]}${csvRow[1]}`)),
+      upn: csvRow[2],
+      lastName: csvRow[3],
+      foreName: csvRow[4],
+      middleNames: csvRow[5],
+      gender: csvRow[6],
+      dateOfBirth: csvRow[7]
+    })
   }
   // execute
   connection.execBulkLoad(bulkLoad)
@@ -51,11 +69,11 @@ const doBulkInsert = (csvPayload) => {
 module.exports = (csvPayload) => {
   connection = new Connection(dbConfig)
 
-  connection.on('connect', function (error) {
+  connection.on('connect', async function (error) {
     if (error) {
       console.error(error)
     }
-    doBulkInsert(csvPayload)
+    await doBulkInsert(csvPayload)
     console.log('import complete')
   })
 }
