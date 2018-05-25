@@ -1,34 +1,42 @@
-<div class="heading-block">
-    <header>
-        <div class="organisation-logo">
-            <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
-        </div>
-    </header>
-</div>
-
-<div class="grid-row">
-    <div class="column-two-thirds">
+<app-header style="width:100%"></app-header>
+<main id="content" class="js-content" role="main">
+    <div class="heading-block">
         <header>
-            <h1 class="heading-xlarge">Multiplication tables check</h1>
+            <div class="organisation-logo">
+                <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+            </div>
         </header>
-
-        <p class="lede">
-            Enter your school password and pupil PIN, then click <span class="nowrap">‘Sign in’</span>
-        </p>
-        <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off" autocapitalize="none">
-            <div class="form-group">
-                <label for="schoolPin" class="form-label-bold"> School password </label>
-                <input #schoolPin id="schoolPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
-            </div>
-            <div class="form-group">
-                <label for="pupilPin" class="form-label-bold"> Pupil PIN </label>
-                <input #pupilPin id="pupilPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off" type="number" pattern="\d*">
-            </div>
-            <div class="form-group">
-                <p>
-                    <input class="button button-start" type="submit" value="Sign in" [disabled]="!loginForm.form.valid">
-                </p>
-            </div>
-        </form>
     </div>
-</div>
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <header>
+                <h1 class="heading-xlarge">Multiplication tables check</h1>
+            </header>
+
+            <p class="lede">
+                Enter your school password and pupil PIN, then click <span class="nowrap">‘Sign in’</span>
+            </p>
+            <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off"
+                  autocapitalize="none">
+                <div class="form-group">
+                    <label for="schoolPin" class="form-label-bold"> School password </label>
+                    <input #schoolPin id="schoolPin" class="form-control" required minlength="1"
+                           [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
+                </div>
+                <div class="form-group">
+                    <label for="pupilPin" class="form-label-bold"> Pupil PIN </label>
+                    <input #pupilPin id="pupilPin" class="form-control" required minlength="1"
+                           [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off"
+                           type="number" pattern="\d*">
+                </div>
+                <div class="form-group">
+                    <p>
+                        <input class="button button-start" type="submit" value="Sign in"
+                               [disabled]="!loginForm.form.valid">
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

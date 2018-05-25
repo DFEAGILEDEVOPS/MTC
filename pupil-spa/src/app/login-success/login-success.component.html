@@ -1,19 +1,24 @@
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <header class="page-header">
-      <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}}</h1>
-    </header>
-    <p class="lede" tabindex="0">
-      Check your details are correct. Begin by clicking ‘Next’.
-    </p>
-    <br />
-    <p id="first-name" class="lede" tabindex="0">First name: <strong class="bold-medium">{{pupil.firstName}}</strong></p>
-    <p id="last-name" class="lede" tabindex="0">Last name: <strong class="bold-medium">{{pupil.lastName}}</strong></p>
-    <p id="dob" class="lede" tabindex="0">Date of birth: <strong class="bold-medium">{{pupil.dob}}</strong></p>
-    <p id="school" class="lede" tabindex="0">School: <strong class="bold-medium">{{school.name}}</strong></p>
-    <p class="lede">
-      <a routerLink="/sign-out" >This is not me, I will try again</a>
-    </p>
-    <button class="button" (click)="onClick()">Next</button>
-  </div>
-</div>
+<app-header style="width:100%"></app-header>
+<main id="content" class="js-content" role="main">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <header class="page-header">
+                <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}}</h1>
+            </header>
+            <p class="lede" tabindex="0">
+                Check your details are correct. Begin by clicking ‘Next’.
+            </p>
+            <br/>
+            <p id="first-name" class="lede" tabindex="0">First name: <strong
+                    class="bold-medium">{{pupil.firstName}}</strong></p>
+            <p id="last-name" class="lede" tabindex="0">Last name: <strong
+                    class="bold-medium">{{pupil.lastName}}</strong></p>
+            <p id="dob" class="lede" tabindex="0">Date of birth: <strong class="bold-medium">{{pupil.dob}}</strong></p>
+            <p id="school" class="lede" tabindex="0">School: <strong class="bold-medium">{{school.name}}</strong></p>
+            <p class="lede">
+                <a routerLink="/sign-out">This is not me, I will try again</a>
+            </p>
+            <button class="button" (click)="onClick()">Next</button>
+        </div>
+    </div>
+</main>
