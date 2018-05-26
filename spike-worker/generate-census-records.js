@@ -30,7 +30,7 @@ function main (options) {
   const { recordsLength } = options
   const csvData = []
   let baseUpn = '702500001'
-  for (let i = 0; i < recordsLength; i++) {
+  for (let i = 0; i <= recordsLength; i++) {
     let pupilIdx = i + 1
     if (pupilIdx > 999) {
       baseUpn = (parseInt(baseUpn) + 1000).toString()

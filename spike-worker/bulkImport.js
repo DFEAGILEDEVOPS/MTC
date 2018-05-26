@@ -68,7 +68,7 @@ const doBulkInsert = async (csvPayload) => {
       foreName: csvRow[4],
       middleNames: csvRow[5],
       gender: csvRow[6],
-      dateOfBirth: moment(csvRow[7]).toDate()
+      dateOfBirth: moment(csvRow[7], 'MM/DD/YY').toDate()
     })
   }
   // execute
