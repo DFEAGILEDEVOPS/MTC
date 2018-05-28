@@ -1,1 +1,1 @@
-ALTER TABLE mtc_admin.[check] ADD checkForms NVARCHAR(max) NULL;
+ALTER TABLE mtc_admin.[check] ADD checkForm_ids NVARCHAR(max) NULL;

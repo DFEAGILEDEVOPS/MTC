@@ -111,7 +111,7 @@ checkStartService.pupilLogin = async function (pupilId) {
   } else {
     const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
     
-    checkForms = JSON.parse(`[${check.checkForms}]`)
+    checkForms = JSON.parse(`[${check.checkForm_ids}]`)
     
     // If a pupil has seen all the checkForms, then we need to empty the array
     if (checkForms.length === allForms.length) checkForms = []
@@ -126,7 +126,7 @@ checkStartService.pupilLogin = async function (pupilId) {
     id: check.id,
     checkForm_id: checkForm.id,
     pupilLoginDate: moment.utc(),
-    checkForms: R.append(checkForm.id, checkForms)
+    checkForm_ids: R.append(checkForm.id, checkForms)
   }
 
   await checkDataService.sqlUpdate(checkData)
