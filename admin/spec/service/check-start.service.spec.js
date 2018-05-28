@@ -31,7 +31,8 @@ const preparedCheckMock = {
   maxMark: null,
   markedAt: null,
   startedAt: null,
-  data: null
+  data: null,
+  checkForm_ids: 3
 }
 
 describe('check-start.service', () => {
