@@ -107,7 +107,7 @@ checkStartService.pupilLogin = async function (pupilId) {
   if (check.pupilLoginDate === null) {
     const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
   
-    checkForm = R.head(res)
+    checkForm = res ? R.head(res) : null
   } else {
     const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
     
