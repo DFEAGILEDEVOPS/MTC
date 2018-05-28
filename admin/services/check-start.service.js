@@ -112,6 +112,10 @@ checkStartService.pupilLogin = async function (pupilId) {
     const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
     
     checkForms = JSON.parse(`[${check.checkForms}]`)
+    
+    // If a pupil has seen all the checkForms, then we need to empty the array
+    if (checkForms.length === allForms.length) checkForms = []
+    
     checkForm = await checkFormService.allocateCheckForm(allForms, checkForms)
   }
    
