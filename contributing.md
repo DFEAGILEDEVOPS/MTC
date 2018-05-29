@@ -25,7 +25,7 @@ Once the new controller and services are complete, update the routes to point to
 ## Coding conventions
 
 ### General coding style
-- Use object destructuring where possible, export all the functions from a controller to use them as `import { methodName } from './controller';`
+- For the function names inside controllers, use full names for clarity instead of destructuring the methods from the controller, such as `someService.someMethod()` instead of `someMethod()`
 - From the controllers, export only the functions needed in the routes, since there is no true 'private' way in javascript.
 - There should not be methods inside the controllers that are not used in the routes, consider moving them into a service.
 
@@ -38,6 +38,29 @@ Once the new controller and services are complete, update the routes to point to
 - The `routes/index.js` file is responsible for defining the top-level routes, and delegating their responsibility to a route file in the same directory to define any further sub-routes needed; there should be no routes in the app.js file except using the `routes/index.js`.
 - All routes should follow the general pattern of `controller-name/method-name` (using `dashed-case` where needed).
 - Routes should use the methods prepended with the type of request (get / post) in the controller (all `lowerCamelCased`, i.e `controllerName.getMethodName` for a GET request to `controller-name/method-name`).
+
+Small example for creating the routes (using school controller with method1 as an example):
+
+- `app.js` only does `app.use('/', index)` where index is `require('./routes/index')`
+- `index.js` defines the top-level routes, such as:
+
+``` javascript
+// ... imports
+const schoolRoute = require('./school')
+router.get('/school', schoolRoute)
+
+module.exports = router
+```
+
+- `school.js` in `routes/` exports a router that defines the routes for `/school`, like:
+
+``` javascript
+// ... imports
+const schoolController = require('../controllers/school)
+router.get('/method1', schoolController.method1)
+
+module.exports = router
+```
 
 ## Useful tools
 
