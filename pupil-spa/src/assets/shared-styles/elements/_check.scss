@@ -48,11 +48,11 @@
 .key {
   @include core-36;
 
-  background-color: $grey-3;
+  background-color: $grey-1;
   cursor: pointer;
   height: 2em;
   text-align: center;
-  width: 2em;
+  width: 2.75em;
 
   img {
     vertical-align: middle;
