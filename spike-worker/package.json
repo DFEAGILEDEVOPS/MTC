@@ -8,6 +8,8 @@
     "fast-csv": "^2.4.1",
     "logdna": "^2.0.2",
     "moment": "^2.22.1",
+    "number-to-words": "^1.2.3",
+    "ramda": "^0.25.0",
     "tedious": "^2.6.1",
     "timer-stopwatch": "^0.2.0",
     "to-bool": "^0.0.1",

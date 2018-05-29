@@ -3,9 +3,13 @@
 
 const csv = require('fast-csv')
 const fs = require('fs')
+const R = require('ramda')
 const faker = require('faker')
 const moment = require('moment')
 const commandLineArgs = require('command-line-args')
+const winston = require('winston')
+
+const sqlService = require('../admin/services/data-access/sql.service')
 const upnService = require('../admin/services/upn.service')
 const outputFilename = 'pupilCensusData.csv'
 
@@ -26,10 +30,25 @@ function writeCsv (data) {
     .pipe(ws)
 }
 
-function main (options) {
+async function getSchoolsLength () {
+  const sql = `SELECT COUNT(*) AS [cnt]
+  FROM ${sqlService.adminSchema}.school`
+  const result = await sqlService.query(sql, [])
+  const obj = R.head(result)
+  return R.prop('cnt', obj)
+}
+
+async function main (options) {
   const { recordsLength } = options
   const csvData = []
   let baseUpn = '702500001'
+  let schoolsLength
+  try {
+    schoolsLength = await getSchoolsLength()
+    schoolsLength = schoolsLength - 1
+  } catch (error) {
+    winston.info(error)
+  }
   for (let i = 0; i <= recordsLength; i++) {
     let pupilIdx = i + 1
     if (pupilIdx > 999) {
@@ -38,9 +57,10 @@ function main (options) {
     }
     const serial = pupilIdx.toString().padStart(3, '0')
     const upn = upnService.calculateCheckLetter(baseUpn + serial) + baseUpn + serial
+    const randomEstabCode = (Math.floor(Math.random() * schoolsLength) + 1001).toString()
     const record = [
       '999', // LEA
-      '1001', // Estab
+      randomEstabCode, // Estab
       upn,
       faker.name.lastName(), // Surname
       faker.name.firstName(), // Forename
