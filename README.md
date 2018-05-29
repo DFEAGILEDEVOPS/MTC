@@ -53,3 +53,9 @@ where `<image-name>` is a friendly name that allows you to easily identify the i
 ### Using microservices
 
 To make the pupil-spa use the auth microservice instead of the API in admin, change the AUTH_URL environment variable in `pupil-spa/Dockerfile` and the `docker-compose.*.yml` files relevant for pupil-spa
+
+# Enabling AMQP 1.0 in Rabbit MQ
+
+In order to use the npm package `amqp10` with Rabbit MQ the `rabbitmq_amqp1_0` plugin must be enabled within Rabbit MQ.
+
+This is achieved by mapping the local `rabbit_enabled_plugins` file to `etc/rabbitmq/` within the container.
