@@ -5,15 +5,20 @@ const fs = require('fs')
 require('dotenv').config()
 const bulkImport = require('./bulkImport')
 const Stopwatch = require('timer-stopwatch')
+const commandLineArgs = require('command-line-args')
 
-// Instruments the import of the census CSV file....
+const schoolLookup = require('./schoolLookup')
 
-// TODO find out how long it takes to load and import 5000 records from csv
-// TODO find out how long it takes to load and import 600K records from csv
+const optionDefinitions = [
+  { name: 'schoolLookupDisabled', alias: 'l', type: Boolean }
+]
+
+const options = commandLineArgs(optionDefinitions)
 
 const pupilCensusCSV = 'pupilCensusData.csv'
 
-async function loadAndImportCsv () {
+async function loadAndImportCsv (options) {
+  const { schoolLookupDisabled } = options
   const stopwatch = new Stopwatch()
   console.log(`reading csv file`)
   stopwatch.start()
@@ -28,17 +33,22 @@ async function loadAndImportCsv () {
   console.log(`reading csv took ${stopwatch.ms / 1000} seconds`)
   // Remove headers row
   csvData.shift()
+  let schoolData
+  // Perform school lookup outside of the stopwatch timer scope
+  if (schoolLookupDisabled) {
+    schoolData = await schoolLookup(csvData)
+  }
   stopwatch.reset()
   console.log(`invoking bulk import with csv payload`)
   stopwatch.start()
-  await bulkImport(csvData)
+  await bulkImport(csvData, schoolLookupDisabled, schoolData)
   stopwatch.stop()
   console.log(`bulk import took ${stopwatch.ms / 1000} seconds`)
 }
 
 (async () => {
   try {
-    await loadAndImportCsv()
+    await loadAndImportCsv(options)
   } catch (e) {
     console.log(e)
   }

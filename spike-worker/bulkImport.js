@@ -5,7 +5,7 @@ const Connection = require('tedious').Connection
 const config = require('./config')
 const moment = require('moment')
 
-const schoolDataService = require('../admin/services/data-access/school.data.service')
+const schoolLookup = require('./schoolLookup')
 
 const dbConfig = {
   userName: config.Sql.Username,
@@ -19,13 +19,13 @@ const dbConfig = {
 
 let connection
 
-const doBulkInsert = async (csvPayload) => {
+const doBulkInsert = async (csvPayload, schoolLookupDisabled, schoolData) => {
   if (!connection) {
     throw new Error('connection not initialised')
   }
 
   // optional BulkLoad options
-  const options = { keepNulls: true }
+  const options = {keepNulls: true}
 
   // instantiate - provide the table where you'll be inserting to, options and a callback
   const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.[mtc_admin].[pupil]`, options, function (error, rowCount) {
@@ -38,20 +38,15 @@ const doBulkInsert = async (csvPayload) => {
 
   // setup your columns - always indicate whether the column is nullable
   // TODO add all fields that are being imported to this list
-  bulkLoad.addColumn('school_id', TYPES.Int, { nullable: false })
-  bulkLoad.addColumn('upn', TYPES.Char, { length: 13, nullable: false })
-  bulkLoad.addColumn('lastName', TYPES.NVarChar, { length: 'max', nullable: false })
-  bulkLoad.addColumn('foreName', TYPES.NVarChar, { length: 'max', nullable: false })
-  bulkLoad.addColumn('middleNames', TYPES.NVarChar, { length: 'max', nullable: true })
-  bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
-  bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
+  bulkLoad.addColumn('school_id', TYPES.Int, {nullable: false})
+  bulkLoad.addColumn('upn', TYPES.Char, {length: 13, nullable: false})
+  bulkLoad.addColumn('lastName', TYPES.NVarChar, {length: 'max', nullable: false})
+  bulkLoad.addColumn('foreName', TYPES.NVarChar, {length: 'max', nullable: false})
+  bulkLoad.addColumn('middleNames', TYPES.NVarChar, {length: 'max', nullable: true})
+  bulkLoad.addColumn('gender', TYPES.Char, {length: 1, nullable: false})
+  bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, {nullable: false})
 
-  // Fetch all school for pupil records
-  let schoolDfeNumbers = csvPayload.map(r => `${r[0]}${r[1]}`)
-  // filter duplicate entries
-  schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => self.indexOf(item) === pos)
-  const schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
-
+  const schools = schoolLookupDisabled ? schoolData : await schoolLookup(csvPayload)
   for (let index = 0; index < csvPayload.length; index++) {
     const csvRow = csvPayload[index]
     const dfeNumber = `${csvRow[0]}${csvRow[1]}`
@@ -75,20 +70,20 @@ const doBulkInsert = async (csvPayload) => {
   connection.execBulkLoad(bulkLoad)
 }
 
-function doWork (csvPayload) {
+function doWork (csvPayload, schoolLookupDisabled, schoolData) {
   return new Promise((resolve, reject) => {
     connection = new Connection(dbConfig)
     connection.on('connect', async function (error) {
       if (error) {
         reject(error)
       }
-      await doBulkInsert(csvPayload)
+      await doBulkInsert(csvPayload, schoolLookupDisabled, schoolData)
       resolve()
     })
   })
 }
 
-module.exports = async (csvPayload) => {
-  await doWork(csvPayload)
+module.exports = async (csvPayload, schoolLookupDisabled, schoolData) => {
+  await doWork(csvPayload, schoolLookupDisabled, schoolData)
   console.log('import complete')
 }

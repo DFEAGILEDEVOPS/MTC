@@ -39,6 +39,7 @@ async function getSchoolsLength () {
 }
 
 async function main (options) {
+  winston.info('Generating census records...')
   const { recordsLength } = options
   const csvData = []
   let baseUpn = '702500001'
@@ -71,6 +72,7 @@ async function main (options) {
     csvData.push(record)
   }
   writeCsv(csvData)
+  winston.info('Census CSV generated')
 }
 
 main(options)
