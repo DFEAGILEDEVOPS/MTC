@@ -34,6 +34,10 @@ const preparedCheckMock = {
   data: null,
   checkForm_ids: 3
 }
+const preparedCheckMockLoggedIn = {
+  ...preparedCheckMock,
+  pupilLoginDate: moment.utc()
+}
 
 describe('check-start.service', () => {
   const service = checkStartService
@@ -160,6 +164,33 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlUpdate')
       await service.pupilLogin(1)
       expect(checkFormDataService.sqlGetActiveForm).toHaveBeenCalled()
+    })
+
+    it('gets a different CheckForm when the current one was assigned but not used', async () => {
+      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMockLoggedIn)
+      spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([1, 2, 3]))
+      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+      spyOn(checkDataService, 'sqlUpdate')
+      await service.pupilLogin(1)
+      expect(checkFormService.getAllFormsForCheckWindow).toHaveBeenCalledWith(2)
+      expect(checkFormService.getAllFormsForCheckWindow).toHaveBeenCalledTimes(1)
+      expect(checkFormService.allocateCheckForm).toHaveBeenCalledWith([1, 2, 3], [3])
+      expect(checkFormService.allocateCheckForm).toHaveBeenCalledTimes(1)
+    })
+
+    it('resets used CheckForms after all CheckForms were allocated for a pupil but not used', async () => {
+      spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue({
+        ...preparedCheckMockLoggedIn,
+        checkForm_ids: '1,2,3'
+      })
+      spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([1, 2, 3]))
+      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+      spyOn(checkDataService, 'sqlUpdate')
+      await service.pupilLogin(1)
+      expect(checkFormService.getAllFormsForCheckWindow).toHaveBeenCalledWith(2)
+      expect(checkFormService.getAllFormsForCheckWindow).toHaveBeenCalledTimes(1)
+      expect(checkFormService.allocateCheckForm).toHaveBeenCalledWith([1, 2, 3], [])
+      expect(checkFormService.allocateCheckForm).toHaveBeenCalledTimes(1)
     })
 
     it('throws an error if the check form is not found', async () => {
