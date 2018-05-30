@@ -23,7 +23,7 @@ const service = {
       }
     }
 
-    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
+    let userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
     if (!userRecord) {
       const mtcRoleName = roleService.mapNcaRoleToMtcRole(ncaUser.UserType, school)
       const role = await roleService.findByTitle(mtcRoleName)
@@ -36,7 +36,7 @@ const service = {
         user.school_id = school.id
       }
       await userDataService.sqlCreate(user)
-      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.EmailAddress)
+      userRecord = await userDataService.sqlFindOneByIdentifier(ncaUser.externalAuthenticationId)
       if (!userRecord) {
         throw new Error('unable to find user record')
       }
