@@ -30,7 +30,6 @@ module.exports = {
     helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080'
   },
   Sql: {
-    Enabled: true, // deprecated, to be removed
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
@@ -81,5 +80,11 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  AssetPath: process.env.ASSET_PATH || '/'
+  AssetPath: process.env.ASSET_PATH || '/',
+  Messaging: {
+    host: process.env.ESB_HOST || 'localhost',
+    username: process.env.ESB_USER || 'guest',
+    password: process.env.ESB_PASSWORK || 'guest',
+    protocol: process.env.ESB_PROTOCOL || 'amqp' // Azure requires amqps
+  }
 }
