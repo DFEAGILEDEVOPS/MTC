@@ -225,7 +225,9 @@ export class CheckComponent implements OnInit {
       case CheckComponent.submissionPendingRe.test(stateDesc): {
         // Display pending screen
         this.auditService.addEntry(new CheckSubmissionPending());
-        this.storageService.setItem('pending_submission', true);
+        if (this.storageService.getItem('pending_submission') === undefined) {
+          this.storageService.setItem('pending_submission', true);
+        }
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
         this.window.ga('send', {

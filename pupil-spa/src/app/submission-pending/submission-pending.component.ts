@@ -5,6 +5,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CheckSubmissionApiCalled, CheckSubmissionAPICallSucceeded } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
+import { CheckStatusService } from '../services/check-status/check-status.service';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
@@ -25,10 +26,15 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
               private route: ActivatedRoute,
               private questionService: QuestionService,
               private speechService: SpeechService,
+              private checkStatusService: CheckStatusService,
               private elRef: ElementRef) {
   }
 
   async ngOnInit() {
+    if (!this.checkStatusService.hasUnfinishedCheck()) {
+      await this.router.navigate(['/check-complete']);
+      return;
+    }
     const queryParams = this.route.snapshot.queryParams;
     this.title = queryParams && queryParams.unfinishedCheck ?
       'Uploading previous check' : 'You have finished the check';
