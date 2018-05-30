@@ -27,7 +27,7 @@ class AddMultiplePupilPage < SitePrism::Page
 
   def get_dob_for_pupil_for_multiple_upload
     dob = []
-    cur_date = Date.today
+    cur_date = Time.now
     old_date1 = (cur_date - (365*5)).strftime('%d/%m/%Y')
     old_date2 = (cur_date - (365*6)).strftime('%d/%m/%Y')
     dob << old_date1
