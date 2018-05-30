@@ -1,4 +1,4 @@
-/* global jasmine describe expect it beforeEach spyOn fail */
+/* global jasmine describe expect it beforeEach spyOn */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../controllers/service-manager')
 const settingService = require('../../services/setting.service')
@@ -296,7 +296,7 @@ describe('service manager controller:', () => {
         method: 'POST',
         url: '/service-manager/upload-pupil-census/upload',
         files: {
-          csvPupilCensusFile: { name: 'test'}
+          csvPupilCensusFile: { name: 'test' }
         }
       }
 
