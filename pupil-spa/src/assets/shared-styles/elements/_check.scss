@@ -31,7 +31,7 @@
   height: pem(80px, 80);
   margin: auto;
   text-align: left;
-  width: 3.02em; // IE Edge needs 0.02em more than other browsers.
+  width: pem(320px, 80); // IE Edge needs 0.02em more than other browsers.
   line-height: 1.15 !important;
 }
 
