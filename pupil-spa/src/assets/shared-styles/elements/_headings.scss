@@ -10,3 +10,15 @@
 .page-header {
   margin-top: 75px;
 }
+
+// Just required to constrain the width
+.question-header {
+  max-width: 960px;
+  margin: 0 15px;
+  @media (min-width: 641px) {
+    margin: 0 30px;
+  }
+  @media (min-width: 1020px) {
+    margin: 0 auto;
+  }
+}
