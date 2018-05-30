@@ -17,3 +17,8 @@ Feature:
   Scenario: Pupil census page has an uploaded file area
     Given I am on the upload pupil census page
     Then I should see an area where it displays files uploaded
+
+  Scenario: Pupil census can be submitted
+    Given I am on the upload pupil census page
+    When I have chosen a file to submit
+    Then I should see the file uploaded
