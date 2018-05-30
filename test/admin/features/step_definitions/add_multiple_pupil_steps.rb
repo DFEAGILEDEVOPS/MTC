@@ -63,8 +63,8 @@ end
 And(/^I can see the new pupil in the list$/) do
   hightlighted_rows = pupil_register_page.pupil_list.pupil_row.find_all{|row| row.has_edited_pupil?}
   hightlighted_row_list = hightlighted_rows.map{|x| x.names.text}
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%d %b %Y')}")
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%d %b %Y')}")
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%d %b %Y')}")
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth: #{(Date.parse(@old_date1)).strftime('%d %b %Y')}")
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
