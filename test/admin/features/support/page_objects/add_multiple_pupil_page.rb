@@ -25,4 +25,14 @@ class AddMultiplePupilPage < SitePrism::Page
     page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template_moreThan300Rows.csv"))
   end
 
+  def get_dob_for_pupil_for_multiple_upload
+    dob = []
+    cur_date = Date.today
+    old_date1 = (cur_date - (365*5)).strftime('%d/%m/%Y')
+    old_date2 = (cur_date - (365*6)).strftime('%d/%m/%Y')
+    dob << old_date1
+    dob << old_date2
+    dob
+  end
+
 end
