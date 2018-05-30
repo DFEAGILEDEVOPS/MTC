@@ -1,4 +1,5 @@
 <!-- Global Site Tag (gtag.js) - Google Analytics -->
+<% if (googleTrackingId) { %>
 <script async src='https://www.googletagmanager.com/gtag/js?id=<%= googleTrackingId %>'></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -7,3 +8,4 @@
 
   gtag('config', '<%= googleTrackingId %>');
 </script>
+<% } %>
