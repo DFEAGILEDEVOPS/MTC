@@ -133,9 +133,9 @@ if (config.Logging.Express.UseWinston === 'true') {
 
 app.use(cors())
 app.use(helmet())
-const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com']
+const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com']
 const styleSources = ["'self'", "'unsafe-inline'"]
-const imgSources = ["'self'", 'https://www.google-analytics.com', 'data:']
+const imgSources = ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']
 const objectSources = ["'self'"]
 
 if (config.AssetPath !== '/') {
@@ -152,7 +152,7 @@ app.use(helmet.contentSecurityPolicy({
     fontSrc: ["'self'", 'data:'],
     styleSrc: styleSources,
     imgSrc: imgSources,
-    connectSrc: ["'self'", 'https://www.google-analytics.com'],
+    connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com'],
     objectSrc: objectSources,
     mediaSrc: ["'none'"],
     childSrc: ["'none'"]
