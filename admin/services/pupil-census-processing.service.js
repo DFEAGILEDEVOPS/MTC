@@ -1,7 +1,7 @@
 'use strict'
 
 const schoolDataService = require('../services/data-access/school.data.service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilCensusImportDataService = require('../services/data-access/pupil-census-import.data.service')
 const pupilCensusProcessingService = {}
 
 /**
@@ -15,7 +15,7 @@ pupilCensusProcessingService.process = async(csvData) => {
   // filter duplicate entries
   schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => self.indexOf(item) === pos)
   let schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
-  return pupilDataService.sqlBulkImport(csvData, schools)
+  return pupilCensusImportDataService.sqlBulkImport(csvData, schools)
 }
 
 module.exports = pupilCensusProcessingService
