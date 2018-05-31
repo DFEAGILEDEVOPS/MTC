@@ -9,4 +9,11 @@ class UploadPupilCensusPage < SitePrism::Page
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
     element :file, 'dd'
   end
+
+  def create_unique_check_csv(file_name, file_contents)
+    out_file = File.new(file_name, "w")
+    out_file.puts(file_contents)
+    out_file.close
+  end
+
 end
