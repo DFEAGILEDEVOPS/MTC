@@ -32,11 +32,14 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
     if (this.questionService.getConfig().speechSynthesis) {
-      this.speechService.speakElement(this.elRef.nativeElement);
+      this.speechService.speakElement(this.elRef.nativeElement).then(() => {
+        this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#sign-out'));
+      });
 
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
-        this.speechService.speakFocusedElement(event.target);
-      }, true);
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
+        (event) => { this.speechService.focusEventListenerHook(event); },
+        true
+      );
     }
   }
 
