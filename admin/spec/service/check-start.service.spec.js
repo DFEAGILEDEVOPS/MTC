@@ -32,7 +32,7 @@ const preparedCheckMock = {
   markedAt: null,
   startedAt: null,
   data: null,
-  checkForm_ids: 3
+  seenCheckForm_ids: 3
 }
 const preparedCheckMockLoggedIn = {
   ...preparedCheckMock,
@@ -181,7 +181,7 @@ describe('check-start.service', () => {
     it('resets used CheckForms after all CheckForms were allocated for a pupil but not used', async () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue({
         ...preparedCheckMockLoggedIn,
-        checkForm_ids: '1,2,3'
+        seenCheckForm_ids: '1,2,3'
       })
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([1, 2, 3]))
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)

@@ -1,1 +1,1 @@
-ALTER TABLE mtc_admin.[check] DROP COLUMN [checkForm_ids];
+ALTER TABLE mtc_admin.[check] DROP COLUMN [seenCheckForm_ids];
