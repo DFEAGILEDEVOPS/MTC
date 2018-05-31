@@ -3,7 +3,6 @@
 const { TYPES } = require('tedious')
 const moment = require('moment')
 
-const table = '[pupil]'
 const config = require('../../config')
 const pupilCensusImportDataService = {}
 const sqlService = require('./sql.service')
@@ -32,7 +31,7 @@ const bulkLoadData = (connection, pupilData, schools) => {
     // optional BulkLoad options
     const options = {keepNulls: true}
 
-    const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.${table}`, options, function (error, rowCount) {
+    const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, options, function (error, rowCount) {
       if (error) {
         reject(error)
       }
