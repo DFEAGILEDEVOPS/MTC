@@ -103,15 +103,15 @@ checkStartService.pupilLogin = async function (pupilId) {
   let checkForms = []
 
   // If they have not logged in before, then give selected form.
-
   if (check.pupilLoginDate === null) {
     const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
 
     checkForm = res ? R.head(res) : null
   } else {
+    // Edge case, when they have logged in before but did not send completed test
     const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
 
-    checkForms = JSON.parse(`[${check.checkForm_ids}]`)
+    checkForms = JSON.parse(`[${check.seenCheckForm_ids || ''}]`)
 
     // If a pupil has seen all the checkForms, then we need to empty the array
     if (checkForms.length === allForms.length) checkForms = []
@@ -126,7 +126,7 @@ checkStartService.pupilLogin = async function (pupilId) {
     id: check.id,
     checkForm_id: checkForm.id,
     pupilLoginDate: moment.utc(),
-    checkForm_ids: R.append(checkForm.id, checkForms)
+    seenCheckForm_ids: R.append(checkForm.id, checkForms)
   }
 
   await checkDataService.sqlUpdate(checkData)
