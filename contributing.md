@@ -18,9 +18,49 @@ As an example, lets say you are refactoring an existing controller and the servi
 2.  Once you reach a point where there is enough definition to create a commit, do so, and then create a PR and invite the team in to review your WIP
 3.  Repeat this process for dependent services
 
-Any code from the old/legacy controller that you feel is useful should be introduced to the new controller after the tests are written and you the SUT starts to emerge.  That way your new controller tests only pass if the code works in the expected way.  
+Any code from the old/legacy controller that you feel is useful should be introduced to the new controller after the tests are written and you the SUT starts to emerge.  That way your new controller tests only pass if the code works in the expected way.
 
 Once the new controller and services are complete, update the routes to point to the new controller, and now you can delete the old controller/components.
+
+## Coding conventions
+
+### General coding style
+- For the function names inside controllers, use full names for clarity instead of destructuring the methods from the controller, such as `someService.someMethod()` instead of `someMethod()`
+- From the controllers, export only the functions needed in the routes, since there is no true 'private' way in javascript.
+- There should not be methods inside the controllers that are not used in the routes, consider moving them into a service.
+
+### Method naming
+- Use `lowerCamelCase` for all method names.
+- Method names should be descriptive and properly name the scope of the function.
+- Do not prefix functions by underscore to signify 'private', any private functions should be declared *after* the non-private functions and should not be exported. When / where is used, TypeScript makes it easy to identify private functions in classes with the proper private definition.
+
+### Routing convention
+- The `routes/index.js` file is responsible for defining the top-level routes, and delegating their responsibility to a route file in the same directory to define any further sub-routes needed; there should be no routes in the app.js file except using the `routes/index.js`.
+- All routes should follow the general pattern of `controller-name/method-name` (using `dashed-case` where needed).
+- Routes should use the methods prepended with the type of request (get / post) in the controller (all `lowerCamelCased`, i.e `controllerName.getMethodName` for a GET request to `controller-name/method-name`).
+
+Small example for creating the routes (using school controller with method1 as an example):
+
+- `app.js` only does `app.use('/', index)` where index is `require('./routes/index')`
+- `index.js` defines the top-level routes, such as:
+
+``` javascript
+// ... imports
+const schoolRoute = require('./school')
+router.get('/school', schoolRoute)
+
+module.exports = router
+```
+
+- `school.js` in `routes/` exports a router that defines the routes for `/school`, like:
+
+``` javascript
+// ... imports
+const schoolController = require('../controllers/school)
+router.get('/method1', schoolController.method1)
+
+module.exports = router
+```
 
 ## Useful tools
 
@@ -68,7 +108,7 @@ The dev team members should be assigned as reviewers and as soon as the code cha
 In Javascript the only way to "freeze" a computation and have the "rest of it" execute latter (asynchronously) is to put "the rest of it" inside a callback.
 When multiple callbacks are nested after each other in a chain of asynchronous activity the code is much harder to read. For more information read[here.](http://callbackhell.com/)
 
-### Promises - Async/Await 
+### Promises - Async/Await
 Solutions like promises and async functions drastically decrease the complexity and the length of callbacks and make the logical flow of the code much easier to follow.
 
 [Promises](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise)are a way to write async code that still appears as though it is executing in a top-down way, and handles more types of errors due to encouraged use of try/catch style error handling.
@@ -85,7 +125,7 @@ Taking into account that[cross-browser compatibility](https://www.gov.uk/service
 ## Unit testing
 
 For the purpose of testing the following libraries are used:
- 
+
 - [Karma](https://karma-runner.github.io)- a test runner that spawns a web server and executes source code against test code for each of the browsers connected
 - [Jasmine](https://jasmine.github.io)testing framework for JavaScript
 - [Sinon](http://sinonjs.org/)a standalone tool to create test spies, stubs and mocks
