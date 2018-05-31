@@ -9,6 +9,7 @@ const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const settingService = require('../services/setting.service')
+const pupilCensusService = require('../services/pupil-census.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -136,13 +137,39 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getUploadPupilCensus: async (req, res) => {
+  getUploadPupilCensus: async (req, res, next) => {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
-
+    let pupilCensus
+    try {
+      pupilCensus = await pupilCensusService.getUploadedFile()
+    } catch (error) {
+      return next(error)
+    }
     res.render('service-manager/upload-pupil-census', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      messages: res.locals.messages,
+      pupilCensus: pupilCensus
     })
+  },
+
+  /**
+   * Submit pupil census.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  postUploadPupilCensus: async (req, res, next) => {
+    const uploadFile = req.files && req.files.csvPupilCensusFile
+    if (!uploadFile) return next('No file to upload')
+    try {
+      await pupilCensusService.upload(uploadFile)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', `File has been uploaded`)
+    res.redirect('/service-manager/upload-pupil-census')
   },
 
   /**

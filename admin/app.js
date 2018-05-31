@@ -213,7 +213,8 @@ busboy.extend(app, {
 })
 
 const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
-  (/^\/test-developer\/upload-new-form$/).test(url)
+  (/^\/test-developer\/upload-new-form$/).test(url) ||
+  (/^\/service-manager\/upload-pupil-census\/upload$/).test(url)
 
 const sessionOptions = {
   name: 'mtc-admin-session-id',
