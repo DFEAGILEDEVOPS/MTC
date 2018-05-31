@@ -2,11 +2,13 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
-const pupilDataService = {}
 const moment = require('moment')
+
 const table = '[pupil]'
-const sqlService = require('./sql.service')
 const config = require('../../config')
+const pupilDataService = {}
+const sqlService = require('./sql.service')
+const sqlPoolService = require('./sql.pool.service')
 
 /** SQL METHODS */
 
@@ -369,20 +371,16 @@ pupilDataService.sqlInsertMany = async (pupils) => {
 
 /**
  * Execute pupil data bulk import
- * @param {Object} connection
  * @param {Array} pupilData
  * @param {Array} schools
  * @return {Promise<*>}
  */
-pupilDataService.sqlBulkImport = async(connection, pupilData, schools) => {
+pupilDataService.sqlBulkImport = async(pupilData, schools) => {
   const result = {}
-  if (!connection) {
-    result.errorOutput = 'Connection not initialised'
-    return result
-  }
+  const con = await sqlPoolService.getConnection()
 
   try {
-    result.output = await bulkLoadData(connection, pupilData, schools)
+    result.output = await bulkLoadData(con, pupilData, schools)
   } catch (error) {
     result.errorOutput = error
   }
