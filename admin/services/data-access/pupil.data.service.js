@@ -3,8 +3,10 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const pupilDataService = {}
+const moment = require('moment')
 const table = '[pupil]'
 const sqlService = require('./sql.service')
+const config = require('../../config')
 
 /** SQL METHODS */
 
@@ -363,6 +365,63 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   const sql = [insertSql, values.join(',\n'), output].join(' ')
   return sqlService.modify(sql, params)
   // E.g. { insertId: [1, 2], rowsModified: 4 }
+}
+
+/**
+ * Execute pupil data bulk import
+ * @param {Object} connection
+ * @param {Array} pupilData
+ * @param {Array} schools
+ * @return {Promise<*>}
+ */
+pupilDataService.sqlBulkImport = async(connection, pupilData, schools) => {
+  const result = {}
+  if (!connection) {
+    result.errorOutput = 'Connection not initialised'
+    return result
+  }
+  // optional BulkLoad options
+  const options = {keepNulls: true}
+
+  // **WIP**
+  // Needs to be async
+  const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.${table}`, options, function (error, rowCount) {
+    if (error) {
+      result.errorOutput = error
+      return result
+    }
+  })
+
+  bulkLoad.addColumn('school_id', TYPES.Int, {nullable: false})
+  bulkLoad.addColumn('upn', TYPES.Char, {length: 13, nullable: false})
+  bulkLoad.addColumn('lastName', TYPES.NVarChar, {length: 'max', nullable: false})
+  bulkLoad.addColumn('foreName', TYPES.NVarChar, {length: 'max', nullable: false})
+  bulkLoad.addColumn('middleNames', TYPES.NVarChar, {length: 'max', nullable: true})
+  bulkLoad.addColumn('gender', TYPES.Char, {length: 1, nullable: false})
+  bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, {nullable: false})
+
+  for (let index = 0; index < pupilData.length; index++) {
+    const csvRow = pupilData[index]
+    const dfeNumber = `${csvRow[0]}${csvRow[1]}`
+    const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
+    const schoolId = school && school.id
+    if (!schoolId) {
+      result.errorOutput = `School id not found for DfeNumber ${dfeNumber} for pupil on row number ${index + 1}`
+      return result
+    }
+    bulkLoad.addRow({
+      school_id: schoolId,
+      upn: csvRow[2],
+      lastName: csvRow[3],
+      foreName: csvRow[4],
+      middleNames: csvRow[5],
+      gender: csvRow[6],
+      dateOfBirth: moment(csvRow[7], 'MM/DD/YY').toDate()
+    })
+  }
+  connection.execBulkLoad(bulkLoad)
+  result.output = `Inserted ${pupilData.length} rows`
+  return result
 }
 
 module.exports = pupilDataService

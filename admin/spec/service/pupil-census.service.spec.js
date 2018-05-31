@@ -2,6 +2,7 @@
 /* global spyOn, describe, it, expect, fail */
 
 const pupilCensusService = require('../../services/pupil-census.service')
+const pupilCensusProcessingService = require('../../services/pupil-census-processing.service')
 const jobDataService = require('../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../services/data-access/job-type.data.service')
@@ -41,9 +42,11 @@ describe('pupilCensusService', () => {
   describe('upload', () => {
     it('calls uploadToBlobStorage when reading is done', async () => {
       spyOn(pupilCensusService, 'uploadToBlobStorage')
+      spyOn(pupilCensusProcessingService, 'process')
       spyOn(pupilCensusService, 'create')
       await pupilCensusService.upload(pupilCensusUploadMock)
       expect(pupilCensusService.uploadToBlobStorage).toHaveBeenCalled()
+      expect(pupilCensusProcessingService.process).toHaveBeenCalled()
       expect(pupilCensusService.create).toHaveBeenCalled()
     })
     it('rejects if uploadToBlobStorage fails', async () => {
@@ -111,7 +114,7 @@ describe('pupilCensusService', () => {
       spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusMock)
       const blobResultMock = { name: 'blobFile' }
-      await pupilCensusService.create(pupilCensusMock, blobResultMock)
+      await pupilCensusService.create(pupilCensusMock, blobResultMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })

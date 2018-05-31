@@ -9,6 +9,7 @@ const azureFileDataService = require('./data-access/azure-file.data.service')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
+const pupilCensusProcessingService = require('./pupil-census-processing.service')
 
 const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
@@ -39,7 +40,10 @@ pupilCensusService.upload = async (uploadFile) => {
       })
   })
   const blobResult = await pupilCensusService.uploadToBlobStorage(csvData)
-  await pupilCensusService.create(uploadFile, blobResult)
+  // Remove headers from csv
+  csvData.shift()
+  const submissionResult = await pupilCensusProcessingService.process(csvData)
+  await pupilCensusService.create(uploadFile, blobResult, submissionResult)
 }
 /**
  * Upload stream to Blob Storage
@@ -57,20 +61,24 @@ pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
  * Creates a new pupilCensus record
  * @param {Object} uploadFile
  * @param {Object} blobResult
+ * @param {Object} submissionResult
  * @return {Object}
  */
-pupilCensusService.create = async (uploadFile, blobResult) => {
+pupilCensusService.create = async (uploadFile, blobResult, submissionResult) => {
   let dataInput = []
   const csvName = uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, '')
   const blobFileName = blobResult && blobResult.name
   dataInput.push(csvName, blobFileName)
   dataInput = JSON.stringify(dataInput.join(','))
+  const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
-  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
   const pupilCensusRecord = {
     jobInput: dataInput,
     jobType_id: jobType.id,
-    jobStatus_id: jobStatus.id
+    jobStatus_id: jobStatus.id,
+    jobOutput: submissionResult.output,
+    errorOutput: submissionResult.errorOutput
   }
   await jobDataService.sqlCreate(pupilCensusRecord)
 }
