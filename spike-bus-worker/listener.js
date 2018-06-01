@@ -5,6 +5,7 @@ const Policy = require('amqp10').Policy
 const winston = require('winston')
 
 let client
+let sender
 const busConfig = {
   host: process.env.ServiceBusHost,
   queueName: process.env.ServiceBusQueueName,
@@ -35,8 +36,25 @@ const init = async () => {
   }
 }
 
-const send = () => {
-  winston.error('send not implemented')
+const send = async (message) => {
+  if (!client) {
+    await init()
+  }
+  if (!sender) {
+    try {
+      sender = await client.createSender(busConfig.queueName)
+      sender.on('errorReceived', function (err) { winston.error('===> Sender Error: ', err) })
+    } catch (error) {
+      winston.error('sender setup failed...\n', error)
+    }
+  }
+  try {
+    const state = await sender.send(message)
+    // track message disposition
+    return state
+  } catch (error) {
+    winston.error(`error sending message...\n`, error)
+  }
 }
 
 const listen = async () => {
@@ -45,7 +63,7 @@ const listen = async () => {
   }
   try {
     const receiver = await client.createReceiver(busConfig.queueName)
-    receiver.on('errorReceived', function (rxErr) { winston.error('===> RX ERROR: ', rxErr) })
+    receiver.on('errorReceived', function (err) { winston.error('===> Receiver Error: ', err) })
     receiver.on('message', messageReceived)
     winston.info(`listening for messages on ${busConfig.queueName}...`)
   } catch (error) {
