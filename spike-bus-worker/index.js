@@ -6,4 +6,4 @@ const winston = require('winston')
 const listener = require('./listener')
 
 winston.info('starting up bus listener')
-listener()
+listener.listen()
