@@ -99,14 +99,34 @@ checkStartService.pupilLogin = async function (pupilId) {
     throw new Error('Unable to find a prepared check for pupil: ' + pupilId)
   }
 
-  const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
-  if (!res) {
+  let checkForm = null
+  let checkForms = []
+
+  // If they have not logged in before, then give selected form.
+  if (check.pupilLoginDate === null) {
+    const res = await checkFormDataService.sqlGetActiveForm(check.checkForm_id)
+
+    checkForm = res ? R.head(res) : null
+  } else {
+    // Edge case, when they have logged in before but did not send completed test
+    const allForms = await checkFormService.getAllFormsForCheckWindow(check.checkWindow_id)
+
+    checkForms = JSON.parse(`[${check.seenCheckForm_ids || ''}]`)
+
+    // If a pupil has seen all the checkForms, then we need to empty the array
+    if (checkForms.length === allForms.length) checkForms = []
+
+    checkForm = await checkFormService.allocateCheckForm(allForms, checkForms)
+  }
+
+  if (!checkForm) {
     throw new Error('CheckForm not found: ' + check.checkForm_id)
   }
-  const checkForm = R.head(res)
   const checkData = {
     id: check.id,
-    pupilLoginDate: moment.utc()
+    checkForm_id: checkForm.id,
+    pupilLoginDate: moment.utc(),
+    seenCheckForm_ids: R.append(checkForm.id, checkForms)
   }
 
   await checkDataService.sqlUpdate(checkData)
