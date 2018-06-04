@@ -1,4 +1,5 @@
 'use strict'
+const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilCensusImportDataService = require('../services/data-access/pupil-census-import.data.service')
@@ -10,13 +11,8 @@ const pupilCensusProcessingService = {}
  * @return {Promise<void>}
  */
 pupilCensusProcessingService.process = async(csvData) => {
-  // Fetch all school for pupil records
-  let schoolDfeNumbers = csvData.map(r => `${r[0]}${r[1]}`)
-  // filter duplicate entries
-  schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => {
-    const dfeNumbers = self.slice()
-    return dfeNumbers.indexOf(item) === pos
-  })
+  // Fetch all unique school for pupil records
+  const schoolDfeNumbers = R.uniq(csvData.map(r => `${r[0]}${r[1]}`))
   let schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
   const schoolsHashMap = schools.reduce((obj, item) => {
     obj[item.dfeNumber] = item
