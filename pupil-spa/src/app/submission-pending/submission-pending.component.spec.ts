@@ -53,7 +53,7 @@ describe('SubmissionPendingComponent', () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
-      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(true);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
@@ -69,7 +69,7 @@ describe('SubmissionPendingComponent', () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
-      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(true);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
@@ -84,7 +84,7 @@ describe('SubmissionPendingComponent', () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
-      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(true);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
@@ -95,7 +95,7 @@ describe('SubmissionPendingComponent', () => {
     it('redirects to check complete when a previous check was already completed but not logged out', async () => {
       spyOn(router, 'navigate');
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
-      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(false);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(true);
       spyOn(submissionService, 'submitData');
       spyOn(component, 'loadComponent');
       await component.ngOnInit();

@@ -63,10 +63,6 @@ describe('CheckComponent', () => {
         // we can change this to a valid state number to simulate
         // a page refresh.
         return checkStateMock;
-      } else if (arg === 'pending_submission') {
-        // For submission pending, there is no pending_submission
-        // item in localStorage yet
-        return undefined;
       } else {
         return [];
       }

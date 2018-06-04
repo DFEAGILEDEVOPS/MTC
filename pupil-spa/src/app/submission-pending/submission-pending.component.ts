@@ -31,7 +31,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   }
 
   async ngOnInit() {
-    if (!this.checkStatusService.hasUnfinishedCheck()) {
+    if (this.checkStatusService.hasFinishedCheck()) {
       await this.router.navigate(['/check-complete']);
       return;
     }
