@@ -27,24 +27,30 @@ And(/^I should have the option to choose a csv file for adding multiple pupil$/)
 end
 
 When(/^I Upload a valid CSV file to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  @old_date1 = dobs[0]
+  @old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2011", "f", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, @old_date1, "f", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, @old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 When(/^I Upload a CSV file with errors to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "30/12/2011", "FEMALE", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
@@ -57,8 +63,8 @@ end
 And(/^I can see the new pupil in the list$/) do
   hightlighted_rows = pupil_register_page.pupil_list.pupil_row.find_all{|row| row.has_edited_pupil?}
   hightlighted_row_list = hightlighted_rows.map{|x| x.names.text}
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: 5 Dec 2011")
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} Date of birth: 5 Dec 2010")
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth:#{(Date.parse(@old_date1)).strftime('%e %b %Y')}")
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name} #{@pupil_name} Date of birth:#{(Date.parse(@old_date1)).strftime('%e %b %Y')}")
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
