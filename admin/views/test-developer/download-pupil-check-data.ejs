@@ -29,10 +29,38 @@
             Generate and download the latest file which contains a detailed record of the raw pupil check data such as timings, responses and key strokes.
         </p>
 
-        <a class="button button-primary" href="/test-developer/generate-latest-pupil-check-data">Generate latest file</a>
+        <button class="button button-primary" id="generate-check-data-button" onclick="generatePupilCheckData()">Generate latest file</button>
 
-        <p class="top-padding-30">
+        <p id="pupilCheckDataContent" class="top-padding-30">
             No file generated
         </p>
     </div>
 </div>
+
+<script type="text/javascript">
+    const contentId = "#pupilCheckDataContent";
+    const buttonId = "#generate-check-data-button";
+
+    function generatePupilCheckData() {
+        $(contentId).html(`<p>
+            <img src='/images/loading.gif' alt='loading' width='44' style='vertical-align: middle'/>
+            &nbsp; Generating...
+        </p>`);
+        $(buttonId).prop('disabled', true);
+
+        $.ajax({
+            url: '/test-developer/generate-latest-pupil-check-data',
+            timeout: 60 * 1000
+        })
+            .done(function(data) {
+                console.log(data);
+                $(contentId).html(`Generated`);
+            })
+            .fail(function() {
+                $(contentId).html('<p>There was an error when generating the latest file.</p>');
+            })
+            .always(function() {
+                $(buttonId).prop('disabled', false);
+            });
+    }
+</script>
