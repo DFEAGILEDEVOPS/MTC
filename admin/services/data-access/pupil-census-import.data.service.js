@@ -31,7 +31,7 @@ const bulkLoadData = (connection, pupilData, schools) => {
   return new Promise((resolve, reject) => {
     const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, function (error, rowCount) {
       if (error) {
-        reject(error)
+        return reject(error)
       }
       resolve(`Inserted ${rowCount} rows`)
     })
