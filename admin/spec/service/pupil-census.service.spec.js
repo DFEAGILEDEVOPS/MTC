@@ -6,7 +6,8 @@ const pupilCensusProcessingService = require('../../services/pupil-census-proces
 const jobDataService = require('../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../services/data-access/job-type.data.service')
-const azureFileDataService = require('../../services/data-access/azure-file.data.service')
+
+
 
 const pupilCensusUploadMock = {
   'uuid': 'bfa9ab1b-88ae-46f2-a4ff-726c0567e37c',
@@ -21,7 +22,7 @@ const pupilCensusUploadMock = {
 
 const pupilCensusMock = {
   id: 1,
-  jobInput: JSON.stringify(['csv', 'blob'].join(',')),
+  jobInput: 'csv',
   jobType_id: 1,
   jobStatus_id: 1
 }
@@ -40,36 +41,27 @@ const jobTypeMock = {
 
 describe('pupilCensusService', () => {
   describe('upload', () => {
-    it('calls uploadToBlobStorage when reading is done', async () => {
-      spyOn(pupilCensusService, 'uploadToBlobStorage')
+    it('calls create when reading is done', async () => {
       spyOn(pupilCensusProcessingService, 'process')
       spyOn(pupilCensusService, 'create')
       await pupilCensusService.upload(pupilCensusUploadMock)
-      expect(pupilCensusService.uploadToBlobStorage).toHaveBeenCalled()
       expect(pupilCensusProcessingService.process).toHaveBeenCalled()
       expect(pupilCensusService.create).toHaveBeenCalled()
     })
-    it('rejects if uploadToBlobStorage fails', async () => {
+    it('rejects if process fails', async () => {
       const unsafeReject = p => {
         p.catch(ignore => ignore)
         return p
       }
       const rejection = unsafeReject(Promise.reject(new Error('Mock error')))
-      spyOn(pupilCensusService, 'uploadToBlobStorage').and.returnValue(rejection)
       spyOn(pupilCensusService, 'create')
+      spyOn(pupilCensusProcessingService, 'process').and.returnValue(rejection)
       try {
         await pupilCensusService.upload(pupilCensusUploadMock)
         fail()
       } catch (error) {
         expect(error.message).toBe('Mock error')
       }
-    })
-  })
-  describe('uploadToBlobStorage', () => {
-    it('calls azureUploadFile method to upload the file', async () => {
-      spyOn(azureFileDataService, 'azureUploadFile')
-      await pupilCensusService.uploadToBlobStorage([])
-      expect(azureFileDataService.azureUploadFile).toHaveBeenCalled()
     })
   })
   describe('getUploadedFile', () => {
@@ -113,8 +105,7 @@ describe('pupilCensusService', () => {
       spyOn(jobDataService, 'sqlCreate')
       spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusMock)
-      const blobResultMock = { name: 'blobFile' }
-      await pupilCensusService.create(pupilCensusMock, blobResultMock, { output: 'Inserted 5000 rows' })
+      await pupilCensusService.create(pupilCensusMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })

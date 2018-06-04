@@ -1,22 +1,17 @@
 'use strict'
-const uuidv4 = require('uuid/v4')
-const moment = require('moment')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 
-const config = require('../config')
-const azureFileDataService = require('./data-access/azure-file.data.service')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
 
-const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
 
 /**
  * Upload handler for pupil census
- * Reads the file contents, calls the upload to blob storage method and the creation of the pupil census record
+ * Reads the file contents and creates of the pupil census record
  * @param uploadFile
  * @return {Promise<void>}
  */
@@ -39,42 +34,25 @@ pupilCensusService.upload = async (uploadFile) => {
         }
       })
   })
-  const blobResult = await pupilCensusService.uploadToBlobStorage(csvData)
   // Remove headers from csv
   csvData.shift()
   const submissionResult = await pupilCensusProcessingService.process(csvData)
-  await pupilCensusService.create(uploadFile, blobResult, submissionResult)
-}
-/**
- * Upload stream to Blob Storage
- * @param uploadFile
- * @return {Promise<void>}
- */
-pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
-  const streamLength = pupilCensusMaxSizeFileUploadMb
-  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
-  const csvFileStream = uploadFile.join('\n')
-  return azureFileDataService.azureUploadFile('censusupload', remoteFilename, csvFileStream, streamLength)
+  await pupilCensusService.create(uploadFile, submissionResult)
 }
 
 /**
  * Creates a new pupilCensus record
  * @param {Object} uploadFile
- * @param {Object} blobResult
  * @param {Object} submissionResult
  * @return {Object}
  */
-pupilCensusService.create = async (uploadFile, blobResult, submissionResult) => {
-  let dataInput = []
+pupilCensusService.create = async (uploadFile, submissionResult) => {
   const csvName = uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, '')
-  const blobFileName = blobResult && blobResult.name
-  dataInput.push(csvName, blobFileName)
-  dataInput = JSON.stringify(dataInput.join(','))
   const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
   const pupilCensusRecord = {
-    jobInput: dataInput,
+    jobInput: csvName,
     jobType_id: jobType.id,
     jobStatus_id: jobStatus.id,
     jobOutput: submissionResult.output,
@@ -84,7 +62,7 @@ pupilCensusService.create = async (uploadFile, blobResult, submissionResult) => 
 }
 
 /**
- * Get existing pupil census file
+ * Gets existing pupil census file
  * @return {Object}
  */
 pupilCensusService.getUploadedFile = async () => {
@@ -96,9 +74,8 @@ pupilCensusService.getUploadedFile = async () => {
     throw new Error('Pupil census record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  const dataInput = pupilCensus.jobInput && JSON.parse(pupilCensus.jobInput)
   pupilCensus.jobStatus = jobStatus && jobStatus.description
-  pupilCensus.csvName = dataInput.split(',')[0]
+  pupilCensus.csvName = pupilCensus.jobInput
   return pupilCensus
 }
 
