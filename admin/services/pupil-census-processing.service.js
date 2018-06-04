@@ -13,9 +13,16 @@ pupilCensusProcessingService.process = async(csvData) => {
   // Fetch all school for pupil records
   let schoolDfeNumbers = csvData.map(r => `${r[0]}${r[1]}`)
   // filter duplicate entries
-  schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => self.indexOf(item) === pos)
+  schoolDfeNumbers = schoolDfeNumbers.filter((item, pos, self) => {
+    const dfeNumbers = self.slice()
+    return dfeNumbers.indexOf(item) === pos
+  })
   let schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)
-  return pupilCensusImportDataService.sqlBulkImport(csvData, schools)
+  const schoolsHashMap = schools.reduce((obj, item) => {
+    obj[item.dfeNumber] = item
+    return obj
+  }, {})
+  return pupilCensusImportDataService.sqlBulkImport(csvData, schoolsHashMap)
 }
 
 module.exports = pupilCensusProcessingService

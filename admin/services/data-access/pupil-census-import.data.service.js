@@ -47,7 +47,8 @@ const bulkLoadData = (connection, pupilData, schools) => {
     for (let index = 0; index < pupilData.length; index++) {
       const csvRow = pupilData[index]
       const dfeNumber = `${csvRow[0]}${csvRow[1]}`
-      const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
+      // const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
+      const school = schools[parseInt(dfeNumber)]
       const schoolId = school && school.id
       if (!schoolId) {
         return reject(new Error(`School id not found for DfeNumber ${dfeNumber} for pupil on row number ${index + 1}`))
