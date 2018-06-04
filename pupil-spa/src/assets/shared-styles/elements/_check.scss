@@ -37,7 +37,7 @@
 
 // Numpad
 .numpad-container {
-  margin-top: 10px;  // total spacing is 20 px made up of 10px border-spacing + 10px margin
+  margin-top: 10px;  // total spacing is 20px made up of 10px border-spacing + 10px margin
   text-align: center;
 }
 
@@ -57,12 +57,6 @@
   img {
     vertical-align: middle;
   }
-}
-
-.enter-key {
-  @extend .key;
-
-  @include core-27;
 }
 
 .preload {
