@@ -1,6 +1,6 @@
 // Questions
 .question-container {
-  margin-top: pem($gutter, 16);
+  margin-top: 70px; // TODO: condense this space for small screens
 }
 
 .question-and-answer {
@@ -37,7 +37,7 @@
 
 // Numpad
 .numpad-container {
-  margin-top: 2em;
+  margin-top: 10px;  // total spacing is 20 px made up of 10px border-spacing + 10px margin
   text-align: center;
 }
 
