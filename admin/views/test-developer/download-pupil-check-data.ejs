@@ -1,0 +1,38 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+        <% } %>
+
+        <% if (messages && messages.error && messages.error.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                <%= messages.error %>
+            </h2>
+        </div>
+        <% } %>
+
+        <h1 class="heading-xlarge">Download pupil check data</h1>
+
+        <p class="lede" id="lead-paragraph">
+            Generate and download the latest file which contains a detailed record of the pupil check data such as timings, responses and key strokes.
+        </p>
+
+        <a class="button button-primary" href="/test-developer/generate-latest-pupil-check-data">Generate latest file</a>
+
+        <p class="top-padding-30">
+            No file generated
+        </p>
+    </div>
+</div>
