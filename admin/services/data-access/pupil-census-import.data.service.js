@@ -50,7 +50,7 @@ const bulkLoadData = (connection, pupilData, schools) => {
       const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
       const schoolId = school && school.id
       if (!schoolId) {
-        reject(new Error(`School id not found for DfeNumber ${dfeNumber} for pupil on row number ${index + 1}`))
+        return reject(new Error(`School id not found for DfeNumber ${dfeNumber} for pupil on row number ${index + 1}`))
       }
       bulkLoad.addRow({
         school_id: schoolId,
