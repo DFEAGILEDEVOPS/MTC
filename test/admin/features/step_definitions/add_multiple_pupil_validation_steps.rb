@@ -1,184 +1,227 @@
 
 And(/^I Upload a CSV file with four columns to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/22/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong gender format to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "FEMALE", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with empty first name and last name to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["", "", @pupil_name, "03/12/2010", "FEMALE", @upn]
+  pupil_detail_array = ["", "", @pupil_name, old_date1, "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with special character in first name and last name to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "03/12/2010", "FEMALE", @upn]
+  pupil_detail_array = ["#{@pupil_name}_%&*", "#{@pupil_name}_%&*", "#{@pupil_name}_%&*", old_date1, "FEMALE", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong month for date of birth format to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "30/32/2005", "F", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong day for date of birth format to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "32/12/2005", "F", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong year for date of birth format to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/20056", "F", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with future date of birth to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2020", "F", @upn]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn2]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn2]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with duplicate UPN from attendance register to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   step 'I Upload a valid CSV file to add Multiple Pupil'
   pupil_register_page.add_multiple_pupil.click
   @page = add_multiple_pupil_page
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "F", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @upn]
 
   @upn3 = UpnGenerator.generate
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn3]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn3]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with duplicate UPN within uploaded file to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", @upn]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with empty UPN to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", ""]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", ""]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong letter for at 1st Char for UPN to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F",  "X938021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F",  "X938021200020"]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong LA code for UPN to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D136021200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D136021200020"]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong 6th char for UPN to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D93802X200020"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D93802X200020"]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with wrong 13th char for UPN to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date1 = dobs[0]
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "03/12/2010", "F", "D93802120002I"]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date1, "F", "D93802120002I"]
 
-  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array, pupil_detail_array2)
   add_multiple_pupil_page.save.click
 end
 
 And(/^I Upload a CSV file with 1 row to add Multiple Pupil$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  old_date2 = dobs[1]
   @upn = UpnGenerator.generate
   @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, "05/12/2010", "M", @upn]
+  pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, old_date2, "M", @upn]
 
   add_multiple_pupil_page.upload_multiple_pupil(pupil_detail_array)
   add_multiple_pupil_page.save.click

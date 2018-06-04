@@ -240,4 +240,11 @@ class SqlDbHelper
     result.do
   end
 
+  def self.get_jobs
+    sql = "SELECT * FROM [mtc_admin].[job]"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+
 end

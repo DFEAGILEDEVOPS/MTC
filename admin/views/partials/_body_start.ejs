@@ -1,9 +1,11 @@
+<% if (googleTrackingId) { %>
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=<%= googleTrackingId %>'></script>
 <script>
-    var googleTrackingId = '<%= googleTrackingId %>';
-    if (googleTrackingId) {
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', googleTrackingId, 'auto');
-      ga('send', 'pageview');
-    }
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '<%= googleTrackingId %>');
 </script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
+<% } %>

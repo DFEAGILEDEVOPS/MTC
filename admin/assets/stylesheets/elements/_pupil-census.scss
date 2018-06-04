@@ -4,5 +4,17 @@
   > dd {
     padding-top: pem(10px);
     padding-bottom: pem(10px);
+    > span:first-child {
+      display:inline-block;
+      width: pem(170px);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
   }
+}
+
+.job-status {
+  float: right;
+  margin-right: pem(200px);
 }
