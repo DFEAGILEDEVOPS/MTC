@@ -23,19 +23,17 @@ pupilCensusImportDataService.sqlBulkImport = async(pupilData, schools) => {
   } catch (error) {
     result.errorOutput = error
   }
+  con.release()
   return result
 }
 
 const bulkLoadData = (connection, pupilData, schools) => {
   return new Promise((resolve, reject) => {
-    // optional BulkLoad options
-    const options = {keepNulls: true}
-
-    const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, options, function (error, rowCount) {
+    const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, function (error, rowCount) {
       if (error) {
         reject(error)
       }
-      resolve('inserted %d rows', rowCount)
+      resolve(`Inserted ${rowCount} rows`)
     })
 
     bulkLoad.addColumn('school_id', TYPES.Int, {nullable: false})
