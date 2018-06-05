@@ -12,14 +12,15 @@ const sqlPoolService = require('./sql.pool.service')
  * Execute pupil data bulk import
  * @param {Array} pupilData
  * @param {Array} schools
+ * @param {Number} jobId
  * @return {Promise<*>}
  */
-pupilCensusImportDataService.sqlBulkImport = async(pupilData, schools) => {
+pupilCensusImportDataService.sqlBulkImport = async(pupilData, schools, jobId) => {
   const result = {}
   const con = await sqlPoolService.getConnection()
 
   try {
-    result.output = await bulkLoadData(con, pupilData, schools)
+    result.output = await bulkLoadData(con, pupilData, schools, jobId)
   } catch (error) {
     result.errorOutput = error
   }
@@ -27,7 +28,7 @@ pupilCensusImportDataService.sqlBulkImport = async(pupilData, schools) => {
   return result
 }
 
-const bulkLoadData = (connection, pupilData, schools) => {
+const bulkLoadData = (connection, pupilData, schools, jobId) => {
   return new Promise((resolve, reject) => {
     const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, function (error, rowCount) {
       if (error) {
@@ -43,11 +44,11 @@ const bulkLoadData = (connection, pupilData, schools) => {
     bulkLoad.addColumn('middleNames', TYPES.NVarChar, {length: 'max', nullable: true})
     bulkLoad.addColumn('gender', TYPES.Char, {length: 1, nullable: false})
     bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, {nullable: false})
+    bulkLoad.addColumn('job_id', TYPES.Int, {nullable: true})
 
     for (let index = 0; index < pupilData.length; index++) {
       const csvRow = pupilData[index]
       const dfeNumber = `${csvRow[0]}${csvRow[1]}`
-      // const school = schools.find(s => s.dfeNumber === parseInt(dfeNumber))
       const school = schools[parseInt(dfeNumber)]
       const schoolId = school && school.id
       if (!schoolId) {
@@ -60,7 +61,8 @@ const bulkLoadData = (connection, pupilData, schools) => {
         foreName: csvRow[4],
         middleNames: csvRow[5],
         gender: csvRow[6],
-        dateOfBirth: moment(csvRow[7], 'MM/DD/YY').toDate()
+        dateOfBirth: moment(csvRow[7], 'MM/DD/YY').toDate(),
+        job_id: jobId
       })
     }
     connection.execBulkLoad(bulkLoad)

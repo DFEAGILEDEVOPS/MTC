@@ -36,29 +36,49 @@ pupilCensusService.upload = async (uploadFile) => {
   })
   // Remove headers from csv
   csvData.shift()
-  const submissionResult = await pupilCensusProcessingService.process(csvData)
-  await pupilCensusService.create(uploadFile, submissionResult)
+  // Create the pupil census record
+  const job = await pupilCensusService.create(uploadFile)
+  if (!job || !job.insertId) {
+    throw new Error('Job has not been created')
+  }
+  // Process and perform pupil bulk insertion
+  const submissionResult = await pupilCensusProcessingService.process(csvData, job.insertId)
+  if (!submissionResult) {
+    throw new Error('No result has been returned from pupil bulk insertion')
+  }
+  // Update pupil census record with corresponding output
+  pupilCensusService.updateJobOutput(job.insertId, submissionResult)
 }
 
 /**
  * Creates a new pupilCensus record
  * @param {Object} uploadFile
- * @param {Object} submissionResult
- * @return {Object}
+ * @return {Promise}
  */
-pupilCensusService.create = async (uploadFile, submissionResult) => {
+pupilCensusService.create = async (uploadFile) => {
   const csvName = uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, '')
-  const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
-  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
   const pupilCensusRecord = {
     jobInput: csvName,
     jobType_id: jobType.id,
-    jobStatus_id: jobStatus.id,
-    jobOutput: submissionResult.output,
-    errorOutput: submissionResult.errorOutput
+    jobStatus_id: jobStatus.id
   }
-  await jobDataService.sqlCreate(pupilCensusRecord)
+  return jobDataService.sqlCreate(pupilCensusRecord)
+}
+
+/**
+ * Updates the output of a pupilCensus record
+ * @param {Number} jobId
+ * @param {Object} submissionResult
+ * @return {Object}
+ */
+pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
+  const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
+  const output = submissionResult.output
+  const errorOutput = submissionResult.errorOutput
+  await jobDataService.updateJobOutput(jobId, jobStatus.id, output, errorOutput)
 }
 
 /**

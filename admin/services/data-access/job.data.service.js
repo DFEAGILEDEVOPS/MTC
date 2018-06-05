@@ -37,4 +37,41 @@ jobDataService.sqlFindLatestByTypeId = async (jobTypeId) => {
   return R.head(result)
 }
 
+/**
+ * Update job output
+ * @param {Number} jobId
+ * @param {Number} jobStatusId
+ * @param {String} jobOutput
+ * @param {String} errorOutput
+ * @return {Promise}
+ */
+jobDataService.updateJobOutput = async (jobId, jobStatusId, jobOutput, errorOutput) => {
+  const sql = `UPDATE ${sqlService.adminSchema}.${table}
+  SET jobStatus_id=@jobStatusId, jobOutput=@jobOutput, errorOutput=@errorOutput
+  WHERE id=@jobId`
+  const params = [
+    {
+      name: 'jobId',
+      value: jobId,
+      type: TYPES.Int
+    },
+    {
+      name: 'jobStatusId',
+      value: jobStatusId,
+      type: TYPES.Int
+    },
+    {
+      name: 'jobOutput',
+      value: jobOutput,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'errorOutput',
+      value: errorOutput,
+      type: TYPES.NVarChar
+    }
+  ]
+  return sqlService.modify(sql, params)
+}
+
 module.exports = jobDataService
