@@ -3,9 +3,11 @@
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
+const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const psychometricianReportService = require('../services/psychometrician-report.service')
 const winston = require('winston')
 
 /**
@@ -442,17 +444,20 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
  */
 const getDownloadPupilCheckData = async (req, res, next) => {
   res.locals.pageTitle = 'Download pupil check data'
-  let error
+  req.breadcrumbs(res.locals.pageTitle)
 
+  let psychometricianReport, dateGenerated
   try {
-    req.breadcrumbs(res.locals.pageTitle)
-    res.render('test-developer/download-pupil-check-data', {
-      error,
-      breadcrumbs: req.breadcrumbs()
-    })
+    psychometricianReport = await psychometricianReportService.getUploadedFile()
   } catch (error) {
-    next(error)
+    return next(error)
   }
+
+  res.render('test-developer/download-pupil-check-data', {
+    breadcrumbs: req.breadcrumbs(),
+    psychometricianReport,
+    dateGenerated
+  })
 }
 
 /**
@@ -463,8 +468,20 @@ const getDownloadPupilCheckData = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const getGenerateLatestPupilCheckData = async (req, res, next) => {
-  req.flash('info', 'Generating...')
-  res.redirect('/test-developer/download-pupil-check-data')
+  try {
+    await checkProcessingService.process()
+
+    const reportStream = await psychometricianReportService.generateReport()
+    const blobResult = await psychometricianReportService.uploadToBlobStorage(reportStream)
+
+    const { csvName, dateGenerated } = await psychometricianReportService.create(blobResult)
+
+    const psychometricianReport = csvName.replace(/\.csv$/, '')
+
+    return res.status(200).json({ psychometricianReport, dateGenerated })
+  } catch(error) {
+    return res.status(500).json({ error })
+  }
 }
 
 module.exports = {
