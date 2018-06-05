@@ -2,18 +2,79 @@
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
+const uuidv4 = require('uuid/v4')
 
+const config = require('../config')
 // const checkWindowDataService = require('./data-access/check-window.data.service')
 const answerDataService = require('../services/data-access/answer.data.service')
+const azureFileDataService = require('./data-access/azure-file.data.service')
 const checkFormService = require('./check-form.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
+const jobDataService = require('./data-access/job.data.service')
+const jobStatusDataService = require('./data-access/job-status.data.service')
+const jobTypeDataService = require('./data-access/job-type.data.service')
 const psUtilService = require('./psychometrician-util.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
 const psychometricianReportService = {}
+const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
+
+/**
+ * Creates a new psychometricianReport record
+ * @param {Object} uploadFile
+ * @param {Object} blobResult
+ * @return {Object}
+ */
+psychometricianReportService.create = async (blobResult) => {
+  let dataInput = []
+  const dateGenerated = moment()
+  const csvName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv`
+  const blobFileName = blobResult && blobResult.name
+  dataInput.push(csvName, blobFileName)
+  dataInput = JSON.stringify(dataInput.join(','))
+  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
+  const psychometricianReportRecord = {
+    jobInput: dataInput,
+    jobType_id: jobType.id,
+    jobStatus_id: jobStatus.id
+  }
+  await jobDataService.sqlCreate(psychometricianReportRecord)
+  return { csvName, dateGenerated }
+}
+
+/**
+ * Upload stream to Blob Storage
+ * @param uploadStream
+ * @return {Promise<void>}
+ */
+psychometricianReportService.uploadToBlobStorage = async (uploadStream) => {
+  const streamLength = psychometricianReportMaxSizeFileUploadMb
+  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
+  return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, uploadStream, streamLength)
+}
+
+/**
+ * Get existing psychometrician report file
+ * @return {Object}
+ */
+psychometricianReportService.getUploadedFile = async () => {
+  const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
+  const psychometricianReport = await jobDataService.sqlFindLatestByTypeId(jobType.id)
+  if (!psychometricianReport) return
+  const jobStatusId = psychometricianReport.jobStatus_id
+  if (!jobStatusId) {
+    throw new Error('Psychometrician report record does not have a job status reference')
+  }
+  const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
+  const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput)
+  psychometricianReport.jobStatus = jobStatus && jobStatus.description
+  psychometricianReport.csvName = dataInput.split(',')[0]
+  return psychometricianReport
+}
 
 /**
  * Return the CSV file as a string
