@@ -336,6 +336,9 @@ describe('check-form.service', () => {
 
     // happy path
     it('calls the data layer method to unassign forms', async () => {
+      // For this to pass we want the checkStart date to be in the future
+      checkWindowMock.checkStartDate = moment().add(2, 'weeks')
+
       // mock out the db calls
       spyOn(checkFormDataService, 'sqlFindOneById').and.returnValue(resolve(checkFormMock))
       spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(resolve(checkWindowMock))
