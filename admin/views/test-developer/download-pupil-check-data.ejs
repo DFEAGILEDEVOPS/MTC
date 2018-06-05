@@ -32,7 +32,14 @@
         <button class="button button-primary" id="generate-check-data-button" onclick="generatePupilCheckData()">Generate latest file</button>
 
         <p id="pupilCheckDataContent" class="top-padding-30">
-            No file generated
+            <% if (psychometricianReport) { %>
+                <a href="#" class="heading-small icon-download">
+                    <%= psychometricianReport.csvName %> (CSV file)
+                </a>
+                <span>Last generated at <%= dateGenerated %></span>
+            <% } else { %>
+                No file generated
+            <% } %>
         </p>
     </div>
 </div>
@@ -53,8 +60,10 @@
             timeout: 60 * 1000
         })
             .done(function(data) {
-                console.log(data);
-                $(contentId).html(`Generated`);
+                $(contentId).html(`
+                    <a href="#" class="heading-small icon-download">${data.psychometricianReport}</a> (CSV file)</a>
+                    <p> Last generated at </p>
+                `);
             })
             .fail(function() {
                 $(contentId).html('<p>There was an error when generating the latest file.</p>');
