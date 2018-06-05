@@ -1,6 +1,6 @@
 // Questions
 .question-container {
-  margin-top: 70px; // TODO: condense this space for small screens
+  margin-top: pem(70px, 16); // TODO: condense this space for small screens
 }
 
 .question-and-answer {
