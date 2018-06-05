@@ -71,7 +71,7 @@ pupilCensusService.create = async (uploadFile) => {
  * Updates the output of a pupilCensus record
  * @param {Number} jobId
  * @param {Object} submissionResult
- * @return {Object}
+ * @returns {Promise.<void>}
  */
 pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
   const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
@@ -94,8 +94,13 @@ pupilCensusService.getUploadedFile = async () => {
     throw new Error('Pupil census record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  pupilCensus.jobStatus = jobStatus && jobStatus.description
+  if (!jobStatus) {
+    throw new Error(`There is no job status for job status id ${jobStatusId}`)
+  }
+  const outcome = jobStatus.jobStatusCode === 'CWR'
+    ? `${jobStatus.description} : ${pupilCensus.errorOutput}` : `${jobStatus.description} : ${pupilCensus.jobOutput}`
   pupilCensus.csvName = pupilCensus.jobInput
+  pupilCensus.outcome = outcome
   return pupilCensus
 }
 

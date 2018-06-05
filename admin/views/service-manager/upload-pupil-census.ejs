@@ -43,8 +43,8 @@
             <% if (pupilCensus) { %>
             <dd>
                 <span><%= pupilCensus.csvName %></span>
-                <span class="job-status"><%= pupilCensus.jobStatus %></span>
             </dd>
+            <dd><span class="job-status"><%= pupilCensus.outcome %></span></dd>
             <% } else { %>
             <dd>No file uploaded</dd>
             <% } %>

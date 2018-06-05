@@ -1,15 +1,14 @@
 .pupil-census-uploaded-file {
   border-top: 1px solid $grey-2;
   border-bottom: 1px solid $grey-2;
+  display: inline-flex;
   > dd {
     padding-top: pem(10px);
     padding-bottom: pem(10px);
     > span:first-child {
       display:inline-block;
-      width: pem(170px);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
+      width: pem(280px);
+      word-wrap: break-word;
     }
   }
 }
