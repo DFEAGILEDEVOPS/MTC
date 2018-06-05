@@ -46,11 +46,11 @@
 }
 
 .key {
-  @include core-36;
+  @include core-27;
 
   background-color: $grey-1;
   cursor: pointer;
-  height: 2em;
+  //height: 2em;
   text-align: center;
   width: 2.75em;
   border-bottom: 3px solid #000;

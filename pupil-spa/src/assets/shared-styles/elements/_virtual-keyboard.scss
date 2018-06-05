@@ -1,7 +1,7 @@
 .numpad {
   td {
-    max-height: 72px;
-    max-width: 102px;
+    height: pem(70px, 36);
+    width: pem(100px, 36);
   }
 
   td > button {
@@ -12,18 +12,14 @@
     cursor: hand;
     font-size: 36px;
     font-weight: 400;
-    height: 100%;
-    width: 100%;
+    height: pem(70px, 36);
+    width: pem(100px, 36);
     text-align: center;
     margin: 0;
     padding: 0;
   }
 
   .enter-key {
-    font-family: "nta", Arial, sans-serif;
-    font-weight: 400;
-    text-transform: none;
-    font-size: 20px;
-    line-height: 1.11111;
+    @include core-27;
   }
 }
