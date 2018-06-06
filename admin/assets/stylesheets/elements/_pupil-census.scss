@@ -7,13 +7,21 @@
     padding-bottom: pem(10px);
     > span:first-child {
       display:inline-block;
-      width: pem(280px);
       word-wrap: break-word;
     }
   }
 }
 
+.job-file {
+  width: pem(200px);
+}
+
 .job-status {
   float: right;
-  margin-right: pem(200px);
+  margin-right: pem(80px);
+  width: pem(250px);
+}
+
+.no-file-uploaded {
+  width: pem(500px);
 }

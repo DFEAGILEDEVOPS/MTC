@@ -2,13 +2,10 @@
 
 const { TYPES } = require('tedious')
 const R = require('ramda')
-const moment = require('moment')
 
 const table = '[pupil]'
-const config = require('../../config')
 const pupilDataService = {}
 const sqlService = require('./sql.service')
-const sqlPoolService = require('./sql.pool.service')
 
 /** SQL METHODS */
 

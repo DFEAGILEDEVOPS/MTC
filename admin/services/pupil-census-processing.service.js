@@ -11,7 +11,7 @@ const pupilCensusProcessingService = {}
  * @param jobId
  * @return {Promise<void>}
  */
-pupilCensusProcessingService.process = async(csvData, jobId) => {
+pupilCensusProcessingService.process = async (csvData, jobId) => {
   // Fetch all unique school for pupil records
   const schoolDfeNumbers = R.uniq(csvData.map(r => `${r[0]}${r[1]}`))
   let schools = await schoolDataService.sqlFindByDfeNumbers(schoolDfeNumbers)

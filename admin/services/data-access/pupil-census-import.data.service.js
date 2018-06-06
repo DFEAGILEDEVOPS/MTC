@@ -15,7 +15,7 @@ const sqlPoolService = require('./sql.pool.service')
  * @param {Number} jobId
  * @return {Promise<*>}
  */
-pupilCensusImportDataService.sqlBulkImport = async(pupilData, schools, jobId) => {
+pupilCensusImportDataService.sqlBulkImport = async (pupilData, schools, jobId) => {
   const result = {}
   const con = await sqlPoolService.getConnection()
 
