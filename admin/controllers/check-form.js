@@ -454,8 +454,10 @@ const getDownloadPupilCheckData = async (req, res, next) => {
     return next(error)
   }
 
-  psychometricianReport.csvName = psychometricianReport.csvName.replace(/\.csv$/, '')
-  psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.dateGenerated)
+  if (psychometricianReport) {
+    psychometricianReport.csvName = psychometricianReport.csvName.replace(/\.csv$/, '')
+    psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.dateGenerated)
+  }
 
   res.render('test-developer/download-pupil-check-data', {
     breadcrumbs: req.breadcrumbs(),
@@ -474,6 +476,9 @@ const getCsvDownloadPupilCheckData = async (req, res, next) => {
   let psychometricianReport, reportContent
   try {
     psychometricianReport = await psychometricianReportService.getUploadedFile()
+    if (!psychometricianReport) {
+      return res.redirect('/test-developer/download-pupil-check-data')
+    }
     reportContent = await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename)
   } catch (error) {
     req.flash('error', error.message)
