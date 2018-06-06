@@ -41,12 +41,10 @@
         </span>
         <dl class="pupil-census-uploaded-file">
             <% if (pupilCensus) { %>
-            <dd>
-                <span><%= pupilCensus.csvName %></span>
-                <span class="job-status"><%= pupilCensus.jobStatus %></span>
-            </dd>
+            <dd><span class="job-file"><%= pupilCensus.csvName %></span></dd>
+            <dd><span class="job-status"><%= pupilCensus.outcome %></span></dd>
             <% } else { %>
-            <dd>No file uploaded</dd>
+            <dd><span class="no-file-uploaded">No file uploaded</span></dd>
             <% } %>
         </dl>
     </div>
