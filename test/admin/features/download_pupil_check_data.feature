@@ -12,6 +12,6 @@ Feature:
     Given I am on the download pupil check data page
     Then I should see a heading for the download pupil check data page
 
-  Scenario: Assign check window page has information about the check form
+  Scenario: Download Pupil Check Data page has information about the downloading pupil check data
     Given I am on the download pupil check data page
     Then I should see some information about the download pupil check data
