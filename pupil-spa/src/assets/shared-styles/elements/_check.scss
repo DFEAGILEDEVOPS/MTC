@@ -1,6 +1,7 @@
 // Questions
 .question-container {
-  margin-top: pem(70px, 16); // TODO: condense this space for small screens
+  margin-top: pem(65px, 16); // TODO: condense this space for small screens
+  vertical-align: top;
 }
 
 .question-and-answer {
@@ -37,7 +38,7 @@
 
 // Numpad
 .numpad-container {
-  margin-top: 10px;  // total spacing is 20px made up of 10px border-spacing + 10px margin
+  margin-top: 8px;  // total spacing is 20px made up of 10px border-spacing + 8px margin + ?
   text-align: center;
 }
 
