@@ -1,21 +1,17 @@
 'use strict'
-const uuidv4 = require('uuid/v4')
-const moment = require('moment')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 
-const config = require('../config')
-const azureFileDataService = require('./data-access/azure-file.data.service')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
+const pupilCensusProcessingService = require('./pupil-census-processing.service')
 
-const pupilCensusMaxSizeFileUploadMb = config.Data.pupilCensusMaxSizeFileUploadMb
 const pupilCensusService = {}
 
 /**
  * Upload handler for pupil census
- * Reads the file contents, calls the upload to blob storage method and the creation of the pupil census record
+ * Reads the file contents and creates of the pupil census record
  * @param uploadFile
  * @return {Promise<void>}
  */
@@ -38,45 +34,55 @@ pupilCensusService.upload = async (uploadFile) => {
         }
       })
   })
-  const blobResult = await pupilCensusService.uploadToBlobStorage(csvData)
-  await pupilCensusService.create(uploadFile, blobResult)
-}
-/**
- * Upload stream to Blob Storage
- * @param uploadFile
- * @return {Promise<void>}
- */
-pupilCensusService.uploadToBlobStorage = async (uploadFile) => {
-  const streamLength = pupilCensusMaxSizeFileUploadMb
-  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
-  const csvFileStream = uploadFile.join('\n')
-  return azureFileDataService.azureUploadFile('censusupload', remoteFilename, csvFileStream, streamLength)
+  // Remove headers from csv
+  csvData.shift()
+  // Create the pupil census record
+  const job = await pupilCensusService.create(uploadFile)
+  if (!job || !job.insertId) {
+    throw new Error('Job has not been created')
+  }
+  // Process and perform pupil bulk insertion
+  const submissionResult = await pupilCensusProcessingService.process(csvData, job.insertId)
+  if (!submissionResult) {
+    throw new Error('No result has been returned from pupil bulk insertion')
+  }
+  // Update pupil census record with corresponding output
+  pupilCensusService.updateJobOutput(job.insertId, submissionResult)
 }
 
 /**
  * Creates a new pupilCensus record
  * @param {Object} uploadFile
- * @param {Object} blobResult
- * @return {Object}
+ * @return {Promise}
  */
-pupilCensusService.create = async (uploadFile, blobResult) => {
-  let dataInput = []
+pupilCensusService.create = async (uploadFile) => {
   const csvName = uploadFile.filename && uploadFile.filename.replace(/\.[^/.]+$/, '')
-  const blobFileName = blobResult && blobResult.name
-  dataInput.push(csvName, blobFileName)
-  dataInput = JSON.stringify(dataInput.join(','))
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
   const pupilCensusRecord = {
-    jobInput: dataInput,
+    jobInput: csvName,
     jobType_id: jobType.id,
     jobStatus_id: jobStatus.id
   }
-  await jobDataService.sqlCreate(pupilCensusRecord)
+  return jobDataService.sqlCreate(pupilCensusRecord)
 }
 
 /**
- * Get existing pupil census file
+ * Updates the output of a pupilCensus record
+ * @param {Number} jobId
+ * @param {Object} submissionResult
+ * @returns {Promise.<void>}
+ */
+pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
+  const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
+  const output = submissionResult.output
+  const errorOutput = submissionResult.errorOutput
+  await jobDataService.updateJobOutput(jobId, jobStatus.id, output, errorOutput)
+}
+
+/**
+ * Gets existing pupil census file
  * @return {Object}
  */
 pupilCensusService.getUploadedFile = async () => {
@@ -88,9 +94,13 @@ pupilCensusService.getUploadedFile = async () => {
     throw new Error('Pupil census record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  const dataInput = pupilCensus.jobInput && JSON.parse(pupilCensus.jobInput)
-  pupilCensus.jobStatus = jobStatus && jobStatus.description
-  pupilCensus.csvName = dataInput.split(',')[0]
+  if (!jobStatus) {
+    throw new Error(`There is no job status for job status id ${jobStatusId}`)
+  }
+  const outcome = jobStatus.jobStatusCode === 'CWR'
+    ? `${jobStatus.description} : ${pupilCensus.errorOutput}` : `${jobStatus.description} : ${pupilCensus.jobOutput}`
+  pupilCensus.csvName = pupilCensus.jobInput
+  pupilCensus.outcome = outcome
   return pupilCensus
 }
 
