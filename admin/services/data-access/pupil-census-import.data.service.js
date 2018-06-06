@@ -30,7 +30,7 @@ pupilCensusImportDataService.sqlBulkImport = async (pupilData, schools, jobId) =
 
 const bulkLoadData = (connection, pupilData, schools, jobId) => {
   return new Promise((resolve, reject) => {
-    const bulkLoad = connection.newBulkLoad(`${config.Sql.Database}.${sqlService.adminSchema}.[pupil]`, function (error, rowCount) {
+    const bulkLoad = connection.newBulkLoad(`[${config.Sql.Database}].[${sqlService.adminSchema}].[pupil]`, function (error, rowCount) {
       if (error) {
         return reject(error)
       }
