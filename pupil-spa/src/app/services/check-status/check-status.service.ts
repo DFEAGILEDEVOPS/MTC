@@ -10,4 +10,8 @@ export class CheckStatusService {
   hasUnfinishedCheck(): boolean {
     return this.storageService.getItem('pending_submission');
   }
+
+  hasFinishedCheck(): boolean {
+    return this.storageService.getItem('completed_submission');
+  }
 }
