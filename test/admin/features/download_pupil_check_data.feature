@@ -9,9 +9,9 @@ Feature:
     Given I am logged in with a test developer
 
   Scenario: Download Pupil Check Data page has a heading
-    Given I am on the download pupil check data page
+    When I am on the download pupil check data page
     Then I should see a heading for the download pupil check data page
 
   Scenario: Download Pupil Check Data page has information about the downloading pupil check data
-    Given I am on the download pupil check data page
+    When I am on the download pupil check data page
     Then I should see some information about the download pupil check data
