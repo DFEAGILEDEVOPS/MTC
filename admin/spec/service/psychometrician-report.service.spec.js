@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, expect, it, beforeEach, fail, spyOn */
+/* global describe, expect, it, beforeEach, afterEach, fail, spyOn, jasmine */
 
 const moment = require('moment')
 const winston = require('winston')
@@ -286,6 +286,14 @@ describe('psychometricians-report.service', () => {
     })
   })
 
+  describe('downloadUploadedFile', () => {
+    it('calls azureDownloadFile method to download the file', async () => {
+      spyOn(azureFileDataService, 'azureDownloadFile')
+      await service.downloadUploadedFile([])
+      expect(azureFileDataService.azureDownloadFile).toHaveBeenCalled()
+    })
+  })
+
   describe('getUploadedFile', () => {
     it('fetches a psychometrician report record and related status', async () => {
       spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(psychometricianReportMock)
@@ -344,7 +352,7 @@ describe('psychometricians-report.service', () => {
       expect(jobDataService.sqlCreate).toHaveBeenCalledWith({
         jobType_id: jobTypeMock.id,
         jobStatus_id: jobStatusMock.id,
-        jobInput: '"Pupil check data 2018-06-02 09.00.00.csv,blobFile"'
+        jobInput: `"Pupil check data 2018-06-02 09.00.00.csv,blobFile,Sat Jun 02 2018 09:00:00 GMT+0100"`
       })
     })
   })

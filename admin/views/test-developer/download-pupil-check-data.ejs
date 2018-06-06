@@ -31,16 +31,16 @@
 
         <button class="button button-primary" id="generate-check-data-button" onclick="generatePupilCheckData()">Generate latest file</button>
 
-        <p id="pupilCheckDataContent" class="top-padding-30">
+        <div id="pupilCheckDataContent" class="top-padding-30">
             <% if (psychometricianReport) { %>
-                <a href="#" class="heading-small icon-download">
-                    <%= psychometricianReport.csvName %> (CSV file)
+                <a href="/test-developer/csv-download-pupil-check-data" class="heading-small icon-download">
+                    <%= psychometricianReport.csvName %> (CSV)
                 </a>
-                <span>Last generated at <%= dateGenerated %></span>
+                <p class="text-secondary"> File generated on <%= psychometricianReport.dateGenerated %> </p>
             <% } else { %>
                 No file generated
             <% } %>
-        </p>
+        </div>
     </div>
 </div>
 
@@ -61,8 +61,11 @@
         })
             .done(function(data) {
                 $(contentId).html(`
-                    <a href="#" class="heading-small icon-download">${data.psychometricianReport}</a> (CSV file)</a>
-                    <p> Last generated at </p>
+                    <a
+                        href="/test-developer/csv-download-pupil-check-data"
+                        class="heading-small icon-download"
+                    > ${data.csvName} (CSV) </a>
+                    <p class="text-secondary"> File generated on ${data.dateGenerated} </p>
                 `);
             })
             .fail(function() {

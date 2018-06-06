@@ -33,7 +33,7 @@ psychometricianReportService.create = async (blobResult) => {
   const dateGenerated = moment()
   const csvName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv`
   const blobFileName = blobResult && blobResult.name
-  dataInput.push(csvName, blobFileName)
+  dataInput.push(csvName, blobFileName, dateGenerated)
   dataInput = JSON.stringify(dataInput.join(','))
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
@@ -70,10 +70,20 @@ psychometricianReportService.getUploadedFile = async () => {
     throw new Error('Psychometrician report record does not have a job status reference')
   }
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
-  const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput)
+  const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput).split(',')
   psychometricianReport.jobStatus = jobStatus && jobStatus.description
-  psychometricianReport.csvName = dataInput.split(',')[0]
+  psychometricianReport.csvName = dataInput[0]
+  psychometricianReport.remoteFilename = dataInput[1]
+  psychometricianReport.dateGenerated = dataInput[2]
   return psychometricianReport
+}
+
+/**
+ * Get existing psychometrician report file
+ * @return {Object}
+ */
+psychometricianReportService.downloadUploadedFile = async (remoteFilename) => {
+  return azureFileDataService.azureDownloadFile('psychometricianreportupload', remoteFilename)
 }
 
 /**
