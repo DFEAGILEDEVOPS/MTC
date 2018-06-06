@@ -11,11 +11,14 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { CheckStatusService } from '../services/check-status/check-status.service';
+import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>;
   let submissionService;
   let auditService;
+  let checkStatusService;
   let component;
   let router: Router;
   let activatedRoute: ActivatedRoute;
@@ -26,6 +29,7 @@ describe('SubmissionPendingComponent', () => {
       providers: [
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
+        { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
@@ -48,6 +52,8 @@ describe('SubmissionPendingComponent', () => {
     it('calls loadComponent method when data submission is successful', async () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
+      checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
@@ -62,6 +68,8 @@ describe('SubmissionPendingComponent', () => {
     it('calls loadComponent method when data submission throws an error', async () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
+      checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
@@ -75,12 +83,25 @@ describe('SubmissionPendingComponent', () => {
     it('provides an appropriate title when a previous check is detected though a URL param', async () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
+      checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
       activatedRoute.snapshot.queryParams.unfinishedCheck = true;
       await component.ngOnInit();
       expect(component.title).toBe('Uploading previous check');
+    });
+    it('redirects to check complete when a previous check was already completed but not logged out', async () => {
+      spyOn(router, 'navigate');
+      checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
+      spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(true);
+      spyOn(submissionService, 'submitData');
+      spyOn(component, 'loadComponent');
+      await component.ngOnInit();
+      expect(submissionService.submitData).toHaveBeenCalledTimes(0);
+      expect(component.loadComponent).toHaveBeenCalledTimes(0);
+      expect(router.navigate).toHaveBeenCalledWith(['/check-complete']);
     });
   });
   describe('loadComponent()', () => {

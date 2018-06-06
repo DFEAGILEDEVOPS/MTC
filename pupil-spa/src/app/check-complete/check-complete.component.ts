@@ -24,6 +24,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnInit() {
     this.storageService.setItem('pending_submission', false);
+    this.storageService.setItem('completed_submission', true);
     this.window.ga('send', {
       hitType: 'pageview',
       page: '/check-complete'

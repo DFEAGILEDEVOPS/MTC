@@ -34,4 +34,16 @@ describe('CheckStatusService', () => {
       expect(hasUnfinishedCheck).toBeFalsy();
     });
   });
+  describe('#hasFinishedCheck', () => {
+    it('should return true if local storage submission completed entry is true', () => {
+      spyOn(mockStorageService, 'getItem').and.returnValue(true);
+      const hasFinishedCheck = checkStatusService.hasFinishedCheck();
+      expect(hasFinishedCheck).toBeTruthy();
+    });
+    it('should return false if local storage is empty', () => {
+      spyOn(mockStorageService, 'getItem');
+      const hasFinishedCheck = checkStatusService.hasFinishedCheck();
+      expect(hasFinishedCheck).toBeFalsy();
+    });
+  });
 });
