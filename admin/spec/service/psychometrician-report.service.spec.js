@@ -348,11 +348,11 @@ describe('psychometricians-report.service', () => {
       spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusMock)
       const blobResultMock = { name: 'blobFile' }
-      await service.create(blobResultMock)
+      await service.create(blobResultMock, moment())
       expect(jobDataService.sqlCreate).toHaveBeenCalledWith({
         jobType_id: jobTypeMock.id,
         jobStatus_id: jobStatusMock.id,
-        jobInput: `"Pupil check data 2018-06-02 09.00.00.csv,blobFile,Sat Jun 02 2018 09:00:00 GMT+0100"`
+        jobInput: `"Pupil check data 2018-06-02 09.00.00.zip,blobFile,Sat Jun 02 2018 09:00:00 GMT+0100"`
       })
     })
   })
