@@ -1,4 +1,5 @@
 const appInsights = require('applicationinsights')
+const config = require('./config')
 
 const azure = {
   /**
@@ -8,7 +9,7 @@ const azure = {
     return process.env.KUDU_APPPATH !== undefined
   },
   startInsightsIfConfigured: () => {
-    if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+    if (config.Logging.ApplicationInsights.Key) {
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)

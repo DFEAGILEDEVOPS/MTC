@@ -67,6 +67,10 @@ module.exports = {
     },
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
+    },
+    ApplicationInsights: {
+      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
+      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
