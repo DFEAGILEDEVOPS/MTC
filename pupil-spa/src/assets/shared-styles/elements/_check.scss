@@ -20,16 +20,17 @@
 
   display: block; // mobile
 
-  width: pem(320px, 80);
+  width: pem(326px, 80); // 320px + 6px for the border on the .answer
   margin-left: auto;
   margin-right: auto;
-  text-align: center;
+  text-align: right;
 
   @include media(desktop) {
     display: inline-block;
     padding-top: 3px; // allow for the border that the .answer has
     margin: 0;
     text-align: right;
+    width: pem(300, 80) // shrink the width as much as possible so as to center the image
   }
 
   vertical-align: top;
@@ -44,13 +45,18 @@
 .answer {
   @include core-80;
 
-  border: 3px solid $focus-colour;
+  border: 2px solid $black;
+  outline: 3px solid $focus-colour;
   display: block;
   height: pem(80px, 80);
   margin: auto;
-  text-align: left;
+  text-align: right;
   width: pem(320px, 80); // IE Edge needs 0.02em more than other browsers.
   line-height: 1.15 !important;
+
+  @include media(desktop) {
+    text-align: left;
+  }
 }
 
 // Numpad
