@@ -1,20 +1,37 @@
 // Questions
-.question-container {
-  margin-top: pem(65px, 16); // TODO: condense this space for small screens
-  vertical-align: top;
-}
 
 .question-and-answer {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  margin-top: pem(35px, 16);
+
+  @include media(desktop) {
+    margin-top: pem(65px, 16); // TODO: condense this space for small screens
+  }
+}
+
+.question-container {
+  vertical-align: top;
 }
 
 .question {
   @include core-80;
 
-  display: inline-block;
-  padding-top: 3px; // allow for the border that the .answer has
+  display: block; // mobile
+
+  width: pem(320px, 80);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+
+  @include media(desktop) {
+    display: inline-block;
+    padding-top: 3px; // allow for the border that the .answer has
+    margin: 0;
+    text-align: right;
+  }
+
   vertical-align: top;
   line-height: 1.15 !important;
 }
@@ -50,11 +67,6 @@
   @include core-27;
 
   background-color: $grey-1;
-  cursor: pointer;
-  //height: 2em;
-  text-align: center;
-  //width: 2.75em;
-  border-bottom: 3px solid #000;
   padding-top: 5px;
 }
 

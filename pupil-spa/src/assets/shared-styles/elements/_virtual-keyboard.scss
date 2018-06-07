@@ -23,4 +23,20 @@
   .enter-key {
     @include core-27;
   }
+
+  .numpad-button {
+    @include button($grey-1);
+    @include core-36;
+
+    padding: 0;
+  }
+
+  .enter-button {
+    @include button($grey-1);
+    @include core-27;
+
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
 }
