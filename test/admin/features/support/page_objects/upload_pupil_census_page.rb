@@ -7,7 +7,8 @@ class UploadPupilCensusPage < SitePrism::Page
   element :cancel, 'a[href="/service-manager/home"]'
   element :uploaded_title, '.bold-small'
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
-    element :file, 'dd'
+    element :file, 'dd:first-of-type'
+    element :status, 'dd:last-of-type'
   end
 
   def create_unique_check_csv(file_name, file_contents)
