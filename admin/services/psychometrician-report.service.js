@@ -77,7 +77,6 @@ psychometricianReportService.generateZip = async (psychometricianReport, anomaly
  * @return {Promise<void>}
  */
 psychometricianReportService.uploadToBlobStorage = async (uploadStream) => {
-  fs.writeFileSync('/tmp/test33.zip', uploadStream)
   const streamLength = psychometricianReportMaxSizeFileUploadMb
   const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
   return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, uploadStream, streamLength)
