@@ -433,7 +433,43 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   res.redirect('/test-developer/assign-form-to-window')
 }
 
+/**
+ * Download pupil check data view.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getDownloadPupilCheckData = async (req, res, next) => {
+  res.locals.pageTitle = 'Download pupil check data'
+  let error
+
+  try {
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('test-developer/download-pupil-check-data', {
+      error,
+      breadcrumbs: req.breadcrumbs()
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * Generate latest pupil check data.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getGenerateLatestPupilCheckData = async (req, res, next) => {
+  req.flash('info', 'Generating...')
+  res.redirect('/test-developer/download-pupil-check-data')
+}
+
 module.exports = {
+  getDownloadPupilCheckData,
+  getGenerateLatestPupilCheckData,
   getTestDeveloperHomePage,
   uploadAndViewFormsPage,
   removeCheckForm,

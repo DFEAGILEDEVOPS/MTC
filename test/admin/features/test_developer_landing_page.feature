@@ -17,6 +17,10 @@ Feature: Test Developer Landing page
     Given I have signed in with test-developer
     Then I should be given the option to assign forms to check windows
 
+  Scenario: Test Developers should be given the option to download pupil check data
+    Given I have signed in with test-developer
+    Then I should be given the option to download pupil check data
+
   Scenario: Test Developers should be given some guidance
     Given I have signed in with test-developer
     Then I should be given some guidance
