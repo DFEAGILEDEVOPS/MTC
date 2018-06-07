@@ -512,7 +512,7 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
 
     return res.status(200).json({ csvName, dateGenerated })
   } catch (error) {
-    return res.status(500).json({ error })
+    return res.status(500).json({ error: error.message })
   }
 }
 
