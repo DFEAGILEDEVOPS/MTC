@@ -1,18 +1,16 @@
 'use strict'
-const winston = require('winston')
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
 const useragent = require('useragent')
 
-const checkFormService = require('./check-form.service')
-const checkFormDataService = require('./check-form.data.service')
+const checkFormDataService = require('./data-access/check-form.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 
 const anomalyReportService = {}
-const anomalyReportService.reportedAnomalies = []
+anomalyReportService.reportedAnomalies = []
 
 /**
  * Return the CSV file as a string
@@ -20,7 +18,7 @@ const anomalyReportService.reportedAnomalies = []
  */
 anomalyReportService.generateReport = async () => {
   const output = await anomalyReportService.findAllAnomalies()
-  const headers = psychometricianReportService.produceReportDataHeaders(results)
+  const headers = anomalyReportService.produceReportDataHeaders()
 
   return new Promise((resolve, reject) => {
     csv.writeToString(
@@ -42,6 +40,9 @@ anomalyReportService.findAllAnomalies = async () => {
   const checkInfo = await completedCheckDataService.sqlFindMeta()
   const batchSize = 250
   let lowCheckId = checkInfo.min // starting Check ID
+  if (lowCheckId === null) return '' // no checks taken means an empty file
+
+  anomalyReportService.reportedAnomalies = []
 
   while (lowCheckId <= checkInfo.max) {
     // Fetching ${batchSize} checks for processing starting at ID ${lowCheckId}`
@@ -50,12 +51,12 @@ anomalyReportService.findAllAnomalies = async () => {
     const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
     checks.forEach(check => {
       const checkForm = checkForms.find(checkForm => checkForm.id === check.checkForm_id)
-      this.detectAnomalies(check, checkForm)
+      anomalyReportService.detectAnomalies(check, checkForm)
       lowCheckId = parseInt(check.id, 10) + 1
     })
   }
 
-  return reportedAnomalies
+  return anomalyReportService.reportedAnomalies
 }
 
 /**
@@ -68,7 +69,7 @@ anomalyReportService.findAllAnomalies = async () => {
  */
 anomalyReportService.produceReportData = (check, message, testedValue = null, expectedValue = null, questionNumber = null) => {
   const agent = useragent.lookup(R.path(['data', 'device', 'navigator', 'userAgent'], check))
-  const checkDate = getCheckDate(check)
+  const checkDate = anomalyReportService.getCheckDate(check)
 
   const reportData = [
     check.checkCode,
@@ -83,7 +84,7 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
     questionNumber
   ]
 
-  this.reportedAnomalies.push(reportData)
+  anomalyReportService.reportedAnomalies.push(reportData)
 }
 
 /**
@@ -91,7 +92,7 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
  * @param {Array} results
  * @returns {Array}
  */
-anomalyReportService.produceReportDataHeaders = (results) => {
+anomalyReportService.produceReportDataHeaders = () => {
   const reportHeaders = [
     'Check Code',
     'Date',
@@ -109,28 +110,28 @@ anomalyReportService.produceReportDataHeaders = (results) => {
 }
 
 anomalyReportService.detectAnomalies = (check, checkForm) => {
-  this.detectWrongNumberOfAnswers(check)
-  this.detectAnswersCorrespondToQuestions(check, checkForm)
-  this.detectPageRefresh(check)
-  this.detectInputBeforeOrAfterTheQuestionIsShown(check)
-  this.detectMissingAudits(check)
-  this.detectChecksThatTookLongerThanTheTheoreticalMax(check)
-  this.detectInputThatDoesNotCorrespondToAnswers(check)
-  this.detectQuestionsThatWereShownForTooLong(check)
-  this.detectInputsWithoutQuestionInformation(check)
-  this.detectApplicationErrors(check)
+  anomalyReportService.detectWrongNumberOfAnswers(check)
+  anomalyReportService.detectAnswersCorrespondToQuestions(check, checkForm)
+  anomalyReportService.detectPageRefresh(check)
+  anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown(check)
+  anomalyReportService.detectMissingAudits(check)
+  anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax(check)
+  anomalyReportService.detectInputThatDoesNotCorrespondToAnswers(check)
+  anomalyReportService.detectQuestionsThatWereShownForTooLong(check)
+  anomalyReportService.detectInputsWithoutQuestionInformation(check)
+  anomalyReportService.detectApplicationErrors(check)
 
   // Navigator checks
-  this.detectLowBattery(check)
-  this.detectInsufficientVerticalHeight(check)
-  this.detectLowColourDisplays(check)
+  anomalyReportService.detectLowBattery(check)
+  anomalyReportService.detectInsufficientVerticalHeight(check)
+  anomalyReportService.detectLowColourDisplays(check)
 }
 
 anomalyReportService.detectWrongNumberOfAnswers = (check) => {
   const numberOfQuestions = check.data.questions.length
   const numberOfAnswers = check.data.answers.length
   if (numberOfAnswers !== numberOfQuestions) {
-    this.produceReportData(check, 'Wrong number of answers', numberOfAnswers, numberOfQuestions)
+    anomalyReportService.produceReportData(check, 'Wrong number of answers', numberOfAnswers, numberOfQuestions)
   }
 }
 
@@ -142,7 +143,7 @@ anomalyReportService.detectPageRefresh = (check) => {
     }
   })
   if (pageRefreshCount) {
-    this.produceReportData(check, 'Page refresh detected', pageRefreshCount, 0)
+    anomalyReportService.produceReportData(check, 'Page refresh detected', pageRefreshCount, 0)
   }
 }
 
@@ -150,7 +151,7 @@ anomalyReportService.detectLowBattery = (check) => {
   const battery = R.path(['data', 'device', 'battery'], check)
   if (!battery) { return }
   if (battery.levelPercent < 20 && !battery.isCharging) {
-    this.produceReportData(check, 'Low battery', '' + battery.levelPercent + '%' + ' charging ' + battery.isCharging, '> 20%')
+    anomalyReportService.produceReportData(check, 'Low battery', '' + battery.levelPercent + '%' + ' charging ' + battery.isCharging, '> 20%')
   }
 }
 
@@ -170,14 +171,14 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
   questions.forEach(question => {
     const questionRenderedEvent = check.data.audit.find(e => e.type === 'QuestionRendered' && e.data && e.data.sequenceNumber === question.order)
     if (!questionRenderedEvent) {
-      return this.produceReportData(check, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
+      return anomalyReportService.produceReportData(check, 'QuestionRenderedEvent not found', null, null, `Q${question.order}`)
     }
     const questionShownAt = moment(questionRenderedEvent.clientTimestamp)
     if (!questionShownAt.isValid()) {
-      return this.produceReportData(check, 'QuestionRendered Timestamp is not valid', questionRenderedEvent.clientTimestamp, 'Valid ts')
+      return anomalyReportService.produceReportData(check, 'QuestionRendered Timestamp is not valid', questionRenderedEvent.clientTimestamp, 'Valid ts')
     }
     // If there are any inputs before `questionShownAt` it's an anomaly
-    const inputs = this.filterInputsForQuestion(question.order, question.factor1, question.factor2, R.pathOr([], ['data', 'inputs'], check))
+    const inputs = anomalyReportService.filterInputsForQuestion(question.order, question.factor1, question.factor2, R.pathOr([], ['data', 'inputs'], check))
     if (!inputs) {
       return
     }
@@ -191,11 +192,11 @@ anomalyReportService.detectInputBeforeOrAfterTheQuestionIsShown = (check) => {
     inputs.forEach(input => {
       const inputTimeStamp = moment(input.clientTimestamp)
       if (inputTimeStamp.isBefore(questionShownAt)) {
-        this.produceReportData(check, 'Input received before Question shown', input.clientTimestamp, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
+        anomalyReportService.produceReportData(check, 'Input received before Question shown', input.clientTimestamp, questionRenderedEvent.clientTimestamp, `Q${question.order}`)
       }
       // We shouldn't have any input after the QuestionRendered ts + the question time-limit
       if (inputTimeStamp.isAfter(questionCutoffAt)) {
-        this.produceReportData(check, 'Input received after cut-off', input.clientTimestamp, dateService.formatIso8601(questionCutoffAt), `Q${question.order}`)
+        anomalyReportService.produceReportData(check, 'Input received after cut-off', input.clientTimestamp, dateService.formatIso8601(questionCutoffAt), `Q${question.order}`)
       }
     })
   })
@@ -207,19 +208,19 @@ anomalyReportService.detectMissingAudits = (check) => {
   const questionRenderedAudits = check.data.audit.filter(audit => audit.type === 'QuestionRendered')
   const numberOfPractiseQuestions = 3
   if (questionRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
-    this.produceReportData(check, 'Wrong number of QuestionRendered audits', questionRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
+    anomalyReportService.produceReportData(check, 'Wrong number of QuestionRendered audits', questionRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
   const pauseRenderedAudits = check.data.audit.filter(audit => audit.type === 'PauseRendered')
   if (pauseRenderedAudits.length !== numberOfQuestions + numberOfPractiseQuestions) {
-    this.produceReportData(check, 'Wrong number of PauseRendered audits', pauseRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
+    anomalyReportService.produceReportData(check, 'Wrong number of PauseRendered audits', pauseRenderedAudits.length, numberOfQuestions + numberOfPractiseQuestions)
   }
 
   const detectMissingSingleAudit = function (auditType) {
     // Detect events that should occur only once
     const audit = check.data.audit.find(audit => audit.type === auditType)
     if (!audit) {
-      this.produceReportData(check, `Missing audit ${auditType}`)
+      anomalyReportService.produceReportData(check, `Missing audit ${auditType}`)
     }
   }
   const singleMandatoryAuditEvents = [
@@ -247,7 +248,7 @@ anomalyReportService.detectInputsWithoutQuestionInformation = (check) => {
     return false
   })
   if (eventsMissingInformation.length) {
-    this.produceReportData(check, 'One or more Input events missing question information', eventsMissingInformation.length, 0)
+    anomalyReportService.produceReportData(check, 'One or more Input events missing question information', eventsMissingInformation.length, 0)
   }
 }
 
@@ -257,18 +258,18 @@ anomalyReportService.detectInsufficientVerticalHeight = (check) => {
 
   // The vertical height required depends on the width, as we have 3 breakpoints
   if (width <= 640 && height < 558) {
-    this.produceReportData(check, 'Insufficient browser vertical height', height, '> 558 pixels')
+    anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 558 pixels')
   } else if (width > 640 && width < 769 && height < 700) {
-    this.produceReportData(check, 'Insufficient browser vertical height', height, '> 700 pixels')
+    anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 700 pixels')
   } else if (width > 769 && height < 660) {
-    this.produceReportData(check, 'Insufficient browser vertical height', height, '> 660 pixels')
+    anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 660 pixels')
   }
 }
 
 anomalyReportService.detectLowColourDisplays = (check) => {
   const colourDepth = R.path(['data', 'device', 'screen', 'colorDepth'], check)
   if (colourDepth < 24) {
-    this.produceReportData(check, 'Low colour display', colourDepth, '24')
+    anomalyReportService.produceReportData(check, 'Low colour display', colourDepth, '24')
   }
 }
 
@@ -285,34 +286,34 @@ anomalyReportService.detectChecksThatTookLongerThanTheTheoreticalMax = (check) =
   const checkStart = psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check)
   const checkComplete = psUtilService.getClientTimestampFromAuditEvent('CheckSubmissionPending', check)
   if (!checkStart || !checkComplete) {
-    return this.produceReportData(check, 'Missing audit event ' + (checkStart ? 'CheckStarted' : 'CheckSubmissionPending'))
+    return anomalyReportService.produceReportData(check, 'Missing audit event ' + (checkStart ? 'CheckStarted' : 'CheckSubmissionPending'))
   }
   if (checkStart === 'error' || checkComplete === 'error') {
-    return this.produceReportData(check, 'Timestamp error ' + (checkStart === 'error' ? 'CheckStarted' : 'CheckSubmissionPending'))
+    return anomalyReportService.produceReportData(check, 'Timestamp error ' + (checkStart === 'error' ? 'CheckStarted' : 'CheckSubmissionPending'))
   }
   const checkStartDate = moment(checkStart)
   const checkCompleteDate = moment(checkComplete)
   if (!checkStartDate.isValid()) {
-    return this.produceReportData(check, 'Invalid CheckStarted date', checkStart)
+    return anomalyReportService.produceReportData(check, 'Invalid CheckStarted date', checkStart)
   }
   if (!checkCompleteDate.isValid()) {
-    return this.produceReportData(check, 'Invalid CheckSubmissionPending date', checkComplete)
+    return anomalyReportService.produceReportData(check, 'Invalid CheckSubmissionPending date', checkComplete)
   }
   const totalCheckSeconds = checkCompleteDate.diff(checkStartDate, 'seconds')
   if (totalCheckSeconds > maxCheckSeconds) {
-    this.produceReportData(check, 'Check took too long', totalCheckSeconds, maxCheckSeconds)
+    anomalyReportService.produceReportData(check, 'Check took too long', totalCheckSeconds, maxCheckSeconds)
   }
 }
 
 anomalyReportService.detectInputThatDoesNotCorrespondToAnswers = (check) => {
   check.data.answers.forEach((answer, idx) => {
     const questionNumber = idx + 1
-    const inputs = this.filterInputsForQuestion(questionNumber, answer.factor1, answer.factor2, check.data.inputs)
-    const answerFromInputs = this.reconstructAnswerFromInputs(inputs)
+    const inputs = anomalyReportService.filterInputsForQuestion(questionNumber, answer.factor1, answer.factor2, check.data.inputs)
+    const answerFromInputs = anomalyReportService.reconstructAnswerFromInputs(inputs)
     // The answer only stores the first 5 inputs, so there is no point in comparing more
     // characters (the inputs stores all the characters entered)
     if (answer.answer.substring(0, 5) !== answerFromInputs.substring(0, 5)) {
-      this.produceReportData(check, 'Answer from inputs captured does not equal given answer', answerFromInputs, answer.answer, `Q${idx + 1}`)
+      anomalyReportService.produceReportData(check, 'Answer from inputs captured does not equal given answer', answerFromInputs, answer.answer, `Q${idx + 1}`)
     }
   })
 }
@@ -322,7 +323,7 @@ anomalyReportService.detectAnswersCorrespondToQuestions = (check, checkForm) => 
   const formData = JSON.parse(checkForm.formData)
   const difference = R.difference(answerFactors, formData)
   if (difference.length > 0) {
-    this.produceReportData(check, 'Answers factors do not correspond to the questions factors', difference.length, 0)
+    anomalyReportService.produceReportData(check, 'Answers factors do not correspond to the questions factors', difference.length, 0)
   }
 }
 
@@ -386,7 +387,7 @@ anomalyReportService.addRelativeTimings = (elems) => {
 }
 
 anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
-  const audits = filterAllRealQuestionsAndPauseAudits(check)
+  const audits = anomalyReportService.filterAllRealQuestionsAndPauseAudits(check)
   const config = check.data.config
   const head = R.head(audits)
   const tail = R.tail(audits)
@@ -394,7 +395,7 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
     throw new Error('First audit is NOT a pause')
   }
   // Add relative timings to each of the elements
-  addRelativeTimings(audits)
+  anomalyReportService.addRelativeTimings(audits)
   // Expected question time: allow a 5% tolerance for computer processing, and 2.5s for the speech to be read out (if configured)
   // NB: ticket 20864 will replace the 2.5 seconds with something accurate
   const expectedValue = (config.questionTime * 1.05) + (config.speechSynthesis ? 2.5 : 0)
@@ -407,9 +408,9 @@ anomalyReportService.detectQuestionsThatWereShownForTooLong = (check) => {
     if (audit.type === 'QuestionRendered') {
       questionNumber = R.path(['data', 'sequenceNumber'], audit)
     }
-    // We detect the relative timing of the pause, as the relative timing of this shows the time the question was shown
+    // We detect the relative timing of the pause, as the relative timing of anomalyReportService.shows the time the question was shown
     if (audit.type === 'PauseRendered' && audit.relativeTiming > expectedValue) {
-      this.produceReportData(check, 'Question may have been shown for too long', audit.relativeTiming, expectedValue, questionNumber)
+      anomalyReportService.produceReportData(check, 'Question may have been shown for too long', audit.relativeTiming, expectedValue, questionNumber)
     }
   }
 }
@@ -418,7 +419,7 @@ anomalyReportService.detectApplicationErrors = (check) => {
   const audits = check.data.audit
   const appErrors = audits.filter(c => c.type === 'AppError')
   if (appErrors.length) {
-    this.produceReportData(check, 'Check has Application Errors', appErrors.length, 0)
+    anomalyReportService.produceReportData(check, 'Check has Application Errors', appErrors.length, 0)
   }
 }
 

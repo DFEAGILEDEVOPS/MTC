@@ -1,4 +1,6 @@
 'use strict'
+const archiver = require('archiver')
+const fs = require('fs-extra')
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
@@ -24,16 +26,15 @@ const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianRepo
 
 /**
  * Creates a new psychometricianReport record
- * @param {Object} uploadFile
  * @param {Object} blobResult
+ * @param {Object} dateGenerated
  * @return {Object}
  */
-psychometricianReportService.create = async (blobResult) => {
+psychometricianReportService.create = async (blobResult, dateGenerated) => {
   let dataInput = []
-  const dateGenerated = moment()
-  const csvName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv`
+  const fileName = `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.zip`
   const blobFileName = blobResult && blobResult.name
-  dataInput.push(csvName, blobFileName, dateGenerated)
+  dataInput.push(fileName, blobFileName, dateGenerated)
   dataInput = JSON.stringify(dataInput.join(','))
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('PSY')
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('SUB')
@@ -43,7 +44,31 @@ psychometricianReportService.create = async (blobResult) => {
     jobStatus_id: jobStatus.id
   }
   await jobDataService.sqlCreate(psychometricianReportRecord)
-  return { csvName, dateGenerated }
+  return fileName
+}
+
+/**
+ * Creates a zip with the psychometricianReport and anomalyReport
+ * @param {Object} psychometricianReport
+ * @param {Object} anomalyReport
+ * @param {Date} dateGenerated
+ * @return {Object}
+ */
+psychometricianReportService.generateZip = async (psychometricianReport, anomalyReport, dateGenerated) => {
+  const archive = archiver('zip')
+
+  // collect data from the zip stream since uploadBlobToStorage receives the entire blob
+  const zipStreamChunks = []
+  archive.on('data', (chunk) => {
+    zipStreamChunks.push(chunk)
+  })
+
+  archive.append(psychometricianReport, { name: `Pupil check data ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
+  archive.append(anomalyReport, { name: `Anomaly Report ${dateGenerated.format('YYYY-MM-DD HH.mm.ss')}.csv` })
+
+  await archive.finalize()
+
+  return Buffer.concat(zipStreamChunks)
 }
 
 /**
@@ -52,8 +77,9 @@ psychometricianReportService.create = async (blobResult) => {
  * @return {Promise<void>}
  */
 psychometricianReportService.uploadToBlobStorage = async (uploadStream) => {
+  fs.writeFileSync('/tmp/test33.zip', uploadStream)
   const streamLength = psychometricianReportMaxSizeFileUploadMb
-  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.csv`
+  const remoteFilename = `${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}.zip`
   return azureFileDataService.azureUploadFile('psychometricianreportupload', remoteFilename, uploadStream, streamLength)
 }
 
@@ -72,7 +98,7 @@ psychometricianReportService.getUploadedFile = async () => {
   const jobStatus = await jobStatusDataService.sqlFindOneById(jobStatusId)
   const dataInput = psychometricianReport.jobInput && JSON.parse(psychometricianReport.jobInput).split(',')
   psychometricianReport.jobStatus = jobStatus && jobStatus.description
-  psychometricianReport.csvName = dataInput[0]
+  psychometricianReport.fileName = dataInput[0]
   psychometricianReport.remoteFilename = dataInput[1]
   psychometricianReport.dateGenerated = dataInput[2]
   return psychometricianReport

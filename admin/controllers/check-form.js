@@ -1,5 +1,6 @@
 'use strict'
 
+const moment = require('moment')
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
@@ -9,6 +10,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const dateService = require('../services/date.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
+const anomalyReportService = require('../services/anomaly-report.service')
 const winston = require('winston')
 
 /**
@@ -455,7 +457,7 @@ const getDownloadPupilCheckData = async (req, res, next) => {
   }
 
   if (psychometricianReport) {
-    psychometricianReport.csvName = psychometricianReport.csvName.replace(/\.csv$/, '')
+    psychometricianReport.fileName = psychometricianReport.fileName.replace(/\.zip$/, '')
     psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.dateGenerated)
   }
 
@@ -466,13 +468,13 @@ const getDownloadPupilCheckData = async (req, res, next) => {
 }
 
 /**
- * Download pupil check data CSV file.
+ * Download pupil check data ZIP file.
  * @param req
  * @param res
  * @param next
  * @returns {Promise.<void>}
  */
-const getCsvDownloadPupilCheckData = async (req, res, next) => {
+const getFileDownloadPupilCheckData = async (req, res, next) => {
   let psychometricianReport, reportContent
   try {
     psychometricianReport = await psychometricianReportService.getUploadedFile()
@@ -485,8 +487,8 @@ const getCsvDownloadPupilCheckData = async (req, res, next) => {
     return res.redirect('/test-developer/download-pupil-check-data')
   }
 
-  res.setHeader('Content-type', 'text/csv')
-  res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.csvName}`)
+  res.setHeader('Content-type', 'application/zip')
+  res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.fileName}`)
 
   res.send(reportContent)
 }
@@ -502,15 +504,19 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
   try {
     await checkProcessingService.process()
 
-    const reportStream = await psychometricianReportService.generateReport()
-    const blobResult = await psychometricianReportService.uploadToBlobStorage(reportStream)
+    const dateGenerated = moment()
+    const psychometricianReport = await psychometricianReportService.generateReport()
+    const anomalyReport = await anomalyReportService.generateReport()
 
-    let { csvName, dateGenerated } = await psychometricianReportService.create(blobResult)
+    const generatedZip = await psychometricianReportService.generateZip(psychometricianReport, anomalyReport, dateGenerated)
+    const blobResult = await psychometricianReportService.uploadToBlobStorage(generatedZip)
 
-    csvName = csvName.replace(/\.csv$/, '')
-    dateGenerated = dateService.formatDateAndTime(dateGenerated)
+    const fileName = await psychometricianReportService.create(blobResult, dateGenerated)
 
-    return res.status(200).json({ csvName, dateGenerated })
+    return res.status(200).json({
+      fileName: fileName.replace(/\.zip$/, ''),
+      dateGenerated: dateService.formatDateAndTime(dateGenerated)
+    })
   } catch (error) {
     return res.status(500).json({ error: error.message })
   }
@@ -518,7 +524,7 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
 
 module.exports = {
   getDownloadPupilCheckData,
-  getCsvDownloadPupilCheckData,
+  getFileDownloadPupilCheckData,
   getGenerateLatestPupilCheckData,
   getTestDeveloperHomePage,
   uploadAndViewFormsPage,
