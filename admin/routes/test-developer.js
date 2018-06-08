@@ -21,5 +21,6 @@ router.get('/unassign-forms/:checkWindowId', isAuthenticated(rolesConfig.ROLE_TE
 router.post('/unassign-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.unassignCheckFormFromWindow(req, res, next))
 router.get('/download-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getDownloadPupilCheckData(req, res, next))
 router.get('/generate-latest-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getGenerateLatestPupilCheckData(req, res, next))
+router.get('/csv-download-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getCsvDownloadPupilCheckData(req, res, next))
 
 module.exports = router
