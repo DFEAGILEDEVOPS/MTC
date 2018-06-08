@@ -110,6 +110,13 @@ describe('date service', () => {
     })
   })
 
+  describe('#formatDateAndTime', () => {
+    it('correctly formats a date', () => {
+      const date = new Date(2010, 11, 31, 14, 10, 12, 13)
+      expect(dateService.formatDateAndTime(date)).toBe('31 December 2010 2:10pm')
+    })
+  })
+
   describe('#formatDateFromRequest', () => {
     it('should return a date correctly formatted', () => {
       const result1 = dateService.formatDateFromRequest(requestMock, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
