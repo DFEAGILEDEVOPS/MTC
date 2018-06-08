@@ -89,7 +89,6 @@ app.use(featureToggles.middleware)
 
 /* Security Directives */
 
-// app.use(cors())
 app.use(helmet())
 const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com']
 const styleSources = ["'self'", "'unsafe-inline'"]
