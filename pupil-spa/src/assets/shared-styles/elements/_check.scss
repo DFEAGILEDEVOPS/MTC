@@ -1,5 +1,8 @@
 // Questions
 
+$vertical-breakpoint: 600px;
+$vertical-breakpoint-2: 500px;
+
 .question-and-answer {
   margin-left: auto;
   margin-right: auto;
@@ -7,7 +10,12 @@
   margin-top: pem(35px, 16);
 
   @include media(desktop) {
-    margin-top: pem(65px, 16); // TODO: condense this space for small screens
+    margin-top: pem(65px, 16); // condense this space for small screens
+  }
+
+  @media only screen
+  and (max-height: $vertical-breakpoint-2) {
+    margin-top: pem(5px, 16);
   }
 }
 
@@ -25,7 +33,10 @@
   margin-right: auto;
   text-align: right;
 
-  @include media(desktop) {
+
+  @media only screen
+  and (max-height: $vertical-breakpoint)
+  {
     display: inline-block;
     padding-top: 3px; // allow for the border that the .answer has
     margin: 0;
@@ -54,14 +65,16 @@
   width: pem(320px, 80); // IE Edge needs 0.02em more than other browsers.
   line-height: 1.15 !important;
 
-  @include media(desktop) {
+  @media only screen
+  and (max-height: $vertical-breakpoint)
+  {
     text-align: left;
   }
 }
 
 // Numpad
 .numpad-container {
-  margin-top: 8px;  // total spacing is 20px made up of 10px border-spacing + 8px margin + ?
+  margin-top: 12px;  // total spacing is 20px made up of 12px border-spacing + 8px margin
   text-align: center;
 }
 
