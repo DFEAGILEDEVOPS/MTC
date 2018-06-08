@@ -99,8 +99,16 @@ pupilCensusService.getUploadedFile = async () => {
     throw new Error(`There is no job status for job status id ${jobStatusId}`)
   }
   const completedWithErrors = 'CWR'
-  const outcome = jobStatus.jobStatusCode === completedWithErrors
-    ? `${jobStatus.description} : ${pupilCensus.errorOutput}` : `${jobStatus.description} : ${pupilCensus.jobOutput}`
+  const deleted = 'DEL'
+  let outcome
+  if (jobStatus.jobStatusCode === completedWithErrors) {
+    outcome = pupilCensus.errorOutput
+  }
+  if (jobStatus.jobStatusCode === deleted) {
+    outcome = jobStatus.description
+  } else {
+    outcome = `${jobStatus.description} : ${pupilCensus.jobOutput}`
+  }
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
   pupilCensus.jobStatusCode = jobStatus.jobStatusCode
@@ -117,9 +125,9 @@ pupilCensusService.remove = async (pupilCensusId) => {
     throw new Error('No pupil census id is provided for deletion')
   }
   await pupilCensusDataService.sqlDeletePupilsByJobId(pupilCensusId)
-  const pupilCensus = await jobDataService.sqlFindById(pupilCensusId)
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('DEL')
-  await jobDataService.sqlUpdate(pupilCensusId, jobStatus.id, pupilCensus.output, pupilCensus.errorOutput)
+  const output = jobStatus.description
+  await jobDataService.sqlUpdate(pupilCensusId, jobStatus.id, output)
 }
 
 module.exports = pupilCensusService

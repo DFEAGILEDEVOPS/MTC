@@ -65,7 +65,7 @@ jobDataService.sqlFindLatestByTypeId = async (jobTypeId) => {
  * @param {String} errorOutput
  * @return {Promise}
  */
-jobDataService.sqlUpdate = async (jobId, jobStatusId, jobOutput, errorOutput) => {
+jobDataService.sqlUpdate = async (jobId, jobStatusId, jobOutput = undefined, errorOutput = undefined) => {
   const sql = `UPDATE ${sqlService.adminSchema}.${table}
   SET jobStatus_id=@jobStatusId, jobOutput=@jobOutput, errorOutput=@errorOutput
   WHERE id=@jobId`

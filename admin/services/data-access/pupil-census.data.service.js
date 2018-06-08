@@ -7,7 +7,7 @@ const pupilCensusDataService = {
     const sql = `DELETE FROM ${sqlService.adminSchema}.[pupil] WHERE job_id=@jobId`
     const params = [
       {
-        name: 'job_id',
+        name: 'jobId',
         value: jobId,
         type: TYPES.Int
       }

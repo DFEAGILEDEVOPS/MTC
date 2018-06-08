@@ -152,18 +152,15 @@ describe('pupilCensusService', () => {
   })
   describe('remove', () => {
     it('calls sqlUpdate method to update the pupil census record with the deleted status', async () => {
-      spyOn(jobDataService, 'sqlFindById').and.returnValue({ id: 1, output: 'output' })
       spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId')
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusDeletedMock)
       spyOn(jobDataService, 'sqlUpdate')
       await pupilCensusService.remove(1)
-      expect(jobDataService.sqlFindById).toHaveBeenCalled()
       expect(pupilCensusDataService.sqlDeletePupilsByJobId).toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByTypeCode).toHaveBeenCalledWith('DEL')
       expect(jobDataService.sqlUpdate).toHaveBeenCalled()
     })
     it('throws an error when argument passed is undefined', async () => {
-      spyOn(jobDataService, 'sqlFindById')
       spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId')
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode')
       spyOn(jobDataService, 'sqlUpdate')
@@ -173,7 +170,6 @@ describe('pupilCensusService', () => {
       } catch (error) {
         expect(error.message).toBe('No pupil census id is provided for deletion')
       }
-      expect(jobDataService.sqlFindById).not.toHaveBeenCalled()
       expect(pupilCensusDataService.sqlDeletePupilsByJobId).not.toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByTypeCode).not.toHaveBeenCalledWith('DEL')
       expect(jobDataService.sqlUpdate).not.toHaveBeenCalled()

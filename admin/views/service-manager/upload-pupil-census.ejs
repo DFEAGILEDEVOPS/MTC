@@ -20,7 +20,7 @@
                 in CSV format.</p>
         </header>
         <br>
-        <% if (pupilCensus.jobStatusCode !== 'COM') { %>
+        <% if (!pupilCensus || pupilCensus.jobStatusCode !== 'COM') { %>
             <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
                 <div class="form-group">
                     <div class="font-xsmall">
