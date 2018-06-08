@@ -259,7 +259,7 @@ anomalyReportService.detectInsufficientVerticalHeight = (check) => {
   // The vertical height required depends on the width, as we have 3 breakpoints
   if (width <= 640 && height < 558) {
     anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 558 pixels')
-  } else if (width > 640 && width < 769 && height < 700) {
+  } else if (width > 640 && width <= 769 && height < 700) {
     anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 700 pixels')
   } else if (width > 769 && height < 660) {
     anomalyReportService.produceReportData(check, 'Insufficient browser vertical height', height, '> 660 pixels')
