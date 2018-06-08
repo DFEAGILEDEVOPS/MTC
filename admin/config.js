@@ -91,5 +91,8 @@ module.exports = {
     username: process.env.ESB_USER || 'guest',
     password: process.env.ESB_PASSWORK || 'guest',
     protocol: process.env.ESB_PROTOCOL || 'amqp' // Azure requires amqps
+  },
+  Cors: {
+    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
   }
 }
