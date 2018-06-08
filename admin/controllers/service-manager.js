@@ -173,6 +173,24 @@ const controller = {
   },
 
   /**
+   * Remove a pupil census record.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  postRemovePupilCensus: async (req, res, next) => {
+    const pupilCensusId = req.body && req.body.pupilCensusId
+    try {
+      await pupilCensusService.remove(pupilCensusId)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', `Operation was successful`)
+    res.redirect('/service-manager/upload-pupil-census')
+  },
+
+  /**
    * Add window check form.
    * @param req
    * @param res

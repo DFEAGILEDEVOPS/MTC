@@ -5,6 +5,7 @@ const fs = require('fs-extra')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
+const pupilCensusDataService = require('./data-access/pupil-census.data.service')
 const pupilCensusProcessingService = require('./pupil-census-processing.service')
 
 const pupilCensusService = {}
@@ -78,7 +79,7 @@ pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
   const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
   const output = submissionResult.output
   const errorOutput = submissionResult.errorOutput
-  await jobDataService.updateJobOutput(jobId, jobStatus.id, output, errorOutput)
+  await jobDataService.sqlUpdate(jobId, jobStatus.id, output, errorOutput)
 }
 
 /**
@@ -97,11 +98,28 @@ pupilCensusService.getUploadedFile = async () => {
   if (!jobStatus) {
     throw new Error(`There is no job status for job status id ${jobStatusId}`)
   }
-  const outcome = jobStatus.jobStatusCode === 'CWR'
+  const completedWithErrors = 'CWR'
+  const outcome = jobStatus.jobStatusCode === completedWithErrors
     ? `${jobStatus.description} : ${pupilCensus.errorOutput}` : `${jobStatus.description} : ${pupilCensus.jobOutput}`
   pupilCensus.csvName = pupilCensus.jobInput
   pupilCensus.outcome = outcome
+  pupilCensus.jobStatusCode = jobStatus.jobStatusCode
   return pupilCensus
+}
+
+/**
+ * Remove a pupil census file record
+ * @param {Number} pupilCensusId
+ * @return {Object}
+ */
+pupilCensusService.remove = async (pupilCensusId) => {
+  if (!pupilCensusId) {
+    throw new Error('No pupil census id is provided for deletion')
+  }
+  await pupilCensusDataService.sqlDeletePupilsByJobId(pupilCensusId)
+  const pupilCensus = await jobDataService.sqlFindById(pupilCensusId)
+  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode('DEL')
+  await jobDataService.sqlUpdate(pupilCensusId, jobStatus.id, pupilCensus.output, pupilCensus.errorOutput)
 }
 
 module.exports = pupilCensusService
