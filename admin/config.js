@@ -29,7 +29,7 @@ module.exports = {
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
     helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080',
     pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
-    psychometricianReportMaxSizeFileUploadMb: process.env.PSYCHOMETRICIAN_REPORT_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
+    psychometricianReportMaxSizeFileUploadMb: process.env.PS_REPORT_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
   },
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
