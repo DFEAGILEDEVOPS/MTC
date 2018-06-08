@@ -28,7 +28,7 @@
     @include button($grey-1);
     @include core-36;
 
-    padding: 0;
+    padding: 0.1em 0 0 0;
   }
 
   .enter-button {
@@ -37,6 +37,6 @@
 
     width: 100%;
     height: 100%;
-    padding: 0;
+    padding: 0.1em 0 0 0;
   }
 }
