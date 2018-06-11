@@ -117,7 +117,7 @@ pupilCensusService.getUploadedFile = async () => {
 
 /**
  * Remove a pupil census file record
- * @param {Number} pupilCensusId
+ * @param {String} pupilCensusId
  * @return {Object}
  */
 pupilCensusService.remove = async (pupilCensusId) => {

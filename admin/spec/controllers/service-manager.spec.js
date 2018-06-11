@@ -336,11 +336,11 @@ describe('service manager controller:', () => {
       expect(next).toHaveBeenCalled()
     })
   })
-  describe('postRemovePupilCensus', () => {
+  describe('getRemovePupilCensus', () => {
     const goodReqParams = {
       method: 'POST',
       url: '/service-manager/upload-pupil-census/upload',
-      body: {
+      params: {
         pupilCensusId: 1
       }
     }
@@ -350,7 +350,7 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(res, 'redirect')
       spyOn(pupilCensusService, 'remove')
-      await controller.postRemovePupilCensus(req, res, next)
+      await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
@@ -359,7 +359,7 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       spyOn(res, 'redirect')
       spyOn(pupilCensusService, 'remove').and.returnValue(Promise.reject(new Error('error')))
-      await controller.postRemovePupilCensus(req, res, next)
+      await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })

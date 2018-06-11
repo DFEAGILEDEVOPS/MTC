@@ -179,8 +179,8 @@ const controller = {
    * @param next
    * @returns {Promise<*>}
    */
-  postRemovePupilCensus: async (req, res, next) => {
-    const pupilCensusId = req.body && req.body.pupilCensusId
+  getRemovePupilCensus: async (req, res, next) => {
+    const pupilCensusId = req.params && req.params.pupilCensusId
     try {
       await pupilCensusService.remove(pupilCensusId)
     } catch (error) {
