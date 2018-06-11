@@ -103,8 +103,7 @@ pupilCensusService.getUploadedFile = async () => {
   let outcome
   if (jobStatus.jobStatusCode === completedWithErrors) {
     outcome = pupilCensus.errorOutput
-  }
-  if (jobStatus.jobStatusCode === deleted) {
+  } else if (jobStatus.jobStatusCode === deleted) {
     outcome = jobStatus.description
   } else {
     outcome = `${jobStatus.description} : ${pupilCensus.jobOutput}`
