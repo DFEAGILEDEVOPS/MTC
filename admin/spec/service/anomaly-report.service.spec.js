@@ -13,6 +13,7 @@ const dateService = require('../../services/date.service')
 const psUtilService = require('../../services/psychometrician-util.service')
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
+const checkFormMockOrig = require('../mocks/check-form')
 
 describe('anomaly-report.service', () => {
   const service = require('../../services/anomaly-report.service')
@@ -196,6 +197,267 @@ describe('anomaly-report.service', () => {
       it('reports anomaly when check has application errors', () => {
         checkMock.data.audit = [ { type: "AppError" } ]
         service.detectApplicationErrors(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('#detectInputBeforeOrAfterTheQuestionIsShown', () => {
+      let startTime, secondTime
+      beforeEach(() => {
+        startTime = moment()
+        secondTime = startTime.clone()
+        secondTime.add(5, 'seconds')
+        checkMock.data.audit = [
+          {
+            type: 'PauseRendered',
+            clientTimestamp: startTime.toISOString(),
+            data: { sequenceNumber: 1 }
+          }, {
+            type: 'QuestionRendered',
+            clientTimestamp: startTime.toISOString(),
+            data: { sequenceNumber: 1 }
+          }, {
+            type: 'PauseRendered',
+            clientTimestamp: secondTime.toISOString(),
+            data: { sequenceNumber: 2 }
+          }, {
+            type: 'QuestionRendered',
+            clientTimestamp: secondTime.toISOString(),
+            data: { sequenceNumber: 2 }
+          }
+        ]
+        checkMock.data.questions = [ { order: 1, factor1: 1, factor2: 1 }, { order: 2, factor1: 2, factor2: 2 } ]
+      })
+
+      it('does not report an anomaly when there are no inputs before or after the question was shown', () => {
+        checkMock.data.inputs = [
+          {
+            input: '1',
+            eventType: 'keyDown',
+            clientTimestamp: startTime.add(2, 'seconds').toISOString(),
+            sequenceNumber: 1,
+            question: '1x1'
+          },
+          {
+            input: '2',
+            eventType: 'keyDown',
+            clientTimestamp: secondTime.add(3, 'seconds').toISOString(),
+            sequenceNumber: 2,
+            question: '2x2'
+          },
+        ];
+
+        service.detectInputBeforeOrAfterTheQuestionIsShown(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are inputs before the question was shown', () => {
+        checkMock.data.inputs = [
+          {
+            input: '1',
+            eventType: 'keyDown',
+            clientTimestamp: startTime.subtract(1, 'seconds').toISOString(),
+            sequenceNumber: 1,
+            question: '1x1'
+          },
+          {
+            input: '2',
+            eventType: 'keyDown',
+            clientTimestamp: secondTime.subtract(1, 'seconds').toISOString(),
+            sequenceNumber: 2,
+            question: '2x2'
+          },
+        ];
+
+        service.detectInputBeforeOrAfterTheQuestionIsShown(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(2)
+      })
+
+      it('reports an anomaly when there are inputs after the question was shown', () => {
+        const extraTime = checkMock.data.config.questionTime * 1.06 // * 1.05 is the maximum
+
+        checkMock.data.inputs = [
+          {
+            input: '1',
+            eventType: 'keyDown',
+            clientTimestamp: startTime.add(extraTime, 'seconds').toISOString(),
+            sequenceNumber: 1,
+            question: '1x1'
+          },
+          {
+            input: '2',
+            eventType: 'keyDown',
+            clientTimestamp: secondTime.add(extraTime, 'seconds').toISOString(),
+            sequenceNumber: 2,
+            question: '2x2'
+          },
+        ];
+
+        service.detectInputBeforeOrAfterTheQuestionIsShown(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(2)
+      })
+    })
+
+    describe('#detectMissingAudits', () => {
+      it('does not report an anomaly when there are no missing audits', () => {
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are missing QuestionRendered audits', () => {
+        const firstIdx = checkMock.data.audit.findIndex(({ type }) => type === 'QuestionRendered')
+        checkMock.data.audit = [ ...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1) ]
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('reports an anomaly when there are missing PauseRendered audits', () => {
+        const firstIdx = checkMock.data.audit.findIndex(({ type }) => type === 'PauseRendered')
+        checkMock.data.audit = [ ...checkMock.data.audit.slice(0, firstIdx), ...checkMock.data.audit.slice(firstIdx + 1) ]
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('reports an anomaly for each missing single mandatory audits', () => {
+        const singleMandatoryAuditEvents = [
+          'WarmupStarted',
+          'WarmupIntroRendered',
+          'WarmupCompleteRendered',
+          'CheckStarted',
+          'CheckStartedApiCalled',
+          'CheckSubmissionPending'
+        ]
+
+        checkMock.data.audit = checkMock.data.audit.filter(({ type }) => !singleMandatoryAuditEvents.includes(type))
+        service.detectMissingAudits(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(singleMandatoryAuditEvents.length)
+      })
+    })
+
+    describe('#detectInputsWithoutQuestionInformation', () => {
+      it('does not report an anomaly when all inputs have question information', () => {
+        service.detectInputsWithoutQuestionInformation(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are inputs that do not have question information', () => {
+        checkMock.data.inputs[0].sequenceNumber = undefined;
+        service.detectInputsWithoutQuestionInformation(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('#detectChecksThatTookLongerThanTheTheoreticalMax', () => {
+      it('does not report an anomaly when all checks took a normal duration', () => {
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('report an anomaly when there is no CheckStarted audit event', () => {
+        checkMock.data.audit = checkMock.data.audit.filter(({ type }) => type !== 'CheckStarted')
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('report an anomaly when there is no CheckSubmissionPending audit event', () => {
+        checkMock.data.audit = checkMock.data.audit.filter(({ type }) => type !== 'CheckSubmissionPending')
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('report an anomaly when there is an error for the CheckStarted audit event', () => {
+        spyOn(psUtilService, 'getClientTimestampFromAuditEvent').and.returnValues(['error', moment().toISOString()])
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('report an anomaly when there is an error for the CheckSubmissionPending audit event', () => {
+        spyOn(psUtilService, 'getClientTimestampFromAuditEvent').and.returnValues([moment().toISOString(), 'error'])
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+
+      it('report an anomaly when the check takes longer than the theoretical max', () => {
+        const numberOfQuestions = checkMock.data.questions.length
+        const config = checkMock.data.config
+        const theoreticalMax = (numberOfQuestions * config.loadingTime) +
+          (numberOfQuestions * config.questionTime) +
+          (config.speechSynthesis ? numberOfQuestions * 2.5 : 0)
+
+        const startTime = moment()
+        const endTime = startTime.add(theoreticalMax + 1, 'seconds') // longer by 1 second than the max
+
+        spyOn(psUtilService, 'getClientTimestampFromAuditEvent').and.returnValues([startTime.toISOString(), endTime.toISOString()])
+        service.detectChecksThatTookLongerThanTheTheoreticalMax(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('#detectInputThatDoesNotCorrespondToAnswers', () => {
+      it('does not report an anomaly when all inputs correspond to answers', () => {
+        service.detectInputThatDoesNotCorrespondToAnswers(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are inputs that do not correspond to answers', () => {
+        checkMock.data.answers = [ { factor1: 4, factor2: 4, answer: '16' } ];
+        spyOn(service, 'filterInputsForQuestion')
+        spyOn(service, 'reconstructAnswerFromInputs').and.returnValue('15')
+        service.detectInputThatDoesNotCorrespondToAnswers(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('#detectAnswersCorrespondToQuestions', () => {
+      it('does not report an anomaly when all answers correspond to questions', () => {
+        service.detectAnswersCorrespondToQuestions(checkMock, checkFormMockOrig)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are answers that do not correspond to questions', () => {
+        checkMock.data.answers = [ ...checkMock.data.answers, { factor1: 0, factor2: 0 } ];
+        service.detectAnswersCorrespondToQuestions(checkMock, checkFormMockOrig)
+        expect(service.produceReportData).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('#detectQuestionsThatWereShownForTooLong', () => {
+      it('does not report an anomaly when questions are not shown for too long', () => {
+        service.detectQuestionsThatWereShownForTooLong(checkMock)
+        expect(service.produceReportData).toHaveBeenCalledTimes(0)
+      })
+
+      it('reports an anomaly when there are questions shown for too long', () => {
+        const startTime = moment()
+        const timeAfterQuestions = i => startTime.add(i * (checkMock.data.config.questionTime * 1.06), 'seconds').toISOString()
+        spyOn(service, 'filterAllRealQuestionsAndPauseAudits').and.returnValue([
+          {
+            type: 'PauseRendered',
+            clientTimestamp: startTime,
+            sequenceNumber: 1
+          }, {
+            type: 'QuestionRendered',
+            clientTimestamp: startTime,
+            sequenceNumber: 1
+          }, {
+            type: 'PauseRendered',
+            clientTimestamp: timeAfterQuestions(1),
+            sequenceNumber: 2
+          }, {
+            type: 'QuestionRendered',
+            clientTimestamp: timeAfterQuestions(1),
+            sequenceNumber: 2
+          }, {
+            type: 'PauseRendered',
+            clientTimestamp: timeAfterQuestions(2),
+            sequenceNumber: 3
+          }, {
+            type: 'QuestionRendered',
+            clientTimestamp: timeAfterQuestions(2),
+            sequenceNumber: 3
+          }
+        ])
+        service.detectQuestionsThatWereShownForTooLong(checkMock)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })
     })

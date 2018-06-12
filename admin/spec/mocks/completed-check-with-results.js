@@ -234,30 +234,33 @@ module.exports = {
         input: '2',
         eventType: 'keydown',
         clientTimestamp: '2018-02-11T15:42:45.546Z',
-        question: '2x5',
-        sequenceNumber: 1
+        question: '11x2',
+        sequenceNumber: 2
       }, {
         input: '2',
         eventType: 'keydown',
         clientTimestamp: '2018-02-11T15:42:45.705Z',
         question: '11x2',
-        'sequenceNumber': 2
+        sequenceNumber: 2
       }, {
         input: 'Enter',
         eventType: 'keydown',
         clientTimestamp: '2018-02-11T15:42:45.963Z',
-        question: 2
+        question: '11x2',
+        sequenceNumber: 2
       },
       {
         input: '1',
         eventType: 'keydown',
         clientTimestamp: '2018-02-11T15:42:56.498Z',
-        question: 4
+        question: '4x4',
+        sequenceNumber: 4
       }, {
         input: '6',
         eventType: 'keydown',
         clientTimestamp: '2018-02-11T15:42:56.611Z',
-        question: 4
+        question: '4x4',
+        sequenceNumber: 4
       }, {
         input: 'Enter',
         eventType: 'keydown',
