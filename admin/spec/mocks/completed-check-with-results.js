@@ -417,7 +417,7 @@ module.exports = {
       order: 10,
       factor1: 12,
       factor2: 12
-    }],
+    }]
   },
   pupil: {
     firstName: 'Juliana',

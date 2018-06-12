@@ -60,7 +60,7 @@ const anomalyReportCacheDataService = {
 
   sqlDeleteAll: async function () {
     return sqlService.modify(`DELETE FROM ${sqlService.adminSchema}.${table}`)
-  },
+  }
 }
 
 module.exports = anomalyReportCacheDataService
