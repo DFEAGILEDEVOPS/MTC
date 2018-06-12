@@ -186,7 +186,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `Operation was successful`)
+    req.flash('info', `Pupil data were successfully removed`)
     res.redirect('/service-manager/upload-pupil-census')
   },
 
