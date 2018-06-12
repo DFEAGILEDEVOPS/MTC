@@ -6,6 +6,8 @@ class UploadPupilCensusPage < SitePrism::Page
   element :upload, '#upload-form-submit'
   element :cancel, 'a[href="/service-manager/home"]'
   element :uploaded_title, '.bold-small'
+
+
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
     element :file, 'dd:nth-of-type(1)'
     element :status, 'dd:nth-of-type(2)'

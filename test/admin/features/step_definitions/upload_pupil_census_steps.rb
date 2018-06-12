@@ -18,7 +18,6 @@ end
 
 Then(/^I should see an area where it displays files uploaded$/) do
   expect(upload_pupil_census_page).to have_uploaded_title
-  expect(upload_pupil_census_page.uploaded_file).to be_all_there
 end
 
 When(/^I have chosen a file to submit$/) do

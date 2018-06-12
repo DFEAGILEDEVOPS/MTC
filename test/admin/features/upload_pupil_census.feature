@@ -1,4 +1,4 @@
-@upload_pupil_census
+@upload_pupil_census @delete_census
 Feature:
   Upload Pupil Census
 
