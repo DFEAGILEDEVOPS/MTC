@@ -5,7 +5,6 @@ require('dotenv').config()
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
-const morgan = require('morgan')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const uuidV4 = require('uuid/v4')
@@ -16,7 +15,6 @@ const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
 const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
-const cors = require('cors')
 const flash = require('connect-flash')
 const helmet = require('helmet')
 const config = require('./config')
@@ -91,7 +89,6 @@ app.use(featureToggles.middleware)
 
 /* Security Directives */
 
-app.use(cors())
 app.use(helmet())
 const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com']
 const styleSources = ["'self'", "'unsafe-inline'"]
@@ -150,7 +147,7 @@ app.use((req, res, next) => {
 
 /* END:Security Directives */
 
-require('./helpers')(app)
+require('./helpers/index')(app)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))

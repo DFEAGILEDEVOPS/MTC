@@ -168,7 +168,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `File has been uploaded`)
+    req.flash('info', 'File has been uploaded')
     res.redirect('/service-manager/upload-pupil-census')
   },
 
@@ -186,7 +186,7 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `Pupil data successfully removed`)
+    req.flash('info', 'Pupil data successfully removed')
     res.redirect('/service-manager/upload-pupil-census')
   },
 
