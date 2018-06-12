@@ -1,6 +1,5 @@
 'use strict'
 const archiver = require('archiver')
-const fs = require('fs-extra')
 const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
