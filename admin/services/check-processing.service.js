@@ -2,6 +2,7 @@
 
 const psychometricianReportDataService = require('./data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('./psychometrician-report.service')
+const anomalyReportService = require('./anomaly-report.service')
 const winston = require('winston')
 
 const checkProcessingService = {}
@@ -42,6 +43,8 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   }
   // Produce and cache the Psychometrician data
   await psychometricianReportService.batchProduceCacheData(batchIds)
+  // Produce and cache the Anomaly report data
+  await anomalyReportService.batchProduceCacheData(batchIds)
 
   winston.info('Processed %d checks', batchIds.length)
   return true

@@ -6,6 +6,7 @@ const useragent = require('useragent')
 
 const checkFormDataService = require('./data-access/check-form.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
+const anomalyReportCacheDataService = require('./data-access/anomaly-report-cache.data.service')
 const dateService = require('./date.service')
 const psUtilService = require('./psychometrician-util.service')
 
@@ -17,7 +18,12 @@ anomalyReportService.reportedAnomalies = []
  * @return {Promise<void>}
  */
 anomalyReportService.generateReport = async () => {
-  const output = await anomalyReportService.findAllAnomalies()
+  const results = await anomalyReportCacheDataService.sqlFindAll()
+  const output = []
+  for (const obj of results) {
+    output.push(obj.jsonData)
+  }
+
   const headers = anomalyReportService.produceReportDataHeaders()
 
   return new Promise((resolve, reject) => {
@@ -33,30 +39,35 @@ anomalyReportService.generateReport = async () => {
 }
 
 /**
- * Generate batched anomalies
+ * Generate batched cached anomalies
  * @return {Array}
  */
-anomalyReportService.findAllAnomalies = async () => {
-  const checkInfo = await completedCheckDataService.sqlFindMeta()
-  const batchSize = 250
-  let lowCheckId = checkInfo.min // starting Check ID
-  if (lowCheckId === null) return '' // no checks taken means an empty file
-
+anomalyReportService.batchProduceCacheData = async (batchIds) => {
   anomalyReportService.reportedAnomalies = []
 
-  while (lowCheckId <= checkInfo.max) {
-    // Fetching ${batchSize} checks for processing starting at ID ${lowCheckId}`
-    const checks = await completedCheckDataService.sqlFind(lowCheckId, batchSize)
-    const checkFormIds = checks.map(check => check.checkForm_id)
-    const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
-    checks.forEach(check => {
-      const checkForm = checkForms.find(checkForm => checkForm.id === check.checkForm_id)
-      anomalyReportService.detectAnomalies(check, checkForm)
-      lowCheckId = parseInt(check.id, 10) + 1
-    })
+  if (!batchIds) {
+    throw new Error('Missing argument: batchIds')
   }
 
-  return anomalyReportService.reportedAnomalies
+  if (!(Array.isArray(batchIds) && batchIds.length)) {
+    throw new Error('Invalid arg: batchIds')
+  }
+
+  const checks = await completedCheckDataService.sqlFindByIds(batchIds)
+
+  if (!checks || !Array.isArray(checks) || !checks.length) {
+    throw new Error('Failed to find any checks')
+  }
+
+  const checkFormIds = checks.map(check => check.checkForm_id)
+  const checkForms = await checkFormDataService.sqlFindByIds(checkFormIds)
+  checks.forEach(check => {
+    const checkForm = checkForms.find(checkForm => checkForm.id === check.checkForm_id)
+    anomalyReportService.detectAnomalies(check, checkForm)
+  })
+
+  // return anomalyReportService.reportedAnomalies
+  await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
 }
 
 /**
@@ -84,7 +95,7 @@ anomalyReportService.produceReportData = (check, message, testedValue = null, ex
     questionNumber
   ]
 
-  anomalyReportService.reportedAnomalies.push(reportData)
+  anomalyReportService.reportedAnomalies.push({ check_id: check.id, jsonData: reportData })
 }
 
 /**
