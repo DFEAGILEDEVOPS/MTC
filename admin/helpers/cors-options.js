@@ -6,9 +6,11 @@ const whitelist = config.Cors.Whitelist.split(',')
 const options = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
+      return callback(null, true)
+    } else if (config.Environment === 'Local-Dev') {
+      return callback(null, true)
     } else {
-      callback(new Error(`CORS policy does not allow ${origin}`))
+      return callback(new Error(`CORS policy does not allow ${origin}`))
     }
   }
 }
