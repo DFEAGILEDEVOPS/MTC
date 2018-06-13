@@ -58,7 +58,7 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
   text-align: right;
   vertical-align: top;
   width: 223px;  // mobile
-  
+
   // For tablets we want the question and answer to be on the same line
   @include media(tablet) {
     margin: 0;
@@ -103,8 +103,12 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 
 // Numpad
 .numpad-container {
-  margin-top: 12px;  // total spacing is 20px made up of 12px border-spacing + 8px margin
+  margin-top: 2px;
   text-align: center;
+
+  @include media(tablet) {
+    margin-top: 12px;
+  }
 }
 
 
