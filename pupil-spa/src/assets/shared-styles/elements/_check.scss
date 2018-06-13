@@ -46,6 +46,7 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
   @include media(desktop) {
     @include core-80;
     margin-top: 70px;
+    text-align: center;
   }
 }
 
