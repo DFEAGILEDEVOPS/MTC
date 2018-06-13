@@ -61,8 +61,8 @@ const checkWindowDataService = {
         // anything else should default to checkWindow name
         sortBy = 'name'
     }
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE isDeleted=0 AND 
-                  checkEndDate >= @currentTimestamp ORDER BY ${sortBy} ${sortDirection}`
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE isDeleted=0 AND
+                  checkEndDate >= @currentTimestamp AND checkStartDate >= @currentTimestamp ORDER BY ${sortBy} ${sortDirection}`
     const params = [
       {
         name: 'currentTimestamp',
