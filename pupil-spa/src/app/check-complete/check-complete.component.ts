@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -14,8 +13,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   protected window: any;
   private speechListenerEvent: any;
 
-  constructor(private storageService: StorageService,
-              protected windowRefService: WindowRefService,
+  constructor(protected windowRefService: WindowRefService,
               private questionService: QuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef) {
@@ -23,8 +21,6 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngOnInit() {
-    this.storageService.setItem('pending_submission', false);
-    this.storageService.setItem('completed_submission', true);
     this.window.ga('send', {
       hitType: 'pageview',
       page: '/check-complete'

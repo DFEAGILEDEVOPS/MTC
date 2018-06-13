@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { SubmissionService } from '../services/submission/submission.service';
+import { StorageService } from '../services/storage/storage.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CheckSubmissionApiCalled, CheckSubmissionAPICallSucceeded } from '../services/audit/auditEntry';
@@ -20,7 +21,8 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   clickEvent: EventEmitter<any> = new EventEmitter();
 
   public title;
-  constructor(private submissionService: SubmissionService,
+  constructor(private storageService: StorageService,
+              private submissionService: SubmissionService,
               private auditService: AuditService,
               private router: Router,
               private route: ActivatedRoute,
@@ -43,6 +45,8 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
       .then(async () => {
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
         this.auditService.addEntry(new CheckSubmissionApiCalled());
+        this.storageService.setItem('pending_submission', false);
+        this.storageService.setItem('completed_submission', true);
         // Display pending screen for the minimum configurable time
         const end = Date.now();
         const duration = end - start;
