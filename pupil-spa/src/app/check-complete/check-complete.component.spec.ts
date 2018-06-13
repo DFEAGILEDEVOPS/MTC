@@ -41,6 +41,6 @@ describe('CheckCompleteComponent', () => {
     spyOn(storageService, 'setItem');
     expect(component).toBeTruthy();
     component.ngOnInit();
-    expect(storageService.setItem).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(2);
   });
 });

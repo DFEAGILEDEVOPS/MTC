@@ -28,7 +28,8 @@ module.exports = {
     allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
     helplineNumber: process.env.HELPLINE_NUMBER || '0345 278 8080',
-    pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
+    pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
+    psychometricianReportMaxSizeFileUploadMb: process.env.PS_REPORT_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
   },
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
@@ -66,6 +67,10 @@ module.exports = {
     },
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
+    },
+    ApplicationInsights: {
+      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
+      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
     }
   },
   OverridePinExpiry: process.env.hasOwnProperty('OVERRIDE_PIN_EXPIRY') ? toBool(process.env.OVERRIDE_PIN_EXPIRY) : false,
@@ -87,5 +92,8 @@ module.exports = {
     username: process.env.ESB_USER || 'guest',
     password: process.env.ESB_PASSWORK || 'guest',
     protocol: process.env.ESB_PROTOCOL || 'amqp' // Azure requires amqps
+  },
+  Cors: {
+    Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
   }
 }

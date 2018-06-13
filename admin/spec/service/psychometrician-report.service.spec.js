@@ -1,12 +1,16 @@
 'use strict'
-/* global describe, expect, it, beforeEach, fail, spyOn */
+/* global describe, expect, it, beforeEach, afterEach, fail, spyOn, jasmine */
 
 const moment = require('moment')
 const winston = require('winston')
 
 const answerDataService = require('../../services/data-access/answer.data.service')
+const azureFileDataService = require('../../services/data-access/azure-file.data.service')
 const checkFormService = require('../../services/check-form.service')
 const completedCheckDataService = require('../../services/data-access/completed-check.data.service')
+const jobDataService = require('../../services/data-access/job.data.service')
+const jobStatusDataService = require('../../services/data-access/job-status.data.service')
+const jobTypeDataService = require('../../services/data-access/job-type.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
@@ -14,6 +18,25 @@ const schoolDataService = require('../../services/data-access/school.data.servic
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
 const checkFormMock = require('../mocks/check-form')
+
+const psychometricianReportMock = {
+  id: 1,
+  jobInput: JSON.stringify(['csv', 'blob'].join(',')),
+  jobType_id: 1,
+  jobStatus_id: 1
+}
+
+const jobStatusMock = {
+  id: 1,
+  description: 'Submitted',
+  jobStatusCode: 'SUB'
+}
+
+const jobTypeMock = {
+  id: 1,
+  description: 'Psychometrician Report',
+  jobTypeCode: 'PSY'
+}
 
 describe('psychometricians-report.service', () => {
   const service = require('../../services/psychometrician-report.service')
@@ -252,6 +275,85 @@ describe('psychometricians-report.service', () => {
         { jsonData: { Mark: 'ValTwo', propTwo: 2 } } ]
       const headers = service.produceReportDataHeaders(results)
       expect(headers.includes('Q1ID')).toBeFalsy()
+    })
+  })
+
+  describe('uploadToBlobStorage', () => {
+    it('calls azureUploadFile method to upload the file', async () => {
+      spyOn(azureFileDataService, 'azureUploadFile')
+      await service.uploadToBlobStorage([])
+      expect(azureFileDataService.azureUploadFile).toHaveBeenCalled()
+    })
+  })
+
+  describe('downloadUploadedFile', () => {
+    it('calls azureDownloadFile method to download the file', async () => {
+      spyOn(azureFileDataService, 'azureDownloadFile')
+      await service.downloadUploadedFile([])
+      expect(azureFileDataService.azureDownloadFile).toHaveBeenCalled()
+    })
+  })
+
+  describe('getUploadedFile', () => {
+    it('fetches a psychometrician report record and related status', async () => {
+      spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(psychometricianReportMock)
+      spyOn(jobStatusDataService, 'sqlFindOneById').and.returnValue(jobStatusMock)
+      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+      await service.getUploadedFile()
+      expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
+      expect(jobStatusDataService.sqlFindOneById).toHaveBeenCalled()
+      expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
+    })
+
+    it('returns if no psychometrician report record is found', async () => {
+      spyOn(jobDataService, 'sqlFindLatestByTypeId')
+      spyOn(jobStatusDataService, 'sqlFindOneById')
+      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+      await service.getUploadedFile()
+      expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
+      expect(jobStatusDataService.sqlFindOneById).not.toHaveBeenCalled()
+      expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
+    })
+
+    it('throws an error if psychometrician record does not have a job status code', async () => {
+      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+      const errorPsychometricianReportMock = Object.assign({}, psychometricianReportMock)
+      errorPsychometricianReportMock.jobStatus_id = undefined
+      spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(errorPsychometricianReportMock)
+      spyOn(jobStatusDataService, 'sqlFindOneById')
+      try {
+        await service.getUploadedFile()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Psychometrician report record does not have a job status reference')
+      }
+      expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
+      expect(jobStatusDataService.sqlFindOneById).not.toHaveBeenCalled()
+      expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
+    })
+  })
+
+  describe('create', () => {
+    let today = moment('2018-06-02T09:00:00').toDate()
+    beforeEach(() => {
+      jasmine.clock().mockDate(today)
+    })
+
+    afterEach(() => {
+      jasmine.clock().uninstall()
+    })
+
+    it('calls sqlCreate method to create the psychometrician report record', async () => {
+      spyOn(jobDataService, 'sqlCreate')
+      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+      spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusMock)
+      const blobResultMock = { name: 'blobFile' }
+      await service.create(blobResultMock)
+      expect(jobDataService.sqlCreate).toHaveBeenCalledWith({
+        jobType_id: jobTypeMock.id,
+        jobStatus_id: jobStatusMock.id,
+        jobInput: `"Pupil check data 2018-06-02 09.00.00.csv,blobFile,Sat Jun 02 2018 09:00:00 GMT+0100"`
+      })
     })
   })
 })

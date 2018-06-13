@@ -1,20 +1,27 @@
 .pupil-census-uploaded-file {
   border-top: 1px solid $grey-2;
   border-bottom: 1px solid $grey-2;
+  display: inline-flex;
   > dd {
     padding-top: pem(10px);
     padding-bottom: pem(10px);
     > span:first-child {
       display:inline-block;
-      width: pem(170px);
-      white-space: nowrap;
-      overflow:hidden;
-      text-overflow: ellipsis;
+      word-wrap: break-word;
     }
   }
 }
 
+.job-file {
+  width: pem(200px);
+}
+
 .job-status {
   float: right;
-  margin-right: pem(200px);
+  margin-right: pem(80px);
+  width: pem(250px);
+}
+
+.no-file-uploaded {
+  width: pem(500px);
 }

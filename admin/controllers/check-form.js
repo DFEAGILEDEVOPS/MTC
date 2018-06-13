@@ -3,9 +3,12 @@
 const path = require('path')
 const fs = require('fs-extra')
 const checkFormService = require('../services/check-form.service')
+const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
+const dateService = require('../services/date.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
+const psychometricianReportService = require('../services/psychometrician-report.service')
 const winston = require('winston')
 
 /**
@@ -433,7 +436,90 @@ const unassignCheckFormFromWindow = async (req, res, next) => {
   res.redirect('/test-developer/assign-form-to-window')
 }
 
+/**
+ * Download pupil check data view.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getDownloadPupilCheckData = async (req, res, next) => {
+  res.locals.pageTitle = 'Download pupil check data'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  let psychometricianReport
+  try {
+    psychometricianReport = await psychometricianReportService.getUploadedFile()
+  } catch (error) {
+    return next(error)
+  }
+
+  if (psychometricianReport) {
+    psychometricianReport.csvName = psychometricianReport.csvName.replace(/\.csv$/, '')
+    psychometricianReport.dateGenerated = dateService.formatDateAndTime(psychometricianReport.dateGenerated)
+  }
+
+  res.render('test-developer/download-pupil-check-data', {
+    breadcrumbs: req.breadcrumbs(),
+    psychometricianReport
+  })
+}
+
+/**
+ * Download pupil check data CSV file.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getCsvDownloadPupilCheckData = async (req, res, next) => {
+  let psychometricianReport, reportContent
+  try {
+    psychometricianReport = await psychometricianReportService.getUploadedFile()
+    if (!psychometricianReport) {
+      return res.redirect('/test-developer/download-pupil-check-data')
+    }
+    reportContent = await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename)
+  } catch (error) {
+    req.flash('error', error.message)
+    return res.redirect('/test-developer/download-pupil-check-data')
+  }
+
+  res.setHeader('Content-type', 'text/csv')
+  res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.csvName}`)
+
+  res.send(reportContent)
+}
+
+/**
+ * Generate latest pupil check data.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+const getGenerateLatestPupilCheckData = async (req, res, next) => {
+  try {
+    await checkProcessingService.process()
+
+    const reportStream = await psychometricianReportService.generateReport()
+    const blobResult = await psychometricianReportService.uploadToBlobStorage(reportStream)
+
+    let { csvName, dateGenerated } = await psychometricianReportService.create(blobResult)
+
+    csvName = csvName.replace(/\.csv$/, '')
+    dateGenerated = dateService.formatDateAndTime(dateGenerated)
+
+    return res.status(200).json({ csvName, dateGenerated })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
+}
+
 module.exports = {
+  getDownloadPupilCheckData,
+  getCsvDownloadPupilCheckData,
+  getGenerateLatestPupilCheckData,
   getTestDeveloperHomePage,
   uploadAndViewFormsPage,
   removeCheckForm,

@@ -5,7 +5,6 @@ require('dotenv').config()
 const express = require('express')
 const piping = require('piping')
 const path = require('path')
-const morgan = require('morgan')
 const busboy = require('express-busboy')
 const partials = require('express-partials')
 const uuidV4 = require('uuid/v4')
@@ -16,7 +15,6 @@ const CustomStrategy = require('passport-custom').Strategy
 const session = require('express-session')
 const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
-const cors = require('cors')
 const flash = require('connect-flash')
 const helmet = require('helmet')
 const config = require('./config')
@@ -25,25 +23,7 @@ const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
-
-/**
- * Logging
- * use LogDNA transport for winston if configuration setting available
- */
-if (config.Logging.LogDna.key) {
-  require('logdna')
-  const options = config.Logging.LogDna
-  // Defaults to false, when true ensures meta object will be searchable
-  options.index_meta = true
-  // Only add this line in order to track exceptions
-  options.handleExceptions = true
-  winston.add(winston.transports.Logdna, options)
-  winston.info(`logdna transport enabled for ${options.hostname}`)
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  winston.level = 'debug'
-}
+const setupLogging = require('./helpers/logger')
 
 azure.startInsightsIfConfigured()
 
@@ -102,36 +82,13 @@ const attendance = require('./routes/attendance')
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
 
+setupLogging(app)
+
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
 
-if (config.Logging.Express.UseWinston === 'true') {
-  /**
-   * Express logging to winston
-   */
-  const expressWinston = require('express-winston')
-  app.use(expressWinston.logger({
-    transports: [
-      new winston.transports.Console({
-        json: true,
-        colorize: true
-      })
-    ],
-    meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-    // msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-    expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-    colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-    ignoreRoute: function (req, res) {
-      return false
-    } // optional: allows to skip some log messages based on request and/or response
-  }))
-} else {
-  app.use(morgan('dev'))
-}
-
 /* Security Directives */
 
-app.use(cors())
 app.use(helmet())
 const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com']
 const styleSources = ["'self'", "'unsafe-inline'"]
@@ -190,7 +147,7 @@ app.use((req, res, next) => {
 
 /* END:Security Directives */
 
-require('./helpers')(app)
+require('./helpers/index')(app)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))

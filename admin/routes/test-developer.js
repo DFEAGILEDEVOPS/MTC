@@ -19,5 +19,8 @@ router.get('/assign-form-to-window/:checkWindowId', isAuthenticated(rolesConfig.
 router.post('/assign-form-to-window', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.saveAssignCheckFormsToWindow(req, res, next))
 router.get('/unassign-forms/:checkWindowId', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.unassignCheckFormsFromWindowPage(req, res, next))
 router.post('/unassign-form', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.unassignCheckFormFromWindow(req, res, next))
+router.get('/download-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getDownloadPupilCheckData(req, res, next))
+router.get('/generate-latest-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getGenerateLatestPupilCheckData(req, res, next))
+router.get('/csv-download-pupil-check-data', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), (req, res, next) => checkFormController.getCsvDownloadPupilCheckData(req, res, next))
 
 module.exports = router

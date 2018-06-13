@@ -75,3 +75,8 @@ end
 When(/^I navigate to the upload pupil census page$/) do
   admin_page.upload_pupil_census.click
 end
+
+Then(/^I should be given the option to download pupil check data$/) do
+  expect(testdeveloper_landing_page).to have_download_pupil_check_data
+  expect(testdeveloper_landing_page).to have_download_pupil_check_data_text
+end

@@ -8,6 +8,7 @@ const UKFormat = 'DD/MM/YYYY'
 const reverseFormatNoSeparator = 'YYYYMMDD'
 const timeFormatWithSeconds = 'h:mm:ss a'
 const dayAndDateFormat = 'dddd D MMMM'
+const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
 const dateService = {
@@ -21,6 +22,10 @@ const dateService = {
 
   formatDayAndDate: function (date) {
     return moment(date).format(dayAndDateFormat)
+  },
+
+  formatDateAndTime: function (date) {
+    return moment(date).format(dateAndTimeFormat)
   },
 
   formatUKDate: function (date) {
