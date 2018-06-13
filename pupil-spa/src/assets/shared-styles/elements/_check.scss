@@ -1,6 +1,6 @@
 // Questions
 
-$vertical-breakpoint: 600px;
+$vertical-breakpoint-1: 600px;
 $vertical-breakpoint-2: 500px;
 $small-screen-breakpoint: 485px; // screens below this threshold get a fallback stacked view
 
@@ -27,26 +27,28 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 .question-and-answer {
   @include mtc-core-64;
 
-  @include media(tablet) {
-    margin-top: 65px; // condense this space for small screens
-  }
-
-  @media only screen
-  and (max-height: $vertical-breakpoint-2) {
-    margin-top: 5px;
-  }
-
   text-align: center;
   margin-top: 35px;
 
   @include media(tablet) {
     text-align: left;
+    margin-top: 65px; // condense this space for small screens
   }
 
   @include media(desktop) {
     @include core-80;
     margin-top: 70px;
     text-align: center;
+  }
+
+  @media only screen
+  and (max-height: $vertical-breakpoint-1) {
+    margin-top: 35px;
+  }
+
+  @media only screen
+  and (max-height: $vertical-breakpoint-2) {
+    margin-top: 5px;
   }
 }
 
