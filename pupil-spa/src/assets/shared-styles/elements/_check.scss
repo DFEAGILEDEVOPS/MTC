@@ -64,7 +64,7 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
     margin: 0;
     width: 3.7em;
     display: inline-block;
-    line-height: 1.2em;
+    line-height: 1.425em !important;
   }
 
   @include media(desktop) {
@@ -91,13 +91,14 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
   text-align: right;
   width: 223px;  // mobile
 
-  line-height: 1.2 !important;
+  line-height: 1.35;
 
   // Tablet : question and answer on one line
   @include media(tablet) {
     width: 319px;
     text-align: left;
     margin: 0 0 0 10px;
+    line-height: 1.4;
   }
 }
 
