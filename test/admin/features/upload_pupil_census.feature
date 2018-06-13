@@ -1,4 +1,4 @@
-@upload_pupil_census
+@upload_pupil_census @delete_census
 Feature:
   Upload Pupil Census
 
@@ -27,3 +27,12 @@ Feature:
     Given I am on the upload pupil census page
     When I have chosen a file with duplicate upn to submit
     Then I should see the error status for the duplicate upn
+
+  Scenario: Pupil census can be removed
+    Given I have uploaded a pupil census file
+    When I decide to remove the file
+    Then it should be removed and the status updated
+
+  Scenario: Pupils are removed from the register when the census has been deleted
+    Given the pupil census file has been removed
+    Then the pupils should be removed from the register
