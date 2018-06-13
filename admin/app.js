@@ -143,7 +143,11 @@ const sessionOptions = {
   resave: false,
   rolling: true,
   saveUninitialized: false,
-  cookie: {maxAge: 1200000}, // Expire after 20 minutes inactivity
+  cookie: {
+    maxAge: 1200000, // Expire after 20 minutes inactivity
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production'
+  },
   store: new TediousSessionStore({
     config: {
       appName: config.Sql.Application.Name,
