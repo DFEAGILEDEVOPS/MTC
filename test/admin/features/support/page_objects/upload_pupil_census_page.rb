@@ -17,4 +17,9 @@ class UploadPupilCensusPage < SitePrism::Page
     out_file.close
   end
 
+  def upload_pupil_census_data_with_duplicate_upn()
+    page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupil-census-data_error.csv"))
+  end
+
+
 end

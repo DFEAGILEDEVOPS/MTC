@@ -22,3 +22,8 @@ Feature:
     Given I am on the upload pupil census page
     When I have chosen a file to submit
     Then I should see the file uploaded
+
+  Scenario: Error is displayed when uploading a pupil census data with error
+    Given I am on the upload pupil census page
+    When I have chosen a file with duplicate upn to submit
+    Then I should see the error status for the duplicate upn

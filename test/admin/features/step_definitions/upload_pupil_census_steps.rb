@@ -40,3 +40,15 @@ Then(/^I should see the file uploaded$/) do
   jobs = SqlDbHelper.get_jobs
   expect(jobs.last['jobInput']).to include @file_name.split('.').first
 end
+
+When(/^I have chosen a file with duplicate upn to submit$/) do
+  upload_pupil_census_page.upload_pupil_census_data_with_duplicate_upn
+  upload_pupil_census_page.upload.click
+end
+
+Then(/^I should see the error status for the duplicate upn$/) do
+  expected_message = "RequestError: Cannot insert duplicate key row in object 'mtc_admin.pupil' with unique index 'pupil_upn_uindex'. The duplicate key value is (A999999609170)."
+  actual_message = upload_pupil_census_page.uploaded_file.status.text
+
+  expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
+end
