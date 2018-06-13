@@ -57,11 +57,12 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
   margin: 0 auto; // center it in the page
   text-align: right;
   vertical-align: top;
-  width: 3.7em;
-
+  width: 223px;  // mobile
+  
   // For tablets we want the question and answer to be on the same line
   @include media(tablet) {
     margin: 0;
+    width: 3.7em;
     display: inline-block;
     line-height: 1.2em;
   }
