@@ -16,7 +16,6 @@ const session = require('express-session')
 const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const flash = require('connect-flash')
-const helmet = require('helmet')
 const config = require('./config')
 const devWhitelist = require('./whitelist-dev')
 const azure = require('./azure')
@@ -24,6 +23,7 @@ const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
 const setupLogging = require('./helpers/logger')
+const setupBrowserSecurity = require('./helpers/browserSecurity')
 
 azure.startInsightsIfConfigured()
 
@@ -82,47 +82,11 @@ const attendance = require('./routes/attendance')
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
 
+setupBrowserSecurity(app)
 setupLogging(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
-
-/* Security Directives */
-
-app.use(helmet())
-const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com']
-const styleSources = ["'self'", "'unsafe-inline'"]
-const imgSources = ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']
-const objectSources = ["'self'"]
-
-if (config.AssetPath !== '/') {
-  // add CSP policy for assets domain
-  scriptSources.push(config.AssetPath)
-  styleSources.push(config.AssetPath)
-  imgSources.push(config.AssetPath)
-  objectSources.push(config.AssetPath)
-}
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc: scriptSources,
-    fontSrc: ["'self'", 'data:'],
-    styleSrc: styleSources,
-    imgSrc: imgSources,
-    connectSrc: ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com'],
-    objectSrc: objectSources,
-    mediaSrc: ["'none'"],
-    childSrc: ["'none'"]
-  }
-}))
-
-// Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
-const oneYearInSeconds = 31536000
-app.use(helmet.hsts({
-  maxAge: oneYearInSeconds,
-  includeSubdomains: false,
-  preload: false
-}))
 
 // azure uses req.headers['x-arr-ssl'] instead of x-forwarded-proto
 // if production ensure x-forwarded-proto is https OR x-arr-ssl is present
