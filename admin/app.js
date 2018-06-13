@@ -23,7 +23,7 @@ const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
 const setupLogging = require('./helpers/logger')
-const setupHelmet = require('./helpers/helmet')
+const setupBrowserSecurity = require('./helpers/browserSecurity')
 
 azure.startInsightsIfConfigured()
 
@@ -82,7 +82,7 @@ const attendance = require('./routes/attendance')
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
 
-setupHelmet(app)
+setupBrowserSecurity(app)
 setupLogging(app)
 
 // Use the feature toggle middleware to enable it in res.locals
