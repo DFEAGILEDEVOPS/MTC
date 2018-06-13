@@ -21,6 +21,7 @@
         <p class="lede">Use this page to choose which check window you want to assign forms to.</p>
 
         <form method="post" action="assign-forms-to-check-windows">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <% forms.forEach( f => { %>
             <input type="hidden" name="check-form" value="<%= f._id %>" />
             <% }) %>
