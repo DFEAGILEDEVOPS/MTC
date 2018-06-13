@@ -26,8 +26,17 @@ class UploadPupilCensusPage < SitePrism::Page
     out_file.close
   end
 
-  def upload_pupil_census_data_with_duplicate_upn()
-    page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupil-census-data_error.csv"))
+  def upload_pupil_census_data_with_duplicate_upn(condition)
+    case condition
+      when 'duplicate upn'
+        page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupil-census-data_error.csv"))
+      when 'empty last name'
+        page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupilCensusDataEmptyLastname.csv"))
+      when 'empty first name'
+        page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupilCensusDataEmptyForname.csv"))
+      when 'empty gender'
+        page.attach_file('file-upload', File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/pupilCensusDataEmptyGender.csv"))
+    end
   end
 
 

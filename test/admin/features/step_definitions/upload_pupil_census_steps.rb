@@ -40,13 +40,40 @@ Then(/^I should see the file uploaded$/) do
   expect(jobs.last['jobInput']).to include @file_name.split('.').first
 end
 
-When(/^I have chosen a file with duplicate upn to submit$/) do
-  upload_pupil_census_page.upload_pupil_census_data_with_duplicate_upn
+When(/^I have chosen a file with '(.*)' to submit$/) do |condition|
+  upload_pupil_census_page.upload_pupil_census_data_with_duplicate_upn(condition)
   upload_pupil_census_page.upload.click
+end
+
+Then(/^I should see the completed status$/) do
+  expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
+  actual_message = upload_pupil_census_page.uploaded_file.status.text
+  expect(actual_message.include?('Completed')).to be_truthy, "Expected status: 'Completed' to be included in Actual Message: #{actual_message}"
 end
 
 Then(/^I should see the error status for the duplicate upn$/) do
   expected_message = "RequestError: Cannot insert duplicate key row in object 'mtc_admin.pupil' with unique index 'pupil_upn_uindex'. The duplicate key value is (A999999609170)."
+  actual_message = upload_pupil_census_page.uploaded_file.status.text
+
+  expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
+end
+
+Then(/^I should see the error status for the empty last name$/) do
+  expected_message = "RequestError: Cannot insert the value NULL into column 'lastName', table 'mtc.mtc_admin.pupil'; column does not allow nulls. INSERT fails."
+  actual_message = upload_pupil_census_page.uploaded_file.status.text
+
+  expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
+end
+
+Then(/^I should see the error status for the empty first name$/) do
+  expected_message = "RequestError: Cannot insert the value NULL into column 'foreName', table 'mtc.mtc_admin.pupil'; column does not allow nulls. INSERT fails."
+  actual_message = upload_pupil_census_page.uploaded_file.status.text
+
+  expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
+end
+
+Then(/^I should see the error status for the empty gender$/) do
+  expected_message = "RequestError: Cannot insert the value NULL into column 'gender', table 'mtc.mtc_admin.pupil'; column does not allow nulls. INSERT fails."
   actual_message = upload_pupil_census_page.uploaded_file.status.text
 
   expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
