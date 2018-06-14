@@ -94,6 +94,12 @@ Before("@reset_checks") do
   SqlDbHelper.delete_all_checks
 end
 
+After("@delete_census") do
+  step "I am logged in with a service manager"
+  upload_pupil_census_page.load
+  step 'I decide to remove the file' if upload_pupil_census_page.uploaded_file.has_remove?
+end
+
 Before("@remove_all_groups") do
   step 'I am on the groups page'
   group_pupils_page.remove_all_groups
