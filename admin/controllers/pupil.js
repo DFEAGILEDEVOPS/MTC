@@ -166,12 +166,6 @@ const getEditPupilById = async (req, res, next) => {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
 
-    // @TODO: Why is the school data pulled for?
-    const school = await schoolDataService.sqlFindOneById(pupil.school_id)
-    if (!school) {
-      return next(new Error(`School ${pupil.school._id} not found`))
-    }
-
     const pupilData = pupilAddService.formatPupilData(pupil)
 
     req.breadcrumbs(res.locals.pageTitle)
