@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angula
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupStarted} from '../services/audit/auditEntry';
+import { PracticeInstructionsRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
@@ -41,8 +41,8 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    this.auditService.addEntry(new WarmupStarted());
-    this.router.navigate(['check']);
+    this.auditService.addEntry(new PracticeInstructionsRendered());
+    this.router.navigate(['practice-instructions']);
   }
 
   // wait for the component to be rendered first, before parsing the text

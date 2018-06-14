@@ -6,7 +6,7 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { QuestionService } from '../services/question/question.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
+import { AuditEntry, PracticeInstructionsRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -45,9 +45,9 @@ describe('InstructionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('redirects to warm up introduction page', () => {
+  it('redirects to practice questions instructions page', () => {
     component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['practice-instructions']);
   });
 
   describe('audit entry', () => {
@@ -61,7 +61,7 @@ describe('InstructionsComponent', () => {
     it('adds audit entry onClick for check started', () => {
       component.onClick();
       expect(auditServiceMock.addEntry).toHaveBeenCalledTimes(1);
-      expect(auditEntryInserted instanceof WarmupStarted).toBeTruthy();
+      expect(auditEntryInserted instanceof PracticeInstructionsRendered).toBeTruthy();
     });
   });
 

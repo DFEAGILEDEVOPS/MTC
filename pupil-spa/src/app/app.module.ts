@@ -44,6 +44,7 @@ import { AppUsageService } from './services/app-usage/app-usage.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
+import { PracticeInstructionsComponent } from './practice-instructions/practice-instructions.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
@@ -53,6 +54,7 @@ import { SubmissionPendingComponent } from './submission-pending/submission-pend
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
   {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
+  {path: 'practice-instructions', component: PracticeInstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
@@ -89,6 +91,7 @@ const appRoutes: Routes = [
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
+    PracticeInstructionsComponent
   ],
   imports: [
     RouterModule.forRoot(
