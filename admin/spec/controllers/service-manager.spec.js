@@ -291,49 +291,77 @@ describe('service manager controller:', () => {
       expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
-    describe('postUploadPupilCensus', () => {
-      const goodReqParams = {
-        method: 'POST',
-        url: '/service-manager/upload-pupil-census/upload',
-        files: {
-          csvPupilCensusFile: { name: 'test' }
-        }
+  })
+  describe('postUploadPupilCensus', () => {
+    const goodReqParams = {
+      method: 'POST',
+      url: '/service-manager/upload-pupil-census/upload',
+      files: {
+        csvPupilCensusFile: { name: 'test' }
       }
+    }
 
-      const badReqParams = {
-        method: 'POST',
-        url: '/service-manager/upload-pupil-census/upload',
-        files: {
-          csvPupilCensusFile: {}
-        }
+    const badReqParams = {
+      method: 'POST',
+      url: '/service-manager/upload-pupil-census/upload',
+      files: {
+        csvPupilCensusFile: {}
       }
+    }
 
-      it('redirects to pupil census page when successfully uploaded a csv file', async () => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(res, 'redirect')
-        spyOn(pupilCensusService, 'upload')
-        await controller.postUploadPupilCensus(req, res, next)
-        expect(res.redirect).toHaveBeenCalled()
-        expect(req.flash).toHaveBeenCalled()
-      })
-      it('calls next when upload is rejected', async () => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(res, 'redirect')
-        spyOn(pupilCensusService, 'upload').and.returnValue(Promise.reject(new Error('error')))
-        await controller.postUploadPupilCensus(req, res, next)
-        expect(res.redirect).not.toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-      })
-      it('calls next when there is no file to upload', async () => {
-        const res = getRes()
-        const req = getReq(badReqParams)
-        spyOn(res, 'redirect')
-        await controller.postUploadPupilCensus(req, res, next)
-        expect(res.redirect).not.toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-      })
+    it('redirects to pupil census page when successfully uploaded a csv file', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(pupilCensusService, 'upload')
+      await controller.postUploadPupilCensus(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+    it('calls next when upload is rejected', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(pupilCensusService, 'upload').and.returnValue(Promise.reject(new Error('error')))
+      await controller.postUploadPupilCensus(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+    it('calls next when there is no file to upload', async () => {
+      const res = getRes()
+      const req = getReq(badReqParams)
+      spyOn(res, 'redirect')
+      await controller.postUploadPupilCensus(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+  })
+  describe('getRemovePupilCensus', () => {
+    const goodReqParams = {
+      method: 'POST',
+      url: '/service-manager/upload-pupil-census/upload',
+      params: {
+        pupilCensusId: 1
+      }
+    }
+
+    it('redirects to pupil census page when successfully removed the selected pupil', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(pupilCensusService, 'remove')
+      await controller.getRemovePupilCensus(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+    it('calls next when upload is rejected', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(res, 'redirect')
+      spyOn(pupilCensusService, 'remove').and.returnValue(Promise.reject(new Error('error')))
+      await controller.getRemovePupilCensus(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
 })
