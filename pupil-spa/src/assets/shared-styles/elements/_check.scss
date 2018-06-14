@@ -4,7 +4,7 @@ $vertical-breakpoint-1: 600px;
 $vertical-breakpoint-2: 500px;
 $small-screen-breakpoint: 485px; // screens below this threshold get a fallback stacked view
 
-@mixin mtc-core-64($line-height: (64 / 64), $line-height-640: (55 / 53), $tabular-numbers: false, $font-weight: 400) {
+@mixin mtc-core-59($line-height: (64 / 64), $line-height-640: (55 / 53), $tabular-numbers: false, $font-weight: 400) {
   $font-size: 59px;
   $font-size-640: 46px;
   $font-size-print: 28pt;
@@ -25,7 +25,7 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 }
 
 .question-and-answer {
-  @include mtc-core-64;
+  @include mtc-core-59;
 
   text-align: center;
   margin-top: 35px;
