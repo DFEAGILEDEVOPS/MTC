@@ -109,7 +109,7 @@ describe('LoginComponent', () => {
       });
     });
 
-    xit('should reject a second submit', async () => {
+    it('should reject a second submit', async () => {
       component.onSubmit('goodPin', 'goodPin');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {

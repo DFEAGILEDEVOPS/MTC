@@ -15,6 +15,7 @@ import { Login } from './login.model';
 })
 export class LoginComponent implements OnInit {
 
+  private submitted: boolean;
   public loginModel = new Login('', '');
   private logInFailed: boolean;
 
@@ -32,12 +33,17 @@ export class LoginComponent implements OnInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
+    this.submitted = false;
   }
 
   /**
    * Handler for the login form submit action
    */
   onSubmit(schoolPin, pupilPin) {
+    if (this.submitted === true) {
+      return;
+    }
+    this.submitted = true;
     this.userService.login(schoolPin, pupilPin)
       .then(
       () => {
@@ -48,11 +54,13 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['sign-in-success']);
       },
       () => {
+        this.submitted = false;
         this.logInFailed = true;
         this.loginModel = new Login('', '');
         this.router.navigate(['sign-in']);
       })
       .catch(() => {
+        this.submitted = false;
         this.logInFailed = true;
         this.loginModel = new Login('', '');
         this.router.navigate(['sign-in']);
