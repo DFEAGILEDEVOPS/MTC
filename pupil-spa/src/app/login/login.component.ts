@@ -15,8 +15,8 @@ import { Login } from './login.model';
 })
 export class LoginComponent implements OnInit {
 
-  private submitted: boolean;
   public loginModel = new Login('', '');
+  private logInFailed: boolean;
 
   constructor(
     private userService: UserService,
@@ -32,30 +32,30 @@ export class LoginComponent implements OnInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
-    this.submitted = false;
   }
 
   /**
    * Handler for the login form submit action
    */
   onSubmit(schoolPin, pupilPin) {
-    if (this.submitted === true) {
-      return;
-    }
-    this.submitted = true;
     this.userService.login(schoolPin, pupilPin)
       .then(
       () => {
+        this.logInFailed = false;
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
         this.router.navigate(['sign-in-success']);
       },
       () => {
-        this.router.navigate(['sign-in-failure']);
+        this.logInFailed = true;
+        this.loginModel = new Login('', '');
+        this.router.navigate(['sign-in']);
       })
       .catch(() => {
-        this.router.navigate(['sign-in-failure']);
+        this.logInFailed = true;
+        this.loginModel = new Login('', '');
+        this.router.navigate(['sign-in']);
       });
   }
 }

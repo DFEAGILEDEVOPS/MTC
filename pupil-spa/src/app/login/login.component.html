@@ -6,6 +6,16 @@
     </header>
 </div>
 
+<div [hidden]="!logInFailed" class="grid-row">
+  <div class="column-two-thirds">
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
+      <p>The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.</p>
+    </div>
+  </div>
+</div>
+
+
 <div class="grid-row">
     <div class="column-two-thirds">
         <header>
