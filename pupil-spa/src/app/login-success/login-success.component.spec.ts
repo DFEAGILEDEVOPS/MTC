@@ -74,7 +74,7 @@ describe('LoginSuccessComponent', () => {
 
   it('asks the user to confirm their details', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('p.lede').textContent).toMatch(/Check your details are correct/);
+    expect(compiled.querySelector('p.lede').textContent).toMatch(/If this is you, please confirm/);
   });
 
   it('redirects to warm up introduction page and removes pupil data', () => {
