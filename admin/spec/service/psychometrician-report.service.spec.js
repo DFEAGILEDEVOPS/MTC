@@ -288,9 +288,9 @@ describe('psychometricians-report.service', () => {
 
   describe('downloadUploadedFile', () => {
     it('calls azureDownloadFile method to download the file', async () => {
-      spyOn(azureFileDataService, 'azureDownloadFile')
+      spyOn(azureFileDataService, 'azureDownloadFileStream')
       await service.downloadUploadedFile([])
-      expect(azureFileDataService.azureDownloadFile).toHaveBeenCalled()
+      expect(azureFileDataService.azureDownloadFileStream).toHaveBeenCalled()
     })
   })
 

@@ -475,22 +475,25 @@ const getDownloadPupilCheckData = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const getFileDownloadPupilCheckData = async (req, res, next) => {
-  let psychometricianReport, reportContent
+  let psychometricianReport
   try {
     psychometricianReport = await psychometricianReportService.getUploadedFile()
     if (!psychometricianReport) {
       return res.redirect('/test-developer/download-pupil-check-data')
     }
-    reportContent = await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename)
   } catch (error) {
     req.flash('error', error.message)
     return res.redirect('/test-developer/download-pupil-check-data')
   }
 
-  res.setHeader('Content-type', 'application/zip')
-  res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.fileName}`)
+  try {
+    res.setHeader('Content-type', 'application/zip')
+    res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.fileName}`)
 
-  res.send(reportContent)
+    await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
+  } catch (error) {
+    return next(error)
+  }
 }
 
 /**

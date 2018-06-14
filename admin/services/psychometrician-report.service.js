@@ -106,8 +106,8 @@ psychometricianReportService.getUploadedFile = async () => {
  * Get existing psychometrician report file
  * @return {Object}
  */
-psychometricianReportService.downloadUploadedFile = async (remoteFilename) => {
-  return azureFileDataService.azureDownloadFile('psychometricianreportupload', remoteFilename)
+psychometricianReportService.downloadUploadedFile = async (remoteFilename, stream) => {
+  return azureFileDataService.azureDownloadFileStream('psychometricianreportupload', remoteFilename, stream)
 }
 
 /**
