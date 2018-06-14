@@ -161,7 +161,7 @@ const getErrorCSVFile = async (req, res) => {
 const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   try {
-    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id)
+    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
     }
@@ -200,7 +200,7 @@ const postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug)
+    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }

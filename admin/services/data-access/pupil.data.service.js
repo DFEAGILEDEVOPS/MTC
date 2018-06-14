@@ -33,18 +33,23 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirec
 
 /**
  * Find a pupil by their urlSlug
- * @param urlSlug
+ * @param urlSlug - GUID
+ * @param schoolId - look for the pupil only in a particular school
  * @return {Promise<void>}
  */
-pupilDataService.sqlFindOneBySlug = async function (urlSlug) {
-  const param = { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug }
+pupilDataService.sqlFindOneBySlug = async function (urlSlug, schoolId) {
+  const params = [
+    { name: 'urlSlug', type: TYPES.UniqueIdentifier, value: urlSlug },
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
   const sql = `
       SELECT TOP 1 
       *  
       FROM ${sqlService.adminSchema}.${table}
-      WHERE urlSlug = @urlSlug    
+      WHERE urlSlug = @urlSlug
+      AND school_id = @schoolId  
     `
-  const results = await sqlService.query(sql, [param])
+  const results = await sqlService.query(sql, params)
   return R.head(results)
 }
 
