@@ -5,6 +5,10 @@ Pre-reqs for ubuntu: https://github.com/Microsoft/vsts-agent/blob/master/docs/st
 ## Pre-reqs for MTC
 
 Install docker
+** check to see if docker works.  if you get a permissions error, run the following...
+``` bash
+sudo usermod -a -G docker $USER
+```
 Install nvm
 Install yarn
 
