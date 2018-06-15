@@ -24,7 +24,6 @@ import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
 import { LoggedInGuard } from './logged-in.guard';
 import { LoginComponent } from './login/login.component';
-import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { QuestionComponent } from './question/question.component';
@@ -59,7 +58,6 @@ const appRoutes: Routes = [
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent },
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent }
   // { path: '**', component: NotFoundComponent }
