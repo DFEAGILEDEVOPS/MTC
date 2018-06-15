@@ -182,6 +182,7 @@ restartService.getStatus = async pupilId => {
  */
 
 restartService.markDeleted = async (pupilId, userId) => {
+  // TODO: add security to restrict it to the user's school
   const pupil = await pupilDataService.sqlFindOneById(pupilId)
   let lastStartedCheck = await checkDataService.sqlFindLastStartedCheckByPupilId(pupilId)
   pupil.pinExpiresAt = lastStartedCheck.startedAt
