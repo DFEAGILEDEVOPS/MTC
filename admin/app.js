@@ -125,6 +125,13 @@ const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).tes
   (/^\/test-developer\/upload-new-form$/).test(url) ||
   (/^\/service-manager\/upload-pupil-census\/upload$/).test(url)
 
+// as we run in container over http, we must set up proxy trust for secure cookies
+let secureCookie = false
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1)
+  secureCookie = true
+}
+
 const sessionOptions = {
   name: 'mtc-admin-session-id',
   secret: config.SESSION_SECRET,
@@ -134,7 +141,7 @@ const sessionOptions = {
   cookie: {
     maxAge: 1200000, // Expire after 20 minutes inactivity
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: secureCookie
   },
   store: new TediousSessionStore({
     config: {
