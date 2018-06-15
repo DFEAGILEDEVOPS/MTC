@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   private submitted: boolean;
   public loginModel = new Login('', '');
-  private logInFailed: boolean;
+  public loginSucceeded: boolean;
 
   constructor(
     private userService: UserService,
@@ -33,7 +33,6 @@ export class LoginComponent implements OnInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
-    this.submitted = false;
   }
 
   /**
@@ -47,22 +46,20 @@ export class LoginComponent implements OnInit {
     this.userService.login(schoolPin, pupilPin)
       .then(
       () => {
-        this.logInFailed = false;
+        this.loginSucceeded = true;
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
         this.router.navigate(['sign-in-success']);
       },
       () => {
+        this.loginSucceeded = false;
         this.submitted = false;
-        this.logInFailed = true;
-        this.loginModel = new Login('', '');
         this.router.navigate(['sign-in']);
       })
       .catch(() => {
+        this.loginSucceeded = false;
         this.submitted = false;
-        this.logInFailed = true;
-        this.loginModel = new Login('', '');
         this.router.navigate(['sign-in']);
       });
   }

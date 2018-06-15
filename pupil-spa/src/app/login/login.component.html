@@ -6,7 +6,7 @@
     </header>
 </div>
 
-<div [hidden]="!logInFailed" class="grid-row">
+<div *ngIf="loginSucceeded === false" class="grid-row">
   <div class="column-two-thirds">
     <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
       <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
