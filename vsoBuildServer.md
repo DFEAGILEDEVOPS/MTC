@@ -2,19 +2,20 @@
 
 Pre-reqs for ubuntu: https://github.com/Microsoft/vsts-agent/blob/master/docs/start/envubuntu.md
 
+## Pre-reqs for MTC
+
+Install docker
+Install nvm
+Install yarn
+
 ## Install the VSTS agent
 
-https://www.visualstudio.com/en-gb/docs/build/actions/agents/v2-linux
-
-``` bash
-~/$ wget https://github.com/Microsoft/vsts-agent/releases/download/v2.111.1/vsts-agent-osx.10.11-x64-2.111.1.tar.gz
-~/$ mkdir vstsagent && cd vstsagent
-~/vstsagent$ tar zxvf ~/vsts-agent-osx.10.11-x64-2.111.1.tar.gz
-```
+Go to the agents page in VSO, click the download button, and choose the linux option.
+It will give you instructions on how to install the agent.
 
 ## Service configuration
 
-Running config.sh currently fails with: `Failed to initialize CoreCLR, HRESULT: 0x80131500`
+Running config.sh can fail with: `Failed to initialize CoreCLR, HRESULT: 0x80131500`
 
 This is due to compatibility issues with the icu library v55 on 16.04.
 To install v52 run the following...
@@ -46,7 +47,7 @@ https://github.com/Microsoft/vsts-agent/blob/master/docs/start/svcsystemd.md
 
 ### PATH updates
 
-If you ever update PATH this will not automatically be reflected in VSO agent metadata.  The workaround is to run run the following...
+If you ever update PATH this will not automatically be reflected in VSO agent metadata.  The workaround is to run the following...
 
 ``` bash
 # update the vso PATH metadata
@@ -55,3 +56,5 @@ If you ever update PATH this will not automatically be reflected in VSO agent me
 ~/vstsagent/svc.sh stop
 ~/vstsagent/svc.sh start
 ```
+
+The above should all now be documented in the official VSTS agent area.  Use the above as a rough guide only.
