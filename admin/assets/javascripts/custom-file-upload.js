@@ -18,6 +18,10 @@ $(function () {
     })
 
     $('input:file').change(function (e) {
+      var hasFileForUpload = !!e.target.value
+      if (!hasFileForUpload) {
+        return $removeElement.click()
+      }
       $removeElement.css('visibility', 'visible')
       $removeElement.show()
       $uploadButton.attr('disabled', false)

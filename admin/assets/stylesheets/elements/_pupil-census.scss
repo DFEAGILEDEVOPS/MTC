@@ -2,24 +2,29 @@
   border-top: 1px solid $grey-2;
   border-bottom: 1px solid $grey-2;
   display: inline-flex;
+  min-width: 100%;
   > dd {
     padding-top: pem(10px);
     padding-bottom: pem(10px);
     > span:first-child {
       display:inline-block;
       word-wrap: break-word;
+      width: pem(120px);
     }
   }
 }
 
-.job-file {
-  width: pem(200px);
+.job-status {
+  min-width: pem(255px);
+  margin-left: pem(100px);
 }
 
-.job-status {
-  float: right;
-  margin-right: pem(80px);
-  width: pem(250px);
+.job-status-value {
+  margin-left: pem(80px);
+}
+
+.job-remove {
+  margin-left: pem(50px);
 }
 
 .no-file-uploaded {
