@@ -17,7 +17,7 @@ const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const flash = require('connect-flash')
 const config = require('./config')
-const devWhitelist = require('./whitelist-dev')
+const checkConfigWhitelist = require('./helpers/whitelist-dev')
 const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
@@ -26,19 +26,6 @@ const setupLogging = require('./helpers/logger')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 
 azure.startInsightsIfConfigured()
-
-const unsetVars = []
-Object.keys(config).map((key) => {
-  if (config[key] === undefined && !devWhitelist.includes(key)) {
-    unsetVars.push(`${key}`)
-  }
-})
-
-if (unsetVars.length > 0) {
-  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
-  process.exitCode = 1
-  throw new Error(error)
-}
 
 /**
  * Load feature toggles
@@ -84,6 +71,7 @@ const app = express()
 
 setupBrowserSecurity(app)
 setupLogging(app)
+// checkConfigWhitelist(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
@@ -199,7 +187,7 @@ passport.use(
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
-if (process.env.NODE_ENV === 'production') {
+if (config.AZURE_STORAGE_CONNECTION_STRING) {
   app.use(require('./lib/azure-upload'))
 }
 
