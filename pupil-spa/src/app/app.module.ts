@@ -74,7 +74,6 @@ const appRoutes: Routes = [
     InstructionsComponent,
     LoadingComponent,
     LoginComponent,
-    LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
     PracticeQuestionComponent,
