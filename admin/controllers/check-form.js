@@ -269,7 +269,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   }
 
   try {
-    checkWindowsData = await checkWindowService.getCurrentCheckWindowsAndCountForms()
+    checkWindowsData = await checkWindowService.getFutureCheckWindowsAndCountForms()
   } catch (error) {
     return next(error)
   }
