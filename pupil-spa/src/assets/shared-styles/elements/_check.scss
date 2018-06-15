@@ -86,21 +86,21 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 
 .answer {
   border: 2px solid $black;
-  outline: 3px solid $focus-colour;
+  box-shadow: 0 0 0 3px $focus-colour;
   display: block;
   height: pem(80px, 64);
   margin: auto;
   text-align: right;
   width: 223px;  // mobile
 
-  line-height: 1.35;
+  line-height: 1.35em;
 
   // Tablet : question and answer on one line
   @include media(tablet) {
     width: 319px;
     text-align: left;
     margin: 0 0 0 10px;
-    line-height: 1.4;
+    line-height: 1.4em;
   }
 }
 
