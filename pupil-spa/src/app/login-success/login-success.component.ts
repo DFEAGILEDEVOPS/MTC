@@ -71,16 +71,13 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   onClick() {
     // remove pupil data from local storage after confirming identity
     const checkCode = this.storageService.getItem('pupil').checkCode;
-    
     this.storageService.setItem('pupil', { checkCode });
-    
     this.router.navigate(['check-start']);
   }
 
   ngOnDestroy(): void {
     // remove pupil data from memory once component is destroyed
     this.pupil = undefined;
-    
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.cancel();
