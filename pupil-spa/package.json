@@ -6,7 +6,7 @@
     "ng": "ng",
     "sass": "node-sass -r src/assets/shared-styles/ -o src/public/styles/",
     "sasswatch": "npm run sass && node-sass src/assets/shared-styles -wro src/public/styles/",
-    "start": "concurrently \"ng serve\" \"npm run sasswatch\" ",
+    "start": "concurrently \"ng serve --host 0.0.0.0\" \"npm run sasswatch\" ",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "ng build",
     "test": "ng test",

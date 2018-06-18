@@ -15,6 +15,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>;
@@ -28,7 +29,8 @@ describe('SubmissionPendingComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionPendingComponent ],
-      imports: [    RouterTestingModule.withRoutes([])],
+      imports: [ RouterTestingModule.withRoutes([])],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: SubmissionService, useClass: SubmissionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
