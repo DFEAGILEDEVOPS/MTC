@@ -1,0 +1,216 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "webhooks_prodadminasmtc_serviceUri": {
+            "value": null
+        },
+        "webhooks_prodassetsasmtc_serviceUri": {
+            "value": null
+        },
+        "servers_mtceepr_name": {
+            "value": null
+        },
+        "serverfarms_prodasmtc_name": {
+            "value": null
+        },
+        "sites_prodadmin_as_mtc_name": {
+            "value": null
+        },
+        "sites_prodpupil_as_mtc_name": {
+            "value": null
+        },
+        "servers_mtceepr_replica_name": {
+            "value": null
+        },
+        "sites_prodassets_as_mtc_name": {
+            "value": null
+        },
+        "storageAccounts_prodsamtc_name": {
+            "value": null
+        },
+        "components_prodadmin_ai_mtc_name": {
+            "value": null
+        },
+        "config_web_name": {
+            "value": null
+        },
+        "config_web_name_1": {
+            "value": null
+        },
+        "registries_PRODCRMTC_name": {
+            "value": null
+        },
+        "advisors_DropIndex_name": {
+            "value": null
+        },
+        "config_web_name_2": {
+            "value": null
+        },
+        "keys_ServiceManaged_name": {
+            "value": null
+        },
+        "advisors_CreateIndex_name": {
+            "value": null
+        },
+        "firewallRules_Guy_Phone_name": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name": {
+            "value": null
+        },
+        "auditingPolicies_Default_name": {
+            "value": null
+        },
+        "databases_mtc_admin_prod_name": {
+            "value": null
+        },
+        "firewallRules_Guy_Office_name": {
+            "value": null
+        },
+        "firewallRules_Guy_name": {
+            "value": null
+        },
+        "advisors_DropIndex_name_1": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name": {
+            "value": null
+        },
+        "keys_ServiceManaged_name_1": {
+            "value": null
+        },
+        "advisors_DbParameterization_name": {
+            "value": null
+        },
+        "encryptionProtector_current_name": {
+            "value": null
+        },
+        "advisors_CreateIndex_name_1": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name_1": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_1": {
+            "value": null
+        },
+        "databases_mtc_admin_prod_name_1": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name_1": {
+            "value": null
+        },
+        "advisors_DbParameterization_name_1": {
+            "value": null
+        },
+        "encryptionProtector_current_name_1": {
+            "value": null
+        },
+        "firewallRules_AllowAllWindowsAzureIps_name": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_2": {
+            "value": null
+        },
+        "databases_master_name": {
+            "value": null
+        },
+        "webhooks_prodadminasmtc_name": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name": {
+            "value": null
+        },
+        "webhooks_prodassetsasmtc_name": {
+            "value": null
+        },
+        "advisors_DropIndex_name_2": {
+            "value": null
+        },
+        "firewallRules_AllowAllWindowsAzureIps_name_1": {
+            "value": null
+        },
+        "advisors_CreateIndex_name_2": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_3": {
+            "value": null
+        },
+        "databases_master_name_1": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name_2": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_4": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name_1": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name_2": {
+            "value": null
+        },
+        "advisors_DropIndex_name_3": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name_2": {
+            "value": null
+        },
+        "advisors_DbParameterization_name_2": {
+            "value": null
+        },
+        "advisors_CreateIndex_name_3": {
+            "value": null
+        },
+        "advisors_DefragmentIndex_name_3": {
+            "value": null
+        },
+        "auditingPolicies_Default_name_5": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name_1": {
+            "value": null
+        },
+        "geoBackupPolicies_Default_name_3": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name_2": {
+            "value": null
+        },
+        "hostNameBindings_prodadmin_as_mtc.azurewebsites.net_name": {
+            "value": null
+        },
+        "hostNameBindings_prodpupil_as_mtc.azurewebsites.net_name": {
+            "value": null
+        },
+        "advisors_ForceLastGoodPlan_name_3": {
+            "value": null
+        },
+        "advisors_DbParameterization_name_3": {
+            "value": null
+        },
+        "hostNameBindings_prodassets_as_mtc.azurewebsites.net_name": {
+            "value": null
+        },
+        "transparentDataEncryption_current_name_3": {
+            "value": null
+        },
+        "certificates_2BC5BF982634994E056C7C342EAC6342F0623CF8#rg_t1pr_mtc_WestEuropewebspace_name": {
+            "value": null
+        },
+        "certificates_CA9C84AB72C4E8647831EF6EBC5DE5290356BB28#rg_t1pr_mtc_WestEuropewebspace_name": {
+            "value": null
+        },
+        "hostNameBindings_multiplication_tables_check_trial.service.gov.uk_name": {
+            "value": null
+        },
+        "hostNameBindings_multiplication_tables_check_school_trial.service.gov.uk_name": {
+            "value": null
+        }
+    }
+}
