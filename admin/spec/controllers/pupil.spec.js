@@ -354,6 +354,9 @@ describe('pupil controller:', () => {
       },
       params: {
         id: 'pupil999'
+      },
+      user: {
+        schoolId: 42
       }
     }
 
@@ -366,7 +369,6 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
       await controller(req, res, next)
       expect(pupilDataService.sqlFindOneBySlug).toHaveBeenCalled()
     })
@@ -377,24 +379,6 @@ describe('pupil controller:', () => {
       spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(null))
       await controller(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
-    })
-
-    it('retrieves the school data', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(schoolMock))
-      await controller(req, res, next)
-      expect(schoolDataService.sqlFindOneById).toHaveBeenCalled()
-    })
-
-    it('bails out if the school is not found', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(pupilDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(populatedPupilMock))
-      spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(undefined))
-      await controller(req, res, next)
-      expect(next).toHaveBeenCalledWith(new Error(`School ${populatedPupilMock.school._id} not found`))
     })
 
     it('bails out if any of the method raises an exception', async () => {

@@ -15,9 +15,9 @@ const attendanceService = {
    * @param userId
    * @returns {Promise<void>}
    */
-  updatePupilAttendanceBySlug: async (slugs, code, userId) => {
-    const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(slugs)
-    if (!pupils) {
+  updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
+    const pupils = await pupilDataService.sqlFindPupilsByUrlSlug(slugs, schoolId)
+    if (!Array.isArray(pupils) || pupils.length === 0) {
       throw new Error('Pupils not found')
     }
     const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)

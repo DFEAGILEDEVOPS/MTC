@@ -187,16 +187,23 @@ pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
  * @param {Array|string} slugs
  * @return {Promise<*>}
  */
-pupilDataService.sqlFindPupilsByUrlSlug = async (slugs) => {
+pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
   if (!(Array.isArray(slugs) && slugs.length > 0)) {
     throw new Error('No slugs provided')
   }
+
+  if (!schoolId) {
+    throw new Error('Required parameter `schoolId` missing')
+  }
+
   const select = `
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
   const {params, paramIdentifiers} = sqlService.buildParameterList(slugs, TYPES.UniqueIdentifier)
-  const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')'
+  const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')' +
+    'AND school_id = @schoolId'
+  params.push({name: 'schoolId', type: TYPES.Int, value: schoolId})
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
 }

@@ -15,6 +15,7 @@ describe('attendanceService', () => {
     const slugs = ['slug1', 'slug2', 'slug3']
     const code = 'ABSNT'
     const userId = 1
+    const schoolId = 7
 
     it('makes a call to get the pupils', async (done) => {
       spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue(Promise.resolve([ pupilMock ]))
@@ -23,7 +24,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilDataService.sqlFindPupilsByUrlSlug).toHaveBeenCalled()
       done()
     })
@@ -35,7 +36,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       try {
-        await service.updatePupilAttendanceBySlug(slugs, code, userId)
+        await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Pupils not found')
@@ -50,7 +51,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(code)
       done()
     })
@@ -62,7 +63,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       try {
-        await service.updatePupilAttendanceBySlug(slugs, code, userId)
+        await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe(`attendanceCode not found: ${code}`)
@@ -77,7 +78,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilAttendanceDataService.findByPupilIds).toHaveBeenCalled()
       done()
     })
@@ -92,7 +93,7 @@ describe('attendanceService', () => {
       spyOn(pinService, 'expireMultiplePins')
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilAttendanceDataService.sqlInsertBatch).toHaveBeenCalledWith([pupilMock.id], attendanceCodeMock.id, userId)
       expect(pupilAttendanceDataService.sqlUpdateBatch).not.toHaveBeenCalled()
       done()
@@ -106,7 +107,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith([pupilMock.id], attendanceCodeMock.id, userId)
       expect(pupilAttendanceDataService.sqlInsertBatch).not.toHaveBeenCalled()
       done()
@@ -120,7 +121,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch')
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
-      await service.updatePupilAttendanceBySlug(slugs, code, userId)
+      await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pinService.expireMultiplePins).toHaveBeenCalledWith([pupilMock.id])
       done()
     })

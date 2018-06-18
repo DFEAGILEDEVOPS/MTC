@@ -106,7 +106,8 @@ const savePupilNotTakingCheck = async (req, res, next) => {
     await attendanceCodeService.updatePupilAttendanceBySlug(
       postedPupilSlugs,
       req.body.attendanceCode,
-      req.user.id)
+      req.user.id,
+      req.user.schoolId)
 
     const reasonText = postedPupilSlugs.length > 1 ? 'reasons' : 'reason'
     req.flash('info', `${postedPupilSlugs.length} ${reasonText} updated`)
