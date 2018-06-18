@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginFailureComponent } from './login-failure.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('LoginFailureComponent', () => {
   let component: LoginFailureComponent;
@@ -8,7 +9,8 @@ describe('LoginFailureComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginFailureComponent ]
+      declarations: [ LoginFailureComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
     })
     .compileComponents();
   }));
