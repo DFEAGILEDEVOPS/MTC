@@ -45,6 +45,7 @@ module.exports = async function (req, done) {
     userData.role = mtcUser.mtcRole
     userData.schoolId = mtcUser.school_id
     userData.id = mtcUser.id
+    userData.displayName = mtcUser.displayName
     // auth success
     logonEvent.user_id = mtcUser.id
     logonEvent.isAuthenticated = true

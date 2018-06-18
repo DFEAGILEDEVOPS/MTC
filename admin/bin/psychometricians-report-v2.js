@@ -9,8 +9,10 @@ const poolService = require('../services/data-access/sql.pool.service')
 const commandLineArgs = require('command-line-args')
 const markingService = require('../services/marking.service')
 const checkProcessingService = require('../services/check-processing.service')
+const anomalyReportCacheDataService = require('../services/data-access/anomaly-report-cache.data.service')
 const psychometricianReportCacheDataService = require('../services/data-access/psychometrician-report-cache.data.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
+
 let requiresMarking = false
 let requiresProcessing = false
 
@@ -28,6 +30,7 @@ async function main (options) {
       // force the report to re-calculate the cached ps-report
       winston.info('force detected: re-processing all checks')
       await psychometricianReportCacheDataService.sqlDeleteAll()
+      await anomalyReportCacheDataService.sqlDeleteAll()
     }
     if (options.marking) {
       requiresMarking = true
@@ -37,7 +40,7 @@ async function main (options) {
     }
 
     winston.info('main: Processing the completed checks')
-    // Make sure all completed checks are marked and ps-report data cached
+    // Make sure all completed checks are marked and ps-report + anomaly data cached
     if (requiresMarking) {
       await markingService.process()
     }
