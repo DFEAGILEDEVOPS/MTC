@@ -1,68 +1,125 @@
 // Questions
+
+$vertical-breakpoint-1: 600px;
+$vertical-breakpoint-2: 500px;
+$small-screen-breakpoint: 485px; // screens below this threshold get a fallback stacked view
+
+@mixin mtc-core-59($line-height: (64 / 64), $line-height-640: (55 / 53), $tabular-numbers: false, $font-weight: 400) {
+  $font-size: 59px;
+  $font-size-640: 46px;
+  $font-size-print: 28pt;
+  @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+}
+
 .question-container {
-  margin-top: pem($gutter, 16);
+  margin: 0 15px;
+  max-width: 960px;
+  vertical-align: top;
+
+  @media (min-width: 641px) {
+    margin: 0 30px;
+  }
+  @media (min-width: 1020px) {
+    margin: 0 auto;
+  }
 }
 
 .question-and-answer {
-  margin-left: auto;
-  margin-right: auto;
+  @include mtc-core-59;
+
   text-align: center;
+  margin-top: 35px;
+
+  @include media(tablet) {
+    text-align: left;
+    margin-top: 65px; // condense this space for small screens
+  }
+
+  @include media(desktop) {
+    @include core-80;
+    margin-top: 70px;
+    text-align: center;
+  }
+
+  @media only screen
+  and (max-height: $vertical-breakpoint-1) {
+    margin-top: 35px;
+  }
+
+  @media only screen
+  and (max-height: $vertical-breakpoint-2) {
+    margin-top: 5px;
+  }
 }
 
 .question {
-  @include core-80;
-
-  display: inline-block;
-  padding-top: 3px; // allow for the border that the .answer has
-  vertical-align: top;
+  // mobile view
+  display: block;
   line-height: 1.15 !important;
+  margin: 0 auto; // center it in the page
+  text-align: right;
+  vertical-align: top;
+  width: 223px;  // mobile
+
+  // For tablets we want the question and answer to be on the same line
+  @include media(tablet) {
+    margin: 0;
+    width: 3.7em;
+    display: inline-block;
+    line-height: 1.425em !important;
+  }
+
+  @include media(desktop) {
+    margin: 0;
+  }
 }
 
 // Answers
 .answer-container {
   display: inline-block;
+
+  @include media(tablet) {
+    text-align: left;
+    padding: 0;
+  }
 }
 
 .answer {
-  @include core-80;
-
-  border: 3px solid $focus-colour;
+  border: 2px solid $black;
+  box-shadow: 0 0 0 3px $focus-colour;
   display: block;
-  height: pem(80px, 80);
+  height: pem(80px, 64);
   margin: auto;
-  text-align: left;
-  width: 3.02em; // IE Edge needs 0.02em more than other browsers.
-  line-height: 1.15 !important;
+  text-align: right;
+  width: 223px;  // mobile
+
+  line-height: 1.35em;
+
+  // Tablet : question and answer on one line
+  @include media(tablet) {
+    width: 319px;
+    text-align: left;
+    margin: 0 0 0 10px;
+    line-height: 1.4em;
+  }
 }
 
 // Numpad
 .numpad-container {
-  margin-top: 2em;
+  margin-top: 2px;
   text-align: center;
-}
 
-.numpad {
-  border-spacing: pem(10px, 16);
-}
-
-.key {
-  @include core-36;
-
-  background-color: $grey-3;
-  cursor: pointer;
-  height: 2em;
-  text-align: center;
-  width: 2em;
-
-  img {
-    vertical-align: middle;
+  @include media(tablet) {
+    margin-top: 12px;
   }
 }
 
-.enter-key {
-  @extend .key;
 
+.key {
   @include core-27;
+
+  background-color: $grey-1;
+  padding-top: 5px;
 }
 
 .preload {

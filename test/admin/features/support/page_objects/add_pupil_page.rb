@@ -14,6 +14,7 @@ class AddPupilPage < SitePrism::Page
   element :male, '#gender-male'
   element :add_pupil, 'input[value="Add pupil"]'
   element :back, 'a.button.button-secondary'
+  element :csrf, 'input[name="_csrf"]', visible: false
   section :phase_banner, PhaseBanner, '.phase-banner'
   elements :error_messages, '.error-message'
   section :error_summary, ErrorSummary, '.error-summary'
