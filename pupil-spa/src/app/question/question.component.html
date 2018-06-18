@@ -1,10 +1,9 @@
-<div *ngIf="isWarmUpQuestion" class="practice-box">practice</div>
-<div class="remaining-time" id="js-page-time-settings">
-    Remaining time: <span id="js-page-timer" class="bold timer">{{remainingTime}}</span>
+<div class="question-header">
+    <div *ngIf="isWarmUpQuestion" class="practice-box">practice</div>
+    <div class="remaining-time" id="js-page-time-settings">
+        Time left: <span id="js-page-timer" class="bold timer">{{remainingTime}}</span>
+    </div>
 </div>
-
-<br style="clear:both"/>
-
 <div class="question-container">
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="question-and-answer"><span class="question">{{ factor1 }} &times; {{ factor2 }} = </span>
@@ -12,26 +11,26 @@
                 <div class="numpad-container">
                     <table class="numpad" id="js-numpad">
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb1" (click)="onClickAnswer(1)">1</button></td>
-                            <td class="key js-key"><button type="button" id="kb2" (click)="onClickAnswer(2)">2</button></td>
-                            <td class="key js-key"><button type="button" id="kb3" (click)="onClickAnswer(3)">3</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb1" (click)="onClickAnswer(1)">1</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb2" (click)="onClickAnswer(2)">2</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb3" (click)="onClickAnswer(3)">3</button></td>
                         </tr>
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb4" (click)="onClickAnswer(4)">4</button></td>
-                            <td class="key js-key"><button type="button" id="kb5" (click)="onClickAnswer(5)">5</button></td>
-                            <td class="key js-key"><button type="button" id="kb6" (click)="onClickAnswer(6)">6</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb4" (click)="onClickAnswer(4)">4</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb5" (click)="onClickAnswer(5)">5</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb6" (click)="onClickAnswer(6)">6</button></td>
                         </tr>
                         <tr>
-                            <td class="key js-key"><button type="button" id="kb7" (click)="onClickAnswer(7)">7</button></td>
-                            <td class="key js-key"><button type="button" id="kb8" (click)="onClickAnswer(8)">8</button></td>
-                            <td class="key js-key"><button type="button" id="kb9" (click)="onClickAnswer(9)">9</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb7" (click)="onClickAnswer(7)">7</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb8" (click)="onClickAnswer(8)">8</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb9" (click)="onClickAnswer(9)">9</button></td>
                         </tr>
                         <tr>
                             <td class="key js-key">
-                                <button type="button" class="backspace-button" id="kb-backspace" (click)="onClickBackspace()"></button>
+                                <button type="button" id="kb-backspace" class="numpad-button" (click)="onClickBackspace()">&#9003;</button>
                             </td>
-                            <td class="key js-key"><button type="button" id="kb0" (click)="onClickAnswer(0)">0</button></td>
-                            <td class="enter-key js-key"><button type="button" id="kb-enter" class="enter-key" (click)="onClickSubmit()">Enter</button></td>
+                            <td class="key js-key"><button type="button" class="numpad-button" id="kb0" (click)="onClickAnswer(0)">0</button></td>
+                            <td class="key js-key"><button type="button" id="kb-enter" class="numpad-button" (click)="onClickSubmit()">Enter</button></td>
                         </tr>
                     </table>
                 </div>

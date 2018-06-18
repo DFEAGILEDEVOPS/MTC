@@ -15,6 +15,7 @@ class RestartsPage < SitePrism::Page
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
   element :back_to_top, 'a', text: 'Back to top'
   element :flash_message, '.info-message'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   section :pupil_list, '#pupilsRestartList tbody' do
     sections :rows, 'tr' do
