@@ -6,5 +6,6 @@ class GeneratedPinsPage < SitePrism::Page
   element :school_password_info, '.govuk-box-highlight'
   element :download_pin_link, '.column-two-thirds a', text: 'Print pupil PINs and school password'
   element :custom_download_link, '.column-two-thirds a', text: 'Create custom download'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
 end

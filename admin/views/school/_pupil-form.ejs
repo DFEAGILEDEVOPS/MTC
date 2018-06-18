@@ -10,6 +10,7 @@ if (formData.urlSlug) {
 %>
 
 <form action="<%= createOrSave %>" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
     <% if (formData.urlSlug) { %>
     <input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>">
     <% } %>

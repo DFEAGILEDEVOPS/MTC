@@ -5,6 +5,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   element :generate_pin_message, '.column-two-thirds', text: 'Pupils will need a Personal Identification Number (PIN) and school password in order to start the check. These expire daily.'
   elements :info_message, '.list-number li'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   section :group_filter, GroupFilter, '.column-two-thirds'
 
