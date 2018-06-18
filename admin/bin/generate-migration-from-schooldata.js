@@ -2,6 +2,7 @@
 'use strict'
 
 const chalk = require('chalk')
+const commandLineArgs = require('command-line-args')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
 const uuid = require('uuid/v4')
@@ -10,14 +11,28 @@ const winston = require('winston')
 let insertStatements = []
 let deleteStatements = []
 
-let migrationNumber
+const optionDefinitions = [
+  { name: 'migration', alias: 'm', type: Number, description: 'migration number to be generated' },
+  {
+    name: 'file',
+    alias: 'f',
+    type: String,
+    description: 'file containing the schooldataset',
+    defaultOption: '../NCATools_EduBase_20180604.txt'
+  }
+]
 
-if (process.argv.length > 2) {
-  migrationNumber = process.argv[2]
-} else {
-  winston.error(chalk.red('Specify a migration number as the first argument, i.e `node generate-migration-from-schooldata.js 100` to generate migration number 100'))
+const options = commandLineArgs(optionDefinitions)
+if (!options.migration) {
+  winston.error(chalk.red(`
+    Usage: <script> --migration <migrationNumber>
+
+    E.g. generate-migration-from-schooldata.js -m 100
+    `))
   process.exit(1)
 }
+
+const migrationNumber = options.migration
 
 fs.createReadStream('../NCATools_EduBase_20180604.txt')
   .pipe(csv({ delimiter: '|', headers: true, trim: true }))
