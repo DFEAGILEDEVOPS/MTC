@@ -40,10 +40,10 @@ fs.createReadStream('../NCATools_EduBase_20180604.txt')
 
     const urn = data['DfENumber']
 
-    insertStatements.push(`INSERT [mtc_admin].[school] (leaCode, estabCode, name, pinExpiresAt, urlSlug, dfeNumber, urn)
-      VALUES ('${data['LEANUMBER']}', '${estabCode}', '${schoolNameEscaped}', '2025-01-01 00:00:00.000', '${randUrlSlug}', '${data['DfENumber']}', '${urn}');`)
-    // delete by name AND the random generated url slug, to be sure we're deleting exactly what we added
-    deleteStatements.push(`DELETE FROM [mtc_admin].[school] WHERE name = '${schoolName}' AND urlSlug='${randUrlSlug}';`)
+    insertStatements.push(`INSERT [mtc_admin].[school] (leaCode, estabCode, name, urlSlug, dfeNumber, urn)
+      VALUES ('${data['LEANUMBER']}', '${estabCode}', '${schoolNameEscaped}', '${randUrlSlug}', '${data['DfENumber']}', '${urn}');`)
+    // delete by the unique random generated url slug, to be sure we're deleting exactly what we added
+    deleteStatements.push(`DELETE FROM [mtc_admin].[school] WHERE urlSlug='${randUrlSlug}';`)
   })
   .on('end', () => {
     fs.writeFileSync(`../data/sql/migrations/${migrationNumber}.do.add-school-dataset.js`, `'use strict'
