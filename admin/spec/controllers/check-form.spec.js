@@ -428,7 +428,7 @@ describe('check-form controller:', () => {
     describe('#assignCheckFormsToWindowsPage - Initial page to assign check forms to check windows', () => {
       describe('Happy path', () => {
         beforeEach(() => {
-          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.resolve(checkFormMock))
+          spyOn(checkWindowService, 'getFutureCheckWindowsAndCountForms').and.returnValue(Promise.resolve(checkFormMock))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.resolve(checkFormsMock))
           controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
@@ -439,7 +439,7 @@ describe('check-form controller:', () => {
           spyOn(res, 'render').and.returnValue(null)
           req.url = '/test-developer/assign-form-to-window'
           await controller(req, res, next)
-          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(checkWindowService.getFutureCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
           expect(res.render).toHaveBeenCalled()
@@ -449,9 +449,9 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('Unhappy path - When #getCurrentCheckWindowsAndCountForms fails', () => {
+      describe('Unhappy path - When #getFutureCheckWindowsAndCountForms fails', () => {
         beforeEach(() => {
-          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowService, 'getFutureCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkFormsMock)
           controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
@@ -463,7 +463,7 @@ describe('check-form controller:', () => {
 
           await controller(req, res, next)
           expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
-          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(checkWindowService.getFutureCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
           expect(res.statusCode).toBe(200)
           expect(next).toHaveBeenCalled()
