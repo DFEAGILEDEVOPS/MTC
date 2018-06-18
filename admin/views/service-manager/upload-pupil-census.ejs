@@ -20,33 +20,51 @@
                 in CSV format.</p>
         </header>
         <br>
-        <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group">
-                <div class="font-xsmall">
-                    <input type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
-                           aria-label="Choose a file to upload"/>
+        <% if (!pupilCensus || pupilCensus.jobStatusCode !== 'COM') { %>
+            <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="form-group">
+                    <div class="font-xsmall">
+                        <input type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
+                               aria-label="Choose a file to upload"/>
+                    </div>
+                    <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
+                           aria-label="Remove uploaded file."/>
                 </div>
-                <input type="reset" class="link remove-file" id="removeUploadedFile" value="Remove file"
-                       aria-label="Remove uploaded file."/>
-            </div>
-            <div class="form-buttons">
-                <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled"/>
-                <a href="/service-manager/home" class="button button-secondary">Cancel</a>
-            </div>
-        </form>
+                <div class="form-buttons">
+                    <input type="submit" id="upload-form-submit" class="button" value="Upload" disabled="disabled"/>
+                    <a href="/service-manager/home" class="button button-secondary">Cancel</a>
+                </div>
+            </form>
+        <% } %>
 
         <span class="bold-small">
             <span>Uploaded file</span>
             <span class="job-status">Status</span>
         </span>
-        <dl class="pupil-census-uploaded-file">
-            <% if (pupilCensus) { %>
-            <dd><span class="job-file"><%= pupilCensus.csvName %></span></dd>
-            <dd><span class="job-status"><%= pupilCensus.outcome %></span></dd>
-            <% } else { %>
-            <dd><span class="no-file-uploaded">No file uploaded</span></dd>
-            <% } %>
-        </dl>
+            <dl class="pupil-census-uploaded-file">
+                <% if (pupilCensus) { %>
+                    <dd><span><%= pupilCensus.csvName %></span></dd>
+                    <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
+                    <% if (pupilCensus.jobStatusCode === 'COM') { %>
+                        <dd>
+                            <span class="job-remove">
+                                <a class="modal-link font-small" id="js-modal-link" href="/service-manager/upload-pupil-census/delete/<%= pupilCensus.id %>">Remove</a>
+                            </span>
+                        </dd>
+                    <% } %>
+                <% } else { %>
+                <dd><span class="no-file-uploaded">No file uploaded</span></dd>
+                <% } %>
+            </dl>
+        </form>
     </div>
 </div>
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Please confirm',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
+}) %>
