@@ -102,7 +102,6 @@ const savePupilNotTakingCheck = async (req, res, next) => {
   const postedPupilSlugs = pupilsNotTakingCheckService.getPupilSlugs(req.body.pupil)
   try {
     // Update the pupils with the attendanceCode
-    // TODO: security - add a school check
     await attendanceCodeService.updatePupilAttendanceBySlug(
       postedPupilSlugs,
       req.body.attendanceCode,
