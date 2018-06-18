@@ -11,6 +11,10 @@ class PupilsNotTakingCheckPage < SitePrism::Page
   element :no_pupils_listed_message, '.top-padding-30', text: 'No pupils added'
   element :home, '#content .breadcrumbs a', text: 'Home'
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
+  element :related_heading, ".heading-medium", text: 'Related'
+  element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'
+  element :access_arrangements, ".disabled-link", text: 'Access arrangements'
+  element :generate_pins, "a[href='/pupil-pin/generate-pins-overview']", text: 'Generate pupil PINs'
 
   section :pupil_list, 'tbody' do
     sections :rows, 'tr' do
