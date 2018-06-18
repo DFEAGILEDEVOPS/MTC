@@ -15,28 +15,32 @@
         </div>
         <% } %>
 
-        <% if (messages && messages.error && messages.error.length) { %>
-        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                <%= messages.error %>
-            </h2>
+        <div id="errorPlaceholder">
+            <% if (messages && messages.error && messages.error.length) { %>
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    <%= messages.error %>
+                </h2>
+            </div>
+            <% } %>
         </div>
-        <% } %>
 
         <h1 class="heading-xlarge">Download pupil check data</h1>
 
         <p class="lede" id="lead-paragraph">
-            Generate and download the latest file which contains a detailed record of the raw pupil check data such as timings, responses and key strokes.
+            Generate a zip file with the most up to date pupil check data. The zip file will contain two csv files. One with the raw pupil check data including timings, responses and keystrokes. Another will contain an anomaly report.
         </p>
 
-        <button class="button button-primary" id="generate-check-data-button" onclick="generatePupilCheckData()">Generate latest file</button>
+        <button class="button button-primary" id="generate-check-data-button" onclick="generatePupilCheckData()">Generate latest files</button>
 
         <div id="pupilCheckDataContent" class="top-padding-30">
             <% if (psychometricianReport) { %>
-                <a href="/test-developer/csv-download-pupil-check-data" class="heading-small icon-download">
-                    <%= psychometricianReport.csvName %> (CSV)
-                </a>
-                <p class="text-secondary"> File generated on <%= psychometricianReport.dateGenerated %> </p>
+                <a
+                    href="/test-developer/file-download-pupil-check-data"
+                    class="heading-small
+                    icon-download"
+                ><%= psychometricianReport.fileName %> (Zip)</a>
+                <p class="text-secondary left-padding-30"> File generated on <%= psychometricianReport.dateGenerated %> </p>
             <% } else { %>
                 No file generated
             <% } %>
@@ -46,9 +50,13 @@
 
 <script type="text/javascript">
     const contentId = "#pupilCheckDataContent";
+    const errorElemId = "#errorPlaceholder";
     const buttonId = "#generate-check-data-button";
+    let prevContent;
 
     function generatePupilCheckData() {
+        prevContent = $(contentId).html();
+        $(errorElemId).html('');
         $(contentId).html(`<p>
             <img src='/images/loading.gif' alt='loading' width='44' style='vertical-align: middle'/>
             &nbsp; Generating...
@@ -62,14 +70,21 @@
             .done(function(data) {
                 $(contentId).html(`
                     <a
-                        href="/test-developer/csv-download-pupil-check-data"
+                        href="/test-developer/file-download-pupil-check-data"
                         class="heading-small icon-download"
-                    > ${data.csvName} (CSV) </a>
-                    <p class="text-secondary"> File generated on ${data.dateGenerated} </p>
+                    >${data.fileName} (Zip)</a>
+                    <p class="text-secondary left-padding-30">File generated on ${data.dateGenerated}</p>
                 `);
             })
             .fail(function() {
-                $(contentId).html('<p>There was an error when generating the latest file.</p>');
+                $(contentId).html(prevContent);
+                $(errorElemId).html(`<p></p>
+                    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+                        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                            There was an error when generating the latest file.
+                        </h2>
+                    </div>
+                `);
             })
             .always(function() {
                 $(buttonId).prop('disabled', false);

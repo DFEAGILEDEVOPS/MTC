@@ -14,6 +14,7 @@ class AddEditCheckWindowPage < SitePrism::Page
   element :save_changes, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
   elements :error_message, '.error-message'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   section :error_summary, '.error-summary' do
     element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'

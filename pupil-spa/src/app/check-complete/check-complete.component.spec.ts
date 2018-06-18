@@ -8,6 +8,7 @@ import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { AuditService } from '../services/audit/audit.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CheckCompleteComponent', () => {
   let component: CheckCompleteComponent;
@@ -16,6 +17,7 @@ describe('CheckCompleteComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CheckCompleteComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         WindowRefService,
         { provide: SpeechService, useClass: SpeechServiceMock },

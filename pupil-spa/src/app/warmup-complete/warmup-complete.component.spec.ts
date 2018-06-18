@@ -11,6 +11,7 @@ import { SubmissionServiceMock } from '../services/submission/submission.service
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupCompleteRendered, AuditEntry, CheckStartedApiCalled } from '../services/audit/auditEntry';
 import 'rxjs/add/operator/toPromise';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('WarmupCompleteComponent', () => {
   let component: WarmupCompleteComponent;
@@ -23,6 +24,7 @@ describe('WarmupCompleteComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WarmupCompleteComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },

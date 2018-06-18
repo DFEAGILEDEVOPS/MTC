@@ -68,6 +68,7 @@
         <h2 class="heading-medium">Upload file(s)</h2>
 
         <form action="/test-developer/upload-new-form" method="post" enctype="multipart/form-data" encoding="multipart/form-data" id="upload-form">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group<% if (err) { %> form-group-error<% } %>">
                 <% if (err) { %>
                 <label class="error-message"><%= err.message %></label>
