@@ -22,6 +22,7 @@ const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
+const csurf = require('csurf')
 const setupLogging = require('./helpers/logger')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 
@@ -216,6 +217,20 @@ app.use(function (req, res, next) {
   next()
 })
 
+
+app.use('/api/questions', questions)
+app.use('/api/pupil-feedback', pupilFeedback)
+app.use('/api/completed-check', completedCheck)
+app.use('/api/check-started', checkStarted)
+
+// CSRF setup - needs to be set up after session() and after API calls
+// that shouldn't use CSRF
+app.use(csurf())
+app.use((req, res, next) => {
+  res.locals.csrftoken = req.csrfToken()
+  next()
+})
+
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
@@ -226,10 +241,6 @@ app.use('/group', group)
 app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
-app.use('/api/questions', questions)
-app.use('/api/pupil-feedback', pupilFeedback)
-app.use('/api/completed-check', completedCheck)
-app.use('/api/check-started', checkStarted)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
