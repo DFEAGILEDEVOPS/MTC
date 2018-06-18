@@ -15,16 +15,7 @@ Then(/^I should see check windows$/) do
 end
 
 Then(/^I should not see '(.*)' check windows$/) do |check_window_name|
-  check_found = false
-  assign_form_to_window_page.check_windows.rows.each do|row|
-    if row.name_of_window.text.include?(check_window_name)
-      check_found = true
-      break
-    else
-      check_found = false
-    end
-  end
-  expect(check_found).to be_falsy, "Expected check window : '#{check_window_name}' to not appear in Assign check window list. Actual its displayed in the list"
+  expect(assign_form_to_window_page.check_windows.rows.find {|row| row.name_of_window.text.include? check_window_name}).to be_nil
 end
 
 And(/^the check window has started$/) do
