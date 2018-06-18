@@ -8,6 +8,7 @@ class PupilReasonPage < SitePrism::Page
   element :generate_pins, 'a', text: 'Generate PINs'
   element :pupil_coloumn, 'a', text: 'Pupil name'
   element :reason_coloumn, 'a', text: 'Reason'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
   section :group_filter, GroupFilter, '.column-two-thirds'

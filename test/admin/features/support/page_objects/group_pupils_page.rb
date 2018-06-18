@@ -9,6 +9,7 @@ class GroupPupilsPage < SitePrism::Page
   element :pupil_register, "a[href='#']", text: 'Pupil register'
   element :generate_pins, "a[href='#']", text: 'Generate pupil PINs'
   element :info_message, '.info-message'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   section :group_list, '#groupList' do
     sections :rows, 'tbody tr' do
