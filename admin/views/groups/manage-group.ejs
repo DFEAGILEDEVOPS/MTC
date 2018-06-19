@@ -42,6 +42,7 @@
 
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
         <form method="post" action="/group/pupils-list/<%= action %>">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group <%= typeof validation !== 'undefined' && validation.name ? 'form-group-error' : '' %>">
                 <label for="name" class="form-label-bold">
                     <span class="bold-medium">1. Group name</span><a name="group-name"></a>

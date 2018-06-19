@@ -33,6 +33,7 @@
     <div class="column-two-thirds">
         <% if (pupils.some((p) => p.hasScore)) { %>
         <form method="post" action="/school/submit-attendance-form" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group form-horizontal">
                 <input class="button" type="submit" value="Submit">
             </div>
