@@ -164,7 +164,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(expressValidator())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    // force download all .csv files
+    if (path.endsWith('.csv')) {
+      res.attachment(path)
+    }
+  }
+}))
 
 // Breadcrumbs
 app.use(breadcrumbs.init())
