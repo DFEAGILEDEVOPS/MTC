@@ -38,6 +38,7 @@
         <p class="lede" id="lead-paragraph">Adjust question timings.</p>
 
         <form action="/service-manager/check-settings" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div class="form-group">
                 <label for="questionTimeLimit" class="form-label-bold">
                     Question time limit

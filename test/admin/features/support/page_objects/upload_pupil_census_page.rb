@@ -6,6 +6,7 @@ class UploadPupilCensusPage < SitePrism::Page
   element :upload, '#upload-form-submit'
   element :cancel, 'a[href="/service-manager/home"]'
   element :uploaded_title, '.bold-small'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
 
   section :uploaded_file, 'dl.pupil-census-uploaded-file' do
