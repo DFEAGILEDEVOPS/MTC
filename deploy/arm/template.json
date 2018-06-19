@@ -1,0 +1,178 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "maxLength": 10,
+      "allowedValues": [
+        "dev",
+        "test",
+        "preprod",
+        "live"
+      ],
+      "type": "string"
+    },
+    "sqlAdminUsername": {
+      "type": "securestring"
+    },
+    "sqlAdminPassword": {
+      "type": "securestring"
+    }
+  },
+  "variables": {
+    "storageAccountName": "[concat('sa', parameters('environmentName'), uniqueString(resourceGroup().id))]",
+    "appServicePlanName": "[concat('asp', parameters('environmentName'), uniqueString(resourceGroup().id))]",
+    "adminAppName": "[concat('admin', parameters('environmentName'), 'mtc')]",
+    "pupilAppName": "[concat('pupil', parameters('environmentName'), 'mtc')]",
+    "assetsAppName": "[concat('assets', parameters('environmentName'), 'mtc')]",
+    "sqlServerName": "[concat('sql', parameters('environmentName'), 'mtc')]",
+    "sqlDbName": "[concat('mtcadmin', parameters('environmentName'))]",
+    "containerRegistryName": "[concat('cr', parameters('environmentName'), 'mtc')]",
+    "adminWebhookName": "[concat('adminWebhook', parameters('environmentName'), 'mtc')]"
+  },
+  "resources": [
+    {
+      "comments": "V2 Storage Account",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2018-02-01",
+      "location": "resourceGroup().location",
+      "tags": {
+        "product": "MTC"
+      },
+      "scale": null,
+      "properties": {
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Cool"
+      }
+    },
+    {
+      "comments": "App Service Plan",
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "S3",
+        "tier": "Standard",
+        "size": "S3",
+        "family": "S",
+        "capacity": 1
+      },
+      "kind": "linux",
+      "name": "[variables('appServicePlanName')]",
+      "apiVersion": "2016-09-01",
+      "location": "resourceGroup().location",
+      "scale": null,
+      "properties": {
+        "name": "[variables('appServicePlanName')]",
+        "workerTierName": null,
+        "adminSiteName": null,
+        "hostingEnvironmentProfile": null,
+        "perSiteScaling": false,
+        "reserved": true,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      }
+    },
+    {
+      "comments": "Admin Web App Container",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('adminAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "resourceGroup().id",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('adminAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('adminAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "reserved": true,
+        "siteConfig": null,
+        "scmSiteAlsoStopped": false,
+        "hostingEnvironmentProfile": null,
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "cloningInfo": null
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "Logical SQL Server.  Scaling parameter to be implemented",
+      "type": "Microsoft.Sql/servers",
+      "kind": "v12.0",
+      "name": "[variables('sqlServerName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "resourceGroup().id",
+      "scale": null,
+      "properties": {
+        "administratorLogin": "[parameters('sqlAdminUsername')]",
+        "administratorLoginPassword": "[parameters('sqlAdminPassword')]",
+        "version": "12.0"
+      }
+    },
+    {
+      "comments": "Admin Database",
+      "type": "Microsoft.Sql/servers/databases",
+      "kind": "v12.0,user",
+      "name": "[variables('sqlDbName')]",
+      "apiVersion": "2014-04-01-preview",
+      "location": "West Europe",
+      "scale": null,
+      "properties": {
+        "databaseId": "73118fa0-1dc5-48cc-8cd8-1b94b4d2eb3b",
+        "edition": "Standard",
+        "status": "Online",
+        "serviceLevelObjective": "S3",
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "requestedServiceObjectiveName": "S3"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+      ]
+    }
+  ],
+  "outputs": {}
+}
