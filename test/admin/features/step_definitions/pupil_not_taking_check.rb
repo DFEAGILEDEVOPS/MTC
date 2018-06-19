@@ -316,3 +316,10 @@ And(/^I should be able to see a count of pupils in the group$/) do
   group = pupil_reason_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
+
+Then(/^I should see related content on the pupils not taking a check page$/) do
+  expect(pupils_not_taking_check_page).to have_related_heading
+  expect(pupils_not_taking_check_page).to have_guidance
+  expect(pupils_not_taking_check_page).to have_access_arrangements
+  expect(pupils_not_taking_check_page).to have_generate_pins
+end
