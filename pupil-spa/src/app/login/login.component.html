@@ -1,41 +1,48 @@
-<div class="heading-block">
-    <header>
-        <div class="organisation-logo">
-            <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
-        </div>
-    </header>
-</div>
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+    <div class="heading-block">
+        <header>
+            <div class="organisation-logo">
+                <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+            </div>
+        </header>
+    </div>
 
-<div *ngIf="loginSucceeded === false" class="grid-row">
-  <div class="column-two-thirds">
-    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
-      <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
-      <p>The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.</p>
+  <div *ngIf="loginSucceeded === false" class="grid-row">
+    <div class="column-two-thirds">
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
+        <p>The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.</p>
+      </div>
     </div>
   </div>
-</div>
 
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <header>
+                <h1 class="heading-xlarge">Sign in</h1>
+            </header>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <header>
-            <h1 class="heading-xlarge">Sign in</h1>
-        </header>
-
-        <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off" autocapitalize="none">
-            <div class="form-group">
-                <label for="schoolPin" class="form-label-bold"> School password </label>
-                <input #schoolPin id="schoolPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
-            </div>
-            <div class="form-group">
-                <label for="pupilPin" class="form-label-bold">PIN</label>
-                <input #pupilPin id="pupilPin" class="form-control" required minlength="1" [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off" type="number" pattern="\d*">
-            </div>
-            <div class="form-group">
-                <p>
-                    <input class="button button-start" type="submit" value="Sign in" [disabled]="!loginForm.form.valid">
-                </p>
-            </div>
-        </form>
+            <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off"
+                  autocapitalize="none">
+                <div class="form-group">
+                    <label for="schoolPin" class="form-label-bold"> School password </label>
+                    <input #schoolPin id="schoolPin" class="form-control" required minlength="1"
+                           [(ngModel)]="loginModel.schoolPin" name="schoolPin" spellcheck="false" autocorrect="off">
+                </div>
+                <div class="form-group">
+                    <label for="pupilPin" class="form-label-bold"> Pupil PIN </label>
+                    <input #pupilPin id="pupilPin" class="form-control" required minlength="1"
+                           [(ngModel)]="loginModel.pupilPin" name="pupilPin" spellcheck="false" autocorrect="off"
+                           type="number" pattern="\d*">
+                </div>
+                <div class="form-group">
+                    <p>
+                        <input class="button button-start" type="submit" value="Sign in"
+                               [disabled]="!loginForm.form.valid">
+                    </p>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</main>

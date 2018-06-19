@@ -1,29 +1,34 @@
-<div class="grid-row">
-  <div class="column-two-thirds">
-    <header class="page-header">
-      <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}}</h1>
-    </header>
-    <p class="lede" tabindex="0">
-      If this is you, please confirm.
-    </p>
-    <br />
-    <p id="first-name" class="lede" tabindex="0">First name: <strong class="bold-medium">{{pupil.firstName}}</strong></p>
-    <p id="last-name" class="lede" tabindex="0">Last name: <strong class="bold-medium">{{pupil.lastName}}</strong></p>
-    <p id="dob" class="lede" tabindex="0">Date of birth: <strong class="bold-medium">{{pupil.dob}}</strong></p>
-    <p id="school" class="lede" tabindex="0">School: <strong class="bold-medium">{{school.name}}</strong></p>
-    <div class="notice">
-      <i class="icon icon-important">
-        <span class="visually-hidden">Warning</span>
-      </i>
-      <strong class="bold-small">
-        After you confirm, you cannot come back to this page
-      </strong>
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <header class="page-header">
+                <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}}</h1>
+            </header>
+            <p class="lede" tabindex="0">
+              If this is you, please confirm.
+            </p>
+            <br/>
+            <p id="first-name" class="lede" tabindex="0">First name: <strong
+                    class="bold-medium">{{pupil.firstName}}</strong></p>
+            <p id="last-name" class="lede" tabindex="0">Last name: <strong
+                    class="bold-medium">{{pupil.lastName}}</strong></p>
+            <p id="dob" class="lede" tabindex="0">Date of birth: <strong class="bold-medium">{{pupil.dob}}</strong></p>
+            <p id="school" class="lede" tabindex="0">School: <strong class="bold-medium">{{school.name}}</strong></p>
+          <div class="notice">
+            <i class="icon icon-important">
+              <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">
+              After you confirm, you cannot come back to this page
+            </strong>
+          </div>
+          <div class="sign-out-link">
+            <p class="lede">
+              <a routerLink="/sign-out" >This is not me, sign out</a>
+            </p>
+          </div>
+          <button class="button" (click)="onClick()">Confirm</button>
+        </div>
     </div>
-    <div class="sign-out-link">
-      <p class="lede">
-        <a routerLink="/sign-out" >This is not me, sign out</a>
-      </p>
-    </div>
-    <button class="button" (click)="onClick()">Confirm</button>
-  </div>
-</div>
+</main>

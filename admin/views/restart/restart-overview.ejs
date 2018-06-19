@@ -64,6 +64,7 @@
         <br class="clearfix"/>
         <b class="bold-medium">Restarts recorded</b>
         <form method="post" action="/restart/delete/" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <table id='submitted-restarts' class="spacious">
             <thead>
             <tr>
