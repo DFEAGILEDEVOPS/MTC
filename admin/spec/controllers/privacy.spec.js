@@ -23,7 +23,7 @@ describe('privacy page controller', () => {
     spyOn(res, 'render').and.returnValue(null)
     await controller(req, res)
 
-    expect(res.locals.pageTitle).toBe('Privacy Notice')
+    expect(res.locals.pageTitle).toBe('Privacy notice')
     expect(res.render).toHaveBeenCalled()
     expect(res.statusCode).toBe(200)
     done()
