@@ -9,6 +9,7 @@ class CheckSettingsPage < SitePrism::Page
   element :error_summary_list, '.error-summary-list'
   element :error_summary, '.error-summary p'
   element :successful_submission, '.box-successful h2'
+  element :csrf, 'input[name="_csrf"]', visible: false
 
   def update_question_time_limit(value)
     question_time_limit.set ''

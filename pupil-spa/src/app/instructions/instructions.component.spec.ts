@@ -10,6 +10,7 @@ import { AuditEntry, WarmupStarted } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('InstructionsComponent', () => {
   let component: InstructionsComponent;
@@ -23,6 +24,7 @@ describe('InstructionsComponent', () => {
     };
     TestBed.configureTestingModule({
       declarations: [InstructionsComponent],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: QuestionService, useClass: QuestionServiceMock },
