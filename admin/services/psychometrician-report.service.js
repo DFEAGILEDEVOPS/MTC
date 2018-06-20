@@ -225,6 +225,8 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 psychometricianReportService.produceReportData = function (check, markedAnswers, pupil, checkForm, school) {
   const userAgent = R.path(['data', 'device', 'navigator', 'userAgent'], check)
   const config = R.path(['data', 'config'], check)
+  const deviceOptions = R.path(['data', 'device'], check)
+  const { type, model } = psUtilService.getDeviceTypeAndModel(userAgent)
 
   const psData = {
     'DOB': dateService.formatUKDate(pupil.dateOfBirth),
@@ -238,7 +240,9 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'PauseLength': R.pathOr('', ['loadingTime'], config),
     'SpeechSynthesis': R.pathOr('', ['speechSynthesis'], config),
 
-    'DeviceType': psUtilService.getDevice(userAgent),
+    'DeviceType': type,
+    'DeviceTypeModel': model,
+    'DeviceId': psUtilService.getDeviceId(deviceOptions),
     'BrowserType': psUtilService.getBrowser(userAgent),
 
     'School Name': school.name,

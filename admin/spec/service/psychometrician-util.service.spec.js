@@ -962,27 +962,65 @@ describe('psychometrician-util.service', () => {
     })
   })
 
-  describe('#getDevice', () => {
+  describe('#getDeviceTypeAndModel', () => {
     // NB - UA strings are from `useragent`
     it('returns the device type for a MBP', () => {
-      const device = service.getDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
-      expect(device).toBe('Other')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
+      expect(device).toEqual({ type: 'desktop', model: 'Other' })
     })
     it('returns the device type for an 10.5 inch iPad Pro running iOS 11.2', () => {
-      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
-      expect(device).toBe('iPad')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
+      expect(device).toEqual({ type: 'tablet', model: 'iPad' })
     })
     it('returns the device type for an iPad Air running iOS 10.3.1', () => {
-      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1')
-      expect(device).toBe('iPad')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1')
+      expect(device).toEqual({ type: 'tablet', model: 'iPad' })
     })
     it('returns the device type for an Nexus 7 running android', () => {
-      const device = service.getDevice('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30D) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Safari/537.36')
-      expect(device).toBe('Asus Nexus 7')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30D) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Safari/537.36')
+      expect(device).toEqual({ type: 'tablet', model: 'Asus Nexus 7' })
     })
     it('returns an empty string if the useragent string is not provided', () => {
-      const device = service.getDevice(null)
-      expect(device).toBe('')
+      const device = service.getDeviceTypeAndModel(null)
+      expect(device).toEqual({ type: '', model: '' })
+    })
+  })
+
+  describe('#getDeviceId', () => {
+    it('returns the device type for complete device options', () => {
+      const deviceId = service.getDeviceId({
+        cpu: { hardwareConcurrency: 4 },
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6',
+          platform: 'x86',
+          language: 'en-GB',
+          cookieEnabled: true,
+          doNotTrack: false
+        }
+      })
+      expect(deviceId).toBe('218fa19a14790e4be6144717543907bc547fe86f')
+    })
+
+    it('ignores non-changing device options', () => {
+      const deviceId = service.getDeviceId({
+        cpu: 1,
+        navigator: 2
+      })
+
+      const deviceId2 = service.getDeviceId({
+        cpu: 1,
+        navigator: 2,
+        screen: 3
+      })
+      expect(deviceId).toBe(deviceId2)
+    })
+
+    it('returns an empty string if there are no non-changing device options', () => {
+      const deviceId = service.getDeviceId(undefined)
+      expect(deviceId).toBe('')
+
+      const deviceId2 = service.getDeviceId({ screen: 1 })
+      expect(deviceId2).toBe('')
     })
   })
 
