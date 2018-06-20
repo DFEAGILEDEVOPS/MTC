@@ -155,19 +155,13 @@
     },
     {
       "comments": "Admin Database",
-      "type": "Microsoft.Sql/servers/databases",
-      "kind": "v12.0,user",
       "name": "[variables('sqlDbName')]",
-      "apiVersion": "2014-04-01-preview",
-      "location": "West Europe",
-      "scale": null,
+      "type": "Microsoft.Sql/servers/databases",
+      "apiVersion": "2014-04-01",
+      "tags": {},
+      "location": "[resourceGroup().id]",
       "properties": {
-        "databaseId": "73118fa0-1dc5-48cc-8cd8-1b94b4d2eb3b",
-        "edition": "Standard",
-        "status": "Online",
-        "serviceLevelObjective": "S3",
-        "collation": "SQL_Latin1_General_CP1_CI_AS",
-        "requestedServiceObjectiveName": "S3"
+        "collation": "SQL_Latin1_General_CP1_CI_AS"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
