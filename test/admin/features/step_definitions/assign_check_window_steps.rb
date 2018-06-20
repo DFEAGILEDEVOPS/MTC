@@ -14,6 +14,10 @@ Then(/^I should see check windows$/) do
   expect(assign_form_to_window_page.check_windows.rows.first).to have_name_of_window
 end
 
+Then(/^I should not see '(.*)' check windows$/) do |check_window_name|
+  expect(assign_form_to_window_page.check_windows.rows.find {|row| row.name_of_window.text.include? check_window_name}).to be_nil
+end
+
 And(/^the check window has started$/) do
   SqlDbHelper.update_check_window_start_date_to_past( @check_window_hash[:check_name])
 end
