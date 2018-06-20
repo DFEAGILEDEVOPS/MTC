@@ -41,6 +41,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     // disable pin change when input is scrolled
     const input = this.elRef.nativeElement.querySelector('#pupilPin');
     input.addEventListener('mousewheel', function(e) { e.preventDefault(); });
+    // firefox uses DOMMouseScroll instead of mousewheel
+    input.addEventListener('DOMMouseScroll', function(e) { e.preventDefault(); });
   }
 
   /**
