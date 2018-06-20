@@ -64,13 +64,14 @@ restartService.isPupilEligible = async (p) => {
  * @returns {Promise.<void>}
  */
 
-restartService.restart = async (pupilsList,
-                                restartReasonCode,
-                                classDisruptionInfo,
-                                didNotCompleteInfo,
-                                restartFurtherInfo,
-                                userName,
-                                schoolId) => {
+restartService.restart = async (
+  pupilsList,
+  restartReasonCode,
+  classDisruptionInfo,
+  didNotCompleteInfo,
+  restartFurtherInfo,
+  userName,
+  schoolId) => {
   if (!schoolId) {
     throw new Error('Missing parameter: `schoolId`')
   }

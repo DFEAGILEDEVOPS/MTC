@@ -12,7 +12,6 @@ const jobDataService = require('../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../services/data-access/job-type.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
-const pupilDataService = require('../../services/data-access/pupil.data.service')
 const psychometicianDataService = require('../../services/data-access/psychometrician.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 

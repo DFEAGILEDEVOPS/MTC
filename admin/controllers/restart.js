@@ -93,7 +93,6 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let submittedRestarts
   try {
-    // TODO: add security to only allow restarts for the user's school
     submittedRestarts = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)

@@ -106,7 +106,7 @@ describe('pupil service', () => {
   describe('#getPupilsByUrlSlug', () => {
     // const schoolId = 1
     it('it makes a call to the pupilDataService', async () => {
-      const schoolId = 42;
+      const schoolId = 42
       spyOn(pupilDataService, 'sqlFindPupilsByUrlSlug').and.returnValue([pupilMock])
       const service = setupService(pupilDataService)
       await service.getPupilsByUrlSlug(['slug'], schoolId)
