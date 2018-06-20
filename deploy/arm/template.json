@@ -154,7 +154,7 @@
       },
       "resources": [
         {
-          "name": "[variables('sqlDbName')]",
+          "name": "[concat(variables('sqlServerName'), '/', variables('sqlDbName'))]",
           "type": "Microsoft.Sql/servers/databases",
           "apiVersion": "2015-05-01-preview",
           "location": "[resourceGroup().location]",
