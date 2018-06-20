@@ -155,7 +155,7 @@
       "resources": [
         {
           "name": "[variables('sqlDbName')]",
-          "type": "Microsoft.Sql/servers/databases",
+          "type": "databases",
           "location": "[resourceGroup().location]",
           "tags": {
             "product": "MTC"
