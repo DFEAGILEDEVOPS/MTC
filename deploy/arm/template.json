@@ -152,22 +152,6 @@
         "administratorLoginPassword": "[parameters('sqlAdminPassword')]",
         "version": "12.0"
       }
-    },
-    {
-      "comments": "Admin Database",
-      "name": "[variables('sqlDbName')]",
-      "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2014-04-01",
-      "tags": {},
-      "location": "[resourceGroup().id]",
-      "properties": {
-        "collation": "SQL_Latin1_General_CP1_CI_AS",
-        "serviceLevelObjective": "S2",
-        "maxSizeBytes": "268435456000"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
-      ]
     }
   ],
   "outputs": {}
