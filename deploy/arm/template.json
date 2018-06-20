@@ -161,7 +161,9 @@
       "tags": {},
       "location": "[resourceGroup().id]",
       "properties": {
-        "collation": "SQL_Latin1_General_CP1_CI_AS"
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "serviceLevelObjective": "S2",
+        "maxSizeBytes": "268435456000"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
