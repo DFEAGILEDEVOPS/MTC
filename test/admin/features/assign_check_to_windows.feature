@@ -19,6 +19,10 @@ Feature:
     Given I am on the assign check window page
     Then I should see check windows
 
+  Scenario: Assign check window page doesn't show check window whose check started date is in past
+    Given I am on the assign check window page
+    Then I should not see 'Development Phase' check windows
+
   @create_new_window
   Scenario: Users can assign a check form to a check window
     Given I have uploaded a check form
