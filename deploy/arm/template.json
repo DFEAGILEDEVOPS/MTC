@@ -41,7 +41,7 @@
       "kind": "StorageV2",
       "name": "[variables('storageAccountName')]",
       "apiVersion": "2018-02-01",
-      "location": "resourceGroup().location",
+      "location": "[resourceGroup().location]",
       "tags": {
         "product": "MTC"
       },
@@ -81,7 +81,7 @@
       "kind": "linux",
       "name": "[variables('appServicePlanName')]",
       "apiVersion": "2016-09-01",
-      "location": "resourceGroup().location",
+      "location": "[resourceGroup().location]",
       "scale": null,
       "properties": {
         "name": "[variables('appServicePlanName')]",
@@ -100,7 +100,7 @@
       "kind": "app,linux,container",
       "name": "[variables('adminAppName')]",
       "apiVersion": "2016-08-01",
-      "location": "resourceGroup().id",
+      "location": "[resourceGroup().location]",
       "tags": {},
       "scale": null,
       "properties": {
@@ -145,7 +145,7 @@
       "kind": "v12.0",
       "name": "[variables('sqlServerName')]",
       "apiVersion": "2015-05-01-preview",
-      "location": "resourceGroup().id",
+      "location": "[resourceGroup().location]",
       "scale": null,
       "properties": {
         "administratorLogin": "[parameters('sqlAdminUsername')]",
