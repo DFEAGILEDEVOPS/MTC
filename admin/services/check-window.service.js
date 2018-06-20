@@ -44,6 +44,25 @@ const checkWindowService = {
   },
 
   /**
+   * Get future check windows (checkStarted date not happened yet) and count forms assigned.
+   * @returns {Promise<*|null>}
+   */
+  getFutureCheckWindowsAndCountForms: async () => {
+    let checkWindowsList = null
+    let checkWindowsListData = await checkWindowDataService.sqlFindFutureWithFormCount()
+    if (checkWindowsListData) {
+      checkWindowsList = checkWindowsListData.map((cw) => {
+        return {
+          'id': cw.id,
+          'checkWindowName': cw.name,
+          'totalForms': cw.FormCount
+        }
+      })
+    }
+    return checkWindowsList
+  },
+
+  /**
    * Get current check windows and count forms assigned.
    * @returns {Promise<*|null>}
    */
