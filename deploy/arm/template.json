@@ -140,7 +140,7 @@
       ]
     },
     {
-      "comments": "Logical SQL Server.  Scaling parameter to be implemented",
+      "comments": "Logical SQL Server",
       "type": "Microsoft.Sql/servers",
       "kind": "v12.0",
       "name": "[variables('sqlServerName')]",
@@ -151,8 +151,50 @@
         "administratorLogin": "[parameters('sqlAdminUsername')]",
         "administratorLoginPassword": "[parameters('sqlAdminPassword')]",
         "version": "12.0"
-      }
+      },
+      "resources": [
+        {
+          "name": "[variables('sqlDbName')]",
+          "type": "databases",
+          "location": "[resourceGroup().location]",
+          "tags": {
+            "product": "MTC"
+          },
+          "apiVersion": "2015-05-01-preview",
+          "dependsOn": [
+            "[variables('sqlServerName')]"
+          ],
+          "properties": {
+            "edition": "Standard",
+            "collation": "SQL_Latin1_General_CP1_CI_AS",
+            "maxSizeBytes": "1073741824",
+            "requestedServiceObjectiveName": "Basic"
+          }
+        },
+        {
+          "type": "virtualNetworkRules",
+          "apiVersion": "2015-05-01-preview",
+          "dependsOn": [
+            "[variables('sqlserverName')]"
+          ],
+          "location": "[resourceGroup().location]",
+          "name": "AllowAllWindowsAzureIps",
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
+        }
+      ]
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "siteUri": {
+      "type": "string",
+      "value": "[reference(concat('Microsoft.Web/sites/', variables('adminAppName'))).hostnames[0]]"
+    },
+    "sqlServerFqdn": {
+      "type": "string",
+      "value": "[reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName]"
+    }
+  }
 }
