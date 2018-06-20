@@ -155,7 +155,7 @@
       "resources": [
         {
           "name": "[variables('sqlDbName')]",
-          "type": "databases",
+          "type": "Microsoft.Sql/servers/databases",
           "location": "[resourceGroup().location]",
           "tags": {
             "product": "MTC"
@@ -165,10 +165,10 @@
             "[variables('sqlServerName')]"
           ],
           "properties": {
-            "edition": "Standard",
+            "edition": "Basic",
             "collation": "SQL_Latin1_General_CP1_CI_AS",
             "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "S3"
+            "requestedServiceObjectiveName": "Basic"
           }
         },
         {
