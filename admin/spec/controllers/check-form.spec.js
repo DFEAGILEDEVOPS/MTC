@@ -1,8 +1,9 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn afterEach */
 
 const httpMocks = require('node-mocks-http')
 const fs = require('fs-extra')
+const moment = require('moment')
 
 const checkWindowService = require('../../services/check-window.service')
 const checkWindowDataService = require('../../services/data-access/check-window.data.service')
@@ -427,8 +428,8 @@ describe('check-form controller:', () => {
     describe('#assignCheckFormsToWindowsPage - Initial page to assign check forms to check windows', () => {
       describe('Happy path', () => {
         beforeEach(() => {
-          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(checkFormMock)
-          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkFormsMock)
+          spyOn(checkWindowService, 'getFutureCheckWindowsAndCountForms').and.returnValue(Promise.resolve(checkFormMock))
+          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.resolve(checkFormsMock))
           controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
 
@@ -438,7 +439,7 @@ describe('check-form controller:', () => {
           spyOn(res, 'render').and.returnValue(null)
           req.url = '/test-developer/assign-form-to-window'
           await controller(req, res, next)
-          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(checkWindowService.getFutureCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
           expect(res.render).toHaveBeenCalled()
@@ -448,9 +449,9 @@ describe('check-form controller:', () => {
         })
       })
 
-      describe('Unhappy path - When #getCurrentCheckWindowsAndCountForms fails', () => {
+      describe('Unhappy path - When #getFutureCheckWindowsAndCountForms fails', () => {
         beforeEach(() => {
-          spyOn(checkWindowService, 'getCurrentCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkWindowService, 'getFutureCheckWindowsAndCountForms').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkFormsMock)
           controller = require('../../controllers/check-form').assignCheckFormsToWindowsPage
         })
@@ -462,7 +463,7 @@ describe('check-form controller:', () => {
 
           await controller(req, res, next)
           expect(checkFormService.getUnassignedFormsForCheckWindow).toHaveBeenCalled()
-          expect(checkWindowService.getCurrentCheckWindowsAndCountForms).toHaveBeenCalled()
+          expect(checkWindowService.getFutureCheckWindowsAndCountForms).toHaveBeenCalled()
           expect(res.locals.pageTitle).toBe('Assign forms to check windows')
           expect(res.statusCode).toBe(200)
           expect(next).toHaveBeenCalled()
@@ -477,11 +478,17 @@ describe('check-form controller:', () => {
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
             {
               id: 1,
-              name: 'window 1'
+              name: 'window 1',
+              checkStartDate: '2017-09-10 00:00:00.000 +00:00'
             }
           )
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
           controller = require('../../controllers/check-form').assignCheckFormToWindowPage
+          jasmine.clock().mockDate(moment('2017-09-09 00:00:01').toDate())
+        })
+
+        afterEach(() => {
+          jasmine.clock().uninstall()
         })
 
         it('should render the correct page', async (done) => {
@@ -531,14 +538,56 @@ describe('check-form controller:', () => {
         })
       })
 
+      describe('Unhappy path - when the checkWindow startDate is in the past', () => {
+        beforeEach(() => {
+          spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(
+            {
+              id: 1,
+              name: 'window 1',
+              checkStartDate: '2017-09-10 00:00:00.000 +00:00'
+            }
+          )
+          spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
+          controller = require('../../controllers/check-form').assignCheckFormToWindowPage
+          jasmine.clock().mockDate(moment('2017-09-11 00:00:01').toDate())
+        })
+
+        afterEach(() => {
+          jasmine.clock().uninstall()
+        })
+
+        it('should render the correct page with no checkForms', async (done) => {
+          const res = getRes()
+          const req = getReq(goodReqParams)
+          spyOn(res, 'render').and.returnValue(null)
+          req.params.checkWindowId = '5a1ff0eefb8e09530d76976f'
+          req.url = `/test-developer/assign-form-to-window/${req.params.checkWindowId}`
+
+          await controller(req, res, next)
+          expect(checkWindowDataService.sqlFindOneById).toHaveBeenCalled()
+          expect(checkFormService.getUnassignedFormsForCheckWindow).not.toHaveBeenCalled()
+          expect(res.render).toHaveBeenCalled()
+          expect(res.locals.pageTitle).toBe('Assign forms')
+          expect(res.statusCode).toBe(200)
+          expect(next).not.toHaveBeenCalled()
+          done()
+        })
+      })
+
       describe('#assignCheckFormToWindowPage - Unhappy path - When checkFormService.getUnassignedFormsForCheckWindow fails', () => {
         beforeEach(() => {
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue({
             id: 1,
-            name: 'window 1'
+            name: 'window 1',
+            checkStartDate: '2017-09-10 00:00:00.000 +00:00'
           })
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           controller = require('../../controllers/check-form').assignCheckFormToWindowPage
+          jasmine.clock().mockDate(moment('2017-09-09 00:00:01').toDate())
+        })
+
+        afterEach(() => {
+          jasmine.clock().uninstall()
         })
 
         it('should execute next', async (done) => {
