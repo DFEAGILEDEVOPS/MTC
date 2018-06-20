@@ -26,7 +26,7 @@
     "pupilAppName": "[concat('pupil', parameters('environmentName'), 'mtc')]",
     "assetsAppName": "[concat('assets', parameters('environmentName'), 'mtc')]",
     "sqlServerName": "[concat('sql', parameters('environmentName'), 'mtc')]",
-    "sqlDbName": "[concat('mtc-admin-', parameters('environmentName'))]",
+    "sqlDbName": "[concat('mtc-admin-', parameters('environmentName'), '-', uniqueString(resourceGroup().id))]",
     "containerRegistryName": "[concat('cr', parameters('environmentName'), 'mtc')]",
     "adminWebhookName": "[concat('adminWebhook', parameters('environmentName'), 'mtc')]"
   },
@@ -155,7 +155,7 @@
       "resources": [
         {
           "name": "[variables('sqlDbName')]",
-          "type": "databases",
+          "type": "Microsoft.Sql/servers/databases",
           "location": "[resourceGroup().location]",
           "tags": {
             "product": "MTC"
