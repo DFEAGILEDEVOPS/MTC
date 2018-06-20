@@ -55,7 +55,6 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   async onClick() {
-    // console.log(`warmup-complete(): onClick called()`);
     this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
     this.submissionService.submitCheckStartData().toPromise()
