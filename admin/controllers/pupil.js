@@ -130,7 +130,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
-    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds)
+    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
     res.redirect(`/pupil-register/pupils-list/name/asc?hl=${qp}`)

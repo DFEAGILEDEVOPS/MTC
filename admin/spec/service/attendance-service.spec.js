@@ -122,7 +122,7 @@ describe('attendanceService', () => {
       spyOn(pupilAttendanceDataService, 'sqlInsertBatch')
       spyOn(pinService, 'expireMultiplePins')
       await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
-      expect(pinService.expireMultiplePins).toHaveBeenCalledWith([pupilMock.id])
+      expect(pinService.expireMultiplePins).toHaveBeenCalledWith([pupilMock.id], schoolId)
       done()
     })
   })

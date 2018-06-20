@@ -211,18 +211,25 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
 /**
  * Find pupils by ids
  * @param ids
+ * @param {Number} schoolId - `school.id` database ID
  * @return {Promise<void>}
  */
-pupilDataService.sqlFindByIds = async (ids) => {
+pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   if (!(Array.isArray(ids) && ids.length > 0)) {
     throw new Error('No ids provided')
   }
+  if (!schoolId) {
+    throw new Error('No `schoolId` provided')
+  }
+
   const select = `
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
   const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
+  const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')' +
+    ' AND school_id = @schoolId'
+  params.push({name: 'schoolId', type: TYPES.Int, value: schoolId})
   const orderClause = 'ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
   const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)

@@ -52,11 +52,15 @@ pinService.expirePupilPin = async (token, checkCode) => {
 /**
  * Check and expire pupil pins based on set of provided pupil Ids
  * @param pupilIds
+ * @param {Number} schoolId - `school.id` database ID
  * @returns {Promise}
  */
 
-pinService.expireMultiplePins = async (pupilIds) => {
-  const pupils = await pupilDataService.sqlFindByIds(pupilIds)
+pinService.expireMultiplePins = async (pupilIds, schoolId) => {
+  if (!schoolId) {
+    throw new Error('Missing parameter: `schoolId`')
+  }
+  const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
   let pupilData = []
   pupils.forEach(p => {
     if (p.pin || p.pinExpiresAt) pupilData.push(p)

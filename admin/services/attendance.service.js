@@ -40,7 +40,7 @@ const attendanceService = {
       await pupilAttendanceDataService.sqlInsertBatch(inserts, attendanceCode.id, userId)
     }
 
-    await pinService.expireMultiplePins(ids)
+    await pinService.expireMultiplePins(ids, schoolId)
   },
 
   /**

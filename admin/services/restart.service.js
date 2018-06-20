@@ -60,11 +60,21 @@ restartService.isPupilEligible = async (p) => {
  * @param classDisruptionInfo
  * @param restartFurtherInfo
  * @param userName
+ * @param {Number} schoolId - `school.id` database ID
  * @returns {Promise.<void>}
  */
 
-restartService.restart = async (pupilsList, restartReasonCode, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, userName) => {
-  await pinService.expireMultiplePins(pupilsList)
+restartService.restart = async (pupilsList,
+                                restartReasonCode,
+                                classDisruptionInfo,
+                                didNotCompleteInfo,
+                                restartFurtherInfo,
+                                userName,
+                                schoolId) => {
+  if (!schoolId) {
+    throw new Error('Missing parameter: `schoolId`')
+  }
+  await pinService.expireMultiplePins(pupilsList, schoolId)
   // All pupils should be eligible for restart before proceeding with creating a restart record for each one
   const canAllPupilsRestart = restartService.canAllPupilsRestart(pupilsList)
   if (!canAllPupilsRestart) {
