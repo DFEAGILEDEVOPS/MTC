@@ -156,32 +156,13 @@
         {
           "name": "[variables('sqlDbName')]",
           "type": "Microsoft.Sql/servers/databases",
-          "location": "[resourceGroup().location]",
-          "tags": {
-            "product": "MTC"
-          },
           "apiVersion": "2015-05-01-preview",
+          "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[variables('sqlServerName')]"
+            "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
           ],
           "properties": {
-            "edition": "Basic",
-            "collation": "SQL_Latin1_General_CP1_CI_AS",
-            "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "Basic"
-          }
-        },
-        {
-          "type": "virtualNetworkRules",
-          "apiVersion": "2015-05-01-preview",
-          "dependsOn": [
-            "[variables('sqlserverName')]"
-          ],
-          "location": "[resourceGroup().location]",
-          "name": "AllowAllWindowsAzureIps",
-          "properties": {
-            "endIpAddress": "0.0.0.0",
-            "startIpAddress": "0.0.0.0"
+            "collation": "SQL_Latin1_General_CP1_CI_AS"
           }
         }
       ]
