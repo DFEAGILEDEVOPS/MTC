@@ -47,6 +47,7 @@ import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spok
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
+import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 
 
 const appRoutes: Routes = [
@@ -86,6 +87,7 @@ const appRoutes: Routes = [
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
+    QuestionsIntroComponent,
   ],
   imports: [
     RouterModule.forRoot(
