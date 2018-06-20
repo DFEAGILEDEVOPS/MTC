@@ -11,6 +11,7 @@ import { RegisterInputServiceMock } from '../services/register-input/register-in
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock';
 import { CheckStatusService } from '../services/check-status/check-status.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -48,6 +49,7 @@ describe('LoginComponent', () => {
     const injector = TestBed.configureTestingModule({
       declarations: [LoginComponent],
       imports: [FormsModule],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Login, useValue: mockLoginModel },
         { provide: UserService, useValue: mockUserService },

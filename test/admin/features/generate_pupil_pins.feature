@@ -182,3 +182,8 @@ Feature: Generate Pupil PINs
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
     Then I should see an error message to contact helpdesk
+
+  Scenario: Generate pins page has related content
+    Given I have signed in with teacher2
+    When I navigate to generate pupil pins page
+    Then I should see related content on the generate pins page

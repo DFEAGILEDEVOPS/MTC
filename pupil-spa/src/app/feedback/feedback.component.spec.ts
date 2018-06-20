@@ -8,6 +8,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('FeedbackComponent', () => {
   let component: FeedbackComponent;
@@ -23,6 +24,7 @@ describe('FeedbackComponent', () => {
     const injector = TestBed.configureTestingModule({
       declarations: [ FeedbackComponent ],
       imports: [HttpModule],
+      schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Router, useValue: mockRouter },
         StorageService,

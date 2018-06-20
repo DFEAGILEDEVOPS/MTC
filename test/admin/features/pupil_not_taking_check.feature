@@ -190,3 +190,7 @@ Feature:
   Scenario: Group filter is open by default
     Given I have a group of pupils
     Then the group filter should be opened by default
+
+  Scenario: Pupils not taking check page has related content
+    Given I am on the pupil not taking check page
+    Then I should see related content on the pupils not taking a check page

@@ -17,28 +17,16 @@ const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const flash = require('connect-flash')
 const config = require('./config')
-const devWhitelist = require('./whitelist-dev')
+const checkConfigWhitelist = require('./helpers/whitelist-dev')
 const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
+const csurf = require('csurf')
 const setupLogging = require('./helpers/logger')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 
 azure.startInsightsIfConfigured()
-
-const unsetVars = []
-Object.keys(config).map((key) => {
-  if (config[key] === undefined && !devWhitelist.includes(key)) {
-    unsetVars.push(`${key}`)
-  }
-})
-
-if (unsetVars.length > 0) {
-  const error = `The following environment variables need to be defined:\n${unsetVars.join('\n')}`
-  process.exitCode = 1
-  throw new Error(error)
-}
 
 /**
  * Load feature toggles
@@ -84,6 +72,7 @@ const app = express()
 
 setupBrowserSecurity(app)
 setupLogging(app)
+// checkConfigWhitelist(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
@@ -137,6 +126,13 @@ const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).tes
   (/^\/test-developer\/upload-new-form$/).test(url) ||
   (/^\/service-manager\/upload-pupil-census\/upload$/).test(url)
 
+// as we run in container over http, we must set up proxy trust for secure cookies
+let secureCookie = false
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1)
+  secureCookie = true
+}
+
 const sessionOptions = {
   name: 'mtc-admin-session-id',
   secret: config.SESSION_SECRET,
@@ -146,7 +142,7 @@ const sessionOptions = {
   cookie: {
     maxAge: 1200000, // Expire after 20 minutes inactivity
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: secureCookie
   },
   store: new TediousSessionStore({
     config: {
@@ -169,7 +165,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(expressValidator())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    // force download all .csv files
+    if (path.endsWith('.csv')) {
+      res.attachment(path)
+    }
+  }
+}))
 
 // Breadcrumbs
 app.use(breadcrumbs.init())
@@ -199,7 +202,7 @@ passport.use(
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
-if (process.env.NODE_ENV === 'production') {
+if (config.AZURE_STORAGE_CONNECTION_STRING) {
   app.use(require('./lib/azure-upload'))
 }
 
@@ -221,6 +224,20 @@ app.use(function (req, res, next) {
   next()
 })
 
+
+app.use('/api/questions', questions)
+app.use('/api/pupil-feedback', pupilFeedback)
+app.use('/api/completed-check', completedCheck)
+app.use('/api/check-started', checkStarted)
+
+// CSRF setup - needs to be set up after session() and after API calls
+// that shouldn't use CSRF
+app.use(csurf())
+app.use((req, res, next) => {
+  res.locals.csrftoken = req.csrfToken()
+  next()
+})
+
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
@@ -231,10 +248,6 @@ app.use('/group', group)
 app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
-app.use('/api/questions', questions)
-app.use('/api/pupil-feedback', pupilFeedback)
-app.use('/api/completed-check', completedCheck)
-app.use('/api/check-started', checkStarted)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

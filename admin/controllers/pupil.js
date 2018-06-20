@@ -145,8 +145,8 @@ const postAddMultiplePupils = async (req, res, next) => {
  */
 const getErrorCSVFile = async (req, res) => {
   const blobFile = await azureFileDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
-  res.setHeader('Content-disposition', 'filename=multiple_pupils_errors.csv')
-  res.setHeader('content-type', 'text/csv')
+  res.setHeader('Content-type', 'text/csv')
+  res.setHeader('Content-disposition', 'attachment; filename=multiple_pupils_errors.csv')
   res.write(blobFile)
   res.end()
 }

@@ -8,6 +8,7 @@
 </div>
 
 <form method="post" action="/test-developer/assign-form-to-window">
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
     <div class="grid-row">
         <div class="column-two-thirds">
             <% if (messages && messages.info && messages.info.length) { %>

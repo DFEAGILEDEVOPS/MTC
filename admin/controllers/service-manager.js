@@ -168,7 +168,25 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', `File has been uploaded`)
+    req.flash('info', 'File has been uploaded')
+    res.redirect('/service-manager/upload-pupil-census')
+  },
+
+  /**
+   * Remove a pupil census record.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise<*>}
+   */
+  getRemovePupilCensus: async (req, res, next) => {
+    const pupilCensusId = req.params && req.params.pupilCensusId
+    try {
+      await pupilCensusService.remove(pupilCensusId)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'Pupil data successfully removed')
     res.redirect('/service-manager/upload-pupil-census')
   },
 
