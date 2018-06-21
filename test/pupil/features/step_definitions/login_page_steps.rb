@@ -19,10 +19,6 @@ When(/^I attempt to login with just a school pin$/) do
   sign_in_page.sign_in_button.click
 end
 
-Then(/^I should be taken to the sign in failure page$/) do
-  expect(sign_in_failure_page).to be_displayed
-end
-
 When(/^I attempt to login with just a pupil pin$/) do
   sign_in_page.pupil_pin.set '9999'
   sign_in_page.sign_in_button.click
@@ -36,24 +32,8 @@ When(/^I have not entered any sign in details$/) do
   sign_in_page.sign_in_button.click
 end
 
-Given(/^I am on the login failure page$/) do
-  sign_in_failure_page.load
-end
-
-When(/^I want to try logging in again$/) do
-  sign_in_failure_page.retry_sign_in.click
-end
-
 Then(/^I should be taken to the sign in page$/) do
   expect(sign_in_page).to be_displayed
-end
-
-Then(/^I should see a sign in page failure heading$/) do
-  expect(sign_in_failure_page).to have_heading
-end
-
-Then(/^I should see some text instructing me on what to do next$/) do
-  expect(sign_in_failure_page).to have_error_message
 end
 
 Then(/^local storage should be populated with questions and pupil metadata$/) do
@@ -74,6 +54,7 @@ Then(/^pupil name is removed from local storage$/) do
 end
 
 When(/^I have chosen that the details are not correct$/) do
+  expect(confirmation_page).to have_come_back_message
   confirmation_page.back_sign_in_page.click
 end
 
@@ -97,7 +78,7 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
 end
 
 
-Then(/^I should all the correct pupil details$/) do
+Then(/^I should see all the correct pupil details$/) do
   school = SqlDbHelper.find_school(1)['name']
   expect(confirmation_page.first_name.text).to eql "First name: #{@pupil_information['foreName']}"
   expect(confirmation_page.last_name.text).to  eql "Last name: #{@pupil_information['lastName']}"
@@ -155,4 +136,14 @@ end
 
 When(/^I enter a school password$/) do
   sign_in_page.school_pin.set 'abc12345'
+end
+
+
+When(/^I want to try login with invalid credentials$/) do
+  sign_in_page.login("abc15","8888")
+  sign_in_page.sign_in_button.click
+end
+
+Then(/^I should see a failed login message$/) do
+  expect(sign_in_page.login_failure).to be_all_there
 end
