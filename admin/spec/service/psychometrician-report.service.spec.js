@@ -14,6 +14,7 @@ const jobTypeDataService = require('../../services/data-access/job-type.data.ser
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const psychometicianDataService = require('../../services/data-access/psychometrician.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
+const pupilRestartDataService = require('../../services/data-access/pupil-restart.data.service')
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
@@ -70,6 +71,35 @@ describe('psychometricians-report.service', () => {
         10: [],
         11: []
       })
+      spyOn(pupilRestartDataService, 'sqlFindByPupilIds').and.returnValue(
+        [
+          {
+            id: 1,
+            pupil_id: 3,
+            pupilRestartReason_id: 1
+          }
+        ]
+      )
+      spyOn(pupilRestartDataService, 'sqlFindRestartCodes').and.returnValue(
+        [
+          {
+            id: 1,
+            code: 'LOI'
+          },
+          {
+            id: 2,
+            code: 'ITI'
+          },
+          {
+            id: 3,
+            code: 'CLD'
+          },
+          {
+            id: 4,
+            code: 'DNC'
+          }
+        ]
+      )
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })
@@ -119,6 +149,7 @@ describe('psychometricians-report.service', () => {
         expect(service.produceReportData).toHaveBeenCalledTimes(3)
         const firstArgsSet = service.produceReportData.calls.argsFor(0)
         const secondArgsSet = service.produceReportData.calls.argsFor(1)
+        const thirdArgsSet = service.produceReportData.calls.argsFor(2)
         expect(secondArgsSet[0].id).toBe(10) // check
         expect(typeof secondArgsSet[1]).toBe('object') // answers
         expect(secondArgsSet[2].id).toBe(2) // pupil
@@ -127,6 +158,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
         expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
+        expect(thirdArgsSet[2].restartReason).toBe('LOI')
       } catch (error) {
         fail(error)
       }

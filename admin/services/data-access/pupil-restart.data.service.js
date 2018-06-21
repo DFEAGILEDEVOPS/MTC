@@ -159,4 +159,24 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   return sqlService.modify(sql, params)
 }
 
+/**
+ * Find all active restarts based on pupil ids
+ * @param pupilIds
+ * @return {Promise<*>}
+ */
+pupilRestartDataService.sqlFindByPupilIds = async (pupilIds) => {
+  if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
+    throw new Error('No ids provided')
+  }
+  const select = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.[pupilRestart]
+  `
+  const {params, paramIdentifiers} = sqlService.buildParameterList(pupilIds, TYPES.Int)
+  const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ')'
+  const orderClause = 'ORDER BY createdAt ASC'
+  const sql = [select, whereClause, orderClause].join(' ')
+  return sqlService.query(sql, params)
+}
+
 module.exports = pupilRestartDataService

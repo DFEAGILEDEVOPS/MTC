@@ -18,6 +18,7 @@ const psUtilService = require('./psychometrician-util.service')
 const psychometricianDataService = require('./data-access/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const schoolDataService = require('./data-access/school.data.service')
+const pupilRestartDataService = require('./data-access/pupil-restart.data.service')
 
 const psychometricianReportService = {}
 const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
@@ -179,6 +180,8 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   const pupils = await psychometricianDataService.sqlFindPupilsByIds(pupilIds) // test-developer all-pupil access
   const checkForms = await checkFormService.getCheckFormsByIds(checks.map(x => x.checkForm_id))
   const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
+  const pupilRestarts = await pupilRestartDataService.sqlFindByPupilIds(pupilIds)
+  const restartReasons = await pupilRestartDataService.sqlFindRestartCodes()
 
   // answers is an object with check.ids as keys and arrays of answers for that check as values
   const answers = await answerDataService.sqlFindByCheckIds(checks.map(x => x.id))
@@ -194,6 +197,9 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     // Find check index from pupil's checks
     check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
     check.checkStatus = check.data && Object.keys(check.data).length > 0 ? 'Completed' : 'Started, not completed'
+    const pupilRestart = pupilRestarts.find(r => r.pupil_id === pupil.id)
+    const restartReason = pupilRestart && restartReasons.find(rr => rr.id === pupilRestart.pupilRestartReason_id)
+    pupil.restartReason = (restartReason && restartReason.code) || ''
     // Generate one line of the report
     const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
@@ -250,6 +256,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
     'CheckStatus': check.checkStatus,
     'CheckCount': check.checkCount,
+    'RestartReason': pupil.restartReason,
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
