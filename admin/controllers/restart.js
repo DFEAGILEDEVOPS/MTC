@@ -93,7 +93,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   }
   let submittedRestarts
   try {
-    submittedRestarts = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id)
+    submittedRestarts = await restartService.restart(pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }

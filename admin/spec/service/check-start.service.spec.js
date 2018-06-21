@@ -37,6 +37,7 @@ const preparedCheckMock = {
 describe('check-start.service', () => {
   const service = checkStartService
   const dfeNumber = 9991999
+  const schoolId = 42
 
   describe('#prepareCheck', () => {
     const mockPupils = [
@@ -61,9 +62,18 @@ describe('check-start.service', () => {
         spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
       })
 
+      it('throws an error if schoolId is not provided', async () => {
+        try {
+          await service.prepareCheck(pupilIds, 1, undefined)
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('schoolId is required')
+        }
+      })
+
       it('throws an error if dfeNumber is not provided', async () => {
         try {
-          await service.prepareCheck(pupilIds)
+          await service.prepareCheck(pupilIds, undefined, 1)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('dfeNumber is required')
@@ -71,17 +81,17 @@ describe('check-start.service', () => {
       })
 
       it('finds the current check window', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber)
+        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
         expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
       })
 
       it('calls initialiseCheck once per pupil', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber)
+        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
         expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
       })
 
       it('calls sqlCreateBatch to save the checks', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber)
+        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
         expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
         const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
         expect(arg.length).toBe(3)
@@ -97,7 +107,7 @@ describe('check-start.service', () => {
         // shut it up for the test
         spyOn(winston, 'warn')
         try {
-          await service.prepareCheck(pupilIdsHackAttempt, dfeNumber)
+          await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Validation failed')
