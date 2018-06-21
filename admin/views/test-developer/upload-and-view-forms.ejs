@@ -12,7 +12,9 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+            <% messages.info.forEach( info => { %>
+                <p><a href="#anchor-<%= info.formName %>"><%= info.message %></a></p>
+            <% }) %>
         </div>
         <% } %>
 
@@ -21,6 +23,16 @@
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
                 <%= messages.error %>
             </h2>
+        </div>
+        <% } %>
+        
+        <% if (messages && messages.errors && messages.errors.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <% messages.errors.forEach( error => { %>
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    <%= error.error.message %> - <%= error.formName %>
+                </h2>
+            <% }) %>
         </div>
         <% } %>
 
