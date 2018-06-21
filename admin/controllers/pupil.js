@@ -130,7 +130,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
-    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds)
+    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
     res.redirect(`/pupil-register/pupils-list/name/asc?hl=${qp}`)
@@ -161,15 +161,9 @@ const getErrorCSVFile = async (req, res) => {
 const getEditPupilById = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
   try {
-    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id)
+    const pupil = await pupilDataService.sqlFindOneBySlug(req.params.id, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
-    }
-
-    // @TODO: Why is the school data pulled for?
-    const school = await schoolDataService.sqlFindOneById(pupil.school_id)
-    if (!school) {
-      return next(new Error(`School ${pupil.school._id} not found`))
     }
 
     const pupilData = pupilAddService.formatPupilData(pupil)
@@ -200,7 +194,7 @@ const postEditPupil = async (req, res, next) => {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug)
+    pupil = await pupilDataService.sqlFindOneBySlug(req.body.urlSlug, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
