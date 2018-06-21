@@ -14,6 +14,8 @@ const jobTypeDataService = require('../../services/data-access/job-type.data.ser
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
+const pupilAttendanceDataService = require('../../services/data-access/pupil-attendance.data.service')
+const attendanceCodeDataService = require('../../services/data-access/attendance-code.data.service')
 
 // A mock completed Check that has been marked
 const completedCheckMockOrig = require('../mocks/completed-check-with-results')
@@ -70,6 +72,42 @@ describe('psychometricians-report.service', () => {
         10: [],
         11: []
       })
+      spyOn(pupilAttendanceDataService, 'findByPupilIds').and.returnValue(
+        [{
+          'id': 1,
+          'recordedBy_user_id': 1,
+          'attendanceCode_id': 1,
+          'pupil_id': 2
+        }]
+      )
+      spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(
+        [
+          {
+            'id': 3,
+            'order': 1
+          },
+          {
+            'id': 1,
+            'order': 2
+          },
+          {
+            'id': 2,
+            'order': 3
+          },
+          {
+            'id': 5,
+            'order': 4
+          },
+          {
+            'id': 6,
+            'order': 5
+          },
+          {
+            'id': 7,
+            'order': 6
+          }
+        ]
+      )
       spyOn(service, 'produceReportData')
       spyOn(psychometricianReportCacheDataService, 'sqlInsertMany')
     })
@@ -127,6 +165,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
         expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
+        expect(secondArgsSet[2].attendanceCodeNumber).toBe(2)
       } catch (error) {
         fail(error)
       }
