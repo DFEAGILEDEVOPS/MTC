@@ -39,7 +39,7 @@ Then(/^the check form should be displayed as being assigned to multiple check wi
 end
 
 When(/^I choose to preview the check form questions$/) do
-  new_check = upload_and_view_forms_page.available_checks.rows.find{|row| row.has_highlighted_row?}
+  new_check = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
   new_check.title.click
 end
 
