@@ -105,6 +105,14 @@
         }
       });
     }
+
+    document.getElementById('close-cookie-message').addEventListener('click', function(e){
+      e.preventDefault();
+      var message = document.getElementById('global-cookie-message');
+      if (message) {
+        message.style.display = 'none';
+      }
+    });
   }
 }).call(this);
 
