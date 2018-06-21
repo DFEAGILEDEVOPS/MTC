@@ -231,10 +231,14 @@ app.use('/api/completed-check', completedCheck)
 app.use('/api/check-started', checkStarted)
 
 // CSRF setup - needs to be set up after session() and after API calls
-// that shouldn't use CSRF
-app.use(csurf())
+// that shouldn't use CSRF; also exclude if url === '/auth' for NCA tools
+const csrf = csurf()
+app.use(function (req, res, next) {
+  if (req.url === '/auth') return next()
+  csrf(req, res, next)
+})
 app.use((req, res, next) => {
-  res.locals.csrftoken = req.csrfToken()
+  if (req.url !== '/auth') res.locals.csrftoken = req.csrfToken()
   next()
 })
 
