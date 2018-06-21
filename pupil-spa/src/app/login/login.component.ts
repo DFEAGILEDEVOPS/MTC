@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private submitted: boolean;
   public loginModel = new Login('', '');
+  public loginSucceeded: boolean;
 
   constructor(
     private userService: UserService,
@@ -34,7 +35,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
-    this.submitted = false;
   }
 
   ngAfterViewInit() {
@@ -56,16 +56,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.userService.login(schoolPin, pupilPin)
       .then(
       () => {
+        this.loginSucceeded = true;
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
         this.router.navigate(['sign-in-success']);
       },
       () => {
-        this.router.navigate(['sign-in-failure']);
+        this.loginSucceeded = false;
+        this.submitted = false;
+        this.router.navigate(['sign-in']);
       })
       .catch(() => {
-        this.router.navigate(['sign-in-failure']);
+        this.loginSucceeded = false;
+        this.submitted = false;
+        this.router.navigate(['sign-in']);
       });
   }
 }

@@ -14,7 +14,7 @@ Then(/^I should see meta data stored in the DB$/) do
   questions_expected = SqlDbHelper.get_form(1)['formData']
   q_data = JSON.parse(questions_expected.gsub("\n", "").gsub("        ", "").gsub("    ", ""))
   expect(q_data).to eql questions_recieved.map{|b| {'f1' => b['factor1'], 'f2' =>  b['factor2']}}
-  expect(stored_check['pupilLoginDate'].strftime('%d-%m-%y %H:%M')).to eql current_time.utc.strftime('%d-%m-%y %H:%M')
+  expect(stored_check['pupilLoginDate'].utc.strftime('%d-%m-%y %H:%M')).to eql current_time.strftime('%d-%m-%y %H:%M')
 end
 
 Given(/^I have failed to login$/) do
@@ -27,19 +27,19 @@ Then(/^I should see no pupil metadata stored$/) do
 end
 
 Given(/^I attempt to login whilst the check window is not open as the end date is in the past$/) do
-  original = SqlDbHelper.get_check_window_via_name('Development Phase')
-  @original_date_time = {endDate: original['checkEndDate']}
-  check_end_date = (Time.now - 60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.update_check_window(original['id'], 'checkEndDate', check_end_date)
-
+  @original = SqlDbHelper.get_check_window_via_name('Development Phase')
+  @original_start_date = @original['checkStartDate'].strftime("%Y-%m-%d %H:%M:%S")
+  @original_end_date = @original['checkEndDate'].strftime("%Y-%m-%d %H:%M:%S")
+  check_end_date = (Time.now - 3600).strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', check_end_date)
   step 'I have logged in'
 end
 
 Given(/^I attempt to login whilst the check window is not open as the start date is in the future$/) do
-  original = SqlDbHelper.get_check_window_via_name('Development Phase')
-  @original_date_time = {startDate: original['checkStartDate']}
+  @original = SqlDbHelper.get_check_window_via_name('Development Phase')
+  @original_start_date = @original['checkStartDate'].strftime("%Y-%m-%d %H:%M:%S")
+  @original_end_date = @original['checkEndDate'].strftime("%Y-%m-%d %H:%M:%S")
   check_start_date = (Time.now + 24*60*60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.update_check_window(original['id'], 'checkStartDate', check_start_date)
-
+  SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', check_start_date)
   step 'I have logged in'
 end
