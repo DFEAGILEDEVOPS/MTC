@@ -5,19 +5,18 @@ const R = require('ramda')
 const moment = require('moment')
 const uuidv4 = require('uuid/v4')
 
-const config = require('../config')
-// const checkWindowDataService = require('./data-access/check-window.data.service')
 const answerDataService = require('../services/data-access/answer.data.service')
 const azureFileDataService = require('./data-access/azure-file.data.service')
 const checkFormService = require('./check-form.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
+const config = require('../config')
 const dateService = require('./date.service')
 const jobDataService = require('./data-access/job.data.service')
 const jobStatusDataService = require('./data-access/job-status.data.service')
 const jobTypeDataService = require('./data-access/job-type.data.service')
 const psUtilService = require('./psychometrician-util.service')
+const psychometricianDataService = require('./data-access/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
-const pupilDataService = require('./data-access/pupil.data.service')
 const schoolDataService = require('./data-access/school.data.service')
 
 const psychometricianReportService = {}
@@ -177,7 +176,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
 
   // Fetch all pupils, checkForms, checkWindows or the checks
   const pupilIds = checks.map(x => x.pupil_id)
-  const pupils = await pupilDataService.sqlFindByIds(pupilIds)
+  const pupils = await psychometricianDataService.sqlFindPupilsByIds(pupilIds) // test-developer all-pupil access
   const checkForms = await checkFormService.getCheckFormsByIds(checks.map(x => x.checkForm_id))
   const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
 

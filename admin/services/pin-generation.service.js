@@ -88,14 +88,19 @@ pinGenerationService.isValid = async (p) => {
  * @param dfeNumber
  * @param maxAttempts
  * @param attemptsRemaining
+ * @throws
  */
-pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining) => {
+pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId) => {
   if (!Array.isArray(pupilsList)) {
     throw new Error('Received list of pupils is not an array')
   }
+  if (!schoolId) {
+    throw new Error('Parameter `schoolId` not provided', schoolId)
+  }
+
   let ids = Object.values(pupilsList || null)
   ids = ids.map(i => parseInt(i))
-  const pupils = await pupilDataService.sqlFindByIds(ids)
+  const pupils = await pupilDataService.sqlFindByIds(ids, schoolId)
   pupils.forEach(pupil => {
     if (!pinValidator.isActivePin(pupil.pin, pupil.pinExpiresAt)) {
       pupil.pin = pinGenerationService.generatePupilPin()
@@ -116,7 +121,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
       const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
       const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
-      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining)
+      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
     } else {
       throw new Error(error)
     }
