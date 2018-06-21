@@ -3,6 +3,7 @@
 const moment = require('moment')
 const path = require('path')
 const fs = require('fs-extra')
+const R = require('ramda')
 const checkFormService = require('../services/check-form.service')
 const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
@@ -123,21 +124,33 @@ const saveCheckForm = async (req, res, next) => {
 
   let uploadError = {}
   let uploadFile = req.files.csvFile
-  let checkForm = {}
   let absFile
   let deleteDir
   let fileName
 
   // Various errors cause a page to be rendered instead, and it *needs* a title
-  if (!(uploadFile && path.extname(uploadFile.filename.toLowerCase()) === '.csv')) {
-    // Either it actually wasn't uploaded, or it failed one the busboy checks: e.g.
-    // * mime-type needs to be text/csv (.csv)
-    // * uploaded from the wrong path
-    // * file size exceeded?
-    uploadError.message = 'A valid CSV file was not uploaded'
-    uploadError.errors = {}
-    uploadError.errors['csvFile'] = new Error(uploadError.message)
+  uploadError.message = 'A valid CSV file was not uploaded'
+  uploadError.errors = {}
+  uploadError.errors['csvFile'] = new Error(uploadError.message)
 
+  // Either it actually wasn't uploaded, or it failed one the busboy checks: e.g.
+  // * mime-type needs to be text/csv (.csv)
+  // * uploaded from the wrong path
+  // * file size exceeded?
+  if (!uploadFile) {
+    return res.render('test-developer/upload-new-form', {
+      error: uploadError,
+      breadcrumbs: req.breadcrumbs()
+    })
+  }
+
+  // Convert single uploaded file to an array
+  if (!Array.isArray(uploadFile)) {
+    uploadFile = [uploadFile]
+  }
+
+  // If a non-csv file was uploaded, fail with error
+  if (!R.all((file) => path.extname(file.filename.toLowerCase()) === '.csv', uploadFile)) {
     return res.render('test-developer/upload-new-form', {
       error: uploadError,
       breadcrumbs: req.breadcrumbs()
@@ -145,66 +158,77 @@ const saveCheckForm = async (req, res, next) => {
   }
 
   /**
-   * uploadfile is an object:
+   * uploadFile is an array of objects like:
    *
-   { uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
+   [ { uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
      field: 'uploadFile',
      file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
      filename: 'form-1.csv',
      encoding: '7bit',
      mimetype: 'text/csv',
      truncated: false,
-     done: true } }
+     done: true } ]
    */
 
-  absFile = path.join(__dirname, '/../', uploadFile.file)
-  deleteDir = path.dirname(path.dirname(absFile))
+  let checkForms = []
+  for (let i = 0; i < uploadFile.length; i++) {
+    let checkForm = {}
+    absFile = path.join(__dirname, '/../', uploadFile[i].file)
+    deleteDir = path.dirname(path.dirname(absFile))
 
-  try {
-    await checkFormService.populateFromFile(checkForm, absFile)
-  } catch (error) {
+    try {
+      await checkFormService.populateFromFile(checkForm, absFile)
+    } catch (error) {
+      fs.remove(deleteDir, err => {
+        if (err) winston.error(err.message)
+      })
+      return res.render('test-developer/upload-new-form', {
+        error: new Error(`There is a problem with the form content - ${uploadFile[i].filename}`),
+        breadcrumbs: req.breadcrumbs()
+      })
+    }
+
+    try {
+      fileName = await checkFormService.buildFormName(uploadFile[i].filename)
+      if (!fileName) {
+        req.flash('error', `Select a file with no more than 128 characters in name - ${uploadFile[i].filename.slice(0, -4)}`)
+        return res.redirect('/test-developer/upload-new-form')
+      }
+    } catch (error) {
+      return next(new Error(`File name should be between 1 and 128 characters - ${uploadFile[i].filename.slice(0, -4)}`))
+    }
+
+    try {
+      const isFileNameValid = await checkFormService.validateCheckFormName(fileName)
+      if (!isFileNameValid) {
+        req.flash('error', `'${fileName}' already exists. Rename and upload again.`)
+        return res.redirect('/test-developer/upload-new-form')
+      }
+      checkForm.name = fileName
+    } catch (error) {
+      return next(new Error(`Error trying to find form with name ${uploadFile[i].filename.slice(0, -4)}`))
+    }
+
+    checkForms.push(checkForm)
+
     fs.remove(deleteDir, err => {
       if (err) winston.error(err.message)
     })
-    return res.render('test-developer/upload-new-form', {
-      error: new Error('There is a problem with the form content'),
-      breadcrumbs: req.breadcrumbs()
-    })
   }
 
-  try {
-    fileName = await checkFormService.buildFormName(uploadFile.filename)
-    if (!fileName) {
-      req.flash('error', `Select a file with no more than 128 characters in name`)
-      return res.redirect('/test-developer/upload-new-form')
+  let infoMessages = []
+  let errorMessages = []
+  for (let i = 0; i < checkForms.length; i++) {
+    try {
+      await checkFormService.create(checkForms[i])
+      infoMessages.push({ message: `New form uploaded - ${checkForms[i].name}`, formName: checkForms[i].name })
+    } catch (error) {
+      errorMessages.push({ error, formName: checkForms[i].name })
     }
-  } catch (error) {
-    return next(new Error(`File name should be between 1 and 128 characters - ${uploadFile.filename.slice(0, -4)}`))
   }
 
-  try {
-    const isFileNameValid = await checkFormService.validateCheckFormName(fileName)
-    if (!isFileNameValid) {
-      req.flash('error', `'${fileName}' already exists. Rename and upload again.`)
-      return res.redirect('/test-developer/upload-new-form')
-    }
-    checkForm.name = fileName
-  } catch (error) {
-    return next(new Error(`Error trying to find form with name ${uploadFile.filename.slice(0, -4)}`))
-  }
-
-  fs.remove(deleteDir, err => {
-    if (err) winston.error(err.message)
-  })
-
-  try {
-    await checkFormService.create(checkForm)
-    req.flash('info', 'New form uploaded')
-    req.flash('formName', checkForm.name)
-  } catch (error) {
-    return next(error)
-  }
-
+  if (infoMessages.length > 0) req.flash('info', infoMessages)
+  if (errorMessages.length > 0) req.flash('errors', errorMessages)
   res.redirect('/test-developer/upload-and-view-forms')
 }
 
