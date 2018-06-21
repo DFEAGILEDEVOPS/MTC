@@ -46,7 +46,7 @@ router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER)
 /* Contact page */
 router.get('/contact', (req, res, next) => contactPage(req, res))
 /* Cookies page */
-router.get('/cookies', (req, res, next) => cookiesPage(req, res))
+router.get('/cookies', (req, res) => cookiesPage(req, res))
 /* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt
