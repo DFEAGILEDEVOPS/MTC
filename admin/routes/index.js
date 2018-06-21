@@ -8,6 +8,7 @@ const config = require('../config')
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
 const contactPage = require('../controllers/contact')
+const privacyPage = require('../controllers/privacy')
 const cookiesPage = require('../controllers/cookies')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
@@ -44,7 +45,8 @@ router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), 
 /* Service manager routing */
 router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
-router.get('/contact', (req, res, next) => contactPage(req, res))
+router.get('/contact', (req, res) => contactPage(req, res))
+router.get('/privacy', (req, res) => privacyPage(req, res))
 /* Cookies page */
 router.get('/cookies', (req, res) => cookiesPage(req, res))
 /* Health check */

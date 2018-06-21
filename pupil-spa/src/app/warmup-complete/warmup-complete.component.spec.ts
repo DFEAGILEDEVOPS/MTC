@@ -9,14 +9,12 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
 import { SubmissionService } from '../services/submission/submission.service';
-import { WarmupCompleteRendered, AuditEntry, CheckStartedApiCalled } from '../services/audit/auditEntry';
-import 'rxjs/add/operator/toPromise';
+import { WarmupCompleteRendered, AuditEntry } from '../services/audit/auditEntry';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('WarmupCompleteComponent', () => {
   let component: WarmupCompleteComponent;
   let fixture: ComponentFixture<WarmupCompleteComponent>;
-  let submissionService;
   let auditEntryInserted: AuditEntry;
   let auditService;
   let addEntrySpy;
@@ -48,47 +46,14 @@ describe('WarmupCompleteComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('onClick()', () => {
-    describe('when submission service call succeeds', () => {
-      beforeEach(() => {
-        submissionService = fixture.debugElement.injector.get(SubmissionService);
-        spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue({ toPromise: () => Promise.resolve() });
-      });
-      it('successfully calls submission service and audit service', async (async() => {
-        component.clickEvent.subscribe(g => {
-          expect(g).toBe(null);
-        });
-        await component.onClick();
-        fixture.whenStable().then(() => {
-          fixture.detectChanges();
-          expect(auditService.addEntry).toHaveBeenCalledTimes(4);
-          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallSucceeded');
-          expect(addEntrySpy.calls.all()[3].args[0].type).toEqual('CheckStartedApiCalled');
-        });
-        expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
-      }));
+  it('emits onClick()', async ((done) => {
+    component.clickEvent.subscribe( g => {
+      expect(g).toBe(null);
+      // Issue: https://github.com/angular/angular/issues/15830
+      // done();
     });
-    describe('when submission service call fails', () => {
-      beforeEach(() => {
-        submissionService = fixture.debugElement.injector.get(SubmissionService);
-        spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
-      });
-      it('throws the error and logs in audit service the failure', (async () => {
-        component.clickEvent.subscribe(g => {
-          expect(g).toBe(null);
-        });
-        await component.onClick();
-        fixture.whenStable()
-          .then(() => {
-            expect(auditService.addEntry).toHaveBeenCalledTimes(3);
-            expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedApiCalled');
-          });
-        expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
-      }));
-    });
-  });
+    component.onClick();
+  }));
 
   describe('audit entry', () => {
     it('is added on WarmupComplete rendered', () => {

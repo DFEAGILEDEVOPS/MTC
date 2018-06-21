@@ -29,11 +29,8 @@ Before('@non_browserstack_compliant') do
 end
 
 After('@window_date_time_reset') do
-  original = SqlDbHelper.get_check_window_via_name('Development Phase')
-  check_end_date = (Time.now + 3*24*60*60).strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  check_start_date = (Time.now).strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.update_check_window(original['id'], 'checkEndDate', check_end_date)
-  SqlDbHelper.update_check_window(original['id'], 'checkStartDate', check_start_date)
+SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
+SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
 end
 
 After do |scenario|
