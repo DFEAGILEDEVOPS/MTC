@@ -158,7 +158,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
         expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
-        expect(thirdArgsSet[2].restartReason).toBe('LOI')
+        expect(thirdArgsSet[2].restartReasonCode).toBe('LOI')
       } catch (error) {
         fail(error)
       }

@@ -199,7 +199,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     check.checkStatus = check.data && Object.keys(check.data).length > 0 ? 'Completed' : 'Started, not completed'
     const pupilRestart = pupilRestarts.find(r => r.pupil_id === pupil.id)
     const restartReason = pupilRestart && restartReasons.find(rr => rr.id === pupilRestart.pupilRestartReason_id)
-    pupil.restartReason = (restartReason && restartReason.code) || ''
+    pupil.restartReasonCode = (restartReason && restartReason.code) || ''
     // Generate one line of the report
     const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
@@ -256,7 +256,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
     'CheckStatus': check.checkStatus,
     'CheckCount': check.checkCount,
-    'RestartReason': pupil.restartReason,
+    'RestartReason': pupil.restartReasonCode,
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
