@@ -352,7 +352,7 @@ psUtilService.getScore = function (markedAnswer) {
  */
 psUtilService.getDeviceTypeAndModel = function (userAgent) {
   if (!userAgent) {
-    return { type: '', model: ''}
+    return { type: '', model: '' }
   }
   const { type, model } = device(userAgent, { parseUserAgent: true })
   return { type, model }
