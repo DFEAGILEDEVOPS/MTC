@@ -6,6 +6,7 @@ Given(/^I have started the check(?: using the (.+))?$/) do |input|
   warm_up_page.start_now.click
   step "I complete the warm up questions using the #{input_type}"
   warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
 end
 
 Given(/^I complete the warm up questions using the (.+)$/) do |input_type|
@@ -123,7 +124,6 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   chk_data = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
   check = JSON.parse(chk_data['data'])
-  # check = completed_checks.select {|check| check['data']['pupil']['sessionId'] == storage_pupil['sessionId']}.last
   storage_answers.each {|answer| expect(check['data']['answers']).to include answer}
   storage_inputs.each {|input| expect(check['data']['inputs']).to include input}
   expect(check['data']['access_token']).to eql storage_access_token
@@ -136,4 +136,19 @@ Then(/^I should see all the data from the check stored in the DB$/) do
       expect(check['data']['audit']).to include audit
     end
   end
+end
+
+
+Given(/^I am on the MTC check start page$/) do
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+end
+
+Then(/^I should see the number of questions$/) do
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  expect(mtc_check_start_page.questions.text).to include "There will be #{questions.size.to_s} questions."
 end
