@@ -16,7 +16,7 @@ end
 Given(/^I should be able to use the (.+) to complete the warm up questions$/) do |input_type|
   input = input_type == 'on screen keyboard' ? 'numpad' : 'keyboard'
   check_page.complete_check_with_correct_answers(3, input)
-  expect(warm_up_complete_page).to have_completion_text
+  expect(warm_up_complete_page).to have_start_check
 end
 
 And(/^I could answer the question within the configured time$/) do
@@ -28,10 +28,6 @@ end
 
 Then(/^I should see a warm up label$/) do
   expect(warm_up_page).to have_warm_up_label
-end
-
-Then(/^I should see a warm up label on the complete page$/) do
-  expect(warm_up_complete_page).to have_warm_up_label
 end
 
 Then(/^I am on the warm up complete page$/) do
@@ -58,10 +54,4 @@ end
 
 Then(/^I should see the total number of warm up questions$/) do
   expect(warm_up_page.welcome_message.text.scan(/\d+/).first.to_i).to eql 3
-end
-
-
-Then(/^I should see the total number of warm up questions on the complete page$/) do
-  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  expect(warm_up_complete_page.completion_text.text.scan(/\d+/).first.to_i).to eql questions.size
 end

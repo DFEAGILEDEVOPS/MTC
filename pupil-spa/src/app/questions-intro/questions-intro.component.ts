@@ -1,17 +1,23 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 
-import { AuditService } from '../services/audit/audit.service';
-import { WarmupCompleteRendered } from '../services/audit/auditEntry';
+import {
+  QuestionIntroRendered,
+  CheckStartedApiCalled,
+  CheckStartedAPICallSucceeded,
+  CheckStarted,
+} from '../services/audit/auditEntry';
 import { SubmissionService } from '../services/submission/submission.service';
+import { AuditService } from '../services/audit/audit.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
-  selector: 'app-warmup-complete',
-  templateUrl: './warmup-complete.component.html',
-  styles: []
+  selector: 'app-questions-intro',
+  templateUrl: './questions-intro.component.html',
+  styleUrls: ['./questions-intro.component.scss']
 })
-export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy {
+
   private speechListenerEvent: any;
 
   /**
@@ -37,7 +43,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit() {
-    this.auditService.addEntry(new WarmupCompleteRendered());
+    this.auditService.addEntry(new QuestionIntroRendered());
 
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
@@ -49,7 +55,16 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   async onClick() {
+    this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
+    this.submissionService.submitCheckStartData().toPromise()
+      .then(() => {
+        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      })
+      .catch((error) => {
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      });
   }
 
   ngOnDestroy(): void {
@@ -60,4 +75,5 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
+
 }
