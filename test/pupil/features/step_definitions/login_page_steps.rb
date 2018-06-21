@@ -74,7 +74,6 @@ Given(/^I have attempted to enter a school I do not attend upon login$/) do
   pin = 'tes23mo'
   SqlDbHelper.set_school_pin(schools.first['id'], new_time, pin)
   sign_in_page.login(pin,@pupil_information['pin'])
-  binding.pry
   sign_in_page.sign_in_button.click
 end
 

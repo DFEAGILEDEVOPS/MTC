@@ -19,5 +19,5 @@ end
 Then(/^I should see the total number of questions in the check$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   array_of_instructions = start_page.bulleted_list_instructions.map{|instruction| instruction.text}
-  expect(array_of_instructions).to include "Then there will be #{questions.size.to_s} questions."
+  expect(array_of_instructions).to include "Then there will be #{questions.size} questions."
 end

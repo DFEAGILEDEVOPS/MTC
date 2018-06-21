@@ -150,5 +150,5 @@ end
 
 Then(/^I should see the number of questions$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  expect(mtc_check_start_page.questions.text).to include "There will be #{questions.size.to_s} questions."
+  expect(mtc_check_start_page.questions.text).to include "There will be #{questions.size} questions."
 end
