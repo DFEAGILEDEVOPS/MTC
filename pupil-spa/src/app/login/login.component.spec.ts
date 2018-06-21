@@ -130,7 +130,7 @@ describe('LoginComponent', () => {
     it('redirects to an error page when the login is rejected', async () => {
       component.onSubmit('badPin', 'badPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-failure']);
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in']);
       });
     });
   });

@@ -8,15 +8,21 @@
         </header>
     </div>
 
+  <div *ngIf="loginSucceeded === false" class="grid-row">
+    <div class="column-two-thirds">
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">Unable to confirm details</h2>
+        <p>The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.</p>
+      </div>
+    </div>
+  </div>
+
     <div class="grid-row">
         <div class="column-two-thirds">
             <header>
-                <h1 class="heading-xlarge">Multiplication tables check</h1>
+                <h1 class="heading-xlarge">Sign in</h1>
             </header>
 
-            <p class="lede">
-                Enter your school password and pupil PIN, then click <span class="nowrap">‘Sign in’</span>
-            </p>
             <form (ngSubmit)="onSubmit(schoolPin.value, pupilPin.value)" #loginForm="ngForm" autocomplete="off"
                   autocapitalize="none">
                 <div class="form-group">
