@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
@@ -13,7 +14,7 @@ import { Login } from './login.model';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   private submitted: boolean;
   public loginModel = new Login('', '');
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private questionService: QuestionService,
     private warmupQuestionService: WarmupQuestionService,
+    private elRef: ElementRef,
     private registerInputService: RegisterInputService,
     private checkStatusService: CheckStatusService
   ) { }
@@ -33,6 +35,14 @@ export class LoginComponent implements OnInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
+  }
+
+  ngAfterViewInit() {
+    // disable pin change when input is scrolled
+    const input = this.elRef.nativeElement.querySelector('#pupilPin');
+    input.addEventListener('mousewheel', function(e) { e.preventDefault(); });
+    // firefox uses DOMMouseScroll instead of mousewheel
+    input.addEventListener('DOMMouseScroll', function(e) { e.preventDefault(); });
   }
 
   /**
