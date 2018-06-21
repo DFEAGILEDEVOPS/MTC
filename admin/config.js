@@ -17,10 +17,10 @@ module.exports = {
   NCA_TOOLS_AUTH_URL: process.env.NCA_TOOLS_AUTH_URL,
   PORT: process.env.PORT || '3001',
   PUPIL_APP_URL: process.env.PUPIL_APP_URL,
-  QUESTION_TIME_LIMIT: 5,
+  QUESTION_TIME_LIMIT: 6,
   RESTART_MAX_ATTEMPTS: 2,
   SESSION_SECRET: process.env.NODE_ENV === 'production' ? process.env.SESSION_SECRET : 'anti tamper for dev',
-  TIME_BETWEEN_QUESTIONS: 2,
+  TIME_BETWEEN_QUESTIONS: 3,
   LINES_PER_CHECK_FORM: 25,
   MIGRATE_FULL_SCHOOL_DATASET: process.env.hasOwnProperty('MIGRATE_FULL_SCHOOL_DATASET') ? toBool(process.env.MIGRATE_FULL_SCHOOL_DATASET) : true,
   // autoMark true | false - Automatically mark the check data when we receive it: boolean
