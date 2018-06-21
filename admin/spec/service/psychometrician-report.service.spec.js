@@ -83,28 +83,28 @@ describe('psychometricians-report.service', () => {
       spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').and.returnValue(
         [
           {
-            'id': 3,
-            'order': 1
-          },
-          {
             'id': 1,
-            'order': 2
+            'reason': 'Incorrect registration'
           },
           {
             'id': 2,
-            'order': 3
+            'reason': 'Absent'
+          },
+          {
+            'id': 3,
+            'reason': 'Left school'
+          },
+          {
+            'id': 4,
+            'reason': 'Unable to access'
           },
           {
             'id': 5,
-            'order': 4
+            'reason': 'Working below expectation'
           },
           {
             'id': 6,
-            'order': 5
-          },
-          {
-            'id': 7,
-            'order': 6
+            'reason': 'Just arrived with EAL'
           }
         ]
       )
@@ -165,7 +165,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
         expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
-        expect(secondArgsSet[2].attendanceCodeNumber).toBe(2)
+        expect(secondArgsSet[2].attendance).toBe('Incorrect registration')
       } catch (error) {
         fail(error)
       }

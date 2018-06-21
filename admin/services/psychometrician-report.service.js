@@ -202,7 +202,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     // Find possible attendance record and related code number
     const pupilAttendance = pupilAttendances.find(x => x.pupil_id === check.pupil_id)
     const attendanceCode = pupilAttendance && attendanceCodes.find(a => a.id === pupilAttendance.attendanceCode_id)
-    pupil.attendanceCodeNumber = (attendanceCode && attendanceCode.order) || ''
+    pupil.attendance = (attendanceCode && attendanceCode.reason) || ''
     // Generate one line of the report
     const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
@@ -259,7 +259,7 @@ psychometricianReportService.produceReportData = function (check, markedAnswers,
     'TestDate': dateService.reverseFormatNoSeparator(check.pupilLoginDate),
     'CheckStatus': check.checkStatus,
     'CheckCount': check.checkCount,
-    'ReasonForNotTakingCheck': pupil.attendanceCodeNumber,
+    'ReasonForNotTakingCheck': pupil.attendance,
 
     // TimeStart should be when the user clicked the Start button.
     'TimeStart': dateService.formatTimeWithSeconds(moment(psUtilService.getClientTimestampFromAuditEvent('CheckStarted', check))),
