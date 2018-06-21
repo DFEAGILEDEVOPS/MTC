@@ -22,6 +22,7 @@ const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
 const R = require('ramda')
+const csurf = require('csurf')
 const setupLogging = require('./helpers/logger')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 
@@ -164,7 +165,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 app.use(expressValidator())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    // force download all .csv files
+    if (path.endsWith('.csv')) {
+      res.attachment(path)
+    }
+  }
+}))
 
 // Breadcrumbs
 app.use(breadcrumbs.init())
@@ -216,6 +224,24 @@ app.use(function (req, res, next) {
   next()
 })
 
+
+app.use('/api/questions', questions)
+app.use('/api/pupil-feedback', pupilFeedback)
+app.use('/api/completed-check', completedCheck)
+app.use('/api/check-started', checkStarted)
+
+// CSRF setup - needs to be set up after session() and after API calls
+// that shouldn't use CSRF; also exclude if url === '/auth' for NCA tools
+const csrf = csurf()
+app.use(function (req, res, next) {
+  if (req.url === '/auth') return next()
+  csrf(req, res, next)
+})
+app.use((req, res, next) => {
+  if (req.url !== '/auth') res.locals.csrftoken = req.csrfToken()
+  next()
+})
+
 app.use('/', index)
 app.use('/test-developer', testDeveloper)
 app.use('/service-manager', serviceManager)
@@ -226,10 +252,6 @@ app.use('/group', group)
 app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
-app.use('/api/questions', questions)
-app.use('/api/pupil-feedback', pupilFeedback)
-app.use('/api/completed-check', completedCheck)
-app.use('/api/check-started', checkStarted)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

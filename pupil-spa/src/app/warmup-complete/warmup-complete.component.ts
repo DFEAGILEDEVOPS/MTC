@@ -1,10 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupCompleteRendered,
-  CheckStartedApiCalled,
-  CheckStartedAPICallSucceeded,
-  CheckStarted } from '../services/audit/auditEntry';
+import { WarmupCompleteRendered } from '../services/audit/auditEntry';
 import { SubmissionService } from '../services/submission/submission.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -52,17 +49,7 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   async onClick() {
-    // console.log(`warmup-complete(): onClick called()`);
-    this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
-    this.submissionService.submitCheckStartData().toPromise()
-      .then(() => {
-        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      })
-      .catch((error) => {
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      });
   }
 
   ngOnDestroy(): void {

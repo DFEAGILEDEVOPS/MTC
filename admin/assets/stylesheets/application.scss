@@ -233,6 +233,10 @@ dl dd {
   margin-left: pem(35px);
 }
 
+.list-item--dashed:before {
+  content: "— ";
+}
+
 // Forms
 input:disabled {
   border: 0;

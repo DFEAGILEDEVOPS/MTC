@@ -26,6 +26,7 @@
         <h1 class="heading-xlarge"><%= checkWindowName %></h1>
 
         <form method="post" action="/test-developer/unassign-form">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <% if (Array.isArray(checkFormsList) && checkFormsList.length > 0) { %>
             <table class="spacious" id="assignFormToWindowList" role="group">
                 <thead>
