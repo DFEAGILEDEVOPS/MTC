@@ -13,6 +13,9 @@
     <app-warmup-complete *ngSwitchCase="'warmup-complete'"
         (clickEvent)="warmupCompleteClickHandler()">
     </app-warmup-complete>
+    <app-questions-intro *ngSwitchCase="'questions-intro'"
+                         (clickEvent)="questionsIntroClickHandler()">
+    </app-questions-intro>
     <app-loading *ngSwitchCase="'preload'"
         [question]="question"
         [loadingTimeout]="config.loadingTime"

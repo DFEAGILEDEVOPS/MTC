@@ -47,7 +47,7 @@ describe('InstructionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('redirects to warm up introduction page', () => {
+  it('redirects to practice questions instructions page', () => {
     component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
   });
