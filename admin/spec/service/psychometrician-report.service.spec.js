@@ -84,27 +84,27 @@ describe('psychometricians-report.service', () => {
         [
           {
             'id': 1,
-            'reason': 'Incorrect registration'
+            'code': 'INCRG'
           },
           {
             'id': 2,
-            'reason': 'Absent'
+            'code': 'ABSNT'
           },
           {
             'id': 3,
-            'reason': 'Left school'
+            'code': 'LEFTT'
           },
           {
             'id': 4,
-            'reason': 'Unable to access'
+            'code': 'NOACC'
           },
           {
             'id': 5,
-            'reason': 'Working below expectation'
+            'code': 'BLSTD'
           },
           {
             'id': 6,
-            'reason': 'Just arrived with EAL'
+            'code': 'JSTAR'
           }
         ]
       )
@@ -165,7 +165,7 @@ describe('psychometricians-report.service', () => {
         expect(secondArgsSet[0].checkCount).toBe(1)
         expect(firstArgsSet[0].checkStatus).toBe('Completed')
         expect(secondArgsSet[0].checkStatus).toBe('Started, not completed')
-        expect(secondArgsSet[2].attendance).toBe('Incorrect registration')
+        expect(secondArgsSet[2].attendanceCode).toBe('INCRG')
       } catch (error) {
         fail(error)
       }
