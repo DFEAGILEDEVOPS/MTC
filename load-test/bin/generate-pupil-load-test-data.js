@@ -85,7 +85,7 @@ async function main () {
       await schoolDataService.sqlUpdate(R.assoc('id', s.id, update))
       const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(s.dfeNumber)
       const pupilsList = pupils.map(p => p.id)
-      await checkStartService.prepareCheck(pupilsList, s.dfeNumber)
+      await checkStartService.prepareCheck(pupilsList, s.dfeNumber, s.id)
     }))
     winston.info('DONE')
     sqlPoolService.drain()
