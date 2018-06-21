@@ -270,7 +270,7 @@ const assignCheckFormsToWindowsPage = async (req, res, next) => {
   }
 
   try {
-    checkWindowsData = await checkWindowService.getCurrentCheckWindowsAndCountForms()
+    checkWindowsData = await checkWindowService.getFutureCheckWindowsAndCountForms()
   } catch (error) {
     return next(error)
   }
@@ -303,10 +303,14 @@ const assignCheckFormToWindowPage = async (req, res, next) => {
     return next(error)
   }
 
-  try {
-    checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.id)
-  } catch (error) {
-    return next(error)
+  if (moment().isBefore(checkWindow.checkStartDate)) {
+    try {
+      checkFormsList = await checkFormService.getUnassignedFormsForCheckWindow(checkWindow.id)
+    } catch (error) {
+      return next(error)
+    }
+  } else {
+    checkFormsList = []
   }
 
   req.breadcrumbs('Assign forms to check windows', '/test-developer/assign-form-to-window')

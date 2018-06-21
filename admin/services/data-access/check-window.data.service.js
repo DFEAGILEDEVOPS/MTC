@@ -61,8 +61,40 @@ const checkWindowDataService = {
         // anything else should default to checkWindow name
         sortBy = 'name'
     }
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE isDeleted=0 AND 
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE isDeleted=0 AND
                   checkEndDate >= @currentTimestamp ORDER BY ${sortBy} ${sortDirection}`
+    const params = [
+      {
+        name: 'currentTimestamp',
+        value: currentTimestamp,
+        type: TYPES.DateTimeOffset
+      }
+    ]
+    return sqlService.query(sql, params)
+  },
+  /**
+   * Fetch check windows by status, sort by, sort direction and date (current).
+   * @param sortBy valid values are [checkWindowName|adminStartDate|checkStartDate]
+   * @param sortDirection valid values are [asc|desc]
+   * @returns {Promise.<void>}
+   */
+  sqlFindFutureWithFormCount: async (sortBy, sortDirection) => {
+    const currentTimestamp = moment.utc().toDate()
+    sortDirection = sortDirection !== 'asc' ? 'desc' : 'asc'
+    switch (sortBy) {
+      case 'checkWindowName':
+        sortBy = 'name'
+        break
+      case 'adminStartDate':
+      case 'checkStartDate':
+        // are acceptable as-is
+        break
+      default:
+        // anything else should default to checkWindow name
+        sortBy = 'name'
+    }
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.[vewCheckWindowsWithFormCount] WHERE isDeleted=0 AND
+                  checkEndDate >= @currentTimestamp AND checkStartDate >= @currentTimestamp ORDER BY ${sortBy} ${sortDirection}`
     const params = [
       {
         name: 'currentTimestamp',
