@@ -80,7 +80,7 @@ describe('psychometricians-report.service', () => {
           }
         ]
       )
-      spyOn(pupilRestartDataService, 'sqlFindRestartCodes').and.returnValue(
+      spyOn(pupilRestartDataService, 'sqlFindRestartReasons').and.returnValue(
         [
           {
             id: 1,
