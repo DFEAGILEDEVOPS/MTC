@@ -160,6 +160,7 @@ describe('pin-generation.service', () => {
   })
 
   describe('updatePupilPins', () => {
+    const schoolId = 42
     let pupilArray, submittedIds, storedPupilsWithPins, duplicateKeyError
     beforeEach(() => {
       pupilArray = []
@@ -190,16 +191,26 @@ describe('pin-generation.service', () => {
     })
     it('should throw an error when received data structure is not an array', async () => {
       try {
-        await pinGenerationService.updatePupilPins(new Set(pupilArray), 9991999, 100, 100)
+        await pinGenerationService.updatePupilPins(new Set(pupilArray), 9991999, 100, 100, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Received list of pupils is not an array')
       }
     })
+
+    it('throws an error when schoolId is not provided', async () => {
+      try {
+        await pinGenerationService.updatePupilPins(pupilArray, 9991999, 100, 100, undefined)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Parameter `schoolId` not provided')
+      }
+    })
+
     it('should generate pin and execute update when pins have not been generated', async () => {
       spyOn(pupilDataService, 'sqlUpdatePinsBatch')
       spyOn(pupilDataService, 'sqlFindByIds').and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
-      await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100)
+      await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId)
       const data = pupilArray.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data)
       expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
@@ -216,7 +227,7 @@ describe('pin-generation.service', () => {
         const error = { number: 1, message: 'test' }
         sqlUpdatePinsBatchSpy.and.returnValue(Promise.reject(error))
         try {
-          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100)
+          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId)
           fail('expected to throw')
         } catch (error) {
           expect(sqlUpdatePinsBatchSpy).toHaveBeenCalledTimes(1)
@@ -236,9 +247,9 @@ describe('pin-generation.service', () => {
           storedPupilsWithPins(5, pupilArray.length)
         )
         try {
-          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100)
+          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId)
         } catch (error) {
-          fail('not expected to throw')
+          return fail('not expected to throw: ' + error.message)
         }
         expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(3)
         expect(sqlFindByIdsSpy.calls.all()[ 1 ].args[ 0 ]).toEqual(unsavedPupilIdsMock(6))
@@ -257,7 +268,7 @@ describe('pin-generation.service', () => {
         const sqlFindPupilsWithActivePinsValues = Array(100).fill(storedPupilsWithPins(4))
         spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValues(...sqlFindPupilsWithActivePinsValues)
         try {
-          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100)
+          await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toEqual(`100 allowed attempts 

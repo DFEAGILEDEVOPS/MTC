@@ -63,3 +63,7 @@ Feature: Check questions
   Scenario: Complete check data is submitted to the DB
     Given I am on the complete page
     Then I should see all the data from the check stored in the DB
+
+  Scenario: MTC check start page shows number of questions
+    Given I am on the MTC check start page
+    Then I should see the number of questions

@@ -24,7 +24,6 @@ import { InstructionsComponent } from './instructions/instructions.component';
 import { LoadingComponent } from './loading/loading.component';
 import { LoggedInGuard } from './logged-in.guard';
 import { LoginComponent } from './login/login.component';
-import { LoginFailureComponent } from './login-failure/login-failure.component';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
 import { QuestionComponent } from './question/question.component';
@@ -48,6 +47,7 @@ import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spok
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
+import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 
 
 const appRoutes: Routes = [
@@ -59,7 +59,6 @@ const appRoutes: Routes = [
   {path: 'sign-in', component: LoginComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'sign-in-failure', component: LoginFailureComponent },
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent }
   // { path: '**', component: NotFoundComponent }
@@ -76,7 +75,6 @@ const appRoutes: Routes = [
     InstructionsComponent,
     LoadingComponent,
     LoginComponent,
-    LoginFailureComponent,
     LoginSuccessComponent,
     LogoutComponent,
     PracticeQuestionComponent,
@@ -89,6 +87,7 @@ const appRoutes: Routes = [
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
+    QuestionsIntroComponent,
   ],
   imports: [
     RouterModule.forRoot(
