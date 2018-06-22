@@ -4,12 +4,15 @@ end
 
 
 Then(/^all the events should be captured$/) do
+
   expect(@local_storage.first['type']).to eql 'WarmupStarted'
   @local_storage.shift
   expect(@local_storage.first['type']).to eql 'WarmupIntroRendered'
   @local_storage.reject!{|a| a['type'] == 'WarmupIntroRendered'}
   expect(@local_storage.find{|a| a['type'] == 'WarmupCompleteRendered'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'WarmupCompleteRendered'}
+  expect(@local_storage.find{|a| a['type'] == 'QuestionIntroRendered'}).to_not be_nil
+  @local_storage.reject!{|a| a['type'] == 'QuestionIntroRendered'}
   expect(@local_storage.find{|a| a['type'] == 'CheckStarted'}).to_not be_nil
   @local_storage.reject!{|a| a['type'] == 'CheckStarted'}
   expect(@local_storage.find{|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_nil

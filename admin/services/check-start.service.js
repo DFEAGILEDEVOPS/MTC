@@ -22,11 +22,15 @@ const checkStartService = {}
  * @param {number} dfeNumber
  * @return {Promise<void>}
  */
-checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
+checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId) {
   // TODO: add transaction wrapper around the service calls to generate pins and checks
 
   if (!dfeNumber) {
     throw new Error('dfeNumber is required')
+  }
+
+  if (!schoolId) {
+    throw new Error('schoolId is required')
   }
 
   // Validate the incoming pupil list to ensure that the pupils are real ids
@@ -44,7 +48,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber) {
   const maxAttempts = config.Data.pinSubmissionMaxAttempts
   const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
   // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining)
+  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice

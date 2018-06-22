@@ -47,10 +47,12 @@ pupilService.getPrintPupils = async (dfeNumber) => {
 /**
  * Find Pupils using urlSlugs
  * @param {Array} slugs
+ * @param {number} schoolId - the db id of the school
  * @return {Promise<*>}
  */
-pupilService.getPupilsByUrlSlug = async (slugs) => {
-  return pupilDataService.sqlFindPupilsByUrlSlug(slugs)
+pupilService.getPupilsByUrlSlug = async (slugs, schoolId) => {
+  // TODO: [JMS] this only seems to be used by the test!
+  return pupilDataService.sqlFindPupilsByUrlSlug(slugs, schoolId)
 }
 
 /**
