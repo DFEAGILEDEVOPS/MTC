@@ -168,14 +168,16 @@ pupilRestartDataService.sqlFindByPupilIds = async (pupilIds) => {
   if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
     throw new Error('No ids provided')
   }
-  const select = `
+
+  const {params, paramIdentifiers} = sqlService.buildParameterList(pupilIds, TYPES.Int)
+  const pupilIdsParams = paramIdentifiers.join(', ')
+
+  const sql = `
   SELECT *
   FROM ${sqlService.adminSchema}.[pupilRestart]
+  WHERE pupil_id IN (${pupilIdsParams})
+  ORDER BY createdAt ASC
   `
-  const {params, paramIdentifiers} = sqlService.buildParameterList(pupilIds, TYPES.Int)
-  const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ')'
-  const orderClause = 'ORDER BY createdAt ASC'
-  const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)
 }
 
