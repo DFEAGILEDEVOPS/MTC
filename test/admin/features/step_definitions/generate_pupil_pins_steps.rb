@@ -259,7 +259,7 @@ end
 
 Then(/^I should only see pupils from the group$/) do
   filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
-  expect(filtered_pupils.sort).to eql @pupil_group_array.sort
+  expect(filtered_pupils.count).to eql @pupil_group_array.count
 end
 
 And(/^I should be able to generate pins for all pupils in this group$/) do
@@ -267,7 +267,7 @@ And(/^I should be able to generate pins for all pupils in this group$/) do
   generate_pins_overview_page.sticky_banner.confirm.click
   pupils_with_pins = generate_pins_overview_page.pupil_list.rows.select {|row| row.has_pin?}
   names = pupils_with_pins.map {|row| row.name.text}
-  expect(@pupil_group_array - [@excluded_pupil].sort - names.map {|name| name.split(' Date')[0]}).to be_empty
+  expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
 end
 
 And(/^that pupil is apart of a group$/) do
