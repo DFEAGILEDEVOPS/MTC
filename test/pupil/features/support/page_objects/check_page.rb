@@ -17,7 +17,7 @@ class CheckPage < SitePrism::Page
     wait_until(time + 0.5, 0.1) {has_no_preload?}
   end
 
-  def wait_for_question_timer_to_expire(time=3)
+  def wait_for_question_timer_to_expire(time=6)
     wait_until(time + 0.5, 0.1) {question.visible?}
     wait_until(time + 0.5, 0.1) {has_no_question?}
   end
