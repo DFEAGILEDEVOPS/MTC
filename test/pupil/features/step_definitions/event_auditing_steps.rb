@@ -28,7 +28,7 @@ Then(/^all the events should be captured$/) do
       expect(slice[2]['type']).to eql 'QuestionTimerStarted'
       expect(slice[3]['type']).to eql 'QuestionTimerCancelled'
       expect(slice[4]['type']).to eql 'QuestionAnswered'
-      expect((Time.parse(slice[1]['clientTimestamp'])-Time.parse(slice[0]['clientTimestamp'])).to_i).to eql 2
+      expect((Time.parse(slice[1]['clientTimestamp'])-Time.parse(slice[0]['clientTimestamp'])).to_i).to eql 3
     end
 
   end
