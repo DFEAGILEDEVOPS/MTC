@@ -124,16 +124,79 @@
           }
         ],
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
-        "reserved": true,
-        "siteConfig": null,
-        "scmSiteAlsoStopped": false,
-        "hostingEnvironmentProfile": null,
-        "clientAffinityEnabled": false,
-        "clientCertEnabled": false,
-        "hostNamesDisabled": false,
-        "containerSize": 0,
-        "dailyMemoryTimeQuota": 0,
-        "cloningInfo": null
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "Pupil Web App Container",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('pupilAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('pupilAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('pupilAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    },
+    {
+      "comments": "Assets Web App Container",
+      "type": "Microsoft.Web/sites",
+      "kind": "app,linux,container",
+      "name": "[variables('assetsAppName')]",
+      "apiVersion": "2016-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {},
+      "scale": null,
+      "properties": {
+        "enabled": true,
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('assetsAppName'),'.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Standard"
+          },
+          {
+            "name": "[concat(variables('assetsAppName'),'.scm.azurewebsites.net')]",
+            "sslState": "Disabled",
+            "virtualIP": null,
+            "thumbprint": null,
+            "toUpdate": null,
+            "hostType": "Repository"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',variables('appServicePlanName'))]",
+        "httpsOnly": true
       },
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
