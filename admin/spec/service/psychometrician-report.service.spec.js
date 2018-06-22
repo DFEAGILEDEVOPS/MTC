@@ -12,7 +12,7 @@ const jobDataService = require('../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../services/data-access/job-type.data.service')
 const psychometricianReportCacheDataService = require('../../services/data-access/psychometrician-report-cache.data.service')
-const psychometicianDataService = require('../../services/data-access/psychometrician.data.service')
+const psychometricianDataService = require('../../services/data-access/psychometrician.data.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
 const pupilRestartDataService = require('../../services/data-access/pupil-restart.data.service')
 
@@ -51,7 +51,7 @@ describe('psychometricians-report.service', () => {
         {id: 10, pupil_id: 2, checkForm_id: 3},
         {id: 11, pupil_id: 3, checkForm_id: 4}
       ])
-      spyOn(psychometicianDataService, 'sqlFindPupilsByIds').and.returnValue([
+      spyOn(psychometricianDataService, 'sqlFindPupilsByIds').and.returnValue([
         {id: 1, school_id: 5},
         {id: 2, school_id: 6},
         {id: 3, school_id: 7}
@@ -71,7 +71,7 @@ describe('psychometricians-report.service', () => {
         10: [],
         11: []
       })
-      spyOn(pupilRestartDataService, 'sqlFindByPupilIds').and.returnValue(
+      spyOn(psychometricianDataService, 'sqlFindRestartsByPupilIds').and.returnValue(
         [
           {
             id: 1,

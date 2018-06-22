@@ -180,7 +180,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
   const pupils = await psychometricianDataService.sqlFindPupilsByIds(pupilIds) // test-developer all-pupil access
   const checkForms = await checkFormService.getCheckFormsByIds(checks.map(x => x.checkForm_id))
   const schools = await schoolDataService.sqlFindByIds(pupils.map(x => x.school_id))
-  const pupilRestarts = await pupilRestartDataService.sqlFindByPupilIds(pupilIds)
+  const pupilRestarts = await psychometricianDataService.sqlFindRestartsByPupilIds(pupilIds)
   const restartReasons = await pupilRestartDataService.sqlFindRestartReasons()
 
   // answers is an object with check.ids as keys and arrays of answers for that check as values
