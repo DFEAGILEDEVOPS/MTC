@@ -119,6 +119,7 @@ describe('pupil.data.service', () => {
       expect(sqlService.query).toHaveBeenCalled()
     })
   })
+
   describe('#sqlFindOneByPinAndSchool', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([ pupilMock ]))

@@ -1,12 +1,15 @@
 class SignInPage < SitePrism::Page
   set_url '/sign-in'
 
-  element :heading, '.heading-xlarge', text: "Multiplication tables check"
+  element :heading, '.heading-xlarge', text: "Sign in"
   element :global_header, '#global-header .header-logo'
   element :footer_link, '.footer-wrapper .footer-meta .copyright a'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 
-  element :welcome_message, '.lede', text: "Enter your school password and pupil PIN, then click ‘Sign in’"
+  section :login_failure, '.error-summary' do
+    element :heading, '#error-summary-heading-1', text: 'Unable to confirm details'
+    element :message, 'p' , text: 'The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.'
+  end
 
   element :logo, '.organisation-logo'
   element :first_letter, '#last-name'

@@ -23,7 +23,6 @@ Feature:
     Given I am on the instructions page
     Then pupil name is removed from local storage
 
-# Removed for the March trial
-#  Scenario: Instructions page should display the timings between questions dynamically
-#    Given I am on the instructions page
-#    Then I should see the timings between questions
+  Scenario: Instructions page should display the timings between questions dynamically
+    Given I am on the instructions page
+    Then I should see the timings between questions
