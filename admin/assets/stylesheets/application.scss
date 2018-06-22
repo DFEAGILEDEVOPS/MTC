@@ -39,6 +39,7 @@ $mainstream-brand: $department-for-education;
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/shame';
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/lists';
 @import '../../node_modules/govuk-elements-sass/public/sass/elements/components';
+@import '../../node_modules/govuk-elements-sass/public/sass/elements/tables';
 
 @import '_variables';
 @import 'elements/_phase-banner';
@@ -177,6 +178,10 @@ hr.divider {
   margin-top: $gutter;
 }
 
+.float-right {
+  float: right;
+}
+
 // Visibility
 
 .hidden {
@@ -227,6 +232,10 @@ dl dd {
 
 .list-nested {
   margin-left: pem(35px);
+}
+
+.list-item--dashed:before {
+  content: "— ";
 }
 
 // Forms

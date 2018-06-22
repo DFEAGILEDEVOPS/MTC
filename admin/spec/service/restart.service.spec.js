@@ -13,7 +13,7 @@ const startedCheckMock = require('../mocks/check-started')
 const pupilRestartMock = require('../mocks/pupil-restart')
 const restartCodesMock = require('../mocks/restart-codes')
 
-/* global describe, it, expect, beforeEach, afterEach, spyOn */
+/* global describe, it, expect, beforeEach, afterEach, spyOn, fail */
 
 describe('restart.service', () => {
   let sandbox
@@ -99,14 +99,23 @@ describe('restart.service', () => {
   })
 
   describe('restart', () => {
+    it('throws an error if the schoolId is not provided', async () => {
+      try {
+        await restartService.restart([1, 2], 'Test', '', '', '', '59c38bcf3cd57f97b7da2002', undefined)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing parameter: `schoolId`')
+      }
+    })
     it('it should call create if the pupil can be restarted', async () => {
+      const schoolId = 42
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(true)
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue({ 'ok': 1, 'n': 1 })
       let results
       try {
-        results = await restartService.restart([ pupilMock.id, pupilMock.id ], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
+        results = await restartService.restart([ pupilMock.id, pupilMock.id ], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
       } catch (error) {
         expect(error).toBeUndefined()
       }
@@ -114,12 +123,13 @@ describe('restart.service', () => {
       expect(results.length).toBe(2)
     })
     it('it should throw an error if the pupil cannot be restarted', async () => {
+      const schoolId = 42
       spyOn(pinService, 'expireMultiplePins').and.returnValue(null)
       spyOn(restartService, 'canAllPupilsRestart').and.returnValue(false)
       spyOn(pupilRestartDataService, 'sqlFindRestartReasonByCode').and.returnValue(2)
       spyOn(pupilRestartDataService, 'sqlCreate').and.returnValue(null)
       try {
-        await restartService.restart([ pupilMock.id ], 'IT issues', '', '', '59c38bcf3cd57f97b7da2002')
+        await restartService.restart([ pupilMock.id ], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
       } catch (error) {
         expect(error.message).toBe('One of the pupils is not eligible for a restart')
       }

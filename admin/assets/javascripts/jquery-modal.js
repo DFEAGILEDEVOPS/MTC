@@ -18,8 +18,9 @@ $(function () {
       toggleShowHideModal(e)
     })
     $('body').on('keydown', function (e) {
-      // esc
-      if (e.keyCode === 27) {
+      var modalBox = $('#js-modal-box')
+      // escape keystroke should hide the modal when it is visible
+      if (e.keyCode === 27 && modalBox.hasClass('show')) {
         toggleShowHideModal(e)
       }
       // space or enter
@@ -27,7 +28,7 @@ $(function () {
         confirmModal(e, e.target.href)
       }
       // tab or maj+tab, left arrow, right arrow
-      if ((e.keyCode === 9 || e.keyCode === 37 || e.keyCode === 39) && $('#js-modal-box').hasClass('show')) {
+      if ((e.keyCode === 9 || e.keyCode === 37 || e.keyCode === 39) && modalBox.hasClass('show')) {
         toggleOnModal(e)
         e.preventDefault(e)
       }

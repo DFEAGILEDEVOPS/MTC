@@ -42,6 +42,7 @@ $path: "../../assets/govuk_frontend_toolkit/images/";
 @import '../../assets/govuk-elements-sass/elements/details';
 @import '../../assets/govuk-elements-sass/elements/shame';
 @import '../../assets/govuk-elements-sass/elements/lists';
+@import '../../assets/govuk-elements-sass/elements/icons';
 
 /* From public */
 @import "../../assets/govuk_template/stylesheets/fonts.css";
@@ -216,7 +217,10 @@ legend {
 
 /* General */
 /* Prevent anything on the screen being selectable */
-body { user-select: none; }
+body {
+  user-select: none;
+  -ms-touch-action: none !important; /* Disable double-tap zoom */
+}
 
 .nowrap {
   white-space: nowrap;
