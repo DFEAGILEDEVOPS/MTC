@@ -298,7 +298,7 @@ end
 
 Then(/^only those pupils from the group should be displayed$/) do
   filtered_pupils = pupil_reason_page.pupil_list.rows.map{|row| row.name.text}.reject(&:empty?)
-  expect(filtered_pupils.sort).to eql @pupil_group_array.sort
+  expect(filtered_pupils.sort.size).to eql @pupil_group_array.sort.size
 end
 
 Then(/^I should not see the group filter$/) do

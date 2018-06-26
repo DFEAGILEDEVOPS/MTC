@@ -8,13 +8,13 @@ Feature: Question time limit tests
   Background:
     Given I am on the admin page
 
-  Scenario: Question time limit has a default value of 5 seconds
+  Scenario: Question time limit has a default value of 6 seconds
     When I am on the check settings page
-    Then I should see that question time limit is set to 5 seconds
+    Then I should see that question time limit is set to 6 seconds
 
   Scenario: The 'Question time limit' contains the value it was last populated with
-    When I have updated the question time limit to 6 seconds
-    Then I should see that question time limit is set to 6 seconds
+    When I have updated the question time limit to 5 seconds
+    Then I should see that question time limit is set to 5 seconds
 
   Scenario Outline: Error message is shown when the input for Question time limit is not valid
     When I attempt to enter question time limit as <value> seconds
