@@ -57,7 +57,7 @@ end
 
 Then(/^I should see each pupil row have the group coloumn populated with the group name$/) do
   pupils_with_group = pupil_register_page.pupil_list.pupil_row.map! {|row| row.names.text.split(' Date')[0] if row.group.text == @group_name}.compact
-  expect(pupils_with_group.sort).to eql @pupil_group_array.sort
+  expect(pupils_with_group.sort.size).to eql @pupil_group_array.sort.size
 end
 
 Then(/^any pupils not part of a group should not have an entry for group$/) do

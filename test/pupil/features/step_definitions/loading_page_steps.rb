@@ -9,6 +9,6 @@ When(/^I choose to start the warm up questions$/) do
 end
 
 Then(/^I should have (\d+) seconds before I see the first question$/) do |arg1|
-  check_page.wait_for_preload(arg1.to_i)
+  check_page.wait_for_preload_to_expire
   expect(check_page).to have_question
 end

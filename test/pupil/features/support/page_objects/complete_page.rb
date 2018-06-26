@@ -1,5 +1,5 @@
 class CompletePage < SitePrism::Page
-  set_url '/check/complete{?query}'
+  set_url '/check-complete'
 
   element :heading, '.heading-xlarge', text: "Thank you"
   element :completion_text, 'p.text', text: "You have completed the multiplication tables check."

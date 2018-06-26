@@ -26,25 +26,10 @@ Feature:
     When I attempt to refresh the page
     Then I should remain on the warm up complete page
 
-  @local_storage
-  Scenario Outline: Next question is loaded if user refreshes on the question page
-    Given I am on question <number> of the check
-    And I attempt to refresh the page
-    But the next question has loaded so I continue with the check
-    Then the audit and inputs recorded should reflect this
-
-    Examples:
-      | number |
-      | 1      |
-      | 2      |
-      | 3      |
-      | 4      |
-      | 5      |
-      | 6      |
-      | 7      |
-      | 8      |
-      | 9      |
-      | 10     |
+  Scenario: Next question is loaded if user refreshes the question
+    Given I have refreshed on every question page
+    Then I should see the complete page after seeing all the questions
+    And audit and inputs recorded should reflect this
 
   Scenario: Refresh keeps user on complete page
     Given I am on the complete page
