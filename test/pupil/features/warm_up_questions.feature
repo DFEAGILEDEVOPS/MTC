@@ -7,10 +7,6 @@ Feature: Warm up questions
     Given I am on the warm up intro page
     Then I should see a warm up page heading
 
-  Scenario: Warm up questions start after a 2 second delay
-    Given I am on the warm up check page
-    Then I should have 2 seconds before I see the first question
-
   Scenario: Warm up complete page has a heading
     Given I am on the warm up complete page
     Then I should see a warm up complete heading
