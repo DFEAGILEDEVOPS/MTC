@@ -46,6 +46,7 @@ module.exports = function (app) {
   app.locals.globalHeaderText = 'GOV.UK'
   app.locals.crownCopyrightMessage = null
   app.locals.googleTrackingId = config.GOOGLE_TRACKING_ID
+  app.locals.sessionExpirationTime = config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER
   app.locals.deployVersion = appVersion
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
