@@ -27,6 +27,8 @@
 
         <h1 class="heading-xlarge">Headteacher’s declaration form</h1>
 
+        <%- partial('partials/_session_expiry') %>
+
         <form method="post" action="/school/submit-declaration-form" autocomplete="off">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <div id="declaration" <%= error.isError('declaration') ? 'class="form-group-error"' : '' %>>
