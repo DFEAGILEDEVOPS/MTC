@@ -43,6 +43,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     input.addEventListener('mousewheel', function(e) { e.preventDefault(); });
     // firefox uses DOMMouseScroll instead of mousewheel
     input.addEventListener('DOMMouseScroll', function(e) { e.preventDefault(); });
+    // prevent arrow up or down to change the input value
+    input.addEventListener('keydown', function(e) {
+      if (e.which === 38 || e.which === 40) {
+        e.preventDefault();
+      }
+    });
   }
 
   /**

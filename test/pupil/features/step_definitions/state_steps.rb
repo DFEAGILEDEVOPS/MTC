@@ -78,3 +78,32 @@ Then(/^I should remain on the complete page$/) do
   step 'I should see a complete page heading'
   step 'I should see some text stating i have completed the check'
 end
+
+
+Given(/^I have refreshed on every question page$/) do
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  @question_strings = create_question_strings(JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')))
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+  @array_of_questions = []
+  @question_strings.size.times do
+    check_page.wait_for_question
+    @array_of_questions << check_page.question.text
+    visit current_url
+  end
+  complete_page.wait_for_complete_page
+end
+
+Then(/^I should see the complete page after seeing all the questions$/) do
+  expect(complete_page).to be_displayed
+  expect(@array_of_questions).to eql @question_strings
+end
+
+And(/^audit and inputs recorded should reflect this$/) do
+  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
+  expect(local_storage.select {|a| a['type'] == 'RefreshDetected'}.count).to eql @array_of_questions.size
+end

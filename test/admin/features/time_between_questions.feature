@@ -8,13 +8,13 @@ Feature: Time between questions
   Background:
     Given I am on the admin page
 
-  Scenario: Time between questions has a default value of 2 seconds
+  Scenario: Time between questions has a default value of 3 seconds
     When I am on the check settings page
-    Then I should see that time between questions is set to 2 seconds
+    Then I should see that time between questions is set to 3 seconds
 
   Scenario: The 'Time between questions' contains the value it was last populated with
-    When I have updated the time between questions to 3 seconds
-    Then I should see that time between questions is set to 3 seconds
+    When I have updated the time between questions to 4 seconds
+    Then I should see that time between questions is set to 4 seconds
 
   Scenario Outline: Error message is shown when the input for Time between questions is not valid
     When I attempt to enter time between questions as <value> seconds
