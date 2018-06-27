@@ -219,7 +219,7 @@ legend {
 /* Prevent anything on the screen being selectable */
 body {
   user-select: none;
-  -ms-touch-action: none !important; /* Disable double-tap zoom */
+  -ms-touch-action: manipulation !important; /* Disable double-tap zoom */
 }
 
 .nowrap {
