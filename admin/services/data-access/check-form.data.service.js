@@ -129,6 +129,7 @@ const checkFormDataService = {
           ON cf.id = fw.checkForm_id
       LEFT OUTER JOIN ${sqlService.adminSchema}.[checkWindow] cw
         ON cw.id = fw.checkWindow_id
+      WHERE cf.isDeleted=0
       ORDER BY cf.name ${sortOrder}`
     }
     return sqlService.query(sql, params)
