@@ -27,6 +27,28 @@ const psychometricianDataService = {
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
+  },
+
+  /**
+   * Find all active restarts based on pupil ids
+   * @param pupilIds
+   * @return {Promise<*>}
+   */
+  sqlFindRestartsByPupilIds: async (pupilIds) => {
+    if (!(Array.isArray(pupilIds) && pupilIds.length > 0)) {
+      throw new Error('No ids provided')
+    }
+
+    const {params, paramIdentifiers} = sqlService.buildParameterList(pupilIds, TYPES.Int)
+    const pupilIdsParams = paramIdentifiers.join(', ')
+
+    const sql = `
+  SELECT *
+  FROM ${sqlService.adminSchema}.[pupilRestart]
+  WHERE pupil_id IN (${pupilIdsParams})
+  ORDER BY createdAt ASC
+  `
+    return sqlService.query(sql, params)
   }
 }
 
