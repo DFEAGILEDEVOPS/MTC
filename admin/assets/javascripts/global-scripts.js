@@ -227,71 +227,84 @@ $(function () {
     }
   }
 
-  /**
-   * Group filters methods.
-   * @type {{tableRowVisibility: tableRowVisibility, findActiveGroups: findActiveGroups, checkGroupCheckbox: checkGroupCheckbox, updateSortingLink: updateSortingLink}}
-   */
-  var groupFilters = {
+  var checkboxUtil = {
+    /**
+     * Change checkbox status to 'checked' for passed `param`Ids.
+     * @param `param`Ids
+     * @returns {boolean}
+     */
+    checkCheckbox: function (param, paramIds) {
+      if (!paramIds) { return false }
+      $('input[name="' + param + '"]').prop('checked', false).attr('data-checked', false)
+      $(paramIds).each(function (key, value) {
+        $('input[id="' + param + '-' + value + '"]').prop('checked', true).attr('data-checked', true)
+      })
+    },
+
+    /**
+     * Update sorting link to include active parameters - group / pupil ids.
+     * @param action
+     * @param groupId
+     */
+    updateSortingLink: function (action, param, paramId) {
+      var sortingLink = $('#sortingLink')
+      var insertParamId = paramId + 'Ids,'
+      if (sortingLink.length > 0) {
+        if (action === 'add') {
+          if (sortingLink.attr('href').indexOf(param + '=') === -1) {
+            precedingElement = sortingLink.attr('href').indexOf('?') === -1 ? '?' : '&'
+            sortingLink.attr('href', sortingLink.attr('href') + precedingElement + param + '=')
+          }
+          sortingLink.attr('href', sortingLink.attr('href') + insertParamId)
+        } else if (action === 'remove') {
+          sortingLink.attr('href', sortingLink.attr('href').replace(insertParamId, ''))
+        }
+      }
+    },
+      
     /**
      * Table row visibility.
      * @param groupIds
      */
-    tableRowVisibility: function (groupIds) {
+    tableRowVisibility: function (param, paramIds) {
       var sel = '.spacious > tbody > tr'
-      if (groupIds.length < 1 || groupIds[0].length < 1) {
+      if (paramIds.length < 1 || paramIds[0].length < 1) {
         $(sel).removeClass('hidden')
       } else {
         $(sel).addClass('hidden')
-        groupIds.map(function (gId) {
-          $(sel + '.group-id-' + gId).removeClass('hidden')
+        paramIds.map(function (pId) {
+          $(sel + '.' + param + '-id-' + pId).removeClass('hidden')
         })
         $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
       }
     },
 
-    /**
-     * Find active groups from URL.
-     * @returns {string}
-     */
-    findActiveGroups: function () {
-      var url = window.location.href
-      if (url.lastIndexOf('/groupIds=') > 0) {
-        return url.substr(url.lastIndexOf('/groupIds=') + 10, url.length)
-      }
-    },
-
-    /**
-     * Change checkbox status to 'checked' for passed groupIds.
-     * @param groupIds
-     * @returns {boolean}
-     */
-    checkGroupCheckbox: function (groupIds) {
-      if (!groupIds) { return false }
-      $('input[name="group"]').prop('checked', false).attr('data-checked', false)
-      $(groupIds).each(function (key, value) {
-        $('input[id="group-' + value + '"]').prop('checked', true).attr('data-checked', true)
-      })
-    },
-
-    /**
-     * Update sorting link to include active group ids.
-     * @param action
-     * @param groupId
-     */
-    updateSortingLink: function (action, groupId) {
-      var sortingLink = $('#sortingLink')
-      var insertGroupId = groupId + ','
-      if (sortingLink.length > 0) {
-        if (action === 'add') {
-          if (sortingLink.attr('href').indexOf('groupIds=') === -1) {
-            sortingLink.attr('href', sortingLink.attr('href') + 'groupIds=')
-          }
-          sortingLink.attr('href', sortingLink.attr('href') + insertGroupId)
-        } else if (action === 'remove') {
-          sortingLink.attr('href', sortingLink.attr('href').replace(insertGroupId, ''))
+    getQueryParam: function (variable) {
+      var query = window.location.search.substring(1);
+      var vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
         }
       }
-    }
+      return false;
+    },
+
+    /**
+    * Re-doing state for checked checkboxes when sorting
+    */
+    reselectPreviousValues: function(param) {
+      var paramIds = []
+      var activeParamIds = checkboxUtil.getQueryParam(param + 'Ids')
+      if (activeParamIds) {
+        var paramIdsArr = activeParamIds.split(',')
+        paramIdsArr.map(function (p) {
+            paramIds.push(p)
+        })
+        checkboxUtil.checkCheckbox(param, paramIdsArr)
+      }
+    }      
   }
 
   /**
@@ -425,6 +438,7 @@ $(function () {
   }
 
   if ($('#pupilsList').length > 0) {
+    checkboxUtil.reselectPreviousValues('pupil')
     inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
@@ -470,29 +484,29 @@ $(function () {
    */
   if ($('#filterByGroup').length > 0) {
     var groupIds = []
-    var activeGroupsIds = groupFilters.findActiveGroups()
+    var activeGroupsIds = checkboxUtil.getQueryParam('groupIds')
 
     if (activeGroupsIds) {
       $('#filter-content').removeClass('hidden')
-      var groupIdsArr = decodeURIComponent(activeGroupsIds).split(',')
+      var groupIdsArr = activeGroupsIds.split(',')
       groupIdsArr.map(function (g) {
         groupIds.push(g)
       })
-      groupFilters.checkGroupCheckbox(groupIdsArr)
-      groupFilters.tableRowVisibility(groupIdsArr)
+      checkboxUtil.checkCheckbox('group', groupIdsArr)
+      checkboxUtil.tableRowVisibility('group', groupIdsArr)
     }
 
     $('#filterByGroup input:checkbox').on('click', function (e) {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
         groupIds.push($(this).val())
-        groupFilters.updateSortingLink('add', $(this).val())
+        checkboxUtil.updateSortingLink('add', 'group', $(this).val())
       } else {
         $(this).attr('data-checked', false)
         groupIds.splice($.inArray($(this).val(), groupIds), 1)
-        groupFilters.updateSortingLink('remove', $(this).val())
+        checkboxUtil.updateSortingLink('remove', 'group', $(this).val())
       }
-      groupFilters.tableRowVisibility(groupIds)
+      checkboxUtil.tableRowVisibility('group', groupIds)
 
       /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
