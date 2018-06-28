@@ -8,7 +8,7 @@ const moment = require('moment')
 const currentYear = moment.utc(moment.now()).format('YYYY')
 
 const getCheckWindowValidationSchemas = () => {
-  let checkWindowValidationBasicSchema = {
+  const checkWindowValidationBasicSchema = {
     'checkWindowName': {
       notEmpty: true,
       errorMessage: checkWindowErrorMessages.checkWindowName,
