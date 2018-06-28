@@ -38,7 +38,7 @@
 
         <h1 class="heading-xlarge">Upload and view forms</h1>
         <p class="lede" id="lead-paragraph">
-            View, upload or remove check forms.
+            View, upload or remove check forms. Each form has a check window, which is the period when pupils will take the check.
         </p>
         <div class="button-wrapper">
             <a class="button button-primary" href="/test-developer/upload-new-form">Upload new form</a>
@@ -80,6 +80,9 @@
                 </tbody>
             </table>
         </div>
+        <% } else {%>
+        <br>
+        <p>No forms uploaded.</p>
         <% } %>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
