@@ -153,7 +153,7 @@ const getCheckWindowValidationSchemas = () => {
 
 module.exports.validate = function (requestData, checkBody, getValidationResult) {
   return new Promise(async function (resolve, reject) {
-    const { checkWindowValidationBasicSchema,checkWindowValidationSchemaAdminDate, checkWindowValidationSchemaCheckStart } =
+    const { checkWindowValidationBasicSchema, checkWindowValidationSchemaAdminDate, checkWindowValidationSchemaCheckStart } =
       getCheckWindowValidationSchemas()
     let checkWindowValidationSchema
     let validationError = new ValidationError()
