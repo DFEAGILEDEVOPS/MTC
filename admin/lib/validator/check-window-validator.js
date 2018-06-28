@@ -7,145 +7,155 @@ const XRegExp = require('xregexp')
 const moment = require('moment')
 const currentYear = moment.utc(moment.now()).format('YYYY')
 
-let checkWindowValidationSchema = {
-  'checkWindowName': {
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkWindowName,
-    isLength: {
-      options: [{min: 2, max: 35}],
-      errorMessage: checkWindowErrorMessages.checkWindowNameLength
+const getCheckWindowValidationSchemas = () => {
+  const checkWindowValidationBasicSchema = {
+    'checkWindowName': {
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkWindowName,
+      isLength: {
+        options: [{min: 2, max: 35}],
+        errorMessage: checkWindowErrorMessages.checkWindowNameLength
+      }
+    },
+    'checkEndDay': {
+      isInt: {
+        options: [{min: 1, max: 31}],
+        errorMessage: checkWindowErrorMessages.checkEndDayWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkEndDayInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkEndDayRequired
+    },
+    'checkEndMonth': {
+      isInt: {
+        options: [{min: 1, max: 12}],
+        errorMessage: checkWindowErrorMessages.checkEndMonthWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkEndMonthInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkEndMonthRequired
+    },
+    'checkEndYear': {
+      isInt: {
+        options: [{min: currentYear, max: (currentYear * 1 + 10)}],
+        errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
+      },
+      isLength: {
+        options: [{min: 4, max: 4}],
+        errorMessage: checkWindowErrorMessages.enterValidYear
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkEndYearInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkEndYearRequired
     }
-  },
-  'checkEndDay': {
-    isInt: {
-      options: [{min: 1, max: 31}],
-      errorMessage: checkWindowErrorMessages.checkEndDayWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndDayInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndDayRequired
-  },
-  'checkEndMonth': {
-    isInt: {
-      options: [{min: 1, max: 12}],
-      errorMessage: checkWindowErrorMessages.checkEndMonthWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndMonthInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndMonthRequired
-  },
-  'checkEndYear': {
-    isInt: {
-      options: [{min: currentYear, max: (currentYear * 1 + 10)}],
-      errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
-    },
-    isLength: {
-      options: [{min: 4, max: 4}],
-      errorMessage: checkWindowErrorMessages.enterValidYear
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkEndYearInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkEndYearRequired
   }
-}
 
-const checkWindowValidationSchemaAdminDate = {
-  'adminStartDay': {
-    isInt: {
-      options: [{min: 1, max: 31}],
-      errorMessage: checkWindowErrorMessages.adminStartDayWrongDay
+  const checkWindowValidationSchemaAdminDate = {
+    'adminStartDay': {
+      isInt: {
+        options: [{min: 1, max: 31}],
+        errorMessage: checkWindowErrorMessages.adminStartDayWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.adminStartDayInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.adminStartDayRequired
     },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.adminStartDayInvalidChars
+    'adminStartMonth': {
+      isInt: {
+        options: [{min: 1, max: 12}],
+        errorMessage: checkWindowErrorMessages.adminStartMonthWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.adminStartMonthInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.adminStartMonthRequired
     },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.adminStartDayRequired
-  },
-  'adminStartMonth': {
-    isInt: {
-      options: [{min: 1, max: 12}],
-      errorMessage: checkWindowErrorMessages.adminStartMonthWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.adminStartMonthInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.adminStartMonthRequired
-  },
-  'adminStartYear': {
-    isInt: {
-      options: [{min: currentYear}],
-      errorMessage: checkWindowErrorMessages.adminStartYearWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.adminStartYearInvalidChars
-    },
-    isLength: {
-      options: [{min: 4, max: 4}],
-      errorMessage: checkWindowErrorMessages.enterValidYear
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.adminStartYearRequired
+    'adminStartYear': {
+      isInt: {
+        options: [{min: currentYear}],
+        errorMessage: checkWindowErrorMessages.adminStartYearWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.adminStartYearInvalidChars
+      },
+      isLength: {
+        options: [{min: 4, max: 4}],
+        errorMessage: checkWindowErrorMessages.enterValidYear
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.adminStartYearRequired
+    }
   }
-}
 
-const checkWindowValidationSchemaCheckStart = {
-  'checkStartDay': {
-    isInt: {
-      options: [{min: 1, max: 31}],
-      errorMessage: checkWindowErrorMessages.checkStartDayWrongDay
+  const checkWindowValidationSchemaCheckStart = {
+    'checkStartDay': {
+      isInt: {
+        options: [{min: 1, max: 31}],
+        errorMessage: checkWindowErrorMessages.checkStartDayWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkStartDayInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkStartDayRequired
     },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkStartDayInvalidChars
+    'checkStartMonth': {
+      isInt: {
+        options: [{min: 1, max: 12}],
+        errorMessage: checkWindowErrorMessages.checkStartMonthWrongDay
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkStartMonthInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkStartMonthRequired
     },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkStartDayRequired
-  },
-  'checkStartMonth': {
-    isInt: {
-      options: [{min: 1, max: 12}],
-      errorMessage: checkWindowErrorMessages.checkStartMonthWrongDay
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkStartMonthInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkStartMonthRequired
-  },
-  'checkStartYear': {
-    isInt: {
-      options: [{min: currentYear}],
-      errorMessage: checkWindowErrorMessages.checkStartYearWrongDay
-    },
-    isLength: {
-      options: [{min: 4, max: 4}],
-      errorMessage: checkWindowErrorMessages.enterValidYear
-    },
-    matches: {
-      options: [XRegExp('^[0-9]+$')],
-      errorMessage: checkWindowErrorMessages.checkStartYearInvalidChars
-    },
-    notEmpty: true,
-    errorMessage: checkWindowErrorMessages.checkStartYearRequired
+    'checkStartYear': {
+      isInt: {
+        options: [{min: currentYear}],
+        errorMessage: checkWindowErrorMessages.checkStartYearWrongDay
+      },
+      isLength: {
+        options: [{min: 4, max: 4}],
+        errorMessage: checkWindowErrorMessages.enterValidYear
+      },
+      matches: {
+        options: [XRegExp('^[0-9]+$')],
+        errorMessage: checkWindowErrorMessages.checkStartYearInvalidChars
+      },
+      notEmpty: true,
+      errorMessage: checkWindowErrorMessages.checkStartYearRequired
+    }
+  }
+  return {
+    checkWindowValidationBasicSchema,
+    checkWindowValidationSchemaAdminDate,
+    checkWindowValidationSchemaCheckStart
   }
 }
 
 module.exports.validate = function (requestData, checkBody, getValidationResult) {
   return new Promise(async function (resolve, reject) {
+    const { checkWindowValidationBasicSchema, checkWindowValidationSchemaAdminDate, checkWindowValidationSchemaCheckStart } =
+      getCheckWindowValidationSchemas()
+    let checkWindowValidationSchema
     let validationError = new ValidationError()
     let adminStartDate
     let checkStartDate
@@ -173,7 +183,7 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
     try {
       if (!requestData.checkWindowId) { // Adding
         checkWindowValidationSchema = Object.assign(
-          checkWindowValidationSchema,
+          checkWindowValidationBasicSchema,
           checkWindowValidationSchemaAdminDate,
           checkWindowValidationSchemaCheckStart
         )
@@ -208,22 +218,20 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
       } else { // Editing
         if (adminStartDate !== undefined) {
           checkWindowValidationSchema = Object.assign(
-            checkWindowValidationSchema,
+            checkWindowValidationBasicSchema,
             checkWindowValidationSchemaAdminDate
           )
         }
 
         if (checkStartDate !== undefined) {
           checkWindowValidationSchema = Object.assign(
-            checkWindowValidationSchema,
+            checkWindowValidationBasicSchema,
             checkWindowValidationSchemaCheckStart
           )
         }
-
         checkBody(checkWindowValidationSchema)
         const result = await getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
-
         if (adminStartDate !== undefined) {
           if (adminStartDate.isValid() === false) {
             validationError.addError('adminDateInvalid', true)
@@ -237,7 +245,7 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
           if (checkStartDate.isValid() === false) {
             validationError.addError('checkStartDateInvalid', true)
           }
-          adminStartDate = adminStartDate || requestData['existingAdminStartDate']
+          adminStartDate = adminStartDate || moment.utc(requestData['existingAdminStartDate'])
           if (moment(adminStartDate).isAfter(checkStartDate)) {
             validationError.addError('checkDateBeforeAdminDate', true)
           }
@@ -254,7 +262,7 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
       }
 
       if (checkEndDate !== undefined) {
-        checkStartDate = checkStartDate || requestData['existingCheckStartDate']
+        checkStartDate = checkStartDate || moment.utc(requestData['existingCheckStartDate'])
         if (moment(checkEndDate).isBefore(checkStartDate)) {
           validationError.addError('checkEndDateBeforeStartDate', true)
         }
