@@ -570,7 +570,7 @@ describe('check-form controller:', () => {
           expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
           expect(checkFormService.checkWindowNames).toHaveBeenCalled()
           expect(checkFormService.canDelete).toHaveBeenCalled()
-          expect(res.locals.pageTitle).toBe('View form')
+          expect(res.locals.pageTitle).toBe('MTC0100')
           done()
         })
       })

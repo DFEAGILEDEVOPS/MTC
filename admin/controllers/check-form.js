@@ -266,7 +266,7 @@ const displayCheckForm = async (req, res) => {
     formData.checkWindowNames = checkFormService.checkWindowNames(checkWindows)
     formData.canDelete = checkFormService.canDelete(checkWindows)
   }
-
+  res.locals.pageTitle = formData && formData.name
   req.breadcrumbs(res.locals.pageTitle)
   res.render('test-developer/view-check-form', {
     form: formData,
