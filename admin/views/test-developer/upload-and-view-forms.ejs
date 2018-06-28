@@ -59,8 +59,10 @@
                     <% forms.forEach( form => { %>
                     <tr>
                         <td<% if (messages.info && messages.info.length && messages.info.find(({ formName }) => formName == form.name)) { %> class="highlight-item"<% } %>>
-                            <a name="anchor-<%= form.name %>"></a>
-                            <a href="/test-developer/view-form/<%= form.id %>" class="bold"><%= form.name %></a>
+                            <div class="highlight-wrapper">
+                                <a name="anchor-<%= form.name %>"></a>
+                                <a href="/test-developer/view-form/<%= form.id %>" class="bold"><%= form.name %></a>
+                            </div>
                         </td>
                         <td>
                             <% if (form.checkWindows.length > 0) { %>
