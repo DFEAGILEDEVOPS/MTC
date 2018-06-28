@@ -13,6 +13,7 @@ const service = {
       SuperUser: 'HEADTEACHER',
       SchoolSup: 'TEACHER',
       SchoolNom: 'TEACHER',
+      SchoolNomAA: 'TEACHER',
       Admin: 'HELPDESK',
       DataAdmin: 'TEST-DEVELOPER'
     }

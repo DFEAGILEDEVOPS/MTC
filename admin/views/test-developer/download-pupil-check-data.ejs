@@ -67,7 +67,7 @@
 
         $.ajax({
             url: '/test-developer/generate-latest-pupil-check-data',
-            timeout: 60 * 1000
+            timeout: 60 * 1000 * 5
         })
             .done(function(data) {
                 $(contentId).html(`
