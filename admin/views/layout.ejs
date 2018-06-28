@@ -106,18 +106,21 @@
     <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
 
     <script>
-      window.setTimeout(function() {
-        var sessionExpirationError = document.getElementsByClassName('error-session-expiration')[0];
-        if (!sessionExpirationError) return;
+      var sessionExpirationError = document.getElementsByClassName('error-session-expiration')[0];
+      if (sessionExpirationError) {
+        window.setTimeout(function() {
+            sessionExpirationError.className = sessionExpirationError.className.replace('error-session-expiration', 'error-about-to-expire-session');
 
-        sessionExpirationError.className = sessionExpirationError.className.replace('error-session-expiration', 'error-about-to-expire-session');
+            document.getElementById('continue-session-expiration').addEventListener('click', function(e) {
+              e.preventDefault();
+              window.location.reload();
+            });
+        }, <%= sessionDisplayNoticeTime %> * 1000);
 
-        document.getElementById('continue-session-expiration').addEventListener('click', function(e) {
-          e.preventDefault();
-
-          window.location.reload();
-        });
-      }, <%= sessionExpirationTime %> * 1000);
+        window.setTimeout(function() {
+            window.location.href = '/sign-out';
+        }, <%= sessionExpirationTime %> * 1000);
+      }
     </script>
   </body>
 </html>
