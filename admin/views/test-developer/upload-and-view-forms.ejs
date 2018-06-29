@@ -12,7 +12,9 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
         <div class="info-message">
-            <a href="#anchor-<%= messages.formName %>"><%= messages.info %></a>
+            <% messages.info.forEach( info => { %>
+                <p><a href="#anchor-<%= info.formName %>"><%= info.message %></a></p>
+            <% }) %>
         </div>
         <% } %>
 
@@ -21,6 +23,16 @@
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
                 <%= messages.error %>
             </h2>
+        </div>
+        <% } %>
+        
+        <% if (messages && messages.errors && messages.errors.length) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <% messages.errors.forEach( error => { %>
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                    <%= error.error.message %> - <%= error.formName %>
+                </h2>
+            <% }) %>
         </div>
         <% } %>
 
@@ -46,9 +58,11 @@
                 <tbody>
                     <% forms.forEach( form => { %>
                     <tr>
-                        <td<% if (messages.formName == form.name) { %> class="highlight-item"<% } %>>
-                            <a name="anchor-<%= form.name %>"></a>
-                            <a href="/test-developer/view-form/<%= form.id %>" class="bold"><%= form.name %></a>
+                        <td<% if (messages.info && messages.info.length && messages.info.find(({ formName }) => formName == form.name)) { %> class="highlight-item"<% } %>>
+                            <div class="highlight-wrapper">
+                                <a name="anchor-<%= form.name %>"></a>
+                                <a href="/test-developer/view-form/<%= form.id %>" class="bold"><%= form.name %></a>
+                            </div>
                         </td>
                         <td>
                             <% if (form.checkWindows.length > 0) { %>
