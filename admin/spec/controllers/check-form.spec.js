@@ -14,6 +14,7 @@ const checkFormMock = require('../mocks/check-form')
 const checkFormsMock = require('../mocks/check-forms')
 const checkFormsFormattedMock = require('../mocks/check-forms-formatted')
 const checkWindowsMock = require('../mocks/check-windows')
+const checkFormMock2 = { ...checkFormMock, id: 101, name: 'MTC0101' }
 
 describe('check-form controller:', () => {
   function getRes () {
@@ -166,7 +167,7 @@ describe('check-form controller:', () => {
       })
     })
 
-    describe('#saveCheckForm - Saving a check form', () => {
+    describe('#saveCheckForm - Saving a single check form', () => {
       function standardReq () {
         let req
         req = getReq(goodReqParams)
@@ -210,6 +211,7 @@ describe('check-form controller:', () => {
             expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
             expect(checkFormService.create).toHaveBeenCalled()
             expect(next).not.toHaveBeenCalled()
+            expect(req.flash).toHaveBeenCalledWith('info', [ { message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' } ])
             expect(res.statusCode).toBe(302)
           } catch (error) {
             expect(error).toBe('not thrown')
@@ -219,11 +221,12 @@ describe('check-form controller:', () => {
       })
 
       describe('Unhappy path - When checkFormDataService.create fails', () => {
+        let createError = new Error('Error')
         beforeEach(() => {
           spyOn(checkFormService, 'populateFromFile').and.returnValue(checkFormMock)
           spyOn(checkFormService, 'buildFormName').and.returnValue('MTC0100.csv')
           spyOn(checkFormService, 'validateCheckFormName').and.returnValue('MTC0100')
-          spyOn(checkFormService, 'create').and.returnValue(Promise.reject(new Error('Error')))
+          spyOn(checkFormService, 'create').and.returnValue(Promise.reject(createError))
           spyOn(fs, 'remove').and.returnValue(checkFormMock)
           controller = require('../../controllers/check-form').saveCheckForm
         })
@@ -239,8 +242,9 @@ describe('check-form controller:', () => {
             expect(checkFormService.buildFormName).toHaveBeenCalled()
             expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
             expect(checkFormService.create).toHaveBeenCalled()
-            expect(next).toHaveBeenCalled()
-            expect(res.statusCode).toBe(200)
+            expect(next).not.toHaveBeenCalled()
+            expect(res.statusCode).toBe(302)
+            expect(req.flash).toHaveBeenCalledWith('errors', [ { error: createError, formName: 'MTC0100.csv' } ])
           } catch (error) {
             expect(error).toBe('not thrown')
           }
@@ -342,6 +346,200 @@ describe('check-form controller:', () => {
       })
     })
 
+    describe('#saveCheckForm - Saving multiple check forms', () => {
+      function multiReq () {
+        let req
+        req = getReq(goodReqParams)
+
+        req.method = 'POST'
+        req.url = 'test-developer/upload-new-form'
+        req.files = {}
+        req.files.csvFile = [ {
+          uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40',
+          field: 'uploadFile',
+          file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
+          filename: 'form-1.csv',
+          encoding: '7bit',
+          mimetype: 'text/csv',
+          truncated: false,
+          done: true
+        }, {
+          uuid: 'ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc41',
+          field: 'uploadFile',
+          file: 'data/files/ff6c17d9-84d0-4a9b-a3c4-3f94a6ccdc40/uploadFile/form-1.csv',
+          filename: 'form-2.csv',
+          encoding: '7bit',
+          mimetype: 'text/csv',
+          truncated: false,
+          done: true
+        } ]
+
+        return req
+      }
+
+      describe('Happy path', () => {
+        beforeEach(() => {
+          spyOn(checkFormService, 'populateFromFile').and.returnValues(checkFormMock, checkFormMock2)
+          spyOn(checkFormService, 'buildFormName').and.returnValues('MTC0100.csv', 'MTC0101.csv')
+          spyOn(checkFormService, 'validateCheckFormName').and.returnValues('MTC0100', 'MTC0101')
+          spyOn(checkFormService, 'create').and.returnValues(Promise.resolve(checkFormMock), Promise.resolve(checkFormMock2))
+          spyOn(fs, 'remove').and.returnValues(checkFormMock, checkFormMock2)
+          controller = require('../../controllers/check-form').saveCheckForm
+        })
+
+        it('should save the forms and redirect the user', async (done) => {
+          const res = getRes()
+          const req = multiReq()
+
+          try {
+            await controller(req, res, next)
+            expect(res.locals.pageTitle).toBe('Upload check form')
+            expect(checkFormService.populateFromFile).toHaveBeenCalled()
+            expect(checkFormService.buildFormName).toHaveBeenCalled()
+            expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
+            expect(checkFormService.create).toHaveBeenCalled()
+            expect(next).not.toHaveBeenCalled()
+            expect(req.flash).toHaveBeenCalledWith('info', [
+              { message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' },
+              { message: 'New form uploaded - MTC0101.csv', formName: 'MTC0101.csv' }
+            ])
+            expect(res.statusCode).toBe(302)
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+          done()
+        })
+      })
+
+      describe('Unhappy path - When checkFormDataService.create fails for one form', () => {
+        let createError = new Error('Error')
+        beforeEach(() => {
+          spyOn(checkFormService, 'populateFromFile').and.returnValues(checkFormMock, checkFormMock2)
+          spyOn(checkFormService, 'buildFormName').and.returnValues('MTC0100.csv', 'MTC0101.csv')
+          spyOn(checkFormService, 'validateCheckFormName').and.returnValues('MTC0100', 'MTC0101')
+          spyOn(checkFormService, 'create').and.returnValues(Promise.reject(createError), Promise.resolve(checkFormMock2))
+          spyOn(fs, 'remove').and.returnValues(checkFormMock, checkFormMock2)
+          controller = require('../../controllers/check-form').saveCheckForm
+        })
+
+        it('should display one form created and one failed when #create fails for it', async (done) => {
+          const res = getRes()
+          const req = multiReq()
+
+          try {
+            await controller(req, res, next)
+            expect(res.locals.pageTitle).toBe('Upload check form')
+            expect(checkFormService.populateFromFile).toHaveBeenCalled()
+            expect(checkFormService.buildFormName).toHaveBeenCalled()
+            expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
+            expect(checkFormService.create).toHaveBeenCalled()
+            expect(next).not.toHaveBeenCalled()
+            expect(res.statusCode).toBe(302)
+            expect(req.flash).toHaveBeenCalledWith('info', [
+              { message: 'New form uploaded - MTC0101.csv', formName: 'MTC0101.csv' }
+            ])
+            expect(req.flash).toHaveBeenCalledWith('errors', [ { error: createError, formName: 'MTC0100.csv' } ])
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+          done()
+        })
+      })
+
+      describe('Unhappy path - When checkFormService.populateFromFile fails for one form', () => {
+        beforeEach(() => {
+          spyOn(checkFormService, 'populateFromFile').and.returnValues(Promise.reject(new Error('Error')), checkFormMock2)
+          spyOn(checkFormService, 'buildFormName').and.returnValues('MTC0100.csv', 'MTC0101.csv')
+          spyOn(checkFormService, 'validateCheckFormName').and.returnValues('MTC0100', 'MTC0101')
+          spyOn(checkFormService, 'create').and.returnValues(Promise.resolve(checkFormMock), Promise.resolve(checkFormMock2))
+          spyOn(fs, 'remove').and.returnValues(checkFormMock, checkFormMock2)
+          controller = require('../../controllers/check-form').saveCheckForm
+        })
+
+        it('should handle #populateFromFile failure and not create any form', async (done) => {
+          const res = getRes()
+          const req = multiReq()
+
+          try {
+            await controller(req, res, next)
+            expect(res.locals.pageTitle).toBe('Upload check form')
+            expect(checkFormService.populateFromFile).toHaveBeenCalled()
+            expect(checkFormService.buildFormName).not.toHaveBeenCalled()
+            expect(checkFormService.validateCheckFormName).not.toHaveBeenCalled()
+            expect(checkFormService.create).not.toHaveBeenCalled()
+            expect(next).not.toHaveBeenCalled()
+            expect(res.statusCode).toBe(200)
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+
+          done()
+        })
+      })
+
+      describe('Unhappy path - When checkFormService.buildFormName returns false', () => {
+        beforeEach(() => {
+          spyOn(checkFormService, 'populateFromFile').and.returnValues(checkFormMock, checkFormMock2)
+          spyOn(checkFormService, 'buildFormName').and.returnValue(false, 'MTC0101.csv')
+          spyOn(checkFormService, 'validateCheckFormName').and.returnValues('MTC0100', 'MTC0101')
+          spyOn(checkFormService, 'create').and.returnValues(Promise.resolve(checkFormMock), Promise.resolve(checkFormMock2))
+          spyOn(fs, 'remove').and.returnValues(checkFormMock, checkFormMock2)
+          controller = require('../../controllers/check-form').saveCheckForm
+        })
+
+        it('should handle #buildFormName failure and not create any form', async (done) => {
+          const res = getRes()
+          const req = multiReq()
+
+          try {
+            await controller(req, res, next)
+            expect(res.locals.pageTitle).toBe('Upload check form')
+            expect(checkFormService.populateFromFile).toHaveBeenCalled()
+            expect(checkFormService.buildFormName).toHaveBeenCalled()
+            expect(checkFormService.validateCheckFormName).not.toHaveBeenCalled()
+            expect(checkFormService.create).not.toHaveBeenCalled()
+            expect(next).not.toHaveBeenCalled()
+            expect(res.statusCode).toBe(302)
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+
+          done()
+        })
+      })
+
+      describe('Unhappy path - When checkFormService.validateCheckFormName fails', () => {
+        beforeEach(() => {
+          spyOn(checkFormService, 'populateFromFile').and.returnValues(checkFormMock, checkFormMock2)
+          spyOn(checkFormService, 'buildFormName').and.returnValues('MTC0100.csv', 'MTC0101.csv')
+          spyOn(checkFormService, 'validateCheckFormName').and.returnValue(Promise.reject(new Error('Error')), 'MTC0101')
+          spyOn(checkFormService, 'create').and.returnValues(Promise.resolve(checkFormMock), Promise.resolve(checkFormMock2))
+          spyOn(fs, 'remove').and.returnValues(checkFormMock, checkFormMock2)
+          controller = require('../../controllers/check-form').saveCheckForm
+        })
+
+        it('should handle #validateCheckFormName failure and not create any form', async (done) => {
+          const res = getRes()
+          const req = multiReq()
+
+          try {
+            await controller(req, res, next)
+            expect(res.locals.pageTitle).toBe('Upload check form')
+            expect(checkFormService.populateFromFile).toHaveBeenCalled()
+            expect(checkFormService.buildFormName).toHaveBeenCalled()
+            expect(checkFormService.validateCheckFormName).toHaveBeenCalled()
+            expect(checkFormService.create).not.toHaveBeenCalled()
+            expect(next).toHaveBeenCalled()
+            expect(res.statusCode).toBe(200)
+          } catch (error) {
+            expect(error).toBe('not thrown')
+          }
+
+          done()
+        })
+      })
+    })
+
     describe('#displayCheckForm - Clicking a form', () => {
       describe('Happy path', () => {
         beforeEach(() => {
@@ -372,7 +570,7 @@ describe('check-form controller:', () => {
           expect(checkWindowService.getCheckWindowsAssignedToForms).toHaveBeenCalled()
           expect(checkFormService.checkWindowNames).toHaveBeenCalled()
           expect(checkFormService.canDelete).toHaveBeenCalled()
-          expect(res.locals.pageTitle).toBe('View form')
+          expect(res.locals.pageTitle).toBe('MTC0100')
           done()
         })
       })
