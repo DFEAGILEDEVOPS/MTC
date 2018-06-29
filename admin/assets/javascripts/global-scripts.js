@@ -107,6 +107,11 @@ $(function () {
       })
     },
 
+    /**
+     * Register the click event to save checkboxes in the `sortingLink`s.
+     * @param sel
+     * @param param
+     */
     saveSelectedForSorting: function (sel, param) {
       $(sel + ' > input:checkbox').on('click', function () {
         if ($(this).is(':checked')) {
@@ -237,6 +242,10 @@ $(function () {
     }
   }
 
+ /**
+  * Util methods to help manage the checkbox state.
+  * @type {{checkCheckbox: checkCheckbox, updateSortingLink: updateSortingLink, tableRowVisibility: tableRowVisibility, reselectPreviousValues: reselectPreviousValues, getQueryParam: getQueryParam}}
+  */
   var checkboxUtil = {
     /**
      * Change checkbox status to 'checked' for passed `param`Ids.
@@ -285,8 +294,9 @@ $(function () {
     },
 
     /**
-     * Table row visibility.
-     * @param groupIds
+     * Table row visibility for a parameter.
+     * @param param
+     * @param paramIds
      */
     tableRowVisibility: function (param, paramIds) {
       var sel = '.spacious > tbody > tr'
@@ -301,6 +311,10 @@ $(function () {
       }
     },
 
+    /**
+     * Parses a variable from the querystring.
+     * @param variable
+     */
     getQueryParam: function (variable) {
       var query = window.location.search.substring(1)
       var vars = query.split('&')
@@ -314,7 +328,8 @@ $(function () {
     },
 
     /**
-    * Re-doing state for checked checkboxes when sorting
+    * Re-doing checked state for checkboxes when sorting
+    * @param param
     */
     reselectPreviousValues: function (param) {
       var paramIds = []
