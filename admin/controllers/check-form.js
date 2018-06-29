@@ -532,6 +532,8 @@ const getFileDownloadPupilCheckData = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 const getGenerateLatestPupilCheckData = async (req, res, next) => {
+  req.setTimeout(5 * 1000 * 60) // 5 minutes
+
   try {
     await checkProcessingService.process()
 
