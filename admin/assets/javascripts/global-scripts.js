@@ -107,6 +107,16 @@ $(function () {
       })
     },
 
+    saveSelectedForSorting: function (sel, param) {
+      $(sel + ' > input:checkbox').on('click', function () {
+        if ($(this).is(':checked')) {
+          checkboxUtil.updateSortingLink('add', param, $(this).val())
+        } else {
+          checkboxUtil.updateSortingLink('remove', param, $(this).val())
+        }
+      })
+    },
+
     /**
      * Manage radio button status and dependencies.
      * @param sel
@@ -247,21 +257,33 @@ $(function () {
      * @param groupId
      */
     updateSortingLink: function (action, param, paramId) {
-      var sortingLink = $('#sortingLink')
-      var insertParamId = paramId + 'Ids,'
-      if (sortingLink.length > 0) {
-        if (action === 'add') {
-          if (sortingLink.attr('href').indexOf(param + '=') === -1) {
-            precedingElement = sortingLink.attr('href').indexOf('?') === -1 ? '?' : '&'
-            sortingLink.attr('href', sortingLink.attr('href') + precedingElement + param + '=')
+      var sortingLinks = $('.sortingLink')
+      sortingLinks.each(function () {
+        var sortingLink = $(this)
+        var insertParamId = paramId + ','
+        if (sortingLink.length > 0) {
+          if (action === 'add') {
+            var paramIndex = sortingLink.attr('href').indexOf(param + 'Ids=')
+            if (paramIndex === -1) {
+              var precedingElement = sortingLink.attr('href').indexOf('?') === -1 ? '?' : '&'
+              sortingLink.attr('href', sortingLink.attr('href') + precedingElement + param + 'Ids=')
+              sortingLink.attr('href', sortingLink.attr('href') + insertParamId)
+            } else {
+              var paramLength = (param + 'Ids=').length
+              sortingLink.attr(
+                'href',
+                sortingLink.attr('href').slice(0, paramIndex + paramLength) +
+                  insertParamId +
+                  sortingLink.attr('href').substring(paramIndex + paramLength)
+              )
+            }
+          } else if (action === 'remove') {
+            sortingLink.attr('href', sortingLink.attr('href').replace(insertParamId, ''))
           }
-          sortingLink.attr('href', sortingLink.attr('href') + insertParamId)
-        } else if (action === 'remove') {
-          sortingLink.attr('href', sortingLink.attr('href').replace(insertParamId, ''))
         }
-      }
+      })
     },
-      
+
     /**
      * Table row visibility.
      * @param groupIds
@@ -280,31 +302,33 @@ $(function () {
     },
 
     getQueryParam: function (variable) {
-      var query = window.location.search.substring(1);
-      var vars = query.split('&');
+      var query = window.location.search.substring(1)
+      var vars = query.split('&')
       for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-          return decodeURIComponent(pair[1]);
+        var pair = vars[i].split('=')
+        if (decodeURIComponent(pair[0]) === variable) {
+          return decodeURIComponent(pair[1])
         }
       }
-      return false;
+      return false
     },
 
     /**
     * Re-doing state for checked checkboxes when sorting
     */
-    reselectPreviousValues: function(param) {
+    reselectPreviousValues: function (param) {
       var paramIds = []
       var activeParamIds = checkboxUtil.getQueryParam(param + 'Ids')
       if (activeParamIds) {
-        var paramIdsArr = activeParamIds.split(',')
+        var paramIdsArr = activeParamIds.replace(/,$/, '').split(',')
         paramIdsArr.map(function (p) {
-            paramIds.push(p)
+          paramIds.push(p)
+          checkboxUtil.updateSortingLink('add', param, p)
         })
         checkboxUtil.checkCheckbox(param, paramIdsArr)
       }
-    }      
+      return paramIds
+    }
   }
 
   /**
@@ -444,6 +468,7 @@ $(function () {
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
+    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#pupilsRestartList').length > 0) {
@@ -455,10 +480,12 @@ $(function () {
   }
 
   if ($('#generatePins').length > 0) {
+    checkboxUtil.reselectPreviousValues('pupil')
     inputStatus.toggleAllCheckboxes('#generatePins')
     inputStatus.selectAll('.multiple-choice-mtc')
     inputStatus.deselectAll('.multiple-choice-mtc')
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
+    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#assignFormToWindowList').length > 0) {
@@ -483,18 +510,8 @@ $(function () {
    * Filtering pupils by group.
    */
   if ($('#filterByGroup').length > 0) {
-    var groupIds = []
-    var activeGroupsIds = checkboxUtil.getQueryParam('groupIds')
-
-    if (activeGroupsIds) {
-      $('#filter-content').removeClass('hidden')
-      var groupIdsArr = activeGroupsIds.split(',')
-      groupIdsArr.map(function (g) {
-        groupIds.push(g)
-      })
-      checkboxUtil.checkCheckbox('group', groupIdsArr)
-      checkboxUtil.tableRowVisibility('group', groupIdsArr)
-    }
+    var groupIds = checkboxUtil.reselectPreviousValues('group')
+    checkboxUtil.tableRowVisibility('group', groupIds)
 
     $('#filterByGroup input:checkbox').on('click', function (e) {
       if ($(this).is(':checked')) {
