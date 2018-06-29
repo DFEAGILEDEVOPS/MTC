@@ -7,7 +7,7 @@ var encoder = new AzureStorage.Queue.QueueMessageEncoder.TextBase64QueueMessageE
 function checkParameters() {
     account = document.getElementById('account').value;
     sas = document.getElementById('sas').value;
-    queue = document.getElementById('queuename')
+    queue = document.getElementById('queuename').value;
 
     if (account == null || account.length < 1)
     {
@@ -33,7 +33,7 @@ function getQueueService() {
     if (!checkParameters())
         return null;
 
-    queueUri = 'https://' + account + '.queue.core.windows.net/' + queue;
+    queueUri = 'https://' + account + '.queue.core.windows.net';
     var queueService = AzureStorage.Queue.createQueueServiceWithSas(queueUri, sas).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter());
     return queueService;
 }
@@ -48,7 +48,7 @@ function addMessage() {
         return;
     }
 
-    var message = document.getElementById('newmessage').value;
+    var message = document.getElementById('message').value;
     var messageDisplay = document.getElementById('ui-messages')
     queueService.createMessage(queue, encoder.encode(message), function(error, result, response) {
         if(error) {
