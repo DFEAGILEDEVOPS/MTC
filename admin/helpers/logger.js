@@ -23,9 +23,7 @@ const init = (app) => {
     winston.info(`logdna transport enabled for ${options.hostname}`)
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    winston.level = 'debug'
-  }
+  winston.level = config.Logging.LogLevel
 
   if (config.Logging.Express.UseWinston === 'true') {
     /**
