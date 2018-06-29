@@ -496,6 +496,7 @@ const getFileDownloadPupilCheckData = async (req, res, next) => {
 
     await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
   } catch (error) {
+    winston.error(error)
     return next(error)
   }
 }
@@ -512,7 +513,6 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
 
   try {
     await checkProcessingService.process()
-
     const dateGenerated = moment()
     const psychometricianReport = await psychometricianReportService.generateReport()
     const anomalyReport = await anomalyReportService.generateReport()
@@ -527,6 +527,8 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
       dateGenerated: dateService.formatDateAndTime(dateGenerated)
     })
   } catch (error) {
+    // npm log levels
+    winston.error(error.message)
     return res.status(500).json({ error: error.message })
   }
 }
