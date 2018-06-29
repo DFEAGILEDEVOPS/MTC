@@ -154,8 +154,8 @@ export class SpeechService implements OnDestroy {
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
 
-    // remove all elements that have the speech-hidden class completely before speaking
-    const elementsToRemove = clonedElement.getElementsByClassName('speech-hidden');
+    // remove all elements that have the aria-hidden attribute completely before speaking
+    const elementsToRemove = clonedElement.querySelectorAll('[aria-hidden="true"]');
     for (let i = 0; i < elementsToRemove.length; i++) {
       elementsToRemove[i].parentNode.removeChild(elementsToRemove[i]);
     }
