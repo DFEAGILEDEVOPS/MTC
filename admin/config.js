@@ -60,6 +60,7 @@ module.exports = {
     }
   },
   Logging: {
+    LogLevel: process.env.LOG_LEVEL || 'debug',
     LogDna: {
       key: process.env.LOGDNA_API_KEY,
       hostname: `${os.hostname()}:${process.pid}`,
