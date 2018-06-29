@@ -400,8 +400,8 @@ describe('check-form controller:', () => {
             expect(checkFormService.create).toHaveBeenCalled()
             expect(next).not.toHaveBeenCalled()
             expect(req.flash).toHaveBeenCalledWith('info', [
-                { message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' },
-                { message: 'New form uploaded - MTC0101.csv', formName: 'MTC0101.csv' }
+              { message: 'New form uploaded - MTC0100.csv', formName: 'MTC0100.csv' },
+              { message: 'New form uploaded - MTC0101.csv', formName: 'MTC0101.csv' }
             ])
             expect(res.statusCode).toBe(302)
           } catch (error) {
