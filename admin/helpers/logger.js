@@ -55,7 +55,8 @@ const init = (app) => {
     const aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger
 
     winston.add(aiLogger, {
-      key: config.Logging.ApplicationInsights.Key
+      key: config.Logging.ApplicationInsights.Key,
+      treatErrorsAsExceptions: true
     })
     winston.info(`app insights winston transport enabled`)
   }
