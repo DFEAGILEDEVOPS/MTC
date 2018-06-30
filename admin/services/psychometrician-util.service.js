@@ -94,16 +94,25 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
 }
 
 /**
- * Function used in `cleanUpInputEvents()`  add the clientTimestamp to the click event
+ * Function used in `cleanUpInputEvents()` add the clientTimestamp to the click event
  * @param touchOrMouseEvent
  * @param clickEvent
  * @return {{input, eventType: string, clientTimestamp: *, question}}
  */
 function mergeEvents (touchOrMouseEvent, clickEvent) {
+  let eventType = clickEvent.eventType
+  if (touchOrMouseEvent) {
+    if (touchOrMouseEvent.eventType === 'touchstart') {
+      eventType = 'touch'
+    } else {
+      eventType = 'click'
+    }
+  }
+
   const clientTimestamp = touchOrMouseEvent ? touchOrMouseEvent.clientTimestamp : clickEvent.clientTimestamp
   const newEvent = {
     input: clickEvent.input,
-    eventType: touchOrMouseEvent.eventType === 'touchstart' ? 'touch' : 'click',
+    eventType,
     clientTimestamp,
     question: clickEvent.question
   }
@@ -117,12 +126,14 @@ function mergeEvents (touchOrMouseEvent, clickEvent) {
  * @param output
  */
 function clearBuffers (clickEvents, openTouchAndMouseEvents, output) {
+  const buffer = []
   while (clickEvents.length) {
     const clickEvent = clickEvents.pop()
     const touchOrMouseEvent = openTouchAndMouseEvents.pop()
     const newEvent = mergeEvents(touchOrMouseEvent, clickEvent)
-    output.push(newEvent)
+    buffer.push(newEvent)
   }
+  Array.prototype.push.apply(output, buffer.reverse())
 }
 
 /**
