@@ -53,8 +53,8 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
   const openTouchAndMouseEvents = []
   const clickEvents = []
   const output = []
-  const touchCount = inputEvents.filter(event => event.eventType === 'touchstart').length
-  const mouseCount = inputEvents.filter(event => event.eventType === 'mousedown').length
+  const touchCount = inputEvents.filter(event => R.propEq('eventType', 'touchstart', event)).length
+  const mouseCount = inputEvents.filter(event => R.propEq('eventType', 'mousedown', event)).length
 
   for (let event of inputEvents) {
     if (event.eventType === 'touchstart' || event.eventType === 'mousedown') {
