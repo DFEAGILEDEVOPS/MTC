@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach spyOn */
+/* global describe it expect beforeEach spyOn fail */
 const winston = require('winston')
 const service = require('../../services/psychometrician-util.service')
 
@@ -103,6 +103,18 @@ describe('psychometrician-util.service', () => {
           eventType: 'click',
           clientTimestamp: '2018-03-07T10:53:46.068Z',
           question: 1
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientTimestamp: '2018-03-07T10:53:47.981Z',
+          question: 1
+        },
+        {
+          input: '9',
+          eventType: 'click',
+          clientTimestamp: '2018-03-07T10:53:47.068Z',
+          question: 1
         }
       ]
 
@@ -133,7 +145,12 @@ describe('psychometrician-util.service', () => {
       describe('touch events', () => {
         it('filters the touchstart and click events into a single object', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output.length).toBe(1)
+          expect(output.length).toBe(2)
+        })
+        it('puts the events in the right order', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[0].input).toBe('8')
+          expect(output[1].input).toBe('9')
         })
         it('uses the timestamp of the touchstart event', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
@@ -578,6 +595,50 @@ describe('psychometrician-util.service', () => {
         expect(output[3].input).toBe('5')
         expect(output[3].eventType).toBe('keydown')
         expect(output[3].clientTimestamp).toBe('2018-03-07T10:52:47.951Z')
+      })
+    })
+
+    describe('prod-issue-1 : unbalanced clicks and header events', () => {
+      const input = [
+        {
+          'input': 'left click',
+          'eventType': 'mousedown',
+          'clientTimestamp': '2018-06-28T08:51:15.591Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        },
+        {
+          'input': '2',
+          'eventType': 'click',
+          'clientTimestamp': '2018-06-28T08:51:15.683Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        },
+        {
+          'input': '5',
+          'eventType': 'click',
+          'clientTimestamp': '2018-06-28T08:51:15.688Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        }
+      ]
+
+      it('returns without error', () => {
+        try {
+          const output = service.cleanUpInputEvents(input)
+          expect(output).toBeTruthy()
+          expect(output.length).toBe(2)
+          // In the output above you might assume that the first click would get the timestamp
+          // of the first header, but that would mean that there would only be 5ms for the user to click
+          // the second button - unlikely?
+          // In this case we have clearly lost input (one of the headers) so we end up in a crazy situation
+          // where the second click has a timestamp earlier than the first click.
+          expect(output[0].clientTimestamp).toBe('2018-06-28T08:51:15.683Z')
+          // Expect the 2nd click to have the altered timestamp
+          expect(output[1].clientTimestamp).toBe('2018-06-28T08:51:15.591Z')
+        } catch (error) {
+          fail(error)
+        }
       })
     })
   })

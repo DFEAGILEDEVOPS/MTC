@@ -53,24 +53,28 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
   const openTouchAndMouseEvents = []
   const clickEvents = []
   const output = []
-  const touchCount = inputEvents.filter(event => event.eventType === 'touchstart').length
-  const mouseCount = inputEvents.filter(event => event.eventType === 'mousedown').length
+  const touchCount = inputEvents.filter(event => R.propEq('eventType', 'touchstart', event)).length
+  const mouseCount = inputEvents.filter(event => R.propEq('eventType', 'mousedown', event)).length
 
   for (let event of inputEvents) {
-    if (event.eventType === 'touchstart' || event.eventType === 'mousedown') {
+    if (event === null || event === undefined) {
+      winston.info(`psUtilService.cleanUpInputEvents: empty event found`)
+      continue
+    }
+    const eventType = R.prop('eventType', event)
+    if (eventType === 'touchstart' || eventType === 'mousedown') {
       // check to see if what we have inputs in the click buffer and touch/mouse buffers
       clearBuffers(clickEvents, openTouchAndMouseEvents, output)
       openTouchAndMouseEvents.push(event)
       continue
     }
 
-    if (event.eventType === 'click' && openTouchAndMouseEvents.length > 0) {
+    if (eventType === 'click' && openTouchAndMouseEvents.length > 0) {
       clickEvents.push(event)
-    } else if (event.eventType === 'click') {
+    } else if (eventType === 'click') {
       // A single click without any context.  Possibly the header is lost.
       if (touchCount > mouseCount) {
         // We take an educated guess as to what kind of click it is
-        // This guess would be more
         const newEvent = R.clone(event)
         newEvent.eventType = 'touch' // It's more likely to be a touch event
         output.push(newEvent)
@@ -78,7 +82,7 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
         // It will be treated, rightly or wrongly, as a mouse click
         output.push(R.clone(event))
       }
-    } else if (event.eventType === 'keydown') {
+    } else if (eventType === 'keydown') {
       clearBuffers(clickEvents, openTouchAndMouseEvents, output)
       output.push(event)
     }
@@ -90,16 +94,25 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
 }
 
 /**
- * Function used in `cleanUpInputEvents()`  add the clientTimestamp to the click event
+ * Function used in `cleanUpInputEvents()` add the clientTimestamp to the click event
  * @param touchOrMouseEvent
  * @param clickEvent
  * @return {{input, eventType: string, clientTimestamp: *, question}}
  */
 function mergeEvents (touchOrMouseEvent, clickEvent) {
+  let eventType = clickEvent.eventType
+  if (touchOrMouseEvent) {
+    if (touchOrMouseEvent.eventType === 'touchstart') {
+      eventType = 'touch'
+    } else {
+      eventType = 'click'
+    }
+  }
+
   const clientTimestamp = touchOrMouseEvent ? touchOrMouseEvent.clientTimestamp : clickEvent.clientTimestamp
   const newEvent = {
     input: clickEvent.input,
-    eventType: touchOrMouseEvent.eventType === 'touchstart' ? 'touch' : 'click',
+    eventType,
     clientTimestamp,
     question: clickEvent.question
   }
@@ -113,12 +126,14 @@ function mergeEvents (touchOrMouseEvent, clickEvent) {
  * @param output
  */
 function clearBuffers (clickEvents, openTouchAndMouseEvents, output) {
+  const buffer = []
   while (clickEvents.length) {
     const clickEvent = clickEvents.pop()
     const touchOrMouseEvent = openTouchAndMouseEvents.pop()
     const newEvent = mergeEvents(touchOrMouseEvent, clickEvent)
-    output.push(newEvent)
+    buffer.push(newEvent)
   }
+  Array.prototype.push.apply(output, buffer.reverse())
 }
 
 /**
