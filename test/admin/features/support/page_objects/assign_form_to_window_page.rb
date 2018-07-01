@@ -9,6 +9,7 @@ class AssignFormToWindowPage < SitePrism::Page
   section :check_windows, '#assignFormToWindowList tbody' do
     sections :rows, 'tr' do
       element :name_of_window, 'td:first-of-type'
+      element :name_of_window_link, 'td:first-of-type a'
       element :assign_form, 'td a[href^="/test-developer/assign-form-to-window/"]'
     end
   end
