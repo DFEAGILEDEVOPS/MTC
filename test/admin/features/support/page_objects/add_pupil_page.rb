@@ -17,7 +17,7 @@ class AddPupilPage < SitePrism::Page
   element :csrf, 'input[name="_csrf"]', visible: false
   section :phase_banner, PhaseBanner, '.phase-banner'
   elements :error_messages, '.error-message'
-  section :error_summary, ErrorSummary, '.error-summary'
+  section :error_summary, ErrorSummary, '.column-two-thirds .error-summary'
 
   section :what_is_upn, "details[role='group']" do
     element :toggle, "summary .summary"

@@ -27,7 +27,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
-  section :error_summary, '.error-summary' do
+  section :error_summary, '.column-two-thirds .error-summary' do
     element :error_heading, '#error-summary-heading-1', text: 'Unable to proceed. Error: SM01. Please contact helpdesk'
     element :error_info, 'p', text: 'Multiplication tables check helpline'
   end

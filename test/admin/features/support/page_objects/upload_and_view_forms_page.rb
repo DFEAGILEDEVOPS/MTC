@@ -38,7 +38,7 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :confirm, '.modal-confirm'
   end
 
-  section :errors, '.error-summary' do
+  section :errors, '.column-two-thirds .error-summary' do
     element :title, 'h2.error-summary-heading'
     element :criteria_intro, 'p', text: 'The form upload spreadsheet:'
     element :csv_format_error, 'li', text: 'must be in CSV format'
