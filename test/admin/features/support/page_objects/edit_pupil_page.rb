@@ -15,7 +15,7 @@ class EditPupilPage < SitePrism::Page
   element :save_changes, 'input[value="Save"]'
   element :back, 'a.button.button-secondary'
   section :phase_banner, PhaseBanner, '.phase-banner'
-  section :error_summary, ErrorSummary, '.column-two-thirds .error-summary'
+  section :error_summary, ErrorSummary, 'div[aria-labelledby="error-summary-heading-1"]'
   elements :error_messages, '.error-message'
 
   def enter_details(hash)

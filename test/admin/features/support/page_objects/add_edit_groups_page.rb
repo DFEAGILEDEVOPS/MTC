@@ -3,7 +3,7 @@ class AddEditGroupsPage < SitePrism::Page
 
   element :group_name, '#name'
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
-  section :error_summary, '.column-two-thirds .error-summary' do
+  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :heading, 'h2', text: 'You need to fix the errors on this page before continuing'
     element :message, 'p', text: "See highlighted errors below"
     element :message, 'li a'
