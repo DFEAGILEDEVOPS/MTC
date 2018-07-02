@@ -40,6 +40,8 @@
         <h1 class="heading-xlarge"><%= actionTitle %></h1>
         <br>
 
+        <%- partial('partials/_session_expiry') %>
+
         <% if (Array.isArray(pupilsList) && pupilsList.length > 0) { %>
         <form method="post" action="/group/pupils-list/<%= action %>">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
