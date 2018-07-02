@@ -7,7 +7,7 @@ class CheckSettingsPage < SitePrism::Page
   element :cancel, "a", text: 'Cancel'
   element :error_message, '.error-message'
   element :error_summary_list, '.error-summary-list'
-  element :error_summary, '.error-summary p'
+  element :error_summary, '.column-two-thirds .error-summary p'
   element :successful_submission, '.box-successful h2'
   element :csrf, 'input[name="_csrf"]', visible: false
 
