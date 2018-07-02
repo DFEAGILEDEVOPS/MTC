@@ -1,4 +1,5 @@
 'use strict'
+const toBool = require('to-bool')
 
 const ValidationError = require('../validation-error')
 const errorConverter = require('../error-converter')
@@ -7,7 +8,7 @@ const XRegExp = require('xregexp')
 const moment = require('moment')
 const currentYear = moment.utc(moment.now()).format('YYYY')
 
-let checkWindowValidationSchema = {
+const checkWindowValidationSchema = {
   'checkWindowName': {
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.checkWindowName,
@@ -55,10 +56,7 @@ let checkWindowValidationSchema = {
     },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.checkEndYearRequired
-  }
-}
-
-const checkWindowValidationSchemaAdminDate = {
+  },
   'adminStartDay': {
     isInt: {
       options: [{min: 1, max: 31}],
@@ -98,10 +96,7 @@ const checkWindowValidationSchemaAdminDate = {
     },
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.adminStartYearRequired
-  }
-}
-
-const checkWindowValidationSchemaCheckStart = {
+  },
   'checkStartDay': {
     isInt: {
       options: [{min: 1, max: 31}],
@@ -172,11 +167,6 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
     }
     try {
       if (!requestData.checkWindowId) { // Adding
-        checkWindowValidationSchema = Object.assign(
-          checkWindowValidationSchema,
-          checkWindowValidationSchemaAdminDate,
-          checkWindowValidationSchemaCheckStart
-        )
         checkBody(checkWindowValidationSchema)
         const result = await getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
@@ -206,20 +196,16 @@ module.exports.validate = function (requestData, checkBody, getValidationResult)
           validationError.addError('checkEndDateInThePast', moment(currentDate).isAfter(checkEndDate))
         }
       } else { // Editing
-        if (adminStartDate !== undefined) {
-          checkWindowValidationSchema = Object.assign(
-            checkWindowValidationSchema,
-            checkWindowValidationSchemaAdminDate
-          )
+        if (toBool(requestData['adminIsDisabled'])) {
+          requestData['adminStartYear'] = requestData['adminStartYear'] || (requestData['existingAdminStartDate'] && moment(requestData['existingAdminStartDate']).format('YYYY'))
+          requestData['adminStartMonth'] = requestData['adminStartMonth'] || (requestData['existingAdminStartDate'] && moment(requestData['existingAdminStartDate']).format('MM'))
+          requestData['adminStartDay'] = requestData['adminStartDay'] || (requestData['existingAdminStartDate'] && moment(requestData['existingAdminStartDate']).format('DD'))
         }
-
-        if (checkStartDate !== undefined) {
-          checkWindowValidationSchema = Object.assign(
-            checkWindowValidationSchema,
-            checkWindowValidationSchemaCheckStart
-          )
+        if (toBool(requestData['checkStartIsDisabled'])) {
+          requestData['checkStartYear'] = requestData['checkStartYear'] || (requestData['existingCheckStartDate'] && moment(requestData['existingCheckStartDate']).format('YYYY'))
+          requestData['checkStartMonth'] = requestData['checkStartMonth'] || (requestData['existingCheckStartDate'] && moment(requestData['existingCheckStartDate']).format('MM'))
+          requestData['checkStartDay'] = requestData['checkStartDay'] || (requestData['existingCheckStartDate'] && moment(requestData['existingCheckStartDate']).format('DD'))
         }
-
         checkBody(checkWindowValidationSchema)
         const result = await getValidationResult()
         validationError = errorConverter.fromExpressValidator(result.mapped())
