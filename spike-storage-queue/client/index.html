@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Azure Storage Queue Client Side with SAS POC</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="mt-1">
+      <h1>SAS Auth for client side queue push</h1>
+    </div>
+    <p>This will add a message to the specified queue.</p>
+    <label>
+      <b>Storage account:</b>
+    </label>
+    <input type="text" id="account" />
+    <label>
+      <b>SAS Token:</b>
+    </label>
+    <input type="text" id="sas" />
+    <p> Azure Storage queue service provides plenty of interfaces for queue operations. In following example, you can try to
+      list all the queues under your storage account, and try to create or delete one queue from your account.</p>
+    <ul>
+      <li>
+        <p>
+          <label>
+            <b>Queue Name:</b>
+          </label>
+          <input type="text" value="sastest" id="queuename" /> </p>
+      </li>
+      <li>
+        <p>
+          <label>
+            <b>Message Content:</b>
+          </label>
+          <input type="text" value="hello" id="message" />
+        </p>
+      </li>
+      <li>
+        <button class="btn btn-xs btn-primary" onclick="addMessage()">Add Message</button>
+      </li>
+    </ul>
+    <div id="ui-messages"></div>
+  </div>
+  <script src="azure-storage.queue.js"></script>
+  <script src="queue-util.js"></script>
+  <script src="payload.js"></script>
+</body>
+
+</html>
