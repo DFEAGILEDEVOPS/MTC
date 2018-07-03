@@ -27,6 +27,8 @@
 
         <h1 class="heading-xlarge">Download pupil check data</h1>
 
+        <%- partial('partials/_session_expiry') %>
+
         <p class="lede" id="lead-paragraph">
             Generate a zip file with the most up to date pupil check data. The zip file will contain two csv files. One with the raw pupil check data including timings, responses and keystrokes. Another will contain an anomaly report.
         </p>
@@ -65,7 +67,7 @@
 
         $.ajax({
             url: '/test-developer/generate-latest-pupil-check-data',
-            timeout: 60 * 1000
+            timeout: 60 * 1000 * 5
         })
             .done(function(data) {
                 $(contentId).html(`

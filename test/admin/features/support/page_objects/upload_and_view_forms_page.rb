@@ -9,7 +9,7 @@ class UploadAndViewFormsPage < SitePrism::Page
   element :chose_file, '#file-upload'
   element :upload, 'input[value="Upload"]'
   element :back, 'a.button-secondary'
-  element :remove_upload, 'input[value="Remove file"]'
+  element :remove_upload, 'input[value="Remove files"]'
   element :error_message, '.error-message', text: 'A valid CSV file was not uploaded'
   element :check_form_title_column_heading, '#checkFormsList thead tr th:nth-child(1) a'
   element :back_to_home, '.breadcrumbs a[href="/"]'
@@ -38,7 +38,7 @@ class UploadAndViewFormsPage < SitePrism::Page
     element :confirm, '.modal-confirm'
   end
 
-  section :errors, '.error-summary' do
+  section :errors, 'div[aria-labelledby="error-summary-heading-2"]' do
     element :title, 'h2.error-summary-heading'
     element :criteria_intro, 'p', text: 'The form upload spreadsheet:'
     element :csv_format_error, 'li', text: 'must be in CSV format'

@@ -9,7 +9,9 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <h1 class="heading-xlarge">Form <%= form.name %></h1>
+        <h1 class="heading-xlarge"><%= form.name %></h1>
+
+        <%- partial('partials/_session_expiry') %>
 
         <div class="panel panel-border-wide">
             <% if (form.checkWindowNames && form.checkWindowNames.length > 0) { %>

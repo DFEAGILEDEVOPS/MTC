@@ -26,6 +26,9 @@
             <% } %>
 
             <h1 class="heading-xlarge">Assign forms</h1>
+
+            <%- partial('partials/_session_expiry') %>
+
             <div class="panel panel-border-wide">
                 <p>
                     <% if (checkFormsList && checkFormsList.length) {%>

@@ -14,6 +14,8 @@
             <h1 class="heading-xlarge">Select pupils to generate pupil PINs</h1>
         </header>
 
+        <%- partial('partials/_session_expiry') %>
+
         <%- partial('partials/_groups_filter', { groups: groups }) %>
 
         <form method="post" action="/pupil-pin/generate-pins" method="post" autocomplete="off">

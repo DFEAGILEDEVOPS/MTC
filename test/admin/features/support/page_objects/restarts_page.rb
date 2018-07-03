@@ -47,7 +47,7 @@ class RestartsPage < SitePrism::Page
     element :did_not_complete, 'strong', text: 'Did not complete'
   end
 
-  section :error_summary, '.error-summary' do
+  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, '#error-summary-heading-1', text: 'You need to fix the errors on this page before continuing'
     element :error_info, 'p', text: 'See highlighted errors below'
     element :error_text, 'ul li a', text: 'Enter an explanation'
