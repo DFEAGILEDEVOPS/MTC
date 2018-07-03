@@ -9,7 +9,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    toggleAllCheckboxes: function (sel, validation) {
+    toggleAllCheckboxes: function (sel, validation, param) {
       $('#tickAllCheckboxes').on('change', function (e) {
         var validationStatus = true
         var selectAll = $('#selectAll')
@@ -27,11 +27,21 @@ $(function () {
             deselectAll.removeClass('all-hide')
             $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
             stickyBanner.toggle(validationStatus)
+            if (param) {
+              $('.multiple-choice-mtc > input:checkbox').each(function () {
+                checkboxUtil.updateSortingLink('add', param, $(this).val())
+              })
+            }
           } else {
             deselectAll.addClass('all-hide')
             selectAll.removeClass('all-hide')
             $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
             stickyBanner.toggle(false)
+            if (param) {
+              $('.multiple-choice-mtc > input:checkbox').each(function () {
+                checkboxUtil.updateSortingLink('remove', param, $(this).val())
+              })
+            }
           }
         }
       })
@@ -42,7 +52,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    selectAll: function (sel, validation) {
+    selectAll: function (sel, validation, param) {
       $('#selectAll').on('click', function (e) {
         var validationStatus
         if (validation) {
@@ -52,6 +62,11 @@ $(function () {
         $('#deselectAll').removeClass('all-hide')
         $(sel + ' > input:checkbox').attr('data-checked', true)
         stickyBanner.toggle(validationStatus || true)
+        if (param) {
+          $(sel + ' > input:checkbox').each(function () {
+            checkboxUtil.updateSortingLink('add', param, $(this).val())
+          })
+        }
       })
     },
 
@@ -60,7 +75,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    deselectAll: function (sel, validation) {
+    deselectAll: function (sel, validation, param) {
       $('#deselectAll').on('click', function (e) {
         var validationStatus
         if (validation) {
@@ -70,6 +85,11 @@ $(function () {
         $('#selectAll').removeClass('all-hide')
         stickyBanner.toggle(validationStatus || false)
         $(sel + ' > input:checkbox').attr('data-checked', null)
+        if (param) {
+          $(sel + ' > input:checkbox').each(function () {
+            checkboxUtil.updateSortingLink('add', param, $(this).val())
+          })
+        }
       })
     },
 
@@ -114,6 +134,8 @@ $(function () {
      */
     saveSelectedForSorting: function (sel, param) {
       $(sel + ' > input:checkbox').on('click', function () {
+        if ($(this).val() === 'on') return // for the select/deselect all checkboxes
+
         if ($(this).is(':checked')) {
           checkboxUtil.updateSortingLink('add', param, $(this).val())
         } else {
@@ -269,9 +291,11 @@ $(function () {
       var sortingLinks = $('.sortingLink')
       sortingLinks.each(function () {
         var sortingLink = $(this)
+        var previousParams = checkboxUtil.getQueryParamFromString(sortingLink.attr('href'), param + 'Ids').split(',')
         var insertParamId = paramId + ','
         if (sortingLink.length > 0) {
           if (action === 'add') {
+            if ($.inArray(paramId, previousParams) !== -1) return // return early if the paramId already exists
             var paramIndex = sortingLink.attr('href').indexOf(param + 'Ids=')
             if (paramIndex === -1) {
               var precedingElement = sortingLink.attr('href').indexOf('?') === -1 ? '?' : '&'
@@ -287,6 +311,7 @@ $(function () {
               )
             }
           } else if (action === 'remove') {
+            if ($.inArray(paramId, previousParams) === -1) return // return early if the paramId doesn't exist
             sortingLink.attr('href', sortingLink.attr('href').replace(insertParamId, ''))
           }
         }
@@ -312,35 +337,69 @@ $(function () {
     },
 
     /**
-     * Parses a variable from the querystring.
+     * Parses variable from the string provided.
      * @param variable
      */
-    getQueryParam: function (variable) {
-      var query = window.location.search.substring(1)
+    parseQueryString: function (query, variable) {
       var vars = query.split('&')
       for (var i = 0; i < vars.length; i++) {
         var pair = vars[i].split('=')
         if (decodeURIComponent(pair[0]) === variable) {
-          return decodeURIComponent(pair[1])
+          return decodeURIComponent(pair[1]).replace(/,$/, '')
         }
       }
-      return false
+      return ''
+    },
+
+    /**
+     * Gets the window query string and parses it.
+     * @param variable
+     */
+    getQueryParam: function (variable) {
+      var query = window.location.search.substring(1)
+      return checkboxUtil.parseQueryString(query, variable)
+    },
+
+    /**
+     * Gets the url from a query string and parses it.
+     * @param variable
+     */
+    getQueryParamFromString: function (querystring, variable) {
+      var searchIndex = querystring.indexOf('?')
+      if (searchIndex === -1) return '' // nothing to be parsed
+
+      return checkboxUtil.parseQueryString(querystring.substring(searchIndex + 1), variable)
     },
 
     /**
     * Re-doing checked state for checkboxes when sorting
     * @param param
     */
-    reselectPreviousValues: function (param) {
+    reselectPreviousValues: function (param, updateCountedCheckboxes) {
       var paramIds = []
       var activeParamIds = checkboxUtil.getQueryParam(param + 'Ids')
       if (activeParamIds) {
-        var paramIdsArr = activeParamIds.replace(/,$/, '').split(',')
+        var paramIdsArr = activeParamIds.split(',')
         paramIdsArr.map(function (p) {
           paramIds.push(p)
           checkboxUtil.updateSortingLink('add', param, p)
         })
         checkboxUtil.checkCheckbox(param, paramIdsArr)
+
+        var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+        var countAllCheckboxes = inputStatus.countCheckboxes()
+
+        if (updateCountedCheckboxes) {
+          if (countCheckedCheckboxes === 0 || countCheckedCheckboxes < countAllCheckboxes) {
+            $('#deselectAll').addClass('all-hide')
+            $('#selectAll').removeClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', false)
+          } else {
+            $('#deselectAll').removeClass('all-hide')
+            $('#selectAll').addClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', true)
+          }
+        }
       }
       return paramIds
     }
@@ -477,10 +536,10 @@ $(function () {
   }
 
   if ($('#pupilsList').length > 0) {
-    checkboxUtil.reselectPreviousValues('pupil')
-    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
-    inputStatus.selectAll('.multiple-choice-mtc')
-    inputStatus.deselectAll('.multiple-choice-mtc')
+    checkboxUtil.reselectPreviousValues('pupil', true)
+    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm, 'pupil')
+    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
     inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
@@ -495,10 +554,10 @@ $(function () {
   }
 
   if ($('#generatePins').length > 0) {
-    checkboxUtil.reselectPreviousValues('pupil')
-    inputStatus.toggleAllCheckboxes('#generatePins')
-    inputStatus.selectAll('.multiple-choice-mtc')
-    inputStatus.deselectAll('.multiple-choice-mtc')
+    checkboxUtil.reselectPreviousValues('pupil', true)
+    inputStatus.toggleAllCheckboxes('#generatePins', false, 'pupil')
+    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
     inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
