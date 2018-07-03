@@ -394,6 +394,14 @@ input {
   padding: 20px 15px 5px 15px;
 }
 
+.error-session-expiration {
+  display: none;
+}
+
+.error-about-to-expire-session {
+  display: block;
+}
+
 // Hide 'check all' checkboxes if JS is not enabled
 
 .tick-all-boxes {

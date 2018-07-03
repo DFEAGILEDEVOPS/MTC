@@ -25,6 +25,8 @@
 
         <h1 class="heading-xlarge"><%= checkWindowName %></h1>
 
+        <%- partial('partials/_session_expiry') %>
+
         <form method="post" action="/test-developer/unassign-form">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <% if (Array.isArray(checkFormsList) && checkFormsList.length > 0) { %>
