@@ -5,6 +5,8 @@ const moment = require('moment')
 const momentDurationFormatSetup = require('moment-duration-format')
 const winston = require('winston')
 const useragent = require('useragent')
+const device = require('device')
+const hash = require('object-hash')
 
 momentDurationFormatSetup(moment)
 
@@ -340,19 +342,41 @@ psUtilService.getScore = function (markedAnswer) {
   return markedAnswer.isCorrect ? 1 : 0
 }
 
-psUtilService.getDevice = function (userAgent) {
+/**
+ * Parses the useragent and returns a type and model for  devices,
+ * with model being 'Other' for desktop devices
+ * `device` is a wrapper over `useragent` which simplifies type/model parsing
+ *
+ * @param userAgent
+ * @return {object}
+ */
+psUtilService.getDeviceTypeAndModel = function (userAgent) {
   if (!userAgent) {
-    return ''
+    return { type: '', model: '' }
   }
-  const agent = useragent.parse(userAgent)
-  return agent.device.toString().replace('0.0.0', '').trim()
+  const { type, model } = device(userAgent, { parseUserAgent: true })
+  return { type, model }
+}
+
+/**
+ * Generates a unique identifier for a device from its characteristics that don't change
+ *
+ * @param deviceOptions
+ * @return {string}
+ */
+psUtilService.getDeviceId = function (deviceOptions) {
+  if (!deviceOptions) return ''
+  const uniqueOptions = R.pick(['cpu', 'navigator'], deviceOptions)
+  if (R.isEmpty(uniqueOptions)) return ''
+
+  return hash(uniqueOptions)
 }
 
 psUtilService.getBrowser = function (userAgent) {
   if (!userAgent) {
     return ''
   }
-  const agent = useragent.parse(userAgent)
+  const agent = useragent.lookup(userAgent)
   return agent.toString()
 }
 
