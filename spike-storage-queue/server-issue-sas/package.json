@@ -1,0 +1,12 @@
+{
+  "name": "server-issue-sas",
+  "version": "1.0.0",
+  "description": "issue sas token when pupil authenticates",
+  "main": "index.js",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "azure-storage": "^2.10.0",
+    "dotenv": "^6.0.0"
+  }
+}
