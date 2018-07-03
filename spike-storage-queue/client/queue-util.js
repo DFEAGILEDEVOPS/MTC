@@ -48,9 +48,10 @@ function addMessage() {
         return;
     }
 
-    var message = document.getElementById('message').value;
+    var message = JSON.stringify(payload) // document.getElementById('message').value;
+    var encodedMessage = encoder.encode(message)
     var messageDisplay = document.getElementById('ui-messages')
-    queueService.createMessage(queue, encoder.encode(message), function(error, result, response) {
+    queueService.createMessage(queue, encodedMessage, function(error, result, response) {
         if(error) {
             messageDisplay.innerText = 'error creating message:' + result;
             console.log(error);
