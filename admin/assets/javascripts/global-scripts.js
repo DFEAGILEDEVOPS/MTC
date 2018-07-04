@@ -264,10 +264,10 @@ $(function () {
     }
   }
 
- /**
-  * Util methods to help manage the checkbox state.
-  * @type {{checkCheckbox: checkCheckbox, updateSortingLink: updateSortingLink, tableRowVisibility: tableRowVisibility, reselectPreviousValues: reselectPreviousValues, getQueryParam: getQueryParam}}
-  */
+  /**
+   * Util methods to help manage the checkbox state.
+   * @type {{checkCheckbox: checkCheckbox, updateSortingLink: updateSortingLink, tableRowVisibility: tableRowVisibility, reselectPreviousValues: reselectPreviousValues, getQueryParam: getQueryParam, addToSortingLink: addToSortingLink, removeFromSortingLink: removeFromSortingLink}}
+   */
   var checkboxUtil = {
     /**
      * Change checkbox status to 'checked' for passed `param`Ids.
@@ -283,38 +283,58 @@ $(function () {
     },
 
     /**
+     * Add a parameter to the sorting link
+     * @param link
+     * @param param
+     * @param insertParamId
+     */
+    addToSortingLink: function (link, param, insertParamId) {
+      var paramIndex = link.attr('href').indexOf(param + 'Ids=')
+      var paramLength = (param + 'Ids=').length
+
+      if (paramIndex === -1) {
+        // param not previously set in the URL, add `param`Ids=
+        var precedingElement = link.attr('href').indexOf('?') === -1 ? '?' : '&'
+        // if it's the first parameter, add it with ?, otherwise use &
+        link.attr('href', link.attr('href') + precedingElement + param + 'Ids=')
+        link.attr('href', link.attr('href') + insertParamId)
+      } else {
+        // add it after `param`Ids=, before the previous first element of `param`Ids
+        link.attr(
+          'href',
+          link.attr('href').slice(0, paramIndex + paramLength) +
+            insertParamId +
+            link.attr('href').substring(paramIndex + paramLength)
+        )
+      }
+    },
+
+    /**
+     * Remove the parameter from the link
+     * @param link
+     * @param insertParamId
+     */
+    removeFromSortingLink: function (link, insertParamId) {
+      link.attr('href', link.attr('href').replace(insertParamId, ''))
+    },
+
+    /**
      * Update sorting link to include active parameters - group / pupil ids.
      * @param action
      * @param groupId
      */
     updateSortingLink: function (action, param, paramId) {
       var sortingLinks = $('.sortingLink')
+
       sortingLinks.each(function () {
         var sortingLink = $(this)
         var previousParams = checkboxUtil.getQueryParamFromString(sortingLink.attr('href'), param + 'Ids').split(',')
         var insertParamId = paramId + ','
-        if (sortingLink.length > 0) {
-          if (action === 'add') {
-            if ($.inArray(paramId, previousParams) !== -1) return // return early if the paramId already exists
-            var paramIndex = sortingLink.attr('href').indexOf(param + 'Ids=')
-            if (paramIndex === -1) {
-              var precedingElement = sortingLink.attr('href').indexOf('?') === -1 ? '?' : '&'
-              sortingLink.attr('href', sortingLink.attr('href') + precedingElement + param + 'Ids=')
-              sortingLink.attr('href', sortingLink.attr('href') + insertParamId)
-            } else {
-              var paramLength = (param + 'Ids=').length
-              sortingLink.attr(
-                'href',
-                sortingLink.attr('href').slice(0, paramIndex + paramLength) +
-                  insertParamId +
-                  sortingLink.attr('href').substring(paramIndex + paramLength)
-              )
-            }
-          } else if (action === 'remove') {
-            if ($.inArray(paramId, previousParams) === -1) return // return early if the paramId doesn't exist
-            sortingLink.attr('href', sortingLink.attr('href').replace(insertParamId, ''))
-          }
-        }
+
+        if (sortingLink.length <= 0) return // defensive programming, don't alter null links
+
+        if (action === 'add' && $.inArray(paramId, previousParams) === -1) checkboxUtil.addToSortingLink(sortingLink, param, insertParamId)
+        if (action === 'remove' && $.inArray(paramId, previousParams) !== -1) checkboxUtil.removeFromSortingLink(sortingLink, insertParamId)
       })
     },
 
