@@ -8,7 +8,7 @@
     "sasswatch": "npm run sass && node-sass src/assets/shared-styles -wro src/public/styles/",
     "start": "npm run genconfig && concurrently \"ng serve --host 0.0.0.0\" \"npm run sasswatch\" ",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
-    "build": "ng build",
+    "build": "npm run genconfig && ng build",
     "test": "npm run genconfig && ng test",
     "test-single": "npm run genconfig && ng test --single-run=true --browsers ChromeHeadless",
     "lint": "ng lint",

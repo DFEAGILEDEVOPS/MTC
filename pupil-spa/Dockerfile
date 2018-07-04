@@ -29,14 +29,12 @@ ENV AUTH_URL=$auth_url
 ENV CHECK_STARTED_URL=$check_started_url
 ENV CHECK_SUBMISSION_URL=$check_submission_url
 ENV GA_CODE=$ga_code
-RUN $(npm bin)/gulp setApiURL
-RUN $(npm bin)/gulp setAuthURL
-RUN $(npm bin)/gulp setCheckStartedURL
-RUN $(npm bin)/gulp setCheckSubmissionURL
-RUN $(npm bin)/gulp setGaCode
 
 ## Build the angular app in production mode and store the artifacts in dist folder
 RUN $(npm bin)/ng build --prod
+
+## Generate the config file and add it to the public folder
+RUN sh gen_config.sh && mv config.json dist/public
 
 ### STAGE 2: Setup ###
 
