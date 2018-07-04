@@ -99,3 +99,8 @@ Then(/^my feedback should be saved$/) do
   expect(saved_feedback['satisfactionRating']).to eql 1
   expect(saved_feedback['comments']).to eql 'Test feedback'
 end
+
+
+Given(/^I navigate to the complete page$/) do
+  complete_page.load
+end
