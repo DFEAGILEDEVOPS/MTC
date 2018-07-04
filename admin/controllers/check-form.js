@@ -516,7 +516,7 @@ const getFileDownloadPupilCheckData = async (req, res, next) => {
 
   try {
     res.setHeader('Content-type', 'application/zip')
-    res.setHeader('Content-disposition', `attachment; filename=${psychometricianReport.fileName}`)
+    res.setHeader('Content-disposition', `attachment; filename="${psychometricianReport.fileName}"`)
 
     await psychometricianReportService.downloadUploadedFile(psychometricianReport.remoteFilename, res)
   } catch (error) {
