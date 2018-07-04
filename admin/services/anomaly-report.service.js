@@ -3,6 +3,7 @@ const csv = require('fast-csv')
 const R = require('ramda')
 const moment = require('moment')
 const useragent = require('useragent')
+const winston = require('winston')
 
 const checkFormDataService = require('./data-access/check-form.data.service')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
@@ -344,6 +345,10 @@ anomalyReportService.reconstructAnswerFromInputs = (events) => {
     return ans
   }
   events.forEach(event => {
+    if (event === null || event === undefined) {
+      winston.info('anomalyReportService.reconstructAnswerFromInputs: event is empty')
+      return
+    }
     if (event.eventType !== 'click' && event.eventType !== 'keydown') {
       return
     }
