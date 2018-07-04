@@ -183,6 +183,60 @@ describe('psychometricians-report.service', () => {
       expect(data.CheckCount).toBe(1)
       expect(data.CheckStatus).toBe('Complete')
     })
+
+    it('does not throw an error if an event does not have an eventType', () => {
+      // spyOn(winston, 'info')
+      const pupil = {
+        id: 12,
+        foreName: 'Mocky',
+        middleNames: 'Mockable',
+        lastName: 'McMock',
+        dateOfBirth: moment().subtract(8, 'years'),
+        upn: 'F673001000200',
+        gender: 'M',
+        status: 'Complete'
+      }
+      const school = {
+        id: 99,
+        name: 'Schooly McSchool',
+        leaCode: '999',
+        estabCode: 1999,
+        dfeNumber: 9991999,
+        urn: 'URN99'
+      }
+      const markedAnswers = [
+        {id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1},
+        {id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1},
+        {id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0},
+        {id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1},
+        {id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1},
+        {id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1},
+        {id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1},
+        {id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1},
+        {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
+        {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
+      ]
+      const checkForm = Object.assign({}, checkFormMock)
+      checkForm.formData = JSON.parse(checkForm.formData)
+      const completedCheck = Object.assign({}, completedCheckMockOrig)
+
+      // Test setup: an input event without an eventType, and also add a null element
+      completedCheck.data.inputs.splice(2, 0, {
+        input: 'x',
+        clientTimestamp: '2018-02-11T15:42:42.305Z',
+        question: '2x5',
+        sequenceNumber: 1
+      })
+
+      completedCheck.checkCount = 1
+      completedCheck.checkStatus = 'Complete'
+      try {
+        const data = service.produceReportData(completedCheck, markedAnswers, pupil, checkForm, school)
+        expect(data).toBeTruthy()
+      } catch (error) {
+        fail(error)
+      }
+    })
   })
 
   describe('#generateReport', () => {
