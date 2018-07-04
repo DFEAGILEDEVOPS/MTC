@@ -9,7 +9,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    toggleAllCheckboxes: function (sel, validation) {
+    toggleAllCheckboxes: function (sel, validation, param) {
       $('#tickAllCheckboxes').on('change', function (e) {
         var validationStatus = true
         var selectAll = $('#selectAll')
@@ -27,11 +27,21 @@ $(function () {
             deselectAll.removeClass('all-hide')
             $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
             stickyBanner.toggle(validationStatus)
+            if (param) {
+              $('.multiple-choice-mtc > input:checkbox').each(function () {
+                checkboxUtil.updateSortingLink('add', param, $(this).val())
+              })
+            }
           } else {
             deselectAll.addClass('all-hide')
             selectAll.removeClass('all-hide')
             $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
             stickyBanner.toggle(false)
+            if (param) {
+              $('.multiple-choice-mtc > input:checkbox').each(function () {
+                checkboxUtil.updateSortingLink('remove', param, $(this).val())
+              })
+            }
           }
         }
       })
@@ -42,7 +52,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    selectAll: function (sel, validation) {
+    selectAll: function (sel, validation, param) {
       $('#selectAll').on('click', function (e) {
         var validationStatus
         if (validation) {
@@ -52,6 +62,11 @@ $(function () {
         $('#deselectAll').removeClass('all-hide')
         $(sel + ' > input:checkbox').attr('data-checked', true)
         stickyBanner.toggle(validationStatus || true)
+        if (param) {
+          $(sel + ' > input:checkbox').each(function () {
+            checkboxUtil.updateSortingLink('add', param, $(this).val())
+          })
+        }
       })
     },
 
@@ -60,7 +75,7 @@ $(function () {
      * @param sel
      * @param validation
      */
-    deselectAll: function (sel, validation) {
+    deselectAll: function (sel, validation, param) {
       $('#deselectAll').on('click', function (e) {
         var validationStatus
         if (validation) {
@@ -70,6 +85,11 @@ $(function () {
         $('#selectAll').removeClass('all-hide')
         stickyBanner.toggle(validationStatus || false)
         $(sel + ' > input:checkbox').attr('data-checked', null)
+        if (param) {
+          $(sel + ' > input:checkbox').each(function () {
+            checkboxUtil.updateSortingLink('add', param, $(this).val())
+          })
+        }
       })
     },
 
@@ -103,6 +123,23 @@ $(function () {
             $('#selectAll').removeClass('all-hide')
             $('#tickAllCheckboxes').prop('checked', false)
           }
+        }
+      })
+    },
+
+    /**
+     * Register the click event to save checkboxes in the `sortingLink`s.
+     * @param sel
+     * @param param
+     */
+    saveSelectedForSorting: function (sel, param) {
+      $(sel + ' > input:checkbox').on('click', function () {
+        if ($(this).val() === 'on') return // for the select/deselect all checkboxes
+
+        if ($(this).is(':checked')) {
+          checkboxUtil.updateSortingLink('add', param, $(this).val())
+        } else {
+          checkboxUtil.updateSortingLink('remove', param, $(this).val())
         }
       })
     },
@@ -228,69 +265,163 @@ $(function () {
   }
 
   /**
-   * Group filters methods.
-   * @type {{tableRowVisibility: tableRowVisibility, findActiveGroups: findActiveGroups, checkGroupCheckbox: checkGroupCheckbox, updateSortingLink: updateSortingLink}}
+   * Util methods to help manage the checkbox state.
+   * @type {{checkCheckbox: checkCheckbox, updateSortingLink: updateSortingLink, tableRowVisibility: tableRowVisibility, reselectPreviousValues: reselectPreviousValues, getQueryParam: getQueryParam, addToSortingLink: addToSortingLink, removeFromSortingLink: removeFromSortingLink}}
    */
-  var groupFilters = {
+  var checkboxUtil = {
     /**
-     * Table row visibility.
-     * @param groupIds
+     * Change checkbox status to 'checked' for passed `param`Ids.
+     * @param `param`Ids
+     * @returns {boolean}
      */
-    tableRowVisibility: function (groupIds) {
+    checkCheckbox: function (param, paramIds) {
+      if (!paramIds) { return false }
+      $('input[name="' + param + '"]').prop('checked', false).attr('data-checked', false)
+      $(paramIds).each(function (key, value) {
+        $('input[id="' + param + '-' + value + '"]').prop('checked', true).attr('data-checked', true)
+      })
+    },
+
+    /**
+     * Add a parameter to the sorting link
+     * @param link
+     * @param param
+     * @param insertParamId
+     */
+    addToSortingLink: function (link, param, insertParamId) {
+      var paramIndex = link.attr('href').indexOf(param + 'Ids=')
+      var paramLength = (param + 'Ids=').length
+
+      if (paramIndex === -1) {
+        // param not previously set in the URL, add `param`Ids=
+        var precedingElement = link.attr('href').indexOf('?') === -1 ? '?' : '&'
+        // if it's the first parameter, add it with ?, otherwise use &
+        link.attr('href', link.attr('href') + precedingElement + param + 'Ids=')
+        link.attr('href', link.attr('href') + insertParamId)
+      } else {
+        // add it after `param`Ids=, before the previous first element of `param`Ids
+        link.attr(
+          'href',
+          link.attr('href').slice(0, paramIndex + paramLength) +
+            insertParamId +
+            link.attr('href').substring(paramIndex + paramLength)
+        )
+      }
+    },
+
+    /**
+     * Remove the parameter from the link
+     * @param link
+     * @param insertParamId
+     */
+    removeFromSortingLink: function (link, insertParamId) {
+      link.attr('href', link.attr('href').replace(insertParamId, ''))
+    },
+
+    /**
+     * Update sorting link to include active parameters - group / pupil ids.
+     * @param action
+     * @param groupId
+     */
+    updateSortingLink: function (action, param, paramId) {
+      var sortingLinks = $('.sortingLink')
+
+      sortingLinks.each(function () {
+        var sortingLink = $(this)
+        var previousParams = checkboxUtil.getQueryParamFromString(sortingLink.attr('href'), param + 'Ids').split(',')
+        var insertParamId = paramId + ','
+
+        if (sortingLink.length <= 0) return // defensive programming, don't alter null links
+
+        if (action === 'add' && $.inArray(paramId, previousParams) === -1) checkboxUtil.addToSortingLink(sortingLink, param, insertParamId)
+        if (action === 'remove' && $.inArray(paramId, previousParams) !== -1) checkboxUtil.removeFromSortingLink(sortingLink, insertParamId)
+      })
+    },
+
+    /**
+     * Table row visibility for a parameter.
+     * @param param
+     * @param paramIds
+     */
+    tableRowVisibility: function (param, paramIds) {
       var sel = '.spacious > tbody > tr'
-      if (groupIds.length < 1 || groupIds[0].length < 1) {
+      if (paramIds.length < 1 || paramIds[0].length < 1) {
         $(sel).removeClass('hidden')
       } else {
         $(sel).addClass('hidden')
-        groupIds.map(function (gId) {
-          $(sel + '.group-id-' + gId).removeClass('hidden')
+        paramIds.map(function (pId) {
+          $(sel + '.' + param + '-id-' + pId).removeClass('hidden')
         })
         $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
       }
     },
 
     /**
-     * Find active groups from URL.
-     * @returns {string}
+     * Parses variable from the string provided.
+     * @param variable
      */
-    findActiveGroups: function () {
-      var url = window.location.href
-      if (url.lastIndexOf('/groupIds=') > 0) {
-        return url.substr(url.lastIndexOf('/groupIds=') + 10, url.length)
-      }
-    },
-
-    /**
-     * Change checkbox status to 'checked' for passed groupIds.
-     * @param groupIds
-     * @returns {boolean}
-     */
-    checkGroupCheckbox: function (groupIds) {
-      if (!groupIds) { return false }
-      $('input[name="group"]').prop('checked', false).attr('data-checked', false)
-      $(groupIds).each(function (key, value) {
-        $('input[id="group-' + value + '"]').prop('checked', true).attr('data-checked', true)
-      })
-    },
-
-    /**
-     * Update sorting link to include active group ids.
-     * @param action
-     * @param groupId
-     */
-    updateSortingLink: function (action, groupId) {
-      var sortingLink = $('#sortingLink')
-      var insertGroupId = groupId + ','
-      if (sortingLink.length > 0) {
-        if (action === 'add') {
-          if (sortingLink.attr('href').indexOf('groupIds=') === -1) {
-            sortingLink.attr('href', sortingLink.attr('href') + 'groupIds=')
-          }
-          sortingLink.attr('href', sortingLink.attr('href') + insertGroupId)
-        } else if (action === 'remove') {
-          sortingLink.attr('href', sortingLink.attr('href').replace(insertGroupId, ''))
+    parseQueryString: function (query, variable) {
+      var vars = query.split('&')
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=')
+        if (decodeURIComponent(pair[0]) === variable) {
+          return decodeURIComponent(pair[1]).replace(/,$/, '')
         }
       }
+      return ''
+    },
+
+    /**
+     * Gets the window query string and parses it.
+     * @param variable
+     */
+    getQueryParam: function (variable) {
+      var query = window.location.search.substring(1)
+      return checkboxUtil.parseQueryString(query, variable)
+    },
+
+    /**
+     * Gets the url from a query string and parses it.
+     * @param variable
+     */
+    getQueryParamFromString: function (querystring, variable) {
+      var searchIndex = querystring.indexOf('?')
+      if (searchIndex === -1) return '' // nothing to be parsed
+
+      return checkboxUtil.parseQueryString(querystring.substring(searchIndex + 1), variable)
+    },
+
+    /**
+    * Re-doing checked state for checkboxes when sorting
+    * @param param
+    */
+    reselectPreviousValues: function (param, updateCountedCheckboxes) {
+      var paramIds = []
+      var activeParamIds = checkboxUtil.getQueryParam(param + 'Ids')
+      if (activeParamIds) {
+        var paramIdsArr = activeParamIds.split(',')
+        paramIdsArr.map(function (p) {
+          paramIds.push(p)
+          checkboxUtil.updateSortingLink('add', param, p)
+        })
+        checkboxUtil.checkCheckbox(param, paramIdsArr)
+
+        var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+        var countAllCheckboxes = inputStatus.countCheckboxes()
+
+        if (updateCountedCheckboxes) {
+          if (countCheckedCheckboxes === 0 || countCheckedCheckboxes < countAllCheckboxes) {
+            $('#deselectAll').addClass('all-hide')
+            $('#selectAll').removeClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', false)
+          } else {
+            $('#deselectAll').removeClass('all-hide')
+            $('#selectAll').addClass('all-hide')
+            $('#tickAllCheckboxes').prop('checked', true)
+          }
+        }
+      }
+      return paramIds
     }
   }
 
@@ -425,11 +556,13 @@ $(function () {
   }
 
   if ($('#pupilsList').length > 0) {
-    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
-    inputStatus.selectAll('.multiple-choice-mtc')
-    inputStatus.deselectAll('.multiple-choice-mtc')
+    checkboxUtil.reselectPreviousValues('pupil', true)
+    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm, 'pupil')
+    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
+    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#pupilsRestartList').length > 0) {
@@ -441,10 +574,12 @@ $(function () {
   }
 
   if ($('#generatePins').length > 0) {
-    inputStatus.toggleAllCheckboxes('#generatePins')
-    inputStatus.selectAll('.multiple-choice-mtc')
-    inputStatus.deselectAll('.multiple-choice-mtc')
+    checkboxUtil.reselectPreviousValues('pupil', true)
+    inputStatus.toggleAllCheckboxes('#generatePins', false, 'pupil')
+    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
+    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#assignFormToWindowList').length > 0) {
@@ -469,30 +604,20 @@ $(function () {
    * Filtering pupils by group.
    */
   if ($('#filterByGroup').length > 0) {
-    var groupIds = []
-    var activeGroupsIds = groupFilters.findActiveGroups()
-
-    if (activeGroupsIds) {
-      $('#filter-content').removeClass('hidden')
-      var groupIdsArr = decodeURIComponent(activeGroupsIds).split(',')
-      groupIdsArr.map(function (g) {
-        groupIds.push(g)
-      })
-      groupFilters.checkGroupCheckbox(groupIdsArr)
-      groupFilters.tableRowVisibility(groupIdsArr)
-    }
+    var groupIds = checkboxUtil.reselectPreviousValues('group')
+    checkboxUtil.tableRowVisibility('group', groupIds)
 
     $('#filterByGroup input:checkbox').on('click', function (e) {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
         groupIds.push($(this).val())
-        groupFilters.updateSortingLink('add', $(this).val())
+        checkboxUtil.updateSortingLink('add', 'group', $(this).val())
       } else {
         $(this).attr('data-checked', false)
         groupIds.splice($.inArray($(this).val(), groupIds), 1)
-        groupFilters.updateSortingLink('remove', $(this).val())
+        checkboxUtil.updateSortingLink('remove', 'group', $(this).val())
       }
-      groupFilters.tableRowVisibility(groupIds)
+      checkboxUtil.tableRowVisibility('group', groupIds)
 
       /* Sticky banner interaction */
       stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
