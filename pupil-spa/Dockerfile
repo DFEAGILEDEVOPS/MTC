@@ -23,12 +23,17 @@ ARG check_started_url=http://localhost:3001/api/check-started
 # ARG check_started_url=http://localhost:3004/submit
 ARG check_submission_url=http://localhost:3001/api/completed-check
 # ARG check_submission_url=http://localhost:3005/submit
+ARG runtime_config_url=/public/config.json
+
 ARG ga_code
 ENV API_URL=$api_url
 ENV AUTH_URL=$auth_url
 ENV CHECK_STARTED_URL=$check_started_url
 ENV CHECK_SUBMISSION_URL=$check_submission_url
 ENV GA_CODE=$ga_code
+ENV RUNTIME_CONFIG_URL=$runtime_config_url
+
+RUN $(npm bin)/gulp setRuntimeConfigURL
 
 ## Build the angular app in production mode and store the artifacts in dist folder
 RUN $(npm bin)/ng build --prod
