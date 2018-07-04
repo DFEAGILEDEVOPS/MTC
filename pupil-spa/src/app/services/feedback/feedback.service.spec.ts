@@ -1,8 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { APP_INITIALIZER } from '@angular/core';
 import { HttpModule, Response, ResponseOptions, XHRBackend } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { FeedbackService } from './feedback.service';
 import { StorageService } from '../storage/storage.service';
+import { AppConfigService, loadConfigMockService } from '../config/config.service';
 
 let feedbackService: FeedbackService;
 let storageService: StorageService;
@@ -14,6 +16,8 @@ describe('FeedService', () => {
     const injector = TestBed.configureTestingModule({
       imports: [HttpModule],
       providers: [
+        AppConfigService,
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         FeedbackService,
         StorageService,
         { provide: XHRBackend, useClass: MockBackend }

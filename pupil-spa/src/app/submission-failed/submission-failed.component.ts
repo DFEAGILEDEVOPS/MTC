@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angula
 import { CheckSubmissionFailed } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { environment } from '../../environments/environment';
+import { APP_CONFIG } from '../services/config/config.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
@@ -23,7 +23,7 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
               private questionService: QuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef) {
-    this.supportNumber = environment.supportNumber;
+    this.supportNumber = APP_CONFIG.supportNumber;
     this.window = windowRefService.nativeWindow;
   }
 

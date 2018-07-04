@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
-import { environment } from '../environments/environment';
+import { APP_CONFIG } from './services/config/config.service';
 
 // import { NGXLogger } from 'ngx-logger';
 
@@ -23,8 +23,8 @@ export class AppComponent {
 
   constructor(protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics, protected windowRefService: WindowRefService) {
     this.window = windowRefService.nativeWindow;
-    if (environment.googleAnalyticsTrackingCode) {
-      this.window.ga('create', environment.googleAnalyticsTrackingCode, 'auto');
+    if (APP_CONFIG.googleAnalyticsTrackingCode) {
+      this.window.ga('create', APP_CONFIG.googleAnalyticsTrackingCode, 'auto');
     }
   }
 }
