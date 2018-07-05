@@ -253,6 +253,13 @@ app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
 
+// catch CSRF errors
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+  res.redirect('back')
+})
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   let err = new Error('Not Found')
