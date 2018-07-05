@@ -5,6 +5,8 @@ const moment = require('moment')
 const momentDurationFormatSetup = require('moment-duration-format')
 const winston = require('winston')
 const useragent = require('useragent')
+const device = require('device')
+const hash = require('object-hash')
 
 momentDurationFormatSetup(moment)
 
@@ -53,24 +55,28 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
   const openTouchAndMouseEvents = []
   const clickEvents = []
   const output = []
-  const touchCount = inputEvents.filter(event => event.eventType === 'touchstart').length
-  const mouseCount = inputEvents.filter(event => event.eventType === 'mousedown').length
+  const touchCount = inputEvents.filter(event => R.propEq('eventType', 'touchstart', event)).length
+  const mouseCount = inputEvents.filter(event => R.propEq('eventType', 'mousedown', event)).length
 
   for (let event of inputEvents) {
-    if (event.eventType === 'touchstart' || event.eventType === 'mousedown') {
+    if (event === null || event === undefined) {
+      winston.info(`psUtilService.cleanUpInputEvents: empty event found`)
+      continue
+    }
+    const eventType = R.prop('eventType', event)
+    if (eventType === 'touchstart' || eventType === 'mousedown') {
       // check to see if what we have inputs in the click buffer and touch/mouse buffers
       clearBuffers(clickEvents, openTouchAndMouseEvents, output)
       openTouchAndMouseEvents.push(event)
       continue
     }
 
-    if (event.eventType === 'click' && openTouchAndMouseEvents.length > 0) {
+    if (eventType === 'click' && openTouchAndMouseEvents.length > 0) {
       clickEvents.push(event)
-    } else if (event.eventType === 'click') {
+    } else if (eventType === 'click') {
       // A single click without any context.  Possibly the header is lost.
       if (touchCount > mouseCount) {
         // We take an educated guess as to what kind of click it is
-        // This guess would be more
         const newEvent = R.clone(event)
         newEvent.eventType = 'touch' // It's more likely to be a touch event
         output.push(newEvent)
@@ -78,7 +84,7 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
         // It will be treated, rightly or wrongly, as a mouse click
         output.push(R.clone(event))
       }
-    } else if (event.eventType === 'keydown') {
+    } else if (eventType === 'keydown') {
       clearBuffers(clickEvents, openTouchAndMouseEvents, output)
       output.push(event)
     }
@@ -90,16 +96,25 @@ psUtilService.cleanUpInputEvents = function (inputEvents) {
 }
 
 /**
- * Function used in `cleanUpInputEvents()`  add the clientTimestamp to the click event
+ * Function used in `cleanUpInputEvents()` add the clientTimestamp to the click event
  * @param touchOrMouseEvent
  * @param clickEvent
  * @return {{input, eventType: string, clientTimestamp: *, question}}
  */
 function mergeEvents (touchOrMouseEvent, clickEvent) {
+  let eventType = clickEvent.eventType
+  if (touchOrMouseEvent) {
+    if (touchOrMouseEvent.eventType === 'touchstart') {
+      eventType = 'touch'
+    } else {
+      eventType = 'click'
+    }
+  }
+
   const clientTimestamp = touchOrMouseEvent ? touchOrMouseEvent.clientTimestamp : clickEvent.clientTimestamp
   const newEvent = {
     input: clickEvent.input,
-    eventType: touchOrMouseEvent.eventType === 'touchstart' ? 'touch' : 'click',
+    eventType,
     clientTimestamp,
     question: clickEvent.question
   }
@@ -113,12 +128,14 @@ function mergeEvents (touchOrMouseEvent, clickEvent) {
  * @param output
  */
 function clearBuffers (clickEvents, openTouchAndMouseEvents, output) {
+  const buffer = []
   while (clickEvents.length) {
     const clickEvent = clickEvents.pop()
     const touchOrMouseEvent = openTouchAndMouseEvents.pop()
     const newEvent = mergeEvents(touchOrMouseEvent, clickEvent)
-    output.push(newEvent)
+    buffer.push(newEvent)
   }
+  Array.prototype.push.apply(output, buffer.reverse())
 }
 
 /**
@@ -340,19 +357,41 @@ psUtilService.getScore = function (markedAnswer) {
   return markedAnswer.isCorrect ? 1 : 0
 }
 
-psUtilService.getDevice = function (userAgent) {
+/**
+ * Parses the useragent and returns a type and model for  devices,
+ * with model being 'Other' for desktop devices
+ * `device` is a wrapper over `useragent` which simplifies type/model parsing
+ *
+ * @param userAgent
+ * @return {object}
+ */
+psUtilService.getDeviceTypeAndModel = function (userAgent) {
   if (!userAgent) {
-    return ''
+    return { type: '', model: '' }
   }
-  const agent = useragent.parse(userAgent)
-  return agent.device.toString().replace('0.0.0', '').trim()
+  const { type, model } = device(userAgent, { parseUserAgent: true })
+  return { type, model }
+}
+
+/**
+ * Generates a unique identifier for a device from its characteristics that don't change
+ *
+ * @param deviceOptions
+ * @return {string}
+ */
+psUtilService.getDeviceId = function (deviceOptions) {
+  if (!deviceOptions) return ''
+  const uniqueOptions = R.pick(['cpu', 'navigator'], deviceOptions)
+  if (R.isEmpty(uniqueOptions)) return ''
+
+  return hash(uniqueOptions)
 }
 
 psUtilService.getBrowser = function (userAgent) {
   if (!userAgent) {
     return ''
   }
-  const agent = useragent.parse(userAgent)
+  const agent = useragent.lookup(userAgent)
   return agent.toString()
 }
 

@@ -1,2 +1,5 @@
 exclude_paths:
   - '**.sql'
+  - '/spike-bus-worker/'
+  - '/spike-storage-queue/'
+  - '/spike-worker/'

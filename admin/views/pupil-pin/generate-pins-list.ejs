@@ -14,6 +14,8 @@
             <h1 class="heading-xlarge">Select pupils to generate pupil PINs</h1>
         </header>
 
+        <%- partial('partials/_session_expiry') %>
+
         <%- partial('partials/_groups_filter', { groups: groups }) %>
 
         <form method="post" action="/pupil-pin/generate-pins" method="post" autocomplete="off">
@@ -23,7 +25,7 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a id="sortingLink" href="/pupil-pin/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>/<%= groupIds %>">
+                        <a class="sortingLink" href="/pupil-pin/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>/<%= groupIds %>">
                             Pupil <span class="<%= arrowSortDirection.lastName %>"></span>
                         </a>
                     </th>

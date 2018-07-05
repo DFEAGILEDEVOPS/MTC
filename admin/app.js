@@ -140,7 +140,7 @@ const sessionOptions = {
   rolling: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1200000, // Expire after 20 minutes inactivity
+    maxAge: config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000,
     httpOnly: true,
     secure: secureCookie
   },
@@ -223,7 +223,6 @@ app.use(function (req, res, next) {
   res.locals.messages = req.flash()
   next()
 })
-
 
 app.use('/api/questions', questions)
 app.use('/api/pupil-feedback', pupilFeedback)

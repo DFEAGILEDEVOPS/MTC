@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeEach spyOn */
+/* global describe it expect beforeEach spyOn fail */
 const winston = require('winston')
 const service = require('../../services/psychometrician-util.service')
 
@@ -103,6 +103,18 @@ describe('psychometrician-util.service', () => {
           eventType: 'click',
           clientTimestamp: '2018-03-07T10:53:46.068Z',
           question: 1
+        },
+        {
+          input: '',
+          eventType: 'touchstart',
+          clientTimestamp: '2018-03-07T10:53:47.981Z',
+          question: 1
+        },
+        {
+          input: '9',
+          eventType: 'click',
+          clientTimestamp: '2018-03-07T10:53:47.068Z',
+          question: 1
         }
       ]
 
@@ -133,7 +145,12 @@ describe('psychometrician-util.service', () => {
       describe('touch events', () => {
         it('filters the touchstart and click events into a single object', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
-          expect(output.length).toBe(1)
+          expect(output.length).toBe(2)
+        })
+        it('puts the events in the right order', () => {
+          const output = service.cleanUpInputEvents(simpleTouch)
+          expect(output[0].input).toBe('8')
+          expect(output[1].input).toBe('9')
         })
         it('uses the timestamp of the touchstart event', () => {
           const output = service.cleanUpInputEvents(simpleTouch)
@@ -580,6 +597,50 @@ describe('psychometrician-util.service', () => {
         expect(output[3].clientTimestamp).toBe('2018-03-07T10:52:47.951Z')
       })
     })
+
+    describe('prod-issue-1 : unbalanced clicks and header events', () => {
+      const input = [
+        {
+          'input': 'left click',
+          'eventType': 'mousedown',
+          'clientTimestamp': '2018-06-28T08:51:15.591Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        },
+        {
+          'input': '2',
+          'eventType': 'click',
+          'clientTimestamp': '2018-06-28T08:51:15.683Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        },
+        {
+          'input': '5',
+          'eventType': 'click',
+          'clientTimestamp': '2018-06-28T08:51:15.688Z',
+          'question': '4x9',
+          'sequenceNumber': 17
+        }
+      ]
+
+      it('returns without error', () => {
+        try {
+          const output = service.cleanUpInputEvents(input)
+          expect(output).toBeTruthy()
+          expect(output.length).toBe(2)
+          // In the output above you might assume that the first click would get the timestamp
+          // of the first header, but that would mean that there would only be 5ms for the user to click
+          // the second button - unlikely?
+          // In this case we have clearly lost input (one of the headers) so we end up in a crazy situation
+          // where the second click has a timestamp earlier than the first click.
+          expect(output[0].clientTimestamp).toBe('2018-06-28T08:51:15.683Z')
+          // Expect the 2nd click to have the altered timestamp
+          expect(output[1].clientTimestamp).toBe('2018-06-28T08:51:15.591Z')
+        } catch (error) {
+          fail(error)
+        }
+      })
+    })
   })
 
   describe('#getUserInput', () => {
@@ -962,27 +1023,65 @@ describe('psychometrician-util.service', () => {
     })
   })
 
-  describe('#getDevice', () => {
+  describe('#getDeviceTypeAndModel', () => {
     // NB - UA strings are from `useragent`
     it('returns the device type for a MBP', () => {
-      const device = service.getDevice('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
-      expect(device).toBe('Other')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6')
+      expect(device).toEqual({ type: 'desktop', model: 'Other' })
     })
     it('returns the device type for an 10.5 inch iPad Pro running iOS 11.2', () => {
-      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
-      expect(device).toBe('iPad')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (iPad; CPU OS 11_2 like Mac OS X) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0 Mobile/15C107 Safari/604.1')
+      expect(device).toEqual({ type: 'tablet', model: 'iPad' })
     })
     it('returns the device type for an iPad Air running iOS 10.3.1', () => {
-      const device = service.getDevice('Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1')
-      expect(device).toBe('iPad')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (iPad; CPU OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E8301 Safari/602.1')
+      expect(device).toEqual({ type: 'tablet', model: 'iPad' })
     })
     it('returns the device type for an Nexus 7 running android', () => {
-      const device = service.getDevice('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30D) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Safari/537.36')
-      expect(device).toBe('Asus Nexus 7')
+      const device = service.getDeviceTypeAndModel('Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30D) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Safari/537.36')
+      expect(device).toEqual({ type: 'tablet', model: 'Asus Nexus 7' })
     })
     it('returns an empty string if the useragent string is not provided', () => {
-      const device = service.getDevice(null)
-      expect(device).toBe('')
+      const device = service.getDeviceTypeAndModel(null)
+      expect(device).toEqual({ type: '', model: '' })
+    })
+  })
+
+  describe('#getDeviceId', () => {
+    it('returns the device type for complete device options', () => {
+      const deviceId = service.getDeviceId({
+        cpu: { hardwareConcurrency: 4 },
+        navigator: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6',
+          platform: 'x86',
+          language: 'en-GB',
+          cookieEnabled: true,
+          doNotTrack: false
+        }
+      })
+      expect(deviceId).toBe('218fa19a14790e4be6144717543907bc547fe86f')
+    })
+
+    it('ignores non-changing device options', () => {
+      const deviceId = service.getDeviceId({
+        cpu: 1,
+        navigator: 2
+      })
+
+      const deviceId2 = service.getDeviceId({
+        cpu: 1,
+        navigator: 2,
+        screen: 3
+      })
+      expect(deviceId).toBe(deviceId2)
+    })
+
+    it('returns an empty string if there are no non-changing device options', () => {
+      const deviceId = service.getDeviceId(undefined)
+      expect(deviceId).toBe('')
+
+      const deviceId2 = service.getDeviceId({ screen: 1 })
+      expect(deviceId2).toBe('')
     })
   })
 

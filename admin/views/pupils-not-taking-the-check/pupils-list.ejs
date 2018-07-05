@@ -15,6 +15,8 @@
         <div class="column-two-thirds">
             <h1 class="heading-xlarge" id="heading-xlarge">Select pupils not taking the check</h1>
 
+            <%- partial('partials/_session_expiry') %>
+
             <br />
 
             <% if (attendanceCodes && attendanceCodes.length > 1) { %>
@@ -83,10 +85,10 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a id="sortingLink" href="/pupils-not-taking-the-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
+                        <a class="sortingLink" href="/pupils-not-taking-the-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
                     </th>
                     <th scope="col">
-                        <a href="/pupils-not-taking-the-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
+                        <a class="sortingLink" href="/pupils-not-taking-the-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
                     </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
