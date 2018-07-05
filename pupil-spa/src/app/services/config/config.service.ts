@@ -27,7 +27,7 @@ export class AppConfig {
 export let APP_CONFIG: AppConfig;
 
 /**
- * Exported function so that it works with AOT
+ * Exported function -- to work with AOT
  * @param {AppConfigService} configService
  * @returns {Function}
  */
@@ -58,6 +58,9 @@ export class AppConfigService {
   constructor(private http: HttpClient) {
   }
 
+  /**
+   * Parse the config file through http, throw a Server error if unavailable
+   */
   public load(): Promise<Boolean> {
     return new Promise((resolve, reject) => {
       this.http.get('/public/config.json').catch((error: any): any => {

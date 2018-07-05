@@ -25,6 +25,10 @@ ARG check_submission_url=http://localhost:3001/api/completed-check
 # ARG check_submission_url=http://localhost:3005/submit
 ARG runtime_config_url=/public/config.json
 
+## The config will be loaded at runtime from this path / URL, but
+# this path needs to be set at build time. It can be an external
+# URL too, as long as it's accessible through http
+
 ARG ga_code
 ENV API_URL=$api_url
 ENV AUTH_URL=$auth_url
