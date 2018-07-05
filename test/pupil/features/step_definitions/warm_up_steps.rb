@@ -55,3 +55,9 @@ end
 Then(/^I should see the total number of warm up questions$/) do
   expect(warm_up_page.welcome_message.text.scan(/\d+/).first.to_i).to eql 3
 end
+
+
+Then(/^I should see the warm up complete page meets design$/) do
+  step 'I should see a warm up complete heading'
+  step 'I should see a way to start the check'
+end

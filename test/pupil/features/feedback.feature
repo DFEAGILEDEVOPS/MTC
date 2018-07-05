@@ -4,10 +4,8 @@ Feature: Feedback page
   Scenario: Users can submit their feedback
     Given I am on the complete page
     When I choose to give feedback
-    And I have provided my feedback
-    Then I should be able to submit my feedback
-    And I should be shown the thanks page
-    And my feedback should be saved
+    And I submit my feedback
+    Then my feedback should be saved
 
   Scenario: Users cannot submit feedback if they have not entered a method of entry
     Given I am on the complete page

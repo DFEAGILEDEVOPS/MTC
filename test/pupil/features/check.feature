@@ -8,14 +8,13 @@ Feature: Check questions
   Scenario: Check page has a question and a timer
     Given I have started the check
     When the loading screen has expired
-    Then I should see a question
-    And I should see a timer
+    Then I should see the question and timer
 
   Scenario: Question should display for configured number of seconds
     Given I have started the check
     When the loading screen has expired
     Then the question should display for the configured number of seconds
-    Then I should be moved to the next question
+    And I should be moved to the next question
 
   Scenario: Route remains /check during the check
     Given I have started the check

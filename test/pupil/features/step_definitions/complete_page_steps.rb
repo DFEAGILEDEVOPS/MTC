@@ -19,3 +19,9 @@ end
 Then(/^I should be taken back to the sign in page$/) do
   expect(sign_in_page).to be_displayed
 end
+
+
+Then(/^I should see the complete page which matches design$/) do
+  step 'I should see a complete page heading'
+  step 'I should see some text stating i have completed the check'
+end
