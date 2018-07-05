@@ -8,7 +8,7 @@ const { isEmpty, isInt } = require('validator')
 /**
  * Validates check window check start date data
  * @param {Object} validationError
- * @param {String} checkStartDateData
+ * @param {Object} checkStartDateData
  */
 module.exports.validate = (validationError, checkStartDateData) => {
   const currentYear = moment.utc().format('YYYY')

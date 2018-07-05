@@ -8,13 +8,13 @@ const { isEmpty, isInt } = require('validator')
 /**
  * Validates check window check end date data
  * @param {Object} validationError
- * @param {String} checkEndDateData
+ * @param {Object} checkEndDateData
  */
 module.exports.validate = (validationError, checkEndDateData) => {
   const currentYear = moment.utc().format('YYYY')
   // Check end day
   if (isEmpty(checkEndDateData.checkEndDay.trim())) {
-    validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayWrongDay)
+    validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayRequired)
   }
   if (!isInt(checkEndDateData.checkEndDay, { min: 1, max: 31 })) {
     validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayWrongDay)
@@ -43,6 +43,6 @@ module.exports.validate = (validationError, checkEndDateData) => {
     validationError.addError('checkEndYear', checkWindowErrorMessages.enterValidYear)
   }
   if (!XRegExp('^[0-9]+$').test(checkEndDateData.checkEndYear)) {
-    validationError.addError('checkEndMonth', checkWindowErrorMessages.checkEndYearInvalidChars)
+    validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
   }
 }
