@@ -15,6 +15,7 @@ router.get('/check-windows/edit/:id', isAuthenticated(rolesConfig.ROLE_SERVICE_M
 router.get('/check-windows/:sortField/:sortDirection', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getCheckWindows(req, res, next))
 router.get('/check-windows/:sortField/:sortDirection/:error', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getCheckWindows(req, res, next))
 router.post('/check-windows/save', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.saveCheckWindow(req, res, next))
+router.post('/check-windows/submit', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.submitCheckWindow(req, res, next))
 router.get('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
 router.get('/check-settings/:status', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
 router.post('/check-settings', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => serviceManagerController.setUpdateTiming(req, res, next))

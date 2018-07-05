@@ -1,9 +1,12 @@
 /* global jasmine describe expect it beforeEach spyOn */
+/* global jasmine describe expect it beforeEach spyOn */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../controllers/service-manager')
 const settingService = require('../../services/setting.service')
 const checkWindowService = require('../../services/check-window.service')
 const pupilCensusService = require('../../services/pupil-census.service')
+const checkWindowAddService = require('../../services/check-window-add.service')
+const checkWindowEditService = require('../../services/check-window-edit.service')
 const settingsValidator = require('../../lib/validator/settings-validator')
 const checkWindowValidator = require('../../lib/validator/check-window-validator')
 const ValidationError = require('../../lib/validation-error')
@@ -261,6 +264,117 @@ describe('service manager controller:', () => {
       })
     })
   })
+
+  describe('getCheckWindowEditForm', () => {
+    let goodReqParams = {
+      method: 'GET',
+      url: '/service-manager/check-windows/edit/1',
+      params: {
+        id: 1
+      }
+    }
+
+    it('calls render after fetching editable check window form', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowService, 'getEditableCheckWindow')
+        .and.returnValue({id: 1, adminIsDisabled: true, checkStartIsDisabled: true})
+      spyOn(res, 'render')
+      await controller.getCheckWindowEditForm(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+    })
+    it('throws an error when fetching editable window form call is rejected', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowService, 'getEditableCheckWindow').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(res, 'render')
+      await controller.getCheckWindowEditForm(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('submitCheckWindow', () => {
+    const goodReqAddParams = {
+      method: 'POST',
+      url: '/service-manager/check-windows/submit',
+      body: {}
+    }
+    const goodReqEditParams = {
+      method: 'POST',
+      url: '/service-manager/check-windows/submit',
+      body: {
+        checkWindowId: 1
+      }
+    }
+
+    it('calls checkWindowAddService process method and redirects after successfully adding', async () => {
+      const res = getRes()
+      const req = getReq(goodReqAddParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowAddService, 'process')
+      await controller.submitCheckWindow(req, res, next)
+      expect(checkWindowAddService.process).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('calls checkWindowEditService process method and redirects after successfully adding', async () => {
+      const res = getRes()
+      const req = getReq(goodReqEditParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowEditService, 'process')
+      await controller.submitCheckWindow(req, res, next)
+      expect(checkWindowEditService.process).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('calls getCheckWindowEditForm when checkWindowEditService process throws a validation error', async () => {
+      const res = getRes()
+      const req = getReq(goodReqEditParams)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      const error = new Error('error')
+      error.name = 'ValidationError'
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
+      }
+      const rejection = unsafeReject(Promise.reject(error))
+      spyOn(checkWindowEditService, 'process').and.returnValue(rejection)
+      spyOn(controller, 'getCheckWindowEditForm')
+      try {
+        await controller.submitCheckWindow(req, res, next)
+      } catch (error) {
+        expect(error.name).toBe('ValidationError')
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(controller.getCheckWindowEditForm).toHaveBeenCalled()
+    })
+    it('calls render when checkWindowAddService process throws a non validation error', async () => {
+      const res = getRes()
+      const req = getReq(goodReqAddParams)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      const error = new Error('error')
+      error.name = 'OtherError'
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
+      }
+      const rejection = unsafeReject(Promise.reject(error))
+      spyOn(checkWindowEditService, 'process').and.returnValue(rejection)
+      try {
+        await controller.submitCheckWindow(req, res, next)
+      } catch (error) {
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
   describe('getUploadPupilCensus', () => {
     let goodReqParams = {
       method: 'GET',

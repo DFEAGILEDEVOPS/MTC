@@ -10,6 +10,8 @@ const checkWindowService = require('../services/check-window.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
 const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
+const checkWindowAddService = require('../services/check-window-add.service')
+const checkWindowEditService = require('../services/check-window-edit.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -281,6 +283,63 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+    return res.redirect('/service-manager/check-windows')
+  },
+
+  /**
+   * Edit check window form.
+   * @param req
+   * @param res
+   * @param next
+   * @param error
+   * @returns {Promise.<void>}
+   */
+
+  getCheckWindowEditForm: async (req, res, next, error = null) => {
+    req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
+    res.locals.pageTitle = 'Edit check window'
+    let checkWindowData
+    try {
+      checkWindowData = await checkWindowService.getEditableCheckWindow(req.params.id)
+    } catch (error) {
+      return next()
+    }
+    res.render('service-manager/check-window-form', {
+      error: error || new ValidationError(),
+      breadcrumbs: req.breadcrumbs(),
+      checkWindowData,
+      successfulPost: false,
+      actionName: 'Create',
+      urlActionName: 'add',
+      currentYear: moment(Date.now()).format('YYYY'),
+    })
+  },
+
+  /**
+   * Submit check window (add/edit).
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  submitCheckWindow: async (req, res, next) => {
+    const requestData = req.body
+    let flashMessage
+    try {
+      if (!requestData.checkWindowId) {
+        await checkWindowAddService.process(requestData)
+        flashMessage = `${requestData.checkWindowName} has been created`
+      } else {
+        await checkWindowEditService.process(requestData)
+        flashMessage = 'Changes have been saved'
+      }
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        return controller.getCheckWindowEditForm(req, res, next, error)
+      }
+      return next(error)
+    }
+    req.flash('info', flashMessage)
     return res.redirect('/service-manager/check-windows')
   },
 
