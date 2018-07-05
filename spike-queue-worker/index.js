@@ -2,13 +2,54 @@
 
 require('dotenv').config()
 const config = require('./config')
-let jobCount = 0
+const azureStorage = require('azure-storage')
+const winston = require('winston')
 
-// example of node single thread worker that executes at specified interval
-// could check the job table for new jobs and invoke import of data
+const expRetryFilter = new azureStorage.ExponentialRetryPolicyFilter()
+const qService = azureStorage.createQueueService().withFilter(expRetryFilter)
+const qName = 'sastest'
+let initialOperation = ''
 
-function checkQueue () {
-  console.log(`running job ${jobCount++}`)
+qService.createQueueIfNotExists(qName, function (error, results, response) {
+  if (!error) {
+    if (results.created) {
+      initialOperation = 'created'
+    } else {
+      initialOperation = 'connected to'
+    }
+    winston.info(`${initialOperation} ${qName} queue. Polling every ${config.pollInterval}ms`)
+    try {
+      bind()
+    } catch (error) {
+      winston.error(`error binding main worker function: ${error}`)
+    }
+  }
+})
+
+function bind () {
+  setInterval(main.bind(null), config.pollInterval)
 }
-console.log(`setting queue poll interval to ${config.pollInterval}`)
-setInterval(checkQueue.bind(null), config.pollInterval)
+
+function main () {
+  winston.info(`polling queue...`)
+  qService.getMessages(qName, function (error, results, response) {
+    if (!error) {
+      // Message text is in results[0].messageText
+      const message = results[0]
+      let messageText
+      if (message.messageText) {
+        messageText = Buffer.from(messageText, 'base64')
+      } else {
+        messageText = 'no text'
+      }
+      winston.info(`message collected: ${messageText}`)
+      qService.deleteMessage(qName, message.messageId, message.popReceipt, function (error, response) {
+        if (!error) {
+          winston.info('message deleted successfully')
+        } else {
+          winston.error(`unable to delete message:${error}`)
+        }
+      })
+    }
+  })
+}

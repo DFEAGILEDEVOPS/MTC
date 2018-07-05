@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "dotenv": "^6.0.0"
+    "dotenv": "^6.0.0",
+    "winston": "^3.0.0"
   }
 }
