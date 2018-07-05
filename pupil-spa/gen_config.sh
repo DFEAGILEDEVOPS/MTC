@@ -1,3 +1,4 @@
+#!/bin/bash
 apiUrl=${API_URL:-"http://localhost:3001"}
 authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
 checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
@@ -10,6 +11,12 @@ checkSubmissionAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"10"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
 supportNumber=${SUPPORT_NUMBER:-"0345 278 8080"}
 gaCode=${GA_CODE:-"null"}
+if [ $gaCode == "null" ]
+then
+    gaCodeParsed="null"
+else
+    gaCodeParsed="\"$gaCode\""
+fi
 
 cat <<EOF > config.json
 {
@@ -24,6 +31,6 @@ cat <<EOF > config.json
   "checkSubmissionAPIErrorMaxAttempts": $checkSubmissionAPIErrorMaxAttempts,
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
-  "googleAnalyticsTrackingCode": $gaCode
+  "googleAnalyticsTrackingCode": $gaCodeParsed
 }
 EOF
