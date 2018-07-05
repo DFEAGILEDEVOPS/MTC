@@ -16,7 +16,7 @@
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
     "copygovukelements": "node tools/copyGovukElements",
     "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
-    "genconfig": "bash gen_config.sh && mv config.json > src/public"
+    "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
     "@angular/animations": "^5.2.9",
