@@ -2,21 +2,9 @@
 Feature:
   Create check window
 
-  Scenario: Users can name a check window
+  Scenario: Create check window Page should display all fields as per design
     Given I am on the create a check window page
-    Then I should be able to name the window
-
-  Scenario: Users can enter a admin start date
-    Given I am on the create a check window page
-    Then I should be able to enter a admin start date
-
-  Scenario: Users can enter a check start date
-    Given I am on the create a check window page
-    Then I should be able to enter a check start date
-
-  Scenario: Users can enter a check end date
-    Given I am on the create a check window page
-    Then I should be able to enter a check end date
+    Then create check window page should display all fields as per design
 
   Scenario: Users can create a check window
     Given I am on the create a check window page

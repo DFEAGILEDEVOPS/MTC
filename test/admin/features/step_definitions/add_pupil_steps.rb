@@ -199,15 +199,18 @@ Then(/^I should be taken to the add pupil page$/) do
   expect(add_pupil_page).to be_displayed
 end
 
-Then(/^there should be a toggle that informs me what a upn is$/) do
+Then(/^I can see add pupil page as per the design$/) do
+  expect(@page).to have_first_name
+  expect(@page).to have_middle_name
+  expect(@page).to have_last_name
+  expect(@page).to have_upn
+  expect(@page).to have_day
+  expect(@page).to have_month
+  expect(@page).to have_year
+  expect(@page).to have_female
+  expect(@page).to have_male
   expect(@page).to have_what_is_upn
-end
-
-Then(/^there should be text in the what a upn is section$/) do
   expect(@page.what_is_upn).to have_explanatory_text
-end
-
-Then(/^I should see a link to more details in the what is a upn section$/) do
   expect(@page.what_is_upn).to have_more_details
 end
 

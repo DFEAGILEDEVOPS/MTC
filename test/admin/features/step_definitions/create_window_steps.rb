@@ -12,23 +12,17 @@ Given(/^I am on the create a check window page$/) do
   manage_check_window_page.create_new_window.click
 end
 
-Then(/^I should be able to name the window$/) do
+Then(/^create check window page should display all fields as per design$/) do
   expect(add_edit_check_window_page).to have_check_name
-end
 
-Then(/^I should be able to enter a admin start date$/) do
   expect(add_edit_check_window_page).to have_admin_start_day
   expect(add_edit_check_window_page).to have_admin_start_month
   expect(add_edit_check_window_page).to have_admin_start_year
-end
 
-Then(/^I should be able to enter a check start date$/) do
   expect(add_edit_check_window_page).to have_check_start_day
   expect(add_edit_check_window_page).to have_check_start_month
   expect(add_edit_check_window_page).to have_check_start_year
-end
 
-Then(/^I should be able to enter a check end date$/) do
   expect(add_edit_check_window_page).to have_check_end_day
   expect(add_edit_check_window_page).to have_check_end_month
   expect(add_edit_check_window_page).to have_check_end_year
