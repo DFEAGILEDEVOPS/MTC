@@ -18,7 +18,7 @@ module.exports.validate = (checkWindowData) => {
   let adminStartDate
   let checkStartDate
   let checkEndDate
-  const currentDate = moment.utc().format('YYYY-MM-D')
+  const currentDate = moment.utc()
 
   const validationError = new ValidationError()
   const checkWindowName = R.pick(['checkWindowName'], checkWindowData)
@@ -43,7 +43,7 @@ module.exports.validate = (checkWindowData) => {
   }
   checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkEndDay'],
     checkWindowData['checkEndMonth'], checkWindowData['checkEndYear'])
-  if (checkEndDate !== undefined && checkEndDate.isValid() === false) {
+  if (!checkEndDate) {
     validationError.addError('checkEndDateInvalid', true)
   }
 
@@ -63,15 +63,8 @@ module.exports.validate = (checkWindowData) => {
   if (checkEndDate && moment(currentDate).isAfter(checkEndDate)) {
     validationError.addError('checkEndDateInThePast', moment(currentDate).isAfter(checkEndDate))
   }
-
-  if (!checkEndDate) {
-    return validationError
-  }
-  if (moment(checkEndDate).isBefore(checkStartDate)) {
+  if (checkEndDate && moment(checkEndDate).isBefore(checkStartDate)) {
     validationError.addError('checkEndDateBeforeStartDate', true)
-  }
-  if (moment(currentDate).isAfter(checkEndDate)) {
-    validationError.addError('checkEndDateInThePast', true)
   }
   return validationError
 }
