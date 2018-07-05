@@ -23,9 +23,7 @@ const init = (app) => {
     winston.info(`logdna transport enabled for ${options.hostname}`)
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    winston.level = 'debug'
-  }
+  winston.level = config.Logging.LogLevel
 
   if (config.Logging.Express.UseWinston === 'true') {
     /**
@@ -55,7 +53,8 @@ const init = (app) => {
     const aiLogger = require('winston-azure-application-insights').AzureApplicationInsightsLogger
 
     winston.add(aiLogger, {
-      key: config.Logging.ApplicationInsights.Key
+      key: config.Logging.ApplicationInsights.Key,
+      treatErrorsAsExceptions: true
     })
     winston.info(`app insights winston transport enabled`)
   }
