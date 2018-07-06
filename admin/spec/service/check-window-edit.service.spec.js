@@ -9,10 +9,10 @@ const ValidationError = require('../../lib/validation-error')
 
 describe('check-window-edit.service', () => {
   describe('process', () => {
-    it('should call save if no validation error is thrown', async () => {
+    it('should call submit if no validation error is thrown', async () => {
       const validationError = new ValidationError()
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
-      spyOn(checkWindowService, 'save')
+      spyOn(checkWindowService, 'submit')
       spyOn(checkWindowEditValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
       try {
@@ -20,13 +20,13 @@ describe('check-window-edit.service', () => {
       } catch (error) {
         fail()
       }
-      expect(checkWindowService.save).toHaveBeenCalled()
+      expect(checkWindowService.submit).toHaveBeenCalled()
     })
     it('should throw when a validation error exists', async () => {
       const validationError = new ValidationError()
       validationError.addError('errorField', true)
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
-      spyOn(checkWindowService, 'save')
+      spyOn(checkWindowService, 'submit')
       spyOn(checkWindowEditValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
       try {
@@ -36,7 +36,7 @@ describe('check-window-edit.service', () => {
         expect(error.name).toBe('ValidationError')
         expect(Object.keys(error.errors).length).toBe(1)
       }
-      expect(checkWindowService.save).not.toHaveBeenCalled()
+      expect(checkWindowService.submit).not.toHaveBeenCalled()
     })
   })
 })

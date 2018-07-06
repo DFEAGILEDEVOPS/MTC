@@ -12,6 +12,6 @@ checkWindowAddService.process = async (requestData) => {
   if (validationError.hasError()) {
     throw validationError
   }
-  await checkWindowService.save(requestData)
+  await checkWindowService.submit(requestData)
 }
 module.exports = checkWindowAddService

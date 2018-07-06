@@ -275,6 +275,33 @@ const checkWindowService = {
   },
 
   /**
+   * Submit check window
+   * @param {Object} requestData
+   * @param {Object} existingCheckWindow
+   */
+  submit: async (requestData, existingCheckWindow = {}) => {
+    const checkWindow = R.clone(existingCheckWindow)
+    checkWindow.name = requestData['checkWindowName']
+    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
+      checkWindow.adminStartDate =
+        dateService.createUTCFromDayMonthYear(requestData['adminStartDay'], requestData['adminStartMonth'], requestData['adminStartYear'])
+    }
+    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
+      checkWindow.checkStartDate =
+        dateService.createUTCFromDayMonthYear(requestData['checkStartDay'], requestData['checkStartMonth'], requestData['checkStartYear'])
+    }
+    checkWindow.checkEndDate =
+      dateService.createUTCFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
+    // Ensure check end date time is set to the last minute of the particular day
+    checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
+    if (!checkWindow.id) {
+      await checkWindowDataService.sqlCreate(checkWindow)
+    } else {
+      await checkWindowDataService.sqlUpdate(checkWindow)
+    }
+  },
+
+  /**
    * Mark check window as deleted
    * @param {Object} id
    * @returns {Object}

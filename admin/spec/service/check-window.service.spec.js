@@ -279,6 +279,20 @@ describe('check-window.service', () => {
       expect(checkWindowDataService.sqlCreate).toHaveBeenCalledTimes(1)
     })
   })
+  describe('#submit', () => {
+    it('submits existing check window data', async () => {
+      spyOn(checkWindowDataService, 'sqlUpdate')
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
+      await service.submit({}, { id: 1 })
+      expect(checkWindowDataService.sqlUpdate).toHaveBeenCalledTimes(1)
+    })
+    it('submits new check window data', async () => {
+      spyOn(checkWindowDataService, 'sqlCreate')
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
+      await service.submit({})
+      expect(checkWindowDataService.sqlCreate).toHaveBeenCalledTimes(1)
+    })
+  })
   describe('#marKDeleted', () => {
     it('throws an error when check window is not found', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneById')
