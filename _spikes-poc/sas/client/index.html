@@ -24,10 +24,20 @@
       <li>
         <p>
           <label>
+            <b>SAS Token:</b>
+          </label>
+          <input type="text" readonly="readonly" value="" id="sas-token" /> </p>
+      </li>
+      <li>
+        <p>
+          <label>
             <b>Message Count:</b>
           </label>
           <input type="text" inputmode="numeric" value="200" id="message-count" />
         </p>
+      </li>
+      <li>
+        <button class="btn btn-xs btn-primary" onclick="getSasToken()">Get SAS Token</button>
       </li>
       <li>
         <button class="btn btn-xs btn-primary" onclick="addMessage()">Queue Messages</button>
@@ -35,6 +45,7 @@
     </ul>
     <div id="ui-messages"></div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="azure-storage.queue.js"></script>
   <script src="queue-util.js"></script>
   <script src="payload.js"></script>

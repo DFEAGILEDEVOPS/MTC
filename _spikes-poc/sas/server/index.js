@@ -11,7 +11,8 @@ app.use(cors())
 
 app.post('/auth', (req, res) => {
   const token = sasGenerator()
-  res.send(token)
+  res.setHeader('Content-Type', 'application/json')
+  res.json(token)
   res.status(200)
 })
 

@@ -6,32 +6,38 @@ var queue = ''
 var encoder = new AzureStorage.Queue.QueueMessageEncoder.TextBase64QueueMessageEncoder()
 
 function getSasToken () {
-  var xhttp = new XMLHttpRequest()
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      sas = this.responseJSON
-      console.log(sas)
-    }
-  }
-  xhttp.open('POST', 'http://localhost:3000/auth', true)
-  xhttp.send()
+  var url = 'http://localhost:3000/auth'
+  var dataType = 'json'
+  var contentType = 'application/json; charset=utf-8'
+  $.ajax({
+    type: 'POST',
+    url: url,
+    data: null,
+    success: processSas,
+    dataType: dataType,
+    contentType: contentType
+  })
 }
 
-getSasToken()
+function processSas (data) {
+  console.dir(data)
+  document.getElementById('sas-token').value = data.token
+  sas = data
+}
 
 function checkParameters () {
   // account = document.getElementById('account').value
   // sas = document.getElementById('sas').value
   queue = document.getElementById('queuename').value
 
-/*   if (account == null || account.length < 1) {
-    alert('Please enter a valid storage account name')
-    return false
-  } */
-/*   if (sas == null || sas.length < 1) {
-    alert('Please enter a valid SAS Token')
-    return false
-  } */
+  /*   if (account == null || account.length < 1) {
+      alert('Please enter a valid storage account name')
+      return false
+    } */
+  /*   if (sas == null || sas.length < 1) {
+      alert('Please enter a valid SAS Token')
+      return false
+    } */
 
   if (queue == null || queue.length < 1) {
     alert('Please enter a valid queue name')
@@ -47,7 +53,7 @@ function getQueueService () {
     return null
 
   // queueUri = 'https://' + account + '.queue.core.windows.net'
-  var queueService = AzureStorage.Queue.createQueueServiceWithSas(sas.uri).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter())
+  var queueService = AzureStorage.Queue.createQueueServiceWithSas(sas.url.replace('sastest', ''), sas.token).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter())
   return queueService
 }
 
@@ -64,15 +70,15 @@ function addMessage () {
   var message = JSON.stringify(payload) // document.getElementById('message').value
   var encodedMessage = encoder.encode(message)
   var messageDisplay = document.getElementById('ui-messages')
-  var errorCount = 0
+  messageDisplay.innerText = ''
   for (let index = 0; index < msgCount; index++) {
     queueService.createMessage(queue, encodedMessage, function (error, result, response) {
       if (error) {
-        errorCount++
+        messageDisplay.innerText = 'errors occured. see console for details'
         console.log(error)
       }
     })
   }
-  var successCount = msgCount - errorCount
-  messageDisplay.innerText = successCount + ' messages pushed successfully. ' + errorCount + ' failed.'
+/*   var successCount = msgCount - errorCount
+  messageDisplay.innerText = successCount + ' messages pushed successfully. ' + errorCount + ' failed.' */
 }

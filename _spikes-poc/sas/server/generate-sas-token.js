@@ -35,7 +35,7 @@ const generateSasToken = () => {
 
   return {
     token: sasToken,
-    uri: queueService.getUrl(queueName, sasToken, true)
+    url: queueService.getUrl(queueName)
   }
 }
 
