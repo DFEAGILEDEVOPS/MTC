@@ -252,13 +252,6 @@ app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
 
-// catch CSRF errors
-app.use(function (err, req, res, next) {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err)
-
-  res.redirect('back')
-})
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   let err = new Error('Not Found')
@@ -275,6 +268,9 @@ app.use(function (err, req, res, next) {
   // up from logging web interface (e.g. ELK / LogDNA)
   winston.error('ERROR: ' + err.message + ' ID:' + errorId)
   winston.error(err.stack)
+
+  // catch CSRF errors and redirect to the previous location
+  if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
   // render the error page
   // @TODO: provide an error code and phone number? for the user to call support
