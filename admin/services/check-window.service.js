@@ -293,7 +293,7 @@ const checkWindowService = {
     checkWindow.checkEndDate =
       dateService.createUTCFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
     // Ensure check end date time is set to the last minute of the particular day
-    checkWindow.checkEndDate.set({ hour: 23, minute: 59, second: 59 })
+    checkWindow.checkEndDate.set({ hour: 22, minute: 59, second: 59 })
     if (!checkWindow.id) {
       await checkWindowDataService.sqlCreate(checkWindow)
     } else {
