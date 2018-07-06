@@ -40,6 +40,7 @@ function main () {
   qService.getMessages(qName, function (error, results, response) {
     if (!error) {
       if (results.length === 0) return
+      winston.info(`collected ${results.length} messages.`)
       results.forEach(result => {
         processMessage(result)
       })
@@ -49,11 +50,10 @@ function main () {
 
 function processMessage (message) {
   if (!message) return
-  let content = ''
+
   if (message.messageText) {
-    content = Buffer.from(message.messageText, 'base64')
+    const content = Buffer.from(message.messageText, 'base64')
   }
-  logger.info(`message collected: ${content}`)
   qService.deleteMessage(qName, message.messageId, message.popReceipt, function (error, response) {
     if (!error) {
       logger.info('message deleted successfully')
