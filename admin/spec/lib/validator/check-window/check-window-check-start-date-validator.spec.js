@@ -20,7 +20,7 @@ describe('Check window check start date validator', function () {
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).not.toHaveBeenCalled()
     })
-    it('calls addError with checkStartDayRequired, checkStartDayWrongDay and checkStartDayInvalidChars messages if the check start day is missing', () => {
+    it('calls addError with checkStartDayRequired message if the check start day is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {
@@ -30,8 +30,6 @@ describe('Check window check start date validator', function () {
       }
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartDay', checkWindowErrorMessages.checkStartDayRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartDay', checkWindowErrorMessages.checkStartDayWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartDay', checkWindowErrorMessages.checkStartDayInvalidChars)
     })
     it('calls addError with checkStartDayWrongDay and checkStartDayInvalidChars messages if the check start day is invalid', () => {
       const validationError = new ValidationError()
@@ -45,7 +43,7 @@ describe('Check window check start date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkStartDay', checkWindowErrorMessages.checkStartDayWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartDay', checkWindowErrorMessages.checkStartDayInvalidChars)
     })
-    it('calls addError with checkStartMonthRequired, checkStartMonthWrongDay and checkStartMonthInvalidChars messages if the check start month is missing', () => {
+    it('calls addError with checkStartMonthRequired message if the check start month is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {
@@ -55,8 +53,6 @@ describe('Check window check start date validator', function () {
       }
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartMonth', checkWindowErrorMessages.checkStartMonthRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartMonth', checkWindowErrorMessages.checkStartMonthWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartMonth', checkWindowErrorMessages.checkStartMonthInvalidChars)
     })
     it('calls addError with checkStartMonthWrongDay and checkStartMonthInvalidChars messages if the check start month is invalid', () => {
       const validationError = new ValidationError()
@@ -70,7 +66,7 @@ describe('Check window check start date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkStartMonth', checkWindowErrorMessages.checkStartMonthWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartMonth', checkWindowErrorMessages.checkStartMonthInvalidChars)
     })
-    it('calls addError with checkStartYearRequired, checkStartYearWrongDay, enterValidYear and checkStartYearInvalidChars messages if the check start year is missing', () => {
+    it('calls addError with checkStartYearRequired message if the check start year is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {
@@ -80,9 +76,6 @@ describe('Check window check start date validator', function () {
       }
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearInvalidChars)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.enterValidYear)
     })
     it('calls addError with checkStartYearRequired, checkStartYearWrongDay, enterValidYear and checkStartYearInvalidChars messages if the check start year is invalid', () => {
       const validationError = new ValidationError()

@@ -20,7 +20,7 @@ describe('Check window check end date validator', function () {
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).not.toHaveBeenCalled()
     })
-    it('calls addError with checkEndDayRequired, checkEndDayWrongDay and checkEndDayInvalidChars messages if the check end day is missing', () => {
+    it('calls addError with checkEndDayRequired messages if the check end day is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkEndDateData = {
@@ -30,8 +30,6 @@ describe('Check window check end date validator', function () {
       }
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndDay', checkWindowErrorMessages.checkEndDayRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndDay', checkWindowErrorMessages.checkEndDayWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndDay', checkWindowErrorMessages.checkEndDayInvalidChars)
     })
     it('calls addError with checkEndDayWrongDay and checkEndDayInvalidChars messages if the check end day is invalid', () => {
       const validationError = new ValidationError()
@@ -45,7 +43,7 @@ describe('Check window check end date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkEndDay', checkWindowErrorMessages.checkEndDayWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndDay', checkWindowErrorMessages.checkEndDayInvalidChars)
     })
-    it('calls addError with checkEndMonthRequired, checkEndMonthWrongDay and checkEndMonthInvalidChars messages if the check end month is missing', () => {
+    it('calls addError with checkEndMonthRequired message if the check end month is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkEndDateData = {
@@ -55,8 +53,6 @@ describe('Check window check end date validator', function () {
       }
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndMonth', checkWindowErrorMessages.checkEndMonthRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndMonth', checkWindowErrorMessages.checkEndMonthWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndMonth', checkWindowErrorMessages.checkEndMonthInvalidChars)
     })
     it('calls addError with checkEndMonthWrongDay and checkEndMonthInvalidChars messages if the check end month is invalid', () => {
       const validationError = new ValidationError()
@@ -70,7 +66,7 @@ describe('Check window check end date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkEndMonth', checkWindowErrorMessages.checkEndMonthWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndMonth', checkWindowErrorMessages.checkEndMonthInvalidChars)
     })
-    it('calls addError with checkEndYearRequired, checkEndYearWrongDay, enterValidYear and checkEndYearInvalidChars messages if the check end year is missing', () => {
+    it('calls addError with checkEndYearRequired message if the check end year is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkEndDateData = {
@@ -80,9 +76,6 @@ describe('Check window check end date validator', function () {
       }
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
-      expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.enterValidYear)
     })
     it('calls addError with checkEndYearRequired, checkEndYearWrongDay, enterValidYear and checkEndYearInvalidChars messages if the check end year is invalid', () => {
       const validationError = new ValidationError()

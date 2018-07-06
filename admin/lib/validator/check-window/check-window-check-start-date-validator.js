@@ -13,36 +13,39 @@ const { isEmpty, isInt } = require('validator')
 module.exports.validate = (validationError, checkStartDateData) => {
   const currentYear = moment.utc().format('YYYY')
 // Check start day
-  if (isEmpty(checkStartDateData.checkStartDay.trim())) {
+  const isCheckStartDayEmpty = isEmpty(checkStartDateData.checkStartDay.trim())
+  if (isCheckStartDayEmpty) {
     validationError.addError('checkStartDay', checkWindowErrorMessages.checkStartDayRequired)
   }
-  if (!isInt(checkStartDateData.checkStartDay, { min: 1, max: 31 })) {
+  if (!isCheckStartDayEmpty && !isInt(checkStartDateData.checkStartDay, { min: 1, max: 31 })) {
     validationError.addError('checkStartDay', checkWindowErrorMessages.checkStartDayWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(checkStartDateData.checkStartDay)) {
+  if (!isCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(checkStartDateData.checkStartDay)) {
     validationError.addError('checkStartDay', checkWindowErrorMessages.checkStartDayInvalidChars)
   }
 // Check start month
-  if (isEmpty(checkStartDateData.checkStartMonth.trim())) {
+  const isCheckStartMonthEmpty = isEmpty(checkStartDateData.checkStartMonth.trim())
+  if (isCheckStartMonthEmpty) {
     validationError.addError('checkStartMonth', checkWindowErrorMessages.checkStartMonthRequired)
   }
-  if (!isInt(checkStartDateData.checkStartMonth, { min: 1, max: 12 })) {
+  if (!isCheckStartMonthEmpty && !isInt(checkStartDateData.checkStartMonth, { min: 1, max: 12 })) {
     validationError.addError('checkStartMonth', checkWindowErrorMessages.checkStartMonthWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(checkStartDateData.checkStartMonth)) {
+  if (!isCheckStartMonthEmpty && !XRegExp('^[0-9]+$').test(checkStartDateData.checkStartMonth)) {
     validationError.addError('checkStartMonth', checkWindowErrorMessages.checkStartMonthInvalidChars)
   }
 // Check start year
-  if (isEmpty(checkStartDateData.checkStartYear.trim())) {
+  const isCheckStartYearEmpty = isEmpty(checkStartDateData.checkStartYear.trim())
+  if (isCheckStartYearEmpty) {
     validationError.addError('checkStartYear', checkWindowErrorMessages.checkStartYearRequired)
   }
-  if (!isInt(checkStartDateData.checkStartYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
+  if (!isCheckStartYearEmpty && !isInt(checkStartDateData.checkStartYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
     validationError.addError('checkStartYear', checkWindowErrorMessages.checkStartYearWrongDay)
   }
-  if (checkStartDateData.checkStartYear.length !== 4) {
+  if (!isCheckStartYearEmpty && checkStartDateData.checkStartYear.length !== 4) {
     validationError.addError('checkStartYear', checkWindowErrorMessages.enterValidYear)
   }
-  if (!XRegExp('^[0-9]+$').test(checkStartDateData.checkStartYear)) {
+  if (!isCheckStartYearEmpty && !XRegExp('^[0-9]+$').test(checkStartDateData.checkStartYear)) {
     validationError.addError('checkStartYear', checkWindowErrorMessages.checkStartYearInvalidChars)
   }
 }

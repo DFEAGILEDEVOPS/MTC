@@ -13,36 +13,39 @@ const { isEmpty, isInt } = require('validator')
 module.exports.validate = (validationError, adminStartDateData) => {
   const currentYear = moment.utc().format('YYYY')
   // Admin start day
-  if (isEmpty(adminStartDateData.adminStartDay.trim())) {
+  const isAdminStartDayEmpty = isEmpty(adminStartDateData.adminStartDay.trim())
+  if (isAdminStartDayEmpty) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayRequired)
   }
-  if (!isInt(adminStartDateData.adminStartDay, { min: 1, max: 31 })) {
+  if (!isAdminStartDayEmpty && !isInt(adminStartDateData.adminStartDay, { min: 1, max: 31 })) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(adminStartDateData.adminStartDay)) {
+  if (!isAdminStartDayEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartDay)) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayInvalidChars)
   }
   // Admin start month
-  if (isEmpty(adminStartDateData.adminStartMonth.trim())) {
+  const isAdminStartMonthEmpty = isEmpty(adminStartDateData.adminStartMonth.trim())
+  if (isAdminStartMonthEmpty) {
     validationError.addError('adminStartMonth', checkWindowErrorMessages.adminStartMonthRequired)
   }
-  if (!isInt(adminStartDateData.adminStartMonth, { min: 1, max: 12 })) {
+  if (!isAdminStartMonthEmpty && !isInt(adminStartDateData.adminStartMonth, { min: 1, max: 12 })) {
     validationError.addError('adminStartMonth', checkWindowErrorMessages.adminStartMonthWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(adminStartDateData.adminStartMonth)) {
+  if (!isAdminStartMonthEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartMonth)) {
     validationError.addError('adminStartMonth', checkWindowErrorMessages.adminStartMonthInvalidChars)
   }
   // Admin start year
-  if (isEmpty(adminStartDateData.adminStartYear.trim())) {
+  const isAdminStartYearEmpty = isEmpty(adminStartDateData.adminStartYear.trim())
+  if (isAdminStartYearEmpty) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.adminStartYearRequired)
   }
-  if (!isInt(adminStartDateData.adminStartYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
+  if (!isAdminStartYearEmpty && !isInt(adminStartDateData.adminStartYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
   }
-  if (adminStartDateData.adminStartYear.length !== 4) {
+  if (!isAdminStartYearEmpty && adminStartDateData.adminStartYear.length !== 4) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.enterValidYear)
   }
-  if (!XRegExp('^[0-9]+$').test(adminStartDateData.adminStartYear)) {
+  if (!isAdminStartYearEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartYear)) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.adminStartYearInvalidChars)
   }
 }

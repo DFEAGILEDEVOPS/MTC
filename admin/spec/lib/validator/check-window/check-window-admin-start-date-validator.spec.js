@@ -20,7 +20,7 @@ describe('Check window admin start date validator', function () {
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).not.toHaveBeenCalled()
     })
-    it('calls addError with adminStartDayRequired, adminStartDayWrongDay and adminStartDayInvalidChars messages if the admin start day is missing', () => {
+    it('calls addError with adminStartDayRequired message if the admin start day is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const adminStartDateData = {
@@ -30,8 +30,6 @@ describe('Check window admin start date validator', function () {
       }
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartDay', checkWindowErrorMessages.adminStartDayRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartDay', checkWindowErrorMessages.adminStartDayWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartDay', checkWindowErrorMessages.adminStartDayInvalidChars)
     })
     it('calls addError with adminStartDayWrongDay and adminStartDayInvalidChars messages if the admin start day is invalid', () => {
       const validationError = new ValidationError()
@@ -45,7 +43,7 @@ describe('Check window admin start date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('adminStartDay', checkWindowErrorMessages.adminStartDayWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartDay', checkWindowErrorMessages.adminStartDayInvalidChars)
     })
-    it('calls addError with adminStartMonthRequired, adminStartMonthWrongDay and adminStartMonthInvalidChars messages if the admin start month is missing', () => {
+    it('calls addError with adminStartMonthRequired, message if the admin start month is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const adminStartDateData = {
@@ -55,8 +53,6 @@ describe('Check window admin start date validator', function () {
       }
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartMonth', checkWindowErrorMessages.adminStartMonthRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartMonth', checkWindowErrorMessages.adminStartMonthWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartMonth', checkWindowErrorMessages.adminStartMonthInvalidChars)
     })
     it('calls addError with adminStartMonthWrongDay and adminStartMonthInvalidChars messages if the admin start month is invalid', () => {
       const validationError = new ValidationError()
@@ -70,7 +66,7 @@ describe('Check window admin start date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('adminStartMonth', checkWindowErrorMessages.adminStartMonthWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartMonth', checkWindowErrorMessages.adminStartMonthInvalidChars)
     })
-    it('calls addError with adminStartYearRequired, adminStartYearWrongDay, enterValidYear and adminStartYearInvalidChars messages if the admin start year is missing', () => {
+    it('calls addError with adminStartYearRequired, message if the admin start year is missing', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const adminStartDateData = {
@@ -80,9 +76,6 @@ describe('Check window admin start date validator', function () {
       }
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearRequired)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearInvalidChars)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.enterValidYear)
     })
     it('calls addError with adminStartYearRequired, adminStartYearWrongDay, enterValidYear and adminStartYearInvalidChars messages if the admin start year is invalid', () => {
       const validationError = new ValidationError()

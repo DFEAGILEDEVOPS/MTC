@@ -13,36 +13,39 @@ const { isEmpty, isInt } = require('validator')
 module.exports.validate = (validationError, checkEndDateData) => {
   const currentYear = moment.utc().format('YYYY')
   // Check end day
-  if (isEmpty(checkEndDateData.checkEndDay.trim())) {
+  const isCheckEndDayEmpty = isEmpty(checkEndDateData.checkEndDay.trim())
+  if (isCheckEndDayEmpty) {
     validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayRequired)
   }
-  if (!isInt(checkEndDateData.checkEndDay, { min: 1, max: 31 })) {
+  if (!isCheckEndDayEmpty && !isInt(checkEndDateData.checkEndDay, { min: 1, max: 31 })) {
     validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(checkEndDateData.checkEndDay)) {
+  if (!isCheckEndDayEmpty && !XRegExp('^[0-9]+$').test(checkEndDateData.checkEndDay)) {
     validationError.addError('checkEndDay', checkWindowErrorMessages.checkEndDayInvalidChars)
   }
   // Check end month
-  if (isEmpty(checkEndDateData.checkEndMonth.trim())) {
+  const isCheckEndMonthEmpty = isEmpty(checkEndDateData.checkEndMonth.trim())
+  if (isCheckEndMonthEmpty) {
     validationError.addError('checkEndMonth', checkWindowErrorMessages.checkEndMonthRequired)
   }
-  if (!isInt(checkEndDateData.checkEndMonth, { min: 1, max: 12 })) {
+  if (!isCheckEndMonthEmpty && !isInt(checkEndDateData.checkEndMonth, { min: 1, max: 12 })) {
     validationError.addError('checkEndMonth', checkWindowErrorMessages.checkEndMonthWrongDay)
   }
-  if (!XRegExp('^[0-9]+$').test(checkEndDateData.checkEndMonth)) {
+  if (!isCheckEndMonthEmpty && !XRegExp('^[0-9]+$').test(checkEndDateData.checkEndMonth)) {
     validationError.addError('checkEndMonth', checkWindowErrorMessages.checkEndMonthInvalidChars)
   }
   // Check end year
-  if (isEmpty(checkEndDateData.checkEndYear.trim())) {
+  const isCheckEndYearEmpty = isEmpty(checkEndDateData.checkEndYear.trim())
+  if (isCheckEndYearEmpty) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearRequired)
   }
-  if (!isInt(checkEndDateData.checkEndYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
+  if (!isCheckEndYearEmpty && !isInt(checkEndDateData.checkEndYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)
   }
-  if (checkEndDateData.checkEndYear.length !== 4) {
+  if (!isCheckEndYearEmpty && checkEndDateData.checkEndYear.length !== 4) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.enterValidYear)
   }
-  if (!XRegExp('^[0-9]+$').test(checkEndDateData.checkEndYear)) {
+  if (!isCheckEndYearEmpty && !XRegExp('^[0-9]+$').test(checkEndDateData.checkEndYear)) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
   }
 }
