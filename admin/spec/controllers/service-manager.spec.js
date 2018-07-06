@@ -328,11 +328,12 @@ describe('service manager controller:', () => {
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
-    it('calls getCheckWindowEditForm when checkWindowEditService process throws a validation error', async () => {
+    it('calls render when checkWindowEditService process throws a validation error', async () => {
       const res = getRes()
       const req = getReq(goodReqEditParams)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
+      spyOn(checkWindowService, 'getSubmittedCheckWindowData')
       const error = new Error('error')
       error.name = 'ValidationError'
       const unsafeReject = p => {
@@ -350,12 +351,14 @@ describe('service manager controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
+      expect(checkWindowService.getSubmittedCheckWindowData).toHaveBeenCalled()
     })
     it('calls render when checkWindowAddService process throws a non validation error', async () => {
       const res = getRes()
       const req = getReq(goodReqAddParams)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
+      spyOn(checkWindowService, 'getSubmittedCheckWindowData')
       const error = new Error('error')
       error.name = 'OtherError'
       const unsafeReject = p => {
@@ -372,6 +375,8 @@ describe('service manager controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+      expect(checkWindowService.getSubmittedCheckWindowData).not.toHaveBeenCalled()
+
     })
   })
 

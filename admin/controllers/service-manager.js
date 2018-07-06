@@ -334,11 +334,12 @@ const controller = {
     } catch (error) {
       if (error.name === 'ValidationError') {
         res.locals.pageTitle = actionName + ' check window'
+        const checkWindowData = await checkWindowService.getSubmittedCheckWindowData(requestData)
         return res.render('service-manager/check-window-form', {
           error: error || new ValidationError(),
           errorMessage: checkWindowErrorMessages,
           breadcrumbs: req.breadcrumbs(),
-          checkWindowData: req.body,
+          checkWindowData: checkWindowData,
           successfulPost: false,
           actionName,
           currentYear: moment().format('YYYY')

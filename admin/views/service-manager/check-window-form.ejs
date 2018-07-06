@@ -75,7 +75,7 @@
                                value="<%= checkWindowData.adminStartDay %>"
                                aria-required="true"
                                aria-label="Administration start day."
-                                <% if (checkWindowData.adminIsDisabled) { %>
+                                <% if (checkWindowData.hasAdminStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>
@@ -88,7 +88,7 @@
                                value="<%= checkWindowData.adminStartMonth %>"
                                aria-required="true"
                                aria-label="Administration start month."
-                                <% if (checkWindowData.adminIsDisabled) { %>
+                                <% if (checkWindowData.hasAdminStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>
@@ -101,7 +101,7 @@
                                value="<%= checkWindowData.adminStartYear %>"
                                aria-required="true"
                                aria-label="Administration start year."
-                                <% if (checkWindowData.adminIsDisabled) { %>
+                                <% if (checkWindowData.hasAdminStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>
@@ -143,7 +143,7 @@
                                value="<%= checkWindowData.checkStartDay %>"
                                aria-required="true"
                                aria-label="Check start day."
-                                <% if (checkWindowData.checkStartIsDisabled) { %>
+                                <% if (checkWindowData.hasCheckStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>
@@ -156,7 +156,7 @@
                                value="<%= checkWindowData.checkStartMonth %>"
                                aria-required="true"
                                aria-label="Check start month."
-                                <% if (checkWindowData.checkStartIsDisabled) { %>
+                                <% if (checkWindowData.hasCheckStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>
@@ -169,7 +169,7 @@
                                value="<%= checkWindowData.checkStartYear %>"
                                aria-required="true"
                                aria-label="Check start year."
-                                <% if (checkWindowData.checkStartIsDisabled) { %>
+                                <% if (checkWindowData.hasCheckStartDateInPast) { %>
                                disabled="disabled"
                                 <% } %>>
                     </div>

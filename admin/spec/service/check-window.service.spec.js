@@ -318,4 +318,20 @@ describe('check-window.service', () => {
       expect(result.message).toBe('Check window deleted.')
     })
   })
+  describe('#getSubmittedCheckWindowData', () => {
+    it('call sqlFindOneByUrlSlug when request failed on edit', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        urlSlug: 'test',
+        adminStartDate: moment.utc().subtract(2, 'days'),
+        checkStartDate: moment.utc().subtract(1, 'days')
+      })
+      await service.getSubmittedCheckWindowData({ urlSlug: 'test' })
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
+    })
+    it('call sqlFindOneByUrlSlug when request failed on add', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      await service.getSubmittedCheckWindowData({})
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
+    })
+  })
 })

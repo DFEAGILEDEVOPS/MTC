@@ -205,6 +205,8 @@ const checkWindowService = {
       throw new Error('Check window id not provided')
     }
     const checkWindow = await checkWindowDataService.sqlFindOneById(id)
+    const adminStartDate = moment(checkWindow.adminStartDate)
+    const checkStartDate = moment(checkWindow.checkStartDate)
     return {
       checkWindowId: id,
       urlSlug: checkWindow.urlSlug,
@@ -218,6 +220,8 @@ const checkWindowService = {
       checkEndDay: checkWindow.checkEndDate.format('D'),
       checkEndMonth: checkWindow.checkEndDate.format('MM'),
       checkEndYear: checkWindow.checkEndDate.format('YYYY'),
+      hasAdminStartDateInPast: moment().isAfter(adminStartDate),
+      hasCheckStartDateInPast: moment().isAfter(checkStartDate)
     }
   },
 
@@ -323,6 +327,30 @@ const checkWindowService = {
         message: 'Check window deleted.'
       }
     }
+  },
+
+  /**
+   * Fetch check window form data used on submission
+   * @param {Object} requestData
+   * @returns {Object}
+   */
+  getSubmittedCheckWindowData: async(requestData) => {
+    if (requestData.urlSlug) {
+      const existingCheckWindow = await checkWindowDataService.sqlFindOneByUrlSlug(requestData.urlSlug)
+      requestData.hasAdminStartDateInPast = moment().isAfter(existingCheckWindow.adminStartDate)
+      if (requestData.hasAdminStartDateInPast) {
+        requestData.adminStartDay = moment(existingCheckWindow['adminStartDate']).format('D')
+        requestData.adminStartMonth = moment(existingCheckWindow['adminStartDate']).format('MM')
+        requestData.adminStartYear = moment(existingCheckWindow['adminStartDate']).format('YYYY')
+      }
+      requestData.hasCheckStartDateInPast = moment().isAfter(existingCheckWindow.checkStartDate)
+      if (requestData.hasCheckStartDateInPast) {
+        requestData.checkStartDay = moment(existingCheckWindow['checkStartDate']).format('D')
+        requestData.checkStartMonth = moment(existingCheckWindow['checkStartDate']).format('MM')
+        requestData.checkStartYear = moment(existingCheckWindow['checkStartDate']).format('YYYY')
+      }
+    }
+    return requestData
   }
 }
 
