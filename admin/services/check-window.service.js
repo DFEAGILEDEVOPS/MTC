@@ -207,7 +207,7 @@ const checkWindowService = {
     const checkWindow = await checkWindowDataService.sqlFindOneById(id)
     return {
       checkWindowId: id,
-      urSlug: checkWindow.urlSlug,
+      urlSlug: checkWindow.urlSlug,
       checkWindowName: checkWindow.name,
       adminStartDay: checkWindow.adminStartDate.format('D'),
       adminStartMonth: checkWindow.adminStartDate.format('MM'),
