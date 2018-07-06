@@ -9,7 +9,7 @@ const checkWindowService = require('./check-window.service')
  * @param {Object} requestData
  */
 checkWindowEditService.process = async (requestData) => {
-  const checkWindow = await checkWindowDataService.sqlFindOneById(requestData.checkWindowId)
+  const checkWindow = await checkWindowDataService.sqlFindOneByUrlSlug(requestData.urlSlug)
   const validationError = checkWindowEditValidator.validate(requestData, checkWindow)
   if (validationError.hasError()) {
     throw validationError

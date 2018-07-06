@@ -311,7 +311,7 @@ const controller = {
       successfulPost: false,
       actionName: 'Create',
       urlActionName: 'add',
-      currentYear: moment(Date.now()).format('YYYY'),
+      currentYear: moment().format('YYYY')
     })
   },
 
@@ -326,7 +326,7 @@ const controller = {
     const requestData = req.body
     let flashMessage
     try {
-      if (!requestData.checkWindowId) {
+      if (!requestData.urlSlug) {
         await checkWindowAddService.process(requestData)
         flashMessage = `${requestData.checkWindowName} has been created`
       } else {

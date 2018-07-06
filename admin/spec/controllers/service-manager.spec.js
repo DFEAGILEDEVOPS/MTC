@@ -303,7 +303,7 @@ describe('service manager controller:', () => {
       method: 'POST',
       url: '/service-manager/check-windows/submit',
       body: {
-        checkWindowId: 1
+        urlSlug: '2B9DAD9C-A75D-4AAA-BAAA-400A2F2C466C'
       }
     }
 

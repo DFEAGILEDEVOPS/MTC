@@ -11,7 +11,7 @@ describe('check-window-edit.service', () => {
   describe('process', () => {
     it('should call save if no validation error is thrown', async () => {
       const validationError = new ValidationError()
-      spyOn(checkWindowDataService, 'sqlFindOneById')
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
       spyOn(checkWindowService, 'save')
       spyOn(checkWindowEditValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
@@ -25,7 +25,7 @@ describe('check-window-edit.service', () => {
     it('should throw when a validation error exists', async () => {
       const validationError = new ValidationError()
       validationError.addError('errorField', true)
-      spyOn(checkWindowDataService, 'sqlFindOneById')
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
       spyOn(checkWindowService, 'save')
       spyOn(checkWindowEditValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
