@@ -52,10 +52,9 @@ describe('anomaly-report.service', () => {
 
     it('calls all detection methods', async () => {
       const check = 'checkMock'
-      const checkForm = 'checkFormMock'
-      service.detectAnomalies(check, checkForm)
+      service.detectAnomalies(check)
       expect(service.detectWrongNumberOfAnswers).toHaveBeenCalledWith(check)
-      expect(service.detectAnswersCorrespondToQuestions).toHaveBeenCalledWith(check, checkForm)
+      expect(service.detectAnswersCorrespondToQuestions).toHaveBeenCalledWith(check)
       expect(service.detectPageRefresh).toHaveBeenCalledWith(check)
       expect(service.detectInputBeforeOrAfterTheQuestionIsShown).toHaveBeenCalledWith(check)
       expect(service.detectMissingAudits).toHaveBeenCalledWith(check)
@@ -403,13 +402,21 @@ describe('anomaly-report.service', () => {
 
     describe('#detectAnswersCorrespondToQuestions', () => {
       it('does not report an anomaly when all answers correspond to questions', () => {
-        service.detectAnswersCorrespondToQuestions(checkMock, checkFormMockOrig)
+        const checkMockWithForm = {
+          ...checkMock,
+          ...checkFormMockOrig
+        }
+        service.detectAnswersCorrespondToQuestions(checkMockWithForm)
         expect(service.produceReportData).toHaveBeenCalledTimes(0)
       })
 
       it('reports an anomaly when there are answers that do not correspond to questions', () => {
-        checkMock.data.answers = [ ...checkMock.data.answers, { factor1: 0, factor2: 0 } ]
-        service.detectAnswersCorrespondToQuestions(checkMock, checkFormMockOrig)
+        const checkMockWithForm = {
+          ...checkMock,
+          ...checkFormMockOrig
+        }
+        checkMockWithForm.data.answers = [ ...checkMockWithForm.data.answers, { factor1: 0, factor2: 0 } ]
+        service.detectAnswersCorrespondToQuestions(checkMockWithForm)
         expect(service.produceReportData).toHaveBeenCalledTimes(1)
       })
     })

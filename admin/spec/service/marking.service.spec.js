@@ -40,18 +40,9 @@ describe('markingService', () => {
       }
     })
 
-    it('throws an error if check form is not defined', async () => {
-      try {
-        await service.mark(completedCheckMock, {})
-        fail('expected to be thrown')
-      } catch (err) {
-        expect(err.message).toBe('missing or invalid argument')
-      }
-    })
-
     it('throws an error if check form does not have formData', async () => {
       try {
-        await service.mark(completedCheckMock, { checkForm: {} })
+        await service.mark({ ...completedCheckMock, formData: undefined })
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')
@@ -68,7 +59,7 @@ describe('markingService', () => {
       })
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark(completedCheckMock, checkForm)
+      await service.mark({ ...completedCheckMock, ...checkForm })
       expect(checkDataService.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
@@ -77,7 +68,7 @@ describe('markingService', () => {
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark(completedCheckMock, checkForm)
+      await service.mark({ ...completedCheckMock, ...checkForm })
       expect(answerDataService.sqlUpdateWithResults).toHaveBeenCalled()
     })
   })
@@ -105,19 +96,19 @@ describe('markingService', () => {
 
     it('bulk retrieves the completedChecks', async (done) => {
       spyOn(service, 'mark').and.returnValue(Promise.resolve())
-      spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(completedCheckDataService, 'sqlFindByIdsWithForms').and.returnValue([
         {}, {}, {}
       ])
       spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
         {}, {}, {}
       ])
       await service.batchMark([1, 2, 3])
-      expect(completedCheckDataService.sqlFindByIds).toHaveBeenCalledWith([1, 2, 3])
+      expect(completedCheckDataService.sqlFindByIdsWithForms).toHaveBeenCalledWith([1, 2, 3])
       done()
     })
 
     it('ignores errors from mark() and carries on processing', async (done) => {
-      spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
+      spyOn(completedCheckDataService, 'sqlFindByIdsWithForms').and.returnValue([
         {}, {}, {}
       ])
       spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
