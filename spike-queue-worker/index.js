@@ -48,11 +48,10 @@ function main () {
 }
 
 function processMessage (message) {
-  let content
-  if (message.hasOwnProperty('messageText')) {
+  if (!message) return
+  let content = ''
+  if (message.messageText) {
     content = Buffer.from(message.messageText, 'base64')
-  } else {
-    content = 'no text'
   }
   logger.info(`message collected: ${content}`)
   qService.deleteMessage(qName, message.messageId, message.popReceipt, function (error, response) {

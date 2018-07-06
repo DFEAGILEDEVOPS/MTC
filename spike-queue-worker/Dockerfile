@@ -6,4 +6,4 @@ COPY package.json /usr/src/app
 RUN yarn install --ignore-engines
 
 COPY . .
-CMD ["node", "table-poll.js"]
+CMD ["node", "index.js"]
