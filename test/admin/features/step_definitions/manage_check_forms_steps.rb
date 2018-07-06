@@ -140,7 +140,8 @@ end
 
 When(/^I decide i want to remove the check from the check window$/) do
   window = assign_form_to_window_page.check_windows.rows.find{|row| row.name_of_window.text.include? @check_window_hash[:check_name]}
-  window.name_of_window.click
+  # window.name_of_window.click
+  window.name_of_window_link.click
   check_row = unassign_form_page.check_forms.rows.find{|row| row.name_of_form.text == @file_name.split('.').first}
   check_row.remove_from_window.click
 end

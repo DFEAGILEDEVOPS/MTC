@@ -51,18 +51,18 @@
 </div>
 
 <script type="text/javascript">
-    const contentId = "#pupilCheckDataContent";
-    const errorElemId = "#errorPlaceholder";
-    const buttonId = "#generate-check-data-button";
-    let prevContent;
+    var contentId = "#pupilCheckDataContent";
+    var errorElemId = "#errorPlaceholder";
+    var buttonId = "#generate-check-data-button";
+    var prevContent;
 
     function generatePupilCheckData() {
         prevContent = $(contentId).html();
         $(errorElemId).html('');
-        $(contentId).html(`<p>
-            <img src='/images/loading.gif' alt='loading' width='44' style='vertical-align: middle'/>
-            &nbsp; Generating...
-        </p>`);
+        $(contentId).html('<p> \
+            <img src="/images/loading.gif" alt="loading" width="44" style="vertical-align: middle" /> \
+            &nbsp; Generating... \
+        </p>');
         $(buttonId).prop('disabled', true);
 
         $.ajax({
@@ -70,23 +70,23 @@
             timeout: 60 * 1000 * 5
         })
             .done(function(data) {
-                $(contentId).html(`
-                    <a
-                        href="/test-developer/file-download-pupil-check-data"
-                        class="heading-small icon-download"
-                    >${data.fileName} (Zip)</a>
-                    <p class="text-secondary left-padding-30">File generated on ${data.dateGenerated}</p>
-                `);
+                $(contentId).html(' \
+                    <a \
+                        href="/test-developer/file-download-pupil-check-data" \
+                        class="heading-small icon-download" \
+                    >' + data.fileName + ' (Zip)</a> \
+                    <p class="text-secondary left-padding-30">File generated on ' + data.dateGenerated + '</p> \
+                ');
             })
             .fail(function() {
                 $(contentId).html(prevContent);
-                $(errorElemId).html(`<p></p>
-                    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-                        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                            There was an error when generating the latest file.
-                        </h2>
-                    </div>
-                `);
+                $(errorElemId).html('<p></p> \
+                    <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1"> \
+                        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1"> \
+                            There was an error when generating the latest file. \
+                        </h2> \
+                    </div> \
+                ');
             })
             .always(function() {
                 $(buttonId).prop('disabled', false);
