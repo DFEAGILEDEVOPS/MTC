@@ -277,16 +277,16 @@ describe('service manager controller:', () => {
     it('calls render after fetching editable check window form', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowService, 'getEditableCheckWindow')
-        .and.returnValue({id: 1, adminIsDisabled: true, checkStartIsDisabled: true})
+      spyOn(checkWindowService, 'getCheckWindowEditForm')
+        .and.returnValue({ id: 1 })
       spyOn(res, 'render')
       await controller.getCheckWindowEditForm(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
-    it('throws an error when fetching editable window form call is rejected', async () => {
+    it('throws an error when fetching check window edit form call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowService, 'getEditableCheckWindow').and.returnValue(Promise.reject(new Error('error')))
+      spyOn(checkWindowService, 'getCheckWindowEditForm').and.returnValue(Promise.reject(new Error('error')))
       spyOn(res, 'render')
       await controller.getCheckWindowEditForm(req, res, next)
       expect(res.render).not.toHaveBeenCalled()

@@ -208,9 +208,7 @@ const controller = {
       breadcrumbs: req.breadcrumbs(),
       actionName: 'Create',
       urlActionName: 'add',
-      currentYear: moment().format('YYYY'),
-      adminIsDisabled: false,
-      checkStartIsDisabled: false
+      currentYear: moment().format('YYYY')
     })
   },
 
@@ -300,7 +298,7 @@ const controller = {
     res.locals.pageTitle = 'Edit check window'
     let checkWindowData
     try {
-      checkWindowData = await checkWindowService.getEditableCheckWindow(req.params.id)
+      checkWindowData = await checkWindowService.getCheckWindowEditForm(req.params.id)
     } catch (error) {
       return next()
     }
