@@ -15,13 +15,10 @@ const checkWindowCheckEndDateValidator = require('./check-window-check-end-date-
  * @returns {Object}
  */
 module.exports.validate = (checkWindowData) => {
-  let adminStartDate
-  let checkStartDate
-  let checkEndDate
   const currentDate = moment.utc()
 
   const validationError = new ValidationError()
-  const checkWindowName = R.pick(['checkWindowName'], checkWindowData)
+  const checkWindowName = R.path(['checkWindowName'], checkWindowData)
   checkWindowNameValidator.validate(validationError, checkWindowName)
 
   const adminStartDateData = R.pick(['adminStartDay', 'adminStartMonth', 'adminStartYear'], checkWindowData)
@@ -31,17 +28,17 @@ module.exports.validate = (checkWindowData) => {
   const checkEndDateData = R.pick(['checkEndDay', 'checkEndMonth', 'checkEndYear'], checkWindowData)
   checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
 
-  adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
+  const adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
     checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
   if (!adminStartDate) {
     validationError.addError('adminDateInvalid', true)
   }
-  checkStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkStartDay'],
+  const checkStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkStartDay'],
     checkWindowData['checkStartMonth'], checkWindowData['checkStartYear'])
   if (!checkStartDate) {
     validationError.addError('checkStartDateInvalid', true)
   }
-  checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkEndDay'],
+  const checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkEndDay'],
     checkWindowData['checkEndMonth'], checkWindowData['checkEndYear'])
   if (!checkEndDate) {
     validationError.addError('checkEndDateInvalid', true)
