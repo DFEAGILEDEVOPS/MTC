@@ -202,7 +202,7 @@ const controller = {
   getCheckWindowForm: async (req, res) => {
     req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
     res.locals.pageTitle = 'Create check window'
-    res.render('service-manager/check-windows-form', {
+    res.render('service-manager/check-window-form', {
       checkWindowData: {},
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
