@@ -25,7 +25,7 @@ describe('check-window-edit.service', () => {
     it('should throw when a validation error exists', async () => {
       const validationError = new ValidationError()
       validationError.addError('errorField', true)
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ id: 1 })
       spyOn(checkWindowService, 'submit')
       spyOn(checkWindowEditValidator, 'validate').and.returnValue(validationError)
       const requestData = {}

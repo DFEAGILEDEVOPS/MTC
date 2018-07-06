@@ -266,7 +266,7 @@ describe('service manager controller:', () => {
   })
 
   describe('getCheckWindowEditForm', () => {
-    let goodReqParams = {
+    let goodReqEditParams = {
       method: 'GET',
       url: '/service-manager/check-windows/edit/1',
       params: {
@@ -276,16 +276,17 @@ describe('service manager controller:', () => {
 
     it('calls render after fetching editable check window form', async () => {
       const res = getRes()
-      const req = getReq(goodReqParams)
+      const req = getReq(goodReqEditParams)
       spyOn(checkWindowService, 'getCheckWindowEditForm')
         .and.returnValue({ id: 1 })
       spyOn(res, 'render')
       await controller.getCheckWindowEditForm(req, res, next)
       expect(res.render).toHaveBeenCalled()
+      expect(checkWindowService.getCheckWindowEditForm).toHaveBeenCalled()
     })
     it('throws an error when fetching check window edit form call is rejected', async () => {
       const res = getRes()
-      const req = getReq(goodReqParams)
+      const req = getReq(goodReqEditParams)
       spyOn(checkWindowService, 'getCheckWindowEditForm').and.returnValue(Promise.reject(new Error('error')))
       spyOn(res, 'render')
       await controller.getCheckWindowEditForm(req, res, next)
@@ -340,7 +341,6 @@ describe('service manager controller:', () => {
       }
       const rejection = unsafeReject(Promise.reject(error))
       spyOn(checkWindowEditService, 'process').and.returnValue(rejection)
-      spyOn(controller, 'getCheckWindowEditForm')
       try {
         await controller.submitCheckWindow(req, res, next)
       } catch (error) {
@@ -349,7 +349,7 @@ describe('service manager controller:', () => {
       }
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(controller.getCheckWindowEditForm).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
     })
     it('calls render when checkWindowAddService process throws a non validation error', async () => {
       const res = getRes()

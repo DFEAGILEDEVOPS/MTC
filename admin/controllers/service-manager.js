@@ -207,7 +207,6 @@ const controller = {
       error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
       actionName: 'Create',
-      urlActionName: 'add',
       currentYear: moment().format('YYYY')
     })
   },
@@ -289,11 +288,10 @@ const controller = {
    * @param req
    * @param res
    * @param next
-   * @param error
    * @returns {Promise.<void>}
    */
 
-  getCheckWindowEditForm: async (req, res, next, error = null) => {
+  getCheckWindowEditForm: async (req, res, next) => {
     req.breadcrumbs('Manage check windows', '/service-manager/check-windows')
     res.locals.pageTitle = 'Edit check window'
     let checkWindowData
@@ -303,12 +301,11 @@ const controller = {
       return next()
     }
     res.render('service-manager/check-window-form', {
-      error: error || new ValidationError(),
+      error: new ValidationError(),
       breadcrumbs: req.breadcrumbs(),
       checkWindowData,
       successfulPost: false,
-      actionName: 'Create',
-      urlActionName: 'add',
+      actionName: 'Edit',
       currentYear: moment().format('YYYY')
     })
   },
@@ -323,17 +320,29 @@ const controller = {
   submitCheckWindow: async (req, res, next) => {
     const requestData = req.body
     let flashMessage
+    let actionName
     try {
       if (!requestData.urlSlug) {
+        actionName = 'Add'
         await checkWindowAddService.process(requestData)
         flashMessage = `${requestData.checkWindowName} has been created`
       } else {
+        actionName = 'Edit'
         await checkWindowEditService.process(requestData)
         flashMessage = 'Changes have been saved'
       }
     } catch (error) {
       if (error.name === 'ValidationError') {
-        return controller.getCheckWindowEditForm(req, res, next, error)
+        res.locals.pageTitle = actionName + ' check window'
+        return res.render('service-manager/check-window-form', {
+          error: error || new ValidationError(),
+          errorMessage: checkWindowErrorMessages,
+          breadcrumbs: req.breadcrumbs(),
+          checkWindowData: req.body,
+          successfulPost: false,
+          actionName,
+          currentYear: moment().format('YYYY')
+        })
       }
       return next(error)
     }
