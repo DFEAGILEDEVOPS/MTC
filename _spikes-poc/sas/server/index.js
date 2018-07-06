@@ -5,6 +5,9 @@ const express = require('express')
 const app = express()
 const sasGenerator = require('./generate-sas-token')
 const config = require('./config')
+const cors = require('cors')
+
+app.use(cors())
 
 app.post('/auth', (req, res) => {
   const token = sasGenerator()
@@ -13,5 +16,5 @@ app.post('/auth', (req, res) => {
 })
 
 app.listen(config.Port, () => {
-  console.log('http://localhost:' + config.port)
+  console.log(`Listening... http://localhost:${config.Port}/auth`)
 })
