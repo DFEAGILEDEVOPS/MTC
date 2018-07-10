@@ -617,6 +617,9 @@ Then(/^I should see error message for the following admin start date$/) do |tabl
       when 'admin start date after check start date'
         step 'I try to submit an admin start date that is after the check start date'
         step 'I should see an error stating the admin start date has to be before the check start date'
+      when 'update with empty admin start date'
+        step 'I try to update without a admin start date for the window'
+        step 'I should see an error stating the admin start date cant be blank'
     end
   end
 end
@@ -639,6 +642,9 @@ Then(/^I should see error message for the following check start date$/) do |tabl
       when 'check start date after check end date'
         step 'I try to submit an check start date that is after the check end date'
         step 'I should see an error stating the check start date has to be before the check end date'
+      when 'update with empty check start date'
+        step 'I try to update without a check start date for the window'
+        step 'I should see a error message for the check start date field'
     end
   end
 end
@@ -658,6 +664,9 @@ Then(/^I should see error message for the following check end date$/) do |table|
       when 'more digit for day month and year'
         step 'I try to submit a check end date with more digits for day month year than specified'
         step 'I should see errors for the check end day month and year being invalid'
+      when 'update with empty check end date'
+        step 'I try to update without a check end date for the window'
+        step 'I should see a error message for the check start date field'
     end
   end
 end
