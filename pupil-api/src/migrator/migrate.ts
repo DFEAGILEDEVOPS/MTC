@@ -33,7 +33,7 @@ class Migrator {
           winston.info(chalk.green('all done'))
         },
           (error) => {
-            winston.info(chalk.red(error.message))
+            winston.info(chalk.red(error))
             process.exitCode = 1
           })
     } catch (error) {
@@ -48,7 +48,7 @@ class Migrator {
     const postgrator = new Postgrator(this.migratorConfig)
     // subscribe to useful events
     postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
-    postgrator.on('migration-finished', winston.info(chalk.green('SQL Migrations complete')))
+    postgrator.on('migration-finished', () => winston.info(chalk.green('SQL Migrations complete')))
 
     // Migrate to 'max' version or user-specified e.g. '008'
     const version = process.argv.length > 2 ? process.argv[2] : 'max'
