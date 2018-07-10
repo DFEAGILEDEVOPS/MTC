@@ -47,8 +47,8 @@ class Migrator {
 
     const postgrator = new Postgrator(this.migratorConfig)
     // subscribe to useful events
-    postgrator.on('migration-started', migration => winston.info(`executing ${migration.action}:${migration.name}...`))
-    postgrator.on('migration-finished', () => winston.info(chalk.green('SQL Migrations complete')))
+    postgrator.on('migration-started', migration => winston.info(`executing: ${migration.action}:${migration.name}...`))
+    postgrator.on('migration-finished', migration => winston.info(`complete: ${migration.action}:${migration.name}...`))
 
     // Migrate to 'max' version or user-specified e.g. '008'
     const version = process.argv.length > 2 ? process.argv[2] : 'max'
@@ -56,9 +56,10 @@ class Migrator {
 
     try {
       await postgrator.migrate(version)
+      winston.info(chalk.green('SQL Migrations complete'))
     } catch (error) {
       winston.error(chalk.red('ERROR:', error.message))
-      winston.error(`${error.appliedMigrations.length} migrations were applied...`)
+      winston.error(`${error.appliedMigrations.length} migrations were applied.`)
       error.appliedMigrations.forEach(migration => {
         winston.error(migration.name)
       })
