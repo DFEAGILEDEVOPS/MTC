@@ -69,6 +69,7 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
     envs, but the connection string is required for all.
 * GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there 
     is a tracking code and in production mode, eg `NODE_ENV=production`
+* APP_INSIGHTS_CLIENT_KEY - App Insights instrumentation key. This key is used for client-side tracking through AI. 
 * MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
