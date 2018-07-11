@@ -13,7 +13,6 @@ Given(/^I have logged in with (.*)$/) do |teacher|
 end
 
 When(/^I want to manage the pupils$/) do
-  # school_landing_page.manage_pupil.click
   manage_pupil_page.load
 end
 
