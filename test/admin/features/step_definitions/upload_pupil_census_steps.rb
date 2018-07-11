@@ -28,7 +28,7 @@ When(/^I have chosen a file to submit$/) do
   end if Capybara.current_driver.to_s.include? 'bs_'
   @file_name = "pupil-census-data-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
-  upload_pupil_census_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/fixtures/pupil-census-data.csv')))
+  upload_pupil_census_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/pupil-census-data.csv')))
   page.attach_file('csvPupilCensusFile', File.expand_path("#{@file_path}"))
   upload_pupil_census_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)
@@ -61,7 +61,6 @@ end
 Then(/^I should see the error status for the empty last name$/) do
   expected_message = "RequestError: Cannot insert the value NULL into column 'lastName', table 'mtc.mtc_admin.pupil'; column does not allow nulls. INSERT fails."
   actual_message = upload_pupil_census_page.uploaded_file.status.text
-
   expect(actual_message.eql?(expected_message)).to be_truthy, "Expected Message: #{expected_message} does not match Actual: #{actual_message}"
 end
 
@@ -109,3 +108,14 @@ Then(/^the pupils should be removed from the register$/) do
   names = pupil_register_page.pupil_list.pupil_row.map {|row| row.names}
   expect(names).to_not include 'Surname9991001,Mohsen'
 end
+
+Then(/^the pupil census should match design$/) do
+  step 'I should see a heading on the pupil census page'
+  step 'I should see an option to upload a file'
+  step 'I should see upload and cancel buttons'
+  step 'I should see an area where it displays files uploaded'
+end
+
+
+
+
