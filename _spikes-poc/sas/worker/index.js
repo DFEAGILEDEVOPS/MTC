@@ -5,6 +5,8 @@ const config = require('./config')
 const azureStorage = require('azure-storage')
 const winston = require('winston')
 const uuid = require('uuid/v4')
+const moment = require('moment')
+
 const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
@@ -83,16 +85,9 @@ function main () {
 }
 
 function processMessage (message) {
-  logger.info('processMessage')
-  if (!message) {
-    logger.warn('processMessage: null message')
-    return
-  }
-  logger.info('processMessage: checking for messageText')
+  if (!message) return
   if (message.messageText) {
-    logger.info('processMessage: parsing message content')
     const content = Buffer.from(message.messageText, 'base64')
-    logger.info('processMessage: processed base64 buffer')
     let json = ''
     try {
       json = JSON.parse(content)
@@ -100,17 +95,19 @@ function processMessage (message) {
       logger.error(error)
       return
     }
+    const entGen = azureStorage.TableUtilities.entityGenerator
     const entity = {
-      PartitionKey: {'_': json.pupil.checkCode},
-      RowKey: {'_': uuid()},
-      payload: JSON.stringify(json)
+      PartitionKey: entGen.String(json.pupil.checkCode),
+      RowKey: entGen.String(uuid()),
+      payload: entGen.String(JSON.stringify(json)),
+      processedAt: entGen.DateTime(moment().toDate()),
+      processedBy: entGen.String('hostname-env-processId (as we do for logDNA id on admin)')
     }
     tableService.insertEntity(tableName, entity, (error, result, response) => {
       if (!error) {
+        logger.info(`message processed and added to table storage at ${moment().format()}`)
         qService.deleteMessage(qName, message.messageId, message.popReceipt, function (error, response) {
-          if (!error) {
-            logger.info('message deleted successfully')
-          } else {
+          if (error) {
             logger.error(`unable to delete message:${error}`)
           }
         })
