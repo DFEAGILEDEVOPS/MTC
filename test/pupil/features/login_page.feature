@@ -21,8 +21,8 @@ Feature: Login page
   Scenario: Users can login with valid credentials
     Given I have logged in
     Then I should be taken to the confirmation page
-    Then I should see all the correct pupil details
-    Then local storage should be populated with questions and pupil metadata
+    And I should see all the correct pupil details
+    And pupil name is removed from local storage
 
   Scenario: Login failure message is displayed on the sign in page
     Given I am on the sign in page
