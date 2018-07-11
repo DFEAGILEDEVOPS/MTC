@@ -1,5 +1,4 @@
 /* global jasmine describe expect it beforeEach spyOn */
-/* global jasmine describe expect it beforeEach spyOn */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../controllers/service-manager')
 const settingService = require('../../services/setting.service')

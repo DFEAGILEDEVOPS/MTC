@@ -298,7 +298,7 @@ const controller = {
     try {
       checkWindowData = await checkWindowService.getCheckWindowEditForm(req.params.id)
     } catch (error) {
-      return next()
+      return next(error)
     }
     res.render('service-manager/check-window-form', {
       error: new ValidationError(),
