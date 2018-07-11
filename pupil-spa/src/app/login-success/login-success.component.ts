@@ -50,6 +50,10 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.school = new School;
     this.school.name = schoolData.name;
     this.appUsageService.increment();
+
+    // remove pupil data from local storage after setting them visually
+    const checkCode = pupilData.checkCode;
+    this.storageService.setItem('pupil', { checkCode });
   }
 
   async ngOnInit() {
@@ -69,9 +73,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    // remove pupil data from local storage after confirming identity
-    const checkCode = this.storageService.getItem('pupil').checkCode;
-    this.storageService.setItem('pupil', { checkCode });
     this.router.navigate(['check-start']);
   }
 

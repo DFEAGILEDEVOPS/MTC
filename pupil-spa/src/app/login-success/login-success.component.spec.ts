@@ -69,9 +69,10 @@ describe('LoginSuccessComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should be created', () => {
+  it('should be created and remove pupil data', () => {
     expect(component).toBeTruthy();
     expect(appUsageService.increment).toHaveBeenCalledTimes(1);
+    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   });
 
   it('asks the user to confirm their details', () => {
@@ -79,10 +80,9 @@ describe('LoginSuccessComponent', () => {
     expect(compiled.querySelector('p.lede').textContent).toMatch(/If this is you, please confirm/);
   });
 
-  it('redirects to warm up introduction page and removes pupil data', () => {
+  it('redirects to warm up introduction page', () => {
     component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
-    expect(storageService.setItem).toHaveBeenCalledTimes(1);
   });
 
 });

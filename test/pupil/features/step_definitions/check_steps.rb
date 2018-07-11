@@ -27,6 +27,7 @@ Then(/^I should see a question$/) do
 end
 
 Then(/^the question should display for the configured number of seconds$/) do
+  @question = check_page.question.text
   check_page.wait_for_question_timer_to_expire(5)
   expect(check_page).to have_preload
 end
@@ -151,4 +152,10 @@ end
 Then(/^I should see the number of questions$/) do
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   expect(mtc_check_start_page.questions.text).to include "There will be #{questions.size} questions."
+end
+
+
+Then(/^I should see the question and timer$/) do
+  step 'I should see a question'
+  step 'I should see a timer'
 end
