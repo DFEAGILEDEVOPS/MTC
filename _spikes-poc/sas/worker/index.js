@@ -21,7 +21,6 @@ const tableService = azureStorage.createTableService()
 const tableName = 'completedchecks'
 const qName = 'sastest'
 
-
 const run = () => {
   setupStorage(poll)
 }
@@ -46,7 +45,6 @@ function setupStorage (callback) {
 
 function setupTableService (callback) {
   let initialTableOperation = ''
-  
 
   tableService.createTableIfNotExists(tableName, (error, result, response) => {
     if (!error) {
