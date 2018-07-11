@@ -34,38 +34,29 @@ Feature: Edit Check Window
     When I try to submit a name that is 2 characters long
     Then I should not see an error message for the check name
 
-  Scenario: Admin start date has to be in the future
-    When I try to submit admin start date that is in the past
-    Then I should see an error stating the admin start date has to be in the future
+  Scenario: Validation for Admin Start Date
+    Then I should see error message for the following admin start date
+      | condition                               |
+      | admin start date in past                |
+      | update with empty admin start date      |
+      | invalid admin start date                |
+      | more digit for day month and year       |
+      | admin start date after check start date |
 
-  Scenario: Admin start date cannot be left empty
-    When I try to update without a admin start date for the window
-    Then I should see an error stating the admin start date cant be blank
 
   @manual
   Scenario: Admin start date entries have to be numerical
     When I try to submit an admin start date that consists of letters
     Then I should see an error stating the admin start date has to be numerical
 
-  Scenario: Admin date has to consist of a valid day month year
-    When I try to submit with a invalid admin start date for the window
-    Then I should see errors for the admin start day month and year
-
-  Scenario: Admin date can't have more digits for day month year than specified
-    When I try to submit a admin start date with more digits for day month year than specified
-    Then I should see errors for the admin start day month and year being invalid
-
-  Scenario: Admin start date cant be after the check start date
-    When I try to submit an admin start date that is after the check start date
-    Then I should see an error stating the admin start date has to be before the check start date
-
-  Scenario: Start date has to be in the future
-    When I try to submit a start date that is in the past
-    Then I should see an error stating the start date must be in the future
-
-  Scenario: Check window has to have a check start date
-    When I try to update without a check start date for the window
-    Then I should see a error message for the check start date field
+  Scenario: Validation for Check Start Date
+    Then I should see error message for the following check start date
+      | condition                             |
+      | check start date in past              |
+      | update with empty check start date    |
+      | invalid check start date              |
+      | more digit for day month and year     |
+      | check start date after check end date |
 
   @manual
   Scenario: Check start date entries have to be numerical
@@ -73,44 +64,16 @@ Feature: Edit Check Window
     When I try to submit an check start date that consists of letters
     Then I should see an error stating the check start date has to be numerical
 
-  Scenario: Check window has to have a valid check start day
-    When I try to submit with a invalid check start date for the window
-    Then I should see errors for the start day month and year
-
-  Scenario: Check start date can't have more digits for day month year than specified
-    When I try to submit a check start date with more digits for day month year than specified
-    Then I should see errors for the check start day month and year being invalid
-
-  Scenario: Check start date cant be before the admin start date
-    When I try to submit an check start date that is before the admin start date
-    Then I should see an error stating the admin start date has to be before the check start date
-
-  Scenario: Check start date cannot be after check end date
-    When I try to submit an check start date that is after the check end date
-    Then I should see an error stating the check start date has to be before the check end date
-
-  Scenario: Check end date has to be in the future
-    When I try to submit check end date that is in the past
-    Then I should see an error stating the check end date has to be in the future
-
-  Scenario: Check window has to have a end date
-    When I try to submit without a check end date for the window
-    Then I should see a error message for the end date field
+  Scenario: Validation for Check End Date
+    Then I should see error message for the following check end date
+      | condition                         |
+      | check end date in past            |
+      | empty check end date              |
+      | invalid check end date            |
+      | more digit for day month and year |
 
   @manual
   Scenario: Check end date entries have to be numerical
     When I try to submit an check end date that consists of letters
     Then I should see an error stating the check end date has to be numerical
 
-  Scenario: Check window has to have a valid end date
-    When I try to submit with a invalid check end date for the window
-    Then I should see errors for the end day month and year
-
-
-  Scenario: Check end date can't have more digits for day month year than specified
-    When I try to submit a check end date with more digits for day month year than specified
-    Then I should see errors for the check end day month and year being invalid
-
-  Scenario: Check end date cant be before check start date
-    When I try to submit an check end date that is before the check start date
-    Then I should see an error stating the check end date has to be after the check start date

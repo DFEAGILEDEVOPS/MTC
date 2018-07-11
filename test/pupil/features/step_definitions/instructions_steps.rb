@@ -21,3 +21,11 @@ Then(/^I should see the total number of questions in the check$/) do
   array_of_instructions = start_page.bulleted_list_instructions.map{|instruction| instruction.text}
   expect(array_of_instructions).to include "Then there will be #{questions.size} questions."
 end
+
+Then(/^I should see the instructions page matches design$/) do
+  step 'I should see a heading'
+  step 'I should see a bulleted list of instructions'
+  step 'I should see a start button'
+  step 'I should see the total number of questions in the check'
+  step 'I should see the timings between questions'
+end
