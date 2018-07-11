@@ -1,32 +1,11 @@
-Then(/^I should see page heading$/) do
+Then(/^manage check window page is displayed as the the design$/) do
   expect(manage_check_window_page).to have_heading
-end
-
-Then(/^I should see page instructions$/) do
   expect(manage_check_window_page).to have_page_instructions
-end
-
-Then(/^I should see a option to create a new window$/) do
   expect(manage_check_window_page).to have_create_new_window
-end
-
-Then(/^I should see a panel with information about timings$/) do
   expect(manage_check_window_page).to have_panel
-end
-
-Then(/^I should see a table of check windows$/) do
   expect(manage_check_window_page).to have_windows_table
-end
-
-Then(/^I should see a option to get some guidance$/) do
   expect(manage_check_window_page).to have_guidance
-end
-
-Then(/^I should see a option to adjust the timings of the check$/) do
   expect(manage_check_window_page).to have_adjust_timings
-end
-
-Then(/^I should see a option to view the progress report$/) do
   expect(manage_check_window_page).to have_progress_report
 end
 
@@ -74,23 +53,15 @@ Given(/^I am viewing the modal$/) do
   step 'I want to remove a window'
 end
 
-Then(/^I should see an option to cancel$/) do
-  expect(manage_check_window_page.modal).to have_cancel
-end
-
-Then(/^I should see an option to confirm$/) do
-  expect(manage_check_window_page.modal).to have_confirm
-end
-
-Then(/^I should see the modal has a heading$/) do
+Then (/^modal is displayed as per the design$/) do
   expect(manage_check_window_page.modal).to have_heading
   expect(manage_check_window_page.modal.heading.text).to eql 'Please confirm'
-end
 
-Then(/^I should see the modal has some text$/) do
   expect(manage_check_window_page.modal).to have_content
   expect(manage_check_window_page.modal.content.text).to eql 'Are you sure you want to remove this?'
 
+  expect(manage_check_window_page.modal).to have_cancel
+  expect(manage_check_window_page.modal).to have_confirm
 end
 
 Then(/^the check name should be sorted a\-z by default$/) do
