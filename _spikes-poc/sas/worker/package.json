@@ -1,7 +1,11 @@
 {
+  "scripts": {
+    "start": "node ./index.js"
+  },
   "dependencies": {
     "azure-storage": "^2.10.0",
     "dotenv": "^6.0.0",
+    "uuid": "^3.3.2",
     "winston": "^3.0.0"
   }
 }

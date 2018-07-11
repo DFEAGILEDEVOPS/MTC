@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Guy Harwood",
   "license": "GPL-3.0",
+  "scripts": {
+    "start": "node ./index.js"
+  },
   "dependencies": {
     "azure-storage": "^2.10.0",
     "cors": "^2.8.4",

@@ -10,10 +10,10 @@ if (!storageConnection) {
 }
 
 const queueName = process.env.QUEUE_NAME || 'sastest'
+const permissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 
 var queueService = azure.createQueueService(storageConnection)
-
-const permissions = azure.QueueUtilities.SharedAccessPermissions.ADD
+// setCors(queueService)
 
 const generateSasToken = () => {
   // Create a SAS token that expires in an hour
@@ -37,6 +37,28 @@ const generateSasToken = () => {
     token: sasToken,
     url: queueService.getUrl(queueName)
   }
+}
+
+function setCors (qService) {
+  const properties = {
+    Cors: {
+      CorsRule: [{
+        AllowedOrigins: ['*'],
+        AllowedMethods: ['POST', 'GET', 'HEAD', 'PUT'],
+        AllowedHeaders: ['*'],
+        ExposedHeaders: ['*'],
+        MaxAgeInSeconds: 3600
+      }]
+    }
+  }
+
+  qService.setServiceProperties(properties, function (error) {
+    if (error) {
+      throw error
+    }
+  })
+
+  return
 }
 
 module.exports = generateSasToken
