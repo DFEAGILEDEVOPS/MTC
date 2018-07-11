@@ -116,29 +116,35 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  Scenario: School Password is displayed on Generated Pin Page
+  @local
+  Scenario: Generated Pin Page is displayed as per the design
     Given I have generated a pin for a pupil
-    Then I should see the school password for teacher1
+    Then I should see generated pin page as per design
+    And the displayed school password is generated as per the requirement
 
-  Scenario: School Password info is displayed on Generated Pin Page
-    Given I have generated a pin for a pupil
-    Then I should see information for Pupil pin and School password
+#  Scenario: School Password is displayed on Generated Pin Page
+#    Given I have generated a pin for a pupil
+#    Then I should see the school password for teacher1
+#
+#  Scenario: School Password info is displayed on Generated Pin Page
+#    Given I have generated a pin for a pupil
+#    Then I should see information for Pupil pin and School password
+#
+#  Scenario: Download Pin option is displayed on Generated Pin Page
+#    Given I have generated a pin for a pupil
+#    Then I should see link to download all pupil pins
 
-  Scenario: Download Pin option is displayed on Generated Pin Page
-    Given I have generated a pin for a pupil
-    Then I should see link to download all pupil pins
-
-  Scenario: School password should consist of 8 characters
-    Given I have generated a pin for a pupil
-    Then the school password should consist of 8 characters
-
-  Scenario: School password should not contain charachter q
-    Given I have generated a pin for a pupil
-    Then the school password should not contain charachter 'q'
-
-  Scenario: School Password must be generated from the specified pool of characters
-    Given I have generated a pin for a pupil
-    Then school password should be generated from the specified pool of characters
+#  Scenario: School password should consist of 8 characters
+#    Given I have generated a pin for a pupil
+#    Then the school password should consist of 8 characters
+#
+#  Scenario: School password should not contain charachter q
+#    Given I have generated a pin for a pupil
+#    Then the school password should not contain charachter 'q'
+#
+#  Scenario: School Password must be generated from the specified pool of characters
+#    Given I have generated a pin for a pupil
+#    Then school password should be generated from the specified pool of characters
     
   Scenario: Pin is expired when pupil is not taking the check
     Given I have generated a pin for a pupil
