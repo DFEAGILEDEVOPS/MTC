@@ -12,23 +12,17 @@ Given(/^I am on the create a check window page$/) do
   manage_check_window_page.create_new_window.click
 end
 
-Then(/^I should be able to name the window$/) do
+Then(/^create check window page should display all fields as per design$/) do
   expect(add_edit_check_window_page).to have_check_name
-end
 
-Then(/^I should be able to enter a admin start date$/) do
   expect(add_edit_check_window_page).to have_admin_start_day
   expect(add_edit_check_window_page).to have_admin_start_month
   expect(add_edit_check_window_page).to have_admin_start_year
-end
 
-Then(/^I should be able to enter a check start date$/) do
   expect(add_edit_check_window_page).to have_check_start_day
   expect(add_edit_check_window_page).to have_check_start_month
   expect(add_edit_check_window_page).to have_check_start_year
-end
 
-Then(/^I should be able to enter a check end date$/) do
   expect(add_edit_check_window_page).to have_check_end_day
   expect(add_edit_check_window_page).to have_check_end_month
   expect(add_edit_check_window_page).to have_check_end_year
@@ -603,4 +597,76 @@ end
 Then(/^I should see an error stating the check end date has to be after the check start date$/) do
   expect(add_edit_check_window_page.error_summary).to be_all_there
   expect(add_edit_check_window_page.error_message.map {|error| error.text}).to eql ["\"Check end date\" must occur after \"Check start date\""]
+end
+
+Then(/^I should see error message for the following admin start date$/) do |table|
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'admin start date in past'
+        step 'I try to submit admin start date that is in the past'
+        step 'I should see an error stating the admin start date has to be in the future'
+      when 'empty admin start date'
+        step 'I try to submit without a admin start date for the window'
+        step 'I should see an error stating the admin start date cant be blank'
+      when 'invalid admin start date'
+        step 'I try to submit with a invalid admin start date for the window'
+        step 'I should see errors for the admin start day month and year'
+      when 'more digit for day month and year'
+        step 'I try to submit a admin start date with more digits for day month year than specified'
+        step 'I should see errors for the admin start day month and year being invalid'
+      when 'admin start date after check start date'
+        step 'I try to submit an admin start date that is after the check start date'
+        step 'I should see an error stating the admin start date has to be before the check start date'
+      when 'update with empty admin start date'
+        step 'I try to update without a admin start date for the window'
+        step 'I should see an error stating the admin start date cant be blank'
+    end
+  end
+end
+
+Then(/^I should see error message for the following check start date$/) do |table|
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'check start date in past'
+        step 'I try to submit a start date that is in the past'
+        step 'I should see an error stating the start date must be in the future'
+      when 'empty check start date'
+        step 'I try to submit without a check start date for the window'
+        step 'I should see a error message for the check start date field'
+      when 'invalid check start date'
+        step 'I try to submit with a invalid check start date for the window'
+        step 'I should see errors for the start day month and year'
+      when 'more digit for day month and year'
+        step 'I try to submit a check start date with more digits for day month year than specified'
+        step 'I should see errors for the check start day month and year being invalid'
+      when 'check start date after check end date'
+        step 'I try to submit an check start date that is after the check end date'
+        step 'I should see an error stating the check start date has to be before the check end date'
+      when 'update with empty check start date'
+        step 'I try to update without a check start date for the window'
+        step 'I should see a error message for the check start date field'
+    end
+  end
+end
+
+Then(/^I should see error message for the following check end date$/) do |table|
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'check end date in past'
+        step 'I try to submit check end date that is in the past'
+        step 'I should see an error stating the check end date has to be in the future'
+      when 'empty check end date'
+        step 'I try to submit without a check end date for the window'
+        step 'I should see a error message for the end date field'
+      when 'invalid check end date'
+        step 'I try to submit with a invalid check end date for the window'
+        step 'I should see errors for the end day month and year'
+      when 'more digit for day month and year'
+        step 'I try to submit a check end date with more digits for day month year than specified'
+        step 'I should see errors for the check end day month and year being invalid'
+      when 'update with empty check end date'
+        step 'I try to update without a check end date for the window'
+        step 'I should see a error message for the check start date field'
+    end
+  end
 end
