@@ -3,7 +3,7 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AuditService } from './services/audit/audit.service';
 import { AppError } from './services/audit/auditEntry';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
-
+import { AppInsights } from 'applicationinsights-js';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -45,6 +45,13 @@ export class GlobalErrorHandler implements ErrorHandler {
       eventCategory: 'error',
       eventAction: url,
       eventLabel: errorMessage
+    });
+
+    AppInsights.trackPageView('Error', '/error');
+
+    AppInsights.trackEvent('Error', {
+      url: url,
+      errorMessage: errorMessage
     });
   }
 }
