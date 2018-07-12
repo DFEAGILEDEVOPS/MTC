@@ -5,6 +5,10 @@
 $(function () {
   'use strict'
 
+  /**
+   * Performs sorting for the supplied table
+   * @param {String} tableId
+   */
   var applySorting = function (tableId) {
     var getCellValue = function (tr, idx) {
       return tr.children[idx].innerText || tr.children[idx].textContent
