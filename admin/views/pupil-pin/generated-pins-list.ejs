@@ -19,7 +19,7 @@
             </p>
         </div>
         <% } %>
-        <h1 class="heading-xlarge">Generate pupil PINs</h1>
+        <h1 class="heading-xlarge">View and print PINs - <%= pinEnv %> check</h1>
 
         <%- partial('partials/_session_expiry') %>
 
@@ -38,14 +38,14 @@
         </p>
 
         <div class="link-icon-wrapper">
-            <a href="/pupil-pin/print-pins" class="icon-download">Print pupil PINs and school password</a>
+            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="icon-download">Print pupil PINs and school password</a>
         </div>
 
         <div class="button-wrapper">
             <% if (error) { %>
             <a class="button button-secondary" disabled >Generate more PINs</a>
             <% } else { %>
-            <a href="/pupil-pin/generate-pins-list/lastName/asc" class="button button-secondary">Generate more PINs</a>
+            <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list/lastName/asc" class="button button-secondary">Generate more PINs</a>
             <% } %>
         </div>
 
@@ -121,4 +121,3 @@
         </aside>
     </div>
 </div>
-
