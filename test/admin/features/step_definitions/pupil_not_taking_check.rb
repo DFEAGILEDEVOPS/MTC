@@ -3,24 +3,14 @@ Given(/^I am on the pupil not taking check page$/) do
   pupils_not_taking_check_page.load
 end
 
-Then(/^I should see the heading$/) do
+Then(/^pupil not taking check page is displayed as per design$/) do
   expect(pupils_not_taking_check_page).to have_heading
-end
-
-Then(/^I should see the info text$/) do
   expect(pupils_not_taking_check_page).to have_info_text
-end
-
-Then(/^I should see a way to add a reason$/) do
   expect(pupils_not_taking_check_page).to have_add_reason
-end
-
-Then(/^I should be able to go back to the top$/) do
   expect(pupils_not_taking_check_page).to have_back_to_top
-end
-
-Then(/^I should see a way to generate pins$/) do
   expect(pupils_not_taking_check_page).to have_generate_pins
+
+  step 'I should see related content on the pupils not taking a check page'
 end
 
 When(/^I want to add a reason$/) do
@@ -28,8 +18,13 @@ When(/^I want to add a reason$/) do
   page.execute_script "window.scrollBy(0,500)"
 end
 
-Then(/^I should see a heading on the page$/) do
+Then(/^pupil reason page is displayed as per the design$/) do
   expect(pupil_reason_page).to have_heading
+  expect(pupil_reason_page).to have_back_to_top
+  expect(pupil_reason_page).to have_generate_pins
+  expect(pupil_reason_page.explanation_section).to be_all_there
+
+  step 'I should see set of reasons I can choose'
 end
 
 Then(/^I should see set of reasons I can choose$/) do
@@ -37,18 +32,6 @@ Then(/^I should see set of reasons I can choose$/) do
   expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map{|code| code['id']}.sort
   actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
   expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
-end
-
-Then(/^I should see a back to top option$/) do
-  expect(pupil_reason_page).to have_back_to_top
-end
-
-Then(/^I should see a option to generate pins$/) do
-  expect(pupil_reason_page).to have_generate_pins
-end
-
-Then(/^I should see a section that explains the reasons$/) do
-  expect(pupil_reason_page.explanation_section).to be_all_there
 end
 
 When(/^I want to add a reason for pupils not taking a check$/) do
