@@ -44,6 +44,7 @@ Given(/^I have completed the check with a real user(?: using the (.+))?$/) do |i
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_completion_text
+  @audit = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
 end
 
 Then(/^I should have an expired pin$/) do
@@ -59,10 +60,9 @@ Then(/^I should have an expired pin$/) do
 end
 
 Then(/^I should see a check started event in the audit log$/) do
-  local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("audit");'))
-  expect(local_storage.select {|a| a['type'] == 'CheckStarted'}).to_not be_empty
-  expect(local_storage.select {|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_empty
-  expect(local_storage.select {|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_empty
+  expect(@audit.select {|a| a['type'] == 'CheckStarted'}).to_not be_empty
+  expect(@audit.select {|a| a['type'] == 'CheckStartedApiCalled'}).to_not be_empty
+  expect(@audit.select {|a| a['type'] == 'CheckStartedAPICallSucceeded'}).to_not be_empty
 end
 
 
@@ -94,6 +94,10 @@ When(/^I completed the check anyway$/) do
 end
 
 When(/^I start the check$/) do
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step 'I should be able to use the numpad to complete the warm up questions'
   warm_up_page.start_now.click
   mtc_check_start_page.start_now.click
   @time = Time.now

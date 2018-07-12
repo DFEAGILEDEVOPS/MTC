@@ -26,3 +26,8 @@ Given(/^I am on the unauthorized access page as a service manager$/) do
   step "I have signed in with service-manager"
   school_landing_page.load
 end
+
+Given(/^I am on the unauthorized access page as a test developer$/) do
+  step "I have logged in with test-developer"
+  school_landing_page.load
+end
