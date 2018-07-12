@@ -6,7 +6,14 @@
       "type": "queueTrigger",
       "direction": "in",
       "queueName": "sastest",
-      "connection": "CompleteCheckQueue"
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "table",
+      "type": "table",
+      "direction": "out",
+      "tableName": "completedchecks",
+      "connection": "StorageAccount"
     }
   ]
 }
