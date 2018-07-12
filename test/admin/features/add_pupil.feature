@@ -7,25 +7,9 @@ Feature:
   Background:
     Given I am logged in
 
-  Scenario: Add pupil page tells me what a UPN is
+  Scenario: Add Pupil Page displays as per the design
     Given I am on the add pupil page
-    Then there should be a toggle that informs me what a upn is
-
-  Scenario: What upn section should explain what a upn is
-    Given I am on the add pupil page
-    Then there should be text in the what a upn is section
-
-  Scenario: What is upn section should have a link to more information
-    Given I am on the add pupil page
-    Then I should see a link to more details in the what is a upn section
-
-  Scenario: Add pupil page has fields to capture pupil data
-    Given I am on the add pupil page
-    Then I should see fields that will allow me to capture pupil data
-
-  Scenario: Add pupil page has fields to capture pupil data
-    Given I am on the add pupil page
-    Then I should see fields that will allow me to capture pupil data
+    Then I can see add pupil page as per the design
 
   Scenario: Pupil data is stored when valid details are entered
     Given I am on the add pupil page
@@ -48,10 +32,18 @@ Feature:
     When I submit the form without completing the optional fields
     Then I should be taken to the Pupil register page
 
-  Scenario: DOB fields should not allow letters to be entered
+  Scenario: validation for Add Pupil DOB fields
     Given I am on the add pupil page
-    When I attempt to type letters in the DOB fields
-    Then they should not be entered
+    Then I should see validation error for the DOB field fo the following
+      | condition                   |
+      | letters in DOB              |
+      | DOB in future               |
+      | invalid day within a month  |
+      | 3 digit day within a month  |
+      | invalid month within a year |
+      | 3 digit month within a year |
+      | invalid year                |
+      | 5 digit year                |
 
   Scenario: Users can navigate back to the pupil register page
     Given I am on the add pupil page
@@ -73,41 +65,6 @@ Feature:
     Given I am on the add pupil page
     When I submit the form with a last name that is less than 1 character long
     Then I should see a validation error for last name
-
-  Scenario: DOB's can not be in the future
-    Given I am on the add pupil page
-    When I submit the form with a DOB that is in the future
-    Then I should see a validation error
-
-  Scenario: DOB's can not be an invalid day within a month
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 32 days in a month
-    Then I should see a validation error for the day of the month
-
-  Scenario: DOB's can not have a 3 digit day within a month
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 320 days in a month
-    Then I should see a validation error for the day of the month
-
-  Scenario: DOB's can not be an invalid month within a year
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 32 as the month
-    Then I should see a validation error for the month of the year
-
-  Scenario: DOB's can not have a 3 digit month within a year
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 320 as the month
-    Then I should see a validation error for the month of the year
-
-  Scenario: DOB's can not be an invalid year
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 1000 years
-    Then I should see a validation error for the year
-
-  Scenario: DOB's can not have a 5 digit year
-    Given I am on the add pupil page
-    When I submit the form with a DOB that has 20070 years
-    Then I should see a validation error for the year
 
   Scenario: DOB's can have a single digit day
     Given I am on the add pupil page
@@ -188,25 +145,14 @@ Feature:
     When I submit valid details with a already used UPN
     Then I should see an error stating more than 1 pupil with the same UPN
 
-  Scenario: UPN has to have the correct check letter
+  Scenario: Validation for Add Pupil for UPN field
     Given I am on the add pupil page
-    When I submit valid details with a UPN that has a incorrect check letter
-    Then I should see an error stating wrong check letter at character 1
-
-  Scenario: UPN has to have a valid LA code
-    Given I am on the add pupil page
-    When I submit valid details with a UPN that has a invalid LA code
-    Then I should see an error stating characters between 2-4 are invalid
-
-  Scenario: UPN has to have numeric characters between characters 5-12
-    Given I am on the add pupil page
-    When I submit valid details with a UPN that has a alpha character between characters 5-12
-    Then I should see an error stating characters between 5-12 are invalid
-
-  Scenario: UPN has to have a valid alhpa character at position 13
-    Given I am on the add pupil page
-    When I submit valid details with a UPN that has a invalid alpha character at character 13
-    Then I should see an error stating character 13 is invalid
+    Then I should see validation error for the UPN field fo the following
+      | condition                                |
+      | wrong check letter                       |
+      | invalid LA code                          |
+      | alpha characters between characters 5-12 |
+      | invalid alhpa character at position 13   |
 
   Scenario: UPN can have lowercase alpha characters
     Given I am on the add pupil page

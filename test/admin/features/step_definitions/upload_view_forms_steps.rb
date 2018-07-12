@@ -15,10 +15,10 @@ Given(/^I am on the Upload new forms page$/) do
 end
 
 Then(/^I should see a heading on Upload new form page$/) do
- expect(upload_and_view_forms_page).to have_new_form_heading
+  expect(upload_and_view_forms_page).to have_new_form_heading
 end
 
-And(/^I can see sub heading '(.*)' on Upload new form Page$/) do|sub_heading|
+And(/^I can see sub heading '(.*)' on Upload new form Page$/) do |sub_heading|
   expect(upload_and_view_forms_page.new_form_sub_heading.map {|message| message.text}).to include "#{sub_heading}"
 end
 
@@ -45,19 +45,19 @@ When(/^I upload a csv file$/) do
   end if Capybara.current_driver.to_s.include? 'bs_'
   @file_name = "check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/fixtures/check-form-1.csv')) )
+  upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFile', File.expand_path("#{@file_path}"))
   upload_and_view_forms_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)
 end
 
 Then(/^it should be added to the list of forms$/) do
-  wait_until{(upload_and_view_forms_page.available_checks.rows.count).eql?(@current_form_count + 1)}
+  wait_until {(upload_and_view_forms_page.available_checks.rows.count).eql?(@current_form_count + 1)}
 end
 
 Then(/^I should see a flash message to state that new form is uploaded$/) do
   expect(upload_and_view_forms_page).to have_info_message
-  check_row = upload_and_view_forms_page.available_checks.rows.find{|row| row.title.text == @file_name.split('.').first}
+  check_row = upload_and_view_forms_page.available_checks.rows.find {|row| row.title.text == @file_name.split('.').first}
   expect(check_row.has_highlighted_row?).to be_truthy, "New uploaded form is not highlighted"
 end
 
@@ -94,64 +94,12 @@ When(/^I click on the check form title heading$/) do
   upload_and_view_forms_page.check_form_title_column_heading.click
 end
 
-Given(/^I attempt to upload a csv containing minus characters$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/minus-chars.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Then(/^I should see error messages stating why the csv has failed to upload$/) do
-  expect(upload_and_view_forms_page.errors).to be_all_there
-end
-
-Given(/^I attempt to upload a csv containing letters$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/letters.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing a header row$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/header-row.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing more than (\d+) columns$/) do |arg|
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/3-columns.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing numbers greater than 12$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/greater-than-12.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a file that is not a csv format$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/format.txt'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing decimal numbers$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/decimals.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
-Given(/^I attempt to upload a csv containing quotes around the row$/) do
-  step "I am on the Upload new forms page"
-  page.attach_file('csvFile', File.expand_path('data/quotes-around-row.csv'))
-  upload_and_view_forms_page.upload.click
-end
-
 Given(/^I attempt to upload a csv containing quotes around the column values$/) do
   @current_form_count = upload_and_view_forms_page.available_checks.rows.count
   step "I am on the Upload new forms page"
   @file_name = "check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/quotes-around-values.csv')) )
+  upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/quotes-around-values.csv')))
   page.attach_file('csvFile', File.expand_path(@file_path))
   upload_and_view_forms_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)
@@ -162,7 +110,7 @@ Given(/^I attempt to upload a csv containing spaces around the column values$/) 
   step "I am on the Upload new forms page"
   @file_name = "check-form-#{rand(234243234234234)}.csv"
   @file_path = "data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/spaces.csv')) )
+  upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/spaces.csv')))
   page.attach_file('csvFile', File.expand_path(@file_path))
   upload_and_view_forms_page.upload.click
 end
@@ -193,7 +141,7 @@ And(/^I attempt to upload the same csv again$/) do
     str if File.exist?(str)
   end if Capybara.current_driver.to_s.include? 'bs_'
   @file_path = "data/fixtures/#{@file_name}"
-  upload_and_view_forms_page.create_unique_check_csv(@file_path,File.read(File.expand_path('data/fixtures/check-form-1.csv')) )
+  upload_and_view_forms_page.create_unique_check_csv(@file_path, File.read(File.expand_path('data/fixtures/check-form-1.csv')))
   page.attach_file('csvFile', File.expand_path(@file_path))
   upload_and_view_forms_page.upload.click
   upload_and_view_forms_page.delete_csv_file(@file_path)
@@ -202,3 +150,23 @@ end
 Then(/^I should see an error stating it has already been uploaded$/) do
   find('p', text: "'#{@file_name.split('.').first}' already exists. Rename and upload again.")
 end
+
+
+Then(/^I should see error messages stating why the csv has failed to upload when I upload one of the following csv files$/) do |table|
+  step "I am on the Upload new forms page"
+  table.raw.flatten.each do |file_path|
+    page.attach_file('csvFile', File.expand_path(file_path))
+    upload_and_view_forms_page.upload.click
+    expect(upload_and_view_forms_page.errors).to be_all_there
+  end
+end
+
+Then(/^the upload new forms page matches design$/) do
+  step "I should see a heading on Upload new form page"
+  step "I can see sub heading 'Download example' on Upload new form Page"
+  step "I can see sub heading 'Upload file(s)' on Upload new form Page"
+  step "I can see the Info message on Upload new form Page"
+  step "I should have the option to choose a csv file for adding new forms"
+end
+
+

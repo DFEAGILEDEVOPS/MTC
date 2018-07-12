@@ -8,10 +8,6 @@ Feature:
   Background:
     Given I am logged in with a test developer
 
-  Scenario: Download Pupil Check Data page has a heading
+  Scenario: Download Pupil Check Data page display information as per the design
     When I am on the download pupil check data page
-    Then I should see a heading for the download pupil check data page
-
-  Scenario: Download Pupil Check Data page has information about the downloading pupil check data
-    When I am on the download pupil check data page
-    Then I should see some information about the download pupil check data
+    Then download pupil check data page display information as per the design
