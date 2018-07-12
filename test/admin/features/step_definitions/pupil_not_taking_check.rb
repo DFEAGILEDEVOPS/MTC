@@ -9,7 +9,6 @@ Then(/^pupil not taking check page is displayed as per design$/) do
   expect(pupils_not_taking_check_page).to have_add_reason
   expect(pupils_not_taking_check_page).to have_back_to_top
   expect(pupils_not_taking_check_page).to have_generate_pins
-
   step 'I should see related content on the pupils not taking a check page'
 end
 
@@ -21,9 +20,7 @@ end
 Then(/^pupil reason page is displayed as per the design$/) do
   expect(pupil_reason_page).to have_heading
   expect(pupil_reason_page).to have_back_to_top
-  expect(pupil_reason_page).to have_generate_pins
   expect(pupil_reason_page.explanation_section).to be_all_there
-
   step 'I should see set of reasons I can choose'
 end
 
