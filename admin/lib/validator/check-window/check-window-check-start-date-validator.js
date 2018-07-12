@@ -12,7 +12,7 @@ const { isEmpty, isInt } = require('validator')
  */
 module.exports.validate = (validationError, checkStartDateData) => {
   const currentYear = moment.utc().format('YYYY')
-// Check start day
+  // Check start day
   const isCheckStartDayEmpty = isEmpty(checkStartDateData.checkStartDay.trim())
   if (isCheckStartDayEmpty) {
     validationError.addError('checkStartDay', checkWindowErrorMessages.checkStartDayRequired)
@@ -23,7 +23,7 @@ module.exports.validate = (validationError, checkStartDateData) => {
   if (!isCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(checkStartDateData.checkStartDay)) {
     validationError.addError('checkStartDay', checkWindowErrorMessages.checkStartDayInvalidChars)
   }
-// Check start month
+  // Check start month
   const isCheckStartMonthEmpty = isEmpty(checkStartDateData.checkStartMonth.trim())
   if (isCheckStartMonthEmpty) {
     validationError.addError('checkStartMonth', checkWindowErrorMessages.checkStartMonthRequired)
@@ -34,7 +34,7 @@ module.exports.validate = (validationError, checkStartDateData) => {
   if (!isCheckStartMonthEmpty && !XRegExp('^[0-9]+$').test(checkStartDateData.checkStartMonth)) {
     validationError.addError('checkStartMonth', checkWindowErrorMessages.checkStartMonthInvalidChars)
   }
-// Check start year
+  // Check start year
   const isCheckStartYearEmpty = isEmpty(checkStartDateData.checkStartYear.trim())
   if (isCheckStartYearEmpty) {
     validationError.addError('checkStartYear', checkWindowErrorMessages.checkStartYearRequired)

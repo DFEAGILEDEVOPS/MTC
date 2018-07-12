@@ -375,7 +375,6 @@ describe('service manager controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
       expect(checkWindowService.getSubmittedCheckWindowData).not.toHaveBeenCalled()
-
     })
   })
 

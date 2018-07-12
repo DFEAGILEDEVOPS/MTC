@@ -145,7 +145,7 @@ describe('Check window edit validator', function () {
       spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
         moment.utc().add(1, 'days'),
         moment.utc().subtract(2, 'days'),
-        moment.utc().add(3, 'days'),
+        moment.utc().add(3, 'days')
       )
       const existingCheckWindow = {
         adminStartDate: moment.utc().add(1, 'days'),

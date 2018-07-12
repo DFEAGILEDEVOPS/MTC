@@ -334,7 +334,7 @@ const checkWindowService = {
    * @param {Object} requestData
    * @returns {Object}
    */
-  getSubmittedCheckWindowData: async(requestData) => {
+  getSubmittedCheckWindowData: async (requestData) => {
     if (requestData.urlSlug) {
       const existingCheckWindow = await checkWindowDataService.sqlFindOneByUrlSlug(requestData.urlSlug)
       requestData.hasAdminStartDateInPast = moment().isAfter(existingCheckWindow.adminStartDate)

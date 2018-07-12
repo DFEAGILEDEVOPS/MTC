@@ -89,7 +89,7 @@ describe('Check window add validator', function () {
       spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
         moment.utc().add(1, 'days'),
         moment.utc().subtract(2, 'days'),
-        moment.utc().add(3, 'days'),
+        moment.utc().add(3, 'days')
       )
       const validationError = checkWindowAddValidator.validate({})
       expect(validationError.hasError()).toBeTruthy()
