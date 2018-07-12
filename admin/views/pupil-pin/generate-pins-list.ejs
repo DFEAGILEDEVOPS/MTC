@@ -11,21 +11,28 @@
     <div class="column-two-thirds">
 
         <header class="page-header">
-            <h1 class="heading-xlarge">Select pupils to generate pupil PINs</h1>
+            <h1 class="heading-xlarge">Select pupils to generate PINs - <%= pinEnv %> check</h1>
         </header>
 
         <%- partial('partials/_session_expiry') %>
 
+        <h3>Filter by name</h3>
+        <div class="form-group filter-name">
+            <label for="search-name">
+                <img src="/images/icon-search.png"/>
+            </label><input class="form-control" id="search-name" type="text" name="search-name">
+        </div>
+
         <%- partial('partials/_groups_filter', { groups: groups }) %>
 
-        <form method="post" action="/pupil-pin/generate-pins" method="post" autocomplete="off">
+        <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
             <% if (pupils && pupils.length > 0) { %>
             <table class="spacious reduced-top-margin" id="generatePins" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a class="sortingLink" href="/pupil-pin/generate-pins-list/lastName/<%= htmlSortDirection.lastName %>/<%= groupIds %>">
+                        <a class="sortingLink" href="/pupil-pin/generate-<%= pinEnv %>-pins-list/lastName/<%= htmlSortDirection.lastName %>/<%= groupIds %>">
                             Pupil <span class="<%= arrowSortDirection.lastName %>"></span>
                         </a>
                     </th>
@@ -80,7 +87,7 @@
 
             <%- partial('partials/_sticky_confirmation_banner', {
                 cancelLabel: 'Cancel',
-                cancelLink: '/pupil-pin/generate-pins-overview',
+                cancelLink: `/pupil-pin/generate-${pinEnv}-pins-overview`,
                 submitLabel: 'Confirm'
             }) %>
 

@@ -19,7 +19,7 @@ $(function () {
           validationStatus = validation()
         }
 
-        $(sel + ' tbody > tr:not(.hidden) div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
+        $(sel + ' tbody > tr:visible div > input:checkbox').not('[disabled]').prop('checked', ($(this).is(':checked')))
 
         if (selectAll) {
           if ($(this).is(':checked') === true) {
@@ -640,6 +640,30 @@ $(function () {
     $('.group-count').each(function () {
       var totalPupils = $('.' + $(this).context.id).length
       $('#' + $(this).context.id).text('(' + totalPupils + ' pupil' + (totalPupils > 1 ? 's' : '') + ')')
+    })
+  }
+
+  /**
+   * Filtering pupils by name.
+   */
+  if ($('.filter-name').length > 0) {
+    $('#search-name').on('change keyup', function (e) {
+      var input = $.trim($(e.currentTarget).val())
+      var selAllTr = '#generatePins > tbody > tr'
+      if (input.length === 0) {
+        $(selAllTr).each(function () {
+          $(this).show()
+        })
+        return
+      }
+
+      $(selAllTr).each(function () {
+        if ($.trim($(this).text()).indexOf(input) === -1) {
+          $(this).hide()
+        } else {
+          $(this).show()
+        }
+      })
     })
   }
 })
