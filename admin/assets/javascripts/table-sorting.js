@@ -23,13 +23,13 @@ $(function () {
     var applySortClass = function (headerEl) {
       // Remove sort classes from headers
       document.querySelectorAll('thead tr th span').forEach(function (el) {
-        el.className = ''
+        el.className = 'sort-icon'
       })
       // Display sorting class based on sorting behavior
       if (headerEl.asc === undefined) {
-        headerEl.getElementsByTagName('span')[0].className = 'sort'
+        headerEl.getElementsByTagName('span')[0].className = 'sort-icon desc'
       } else {
-        headerEl.getElementsByTagName('span')[0].className = !headerEl.asc ? 'sort up' : 'sort'
+        headerEl.getElementsByTagName('span')[0].className = !headerEl.asc ? 'sort-icon asc' : 'sort-icon desc'
       }
     }
 
