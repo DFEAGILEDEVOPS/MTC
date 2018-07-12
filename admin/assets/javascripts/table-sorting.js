@@ -5,9 +5,7 @@
 $(function () {
   'use strict'
 
-  // Pupil register sorting
-  var isRegisterPupilsView = document.body.contains(document.getElementById('register-pupils'))
-  if (isRegisterPupilsView) {
+  var applySorting = function (tableId) {
     var getCellValue = function (tr, idx) {
       return tr.children[idx].innerText || tr.children[idx].textContent
     }
@@ -32,11 +30,11 @@ $(function () {
         headerEl.getElementsByTagName('span')[0].className = !headerEl.asc ? 'sort-icon asc' : 'sort-icon desc'
       }
     }
-
+    // Listen for click events and perform sorting
     document.querySelectorAll('th').forEach(function (th) {
       return th.addEventListener('click', function () {
         applySortClass(this)
-        var tbody = document.querySelector('#register-pupils tbody')
+        var tbody = document.querySelector('#' + tableId + ' tbody')
         Array.from(tbody.querySelectorAll('tr'))
           .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = this.asc !== undefined ? !this.asc : false))
           .forEach(function (tr) {
@@ -44,5 +42,20 @@ $(function () {
           })
       })
     })
+  }
+  // Pupil register sorting
+  var isRegisterPupilsView = document.body.contains(document.getElementById('register-pupils'))
+  if (isRegisterPupilsView) {
+    applySorting('register-pupils')
+  }
+  // Generate pins sorting
+  var isGeneratePupilsView = document.body.contains(document.getElementById('generatePins'))
+  if (isGeneratePupilsView) {
+    applySorting('generatePins')
+  }
+  // Check forms sorting
+  var isCheckFormsView = document.body.contains(document.getElementById('checkFormsList'))
+  if (isCheckFormsView) {
+    applySorting('checkFormsList')
   }
 })
