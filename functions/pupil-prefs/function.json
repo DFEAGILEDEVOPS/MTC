@@ -2,11 +2,18 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "myQueueItem",
+      "name": "checkStartMessage",
       "type": "queueTrigger",
       "direction": "in",
-      "queueName": "js-queue-items",
-      "connection": ""
+      "queueName": "pupil-preferences",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "pupilEventsTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "pupilEvents",
+      "connection": "StorageAccount"
     }
   ]
 }
