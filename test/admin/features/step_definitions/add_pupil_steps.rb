@@ -199,15 +199,18 @@ Then(/^I should be taken to the add pupil page$/) do
   expect(add_pupil_page).to be_displayed
 end
 
-Then(/^there should be a toggle that informs me what a upn is$/) do
+Then(/^I can see add pupil page as per the design$/) do
+  expect(@page).to have_first_name
+  expect(@page).to have_middle_name
+  expect(@page).to have_last_name
+  expect(@page).to have_upn
+  expect(@page).to have_day
+  expect(@page).to have_month
+  expect(@page).to have_year
+  expect(@page).to have_female
+  expect(@page).to have_male
   expect(@page).to have_what_is_upn
-end
-
-Then(/^there should be text in the what a upn is section$/) do
   expect(@page.what_is_upn).to have_explanatory_text
-end
-
-Then(/^I should see a link to more details in the what is a upn section$/) do
   expect(@page.what_is_upn).to have_more_details
 end
 
@@ -372,4 +375,54 @@ Then(/^I should see a flash message to state the pupil has been added$/) do
   expect(pupil_register_page).to have_new_pupil_info_message
   hightlighted_row = pupil_register_page.pupil_list.pupil_row.find{|row| row.has_edited_pupil?}
   expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+end
+
+Then(/^I should see validation error for the DOB field fo the following$/) do |table|
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'letters in DOB'
+        step 'I attempt to type letters in the DOB fields'
+        step 'they should not be entered'
+      when 'DOB in future'
+        step 'I submit the form with a DOB that is in the future'
+        step 'I should see a validation error'
+      when 'invalid day within a month'
+        step 'I submit the form with a DOB that has 32 days in a month'
+        step 'I should see a validation error for the day of the month'
+      when '3 digit day within a month'
+        step 'I submit the form with a DOB that has 320 days in a month'
+        step 'I should see a validation error for the day of the month'
+      when 'invalid month within a year'
+        step 'I submit the form with a DOB that has 32 as the month'
+        step 'I should see a validation error for the month of the year'
+      when '3 digit month within a year'
+        step 'I submit the form with a DOB that has 320 as the month'
+        step 'I should see a validation error for the month of the year'
+      when 'invalid year'
+        step 'I submit the form with a DOB that has 1000 years'
+        step 'I should see a validation error for the year'
+      when '5 digit year'
+        step 'I submit the form with a DOB that has 20070 years'
+        step 'I should see a validation error for the year'
+    end
+  end
+end
+
+Then(/^I should see validation error for the UPN field fo the following$/) do |table|
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'wrong check letter'
+        step 'I submit valid details with a UPN that has a incorrect check letter'
+        step 'I should see an error stating wrong check letter at character 1'
+      when 'invalid LA code'
+        step 'I submit valid details with a UPN that has a invalid LA code'
+        step 'I should see an error stating characters between 2-4 are invalid'
+      when 'alpha characters between characters 5-12'
+        step 'I submit valid details with a UPN that has a alpha character between characters 5-12'
+        step 'I should see an error stating characters between 5-12 are invalid'
+      when 'invalid alhpa character at position 13'
+        step 'I submit valid details with a UPN that has a invalid alpha character at character 13'
+        step 'I should see an error stating character 13 is invalid'
+    end
+  end
 end

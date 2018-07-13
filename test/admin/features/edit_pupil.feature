@@ -29,10 +29,6 @@ Feature:
     When I submit the form without completing the optional fields
     Then I should be taken to the Pupil register page
 
-  Scenario: DOB fields should not allow letters to be entered
-    When I attempt to type letters in the DOB fields
-    Then they should not be entered
-
   Scenario: Names can include a space
     When I submit the form with the name fields set as Mary Jane
     Then the pupil details should be stored
@@ -53,10 +49,6 @@ Feature:
   Scenario: Last names should contain at least 1 character long
     When I submit the form with a last name that is less than 1 character long
     Then I should see a validation error for last name
-
-  Scenario: DOB's can not be in the future
-    When I submit the form with a DOB that is in the future
-    Then I should see a validation error
 
   Scenario: Names can include a hyphen
     When I submit the form with the name fields set as Mary-Jane
@@ -110,29 +102,17 @@ Feature:
       | ÞÐÇÑẞ              |
       | þçðñß              |
 
-  Scenario: DOB's can not be an invalid day
-    When I submit the form with a DOB that has 32 days in a month
-    Then I should see a validation error for the day of the month
-
-  Scenario: DOB's can not have a 3 digit day
-    When I submit the form with a DOB that has 320 days in a month
-    Then I should see a validation error for the day of the month
-
-  Scenario: DOB's can not be an invalid month
-    When I submit the form with a DOB that has 32 as the month
-    Then I should see a validation error for the month of the year
-
-  Scenario: DOB's can not have a 3 digit month
-    When I submit the form with a DOB that has 320 as the month
-    Then I should see a validation error for the month of the year
-
-  Scenario: DOB's can not be an invalid year
-    When I submit the form with a DOB that has 1000 years
-    Then I should see a validation error for the year
-
-  Scenario: DOB's can not have a 5 digit year
-    When I submit the form with a DOB that has 20070 years
-    Then I should see a validation error for the year
+  Scenario: validation for Add Pupil DOB fields
+    Then I should see validation error for the DOB field fo the following
+      | condition                   |
+      | letters in DOB              |
+      | DOB in future               |
+      | invalid day within a month  |
+      | 3 digit day within a month  |
+      | invalid month within a year |
+      | 3 digit month within a year |
+      | invalid year                |
+      | 5 digit year                |
 
   Scenario: DOB's can have a single digit day
     When I submit the form with a DOB that has 3 days in a month
@@ -146,21 +126,13 @@ Feature:
     When I submit valid details with a already used UPN
     Then I should see an error stating more than 1 pupil with the same UPN
 
-  Scenario: UPN has to have the correct check letter
-    When I submit valid details with a UPN that has a incorrect check letter
-    Then I should see an error stating wrong check letter at character 1
-
-  Scenario: UPN has to have a valid LA code
-    When I submit valid details with a UPN that has a invalid LA code
-    Then I should see an error stating characters between 2-4 are invalid
-
-  Scenario: UPN has to have numeric characters between characters 5-12
-    When I submit valid details with a UPN that has a alpha character between characters 5-12
-    Then I should see an error stating characters between 5-12 are invalid
-
-  Scenario: UPN has to have numeric characters at position 13
-    When I submit valid details with a UPN that has a invalid alpha character at character 13
-    Then I should see an error stating character 13 is invalid
+  Scenario: Validation for Add Pupil for UPN field
+    Then I should see validation error for the UPN field fo the following
+      | condition                                |
+      | wrong check letter                       |
+      | invalid LA code                          |
+      | alpha characters between characters 5-12 |
+      | invalid alhpa character at position 13   |
 
   Scenario: UPN can have lowercase alpha characters
     When I submit valid details with a UPN has a lowercase alpha character
