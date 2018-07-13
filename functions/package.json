@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "func host start"
+    "start": "func host start",
+    "pack": "funcpack pack ."
   },
   "dependencies": {
     "moment": "^2.22.2",
