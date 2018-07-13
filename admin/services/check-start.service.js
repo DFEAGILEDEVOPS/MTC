@@ -61,8 +61,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   const checks = []
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
-    const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds)
-    c.is_familiarisation = pinEnv === 'live' ? 0 : 1
+    const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds, pinEnv)
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
@@ -75,9 +74,10 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
  * @param {object} checkWindow
  * @param {Array.<Object>} availableForms
  * @param {Array.<number>} usedFormIds
+ * @param {string} pinEnv
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
-checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds) {
+checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds, pinEnv) {
   const checkForm = await checkFormService.allocateCheckForm(availableForms, usedFormIds)
 
   if (!checkForm) {
@@ -89,7 +89,8 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
   const checkData = {
     pupil_id: pupilId,
     checkWindow_id: checkWindow.id,
-    checkForm_id: checkForm.id
+    checkForm_id: checkForm.id,
+    is_familiarisation: pinEnv === 'live' ? 0 : 1
   }
 
   return checkData

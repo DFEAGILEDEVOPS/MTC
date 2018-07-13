@@ -57,61 +57,123 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
     })
 
-    describe('pupil validation', () => {
-      beforeEach(() => {
-        spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+    describe('for live pins', () => {
+      describe('pupil validation', () => {
+        beforeEach(() => {
+          spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+        })
+
+        it('throws an error if schoolId is not provided', async () => {
+          try {
+            await service.prepareCheck(pupilIds, 1, undefined, 'live')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('schoolId is required')
+          }
+        })
+
+        it('throws an error if dfeNumber is not provided', async () => {
+          try {
+            await service.prepareCheck(pupilIds, undefined, 1, 'live')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('dfeNumber is required')
+          }
+        })
+
+        it('finds the current check window', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'live')
+          expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
+        })
+
+        it('calls initialiseCheck once per pupil', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'live')
+          expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
+        })
+
+        it('calls sqlCreateBatch to save the checks', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'live')
+          expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+          const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
+          expect(arg.length).toBe(3)
+        })
       })
 
-      it('throws an error if schoolId is not provided', async () => {
-        try {
-          await service.prepareCheck(pupilIds, 1, undefined)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('schoolId is required')
-        }
-      })
-
-      it('throws an error if dfeNumber is not provided', async () => {
-        try {
-          await service.prepareCheck(pupilIds, undefined, 1)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('dfeNumber is required')
-        }
-      })
-
-      it('finds the current check window', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
-        expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
-      })
-
-      it('calls initialiseCheck once per pupil', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
-        expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
-      })
-
-      it('calls sqlCreateBatch to save the checks', async () => {
-        await service.prepareCheck(pupilIds, dfeNumber, schoolId)
-        expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
-        const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
-        expect(arg.length).toBe(3)
+      describe('pupil validation fails', () => {
+        beforeEach(() => {
+          spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+        })
+        it('validates the pupils against the database', async () => {
+          // This validation emits a winston.warn() as potentially it is serious, so let's
+          // shut it up for the test
+          spyOn(winston, 'warn')
+          try {
+            await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId, 'live')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('Validation failed')
+          }
+        })
       })
     })
 
-    describe('pupil validation fails', () => {
-      beforeEach(() => {
-        spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+    describe('for familiarisation pins', () => {
+      describe('pupil validation', () => {
+        beforeEach(() => {
+          spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+        })
+
+        it('throws an error if schoolId is not provided', async () => {
+          try {
+            await service.prepareCheck(pupilIds, 1, undefined, 'familiarisation')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('schoolId is required')
+          }
+        })
+
+        it('throws an error if dfeNumber is not provided', async () => {
+          try {
+            await service.prepareCheck(pupilIds, undefined, 1, 'familiarisation')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('dfeNumber is required')
+          }
+        })
+
+        it('finds the current check window', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'familiarisation')
+          expect(checkWindowDataService.sqlFindOneCurrent).toHaveBeenCalledTimes(1)
+        })
+
+        it('calls initialiseCheck once per pupil', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'familiarisation')
+          expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(3)
+        })
+
+        it('calls sqlCreateBatch to save the checks', async () => {
+          await service.prepareCheck(pupilIds, dfeNumber, schoolId, 'familiarisation')
+          expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+          const arg = checkDataService.sqlCreateBatch.calls.mostRecent().args[0]
+          expect(arg.length).toBe(3)
+        })
       })
-      it('validates the pupils against the database', async () => {
-        // This validation emits a winston.warn() as potentially it is serious, so let's
-        // shut it up for the test
-        spyOn(winston, 'warn')
-        try {
-          await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Validation failed')
-        }
+
+      describe('pupil validation fails', () => {
+        beforeEach(() => {
+          spyOn(pupilDataService, 'sqlFindByIdAndDfeNumber').and.returnValue(Promise.resolve(mockPupils))
+        })
+        it('validates the pupils against the database', async () => {
+          // This validation emits a winston.warn() as potentially it is serious, so let's
+          // shut it up for the test
+          spyOn(winston, 'warn')
+          try {
+            await service.prepareCheck(pupilIdsHackAttempt, dfeNumber, schoolId, 'familiarisation')
+            fail('expected to throw')
+          } catch (error) {
+            expect(error.message).toBe('Validation failed')
+          }
+        })
       })
     })
   })
@@ -133,12 +195,28 @@ describe('check-start.service', () => {
       }
     })
 
-    it('returns a check object, ready to be inserted into the db', async () => {
-      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-      const c = await service.initialisePupilCheck(1, checkWindowMock)
-      expect(c.hasOwnProperty('pupil_id'))
-      expect(c.hasOwnProperty('checkWindow_id'))
-      expect(c.hasOwnProperty('checkForm_id'))
+    describe('for live pins', () => {
+      it('returns a check object, ready to be inserted into the db', async () => {
+        spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, 'live')
+        expect(c.hasOwnProperty('pupil_id'))
+        expect(c.hasOwnProperty('checkWindow_id'))
+        expect(c.hasOwnProperty('checkForm_id'))
+        expect(c.hasOwnProperty('is_familiarisation'))
+        expect(c.is_familiarisation).toBe(0)
+      })
+    })
+
+    describe('for test pins', () => {
+      it('returns a check object, ready to be inserted into the db', async () => {
+        spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, 'familiarisation')
+        expect(c.hasOwnProperty('pupil_id'))
+        expect(c.hasOwnProperty('checkWindow_id'))
+        expect(c.hasOwnProperty('checkForm_id'))
+        expect(c.hasOwnProperty('is_familiarisation'))
+        expect(c.is_familiarisation).toBe(1)
+      })
     })
   })
 

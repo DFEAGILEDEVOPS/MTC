@@ -41,11 +41,23 @@ describe('pin.service', () => {
       pupil2.id = 43
       pupil2.pinExpiresAt = moment().startOf('day').add(16, 'hours')
     })
-    it('makes a call to get the pupils with active pins', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
-      spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
-      await service.getPupilsWithActivePins(dfeNumber)
-      expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber)
+
+    describe('for live pins', () => {
+      it('makes a call to get the pupils with active pins', async () => {
+        spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
+        spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
+        await service.getPupilsWithActivePins(dfeNumber, 'live')
+        expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber, 'live')
+      })
+    })
+
+    describe('for familiarisation pins', () => {
+      it('makes a call to get the pupils with active pins', async () => {
+        spyOn(pupilDataService, 'sqlFindPupilsWithActivePins').and.returnValue(Promise.resolve([]))
+        spyOn(dateService, 'formatShortGdsDate').and.returnValue('9 Sep 2008')
+        await service.getPupilsWithActivePins(dfeNumber, 'familiarisation')
+        expect(pupilDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledWith(dfeNumber, 'familiarisation')
+      })
     })
 
     it('Adds identification flags to the pupil when they have the same name', async () => {

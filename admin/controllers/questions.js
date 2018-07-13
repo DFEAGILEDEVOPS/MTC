@@ -53,7 +53,7 @@ const getQuestions = async (req, res) => {
         await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, errorMessage)
         return apiResponse.serverError(res)
       }
-      await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber, data.school.id)
+      await checkStartService.prepareCheck([data.pupil.id], data.school.dfeNumber, data.school.id, 'live')
     }
   } catch (error) {
     return apiResponse.serverError(res)
