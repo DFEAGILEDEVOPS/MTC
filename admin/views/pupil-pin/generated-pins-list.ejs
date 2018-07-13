@@ -87,7 +87,7 @@
                 </td>
                 <td>
                     <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.pin %>
+                        <%= (pinEnv === 'live' ? pupil.pin : pupil.familiarisation_pin ) %>
                     </label>
                 </td>
             </tr>

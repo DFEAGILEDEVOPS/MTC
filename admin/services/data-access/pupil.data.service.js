@@ -160,23 +160,26 @@ pupilDataService.sqlCreate = async (data) => {
 }
 
 /**
- * Find pupils for a school with pins that have not yet expired
+ * Find pupils for a school with pins that have not yet expired, for
+ * a specific pin environment (live / fam)
  * @param dfeNumber
+ * @param pinEnv
  * @return {Promise<*>}
  */
-pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber) => {
+pupilDataService.sqlFindPupilsWithActivePins = async (dfeNumber, pinEnv) => {
+  const paramPin = pinEnv === 'live' ? '' : 'familiarisation_'
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
   const sql = `
-  SELECT p.*, g.group_id 
-  FROM ${sqlService.adminSchema}.${table} p 
+  SELECT p.*, g.group_id
+  FROM ${sqlService.adminSchema}.${table} p
   INNER JOIN ${sqlService.adminSchema}.[school] s
     ON p.school_id = s.id
   LEFT JOIN  ${sqlService.adminSchema}.[pupilGroup] g
-    ON g.pupil_id = p.id 
-  WHERE p.pin IS NOT NULL
+    ON g.pupil_id = p.id
+  WHERE p.${paramPin}pin IS NOT NULL
   AND s.dfeNumber = @dfeNumber
-  AND p.pinExpiresAt IS NOT NULL
-  AND p.pinExpiresAt > GETUTCDATE()
+  AND p.${paramPin}pinExpiresAt IS NOT NULL
+  AND p.${paramPin}pinExpiresAt > GETUTCDATE()
   ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, dateOfBirth ASC
   `
   return sqlService.query(sql, [paramDfeNumber])

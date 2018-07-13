@@ -19,13 +19,13 @@
         </div>
         <% } %>
         <header class="page-header">
-            <h1 class="heading-xlarge">Generate pupil PINs - live check</h1>
+            <h1 class="heading-xlarge">Generate pupil PINs - <%= pinEnv %> check</h1>
         </header>
 
         <%- partial('partials/_session_expiry') %>
 
         <p class="lede">
-        Pupils will need a personal identification number (PIN) and school password in order to start the check in the live area. These expire at 4pm daily.
+        Pupils will need a personal identification number (PIN) and school password in order to start the check in the <%= pinEnv %> area. These expire at 4pm daily.
         </p>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
@@ -52,7 +52,7 @@
     <div class="column-two-thirds">
         <div class="panel panel-border-wide">
             <p>
-                Select <a href="" >access arrangements</a> for pupils who need it before generating PINs
+                Select <a href="/pupil-pin/access-arrangements">access arrangements</a> for pupils who need it before generating PINs
             </p>
         </div>
 

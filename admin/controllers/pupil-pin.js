@@ -19,7 +19,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
   } catch (err) {
     return next(err)
   }
@@ -132,7 +132,7 @@ const getGeneratedPinsList = async (req, res, next) => {
   let error
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
   } catch (error) {
@@ -167,7 +167,7 @@ const getPrintPins = async (req, res, next) => {
   const pinCardDate = dateService.formatFullGdsDate(new Date())
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     if (pupils.length > 0 && groups.length > 0) {
       pupils = pupils.map(p => {
         p.group = groups[p.group_id] || ''

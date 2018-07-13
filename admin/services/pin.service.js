@@ -9,12 +9,13 @@ const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
 
 /**
- * Get pupils with active pins
+ * Get pupils with active pins for a pin environment (live/fam)
  * @param dfeNumber
+ * @param pinEnv
  * @returns {Promise<*>}
  */
-pinService.getPupilsWithActivePins = async (dfeNumber) => {
-  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+pinService.getPupilsWithActivePins = async (dfeNumber, pinEnv) => {
+  let pupils = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber, pinEnv)
   return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 
