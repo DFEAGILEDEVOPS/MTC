@@ -62,4 +62,9 @@ $(function () {
   if (isCheckFormsView) {
     applySorting('checkFormsList')
   }
+  // Pupil attendance sorting
+  var isAttendanceSelectView = document.body.contains(document.getElementById('pupilsList'))
+  if (isAttendanceSelectView) {
+    applySorting('pupilsList')
+  }
 })
