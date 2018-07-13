@@ -11,20 +11,21 @@ if (!config.StorageConnection) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
-const checkq = 'check-started'
+const startq = 'check-started'
 const completeq = 'completed-checks'
 const feedbackq = 'pupil-feedback'
 const prefsq = 'pupil-preferences'
-const allqs = [checkq, completeq, feedbackq, prefsq]
+const allqs = [startq, completeq, feedbackq, prefsq]
 
 const qsvc = azure.createQueueService(config.storageConnection)
 console.log(`adding ${config.MessageCount} messages to each queue`)
 
 for (let index = 0; index < config.MessageCount; index++) {
-  addCheckStartedMessage()
-  addCheckCompleteMessage()
-  addFeedbackMessage()
-  addPreferencesMessage()
+  const checkCode = uuid()
+  addPreferencesMessage(checkCode)
+  addCheckStartedMessage(checkCode)
+  addCheckCompleteMessage(checkCode)
+  addFeedbackMessage(checkCode)
 }
 
 function initQueues () {
@@ -38,7 +39,8 @@ function initQueues () {
 }
 
 function submit (message, queueName) {
-  qsvc.createMessage(queueName, message, function (error, results, response) {
+  const encodedMessage = Buffer.from(JSON.stringify(message)).toString('base64')
+  qsvc.createMessage(queueName, encodedMessage, function (error, results, response) {
     if (!error) {
       console.log(`message added to ${queueName} successfully`)
     } else {
@@ -47,12 +49,33 @@ function submit (message, queueName) {
   })
 }
 
-function addCheckCompleteMessage () {
+function addCheckCompleteMessage (checkCode) {
   const clonePayload = { ...completePayload }
-  clonePayload.pupil.checkCode = uuid()
-  const encodedMessage = Buffer.from(JSON.stringify(clonePayload)).toString('base64')
-  submit(encodedMessage, completeq)
+  clonePayload.pupil.checkCode = checkCode
+  submit(clonePayload, completeq)
 }
-function addCheckStartedMessage () {}
-function addFeedbackMessage () {}
-function addPreferencesMessage () {}
+
+function addCheckStartedMessage (checkCode) {
+  const payload = {
+    checkCode: checkCode,
+    jwt: 'token-content'
+  }
+  submit(payload, startq)
+}
+function addFeedbackMessage (checkCode) {
+  const payload = {
+    rating: Math.floor(Math.random() * Math.floor(5)),
+    comments: 'pupil comments',
+    checkCode: checkCode
+  }
+  submit(payload, feedbackq)
+}
+function addPreferencesMessage (checkCode) {
+  const payload = {
+    checkCode: checkCode,
+    zoomLevel: 2,
+    type: 'Monaco',
+    colorInvert: true
+  }
+  submit(payload, prefsq)
+}
