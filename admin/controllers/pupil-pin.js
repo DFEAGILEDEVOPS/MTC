@@ -64,7 +64,7 @@ const getGeneratePinsList = async (req, res, next) => {
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection)
+    pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection, pinEnv)
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
@@ -105,7 +105,7 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId)
+    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))

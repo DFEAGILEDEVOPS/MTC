@@ -18,11 +18,13 @@ const checkStartService = {}
 /**
  * Create a check entry for a pupil, generate a pin, and allocate a form
  * Called from the admin app when the teacher generates a pin
+ * Generates the pin and check for a specific pin environment (live/fam)
  * @param {Array.<number>} pupilIds
  * @param {number} dfeNumber
+ * @param {string} pinEnv
  * @return {Promise<void>}
  */
-checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId) {
+checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, pinEnv) {
   // TODO: add transaction wrapper around the service calls to generate pins and checks
 
   if (!dfeNumber) {
@@ -48,7 +50,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId) 
   const maxAttempts = config.Data.pinSubmissionMaxAttempts
   const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
   // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
+  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv)
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
@@ -60,6 +62,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId) 
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds)
+    c.is_familiarisation = pinEnv === 'live' ? 0 : 1
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)

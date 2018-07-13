@@ -207,7 +207,8 @@ checkDataService.sqlCreateBatch = async function (checks) {
   const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
     pupil_id,
     checkWindow_id,
-    checkForm_id
+    checkForm_id,
+    is_familiarisation
   )  VALUES`
 
   const params = []
@@ -217,7 +218,8 @@ checkDataService.sqlCreateBatch = async function (checks) {
     params.push({name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int})
     params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
     params.push({name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int})
-    insertClauses.push(`(@pupil_id${i}, @checkWindow_id${i}, @checkForm_id${i})`)
+    params.push({name: `is_familiarisation${i}`, value: c.is_familiarisation, type: TYPES.Int})
+    insertClauses.push(`(@pupil_id${i}, @checkWindow_id${i}, @checkForm_id${i}, @is_familiarisation${i})`)
   })
 
   const sql = [insert, insertClauses.join(', ')].join(' ')

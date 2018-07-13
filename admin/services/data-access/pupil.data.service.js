@@ -259,16 +259,18 @@ pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
 }
 
 /**
- * Batch update pupil pins
+ * Batch update pupil pins for specific pin env (live/fam)
  * @param pupils
+ * @param pinEnv
  * @return {Promise<void>}
  */
-pupilDataService.sqlUpdatePinsBatch = async (pupils) => {
+pupilDataService.sqlUpdatePinsBatch = async (pupils, pinEnv = 'live') => {
+  const paramPin = pinEnv === 'live' ? '' : 'familiarisation_'
   const params = []
   const update = []
   pupils.forEach((p, i) => {
-    update.push(`UPDATE ${sqlService.adminSchema}.${table} 
-    SET pin = @pin${i}, pinExpiresAt=@pinExpiredAt${i} 
+    update.push(`UPDATE ${sqlService.adminSchema}.${table}
+    SET ${paramPin}pin = @pin${i}, ${paramPin}pinExpiresAt=@pinExpiredAt${i}
     WHERE id = @id${i}`)
     params.push({
       name: `pin${i}`,

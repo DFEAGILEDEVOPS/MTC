@@ -33,14 +33,15 @@ const chars = '23456789'
  * @param sortDirection
  * @returns {Array}
  */
-pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => {
+pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection, pinEnv) => {
   let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection, sortField)
   pupils = await Promise.all(pupils.map(async p => {
-    const isValid = await pinGenerationService.isValid(p)
+    const isValid = await pinGenerationService.isValid(p, pinEnv)
     if (isValid) {
       return {
         id: p.id,
         pin: p.pin,
+        familiarisation_pin: p.familiarisation_pin,
         group_id: p.group_id,
         dateOfBirth: p.dateOfBirth,
         foreName: p.foreName,
@@ -73,24 +74,29 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
  * @param p
  * @returns {Boolean}
  */
-pinGenerationService.isValid = async (p) => {
+pinGenerationService.isValid = async (p, pinEnv = 'live') => {
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
   const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(p.id)
   const hasAttendance = pupilAttendance && pupilAttendance.attendanceCode_id
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
-  return !pinValidator.isActivePin(p.pin, p.pinExpiresAt) && !hasAttendance && !canRestart
+  const hasValidPin = pinEnv === 'live'
+    ? pinValidator.isActivePin(p.pin, p.pinExpiresAt)
+    : pinValidator.isActivePin(p.familiarisation_pin, p.familiarisation_pinExpiresAt)
+  return !hasValidPin && !hasAttendance && !canRestart
 }
 
 /**
- * Generate pupils pins
+ * Generate pupils pins for a specific pin env (live/fam)
  * @param pupilsList
  * @param dfeNumber
  * @param maxAttempts
  * @param attemptsRemaining
+ * @param schoolId
+ * @param pinEnv
  * @throws
  */
-pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId) => {
+pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv) => {
   if (!Array.isArray(pupilsList)) {
     throw new Error('Received list of pupils is not an array')
   }
@@ -109,7 +115,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
   })
   const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
   try {
-    await pupilDataService.sqlUpdatePinsBatch(data)
+    await pupilDataService.sqlUpdatePinsBatch(data, pinEnv)
   } catch (error) {
     if (attemptsRemaining === 0) {
       throw new Error(`${maxAttempts} allowed attempts 
@@ -121,7 +127,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
       const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
       const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
-      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
+      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv)
     } else {
       throw new Error(error)
     }
