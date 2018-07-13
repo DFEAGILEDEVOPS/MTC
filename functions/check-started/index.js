@@ -4,7 +4,7 @@ const uuid = require('uuid/v4')
 const moment = require('moment')
 
 module.exports = function (context, checkStartMessage) {
-  context.log('check-started message received', checkStartMessage)
+  context.log('check-started message received', checkStartMessage.checkCode)
   // TODO: purpose: process check start messages and put into pupilEvents table
   context.bindings.pupilEventsTable = []
   const entity = {

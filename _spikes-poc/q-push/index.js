@@ -51,7 +51,8 @@ function submit (message, queueName) {
 
 function addCheckCompleteMessage (checkCode) {
   const clonePayload = { ...completePayload }
-  clonePayload.pupil.checkCode = checkCode
+  clonePayload.checkCode = checkCode
+  delete clonePayload.pupil
   submit(clonePayload, completeq)
 }
 
