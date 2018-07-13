@@ -1,0 +1,19 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "check",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "completed-checks",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "table",
+      "type": "table",
+      "direction": "out",
+      "tableName": "completedchecks",
+      "connection": "StorageAccount"
+    }
+  ]
+}

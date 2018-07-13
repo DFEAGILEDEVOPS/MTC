@@ -1,0 +1,19 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "checkStartMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "check-started",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "table",
+      "type": "table",
+      "direction": "out",
+      "tableName": "pupilEvents",
+      "connection": "StorageAccount"
+    }
+  ]
+}

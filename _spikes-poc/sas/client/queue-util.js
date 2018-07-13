@@ -53,7 +53,7 @@ function getQueueService () {
     return null
 
   // queueUri = 'https://' + account + '.queue.core.windows.net'
-  var queueService = AzureStorage.Queue.createQueueServiceWithSas(sas.url.replace('sastest', ''), sas.token).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter())
+  var queueService = AzureStorage.Queue.createQueueServiceWithSas(sas.url.replace(queue, ''), sas.token).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter())
   return queueService
 }
 

@@ -9,7 +9,7 @@ if (!storageConnection) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
-const queueName = process.env.QUEUE_NAME || 'sastest'
+const queueName = process.env.QUEUE_NAME || 'completed-checks'
 const permissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 
 var queueService = azure.createQueueService(storageConnection)
