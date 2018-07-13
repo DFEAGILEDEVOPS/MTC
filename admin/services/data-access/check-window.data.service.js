@@ -295,6 +295,24 @@ const checkWindowDataService = {
                 ORDER BY ${sortBy} ${sortDirection}`
     const params = []
     return sqlService.query(sql, params)
+  },
+
+  /**
+   * Fetch check window by url slug.
+   * @param {String} urlSlug
+   * @returns {Object}
+   */
+  sqlFindOneByUrlSlug: async (urlSlug) => {
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.${table} WHERE isDeleted=0 AND urlSlug=@urlSlug`
+    const params = [
+      {
+        name: 'urlSlug',
+        value: urlSlug,
+        type: TYPES.UniqueIdentifier
+      }
+    ]
+    const rows = await sqlService.query(sql, params)
+    return R.head(rows)
   }
 }
 
