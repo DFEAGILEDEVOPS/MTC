@@ -41,7 +41,7 @@ const dateService = {
   },
 
   formatIso8601: function (momentDate) {
-    if (!(momentDate instanceof moment)) {
+    if (!moment.isMoment(momentDate)) {
       throw new Error('Parameter must be of type Moment')
     }
     if (!momentDate.isValid()) {

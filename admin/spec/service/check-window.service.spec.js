@@ -129,6 +129,27 @@ describe('check-window.service', () => {
     })
   })
 
+  describe('getCheckWindowEditForm', () => {
+    it('should throw an error if id is not provided', async () => {
+      try {
+        await service.getCheckWindowEditForm()
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window id not provided')
+      }
+    })
+    it('should return check window data when id is provided', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(checkWindowMock)
+      let checkWindow
+      try {
+        checkWindow = await service.getEditableCheckWindow(1)
+      } catch (error) {
+        fail()
+      }
+      expect(checkWindow).toBeDefined()
+    })
+  })
+
   describe('markAsDeleted - happy path', () => {
     it('should mark a form as soft deleted if no check window was assigned or was assigned but have not started', async (done) => {
       spyOn(checkWindowDataService, 'sqlFindCheckWindowsAssignedToForms').and.returnValue([])
@@ -258,6 +279,20 @@ describe('check-window.service', () => {
       expect(checkWindowDataService.sqlCreate).toHaveBeenCalledTimes(1)
     })
   })
+  describe('#submit', () => {
+    it('submits existing check window data', async () => {
+      spyOn(checkWindowDataService, 'sqlUpdate')
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
+      await service.submit({}, { id: 1 })
+      expect(checkWindowDataService.sqlUpdate).toHaveBeenCalledTimes(1)
+    })
+    it('submits new check window data', async () => {
+      spyOn(checkWindowDataService, 'sqlCreate')
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
+      await service.submit({})
+      expect(checkWindowDataService.sqlCreate).toHaveBeenCalledTimes(1)
+    })
+  })
   describe('#marKDeleted', () => {
     it('throws an error when check window is not found', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneById')
@@ -281,6 +316,22 @@ describe('check-window.service', () => {
       spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
       const result = await service.markDeleted(1)
       expect(result.message).toBe('Check window deleted.')
+    })
+  })
+  describe('#getSubmittedCheckWindowData', () => {
+    it('call sqlFindOneByUrlSlug when request failed on edit', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        urlSlug: 'test',
+        adminStartDate: moment.utc().subtract(2, 'days'),
+        checkStartDate: moment.utc().subtract(1, 'days')
+      })
+      await service.getSubmittedCheckWindowData({ urlSlug: 'test' })
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).toHaveBeenCalled()
+    })
+    it('call sqlFindOneByUrlSlug when request failed on add', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      await service.getSubmittedCheckWindowData({})
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
   })
 })

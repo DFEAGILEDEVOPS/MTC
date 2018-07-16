@@ -17,7 +17,7 @@ module.exports = {
   adminStartYearRequired: '"Administration start year" is required',
 
   checkStartDayWrongDay: 'Please check "Day"',
-  checkStartDayInvalidChars: 'Entry must be numericaly',
+  checkStartDayInvalidChars: 'Entry must be numerical',
   checkStartDayRequired: '"Check start day" is required',
 
   checkStartMonthWrongDay: 'Please check "Month"',
