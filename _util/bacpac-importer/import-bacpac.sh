@@ -26,7 +26,7 @@ set +e
 docker rm -f ${CONTAINER_NAME}
 set -e
 docker run -d -e 'ACCEPT_EULA=Y' -e "SA_PASSWORD=${PASSWORD}" -p 1433:1433 --name ${CONTAINER_NAME} ${IMAGE}
-sleep 10
+sleep 30
 
 # DATABASE SETUP AND PREP
 docker exec -it ${CONTAINER_NAME} /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "${PASSWORD}" -Q "CREATE DATABASE ${DB};"
