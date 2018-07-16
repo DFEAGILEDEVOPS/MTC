@@ -24,10 +24,10 @@ done
 
 declare -a tablenames=('pupilEvent' 'preparedCheck')
 # create tables if they do not exist
-for q in $tablenames
+for t in $tablenames
 do
-	echo "creating $q table in $storageAccountName"
-	az storage table create --name $q
+	echo "creating $t table in $storageAccountName"
+	az storage table create --name $t
                         --account-name $storageAccountName 
 												--account-key $storageAccountKey
                         --fail-on-exist false
