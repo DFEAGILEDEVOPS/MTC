@@ -88,7 +88,6 @@ describe('Check window admin start date validator', function () {
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearInvalidChars)
-      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.enterValidYear)
     })
     it('calls addError with enterValidYear message if the admin start year is in the past', () => {
       const validationError = new ValidationError()
