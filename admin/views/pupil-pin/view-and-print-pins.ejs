@@ -23,29 +23,15 @@
 
         <%- partial('partials/_session_expiry') %>
 
-        <div class="govuk-box-highlight">
-            <div class="font-small">
-                <strong class="bold-medium">
-                    Pupil PINs and school password generated
-                </strong>
-                <br>
-                Valid only until 4pm, <%= date %>
-            </div>
-        </div>
-
         <p class="lede">
-            Please distribute pupil Personal Identification Numbers (PINs) and school password to your pupils.
+            Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.
         </p>
-
-        <div class="link-icon-wrapper">
-            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="icon-download">Print pupil PINs and school password</a>
-        </div>
 
         <div class="button-wrapper">
             <% if (error) { %>
-            <a class="button button-secondary" disabled >Generate more PINs</a>
+            <a class="button button-primary" disabled >Print PINs</a>
             <% } else { %>
-            <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list" class="button button-secondary">Generate more PINs</a>
+            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="button button-primary">Print PINs</a>
             <% } %>
         </div>
 
@@ -67,9 +53,6 @@
                 <th scope="col">
                     Pupil
                 </th>
-                <th scope="col">
-                    Pupil PIN
-                </th>
             </tr>
             </thead>
             <tbody>
@@ -84,11 +67,20 @@
                         Date of birth: <%= pupil.dateOfBirth %>
                     </div>
                     <% } %>
-                </td>
-                <td>
-                    <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.pin %>
-                    </label>
+                    <div class="grid-row top-padding-30">
+                      <div class="pin-content column-one-half">
+                          <span class="label">School Password:</span><span class="information"><%= school.pin %></span>
+                      </div>
+                      <div class="pin-content column-one-half">
+                          <span class="label">PIN:</span>
+                          <span class="information">
+                              <%= (pinEnv === 'live'
+                                  ? pupil.pin
+                                  : pupil.familiarisation_pin
+                              ) %>
+                          </span>
+                      </div>
+                    </div>
                 </td>
             </tr>
             <% }) %>

@@ -1,0 +1,17 @@
+.pin-content {
+  text-align: left;
+  line-height: pem(5px);
+  font-size: 12px;
+  margin-bottom: pem(15px);
+
+  .information {
+    font-size: 26px;
+    background: none;
+    text-align: left;
+    font-weight: bold;
+    margin: 0;
+  }
+  .label {
+    font-size: 16px;
+  }
+}

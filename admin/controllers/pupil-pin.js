@@ -130,7 +130,7 @@ const getGeneratedPinsList = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  return res.render('pupil-pin/generated-pins-list', {
+  return res.render('pupil-pin/view-and-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
