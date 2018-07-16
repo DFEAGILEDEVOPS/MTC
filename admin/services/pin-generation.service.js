@@ -80,10 +80,10 @@ pinGenerationService.isValid = async (p, pinEnv = 'live') => {
   const hasAttendance = pupilAttendance && pupilAttendance.attendanceCode_id
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
-  const hasValidPin = pinEnv === 'live'
-    ? pinValidator.isActivePin(p.pin, p.pinExpiresAt)
-    : pinValidator.isActivePin(p.familiarisation_pin, p.familiarisation_pinExpiresAt)
-  return !hasValidPin && !hasAttendance && !canRestart
+  const hasValidPin = pinValidator.isActivePin(p.pin, p.pinExpiresAt)
+  return pinEnv === 'live'
+    ? !hasValidPin && !hasAttendance && !canRestart
+    : !pinValidator.isActivePin(p.familiarisation_pin, p.familiarisation_pinExpiresAt) // !hasValidFamiliarisationPin
 }
 
 /**
