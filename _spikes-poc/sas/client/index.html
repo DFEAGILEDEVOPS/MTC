@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Azure Storage Queue Client Side with SAS POC</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="mt-1">
+      <h1>SAS Auth for client side queue push</h1>
+    </div>
+    <ul>
+      <li>
+        <p>
+          <label>
+            <b>Queue Name:</b>
+          </label>
+          <input type="text" value="completed-checks" id="queuename" /> </p>
+      </li>
+      <li>
+        <p>
+          <label>
+            <b>SAS Token:</b>
+          </label>
+          <label id="sas-token"></label>
+        </p>
+      </li>
+      <li>
+        <p>
+          <label>
+            <b>Message Count:</b>
+          </label>
+          <input type="text" inputmode="numeric" value="200" id="message-count" />
+        </p>
+      </li>
+      <li>
+        <button class="btn btn-xs btn-primary" onclick="getSasToken()">Get SAS Token</button>
+      </li>
+      <li>
+        <button class="btn btn-xs btn-primary" onclick="addMessage()">Queue Messages</button>
+      </li>
+    </ul>
+    <div id="ui-messages"></div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="azure-storage.queue.js"></script>
+  <script src="queue-util.js"></script>
+  <script src="payload.js"></script>
+</body>
+
+</html>
