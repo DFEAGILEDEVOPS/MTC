@@ -7,7 +7,7 @@ set -e
 # $1 storage account name
 
 # Set variables
-storageAccountName=$2
+storageAccountName=$1
 
 declare -a queuenames=('check-started' 'completed-check' 'pupil-auth' 'pupil-feedback' 'pupil-preferences' 'prepare-check')
 # create queues if they do not exist
