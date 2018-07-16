@@ -77,13 +77,25 @@ describe('Check window check end date validator', function () {
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearRequired)
     })
-    it('calls addError with checkEndYearRequired, checkEndYearWrongDay, enterValidYear and checkEndYearInvalidChars messages if the check end year is invalid', () => {
+    it('calls addError with checkEndYearWrongDay and checkEndYearInvalidChars messages if the check end year is invalid', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkEndDateData = {
         checkEndDay: moment.utc().add(1, 'days').format('DD'),
         checkEndMonth: moment.utc().add(1, 'days').format('MM'),
         checkEndYear: 'th'
+      }
+      checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
+      expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)
+      expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
+    })
+    it('calls addError with checkEndYearWrongDay and checkEndYearInvalidChars messages if the check end year is invalid', () => {
+      const validationError = new ValidationError()
+      spyOn(validationError, 'addError')
+      const checkEndDateData = {
+        checkEndDay: moment.utc().add(1, 'days').format('DD'),
+        checkEndMonth: moment.utc().add(1, 'days').format('MM'),
+        checkEndYear: moment.utc().add(1, 'days').format('YY')
       }
       checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)

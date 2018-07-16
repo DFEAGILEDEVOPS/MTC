@@ -77,13 +77,25 @@ describe('Check window admin start date validator', function () {
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearRequired)
     })
-    it('calls addError with adminStartYearRequired, adminStartYearWrongDay, enterValidYear and adminStartYearInvalidChars messages if the admin start year is invalid', () => {
+    it('calls addError with adminStartYearWrongDay and adminStartYearInvalidChars messages if the admin start year is invalid', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const adminStartDateData = {
         adminStartDay: moment.utc().add(1, 'days').format('DD'),
         adminStartMonth: moment.utc().add(1, 'days').format('MM'),
         adminStartYear: 'th'
+      }
+      checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
+      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
+      expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearInvalidChars)
+    })
+    it('calls addError with adminStartYearWrongDay and adminStartYearInvalidChars messages if the admin start year is invalid', () => {
+      const validationError = new ValidationError()
+      spyOn(validationError, 'addError')
+      const adminStartDateData = {
+        adminStartDay: moment.utc().add(1, 'days').format('DD'),
+        adminStartMonth: moment.utc().add(1, 'days').format('MM'),
+        adminStartYear: moment.utc().add(1, 'days').format('YY')
       }
       checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
