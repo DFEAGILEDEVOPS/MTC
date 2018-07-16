@@ -95,6 +95,13 @@
 
     </div>
 </div>
-
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'register-pupils', {
+      sortNullsLast: true,
+      ignoredStrings: ['-']
+    })
+  })
+</script>
 
 

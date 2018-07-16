@@ -156,3 +156,11 @@
                 isSubmitDisabled: true
             }) %>
 </form>
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'pupilsList', {
+      sortNullsLast: true,
+      ignoredStrings: ['N/A']
+    })
+  })
+</script>
