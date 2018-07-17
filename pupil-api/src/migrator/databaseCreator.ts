@@ -1,7 +1,7 @@
 
 import { Request, Connection } from 'tedious'
 const config = require('../config')
-import winston from 'winston'
+import * as winston from 'winston'
 
 const adminConfig = {
   appName: config.Sql.Application.Name,

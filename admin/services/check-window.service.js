@@ -196,6 +196,36 @@ const checkWindowService = {
   },
 
   /**
+   * Get check window edit form
+   * @param {Number} id
+   * @returns {Object}
+   */
+  getCheckWindowEditForm: async (id) => {
+    if (!id) {
+      throw new Error('Check window id not provided')
+    }
+    const checkWindow = await checkWindowDataService.sqlFindOneById(id)
+    const adminStartDate = moment(checkWindow.adminStartDate)
+    const checkStartDate = moment(checkWindow.checkStartDate)
+    return {
+      checkWindowId: id,
+      urlSlug: checkWindow.urlSlug,
+      checkWindowName: checkWindow.name,
+      adminStartDay: checkWindow.adminStartDate.format('D'),
+      adminStartMonth: checkWindow.adminStartDate.format('MM'),
+      adminStartYear: checkWindow.adminStartDate.format('YYYY'),
+      checkStartDay: checkWindow.checkStartDate.format('D'),
+      checkStartMonth: checkWindow.checkStartDate.format('MM'),
+      checkStartYear: checkWindow.checkStartDate.format('YYYY'),
+      checkEndDay: checkWindow.checkEndDate.format('D'),
+      checkEndMonth: checkWindow.checkEndDate.format('MM'),
+      checkEndYear: checkWindow.checkEndDate.format('YYYY'),
+      hasAdminStartDateInPast: moment().isAfter(adminStartDate),
+      hasCheckStartDateInPast: moment().isAfter(checkStartDate)
+    }
+  },
+
+  /**
    * Format unsaved data
    * @param {Object} requestData
    * @returns {Object}
@@ -249,6 +279,33 @@ const checkWindowService = {
   },
 
   /**
+   * Submit check window
+   * @param {Object} requestData
+   * @param {Object} existingCheckWindow
+   */
+  submit: async (requestData, existingCheckWindow = {}) => {
+    const checkWindow = R.clone(existingCheckWindow)
+    checkWindow.name = requestData['checkWindowName']
+    if (requestData['adminStartDay'] && requestData['adminStartMonth'] && requestData['adminStartYear']) {
+      checkWindow.adminStartDate =
+        dateService.createUTCFromDayMonthYear(requestData['adminStartDay'], requestData['adminStartMonth'], requestData['adminStartYear'])
+    }
+    if (requestData['checkStartDay'] && requestData['checkStartMonth'] && requestData['checkStartYear']) {
+      checkWindow.checkStartDate =
+        dateService.createUTCFromDayMonthYear(requestData['checkStartDay'], requestData['checkStartMonth'], requestData['checkStartYear'])
+    }
+    checkWindow.checkEndDate =
+      dateService.createUTCFromDayMonthYear(requestData['checkEndDay'], requestData['checkEndMonth'], requestData['checkEndYear'])
+    // Ensure check end date time is set to the last minute of the particular day
+    checkWindow.checkEndDate.set({ hour: 22, minute: 59, second: 59 })
+    if (!checkWindow.id) {
+      await checkWindowDataService.sqlCreate(checkWindow)
+    } else {
+      await checkWindowDataService.sqlUpdate(checkWindow)
+    }
+  },
+
+  /**
    * Mark check window as deleted
    * @param {Object} id
    * @returns {Object}
@@ -270,6 +327,30 @@ const checkWindowService = {
         message: 'Check window deleted.'
       }
     }
+  },
+
+  /**
+   * Fetch check window form data used on submission
+   * @param {Object} requestData
+   * @returns {Object}
+   */
+  getSubmittedCheckWindowData: async (requestData) => {
+    if (requestData.urlSlug) {
+      const existingCheckWindow = await checkWindowDataService.sqlFindOneByUrlSlug(requestData.urlSlug)
+      requestData.hasAdminStartDateInPast = moment().isAfter(existingCheckWindow.adminStartDate)
+      if (requestData.hasAdminStartDateInPast) {
+        requestData.adminStartDay = moment(existingCheckWindow['adminStartDate']).format('D')
+        requestData.adminStartMonth = moment(existingCheckWindow['adminStartDate']).format('MM')
+        requestData.adminStartYear = moment(existingCheckWindow['adminStartDate']).format('YYYY')
+      }
+      requestData.hasCheckStartDateInPast = moment().isAfter(existingCheckWindow.checkStartDate)
+      if (requestData.hasCheckStartDateInPast) {
+        requestData.checkStartDay = moment(existingCheckWindow['checkStartDate']).format('D')
+        requestData.checkStartMonth = moment(existingCheckWindow['checkStartDate']).format('MM')
+        requestData.checkStartYear = moment(existingCheckWindow['checkStartDate']).format('YYYY')
+      }
+    }
+    return requestData
   }
 }
 
