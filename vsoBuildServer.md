@@ -9,8 +9,10 @@ Install docker
 ``` bash
 sudo usermod -a -G docker $USER
 ```
+Install docker-compose if installing docker alone does not include it.
 Install nvm
 Install yarn
+[Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 
 ## Install the VSTS agent
 
