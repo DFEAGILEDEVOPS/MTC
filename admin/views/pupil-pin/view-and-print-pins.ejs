@@ -9,6 +9,12 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+          <div class="info-message">
+            <%= messages.info %>
+          </div>
+        <% } %>
+
         <% if (error) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
@@ -35,17 +41,6 @@
             <% } %>
         </div>
 
-        <br />
-
-        <% if (!!school) { %>
-        <div class="school-pin-wrapper">
-            <b><%= school.name %>'s password for the day:</b>
-            <div class="school-pin-pin" id="school-pin"><%= school.pin %></div>
-        </div>
-        <% } else { %>
-        <p>No active password</p>
-        <% } %>
-
         <% if (pupils && pupils.length > 0) { %>
         <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
             <thead>
@@ -60,7 +55,10 @@
             <tr>
                 <td>
                     <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.fullName %>
+                        <strong><%= pupil.formattedFullName %></strong>
+                        <% if (pupil.group) { %>
+                          (<%= pupil.group %>)
+                        <% } %>
                     </label>
                     <% if (pupil.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
@@ -69,14 +67,16 @@
                     <% } %>
                     <div class="grid-row top-padding-30">
                       <div class="pin-content column-one-half">
-                          <span class="label">School Password:</span><span class="information"><%= school.pin %></span>
+                          <span class="label">School Password:</span>
+                          <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
                       </div>
                       <div class="pin-content column-one-half">
                           <span class="label">PIN:</span>
                           <span class="information">
-                              <%= (pinEnv === 'live'
-                                  ? pupil.pin
-                                  : pupil.familiarisation_pin
+                              <%= (
+                                  pinEnv === 'live'
+                                      ? pupil.pin
+                                      : pupil.familiarisation_pin
                               ) %>
                           </span>
                       </div>
