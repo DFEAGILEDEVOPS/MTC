@@ -11,11 +11,6 @@ router.get(
   (req, res, next) => pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck(req, res, next)
 )
 router.get(
-  '/select-pupils/:sortField/:sortDirection/:groupIds?',
-  isAuthenticated(rolesConfig.ROLE_TEACHER),
-  (req, res, next) => pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck(req, res, next)
-)
-router.get(
   '/save-pupils',
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck(req, res, next)

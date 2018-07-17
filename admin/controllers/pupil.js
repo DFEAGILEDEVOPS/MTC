@@ -24,7 +24,7 @@ const winston = require('winston')
 const getAddPupil = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Add pupil'
   try {
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list/name/asc')
+    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('pupil-register/add-pupil', {
       formData: req.body,
@@ -49,7 +49,7 @@ const postAddPupil = async (req, res, next) => {
     const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
     req.flash('info', '1 new pupil has been added')
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
-    res.redirect(`/pupil-register/pupils-list/name/asc?hl=${highlight}`)
+    res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
   } catch (error) {
     if (error.name === 'ValidationError') {
       return getAddPupil(req, res, next, error)
@@ -69,7 +69,7 @@ const getAddMultiplePupils = (req, res, next) => {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
   try {
-    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list/name/asc')
+    req.breadcrumbs('Pupil Register', '/pupil-register/pupils-list')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('school/add-multiple-pupils', {
       breadcrumbs: req.breadcrumbs(),
@@ -133,7 +133,7 @@ const postAddMultiplePupils = async (req, res, next) => {
     const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
-    res.redirect(`/pupil-register/pupils-list/name/asc?hl=${qp}`)
+    res.redirect(`/pupil-register/pupils-list?hl=${qp}`)
   }
 }
 
@@ -238,7 +238,7 @@ const postEditPupil = async (req, res, next) => {
   }
 
   const highlight = JSON.stringify([pupil.urlSlug.toString()])
-  res.redirect(`/pupil-register/pupils-list/name/asc?hl=${highlight}`)
+  res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
 }
 
 /**
