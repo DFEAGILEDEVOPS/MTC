@@ -101,7 +101,7 @@ describe('Check window check end date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
     })
-    it('calls addError with enterValidYear message if the check end year is in the past', () => {
+    it('calls addError with checkEndYearWrongDay message if the check end year is in the past', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkEndDateData = {

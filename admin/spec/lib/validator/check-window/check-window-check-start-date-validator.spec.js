@@ -101,7 +101,7 @@ describe('Check window check start date validator', function () {
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearInvalidChars)
     })
-    it('calls addError with enterValidYear message if the check start year is in the past', () => {
+    it('calls addError with checkStartYearWrongDay message if the check start year is in the past', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {

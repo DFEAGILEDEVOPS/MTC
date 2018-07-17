@@ -45,9 +45,5 @@ module.exports = {
   checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
   checkStartDateInThePast: '"Check start date" must be in the future',
   checkEndDateInThePast: '"Check end date" must be in the future',
-  checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"',
-  enterValidYear: 'Please check "Year"',
-  adminDateInvalid: 'Please check "Date"',
-  checkStartDateInvalid: 'Please check "Date"',
-  checkEndDateInvalid: 'Please check "Date"'
+  checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"'
 }
