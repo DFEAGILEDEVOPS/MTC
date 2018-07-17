@@ -6,7 +6,6 @@
     "allowJs": false,
     "allowUnreachableCode": false,
     "alwaysStrict": true,
-    "checkJs": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [
