@@ -14,7 +14,6 @@ const checkWindowSanityCheckService = require('../../services/check-window-sanit
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const qrService = require('../../services/qr.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
-const sortingAttributesService = require('../../services/sorting-attributes.service')
 const groupService = require('../../services/group.service')
 const schoolMock = require('../mocks/school')
 const groupsMock = require('../mocks/groups')
@@ -109,11 +108,6 @@ describe('pupilPin controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
-        spyOn(sortingAttributesService, 'getAttributes')
-          .and.returnValue({
-            htmlSortDirection: { lastName: 'asc' },
-            arrowSortDirection: { lastName: 'sort' }
-          })
         spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
