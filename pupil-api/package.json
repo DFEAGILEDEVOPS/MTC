@@ -7,10 +7,11 @@
     "build": "gulp scripts",
     "coverage": "nyc -r text -r html ./run-jasmine.js",
     "lint": "standard && tslint --project .",
-    "migrate-sql": "yarn build && node ./dist/migrator/migrate-sql.js",
+    "migrate-sql": "yarn build && node ./dist/migrator/migrate.js",
     "start": "npm run build && node ./dist/index.js",
     "startd": "yarn migrate-sql && yarn start",
-    "test": "npm run build && nyc -r html ./run-jasmine.js"
+    "test": "npm run build && nyc -r html ./run-jasmine.js",
+    "clean": "rm -rf ./dist"
   },
   "engines": {
     "node": ">= 8.4"
