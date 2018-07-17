@@ -230,14 +230,18 @@ app.use('/api/completed-check', completedCheck)
 app.use('/api/check-started', checkStarted)
 
 // CSRF setup - needs to be set up after session() and after API calls
-// that shouldn't use CSRF; also exclude if url === '/auth' for NCA tools
+// that shouldn't use CSRF; also exclude if url in the csrfExcludedPaths
 const csrf = csurf()
+const csrfExcludedPaths = [
+  '/auth', // disable CSRF for NCA tools
+  '/sign-in' // disable CSRF for login
+]
 app.use(function (req, res, next) {
-  if (req.url === '/auth') return next()
+  if (csrfExcludedPaths.includes(req.url)) return next()
   csrf(req, res, next)
 })
 app.use((req, res, next) => {
-  if (req.url !== '/auth') res.locals.csrftoken = req.csrfToken()
+  if (!csrfExcludedPaths.includes(req.url)) res.locals.csrftoken = req.csrfToken()
   next()
 })
 
@@ -268,6 +272,9 @@ app.use(function (err, req, res, next) {
   // up from logging web interface (e.g. ELK / LogDNA)
   winston.error('ERROR: ' + err.message + ' ID:' + errorId)
   winston.error(err.stack)
+
+  // catch CSRF errors and redirect to the previous location
+  if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
   // render the error page
   // @TODO: provide an error code and phone number? for the user to call support
