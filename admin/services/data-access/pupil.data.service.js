@@ -12,13 +12,10 @@ const sqlService = require('./sql.service')
 /**
  * Fetch all pupils for a school by dfeNumber sorted by specific column.
  * @param dfeNumber
- * @param sortDirection
  * @returns {Promise<*>}
  */
-pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirection) {
+pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber) {
   const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
-  sortDirection = sortDirection === 'asc' ? 'asc' : 'desc'
-  const sortBy = `lastName ${sortDirection}, foreName ${sortDirection}, middleNames ${sortDirection}, dateOfBirth ${sortDirection}`
 
   const sql = `
       SELECT p.*, g.group_id 
@@ -26,7 +23,7 @@ pupilDataService.sqlFindPupilsByDfeNumber = async function (dfeNumber, sortDirec
       INNER JOIN school s ON s.id = p.school_id
       LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g ON p.id = g.pupil_id
       WHERE s.dfeNumber = @dfeNumber
-      ORDER BY ${sortBy}      
+      ORDER BY lastName asc      
     `
   return sqlService.query(sql, [paramDfeNumber])
 }
