@@ -80,6 +80,11 @@ Then(/^I should see an option to generate pins$/) do
   expect(school_landing_page).to have_generate_pupil_pin_text
 end
 
+Then(/^I should see an option to generate pins familiarisation$/) do
+  expect(school_landing_page).to have_generate_pupil_pin_familiarisation
+  expect(school_landing_page).to have_generate_pupil_pin_familiarisation_text
+end
+
 Then(/^I should see an option to manage restarts$/) do
   expect(school_landing_page).to have_restarts
   expect(school_landing_page).to have_restarts_text

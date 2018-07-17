@@ -6,6 +6,10 @@ And(/^I navigate to generate pupil pins page$/) do
   school_landing_page.generate_pupil_pin.click
 end
 
+And(/^I navigate to generate pupil pins familiarisation page$/) do
+  school_landing_page.generate_pupil_pin_familiarisation.click
+end
+
 Then(/^I should see a heading for the Generate Pupil Pins$/) do
   expect(generate_pins_overview_page).to have_heading
 end

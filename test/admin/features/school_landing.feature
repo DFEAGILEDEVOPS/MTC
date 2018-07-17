@@ -50,6 +50,10 @@ Feature:
     Given I am on the school landing page
     Then I should see an option to generate pins
 
+  Scenario: School landing page has option to generate pins familiarisation
+    Given I am on the school landing page
+    Then I should see an option to generate pins familiarisation
+
   Scenario: School landing page has option to manage restarts
     Given I am on the school landing page
     Then I should see an option to manage restarts
