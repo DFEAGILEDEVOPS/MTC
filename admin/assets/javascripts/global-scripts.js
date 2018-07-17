@@ -289,7 +289,7 @@ $(function () {
      * @param insertParamId
      */
     addToSortingLink: function (link, param, insertParamId) {
-      var paramIndex = link.attr('href').indexOf(param + 'Ids=')
+      var paramIndex = link.attr('href') && link.attr('href').indexOf(param + 'Ids=')
       var paramLength = (param + 'Ids=').length
 
       if (paramIndex === -1) {
@@ -298,7 +298,7 @@ $(function () {
         // if it's the first parameter, add it with ?, otherwise use &
         link.attr('href', link.attr('href') + precedingElement + param + 'Ids=')
         link.attr('href', link.attr('href') + insertParamId)
-      } else {
+      } else if (link.attr('href')) {
         // add it after `param`Ids=, before the previous first element of `param`Ids
         link.attr(
           'href',
@@ -384,11 +384,10 @@ $(function () {
      * Gets the url from a query string and parses it.
      * @param variable
      */
-    getQueryParamFromString: function (querystring, variable) {
-      var searchIndex = querystring.indexOf('?')
-      if (searchIndex === -1) return '' // nothing to be parsed
-
-      return checkboxUtil.parseQueryString(querystring.substring(searchIndex + 1), variable)
+    getQueryParamFromString: function (queryString, variable) {
+      var searchIndex = queryString && queryString.indexOf('?')
+      if (!searchIndex || searchIndex === -1) return '' // nothing to be parsed
+      return checkboxUtil.parseQueryString(queryString.substring(searchIndex + 1), variable)
     },
 
     /**
