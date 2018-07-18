@@ -9,7 +9,7 @@ const pupilRegister = require('../controllers/pupil-register')
 const pupilController = require('../controllers/pupil')
 
 router.get(
-  ['/', '/pupils-list/:sortField/:sortDirection'],
+  ['/', '/pupils-list'],
   isAuthenticated(rolesConfig.ROLE_TEACHER),
   (req, res, next) => pupilRegister.listPupils(req, res, next)
 )

@@ -3,7 +3,6 @@
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const attendanceCodeService = require('../services/attendance.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
-const sortingAttributesService = require('../services/sorting-attributes.service')
 const groupService = require('../services/group.service')
 
 /**
@@ -48,18 +47,9 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
   let groups = []
   let groupIds = req.params.groupIds || ''
 
-  // Sorting
-  const sortingOptions = [
-    { 'key': 'name', 'value': 'asc' },
-    { 'key': 'reason', 'value': 'asc' }
-  ]
-  const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
-  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-
   try {
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
-    pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber(req.user.School, sortField, sortDirection)
+    pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber(req.user.School)
   } catch (error) {
     return next(error)
   }
@@ -72,12 +62,8 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
 
   return res.render('pupils-not-taking-the-check/pupils-list', {
     breadcrumbs: req.breadcrumbs(),
-    sortField,
-    sortDirection,
     attendanceCodes,
     pupilsList,
-    htmlSortDirection,
-    arrowSortDirection,
     highlight: [],
     groups,
     groupIds
