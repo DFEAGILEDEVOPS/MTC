@@ -8,7 +8,6 @@ const moment = require('moment')
 const checkWindowService = require('../../services/check-window.service')
 const checkWindowDataService = require('../../services/data-access/check-window.data.service')
 const checkFormService = require('../../services/check-form.service')
-const sortingAttributesService = require('../../services/sorting-attributes.service')
 
 const checkFormMock = require('../mocks/check-form')
 const checkFormsMock = require('../mocks/check-forms')
@@ -73,7 +72,6 @@ describe('check-form controller:', () => {
 
       describe('Happy path', () => {
         beforeEach(() => {
-          spyOn(sortingAttributesService, 'getAttributes').and.returnValue({htmlSortDirection, arrowSortDirection})
           spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(checkFormsFormattedMock)
           controller = require('../../controllers/check-form').uploadAndViewFormsPage
         })
@@ -86,7 +84,6 @@ describe('check-form controller:', () => {
           expect(res.statusCode).toBe(200)
           expect(res.locals.pageTitle).toBe('Upload and view forms')
           expect(next).not.toHaveBeenCalled()
-          expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
           expect(checkFormService.formatCheckFormsAndWindows).toHaveBeenCalled()
           done()
         })
@@ -94,7 +91,6 @@ describe('check-form controller:', () => {
 
       describe('Unhappy path', () => {
         beforeEach(() => {
-          spyOn(sortingAttributesService, 'getAttributes').and.returnValue({htmlSortDirection, arrowSortDirection})
           spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(Promise.reject(new Error('Error')))
           controller = require('../../controllers/check-form').uploadAndViewFormsPage
         })
@@ -106,7 +102,6 @@ describe('check-form controller:', () => {
           await controller(req, res, next)
           expect(res.statusCode).toBe(200)
           expect(res.locals.pageTitle).toBe('Upload and view forms')
-          expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
           expect(checkFormService.formatCheckFormsAndWindows).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
           done()

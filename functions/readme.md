@@ -6,11 +6,15 @@ We are targeting V2, which is currently in preview.
 
 ## Pre-requisites
 
-- Install [Azure Functions Core tools](https://github.com/Azure/azure-functions-core-tools) as per documentation
+- Install Azure Functions Core tools as per [the documentation](https://github.com/Azure/azure-functions-core-tools).
 
 ## Running locally
 
 execute `func host start` from `functions` directory.  A shortcut script has been added to `package.json` so you can also just call `yarn start` if you prefer.
+
+## Creating a new function
+
+From the `functions` directory, execute `func function new`.
 
 ## Installing package dependencies
 
