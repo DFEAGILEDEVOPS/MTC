@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+mkdir -p dist
 BUILD_FILE="./dist/build.txt"
 touch $BUILD_FILE
 echo "$BUILD_BUILDNUMBER" | tr '\n' ' ' > "$BUILD_FILE"
