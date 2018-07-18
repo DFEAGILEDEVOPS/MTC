@@ -32,12 +32,10 @@ const pupilsNotTakingCheckService = {
   /**
    * Get pupils with and without reasons assigned.
    * @param schoolId
-   * @param sortField
-   * @param sortDirection
    * @returns {Promise<*>}
    */
-  getPupilsWithReasonsForDfeNumber: async (schoolId, sortField, sortDirection) => {
-    const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId, sortField, sortDirection)
+  getPupilsWithReasonsForDfeNumber: async (schoolId) => {
+    const pupils = await pupilDataService.sqlFindSortedPupilsWithAttendanceReasons(schoolId)
     return pupilIdentificationFlag.addIdentificationFlags(pupils)
   },
 

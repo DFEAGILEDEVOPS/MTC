@@ -8,7 +8,6 @@ const attendanceCodeService = require('../../services/attendance.service')
 const attendanceService = require('../../services/attendance.service')
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const pupilsNotTakingCheckService = require('../../services/pupils-not-taking-check.service')
-const sortingAttributesService = require('../../services/sorting-attributes.service')
 const groupService = require('../../services/group.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
@@ -85,7 +84,6 @@ describe('pupils-not-taking-the-check controller:', () => {
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       it('happy path', async () => {
-        spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
@@ -94,7 +92,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
         expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
         expect(groupService.getGroups).toHaveBeenCalled()
@@ -102,7 +99,6 @@ describe('pupils-not-taking-the-check controller:', () => {
       })
 
       it('unhappy path - attendanceCodeService.getAttendanceCodes fails', async () => {
-        spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue(Promise.reject(new Error()))
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
@@ -111,7 +107,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
         expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).not.toHaveBeenCalled()
         expect(groupService.getGroups).not.toHaveBeenCalled()
@@ -119,7 +114,6 @@ describe('pupils-not-taking-the-check controller:', () => {
       })
 
       it('unhappy path - pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber fails', async () => {
-        spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(Promise.reject(new Error()))
         spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
@@ -128,7 +122,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
         expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
         expect(groupService.getGroups).not.toHaveBeenCalled()
@@ -136,7 +129,6 @@ describe('pupils-not-taking-the-check controller:', () => {
       })
 
       it('unhappy path - groupService.getGroups fails', async () => {
-        spyOn(sortingAttributesService, 'getAttributes').and.returnValue('asc', 'name')
         spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
         spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasonsForDfeNumber').and.returnValue(pupilsWithReasonsMock)
         spyOn(groupService, 'getGroups').and.returnValue(Promise.reject(new Error()))
@@ -145,7 +137,6 @@ describe('pupils-not-taking-the-check controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await controller(req, res, next)
-        expect(sortingAttributesService.getAttributes).toHaveBeenCalled()
         expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
         expect(pupilsNotTakingCheckService.getPupilsWithReasonsForDfeNumber).toHaveBeenCalled()
         expect(groupService.getGroups).toHaveBeenCalled()

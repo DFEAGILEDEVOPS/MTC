@@ -29,12 +29,10 @@ const chars = '23456789'
 /**
  * Fetch pupils and filter required only pupil attributes
  * @param dfeNumber
- * @param sortField
- * @param sortDirection
  * @returns {Array}
  */
-pinGenerationService.getPupils = async (dfeNumber, sortField, sortDirection) => {
-  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber, sortDirection, sortField)
+pinGenerationService.getPupils = async (dfeNumber) => {
+  let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
   pupils = await Promise.all(pupils.map(async p => {
     const isValid = await pinGenerationService.isValid(p)
     if (isValid) {

@@ -1,5 +1,5 @@
 class PupilRegisterPage < SitePrism::Page
-  set_url '/pupil-register/pupils-list/name/asc'
+  set_url '/pupil-register/pupils-list'
 
   element :heading, '.heading-xlarge', text: 'Pupil Register'
   element :add_pupil, 'a[href="/pupil-register/pupil/add"]'
