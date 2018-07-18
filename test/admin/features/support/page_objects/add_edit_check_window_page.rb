@@ -19,6 +19,7 @@ class AddEditCheckWindowPage < SitePrism::Page
   section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
     element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
     element :error_text, 'p', text: 'See highlighted errors below'
+    elements :error_messages, '.error-summary-list li'
   end
 
   def enter_details(hash)
