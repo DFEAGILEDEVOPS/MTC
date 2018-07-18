@@ -9,16 +9,16 @@ $(function () {
       var selAllTr = '#generatePins > tbody > tr'
       if (input.length === 0) {
         $(selAllTr).each(function () {
-          $(this).show()
+          $(this).removeClass('filter-hidden-name')
         })
         return
       }
 
       $(selAllTr).each(function () {
         if ($.trim($(this).text()).indexOf(input) === -1) {
-          $(this).hide()
+          $(this).addClass('filter-hidden-name')
         } else {
-          $(this).show()
+          $(this).removeClass('filter-hidden-name')
         }
       })
     })

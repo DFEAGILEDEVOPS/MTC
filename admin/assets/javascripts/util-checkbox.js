@@ -341,18 +341,18 @@ var checkboxUtil = {
   },
 
   /**
-    * Table row visibility for a parameter.
+    * Table row visibility for a parameter, used for group filters.
     * @param param
     * @param paramIds
     */
   tableRowVisibility: function (param, paramIds) {
     var sel = '.spacious > tbody > tr'
     if (paramIds.length < 1 || paramIds[0].length < 1) {
-      $(sel).removeClass('hidden')
+      $(sel).removeClass('filter-hidden-group')
     } else {
-      $(sel).addClass('hidden')
+      $(sel).addClass('filter-hidden-group')
       paramIds.map(function (pId) {
-        $(sel + '.' + param + '-id-' + pId).removeClass('hidden')
+        $(sel + '.' + param + '-id-' + pId).removeClass('filter-hidden-group')
       })
       $(sel + '.hidden .multiple-choice-mtc > input:checkbox:checked').prop('checked', false)
     }
