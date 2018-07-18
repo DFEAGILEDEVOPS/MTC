@@ -1,7 +1,11 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "**/*[sS]pec.js"
+    "controllers/*[sS]pec.js",
+    "lib/*[sS]pec.js",
+    "lib/**/*[sS]pec.js",
+    "service/*[sS]pec.js",
+    "service/**/*[sS]pec.js"
   ],
   "helpers": [
     "helpers/**/*.js"
