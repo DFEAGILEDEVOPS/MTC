@@ -82,8 +82,8 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
  * @return {Promise<Array>}
  */
 completedCheckDataService.sqlFindByIdsWithForms = async (batchIds) => {
-  let select = ` 
-  SELECT c.*, f.*
+  let select = `
+  SELECT c.*, f.formData
   FROM ${sqlService.adminSchema}.[check] c INNER JOIN
   ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
   `

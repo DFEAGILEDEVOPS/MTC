@@ -404,7 +404,7 @@ describe('anomaly-report.service', () => {
       it('does not report an anomaly when all answers correspond to questions', () => {
         const checkMockWithForm = {
           ...checkMock,
-          ...checkFormMockOrig
+          formData: checkFormMockOrig.formData
         }
         service.detectAnswersCorrespondToQuestions(checkMockWithForm)
         expect(service.produceReportData).toHaveBeenCalledTimes(0)
@@ -413,7 +413,7 @@ describe('anomaly-report.service', () => {
       it('reports an anomaly when there are answers that do not correspond to questions', () => {
         const checkMockWithForm = {
           ...checkMock,
-          ...checkFormMockOrig
+          formData: checkFormMockOrig.formData
         }
         checkMockWithForm.data.answers = [ ...checkMockWithForm.data.answers, { factor1: 0, factor2: 0 } ]
         service.detectAnswersCorrespondToQuestions(checkMockWithForm)

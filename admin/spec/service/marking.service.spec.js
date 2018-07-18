@@ -59,7 +59,7 @@ describe('markingService', () => {
       })
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark({ ...completedCheckMock, ...checkForm })
+      await service.mark({ ...completedCheckMock, formData: checkForm.formData })
       expect(checkDataService.sqlUpdateCheckWithResults).toHaveBeenCalled()
     })
 
@@ -68,7 +68,7 @@ describe('markingService', () => {
       spyOn(checkDataService, 'sqlUpdateCheckWithResults')
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
-      await service.mark({ ...completedCheckMock, ...checkForm })
+      await service.mark({ ...completedCheckMock, formData: checkForm.formData })
       expect(answerDataService.sqlUpdateWithResults).toHaveBeenCalled()
     })
   })

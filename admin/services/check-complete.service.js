@@ -47,7 +47,7 @@ checkCompleteService.completeCheck = async function (completedCheck) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
     const check = await completedCheckDataService.sqlFindOneByCheckCode(completedCheck.data.pupil.checkCode)
     const checkForm = await checkFormDataService.sqlFindOneParsedById(check.checkForm_id)
-    await markingService.mark({ ...check, ...checkForm })
+    await markingService.mark({ ...check, formData: checkForm.formData })
   }
 }
 
