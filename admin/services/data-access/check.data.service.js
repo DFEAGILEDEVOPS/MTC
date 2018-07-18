@@ -208,7 +208,7 @@ checkDataService.sqlCreateBatch = async function (checks) {
   const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
     pupil_id,
     checkWindow_id,
-    checkForm_id,
+    checkForm_id
   )  VALUES`
 
   const params = []

@@ -78,6 +78,7 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
 checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds, pinEnv) {
+  // TODO: use pinEnv to differentiate between the live and familiarisation checks
   const checkForm = await checkFormService.allocateCheckForm(availableForms, usedFormIds)
 
   if (!checkForm) {
@@ -90,7 +91,6 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
     pupil_id: pupilId,
     checkWindow_id: checkWindow.id,
     checkForm_id: checkForm.id,
-    is_familiarisation: pinEnv === 'live' ? 0 : 1
   }
 
   return checkData

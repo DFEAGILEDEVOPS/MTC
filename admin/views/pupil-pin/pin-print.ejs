@@ -32,7 +32,7 @@
                             <% } %>
                         </div>
                         <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.pin %></span></div>
-                        <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= (pinEnv === 'live' ? pupils[i].pin : pupils[i].familiarisation_pin ) %></span></div>
+                        <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i].pin %></span></div>
                         <% if (qrDataURL) { %>
                         <div class="qr"><img src="<%= qrDataURL %>" /></div>
                         <% } %>
@@ -52,7 +52,7 @@
                             <% } %>
                         </div>
                         <div class="pin-content"><span class="label">School Password:</span><br><span class="information"><%= school.pin %></span></div>
-                        <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= (pinEnv === 'live' ? pupils[i + 1].pin : pupils[i + 1].familiarisation_pin ) %></span></div>
+                        <div class="pin-content"><span class="label">Pupil PIN:</span><br><span class="information"><%= pupils[i + 1].pin %></span></div>
                         <% if (qrDataURL) { %>
                         <div class="qr"><img src="<%= qrDataURL %>" /></div>
                         <% } %>

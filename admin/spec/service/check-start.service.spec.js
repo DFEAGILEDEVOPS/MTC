@@ -202,8 +202,6 @@ describe('check-start.service', () => {
         expect(c.hasOwnProperty('pupil_id'))
         expect(c.hasOwnProperty('checkWindow_id'))
         expect(c.hasOwnProperty('checkForm_id'))
-        expect(c.hasOwnProperty('is_familiarisation'))
-        expect(c.is_familiarisation).toBe(0)
       })
     })
 
@@ -214,8 +212,6 @@ describe('check-start.service', () => {
         expect(c.hasOwnProperty('pupil_id'))
         expect(c.hasOwnProperty('checkWindow_id'))
         expect(c.hasOwnProperty('checkForm_id'))
-        expect(c.hasOwnProperty('is_familiarisation'))
-        expect(c.is_familiarisation).toBe(1)
       })
     })
   })
