@@ -65,19 +65,15 @@
                         Date of birth: <%= pupil.dateOfBirth %>
                     </div>
                     <% } %>
-                    <div class="grid-row top-padding-30">
-                      <div class="pin-content column-one-half">
-                          <span class="label">School Password:</span>
+                    <div>
+                      <div class="pin-content">
+                          <span class="label">School Password: </span>
                           <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
                       </div>
-                      <div class="pin-content column-one-half">
-                          <span class="label">PIN:</span>
+                      <div class="pin-content pupil-pin">
+                          <span class="label">PIN: </span>
                           <span class="information">
-                              <%= (
-                                  pinEnv === 'live'
-                                      ? pupil.pin
-                                      : pupil.familiarisation_pin
-                              ) %>
+                              <%= pupil.pin %>
                           </span>
                       </div>
                     </div>

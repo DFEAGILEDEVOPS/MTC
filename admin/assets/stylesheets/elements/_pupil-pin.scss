@@ -2,7 +2,7 @@
   text-align: left;
   line-height: pem(5px);
   font-size: 12px;
-  margin-bottom: pem(15px);
+  float: left;
 
   .information {
     font-size: 26px;
@@ -10,8 +10,15 @@
     text-align: left;
     font-weight: bold;
     margin: 0;
+    display: inline-block;
+    padding-left: pem(5px);
   }
   .label {
     font-size: 16px;
+    display: inline-block;
+  }
+
+  &.pupil-pin {
+    padding-left: pem(50px);
   }
 }
