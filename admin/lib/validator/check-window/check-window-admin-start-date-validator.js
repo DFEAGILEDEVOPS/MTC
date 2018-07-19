@@ -42,10 +42,7 @@ module.exports.validate = (validationError, adminStartDateData) => {
   if (!isAdminStartYearEmpty && !isInt(adminStartDateData.adminStartYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.adminStartYearWrongDay)
   }
-  if (!isAdminStartYearEmpty && adminStartDateData.adminStartYear.length !== 4) {
-    validationError.addError('adminStartYear', checkWindowErrorMessages.enterValidYear)
-  }
-  if (!isAdminStartYearEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartYear)) {
+  if (!isAdminStartYearEmpty && (!XRegExp('^[0-9]+$').test(adminStartDateData.adminStartYear) || adminStartDateData.adminStartYear.length !== 4)) {
     validationError.addError('adminStartYear', checkWindowErrorMessages.adminStartYearInvalidChars)
   }
 }

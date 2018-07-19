@@ -65,60 +65,6 @@ describe('Check window edit validator', function () {
       expect(checkWindowCheckStartDateValidator.validate).not.toHaveBeenCalled()
       expect(Object.keys(validationError.errors).length).toBe(0)
     })
-    it('returns adminDateInvalid validationError if the admin date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        null,
-        moment.utc().add(2, 'days'),
-        moment.utc().add(3, 'days')
-      )
-      const existingCheckWindow = {
-        adminStartDate: moment.utc().add(1, 'days'),
-        checkStartDate: moment.utc().add(2, 'days')
-      }
-      const validationError = checkWindowEditValidator.validate({}, existingCheckWindow)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.adminDateInvalid).toBeTruthy()
-    })
-    it('returns checkStartDateInvalid validationError if the check start date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        moment.utc().add(1, 'days'),
-        null,
-        moment.utc().add(3, 'days')
-      )
-      const existingCheckWindow = {
-        adminStartDate: moment.utc().add(1, 'days'),
-        checkStartDate: moment.utc().add(2, 'days')
-      }
-      const validationError = checkWindowEditValidator.validate({}, existingCheckWindow)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.checkStartDateInvalid).toBeTruthy()
-    })
-    it('returns checkEndDateInvalid validationError if the check end date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        moment.utc().add(1, 'days'),
-        moment.utc().add(2, 'days'),
-        null
-      )
-      const existingCheckWindow = {
-        adminStartDate: moment.utc().add(1, 'days'),
-        checkStartDate: moment.utc().add(2, 'days')
-      }
-      const validationError = checkWindowEditValidator.validate({}, existingCheckWindow)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.checkEndDateInvalid).toBeTruthy()
-    })
     it('returns adminDateInThePast validationError if the new admin date is in the past', () => {
       spyOn(checkWindowNameValidator, 'validate')
       spyOn(checkWindowAdminStartDateValidator, 'validate')
