@@ -25,48 +25,6 @@ describe('Check window add validator', function () {
       const validationError = checkWindowAddValidator.validate({})
       expect(validationError.hasError()).toBeFalsy()
     })
-    it('returns adminDateInvalid validationError if the admin date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        null,
-        moment.utc().add(2, 'days'),
-        moment.utc().add(3, 'days')
-      )
-      const validationError = checkWindowAddValidator.validate({})
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.adminDateInvalid).toBeTruthy()
-    })
-    it('returns checkStartDateInvalid validationError if the check start date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        moment.utc().add(1, 'days'),
-        null,
-        moment.utc().add(3, 'days')
-      )
-      const validationError = checkWindowAddValidator.validate({})
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.checkStartDateInvalid).toBeTruthy()
-    })
-    it('returns checkEndDateInvalid validationError if the check end date is invalid', () => {
-      spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowCheckStartDateValidator, 'validate')
-      spyOn(checkWindowCheckEndDateValidator, 'validate')
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
-        moment.utc().add(1, 'days'),
-        moment.utc().add(2, 'days'),
-        null
-      )
-      const validationError = checkWindowAddValidator.validate({})
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.errors.checkEndDateInvalid).toBeTruthy()
-    })
     it('returns adminDateInThePast validationError if the admin date is in the past', () => {
       spyOn(checkWindowNameValidator, 'validate')
       spyOn(checkWindowAdminStartDateValidator, 'validate')
