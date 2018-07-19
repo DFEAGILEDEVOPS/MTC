@@ -2,45 +2,14 @@
 Feature:
   Pupil not taking check
 
-  Scenario: Pupil not taking check page has a heading
+  Scenario: Pupil not taking check page is dispayed as per the design
     Given I am on the pupil not taking check page
-    Then I should see the heading
+    Then pupil not taking check page is displayed as per design
 
-  Scenario: Pupil not taking check page has some informational text
-    Given I am on the pupil not taking check page
-    Then I should see the info text
-
-  Scenario: Pupil not taking check page allows teachers to add a reason
-    Given I am on the pupil not taking check page
-    Then I should see a way to add a reason
-
-  Scenario: Pupil not taking check page has a back to top button
-    Given I am on the pupil not taking check page
-    Then I should be able to go back to the top
-
-  Scenario: Pupil not taking check has a link to generate pupil pins
-    Given I am on the pupil not taking check page
-    Then I should see a way to generate pins
-
-  Scenario: Pupil reason page has a heading
+  Scenario: Pupil reason page is displayed as per the design
     Given I am on the pupil not taking check page
     When I want to add a reason
-    Then I should see a heading on the page
-
-  Scenario: Pupil reason page has reasons
-    Given I am on the pupil not taking check page
-    When I want to add a reason
-    Then I should see set of reasons I can choose
-
-  Scenario: Pupil reason page has back to top option
-    Given I am on the pupil not taking check page
-    When I want to add a reason
-    Then I should see a back to top option
-
-  Scenario: Pupil reason page has an explanation of the reasons
-    Given I am on the pupil not taking check page
-    When I want to add a reason
-    Then I should see a section that explains the reasons
+    Then pupil reason page is displayed as per the design
 
   Scenario Outline: Pupils are sorted by using surname into ascending order by default
     Given I have signed in with <teacher>
@@ -168,12 +137,6 @@ Feature:
     Given I am on the pupil not taking check page
     Then I should see a message stating there are no pupils not taking the check
 
-  @pupil_not_taking_check @no_pin
-  Scenario: Pupils who are not taking the check are not in the generate pupil pin list
-    Given I have previously added a reason for a pupil
-    When I am on the generate pupil pins page
-    Then I should not see the pupil in the list
-
   @remove_all_groups
   Scenario: Pupils can be filtered by group
     Given I have a group of pupils
@@ -191,6 +154,3 @@ Feature:
     Given I have a group of pupils
     Then the group filter should be opened by default
 
-  Scenario: Pupils not taking check page has related content
-    Given I am on the pupil not taking check page
-    Then I should see related content on the pupils not taking a check page

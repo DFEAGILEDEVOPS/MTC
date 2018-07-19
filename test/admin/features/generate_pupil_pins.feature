@@ -93,13 +93,11 @@ Feature: Generate Pupil PINs
     When I choose to cancel
     Then I should be taken to Generated Pins Page
 
-  Scenario: Pupil pins should consist of 4 characters
+  Scenario: Check Form is assigned when Pin is generated and the Pin consist of 4 characters
     Given I have generated a pin for a pupil
     Then the pin should consist of 4 characters
-
-  Scenario: Generated pupil pins are stored in the DB alongside the pupil
-    Given I have generated a pin for a pupil
-    Then the pin should be stored against the pupil
+    And the pin should be stored against the pupil
+    And check form should be assigned to the pupil
 
   @reset_all_pins @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
@@ -116,29 +114,10 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  Scenario: School Password is displayed on Generated Pin Page
+  Scenario: Generated Pin Page is displayed as per the design
     Given I have generated a pin for a pupil
-    Then I should see the school password for teacher1
-
-  Scenario: School Password info is displayed on Generated Pin Page
-    Given I have generated a pin for a pupil
-    Then I should see information for Pupil pin and School password
-
-  Scenario: Download Pin option is displayed on Generated Pin Page
-    Given I have generated a pin for a pupil
-    Then I should see link to download all pupil pins
-
-  Scenario: School password should consist of 8 characters
-    Given I have generated a pin for a pupil
-    Then the school password should consist of 8 characters
-
-  Scenario: School password should not contain charachter q
-    Given I have generated a pin for a pupil
-    Then the school password should not contain charachter 'q'
-
-  Scenario: School Password must be generated from the specified pool of characters
-    Given I have generated a pin for a pupil
-    Then school password should be generated from the specified pool of characters
+    Then I should see generated pin page as per design
+    And the displayed school password is generated as per the requirement
     
   Scenario: Pin is expired when pupil is not taking the check
     Given I have generated a pin for a pupil
@@ -172,10 +151,6 @@ Feature: Generate Pupil PINs
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again
     Then I should be able to filter by groups on the generate pins page
-
-  Scenario: Check Form is assigned to pupil when pin is generated
-    Given I have generated a pin for a pupil
-    Then check form should be assigned to the pupil
 
   @no_active_check_window
   Scenario: Generate Pin Overview page display error if there is no active check window
