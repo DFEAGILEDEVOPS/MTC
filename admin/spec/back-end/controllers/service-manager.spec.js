@@ -7,7 +7,6 @@ const pupilCensusService = require('../../../services/pupil-census.service')
 const checkWindowAddService = require('../../../services/check-window-add.service')
 const checkWindowEditService = require('../../../services/check-window-edit.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
-const checkWindowValidator = require('../../../lib/validator/check-window-validator')
 const ValidationError = require('../../../lib/validation-error')
 
 describe('service manager controller:', () => {
