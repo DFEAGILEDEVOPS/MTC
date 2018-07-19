@@ -1,24 +1,24 @@
 .pin-content {
   text-align: left;
-  line-height: pem(5px);
   font-size: 12px;
-  float: left;
+  display: flex;
+  align-items: flex-end;
+  margin-top: pem(20px);
+  white-space: normal;
 
   .information {
     font-size: 26px;
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0;
-    display: inline-block;
-    padding-left: pem(5px);
+    margin: 0 pem(5px);
+    width: auto;
   }
   .label {
     font-size: 16px;
-    display: inline-block;
+    max-width: pem(80px);
   }
-
-  &.pupil-pin {
-    padding-left: pem(50px);
+  .separator {
+    padding: 0 pem(30px);
   }
 }
