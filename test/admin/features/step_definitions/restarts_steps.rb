@@ -253,3 +253,16 @@ Given(/^I submitted pupils for Restart using reason Classroom disruption$/) do
   restarts_page.reason_3_textbox.set 'Noisy classroom'
   restarts_page.sticky_banner.confirm.click
 end
+
+Then(/^I should see the restarts page matches design$/) do
+  step 'I should see a heading for the Restarts page'
+  step 'I can see the info message for Restarts'
+  step 'I should see a way to add a reason for restarts'
+  restarts_page.select_pupil_to_restart_btn.click
+  step 'I should be able to go back to the top of restarts page'
+  step 'I should see set of reasons I can choose for restarts'
+  step 'I should see a section that explains the reasons for restarts'
+  step 'I should not see a sticky banner on restarts page'
+
+end
+

@@ -2,17 +2,9 @@
 Feature:
   Pupil groups
 
-  Scenario: Groups page has a heading
+  Scenario: Groups page is displayed as per the design
     Given I am on the groups page
-    Then I should see a heading on the groups page
-
-  Scenario: Groups page has a intro
-    Given I am on the groups page
-    Then I should see a intro
-
-  Scenario: Groups page has a option to create a new group
-    Given I am on the groups page
-    Then I should see a option to create a new group
+    Then the group page is displayed as per the design
 
   Scenario: Groups page has a table of existing groups
     Given groups have been previoulsy created
@@ -21,10 +13,6 @@ Feature:
   Scenario: Groups are stored in the DB
     Given I have created a group with 5 pupils
     Then I should the group stored in the DB
-
-  Scenario: Groups page has related content
-    Given I am on the groups page
-    Then I should see related content
 
   Scenario: Group name must be at least 1 character
     Given I am on the create group page
@@ -101,15 +89,12 @@ Feature:
     Given I want to edit a previously added group
     Then I should be able to edit the group name
 
-  Scenario: Duplicate group names cannot be used
+  Scenario: Duplicate group name validation
     Given I have created a group
-    When I attempt to use the same group name for a new group
-    Then I should see an error for duplicate group name
-
-  Scenario: Duplicate group names cannot be used even if the name is in a different case
-    Given I have created a group
-    When I attempt to use the same group name for a new group with a different case
-    Then I should see an error for duplicate group name
+    Then I should see error for group name for the following
+      | condition                                |
+      | duplicate group name                     |
+      | duplicate group name with different case |
 
   Scenario: Cancel in the sticky banner returns the user to the previous page
     Given I can see the sticky banner

@@ -6,11 +6,7 @@ Feature:
 
   Scenario: Login page has a heading
     Given I am on the sign in page
-    Then I should see a page heading
-
-  Scenario: Login page has instructions
-    Given I am on the sign in page
-    Then I should see instructions
+    Then the sign in page should match design
 
   Scenario: User is logged in when Valid credentials are added
     Given I have entered valid credentials
