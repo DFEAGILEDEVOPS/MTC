@@ -67,9 +67,6 @@ describe('check-form controller:', () => {
     })
 
     describe('#uploadAndViewFormsPage - Display initial \'upload and view\' check forms page.', () => {
-      let htmlSortDirection = 'asc'
-      let arrowSortDirection = 'asc'
-
       describe('Happy path', () => {
         beforeEach(() => {
           spyOn(checkFormService, 'formatCheckFormsAndWindows').and.returnValue(checkFormsFormattedMock)

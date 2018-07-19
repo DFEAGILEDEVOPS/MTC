@@ -4,7 +4,7 @@
  * pupilGroups, assignForm, restarts, generatePins, pupilsNotTakingCheck
  * are global, to be accessed by scripts in other files that use them.
  */
-/* global $, inputStatus, stickyBanner, checkboxUtil */
+/* global $, inputStatus, stickyBanner */
 /**
   * Methods for 'pupils not taking the check'.
   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}
@@ -137,13 +137,11 @@ $(function () {
   }
 
   if ($('#pupilsList').length > 0) {
-    checkboxUtil.reselectPreviousValues('pupil', true)
-    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm, 'pupil')
-    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
-    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.toggleAllCheckboxes('#pupilsList', pupilsNotTakingCheck.validateForm)
+    inputStatus.selectAll('.multiple-choice-mtc', false)
+    inputStatus.deselectAll('.multiple-choice-mtc', false)
     inputStatus.checkboxStatus('.multiple-choice-mtc', pupilsNotTakingCheck.validateForm)
     inputStatus.radioStatus('attendanceCode', pupilsNotTakingCheck.validateForm)
-    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#pupilsRestartList').length > 0) {
@@ -155,12 +153,10 @@ $(function () {
   }
 
   if ($('#generatePins').length > 0) {
-    checkboxUtil.reselectPreviousValues('pupil', true)
-    inputStatus.toggleAllCheckboxes('#generatePins', false, 'pupil')
-    inputStatus.selectAll('.multiple-choice-mtc', false, 'pupil')
-    inputStatus.deselectAll('.multiple-choice-mtc', false, 'pupil')
+    inputStatus.toggleAllCheckboxes('#generatePins', false)
+    inputStatus.selectAll('.multiple-choice-mtc', false)
+    inputStatus.deselectAll('.multiple-choice-mtc', false)
     inputStatus.checkboxStatus('.multiple-choice-mtc', generatePins.isCheckboxChecked)
-    inputStatus.saveSelectedForSorting('.multiple-choice-mtc', 'pupil')
   }
 
   if ($('#assignFormToWindowList').length > 0) {

@@ -11,7 +11,7 @@ var inputStatus = {
     * @param sel
     * @param validation
     */
-  toggleAllCheckboxes: function (sel, validation, param) {
+  toggleAllCheckboxes: function (sel, validation) {
     $('#tickAllCheckboxes').on('change', function (e) {
       var validationStatus = true
       var selectAll = $('#selectAll')
@@ -29,21 +29,11 @@ var inputStatus = {
           deselectAll.removeClass('all-hide')
           $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
           stickyBanner.toggle(validationStatus)
-          if (param) {
-            $('.multiple-choice-mtc > input:checkbox').each(function () {
-              checkboxUtil.updateSortingLink('add', param, $(this).val())
-            })
-          }
         } else {
           deselectAll.addClass('all-hide')
           selectAll.removeClass('all-hide')
           $('.multiple-choice-mtc > input:checkbox').attr('data-checked', null)
           stickyBanner.toggle(false)
-          if (param) {
-            $('.multiple-choice-mtc > input:checkbox').each(function () {
-              checkboxUtil.updateSortingLink('remove', param, $(this).val())
-            })
-          }
         }
       }
     })
@@ -54,7 +44,7 @@ var inputStatus = {
     * @param sel
     * @param validation
     */
-  selectAll: function (sel, validation, param) {
+  selectAll: function (sel, validation) {
     $('#selectAll').on('click', function (e) {
       var validationStatus
       if (validation) {
@@ -64,11 +54,6 @@ var inputStatus = {
       $('#deselectAll').removeClass('all-hide')
       $(sel + ' > input:checkbox').attr('data-checked', true)
       stickyBanner.toggle(validationStatus || true)
-      if (param) {
-        $(sel + ' > input:checkbox').each(function () {
-          checkboxUtil.updateSortingLink('add', param, $(this).val())
-        })
-      }
     })
   },
 
@@ -77,7 +62,7 @@ var inputStatus = {
     * @param sel
     * @param validation
     */
-  deselectAll: function (sel, validation, param) {
+  deselectAll: function (sel, validation) {
     $('#deselectAll').on('click', function (e) {
       var validationStatus
       if (validation) {
@@ -87,11 +72,6 @@ var inputStatus = {
       $('#selectAll').removeClass('all-hide')
       stickyBanner.toggle(validationStatus || false)
       $(sel + ' > input:checkbox').attr('data-checked', null)
-      if (param) {
-        $(sel + ' > input:checkbox').each(function () {
-          checkboxUtil.updateSortingLink('add', param, $(this).val())
-        })
-      }
     })
   },
 
@@ -125,23 +105,6 @@ var inputStatus = {
           $('#selectAll').removeClass('all-hide')
           $('#tickAllCheckboxes').prop('checked', false)
         }
-      }
-    })
-  },
-
-  /**
-    * Register the click event to save checkboxes in the `sortingLink`s.
-    * @param sel
-    * @param param
-    */
-  saveSelectedForSorting: function (sel, param) {
-    $(sel + ' > input:checkbox').on('click', function () {
-      if ($(this).val() === 'on') return // for the select/deselect all checkboxes
-
-      if ($(this).is(':checked')) {
-        checkboxUtil.updateSortingLink('add', param, $(this).val())
-      } else {
-        checkboxUtil.updateSortingLink('remove', param, $(this).val())
       }
     })
   },
@@ -268,7 +231,7 @@ var stickyBanner = {
 
 /**
   * Util methods to help manage the checkbox state.
-  * @type {{checkCheckbox: checkCheckbox, updateSortingLink: updateSortingLink, tableRowVisibility: tableRowVisibility, reselectPreviousValues: reselectPreviousValues, getQueryParam: getQueryParam, addToSortingLink: addToSortingLink, removeFromSortingLink: removeFromSortingLink}}
+  * @type {{checkCheckbox: checkCheckbox, tableRowVisibility: tableRowVisibility, getQueryParam: getQueryParam}}
   */
 var checkboxUtil = {
   /**
@@ -281,62 +244,6 @@ var checkboxUtil = {
     $('input[name="' + param + '"]').prop('checked', false).attr('data-checked', false)
     $(paramIds).each(function (key, value) {
       $('input[id="' + param + '-' + value + '"]').prop('checked', true).attr('data-checked', true)
-    })
-  },
-
-  /**
-    * Add a parameter to the sorting link
-    * @param link
-    * @param param
-    * @param insertParamId
-    */
-  addToSortingLink: function (link, param, insertParamId) {
-    var paramIndex = link.attr('href').indexOf(param + 'Ids=')
-    var paramLength = (param + 'Ids=').length
-
-    if (paramIndex === -1) {
-      // param not previously set in the URL, add `param`Ids=
-      var precedingElement = link.attr('href').indexOf('?') === -1 ? '?' : '&'
-      // if it's the first parameter, add it with ?, otherwise use &
-      link.attr('href', link.attr('href') + precedingElement + param + 'Ids=')
-      link.attr('href', link.attr('href') + insertParamId)
-    } else {
-      // add it after `param`Ids=, before the previous first element of `param`Ids
-      link.attr(
-        'href',
-        link.attr('href').slice(0, paramIndex + paramLength) +
-          insertParamId +
-          link.attr('href').substring(paramIndex + paramLength)
-      )
-    }
-  },
-
-  /**
-    * Remove the parameter from the link
-    * @param link
-    * @param insertParamId
-    */
-  removeFromSortingLink: function (link, insertParamId) {
-    link.attr('href', link.attr('href').replace(insertParamId, ''))
-  },
-
-  /**
-    * Update sorting link to include active parameters - group / pupil ids.
-    * @param action
-    * @param groupId
-    */
-  updateSortingLink: function (action, param, paramId) {
-    var sortingLinks = $('.sortingLink')
-
-    sortingLinks.each(function () {
-      var sortingLink = $(this)
-      var previousParams = checkboxUtil.getQueryParamFromString(sortingLink.attr('href'), param + 'Ids').split(',')
-      var insertParamId = paramId + ','
-
-      if (sortingLink.length <= 0) return // defensive programming, don't alter null links
-
-      if (action === 'add' && $.inArray(paramId, previousParams) === -1) checkboxUtil.addToSortingLink(sortingLink, param, insertParamId)
-      if (action === 'remove' && $.inArray(paramId, previousParams) !== -1) checkboxUtil.removeFromSortingLink(sortingLink, insertParamId)
     })
   },
 
@@ -386,43 +293,9 @@ var checkboxUtil = {
     * Gets the url from a query string and parses it.
     * @param variable
     */
-  getQueryParamFromString: function (querystring, variable) {
-    var searchIndex = querystring.indexOf('?')
-    if (searchIndex === -1) return '' // nothing to be parsed
-
-    return checkboxUtil.parseQueryString(querystring.substring(searchIndex + 1), variable)
-  },
-
-  /**
-  * Re-doing checked state for checkboxes when sorting
-  * @param param
-  */
-  reselectPreviousValues: function (param, updateCountedCheckboxes) {
-    var paramIds = []
-    var activeParamIds = checkboxUtil.getQueryParam(param + 'Ids')
-    if (activeParamIds) {
-      var paramIdsArr = activeParamIds.split(',')
-      paramIdsArr.map(function (p) {
-        paramIds.push(p)
-        checkboxUtil.updateSortingLink('add', param, p)
-      })
-      checkboxUtil.checkCheckbox(param, paramIdsArr)
-
-      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
-      var countAllCheckboxes = inputStatus.countCheckboxes()
-
-      if (updateCountedCheckboxes) {
-        if (countCheckedCheckboxes === 0 || countCheckedCheckboxes < countAllCheckboxes) {
-          $('#deselectAll').addClass('all-hide')
-          $('#selectAll').removeClass('all-hide')
-          $('#tickAllCheckboxes').prop('checked', false)
-        } else {
-          $('#deselectAll').removeClass('all-hide')
-          $('#selectAll').addClass('all-hide')
-          $('#tickAllCheckboxes').prop('checked', true)
-        }
-      }
-    }
-    return paramIds
+  getQueryParamFromString: function (queryString, variable) {
+    var searchIndex = queryString && queryString.indexOf('?')
+    if (!searchIndex || searchIndex === -1) return '' // nothing to be parsed
+    return checkboxUtil.parseQueryString(queryString.substring(searchIndex + 1), variable)
   }
 }

@@ -4,18 +4,14 @@
 /* global $, checkboxUtil, stickyBanner, inputStatus, pupilsNotTakingCheck, restarts */
 $(function () {
   if ($('#filterByGroup').length > 0) {
-    var groupIds = checkboxUtil.reselectPreviousValues('group')
-    checkboxUtil.tableRowVisibility('group', groupIds)
-
+    var groupIds = []
     $('#filterByGroup input:checkbox').on('click', function (e) {
       if ($(this).is(':checked')) {
         $(this).attr('data-checked', true)
         groupIds.push($(this).val())
-        checkboxUtil.updateSortingLink('add', 'group', $(this).val())
       } else {
         $(this).attr('data-checked', false)
         groupIds.splice($.inArray($(this).val(), groupIds), 1)
-        checkboxUtil.updateSortingLink('remove', 'group', $(this).val())
       }
       checkboxUtil.tableRowVisibility('group', groupIds)
 
