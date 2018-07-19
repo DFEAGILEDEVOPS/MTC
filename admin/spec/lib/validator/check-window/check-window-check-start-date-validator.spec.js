@@ -77,7 +77,7 @@ describe('Check window check start date validator', function () {
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearRequired)
     })
-    it('calls addError with checkStartYearRequired, checkStartYearWrongDay, enterValidYear and checkStartYearInvalidChars messages if the check start year is invalid', () => {
+    it('calls addError with checkStartYearWrongDay and checkStartYearInvalidChars messages if the check start year is invalid', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {
@@ -88,9 +88,20 @@ describe('Check window check start date validator', function () {
       checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearWrongDay)
       expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearInvalidChars)
-      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.enterValidYear)
     })
-    it('calls addError with enterValidYear message if the check start year is in the past', () => {
+    it('calls addError with checkStartYearWrongDay and checkStartYearInvalidChars messages if the check start year is invalid', () => {
+      const validationError = new ValidationError()
+      spyOn(validationError, 'addError')
+      const checkStartDateData = {
+        checkStartDay: moment.utc().add(1, 'days').format('DD'),
+        checkStartMonth: moment.utc().add(1, 'days').format('MM'),
+        checkStartYear: moment.utc().add(1, 'days').format('YY')
+      }
+      checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
+      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearWrongDay)
+      expect(validationError.addError).toHaveBeenCalledWith('checkStartYear', checkWindowErrorMessages.checkStartYearInvalidChars)
+    })
+    it('calls addError with checkStartYearWrongDay message if the check start year is in the past', () => {
       const validationError = new ValidationError()
       spyOn(validationError, 'addError')
       const checkStartDateData = {
