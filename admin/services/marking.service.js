@@ -7,7 +7,6 @@ const R = require('ramda')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const answerDataService = require('./data-access/answer.data.service')
-const checkFormService = require('./check-form.service')
 
 const markingService = {}
 const batchSize = 100
@@ -57,17 +56,10 @@ markingService.batchMark = async function (batchIds) {
     throw new Error('No documents to mark')
   }
 
-  const completedChecks = await completedCheckDataService.sqlFindByIds(batchIds)
-  const checkFormIds = completedChecks.map(c => c.checkForm_id)
-  const checkForms = await checkFormService.getCheckFormsByIds(checkFormIds)
-  const checkFormsHashMap = checkForms.reduce((obj, item) => {
-    obj[item.id] = item
-    return obj
-  }, {})
-  for (let cc of completedChecks) {
+  const completedChecksWithCheckForms = await completedCheckDataService.sqlFindByIdsWithForms(batchIds)
+  for (let cc of completedChecksWithCheckForms) {
     try {
-      const checkForm = checkFormsHashMap[cc.checkForm_id]
-      await this.mark(cc, checkForm)
+      await this.mark(cc)
     } catch (error) {
       winston.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
@@ -76,8 +68,9 @@ markingService.batchMark = async function (batchIds) {
   }
 }
 
-markingService.mark = async function (completedCheck, checkForm) {
-  if (!completedCheck || !completedCheck.data || !completedCheck.data.answers || !checkForm || !checkForm.formData) {
+// completedCheck also includes the checkForm
+markingService.mark = async function (completedCheck) {
+  if (!completedCheck || !completedCheck.data || !completedCheck.data.answers || !completedCheck.formData) {
     throw new Error('missing or invalid argument')
   }
 
@@ -92,7 +85,7 @@ markingService.mark = async function (completedCheck, checkForm) {
   const answers = []
   let questionNumber = 1
 
-  for (let question of checkForm.formData) {
+  for (let question of completedCheck.formData) {
     const currentIndex = questionNumber - 1
     const answerRecord = completedCheck.data.answers[currentIndex]
     const answer = (answerRecord && answerRecord.answer) || ''
