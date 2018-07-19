@@ -19,7 +19,9 @@
             <table>
                 <% for (let i = 0; i < pupils.length; i++) { %>
                 <tr class="page">
-                    <td>
+                    <td class="line-empty"></td>
+                    <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'Live' : 'Familiarisation') %></span></td>
+                    <td class="line-content">
                         <div class="pupil-content">
                             <span class="fullname"><%=
                                 `${pupils[i].foreName} ${pupils[i].showMiddleNames
@@ -36,7 +38,9 @@
                         </div>
                         <div class="pin-content grid-row">
                             <div class="column-one-half">
-                                <span class="label">School Password:</span><span class="information"><%= school.pin %></span>
+                                <span class="label">School Password:</span><span class="information"><%= (
+                                    !!school ? school.pin : 'No active password'
+                                ) %></span>
                             </div>
                             <div class="column-one-half">
                                 <span class="label">PIN:</span><span class="information"><%= pupils[i].pin %></span>
