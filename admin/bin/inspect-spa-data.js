@@ -16,7 +16,7 @@ const optionDefinitions = [
 
 const usage = function () {
   return console.log(`
-    Usage: <script> --check <checkCode> --filter [answers|audit|config|device|inputs|pupil|questions]
+    Usage: <script> --checkCode <checkCode> [--addRelTiming ] [-t] [--verbose] [-v] [--filter [answers|audit|config|device|inputs|pupil|questions]]
     E.g. inspect-spa-data.js -c C367DCE8-150B-4FFD-A92C-74F766C42004 audit
     
     Fancy pants stuff
@@ -29,38 +29,37 @@ const usage = function () {
 
 function addRelativeTimingsToInputs (inputs) {
   let lastTime, current
-  for (let inputsByQuestion of inputs) {
-    if (!inputsByQuestion) {
+  for (let input of inputs) {
+    if (!input) {
       continue
     }
 
-    for (let input of inputsByQuestion) {
-      if (!input.clientTimestamp) {
-        continue
-      }
-
-      current = moment(input.clientTimestamp)
-      if (lastTime) {
-        const secondsDiff = (
-          current.valueOf() - lastTime.valueOf()
-        ) / 1000
-        const signAsNumber = Math.sign(secondsDiff)
-        let sign = ''
-        switch (signAsNumber) {
-          case 1:
-          case 0:
-            sign = '+'
-            break
-          case -1:
-          case -0:
-            sign = '-'
-        }
-        input.relativeTiming = '' + sign + Math.abs(secondsDiff)
-      } else {
-        input.relativeTiming = '+0.00'
-      }
-      lastTime = current
+    if (!input.clientTimestamp) {
+      continue
     }
+
+    current = moment(input.clientTimestamp)
+
+    if (lastTime) {
+      const secondsDiff = (
+        current.valueOf() - lastTime.valueOf()
+      ) / 1000
+      const signAsNumber = Math.sign(secondsDiff)
+      let sign = ''
+      switch (signAsNumber) {
+        case 1:
+        case 0:
+          sign = '+'
+          break
+        case -1:
+        case -0:
+          sign = '-'
+      }
+      input.relativeTiming = '' + sign + Math.abs(secondsDiff)
+    } else {
+      input.relativeTiming = '+0.00'
+    }
+    lastTime = current
   }
 }
 
