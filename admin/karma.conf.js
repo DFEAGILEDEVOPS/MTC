@@ -5,7 +5,7 @@ module.exports = function (config) {
     autoWatch: false,
     files: [
       { pattern: 'public/javascripts/app.js', watched: false },
-      'spec/javascripts/*.spec.js'
+      'spec/front-end/*.spec.js'
     ],
     frameworks: [
       'jasmine',
