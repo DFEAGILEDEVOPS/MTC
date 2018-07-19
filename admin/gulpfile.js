@@ -17,7 +17,8 @@ const jsBundleFiles = [
   './assets/javascripts/jquery-modal.js',
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
-  './assets/javascripts/pupil-filter-group.js'
+  './assets/javascripts/pupil-filter-group.js',
+  './assets/javascripts/table-sorting.js'
 ]
 
 gulp.task('watch', function () {

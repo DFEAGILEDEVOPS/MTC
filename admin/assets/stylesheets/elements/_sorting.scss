@@ -40,3 +40,49 @@ body.js-enabled .tick-all-checkboxes.all-hide {
   display: none;
   visibility: hidden;
 }
+
+
+// Client side sorting
+.sort-icon {
+  position: relative;
+}
+
+.sort-icon:before,
+.sort-icon:after {
+  content: '';
+  border: 5px solid transparent;
+  right: pem(-10px);
+  top: 45%;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.sort-icon:before {
+  border-bottom-color: $black;
+  margin-top: -9px;
+}
+.sort-icon:after {
+  border-top-color: $black;
+  margin-top: 2px;
+}
+
+.sort-icon.asc:before {
+  border-width: 0 pem(5) pem(8) pem(5);
+  border-color: transparent transparent $black transparent;
+  margin-top: pem(-4px);
+}
+.sort-icon.asc:after {
+  border-top-color: transparent;
+  margin-top: 0;
+}
+
+.sort-icon.desc:before {
+  border-width: pem(8) pem(5) 0 pem(5);
+  border-color: $black transparent transparent transparent;
+  margin-top: pem(-4px);
+}
+.sort-icon.desc:after {
+  border-top-color: transparent;
+  margin-top: 0;
+}

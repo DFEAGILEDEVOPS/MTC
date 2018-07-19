@@ -43,7 +43,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('with specific properties', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
         expect(Object.keys(pupils[ 0 ]).length).toBe(8)
         done()
@@ -70,7 +70,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('without expired pins', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(1)
         done()
       })
@@ -96,7 +96,7 @@ describe('pin-generation.service', () => {
         })
       })
       it('without expired pins', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(0)
         done()
       })
@@ -122,14 +122,14 @@ describe('pin-generation.service', () => {
         })
       })
       it('should display DoB', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
         expect(pupils[ 0 ].showDoB).toBeTruthy()
         expect(pupils[ 1 ].showDoB).toBeTruthy()
         done()
       })
       it('should display middle names', async (done) => {
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
         expect(pupils[ 0 ].middleNames).toBeTruthy()
         expect(pupils[ 0 ].fullName).toBe('One, Pupil Middle')
@@ -152,7 +152,7 @@ describe('pin-generation.service', () => {
         spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
         spyOn(restartService, 'canRestart').and.returnValue(false)
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue(pupilAttendanceMock)
-        const pupils = await pinGenerationService.getPupils(schoolMock.id, 'lastName', 'asc')
+        const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(0)
         done()
       })

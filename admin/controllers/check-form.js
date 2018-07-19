@@ -9,7 +9,6 @@ const checkProcessingService = require('../services/check-processing.service')
 const checkWindowService = require('../services/check-window.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const dateService = require('../services/date.service')
-const sortingAttributesService = require('../services/sorting-attributes.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
 const winston = require('winston')
@@ -43,30 +42,16 @@ const getTestDeveloperHomePage = async (req, res, next) => {
 const uploadAndViewFormsPage = async (req, res, next) => {
   res.locals.pageTitle = 'Upload and view forms'
   req.breadcrumbs(res.locals.pageTitle)
-
+  let formData
   try {
-    let formData
-
-    // Sorting
-    const sortingOptions = [
-      { key: 'name', value: 'asc' },
-      { key: 'window', value: 'asc' }
-    ]
-    const sortField = req.params.sortField === undefined ? 'name' : req.params.sortField
-    const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-    const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-
-    formData = await checkFormService.formatCheckFormsAndWindows(sortField, sortDirection)
-
-    return res.render('test-developer/upload-and-view-forms', {
-      forms: formData,
-      htmlSortDirection,
-      arrowSortDirection,
-      breadcrumbs: req.breadcrumbs()
-    })
+    formData = await checkFormService.formatCheckFormsAndWindows()
   } catch (error) {
     return next(error)
   }
+  return res.render('test-developer/upload-and-view-forms', {
+    forms: formData,
+    breadcrumbs: req.breadcrumbs()
+  })
 }
 
 /**

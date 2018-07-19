@@ -2,7 +2,6 @@ const R = require('ramda')
 const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
-const sortingAttributesService = require('../services/sorting-attributes.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
@@ -53,18 +52,13 @@ const getGeneratePinsList = async (req, res, next) => {
   let groups = []
   let groupIds = req.params.groupIds || ''
 
-  const sortingOptions = [ { 'key': 'lastName', 'value': 'asc' } ]
-  let sortField = req.params.sortField === undefined ? 'lastName' : req.params.sortField
-  const sortDirection = req.params.sortDirection === undefined ? 'asc' : req.params.sortDirection
-  const { htmlSortDirection, arrowSortDirection } = sortingAttributesService.getAttributes(sortingOptions, sortField, sortDirection)
-
   // TODO: data service call should be moved to a service
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    pupils = await pinGenerationService.getPupils(school.dfeNumber, sortField, sortDirection, pinEnv)
+    pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
@@ -76,9 +70,7 @@ const getGeneratePinsList = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pupils,
     groups,
-    groupIds,
-    htmlSortDirection,
-    arrowSortDirection
+    groupIds
   })
 }
 

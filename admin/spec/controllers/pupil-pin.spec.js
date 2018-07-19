@@ -14,7 +14,6 @@ const checkWindowSanityCheckService = require('../../services/check-window-sanit
 const pupilDataService = require('../../services/data-access/pupil.data.service')
 const qrService = require('../../services/qr.service')
 const schoolDataService = require('../../services/data-access/school.data.service')
-const sortingAttributesService = require('../../services/sorting-attributes.service')
 const groupService = require('../../services/group.service')
 const schoolMock = require('../mocks/school')
 const groupsMock = require('../mocks/groups')
@@ -163,32 +162,11 @@ describe('pupilPin controller:', () => {
           const res = getRes()
           const req = getReq(goodReqParamsLive)
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
-          spyOn(sortingAttributesService, 'getAttributes')
-            .and.returnValue({
-              htmlSortDirection: { lastName: 'asc' },
-              arrowSortDirection: { lastName: 'sort' }
-            })
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Select pupils')
           expect(res.render).toHaveBeenCalled()
-          done()
-        })
-      })
-
-      describe('when the school is not found in the database', () => {
-        beforeEach(() => {
-          sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(undefined)
-          controller = proxyquire('../../controllers/pupil-pin.js', {
-            '../../services/data-access/school.data.service': schoolDataService
-          }).getGeneratePinsList
-        })
-        it('it throws an error', async (done) => {
-          const res = getRes()
-          const req = getReq(goodReqParamsLive)
-          await controller(req, res, next)
-          expect(next).toHaveBeenCalled()
           done()
         })
       })
@@ -207,11 +185,6 @@ describe('pupilPin controller:', () => {
           const res = getRes()
           const req = getReq(goodReqParamsFam)
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
-          spyOn(sortingAttributesService, 'getAttributes')
-            .and.returnValue({
-              htmlSortDirection: { lastName: 'asc' },
-              arrowSortDirection: { lastName: 'sort' }
-            })
           spyOn(groupService, 'findGroupsByPupil').and.returnValue(groupsMock)
           spyOn(res, 'render').and.returnValue(null)
           await controller(req, res, next)
