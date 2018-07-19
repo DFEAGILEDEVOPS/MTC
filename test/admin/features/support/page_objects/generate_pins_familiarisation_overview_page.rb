@@ -29,4 +29,18 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
 
   section :sticky_banner, StickyBannerSection, '.sticky-banner-wrapper'
 
+  def generate_pin_using_name(name)
+    pupil = find_pupil_row(name)
+    name = pupil.name.text
+    pupil.checkbox.click
+    sticky_banner.confirm.click
+    name
+  end
+
+  def find_pupil_row(name)
+    wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}
+    pupil_list.rows.find {|pupil| pupil.text.include? name}
+  end
+
+
 end
