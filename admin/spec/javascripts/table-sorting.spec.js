@@ -59,6 +59,14 @@ describe('tableSort', function () {
       const result = window.GOVUK.tableSort.isNullString('-', { sortNullsLast: true, ignoredStrings: ['-'] })
       expect(result).toBeTruthy()
     })
+    it('should return false if configured to sort null values last but no ignored string is provided', function () {
+      const result = window.GOVUK.tableSort.isNullString('test', { sortNullsLast: true, ignoredStrings: [] })
+      expect(result).toBeFalsy()
+    })
+    it('should return false if configured to sort null values last but no ignored string detected in values', function () {
+      const result = window.GOVUK.tableSort.isNullString('test', { sortNullsLast: true, ignoredStrings: ['N/A'] })
+      expect(result).toBeFalsy()
+    })
   })
   describe('applySortClass', function () {
     it('should add descending sorting class if order is undefined', function () {

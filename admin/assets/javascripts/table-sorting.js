@@ -47,9 +47,7 @@ $(function () {
       var hasIgnoredString = config.ignoredStrings.some(function (ignoredString) {
         return ignoredString === v
       })
-      if (hasIgnoredString) {
-        return true
-      }
+      return hasIgnoredString
     },
 
     applySortClass: function (headerEl) {
