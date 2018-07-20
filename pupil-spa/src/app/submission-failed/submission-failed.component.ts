@@ -5,7 +5,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { APP_CONFIG } from '../services/config/config.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-submission-failed',
@@ -33,6 +33,7 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
       hitType: 'pageview',
       page: '/submission-failed'
     });
+    AppInsights.trackPageView('Submission failed', '/submission-failed');
   }
 
   // wait for the component to be rendered first, before parsing the text

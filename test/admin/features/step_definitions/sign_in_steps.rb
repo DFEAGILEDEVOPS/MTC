@@ -12,7 +12,7 @@ end
 
 Given(/^I have entered valid credentials$/) do
   sign_in_page.load
-  sign_in_page.enter_credentials('teacher1','password')
+  sign_in_page.enter_credentials('teacher1', 'password')
 end
 
 When(/^I sign in$/) do
@@ -40,7 +40,7 @@ end
 Given(/^I have signed in with (.*)$/) do |teacher|
   @teacher = teacher
   sign_in_page.load
-  sign_in_page.login(@teacher,'password')
+  sign_in_page.login(@teacher, 'password')
 end
 
 Given(/^I am on the sign in failure page$/) do
@@ -53,4 +53,9 @@ end
 
 Then(/^I should be taken to the contact page for mtc$/) do
   expect(contact_page).to be_displayed
+end
+
+Then(/^the sign in page should match design$/) do
+  step 'I should see a page heading'
+  step 'I should see instructions'
 end

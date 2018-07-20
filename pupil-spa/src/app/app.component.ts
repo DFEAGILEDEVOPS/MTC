@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service';
+import { AppInsights } from 'applicationinsights-js';
 
 // import { NGXLogger } from 'ngx-logger';
 
@@ -25,6 +26,11 @@ export class AppComponent {
     this.window = windowRefService.nativeWindow;
     if (APP_CONFIG.googleAnalyticsTrackingCode) {
       this.window.ga('create', APP_CONFIG.googleAnalyticsTrackingCode, 'auto');
+    }
+    if (APP_CONFIG.applicationInsightsInstrumentationKey) {
+      AppInsights.downloadAndSetup({
+        instrumentationKey: environment.applicationInsightsInstrumentationKey
+      });
     }
   }
 }

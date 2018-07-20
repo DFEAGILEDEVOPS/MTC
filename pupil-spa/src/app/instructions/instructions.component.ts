@@ -5,6 +5,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { WarmupStarted} from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-instructions',
@@ -38,6 +39,7 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
       hitType: 'pageview',
       page: '/instructions'
     });
+    AppInsights.trackPageView('Instructions', '/instructions');
   }
 
   onClick() {

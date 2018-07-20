@@ -3,16 +3,12 @@ Given(/^I am on the groups page$/) do
   school_landing_page.group_pupils.click
 end
 
-Then(/^I should see a heading on the groups page$/) do
+Then(/^the group page is displayed as per the design$/) do
   expect(group_pupils_page).to have_heading
-end
-
-Then(/^I should see a intro$/) do
   expect(group_pupils_page).to have_intro
-end
-
-Then(/^I should see a option to create a new group$/) do
   expect(group_pupils_page).to have_create_group
+
+  step 'I should see related content'
 end
 
 Then(/^I should see a table of existing groups$/) do
@@ -198,9 +194,7 @@ end
 
 
 When(/^I attempt to use the same group name for a new group$/) do
-  group_pupils_page.create_group.click
   add_edit_groups_page.group_name.set @group_name
-  add_edit_groups_page.pupil_list.rows[0].checkbox.click
   add_edit_groups_page.sticky_banner.confirm.click
 end
 
@@ -211,10 +205,8 @@ Then(/^I should see an error for duplicate group name$/) do
 end
 
 When(/^I attempt to use the same group name for a new group with a different case$/) do
-  group_pupils_page.create_group.click
   @group_name = @group_name.upcase
   add_edit_groups_page.group_name.set @group_name
-  add_edit_groups_page.pupil_list.rows[0].checkbox.click
   add_edit_groups_page.sticky_banner.confirm.click
 end
 
@@ -313,4 +305,19 @@ When(/^I add these pupils to a group$/) do
   @pupil_names_arr.each {|pupil| add_edit_groups_page.pupil_list.rows.find{|row| row.checkbox.click if row.name.text == pupil}}
   page.driver.browser.manage.window.resize_to(current_window_size.width,current_window_size.height)
   add_edit_groups_page.sticky_banner.confirm.click
+end
+
+Then(/^I should see error for group name for the following$/) do |table|
+  group_pupils_page.create_group.click
+  add_edit_groups_page.pupil_list.rows[0].checkbox.click
+  table.hashes.each do |hash|
+    case hash['condition']
+      when 'duplicate group name'
+        step 'I attempt to use the same group name for a new group'
+        step 'I should see an error for duplicate group name'
+      when 'duplicate group name with different case'
+        step 'I attempt to use the same group name for a new group with a different case'
+        step 'I should see an error for duplicate group name'
+    end
+  end
 end

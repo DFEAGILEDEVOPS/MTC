@@ -30,11 +30,13 @@ ARG runtime_config_url=/public/config.json
 # URL too, as long as it's accessible through http
 
 ARG ga_code
+ARG app_insights_code
 ENV API_URL=$api_url
 ENV AUTH_URL=$auth_url
 ENV CHECK_STARTED_URL=$check_started_url
 ENV CHECK_SUBMISSION_URL=$check_submission_url
 ENV GA_CODE=$ga_code
+ENV APP_INSIGHTS_CODE=$app_insights_code
 ENV RUNTIME_CONFIG_URL=$runtime_config_url
 
 RUN $(npm bin)/gulp setRuntimeConfigURL

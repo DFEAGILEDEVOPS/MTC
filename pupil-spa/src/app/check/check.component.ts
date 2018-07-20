@@ -11,6 +11,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-check',
@@ -157,6 +158,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: `/practice-preload/${parseInt(matches[ 1 ], 10)}`
         });
+        AppInsights.trackPageView(
+          `Practice loading ${parseInt(matches[ 1 ], 10)}`,
+          `/practice-preload/${parseInt(matches[ 1 ], 10)}`
+        );
         break;
       }
       case CheckComponent.warmupQuestionRe.test(stateDesc): {
@@ -170,6 +175,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: `/practice-question/${parseInt(matches[ 1 ], 10)}`
         });
+        AppInsights.trackPageView(
+          `Practice question ${parseInt(matches[ 1 ], 10)}`,
+          `/practice-question/${parseInt(matches[ 1 ], 10)}`
+        );
         break;
       }
       case CheckComponent.spokenWarmupQuestionRe.test(stateDesc): {
@@ -189,6 +198,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: '/practice-complete'
         });
+        AppInsights.trackPageView(
+          'Practice complete',
+          '/practice-complete'
+        );
         break;
       }
       case CheckComponent.questionIntroRe.test(stateDesc): {
@@ -200,6 +213,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: '/questions-intro'
         });
+        AppInsights.trackPageView(
+          'Questions intro',
+          '/questions-intro'
+        );
         break;
       }
       case CheckComponent.loadingRe.test(stateDesc): {
@@ -212,6 +229,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: `/preload/${parseInt(matches[ 1 ], 10)}`
         });
+        AppInsights.trackPageView(
+          `Question loading ${parseInt(matches[ 1 ], 10)}`,
+          `/preload/${parseInt(matches[ 1 ], 10)}`
+        );
         break;
       }
       case CheckComponent.questionRe.test(stateDesc): {
@@ -224,6 +245,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: `/question/${parseInt(matches[ 1 ], 10)}`
         });
+        AppInsights.trackPageView(
+          `Question ${parseInt(matches[ 1 ], 10)}`,
+          `/question/${parseInt(matches[ 1 ], 10)}`
+        );
         break;
       }
       case CheckComponent.spokenQuestionRe.test(stateDesc): {
@@ -244,6 +269,10 @@ export class CheckComponent implements OnInit {
           hitType: 'pageview',
           page: '/submission-pending'
         });
+        AppInsights.trackPageView(
+          'Submission pending',
+          '/submission-pending'
+        );
         break;
       }
     }

@@ -77,6 +77,31 @@ completedCheckDataService.sqlFindByIds = async (batchIds) => {
 }
 
 /**
+ * Returns the joined selection of check and check forms with check.data parsed
+ * @param {Array<object>} batchIds array of integers
+ * @return {Promise<Array>}
+ */
+completedCheckDataService.sqlFindByIdsWithForms = async (batchIds) => {
+  let select = `
+  SELECT c.*, f.formData
+  FROM ${sqlService.adminSchema}.[check] c INNER JOIN
+  ${sqlService.adminSchema}.[checkForm] f ON c.checkForm_id = f.id
+  `
+  const where = sqlService.buildParameterList(batchIds, TYPES.Int)
+  const sql = [select, 'WHERE c.id IN (', where.paramIdentifiers.join(', '), ')'].join(' ')
+  // Populate the JSON data structure which is stored as a string in the SQL DB
+  const results = await sqlService.query(sql, where.params)
+  const parsed = results.map(x => {
+    if (!x.data) {
+      return R.clone(x)
+    }
+    const d = JSON.parse(x.data)
+    return R.assoc('data', d.data, x)
+  })
+  return parsed
+}
+
+/**
  * @description returns a boolean indicating whether there are unmarked checks in the database
  */
 completedCheckDataService.sqlHasUnmarked = async () => {

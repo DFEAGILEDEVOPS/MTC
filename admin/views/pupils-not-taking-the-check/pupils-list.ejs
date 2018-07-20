@@ -37,8 +37,6 @@
                 </li>
                 <% }) %>
             </ul>
-            <input type="hidden" name="sortField" value="<%= sortField %>">
-            <input type="hidden" name="sortDirection" value="<%= sortDirection %>">
             <% } %>
 
             <div class="master-detail text">
@@ -85,10 +83,10 @@
                 <thead>
                 <tr>
                     <th scope="col">
-                        <a class="sortingLink" href="/pupils-not-taking-the-check/select-pupils/name/<%= htmlSortDirection.name %>/<%= groupIds %>">Pupil name <span class="<%= arrowSortDirection.name %>"><span>Sort by pupil name <%= htmlSortDirection.name %></span></span></a>
+                        <a class="sortingLink">Pupil name <span class="sort-icon asc"><span>Sort by pupil name</span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="sortingLink" href="/pupils-not-taking-the-check/select-pupils/reason/<%= htmlSortDirection.reason %>">Reason <span class="<%= arrowSortDirection.reason %>"><span>Sort by reason <%= htmlSortDirection.reason %></span></span></a>
+                        <a class="sortingLink">Reason <span class="sort-icon"><span>Sort by reason</span></span></a>
                     </th>
                     <th scope="col">
                         <div class="tick-all-checkboxes-wrapper">
@@ -158,3 +156,11 @@
                 isSubmitDisabled: true
             }) %>
 </form>
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'pupilsList', {
+      sortNullsLast: true,
+      ignoredStrings: ['N/A']
+    })
+  })
+</script>

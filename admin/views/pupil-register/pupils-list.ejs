@@ -39,13 +39,13 @@
             <thead>
                 <tr>
                     <th scope="col" class="two-thirds">
-                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/name/<%= htmlSortDirection.name %>">Pupil<span class="<%= arrowSortDirection.name %>"><span>Sort by pupil <%= htmlSortDirection.name %></span></span></a>
+                        <a class="no-underline" id="sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/group/<%= htmlSortDirection.group %>">Group<span class="<%= arrowSortDirection.group %>"><span>Sort by group <%= htmlSortDirection.group %></span></span></a>
+                        <a class="no-underline" id="sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
                     </th>
                     <th scope="col">
-                        <a class="no-underline" id="sortingLink" href="/pupil-register/pupils-list/status/<%= htmlSortDirection.status %>">Status<span class="<%= arrowSortDirection.status %>"><span>Sort by status <%= htmlSortDirection.status %></span></span></a>
+                        <a class="no-underline" id="sortingLink">Status<span class="sort-icon"><span>Sort by status</span></span></a>
                     </th>
                 </tr>
             </thead>
@@ -95,6 +95,13 @@
 
     </div>
 </div>
-
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'register-pupils', {
+      sortNullsLast: true,
+      ignoredStrings: ['-']
+    })
+  })
+</script>
 
 
