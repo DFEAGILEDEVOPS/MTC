@@ -87,3 +87,11 @@
         </form>
     </div>
 </div>
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'generatePins', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
