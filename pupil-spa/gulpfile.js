@@ -47,3 +47,10 @@ gulp.task('setGaCode', () => {
     .pipe(replace('GA_CODE', process.env.GA_CODE || ''))
     .pipe(gulp.dest('./src/environments/'))
 })
+
+gulp.task('setAppInsightsCode', () => {
+  console.log('env.APP_INSIGHTS_CODE is:', process.env.APP_INSIGHTS_CODE)
+  gulp.src(['./src/environments/environment.prod.ts'])
+    .pipe(replace('APP_INSIGHTS_CODE', process.env.APP_INSIGHTS_CODE || ''))
+    .pipe(gulp.dest('./src/environments/'))
+})
