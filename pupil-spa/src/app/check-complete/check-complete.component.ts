@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angula
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-check-complete',
@@ -25,6 +26,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
       hitType: 'pageview',
       page: '/check-complete'
     });
+    AppInsights.trackPageView('Check complete', '/check-complete');
   }
 
   // wait for the component to be rendered first, before parsing the text

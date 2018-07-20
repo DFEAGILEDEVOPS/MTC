@@ -114,3 +114,11 @@
     modalCancelLabel: 'No',
     modalCancelUrl: '#'
 }) %>
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'checkFormsList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
