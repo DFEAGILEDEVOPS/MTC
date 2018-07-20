@@ -19,6 +19,7 @@ export class AppConfig {
   readonly submissionPendingViewMinDisplay: number;
   readonly supportNumber: string;
   readonly googleAnalyticsTrackingCode: string;
+  readonly applicationInsightsInstrumentationKey: string;
 }
 
 /**

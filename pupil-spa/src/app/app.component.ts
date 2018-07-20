@@ -29,7 +29,7 @@ export class AppComponent {
     }
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       AppInsights.downloadAndSetup({
-        instrumentationKey: environment.applicationInsightsInstrumentationKey
+        instrumentationKey: APP_CONFIG.applicationInsightsInstrumentationKey
       });
     }
   }

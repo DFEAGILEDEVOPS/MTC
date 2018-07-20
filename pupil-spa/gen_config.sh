@@ -17,10 +17,17 @@ then
 else
     gaCodeParsed="\"$gaCode\""
 fi
+applicationInsightsCode=${APP_INSIGHTS_CODE:-"null"}
+if [ $applicationInsightsCode == "null" ]
+then
+    applicationInsightsCodeParsed="null"
+else
+    applicationInsightsCodeParsed="\"$applicationInsightsCode\""
+fi
 
 cat <<EOF > config.json
 {
- "apiURL": "$apiUrl",
+  "apiURL": "$apiUrl",
   "authURL": "$authUrl",
   "checkStartedURL": "$checkStartedUrl",
   "checkSubmissionURL": "$checkSubmissionUrl",
@@ -31,6 +38,7 @@ cat <<EOF > config.json
   "checkSubmissionAPIErrorMaxAttempts": $checkSubmissionAPIErrorMaxAttempts,
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
-  "googleAnalyticsTrackingCode": $gaCodeParsed
+  "googleAnalyticsTrackingCode": $gaCodeParsed,
+  "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF
