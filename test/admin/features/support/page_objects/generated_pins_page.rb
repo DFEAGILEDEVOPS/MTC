@@ -1,5 +1,5 @@
 class GeneratedPinsPage < SitePrism::Page
-  set_url '/pupil-pin/generated-pins-list'
+  set_url '/pupil-pin/generated-live-pins-list'
 
   element :generate_more_pin_btn, 'a', text: "Generate more PINs"
   element :school_password, '#school-pin'

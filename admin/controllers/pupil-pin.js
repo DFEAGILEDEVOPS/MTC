@@ -10,18 +10,20 @@ const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
 
 const getGeneratePinsOverview = async (req, res, next) => {
-  res.locals.pageTitle = 'Generate pupil PINs'
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  res.locals.pinEnv = pinEnv
+  res.locals.pageTitle = `PINs for ${pinEnv} check`
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
   } catch (err) {
     return next(err)
   }
   if (pupils && pupils.length > 0) {
-    return res.redirect('/pupil-pin/generated-pins-list')
+    return res.redirect(`/pupil-pin/generated-${pinEnv}-pins-list`)
   }
   let error
   try {
@@ -37,8 +39,12 @@ const getGeneratePinsOverview = async (req, res, next) => {
 }
 
 const getGeneratePinsList = async (req, res, next) => {
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
-  req.breadcrumbs('Generate pupil PINs', '/pupil-pin/generate-pins-overview')
+  req.breadcrumbs(
+    `PINs for ${pinEnv} check`,
+    `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 
   let school
@@ -52,7 +58,7 @@ const getGeneratePinsList = async (req, res, next) => {
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    pupils = await pinGenerationService.getPupils(school.dfeNumber)
+    pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
@@ -69,6 +75,7 @@ const getGeneratePinsList = async (req, res, next) => {
 }
 
 const postGeneratePins = async (req, res, next) => {
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let pupilsList
   // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
   // busboy provides either an array of values, or, sometimes an object where the key is the
@@ -86,11 +93,11 @@ const postGeneratePins = async (req, res, next) => {
   }
 
   if (!Array.isArray(pupilsList) || pupilsList.length === 0) {
-    return res.redirect('/pupil-pin/generate-pins-list')
+    return res.redirect(`/pupil-pin/generate-${pinEnv}-pins-list`)
   }
   let school
   try {
-    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId)
+    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -102,11 +109,13 @@ const postGeneratePins = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  return res.redirect('/pupil-pin/generated-pins-list')
+  return res.redirect(`/pupil-pin/generated-${pinEnv}-pins-list`)
 }
 
 const getGeneratedPinsList = async (req, res, next) => {
-  res.locals.pageTitle = 'Generate pupil PINs'
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  res.locals.pinEnv = pinEnv
+  res.locals.pageTitle = `Generate ${pinEnv} pupil PINs`
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
@@ -115,7 +124,7 @@ const getGeneratedPinsList = async (req, res, next) => {
   let error
   const date = dateService.formatDayAndDate(new Date())
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
   } catch (error) {
@@ -139,6 +148,8 @@ const getGeneratedPinsList = async (req, res, next) => {
  * @returns {Promise<*>}
  */
 const getPrintPins = async (req, res, next) => {
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Print pupils'
   let groups
   let pupils
@@ -148,7 +159,7 @@ const getPrintPins = async (req, res, next) => {
   const pinCardDate = dateService.formatFullGdsDate(new Date())
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
-    pupils = await pinService.getPupilsWithActivePins(req.user.School)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     if (pupils.length > 0 && groups.length > 0) {
       pupils = pupils.map(p => {
         p.group = groups[p.group_id] || ''

@@ -19,13 +19,14 @@
         </div>
         <% } %>
         <header class="page-header">
-            <h1 class="heading-xlarge">Generate pupil PINs</h1>
+            <h1 class="heading-xlarge">Generate pupil PINs - <%= pinEnv %> check</h1>
         </header>
 
         <%- partial('partials/_session_expiry') %>
 
-        <br />
-        Pupils will need a Personal Identification Number (PIN) and school password in order to start the check. These expire daily.
+        <p class="lede">
+        Pupils will need a personal identification number (PIN) and school password in order to start the check in the <%= pinEnv %> area. These expire at 4pm daily.
+        </p>
     </div>
     <div class="column-one-third sidebar" aria-label="sidebar">
         <aside role="complementary" class="support-column">
@@ -49,11 +50,27 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
-        <ol class="list list-number">
-            <li>Generate pupil PINs and school password.</li>
-            <li>Distribute pupil PINs and school password to your pupils.</li>
-        </ol>
-        <form action="/pupil-pin/generate-pins-list" name="generate-pins-list">
+        <div class="panel panel-border-wide">
+            <p>
+                Select <a href="/pupil-pin/access-arrangements">access arrangements</a> for pupils who need it before generating PINs
+            </p>
+        </div>
+
+        <p>
+        <details>
+          <summary><span class="summary">Instructions</span></summary>
+
+          <div class="panel panel-border-narrow">
+            <ol class="list list-number">
+              <li>Press 'Generate PINs' button.</li>
+              <li>Select which pupils you are generating pins for.</li>
+              <li>Distribute pupil PINs and school password to your pupils.</li>
+            </ol>
+          </div>
+        </details>
+        </p>
+
+        <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
             <div class="form-group">
                 <div class="form-buttons">
                     <% if (error) { %>
