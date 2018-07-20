@@ -62,6 +62,8 @@ RUN rm -rf /usr/share/nginx/html/*
 
 ## From 'builder' stage copy over the artifacts in dist folder to default nginx public folder
 COPY --from=builder /ng-app/dist /usr/share/nginx/html
+COPY --from=builder /ng-app/gen_config.sh /
+COPY --from=builder /ng-app/docker-start.sh /
 
 ## Revove the 'assets' folder that got copied
 # Can't yet: `assets` is referenced in 2 places:
@@ -69,4 +71,4 @@ COPY --from=builder /ng-app/dist /usr/share/nginx/html
 #  * app.component.ts:9
 #RUN rm -rf /usr/share/nginx/html/assets
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["./docker-start.sh"]
