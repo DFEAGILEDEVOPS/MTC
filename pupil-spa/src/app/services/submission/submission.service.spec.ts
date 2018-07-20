@@ -1,4 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { APP_INITIALIZER } from '@angular/core';
 import { XHRBackend } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { MockBackend } from '@angular/http/testing';
@@ -10,6 +11,7 @@ import { SubmissionService } from './submission.service';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
 import { AppUsageService} from '../app-usage/app-usage.service';
+import { AppConfigService, loadConfigMockService } from '../config/config.service';
 
 let mockBackend: MockBackend;
 let submissionService: SubmissionService;
@@ -29,6 +31,8 @@ describe('SubmissionService', () => {
     const injector = TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
+        AppConfigService,
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         SubmissionService,
         { provide: XHRBackend, useClass: MockBackend },
         StorageService,
