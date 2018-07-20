@@ -42,10 +42,7 @@ module.exports.validate = (validationError, checkEndDateData) => {
   if (!isCheckEndYearEmpty && !isInt(checkEndDateData.checkEndYear, { min: currentYear, max: (currentYear * 1 + 10) })) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearWrongDay)
   }
-  if (!isCheckEndYearEmpty && checkEndDateData.checkEndYear.length !== 4) {
-    validationError.addError('checkEndYear', checkWindowErrorMessages.enterValidYear)
-  }
-  if (!isCheckEndYearEmpty && !XRegExp('^[0-9]+$').test(checkEndDateData.checkEndYear)) {
+  if (!isCheckEndYearEmpty && (!XRegExp('^[0-9]+$').test(checkEndDateData.checkEndYear) || checkEndDateData.checkEndYear.length !== 4)) {
     validationError.addError('checkEndYear', checkWindowErrorMessages.checkEndYearInvalidChars)
   }
 }

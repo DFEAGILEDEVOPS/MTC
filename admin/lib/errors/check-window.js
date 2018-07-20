@@ -4,40 +4,40 @@ module.exports = {
   checkWindowName: '"Name of check window" is required',
   checkWindowNameLength: '"Name of check window" can\'t be less than 2 characters',
 
-  adminStartDayWrongDay: 'Please check "Day"',
-  adminStartDayInvalidChars: 'Entry must be numerical',
+  adminStartDayWrongDay: 'Enter a valid day for administration start date',
+  adminStartDayInvalidChars: 'Enter a day in 2 digits for administration start date',
   adminStartDayRequired: '"Administration start day" is required',
 
-  adminStartMonthWrongDay: 'Please check "Month"',
-  adminStartMonthInvalidChars: 'Entry must be numerical',
+  adminStartMonthWrongDay: 'Enter a valid month for administration start date',
+  adminStartMonthInvalidChars: 'Enter a month in 2 digits for administration start date',
   adminStartMonthRequired: '"Administration start month" is required',
 
-  adminStartYearWrongDay: 'Please check "Year"',
-  adminStartYearInvalidChars: 'Entry must be numerical',
+  adminStartYearWrongDay: 'Enter a valid year for administration start date',
+  adminStartYearInvalidChars: 'Enter a year in 4 digits for administration start date',
   adminStartYearRequired: '"Administration start year" is required',
 
-  checkStartDayWrongDay: 'Please check "Day"',
-  checkStartDayInvalidChars: 'Entry must be numerical',
+  checkStartDayWrongDay: 'Enter a valid day for check start date',
+  checkStartDayInvalidChars: 'Enter a day in 2 digits for check start date',
   checkStartDayRequired: '"Check start day" is required',
 
-  checkStartMonthWrongDay: 'Please check "Month"',
-  checkStartMonthInvalidChars: 'Entry must be numerical',
+  checkStartMonthWrongDay: 'Enter a valid month for check start date',
+  checkStartMonthInvalidChars: 'Enter a month in 2 digits for check start date',
   checkStartMonthRequired: '"Check start month" is required',
 
-  checkStartYearWrongDay: 'Please check "Year"',
-  checkStartYearInvalidChars: 'Entry must be numerical',
+  checkStartYearWrongDay: 'Enter a valid year for check start date',
+  checkStartYearInvalidChars: 'Enter a year in 4 digits for check start date',
   checkStartYearRequired: '"Check start year" is required',
 
-  checkEndDayWrongDay: 'Please check "Day"',
-  checkEndDayInvalidChars: 'Entry must be numerical',
+  checkEndDayWrongDay: 'Enter a valid day for check end date',
+  checkEndDayInvalidChars: 'Enter a day in 2 digits for check end date',
   checkEndDayRequired: '"Check end day" is required',
 
-  checkEndMonthWrongDay: 'Please check "Month"',
-  checkEndMonthInvalidChars: 'Entry must be numerical',
+  checkEndMonthWrongDay: 'Enter a valid month for check end date',
+  checkEndMonthInvalidChars: 'Enter a month in 2 digits for check end date',
   checkEndMonthRequired: '"Check end month" is required',
 
-  checkEndYearWrongDay: 'Please check "Year"',
-  checkEndYearInvalidChars: 'Entry must be numerical',
+  checkEndYearWrongDay: 'Enter a valid year for check end date',
+  checkEndYearInvalidChars: 'Enter a year in 4 digits for check end date',
   checkEndYearRequired: '"Check end year" is required',
 
   adminDateInThePast: 'Start date must be in the future',
@@ -45,9 +45,5 @@ module.exports = {
   checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"',
   checkStartDateInThePast: '"Check start date" must be in the future',
   checkEndDateInThePast: '"Check end date" must be in the future',
-  checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"',
-  enterValidYear: 'Please check "Year"',
-  adminDateInvalid: 'Please check "Date"',
-  checkStartDateInvalid: 'Please check "Date"',
-  checkEndDateInvalid: 'Please check "Date"'
+  checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"'
 }

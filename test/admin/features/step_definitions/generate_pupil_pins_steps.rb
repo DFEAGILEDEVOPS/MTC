@@ -338,3 +338,15 @@ Then(/^I should see related content on the generate pins page$/) do
   expect(generate_pins_overview_page).to have_group_pupil
   expect(generate_pins_overview_page).to have_restarts
 end
+
+Then(/^I should see generated pin page as per design$/) do
+  step 'I should see the school password for teacher1'
+  step 'I should see information for Pupil pin and School password'
+  step 'I should see link to download all pupil pins'
+end
+
+And(/^the displayed school password is generated as per the requirement$/) do
+  step 'the school password should consist of 8 characters'
+  step "the school password should not contain charachter 'q'"
+  step 'school password should be generated from the specified pool of characters'
+end
