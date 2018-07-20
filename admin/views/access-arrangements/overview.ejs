@@ -1,0 +1,59 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <header class="page-header">
+            <h1 class="heading-xlarge">Access arrangements</h1>
+        </header>
+        <%- partial('partials/_session_expiry') %>
+        <p class="lede">
+            Modify multiplication tables check for pupils with specific needs. Modifications should be previewed in the pupil’s familiarisation check.
+        </p>
+    </div>
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="/group/pupils-list" >Pupil register</a>
+                    </li>
+                    <li>
+                        <a href="/pupil-pins/generate-familiarisation-pins-overview">PINs for familiarisation are</a>
+                    </li>
+                    <li>
+                        <a href="/pupil-pin/generate-pins-overview">PINs for live area</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <form action="/restart/select-restart-list" name="select-pupils-to-restart">
+            <div class="form-group">
+                <div class="form-buttons">
+                    <input type="submit" class="button" value="Select pupils to restart"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="column-two-thirds">
+        No pupils with access arrangements or modifications selected.
+    </div>
+</div>
+
+<div class="back-to-top-container">
+    <a href="#top">Back to top</a>
+</div>
