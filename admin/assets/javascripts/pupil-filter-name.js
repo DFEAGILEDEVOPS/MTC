@@ -5,7 +5,7 @@
 $(function () {
   if ($('.filter-name').length > 0) {
     $('#search-name').on('change keyup', function (e) {
-      var input = $.trim($(e.currentTarget).val())
+      var input = $.trim($(e.currentTarget).val()).toLowerCase()
       var selAllTr = '#generatePins > tbody > tr'
       if (input.length === 0) {
         $(selAllTr).each(function () {
@@ -15,7 +15,7 @@ $(function () {
       }
 
       $(selAllTr).each(function () {
-        if ($.trim($(this).text()).indexOf(input) === -1) {
+        if ($.trim($(this).text()).toLowerCase().indexOf(input) === -1) {
           $(this).addClass('filter-hidden-name')
         } else {
           $(this).removeClass('filter-hidden-name')
