@@ -4,6 +4,7 @@ import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-warmup-intro',
@@ -36,6 +37,7 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
       hitType: 'pageview',
       page: '/practice-questions'
     });
+    AppInsights.trackPageView('Practice Questions', '/practice-questions');
   }
 
   ngAfterViewInit() {
