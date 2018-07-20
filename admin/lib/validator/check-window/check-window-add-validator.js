@@ -23,31 +23,19 @@ module.exports.validate = (checkWindowData) => {
 
   const adminStartDateData = R.pick(['adminStartDay', 'adminStartMonth', 'adminStartYear'], checkWindowData)
   checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
-  const hasEmptyAdminStartDateFields = R.any((x) => R.isNil(x) || R.isEmpty(x))(Object.values(adminStartDateData))
 
   const checkStartDateData = R.pick(['checkStartDay', 'checkStartMonth', 'checkStartYear'], checkWindowData)
   checkWindowCheckStartDateValidator.validate(validationError, checkStartDateData)
-  const hasEmptyCheckStartDateFields = R.any((x) => R.isNil(x) || R.isEmpty(x))(Object.values(checkStartDateData))
 
   const checkEndDateData = R.pick(['checkEndDay', 'checkEndMonth', 'checkEndYear'], checkWindowData)
   checkWindowCheckEndDateValidator.validate(validationError, checkEndDateData)
-  const hasEmptyCheckEndDateFields = R.any((x) => R.isNil(x) || R.isEmpty(x))(Object.values(checkEndDateData))
 
   const adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
     checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
-  if (!adminStartDate && !hasEmptyAdminStartDateFields) {
-    validationError.addError('adminDateInvalid', true)
-  }
   const checkStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkStartDay'],
     checkWindowData['checkStartMonth'], checkWindowData['checkStartYear'])
-  if (!checkStartDate && !hasEmptyCheckStartDateFields) {
-    validationError.addError('checkStartDateInvalid', true)
-  }
   const checkEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['checkEndDay'],
     checkWindowData['checkEndMonth'], checkWindowData['checkEndYear'])
-  if (!checkEndDate && !hasEmptyCheckEndDateFields) {
-    validationError.addError('checkEndDateInvalid', true)
-  }
 
   // Compare date fields
   if (adminStartDate && moment(currentDate).isAfter(adminStartDate)) {

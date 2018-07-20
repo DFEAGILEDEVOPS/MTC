@@ -14,6 +14,14 @@
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
             <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% error.getUniqueFields(['checkWindowName', 'adminStartDay', 'adminStartMonth', 'adminStartYear', 'checkStartDay', 'checkStartMonth', 'checkStartYear',
+                    'checkEndDay', 'checkEndMonth', 'checkEndYear']).map(f => { %>
+                <% if (typeof error.get(f) !== 'boolean') { %>
+                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                <% }%>
+                <% }); %>
+            </ul>
         </div>
         <% } %>
 
@@ -27,7 +35,7 @@
 
         <form action="/service-manager/check-windows/submit" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-            <div class="form-group">
+            <div class="form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">
                 <label for="checkWindowName" class="form-label-bold">
                     Name of check window
                     <% if (error.isError('checkWindowName')) { %>
@@ -45,7 +53,8 @@
 
             <hr />
 
-            <div class="form-group">
+            <div class="form-group <%= error.isError('adminDateInThePast') || error.isError('adminStartDay') || error.isError('adminStartMonth') ||
+            error.isError('adminStartYear') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Administration start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
@@ -110,13 +119,11 @@
 
             <hr />
 
-            <div class="form-group">
+            <div class="form-group <%= error.isError('checkDateBeforeAdminDate') || error.isError('checkDateBeforeAdminDate') ||
+            error.isError('checkStartDateInThePast') || error.isError('checkStartDay') || error.isError('checkStartMonth') || error.isError('checkStartYear') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Check start date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
-                    <% if (error.isError('checkStartDateInvalid')) { %>
-                    <span class="error-message"><%= errorMessage.checkStartDateInvalid %></span>
-                    <% } %>
                     <% if (error.isError('checkDateBeforeAdminDate')) { %>
                     <span class="error-message"><%= errorMessage.checkDateBeforeAdminDate %></span>
                     <% } %>
@@ -176,13 +183,11 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group <%= error.isError('checkEndDateBeforeStartDate') || error.isError('checkEndDateInThePast') ||
+            error.isError('checkEndDay') || error.isError('checkEndMonth') || error.isError('checkEndYear') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Check end date
                     <span class="form-hint">For example, 28 4 <%= currentYear %></span>
-                    <% if (error.isError('checkEndDateInvalid')) { %>
-                    <span class="error-message"><%= errorMessage.checkEndDateInvalid %></span>
-                    <% } %>
                     <% if (error.isError('checkEndDateBeforeStartDate')) { %>
                     <span class="error-message"><%= errorMessage.checkEndDateBeforeStartDate %></span>
                     <% } %>

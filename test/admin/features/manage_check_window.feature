@@ -5,61 +5,18 @@ Feature:
   Background:
     Given I am logged in with a service manager
 
-  Scenario: Manage check window page has a heading
+  Scenario: Manage check window page is displayed as per the design
     Given I am on the manage check windows page
-    Then I should see page heading
-
-  Scenario: Manage check window page has a instructions
-    Given I am on the manage check windows page
-    Then I should see page instructions
-
-  Scenario: Manage check window page has the option to create a new window
-    Given I am on the manage check windows page
-    Then I should see a option to create a new window
-
-  Scenario: Manage check window page has a panel with information about timings
-    Given I am on the manage check windows page
-    Then I should see a panel with information about timings
-
-  Scenario: Manage check window page has a table with check windows
-    Given I am on the manage check windows page
-    Then I should see a table of check windows
-
-  Scenario: Manage check window page has some guidance
-    Given I am on the manage check windows page
-    Then I should see a option to get some guidance
-
-  Scenario: Manage check window page allows user to adjust timings of check
-    Given I am on the manage check windows page
-    Then I should see a option to adjust the timings of the check
-
-  Scenario: Manage check window page has option to view progress report
-    Given I am on the manage check windows page
-    Then I should see a option to view the progress report
+    Then manage check window page is displayed as the the design
 
   Scenario: Windows that are in the past do not have a remove button
     Given I am on the manage check windows page
     Then windows in the past cannot be removed
 
   @create_new_window
-  Scenario: Modal has a heading
+  Scenario: Modal to remove check window is displayed as per the design
     Given I am viewing the modal
-    Then I should see the modal has a heading
-
-  @create_new_window
-  Scenario: Modal has content
-    Given I am viewing the modal
-    Then I should see the modal has some text
-
-  @create_new_window
-  Scenario: Modal has a option to cancel
-    Given I am viewing the modal
-    Then I should see an option to cancel
-
-  @create_new_window
-  Scenario: Modal has a option to confirm
-    Given I am viewing the modal
-    Then I should see an option to confirm
+    Then modal is displayed as per the design
 
   @create_new_window
   Scenario: Windows that have a remove button can be removed
