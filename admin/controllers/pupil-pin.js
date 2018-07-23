@@ -22,9 +22,6 @@ const getGeneratePinsOverview = async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-  if (pupils && pupils.length > 0) {
-    return res.redirect(`/pupil-pin/generated-${pinEnv}-pins-list`)
-  }
   let error
   try {
     error = await checkWindowSanityCheckService.check()
@@ -34,7 +31,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
   return res.render('pupil-pin/generate-pins-overview', {
     breadcrumbs: req.breadcrumbs(),
     error,
-    helplineNumber
+    helplineNumber,
+    pupils
   })
 }
 
