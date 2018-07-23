@@ -12,9 +12,12 @@ require('dotenv').config()
 const jsBundleFiles = [
   './assets/javascripts/jquery-1.12.4.js',
   './assets/javascripts/details.polyfill.js',
+  './assets/javascripts/util-checkbox.js',
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js',
   './assets/javascripts/custom-file-upload.js',
+  './assets/javascripts/pupil-filter-name.js',
+  './assets/javascripts/pupil-filter-group.js',
   './assets/javascripts/table-sorting.js'
 ]
 

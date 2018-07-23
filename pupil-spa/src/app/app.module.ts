@@ -2,13 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 
 import { GlobalErrorHandler } from './error-handler';
+
+import { AppConfigService, loadConfigService } from './services/config/config.service';
 
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
@@ -107,6 +109,8 @@ const appRoutes: Routes = [
     })
   ],
   providers: [
+    AppConfigService,
+    { provide: APP_INITIALIZER, useFactory: loadConfigService , deps: [AppConfigService], multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     AnswerService,
     AuditService,

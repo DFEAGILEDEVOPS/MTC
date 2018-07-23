@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { APP_CONFIG } from '../services/config/config.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { StorageService } from '../services/storage/storage.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -50,7 +50,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
         // Display pending screen for the minimum configurable time
         const end = Date.now();
         const duration = end - start;
-        const minDisplay = environment.submissionPendingViewMinDisplay;
+        const minDisplay = APP_CONFIG.submissionPendingViewMinDisplay;
         if (duration < minDisplay) {
           const displayTime = minDisplay - duration;
           await this.sleep(displayTime);
