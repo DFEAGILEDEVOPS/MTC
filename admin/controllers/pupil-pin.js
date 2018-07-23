@@ -152,6 +152,45 @@ const getViewAndPrintPins = async (req, res, next) => {
   })
 }
 
+const getViewAndPrintCustomPins = async (req, res, next) => {
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  res.locals.pinEnv = pinEnv
+  res.locals.pageTitle = `View and custom print PINs`
+  req.breadcrumbs(
+    `PINs for ${pinEnv} check`,
+    `/pupil-pin/generate-${pinEnv}-pins-overview`)
+  req.breadcrumbs(res.locals.pageTitle)
+
+  const helplineNumber = config.Data.helplineNumber
+  let pupils
+  let groups
+  let school
+  let error
+  const date = dateService.formatDayAndDate(new Date())
+  try {
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    groups = await groupService.getGroupsAsArray(req.user.schoolId)
+    if (pupils.length > 0 && groups.length > 0) {
+      pupils = pupils.map(p => {
+        p.group = groups[p.group_id] || ''
+        return p
+      })
+    }
+    school = await pinService.getActiveSchool(req.user.School)
+    error = await checkWindowSanityCheckService.check()
+  } catch (error) {
+    return next(error)
+  }
+  return res.render('pupil-pin/view-and-print-custom-pins', {
+    breadcrumbs: req.breadcrumbs(),
+    school,
+    pupils,
+    date,
+    error,
+    helplineNumber
+  })
+}
+
 /**
  * Get Print PINs.
  * @param req
@@ -196,5 +235,6 @@ module.exports = {
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
+  getViewAndPrintCustomPins,
   getPrintPins
 }
