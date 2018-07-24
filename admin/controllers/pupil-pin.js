@@ -152,7 +152,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   })
 }
 
-const getViewAndPrintCustomPins = async (req, res, next) => {
+const getViewAndCustomPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = `View and custom print PINs`
@@ -186,7 +186,7 @@ const getViewAndPrintCustomPins = async (req, res, next) => {
   } catch (error) {
     return next(error)
   }
-  return res.render('pupil-pin/view-and-print-custom-pins', {
+  return res.render('pupil-pin/view-and-custom-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
@@ -295,7 +295,7 @@ module.exports = {
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
-  getViewAndPrintCustomPins,
+  getViewAndCustomPrintPins,
   getPrintPins,
   postPrintPins
 }
