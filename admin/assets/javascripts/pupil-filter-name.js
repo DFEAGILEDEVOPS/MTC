@@ -15,7 +15,7 @@ $(function () {
       }
 
       $(selAllTr).each(function () {
-        if ($.trim($(this).text()).toLowerCase().indexOf(input) === -1) {
+        if ($.trim($('td > label', this).text()).toLowerCase().indexOf(input) === -1) {
           $(this).addClass('filter-hidden-name')
         } else {
           $(this).removeClass('filter-hidden-name')
