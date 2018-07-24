@@ -19,13 +19,14 @@
                 <input class="form-control" id="pupil-name" type="text" name="pupil-name">
             </div>
             <h2>2. Select access arrangement(s)</h2>
-                <ul class="list access-arrangements-list">
+            <div class="form-group">
+            <ul class="list single-column-list">
                     <% accessArrangements.forEach( (accessArrangement, index) => { %>
                     <li>
                         <div class="multiple-choice">
                             <input id="access-arrangement-<%= index %>"
-                                   type="radio"
-                                   role="radio"
+                                   type="checkbox"
+                                   role="checkbox"
                                    aria-checked="false"
                                    name="accessArrangement"
                                    value="<%= accessArrangement.code %>"
@@ -86,20 +87,16 @@
                     </div>
                 </details>
             </div>
-
-            <br class="clearfix"/>
+            <br />
+            <div class="form-buttons">
+                <input type="submit" id="save-access-arrangement" class="button" value="Save" />
+                <a href="/access-arrangements/overview" class="button button-secondary">Cancel</a>
+            </div>
+            <br />
 
             <div class="back-to-top-container">
                 <a href="#top">Back to top</a>
             </div>
         </div>
-        <%- partial('partials/_sticky_confirmation_banner',
-                {
-                    cancelLabel: 'Cancel',
-                    cancelLink: '/access-arrangements/overview',
-                    submitLabel: 'Confirm',
-                    isSubmitDisabled: true
-                })
-        %>
     </form>
 </div>

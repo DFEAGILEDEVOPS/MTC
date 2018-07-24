@@ -1,0 +1,22 @@
+.single-column-list {
+  overflow: visible;
+  margin-left: pem(-4px);
+
+  .multiple-choice {
+    margin: pem(4px);
+  }
+
+  li {
+    overflow: visible;
+    margin-top: pem(10px);
+
+    @include media(desktop) {
+      width: 100%;
+      float: left;
+    }
+
+    @include media(mobile) {
+      margin-top: pem(5px);
+    }
+  }
+}
