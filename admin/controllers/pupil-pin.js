@@ -163,21 +163,26 @@ const getViewAndPrintCustomPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let groupsForPupils
   let groups
   let school
   let error
   const date = dateService.formatDayAndDate(new Date())
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
-    }
+    groupsForPupils = await groupService.getGroupsAsArray(req.user.schoolId)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
+    if (pupils.length > 0) {
+      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+
+      if (groupsForPupils.length > 0) {
+        pupils = pupils.map(p => {
+          p.group = groupsForPupils[p.group_id] || ''
+          return p
+        })
+      }
+    }
   } catch (error) {
     return next(error)
   }
@@ -185,6 +190,7 @@ const getViewAndPrintCustomPins = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
+    groups,
     date,
     error,
     helplineNumber
@@ -230,11 +236,66 @@ const getPrintPins = async (req, res, next) => {
   })
 }
 
+const postPrintPins = async (req, res, next) => {
+  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  let pupilsList
+  // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
+  // busboy provides either an array of values, or, sometimes an object where the key is the
+  // array prefix.  The scalar check here is just to be safe.
+  if (Array.isArray(req.body.pupil)) {
+    pupilsList = req.body.pupil
+  } else if (typeof req.body.pupil === 'object') {
+    pupilsList = Object.values(req.body.pupil)
+  } else {
+    if (req.body.pupil) {
+      pupilsList = [req.body.pupil]
+    } else {
+      pupilsList = []
+    }
+  }
+
+  if (!Array.isArray(pupilsList) || pupilsList.length === 0) {
+    return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins-list`)
+  }
+  res.locals.pinEnv = pinEnv
+  res.locals.pageTitle = 'Print pupils'
+  let groups
+  let pupils
+  let school
+  let qrDataURL
+  const date = dateService.formatDayAndDate(new Date())
+  const pinCardDate = dateService.formatFullGdsDate(new Date())
+  try {
+    groups = await groupService.getGroupsAsArray(req.user.schoolId)
+    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    pupils = pupils.filter(p => pupilsList.includes(p.id.toString())) // req body IDs are strings
+    if (pupils.length > 0 && groups.length > 0) {
+      pupils = pupils.map(p => {
+        p.group = groups[p.group_id] || ''
+        return p
+      })
+    }
+    school = await pinService.getActiveSchool(req.user.School)
+    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
+  } catch (error) {
+    return next(error)
+  }
+  res.render('pupil-pin/pin-print', {
+    pupils,
+    school,
+    date,
+    pinCardDate,
+    qrDataURL,
+    url: config.PUPIL_APP_URL
+  })
+}
+
 module.exports = {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
   getViewAndPrintCustomPins,
-  getPrintPins
+  getPrintPins,
+  postPrintPins
 }
