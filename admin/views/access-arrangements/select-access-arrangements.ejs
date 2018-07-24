@@ -1,0 +1,105 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
+    <form method="post" action="" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge" id="heading-xlarge">Select access arrangement for pupil</h1>
+            <%- partial('partials/_session_expiry') %>
+            <br />
+            <h2>1. Search for pupil name</h2>
+            <div class="form-group">
+                <input class="form-control" id="pupil-name" type="text" name="pupil-name">
+            </div>
+            <h2>2. Select access arrangement(s)</h2>
+                <ul class="list access-arrangements-list">
+                    <% accessArrangements.forEach( (accessArrangement, index) => { %>
+                    <li>
+                        <div class="multiple-choice">
+                            <input id="access-arrangement-<%= index %>"
+                                   type="radio"
+                                   role="radio"
+                                   aria-checked="false"
+                                   name="accessArrangement"
+                                   value="<%= accessArrangement.code %>"
+                            >
+                            <label for="access-arrangement-<%= index %>"><%= accessArrangement.description %></label>
+                        </div>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+            <div class="master-detail text">
+                <details>
+                    <summary><span class="summary"> What do these access arrangements mean? </span></summary>
+                    <div class="panel-no-border">
+                        <ul class="panel-list">
+                            <li>
+                                <div><strong>Audible time alert</strong></div>
+                                <div>A beep that sounds two seconds before the end of each question, and at the end of each question.</div>
+                            </li>
+                            <li>
+                                <div><strong>Colour contrast</strong></div>
+                                <div>Change the font and background colours.</div>
+                            </li>
+                            <li>
+                                <div><strong>Font size</strong></div>
+                                <div>Increase or decrease the size of the font and number pad on the screen.</div>
+                            </li>
+                            <li>
+                                <div><strong>Input assistance</strong></div>
+                                <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be used when a pupil is physically:
+                                    <ul class="list list-bullet">
+                                        <li>unable to enter their own answers</li>
+                                        <li>able to input but inputting causes physical discomfort</li>
+                                        <li>able to input but inputs very slowly</li>
+                                        <li>able to input but finds inputting very difficult</li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>'Next' button between questions</strong></div>
+                                <div>The pupil will have control of when they are ready for the next question.
+                                    They can press the ‘Next’ button when they are ready for the next question, instead of a three second pause between questions.
+                                    There is a 30 minute time limit to complete the check.
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>Question reader</strong></div>
+                                <div>The screen reader will read out all text displayed on screen in the MTC.
+                                    This includes instructions and questions. Please note, the MTC does not support 3rd party screen readers.
+                                    All pupils requiring this functionality will need to use the in-built screen reader due to compatibility with the timed function.
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>Remove on-screen number pad</strong></div>
+                                <div>Only the question and answer box will show on screen.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <br class="clearfix"/>
+
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
+        </div>
+        <%- partial('partials/_sticky_confirmation_banner',
+                {
+                    cancelLabel: 'Cancel',
+                    cancelLink: '/access-arrangements/overview',
+                    submitLabel: 'Confirm',
+                    isSubmitDisabled: true
+                })
+        %>
+    </form>
+</div>
