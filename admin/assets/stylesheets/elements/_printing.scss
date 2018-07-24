@@ -21,11 +21,22 @@
     border-collapse: collapse;
     width: 100%;
   }
-  tr.page
-  {
+  tr.page {
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
+    display: inline-table;
+    width: 100%;
+
+    /*
+      'hack' to get page-break-inside: avoid to work for safari,
+       see https://github.com/ariya/phantomjs/issues/10638#issuecomment-20186253
+    */
+    &:after {
+      display: block;
+      height: 0px;
+      visibility: hidden;
+    }
   }
   td {
     padding: 1em;
