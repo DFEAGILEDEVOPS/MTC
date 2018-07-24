@@ -10,6 +10,7 @@ import { MockBackend } from '@angular/http/testing';
 import { UserService } from './user.service';
 import { StorageService } from '../storage/storage.service';
 import * as mockLoginResponseBody from '../../login.userService.response.mock.json';
+import { AppConfigService, loadConfigMockService } from '../config/config.service';
 
 const shouldNotExecute = () => {
   expect('this code').toBe('not executed');

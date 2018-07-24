@@ -45,3 +45,21 @@
     padding-left: pem(4px);
   }
 }
+
+.filter-name {
+  label {
+    background-color: $grey-1;
+    padding: pem(5px);
+
+    img {
+      padding-left: pem(5px);
+      vertical-align: middle;
+    }
+  }
+}
+
+.filter-hidden-name,
+.filter-hidden-group {
+  display: none;
+  visibility: hidden;
+}

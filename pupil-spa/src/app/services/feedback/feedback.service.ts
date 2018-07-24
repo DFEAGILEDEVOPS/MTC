@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { APP_CONFIG } from '../config/config.service';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
 
@@ -26,7 +26,7 @@ export class FeedbackService {
       const comments = storedFeedback.comments;
       const checkCode = storedFeedback.checkCode;
 
-      await this.http.post(`${environment.apiURL}/api/pupil-feedback`,
+      await this.http.post(`${APP_CONFIG.apiURL}/api/pupil-feedback`,
         {
           inputType,
           satisfactionRating,

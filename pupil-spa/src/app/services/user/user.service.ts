@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { APP_CONFIG } from '../config/config.service';
 import 'rxjs/add/operator/toPromise';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
@@ -24,7 +24,7 @@ export class UserService {
       headers.append('Content-Type', 'application/json');
       const requestArgs = new RequestOptions({headers: headers});
 
-      await this.http.post(`${environment.authURL}`,
+      await this.http.post(`${APP_CONFIG.authURL}`,
         { schoolPin, pupilPin },
         requestArgs)
         .toPromise()

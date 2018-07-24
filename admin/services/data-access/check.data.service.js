@@ -204,6 +204,7 @@ checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
  * @return {Promise}
  */
 checkDataService.sqlCreateBatch = async function (checks) {
+  // TODO: use checks[i].is_familiarisation to mark the check as live / fam
   const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
     pupil_id,
     checkWindow_id,

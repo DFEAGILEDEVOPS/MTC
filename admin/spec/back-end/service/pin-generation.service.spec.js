@@ -207,13 +207,26 @@ describe('pin-generation.service', () => {
       }
     })
 
-    it('should generate pin and execute update when pins have not been generated', async () => {
-      spyOn(pupilDataService, 'sqlUpdatePinsBatch')
-      spyOn(pupilDataService, 'sqlFindByIds').and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
-      await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId)
-      const data = pupilArray.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
-      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data)
-      expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
+    describe('for live pins', () => {
+      it('should generate pin and execute update when pins have not been generated', async () => {
+        spyOn(pupilDataService, 'sqlUpdatePinsBatch')
+        spyOn(pupilDataService, 'sqlFindByIds').and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
+        await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId, 'live')
+        const data = pupilArray.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+        expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data, 'live')
+        expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('for familiarisation pins', () => {
+      it('should generate pin and execute update when pins have not been generated', async () => {
+        spyOn(pupilDataService, 'sqlUpdatePinsBatch')
+        spyOn(pupilDataService, 'sqlFindByIds').and.callFake((list) => pupilArray.filter(p => list.includes(p.id)))
+        await pinGenerationService.updatePupilPins(submittedIds, 9991999, 100, 100, schoolId, 'familiarisation')
+        const data = pupilArray.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+        expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledWith(data, 'familiarisation')
+        expect(pupilDataService.sqlUpdatePinsBatch).toHaveBeenCalledTimes(1)
+      })
     })
 
     describe('retry generating existing pins process', () => {
