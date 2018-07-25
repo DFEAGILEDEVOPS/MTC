@@ -41,9 +41,9 @@ jobs:
           paths:
             - ~/repo/pupil-api/node_modules
       - save_cache:
-        key: v1-node-functions-deps-{{ checksum "functions/yarn.lock" }}
-        paths:
-          - ~/repo/functions/node_modules
+          key: v1-node-functions-deps-{{ checksum "functions/yarn.lock" }}
+          paths:
+            - ~/repo/functions/node_modules
 
 workflows:
   version: 2
