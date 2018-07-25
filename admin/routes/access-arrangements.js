@@ -8,7 +8,7 @@ const rolesConfig = require('../roles-config')
 const accessArrengementsController = require('../controllers/access-arrangements')
 
 if (featureToggles.isFeatureEnabled('accessArrangements')) {
-  /* Service Manager routing */
+  /* Access arrangements routing */
   router.get('/overview', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrengementsController.getOverview(req, res, next))
   router.get('/select-access-arrangements', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrengementsController.getSelectAccessArrangements(req, res, next))
 }
