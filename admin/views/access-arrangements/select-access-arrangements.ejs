@@ -15,28 +15,37 @@
             <%- partial('partials/_session_expiry') %>
             <br />
             <h2>1. Search for pupil name</h2>
+            <br />
             <div class="form-group">
                 <input class="form-control" id="pupil-name" type="text" name="pupil-name">
             </div>
+            <br />
             <h2>2. Select access arrangement(s)</h2>
-            <div class="form-group">
-            <ul class="list single-column-list">
-                    <% accessArrangements.forEach( (accessArrangement, index) => { %>
-                    <li>
-                        <div class="multiple-choice">
-                            <input id="access-arrangement-<%= index %>"
-                                   type="checkbox"
-                                   role="checkbox"
-                                   aria-checked="false"
-                                   name="accessArrangement"
-                                   value="<%= accessArrangement.code %>"
-                            >
-                            <label for="access-arrangement-<%= index %>"><%= accessArrangement.description %></label>
-                        </div>
-                    </li>
-                    <% }) %>
-                </ul>
-            </div>
+            <table class="spacious reduced-top-margin" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                <tbody>
+                    <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                    <tr>
+                        <td class="font-small">
+                            <label for="accessArrangement-<%= index %>">
+                                <%= accessArrangement.description %>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="multiple-choice-mtc">
+                                <input id="accessArrangement-<%= index %>"
+                                       name="accessArrangement[<%= index %>]"
+                                       type="checkbox"
+                                       value="<%= accessArrangement.code %>"
+                                       aria-label="Tick accessArrangement <%= accessArrangement.description %>."
+                                       aria-checked="false"
+                                       role="checkbox">
+                                <div></div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
             <div class="master-detail text">
                 <details>
                     <summary>What do these access arrangements mean?</summary>

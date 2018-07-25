@@ -17,7 +17,7 @@ controller.getSelectAccessArrangements = async (req, res, next) => {
   try {
     accessArrangements = await accessArrangementsService.getAccessArrangements()
   } catch (error) {
-    next(error)
+    return next(error)
   }
   return res.render('access-arrangements/select-access-arrangements', {
     breadcrumbs: req.breadcrumbs(),
