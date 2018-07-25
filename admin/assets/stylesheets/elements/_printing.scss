@@ -6,6 +6,9 @@
   .no-print{
     display: none;
   }
+  .column-two-thirds {
+    width: 100%;
+  }
 }
 
 .pupil-print-table {
@@ -51,7 +54,9 @@
 
       span {
         writing-mode: vertical-rl;
+        -ms-writing-mode: tb-rl;
         transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
         width: 14px;
         font-weight: bold;
       }
