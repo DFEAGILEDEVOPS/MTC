@@ -45,7 +45,7 @@ describe('pin-generation.service', () => {
       it('with specific properties', async (done) => {
         const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(2)
-        expect(Object.keys(pupils[ 0 ]).length).toBe(9)
+        expect(Object.keys(pupils[ 0 ]).length).toBe(8)
         done()
       })
     })

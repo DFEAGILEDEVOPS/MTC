@@ -13,7 +13,6 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
 
     if (nextPupil === undefined) {
       currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
-      currentPupil.formattedFullName = !currentPupil.formattedFullName ? `${currentPupil.foreName} ${currentPupil.lastName}` : currentPupil.formattedFullName
       return pupils
     }
 
@@ -26,14 +25,10 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
       if (currentPupil.dateOfBirth.toString() === nextPupil.dateOfBirth.toString()) {
         currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName} ${currentPupil.middleNames}`
         nextPupil.fullName = `${nextPupil.lastName}, ${nextPupil.foreName} ${nextPupil.middleNames}`
-        currentPupil.formattedFullName = `${currentPupil.foreName} ${currentPupil.middleNames} ${currentPupil.lastName}`
-        nextPupil.formattedFullName = `${nextPupil.foreName} ${nextPupil.middleNames} ${nextPupil.lastName}`
       }
     }
     currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
     nextPupil.fullName = !nextPupil.fullName ? `${nextPupil.lastName}, ${nextPupil.foreName}` : nextPupil.fullName
-    currentPupil.formattedFullName = !currentPupil.formattedFullName ? `${currentPupil.foreName} ${currentPupil.lastName}` : currentPupil.formattedFullName
-    nextPupil.formattedFullName = !nextPupil.formattedFullName ? `${nextPupil.foreName} ${nextPupil.lastName}` : nextPupil.formattedFullName
   })
   return pupils
 }
