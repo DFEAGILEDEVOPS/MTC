@@ -3,8 +3,8 @@ const sqlService = require('./sql.service')
 const accessArrangementsDataService = {}
 
 /**
- * Find restart reasons
- * @return {Promise.<void>}
+ * Find access arrangements
+ * @returns {Promise<Array>}
  */
 accessArrangementsDataService.sqlFindAccessArrangements = async function () {
   const sql = `
