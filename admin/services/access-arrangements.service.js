@@ -4,7 +4,7 @@ const accessArrangementsService = {}
 
 /**
  * Get access arrangements
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 accessArrangementsService.getAccessArrangements = async () => {
   return accessArrangementsDataService.sqlFindAccessArrangements()
