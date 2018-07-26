@@ -63,6 +63,7 @@ Feature: Generate Pupil PINs Familiarisation
     When I select all pupils for Generate pin
     Then the sticky banner should display the total pupil count on Generate Pin Page
 
+  @wip @remove-this-when-22408-isReady
   Scenario: Familiarisation Pupil pins should consist of 4 characters
     Given I have generated a familiarisation pin for a pupil
     Then the pin should consist of 4 characters
