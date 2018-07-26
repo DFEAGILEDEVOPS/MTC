@@ -66,6 +66,7 @@ const pupilsNotTakingTheCheck = require('./routes/pupils-not-taking-the-check')
 const group = require('./routes/group')
 const pupilRegister = require('./routes/pupil-register')
 const attendance = require('./routes/attendance')
+const accessArrangements = require('./routes/access-arrangements')
 
 if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
 const app = express()
@@ -255,6 +256,7 @@ app.use('/group', group)
 app.use('/restart', restart)
 app.use('/pupil-register', pupilRegister)
 app.use('/attendance', attendance)
+app.use('/access-arrangements', accessArrangements)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
