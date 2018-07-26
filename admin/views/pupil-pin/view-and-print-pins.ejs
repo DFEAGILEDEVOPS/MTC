@@ -9,6 +9,12 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+          <div class="info-message">
+            <%= messages.info %>
+          </div>
+        <% } %>
+
         <% if (error) { %>
         <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
@@ -23,42 +29,17 @@
 
         <%- partial('partials/_session_expiry') %>
 
-        <div class="govuk-box-highlight">
-            <div class="font-small">
-                <strong class="bold-medium">
-                    Pupil PINs and school password generated
-                </strong>
-                <br>
-                Valid only until 4pm, <%= date %>
-            </div>
-        </div>
-
         <p class="lede">
-            Please distribute pupil Personal Identification Numbers (PINs) and school password to your pupils.
+            Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.
         </p>
-
-        <div class="link-icon-wrapper">
-            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="icon-download">Print pupil PINs and school password</a>
-        </div>
 
         <div class="button-wrapper">
             <% if (error) { %>
-            <a class="button button-secondary" disabled >Generate more PINs</a>
+            <a class="button button-primary" disabled >Print PINs</a>
             <% } else { %>
-            <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list" class="button button-secondary">Generate more PINs</a>
+            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="button button-primary">Print PINs</a>
             <% } %>
         </div>
-
-        <br />
-
-        <% if (!!school) { %>
-        <div class="school-pin-wrapper">
-            <b><%= school.name %>'s password for the day:</b>
-            <div class="school-pin-pin" id="school-pin"><%= school.pin %></div>
-        </div>
-        <% } else { %>
-        <p>No active password</p>
-        <% } %>
 
         <% if (pupils && pupils.length > 0) { %>
         <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
@@ -67,9 +48,6 @@
                 <th scope="col">
                     Pupil
                 </th>
-                <th scope="col">
-                    Pupil PIN
-                </th>
             </tr>
             </thead>
             <tbody>
@@ -77,18 +55,27 @@
             <tr>
                 <td>
                     <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.fullName %>
+                        <strong><%= pupil.fullName %></strong>
+                        <% if (pupil.group) { %>
+                          (<%= pupil.group %>)
+                        <% } %>
                     </label>
                     <% if (pupil.showDoB) { %>
                     <div class="font-greyed-out font-xsmall">
                         Date of birth: <%= pupil.dateOfBirth %>
                     </div>
                     <% } %>
-                </td>
-                <td>
-                    <label for="pupil-<%= pupil.id %>">
-                        <%= pupil.pin %>
-                    </label>
+                    <div>
+                      <div class="pin-content">
+                          <span class="label">School Password: </span>
+                          <span class="information"><%= (!!school ? school.pin : 'No active password') %></span>
+                          <span class="separator"></span>
+                          <span class="label">PIN: </span>
+                          <span class="information">
+                              <%= pupil.pin %>
+                          </span>
+                      </div>
+                    </div>
                 </td>
             </tr>
             <% }) %>
@@ -111,10 +98,10 @@
                         <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
                     </li>
                     <li>
-                        <a href="">Group pupils</a>
+                        <a href="/group/pupils-list">Group pupils</a>
                     </li>
                     <li>
-                        <a href="">Restarts</a>
+                        <a href="/restart/overview">Restarts</a>
                     </li>
                 </ul>
             </nav>
