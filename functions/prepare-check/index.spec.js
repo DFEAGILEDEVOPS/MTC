@@ -45,8 +45,9 @@ describe('prepare-check function', () => {
       bindings: {},
       log: (function () {
         const logHandler = R.partial(logFunc, ['info'])
-        logHandler.verbose = R.partial(logFunc, ['verbose']),
+        logHandler.verbose = R.partial(logFunc, ['verbose'])
         logHandler.info = R.partial(logFunc, ['info'])
+        logHandler.error = R.partial(logFunc, ['error'])
         return logHandler
       }()), // whoo-hoo: a function with properties.  Your enthusiasm may vary.
       done: function () {}
