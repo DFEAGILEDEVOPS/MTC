@@ -25,6 +25,8 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
       if (currentPupil.dateOfBirth.toString() === nextPupil.dateOfBirth.toString()) {
         currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName} ${currentPupil.middleNames}`
         nextPupil.fullName = `${nextPupil.lastName}, ${nextPupil.foreName} ${nextPupil.middleNames}`
+        currentPupil.showMiddleNames = true
+        nextPupil.showMiddleNames = true
       }
     }
     currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName

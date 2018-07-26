@@ -6,38 +6,72 @@
   .no-print{
     display: none;
   }
+  .column-two-thirds {
+    width: 100%;
+  }
 }
 
 .pupil-print-table {
   table, td, tr {
-    border: 1px dashed $black;
+    border-top: 1px dashed $black;
+    border-bottom: 1px dashed $black;
     text-align: center;
     vertical-align: middle;
     margin-bottom: -1px;
-    font-size: 16px;
+    font-size: 14px;
   }
   table {
     border-collapse: collapse;
     width: 100%;
   }
-  tr.page
-  {
+  tr.page {
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
+    display: inline-table;
+    width: 100%;
+
+    /*
+      'hack' to get page-break-inside: avoid to work for safari,
+       see https://github.com/ariya/phantomjs/issues/10638#issuecomment-20186253
+    */
+    &:after {
+      display: block;
+      height: 0px;
+      visibility: hidden;
+    }
   }
   td {
-    min-width:pem(310px);
     padding: 1em;
     strong {
       font-size: medium;
+    }
+    &.line-checktype {
+      vertical-align: middle;
+      padding: 0px;
+      border-left: 1px solid $black;
+      border-right: 1px solid $black;
+
+      span {
+        writing-mode: vertical-rl;
+        -ms-writing-mode: tb-rl;
+        transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        width: 14px;
+        font-weight: bold;
+      }
+    }
+    &.line-empty {
+      padding: 0.5em;
+    }
+    &.line-content {
+      padding-right: pem(20px);
     }
   }
   .pupil-content {
     text-align: left;
     font-size: 12px;
-    margin-bottom: pem(50px);
-    margin-top: pem(20px);
+    margin-bottom: pem(40px);
   }
   .fullname {
     font-size: 22px;
@@ -48,40 +82,47 @@
   }
   .dob {
     color: $grey-1;
-    margin-bottom: pem(-15px);
+    margin-bottom: pem(-20px);
   }
   .information {
     font-size: 26px;
     background: none;
     text-align: left;
     font-weight: bold;
-    margin: 0;
+    margin: 0 pem(5px);
+    width: auto;
+    line-height: 1;
   }
   .label {
-    font-size: 16px;
+    font-size: 14px;
+    max-width: pem(80px);
+  }
+  .separator {
+    padding: 0 pem(30px);
   }
   .pin-content {
     text-align: left;
-    line-height: pem(5px);
     font-size: 12px;
-    margin-bottom: pem(15px);
+    margin-top: pem(20px);
+	  display: flex;
+    align-items: flex-end;
   }
   .qr {
     position: relative;
-    left:12px;
+    left: 12px;
     img {
-      width: pem(100px);
-      height: pem(100px);
+      width: pem(90px);
+      height: pem(90px);
       float: right;
       position: static;
-      margin-top: -135px;
+      margin-top: pem(-115px);
     }
   }
   .url {
-    font-size: 16px;
+    font-size: 14px;
     float: right;
     margin-left: pem(150px);
     position: static;
-    margin-top: pem(-35px);
+    margin-top: pem(-25px);
   }
 }
