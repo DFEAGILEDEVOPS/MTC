@@ -97,7 +97,12 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
-    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
+    // OLD code - writes to check table
+    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+
+    // New code - writes to allocateCheckFormTable
+    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -106,6 +111,10 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
+
+    // TODO - write the prepare-check data to the queue to be inserted into Table Storage
+    // ...
+
   } catch (error) {
     return next(error)
   }

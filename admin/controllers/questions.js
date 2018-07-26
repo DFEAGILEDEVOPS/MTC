@@ -6,6 +6,7 @@ const checkStartService = require('../services/check-start.service')
 const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const checkWindowService = require('../services/check-window.service')
 const R = require('ramda')
@@ -34,7 +35,7 @@ const getQuestions = async (req, res) => {
     return apiResponse.badRequest(res)
   }
 
-  let config, data, questions, token, checkWindow
+  let config, data, questions, token, jwtSecret, checkWindow
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {
@@ -78,6 +79,7 @@ const getQuestions = async (req, res) => {
   try {
     const checkWindowEndDate = checkWindow && checkWindow.checkEndDate
     token = await jwtService.createToken(data.pupil, checkWindowEndDate)
+    await pupilDataService.sqlUpdate({id: data.pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret}) // Placeholder until this entire api is removed.
   } catch (error) {
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
     return apiResponse.serverError(res)
