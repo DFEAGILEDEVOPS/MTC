@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { APP_CONFIG } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
 import { AuditService } from '../audit/audit.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
@@ -15,28 +15,43 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/of';
 import { Observable } from 'rxjs/Observable';
 
-const { checkStartAPIErrorDelay, checkStartAPIErrorMaxAttempts,
-  checkSubmissionApiErrorDelay, checkSubmissionAPIErrorMaxAttempts,   } = environment;
-
 @Injectable()
 export class SubmissionService {
   // check start api config
-  checkStartAPIErrorDelay = checkStartAPIErrorDelay;
-  checkStartAPIErrorMaxAttempts = checkStartAPIErrorMaxAttempts;
+  checkStartAPIErrorDelay;
+  checkStartAPIErrorMaxAttempts;
   // check submission api config
-  checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
-  checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
+  checkSubmissionApiErrorDelay;
+  checkSubmissionAPIErrorMaxAttempts;
+  // URLs
+  checkStartedURL;
+  checkSubmissionURL;
 
   constructor(private http: HttpClient,
               private storageService: StorageService,
               private auditService: AuditService,
               private appUsageService: AppUsageService) {
+    const {
+      checkStartAPIErrorDelay,
+      checkStartAPIErrorMaxAttempts,
+      checkSubmissionApiErrorDelay,
+      checkSubmissionAPIErrorMaxAttempts,
+      checkStartedURL,
+      checkSubmissionURL
+    } = APP_CONFIG;
+
+    this.checkStartAPIErrorDelay = checkStartAPIErrorDelay;
+    this.checkStartAPIErrorMaxAttempts = checkStartAPIErrorMaxAttempts;
+    this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
+    this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
+    this.checkStartedURL = checkStartedURL;
+    this.checkSubmissionURL = checkSubmissionURL;
   }
 
   submitCheckStartData() {
     const {checkCode} = this.storageService.getItem('pupil');
     const accessToken = this.storageService.getItem('access_token');
-    return this.http.post(`${environment.checkStartedURL}`,
+    return this.http.post(`${this.checkStartedURL}`,
       // Explanation for response type text
       // https://github.com/angular/angular/issues/21211
       {checkCode, accessToken}, { responseType: 'text' })
@@ -63,7 +78,7 @@ export class SubmissionService {
     if (localStorageData.device) {
       localStorageData.device.appUsageCounter = this.appUsageService.getCounterValue();
     }
-    return this.http.post(`${environment.checkSubmissionURL}`,
+    return this.http.post(`${this.checkSubmissionURL}`,
       // Explanation for response type text
       // https://github.com/angular/angular/issues/21211
       {...localStorageData}, { responseType: 'text' })

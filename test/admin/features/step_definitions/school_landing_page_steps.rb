@@ -80,6 +80,11 @@ Then(/^I should see an option to generate pins$/) do
   expect(school_landing_page).to have_generate_pupil_pin_text
 end
 
+Then(/^I should see an option to generate pins familiarisation$/) do
+  expect(school_landing_page).to have_generate_pupil_pin_familiarisation
+  expect(school_landing_page).to have_generate_pupil_pin_familiarisation_text
+end
+
 Then(/^I should see an option to manage restarts$/) do
   expect(school_landing_page).to have_restarts
   expect(school_landing_page).to have_restarts_text
@@ -108,5 +113,5 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see an option to view the results"
   step "I should see the related section"
   step "I should see option to view guidance in the before you start section"
-
+  step "I should see an option to generate pins familiarisation"
 end

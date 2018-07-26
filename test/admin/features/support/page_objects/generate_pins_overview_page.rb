@@ -1,9 +1,15 @@
 class GeneratePinsOverviewPage < SitePrism::Page
-  set_url '/pupil-pin/generate-pins-overview'
+  set_url '/pupil-pin/generate-live-pins-overview'
 
   element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.column-two-thirds', text: 'Pupils will need a Personal Identification Number (PIN) and school password in order to start the check. These expire daily.'
-  elements :info_message, '.list-number li'
+  element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password in order to start the check in the live area. These expire at 4pm daily'
+  element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
+
+  section :instruction_section, 'details' do
+    element :toggle, 'summary[role="button"]'
+    elements :info_message, '.list-number li'
+  end
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :related_heading, ".heading-medium", text: 'Related'
   element :guidance, "a[href='/pdfs/mtc-administration-guidance-2018-03-3.pdf']", text: 'Guidance'

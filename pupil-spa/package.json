@@ -6,16 +6,17 @@
     "ng": "ng",
     "sass": "node-sass -r src/assets/shared-styles/ -o src/public/styles/",
     "sasswatch": "npm run sass && node-sass src/assets/shared-styles -wro src/public/styles/",
-    "start": "concurrently \"ng serve --host 0.0.0.0\" \"npm run sasswatch\" ",
+    "start": "npm run genconfig && concurrently \"ng serve --host 0.0.0.0\" \"npm run sasswatch\" ",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "test-single": "ng test --single-run=true --browsers ChromeHeadless",
+    "build": "npm run genconfig && ng build",
+    "test": "npm run genconfig && ng test",
+    "test-single": "npm run genconfig && ng test --single-run=true --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
     "copygovukelements": "node tools/copyGovukElements",
-    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements"
+    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
+    "genconfig": "bash gen_config.sh && mv config.json src/public/config.json"
   },
   "dependencies": {
     "@angular/animations": "^5.2.9",
