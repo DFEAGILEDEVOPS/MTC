@@ -51,7 +51,7 @@ describe('check-start.service', () => {
     beforeEach(() => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(pinGenerationService, 'updatePupilPins')
-      spyOn(checkStartService, 'initialisePupilCheck')
+      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue({pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true})
       spyOn(checkDataService, 'sqlCreateBatch')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
@@ -181,14 +181,14 @@ describe('check-start.service', () => {
   describe('#initialisePupilCheck', () => {
     it('calls allocateCheckForm for a pupil', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-      await service.initialisePupilCheck(1, checkWindowMock)
+      await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
       expect(checkFormService.allocateCheckForm).toHaveBeenCalledTimes(1)
     })
 
     it('throws an error if a checkform is not returned', async () => {
       spyOn(checkFormService, 'allocateCheckForm').and.returnValue(null)
       try {
-        await service.initialisePupilCheck(1, checkWindowMock)
+        await service.initialisePupilCheck(1, checkWindowMock, [], [], true)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('CheckForm not allocated')
@@ -198,7 +198,7 @@ describe('check-start.service', () => {
     describe('for live pins', () => {
       it('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, 'live')
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true)
         expect(c.hasOwnProperty('pupil_id'))
         expect(c.hasOwnProperty('checkWindow_id'))
         expect(c.hasOwnProperty('checkForm_id'))
@@ -208,7 +208,7 @@ describe('check-start.service', () => {
     describe('for test pins', () => {
       it('returns a check object, ready to be inserted into the db', async () => {
         spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
-        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, 'familiarisation')
+        const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false)
         expect(c.hasOwnProperty('pupil_id'))
         expect(c.hasOwnProperty('checkWindow_id'))
         expect(c.hasOwnProperty('checkForm_id'))

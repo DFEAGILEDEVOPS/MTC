@@ -35,7 +35,7 @@ const getQuestions = async (req, res) => {
     return apiResponse.badRequest(res)
   }
 
-  let config, data, questions, token, jwtSecret, checkWindow
+  let config, data, questions, token, checkWindow
   try {
     data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
   } catch (error) {

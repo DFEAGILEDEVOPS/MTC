@@ -1,5 +1,5 @@
 'use strict'
-/* global beforeEach, describe, it, expect, jasmine */
+/* global beforeEach, describe, it, expect, jasmine, fail */
 
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
@@ -29,22 +29,16 @@ describe('JWT service', () => {
 
   describe('#createToken', () => {
     beforeEach(() => {
-      pupilDataServiceUpdateSpy = jasmine.createSpy().and.callFake(function () { return Promise.resolve() })
-      jwtService = proxyquire('../../../services/jwt.service', {
-        './data-access/pupil.data.service': {
-          sqlUpdate: pupilDataServiceUpdateSpy
-        }
-      })
+      jwtService = require('../../../services/jwt.service')
     })
 
-    it('creates a token', async (done) => {
+    it('creates a token', async () => {
       const token = await jwtService.createToken(pupil, checkWindowEndDate)
       expect(token.token).toBeTruthy()
       expect(token.token.split('.').length).toBe(3)
-      done()
     })
 
-    it('the token details look correct', async (done) => {
+    it('the token details look correct', async () => {
       const token = await jwtService.createToken(pupil, checkWindowEndDate)
       const decoded = jwt.verify(token.token, token.jwtSecret)
       expect(decoded).toBeTruthy()
@@ -52,50 +46,28 @@ describe('JWT service', () => {
       expect(expiry).toBeGreaterThan(0) // expect the expiry date to be greater than 0
       expect(decoded.sub).toBeTruthy()
       expect(decoded.sub).toBe(1)
-      done()
     })
 
-    it('throws an error when the pupil object is missing', async (done) => {
+    it('throws an error when the pupil object is missing', async () => {
       try {
         await jwtService.createToken()
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Pupil is required')
-        done()
       }
     })
 
-    it('throws an error when the check window end date is missing', async (done) => {
+    it('throws an error when the check window end date is missing', async () => {
       try {
         await jwtService.createToken(pupil)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Check window end date is required')
-        done()
       }
-    })
-
-    it('saves a new secret on the pupil', async (done) => {
-      const token = await jwtService.createToken(pupil, checkWindowEndDate)
-      expect(token).toBeTruthy()
-      expect(pupilDataServiceUpdateSpy).toHaveBeenCalled()
-      expect(token.jwtSecret).toBeTruthy()
-      expect(token.jwtSecret.length).toBe(64)
-      done()
     })
   })
 
   describe('verifying a token', () => {
-    it('throws an error if the token is not provided', async (done) => {
-      try {
-        await jwtService.verify()
-        expect('this').toBe('thrown')
-      } catch (error) {
-        expect(error.message).toBe('Token is required')
-        done()
-      }
-    })
-
     describe('and the pupil is found', () => {
       let pupilDataServiceFindOneSpy
       beforeEach(() => {
@@ -109,16 +81,24 @@ describe('JWT service', () => {
         })
       })
 
-      it('then it is able to decode a valid token', async (done) => {
+      it('throws when not provided a token', async () => {
+        try {
+          await jwtService.verify()
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('Token is required')
+        }
+      })
+
+      it('then it is able to decode a valid token', async () => {
         const token = await jwtService.createToken(pupil, checkWindowEndDate)
         try {
           pupil.token = token.jwtSecret
           const isVerified = await jwtService.verify(token.token)
           expect(isVerified).toBe(true)
         } catch (error) {
-          expect(error).toBeFalsy()
+          fail(error)
         }
-        done()
       })
     })
 
@@ -138,14 +118,13 @@ describe('JWT service', () => {
           }
         })
       })
-      it('then it throws an error', async (done) => {
+      it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, checkWindowEndDate)
         try {
           await jwtService.verify(token.token)
-          expect('this').toBe('thrown')
+          fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Subject not found')
-          done()
         }
       })
     })
@@ -166,7 +145,7 @@ describe('JWT service', () => {
           }
         })
       })
-      it('then it throws an error', async (done) => {
+      it('then it throws an error', async () => {
         const result = await jwtService.createToken(pupil, checkWindowEndDate)
         pupil.token = undefined
         // Note we pass in pupil, and this object gets the secret saved in it
@@ -175,10 +154,9 @@ describe('JWT service', () => {
         // definitely does not have a valid `jztSecret` property.
         try {
           await jwtService.verify(result.token)
-          expect('this').toBe('thrown')
+          fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Error - missing secret')
-          done()
         }
       })
     })
@@ -198,15 +176,14 @@ describe('JWT service', () => {
           }
         })
       })
-      it('then it throws an error', async (done) => {
+      it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, checkWindowEndDate)
         pupil.token = 'incorrect secret'
         try {
           await jwtService.verify(token.token)
-          expect('this').toBe('thrown')
+          fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Unable to verify: invalid signature')
-          done()
         }
       })
     })
@@ -229,7 +206,7 @@ describe('JWT service', () => {
         }
       })
     })
-    it('denies a token that has expired 1 hour ago', async (done) => {
+    it('denies a token that has expired 1 hour ago', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -242,14 +219,13 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt expired')
       }
-      done()
     })
 
-    it('denies a token that has expired 1 second ago', async (done) => {
+    it('denies a token that has expired 1 second ago', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -262,14 +238,13 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt expired')
       }
-      done()
     })
 
-    it('denies a token that is not yet active, but has not yet expired', async (done) => {
+    it('denies a token that is not yet active, but has not yet expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -282,14 +257,13 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt not active')
       }
-      done()
     })
 
-    it('denies a token that is almost active, but has not yet expired', async (done) => {
+    it('denies a token that is almost active, but has not yet expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -302,14 +276,13 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt not active')
       }
-      done()
     })
 
-    it('denies a token that not active, and has expired', async (done) => {
+    it('denies a token that not active, and has expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -322,14 +295,13 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt not active')
       }
-      done()
     })
 
-    it('denies a weird token', async (done) => {
+    it('denies a weird token', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -342,11 +314,10 @@ describe('JWT service', () => {
       // Test
       try {
         await jwtService.verify(token)
-        expect('this').toBe('thrown')
+        fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Unable to verify: jwt expired')
       }
-      done()
     })
   })
 })

@@ -17,6 +17,7 @@ const jwtTokenMock = require('../mocks/jwtToken')
 const configMock = require('../mocks/config')
 const questionsMock = require('../mocks/check-form.service.getQuestions')
 const checkWindowMock = require('../mocks/check-window')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const checkStartResponseMock = {
   checkCode: uuidv4(),
   questions: require('../mocks/check-form').questions
@@ -81,6 +82,8 @@ describe('Questions controller', () => {
     jwtSpy = jasmine.createSpy().and.callFake(options['jwt.service.createToken'])
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
     getActiveCheckWindowSpy = jasmine.createSpy().and.callFake(options['check-window.service.getActiveCheckWindow'])
+
+    spyOn(pupilDataService, 'sqlUpdate').and.returnValue({})
 
     return proxyquire('../../../controllers/questions', {
       '../services/pupil-authentication.service': {
