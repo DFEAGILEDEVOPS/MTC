@@ -7,6 +7,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
   element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
+  element :view_all_pins_btn, 'input[value="View all pins"]'
 
   section :instruction_section, 'details' do
     element :toggle, 'summary[role="button"]'

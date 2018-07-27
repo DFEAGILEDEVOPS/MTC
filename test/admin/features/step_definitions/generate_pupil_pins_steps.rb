@@ -148,26 +148,25 @@ Given(/^I have generated pin for all pupil$/) do
 end
 
 Then(/^the pin should consist of (\d+) characters$/) do |size|
-  generate_pins_overview_page.find_pupil_row(@pupil_name)
-  expect(generate_pins_overview_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+  expect(generated_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
 Then(/^the school password should consist of (\d+) characters$/) do |size|
-  expect(generated_pins_page.school_password.text.size).to eql size.to_i
+  expect(generated_pins_page.find_pupil_row(@pupil_name).school_pwd.text.size).to eql size.to_i
 end
 
 Then(/^the school password should not contain charachter 'q'$/) do
-  school_pwd = generated_pins_page.school_password.text
+  school_pwd = generated_pins_page.find_pupil_row(@pupil_name).school_pwd.text
   school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
 end
 
 Then(/^all pupil pins should be generated from the specified pool of characters$/) do
-  pins_array = generate_pins_overview_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array = generated_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
   pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
 end
 
 Then(/^school password should be generated from the specified pool of characters$/) do
-  school_pwd = generated_pins_page.school_password.text
+  school_pwd = generated_pins_page.find_pupil_row(@pupil_name).school_pwd.text
   school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstvwxyz").to include char}
 end
 

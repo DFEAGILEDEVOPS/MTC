@@ -98,3 +98,12 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   step "I am on the generate pupil pins familiarisation page"
 end
 
+Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
+  step "I click View all pins button"
+
+  expect(view_and_print_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+end
+
+When(/^I click View all pins button$/) do
+  generate_pins_familiarisation_overview_page.view_all_pins_btn.click
+end
