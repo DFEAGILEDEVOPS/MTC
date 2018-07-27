@@ -1,7 +1,7 @@
 class GeneratedPinsPage < SitePrism::Page
-  set_url '/pupil-pin/generated-live-pins-list'
+  set_url '/pupil-pin/generate-live-pins-overview'
 
-  element :generate_more_pin_btn, 'a', text: "Generate more PINs"
+  element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
   element :school_password, '#school-pin'
   element :school_password_info, '.govuk-box-highlight'
   element :download_pin_link, '.column-two-thirds a', text: 'Print pupil PINs and school password'

@@ -6,7 +6,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/pupil-pin/access-arrangements']", text: 'access arrangements'
   element :generate_pin_btn, 'input[value="Generate PINs"]'
-  element :generate_more_pin_btn, 'a', text: "Generate more PINs"
+  element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
 
   section :instruction_section, 'details' do
     element :toggle, 'summary[role="button"]'
