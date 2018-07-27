@@ -16,6 +16,7 @@ const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
+const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 
 const checkStartService = {}
@@ -123,7 +124,15 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
   // Create messages on the queue for all these checks
-  const prepareCheckQueueMessages = this.generatePrepareCheckQueueMessages(res.insertId)
+  const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(res.insertId)
+
+  const util = require('util')
+  console.log(
+      util.inspect(prepareCheckQueueMessages, {depth: 10, colors: true})
+  )
+
+  // Inject messages into the queue
+  // ...
 }
 
 /**
@@ -194,7 +203,7 @@ checkStartService.pupilLogin = async function (pupilId) {
  * @param checkFormAllocationIds
  * @return {Promise<Array>}
  */
-checkStartService.generatePrepareCheckQueueMessages = async function (checkFormAllocationIds) {
+checkStartService.prepareCheckQueueMessages = async function (checkFormAllocationIds) {
   if (!checkFormAllocationIds) {
     throw new Error('checkFormAllocationIds is not defined')
   }
@@ -206,7 +215,10 @@ checkStartService.generatePrepareCheckQueueMessages = async function (checkFormA
   const messages = []
   const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
 
-  checkFormAllocations.map(o => {
+  for (let o of checkFormAllocations) {
+    const sasToken = sasTokenService.generateSasToken(sasTokenService.queueNames.CHECK_COMPLETE, moment().add(1, 'hour'))
+    const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+
     const message = {
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
@@ -214,21 +226,24 @@ checkStartService.generatePrepareCheckQueueMessages = async function (checkFormA
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
-        checkCode: o.checkCode
+        checkCode: o.checkFormAllocation_checkCode
       },
       school: {
         id: o.school_id,
         name: o.school_name
       },
       tokens: {
-        sasToken: 'na',
+        sasToken: {
+          token: sasToken.token,
+          url: sasToken.url
+        },
         jwtToken: o.pupil_jwtToken
       },
-      questions: checkFormService.prepareQuestionData(JSON.parse(o.formData)),
-      config: configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+      questions: checkFormService.prepareQuestionData(JSON.parse(o.checkForm_formData)),
+      config: config
     }
     messages.push(message)
-  })
+  }
   return messages
 }
 
