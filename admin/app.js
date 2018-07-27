@@ -17,7 +17,6 @@ const TediousSessionStore = require('connect-tedious')(session)
 const breadcrumbs = require('express-breadcrumbs')
 const flash = require('connect-flash')
 const config = require('./config')
-const checkConfigWhitelist = require('./helpers/whitelist-dev')
 const azure = require('./azure')
 const featureToggles = require('feature-toggles')
 const winston = require('winston')
@@ -73,6 +72,7 @@ const app = express()
 
 setupBrowserSecurity(app)
 setupLogging(app)
+// const checkConfigWhitelist = require('./helpers/whitelist-dev')
 // checkConfigWhitelist(app)
 
 // Use the feature toggle middleware to enable it in res.locals

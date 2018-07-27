@@ -58,7 +58,7 @@ const service = {
 module.exports = service
 
 /**
- * Verify the provided signature is valid.
+ * Verify the provided signature is valid. - commented out at the moment, see the check on line 25
  *
  * This requires decrypting the signature with the TSO public key, and checking the digest
  * matches the current SH1 hash of the encrypted message data.  This implementation uses raw
@@ -71,11 +71,11 @@ module.exports = service
  * @param {String} senderPublicKey - String containing the public RSA key (PEM format) of the sender
  * @return {boolean} - true is the sig is verified, false otherwise
  */
-function verifySignature (sig, data, senderPublicKey) {
-  const verify = crypto.createVerify('RSA-SHA1')
-  verify.update(data)
-  return verify.verify(senderPublicKey, sig)
-}
+// function verifySignature (sig, data, senderPublicKey) {
+//   const verify = crypto.createVerify('RSA-SHA1')
+//   verify.update(data)
+//   return verify.verify(senderPublicKey, sig)
+// }
 
 /**
  * Decryption using the MTC RSA private key
