@@ -5,8 +5,11 @@ const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
+const replace = require('gulp-replace')
 const winston = require('winston')
 require('dotenv').config()
+
+const config = require('./config')
 
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
@@ -18,7 +21,8 @@ const jsBundleFiles = [
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
-  './assets/javascripts/table-sorting.js'
+  './assets/javascripts/table-sorting.js',
+  './assets/javascripts/session-expiry.js'
 ]
 
 gulp.task('watch', function () {
@@ -29,6 +33,8 @@ gulp.task('watch', function () {
 gulp.task('bundle-js', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
+    .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER))
+    .pipe(replace('SESSION_EXPIRATION_TIME', config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS))
     .pipe(uglify({
       ie8: true
     }).on('error', function (e) {
