@@ -99,6 +99,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const maxAttempts = config.Data.pinSubmissionMaxAttempts
   const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
   // Update the pins for each pupil
+  // TODO: choose pinEnv here for the pupil pin
   await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
 
   // Find all used forms for each pupil, so we make sure they do not
