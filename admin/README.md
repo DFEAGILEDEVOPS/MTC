@@ -10,7 +10,7 @@ Administer the Multiplication Table Check
 
 ## Technical documentation
 
-This is a node / express server and Javascript on the client. 
+This is a node / express server and Javascript on the client.
 
 Simple developer steps:
 * `yarn install`
@@ -23,9 +23,9 @@ The app will now be available on `http://localhost:3001`
 
 You need to have node installed and access to an instance of SQL Server.
 
-- [node](https://nodejs.org/) - Node javascript runtime 
+- [node](https://nodejs.org/) - Node javascript runtime
 - [SQL Server](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) - Relational datastore
-- [NPM packages](https://www.npmjs.org) installed globally (for developers): `yarn` 
+- [NPM packages](https://www.npmjs.org) installed globally (for developers): `yarn`
 - [Docker](https://www.docker.com/get-docker) - Docker to run containers
 
 We recommend developers manage their `node` and `npm` packages using [nvm](http://nvm.sh)
@@ -60,14 +60,14 @@ Both will launch the app in development mode on http://localhost:3001/
 
 #### Environment Variables
 
-dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application, 
+dotenv is installed and will load environment variables from a `.env` file stored in the root of the admin application,
 if you have created one.  See [documentation](https://www.npmjs.com/package/dotenv) for more info.
 
-* AUTO_MARK - boolean - defaults to `true` to automatically mark the checks when they are submitted, to override 
+* AUTO_MARK - boolean - defaults to `true` to automatically mark the checks when they are submitted, to override
   this:`AUTO_MARK=false yarn start`
-* AZURE_STORAGE_CONNECTION_STRING - Blob storage account for upload file storage.  Upload only happens for production 
-    envs, but the connection string is required for all.
-* GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there 
+* AZURE_STORAGE_CONNECTION_STRING - Storage account for upload file storage and queues.  Upload is only enabled for
+    production environments, but the queues are used by all environments.
+* GOOGLE_TRACKING_ID - Google Analytics Tracking code, e.g 'UA-1234567-1'.  Google tracking is only enabled if there
     is a tracking code and in production mode, eg `NODE_ENV=production`
 * MTC_AUTH_PRIVATE_KEY - The MTC Private RSA key in PEM format used during Authorisation
 * NCA_TOOLS_AUTH_URL - Trigger redirection to this URL on sign-in if not authenticated
@@ -94,7 +94,7 @@ SQL Server specific environment variables
 
 #### Using SQL Server
 
-We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server data operations.  This has been abstracted with a connection pool implementation and methods for querying and modifying data have been surfaced via the [sqlService](./services/data-access/sql.service.js) object.  
+We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server data operations.  This has been abstracted with a connection pool implementation and methods for querying and modifying data have been surfaced via the [sqlService](./services/data-access/sql.service.js) object.
 
 Example usage can be found [here](./sql.usage.example.js)
 
@@ -104,7 +104,7 @@ Example usage can be found [here](./sql.usage.example.js)
 
 ### Running SQL Server migrations
 
-We use postgrator to run database migrations. 
+We use postgrator to run database migrations.
 
 `yarn migrate-sql` to migrate to the latest or `yarn migrate-sql 123` to migrate to a particular version
 
