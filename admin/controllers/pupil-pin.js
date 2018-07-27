@@ -108,10 +108,10 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
-    
+
     // New code - writes to allocateCheckFormTable, depends on school pin being ready
     await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
-    
+
     req.flash('info', `PINs generated for ${pupilsList.length} pupils`)
   } catch (error) {
     return next(error)
