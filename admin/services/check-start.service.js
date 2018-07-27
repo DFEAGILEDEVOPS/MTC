@@ -126,10 +126,10 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   // Create messages on the queue for all these checks
   const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(res.insertId)
 
-  const util = require('util')
-  console.log(
-      util.inspect(prepareCheckQueueMessages, {depth: 10, colors: true})
-  )
+  // const util = require('util')
+  // console.log(
+  //     util.inspect(prepareCheckQueueMessages, {depth: 10, colors: true})
+  // )
 
   // Inject messages into the queue
   // ...
