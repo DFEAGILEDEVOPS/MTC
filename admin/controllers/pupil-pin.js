@@ -104,31 +104,43 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
+    req.flash('info', `PINs generated for ${pupilsList.length} pupils`)
   } catch (error) {
     return next(error)
   }
-  return res.redirect(`/pupil-pin/generated-${pinEnv}-pins-list`)
+  return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins`)
 }
 
-const getGeneratedPinsList = async (req, res, next) => {
+const getViewAndPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = `Generate ${pinEnv} pupil PINs`
+  res.locals.pageTitle = `View and print PINs`
+  req.breadcrumbs(
+    `PINs for ${pinEnv} check`,
+    `/pupil-pin/generate-${pinEnv}-pins-overview`)
   req.breadcrumbs(res.locals.pageTitle)
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
+  let groups
   let school
   let error
   const date = dateService.formatDayAndDate(new Date())
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    groups = await groupService.getGroupsAsArray(req.user.schoolId)
+    if (pupils.length > 0 && groups.length > 0) {
+      pupils = pupils.map(p => {
+        p.group = groups[p.group_id] || ''
+        return p
+      })
+    }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
   } catch (error) {
     return next(error)
   }
-  return res.render('pupil-pin/generated-pins-list', {
+  return res.render('pupil-pin/view-and-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
     pupils,
@@ -154,7 +166,6 @@ const getPrintPins = async (req, res, next) => {
   let school
   let qrDataURL
   const date = dateService.formatDayAndDate(new Date())
-  const pinCardDate = dateService.formatFullGdsDate(new Date())
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
@@ -173,7 +184,6 @@ const getPrintPins = async (req, res, next) => {
     pupils,
     school,
     date,
-    pinCardDate,
     qrDataURL,
     url: config.PUPIL_APP_URL
   })
@@ -183,6 +193,6 @@ module.exports = {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
-  getGeneratedPinsList,
+  getViewAndPrintPins,
   getPrintPins
 }
