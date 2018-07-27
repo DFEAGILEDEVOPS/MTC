@@ -4,7 +4,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   element :heading, '.heading-xlarge'
   element :generate_pin_message, '.lede', text: 'Pupils will need a personal identification number (PIN) and school password in order to start the check in the live area. These expire at 4pm daily'
   element :access_arrangment_text, '.column-two-thirds', text: 'Select access arrangements for pupils who need it before generating PINs'
-  element :access_arrangment_link, "a[href='/pupil-pin/access-arrangements']", text: 'access arrangements'
+  element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
   section :instruction_section, 'details' do
     element :toggle, 'summary[role="button"]'

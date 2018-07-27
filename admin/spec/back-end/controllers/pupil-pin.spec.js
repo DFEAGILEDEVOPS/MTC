@@ -240,7 +240,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'redirect').and.returnValue(null)
 
         await controller(req, res, next)
-        expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generated-live-pins-list')
+        expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/view-and-print-live-pins')
         done()
       })
 
@@ -287,7 +287,7 @@ describe('pupilPin controller:', () => {
         spyOn(res, 'redirect').and.returnValue(null)
 
         await controller(req, res, next)
-        expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/generated-familiarisation-pins-list')
+        expect(res.redirect).toHaveBeenCalledWith('/pupil-pin/view-and-print-familiarisation-pins')
         done()
       })
 
@@ -320,7 +320,7 @@ describe('pupilPin controller:', () => {
     })
   })
 
-  describe('getGeneratedPins route', () => {
+  describe('getViewAndPrintPins route', () => {
     let sandbox
     let next
     let goodReqParamsLive = {
@@ -357,8 +357,9 @@ describe('pupilPin controller:', () => {
       it('displays the generated pupils list and password', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
-        const controller = require('../../../controllers/pupil-pin.js').getGeneratedPinsList
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(null)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -369,7 +370,7 @@ describe('pupilPin controller:', () => {
       it('calls next if error occurs', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
-        const controller = require('../../../controllers/pupil-pin.js').getGeneratedPinsList
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
@@ -381,8 +382,9 @@ describe('pupilPin controller:', () => {
       it('displays the generated pupils list and password', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsFam)
-        const controller = require('../../../controllers/pupil-pin.js').getGeneratedPinsList
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(null)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -393,7 +395,7 @@ describe('pupilPin controller:', () => {
       it('calls next if error occurs', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsFam)
-        const controller = require('../../../controllers/pupil-pin.js').getGeneratedPinsList
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
@@ -454,7 +456,6 @@ describe('pupilPin controller:', () => {
           pupils: [],
           school: {},
           date: '',
-          pinCardDate: '',
           qrDataURL: '',
           url: config.PUPIL_APP_URL
         })
@@ -479,7 +480,6 @@ describe('pupilPin controller:', () => {
           pupils: [],
           school: {},
           date: '',
-          pinCardDate: '',
           qrDataURL: '',
           url: config.PUPIL_APP_URL
         })

@@ -20,7 +20,7 @@ describe('addIdentificationFlags', () => {
     const pupil1 = Object.assign({}, pupilMock)
     const pupil2 = Object.assign({}, pupilMock)
     const pupils = pupilIdentificationFlagService.addIdentificationFlags([pupil1, pupil2])
-    expect(pupils[0].showDoB && pupils[1].middleNames).toBeTruthy()
+    expect(pupils[0].showMiddleNames && pupils[1].showMiddleNames).toBeTruthy()
     expect(pupils[0].middleNames).toBe('Middle')
   })
   it('returns showMiddleNames property as false for pupils with different fullname and Dob', () => {
