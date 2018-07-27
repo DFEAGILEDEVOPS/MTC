@@ -22,7 +22,6 @@ const main = (app) => {
   if (process.env.NODE_ENV === 'development') {
     whitelist.push(localDevWhitelist)
   }
-  console.log('checking vars')
   // block app if required vars not set and in development mode...
   const unsetVars = []
   Object.keys(config).map((key) => {
