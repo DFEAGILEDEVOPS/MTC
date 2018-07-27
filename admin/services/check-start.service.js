@@ -18,6 +18,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
+const azureQueueService = require('../services/azure-queue.service')
 
 const checkStartService = {}
 
@@ -125,15 +126,12 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
   // Create messages on the queue for all these checks
-  const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(res.insertId)
-
-  // const util = require('util')
-  // console.log(
-  //     util.inspect(prepareCheckQueueMessages, {depth: 10, colors: true})
-  // )
+  const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(Array.isArray(res.insertId) ? res.insertId : [res.insertId])
 
   // Inject messages into the queue
-  // ...
+  for (let msg in prepareCheckQueueMessages) {
+    azureQueueService.addMessage(sasTokenService.queueNames.PREPARE_CHECK, msg)
+  }
 }
 
 /**
