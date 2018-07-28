@@ -11,7 +11,7 @@ const storageConnection = process.env.AZURE_STORAGE_CONNECTION_STRING
 if (!storageConnection) {
   throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
 }
-const queueService = azure.createQueueService(storageConnection)
+const azureQueueService = azure.createQueueService(storageConnection)
 
 const sasTokenService = {
   /**
@@ -20,7 +20,8 @@ const sasTokenService = {
    * @param {Moment} expiryTime
    * @return {{token: string, url: string}}
    */
-  generateSasToken: function (queueName, expiryDate) {
+  generateSasToken: function (queueName, expiryDate, queueService = azureQueueService) {
+
     if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
       throw new Error('Invalid expiryDate')
     }
