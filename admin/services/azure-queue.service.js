@@ -8,8 +8,9 @@ module.exports.addMessage = function addMessage (queueName, payload, queueServic
   }
 
   const message = JSON.stringify(payload)
+  const encodedMessage = Buffer.from(message).toString('base64')
   // var encodedMessage = encoder.encode(message)
-  queueService.createMessage(queueName, message, function (error, result, response) {
+  queueService.createMessage(queueName, encodedMessage, function (error, result, response) {
     if (error) {
       winston.error(`Error injecting message into queue [${queueName}]: ${error.message}`)
       winston.error(error)
