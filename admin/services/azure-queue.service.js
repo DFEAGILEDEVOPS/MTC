@@ -2,7 +2,7 @@ const azure = require('azure-storage')
 const queueService = azure.createQueueService()
 const winston = require('winston')
 
-module.exports.addMessage = function addMessage (queueName, payload) {
+module.exports.addMessage = function addMessage (queueName, payload, queueService = queueService) {
   if (queueName === null || queueName.length < 1) {
     throw new Error('Missing queueName')
   }
