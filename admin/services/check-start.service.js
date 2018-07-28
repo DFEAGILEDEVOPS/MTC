@@ -128,7 +128,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(Array.isArray(res.insertId) ? res.insertId : [res.insertId])
 
   // Inject messages into the queue
-  for (let msg in prepareCheckQueueMessages) {
+  for (let msg of prepareCheckQueueMessages) {
     azureQueueService.addMessage(sasTokenService.queueNames.PREPARE_CHECK, msg)
   }
 }
