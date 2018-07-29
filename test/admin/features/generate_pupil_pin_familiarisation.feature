@@ -66,3 +66,12 @@ Feature: Generate Pupil PINs Familiarisation
   Scenario: Familiarisation Pupil pins should consist of 4 characters
     Given I have generated a familiarisation pin for a pupil
     Then the familiarisation pin should consist of 4 characters
+
+  Scenario: Familiarisation view and print pin page is displayed as per design
+    Given I have generated a familiarisation pin for a pupil
+    Then familiarisation view and print pins page is displayed as per design
+
+  Scenario: Familiarisation Pin Overview page after generating some pin
+    Given I have generated a familiarisation pin for a pupil
+    And I am on the generate pupil pins familiarisation page
+    Then familiarisation generated pin overview page is displayed as per design

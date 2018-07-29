@@ -38,6 +38,8 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'Multiplication tables check helpline'
   end
 
+  element :view_all_pins_btn, 'input[value="View all pins"]'
+
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)
     name = pupil.name.text

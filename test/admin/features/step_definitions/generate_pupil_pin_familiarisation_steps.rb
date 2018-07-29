@@ -100,10 +100,20 @@ end
 
 Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
   step "I click View all pins button"
-
   expect(view_and_print_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
 When(/^I click View all pins button$/) do
   generate_pins_familiarisation_overview_page.view_all_pins_btn.click
+end
+
+Then(/^familiarisation view and print pins page is displayed as per design$/) do
+  expect(view_and_print_pins_page).to have_heading
+  expect(view_and_print_pins_page).to have_view_pin_message
+  expect(view_and_print_pins_page).to have_print_pins_btn
+  expect(view_and_print_pins_page).to have_pupil_list
+end
+
+Then(/^familiarisation generated pin overview page is displayed as per design$/) do
+  expect(generate_pins_familiarisation_overview_page.generated_pin_overview).to be_all_there
 end
