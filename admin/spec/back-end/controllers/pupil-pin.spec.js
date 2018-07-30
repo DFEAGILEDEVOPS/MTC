@@ -654,7 +654,6 @@ describe('pupilPin controller:', () => {
           pupils: [],
           school: {},
           date: '',
-          pinCardDate: '',
           qrDataURL: '',
           url: config.PUPIL_APP_URL
         })
@@ -681,7 +680,6 @@ describe('pupilPin controller:', () => {
           pupils: [],
           school: {},
           date: '',
-          pinCardDate: '',
           qrDataURL: '',
           url: config.PUPIL_APP_URL
         })
