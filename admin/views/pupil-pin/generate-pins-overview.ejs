@@ -83,7 +83,11 @@
               <tr>
                   <td>
                       <label>
-                          PINs have been generated for <%= pupils.length %> pupils
+                          PINs have been generated for <% if(pupils.length == 1) { %>
+                              1 pupil
+                          <% } else { %>
+                              <%= pupils.length %> pupils
+                          <% } %>
                       </label>
                       <div class="font-greyed-out font-xsmall">
                           Expires 4pm today

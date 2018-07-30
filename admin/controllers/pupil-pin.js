@@ -104,7 +104,8 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
-    req.flash('info', `PINs generated for ${pupilsList.length} pupils`)
+    const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
+    req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {
     return next(error)
   }
