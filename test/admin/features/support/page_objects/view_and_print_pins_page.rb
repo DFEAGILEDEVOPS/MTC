@@ -9,7 +9,7 @@ class ViewAndPrintPinsPage < SitePrism::Page
     sections :rows, 'tr' do
       element :name, 'label strong'
       element :school_pwd_label, '.pin-content span:nth-child(1)'
-      element :school_pwd, '.pin-content span:nth-child(2)'
+      element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
       element :pin, '.pin-content span:nth-child(5)'
     end

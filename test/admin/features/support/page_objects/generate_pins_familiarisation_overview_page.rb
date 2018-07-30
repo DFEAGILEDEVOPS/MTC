@@ -15,7 +15,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   end
 
   section :generated_pin_overview, '#generatePins' do
-    element :generated_pin_heading, 'thead tr th', text: " Generated PIN"
+    element :generated_pin_heading, 'tr', text: "Generated PIN"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for 1 pupils"
     element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'input[value="View all pins"]'

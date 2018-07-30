@@ -3,12 +3,7 @@ class GeneratedPinsPage < SitePrism::Page
 
 
   element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
-  # element :school_password, '#school-pin'
-  # element :school_password_info, '.govuk-box-highlight'
-  # element :download_pin_link, '.column-two-thirds a', text: 'Print pupil PINs and school password'
-  # element :custom_download_link, '.column-two-thirds a', text: 'Create custom download'
   element :csrf, 'input[name="_csrf"]', visible: false
-
 
   element :heading, '.heading-xlarge'
   element :generate_pin_message, '.lede', text: 'Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.'

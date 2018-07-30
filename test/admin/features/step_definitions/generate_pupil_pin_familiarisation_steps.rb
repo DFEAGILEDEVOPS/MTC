@@ -34,7 +34,7 @@ Then(/^I can see this pupil in the list of Pupil on Generate Pin familiarisation
 end
 
 And(/^I am on familiarisation generate pins pupil List page$/) do
-  step 'I navigate to generate pupil pins familiarisation page'
+  step 'I am on the generate pupil pins familiarisation page'
   step 'I click Generate PINs button'
   @page = generate_pins_overview_page
 end
@@ -95,11 +95,10 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
   SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
-  step "I am on the generate pupil pins familiarisation page"
+  # step "I am on the generate pupil pins familiarisation page"
 end
 
 Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
-  step "I click View all pins button"
   expect(view_and_print_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
@@ -116,4 +115,33 @@ end
 
 Then(/^familiarisation generated pin overview page is displayed as per design$/) do
   expect(generate_pins_familiarisation_overview_page.generated_pin_overview).to be_all_there
+end
+
+Then(/^I should be taken to familiarisation pin overview page$/) do
+  expect(generate_pins_familiarisation_overview_page).to be_displayed
+end
+
+Then(/^all pupil familiarisation pins should be generated from the specified pool of characters$/) do
+  pins_array = view_and_print_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
+end
+
+And(/^the displayed familiarisation school password is generated as per the requirement$/) do
+  step 'the familiarisation school password should consist of 8 characters'
+  step "the familiarisation school password should not contain charachter 'q'"
+  step 'familiarisation school password should be generated from the specified pool of characters'
+end
+
+Then(/^the familiarisation school password should consist of (\d+) characters$/) do |size|
+  expect(view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
+end
+
+Then(/^the familiarisation school password should not contain charachter 'q'$/) do
+  school_pwd = view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
+end
+
+Then(/^familiarisation school password should be generated from the specified pool of characters$/) do
+  school_pwd = view_and_print_pins_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstvwxyz").to include char}
 end
