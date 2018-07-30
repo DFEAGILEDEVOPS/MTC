@@ -124,18 +124,13 @@ const getViewAndPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
-  let groups
   let school
   let error
   const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
+    if (pupils.length > 0) {
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
@@ -163,25 +158,17 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
-  let groupsForPupils
   let groups
   let school
   let error
   const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    groupsForPupils = await groupService.getGroupsAsArray(req.user.schoolId)
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
-
-      if (groupsForPupils.length > 0) {
-        pupils = pupils.map(p => {
-          p.group = groupsForPupils[p.group_id] || ''
-          return p
-        })
-      }
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
   } catch (error) {
     return next(error)
@@ -208,19 +195,14 @@ const getPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Print pupils'
-  let groups
   let pupils
   let school
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
+    if (pupils.length > 0) {
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
     school = await pinService.getActiveSchool(req.user.School)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
@@ -259,21 +241,16 @@ const postPrintPins = async (req, res, next) => {
   }
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Print pupils'
-  let groups
   let pupils
   let school
   let qrDataURL
   const pinCardDate = dateService.formatFullGdsDate(new Date())
   const date = dateService.formatDayAndDate()
   try {
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     pupils = pupils.filter(p => pupilsList.includes(p.id.toString())) // req body IDs are strings
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
+    if (pupils.length > 0) {
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
     school = await pinService.getActiveSchool(req.user.School)
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)

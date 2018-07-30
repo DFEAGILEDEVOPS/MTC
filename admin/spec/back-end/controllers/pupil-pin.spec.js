@@ -379,7 +379,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -404,7 +404,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -463,7 +463,8 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -488,7 +489,8 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -545,7 +547,7 @@ describe('pupilPin controller:', () => {
 
     describe('for live pins', () => {
       it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(dateService, 'formatDayAndDate').and.returnValue('')
         spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
@@ -569,7 +571,7 @@ describe('pupilPin controller:', () => {
 
     describe('for familiarisation pins', () => {
       it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(dateService, 'formatDayAndDate').and.returnValue('')
         spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
@@ -638,7 +640,7 @@ describe('pupilPin controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
 
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(dateService, 'formatDayAndDate').and.returnValue('')
         spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
@@ -665,7 +667,7 @@ describe('pupilPin controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParamsFam)
 
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(dateService, 'formatDayAndDate').and.returnValue('')
         spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
