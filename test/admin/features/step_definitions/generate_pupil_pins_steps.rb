@@ -194,7 +194,7 @@ end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
   step "I click view all pins button"
-  @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(@pupil_name)).to have_pin}
+  @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
