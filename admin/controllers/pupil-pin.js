@@ -127,7 +127,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let groups
   let school
   let error
-  const date = dateService.formatDayAndDate(new Date())
+  const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
@@ -167,7 +167,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let groups
   let school
   let error
-  const date = dateService.formatDayAndDate(new Date())
+  const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     groupsForPupils = await groupService.getGroupsAsArray(req.user.schoolId)
@@ -212,7 +212,7 @@ const getPrintPins = async (req, res, next) => {
   let pupils
   let school
   let qrDataURL
-  const date = dateService.formatDayAndDate(new Date())
+  const date = dateService.formatDayAndDate()
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
@@ -263,8 +263,8 @@ const postPrintPins = async (req, res, next) => {
   let pupils
   let school
   let qrDataURL
-  const date = dateService.formatDayAndDate(new Date())
   const pinCardDate = dateService.formatFullGdsDate(new Date())
+  const date = dateService.formatDayAndDate()
   try {
     groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
