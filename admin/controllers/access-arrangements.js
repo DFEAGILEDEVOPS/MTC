@@ -12,7 +12,8 @@ controller.getOverview = async (req, res, next) => {
 
 controller.getSelectAccessArrangements = async (req, res, next) => {
   res.locals.pageTitle = 'Select access arrangement for pupil'
-  req.breadcrumbs(res.locals.pageTitle)
+  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Select pupils and access arrangements')
   let accessArrangements
   try {
     accessArrangements = await accessArrangementsService.getAccessArrangements()
