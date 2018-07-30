@@ -63,6 +63,7 @@ When(/^I click on the Pupil heading on familiarisation generate pin pupil list p
 end
 
 When(/^I select a Pupil from familiarisation Generate Pin page$/) do
+  step "I am on familiarisation generate pins pupil List page"
   pupil = generate_pins_familiarisation_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
