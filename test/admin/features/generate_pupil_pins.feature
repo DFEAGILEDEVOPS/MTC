@@ -5,8 +5,7 @@ Feature: Generate Pupil PINs
   Scenario: Generate Pins Landing page displays heading and info section
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
-    Then I should see a heading for the Generate Pupil Pins
-    And I can see the info message for generating the pupil pin
+    Then generate pin overview page for live check is displayed as per design
 
   Scenario Outline: Generate Pins Pupil List Page displays lists of Pupils
     Given I have signed in with <teacher>
@@ -162,3 +161,9 @@ Feature: Generate Pupil PINs
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
     Then I should see related content on the generate pins page
+
+  Scenario: Live Pin Overview page is displayed after generating some pin as per design
+    Given I have generated a pin for a pupil
+    And I am on the generate pupil pins page
+    Then generated pin overview page for live check with some pin generated is displayed as per design
+

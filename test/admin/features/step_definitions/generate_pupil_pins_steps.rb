@@ -10,11 +10,8 @@ And(/^I navigate to generate pupil pins familiarisation page$/) do
   school_landing_page.generate_pupil_pin_familiarisation.click
 end
 
-Then(/^I should see a heading for the Generate Pupil Pins$/) do
+Then(/^generate pin overview page for live check is displayed as per design$/) do
   expect(generate_pins_overview_page).to have_heading
-end
-
-And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pins_overview_page).to have_generate_pin_message
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_text
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_link
@@ -23,6 +20,10 @@ And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[0].text).to include "Press 'Generate PINs' button."
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[1].text).to include "Select which pupils you are generating pins for."
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[2].text).to include "Distribute pupil PINs and school password to your pupils."
+end
+
+Then(/^generated pin overview page for live check with some pin generated is displayed as per design$/) do
+  expect(generate_pins_overview_page.generated_pin_overview).to be_all_there
 end
 
 And(/^I click Generate PINs button$/) do
