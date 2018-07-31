@@ -72,8 +72,6 @@ const app = express()
 
 setupBrowserSecurity(app)
 setupLogging(app)
-// const checkConfigWhitelist = require('./helpers/whitelist-dev')
-// checkConfigWhitelist(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
