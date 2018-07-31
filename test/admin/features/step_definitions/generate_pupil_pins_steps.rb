@@ -10,11 +10,8 @@ And(/^I navigate to generate pupil pins familiarisation page$/) do
   school_landing_page.generate_pupil_pin_familiarisation.click
 end
 
-Then(/^I should see a heading for the Generate Pupil Pins$/) do
+Then(/^generate pin overview page for live check is displayed as per design$/) do
   expect(generate_pins_overview_page).to have_heading
-end
-
-And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pins_overview_page).to have_generate_pin_message
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_text
   expect(generate_pins_familiarisation_overview_page).to have_access_arrangment_link
@@ -23,6 +20,10 @@ And(/^I can see the info message for generating the pupil pin$/) do
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[0].text).to include "Press 'Generate PINs' button."
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[1].text).to include "Select which pupils you are generating pins for."
   expect(generate_pins_familiarisation_overview_page.instruction_section.info_message[2].text).to include "Distribute pupil PINs and school password to your pupils."
+end
+
+Then(/^generated pin overview page for live check with some pin generated is displayed as per design$/) do
+  expect(generate_pins_overview_page.generated_pin_overview).to be_all_there
 end
 
 And(/^I click Generate PINs button$/) do
@@ -85,7 +86,7 @@ Then(/^I should be taken to Generate Pupil Pins Page$/) do
 end
 
 Then(/^I should be taken to Generated Pins Page$/) do
-  expect(generated_pins_page).to be_displayed
+  expect(generate_pins_overview_page).to be_displayed
 end
 
 When(/^I select a Pupil from Generate Pin page$/) do
@@ -132,6 +133,11 @@ When(/^I have generated a pin for a pupil$/) do
   SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
   step "I am on the generate pupil pins page"
+  # generate_pins_overview_page.view_all_pins_btn.click
+end
+
+When(/^I click view all pins button$/) do
+  generate_pins_overview_page.view_all_pins_btn.click
 end
 
 When(/^I expired the pupil pin$/) do
@@ -148,26 +154,26 @@ Given(/^I have generated pin for all pupil$/) do
 end
 
 Then(/^the pin should consist of (\d+) characters$/) do |size|
-  generate_pins_overview_page.find_pupil_row(@pupil_name)
-  expect(generate_pins_overview_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+  step "I click view all pins button"
+  expect(generated_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
 Then(/^the school password should consist of (\d+) characters$/) do |size|
-  expect(generated_pins_page.school_password.text.size).to eql size.to_i
+  expect(generated_pins_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
 end
 
 Then(/^the school password should not contain charachter 'q'$/) do
-  school_pwd = generated_pins_page.school_password.text
+  school_pwd = generated_pins_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
 end
 
 Then(/^all pupil pins should be generated from the specified pool of characters$/) do
-  pins_array = generate_pins_overview_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array = generated_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
   pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
 end
 
 Then(/^school password should be generated from the specified pool of characters$/) do
-  school_pwd = generated_pins_page.school_password.text
+  school_pwd = generated_pins_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstvwxyz").to include char}
 end
 
@@ -188,7 +194,8 @@ Given(/^I have generated pins for multiple pupils$/) do
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  @pupil_names_arr.each {|name| expect(generate_pins_overview_page.find_pupil_row(name)).to have_pin}
+  step "I click view all pins button"
+  @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
@@ -200,7 +207,7 @@ Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
   wait_until {!(SqlDbHelper.pupil_details(pupil_upn)['pin']).nil?}
   pupil_pin = SqlDbHelper.pupil_details(pupil_upn)['pin']
-  expect(generate_pins_overview_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
+  expect(generated_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
 
 Then(/^check form should be assigned to the pupil$/) do
@@ -214,7 +221,7 @@ end
 Then(/^I should see the school password for (.*)$/) do |teacher|
   school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_password = SqlDbHelper.find_school(school_id)['pin']
-  expect(generated_pins_page.school_password.text).to eql school_password
+  expect(generated_pins_page.find_pupil_row(@pupil_name).school_password.text).to eql school_password
 end
 
 Then(/^I should see information for Pupil pin and School password$/) do
@@ -259,8 +266,9 @@ And(/^the status of the pupil should be (.+)$/) do |status|
 end
 
 When(/^I choose to filter via group on the generate pins page$/) do
-  generated_pins_page.load
-  generated_pins_page.generate_more_pin_btn.click
+  generate_pins_overview_page.load
+  step 'I click Generate PINs button'
+  @page = generate_pins_overview_page
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
@@ -274,7 +282,7 @@ end
 And(/^I should be able to generate pins for all pupils in this group$/) do
   generate_pins_overview_page.select_all_pupils.click
   generate_pins_overview_page.sticky_banner.confirm.click
-  pupils_with_pins = generate_pins_overview_page.pupil_list.rows.select {|row| row.has_pin?}
+  pupils_with_pins = generated_pins_page.pupil_list.rows.select {|row| row.has_pin?}
   names = pupils_with_pins.map {|row| row.name.text}
   expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
 end
@@ -308,7 +316,7 @@ end
 
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generated_pins_page.load
-  generated_pins_page.generate_more_pin_btn.click
+  step 'I click Generate PINs button'
   expect(generate_pins_overview_page.group_filter).to have_no_closed_filter
   expect(generate_pins_overview_page.group_filter).to have_no_opened_filter
 end
@@ -345,9 +353,8 @@ Then(/^I should see related content on the generate pins page$/) do
 end
 
 Then(/^I should see generated pin page as per design$/) do
+  step "I click view all pins button"
   step 'I should see the school password for teacher1'
-  step 'I should see information for Pupil pin and School password'
-  step 'I should see link to download all pupil pins'
 end
 
 And(/^the displayed school password is generated as per the requirement$/) do
