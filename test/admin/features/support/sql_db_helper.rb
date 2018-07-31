@@ -149,6 +149,15 @@ class SqlDbHelper
     check_window_result = result.each {|row| row.map}
   end
 
+  def self.access_arrangements
+    access_arrangement_array = []
+    sql = "SELECT * FROM [mtc_admin].[accessArrangements]"
+    result = SQL_CLIENT.execute(sql)
+    access_arrangement_array = result.each {|row| row.map}
+    result.cancel
+    access_arrangement_array
+  end
+
   def self.check_form_details(check_form_name)
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE name = '#{check_form_name}'"
     result = SQL_CLIENT.execute(sql)
