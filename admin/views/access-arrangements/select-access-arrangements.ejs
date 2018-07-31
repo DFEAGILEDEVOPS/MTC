@@ -1,0 +1,112 @@
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-third">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
+    <form method="post" action="" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge" id="heading-xlarge">Select access arrangement for pupil</h1>
+            <%- partial('partials/_session_expiry') %>
+            <br />
+            <h2>1. Search for pupil name</h2>
+            <br />
+            <div class="form-group">
+                <input class="form-control" id="pupil-name" type="text" name="pupil-name">
+            </div>
+            <br />
+            <h2>2. Select access arrangement(s)</h2>
+            <table class="spacious reduced-top-margin" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                <tbody>
+                    <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                    <tr>
+                        <td class="font-small">
+                            <label for="accessArrangement-<%= index %>">
+                                <%= accessArrangement.description %>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="multiple-choice-mtc">
+                                <input id="accessArrangement-<%= index %>"
+                                       name="accessArrangement[<%= index %>]"
+                                       type="checkbox"
+                                       value="<%= accessArrangement.code %>"
+                                       aria-label="Tick accessArrangement <%= accessArrangement.description %>."
+                                       aria-checked="false"
+                                       role="checkbox">
+                                <div></div>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
+            <div class="master-detail text">
+                <details>
+                    <summary><span class="summary">What do these access arrangements mean?</span></summary>
+                    <br />
+                    <div class="panel panel-border-narrow">
+                        <ul class="panel-list">
+                            <li>
+                                <div><strong>Audible time alert</strong></div>
+                                <div>A beep that sounds two seconds before the end of each question, and at the end of each question.</div>
+                            </li>
+                            <li>
+                                <div><strong>Colour contrast</strong></div>
+                                <div>Change the font and background colours.</div>
+                            </li>
+                            <li>
+                                <div><strong>Font size</strong></div>
+                                <div>Increase or decrease the size of the font and number pad on the screen.</div>
+                            </li>
+                            <li>
+                                <div><strong>Input assistance</strong></div>
+                                <div>An input assistant is someone who enters answers dictated by the pupil. An input assistant can be used when a pupil is physically:
+                                    <ul class="list list-bullet">
+                                        <li>unable to enter their own answers</li>
+                                        <li>able to input but inputting causes physical discomfort</li>
+                                        <li>able to input but inputs very slowly</li>
+                                        <li>able to input but finds inputting very difficult</li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>'Next' button between questions</strong></div>
+                                <div>The pupil will have control of when they are ready for the next question.
+                                    They can press the ‘Next’ button when they are ready for the next question, instead of a three second pause between questions.
+                                    There is a 30 minute time limit to complete the check.
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>Question reader</strong></div>
+                                <div>The screen reader will read out all text displayed on screen in the MTC.
+                                    This includes instructions and questions. Please note, the MTC does not support 3rd party screen readers.
+                                    All pupils requiring this functionality will need to use the in-built screen reader due to compatibility with the timed function.
+                                </div>
+                            </li>
+                            <li>
+                                <div><strong>Remove on-screen number pad</strong></div>
+                                <div>Only the question and answer box will show on screen.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+            <br />
+            <div class="form-buttons">
+                <input type="submit" id="save-access-arrangement" class="button" value="Save" />
+                <a href="/access-arrangements/overview" class="button button-secondary">Cancel</a>
+            </div>
+            <br />
+
+            <div class="back-to-top-container">
+                <a href="#top">Back to top</a>
+            </div>
+        </div>
+    </form>
+</div>
