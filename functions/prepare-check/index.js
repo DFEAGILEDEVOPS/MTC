@@ -49,7 +49,7 @@ module.exports = function (context, prepareCheckMessage) {
 
 function validateMessage (message) {
   const check = (prop) => { if (R.not(R.has(prop, message))) { throw new Error(`Message failed validation check: missing field: ${prop}`) } }
-  const topLevelProperties = ['schoolPin', 'pupilPin', 'pupil', 'school', 'sasToken', 'jwtToken', 'config']
+  const topLevelProperties = ['schoolPin', 'pupilPin', 'pupil', 'school', 'tokens', 'config', 'questions']
   topLevelProperties.map(check)
   validatePupil(message.pupil)
   validateQuestions(message.questions)
