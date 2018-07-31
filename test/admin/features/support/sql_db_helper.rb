@@ -150,7 +150,6 @@ class SqlDbHelper
   end
 
   def self.access_arrangements
-    access_arrangement_array = []
     sql = "SELECT * FROM [mtc_admin].[accessArrangements]"
     result = SQL_CLIENT.execute(sql)
     access_arrangement_array = result.each {|row| row.map}
