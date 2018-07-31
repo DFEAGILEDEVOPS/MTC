@@ -4,5 +4,6 @@
   "groupRemove": true,
   "pupilAdd": true,
   "pupilEdit": true,
-  "pupilUpload": true
+  "pupilUpload": true,
+  "accessArrangements": false
 }
