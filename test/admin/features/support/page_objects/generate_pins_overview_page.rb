@@ -38,6 +38,16 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'Multiplication tables check helpline'
   end
 
+  element :view_all_pins_btn, 'input[value="View all pins"]'
+
+  section :generated_pin_overview, '#generatePins' do
+    element :generated_pin_heading, 'tr', text: "Generated PIN"
+    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for 1 pupil"
+    element :pin_expiry_info, '.font-greyed-out', text: "Expires 4pm today"
+    element :view_all_pins_btn, 'input[value="View all pins"]'
+    element :generate_additional_pins_btn, 'a', text: "Generate additional PINs"
+  end
+
   def generate_pin_using_name(name)
     pupil = find_pupil_row(name)
     name = pupil.name.text
