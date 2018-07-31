@@ -77,16 +77,6 @@ describe('pupilPin controller:', () => {
         expect(res.render).toHaveBeenCalled()
         done()
       })
-      it('displays the generated pins list page if active pins are present', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParamsLive)
-        const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
-        spyOn(res, 'redirect').and.returnValue(null)
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([ '1', '2' ])
-        await controller(req, res)
-        expect(res.redirect).toHaveBeenCalled()
-        done()
-      })
     })
 
     describe('for familiarisation pins', () => {
@@ -100,16 +90,6 @@ describe('pupilPin controller:', () => {
         await controller(req, res)
         expect(res.locals.pageTitle).toBe('PINs for familiarisation check')
         expect(res.render).toHaveBeenCalled()
-        done()
-      })
-      it('displays the generated pins list page if active pins are present', async (done) => {
-        const res = getRes()
-        const req = getReq(goodReqParamsFam)
-        const controller = require('../../../controllers/pupil-pin').getGeneratePinsOverview
-        spyOn(res, 'redirect').and.returnValue(null)
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([ '1', '2' ])
-        await controller(req, res)
-        expect(res.redirect).toHaveBeenCalled()
         done()
       })
     })

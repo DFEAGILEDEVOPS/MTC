@@ -5,8 +5,7 @@ Feature: Generate Pupil PINs
   Scenario: Generate Pins Landing page displays heading and info section
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
-    Then I should see a heading for the Generate Pupil Pins
-    And I can see the info message for generating the pupil pin
+    Then generate pin overview page for live check is displayed as per design
 
   Scenario Outline: Generate Pins Pupil List Page displays lists of Pupils
     Given I have signed in with <teacher>
@@ -87,26 +86,24 @@ Feature: Generate Pupil PINs
     When I choose to cancel
     Then I should be taken to Generate Pupil Pins Page
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Cancel returns user to Generated Pin page if there are pupils with activepins
     Given I have generated a pin for a pupil
     And I select a Pupil to Generate more pins
     When I choose to cancel
     Then I should be taken to Generated Pins Page
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Check Form is assigned when Pin is generated and the Pin consist of 4 characters
     Given I have generated a pin for a pupil
     Then the pin should consist of 4 characters
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
 
-  @reset_all_pins @bug_18993 @wip @remove-this-when-22408-isReady
+  @reset_all_pins @bug_18993
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
 
-  @reset_all_pins @wip @remove-this-when-22408-isReady
+  @reset_all_pins @wip
   Scenario: Multiple pins can be generated simultaneously
     Given I have generated pins for multiple pupils
     Then each pin should be displayed next to the pupil its assigned to
@@ -116,7 +113,6 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then the pupil pin should be unique
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Generated Pin Page is displayed as per the design
     Given I have generated a pin for a pupil
     Then I should see generated pin page as per design
@@ -128,7 +124,7 @@ Feature: Generate Pupil PINs
     Then the status of the pupil should be Not taking the Check
     And the pin should be expired
 
-  @reset_all_pins @remove_all_groups @pupil_not_taking_check @wip @remove-this-when-22408-isReady
+  @reset_all_pins @remove_all_groups @pupil_not_taking_check
   Scenario: Pupils can be filtered by group
     Given I have a group of pupils
     When I choose to filter via group on the generate pins page
@@ -136,7 +132,7 @@ Feature: Generate Pupil PINs
     And I should be able to see a count of pupils
     And I should be able to generate pins for all pupils in this group
 
-  @reset_all_pins @remove_all_groups @pupil_not_taking_check @wip @remove-this-when-22408-isReady
+  @reset_all_pins @remove_all_groups @pupil_not_taking_check
   Scenario: Pupils not taking the check should not be in filtered group list
     Given I have a pupil not taking the check
     And that pupil is apart of a group
@@ -144,7 +140,7 @@ Feature: Generate Pupil PINs
     Then I should only see pupils available for taking the check
     And I should be able to generate pins for all pupils in this group
 
-  @reset_all_pins @remove_all_groups @wip @remove-this-when-22408-isReady
+  @reset_all_pins @remove_all_groups
   Scenario: Group is no longer present in the filter when all pupils in the group have had a pin generated
     Given I have generated pins for all pupils in a group
     Then I can no longer use this group to filter on the generate pins page
@@ -161,8 +157,13 @@ Feature: Generate Pupil PINs
     When I navigate to generate pupil pins page
     Then I should see an error message to contact helpdesk
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Generate pins page has related content
     Given I have signed in with teacher2
     When I navigate to generate pupil pins page
     Then I should see related content on the generate pins page
+
+  Scenario: Live Pin Overview page is displayed after generating some pin as per design
+    Given I have generated a pin for a pupil
+    And I am on the generate pupil pins page
+    Then generated pin overview page for live check with some pin generated is displayed as per design
+

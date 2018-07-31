@@ -22,9 +22,6 @@ const getGeneratePinsOverview = async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-  if (pupils && pupils.length > 0) {
-    return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins`)
-  }
   let error
   try {
     error = await checkWindowSanityCheckService.check()
@@ -34,7 +31,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
   return res.render('pupil-pin/generate-pins-overview', {
     breadcrumbs: req.breadcrumbs(),
     error,
-    helplineNumber
+    helplineNumber,
+    pupils
   })
 }
 
@@ -106,7 +104,8 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
-    req.flash('info', `PINs generated for ${pupilsList.length} pupils`)
+    const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
+    req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {
     return next(error)
   }

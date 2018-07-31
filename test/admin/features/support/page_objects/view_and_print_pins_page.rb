@@ -1,12 +1,8 @@
-class GeneratedPinsPage < SitePrism::Page
-  set_url 'pupil-pin/view-and-print-live-pins'
-
-
-  element :generate_more_pin_btn, 'a', text: "Generate additional PINs"
-  element :csrf, 'input[name="_csrf"]', visible: false
+class ViewAndPrintPinsPage < SitePrism::Page
+  set_url '/pupil-pin/view-and-print-familiarisation-pins'
 
   element :heading, '.heading-xlarge'
-  element :generate_pin_message, '.lede', text: 'Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.'
+  element :view_pin_message, '.lede', text: 'Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.'
   element :print_pins_btn, "a", text: 'Print PINs'
 
   section :pupil_list, '#generatePins tbody' do

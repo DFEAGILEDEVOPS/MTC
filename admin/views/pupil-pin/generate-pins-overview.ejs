@@ -70,16 +70,54 @@
         </details>
         </p>
 
-        <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
-            <div class="form-group">
-                <div class="form-buttons">
-                    <% if (error) { %>
-                    <input type="submit" class="button" disabled value="Generate PINs"/>
-                    <% } else { %>
-                    <input type="submit" class="button" value="Generate PINs"/>
-                    <% } %>
+        <% if(pupils && pupils.length > 0) { %>
+          <table id="generatePins" role="listbox" aria-label="Select pupils.">
+              <thead>
+              <tr>
+                  <th scope="col">
+                    Generated PIN
+                  </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>
+                      <label>
+                          PINs have been generated for <% if(pupils.length == 1) { %>
+                              1 pupil
+                          <% } else { %>
+                              <%= pupils.length %> pupils
+                          <% } %>
+                      </label>
+                      <div class="font-greyed-out font-xsmall">
+                          Expires 4pm today
+                      </div>
+                      <div class="generate-additional-pins">
+                          <form action="/pupil-pin/view-and-print-<%= pinEnv %>-pins" name="generate-pins-list">
+                              <% if (error) { %>
+                                  <input type="submit" class="button" disabled value="View all pins"/>
+                              <% } else { %>
+                                  <input type="submit" class="button" value="View all pins"/>
+                              <% } %>
+                          </form>
+                          <a href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate additional PINs</a>
+                      </div>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+        <% } else { %>
+            <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
+                <div class="form-group">
+                    <div class="form-buttons">
+                        <% if (error) { %>
+                        <input type="submit" class="button" disabled value="Generate PINs"/>
+                        <% } else { %>
+                        <input type="submit" class="button" value="Generate PINs"/>
+                        <% } %>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        <% } %>
     </div>
 </div>
