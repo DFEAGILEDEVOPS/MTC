@@ -35,8 +35,10 @@ describe('prepare-check function', () => {
         loadingTime: 3,
         speechSynthesis: false
       },
-      sasToken: '0f824632-8fab-49c6-a5ac-818b485fff96',
-      jwtToken: 'someToken'
+      tokens: {
+        sasToken: '0f824632-8fab-49c6-a5ac-818b485fff96',
+        jwtToken: 'someToken'
+      }
     }
 
     const logFunc = function (level = 'INFO') { /* console.log(`[${level.toUpperCase()}]: `, ...R.tail(Array.from(arguments))) */ }
@@ -98,21 +100,12 @@ describe('prepare-check function', () => {
     })
 
     it('rejects a message that is missing a sasToken', () => {
-      const mockMessage = R.omit(['sasToken'], validMessage)
+      const mockMessage = R.omit(['tokens'], validMessage)
       spyOn(context, 'done')
       func(context, mockMessage)
       expect(context.done).toHaveBeenCalled()
       const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: sasToken')
-    })
-
-    it('rejects a message that is missing a jwtToken', () => {
-      const mockMessage = R.omit(['jwtToken'], validMessage)
-      spyOn(context, 'done')
-      func(context, mockMessage)
-      expect(context.done).toHaveBeenCalled()
-      const args = context.done.calls.allArgs(0)[0]
-      expect(args[0].message).toBe('Message failed validation check: missing field: jwtToken')
+      expect(args[0].message).toBe('Message failed validation check: missing field: tokens')
     })
 
     it('rejects a message when the pupil property is not an object', () => {
