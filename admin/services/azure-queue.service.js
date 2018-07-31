@@ -1,3 +1,5 @@
+'use strict'
+
 const azure = require('azure-storage')
 const azureQueueService = azure.createQueueService()
 const winston = require('winston')
