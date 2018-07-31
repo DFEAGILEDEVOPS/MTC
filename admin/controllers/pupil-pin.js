@@ -1,5 +1,6 @@
 const R = require('ramda')
 const config = require('../config')
+const monitor = require('../helpers/monitor')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const pinGenerationService = require('../services/pin-generation.service')
@@ -191,10 +192,10 @@ const getPrintPins = async (req, res, next) => {
   })
 }
 
-module.exports = {
+module.exports = monitor('pupil-pin.controller', {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
   getPrintPins
-}
+})
