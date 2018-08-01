@@ -170,7 +170,7 @@ describe('pupil service', () => {
       } catch (error) {
         fail()
       }
-      expect(pupils[0].fullName).toBe('John Test Johnson')
+      expect(pupils[0].fullName).toBe('Johnson, John Test')
       expect(pupils[0].urlSlug).toBe('AA-12345')
       expect(pupils.length).toBe(2)
     })
