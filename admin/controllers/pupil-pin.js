@@ -108,7 +108,8 @@ const postGeneratePins = async (req, res, next) => {
     }
 
     // New code - writes to allocateCheckFormTable, depends on school pin being ready
-    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+    // disabled as not yet working correctly in travis.
+    // await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
