@@ -37,7 +37,7 @@
             <% if (error) { %>
             <a class="button button-primary" disabled >Print PINs</a>
             <% } else { %>
-            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="button button-primary">Print PINs</a>
+            <a id="printPinsButton" class="button button-primary">Print PINs</a>
             <% } %>
         </div>
 
@@ -108,3 +108,12 @@
         </aside>
     </div>
 </div>
+
+<script>
+ $(document).ready(function () {
+   $('#printPinsButton').click(function (event) {
+     event.preventDefault()
+     window.GOVUK.printPopup.openWindow('<%= pinEnv %>')
+   })
+ })
+</script>

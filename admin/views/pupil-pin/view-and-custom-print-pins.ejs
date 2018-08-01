@@ -42,8 +42,7 @@
 
         <%- partial('partials/_groups_filter', { groups: groups }) %>
 
-        <form method="post" action="/pupil-pin/print-<%= pinEnv %>-pins" method="post" autocomplete="off">
-            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <form id="printPinsForm" autocomplete="off">
             <% if (pupils && pupils.length > 0) { %>
             <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
                 <thead>
@@ -140,3 +139,13 @@
         </aside>
     </div>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $('#printPinsForm').submit(function (event) {
+      event.preventDefault()
+      var params = window.GOVUK.printPopup.parseParams($(this).serializeArray())
+      window.GOVUK.printPopup.openWindow('<%= pinEnv %>', params)
+    })
+  })
+</script>

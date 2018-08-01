@@ -194,59 +194,31 @@ const getPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Print pupils'
-  let pupils
-  let school
-  let qrDataURL
-  const date = dateService.formatDayAndDate()
-  try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    if (pupils.length > 0) {
-      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
-    }
-    school = await pinService.getActiveSchool(req.user.School)
-    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
-  } catch (error) {
-    return next(error)
-  }
-  res.render('pupil-pin/pin-print', {
-    pupils,
-    school,
-    date,
-    qrDataURL,
-    url: config.PUPIL_APP_URL
-  })
-}
-
-const postPrintPins = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   let pupilsList
   // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
   // busboy provides either an array of values, or, sometimes an object where the key is the
   // array prefix.  The scalar check here is just to be safe.
-  if (Array.isArray(req.body.pupil)) {
-    pupilsList = req.body.pupil
-  } else if (typeof req.body.pupil === 'object') {
-    pupilsList = Object.values(req.body.pupil)
+  if (Array.isArray(req.query.pupil)) {
+    pupilsList = req.query.pupil
+  } else if (typeof req.query.pupil === 'object') {
+    pupilsList = Object.values(req.query.pupil)
   } else {
-    if (req.body.pupil) {
-      pupilsList = [req.body.pupil]
+    if (req.query.pupil) {
+      pupilsList = [req.query.pupil]
     } else {
       pupilsList = []
     }
   }
-
-  if (!Array.isArray(pupilsList) || pupilsList.length === 0) {
-    return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins-list`)
-  }
-  res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'Print pupils'
   let pupils
   let school
   let qrDataURL
   const date = dateService.formatDayAndDate()
+  const showAllPupils = (!Array.isArray(pupilsList) || pupilsList.length === 0)
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    pupils = pupils.filter(p => pupilsList.includes(p.id.toString())) // req body IDs are strings
+    if (!showAllPupils) {
+      pupils = pupils.filter(p => pupilsList.includes(p.id.toString())) // req body IDs are strings
+    }
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
@@ -270,6 +242,5 @@ module.exports = {
   postGeneratePins,
   getViewAndPrintPins,
   getViewAndCustomPrintPins,
-  getPrintPins,
-  postPrintPins
+  getPrintPins
 }
