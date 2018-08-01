@@ -1,13 +1,14 @@
 'use strict'
 
 const azure = require('azure-storage')
-const azureQueueService = azure.createQueueService()
 const winston = require('winston')
 
-module.exports.addMessage = function addMessage (queueName, payload, queueService = azureQueueService) {
+module.exports.addMessage = function addMessage (queueName, payload) {
   if (queueName === null || queueName.length < 1) {
     throw new Error('Missing queueName')
   }
+
+  const queueService = azure.createQueueService()
 
   const message = JSON.stringify(payload)
   const encodedMessage = Buffer.from(message).toString('base64')
