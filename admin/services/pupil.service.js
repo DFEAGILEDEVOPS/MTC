@@ -99,4 +99,20 @@ pupilService.sortByGroup = (pupilsList, sortDirection) => {
   })
 }
 
+/**
+ * Sort pupil's array by group.
+ * @param {Number} dfeNumber
+ * @returns {Array}
+ */
+pupilService.getPupilsWithFullNames = async (dfeNumber) => {
+  if (!dfeNumber) {
+    throw new Error('dfeNumber is not provided')
+  }
+  const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
+  return pupils.map(p => ({
+    fullName: p.foreName + (p.middleNames ? ' ' + p.middleNames + ' ' : ' ') + p.lastName,
+    urlSlug: p.urlSlug
+  }))
+}
+
 module.exports = pupilService

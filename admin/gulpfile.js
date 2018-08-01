@@ -11,6 +11,7 @@ require('dotenv').config()
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
   './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/accessible-autocomplete.min.js',
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/util-checkbox.js',
   './assets/javascripts/global-scripts.js',
@@ -18,7 +19,8 @@ const jsBundleFiles = [
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
-  './assets/javascripts/table-sorting.js'
+  './assets/javascripts/table-sorting.js',
+  './assets/javascripts/typeahead.js'
 ]
 
 gulp.task('watch', function () {
