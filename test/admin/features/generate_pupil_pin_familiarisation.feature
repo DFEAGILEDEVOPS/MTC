@@ -63,7 +63,35 @@ Feature: Generate Pupil PINs Familiarisation
     When I select all pupils for Generate pin
     Then the sticky banner should display the total pupil count on Generate Pin Page
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Familiarisation Pupil pins should consist of 4 characters
     Given I have generated a familiarisation pin for a pupil
-    Then the pin should consist of 4 characters
+    Then the familiarisation pin should consist of 4 characters
+
+  Scenario: Familiarisation view and print pin page is displayed as per design
+    Given I have generated a familiarisation pin for a pupil
+    Then familiarisation view and print pins page is displayed as per design
+    And the displayed familiarisation school password is generated as per the requirement
+
+  Scenario: Familiarisation Pin Overview page after generating some pin
+    Given I have generated a familiarisation pin for a pupil
+    And I am on the generate pupil pins familiarisation page
+    Then familiarisation generated pin overview page is displayed as per design
+
+  @reset_all_pins
+  Scenario: Cancel returns user to Familiarisation Generate Pupil Pin Landing page if there are no pupil with pins
+    Given I am logged in
+    And I select a Pupil from familiarisation Generate Pin page
+    When I choose to cancel
+    Then I should be taken to familiarisation pin overview page
+
+  Scenario: Cancel returns user to Familiarisation Generated Pin page if there are pupils with activepins
+    Given I have generated a familiarisation pin for a pupil
+    And I select a Pupil from familiarisation Generate Pin page
+    When I choose to cancel
+    Then I should be taken to familiarisation pin overview page
+
+  @reset_all_pins
+  Scenario: Familiarisation Pupil pins must be generated from the specified pool of characters
+    Given I have generated a familiarisation pin for a pupil
+    Then all pupil familiarisation pins should be generated from the specified pool of characters
+
