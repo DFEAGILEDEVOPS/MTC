@@ -10,6 +10,7 @@ const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const checkWindowService = require('../services/check-window.service')
 const R = require('ramda')
 const winston = require('winston')
+const monitor = require('../helpers/monitor')
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -106,6 +107,6 @@ const getQuestions = async (req, res) => {
   apiResponse.sendJson(res, responseData)
 }
 
-module.exports = {
+module.exports = monitor('questions.controller', {
   getQuestions
-}
+})

@@ -1,3 +1,4 @@
+const monitor = require('../helpers/monitor')
 
 const controller = {}
 
@@ -9,4 +10,4 @@ controller.getOverview = async (req, res, next) => {
   })
 }
 
-module.exports = controller
+module.exports = monitor('access-arrangements.controller', controller)
