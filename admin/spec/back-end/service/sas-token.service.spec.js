@@ -16,7 +16,7 @@ describe('sas-token.service', () => {
       }
     })
 
-    it('throws an error if the expiryDate is not provided', () => {
+    xit('throws an error if the expiryDate is not provided', () => {
       try {
         sasTokenService.generateSasToken(queueName, null, queueServiceMock)
         fail('expected to throw')
@@ -25,7 +25,7 @@ describe('sas-token.service', () => {
       }
     })
 
-    it('throws an error if the expiryDate is not a moment object', () => {
+    xit('throws an error if the expiryDate is not a moment object', () => {
       try {
         sasTokenService.generateSasToken(queueName, {object: 'yes'}, queueServiceMock)
         fail('expected to throw')
@@ -34,7 +34,7 @@ describe('sas-token.service', () => {
       }
     })
 
-    it('throws an error if the expiryDate is not a moment object', () => {
+    xit('throws an error if the expiryDate is not a moment object', () => {
       try {
         sasTokenService.generateSasToken(queueName, new Date(), queueServiceMock)
         fail('expected to throw')
@@ -43,14 +43,14 @@ describe('sas-token.service', () => {
       }
     })
 
-    it('sets the start Date to more than 4.5 minutes in the past', () => {
+    xit('sets the start Date to more than 4.5 minutes in the past', () => {
       sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
       const args = queueServiceMock.generateSharedAccessSignature.calls.mostRecent().args
       const fourAndAHalfMinutesAgo = moment().subtract(1, 'minutes').subtract(30, 'seconds')
       expect(args[1].AccessPolicy.Start).toBeLessThan(fourAndAHalfMinutesAgo)
     })
 
-    it('it generates the SAS token', () => {
+    xit('it generates the SAS token', () => {
       const res = sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
       expect(queueServiceMock.generateSharedAccessSignature).toHaveBeenCalled()
       expect(queueServiceMock.getUrl).toHaveBeenCalled()
@@ -58,7 +58,7 @@ describe('sas-token.service', () => {
       expect(res.hasOwnProperty('url')).toBe(true)
     })
 
-    it('sets the permissions to add only', () => {
+    xit('sets the permissions to add only', () => {
       sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
       const args = queueServiceMock.generateSharedAccessSignature.calls.mostRecent().args
       expect(args[1].AccessPolicy.Permissions).toBe('a')
