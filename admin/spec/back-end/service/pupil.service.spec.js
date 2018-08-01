@@ -161,7 +161,7 @@ describe('pupil service', () => {
     it('it returns an object with combined name values and urlSlug', async () => {
       const pupilMocks = [
         {foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345'},
-        {foreName: 'John2', middleNames: 'Test2', lastName: 'Johnson2', urlSlug: 'BB-12345'}
+        {foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345'}
       ]
       spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue(pupilMocks)
       let pupils
@@ -171,6 +171,7 @@ describe('pupil service', () => {
         fail()
       }
       expect(pupils[0].fullName).toBe('Johnson, John Test')
+      expect(pupils[1].fullName).toBe('Johnson2, John2')
       expect(pupils[0].urlSlug).toBe('AA-12345')
       expect(pupils.length).toBe(2)
     })

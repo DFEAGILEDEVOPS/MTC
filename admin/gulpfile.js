@@ -20,7 +20,7 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
   './assets/javascripts/table-sorting.js',
-  './assets/javascripts/typeahead.js'
+  './assets/javascripts/autocomplete.js'
 ]
 
 gulp.task('watch', function () {

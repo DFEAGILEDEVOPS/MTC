@@ -110,7 +110,7 @@ pupilService.getPupilsWithFullNames = async (dfeNumber) => {
   }
   const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
   return pupils.map(p => ({
-    fullName: `${p.lastName}, ${p.foreName}${p.middleNames ? '   ' + p.middleNames : ''}`,
+    fullName: `${p.lastName}, ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug
   }))
 }
