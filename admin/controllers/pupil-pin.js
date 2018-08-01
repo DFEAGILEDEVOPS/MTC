@@ -22,9 +22,6 @@ const getGeneratePinsOverview = async (req, res, next) => {
   } catch (err) {
     return next(err)
   }
-  if (pupils && pupils.length > 0) {
-    return res.redirect(`/pupil-pin/view-and-print-${pinEnv}-pins`)
-  }
   let error
   try {
     error = await checkWindowSanityCheckService.check()
@@ -34,7 +31,8 @@ const getGeneratePinsOverview = async (req, res, next) => {
   return res.render('pupil-pin/generate-pins-overview', {
     breadcrumbs: req.breadcrumbs(),
     error,
-    helplineNumber
+    helplineNumber,
+    pupils
   })
 }
 
@@ -98,7 +96,7 @@ const postGeneratePins = async (req, res, next) => {
   let school
   try {
     // OLD code - writes to check table
-    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
 
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
@@ -112,7 +110,8 @@ const postGeneratePins = async (req, res, next) => {
     // New code - writes to allocateCheckFormTable, depends on school pin being ready
     await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
 
-    req.flash('info', `PINs generated for ${pupilsList.length} pupils`)
+    const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
+    req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {
     return next(error)
   }

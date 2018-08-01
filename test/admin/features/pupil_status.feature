@@ -23,7 +23,6 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'In Progress'
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Pupil status is Check Started when a pupil started the actual check
     Given pupil has started a check
     When I am on the Pupil Register page
@@ -40,13 +39,11 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Not taking the Check' for pupil not taking the check
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Pupil Status is Restart when a Restart is taken and PIN not yet Generated
     Given I submitted pupils for Restart
     When I am on the Pupil Register page
     Then I can see the status for the pupil is 'Restart'
 
-  @wip @remove-this-when-22408-isReady
   Scenario: Pupil status is Restart when a Restart is taken and PIN is expired
     Given I submitted pupils for Restart
     And I expired the pupil pin
