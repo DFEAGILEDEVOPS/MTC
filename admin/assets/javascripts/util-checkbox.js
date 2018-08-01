@@ -28,7 +28,8 @@ var inputStatus = {
           selectAll.addClass('all-hide')
           deselectAll.removeClass('all-hide')
           $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-          stickyBanner.toggle(validationStatus)
+          var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+          stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
         } else {
           deselectAll.addClass('all-hide')
           selectAll.removeClass('all-hide')
@@ -53,7 +54,8 @@ var inputStatus = {
       $(this).addClass('all-hide')
       $('#deselectAll').removeClass('all-hide')
       $(sel + ' > input:checkbox').attr('data-checked', true)
-      stickyBanner.toggle(validationStatus || true)
+      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+      stickyBanner.toggle((validationStatus || true) && countCheckedCheckboxes > 0)
     })
   },
 
