@@ -1,4 +1,4 @@
-/* global describe it expect jasmine fail beforeEach spyOn */
+/* global describe it expect jasmine fail beforeEach spyOn xit */
 
 require('dotenv').config()
 
