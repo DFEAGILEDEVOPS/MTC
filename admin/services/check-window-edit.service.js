@@ -3,6 +3,7 @@ const checkWindowEditService = {}
 const checkWindowDataService = require('./data-access/check-window.data.service')
 const checkWindowEditValidator = require('../lib/validator/check-window/check-window-edit-validator')
 const checkWindowService = require('./check-window.service')
+const monitor = require('../helpers/monitor')
 
 /**
  * Processes request data on editing
@@ -16,4 +17,4 @@ checkWindowEditService.process = async (requestData) => {
   }
   await checkWindowService.submit(requestData, existingCheckWindow)
 }
-module.exports = checkWindowEditService
+module.exports = monitor('check-window-edit.service', checkWindowEditService)

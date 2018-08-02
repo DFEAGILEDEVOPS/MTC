@@ -1,5 +1,6 @@
 'use strict'
 
+const monitor = require('../helpers/monitor')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupService = {}
 
@@ -99,4 +100,4 @@ groupService.findGroupsByPupil = async (schoolId, pupils) => {
   return groupDataService.sqlFindGroupsByIds(schoolId, pupils)
 }
 
-module.exports = groupService
+module.exports = monitor('group.service', groupService)

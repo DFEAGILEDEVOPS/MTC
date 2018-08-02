@@ -18,6 +18,7 @@ const psUtilService = require('./psychometrician-util.service')
 const psychometricianDataService = require('./data-access/psychometrician.data.service')
 const psychometricianReportCacheDataService = require('./data-access/psychometrician-report-cache.data.service')
 const schoolDataService = require('./data-access/school.data.service')
+const monitor = require('../helpers/monitor')
 
 const psychometricianReportService = {}
 const psychometricianReportMaxSizeFileUploadMb = config.Data.psychometricianReportMaxSizeFileUploadMb
@@ -195,7 +196,7 @@ psychometricianReportService.batchProduceCacheData = async function (batchIds) {
     check.checkCount = pupilChecks.findIndex(c => check.id === c.id) + 1
     check.checkStatus = check.data && Object.keys(check.data).length > 0 ? 'Completed' : 'Started, not completed'
     // Generate one line of the report
-    const data = this.produceReportData(check, answers[check.id], pupil, checkForm, school)
+    const data = psychometricianReportService.produceReportData(check, answers[check.id], pupil, checkForm, school)
     psReportData.push({ check_id: check.id, jsonData: data })
   }
 
@@ -326,4 +327,4 @@ function scoreFilter (obj) {
   return R.pick(R.concat(props, scoreProps), obj)
 }
 
-module.exports = psychometricianReportService
+module.exports = monitor('psychometrician-report.service', psychometricianReportService)

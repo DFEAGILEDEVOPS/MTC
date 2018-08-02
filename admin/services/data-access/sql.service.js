@@ -313,7 +313,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
   const key = cacheKey(table, column)
   if (R.isEmpty(cache)) {
     // This will cache all data-types once on the first sql request
-    await this.updateDataTypeCache()
+    await sqlService.updateDataTypeCache()
   }
   if (!cache.hasOwnProperty(key)) {
     winston.debug(`sql.service: cache miss for ${key}`)

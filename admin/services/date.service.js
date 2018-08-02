@@ -1,6 +1,7 @@
 'use strict'
 const moment = require('moment')
 const winston = require('winston')
+const monitor = require('../helpers/monitor')
 
 const gdsFullFormat = 'D MMMM YYYY'
 const gdsShortFormat = 'D MMM YYYY'
@@ -13,11 +14,11 @@ const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
 const dateService = {
   formatFullGdsDate: function (date) {
-    return this.checkAndFormat(date, gdsFullFormat)
+    return dateService.checkAndFormat(date, gdsFullFormat)
   },
 
   formatShortGdsDate: function (date) {
-    return this.checkAndFormat(date, gdsShortFormat)
+    return dateService.checkAndFormat(date, gdsShortFormat)
   },
 
   formatDayAndDate: function (date) {
@@ -29,15 +30,15 @@ const dateService = {
   },
 
   formatUKDate: function (date) {
-    return this.checkAndFormat(date, UKFormat)
+    return dateService.checkAndFormat(date, UKFormat)
   },
 
   reverseFormatNoSeparator: function (date) {
-    return this.checkAndFormat(date, reverseFormatNoSeparator)
+    return dateService.checkAndFormat(date, reverseFormatNoSeparator)
   },
 
   formatTimeWithSeconds: function (date) {
-    return this.checkAndFormat(date, timeFormatWithSeconds)
+    return dateService.checkAndFormat(date, timeFormatWithSeconds)
   },
 
   formatIso8601: function (momentDate) {
@@ -136,4 +137,4 @@ const dateService = {
   }
 }
 
-module.exports = dateService
+module.exports = monitor('date.service', dateService)

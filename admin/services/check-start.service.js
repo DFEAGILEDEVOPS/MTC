@@ -12,6 +12,7 @@ const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const setValidationService = require('../services/set-validation.service')
 const config = require('../config')
+const monitor = require('../helpers/monitor')
 
 const checkStartService = {}
 
@@ -122,4 +123,4 @@ checkStartService.pupilLogin = async function (pupilId) {
   return { checkCode: check.checkCode, questions }
 }
 
-module.exports = checkStartService
+module.exports = monitor('check-start.service', checkStartService)
