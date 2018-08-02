@@ -1,5 +1,6 @@
 const appInsights = require('applicationinsights')
 const config = require('./config')
+const { getBuildId } = require('./helpers/healthcheck')
 
 const azure = {
   /**
@@ -19,6 +20,16 @@ const azure = {
         .setAutoCollectConsole(false)
         .setUseDiskRetryCaching(true)
         .start()
+
+      let buildNumber
+      try {
+        buildNumber = await getBuildNumber()
+      } catch (error) {
+        buildNumber = 'NOT FOUND'
+      }
+      appInsights.defaultClient.commonProperties = {
+        buildNumber
+      };
     }
   }
 }

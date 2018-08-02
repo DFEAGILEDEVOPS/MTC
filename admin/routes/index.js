@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const path = require('path')
-const fs = require('fs')
 
+const { getCommitId, getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
@@ -74,33 +74,6 @@ async function getPing (req, res) {
     'CurrentServerTime': Date.now()
   }
   return res.status(200).send(obj)
-}
-
-function getCommitId () {
-  return new Promise(function (resolve, reject) {
-    var commitFilePath = path.join(__dirname, '..', 'public', 'commit.txt')
-    fs.readFile(commitFilePath, 'utf8', function (err, data) {
-      if (!err) {
-        resolve(data)
-      } else {
-        reject(new Error('NOT FOUND'))
-      }
-    })
-  })
-}
-
-function getBuildNumber () {
-  // Promise wrapper function
-  return new Promise(function (resolve, reject) {
-    var buildFilePath = path.join(__dirname, '..', 'public', 'build.txt')
-    fs.readFile(buildFilePath, 'utf8', function (err, data) {
-      if (!err) {
-        resolve(data)
-      } else {
-        reject(new Error('NOT FOUND'))
-      }
-    })
-  })
 }
 
 router.get('/ping', (req, res) => getPing(req, res))
