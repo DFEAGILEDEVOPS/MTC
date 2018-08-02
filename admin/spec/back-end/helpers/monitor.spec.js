@@ -7,6 +7,7 @@ describe('monitor.helper', () => {
   let monitor
   let fakeAI
   let fakeConfig
+  let fakeFeatureToggles
   let testObject
   let monitoredObject
 
@@ -14,8 +15,10 @@ describe('monitor.helper', () => {
     beforeEach(() => {
       fakeConfig = { Logging: { ApplicationInsights: { Key: true } } }
       fakeAI = { defaultClient: { trackDependency: jasmine.createSpy() } }
+      fakeFeatureToggles = { isFeatureEnabled: () => true }
       monitor = proxyquire('../../../helpers/monitor', {
         'applicationinsights': fakeAI,
+        'feature-toggles': fakeFeatureToggles,
         '../config': fakeConfig
       })
       testObject = {
@@ -80,8 +83,10 @@ describe('monitor.helper', () => {
     beforeEach(() => {
       fakeConfig = { Logging: { ApplicationInsights: { Key: undefined } } }
       fakeAI = { defaultClient: { trackDependency: jasmine.createSpy() } }
+      fakeFeatureToggles = { isFeatureEnabled: jasmine.createSpy() }
       monitor = proxyquire('../../../helpers/monitor', {
         'applicationinsights': fakeAI,
+        'feature-toggles': fakeFeatureToggles,
         '../config': fakeConfig
       })
       testObject = {
@@ -99,6 +104,10 @@ describe('monitor.helper', () => {
 
     it('should return the same instance of the object', () => {
       expect(monitoredObject.b).toBe(testObject.b)
+    })
+
+    it('should check if the feature is toggled on', () => {
+      expect(fakeFeatureToggles.isFeatureEnabled).toHaveBeenCalledWith('dependencyTracking')
     })
   })
 })

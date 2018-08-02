@@ -1,8 +1,9 @@
 const appInsights = require('applicationinsights')
+const featureToggles = require('feature-toggles')
 const config = require('../config')
 
 const monitor = (type, obj) => {
-  if (!config.Logging.ApplicationInsights.Key) {
+  if (!featureToggles.isFeatureEnabled('dependencyTracking') || !config.Logging.ApplicationInsights.Key) {
     return obj
   }
 
