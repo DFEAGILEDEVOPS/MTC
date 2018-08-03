@@ -34,3 +34,11 @@ Feature: View and Custom Print Live Check Pin
     And I select a Pupil on Custom Print Live check page
     When I choose to cancel
     Then I should be taken to Generate Pupil Pins Page
+
+
+  @reset_all_pins @remove_all_groups @local
+  Scenario: Pupils can be filtered by group
+    Given I am on view and custom print for live check page with some pupil from the group
+    When I choose to filter via group on Custom Print Live check page
+    Then I should only see pupils on Custom Print Live check page
+    And I should be able to see a count of pupils on Custom Print Live check page

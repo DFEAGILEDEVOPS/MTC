@@ -34,3 +34,26 @@ When(/^I select multiple pupils on Custom Print Live check page$/) do
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
+
+Given(/^I am on view and custom print for live check page with some pupil from the group$/) do
+  step "I have generated pins for all pupils in a group"
+  step "I am on the generate pupil pins page"
+  step "I click View all pins button"
+end
+
+When(/^I choose to filter via group on Custom Print Live check page$/) do
+  @page = view_and_custom_print_live_check_page
+  view_and_custom_print_live_check_page.group_filter.closed_filter.click unless view_and_custom_print_live_check_page.group_filter.has_opened_filter?
+  group = view_and_custom_print_live_check_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
+end
+
+Then(/^I should only see pupils on Custom Print Live check page$/) do
+  filtered_pupils = view_and_custom_print_live_check_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
+  expect(filtered_pupils.count).to eql @pupil_group_array.count
+end
+
+And(/^I should be able to see a count of pupils on Custom Print Live check page$/) do
+  group = view_and_custom_print_live_check_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
+end
