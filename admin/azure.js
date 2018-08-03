@@ -1,6 +1,6 @@
 const appInsights = require('applicationinsights')
 const config = require('./config')
-const { getBuildId } = require('./helpers/healthcheck')
+const { getBuildNumber } = require('./helpers/healthcheck')
 
 const azure = {
   /**
@@ -9,7 +9,7 @@ const azure = {
   isAzure: () => {
     return process.env.KUDU_APPPATH !== undefined
   },
-  startInsightsIfConfigured: () => {
+  startInsightsIfConfigured: async () => {
     if (config.Logging.ApplicationInsights.Key) {
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
@@ -29,7 +29,7 @@ const azure = {
       }
       appInsights.defaultClient.commonProperties = {
         buildNumber
-      };
+      }
     }
   }
 }

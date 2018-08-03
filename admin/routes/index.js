@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
-const path = require('path')
 
-const { getCommitId, getBuildNumber } = require('./healthcheck')
+const { getCommitId, getBuildNumber } = require('../helpers/healthcheck')
 const config = require('../config')
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
