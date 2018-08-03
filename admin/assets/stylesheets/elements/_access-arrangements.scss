@@ -1,0 +1,11 @@
+.hide-checkbox-content {
+  display: none;
+}
+
+.show-checkbox-content {
+  display: block;
+  position: relative;
+  .form-group {
+    margin-bottom: pem(-10px);
+  }
+}

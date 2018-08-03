@@ -18,7 +18,8 @@ const jsBundleFiles = [
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
-  './assets/javascripts/table-sorting.js'
+  './assets/javascripts/table-sorting.js',
+  './assets/javascripts/pupil-access-arrangements-selection.js'
 ]
 
 gulp.task('watch', function () {
@@ -29,11 +30,6 @@ gulp.task('watch', function () {
 gulp.task('bundle-js', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
-    .pipe(uglify({
-      ie8: true
-    }).on('error', function (e) {
-      winston.error(e)
-    }))
     .pipe(gulp.dest('./public/javascripts/'))
 })
 
