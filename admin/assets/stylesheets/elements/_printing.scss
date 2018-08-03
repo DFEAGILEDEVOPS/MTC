@@ -6,9 +6,16 @@
   .no-print{
     display: none;
   }
+  .only-print {
+    display: block !important;
+  }
   .column-two-thirds {
     width: 100%;
   }
+}
+
+.only-print {
+  display: none;
 }
 
 .pupil-print-table {

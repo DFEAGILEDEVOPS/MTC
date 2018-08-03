@@ -125,6 +125,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   let pupils
   let school
   let error
+  let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
@@ -133,6 +134,7 @@ const getViewAndPrintPins = async (req, res, next) => {
     }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
+    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)
   }
@@ -142,7 +144,9 @@ const getViewAndPrintPins = async (req, res, next) => {
     pupils,
     date,
     error,
-    helplineNumber
+    helplineNumber,
+    qrDataURL,
+    url: config.PUPIL_APP_URL
   })
 }
 
