@@ -11,6 +11,7 @@ require('dotenv').config()
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
   './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/accessible-autocomplete.min.js',
   './assets/javascripts/details.polyfill.js',
   './assets/javascripts/util-checkbox.js',
   './assets/javascripts/global-scripts.js',
@@ -19,7 +20,8 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
   './assets/javascripts/table-sorting.js',
-  './assets/javascripts/pupil-access-arrangements-selection.js'
+  './assets/javascripts/pupil-access-arrangements-selection.js',
+  './assets/javascripts/autocomplete.js'
 ]
 
 gulp.task('watch', function () {
@@ -30,6 +32,11 @@ gulp.task('watch', function () {
 gulp.task('bundle-js', function () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
+    .pipe(uglify({
+      ie8: true
+    }).on('error', function (e) {
+      winston.error(e)
+    }))
     .pipe(gulp.dest('./public/javascripts/'))
 })
 

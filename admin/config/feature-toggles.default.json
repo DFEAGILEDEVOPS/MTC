@@ -5,5 +5,5 @@
   "pupilAdd": true,
   "pupilEdit": true,
   "pupilUpload": true,
-  "accessArrangements": false
+  "accessArrangements": true
 }
