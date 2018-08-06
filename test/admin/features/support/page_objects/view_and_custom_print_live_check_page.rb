@@ -7,8 +7,6 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
 
   section :group_filter, GroupFilter, '.column-two-thirds'
 
-  section :group_filter, GroupFilter, '.column-two-thirds'
-
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
   section :pupil_list, '#generatePins tbody' do
