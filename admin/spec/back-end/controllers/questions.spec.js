@@ -4,6 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
+const winston = require('winston')
 
 const pupilLoginEventService = require('../../../services/pupil-logon-event.service')
 
@@ -109,15 +110,14 @@ describe('Questions controller', () => {
   }
 
   describe('happy path', () => {
-    it('returns a valid response', async (done) => {
+    it('returns a valid response', async () => {
       const req = goodReq
       const controller = setupController()
       try {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
-        done()
+        fail(error)
       }
       const data = JSON.parse(res._getData())
       const q1 = data.questions[0]
@@ -135,11 +135,14 @@ describe('Questions controller', () => {
       expect(getConfigSpy).toHaveBeenCalledTimes(1)
       expect(jwtSpy).toHaveBeenCalledTimes(1)
       expect(prepareQuestionDataSpy).toHaveBeenCalledTimes(1)
-      done()
     })
   })
 
   describe('unhappy paths', () => {
+    beforeEach(() => {
+      spyOn(winston, 'error') // ignore winston messages from unhappy outcomes
+    })
+
     it('returns a bad request if the pupil pin is not entered', async (done) => {
       const req = goodReq
       req.body = { schoolPin: 'pin' }
@@ -283,20 +286,6 @@ describe('Questions controller', () => {
       expect(res.statusCode).toBe(500)
       expect(data.error).toBe('Server error')
       expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
-    })
-    it('returns error if the checkWindow service throws', async () => {
-      const req = goodReq
-      const controller = setupController({
-        'check-window.service.getActiveCheckWindow': function () { return Promise.reject(new Error('a mock')) }
-      })
-      try {
-        await controller.getQuestions(req, res)
-      } catch (error) {
-        fail('not expected to throw')
-      }
-      const data = JSON.parse(res._getData())
-      expect(res.statusCode).toBe(403)
-      expect(data).toBe('Forbidden')
     })
   })
 })

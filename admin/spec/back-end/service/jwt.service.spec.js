@@ -11,7 +11,7 @@ const pupilId = 123
 
 describe('JWT service', () => {
   let pupil
-  let checkWindowEndDate
+  let expiryDate
 
   beforeEach(() => {
     pupil = {
@@ -25,7 +25,7 @@ describe('JWT service', () => {
       lastName: 'Test',
       foreName: 'TestForename'
     }
-    checkWindowEndDate = moment().add(1, 'day').toDate()
+    expiryDate = moment().add(1, 'day')
   })
 
   describe('#createToken', () => {
@@ -34,13 +34,13 @@ describe('JWT service', () => {
     })
 
     it('creates a token', async () => {
-      const token = await jwtService.createToken(pupil, checkWindowEndDate)
+      const token = await jwtService.createToken(pupil, expiryDate)
       expect(token.token).toBeTruthy()
       expect(token.token.split('.').length).toBe(3)
     })
 
     it('the token details look correct', async () => {
-      const token = await jwtService.createToken(pupil, checkWindowEndDate)
+      const token = await jwtService.createToken(pupil, expiryDate)
       const decoded = jwt.verify(token.token, token.jwtSecret)
       expect(decoded).toBeTruthy()
       const expiry = Math.abs(decoded.exp - Math.round(Date.now() / 1000))
@@ -58,12 +58,21 @@ describe('JWT service', () => {
       }
     })
 
-    it('throws an error when the check window end date is missing', async () => {
+    it('throws an error when the expiry date is missing', async () => {
       try {
         await jwtService.createToken(pupil)
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('Check window end date is required')
+        expect(error.message).toBe('Expiry date is required')
+      }
+    })
+
+    it('throws an error when the expiry date is not a moment object', async () => {
+      try {
+        await jwtService.createToken(pupil, new Date())
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Invalid expiry date')
       }
     })
   })
@@ -92,7 +101,7 @@ describe('JWT service', () => {
       })
 
       it('then it is able to decode a valid token', async () => {
-        const token = await jwtService.createToken(pupil, checkWindowEndDate)
+        const token = await jwtService.createToken(pupil, expiryDate)
         try {
           pupil.jwtSecret = token.jwtSecret
           const isVerified = await jwtService.verify(token.token)
@@ -120,7 +129,7 @@ describe('JWT service', () => {
         })
       })
       it('then it throws an error', async () => {
-        const token = await jwtService.createToken(pupil, checkWindowEndDate)
+        const token = await jwtService.createToken(pupil, expiryDate)
         try {
           await jwtService.verify(token.token)
           fail('expected to throw')
@@ -147,7 +156,7 @@ describe('JWT service', () => {
         })
       })
       it('then it throws an error', async () => {
-        const result = await jwtService.createToken(pupil, checkWindowEndDate)
+        const result = await jwtService.createToken(pupil, expiryDate)
         pupil.jwtSecret = undefined
         // Note we pass in pupil, and this object gets the secret saved in it
         // But we wasn't to mimic the the key not being found on the object
@@ -178,7 +187,7 @@ describe('JWT service', () => {
         })
       })
       it('then it throws an error', async () => {
-        const token = await jwtService.createToken(pupil, checkWindowEndDate)
+        const token = await jwtService.createToken(pupil, expiryDate)
         pupil.jwtSecret = 'incorrect secret'
         try {
           await jwtService.verify(token.token)

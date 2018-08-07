@@ -14,25 +14,30 @@ const jwtService = {
   /**
    *
    * @param {Object} pupil
-   * @param {Moment} checkWindowEndDate
+   * @param {Moment} expiryDate
    * @return {*}
    */
-  createToken: async (pupil, checkWindowEndDate) => {
+  createToken: async (pupil, expiryDate) => {
     if (!(pupil && pupil.id)) {
       throw new Error('Pupil is required')
     }
-    if (!checkWindowEndDate) {
-      throw new Error('Check window end date is required')
+
+    if (!expiryDate) {
+      throw new Error('Expiry date is required')
     }
+
+    if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
+      throw new Error('Invalid expiry date')
+    }
+
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
-    // TODO: for additional security add in a device Id
-    const expiry = moment().add(config.Tokens.jwtTimeoutHours, 'hours')
 
+    // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin', // Issuer
       sub: pupil.id, // Subject
-      exp: expiry.unix(), // Expiry
+      exp: expiryDate.unix(), // Expiry
       nbf: Math.floor(Date.now() / 1000), // Not before
       jwi: jwtId // JWT token ID
     }
