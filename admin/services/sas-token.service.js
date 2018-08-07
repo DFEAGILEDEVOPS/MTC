@@ -7,6 +7,7 @@ require('dotenv').config()
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 const storageConnection = process.env.AZURE_STORAGE_CONNECTION_STRING
+let queueService
 
 const sasTokenService = {
   /**
@@ -19,7 +20,11 @@ const sasTokenService = {
     if (!storageConnection) {
       throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
     }
-    const queueService = azure.createQueueService(storageConnection)
+
+    if (!queueService) {
+      // init the queue service the first time this is called
+      queueService = azure.createQueueService(storageConnection)
+    }
 
     if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
       throw new Error('Invalid expiryDate')
