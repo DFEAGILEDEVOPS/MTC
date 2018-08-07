@@ -1,4 +1,4 @@
-/* global describe expect it beforeEach jasmine fail xit */
+/* global describe expect beforeEach jasmine fail xit */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const moment = require('moment')
