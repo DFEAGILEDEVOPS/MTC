@@ -191,64 +191,10 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   })
 }
 
-/**
- * Get Print PINs.
- * @param req
- * @param res
- * @param next
- * @returns {Promise<*>}
- */
-const getPrintPins = async (req, res, next) => {
-  const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
-  res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'Print pupils'
-  let pupilsList
-  // As the UI is naming the pupil field like this:  `pupil[0]` which is quite unnecessary
-  // busboy provides either an array of values, or, sometimes an object where the key is the
-  // array prefix.  The scalar check here is just to be safe.
-  if (Array.isArray(req.query.pupil)) {
-    pupilsList = req.query.pupil
-  } else if (typeof req.query.pupil === 'object') {
-    pupilsList = Object.values(req.query.pupil)
-  } else {
-    if (req.query.pupil) {
-      pupilsList = [req.query.pupil]
-    } else {
-      pupilsList = []
-    }
-  }
-  let pupils
-  let school
-  let qrDataURL
-  const date = dateService.formatDayAndDate()
-  const showAllPupils = (!Array.isArray(pupilsList) || pupilsList.length === 0)
-  try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    if (!showAllPupils) {
-      pupils = pupils.filter(p => pupilsList.includes(p.id.toString())) // req body IDs are strings
-    }
-    if (pupils.length > 0) {
-      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
-    }
-    school = await pinService.getActiveSchool(req.user.School)
-    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
-  } catch (error) {
-    return next(error)
-  }
-  res.render('pupil-pin/pin-print', {
-    pupils,
-    school,
-    date,
-    qrDataURL,
-    url: config.PUPIL_APP_URL
-  })
-}
-
 module.exports = {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
-  getViewAndCustomPrintPins,
-  getPrintPins
+  getViewAndCustomPrintPins
 }

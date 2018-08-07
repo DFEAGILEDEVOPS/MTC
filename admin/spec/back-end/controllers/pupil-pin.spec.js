@@ -6,7 +6,6 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 
 const checkStartService = require('../../../services/check-start.service')
-const config = require('../../../config')
 const dateService = require('../../../services/date.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pinService = require('../../../services/pin.service')
@@ -446,6 +445,8 @@ describe('pupilPin controller:', () => {
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
+        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+        spyOn(qrService, 'getDataURL').and.returnValue('')
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
@@ -472,6 +473,8 @@ describe('pupilPin controller:', () => {
         spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
         spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
+        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+        spyOn(qrService, 'getDataURL').and.returnValue('')
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
@@ -486,171 +489,6 @@ describe('pupilPin controller:', () => {
         await controller(req, res, next)
         expect(next).toHaveBeenCalled()
         done()
-      })
-    })
-  })
-
-  describe('getPrintPins route', () => {
-    let controller
-    let sandbox
-    let next
-    let goodReqParamsLive = {
-      method: 'GET',
-      url: '/pupil/print-live-pins',
-      params: {
-        pinEnv: 'live'
-      },
-      session: {
-        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
-      }
-    }
-    let goodReqParamsFam = {
-      method: 'GET',
-      url: '/pupil/print-familiarisation-pins',
-      params: {
-        pinEnv: 'familiarisation'
-      },
-      session: {
-        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
-      }
-    }
-
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-      next = jasmine.createSpy('next')
-      controller = require('../../../controllers/pupil-pin.js').getPrintPins
-    })
-
-    afterEach(() => {
-      sandbox.restore()
-    })
-
-    describe('for live pins', () => {
-      it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
-        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-        spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(pinService, 'getActiveSchool').and.returnValue({})
-        spyOn(qrService, 'getDataURL').and.returnValue('')
-        const res = getRes()
-        const req = getReq(goodReqParamsLive)
-        spyOn(res, 'render').and.returnValue(null)
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-          pupils: [],
-          school: {},
-          date: '',
-          qrDataURL: '',
-          url: config.PUPIL_APP_URL
-        })
-        done()
-      })
-    })
-
-    describe('for familiarisation pins', () => {
-      it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
-        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-        spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(pinService, 'getActiveSchool').and.returnValue({})
-        spyOn(qrService, 'getDataURL').and.returnValue('')
-        const res = getRes()
-        const req = getReq(goodReqParamsFam)
-        spyOn(res, 'render').and.returnValue(null)
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-          pupils: [],
-          school: {},
-          date: '',
-          qrDataURL: '',
-          url: config.PUPIL_APP_URL
-        })
-        done()
-      })
-    })
-
-    describe('for custom print', () => {
-      let goodReqParamsLiveCustom = {
-        method: 'GET',
-        url: '/pupil/print-live-pins',
-        params: {
-          pinEnv: 'live'
-        },
-        session: {
-          id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
-        },
-        query: {
-          pupil: [ '595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520' ]
-        }
-      }
-      let goodReqParamsFamCustom = {
-        method: 'GET',
-        url: '/pupil/print-familiarisation-pins',
-        params: {
-          pinEnv: 'familiarisation'
-        },
-        session: {
-          id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
-        },
-        query: {
-          pupil: [ '595cd5416e5ca13e48ed2519', '595cd5416e5ca13e48ed2520' ]
-        }
-      }
-
-      describe('for live pins', () => {
-        it('displays the print page with custom pupils', async (done) => {
-          const res = getRes()
-          const req = getReq(goodReqParamsLiveCustom)
-
-          spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
-          spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-          spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-          spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-          spyOn(pinService, 'getActiveSchool').and.returnValue({})
-          spyOn(qrService, 'getDataURL').and.returnValue('')
-
-          spyOn(res, 'render').and.returnValue(null)
-          await controller(req, res, next)
-          expect(res.statusCode).toBe(200)
-          expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-            pupils: [],
-            school: {},
-            date: '',
-            qrDataURL: '',
-            url: config.PUPIL_APP_URL
-          })
-          done()
-        })
-      })
-
-      describe('for familiarisation pins', () => {
-        it('displays the print page after post', async (done) => {
-          const res = getRes()
-          const req = getReq(goodReqParamsFamCustom)
-
-          spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
-          spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-          spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-          spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-          spyOn(pinService, 'getActiveSchool').and.returnValue({})
-          spyOn(qrService, 'getDataURL').and.returnValue('')
-
-          spyOn(res, 'render').and.returnValue(null)
-          await controller(req, res, next)
-          expect(res.statusCode).toBe(200)
-          expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-            pupils: [],
-            school: {},
-            date: '',
-            qrDataURL: '',
-            url: config.PUPIL_APP_URL
-          })
-          done()
-        })
       })
     })
   })
