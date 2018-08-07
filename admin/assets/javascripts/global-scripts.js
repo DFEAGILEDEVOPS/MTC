@@ -48,17 +48,6 @@ var generatePins = {
 }
 
 /**
- * Methods for 'View and custom print PINs'.
- * @type {{isCheckboxChecked: isCheckboxChecked}}
- */
-var printCustomPins = {
-  isCheckboxChecked: function () {
-    var el = $('.multiple-choice-mtc > input:checkbox:checked').not('#tickAllCheckboxes')
-    return el.length > 0
-  }
-}
-
-/**
   * Methods for 'Restarts'.
   * @type {{isRadioChecked: isRadioChecked, isCheckboxChecked: isCheckboxChecked, validateForm: validateForm}}
   */
@@ -186,12 +175,5 @@ $(function () {
     if (pupilGroups.validateForm()) {
       stickyBanner.toggle(true)
     }
-  }
-
-  if ($('#printCustomPins').length > 0) {
-    inputStatus.toggleAllCheckboxes('#printCustomPins', false)
-    inputStatus.selectAll('.multiple-choice-mtc', false)
-    inputStatus.deselectAll('.multiple-choice-mtc', false)
-    inputStatus.checkboxStatus('.multiple-choice-mtc', printCustomPins.isCheckboxChecked)
   }
 })
