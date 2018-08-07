@@ -8,6 +8,10 @@
   }
   .only-print {
     display: block !important;
+
+    .hidden {
+      display: none !important;
+    }
   }
   .column-two-thirds {
     width: 100%;

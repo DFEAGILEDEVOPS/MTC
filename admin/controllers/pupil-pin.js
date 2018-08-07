@@ -164,6 +164,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let groups
   let school
   let error
+  let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
@@ -173,6 +174,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
+    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)
   }
@@ -183,7 +185,9 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
     groups,
     date,
     error,
-    helplineNumber
+    helplineNumber,
+    qrDataURL,
+    url: config.PUPIL_APP_URL
   })
 }
 

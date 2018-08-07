@@ -1,4 +1,4 @@
-<div class="grid-row">
+<div class="grid-row no-print">
     <div class="column-two-thirds">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
@@ -7,7 +7,15 @@
     </div>
 </div>
 
-<div class="grid-row">
+<%- partial('partials/_print_pupils', {
+  pupils: pupils,
+  date: date,
+  qrDataURL: qrDataURL,
+  school: school,
+  url: url
+}) %>
+
+<div class="grid-row no-print">
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
           <div class="info-message">
@@ -44,7 +52,7 @@
 
         <form id="printPinsForm" autocomplete="off">
             <% if (pupils && pupils.length > 0) { %>
-            <table class="spacious" id="generatePins" role="listbox" aria-label="Select pupils.">
+            <table class="spacious" id="printCustomPins" role="listbox" aria-label="Select pupils.">
                 <thead>
                 <tr>
                     <th scope="col">
@@ -115,7 +123,8 @@
             <%- partial('partials/_sticky_confirmation_banner', {
                 cancelLabel: 'Cancel',
                 cancelLink: `/pupil-pin/generate-${pinEnv}-pins-overview`,
-                submitLabel: 'Print selected'
+                submitLabel: 'Print selected',
+                submitPrint: true,
               }) %>
         </form>
     </div>
@@ -139,13 +148,3 @@
         </aside>
     </div>
 </div>
-
-<script>
-  $(document).ready(function () {
-    $('#printPinsForm').submit(function (event) {
-      event.preventDefault()
-      var params = window.GOVUK.printPopup.parseParams($(this).serializeArray())
-      window.GOVUK.printPopup.openWindow('<%= pinEnv %>', params)
-    })
-  })
-</script>

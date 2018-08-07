@@ -1,43 +1,32 @@
 'use strict'
-/* global window screen describe it expect spyOn beforeEach */
+/* global $ describe it expect beforeEach afterEach */
 
 describe('printPopup', function () {
-  describe('openWindow', function () {
-    let width
-    let height
-    let left
+  describe('hideUncheckedPupils', function () {
+    let fixture
     beforeEach(() => {
-      width = screen.width / 2
-      height = screen.height / 2
-      left = (screen.width / 2) - (width / 2)
+      fixture = $(`<div>
+        <table class="container">
+          <tr class="pupil-1">Pupil 1</tr>
+          <tr class="pupil-2">Pupil 2</tr>
+        </table>
+        <div class="multiple-choice-mtc">
+          <input type="checkbox" value="1" checked></input>
+          <input type="checkbox" value="2"></input>
+        </div>
+      </div>`)
+      $('body').append(fixture)
     })
-    it('should open popup without parameters when not supplied', function () {
-      spyOn(window, 'open')
-      window.GOVUK.printPopup.openWindow('pinEnv')
-      expect(window.open).toHaveBeenCalledWith(
-        '/pupil-pin/print-pinEnv-pins?',
-        'Print preview',
-        'left=' + left + ', top=100, width=' + width + ', height=' + height + ', toolbar=0, resizable=0'
-      )
+    afterEach(() => {
+      fixture.remove()
     })
-    it('should open popup with parameters when supplied', function () {
-      spyOn(window, 'open')
-      window.GOVUK.printPopup.openWindow('pinEnv', 'params')
-      expect(window.open).toHaveBeenCalledWith(
-        '/pupil-pin/print-pinEnv-pins?params',
-        'Print preview',
-        'left=' + left + ', top=100, width=' + width + ', height=' + height + ', toolbar=0, resizable=0'
-      )
+    it('should remove the hidden class from checked pupils', function () {
+      window.GOVUK.printPopup.hideUncheckedPupils('.container')
+      expect($('.pupil-1').hasClass('hidden')).toBe(false)
     })
-  })
-
-  describe('parseParams', function () {
-    it('should parse a serialized array properly', function () {
-      const result = window.GOVUK.printPopup.parseParams([
-        { name: 'param1', value: 'a' },
-        { name: 'param2', value: 'b' }
-      ])
-      expect(result).toBe('param1=a&param2=b&')
+    it('should add the hidden class from unchecked pupils', function () {
+      window.GOVUK.printPopup.hideUncheckedPupils('.container')
+      expect($('.pupil-2').hasClass('hidden')).toBe(true)
     })
   })
 })

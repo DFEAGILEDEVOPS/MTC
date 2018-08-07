@@ -1,0 +1,53 @@
+<div class="grid-row only-print">
+    <div class="column-two-thirds">
+        <img class="sta-horizontal-logo" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
+        <div class="heading-large">Multiplication Table Check</div>
+        <ul class="list list-bullet font-xsmall" role="listbox">
+            <li role="listitem">Please cut out and distribute to pupils</li>
+            <li role="listitem">The school passwords and pupil PINs will expire by the end of <%= date %></li>
+            <li role="listitem">New PINs will need to be generated if not used by the end of the day</li>
+        </ul>
+        <div class="pupil-print-table">
+            <% if (typeof pupils !== 'object' || Object.keys(pupils).length < 1) { %>
+            <p>No pupils found</p>
+            <% } else { %>
+            <table>
+                <% for (let i = 0; i < pupils.length; i++) { %>
+                <tr class="page pupil-<%= pupils[i].id %> hidden">
+                    <td class="line-empty"></td>
+                    <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'Live' : 'Familiarisation') %></span></td>
+                    <td class="line-content">
+                        <div class="pupil-content">
+                            <span class="fullname"><%=
+                                `${pupils[i].foreName} ${pupils[i].showMiddleNames
+                                    ? pupils[i].middleNames
+                                    : ''
+                                } ${pupils[i].lastName}` %>
+                                <% if (pupils[i].group) { %>
+                                  (<%= pupils[i].group %>)
+                                <% } %>
+                            </span>
+                            <% if (pupils[i].showDoB) { %>
+                            <div class="dob">Date of birth: <%= pupils[i].dateOfBirth %></div>
+                            <% } %>
+                        </div>
+                        <div class="pin-content">
+                            <span class="label">School Password:</span>
+                            <span class="information"><%= (
+                                !!school ? school.pin : 'No active password'
+                            ) %></span>
+                            <span class="separator"></span>
+                            <span class="label">PIN:</span>
+                            <span class="information"><%= pupils[i].pin %></span>
+                        </div>
+                        <% if (qrDataURL) { %>
+                        <div class="qr"><img src="<%= qrDataURL %>" /></div>
+                        <% } %>
+                        <div class="url"><%= url %></div>
+                    </td>
+                </tr>
+                <% }} %>
+            </table>
+        </div>
+    </div>
+</div>
