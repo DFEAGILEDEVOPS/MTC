@@ -16,7 +16,8 @@ describe('JWT service', () => {
   beforeEach(() => {
     pupil = {
       id: 1,
-      token: undefined,
+      jwtSecret: undefined,
+      jwtToken: undefined,
       // required pupil fields
       dob: moment(),
       gender: 'M',
@@ -93,7 +94,7 @@ describe('JWT service', () => {
       it('then it is able to decode a valid token', async () => {
         const token = await jwtService.createToken(pupil, checkWindowEndDate)
         try {
-          pupil.token = token.jwtSecret
+          pupil.jwtSecret = token.jwtSecret
           const isVerified = await jwtService.verify(token.token)
           expect(isVerified).toBe(true)
         } catch (error) {
@@ -147,11 +148,11 @@ describe('JWT service', () => {
       })
       it('then it throws an error', async () => {
         const result = await jwtService.createToken(pupil, checkWindowEndDate)
-        pupil.token = undefined
+        pupil.jwtSecret = undefined
         // Note we pass in pupil, and this object gets the secret saved in it
         // But we wasn't to mimic the the key not being found on the object
         // (as it is not a required property) so we get the sandbox to returned a cloned object that
-        // definitely does not have a valid `jztSecret` property.
+        // definitely does not have a valid `jwtSecret` property.
         try {
           await jwtService.verify(result.token)
           fail('expected to throw')
@@ -178,7 +179,7 @@ describe('JWT service', () => {
       })
       it('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, checkWindowEndDate)
-        pupil.token = 'incorrect secret'
+        pupil.jwtSecret = 'incorrect secret'
         try {
           await jwtService.verify(token.token)
           fail('expected to throw')
@@ -214,8 +215,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000) - (60 * 60), // Expires an hour ago
         nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2 // Not before
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)
@@ -233,8 +234,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000) - 1, // Expires 1s ago
         nbf: Math.floor(Date.now() / 1000) - 60 * 60 * 2 // Not before
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)
@@ -252,8 +253,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000) + 120, // Expires in 120s
         nbf: Math.floor(Date.now() / 1000) + 60 // Not before: becomes active in 60s
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)
@@ -271,8 +272,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000) + 120, // Expires in 120s
         nbf: Math.floor(Date.now() / 1000) + 1 // Not before: becomes active in 1s
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)
@@ -290,8 +291,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000) - 1, // Expired 1s ago
         nbf: Math.floor(Date.now() / 1000) + 1 // Not before: becomes active in 1s
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)
@@ -309,8 +310,8 @@ describe('JWT service', () => {
         exp: Math.floor(Date.now() / 1000), // Expired now
         nbf: Math.floor(Date.now() / 1000) // Not before: becomes active mow
       }
-      pupil.token = 'testing123'
-      const token = jwt.sign(payload, pupil.token)
+      pupil.jwtSecret = 'testing123'
+      const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
       try {
         await jwtService.verify(token)

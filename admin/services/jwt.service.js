@@ -58,12 +58,13 @@ const jwtService = {
       throw new Error('Subject not found')
     }
 
-    if (!pupil.token) {
+    if (!pupil.jwtSecret) {
       throw new Error('Error - missing secret')
     }
 
+    // Verify the token signature is valid, and signed by the secret key stored in the pupil table
     try {
-      await jwt.verify(token, pupil.token)
+      await jwt.verify(token, pupil.jwtSecret)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }
