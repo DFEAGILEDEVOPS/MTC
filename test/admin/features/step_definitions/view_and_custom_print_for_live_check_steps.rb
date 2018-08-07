@@ -43,8 +43,8 @@ end
 
 When(/^I choose to filter via group on Custom Print Live check page$/) do
   @page = view_and_custom_print_live_check_page
-  view_and_custom_print_live_check_page.group_filter.closed_filter.click unless view_and_custom_print_live_check_page.group_filter.has_opened_filter?
-  group = view_and_custom_print_live_check_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  view_and_custom_print_live_check_page.closed_filter.click unless view_and_custom_print_live_check_page.has_opened_filter?
+  group = view_and_custom_print_live_check_page.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
@@ -54,6 +54,6 @@ Then(/^I should only see pupils on Custom Print Live check page$/) do
 end
 
 And(/^I should be able to see a count of pupils on Custom Print Live check page$/) do
-  group = view_and_custom_print_live_check_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group = view_and_custom_print_live_check_page.groups.find {|group| group.name.text.include? @group_name}
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end

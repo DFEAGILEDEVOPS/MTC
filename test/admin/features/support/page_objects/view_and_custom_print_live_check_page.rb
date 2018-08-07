@@ -5,7 +5,13 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
   element :heading, '.heading-xlarge'
   element :generate_pin_message, '.lede', text: 'Personal identification number (PIN) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
 
-  section :group_filter, GroupFilter, '.column-two-thirds'
+  element :closed_filter, '.filter-label.hidden', text: 'Filter by groups'
+  element :opened_filter, '.filter-label', text: 'Filter by groups'
+  sections :groups, '#filterByGroup li' do
+    element :checkbox, '.pupils-not-taking-the-check'
+    element :name, '.font-xsmall'
+    element :count, '.group-count'
+  end
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
