@@ -13,9 +13,9 @@ class SchoolLandingPage < SitePrism::Page
   element :access_arrangements, 'a', text: 'Access arrangements'
   element :access_arrangements_text, 'p', text: 'Select arrangements for pupils with access needs'
   element :generate_pupil_pin, 'a[href="/pupil-pin/generate-live-pins-overview"]'
-  element :generate_pupil_pin_text, 'p', text: 'Generate personal identification numbers (PINs) for pupils and view school password for the live area'
+  element :generate_pupil_pin_text, 'p', text: 'Generate personal identification numbers (PINs) for pupils and view school password for the live check'
   element :generate_pupil_pin_familiarisation, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
-  element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate personal identification numbers (PINs) for pupils and view school password for the familiarisation area'
+  element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate personal identification numbers (PINs) for pupils and view school password for the familiarisation check'
   element :restarts, 'a[href="/restart/overview"]'
   element :restarts_text, 'p', text: 'Select a pupil to restart because of an interrupted check'
   element :hdf, 'a', text: "Headteacher's declaration form"
