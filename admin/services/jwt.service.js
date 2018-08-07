@@ -4,6 +4,7 @@ const moment = require('moment')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
+const config = require('../config')
 
 const pupilDataService = require('./data-access/pupil.data.service')
 
@@ -26,10 +27,12 @@ const jwtService = {
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
     // TODO: for additional security add in a device Id
+    const expiry = moment().add(config.Tokens.jwtTimeoutHours, 'hours')
+
     const payload = {
       iss: 'MTC Admin', // Issuer
       sub: pupil.id, // Subject
-      exp: moment(checkWindowEndDate).unix(), // Expiry
+      exp: expiry.unix(), // Expiry
       nbf: Math.floor(Date.now() / 1000), // Not before
       jwi: jwtId // JWT token ID
     }

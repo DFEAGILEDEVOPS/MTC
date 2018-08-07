@@ -212,11 +212,11 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
 
   const messages = []
   const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
+  const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
+  const sasToken = sasTokenService.generateSasToken(sasTokenService.queueNames.CHECK_COMPLETE, sasExpiryDate)
 
   for (let o of checkFormAllocations) {
-    const sasToken = sasTokenService.generateSasToken(sasTokenService.queueNames.CHECK_COMPLETE, moment().add(1, 'hour'))
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
-
     const message = {
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,

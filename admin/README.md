@@ -74,6 +74,8 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 * RESTART_MAX_ATTEMPTS - Total number of allowed check retakes per pupil
 * SESSION_SECRET - random string; required for session support
 * TSO_AUTH_PUBLIC_KEY - Third party Public RSA key in PEM format used during Authorisation
+* JWT_TIMEOUT_HOURS - number - the timeout in hours of the JSON Web Token
+* SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 
 SQL Server specific environment variables
 * SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
