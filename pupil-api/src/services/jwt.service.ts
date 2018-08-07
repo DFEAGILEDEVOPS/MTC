@@ -1,9 +1,7 @@
 'use strict'
-
 const Promise = require('bluebird')
-const crypto = Promise.promisifyAll(require('crypto'))
-const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const moment = require('moment')
+const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
 
 const pupilDataService = require('./data-access/pupil.data.service')
@@ -26,8 +24,8 @@ const jwtService = {
       throw new Error('Check window end date is required')
     }
     const jwtId = uuidv4()
-    const jwtSecret = await crypto.randomBytes(32).toString('hex')
-
+    const jwtSecret = config.JwtSecret
+    await pupilDataService.sqlUpdate({ id: pupil.id, token: jwtSecret })
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin',                                       // Issuer
@@ -39,12 +37,11 @@ const jwtService = {
 
     // Construct a JWT token
     const token = await jwt.sign(payload, jwtSecret)
-
     return { token, jwtSecret }
   },
   /**
    * Verify a token
-   * @param {String} token - the JWT token to be verified
+   * @param {String} token
    * @return {boolean}
    */
   verify: async (token) => {
@@ -62,12 +59,12 @@ const jwtService = {
       throw new Error('Subject not found')
     }
 
-    if (!pupil.jwtSecret) {
+    if (!pupil.token) {
       throw new Error('Error - missing secret')
     }
 
     try {
-      await jwt.verify(token, pupil.jwtSecret)
+      await jwt.verify(token, pupil.token)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }
