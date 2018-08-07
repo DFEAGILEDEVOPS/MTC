@@ -274,6 +274,15 @@ When(/^I choose to filter via group on the generate pins page$/) do
   group.checkbox.click
 end
 
+When(/^I choose to filter via group on the generate pins familiarisation page$/) do
+  generate_pins_familiarisation_overview_page.load
+  step 'I click Generate PINs button'
+  @page = generate_pins_familiarisation_overview_page
+  generate_pins_familiarisation_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
+  group = generate_pins_familiarisation_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
+end
+
 Then(/^I should only see pupils from the group$/) do
   filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
   expect(filtered_pupils.count).to eql @pupil_group_array.count
@@ -310,6 +319,13 @@ end
 Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
   step 'I choose to filter via group on the generate pins page'
+  step 'I should only see pupils from the group'
+  step 'I should be able to generate pins for all pupils in this group'
+end
+
+Given(/^I have generated familiarisation pins for all pupils in a group$/) do
+  step 'I have a group of pupils'
+  step 'I choose to filter via group on the generate pins familiarisation page'
   step 'I should only see pupils from the group'
   step 'I should be able to generate pins for all pupils in this group'
 end
