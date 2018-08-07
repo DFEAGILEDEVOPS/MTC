@@ -169,6 +169,9 @@ var inputStatus = {
   * Enable/disable confirmation button from sticky banner.
   * @type {{toggle: toggle}}
   */
+
+var documentHeight = 0
+
 var stickyBanner = {
   /**
     * @param status
@@ -184,27 +187,38 @@ var stickyBanner = {
   },
 
   /**
-    * Sticky banner positioning.
+   * Reset the document height, stored instead of recalculating
+   * every time the user scrolls / resize the page (expensive)
+   */
+  resetDocumentHeight: function () {
+    documentHeight = $(document).height()
+  },
+
+  /**
+   * Calculate and update the sticky banner position
+   */
+  calculatePosition: function () {
+    var stickyBannerEl = $('#stickyBanner')
+    var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
+    var y = $(document).scrollTop()
+    if (y > distance) {
+      stickyBannerEl.css({ bottom: y - distance })
+    } else {
+      stickyBannerEl.css({ bottom: 0 })
+    }
+  },
+
+  /**
+    * Sticky banner positioning, set the scroll and resize handlers
     */
   positioning: function () {
-    var documentHeight = $(document).height()
-    var stickyBanner = $('#stickyBanner')
-    var calculatePosition = function () {
-      var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
-      var y = $(this).scrollTop()
-      if (y > distance) {
-        stickyBanner.css({ bottom: y - distance })
-      } else {
-        stickyBanner.css({ bottom: 0 })
-      }
-    }
-
+    stickyBanner.resetDocumentHeight()
     // Initial position.
-    calculatePosition()
+    stickyBanner.calculatePosition()
 
     // Re-calculate position on scrolling.
     $(document).scroll(function () {
-      calculatePosition()
+      stickyBanner.calculatePosition()
       // if (y > distance) {
       //   stickyBanner.css({ bottom: y - distance })
       // } else {
@@ -214,7 +228,7 @@ var stickyBanner = {
 
     // Re-calculating position on window resize.
     $(window).resize(function () {
-      calculatePosition()
+      stickyBanner.calculatePosition()
       // if (y > distance) {
       //   stickyBanner.css({ bottom: y - distance })
       // } else {

@@ -1,7 +1,7 @@
 /**
  * Filtering pupils by name.
  */
-/* global $ */
+/* global $ stickyBanner */
 $(function () {
   if ($('.filter-name').length > 0) {
     $('#search-name').on('change keyup', function (e) {
@@ -11,6 +11,9 @@ $(function () {
         $(selAllTr).each(function () {
           $(this).removeClass('filter-hidden-name')
         })
+
+        stickyBanner.resetDocumentHeight()
+        stickyBanner.calculatePosition()
         return
       }
 
@@ -21,6 +24,9 @@ $(function () {
           $(this).removeClass('filter-hidden-name')
         }
       })
+
+      stickyBanner.resetDocumentHeight()
+      stickyBanner.calculatePosition()
     })
   }
 })
