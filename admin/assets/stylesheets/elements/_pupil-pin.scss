@@ -23,3 +23,16 @@
     padding: 0 pem(30px);
   }
 }
+
+.generate-additional-pins {
+  padding-top: pem(10px);
+  form {
+    display: inline-block;
+  }
+
+  a {
+    display: inline-block;
+    vertical-align: bottom;
+    padding: 0 pem(10px);
+  }
+}
