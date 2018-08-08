@@ -287,5 +287,20 @@ describe('Questions controller', () => {
       expect(data.error).toBe('Server error')
       expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
     })
+
+    it('returns error if the checkWindow service throws', async () => {
+      const req = goodReq
+      const controller = setupController({
+        'check-window.service.getActiveCheckWindow': function () { return Promise.reject(new Error('a mock')) }
+      })
+      try {
+        await controller.getQuestions(req, res)
+      } catch (error) {
+        fail('not expected to throw')
+      }
+      const data = JSON.parse(res._getData())
+      expect(res.statusCode).toBe(403)
+      expect(data).toBe('Forbidden')
+    })
   })
 })

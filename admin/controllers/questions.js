@@ -4,8 +4,8 @@ const apiResponse = require('./api-response')
 const checkFormService = require('../services/check-form.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowService = require('../services/check-window.service')
-const configService = require('../services/config.service')
 const config = require('../config')
+const configService = require('../services/config.service')
 const jwtService = require('../services/jwt.service')
 const moment = require('moment')
 const pupilAuthenticationService = require('../services/pupil-authentication.service')
@@ -13,6 +13,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilLogonEventService = require('../services/pupil-logon-event.service')
 const R = require('ramda')
 const winston = require('winston')
+
 
 /**
  * If the Pupil authenticates: returns the set of questions, pupil details and school details in json format
@@ -62,6 +63,13 @@ const getQuestions = async (req, res) => {
   } catch (error) {
     winston.error('Failed to prepare test account: ' + error.message)
     return apiResponse.serverError(res)
+  }
+
+  // Check that the check window is active
+  try {
+    await checkWindowService.getActiveCheckWindow(data.pupil.id)
+  } catch (error) {
+    return apiResponse.sendJson(res, 'Forbidden', 403)
   }
 
   const pupilData = pupilAuthenticationService.getPupilDataForSpa(data.pupil)
