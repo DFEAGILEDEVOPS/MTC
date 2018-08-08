@@ -2,28 +2,30 @@
 
 const azure = require('azure-storage')
 const moment = require('moment')
-
-require('dotenv').config()
+const config = require('../config')
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 const storageConnection = process.env.AZURE_STORAGE_CONNECTION_STRING
-let queueService
+let azureQueueService
 
 const sasTokenService = {
   /**
    *
    * @param queueName
    * @param {Moment} expiryTime
+   * @param {Object} serviceImplementation
    * @return {{token: string, url: string}}
    */
-  generateSasToken: function (queueName, expiryDate) {
-    if (!storageConnection) {
-      throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
-    }
-
-    if (!queueService) {
-      // init the queue service the first time this is called
-      queueService = azure.createQueueService(storageConnection)
+  generateSasToken: function (queueName, expiryDate, serviceImplementation) {
+    if (!serviceImplementation) {
+      if (!azureQueueService) {
+        if (!config.AZURE_STORAGE_CONNECTION_STRING) {
+          throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
+        }
+        // init the queue service the first time this is called
+        azureQueueService = azure.createQueueService(storageConnection)
+      }
+      serviceImplementation = azureQueueService
     }
 
     if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
@@ -43,11 +45,11 @@ const sasTokenService = {
       }
     }
 
-    const sasToken = queueService.generateSharedAccessSignature(queueName, sharedAccessPolicy)
+    const sasToken = serviceImplementation.generateSharedAccessSignature(queueName, sharedAccessPolicy)
 
     return {
       token: sasToken,
-      url: queueService.getUrl(queueName)
+      url: serviceImplementation.getUrl(queueName)
     }
   },
 
