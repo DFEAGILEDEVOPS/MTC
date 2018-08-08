@@ -1,4 +1,4 @@
-/* global describe it expect jasmine fail beforeEach spyOn xit */
+/* global describe it expect jasmine fail beforeEach spyOn */
 
 require('dotenv').config()
 
@@ -34,13 +34,13 @@ describe('azure-queue-service', () => {
       }
     })
 
-    xit('stringifies the payload', () => {
+    it('stringifies the payload', () => {
       spyOn(JSON, 'stringify').and.callThrough()
       azureQueueService.addMessage(queueName, payload, queueServiceMock)
       expect(JSON.stringify).toHaveBeenCalledWith(payload)
     })
 
-    xit('injects the message into the queue by calling `createMessage`', () => {
+    it('injects the message into the queue by calling `createMessage`', () => {
       azureQueueService.addMessage(queueName, payload, queueServiceMock)
       expect(queueServiceMock.createMessage).toHaveBeenCalled()
     })
