@@ -95,7 +95,9 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
+    // OLD code - writes to check table
     await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
+
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -104,6 +106,11 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
+
+    // New code - writes to allocateCheckFormTable, depends on school pin being ready
+    // disabled as not yet working correctly in travis.
+    // await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {
