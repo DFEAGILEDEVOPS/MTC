@@ -331,8 +331,8 @@ Given(/^I have generated familiarisation pins for all pupils in a group$/) do
 end
 
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
-  generated_pins_page.load
-  step 'I click Generate PINs button'
+  generate_pins_overview_page.load
+  generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
   expect(generate_pins_overview_page.group_filter).to have_no_closed_filter
   expect(generate_pins_overview_page.group_filter).to have_no_opened_filter
 end
