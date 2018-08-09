@@ -1,6 +1,7 @@
 # MTC Azure Functions
 
-See [offical documentation](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node) for full developer reference.
+See [offical documentation](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-node) for full
+developer reference.
 
 We are targeting V2, which is currently in preview.
 
@@ -10,7 +11,8 @@ We are targeting V2, which is currently in preview.
 
 ## Running locally
 
-execute `func host start` from `functions` directory.  A shortcut script has been added to `package.json` so you can also just call `yarn start` if you prefer.
+execute `func host start` from `functions` directory.  A shortcut script has been added to `package.json` so you can
+also just call `yarn start` if you prefer.
 
 ## Creating a new function
 

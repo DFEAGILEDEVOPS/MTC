@@ -1,0 +1,19 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "queueMessage",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "prepare-check",
+      "connection": "StorageAccount"
+    },
+    {
+      "name": "preparedCheckTable",
+      "type": "table",
+      "direction": "out",
+      "tableName": "preparedCheck",
+      "connection": "StorageAccount"
+    }
+  ]
+}
