@@ -18,12 +18,16 @@ jobs:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - restore_cache:
           key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
-      - run: cd admin; yarn install
-      - run: cd pupil-spa; yarn install
-      - run: cd pupil-api; yarn install
+      - restore_cache:
+          key: v1-node-functions-deps-{{ checksum "functions/yarn.lock" }}
+      - run: cd admin; yarn install --frozen-lockfile
+      - run: cd pupil-spa; yarn install --frozen-lockfile
+      - run: cd pupil-api; yarn install --frozen-lockfile
+      - run: cd functions; yarn install --frozen-lockfile
       - run: cd admin; yarn test
       - run: cd pupil-spa; yarn run test-single
       - run: cd pupil-api; yarn run test
+      - run: cd functions; yarn run test
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
@@ -36,6 +40,10 @@ jobs:
           key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
           paths:
             - ~/repo/pupil-api/node_modules
+      - save_cache:
+          key: v1-node-functions-deps-{{ checksum "functions/yarn.lock" }}
+          paths:
+            - ~/repo/functions/node_modules
 
 workflows:
   version: 2

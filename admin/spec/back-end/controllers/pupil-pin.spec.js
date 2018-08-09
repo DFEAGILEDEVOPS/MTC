@@ -232,6 +232,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
@@ -249,6 +250,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'live' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
@@ -263,6 +265,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
@@ -279,6 +282,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
@@ -296,6 +300,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'familiarisation' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
@@ -310,6 +315,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
