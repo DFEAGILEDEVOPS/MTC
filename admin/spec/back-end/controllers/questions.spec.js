@@ -4,6 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const proxyquire = require('proxyquire').noCallThru()
 const uuidv4 = require('uuid/v4')
+const winston = require('winston')
 
 const pupilLoginEventService = require('../../../services/pupil-logon-event.service')
 
@@ -17,6 +18,7 @@ const jwtTokenMock = require('../mocks/jwtToken')
 const configMock = require('../mocks/config')
 const questionsMock = require('../mocks/check-form.service.getQuestions')
 const checkWindowMock = require('../mocks/check-window')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const checkStartResponseMock = {
   checkCode: uuidv4(),
   questions: require('../mocks/check-form').questions
@@ -82,6 +84,8 @@ describe('Questions controller', () => {
     prepareQuestionDataSpy = jasmine.createSpy().and.callFake(options['check-form.service.prepareQuestionData'])
     getActiveCheckWindowSpy = jasmine.createSpy().and.callFake(options['check-window.service.getActiveCheckWindow'])
 
+    spyOn(pupilDataService, 'sqlUpdate').and.returnValue({})
+
     return proxyquire('../../../controllers/questions', {
       '../services/pupil-authentication.service': {
         authenticate: authenticateSpy,
@@ -106,15 +110,14 @@ describe('Questions controller', () => {
   }
 
   describe('happy path', () => {
-    it('returns a valid response', async (done) => {
+    it('returns a valid response', async () => {
       const req = goodReq
       const controller = setupController()
       try {
         await controller.getQuestions(req, res)
       } catch (error) {
         console.error(error)
-        expect('questions controller not to').toBe('error')
-        done()
+        fail(error)
       }
       const data = JSON.parse(res._getData())
       const q1 = data.questions[0]
@@ -132,11 +135,14 @@ describe('Questions controller', () => {
       expect(getConfigSpy).toHaveBeenCalledTimes(1)
       expect(jwtSpy).toHaveBeenCalledTimes(1)
       expect(prepareQuestionDataSpy).toHaveBeenCalledTimes(1)
-      done()
     })
   })
 
   describe('unhappy paths', () => {
+    beforeEach(() => {
+      spyOn(winston, 'error') // ignore winston messages from unhappy outcomes
+    })
+
     it('returns a bad request if the pupil pin is not entered', async (done) => {
       const req = goodReq
       req.body = { schoolPin: 'pin' }
@@ -281,6 +287,7 @@ describe('Questions controller', () => {
       expect(data.error).toBe('Server error')
       expect(pupilLoginEventService.storeLogonEvent).toHaveBeenCalled()
     })
+
     it('returns error if the checkWindow service throws', async () => {
       const req = goodReq
       const controller = setupController({
