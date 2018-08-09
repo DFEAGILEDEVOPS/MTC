@@ -18,6 +18,7 @@ const jsBundleFiles = [
   './assets/javascripts/custom-file-upload.js',
   './assets/javascripts/pupil-filter-name.js',
   './assets/javascripts/pupil-filter-group.js',
+  './assets/javascripts/print-popup.js',
   './assets/javascripts/table-sorting.js'
 ]
 
