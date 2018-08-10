@@ -21,7 +21,7 @@ describe('contact page simple controller', () => {
     controller = require('../../../controllers/contact')
 
     spyOn(res, 'render').and.returnValue(null)
-    await controller(req, res)
+    await controller.getContactPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Contact')
     expect(res.render).toHaveBeenCalled()

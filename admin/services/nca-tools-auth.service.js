@@ -3,6 +3,7 @@
 const iconv = require('iconv-lite')
 const crypto = require('crypto')
 const moment = require('moment')
+const monitor = require('../helpers/monitor')
 
 const service = {
   /**
@@ -55,7 +56,7 @@ const service = {
   }
 }
 
-module.exports = service
+module.exports = monitor('nca-tools-auth.service', service)
 
 /**
  * Verify the provided signature is valid. - commented out at the moment, see the check on line 25

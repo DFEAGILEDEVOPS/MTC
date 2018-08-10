@@ -2,6 +2,7 @@
 const winston = require('winston')
 
 const pupilLogonEventDataService = require('./data-access/pupil-logon-event.data.service')
+const monitor = require('../helpers/monitor')
 
 const pupilLogonEventService = {}
 
@@ -45,4 +46,4 @@ function trimLength (size, truncationIndicator, string = '') {
   return string.slice(0, size - truncationIndicator.length).concat(truncationIndicator)
 }
 
-module.exports = pupilLogonEventService
+module.exports = monitor('pupil-logon-event', pupilLogonEventService)

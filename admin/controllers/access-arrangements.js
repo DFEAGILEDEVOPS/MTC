@@ -1,4 +1,5 @@
 const accessArrangementsService = require('../services/access-arrangements.service')
+const monitor = require('../helpers/monitor')
 
 const controller = {}
 
@@ -26,4 +27,4 @@ controller.getSelectAccessArrangements = async (req, res, next) => {
   })
 }
 
-module.exports = controller
+module.exports = monitor('access-arrangements.controller', controller)

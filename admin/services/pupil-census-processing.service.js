@@ -3,6 +3,7 @@ const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilCensusImportDataService = require('../services/data-access/pupil-census-import.data.service')
+const monitor = require('../helpers/monitor')
 const pupilCensusProcessingService = {}
 
 /**
@@ -22,4 +23,4 @@ pupilCensusProcessingService.process = async (csvData, jobId) => {
   return pupilCensusImportDataService.sqlBulkImport(csvData, schoolsHashMap, jobId)
 }
 
-module.exports = pupilCensusProcessingService
+module.exports = monitor('pupil-census-processing.service', pupilCensusProcessingService)

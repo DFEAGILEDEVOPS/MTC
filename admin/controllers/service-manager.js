@@ -11,6 +11,7 @@ const pupilCensusService = require('../services/pupil-census.service')
 const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
 const ValidationError = require('../lib/validation-error')
+const monitor = require('../helpers/monitor')
 
 const controller = {
 
@@ -300,4 +301,4 @@ const controller = {
   }
 }
 
-module.exports = controller
+module.exports = monitor('service-manager.controller', controller)
