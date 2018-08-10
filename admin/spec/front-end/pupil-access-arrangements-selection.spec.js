@@ -157,20 +157,7 @@ describe('pupil-access-arrangements-selection', function () {
     expect(el.value).toBe('ITA')
     expect($($(el).closest('li').find('.show-checkbox-content')[0]).length).toBe(1)
   })
-  it('should reveal radio buttons once the question reader checkbox is checked', function () {
-    const el = $accessArrangementsList.find('input:checkbox')[5]
-    window.GOVUK.accessArrangements()
-    expect($($(el).closest('li').find('.hide-checkbox-content')[0]).length).toBe(1)
-    $(el).trigger('click')
-    expect(el.checked).toBeTruthy()
-    expect(el.value).toBe('QNR')
-    const closestListItem = $(el).closest('li')
-    expect($($($(closestListItem).children()[1]).children()[0]).attr('id')).toBe('accessArrangement-5')
-    expect($($(closestListItem).children()[2]).attr('class')).toBe('show-checkbox-content')
-    expect($($(closestListItem).children()[2]).find('input:radio').length).toBe(4)
-    $(el).trigger('click')
-  })
-  it('should reveal textarea once the last radio button is checked', function () {
+  it('should remove js-hidden class to reveal textarea once the last radio button is checked', function () {
     const el = $accessArrangementsList.find('input:checkbox')[5]
     window.GOVUK.accessArrangements()
     $(el).trigger('click')
