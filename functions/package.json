@@ -1,10 +1,15 @@
 {
   "scripts": {
     "start": "func host start",
-    "pack": "funcpack pack ."
+    "pack": "funcpack pack .",
+    "test": "jasmine */*.spec.js"
   },
   "dependencies": {
     "moment": "^2.22.2",
+    "ramda": "^0.25.0",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "jasmine": "~3.1.0"
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Filtering pupils by name.
  */
-/* global $ */
+/* global $ stickyBanner */
 $(function () {
   if ($('.filter-name').length > 0) {
     $('#search-name').on('change keyup', function (e) {
@@ -11,16 +11,22 @@ $(function () {
         $(selAllTr).each(function () {
           $(this).removeClass('filter-hidden-name')
         })
+
+        stickyBanner.resetDocumentHeight()
+        stickyBanner.calculatePosition()
         return
       }
 
       $(selAllTr).each(function () {
-        if ($.trim($(this).text()).toLowerCase().indexOf(input) === -1) {
+        if ($.trim($('td > label', this).text()).toLowerCase().indexOf(input) === -1) {
           $(this).addClass('filter-hidden-name')
         } else {
           $(this).removeClass('filter-hidden-name')
         }
       })
+
+      stickyBanner.resetDocumentHeight()
+      stickyBanner.calculatePosition()
     })
   }
 })

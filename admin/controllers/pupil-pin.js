@@ -95,7 +95,9 @@ const postGeneratePins = async (req, res, next) => {
   }
   let school
   try {
+    // OLD code - writes to check table
     await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
+
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
@@ -104,6 +106,11 @@ const postGeneratePins = async (req, res, next) => {
     if (update) {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
+
+    // New code - writes to allocateCheckFormTable, depends on school pin being ready
+    // disabled as not yet working correctly in travis.
+    // await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
   } catch (error) {
@@ -123,21 +130,18 @@ const getViewAndPrintPins = async (req, res, next) => {
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
-  let groups
   let school
   let error
-  const date = dateService.formatDayAndDate(new Date())
+  let qrDataURL
+  const date = dateService.formatDayAndDate()
   try {
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
+    if (pupils.length > 0) {
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
+    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)
   }
@@ -147,44 +151,48 @@ const getViewAndPrintPins = async (req, res, next) => {
     pupils,
     date,
     error,
-    helplineNumber
+    helplineNumber,
+    qrDataURL,
+    url: config.PUPIL_APP_URL
   })
 }
 
-/**
- * Get Print PINs.
- * @param req
- * @param res
- * @param next
- * @returns {Promise<*>}
- */
-const getPrintPins = async (req, res, next) => {
+const getViewAndCustomPrintPins = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'Print pupils'
-  let groups
+  res.locals.pageTitle = `View and custom print PINs`
+  req.breadcrumbs(
+    `PINs for ${pinEnv} check`,
+    `/pupil-pin/generate-${pinEnv}-pins-overview`)
+  req.breadcrumbs(res.locals.pageTitle)
+
+  const helplineNumber = config.Data.helplineNumber
   let pupils
+  let groups
   let school
+  let error
   let qrDataURL
-  const date = dateService.formatDayAndDate(new Date())
+  const date = dateService.formatDayAndDate()
   try {
-    groups = await groupService.getGroupsAsArray(req.user.schoolId)
     pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
-    if (pupils.length > 0 && groups.length > 0) {
-      pupils = pupils.map(p => {
-        p.group = groups[p.group_id] || ''
-        return p
-      })
-    }
     school = await pinService.getActiveSchool(req.user.School)
+    error = await checkWindowSanityCheckService.check()
+    if (pupils.length > 0) {
+      groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
+      pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
+    }
     qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
   } catch (error) {
     return next(error)
   }
-  res.render('pupil-pin/pin-print', {
-    pupils,
+  return res.render('pupil-pin/view-and-custom-print-pins', {
+    breadcrumbs: req.breadcrumbs(),
     school,
+    pupils,
+    groups,
     date,
+    error,
+    helplineNumber,
     qrDataURL,
     url: config.PUPIL_APP_URL
   })
@@ -195,5 +203,5 @@ module.exports = {
   getGeneratePinsList,
   postGeneratePins,
   getViewAndPrintPins,
-  getPrintPins
+  getViewAndCustomPrintPins
 }
