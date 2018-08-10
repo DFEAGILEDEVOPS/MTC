@@ -1,6 +1,8 @@
 'use strict'
 
-const getContactPage = async (req, res) => {
+const monitor = require('../helpers/monitor')
+
+const getPrivacyPage = async (req, res) => {
   res.locals.pageTitle = 'Privacy notice'
   req.breadcrumbs(res.locals.pageTitle)
   res.render('privacy.ejs', {
@@ -8,4 +10,4 @@ const getContactPage = async (req, res) => {
   })
 }
 
-module.exports = getContactPage
+module.exports = monitor('privacy.controller', { getPrivacyPage })

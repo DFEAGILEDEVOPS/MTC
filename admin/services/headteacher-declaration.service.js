@@ -1,6 +1,7 @@
 'use strict'
 
 const R = require('ramda')
+const monitor = require('../helpers/monitor')
 const schoolDataService = require('../services/data-access/school.data.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
 const headteacherDeclarationService = {}
@@ -67,4 +68,4 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (dfeNumber) 
   return true
 }
 
-module.exports = headteacherDeclarationService
+module.exports = monitor('headteacher-declaration.service', headteacherDeclarationService)
