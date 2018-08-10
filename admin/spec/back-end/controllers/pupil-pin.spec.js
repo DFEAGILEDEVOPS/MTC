@@ -6,7 +6,6 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 
 const checkStartService = require('../../../services/check-start.service')
-const config = require('../../../config')
 const dateService = require('../../../services/date.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pinService = require('../../../services/pin.service')
@@ -232,6 +231,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
@@ -249,6 +249,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'live' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
@@ -263,6 +264,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
@@ -279,6 +281,7 @@ describe('pupilPin controller:', () => {
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
 
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(schoolMock)
@@ -296,6 +299,7 @@ describe('pupilPin controller:', () => {
         const req = { body: {}, params: { pinEnv: 'familiarisation' } }
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(pinGenerationService, 'generateSchoolPassword').and.returnValue(null)
@@ -310,6 +314,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').postGeneratePins
         spyOn(checkStartService, 'prepareCheck')
+        spyOn(checkStartService, 'prepareCheck2')
         spyOn(pinGenerationService, 'updatePupilPins').and.returnValue(null)
         spyOn(pupilDataService, 'sqlUpdate').and.returnValue(null)
         spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(undefined)
@@ -325,7 +330,7 @@ describe('pupilPin controller:', () => {
     let next
     let goodReqParamsLive = {
       method: 'POST',
-      url: '/pupil-pin/generate-live-pins-list',
+      url: '/pupil-pin/view-and-print-live-pins',
       params: {
         pinEnv: 'live'
       },
@@ -335,7 +340,7 @@ describe('pupilPin controller:', () => {
     }
     let goodReqParamsFam = {
       method: 'POST',
-      url: '/pupil-pin/generate-familiarisation-pins-list',
+      url: '/pupil-pin/view-and-print-familiarisation-pins',
       params: {
         pinEnv: 'familiarisation'
       },
@@ -359,7 +364,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsLive)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -384,7 +389,7 @@ describe('pupilPin controller:', () => {
         const req = getReq(goodReqParamsFam)
         const controller = require('../../../controllers/pupil-pin.js').getViewAndPrintPins
         spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
         spyOn(pinService, 'getActiveSchool').and.returnValue(null)
         spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
@@ -404,13 +409,12 @@ describe('pupilPin controller:', () => {
     })
   })
 
-  describe('getPrintPins route', () => {
-    let controller
+  describe('getViewAndCustomPrintPins route', () => {
     let sandbox
     let next
     let goodReqParamsLive = {
-      method: 'GET',
-      url: '/pupil/print-live-pins',
+      method: 'POST',
+      url: '/pupil-pin/view-and-custom-print-live-pins',
       params: {
         pinEnv: 'live'
       },
@@ -419,8 +423,8 @@ describe('pupilPin controller:', () => {
       }
     }
     let goodReqParamsFam = {
-      method: 'GET',
-      url: '/pupil/print-familiarisation-pins',
+      method: 'POST',
+      url: '/pupil-pin/view-and-custom-print-familiarisation-pins',
       params: {
         pinEnv: 'familiarisation'
       },
@@ -432,7 +436,6 @@ describe('pupilPin controller:', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-      controller = require('../../../controllers/pupil-pin.js').getPrintPins
     })
 
     afterEach(() => {
@@ -440,49 +443,57 @@ describe('pupilPin controller:', () => {
     })
 
     describe('for live pins', () => {
-      it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
-        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-        spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(pinService, 'getActiveSchool').and.returnValue({})
-        spyOn(qrService, 'getDataURL').and.returnValue('')
+      it('displays the generated pupils list and password', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsLive)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
+        spyOn(pinService, 'getActiveSchool').and.returnValue(null)
+        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+        spyOn(qrService, 'getDataURL').and.returnValue('')
+        spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-          pupils: [],
-          school: {},
-          date: '',
-          qrDataURL: '',
-          url: config.PUPIL_APP_URL
-        })
+        expect(res.render).toHaveBeenCalled()
+        done()
+      })
+      it('calls next if error occurs', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParamsLive)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        await controller(req, res, next)
+        expect(next).toHaveBeenCalled()
         done()
       })
     })
 
     describe('for familiarisation pins', () => {
-      it('returns data for the print page', async (done) => {
-        spyOn(groupService, 'getGroupsAsArray').and.returnValue('')
-        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
-        spyOn(dateService, 'formatFullGdsDate').and.returnValue('')
-        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
-        spyOn(pinService, 'getActiveSchool').and.returnValue({})
-        spyOn(qrService, 'getDataURL').and.returnValue('')
+      it('displays the generated pupils list and password', async (done) => {
         const res = getRes()
         const req = getReq(goodReqParamsFam)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue([])
+        spyOn(groupService, 'findGroupsByPupil').and.returnValue([])
+        spyOn(groupService, 'assignGroupsToPupils').and.returnValue([])
+        spyOn(pinService, 'getActiveSchool').and.returnValue(null)
+        spyOn(dateService, 'formatDayAndDate').and.returnValue('')
+        spyOn(qrService, 'getDataURL').and.returnValue('')
+        spyOn(checkWindowSanityCheckService, 'check')
         spyOn(res, 'render').and.returnValue(null)
         await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(res.render).toHaveBeenCalledWith('pupil-pin/pin-print', {
-          pupils: [],
-          school: {},
-          date: '',
-          qrDataURL: '',
-          url: config.PUPIL_APP_URL
-        })
+        expect(res.render).toHaveBeenCalled()
+        done()
+      })
+      it('calls next if error occurs', async (done) => {
+        const res = getRes()
+        const req = getReq(goodReqParamsFam)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
+        spyOn(pinService, 'getPupilsWithActivePins').and.returnValue(Promise.reject(new Error('error')))
+        await controller(req, res, next)
+        expect(next).toHaveBeenCalled()
         done()
       })
     })

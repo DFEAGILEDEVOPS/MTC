@@ -213,7 +213,7 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
  * Find pupils by ids
  * @param ids
  * @param {Number} schoolId - `school.id` database ID
- * @return {Promise<void>}
+ * @return {Promise<*>}
  */
 pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   if (!(Array.isArray(ids) && ids.length > 0)) {
@@ -287,6 +287,23 @@ pupilDataService.sqlUpdatePinsBatch = async (pupils, pinEnv = 'live') => {
     })
   })
   const sql = update.join(';\n')
+  return sqlService.modify(sql, params)
+}
+/**
+ * Update several pupil tokens in one query
+ * @param {id: Number, jwtToken: String, jwtSecret: String} pupils
+ * @return {Promise}
+ */
+pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
+  const params = []
+  const update = []
+  pupils.forEach((pupil, i) => {
+    update.push(`UPDATE ${sqlService.adminSchema}.${table} SET jwtToken = @jwtToken${i}, jwtSecret = @jwtSecret${i} WHERE id = @id${i}`)
+    params.push({ name: `jwtToken${i}`, value: pupil.jwtToken, type: TYPES.NVarChar })
+    params.push({ name: `jwtSecret${i}`, value: pupil.jwtSecret, type: TYPES.NVarChar })
+    params.push({ name: `id${i}`, value: pupil.id, type: TYPES.Int })
+  })
+  const sql = update.join('; \n')
   return sqlService.modify(sql, params)
 }
 

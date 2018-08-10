@@ -100,4 +100,24 @@ groupService.findGroupsByPupil = async (schoolId, pupils) => {
   return groupDataService.sqlFindGroupsByIds(schoolId, pupils)
 }
 
+/**
+ * Find and assign groups to pupils based on the schoolId
+ * @param schoolId
+ * @param pupils
+ * @returns {Promise<*>}
+ */
+groupService.assignGroupsToPupils = async (schoolId, pupils) => {
+  if (!schoolId || !pupils || (pupils && pupils.length < 1)) {
+    return pupils
+  }
+  const groups = await groupService.getGroupsAsArray(schoolId)
+  if (groups && groups.length < 1) {
+    return pupils
+  }
+  return pupils.map(p => {
+    p.group = groups[p.group_id] || ''
+    return p
+  })
+}
+
 module.exports = monitor('group.service', groupService)

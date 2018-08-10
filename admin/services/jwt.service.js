@@ -4,6 +4,7 @@ const moment = require('moment')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
+const config = require('../config')
 
 const pupilDataService = require('./data-access/pupil.data.service')
 const monitor = require('../helpers/monitor')
@@ -14,24 +15,30 @@ const jwtService = {
   /**
    *
    * @param {Object} pupil
-   * @param {Moment} checkWindowEndDate
+   * @param {Moment} expiryDate
    * @return {*}
    */
-  createToken: async (pupil, checkWindowEndDate) => {
+  createToken: async (pupil, expiryDate) => {
     if (!(pupil && pupil.id)) {
       throw new Error('Pupil is required')
     }
-    if (!checkWindowEndDate) {
-      throw new Error('Check window end date is required')
+
+    if (!expiryDate) {
+      throw new Error('Expiry date is required')
     }
+
+    if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
+      throw new Error('Invalid expiry date')
+    }
+
     const jwtId = uuidv4()
     const jwtSecret = await crypto.randomBytes(32).toString('hex')
-    await pupilDataService.sqlUpdate({id: pupil.id, token: jwtSecret})
+
     // TODO: for additional security add in a device Id
     const payload = {
       iss: 'MTC Admin', // Issuer
       sub: pupil.id, // Subject
-      exp: moment(checkWindowEndDate).unix(), // Expiry
+      exp: expiryDate.unix(), // Expiry
       nbf: Math.floor(Date.now() / 1000), // Not before
       jwi: jwtId // JWT token ID
     }
@@ -60,12 +67,13 @@ const jwtService = {
       throw new Error('Subject not found')
     }
 
-    if (!pupil.token) {
+    if (!pupil.jwtSecret) {
       throw new Error('Error - missing secret')
     }
 
+    // Verify the token signature is valid, and signed by the secret key stored in the pupil table
     try {
-      await jwt.verify(token, pupil.token)
+      await jwt.verify(token, pupil.jwtSecret)
     } catch (error) {
       throw new Error('Unable to verify: ' + error.message)
     }

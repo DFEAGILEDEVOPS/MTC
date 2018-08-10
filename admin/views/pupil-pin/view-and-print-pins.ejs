@@ -1,4 +1,4 @@
-<div class="grid-row">
+<div class="grid-row no-print">
     <div class="column-one-half">
         <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
     </div>
@@ -7,12 +7,20 @@
     </div>
 </div>
 
-<div class="grid-row">
+<%- partial('partials/_print_pupils', {
+  pupils: pupils,
+  date: date,
+  qrDataURL: qrDataURL,
+  school: school,
+  url: url
+}) %>
+
+<div class="grid-row no-print">
     <div class="column-two-thirds">
         <% if (messages && messages.info && messages.info.length) { %>
-          <div class="info-message">
+        <div class="info-message">
             <%= messages.info %>
-          </div>
+        </div>
         <% } %>
 
         <% if (error) { %>
@@ -37,7 +45,7 @@
             <% if (error) { %>
             <a class="button button-primary" disabled >Print PINs</a>
             <% } else { %>
-            <a href="/pupil-pin/print-<%= pinEnv %>-pins" class="button button-primary">Print PINs</a>
+            <a id="printPinsButton" class="button button-primary">Print PINs</a>
             <% } %>
         </div>
 
@@ -108,3 +116,12 @@
         </aside>
     </div>
 </div>
+
+<script>
+ $(document).ready(function () {
+   $('#printPinsButton').click(function (event) {
+     event.preventDefault()
+     window.print();
+   })
+ })
+</script>

@@ -9,6 +9,7 @@ const groupDataService = require('../../../services/data-access/group.data.servi
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const pupilsMock = require('../mocks/pupils')
+const groupsNamesMock = groupsMock.map(g => g.name)
 
 describe('group.service', () => {
   let sandbox
@@ -248,6 +249,36 @@ describe('group.service', () => {
       } catch (error) {
         expect(error.message).toEqual('schoolId and pupils are required')
       }
+      done()
+    })
+  })
+
+  describe('#assignGroupsToPupils', () => {
+    beforeEach(() => {
+      spyOn(groupService, 'getGroupsAsArray').and.returnValue(groupsNamesMock)
+    })
+
+    it('should return pupils with groups added', async (done) => {
+      const schoolId = 1
+      const pupils = await groupService.assignGroupsToPupils(schoolId, pupilsMock)
+      expect(pupils.length).toBe(pupilsMock.length)
+      expect(pupils[0].group).toEqual('')
+      expect(pupils[1].group).toEqual('')
+      expect(pupils[2].group).toEqual(groupsMock[1].name)
+      done()
+    })
+
+    it('should return an empty array if there are no pupils', async (done) => {
+      const schoolId = 1
+      const pupils = await groupService.assignGroupsToPupils(schoolId, [])
+      expect(pupils).toEqual([])
+      done()
+    })
+
+    it('should return the pupils mock if there are no groups', async (done) => {
+      const schoolId = null
+      const pupils = await groupService.assignGroupsToPupils(schoolId, pupilsMock)
+      expect(pupils).toEqual(pupilsMock)
       done()
     })
   })

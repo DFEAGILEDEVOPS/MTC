@@ -12,3 +12,13 @@
         </div>
     </div>
 </div>
+
+<% if (typeof submitPrint !== 'undefined') { %>
+<script>
+    $('#stickyConfirm').click(function (event) {
+        event.preventDefault();
+        window.GOVUK.printPopup.hideUncheckedPupils('.pupil-print-table');
+        window.print();
+    });
+</script>
+<% } %>
