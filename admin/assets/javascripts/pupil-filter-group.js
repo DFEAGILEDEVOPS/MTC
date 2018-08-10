@@ -25,7 +25,7 @@ $(function () {
       if ($('#pupilsRestartList').length > 0) {
         displayStickyBanner = restarts.validateForm()
       }
-      stickyBanner.toggle(displayStickyBanner)
+      stickyBanner.toggle(inputStatus.countCheckedCheckboxes() || displayStickyBanner)
     })
 
     $('.filter-header').on('click', function (e) {

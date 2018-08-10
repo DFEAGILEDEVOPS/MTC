@@ -28,7 +28,8 @@ var inputStatus = {
           selectAll.addClass('all-hide')
           deselectAll.removeClass('all-hide')
           $('.multiple-choice-mtc > input:checkbox').attr('data-checked', true)
-          stickyBanner.toggle(validationStatus)
+          var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+          stickyBanner.toggle(validationStatus && countCheckedCheckboxes > 0)
         } else {
           deselectAll.addClass('all-hide')
           selectAll.removeClass('all-hide')
@@ -53,7 +54,8 @@ var inputStatus = {
       $(this).addClass('all-hide')
       $('#deselectAll').removeClass('all-hide')
       $(sel + ' > input:checkbox').attr('data-checked', true)
-      stickyBanner.toggle(validationStatus || true)
+      var countCheckedCheckboxes = inputStatus.countCheckedCheckboxes()
+      stickyBanner.toggle((validationStatus || true) && countCheckedCheckboxes > 0)
     })
   },
 
@@ -167,6 +169,9 @@ var inputStatus = {
   * Enable/disable confirmation button from sticky banner.
   * @type {{toggle: toggle}}
   */
+
+var documentHeight = 0
+
 var stickyBanner = {
   /**
     * @param status
@@ -182,27 +187,38 @@ var stickyBanner = {
   },
 
   /**
-    * Sticky banner positioning.
+   * Reset the document height, stored instead of recalculating
+   * every time the user scrolls / resize the page (expensive)
+   */
+  resetDocumentHeight: function () {
+    documentHeight = $(document).height()
+  },
+
+  /**
+   * Calculate and update the sticky banner position
+   */
+  calculatePosition: function () {
+    var stickyBannerEl = $('#stickyBanner')
+    var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
+    var y = $(document).scrollTop()
+    if (y > distance) {
+      stickyBannerEl.css({ bottom: y - distance })
+    } else {
+      stickyBannerEl.css({ bottom: 0 })
+    }
+  },
+
+  /**
+    * Sticky banner positioning, set the scroll and resize handlers
     */
   positioning: function () {
-    var documentHeight = $(document).height()
-    var stickyBanner = $('#stickyBanner')
-    var calculatePosition = function () {
-      var distance = documentHeight - $(window).height() - $('#footer').outerHeight()
-      var y = $(this).scrollTop()
-      if (y > distance) {
-        stickyBanner.css({ bottom: y - distance })
-      } else {
-        stickyBanner.css({ bottom: 0 })
-      }
-    }
-
+    stickyBanner.resetDocumentHeight()
     // Initial position.
-    calculatePosition()
+    stickyBanner.calculatePosition()
 
     // Re-calculate position on scrolling.
     $(document).scroll(function () {
-      calculatePosition()
+      stickyBanner.calculatePosition()
       // if (y > distance) {
       //   stickyBanner.css({ bottom: y - distance })
       // } else {
@@ -212,7 +228,7 @@ var stickyBanner = {
 
     // Re-calculating position on window resize.
     $(window).resize(function () {
-      calculatePosition()
+      stickyBanner.calculatePosition()
       // if (y > distance) {
       //   stickyBanner.css({ bottom: y - distance })
       // } else {
