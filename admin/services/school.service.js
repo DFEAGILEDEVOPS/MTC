@@ -1,6 +1,7 @@
 'use strict'
 
 const schoolDataService = require('../services/data-access/school.data.service')
+const monitor = require('../helpers/monitor')
 
 const schoolService = {
 
@@ -18,4 +19,4 @@ const schoolService = {
   }
 }
 
-module.exports = schoolService
+module.exports = monitor('school.service', schoolService)

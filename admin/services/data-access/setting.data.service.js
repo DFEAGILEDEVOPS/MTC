@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
+const monitor = require('../../helpers/monitor')
 
 const settingDataService = {}
 
@@ -39,4 +40,4 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit) => {
   return sqlService.modify(sql, params)
 }
 
-module.exports = settingDataService
+module.exports = monitor('setting.data-service', settingDataService)

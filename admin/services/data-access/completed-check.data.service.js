@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
+const monitor = require('../../helpers/monitor')
 const completedCheckDataService = {}
 const checkDataService = require('./check.data.service')
 
@@ -225,4 +226,4 @@ function parseData (check) {
   return check
 }
 
-module.exports = completedCheckDataService
+module.exports = monitor('completedCheck.data-service', completedCheckDataService)

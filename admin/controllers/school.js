@@ -1,6 +1,7 @@
 'use strict'
 
 const schoolService = require('../services/school.service')
+const monitor = require('../helpers/monitor')
 
 /**
  * School landing page.
@@ -24,4 +25,4 @@ const getSchoolLandingPage = async (req, res, next) => {
   })
 }
 
-module.exports = { getSchoolLandingPage }
+module.exports = monitor('school.controller', { getSchoolLandingPage })

@@ -21,7 +21,7 @@ describe('cookies page controller', () => {
     controller = require('../../../controllers/cookies')
 
     spyOn(res, 'render').and.returnValue(null)
-    await controller(req, res)
+    await controller.getCookiesPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Cookies')
     expect(res.render).toHaveBeenCalled()

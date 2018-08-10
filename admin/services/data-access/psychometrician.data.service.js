@@ -3,6 +3,7 @@
 const { TYPES } = require('tedious')
 
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 
 /**
  * Psychometrician data service - test developer role can access all pupils
@@ -30,4 +31,4 @@ const psychometricianDataService = {
   }
 }
 
-module.exports = psychometricianDataService
+module.exports = monitor('psychometrician.data-service', psychometricianDataService)
