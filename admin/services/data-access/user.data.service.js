@@ -3,6 +3,7 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 
 const table = '[user]'
 
@@ -37,4 +38,4 @@ const userDataService = {
   }
 }
 
-module.exports = userDataService
+module.exports = monitor('user.data-service', userDataService)

@@ -18,6 +18,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 const azureQueueService = require('../services/azure-queue.service')
+const monitor = require('../helpers/monitor')
 
 const checkStartService = {}
 
@@ -245,4 +246,4 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   return messages
 }
 
-module.exports = checkStartService
+module.exports = monitor('check-start.service', checkStartService)

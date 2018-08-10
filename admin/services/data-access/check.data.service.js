@@ -4,6 +4,7 @@ const R = require('ramda')
 
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
+const monitor = require('../../helpers/monitor')
 const table = '[check]'
 
 const checkDataService = {}
@@ -277,4 +278,4 @@ checkDataService.sqlFindAllFormsUsedByPupils = async function (pupilIds) {
   return byPupil
 }
 
-module.exports = checkDataService
+module.exports = monitor('check.data-service', checkDataService)

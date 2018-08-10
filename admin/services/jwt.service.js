@@ -7,6 +7,7 @@ const uuidv4 = require('uuid/v4')
 const config = require('../config')
 
 const pupilDataService = require('./data-access/pupil.data.service')
+const monitor = require('../helpers/monitor')
 
 /** @namespace */
 
@@ -87,4 +88,4 @@ const jwtService = {
   decode: (token) => jwt.decode(token)
 }
 
-module.exports = jwtService
+module.exports = monitor('jwt.service', jwtService)

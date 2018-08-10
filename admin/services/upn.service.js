@@ -1,5 +1,7 @@
 'use strict'
 
+const monitor = require('../helpers/monitor')
+
 /** @namespace */
 
 const remainderLookup = {
@@ -272,4 +274,4 @@ const upnService = {
   }
 }
 
-module.exports = upnService
+module.exports = monitor('upn.service', upnService)

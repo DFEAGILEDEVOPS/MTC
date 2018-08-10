@@ -2,6 +2,7 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 const table = '[pupilRestart]'
 const pupilRestartDataService = {}
 
@@ -159,4 +160,4 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (pupilId, userId) => {
   return sqlService.modify(sql, params)
 }
 
-module.exports = pupilRestartDataService
+module.exports = monitor('pupilRestart.data-service', pupilRestartDataService)

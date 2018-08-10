@@ -1,4 +1,5 @@
 const dateService = require('../services/date.service')
+const monitor = require('../helpers/monitor')
 const pupilIdentificationFlag = {}
 
 /**
@@ -38,4 +39,4 @@ pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
 pupilIdentificationFlag.haveEqualFullNames = (p1, p2) => p1.foreName.toLowerCase() === p2.foreName.toLowerCase() &&
 p1.lastName.toLowerCase() === p2.lastName.toLowerCase()
 
-module.exports = pupilIdentificationFlag
+module.exports = monitor('pupil-identification-flag.service', pupilIdentificationFlag)

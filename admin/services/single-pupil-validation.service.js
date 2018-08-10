@@ -2,11 +2,12 @@ const pupilValidator = require('../lib/validator/pupil-validator')
 const moment = require('moment')
 const R = require('ramda')
 const addPupilErrorMessages = require('../lib/errors/pupil').addPupil
+const monitor = require('../helpers/monitor')
 
 // Warning: some state is built up in this variable.  Please be sure to call `init()` before calling `validate()`
 let seenUpns = {}
 
-module.exports = {
+const service = {
 
   /**
    * Initialise the state to get a clean run - NB always call this function before `validate()`
@@ -56,3 +57,5 @@ module.exports = {
     return { pupil: p, single: pupilCsvData }
   }
 }
+
+module.exports = monitor('single-pupil-validation.service', service)
