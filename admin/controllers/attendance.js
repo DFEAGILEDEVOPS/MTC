@@ -10,6 +10,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const scoreService = require('../services/score.service')
 const ValidationError = require('../lib/validation-error')
+const monitor = require('../helpers/monitor')
 
 const getResults = async (req, res, next) => {
   res.locals.pageTitle = 'Results'
@@ -224,7 +225,7 @@ const getHDFSubmitted = async (req, res, next) => {
   }
 }
 
-module.exports = {
+module.exports = monitor('attendance.controller', {
   getResults,
   downloadResults,
   getSubmitAttendance,
@@ -232,4 +233,4 @@ module.exports = {
   getDeclarationForm,
   postDeclarationForm,
   getHDFSubmitted
-}
+})

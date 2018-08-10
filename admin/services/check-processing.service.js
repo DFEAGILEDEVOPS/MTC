@@ -4,6 +4,7 @@ const psychometricianReportDataService = require('./data-access/psychometrician-
 const psychometricianReportService = require('./psychometrician-report.service')
 const anomalyReportService = require('./anomaly-report.service')
 const winston = require('winston')
+const monitor = require('../helpers/monitor')
 
 const checkProcessingService = {}
 const batchSize = 100
@@ -20,7 +21,7 @@ checkProcessingService.process = async function () {
       winston.info('checkProcessingService.process: nothing to do')
     }
     while (hasWorkToDo) {
-      await this.cachePsychometricanReportData(batchSize)
+      await checkProcessingService.cachePsychometricanReportData(batchSize)
       hasWorkToDo = await psychometricianReportDataService.sqlHasUnprocessedStartedChecks()
     }
   } catch (error) {
@@ -50,4 +51,4 @@ checkProcessingService.cachePsychometricanReportData = async function (batchSize
   return true
 }
 
-module.exports = checkProcessingService
+module.exports = monitor('check-processing.service', checkProcessingService)

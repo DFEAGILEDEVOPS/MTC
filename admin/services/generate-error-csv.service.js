@@ -3,8 +3,10 @@ const moment = require('moment')
 const { promisify } = require('bluebird')
 const csv = require('fast-csv')
 const azureFileDataService = require('./data-access/azure-file.data.service')
+const monitor = require('../helpers/monitor')
 
-module.exports.generate = async (school, headers, csvData) => {
+const service = {}
+service.generate = async (school, headers, csvData) => {
   const errorsCsv = []
   headers.push('Errors')
   errorsCsv.push(headers)
@@ -22,3 +24,5 @@ module.exports.generate = async (school, headers, csvData) => {
   }
   return { file }
 }
+
+module.exports = monitor('generate-error-csv.service', service)

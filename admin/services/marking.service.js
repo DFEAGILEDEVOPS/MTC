@@ -7,6 +7,7 @@ const R = require('ramda')
 const completedCheckDataService = require('./data-access/completed-check.data.service')
 const checkDataService = require('./data-access/check.data.service')
 const answerDataService = require('./data-access/answer.data.service')
+const monitor = require('../helpers/monitor')
 
 const markingService = {}
 const batchSize = 100
@@ -22,7 +23,7 @@ markingService.process = async function () {
       winston.info('Processing: nothing to do')
     }
     while (hasWorkToDo) {
-      await this.applyMarking(batchSize)
+      await markingService.applyMarking(batchSize)
       hasWorkToDo = await completedCheckDataService.sqlHasUnmarked()
     }
   } catch (error) {
@@ -59,7 +60,7 @@ markingService.batchMark = async function (batchIds) {
   const completedChecksWithCheckForms = await completedCheckDataService.sqlFindByIdsWithForms(batchIds)
   for (let cc of completedChecksWithCheckForms) {
     try {
-      await this.mark(cc)
+      await markingService.mark(cc)
     } catch (error) {
       winston.error('Error marking document: ', error)
       // We can ignore this error and re-try the document again.
@@ -118,4 +119,4 @@ markingService.mark = async function (completedCheck) {
   await answerDataService.sqlUpdateWithResults(completedCheck.id, answers)
 }
 
-module.exports = markingService
+module.exports = monitor('marking.service', markingService)

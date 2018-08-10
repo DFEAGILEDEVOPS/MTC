@@ -1,5 +1,7 @@
 'use strict'
 
+const monitor = require('../helpers/monitor')
+
 const setValidatorService = {
   /**
    * Utility function to validate that incoming form ids, match ids from objects in the second param
@@ -16,4 +18,4 @@ const setValidatorService = {
   }
 }
 
-module.exports = setValidatorService
+module.exports = monitor('set-validation.service', setValidatorService)

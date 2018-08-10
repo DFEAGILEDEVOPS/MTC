@@ -3,6 +3,7 @@ const dateService = require('../services/date.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
+const monitor = require('../helpers/monitor')
 
 const pupilAuthenticationService = {
   /**
@@ -33,4 +34,4 @@ const pupilAuthenticationService = {
   }
 }
 
-module.exports = pupilAuthenticationService
+module.exports = monitor('pupil-authentication.service', pupilAuthenticationService)
