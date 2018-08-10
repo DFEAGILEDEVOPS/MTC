@@ -5,5 +5,6 @@
   "pupilAdd": true,
   "pupilEdit": true,
   "pupilUpload": true,
-  "accessArrangements": false
+  "dependencyTracking": true,
+    "accessArrangements": false
 }

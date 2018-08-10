@@ -3,6 +3,7 @@ const {TYPES} = require('tedious')
 const R = require('ramda')
 
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 
 const table = '[anomalyReportCache]'
 
@@ -63,4 +64,4 @@ const anomalyReportCacheDataService = {
   }
 }
 
-module.exports = anomalyReportCacheDataService
+module.exports = monitor('anomalyReportCache.data-service', anomalyReportCacheDataService)
