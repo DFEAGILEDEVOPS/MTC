@@ -4,6 +4,7 @@ class ViewAndPrintPinsPage < SitePrism::Page
   element :heading, '.heading-xlarge'
   element :view_pin_message, '.lede', text: 'Personal Identification Number (PIN) have been generated for selected pupils. These expire at 4pm daily.'
   element :print_pins_btn, "a", text: 'Print PINs'
+  element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
 
   section :pupil_list, '#generatePins tbody' do
     sections :rows, 'tr' do

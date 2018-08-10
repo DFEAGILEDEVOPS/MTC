@@ -8,7 +8,6 @@ const winston = require('winston')
  */
 
 const localDevWhitelist = [
-  'AZURE_STORAGE_CONNECTION_STRING',
   'GOOGLE_TRACKING_ID',
   'MTC_AUTH_PRIVATE_KEY',
   'NCA_TOOLS_AUTH_URL',
@@ -23,7 +22,6 @@ const main = (app) => {
   if (process.env.NODE_ENV === 'development') {
     whitelist.push(localDevWhitelist)
   }
-  console.log('checking vars')
   // block app if required vars not set and in development mode...
   const unsetVars = []
   Object.keys(config).map((key) => {

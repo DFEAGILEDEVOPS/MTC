@@ -99,5 +99,10 @@ module.exports = {
   },
   Cors: {
     Whitelist: process.env.CORS_WHITELIST || 'http://localhost:4200' // for development
+  },
+  Tokens: {
+    // 12 hours default expiry
+    jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
+    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 12,
   }
 }
