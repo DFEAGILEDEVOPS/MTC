@@ -1,6 +1,7 @@
 const accessArrangementsService = require('../services/access-arrangements.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
+const monitor = require('../helpers/monitor')
 
 const controller = {}
 
@@ -57,4 +58,4 @@ controller.getSelectAccessArrangements = async (req, res, next) => {
 controller.postSubmitAccessArrangements = async (req, res, next) => {
 }
 
-module.exports = controller
+module.exports = monitor('access-arrangements.controller', controller)

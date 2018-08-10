@@ -11,6 +11,7 @@ const pinValidator = require('../lib/validator/pin-validator')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const config = require('../config')
+const monitor = require('../helpers/monitor')
 
 const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
 
@@ -176,4 +177,4 @@ pinGenerationService.generatePupilPin = () => {
   return randomGenerator.getRandom(pupilPinLength, chars)
 }
 
-module.exports = pinGenerationService
+module.exports = monitor('pin-generation.service', pinGenerationService)

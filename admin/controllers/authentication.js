@@ -3,6 +3,7 @@
 const winston = require('winston')
 const rolesConfig = require('../roles-config')
 const config = require('../config')
+const monitor = require('../helpers/monitor')
 
 const home = (req, res) => {
   if (req.isAuthenticated()) {
@@ -81,7 +82,7 @@ const getUnauthorised = (req, res) => {
   }
 }
 
-module.exports = {
+module.exports = monitor('authentication.controller', {
   home,
   getSignIn,
   postSignIn,
@@ -89,4 +90,4 @@ module.exports = {
   getSignInFailure,
   postAuth,
   getUnauthorised
-}
+})

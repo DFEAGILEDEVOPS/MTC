@@ -7,6 +7,7 @@ const winston = require('winston')
 const useragent = require('useragent')
 const device = require('device')
 const hash = require('object-hash')
+const monitor = require('../helpers/monitor')
 
 momentDurationFormatSetup(moment)
 
@@ -202,7 +203,7 @@ psUtilService.getLastAnswerInputTime = function (inputs, answer) {
   }
 
   // Filter the inputs to only those that constitute the answer.  E.g. 0-9, Backspace
-  const filtered = this.filterInputsToAnswerKeys(inputs)
+  const filtered = psUtilService.filterInputsToAnswerKeys(inputs)
 
   if (!filtered.length) {
     return ''
@@ -233,7 +234,7 @@ psUtilService.getFirstInputTime = function (inputs, answer) {
   }
 
   // Filter the inputs to only those that constitute the answer.  E.g. 0-9, Backspace
-  const filtered = this.filterInputsToAnswerKeys(inputs)
+  const filtered = psUtilService.filterInputsToAnswerKeys(inputs)
 
   if (!filtered.length) {
     return ''
@@ -275,8 +276,8 @@ psUtilService.getResponseTime = function (inputs, answer) {
   if (inputs.length === 0) {
     return ''
   }
-  const first = moment(this.getFirstInputTime(inputs, answer))
-  const last = moment(this.getLastAnswerInputTime(inputs, answer))
+  const first = moment(psUtilService.getFirstInputTime(inputs, answer))
+  const last = moment(psUtilService.getLastAnswerInputTime(inputs, answer))
 
   if (!(first.isValid() && last.isValid())) {
     return ''
@@ -321,7 +322,7 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
   if (!Array.isArray(inputs)) {
     return 'error'
   }
-  const hasTimeout = this.getTimeoutFlag(answer.answer, inputs)
+  const hasTimeout = psUtilService.getTimeoutFlag(answer.answer, inputs)
   if (!hasTimeout) {
     return ''
   }
@@ -340,7 +341,7 @@ psUtilService.getTimeoutWithNoResponseFlag = function (inputs, answer) {
  * @return {number||string}
  */
 psUtilService.getTimeoutWithCorrectAnswer = function (inputs, markedAnswer) {
-  const timeout = this.getTimeoutFlag(markedAnswer.answer, inputs)
+  const timeout = psUtilService.getTimeoutFlag(markedAnswer.answer, inputs)
   if (!timeout) {
     return ''
   }
@@ -486,4 +487,4 @@ psUtilService.getInputMethod = function (inputs) {
   }
 }
 
-module.exports = psUtilService
+module.exports = monitor('psychometrician-util.service', psUtilService)

@@ -1,4 +1,5 @@
 const moment = require('moment')
+const monitor = require('../helpers/monitor')
 const R = require('ramda')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
@@ -77,4 +78,4 @@ pinService.expireMultiplePins = async (pupilIds, schoolId) => {
   return pupilDataService.sqlUpdatePinsBatch(data)
 }
 
-module.exports = pinService
+module.exports = monitor('pin.service', pinService)

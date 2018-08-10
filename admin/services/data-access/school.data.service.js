@@ -3,6 +3,7 @@
 const { TYPES } = require('tedious')
 const R = require('ramda')
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 const table = '[school]'
 
 const schoolDataService = {
@@ -96,4 +97,4 @@ const schoolDataService = {
   }
 }
 
-module.exports = schoolDataService
+module.exports = monitor('school.data-service', schoolDataService)

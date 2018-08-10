@@ -3,6 +3,7 @@ const restartService = require('../services/restart.service')
 const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const ValidationError = require('../lib/validation-error')
+const monitor = require('../helpers/monitor')
 
 const controller = {}
 
@@ -116,4 +117,4 @@ controller.postDeleteRestart = async (req, res, next) => {
   return res.redirect('/restart/overview')
 }
 
-module.exports = controller
+module.exports = monitor('restart.controller', controller)
