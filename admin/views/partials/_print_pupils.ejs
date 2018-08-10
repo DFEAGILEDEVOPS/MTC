@@ -1,10 +1,5 @@
-<div class="grid-row">
+<div class="grid-row only-print">
     <div class="column-two-thirds">
-        <div class="back-button-wrapper">
-            <div class="no-print">
-                <a class="back-button no-print" href="/pupil-pin/generate-<%= pinEnv %>-pins-overview">Back</a>
-            </div>
-        </div>
         <img class="sta-horizontal-logo" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
         <div class="heading-large">Multiplication Table Check</div>
         <ul class="list list-bullet font-xsmall" role="listbox">
@@ -18,7 +13,7 @@
             <% } else { %>
             <table>
                 <% for (let i = 0; i < pupils.length; i++) { %>
-                <tr class="page">
+                <tr class="page pupil-<%= pupils[i].id %>">
                     <td class="line-empty"></td>
                     <td class="line-checktype"><span><%= (pinEnv === 'live' ? 'Live' : 'Familiarisation') %></span></td>
                     <td class="line-content">
@@ -56,9 +51,3 @@
         </div>
     </div>
 </div>
-
-<script>
-  $(document).ready(function () {
-    window.print();
-  });
-</script>
