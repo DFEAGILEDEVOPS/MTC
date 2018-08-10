@@ -4,6 +4,7 @@ const { verify } = require('../services/jwt.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const apiResponse = require('./api-response')
 const pupilFeedbackDataService = require('../services/data-access/pupil-feedback.data.service')
+const monitor = require('../helpers/monitor')
 
 // TODO: add logging for all error paths
 
@@ -50,6 +51,6 @@ const setPupilFeedback = async (req, res, next) => {
   }
 }
 
-module.exports = {
+module.exports = monitor('pupil-feedback.controller', {
   setPupilFeedback
-}
+})

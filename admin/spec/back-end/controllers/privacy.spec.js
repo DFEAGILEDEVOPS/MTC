@@ -21,7 +21,7 @@ describe('privacy page controller', () => {
     controller = require('../../../controllers/privacy')
 
     spyOn(res, 'render').and.returnValue(null)
-    await controller(req, res)
+    await controller.getPrivacyPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Privacy notice')
     expect(res.render).toHaveBeenCalled()

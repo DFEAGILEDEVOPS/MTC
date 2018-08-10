@@ -12,6 +12,7 @@ const dateService = require('../services/date.service')
 const psychometricianReportService = require('../services/psychometrician-report.service')
 const anomalyReportService = require('../services/anomaly-report.service')
 const winston = require('winston')
+const monitor = require('../helpers/monitor')
 
 /**
  * Display landing page for 'test developer' role.
@@ -542,7 +543,7 @@ const getGenerateLatestPupilCheckData = async (req, res, next) => {
   }
 }
 
-module.exports = {
+module.exports = monitor('check-form.controller', {
   getDownloadPupilCheckData,
   getFileDownloadPupilCheckData,
   getGenerateLatestPupilCheckData,
@@ -557,4 +558,4 @@ module.exports = {
   saveAssignCheckFormsToWindow,
   unassignCheckFormsFromWindowPage,
   unassignCheckFormFromWindow
-}
+})

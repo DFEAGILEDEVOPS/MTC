@@ -1,4 +1,5 @@
 const checkDataService = require('./data-access/check.data.service')
+const monitor = require('../helpers/monitor')
 
 const scoreService = {}
 
@@ -41,4 +42,4 @@ scoreService.calculateScorePercentage = (results) => {
   return rounded
 }
 
-module.exports = scoreService
+module.exports = monitor('score.service', scoreService)

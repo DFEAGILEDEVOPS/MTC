@@ -1,6 +1,7 @@
 'use strict'
 
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 
 const pupilFeedbackDataService = {
   /**
@@ -13,4 +14,4 @@ const pupilFeedbackDataService = {
   }
 }
 
-module.exports = pupilFeedbackDataService
+module.exports = monitor('pupilFeedback.data-service', pupilFeedbackDataService)

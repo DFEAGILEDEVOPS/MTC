@@ -7,6 +7,7 @@ const winston = require('winston')
 
 const sqlPoolService = require('./sql.pool.service')
 const dateService = require('../date.service')
+const monitor = require('../../helpers/monitor')
 const moment = require('moment')
 let cache = {}
 
@@ -313,7 +314,7 @@ sqlService.getCacheEntryForColumn = async function (table, column) {
   const key = cacheKey(table, column)
   if (R.isEmpty(cache)) {
     // This will cache all data-types once on the first sql request
-    await this.updateDataTypeCache()
+    await sqlService.updateDataTypeCache()
   }
   if (!cache.hasOwnProperty(key)) {
     winston.debug(`sql.service: cache miss for ${key}`)
@@ -482,4 +483,4 @@ END CATCH
   `
   return sqlService.modify(wrappedSQL, params)
 }
-module.exports = sqlService
+module.exports = monitor('sql.data-service', sqlService)

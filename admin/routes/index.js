@@ -6,9 +6,9 @@ const { getCommitId, getBuildNumber } = require('../helpers/healthcheck')
 const config = require('../config')
 const rolesConfig = require('../roles-config')
 const isAuthenticated = require('../authentication/middleware')
-const contactPage = require('../controllers/contact')
-const privacyPage = require('../controllers/privacy')
-const cookiesPage = require('../controllers/cookies')
+const { getContactPage } = require('../controllers/contact')
+const { getPrivacyPage } = require('../controllers/privacy')
+const { getCookiesPage } = require('../controllers/cookies')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const checkFormController = require('../controllers/check-form')
 const { home,
@@ -44,10 +44,10 @@ router.get('/test-developer', isAuthenticated(rolesConfig.ROLE_TEST_DEVELOPER), 
 /* Service manager routing */
 router.get('/service-manager', isAuthenticated(rolesConfig.ROLE_SERVICE_MANAGER), (req, res, next) => getServiceManagerHome(req, res, next))
 /* Contact page */
-router.get('/contact', (req, res) => contactPage(req, res))
-router.get('/privacy', (req, res) => privacyPage(req, res))
+router.get('/contact', (req, res) => getContactPage(req, res))
+router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 /* Cookies page */
-router.get('/cookies', (req, res) => cookiesPage(req, res))
+router.get('/cookies', (req, res) => getCookiesPage(req, res))
 /* Health check */
 async function getPing (req, res) {
   // get build number from /build.txt

@@ -1,6 +1,7 @@
 'use strict'
 
 const sqlService = require('./sql.service')
+const monitor = require('../../helpers/monitor')
 
 const pupilStatusCodeDataService = {}
 const table = '[pupilStatusCode]'
@@ -21,4 +22,4 @@ pupilStatusCodeDataService.sqlFindStatusCodes = async () => {
   return sqlService.query(sql)
 }
 
-module.exports = pupilStatusCodeDataService
+module.exports = monitor('pupilStatusCode.data-service', pupilStatusCodeDataService)

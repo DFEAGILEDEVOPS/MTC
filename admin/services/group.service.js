@@ -1,5 +1,6 @@
 'use strict'
 
+const monitor = require('../helpers/monitor')
 const groupDataService = require('../services/data-access/group.data.service')
 const groupService = {}
 
@@ -119,4 +120,4 @@ groupService.assignGroupsToPupils = async (schoolId, pupils) => {
   })
 }
 
-module.exports = groupService
+module.exports = monitor('group.service', groupService)

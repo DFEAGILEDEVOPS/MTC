@@ -1,5 +1,6 @@
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
 const config = require('../config')
+const monitor = require('../helpers/monitor')
 
 let ncaPublicKey, mtcPrivateKey
 
@@ -31,4 +32,4 @@ const service = {
   }
 }
 
-module.exports = service
+module.exports = monitor('certificate-store.service', service)

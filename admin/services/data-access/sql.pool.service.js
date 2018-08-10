@@ -3,6 +3,7 @@
 var ConnectionPool = require('tedious-connection-pool')
 const config = require('../../config')
 const winston = require('winston')
+const monitor = require('../../helpers/monitor')
 
 var poolConfig = {
   min: config.Sql.Pooling.MinCount,
@@ -66,4 +67,4 @@ sqlPoolService.drain = () => {
   }
 }
 
-module.exports = sqlPoolService
+module.exports = monitor('sqlPool.data-service', sqlPoolService)

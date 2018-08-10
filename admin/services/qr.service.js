@@ -1,4 +1,5 @@
 const qrCode = require('qrcode')
+const monitor = require('../helpers/monitor')
 
 const qrService = {
   getDataURL: (url) => {
@@ -14,4 +15,4 @@ const qrService = {
   }
 }
 
-module.exports = qrService
+module.exports = monitor('qr.service', qrService)

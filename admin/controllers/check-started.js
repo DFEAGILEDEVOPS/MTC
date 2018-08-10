@@ -1,6 +1,7 @@
 const jwtService = require('../services/jwt.service')
 const pinService = require('../services/pin.service')
 const apiResponse = require('./api-response')
+const monitor = require('../helpers/monitor')
 
 /**
  * Expires the pupil's pin
@@ -28,6 +29,6 @@ const checkStarted = async (req, res) => {
   return apiResponse.sendJson(res, 'OK', 201)
 }
 
-module.exports = {
+module.exports = monitor('check-started.controller', {
   checkStarted
-}
+})

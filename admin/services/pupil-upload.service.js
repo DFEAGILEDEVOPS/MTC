@@ -5,6 +5,9 @@ const R = require('ramda')
 const pupilDataService = require('./data-access/pupil.data.service')
 const validateCSVService = require('./validate-csv.service')
 const generateErrorCSVService = require('./generate-error-csv.service')
+const monitor = require('../helpers/monitor')
+
+const service = {}
 
 /**
  *
@@ -39,7 +42,7 @@ const onCSVReadComplete = async (csvDataArray, school) => {
  * @param uploadFile
  * @return {Promise<void>}
  */
-module.exports.upload = async (school, uploadFile) => {
+service.upload = async (school, uploadFile) => {
   let stream
   const pr = new Promise((resolve, reject) => {
     let csvDataArray = []
@@ -59,3 +62,5 @@ module.exports.upload = async (school, uploadFile) => {
   })
   return pr
 }
+
+module.exports = monitor('pupil-upload.service', service)
