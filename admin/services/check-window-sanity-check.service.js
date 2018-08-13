@@ -2,6 +2,7 @@ const checkFormService = require('../services/check-form.service')
 const checkWindowDataService = require('../services/data-access/check-window.data.service')
 const serviceManagerErrorMessages = require('../lib/errors/service-manager')
 const testDeveloperErrorMessages = require('../lib/errors/test-developer')
+const monitor = require('../helpers/monitor')
 
 const checkWindowSanityCheckService = {}
 
@@ -26,4 +27,4 @@ checkWindowSanityCheckService.check = async () => {
   }
 }
 
-module.exports = checkWindowSanityCheckService
+module.exports = monitor('check-window-sanity-check.service', checkWindowSanityCheckService)

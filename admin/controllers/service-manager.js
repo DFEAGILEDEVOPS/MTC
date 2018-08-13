@@ -1,10 +1,8 @@
 'use strict'
 
 const moment = require('moment')
-const toBool = require('to-bool')
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
-const checkWindowValidator = require('../lib/validator/check-window-validator')
 const checkWindowErrorMessages = require('../lib/errors/check-window')
 const checkWindowService = require('../services/check-window.service')
 const sortingAttributesService = require('../services/sorting-attributes.service')
@@ -13,6 +11,7 @@ const pupilCensusService = require('../services/pupil-census.service')
 const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
 const ValidationError = require('../lib/validation-error')
+const monitor = require('../helpers/monitor')
 
 const controller = {
 
@@ -302,4 +301,4 @@ const controller = {
   }
 }
 
-module.exports = controller
+module.exports = monitor('service-manager.controller', controller)

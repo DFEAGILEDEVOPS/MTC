@@ -1,6 +1,7 @@
 'use strict'
 const {TYPES} = require('tedious')
 const R = require('ramda')
+const monitor = require('../../helpers/monitor')
 
 const sqlService = require('./sql.service')
 
@@ -113,4 +114,4 @@ const psychometricianReportCacheDataService = {
 
 }
 
-module.exports = psychometricianReportCacheDataService
+module.exports = monitor('psychometricianReportCache.data-service', psychometricianReportCacheDataService)

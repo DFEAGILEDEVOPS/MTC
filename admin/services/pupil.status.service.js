@@ -5,6 +5,7 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const checkDataService = require('./data-access/check.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pupilStatusCodeDataService = require('./data-access/pupil-status-code.data.service')
+const monitor = require('../helpers/monitor')
 
 const pupilStatusService = {}
 
@@ -66,4 +67,4 @@ pupilStatusService.hasPupilLoggedIn = (pupilRestartsCount, latestCheck, latestPu
   return initialLogIn || restartLogIn
 }
 
-module.exports = pupilStatusService
+module.exports = monitor('pupil-status.service', pupilStatusService)

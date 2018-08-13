@@ -3,6 +3,7 @@
 const sqlService = require('./sql.service')
 const TYPES = require('tedious').TYPES
 const R = require('ramda')
+const monitor = require('../../helpers/monitor')
 
 const table = '[role]'
 
@@ -29,4 +30,4 @@ const roleDataService = {
   }
 }
 
-module.exports = roleDataService
+module.exports = monitor('role.data-service', roleDataService)
