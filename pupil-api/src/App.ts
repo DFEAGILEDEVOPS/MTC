@@ -34,7 +34,7 @@ class App {
     this.middleware()
     this.routes()
 
-    azure.startInsightsIfConfigured()
+    azure.startInsightsIfConfigured().catch(e => winston.error(e))
   }
 
   // Configure Express middleware.
