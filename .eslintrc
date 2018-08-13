@@ -1,3 +1,10 @@
 {
-  "extends": "standard"
+  "extends": "standard",
+  "comma-dangle": ["warn", {
+    "arrays": "always",
+    "objects": "never",
+    "imports": "never",
+    "exports": "never",
+    "functions": "ignore"
+}]
 }
