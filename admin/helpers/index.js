@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const { version: appVersion } = require('../package.json')
+const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 
 const formatPageTitle = function (pageTitle) {
@@ -30,9 +31,15 @@ const formatFullGdsDate = function (date) {
   return moment(date).format('D MMMM YYYY')
 }
 
-module.exports = function (app) {
+module.exports = async function (app) {
   'use strict'
   if (typeof app === 'undefined') throw new Error('express application object required')
+  let buildNumber
+  try {
+    buildNumber = await getBuildNumber()
+  } catch (error) {
+    buildNumber = 'NOT FOUND'
+  }
   app.locals.assetPath = config.AssetPath
   app.locals.bodyClasses = ''
   app.locals.formatPageTitle = formatPageTitle
@@ -48,6 +55,7 @@ module.exports = function (app) {
   app.locals.googleTrackingId = config.GOOGLE_TRACKING_ID
   app.locals.appInsightsClientKey = config.Logging.ApplicationInsights.Key
   app.locals.deployVersion = appVersion
+  app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.guidancePdf = `${config.AssetPath}pdfs/mtc-administration-guidance-2018-03-3.pdf`

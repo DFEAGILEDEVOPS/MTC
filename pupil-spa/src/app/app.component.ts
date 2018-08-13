@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service';
@@ -22,7 +23,11 @@ export class AppComponent {
 
   protected window: any;
 
-  constructor(protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics, protected windowRefService: WindowRefService) {
+  constructor(
+    protected angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics,
+    protected windowRefService: WindowRefService,
+    private meta: Meta
+  ) {
     this.window = windowRefService.nativeWindow;
     if (APP_CONFIG.googleAnalyticsTrackingCode) {
       this.window.ga('create', APP_CONFIG.googleAnalyticsTrackingCode, 'auto');
@@ -30,6 +35,13 @@ export class AppComponent {
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       AppInsights.downloadAndSetup({
         instrumentationKey: APP_CONFIG.applicationInsightsInstrumentationKey
+      });
+      AppInsights.queue.push(function () {
+        AppInsights.context.addTelemetryInitializer(function (envelope) {
+          const telemetryItem = envelope.data.baseData;
+          telemetryItem.properties = telemetryItem.properties || {};
+          telemetryItem.properties['buildNumber'] = meta.getTag('name="build:number"').content;
+        });
       });
     }
   }
