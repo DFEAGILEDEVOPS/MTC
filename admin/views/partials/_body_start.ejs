@@ -16,6 +16,14 @@
   }({
     instrumentationKey: "<%= appInsightsClientKey %>"
   });
-  window.appInsights=appInsights,appInsights.queue&&0===appInsights.queue.length&&appInsights.trackPageView();
+  window.appInsights=appInsights,appInsights.queue&&0===appInsights.queue.length;
+  appInsights.queue.push(function () {
+    appInsights.context.addTelemetryInitializer(function (envelope) {
+      var telemetryItem = envelope.data.baseData;
+      telemetryItem.properties = telemetryItem.properties || {};
+      telemetryItem.properties['buildNumber'] = '<%= appBuildNumber %>';
+    })
+  });
+  appInsights.trackPageView();
 </script>
 <% } %>
