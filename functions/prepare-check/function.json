@@ -1,5 +1,9 @@
 {
   "disabled": false,
+  "tracing": {
+    "_comment": "valid params: off, warn, error, info, verbose",
+    "consoleLevel": "verbose"
+  },
   "bindings": [
     {
       "name": "queueMessage",
@@ -9,10 +13,11 @@
       "connection": "StorageAccount"
     },
     {
-      "name": "preparedCheckTable",
       "type": "table",
       "direction": "out",
-      "tableName": "preparedCheck",
+      // this name refers to the name of the context.binding property that will be inserted into the table
+      "name": "data",
+      "tableName": "{tableName}",
       "connection": "StorageAccount"
     }
   ]

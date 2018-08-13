@@ -2,10 +2,10 @@
 
 const azure = require('azure-storage')
 const moment = require('moment')
+const winston = require('winston')
 const config = require('../config')
 
 const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
-const storageConnection = process.env.AZURE_STORAGE_CONNECTION_STRING
 let azureQueueService
 
 const sasTokenService = {
@@ -23,7 +23,7 @@ const sasTokenService = {
           throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
         }
         // init the queue service the first time this is called
-        azureQueueService = azure.createQueueService(storageConnection)
+        azureQueueService = azure.createQueueService(config.AZURE_STORAGE_CONNECTION_STRING)
       }
       serviceImplementation = azureQueueService
     }
@@ -45,20 +45,14 @@ const sasTokenService = {
       }
     }
 
+    winston.debug('Generating SAS token for Queue: ' + queueName)
+
     const sasToken = serviceImplementation.generateSharedAccessSignature(queueName, sharedAccessPolicy)
 
     return {
       token: sasToken,
       url: serviceImplementation.getUrl(queueName)
     }
-  },
-
-  /**
-   * List of queue names used in MTC
-   */
-  queueNames: {
-    PREPARE_CHECK: 'prepare-check',
-    CHECK_COMPLETE: 'check-complete'
   }
 }
 
