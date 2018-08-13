@@ -2,6 +2,11 @@
     <div class="column-two-thirds">
         <img class="sta-horizontal-logo" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
         <div class="heading-large">Multiplication Table Check</div>
+
+        <div class="no-print">
+          <%- partial('partials/_session_expiry') %>
+        </div>
+
         <ul class="list list-bullet font-xsmall" role="listbox">
             <li role="listitem">Please cut out and distribute to pupils</li>
             <li role="listitem">The school passwords and pupil PINs will expire by the end of <%= date %></li>
