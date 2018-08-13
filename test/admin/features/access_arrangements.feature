@@ -1,4 +1,4 @@
-@access_arrangements @feature_toggle
+@access_arrangements @wip @feature_toggle
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design
