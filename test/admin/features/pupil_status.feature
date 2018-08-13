@@ -1,3 +1,4 @@
+@pupil_status
 Feature: Pupil Status Outcome
 
   Scenario: Pupil status is Not Started when a new pupil is added
