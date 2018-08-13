@@ -56,16 +56,6 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
-
-      setTimeout(() => {
-        this.speechService.waitForEndOfSpeech().then(() => {
-          this.sendTimeoutEvent();
-        });
-      }, this.loadingTimeout * 1000);
-    } else {
-      setTimeout(() => {
-        this.sendTimeoutEvent();
-      }, this.loadingTimeout * 1000);
     }
   }
 
