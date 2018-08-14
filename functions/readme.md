@@ -9,6 +9,10 @@ We are targeting V2, which is currently in preview.
 
 - Install Azure Functions Core tools as per [the documentation](https://github.com/Azure/azure-functions-core-tools).
 
+e.g.
+
+`npm i -g azure-functions-core-tools@core --unsafe-perm true`
+
 ## Running locally
 
 execute `func host start` from `functions` directory.  A shortcut script has been added to `package.json` so you can

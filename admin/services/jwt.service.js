@@ -4,7 +4,6 @@ const moment = require('moment')
 const crypto = Promise.promisifyAll(require('crypto'))
 const jwt = Promise.promisifyAll(require('jsonwebtoken'))
 const uuidv4 = require('uuid/v4')
-const config = require('../config')
 
 const pupilDataService = require('./data-access/pupil.data.service')
 const monitor = require('../helpers/monitor')
