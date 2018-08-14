@@ -4,148 +4,115 @@
 
 describe('pupil-access-arrangements-selection', function () {
   const $accessArrangementsList = $('<ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)"></ul>')
-  const $accessArrangementsListItems = $(
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-0">' +
-    '                Audible time alert' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-0" name="accessArrangement[0]" type="checkbox" value="ATA"' +
-    '                   aria-label="Tick accessArrangement Audible time alert." aria-checked="false" role="checkbox">' +
-    '            <div></div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-1">' +
-    '                Colour contrast' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-1" name="accessArrangement[1]" type="checkbox" value="CCT"' +
-    '                   aria-label="Tick accessArrangement Colour contrast." aria-checked="false" role="checkbox">' +
-    '            <div></div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-2">' +
-    '                Font size' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-2" name="accessArrangement[2]" type="checkbox" value="FTS"' +
-    '                   aria-label="Tick accessArrangement Font size." aria-checked="false" role="checkbox">' +
-    '            <div></div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-3">' +
-    '                Input assistance (reason required)' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-3" name="accessArrangement[3]" type="checkbox" value="ITA"' +
-    '                   aria-label="Tick accessArrangement Input assistance (reason required)." aria-checked="false"' +
-    '                   role="checkbox" >' +
-    '            <div></div>' +
-    '        </div>' +
-    '        <div class="hide-checkbox-content">' +
-    '            <div class="panel panel-border-wide">' +
-    '                <div class="form-group">' +
-    '                    <div class="form-label">Please explain why the pupil needs this arrangement</div>' +
-    '                    <textarea id="inputAssistanceInformation" name="inputAssistanceInformation"' +
-    '                              class="form-control form-control-3-4 restart-reason-info" rows="3"' +
-    '                              maxlength="1000"></textarea>' +
-    '                </div>' +
-    '            </div>' +
-    '            <br>' +
-    '            <div class="notice">' +
-    '                <i class="icon icon-important small">' +
-    '                    <span class="visually-hidden">Warning</span>' +
-    '                </i>' +
-    '                <strong class="bold-xsmall">' +
-    '                    Name of input assistant will need to be provided during the pupil\'s check' +
-    '                </strong>' +
-    '            </div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-4">' +
-    '                \'Next\' button between questions' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-4" name="accessArrangement[4]" type="checkbox" value="NBQ"' +
-    '                   aria-label="Tick accessArrangement \'Next\' button between questions." aria-checked="false"' +
-    '                   role="checkbox">' +
-    '            <div></div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-5">' +
-    '                Question reader (reason required)' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-5" name="accessArrangement[5]" type="checkbox" value="QNR"' +
-    '                   aria-label="Tick accessArrangement Question reader (reason required)." aria-checked="false"' +
-    '                   role="checkbox" >' +
-    '            <div></div>' +
-    '        </div>' +
-    '        <div class="hide-checkbox-content">' +
-    '            <div class="form-group">' +
-    '' +
-    '                <div class="multiple-choice">' +
-    '                    <input id="questionReaderReason-0" type="radio" name="questionReaderReason"' +
-    '                           class="question-reader-reason" value="EAL">' +
-    '                    <label for="questionReaderReason-0">English as an additional language (EAL)</label>' +
-    '                </div>' +
-    '                <div class="multiple-choice">' +
-    '                    <input id="questionReaderReason-1" type="radio" name="questionReaderReason-1"' +
-    '                           class="question-reader-reason" value="SLP">' +
-    '                    <label for="questionReaderReason-1">Slow processing</label>' +
-    '                </div>' +
-    '                <div class="multiple-choice">' +
-    '                    <input id="questionReaderReason-2" type="radio" name="questionReaderReason-2"' +
-    '                           class="question-reader-reason" value="VIM">' +
-    '                    <label for="questionReaderReason-2">Visual impairments</label>' +
-    '                </div>' +
-    '                <div class="multiple-choice">' +
-    '                    <input id="questionReaderReason-3" type="radio" name="questionReaderReason-3"' +
-    '                           class="question-reader-reason" value="OTH" >' +
-    '                    <label for="questionReaderReason-3">Other</label>' +
-    '                </div>' +
-    '                <div class="panel panel-border-wide js-hidden">' +
-    '                    <div class="form-group">' +
-    '                        <div class="form-label">Please explain why the pupil needs this arrangement</div>' +
-    '                        <textarea id="questionReaderOtherInformation" name="questionReaderOtherInformation"' +
-    '                                  class="form-control form-control-3-4 restart-reason-info" rows="3"' +
-    '                                  maxlength="1000"></textarea>' +
-    '                    </div>' +
-    '                </div>' +
-    '                <br>' +
-    '            </div>' +
-    '        </div>' +
-    '    </li>' +
-    '    <li>' +
-    '        <div class="font-small">' +
-    '            <label for="accessArrangement-6">' +
-    '                Remove on-screen number pad' +
-    '            </label>' +
-    '        </div>' +
-    '        <div class="multiple-choice-mtc">' +
-    '            <input id="accessArrangement-6" name="accessArrangement[6]" type="checkbox" value="RON"' +
-    '                   aria-label="Tick accessArrangement Remove on-screen number pad." aria-checked="false"' +
-    '                   role="checkbox">' +
-    '            <div></div>' +
-    '        </div>' +
-    '    </li>')
+  const accessArrangements = [
+    {
+      title: 'Audible time alert',
+      code: 'ATA'
+    },
+    {
+      title: 'Colour contrast',
+      code: 'CCT'
+    },
+    {
+      title: 'Font size',
+      code: 'FTS'
+    },
+    {
+      title: 'Input assistance (reason required)',
+      code: 'ITA'
+    },
+    {
+      title: '\'Next\' button between questions',
+      code: 'NBQ'
+    },
+    {
+      title: 'Question reader (reason required)',
+      code: 'QNR'
+    },
+    {
+      title: 'Remove on-screen number pad',
+      code: 'RON'
+    }
+  ]
+
+  const questionReaderReasons = [
+    {
+      title: 'English as an additional language (EAL)',
+      code: 'EAL'
+    },
+    {
+      title: 'Slow processing',
+      code: 'SLP'
+    },
+    {
+      title: 'Visual impairments',
+      code: 'VIM'
+    },
+    {
+      title: 'Other',
+      code: 'OTH'
+    }
+  ]
+
+  const $inputAssistanceTextArea = `<div class="hide-checkbox-content">
+            <div class="panel panel-border-wide">
+                <div class="form-group">
+                    <div class="form-label">Please explain why the pupil needs this arrangement</div>
+                    <textarea id="inputAssistanceInformation" name="inputAssistanceInformation"
+                              class="form-control form-control-3-4 restart-reason-info" rows="3"
+                              maxlength="1000"></textarea>
+                </div>
+            </div>
+            <br>
+            <div class="notice">
+                <i class="icon icon-important small">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-xsmall">
+                    Name of input assistant will need to be provided during the pupil\\'s check'
+                </strong>
+            </div>
+        </div>`
+
+  const $questionReaderOtherTextArea = `<div class="panel panel-border-wide js-hidden">
+              <div class="form-group">
+                <div class="form-label">Please explain why the pupil needs this arrangement</div>
+                    <textarea id="questionReaderOtherInformation" name="questionReaderOtherInformation"
+                                    class="form-control form-control-3-4 restart-reason-info" rows="3"
+                                    maxlength="1000"></textarea>
+                      </div>
+                  </div>`
+
+  const $questionReaderReasons =
+    `<div class="hide-checkbox-content">
+        <div class="form-group">${questionReaderReasons.map(function (qrr, i) {
+          return `<div class="multiple-choice">
+                <input id="questionReaderReason-${i}" type="radio" name="questionReaderReason"
+                    class="question-reader-reason" value="${qrr.code}">
+                    <label for="questionReaderReason-${i}">${qrr.title}</label>
+            </div>
+        ${qrr.code === 'OTH' ? $questionReaderOtherTextArea : ''}`
+        }
+    )}
+      </div>
+    </div>`
+
+  const $accessArrangementsListItems = accessArrangements.map(function (aa, i) {
+    return `<li>
+            <div class="font-small">
+                <label for="accessArrangement-${i}">
+                    ${aa.title}
+                </label>
+            </div>
+            <div class="multiple-choice-mtc">
+                <input id="accessArrangement-${i}" name="accessArrangement[${i}]" type="checkbox" value="${aa.code}"
+                       aria-label="Tick accessArrangement ${aa.title}." aria-checked="false" role="checkbox">
+                <div></div>
+            </div>
+            ${aa.code === 'ITA' ? $inputAssistanceTextArea : ''}          
+            ${aa.code === 'QNR' ? $questionReaderReasons : ''}          
+        </li>`
+  })
 
   $accessArrangementsList.append($accessArrangementsListItems)
   $(document.body).append($accessArrangementsList)
