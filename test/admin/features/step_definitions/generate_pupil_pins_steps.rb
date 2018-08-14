@@ -105,6 +105,7 @@ When(/^I deselect all pupils from Generate Pin Page$/) do
 end
 
 When(/^I select a Pupil to Generate more pins$/) do
+  step "I am on the generate pupil pins page"
   generated_pins_page.generate_more_pin_btn.click
   pupil = generate_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
@@ -132,8 +133,6 @@ When(/^I have generated a pin for a pupil$/) do
   SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
   SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
-  step "I am on the generate pupil pins page"
-  # generate_pins_overview_page.view_all_pins_btn.click
 end
 
 When(/^I click view all pins button$/) do
@@ -154,7 +153,6 @@ Given(/^I have generated pin for all pupil$/) do
 end
 
 Then(/^the pin should consist of (\d+) characters$/) do |size|
-  step "I click view all pins button"
   expect(generated_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
@@ -194,7 +192,6 @@ Given(/^I have generated pins for multiple pupils$/) do
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  step "I click view all pins button"
   @pupil_names_arr.each {|name| expect(generated_pins_page.find_pupil_row(name)).to have_pin}
 end
 
@@ -369,7 +366,6 @@ Then(/^I should see related content on the generate pins page$/) do
 end
 
 Then(/^I should see generated pin page as per design$/) do
-  step "I click view all pins button"
   step 'I should see the school password for teacher1'
 end
 
