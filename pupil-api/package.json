@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "applicationinsights": "^1.0.2",
-    "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
@@ -25,7 +24,6 @@
     "helmet": "^3.12.0",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
-    "ramda": "^0.25.0",
     "to-bool": "0.0.1",
     "uuid": "^3.3.2",
     "winston": "^2.4.1"
@@ -37,7 +35,6 @@
     "@types/jasmine": "^2.8.6",
     "@types/morgan": "^1.7.35",
     "@types/node": "^9.6.6",
-    "@types/ramda": "^0.25.24",
     "@types/string": "0.0.29",
     "gulp": "^3.9.1",
     "gulp-typescript": "^4.0.2",
@@ -45,7 +42,6 @@
     "jasmine-console-reporter": "^2.0.1",
     "node-mocks-http": "^1.5.8",
     "nyc": "^11.5.0",
-    "sinon": "^4.4.8",
     "standard": "^10.0.2",
     "tslint": "^5.9.1",
     "tslint-config-standard": "^7.0.0",
