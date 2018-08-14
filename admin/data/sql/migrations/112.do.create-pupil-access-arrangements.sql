@@ -6,7 +6,7 @@ CREATE TABLE [mtc_admin].[pupilAccessArrangements] (
   createdAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   version rowversion,
-  recordedByUser_id int NOT NULL,
+  recordedBy_user_id int NOT NULL,
   inputAssistanceInformation nvarchar(1000) NULL,
   questionReaderOtherInformation nvarchar(1000) NULL,
   CONSTRAINT [PK_pupilAccessArrangements] PRIMARY KEY CLUSTERED ([id] ASC)
@@ -28,5 +28,5 @@ REFERENCES [mtc_admin].[questionReaderReasons] ([id])
 ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK ADD CONSTRAINT [FK_pupilAccessArrangements_pupil_id] FOREIGN KEY([pupil_id])
 REFERENCES [mtc_admin].[pupil] ([id])
 
-ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK ADD CONSTRAINT [FK_pupilAccessArrangements_recordedByUser_id] FOREIGN KEY([recordedByUser_id])
+ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK ADD CONSTRAINT [FK_pupilAccessArrangements_recordedBy_user_id] FOREIGN KEY([recordedBy_user_id])
 REFERENCES [mtc_admin].[user] ([id])
