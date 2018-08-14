@@ -15,8 +15,10 @@ const dateService = require('../services/date.service')
 const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
+const tableNameService = require('../services/table-name-service')
 const azureQueueService = require('../services/azure-queue.service')
 const monitor = require('../helpers/monitor')
 
@@ -125,12 +127,13 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   }
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
-  // Create messages on the queue for all these checks
+  // Prepare a bunch of messages ready to be inserted into the queue
   const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(Array.isArray(res.insertId) ? res.insertId : [res.insertId])
 
   // Inject messages into the queue
+  const prepareCheckQueueName = queueNameService.getName(queueNameService.NAMES.PREPARE_CHECK)
   for (let msg of prepareCheckQueueMessages) {
-    azureQueueService.addMessage(sasTokenService.queueNames.PREPARE_CHECK, msg)
+    azureQueueService.addMessage(prepareCheckQueueName, msg)
   }
 }
 
@@ -214,11 +217,15 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const messages = []
   const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
-  const sasToken = sasTokenService.generateSasToken(sasTokenService.queueNames.CHECK_COMPLETE, sasExpiryDate)
+  const checkCompleteQueueName = queueNameService.getName(queueNameService.NAMES.CHECK_COMPLETE)
+  const sasToken = sasTokenService.generateSasToken(checkCompleteQueueName, sasExpiryDate)
 
   for (let o of checkFormAllocations) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
     const message = {
+      // We can provide the Azure Table Storage table name here, and it will be picked
+      // up by the Azure `prepare-check` Function as the destination table.
+      tableName: tableNameService.getName(tableNameService.NAMES.PREPARED_CHECK),
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
       pupil: {
