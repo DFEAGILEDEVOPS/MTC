@@ -16,8 +16,5 @@ export = {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     }
   },
-  Environment: getEnvironment(),
-  Endpoints: {
-    Auth: process.env.API_AUTH || false
-  }
+  Environment: getEnvironment()
 }
