@@ -2,6 +2,7 @@
 
 const monitor = require('../helpers/monitor')
 const groupDataService = require('../services/data-access/group.data.service')
+const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const groupService = {}
 
 /**
@@ -40,7 +41,9 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  return groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
+  let pupils = await groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
+  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
+  return pupils
 }
 
 /**
