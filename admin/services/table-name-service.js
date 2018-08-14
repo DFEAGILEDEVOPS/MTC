@@ -29,7 +29,6 @@ const nameService = {
       return tableName
     }
 
-    // Queue naming info: https://docs.microsoft.com/en-us/rest/api/storageservices/naming-queues-and-metadata
     const stem = capitalise(tableName)
 
     // Can't use dashes here - our naming convention is camelCase for table names
