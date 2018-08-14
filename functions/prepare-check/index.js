@@ -20,8 +20,6 @@ module.exports = function (context, prepareCheckMessage) {
     return
   }
 
-  context.bindings.preparedCheckTable = []
-
   const preparedCheck = {
     partitionKey: prepareCheckMessage.schoolPin,
     rowKey: prepareCheckMessage.pupilPin,
@@ -31,8 +29,11 @@ module.exports = function (context, prepareCheckMessage) {
     school: prepareCheckMessage.school,
     config: prepareCheckMessage.config,
     tokens: {
-      sasToken: prepareCheckMessage.sasToken,
-      jwtToken: prepareCheckMessage.jwtToken
+      completedCheck: {
+        sasToken: prepareCheckMessage.tokens.sasToken.token,
+        url: prepareCheckMessage.tokens.sasToken.url
+      },
+      jwtToken: prepareCheckMessage.tokens.jwtToken
     },
     isCollected: false,
     collectedAt: null,
@@ -41,9 +42,12 @@ module.exports = function (context, prepareCheckMessage) {
     updatedAt: new Date()
   }
 
+  const outputProp = 'data'
+
   // Happy path - write to Table Storage
   context.log('prepareCheck: saving to table storage: ', preparedCheck)
-  context.bindings.preparedCheckTable.push(preparedCheck)
+  context.bindings[outputProp] = []
+  context.bindings[outputProp].push(preparedCheck)
   context.done()
 }
 
