@@ -41,7 +41,7 @@ const nameService = {
 const capitalise = R.compose(
   R.join(''),
   R.juxt([R.compose(R.toUpper, R.head), R.tail])
-);
+)
 
 const getKeyFromValue = function (value) {
   return value.replace(/[A-Z]{1}/, '_$&').toUpperCase()
