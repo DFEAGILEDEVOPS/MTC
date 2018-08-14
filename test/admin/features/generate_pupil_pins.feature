@@ -117,7 +117,7 @@ Feature: Generate Pupil PINs
     Given I have generated a pin for a pupil
     Then I should see generated pin page as per design
     And the displayed school password is generated as per the requirement
-    
+
   Scenario: Pin is expired when pupil is not taking the check
     Given I have generated a pin for a pupil
     When I decide the pupil should not be taking the check

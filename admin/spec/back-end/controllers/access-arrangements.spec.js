@@ -6,6 +6,7 @@ const httpMocks = require('node-mocks-http')
 
 const controller = require('../../../controllers/access-arrangements')
 const accessArrangementsService = require('../../../services/access-arrangements.service')
+const pupilService = require('../../../services/pupil.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -54,10 +55,12 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(pupilService, 'getPupilsWithFullNames')
       await controller.getSelectAccessArrangements(req, res, next)
       expect(res.locals.pageTitle).toBe('Select access arrangement for pupil')
       expect(res.render).toHaveBeenCalled()
       expect(accessArrangementsService.getAccessArrangements).toHaveBeenCalled()
+      expect(pupilService.getPupilsWithFullNames).toHaveBeenCalled()
     })
     it('calls next when an error occurs during service call', async () => {
       const res = getRes()
@@ -65,9 +68,11 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'render')
       const error = new Error('error')
       spyOn(accessArrangementsService, 'getAccessArrangements').and.returnValue(Promise.reject(error))
+      spyOn(pupilService, 'getPupilsWithFullNames')
       await controller.getSelectAccessArrangements(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
+      expect(pupilService.getPupilsWithFullNames).not.toHaveBeenCalled()
     })
   })
 })

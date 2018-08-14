@@ -283,15 +283,15 @@ Given(/^I have a group of pupils$/) do
   step 'I am on the create group page'
   step 'I enter a valid group name'
   @pupil_group_array = []
-  add_edit_groups_page.pupil_list.rows[4].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[4].name.text
+  add_edit_groups_page.pupil_list.rows[14].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[14].name.text
   page.execute_script "window.scrollBy(0,500)"
-  add_edit_groups_page.pupil_list.rows[5].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[5].name.text
-  add_edit_groups_page.pupil_list.rows[6].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[6].name.text
-  add_edit_groups_page.pupil_list.rows[7].checkbox.click
-  @pupil_group_array << add_edit_groups_page.pupil_list.rows[7].name.text
+  add_edit_groups_page.pupil_list.rows[15].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[15].name.text
+  add_edit_groups_page.pupil_list.rows[16].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[16].name.text
+  add_edit_groups_page.pupil_list.rows[17].checkbox.click
+  @pupil_group_array << add_edit_groups_page.pupil_list.rows[17].name.text
   add_edit_groups_page.sticky_banner.confirm.click
 end
 

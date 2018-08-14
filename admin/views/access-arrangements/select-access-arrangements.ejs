@@ -8,7 +8,7 @@
 </div>
 
 <div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
-    <form method="post" action="" autocomplete="off">
+    <form method="post" action="/access-arrangements/submit" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div class="column-two-thirds">
             <h1 class="heading-xlarge" id="heading-xlarge">Select access arrangement for pupil</h1>
@@ -16,8 +16,13 @@
             <br />
             <h2>1. Search for pupil name</h2>
             <br />
-            <div class="form-group">
-                <input class="form-control" id="pupil-name" type="text" name="pupil-name">
+            <div class="form-control-1-2">
+                <select name="pupilUrlSlug" id="pupil-autocomplete-container">
+                    <option value="">Select a pupil</option>
+                    <% pupils.map(p => { %>
+                    <option value="<%= p.urlSlug %>"><%= p.fullName %></option>
+                    <% }) %>
+                </select>
             </div>
             <br />
             <h2>2. Select access arrangement(s)</h2>
@@ -110,3 +115,8 @@
         </div>
     </form>
 </div>
+<script>
+  $(function () {
+    window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, '')
+  })
+</script>
