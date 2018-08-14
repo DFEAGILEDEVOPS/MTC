@@ -9,10 +9,28 @@ class SelectAccessArrangementsPage < SitePrism::Page
   element :cancel, 'a[href="/access-arrangements/overview"]'
   element :back_to_top, 'a[href="#top"]'
   section :access_arrangements, '#accessArrangementsList' do
-    sections :row, 'tr' do
-      element :arrangement_name, 'label'
+    sections :row, 'li' do
+      element :arrangement_name, '.font-small label'
       element :checkbox, '.multiple-choice-mtc'
+      sections :question_reader_reason, '.show-checkbox-content .multiple-choice' do
+        element :question_reader_reason_radio , 'input'
+        element :question_reader_reason_name , 'label'
+      end
     end
+  end
+
+  element :input_assistance_info, '.show-checkbox-content .form-label'
+  element :input_assistance_reason, '#inputAssistanceInformation'
+  element :input_assistance_notice, '.notice'
+
+  def select_access_arrangement(access_arrangment_name)
+    access_arrangment_type = find_access_arrangement_row(access_arrangment_name)
+    access_arrangment_type.checkbox.click
+  end
+
+  def find_access_arrangement_row(name)
+    wait_until {!(access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name}).nil?}
+    access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name}
   end
 
 end
