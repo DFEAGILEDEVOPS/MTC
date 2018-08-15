@@ -159,3 +159,27 @@ body.js-enabled .tick-all-checkboxes {
     margin-right: $gutter;
   }
 }
+
+// Checkbox list
+
+ul.checkbox-list {
+  margin-top: pem(15px);
+  margin-left: pem(-35px);
+  li:first-child {
+    border-top: 1px solid $grey-2;
+  }
+  li {
+    padding-bottom: pem(15px);
+    padding-top: pem(15px);
+    border-bottom: 1px solid $grey-2;
+    .multiple-choice-mtc input {
+      top: -20px;
+    }
+    .multiple-choice-mtc [type=checkbox]+div::before {
+      top: -20px;
+    }
+    .multiple-choice-mtc [type=checkbox]+div::after {
+      top: -10px;
+    }
+  }
+}
