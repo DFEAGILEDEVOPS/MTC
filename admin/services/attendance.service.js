@@ -64,6 +64,19 @@ const attendanceService = {
    */
   getAttendanceCodes: async () => {
     return attendanceCodeDataService.sqlFindAttendanceCodes()
+  },
+
+  /**
+   * Check if pupil has valid attendance
+   * @param pupilId
+   * @param pinEnv
+   * @return {boolean}
+   */
+  hasValidAttendance: async (pupilId, pinEnv) => {
+    const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(pupilId)
+    return pinEnv === 'live'
+      ? pupilAttendance && pupilAttendance.id
+      : pupilAttendance && pupilAttendance.attendanceCode_id === 2 // left school
   }
 }
 
