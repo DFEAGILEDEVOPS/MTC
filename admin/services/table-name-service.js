@@ -3,7 +3,8 @@ const config = require('../config')
 const R = require('ramda')
 
 const NAMES = {
-  PREPARED_CHECK: 'preparedCheck'
+  PREPARED_CHECK: 'preparedCheck',
+  PUPIL_EVENT: 'pupilEvent'
 }
 
 Object.freeze(NAMES)
