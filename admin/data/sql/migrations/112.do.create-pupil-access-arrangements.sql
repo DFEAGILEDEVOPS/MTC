@@ -1,7 +1,7 @@
 CREATE TABLE [mtc_admin].[pupilAccessArrangements] (
   id int IDENTITY (1,1) NOT NULL,
   pupil_id int NOT NULL,
-  accessArrangements_id int NOT NULL,
+  accessArrangements_ids nvarchar(50) NOT NULL,
   questionReaderReasons_id int NULL,
   createdAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
   updatedAt datetimeoffset(3) NOT NULL DEFAULT GETUTCDATE(),
@@ -18,9 +18,6 @@ CREATE TABLE [mtc_admin].[pupilAccessArrangements] (
       ALLOW_PAGE_LOCKS = ON
     )
 )
-
-ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK ADD CONSTRAINT [FK_pupilAccessArrangements_accessArrangements_id] FOREIGN KEY([accessArrangements_id])
-REFERENCES [mtc_admin].[accessArrangements] ([id])
 
 ALTER TABLE [mtc_admin].[pupilAccessArrangements] WITH CHECK ADD CONSTRAINT [FK_pupilAccessArrangements_questionReaderReasons_id] FOREIGN KEY([questionReaderReasons_id])
 REFERENCES [mtc_admin].[questionReaderReasons] ([id])
