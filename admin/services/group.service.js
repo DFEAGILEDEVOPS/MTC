@@ -41,9 +41,8 @@ groupService.getPupils = async function (schoolId, groupIdToExclude) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
-  let pupils = await groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
-  pupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-  return pupils
+  const pupils = await groupDataService.sqlFindPupils(schoolId, groupIdToExclude)
+  return pupilIdentificationFlagService.addIdentificationFlags(pupils)
 }
 
 /**
