@@ -14,8 +14,6 @@ import * as azure from './azure'
 const config = require('./config')
 
 import authRoutes from './routes/auth'
-import checkSubmitRoutes from './routes/check-submit'
-import checkStartRoutes from './routes/check-started'
 import pingRoute from './routes/ping'
 
 if (process.env.NODE_ENV !== 'production') {
@@ -106,16 +104,6 @@ class App {
 
     if (config.Endpoints.Auth) {
       this.express.use('/auth', authRoutes)
-    }
-    if (config.Endpoints.CheckStart) {
-      this.express.use('/start', checkStartRoutes)
-    }
-    if (config.Endpoints.CheckSubmit) {
-      this.express.use('/submit', checkSubmitRoutes)
-    }
-    if (config.Endpoints.Feedback) {
-      throw new Error('Not yet implemented')
-      // this.express.use('/feedback', feedbackRoutes)
     }
 
     // catch 404 and forward to error handler
