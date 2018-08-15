@@ -89,7 +89,14 @@
                         <% pupilsList.forEach( (pupil) => { %>
                         <tr>
                             <td>
-                                <label for="pupil-<%= pupil.id %>"><%= pupil.lastName %>, <%= pupil.foreName %></label>
+                                <label for="pupil-<%= pupil.id %>">
+                                    <%= pupil.fullName %>
+                                </label>
+                                <% if (pupil.showDoB) { %>
+                                <div class="font-greyed-out font-xsmall">
+                                    Date of birth: <%= pupil.dateOfBirth %>
+                                </div>
+                                <% } %>
                             </td>
                             <td class="align-right">
                                 <div class="multiple-choice-mtc">
@@ -97,7 +104,7 @@
                                            name="pupil[<%= pupil.id %>]"
                                            type="checkbox"
                                            value="<%= pupil.id %>"
-                                           aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                           aria-label="Tick pupil <%= pupil.fullName %>."
                                            aria-checked="false"
                                            <% if (selectedPupils && selectedPupils[pupil.id]) { %>checked="true"<% } %>
                                            role="checkbox">
