@@ -116,18 +116,16 @@ Feature:
     Given I have created a group
     Then I should see the number of pupils in that group on the group hub page
 
-  @wip
-  Scenario: List of pupils is sorted via surname
-
-  @wip
   Scenario: DOB is displayed for pupils with the same names
     Given I add 2 pupil with same firstname and lastname and different dob
     Then dob is displayed for the 2 pupil on group pupil list page
 
-  @wip
   Scenario: Middle name is displayed when pupils have the same name and DOB
     Given I add 2 pupil with same firstname lastname and same dob
     Then middle name is displayed for the 2 pupil on group pupil list page
+
+  @wip
+  Scenario: List of pupils is sorted via surname
 
   @wip
   Scenario: Pupil records are updated

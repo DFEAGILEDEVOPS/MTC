@@ -432,13 +432,14 @@ When(/^I add 2 pupil with same firstname and lastname and different dob$/) do
   step "I am on the add pupil page"
   name = (0...8).map {(65 + rand(26)).chr}.join
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2012'}
+  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
   step "I am on the add pupil page"
-  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2012'}
+  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @details_hash = {first_name: name, middle_name: name, last_name: name, upn: @upn, female: true, day: '10', month: '9', year: '2012'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -449,13 +450,14 @@ When(/^I add 2 pupil with same firstname lastname and same dob$/) do
   step "I am on the add pupil page"
   name = (0...8).map {(65 + rand(26)).chr}.join
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: rand(1..24.to_s, month: rand(1..12).to_s, year: '2012'}
+  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
   step "I am on the add pupil page"
-  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: rand(1..24).to_s, month: rand(1..12).to_s, year: '2012'}
+  @upn = UpnGenerator.generate unless @page == edit_pupil_page
+  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: '10', month: '10', year: '2012'}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
