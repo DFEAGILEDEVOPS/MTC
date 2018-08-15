@@ -25,7 +25,8 @@ const jsBundleFiles = [
   './assets/javascripts/print-popup.js',
   './assets/javascripts/table-sorting.js',
   './assets/javascripts/session-expiry.js',
-  './assets/javascripts/autocomplete.js'
+  './assets/javascripts/autocomplete.js',
+  './assets/javascripts/pupil-access-arrangements-selection.js'
 ]
 
 gulp.task('watch', function () {

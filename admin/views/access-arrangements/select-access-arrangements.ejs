@@ -26,31 +26,78 @@
             </div>
             <br />
             <h2>2. Select access arrangement(s)</h2>
-            <table class="spacious reduced-top-margin" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
-                <tbody>
-                    <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
-                    <tr>
-                        <td class="font-small">
-                            <label for="accessArrangement-<%= index %>">
-                                <%= accessArrangement.description %>
-                            </label>
-                        </td>
-                        <td>
-                            <div class="multiple-choice-mtc">
-                                <input id="accessArrangement-<%= index %>"
-                                       name="accessArrangement[<%= index %>]"
-                                       type="checkbox"
-                                       value="<%= accessArrangement.code %>"
-                                       aria-label="Tick accessArrangement <%= accessArrangement.description %>."
-                                       aria-checked="false"
-                                       role="checkbox">
-                                <div></div>
+            <ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                <li>
+                    <div class="font-small">
+                        <label for="accessArrangements-<%= index %>">
+                            <%= accessArrangement.description %>
+                        </label>
+                    </div>
+                    <div class="multiple-choice-mtc">
+                        <input id="accessArrangements-<%= index %>"
+                               name="accessArrangements[<%= index %>]"
+                               type="checkbox"
+                               value="<%= accessArrangement.code %>"
+                               aria-label="Tick accessArrangement <%= accessArrangement.description %>."
+                               aria-checked="false"
+                               role="checkbox">
+                        <div></div>
+                    </div>
+                    <% if (accessArrangement.code === 'ITA') { %>
+                    <div class="hide-checkbox-content">
+                        <div class="panel panel-border-wide">
+                            <div class="form-group">
+                                <div class="form-label">Please explain why the pupil needs this arrangement</div>
+                                <textarea
+                                        id="inputAssistanceInformation"
+                                        name="inputAssistanceInformation"
+                                        class="form-control form-control-3-4 access-arrangements-textarea"
+                                        rows="3"
+                                        maxlength="1000"></textarea>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                        <br />
+                        <div class="notice">
+                            <i class="icon icon-important small">
+                                <span class="visually-hidden">Warning</span>
+                            </i>
+                            <strong class="bold-xsmall">
+                                Name of input assistant will need to be provided during the pupil's check
+                            </strong>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% if (accessArrangement.code === 'QNR') { %>
+                    <div class="hide-checkbox-content">
+                        <div class="form-group">
+                            <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
+                                    <div class="multiple-choice">
+                                        <input id="questionReaderReason-<%= index %>" type="radio" name="questionReaderReason" class='question-reader-reason' value="<%= questionReaderReason.code %>">
+                                        <label for="example-contact-by-email"><%= questionReaderReason.description %></label>
+                                    </div>
+                                <% if (questionReaderReason.code === 'OTH') { %>
+                                    <div class="panel panel-border-wide js-hidden">
+                                        <div class="form-group">
+                                            <div class="form-label">Please explain why the pupil needs this arrangement</div>
+                                            <textarea
+                                                    id="questionReaderOtherInformation"
+                                                    name="questionReaderOtherInformation"
+                                                    class="form-control form-control-3-4 access-arrangements-textarea"
+                                                    rows="3"
+                                                    maxlength="1000"></textarea>
+                                        </div>
+                                    </div>
+                                    <br />
+                                <% } %>
+                            <% }) %>
+                        </div>
+                    </div>
+                    <% } %>
+                </li>
                 <% }) %>
-                </tbody>
-            </table>
+            </ul>
+            <br />
             <div class="master-detail text">
                 <details>
                     <summary><span class="summary">What do these access arrangements mean?</span></summary>
@@ -118,5 +165,6 @@
 <script>
   $(function () {
     window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, '')
+    window.GOVUK.accessArrangements()
   })
 </script>
