@@ -52,5 +52,6 @@ export = {
     CheckStart: process.env.API_CHECK_START || false,
     CheckSubmit: process.env.API_CHECK_SUBMIT || false,
     Feedback: process.env.API_FEEDBACK || false
-  }
+  },
+  AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING
 }
