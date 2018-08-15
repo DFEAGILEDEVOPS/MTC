@@ -4,7 +4,9 @@ const config = require('../config')
 const NAMES = {
   PREPARE_CHECK: 'prepare-check',
   CHECK_COMPLETE: 'check-complete',
-  PUPIL_FEEDBACK: 'pupil-feedback'
+  PUPIL_FEEDBACK: 'pupil-feedback',
+  CHECK_STARTED: 'check-started',
+  PUPIL_PREFS: 'pupil-prefs'
 }
 
 Object.freeze(NAMES)
