@@ -157,6 +157,14 @@ class SqlDbHelper
     access_arrangement_array
   end
 
+  def self.question_reader_reasons
+    sql = "SELECT * FROM [mtc_admin].[questionReaderReasons]"
+    result = SQL_CLIENT.execute(sql)
+    question_reader_reason_array = result.each {|row| row.map}
+    result.cancel
+    question_reader_reason_array
+  end
+
   def self.check_form_details(check_form_name)
     sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE name = '#{check_form_name}'"
     result = SQL_CLIENT.execute(sql)
