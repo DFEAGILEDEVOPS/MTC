@@ -44,6 +44,15 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // console.log(`loading.component: handleKeyboardEvent() called: key: ${event.key} keyCode: ${event.keyCode}`);
     // IMPORTANT: return false here
     event.preventDefault();
+
+    const key = event.key;
+
+    switch (key) {
+      case 'Enter':
+        this.sendTimeoutEvent();
+        break;
+    }
+
     return false;
   }
 
@@ -57,6 +66,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     if (this.questionService.getConfig().speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
     }
+    this.elRef.nativeElement.querySelector('#goButton').focus();
   }
 
   sendTimeoutEvent() {
