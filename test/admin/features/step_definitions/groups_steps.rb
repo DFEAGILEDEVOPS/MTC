@@ -321,3 +321,15 @@ Then(/^I should see error for group name for the following$/) do |table|
     end
   end
 end
+
+When(/^dob is displayed for the 2 pupil on group pupil list page$/) do
+  pupil_rows = add_edit_groups_page.pupil_list.rows.find {|row| row.name.text.include?("#{@details_hash[:last_name]}")}
+  expect(pupil_rows[0].text.include?('Date of birth:')).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[0].text}"
+  expect(pupil_rows[1].text.include?('Date of birth:')).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[1].text}"
+end
+
+When(/^middle name is displayed for the 2 pupil on group pupil list page$/) do
+  pupil_rows = add_edit_groups_page.pupil_list.rows.find {|row| row.name.text.include?("#{@details_hash[:last_name]}")}
+  expect(pupil_rows[0].name.text.include?('MiddleName1')).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[0].name.text}"
+  expect(pupil_rows[1].name.text.include?('MiddleName2')).to be_truthy, "Actual Pupil detail displayed is : #{pupil_rows[1].name.text}"
+end
