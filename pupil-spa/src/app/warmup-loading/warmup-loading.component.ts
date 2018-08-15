@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef, Input } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, OnDestroy, Input } from '@angular/core';
 import { LoadingComponent } from '../loading/loading.component';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
@@ -10,7 +10,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './warmup-loading.component.html',
   styles: []
 })
-export class WarmupLoadingComponent extends LoadingComponent implements AfterViewInit {
+export class WarmupLoadingComponent extends LoadingComponent implements AfterViewInit, OnDestroy {
 
   @Input() public familiarisationCheck = false;
 
@@ -30,6 +30,14 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
+    }
+    this.elRef.nativeElement.querySelector('#goButton').focus();
+  }
+
+  ngOnDestroy(): void {
+    // stop the current speech process if the page is changed
+    if (this.questionService.getConfig().speechSynthesis) {
+      this.speechService.cancel();
     }
   }
 }

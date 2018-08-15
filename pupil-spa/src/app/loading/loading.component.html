@@ -6,6 +6,13 @@
     <p id="js-loading" class="font-large text-center aa-lead-size">
       Question {{question.sequenceNumber}}&hellip;
     </p>
-    <button type="button" class="item-center button button-start" (click)="timeoutEvent.emit(null)">Go</button>
+    <button
+      type="button"
+      class="item-center button button-start"
+      id="goButton"
+      (click)="this.sendTimeoutEvent()"
+    >
+      Go
+    </button>
   </div>
 </div>
