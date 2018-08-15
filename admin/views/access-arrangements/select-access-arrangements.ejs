@@ -30,13 +30,13 @@
                 <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
                 <li>
                     <div class="font-small">
-                        <label for="accessArrangement-<%= index %>">
+                        <label for="accessArrangements-<%= index %>">
                             <%= accessArrangement.description %>
                         </label>
                     </div>
                     <div class="multiple-choice-mtc">
-                        <input id="accessArrangement-<%= index %>"
-                               name="accessArrangement[<%= index %>]"
+                        <input id="accessArrangements-<%= index %>"
+                               name="accessArrangements[<%= index %>]"
                                type="checkbox"
                                value="<%= accessArrangement.code %>"
                                aria-label="Tick accessArrangement <%= accessArrangement.description %>."
@@ -52,7 +52,7 @@
                                 <textarea
                                         id="inputAssistanceInformation"
                                         name="inputAssistanceInformation"
-                                        class="form-control form-control-3-4 restart-reason-info"
+                                        class="form-control form-control-3-4 access-arrangements-textarea"
                                         rows="3"
                                         maxlength="1000"></textarea>
                             </div>
@@ -83,7 +83,7 @@
                                             <textarea
                                                     id="questionReaderOtherInformation"
                                                     name="questionReaderOtherInformation"
-                                                    class="form-control form-control-3-4 restart-reason-info"
+                                                    class="form-control form-control-3-4 access-arrangements-textarea"
                                                     rows="3"
                                                     maxlength="1000"></textarea>
                                         </div>
