@@ -15,6 +15,22 @@
   }
 }
 
+.info-message-clickable {
+  border: 5px solid $green;
+  padding: 1em;
+  margin-top: 40px;
+  color: $green;
+  font-weight: bold;
+  text-decoration: underline;
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: $green;
+  }
+}
+
 // Green border to highlight table cell content
 .highlight-item {
   display: flex;

@@ -12,10 +12,13 @@ const controller = {}
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getOverview = async (req, res, next) => {
+controller.getOverview = async (req, res) => {
   res.locals.pageTitle = 'Access arrangements'
   req.breadcrumbs(res.locals.pageTitle)
+  let { hl } = req.query
   return res.render('access-arrangements/overview', {
+    highlight: hl,
+    messages: res.locals.messages,
     breadcrumbs: req.breadcrumbs()
   })
 }
@@ -56,6 +59,14 @@ controller.getSelectAccessArrangements = async (req, res, next) => {
  * @returns {Promise.<void>}
  */
 controller.postSubmitAccessArrangements = async (req, res, next) => {
+  let pupil
+  try {
+    pupil = await accessArrangementsService.submit(req.body, req.user.School, req.user.id)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('info', `Access arrangements applied to ${pupil.lastName}, ${pupil.foreName}`)
+  return res.redirect(`/access-arrangements/overview?hl=${pupil.id}`)
 }
 
 module.exports = monitor('access-arrangements.controller', controller)
