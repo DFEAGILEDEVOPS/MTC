@@ -9,7 +9,7 @@
       "name": "queueMessage",
       "type": "queueTrigger",
       "direction": "in",
-      "queueName": "prepare-check",
+      "queueName": "jon-prepare-check",
       "connection": "StorageAccount"
     },
     {

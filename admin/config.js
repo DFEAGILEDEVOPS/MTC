@@ -100,7 +100,7 @@ module.exports = {
     sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 12
   },
   Azure: {
-    queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',
-    tablePrefix: process.env.AZURE_TABLE_PREFIX || ''
+    queuePrefix: process.env.AZURE_QUEUE_PREFIX || 'jon',
+    tablePrefix: process.env.AZURE_TABLE_PREFIX || 'jon'
   }
 }
