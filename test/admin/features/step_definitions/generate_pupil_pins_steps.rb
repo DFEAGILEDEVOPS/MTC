@@ -46,6 +46,11 @@ Given(/^I have a pupil not taking the check$/) do
   step 'the Absent reason should be stored against the pupils'
 end
 
+Given(/I have a pupil not taking the check with reason '(.*)'/) do |reason|
+  step 'I am on the pupil reason page'
+  step "I add #{reason} as a reason for a particular pupil"
+end
+
 Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/) do
   pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
