@@ -186,7 +186,7 @@ groupDataService.sqlFindPupils = async (schoolId, groupId) => {
     }
   ]
 
-  let sql = `SELECT p.[id], p.[foreName], p.[middleNames], p.[lastName], g.[group_id]
+  let sql = `SELECT p.*, g.[group_id]
     FROM ${sqlService.adminSchema}.[pupil] p 
     LEFT JOIN ${sqlService.adminSchema}.[pupilGroup] g 
       ON p.id = g.pupil_id 

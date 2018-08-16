@@ -23,6 +23,17 @@ Then(/^I should see the select access arrangements page matches design$/) do
   expect(select_access_arrangements_page).to have_save
   expect(select_access_arrangements_page).to have_cancel
   expect(select_access_arrangements_page).to have_back_to_top
+
+  select_access_arrangements_page.select_access_arrangement("Input assistance (reason required)")
+  expect(select_access_arrangements_page).to have_input_assistance_info
+  expect(select_access_arrangements_page).to have_input_assistance_reason
+  expect(select_access_arrangements_page).to have_input_assistance_notice
+
+  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
+  expected_list = SqlDbHelper.question_reader_reasons.map{|a| a['description']}
+  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  actual_list = question_reader_access_arrangement_row.question_reader_reason.map {|a| a.question_reader_reason_name.text}
+  expect(actual_list).to eql expected_list
 end
 
 When(/^I search for pupil '(.*)'$/) do |pupil_search|

@@ -7,12 +7,7 @@ describe('autoComplete', function () {
       spyOn(window.accessibleAutocomplete, 'enhanceSelectElement')
       spyOn(document, 'querySelector')
       window.GOVUK.autoComplete.createComponent('#container', 2, '')
-      const args = {
-        selectElement: document.querySelector('#container'),
-        minLength: 2,
-        defaultValue: ''
-      }
-      expect(window.accessibleAutocomplete.enhanceSelectElement).toHaveBeenCalledWith(args)
+      expect(window.accessibleAutocomplete.enhanceSelectElement).toHaveBeenCalled()
       expect(document.querySelector).toHaveBeenCalledWith('#container')
     })
     it('should not call enhanceSelectElement if container id is not provided', function () {
