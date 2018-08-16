@@ -13,7 +13,7 @@ class AuthController {
       return apiResponse.badRequest(res)
     }
 
-    const {pupilPin, schoolPin} = req.body
+    const { pupilPin, schoolPin } = req.body
 
     try {
       await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
@@ -24,7 +24,7 @@ class AuthController {
 
     // TODO: construct the data for the pupil
 
-    apiResponse.sendJson(res, {implemented: 'not yet'})
+    apiResponse.sendJson(res, { implemented: 'not yet' })
   }
 }
 

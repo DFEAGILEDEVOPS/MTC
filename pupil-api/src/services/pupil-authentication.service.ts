@@ -7,13 +7,13 @@ let azureTableService: any
 const authTable = 'preparedCheck'
 
 export const pupilAuthenticationService = {
-  authenticate: async function authenticate(pupilPin: string, schoolPin: string, tableService?: any) {
+  authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any) {
     // set tableService to azureTableService if not provided, but only instantiate it once.
     if (!tableService) {
       if (!azureTableService) {
-        azureTableService = azureStorage.createTableService();
+        azureTableService = azureStorage.createTableService()
       }
-      tableService = azureTableService;
+      tableService = azureTableService
     }
 
     bluebird.promisifyAll(this.azureTableService, {
@@ -32,8 +32,8 @@ export const pupilAuthenticationService = {
         })
       }
     })
-    console.log('ENV', process.env);
-    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin);
-    console.log('RES', res);
+    console.log('ENV', process.env)
+    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
+    console.log('RES', res)
   }
-};
+}

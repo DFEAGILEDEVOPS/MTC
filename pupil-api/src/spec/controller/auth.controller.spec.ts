@@ -55,7 +55,7 @@ describe('auth controller', () => {
       expect(data.error).toBe('Unauthorised')
     })
 
-    it ('returns a data packet to the client if authorisation is successful', async () => {
+    it('returns a data packet to the client if authorisation is successful', async () => {
       spyOn(pupilAuthenticationService, 'authenticate').and.returnValue(Promise.resolve({}))
       await authController.postAuth(req, res)
       const data = JSON.parse(res._getData())
