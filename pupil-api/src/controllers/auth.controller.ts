@@ -8,7 +8,7 @@ import { pupilAuthenticationService } from '../services/pupil-authentication.ser
 class AuthController {
   async postAuth (req: Request, res: Response) {
     const contentType = req.get('Content-Type')
-    if (contentType !== 'application/json' && contentType !== 'application/json; charset=utf-8') {
+    if (!(contentType === 'application/json' || contentType === 'application/json; charset=utf-8')) {
       winston.error('Bad Request: Content type is: ' + contentType)
       return apiResponse.badRequest(res)
     }
@@ -16,15 +16,12 @@ class AuthController {
     const { pupilPin, schoolPin } = req.body
 
     try {
-      await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+      const data = await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
+      apiResponse.sendJson(res, data)
     } catch (error) {
       winston.error('Failed to authenticate pupil: ' + error.message)
       return apiResponse.unauthorised(res)
     }
-
-    // TODO: construct the data for the pupil
-
-    apiResponse.sendJson(res, { implemented: 'not yet' })
   }
 }
 

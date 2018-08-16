@@ -4,7 +4,7 @@ import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 
 let azureTableService: any
-const authTable = 'preparedCheck'
+const authTable = 'jonPreparedCheck'
 
 export const pupilAuthenticationService = {
   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any) {
@@ -16,7 +16,7 @@ export const pupilAuthenticationService = {
       tableService = azureTableService
     }
 
-    bluebird.promisifyAll(this.azureTableService, {
+    bluebird.promisifyAll(azureTableService, {
       promisifier: (originalFunction) => function (...args) {
         return new Promise((resolve, reject) => {
           try {
@@ -32,8 +32,8 @@ export const pupilAuthenticationService = {
         })
       }
     })
-    console.log('ENV', process.env)
-    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
-    console.log('RES', res)
+
+    const { result } = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
+    return result
   }
 }

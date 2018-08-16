@@ -60,7 +60,7 @@ describe('auth controller', () => {
       await authController.postAuth(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(200)
-      expect(data.implemented).toBe('not yet')
+      expect(data).toBeTruthy()
     })
   })
 })
