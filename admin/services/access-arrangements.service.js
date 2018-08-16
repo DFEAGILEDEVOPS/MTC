@@ -70,6 +70,7 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
  */
 
 accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
+  const { id, foreName, lastName } = pupil
   const pupilAccessArrangement = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
   if (pupilAccessArrangement && pupilAccessArrangement['pupil_id']) {
     // update
@@ -78,7 +79,7 @@ accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
     // create
     await pupilAccessArrangementsDataService.sqlCreate(pupilAccessArrangements)
   }
-  return pupil
+  return { id, foreName, lastName }
 }
 
 module.exports = monitor('access-arrangements.service', accessArrangementsService)
