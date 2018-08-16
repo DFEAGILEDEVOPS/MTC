@@ -70,7 +70,7 @@
                     <% } %>
                     <% if (accessArrangement.code === 'QNR') { %>
                     <div class="hide-checkbox-content">
-                        <div class="form-group">
+                        <div class="form-group" id="questionReaderReasonsList">
                             <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
                                     <div class="multiple-choice">
                                         <input id="questionReaderReason-<%= index %>" type="radio" name="questionReaderReason" class='question-reader-reason' value="<%= questionReaderReason.code %>">

@@ -6,6 +6,9 @@ const accessArrangementsDataService = require('../../../services/data-access/acc
 const questionReaderReasonsDataService = require('../../../services/data-access/question-reader-reasons.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const accessArrangementsValidator = require('../../../lib/validator/access-arrangements-validator.js')
+const ValidationError = require('../../../lib/validation-error')
+const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -33,6 +36,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
@@ -44,31 +48,24 @@ describe('accessArrangementsService', () => {
       expect(saveMethodSpy.calls.all()[0].args[0].questionReaderOtherInformation).toBeUndefined()
       expect(saveMethodSpy.calls.all()[0].args[1].id).toBe(1)
     })
-    it('throws an error if pupil is not supplied', async () => {
+    it('throws a validation error if validation is unsuccessful', async () => {
       const requestData = {
-        accessArrangements: ['ATA'],
+        pupilUrlSlug: '',
+        accessArrangements: undefined,
         questionReaderReason: '',
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
+      const validationError = new ValidationError()
+      validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
+      validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue(validationError)
       try {
         await accessArrangementsService.submit(requestData, 12345, 1)
       } catch (error) {
-        expect(error.message).toBe('No pupil selected')
+        expect(error.name).toBe('ValidationError')
       }
-    })
-    it('throws an error if accessArrangement codes are not supplied', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        questionReaderOtherInformation: ''
-      }
-      try {
-        await accessArrangementsService.submit(requestData, 12345, 1)
-      } catch (error) {
-        expect(error.message).toBe('No access arrangements selected')
-      }
+      expect(accessArrangementsValidator.validate).toHaveBeenCalled()
     })
     it('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
@@ -78,6 +75,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([])
       try {
         await accessArrangementsService.submit(requestData, 12345, 1)
@@ -93,6 +91,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue()
       try {
@@ -101,7 +100,7 @@ describe('accessArrangementsService', () => {
         expect(error.message).toBe('Pupil url slug does not match a pupil record')
       }
     })
-    it('exoects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
+    it('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['ATA', 'ITA'],
@@ -109,6 +108,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: 'inputAssistanceInformation',
         questionReaderOtherInformation: ''
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 2}])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
@@ -124,6 +124,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 3}])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonByCode').and.returnValue({id: 1})
@@ -141,6 +142,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
+      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 3}])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonByCode').and.returnValue({id: 4})

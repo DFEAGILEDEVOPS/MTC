@@ -3,6 +3,7 @@ const accessArrangementsDataService = require('../services/data-access/access-ar
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const questionReaderReasonsDataService = require('../services/data-access/question-reader-reasons.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
+const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
 const monitor = require('../helpers/monitor')
 
 const accessArrangementsService = {}
@@ -23,18 +24,11 @@ accessArrangementsService.getAccessArrangements = async () => {
  * @returns {Object}
  */
 accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
-  // validation here
-  // const validationError = accessArrangementsValidator.validate(requestData)
-  // if (validationError.hasError()) {
-  //   throw validationError
-  // }
+  const validationError = accessArrangementsValidator.validate(requestData)
+  if (validationError.hasError()) {
+    throw validationError
+  }
   const { pupilUrlSlug, accessArrangements: accessArrangementsCodes, questionReaderReason: questionReaderReasonCode } = requestData
-  if (!pupilUrlSlug) {
-    throw new Error('No pupil selected')
-  }
-  if (!accessArrangementsCodes) {
-    throw new Error('No access arrangements selected')
-  }
   let pupilAccessArrangements = R.clone(requestData)
   const accessArrangements = await accessArrangementsDataService.sqlFindAccessArrangementsByCodes(accessArrangementsCodes)
   let questionReaderReason
