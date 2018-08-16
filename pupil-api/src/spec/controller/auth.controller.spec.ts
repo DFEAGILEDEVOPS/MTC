@@ -1,9 +1,10 @@
 'use strict'
 
-/* global describe */
+/* global describe spyOn */
 
 import { default as authController } from '../../controllers/auth.controller'
 import * as httpMocks from 'node-mocks-http'
+import * as winston from 'winston'
 
 describe('auth controller', () => {
   describe('route /auth', () => {
@@ -29,6 +30,7 @@ describe('auth controller', () => {
           'Content-type': 'text/html' // error here - should be application/json
         }
       })
+      spyOn(winston, 'error')
       await authController.postAuth(req, res)
       expect(res.statusCode).toBe(400)
       const data = JSON.parse(res._getData())
