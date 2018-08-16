@@ -3,8 +3,7 @@ import { Request, Response } from 'express'
 import * as winston from 'winston'
 
 import * as apiResponse from './api-response'
-import { PupilAuthenticationService } from '../services/pupil-authentication.service'
-import * as azureStorage from 'azure-storage'
+import { pupilAuthenticationService } from '../services/pupil-authentication.service'
 
 class AuthController {
   async postAuth (req: Request, res: Response) {
@@ -17,12 +16,15 @@ class AuthController {
     const {pupilPin, schoolPin} = req.body
 
     try {
-      const pupilAuthenticationService = new PupilAuthenticationService(azureStorage.createTableService())
       await pupilAuthenticationService.authenticate(pupilPin, schoolPin)
     } catch (error) {
       winston.error('Failed to authenticate pupil: ' + error.message)
       return apiResponse.unauthorised(res)
     }
+
+    // TODO: construct the data for the pupil
+
+    apiResponse.sendJson(res, {implemented: 'not yet'})
   }
 }
 

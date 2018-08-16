@@ -1,20 +1,22 @@
 'use strict'
 
 import * as azureStorage from 'azure-storage'
-import TableService = azureStorage.services.table.TableService
-import table = azureStorage.services.table
 import * as bluebird from 'bluebird'
 
-export class PupilAuthenticationService {
-  azureTableService: any // TableService
+let azureTableService: any
 
-  constructor (service: TableService) {
-    this.azureTableService = service
-  }
-
-  async authenticate (pupilPin: string, schoolPin: string) {
+export const pupilAuthenticationService = {
+   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any) {
     // TODO: add dynamic tablename based on PREFIX
     const authTable = 'jonPreparedCheck'
+
+    if (!tableService) {
+      if (!azureTableService) {
+        azureTableService = azureStorage.createTableService()
+      }
+      tableService = azureTableService
+    }
+
     bluebird.promisifyAll(this.azureTableService, {
       promisifier: (originalFunction) => function (...args) {
         return new Promise((resolve, reject) => {
@@ -32,7 +34,7 @@ export class PupilAuthenticationService {
       }
     })
     console.log('ENV', process.env)
-    const res = await this.azureTableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
+    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
     console.log('RES', res)
   }
 }
