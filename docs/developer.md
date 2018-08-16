@@ -25,5 +25,5 @@ Usage:
 
 1. Scan for credentials:``git secrets --scan``
 2. Scan for credentials including historical commits: ``git secrets --scan-history``
-3. Attempts to commit and new code that matches the patterns 
+3. Attempts to commit any new code that matches the patterns 
 will result in the commit failing.  
