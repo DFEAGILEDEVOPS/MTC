@@ -4,17 +4,16 @@ import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 
 let azureTableService: any
+const authTable = 'preparedCheck'
 
 export const pupilAuthenticationService = {
-   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any) {
-    // TODO: add dynamic tablename based on PREFIX
-    const authTable = 'jonPreparedCheck'
-
+  authenticate: async function authenticate(pupilPin: string, schoolPin: string, tableService?: any) {
+    // set tableService to azureTableService if not provided, but only instantiate it once.
     if (!tableService) {
       if (!azureTableService) {
-        azureTableService = azureStorage.createTableService()
+        azureTableService = azureStorage.createTableService();
       }
-      tableService = azureTableService
+      tableService = azureTableService;
     }
 
     bluebird.promisifyAll(this.azureTableService, {
@@ -25,7 +24,7 @@ export const pupilAuthenticationService = {
               if (error) {
                 return reject(error)
               }
-              resolve({result, response})
+              resolve({ result, response })
             })
           } catch (error) {
             reject(error)
@@ -33,8 +32,8 @@ export const pupilAuthenticationService = {
         })
       }
     })
-    console.log('ENV', process.env)
-    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
-    console.log('RES', res)
+    console.log('ENV', process.env);
+    const res = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin);
+    console.log('RES', res);
   }
-}
+};
