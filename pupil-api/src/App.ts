@@ -103,20 +103,7 @@ class App {
   private routes (): void {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
-
-    if (config.Endpoints.Auth) {
-      this.express.use('/auth', authRoutes)
-    }
-    if (config.Endpoints.CheckStart) {
-      this.express.use('/start', checkStartRoutes)
-    }
-    if (config.Endpoints.CheckSubmit) {
-      this.express.use('/submit', checkSubmitRoutes)
-    }
-    if (config.Endpoints.Feedback) {
-      throw new Error('Not yet implemented')
-      // this.express.use('/feedback', feedbackRoutes)
-    }
+    this.express.use('/auth', authRoutes)
 
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {
