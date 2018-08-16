@@ -4,8 +4,7 @@
 
 ### [git-secrets](https://github.com/awslabs/git-secrets) 
 
-It is highly recommended to install git-secrets to prevent security 
-credentials from being committed to the repository.
+It is highly recommended to install git-secrets to prevent security credentials from being committed to the repository.
 
 Installation steps:
 
@@ -25,5 +24,4 @@ Usage:
 
 1. Scan for credentials:``git secrets --scan``
 2. Scan for credentials including historical commits: ``git secrets --scan-history``
-3. Attempts to commit any new code that matches the patterns 
-will result in the commit failing.  
+3. Attempts to commit any new code that matches the patterns will result in the commit failing.  
