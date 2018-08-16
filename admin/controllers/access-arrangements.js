@@ -50,6 +50,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
     accessArrangements,
     questionReaderReasons,
     pupils,
+    formData: req.body,
     error: error || new ValidationError()
   })
 }

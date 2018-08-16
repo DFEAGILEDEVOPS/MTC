@@ -1,11 +1,9 @@
 'use strict'
 
-const { TYPES } = require('tedious')
-const R = require('ramda')
-
 const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
 const questionReaderReasonsDataService = {}
+const questionReaderCodes = {}
 
 /**
  * Find question reader reasons
@@ -26,16 +24,31 @@ questionReaderReasonsDataService.sqlFindQuestionReaderReasons = async function (
  * Find question reader reason by code
  * @returns {Promise<Array>}
  */
-questionReaderReasonsDataService.sqlFindQuestionReaderReasonByCode = async function (code) {
+questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode = async function (code) {
+  if (Object.keys(questionReaderCodes).length === 0) {
+    // init
+    await init()
+  }
+  if (!questionReaderCodes[code]) {
+    throw new Error('Code does not exist')
+  }
+  return questionReaderCodes[code]
+}
+
+/**
+ * Initialise method to populate accessArrangementCodes for caching purposes
+ * @returns {Array}
+ */
+const init = async () => {
+  let questionReaderReasons
   const sql = `
-  SELECT *
-  FROM ${sqlService.adminSchema}.[questionReaderReasons]
-  WHERE code = @code`
-  const params = [
-    { name: 'code', type: TYPES.Char, value: code }
-  ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
+    SELECT *
+    FROM ${sqlService.adminSchema}.[questionReaderReasons]`
+
+  questionReaderReasons = await sqlService.query(sql)
+  questionReaderReasons.map(qrr => {
+    questionReaderCodes[qrr.code] = qrr.id
+  })
 }
 
 module.exports = monitor('question-reader-reason.data-service', questionReaderReasonsDataService)

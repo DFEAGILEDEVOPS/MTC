@@ -1,9 +1,9 @@
 'use strict'
 
-const { TYPES } = require('tedious')
 const monitor = require('../../helpers/monitor')
 const sqlService = require('./sql.service')
 const accessArrangementsDataService = {}
+const accessArrangementCodes = {}
 
 /**
  * Find access arrangements
@@ -21,38 +21,39 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
 }
 
 /**
- * Find access arrangement by pupil Id
- * @returns {Promise<Array>}
+ * Find access arrangement by codes
+ * @param {Number} codes
+ * @returns {Array}
  */
-accessArrangementsDataService.sqlFindAccessArrangementByPupilId = async function () {
-  const sql = `
-  SELECT 
-    id, 
-    code, 
-    description
-  FROM ${sqlService.adminSchema}.[accessArrangements]
-  WHERE`
-  return sqlService.query(sql)
+accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes = async function (codes) {
+  if (Object.keys(accessArrangementCodes).length === 0) {
+    // init
+    await init()
+  }
+  const result = []
+  codes.forEach(c => {
+    if (!accessArrangementCodes[c]) {
+      throw new Error('Code does not exist')
+    }
+    result.push(accessArrangementCodes[c])
+  })
+  return result
 }
 
 /**
- * Find access arrangement by codes
- * @param {Number} codes
- * @returns {Promise<Array>}
+ * Initialise method to populate accessArrangementCodes for caching purposes
+ * @returns {Array}
  */
-accessArrangementsDataService.sqlFindAccessArrangementsByCodes = async function (codes) {
-  if (!(Array.isArray(codes) && codes.length > 0)) {
-    throw new Error('No ids provided')
-  }
-  const select = `
+const init = async () => {
+  let accessArrangements
+  const sql = `
     SELECT *
-    FROM ${sqlService.adminSchema}.[accessArrangements]
-    `
+    FROM ${sqlService.adminSchema}.[accessArrangements]`
 
-  const {params, paramIdentifiers} = sqlService.buildParameterList(codes, TYPES.NVarChar)
-  const whereClause = 'WHERE code IN (' + paramIdentifiers.join(', ') + ')'
-  const sql = [select, whereClause].join(' ')
-  return sqlService.query(sql, params)
+  accessArrangements = await sqlService.query(sql)
+  accessArrangements.map(aa => {
+    accessArrangementCodes[aa.code] = aa.id
+  })
 }
 
 module.exports = monitor('access-arrangements.data-service', accessArrangementsDataService)

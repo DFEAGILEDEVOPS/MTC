@@ -12,7 +12,7 @@ const accessArrangementsErrorMessages = require('../../../lib/errors/access-arra
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
-    it('calls and return access arrangements list', async () => {
+    it('calls and returns access arrangements list', async () => {
       const accessArrangements = [
         {
           id: 1,
@@ -28,7 +28,7 @@ describe('accessArrangementsService', () => {
     })
   })
   describe('submit', () => {
-    it('calls and return access arrangements list', async () => {
+    it('calls and returns access arrangements list', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['ATA'],
@@ -37,7 +37,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
       await accessArrangementsService.submit(requestData, 12345, 1)
@@ -76,7 +76,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([])
       try {
         await accessArrangementsService.submit(requestData, 12345, 1)
       } catch (error) {
@@ -92,7 +92,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue()
       try {
         await accessArrangementsService.submit(requestData, 12345, 1)
@@ -109,7 +109,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 2}])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 2])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
       await accessArrangementsService.submit(requestData, 12345, 1)
@@ -125,9 +125,9 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 3}])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
-      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonByCode').and.returnValue({id: 1})
+      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
       await accessArrangementsService.submit(requestData, 12345, 1)
       expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1,3]')
@@ -143,9 +143,9 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsByCodes').and.returnValue([{id: 1}, {id: 3}])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
-      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonByCode').and.returnValue({id: 4})
+      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
       const saveMethodSpy = spyOn(accessArrangementsService, 'save')
       await accessArrangementsService.submit(requestData, 12345, 1)
       expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1,3]')

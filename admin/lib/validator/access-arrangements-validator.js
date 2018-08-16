@@ -23,13 +23,13 @@ module.exports.validate = (accessArrangementsData) => {
     validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
   }
   if (accessArrangementsCodes && accessArrangementsCodes.includes('ITA') && !inputAssistanceInformation) {
-    validationError.addError('inputAssistanceInformation', accessArrangementsErrorMessages.missingExplanation)
+    validationError.addError('inputAssistanceInformation', accessArrangementsErrorMessages.missingInputAssistanceExplanation)
   }
   if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && !questionReaderReasonCode) {
     validationError.addError('questionReaderReasonsList', accessArrangementsErrorMessages.missingQuestionReaderReason)
   }
   if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && questionReaderReasonCode === 'OTH' && !questionReaderOtherInformation) {
-    validationError.addError('questionReaderOtherInformation', accessArrangementsErrorMessages.missingExplanation)
+    validationError.addError('questionReaderOtherInformation', accessArrangementsErrorMessages.missingScreenReaderExplanation)
   }
   return validationError
 }

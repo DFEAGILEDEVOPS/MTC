@@ -29,32 +29,36 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
     throw validationError
   }
   const { pupilUrlSlug, accessArrangements: accessArrangementsCodes, questionReaderReason: questionReaderReasonCode } = requestData
-  let pupilAccessArrangements = R.clone(requestData)
-  const accessArrangements = await accessArrangementsDataService.sqlFindAccessArrangementsByCodes(accessArrangementsCodes)
-  let questionReaderReason
-  if (accessArrangements.length === 0) {
+  const pupilAccessArrangements = R.clone(requestData)
+  const accessArrangementsIds = await accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes(accessArrangementsCodes)
+  let questionReaderReasonId
+  if (accessArrangementsIds.length === 0) {
     throw new Error('No access arrangements found')
   }
-  pupilAccessArrangements['accessArrangements_ids'] = JSON.stringify(accessArrangements.map(aa => aa.id))
+  pupilAccessArrangements['accessArrangements_ids'] = JSON.stringify(accessArrangementsIds)
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, dfeNumber)
   if (!pupil) {
     throw new Error('Pupil url slug does not match a pupil record')
   }
+  const omittedFields = []
   pupilAccessArrangements['pupil_id'] = pupil.id
   pupilAccessArrangements['recordedBy_user_id'] = userId
   if (!pupilAccessArrangements.accessArrangements.includes('ITA')) {
-    pupilAccessArrangements = R.omit(['inputAssistanceInformation'], pupilAccessArrangements)
+    omittedFields.push('inputAssistanceInformation')
   }
   if (pupilAccessArrangements.questionReaderReason !== 'OTH') {
-    pupilAccessArrangements = R.omit(['questionReaderOtherInformation'], pupilAccessArrangements)
+    omittedFields.push('questionReaderOtherInformation')
   }
   if (pupilAccessArrangements.accessArrangements.includes('QNR')) {
-    questionReaderReason = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonByCode(questionReaderReasonCode)
+    questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(questionReaderReasonCode)
   }
-  if (questionReaderReason && questionReaderReason.id) {
-    pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReason.id
+  if (questionReaderReasonId) {
+    pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReasonId
   }
-  pupilAccessArrangements = R.omit(['_csrf', 'accessArrangements', 'questionReaderReason', 'pupilUrlSlug'], pupilAccessArrangements)
+  omittedFields.push('_csrf', 'accessArrangements', 'questionReaderReason', 'pupilUrlSlug')
+  omittedFields.forEach(field => {
+    delete pupilAccessArrangements[field]
+  })
   return accessArrangementsService.save(pupilAccessArrangements, pupil)
 }
 

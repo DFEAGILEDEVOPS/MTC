@@ -7,6 +7,22 @@
     </div>
 </div>
 
+<% if (error.hasError()) { %>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
     <form method="post" action="/access-arrangements/submit" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -14,89 +30,113 @@
             <h1 class="heading-xlarge" id="heading-xlarge">Select access arrangement for pupil</h1>
             <%- partial('partials/_session_expiry') %>
             <br />
-            <h2>1. Search for pupil name</h2>
-            <br />
-            <div class="form-control-1-2">
-                <select name="pupilUrlSlug" id="pupil-autocomplete-container">
-                    <option value="">Select a pupil</option>
-                    <% pupils.map(p => { %>
-                    <option value="<%= p.urlSlug %>"><%= p.fullName %></option>
-                    <% }) %>
-                </select>
+            <div id="selectAccessArrangementsPupil" class="form group <%= error.isError('pupil-autocomplete-container') ? 'form-group-error' : '' %>">
+                <h2>1. Search for pupil name</h2>
+                <div id="pupilFormControl" class="form-control-1-2">
+                    <span class="error-message"><%= error.get('pupil-autocomplete-container') %></span>
+                    <select name="pupilUrlSlug" id="pupil-autocomplete-container">
+                        <option value="">Select a pupil</option>
+                        <% pupils.map(p => { %>
+                        <option value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
+                        <% }) %>
+                    </select>
+                </div>
             </div>
-            <br />
+            <div class="extra-space">
+            </div>
+            <div class="form-group <%= error.isError('accessArrangementsList') ? 'form-group-error' : '' %>">
             <h2>2. Select access arrangement(s)</h2>
-            <ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
-                <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
-                <li>
-                    <div class="font-small">
-                        <label for="accessArrangements-<%= index %>">
-                            <%= accessArrangement.description %>
-                        </label>
-                    </div>
-                    <div class="multiple-choice-mtc">
-                        <input id="accessArrangements-<%= index %>"
-                               name="accessArrangements[<%= index %>]"
-                               type="checkbox"
-                               value="<%= accessArrangement.code %>"
-                               aria-label="Tick accessArrangement <%= accessArrangement.description %>."
-                               aria-checked="false"
-                               role="checkbox">
-                        <div></div>
-                    </div>
-                    <% if (accessArrangement.code === 'ITA') { %>
-                    <div class="hide-checkbox-content">
-                        <div class="panel panel-border-wide">
-                            <div class="form-group">
-                                <div class="form-label">Please explain why the pupil needs this arrangement</div>
-                                <textarea
-                                        id="inputAssistanceInformation"
-                                        name="inputAssistanceInformation"
-                                        class="form-control form-control-3-4 access-arrangements-textarea"
-                                        rows="3"
-                                        maxlength="1000"></textarea>
+                <span class="error-message"><%= error.get('accessArrangementsList') %></span>
+                <ul class="checkbox-list " id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)">
+                    <% Array.isArray(accessArrangements) && accessArrangements.forEach( (accessArrangement, index) => { %>
+                    <li>
+                        <div class="font-small">
+                            <label for="accessArrangements-<%= index %>">
+                                <%= accessArrangement.description %>
+                            </label>
+                        </div>
+                        <div class="multiple-choice-mtc">
+                            <input id="accessArrangements-<%= index %>"
+                                   name="accessArrangements[<%= index %>]"
+                                   type="checkbox"
+                                   value="<%= accessArrangement.code %>"
+                                   aria-label="Tick accessArrangement <%= accessArrangement.description %>."
+                                   aria-checked="false"
+                                   role="checkbox"
+                                    <%= formData['accessArrangements'] && formData['accessArrangements'].includes(accessArrangement.code) && 'checked' %>
+                            >
+                            <div></div>
+                        </div>
+                        <% if (accessArrangement.code === 'ITA') { %>
+                        <div class="hide-checkbox-content">
+                            <div class="panel panel-border-wide">
+                                <div class="form-group <%= error.isError('inputAssistanceInformation') ? 'form-group-error' : '' %>">
+                                    <div class="form-label" for='inputAssistanceInformation'>Please explain why the pupil needs this arrangement</div>
+                                    <% if (error.isError('inputAssistanceInformation')) { %>
+                                    <span class="error-message"> <%= error.get('inputAssistanceInformation') %></span>
+                                    <% } %>
+                                    <textarea
+                                            id="inputAssistanceInformation"
+                                            name="inputAssistanceInformation"
+                                            class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'form-control-error' : '' %>"
+                                            rows="3"
+                                            maxlength="1000"><%=formData['inputAssistanceInformation']%></textarea>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="notice">
+                                <i class="icon icon-important small">
+                                    <span class="visually-hidden">Warning</span>
+                                </i>
+                                <strong class="bold-xsmall">
+                                    Name of input assistant will need to be provided during the pupil's check
+                                </strong>
                             </div>
                         </div>
-                        <br />
-                        <div class="notice">
-                            <i class="icon icon-important small">
-                                <span class="visually-hidden">Warning</span>
-                            </i>
-                            <strong class="bold-xsmall">
-                                Name of input assistant will need to be provided during the pupil's check
-                            </strong>
-                        </div>
-                    </div>
-                    <% } %>
-                    <% if (accessArrangement.code === 'QNR') { %>
-                    <div class="hide-checkbox-content">
-                        <div class="form-group" id="questionReaderReasonsList">
-                            <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
-                                    <div class="multiple-choice">
-                                        <input id="questionReaderReason-<%= index %>" type="radio" name="questionReaderReason" class='question-reader-reason' value="<%= questionReaderReason.code %>">
-                                        <label for="example-contact-by-email"><%= questionReaderReason.description %></label>
-                                    </div>
-                                <% if (questionReaderReason.code === 'OTH') { %>
-                                    <div class="panel panel-border-wide js-hidden">
-                                        <div class="form-group">
-                                            <div class="form-label">Please explain why the pupil needs this arrangement</div>
-                                            <textarea
-                                                    id="questionReaderOtherInformation"
-                                                    name="questionReaderOtherInformation"
-                                                    class="form-control form-control-3-4 access-arrangements-textarea"
-                                                    rows="3"
-                                                    maxlength="1000"></textarea>
-                                        </div>
-                                    </div>
-                                    <br />
+                        <% } %>
+                        <% if (accessArrangement.code === 'QNR') { %>
+                        <div class="hide-checkbox-content">
+                            <div class="form-group <%= error.isError('questionReaderReasonsList') ? 'form-group-error' : '' %>" id="questionReaderReasonsList">
+                                <span class="error-message"> <%= error.get('questionReaderReasonsList') %></span>
+                                <% if (error.get('questionReaderReasonsList')) { %>
+                                    <br/>
                                 <% } %>
-                            <% }) %>
+                                <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
+                                        <div class="multiple-choice">
+                                            <input
+                                                    id="questionReaderReason-<%= index %>"
+                                                    type="radio" name="questionReaderReason"
+                                                    class='question-reader-reason'
+                                                    value="<%= questionReaderReason.code %>"
+                                                    <%= formData['questionReaderReason'] && formData['questionReaderReason'].includes(questionReaderReason.code) && 'checked' %>
+                                            >
+                                            <label for="example-contact-by-email"><%= questionReaderReason.description %></label>
+                                        </div>
+                                    <% if (questionReaderReason.code === 'OTH') { %>
+                                        <div class="panel panel-border-wide js-hidden">
+                                            <div class="form-group <%= error.isError('questionReaderOtherInformation') ? 'form-group-error' : '' %>">
+                                                <div class="form-label" for='questionReaderOtherInformation'>Please explain why the pupil needs this arrangement</div>
+                                                <% if (error.isError('questionReaderOtherInformation')) { %>
+                                                <span class="error-message"> <%= error.get('questionReaderOtherInformation') %></span>
+                                                <% } %>
+                                                <textarea
+                                                        id="questionReaderOtherInformation"
+                                                        name="questionReaderOtherInformation"
+                                                        class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('questionReaderOtherInformation') ? 'form-control-error' : '' %>"
+                                                        rows="3"
+                                                        maxlength="1000"><%=formData['questionReaderOtherInformation']%></textarea>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    <% } %>
+                                <% }) %>
+                            </div>
                         </div>
-                    </div>
-                    <% } %>
-                </li>
-                <% }) %>
-            </ul>
+                        <% } %>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
             <br />
             <div class="master-detail text">
                 <details>
@@ -162,9 +202,11 @@
         </div>
     </form>
 </div>
+<% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>
 <script>
   $(function () {
-    window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, '')
+    var getPupilUrlSlug = '<%= pupilUrlSlug  %>'
+    window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
     window.GOVUK.accessArrangements()
   })
 </script>
