@@ -14,8 +14,6 @@ import * as azure from './azure'
 const config = require('./config')
 
 import authRoutes from './routes/auth'
-import checkSubmitRoutes from './routes/check-submit'
-import checkStartRoutes from './routes/check-started'
 import pingRoute from './routes/ping'
 
 if (process.env.NODE_ENV !== 'production') {
