@@ -74,14 +74,14 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
  */
 pinGenerationService.isValid = async (p, pinEnv = 'live') => {
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
-  const hasValidAttendance = await pupilAttendanceService.hasValidAttendance(p.id, pinEnv)
+  const hasAttendance = await pupilAttendanceService.hasAttendance(p.id, pinEnv)
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
   const hasValidPin = pinValidator.isActivePin(p.pin, p.pinExpiresAt)
   // TODO: use pinEnv to differentiate between live and familiarisation checks
   return pinEnv === 'live'
-    ? !hasValidPin && !hasValidAttendance && !canRestart
-    : !hasValidPin && !hasValidAttendance
+    ? !hasValidPin && !hasAttendance && !canRestart
+    : !hasValidPin && !hasAttendance
 }
 
 /**

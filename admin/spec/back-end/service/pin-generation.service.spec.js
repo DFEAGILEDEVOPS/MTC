@@ -35,7 +35,7 @@ describe('pin-generation.service', () => {
         sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
-        sandbox.mock(pupilAttendanceService).expects('hasValidAttendance').resolves(false).twice()
+        sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
         proxyquire('../../../services/pin-generation.service', {
           '../../../services/pupil.service': pupilDataService,
           '../../../services/restart.service': restartService,
@@ -61,7 +61,7 @@ describe('pin-generation.service', () => {
         sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
-        sandbox.mock(pupilAttendanceService).expects('hasValidAttendance').resolves(false).twice()
+        sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../../services/pin-generation.service', {
           '../../../services/pupil.service': pupilDataService,
@@ -87,7 +87,7 @@ describe('pin-generation.service', () => {
         sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(3).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
-        sandbox.mock(pupilAttendanceService).expects('hasValidAttendance').resolves(false).twice()
+        sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
         sandbox.useFakeTimers(moment().startOf('day'))
         proxyquire('../../../services/pin-generation.service', {
           '../../../services/pupil.service': pupilDataService,
@@ -114,7 +114,7 @@ describe('pin-generation.service', () => {
         sandbox.mock(pupilDataService).expects('sqlFindPupilsByDfeNumber').resolves([ pupil1, pupil2 ])
         sandbox.mock(checkDataService).expects('sqlFindNumberOfChecksStartedByPupil').resolves(0).twice()
         sandbox.mock(restartService).expects('canRestart').resolves(false).twice()
-        sandbox.mock(pupilAttendanceService).expects('hasValidAttendance').resolves(false).twice()
+        sandbox.mock(pupilAttendanceService).expects('hasAttendance').resolves(false).twice()
         proxyquire('../../../services/pin-generation.service', {
           '../../../services/pupil.service': pupilDataService,
           '../../../services/restart.service': restartService,
@@ -143,7 +143,7 @@ describe('pin-generation.service', () => {
         spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue([pupil1])
         spyOn(checkDataService, 'sqlFindNumberOfChecksStartedByPupil').and.returnValue(0)
         spyOn(restartService, 'canRestart').and.returnValue(false)
-        spyOn(pupilAttendanceService, 'hasValidAttendance').and.returnValue(true)
+        spyOn(pupilAttendanceService, 'hasAttendance').and.returnValue(true)
         const pupils = await pinGenerationService.getPupils(schoolMock.dfeNumber)
         expect(pupils.length).toBe(0)
         done()

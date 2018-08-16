@@ -67,15 +67,20 @@ const attendanceService = {
   },
 
   /**
-   * Check if pupil has valid attendance
+   * Check if pupil has an existing attendance entry for the
+   * specific `pinEnv` environment.
+   *
+   * All attendance entries are considered for live checks, while for
+   * familiarisation checks, only `left school` entries are considered
+   *
    * @param pupilId
    * @param pinEnv
    * @return {boolean}
    */
-  hasValidAttendance: async (pupilId, pinEnv) => {
+  hasAttendance: async (pupilId, pinEnv) => {
     const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(pupilId)
     return pinEnv === 'live'
-      ? pupilAttendance && pupilAttendance.id
+      ? pupilAttendance && pupilAttendance.attendanceCode_id !== undefined
       : pupilAttendance && pupilAttendance.attendanceCode_id === 2 // left school
   }
 }
