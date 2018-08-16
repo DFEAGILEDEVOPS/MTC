@@ -11,7 +11,7 @@ set -e
 storageAccountName=$1
 storageAccountKey=$2
 
-declare -a queuenames=('check-started' 'completed-check' 'pupil-auth' 'pupil-feedback' 'pupil-preferences' 'prepare-check')
+declare -a queuenames=('check-started' 'check-complete' 'pupil-feedback' 'pupil-prefs' 'prepare-check')
 # create queues if they do not exist
 for q in "${queuenames[@]}"
 do

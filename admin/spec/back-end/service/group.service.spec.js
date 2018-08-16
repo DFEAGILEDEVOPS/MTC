@@ -6,6 +6,7 @@ const sinon = require('sinon')
 
 const groupService = require('../../../services/group.service')
 const groupDataService = require('../../../services/data-access/group.data.service')
+const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 const groupMock = require('../mocks/group')
 const groupsMock = require('../mocks/groups')
 const pupilsMock = require('../mocks/pupils')
@@ -61,6 +62,7 @@ describe('group.service', () => {
   describe('#getPupils', () => {
     beforeEach(() => {
       spyOn(groupDataService, 'sqlFindPupils').and.returnValue(pupilsMock)
+      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags').and.returnValue(pupilsMock)
     })
 
     it('should return pupils', async (done) => {

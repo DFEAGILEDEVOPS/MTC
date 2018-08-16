@@ -5,7 +5,7 @@
       "name": "check",
       "type": "queueTrigger",
       "direction": "in",
-      "queueName": "completed-checks",
+      "queueName": "check-complete",
       "connection": "StorageAccount"
     },
     {

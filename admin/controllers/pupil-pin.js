@@ -9,6 +9,7 @@ const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
+const featureToggles = require('feature-toggles')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
@@ -108,9 +109,11 @@ const postGeneratePins = async (req, res, next) => {
       await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
     }
 
-    // New code - writes to allocateCheckFormTable, depends on school pin being ready
-    // disabled as not yet working correctly in travis.
-    await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      // New code - writes to allocateCheckFormTable, depends on school pin being ready
+      // disabled as not yet working correctly in travis.
+      await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
+    }
 
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)
