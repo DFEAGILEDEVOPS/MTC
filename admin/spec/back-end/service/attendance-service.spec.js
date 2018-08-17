@@ -166,7 +166,7 @@ describe('attendanceService', () => {
   describe('#hasAttendance', () => {
     describe('for live env', () => {
       it('returns valid if pupil has any attendance', async () => {
-        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 100 })
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'A' })
         const result = await service.hasAttendance('id', 'live')
         expect(result).toBe(true)
       })
@@ -180,13 +180,13 @@ describe('attendanceService', () => {
 
     describe('for familiarisation env', () => {
       it('returns valid if pupil has left school attendance', async () => {
-        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 2 })
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'LEFTT' })
         const result = await service.hasAttendance('id', 'familiarisation')
         expect(result).toBe(true)
       })
 
       it('returns invalid if pupil has other attendance than left school', async () => {
-        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 1 })
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'A' })
         const result = await service.hasAttendance('id', 'familiarisation')
         expect(result).toBe(false)
       })

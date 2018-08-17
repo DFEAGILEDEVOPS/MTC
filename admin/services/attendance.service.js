@@ -80,8 +80,8 @@ const attendanceService = {
   hasAttendance: async (pupilId, pinEnv) => {
     const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(pupilId)
     return pinEnv === 'live'
-      ? pupilAttendance !== undefined && pupilAttendance.attendanceCode_id !== undefined
-      : pupilAttendance !== undefined && pupilAttendance.attendanceCode_id === 2 // left school
+      ? pupilAttendance !== undefined && pupilAttendance.id !== undefined
+      : pupilAttendance !== undefined && pupilAttendance.code === 'LEFTT' // left school
   }
 }
 
