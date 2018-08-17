@@ -6,5 +6,6 @@
   "pupilEdit": true,
   "pupilUpload": true,
   "dependencyTracking": true,
-  "accessArrangements": false
+  "accessArrangements": false,
+  "prepareCheckMessaging": false
 }
