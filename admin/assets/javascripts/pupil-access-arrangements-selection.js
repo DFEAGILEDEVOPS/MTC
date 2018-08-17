@@ -13,9 +13,11 @@ $(function () {
     // Reveal hidden content if the checkbox or radio button appears selected on page load
     if ($('input[value=ITA]').is(':checked')) {
       $($('input[value=ITA]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
+      $($('input[value=ITA]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
     }
     if ($('input[value=QNR]').is(':checked')) {
       $($('input[value=QNR]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
+      $($('input[value=QNR]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
     }
     if ($('input[value=OTH]').is(':checked')) {
       $($('input[value=OTH]').parent().siblings('.panel')).removeClass('js-hidden')
