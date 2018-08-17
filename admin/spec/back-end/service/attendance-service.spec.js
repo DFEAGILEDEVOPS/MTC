@@ -168,13 +168,13 @@ describe('attendanceService', () => {
       it('returns valid if pupil has any attendance', async () => {
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 100 })
         const result = await service.hasAttendance('id', 'live')
-        expect(result).toBeTruthy()
+        expect(result).toBe(true)
       })
 
       it('returns invalid if there is no attendance', async () => {
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue(undefined)
         const result = await service.hasAttendance('id', 'live')
-        expect(result).toBeFalsy()
+        expect(result).toBe(false)
       })
     })
 
@@ -182,19 +182,19 @@ describe('attendanceService', () => {
       it('returns valid if pupil has left school attendance', async () => {
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 2 })
         const result = await service.hasAttendance('id', 'familiarisation')
-        expect(result).toBeTruthy()
+        expect(result).toBe(true)
       })
 
       it('returns invalid if pupil has other attendance than left school', async () => {
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', attendanceCode_id: 1 })
         const result = await service.hasAttendance('id', 'familiarisation')
-        expect(result).toBeFalsy()
+        expect(result).toBe(false)
       })
 
       it('returns invalid if there is no attendance', async () => {
         spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue(undefined)
         const result = await service.hasAttendance('id', 'familiarisation')
-        expect(result).toBeFalsy()
+        expect(result).toBe(false)
       })
     })
   })
