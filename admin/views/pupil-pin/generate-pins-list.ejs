@@ -20,7 +20,10 @@
         <div class="form-group filter-name">
             <label for="search-name">
                 <img src="/images/icon-search.png"/>
-            </label><input class="form-control" id="search-name" type="search" name="search-name">
+            </label>
+            <span>
+                <input class="form-control" id="search-name" type="search" name="search-name">
+            </span>
         </div>
 
         <%- partial('partials/_groups_filter', { groups: groups }) %>
