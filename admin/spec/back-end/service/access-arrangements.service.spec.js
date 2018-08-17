@@ -29,45 +29,37 @@ describe('accessArrangementsService', () => {
   })
   describe('submit', () => {
     it('calls and returns access arrangements list', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA'],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        questionReaderOtherInformation: ''
-      }
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
+      spyOn(accessArrangementsService, 'process')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
-      const saveMethodSpy = spyOn(accessArrangementsService, 'save')
-      await accessArrangementsService.submit(requestData, 12345, 1)
-      expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1]')
-      expect(saveMethodSpy.calls.all()[0].args[0].pupil_id).toBe(1)
-      expect(saveMethodSpy.calls.all()[0].args[0].recordedBy_user_id).toBe(1)
-      expect(saveMethodSpy.calls.all()[0].args[0].inputAssistanceInformation).toBeUndefined()
-      expect(saveMethodSpy.calls.all()[0].args[0].questionReaderOtherInformation).toBeUndefined()
-      expect(saveMethodSpy.calls.all()[0].args[1].id).toBe(1)
+      spyOn(accessArrangementsService, 'save')
+      await accessArrangementsService.submit({}, 12345, 1)
+      expect(accessArrangementsValidator.validate).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
+      expect(accessArrangementsService.process).toHaveBeenCalled()
+      expect(accessArrangementsService.save).toHaveBeenCalled()
     })
     it('throws a validation error if validation is unsuccessful', async () => {
-      const requestData = {
-        pupilUrlSlug: '',
-        accessArrangements: undefined,
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        questionReaderOtherInformation: ''
-      }
       const validationError = new ValidationError()
       validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
       validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
       spyOn(accessArrangementsValidator, 'validate').and.returnValue(validationError)
+      spyOn(accessArrangementsService, 'process')
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
+      spyOn(accessArrangementsService, 'save')
       try {
-        await accessArrangementsService.submit(requestData, 12345, 1)
+        await accessArrangementsService.submit({}, 12345, 1)
       } catch (error) {
         expect(error.name).toBe('ValidationError')
       }
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
+      expect(accessArrangementsService.process).not.toHaveBeenCalled()
+      expect(accessArrangementsService.save).not.toHaveBeenCalled()
     })
-    it('throws an error if accessArrangement are not found based on codes provided', async () => {
+  })
+  describe('process', () => {
+    it('returns a processed access arrangements submission object', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['ATA'],
@@ -75,10 +67,22 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
+      const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes).toHaveBeenCalled()
+      expect(result).toEqual(Object({accessArrangements_ids: '[1]', pupil_id: 1, recordedBy_user_id: 1}))
+    })
+    it('throws an error if accessArrangement are not found based on codes provided', async () => {
+      const requestData = {
+        pupilUrlSlug: 'pupilUrlSlug',
+        accessArrangements: ['ATS'],
+        questionReaderReason: '',
+        inputAssistanceInformation: '',
+        questionReaderOtherInformation: ''
+      }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([])
       try {
-        await accessArrangementsService.submit(requestData, 12345, 1)
+        await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
       } catch (error) {
         expect(error.message).toBe('No access arrangements found')
       }
@@ -91,13 +95,11 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue()
       try {
-        await accessArrangementsService.submit(requestData, 12345, 1)
+        await accessArrangementsService.process(requestData, {}, 12345, 1)
       } catch (error) {
-        expect(error.message).toBe('Pupil url slug does not match a pupil record')
+        expect(error.message).toBe('Pupil object is not found')
       }
     })
     it('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
@@ -108,13 +110,9 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: 'inputAssistanceInformation',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 2])
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
-      const saveMethodSpy = spyOn(accessArrangementsService, 'save')
-      await accessArrangementsService.submit(requestData, 12345, 1)
-      expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1,2]')
-      expect(saveMethodSpy.calls.all()[0].args[0].inputAssistanceInformation).toBeDefined()
+      const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
+      expect(result).toEqual(Object({accessArrangements_ids: '[1,2]', pupil_id: 1, recordedBy_user_id: 1, inputAssistanceInformation: 'inputAssistanceInformation'}))
     })
     it('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
       const requestData = {
@@ -124,15 +122,11 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
-      const saveMethodSpy = spyOn(accessArrangementsService, 'save')
-      await accessArrangementsService.submit(requestData, 12345, 1)
-      expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1,3]')
-      expect(saveMethodSpy.calls.all()[0].args[0].questionReaderReasons_id).toBe(1)
-      expect(saveMethodSpy.calls.all()[0].args[0].questionReaderOtherInformation).toBeUndefined()
+      const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
+      expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
+      expect(result).toEqual(Object({accessArrangements_ids: '[1,3]', pupil_id: 1, recordedBy_user_id: 1, questionReaderReasons_id: 1}))
     })
     it('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
       const requestData = {
@@ -142,18 +136,13 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1})
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
-      const saveMethodSpy = spyOn(accessArrangementsService, 'save')
-      await accessArrangementsService.submit(requestData, 12345, 1)
-      expect(saveMethodSpy.calls.all()[0].args[0].accessArrangements_ids).toBe('[1,3]')
-      expect(saveMethodSpy.calls.all()[0].args[0].questionReaderReasons_id).toBe(4)
-      expect(saveMethodSpy.calls.all()[0].args[0].questionReaderOtherInformation).toBeDefined()
+      const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
+      expect(result).toEqual(Object({accessArrangements_ids: '[1,3]', pupil_id: 1, recordedBy_user_id: 1, questionReaderReasons_id: 4, questionReaderOtherInformation: 'questionReaderOtherInformation'}))
     })
   })
-  describe('submit', () => {
+  describe('save', () => {
     it('calls sqlCreate if pupilAccessArrangement record does not exist', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
       spyOn(pupilAccessArrangementsDataService, 'sqlCreate')

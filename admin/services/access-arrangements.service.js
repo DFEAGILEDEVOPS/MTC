@@ -17,7 +17,7 @@ accessArrangementsService.getAccessArrangements = async () => {
 }
 
 /**
- * Process access arrangements for single pupil
+ * Submit access arrangements for single pupil
  * @param {Object} requestData
  * @param {Number} dfeNumber
  * @param {Number} userId
@@ -28,7 +28,21 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
   if (validationError.hasError()) {
     throw validationError
   }
-  const { pupilUrlSlug, accessArrangements: accessArrangementsCodes, questionReaderReason: questionReaderReasonCode } = requestData
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(requestData.pupilUrlSlug, dfeNumber)
+  const processedData = await accessArrangementsService.process(requestData, pupil, dfeNumber, userId)
+  return accessArrangementsService.save(processedData, pupil)
+}
+
+/**
+ * Process access arrangements data
+ * @param {Object} requestData
+ * @param {Object} pupil
+ * @param {Number} dfeNumber
+ * @param {Number} userId
+ * @returns {Object}
+ */
+accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId) => {
+  const { accessArrangements: accessArrangementsCodes, questionReaderReason: questionReaderReasonCode } = requestData
   const pupilAccessArrangements = R.clone(requestData)
   const accessArrangementsIds = await accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes(accessArrangementsCodes)
   let questionReaderReasonId
@@ -36,9 +50,8 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
     throw new Error('No access arrangements found')
   }
   pupilAccessArrangements['accessArrangements_ids'] = JSON.stringify(accessArrangementsIds)
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, dfeNumber)
   if (!pupil) {
-    throw new Error('Pupil url slug does not match a pupil record')
+    throw new Error('Pupil object is not found')
   }
   const omittedFields = []
   pupilAccessArrangements['pupil_id'] = pupil.id
@@ -59,11 +72,11 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
   omittedFields.forEach(field => {
     delete pupilAccessArrangements[field]
   })
-  return accessArrangementsService.save(pupilAccessArrangements, pupil)
+  return pupilAccessArrangements
 }
 
 /**
- * Save access arrangements for single pupil
+ * Save access arrangements data
  * @param {Object} pupilAccessArrangements
  * @param {Object} pupil
  * @returns {Object}
