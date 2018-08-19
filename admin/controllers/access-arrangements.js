@@ -1,4 +1,5 @@
 const accessArrangementsService = require('../services/access-arrangements.service')
+const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const monitor = require('../helpers/monitor')
@@ -10,16 +11,24 @@ const controller = {}
  * Acess arrangements overview
  * @param req
  * @param res
+ * @param next
  * @returns {Promise.<void>}
  */
-controller.getOverview = async (req, res) => {
+controller.getOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Access arrangements'
   req.breadcrumbs(res.locals.pageTitle)
+  let pupils
+  try {
+    pupils = await pupilAccessArrangementsService.getPupils(req.user.School)
+  } catch (error) {
+    return next(error)
+  }
   const { hl } = req.query
   return res.render('access-arrangements/overview', {
     highlight: hl,
     messages: res.locals.messages,
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    pupils
   })
 }
 
@@ -72,7 +81,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
     return next(error)
   }
   req.flash('info', `Access arrangements applied to ${pupil.lastName}, ${pupil.foreName}`)
-  return res.redirect(`/access-arrangements/overview?hl=${pupil.id}`)
+  return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
 module.exports = monitor('access-arrangements.controller', controller)

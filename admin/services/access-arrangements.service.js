@@ -83,17 +83,15 @@ accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId
  */
 
 accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
-  const { id, foreName, lastName } = pupil
+  const { urlSlug, foreName, lastName } = pupil
   const pupilAccessArrangement = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
   if (pupilAccessArrangement && pupilAccessArrangement['pupil_id']) {
-    // update
     const isUpdate = true
     await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements, isUpdate)
   } else {
-    // create
     await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements)
   }
-  return { id, foreName, lastName }
+  return { urlSlug, foreName, lastName }
 }
 
 module.exports = monitor('access-arrangements.service', accessArrangementsService)

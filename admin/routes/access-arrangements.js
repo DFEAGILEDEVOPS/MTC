@@ -9,7 +9,7 @@ const accessArrangementsController = require('../controllers/access-arrangements
 
 if (featureToggles.isFeatureEnabled('accessArrangements')) {
   /* Access arrangements routing */
-  router.get('/overview', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res) => accessArrangementsController.getOverview(req, res))
+  router.get('/overview', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.getOverview(req, res, next))
   router.get('/select-access-arrangements', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.getSelectAccessArrangements(req, res, next))
   router.post('/submit', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.postSubmitAccessArrangements(req, res, next))
 }
