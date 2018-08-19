@@ -42,20 +42,20 @@ accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
  * @returns {Object}
  */
 accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId) => {
-  const { accessArrangements: accessArrangementsCodes, questionReaderReason: questionReaderReasonCode } = requestData
+  const { accessArrangements: accessArrangementsCodes, questionReaderReason } = requestData
   const pupilAccessArrangements = R.clone(requestData)
-  const accessArrangementsIds = await accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes(accessArrangementsCodes)
+  pupilAccessArrangements.accessArrangementsIdsWithCodes = await accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes(accessArrangementsCodes)
   let questionReaderReasonId
-  if (accessArrangementsIds.length === 0) {
+  if (pupilAccessArrangements.accessArrangements.length === 0) {
     throw new Error('No access arrangements found')
   }
-  pupilAccessArrangements['accessArrangements_ids'] = JSON.stringify(accessArrangementsIds)
   if (!pupil) {
     throw new Error('Pupil object is not found')
   }
   const omittedFields = []
   pupilAccessArrangements['pupil_id'] = pupil.id
   pupilAccessArrangements['recordedBy_user_id'] = userId
+  pupilAccessArrangements['questionReaderReasonCode'] = questionReaderReason
   if (!pupilAccessArrangements.accessArrangements.includes('ITA')) {
     omittedFields.push('inputAssistanceInformation')
   }
@@ -63,7 +63,7 @@ accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId
     omittedFields.push('questionReaderOtherInformation')
   }
   if (pupilAccessArrangements.accessArrangements.includes('QNR')) {
-    questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(questionReaderReasonCode)
+    questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(pupilAccessArrangements.questionReaderReasonCode)
   }
   if (questionReaderReasonId) {
     pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReasonId
@@ -87,10 +87,11 @@ accessArrangementsService.save = async (pupilAccessArrangements, pupil) => {
   const pupilAccessArrangement = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
   if (pupilAccessArrangement && pupilAccessArrangement['pupil_id']) {
     // update
-    await pupilAccessArrangementsDataService.sqlUpdate(pupilAccessArrangements)
+    const isUpdate = true
+    await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements, isUpdate)
   } else {
     // create
-    await pupilAccessArrangementsDataService.sqlCreate(pupilAccessArrangements)
+    await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements)
   }
   return { id, foreName, lastName }
 }

@@ -25,7 +25,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
  * @param {Number} codes
  * @returns {Array}
  */
-accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes = async function (codes) {
+accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async function (codes) {
   if (Object.keys(accessArrangementCodes).length === 0) {
     // init
     await init()
@@ -52,7 +52,7 @@ const init = async () => {
 
   accessArrangements = await sqlService.query(sql)
   accessArrangements.map(aa => {
-    accessArrangementCodes[aa.code] = aa.id
+    accessArrangementCodes[aa.code] = { id: aa.id, code: aa.code }
   })
 }
 

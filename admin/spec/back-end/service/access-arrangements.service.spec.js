@@ -67,10 +67,10 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }])
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
-      expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsByCodes).toHaveBeenCalled()
-      expect(result).toEqual(Object({accessArrangements_ids: '[1]', pupil_id: 1, recordedBy_user_id: 1}))
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes).toHaveBeenCalled()
+      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{id: 1, code: 'ATA'}], recordedBy_user_id: 1, questionReaderReasonCode: ''}))
     })
     it('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
@@ -80,7 +80,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([])
       try {
         await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
       } catch (error) {
@@ -95,7 +95,7 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([1])
       try {
         await accessArrangementsService.process(requestData, {}, 12345, 1)
       } catch (error) {
@@ -110,9 +110,9 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: 'inputAssistanceInformation',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 2])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
-      expect(result).toEqual(Object({accessArrangements_ids: '[1,2]', pupil_id: 1, recordedBy_user_id: 1, inputAssistanceInformation: 'inputAssistanceInformation'}))
+      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }], recordedBy_user_id: 1, inputAssistanceInformation: 'inputAssistanceInformation', questionReaderReasonCode: ''}))
     })
     it('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
       const requestData = {
@@ -122,11 +122,11 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
       expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
-      expect(result).toEqual(Object({accessArrangements_ids: '[1,3]', pupil_id: 1, recordedBy_user_id: 1, questionReaderReasons_id: 1}))
+      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }], recordedBy_user_id: 1, questionReaderReasonCode: 'VIM', questionReaderReasons_id: 1}))
     })
     it('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
       const requestData = {
@@ -136,25 +136,25 @@ describe('accessArrangementsService', () => {
         inputAssistanceInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsByCodes').and.returnValue([1, 3])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
-      expect(result).toEqual(Object({accessArrangements_ids: '[1,3]', pupil_id: 1, recordedBy_user_id: 1, questionReaderReasons_id: 4, questionReaderOtherInformation: 'questionReaderOtherInformation'}))
+      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }], recordedBy_user_id: 1, questionReaderReasonCode: 'OTH', questionReaderReasons_id: 4, questionReaderOtherInformation: 'questionReaderOtherInformation'}))
     })
   })
   describe('save', () => {
     it('calls sqlCreate if pupilAccessArrangement record does not exist', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
-      spyOn(pupilAccessArrangementsDataService, 'sqlCreate')
+      spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
       const pupil = await accessArrangementsService.save({}, {id: 1})
-      expect(pupilAccessArrangementsDataService.sqlCreate).toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({})
       expect(pupil.id).toBe(1)
     })
     it('calls sqlUpdate if pupilAccessArrangement record exists', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({pupil_id: 1})
-      spyOn(pupilAccessArrangementsDataService, 'sqlUpdate')
+      spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
       await accessArrangementsService.save({}, {id: 1})
-      expect(pupilAccessArrangementsDataService.sqlUpdate).toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
   })
 })
