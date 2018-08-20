@@ -50,10 +50,22 @@
   label {
     background-color: $grey-1;
     padding: pem(5px);
+    float: left;
 
     img {
-      padding-left: pem(5px);
+      padding: pem(4px);
       vertical-align: middle;
+    }
+  }
+
+  span {
+    display: block;
+    overflow: hidden;
+
+    input {
+      width: 100%;
+      padding-bottom: pem(4px);
+      margin-top: 0;
     }
   }
 }
