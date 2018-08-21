@@ -38,7 +38,7 @@ module.exports = function (context, prepareCheckMessage) {
     isCollected: false,
     collectedAt: null,
     hasCheckStarted: false,
-    createdAt: new Date(),
+    createdAt: new Date(), // This ought to work but doesn't: {'_': new Date(), '$': 'Edm.DateTime'},
     updatedAt: new Date()
   }
 
