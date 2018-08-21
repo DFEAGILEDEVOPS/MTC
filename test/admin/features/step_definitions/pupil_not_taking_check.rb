@@ -79,7 +79,7 @@ end
 
 Given(/^I have selected some pupils$/) do
   step 'I am on the pupil reason page'
-  pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == '-'}
   pupils[0..3].each {|pupil| pupil.checkbox.click}
 end
 
@@ -88,7 +88,7 @@ Then(/^I should see the confirm button disabled$/) do
 end
 
 When(/^I select a pupil$/) do
-  pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == '-'}
   pupil.checkbox.click
 end
 
@@ -115,7 +115,7 @@ end
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
   pupil_reason_page.select_reason(reason)
   pupils = pupil_reason_page.pupil_list.rows.reject{|row| row.name.text.include? 'áàâãäåāæéèêēëíìîïī' or row.name.text.include? 'ÁÀÂÃÄÅĀÆÉÈÊĒËÍÌÎÏĪ'}
-  @pupil_row = pupils.reject.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupil_row = pupils.reject.find {|row| row.has_no_selected? && row.reason.text == '-'}
   @pupil_forename = @pupil_row.name.text.split(',')[1].strip
   @pupil_lastname = @pupil_row.name.text.split(',')[0].strip
   @pupil_row.checkbox.click
@@ -132,7 +132,7 @@ Then(/^the (.+) reason should be stored against the pupils$/) do |reason|
 end
 
 Then(/^I should be able to select the pupils name to check the check box$/) do
-  pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected? && row.reason.text == '-'}
   pupil.name.click
   expect(pupil).to have_selected
 end
@@ -163,7 +163,7 @@ end
 When(/^I add (.+) as a reason for multiple pupils$/) do |reason|
   @reason = reason
   pupil_reason_page.select_reason(@reason)
-  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == '-'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
   pupil_reason_page.sticky_banner.confirm.click
@@ -248,7 +248,7 @@ end
 When(/^I select multiple pupils with the (.+) reason$/) do |reason|
   @reason = reason
   pupil_reason_page.select_reason(@reason)
-  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == 'N/A'}
+  @pupils = pupil_reason_page.pupil_list.rows.select {|row| row.has_no_selected? && row.reason.text == '-'}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
