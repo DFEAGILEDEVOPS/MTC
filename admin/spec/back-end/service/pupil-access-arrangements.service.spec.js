@@ -85,4 +85,78 @@ describe('pupilAccessArrangementsService', () => {
       })
     })
   })
+  describe('getPupilEditFormData', () => {
+    it('returns pupil access arrangement data without question reader reason', async () => {
+      const accessArrangementsData = [
+        {
+          'urlSlug': 'urlSlug',
+          'foreName': 'foreName',
+          'lastName': 'lastName',
+          'inputAssistanceInformation': '',
+          'questionReaderOtherInformation': '',
+          'accessArrangementCode': 'CCT',
+          'questionReaderReasonCode': null
+        },
+        {
+          'urlSlug': 'urlSlug',
+          'foreName': 'foreName',
+          'lastName': 'lastName',
+          'inputAssistanceInformation': 'inputAssistanceInformation',
+          'questionReaderOtherInformation': '',
+          'accessArrangementCode': 'ITA',
+          'questionReaderReasonCode': null
+        }
+      ]
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)
+      const formData = await pupilAccessArrangementsService.getPupilEditFormData('urlSlug')
+      expect(formData).toEqual(
+        {
+          pupilUrlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: 'inputAssistanceInformation',
+          questionReaderOtherInformation: '',
+          accessArrangements: ['CCT', 'ITA'],
+          questionReaderReason: null,
+          isEditView: true
+        }
+      )
+    })
+    it('returns pupil access arrangement data with question reader reason', async () => {
+      const accessArrangementsData = [
+        {
+          'urlSlug': 'urlSlug',
+          'foreName': 'foreName',
+          'lastName': 'lastName',
+          'inputAssistanceInformation': '',
+          'questionReaderOtherInformation': '',
+          'accessArrangementCode': 'CCT',
+          'questionReaderReasonCode': null
+        },
+        {
+          'urlSlug': 'urlSlug',
+          'foreName': 'foreName',
+          'lastName': 'lastName',
+          'inputAssistanceInformation': '',
+          'questionReaderOtherInformation': 'questionReaderOtherInformation',
+          'accessArrangementCode': 'QNR',
+          'questionReaderReasonCode': 'OTH'
+        }
+      ]
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)
+      const formData = await pupilAccessArrangementsService.getPupilEditFormData('urlSlug')
+      expect(formData).toEqual(
+        {
+          pupilUrlSlug: 'urlSlug',
+          foreName: 'foreName',
+          lastName: 'lastName',
+          inputAssistanceInformation: '',
+          questionReaderOtherInformation: 'questionReaderOtherInformation',
+          accessArrangements: ['CCT', 'QNR'],
+          questionReaderReason: 'OTH',
+          isEditView: true
+        }
+      )
+    })
+  })
 })

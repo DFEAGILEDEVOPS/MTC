@@ -8,7 +8,7 @@ const pupilAccessArrangementsService = {}
 /**
  * Returns pupils with associated access arrangements
  * @param {Number} dfeNumber
- * @returns {Promise<Array>}
+ * @returns {Array}
  */
 pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
   const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(dfeNumber)
@@ -28,6 +28,30 @@ pupilAccessArrangementsService.getPupils = async (dfeNumber) => {
   }, {})
   const pupilsWithAccessArrangements = accessArrangementsHashmap && Object.keys(accessArrangementsHashmap).map((key) => accessArrangementsHashmap[key])
   return pupilIdentificationFlag.addIdentificationFlags(pupilsWithAccessArrangements)
+}
+
+/**
+ * Returns pupils edit form data
+ * @param {String} urlSlug
+ * @returns {Object}
+ */
+pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
+  if (!urlSlug) {
+    throw new Error('Pupil url slug is not provided')
+  }
+  const pupilAccessArrangementsData = await pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug(urlSlug)
+  const formData = pupilAccessArrangementsData.reduce((acc, item) => {
+    acc.pupilUrlSlug = !acc.pupilUrlSlug ? item.urlSlug : acc.pupilUrlSlug
+    acc.foreName = !acc.foreName ? item.foreName : acc.foreName
+    acc.lastName = !acc.lastName ? item.lastName : acc.lastName
+    acc.inputAssistanceInformation = !acc.inputAssistanceInformation ? item.inputAssistanceInformation : acc.inputAssistanceInformation
+    acc.questionReaderOtherInformation = !acc.questionReaderOtherInformation ? item.questionReaderOtherInformation : acc.questionReaderOtherInformation
+    acc.questionReaderReason = !acc.questionReaderReason ? item.questionReaderReasonCode : acc.questionReaderReason
+    acc.accessArrangements.push(item.accessArrangementCode)
+    return acc
+  }, { accessArrangements: [] })
+  formData.isEditView = true
+  return formData
 }
 
 module.exports = monitor('pupil-access-arrangements.service', pupilAccessArrangementsService)

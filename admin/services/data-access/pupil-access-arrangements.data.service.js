@@ -134,4 +134,32 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
   return sqlService.query(sql, params)
 }
 
+pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (urlSlug) => {
+  const params = [
+    {
+      name: 'urlSlug',
+      value: urlSlug,
+      type: TYPES.NVarChar
+    }
+  ]
+  const sql =
+    `SELECT
+    p.urlSlug,
+    p.foreName,
+    p.lastName,
+    paa.inputAssistanceInformation,
+    paa.questionReaderOtherInformation,
+    aa.code as accessArrangementCode,
+    qrr.code as questionReaderReasonCode 
+    FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
+    INNER JOIN ${sqlService.adminSchema}.pupil p
+      ON p.id = paa.pupil_id
+    INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
+      ON aa.id = paa.accessArrangements_id
+    LEFT JOIN ${sqlService.adminSchema}.questionReaderReasons qrr
+      ON qrr.id = paa.questionReaderReasons_id
+    WHERE p.urlSlug = @urlSlug`
+  return sqlService.query(sql, params)
+}
+
 module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)

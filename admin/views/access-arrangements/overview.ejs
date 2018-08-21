@@ -69,7 +69,7 @@
                 <td>
                     <div<% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="highlight-item"<% } %>>
                         <span id="<%= pupil.urlSlug %>">
-                        <%= pupil.fullName %>
+                            <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
                         </span>
                         <% if (pupil.showDoB) { %>
                         <div class="font-greyed-out font-xsmall">

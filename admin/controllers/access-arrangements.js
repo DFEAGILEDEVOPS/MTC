@@ -83,5 +83,33 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
   req.flash('info', `Access arrangements applied to ${pupil.lastName}, ${pupil.foreName}`)
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
+/**
+ * Edit access arrangements for single pupil
+ * @param req
+ * @param res
+ * @param next
+ * @param error
+ * @returns {Promise.<void>}
+ */
+controller.getEditAccessArrangements = async (req, res, next, error) => {
+  res.locals.pageTitle = 'Edit access arrangement for pupil'
+  let accessArrangements
+  let questionReaderReasons
+  let formData
+  try {
+    accessArrangements = await accessArrangementsService.getAccessArrangements()
+    questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
+    formData = await pupilAccessArrangementsService.getPupilEditFormData(req.params.pupilUrlSlug)
+  } catch (error) {
+    return next(error)
+  }
+  return res.render('access-arrangements/select-access-arrangements', {
+    breadcrumbs: req.breadcrumbs(),
+    accessArrangements,
+    questionReaderReasons,
+    formData,
+    error: error || new ValidationError()
+  })
+}
 
 module.exports = monitor('access-arrangements.controller', controller)
