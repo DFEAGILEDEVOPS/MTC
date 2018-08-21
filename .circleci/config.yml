@@ -28,6 +28,7 @@ jobs:
       - run: cd pupil-spa; yarn run test-single
       - run: cd pupil-api; yarn run test
       - run: cd functions; yarn run test
+      - run: cd admin; yarn client-test
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:

@@ -21,7 +21,7 @@ describe('Pupils are not taking the check. Service', () => {
       expect(afterSorting[0].reason).toEqual('Absent')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Left school')
-      expect(afterSorting[3].reason).toEqual('N/A')
+      expect(afterSorting[3].reason).toEqual('-')
       done()
     })
 
@@ -30,7 +30,7 @@ describe('Pupils are not taking the check. Service', () => {
       expect(afterSorting[0].reason).toEqual('Left school')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
       expect(afterSorting[2].reason).toEqual('Absent')
-      expect(afterSorting[3].reason).toEqual('N/A')
+      expect(afterSorting[3].reason).toEqual('-')
       done()
     })
   })
