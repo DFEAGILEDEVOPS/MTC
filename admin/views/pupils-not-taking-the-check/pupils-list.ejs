@@ -114,7 +114,7 @@
                             <% } %>
                         </td>
                         <td>
-                            <%= pupil.reason || 'N/A' %>
+                            <%= pupil.reason || '-' %>
                         </td>
                         <td>
                             <div class="multiple-choice-mtc">
@@ -160,7 +160,7 @@
   $(function () {
     window.GOVUK.tableSort.applySorting(window.document, 'pupilsList', {
       sortNullsLast: true,
-      ignoredStrings: ['N/A']
+      ignoredStrings: ['-']
     })
   })
 </script>
