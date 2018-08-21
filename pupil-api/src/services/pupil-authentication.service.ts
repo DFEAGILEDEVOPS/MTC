@@ -4,8 +4,6 @@ import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 import { clone } from 'ramda'
 import * as winston from 'winston'
-import * as azurestorage from 'azure-storage';
-import table = azurestorage.services.table;
 
 let azureTableService: any
 const authTable = 'jonPreparedCheck'
