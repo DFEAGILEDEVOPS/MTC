@@ -208,13 +208,19 @@
                 <a href="#top">Back to top</a>
             </div>
         </div>
+        <% if(formData['isEditView']) { %>
+            <input type="hidden" id="isEditView" name="isEditView" value="true" />
+            <input type="hidden" id="urlSlug" name="urlSlug" value=<%= formData['pupilUrlSlug']%> />
+        <% } %>
     </form>
 </div>
 <% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>
 <script>
   $(function () {
+  <% if(!formData['isEditView']) { %>
     var getPupilUrlSlug = '<%= pupilUrlSlug  %>'
     window.GOVUK.autoComplete.createComponent('#pupil-autocomplete-container', 2, getPupilUrlSlug)
+  <% } %>
     window.GOVUK.accessArrangements()
   })
 </script>

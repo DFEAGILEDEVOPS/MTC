@@ -1,3 +1,4 @@
+const R = require('ramda')
 const accessArrangementsService = require('../services/access-arrangements.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilService = require('../services/pupil.service')
@@ -76,7 +77,8 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
     pupil = await accessArrangementsService.submit(req.body, req.user.School, req.user.id)
   } catch (error) {
     if (error.name === 'ValidationError') {
-      return controller.getSelectAccessArrangements(req, res, next, error)
+      const controllerMethod = !req.body.isEditView ? 'getSelectAccessArrangements' : 'getEditAccessArrangements'
+      return controller[controllerMethod](req, res, next, error)
     }
     return next(error)
   }
@@ -95,11 +97,20 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   let accessArrangements
   let questionReaderReasons
+  const reqBody = R.clone(req.body)
+  const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
   let formData
+  let pupil
   try {
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    formData = await pupilAccessArrangementsService.getPupilEditFormData(req.params.pupilUrlSlug)
+    if (Object.keys(reqBody).length === 0) {
+      formData = await pupilAccessArrangementsService.getPupilEditFormData(pupilUrlSlug)
+    } else {
+      pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, req.user.School)
+      reqBody.foreName = pupil.foreName
+      reqBody.lastName = pupil.lastName
+    }
   } catch (error) {
     return next(error)
   }
@@ -107,7 +118,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     breadcrumbs: req.breadcrumbs(),
     accessArrangements,
     questionReaderReasons,
-    formData,
+    formData: formData || reqBody,
     error: error || new ValidationError()
   })
 }

@@ -3,12 +3,14 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
+const R = require('ramda')
 
 const controller = require('../../../controllers/access-arrangements')
 const accessArrangementsService = require('../../../services/access-arrangements.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
 const pupilService = require('../../../services/pupil.service')
+const ValidationError = require('../../../lib/validation-error')
 
 describe('access arrangements controller:', () => {
   let next
@@ -129,6 +131,80 @@ describe('access arrangements controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(req.flash).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+    it('calls getSelectAccessArrangements if accessArrangementsService submit throws a validation Error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(controller, 'getSelectAccessArrangements')
+      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
+      try {
+        await controller.postSubmitAccessArrangements(req, res, next)
+      } catch (error) {
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(controller.getSelectAccessArrangements).toHaveBeenCalled()
+    })
+    it('calls getEditAccessArrangements if accessArrangementsService submit throws a validation Error on edit view', async () => {
+      const reqParamsClone = R.clone(reqParams)
+      reqParamsClone.body = {
+        isEditView: 'true'
+      }
+      const res = getRes()
+      const req = getReq(reqParamsClone)
+      spyOn(res, 'redirect')
+      spyOn(controller, 'getSelectAccessArrangements')
+      spyOn(controller, 'getEditAccessArrangements')
+      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
+      try {
+        await controller.postSubmitAccessArrangements(req, res, next)
+      } catch (error) {
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(controller.getSelectAccessArrangements).not.toHaveBeenCalled()
+      expect(controller.getEditAccessArrangements).toHaveBeenCalled()
+    })
+  })
+  describe('getEditAccessArrangements route', () => {
+    let reqParams = (urlSlug) => {
+      return {
+        method: 'GET',
+        url: `/access-arrangements/select-access-arrangements/${urlSlug}`,
+        params: {
+          pupilUrlSlug: 'pupilUrlSlug'
+        }
+      }
+    }
+    it('displays the edit access arrangements page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'render')
+      spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
+      spyOn(pupilAccessArrangementsService, 'getPupilEditFormData')
+      await controller.getEditAccessArrangements(req, res, next)
+      expect(res.locals.pageTitle).toBe('Edit access arrangement for pupil')
+      expect(res.render).toHaveBeenCalled()
+      expect(accessArrangementsService.getAccessArrangements).toHaveBeenCalled()
+      expect(pupilAccessArrangementsService.getPupilEditFormData).toHaveBeenCalledWith('pupilUrlSlug')
+    })
+    it('calls next when an error occurs during service call', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'render')
+      const error = new Error('error')
+      spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
+      spyOn(pupilAccessArrangementsService, 'getPupilEditFormData').and.returnValue(Promise.reject(error))
+      await controller.getEditAccessArrangements(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
     })
   })
 })
