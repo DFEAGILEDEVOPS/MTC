@@ -98,12 +98,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       ) VALUES`
 
   queries.push([insertSql, inserts.join(', \n')].join(' '))
-  let sql
-  if (queries.length > 1) {
-    sql = queries.join('\n')
-  } else {
-    sql = queries[0]
-  }
+  const sql = queries.join('\n')
   return sqlService.modify(sql, params)
 }
 
