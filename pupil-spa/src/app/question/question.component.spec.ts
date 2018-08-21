@@ -13,7 +13,7 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-
+import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent;
@@ -39,6 +39,7 @@ describe('QuestionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(QuestionComponent);
     component = fixture.componentInstance;
+    component.soundComponent = new SoundComponentMock();
     spyOn(component, 'handleTouchEvent').and.callThrough();
     spyOn(component, 'handleMouseEvent').and.callThrough();
 
