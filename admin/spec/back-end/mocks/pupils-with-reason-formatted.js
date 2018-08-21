@@ -85,6 +85,6 @@ module.exports = [
     hasAttended: false,
     pinExpired: false,
     __v: 0,
-    reason: 'N/A'
+    reason: '-'
   }
 ]
