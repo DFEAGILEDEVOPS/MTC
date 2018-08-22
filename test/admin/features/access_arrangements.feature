@@ -42,4 +42,4 @@ Feature: Access Arrangements
   Scenario: Validation error is displayed if other is selected for question reader but no explanation is provided
     Given I am on the select access arrangements page
     When I save access arrangements without providing explanation for other reason for question reader
-    Then I can see the error message for access arrangmenets 'Enter an explanation for inbuilt screen reader'
+    Then I can see the error message for access arrangmenets 'Enter an explanation for question reader'
