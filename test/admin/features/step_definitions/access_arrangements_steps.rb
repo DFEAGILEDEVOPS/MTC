@@ -41,7 +41,7 @@ When(/^I search for pupil '(.*)'$/) do |pupil_search|
 end
 
 Then(/^I can see auto search list$/) do
-  expect(select_access_arrangements_page.auto_search_list.count < 0).to be_truthy, "Actual count of the auto serach suggestion is #{select_access_arrangements_page.auto_search_list.count}"
+  expect(select_access_arrangements_page.auto_search_list.count > 0).to be_truthy, "Actual count of the auto serach suggestion is #{select_access_arrangements_page.auto_search_list.count}"
 end
 
 Then(/^I can see the pupil returned in auto search list$/) do
@@ -58,4 +58,45 @@ Given(/^I search for the pupil for access arrangement$/) do
   access_arrangements_page.select_pupil_and_arrangement_btn.click
 
   step "I search for pupil '#{@details_hash[:first_name]}'"
+end
+
+When(/^I save access arrangements without selecting pupil$/) do
+  select_access_arrangements_page.select_access_arrangement("Audible time alert")
+  select_access_arrangements_page.save.click
+end
+
+When(/^I save access arrangements without selecting any access arrangements$/) do
+  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.save.click
+end
+
+When(/^I save access arrangements without providing explanation for input assistance$/) do
+  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement("Input assistance (reason required)")
+  select_access_arrangements_page.save.click
+end
+
+When(/^I save access arrangements without selecting any question reader reason$/) do
+  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
+  select_access_arrangements_page.save.click
+end
+
+When(/^I save access arrangements without providing explanation for other reason for question reader$/) do
+  select_access_arrangements_page.search_pupil.set("pupil 01")
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement("Question reader (reason required)")
+  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  question_reader_access_arrangement_row.question_reader_reason[3].question_reader_reason_radio.click
+  select_access_arrangements_page.save.click
+end
+
+Then(/^I can see the error message for access arrangmenets '(.*)'$/) do |error_message|
+  expect(select_access_arrangements_page).to have_error_summary
+  expect(select_access_arrangements_page.error_summary).to have_error_heading
+  expect(select_access_arrangements_page.error_summary).to have_error_info
+  expect(select_access_arrangements_page.error_summary.error_text.text.eql?(error_message)). to be_truthy, "Expected: #{error_message}....but Got Actual: #{select_access_arrangements_page.error_summary.error_text.text}"
 end
