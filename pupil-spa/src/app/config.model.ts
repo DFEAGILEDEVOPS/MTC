@@ -3,6 +3,7 @@ export class Config {
   private _loadingTime: number;
   private _speechSynthesis: boolean;
   private _audibleSounds: boolean;
+  private _numpadRemoval: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -34,5 +35,13 @@ export class Config {
 
   set audibleSounds(value: boolean) {
     this._audibleSounds = value;
+  }
+
+  get numpadRemoval(): boolean {
+    return this._numpadRemoval;
+  }
+
+  set numpadRemoval(value: boolean) {
+    this._numpadRemoval = value;
   }
 }
