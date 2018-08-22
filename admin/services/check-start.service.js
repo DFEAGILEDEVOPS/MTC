@@ -18,7 +18,6 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
-const tableNameService = require('../services/table-name-service')
 const azureQueueService = require('../services/azure-queue.service')
 const monitor = require('../helpers/monitor')
 
@@ -223,9 +222,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   for (let o of checkFormAllocations) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
     const message = {
-      // We can provide the Azure Table Storage table name here, and it will be picked
-      // up by the Azure `prepare-check` Function as the destination table.
-      tableName: tableNameService.getName(tableNameService.NAMES.PREPARED_CHECK),
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
       pupil: {

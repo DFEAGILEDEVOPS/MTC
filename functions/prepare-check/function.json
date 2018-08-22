@@ -9,7 +9,7 @@
       "name": "queueMessage",
       "type": "queueTrigger",
       "direction": "in",
-      "queueName": "jon-prepare-check",
+      "queueName": "prepare-check",
       "connection": "StorageAccount"
     },
     {
@@ -17,7 +17,7 @@
       "direction": "out",
       // this name refers to the name of the context.binding property that will be inserted into the table
       "name": "data",
-      "tableName": "{tableName}",
+      "tableName": "checkPrepared",
       "connection": "StorageAccount"
     }
   ]
