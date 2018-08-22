@@ -1,8 +1,8 @@
 'use strict'
 
-/* global $ describe it expect */
+/* global $ describe it expect beforeEach */
 
-describe('pupil-access-arrangements-selection', function () {
+function initElemets () {
   const $accessArrangementsList = $('<ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)"></ul>')
   const accessArrangements = [
     {
@@ -113,43 +113,59 @@ describe('pupil-access-arrangements-selection', function () {
             ${aa.code === 'QNR' ? $questionReaderReasons : ''}          
         </li>`
   })
-
   $accessArrangementsList.append($accessArrangementsListItems)
   $(document.body).append($accessArrangementsList)
+}
 
-  it('should find hide-checkbox-content class and change it to show-checkbox-content once the checkbox is checked', function () {
-    const el = $accessArrangementsList.find('input:checkbox')[3]
-    window.GOVUK.accessArrangements()
-    expect($($(el).closest('li').find('.hide-checkbox-content')[0]).length).toBe(1)
-    $(el).trigger('click')
-    expect($($(el).closest('li').find('.show-checkbox-content')[0]).length).toBe(1)
+describe('pupil-access-arrangements-selection', function () {
+  initElemets()
+  describe('after page load', function () {
+    beforeEach(function () {
+      $('body').empty()
+      initElemets()
+      window.GOVUK.accessArrangements()
+    })
+
+    it('should find hide-checkbox-content class and change it to show-checkbox-content once the checkbox is checked', function () {
+      const el = $('.checkbox-list').find('input:checkbox')[3]
+      el.checked = false
+      expect($($(el).closest('li').find('.hide-checkbox-content')[0]).length).toBe(1)
+      $(el).trigger('click')
+      expect($($(el).closest('li').find('.show-checkbox-content')[0]).length).toBe(1)
+    })
+
+    it('should remove js-hidden class to reveal textarea once the last radio button is checked', function () {
+      const el = $('.checkbox-list').find('input:checkbox')[5]
+      $(el).trigger('click')
+      const otherRadioButton = $($($(el).closest('li')).children()[2]).find('input:radio')[3]
+      expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeTruthy()
+      $(otherRadioButton).trigger('click')
+      expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeFalsy()
+      $(otherRadioButton).trigger('click')
+      $(el).trigger('click')
+    })
+
+    it('should clear the text input once the checkbox is unchecked', function () {
+      const el = $('.checkbox-list').find('input:checkbox')[3]
+      const el2 = $('.checkbox-list').find('input:checkbox')[5]
+      $(el).trigger('click')
+      $(el2).trigger('click')
+      const textArea1 = $($(el).closest('li').find('textarea')[0])
+      const textArea2 = $($(el2).closest('li').find('textarea')[0])
+      textArea1.val('text1')
+      textArea2.val('text2')
+      $(el).trigger('click')
+      $(el2).trigger('click')
+      expect(textArea2.val()).toBe('')
+      expect(textArea2.val()).toBe('')
+    })
   })
-
-  it('should remove js-hidden class to reveal textarea once the last radio button is checked', function () {
-    const el = $accessArrangementsList.find('input:checkbox')[5]
+  it('it should add show-checkbox-content if relevant checkbox is checked on page load', function () {
+    const el = $('.checkbox-list').find('input:checkbox')[3]
+    el.checked = true
+    // Fire method as if page reload occurred
     window.GOVUK.accessArrangements()
-    $(el).trigger('click')
-    const otherRadioButton = $($($(el).closest('li')).children()[2]).find('input:radio')[3]
-    expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeTruthy()
-    $(otherRadioButton).trigger('click')
-    expect($(otherRadioButton).parent().siblings('.panel').hasClass('js-hidden')).toBeFalsy()
-    $(otherRadioButton).trigger('click')
-    $(el).trigger('click')
-  })
-
-  it('should clear the text input once the checkbox is unchecked', function () {
-    const el = $accessArrangementsList.find('input:checkbox')[3]
-    const el2 = $accessArrangementsList.find('input:checkbox')[5]
-    window.GOVUK.accessArrangements()
-    $(el).trigger('click')
-    $(el2).trigger('click')
-    const textArea1 = $($(el).closest('li').find('textarea')[0])
-    const textArea2 = $($(el2).closest('li').find('textarea')[0])
-    textArea1.val('text1')
-    textArea2.val('text2')
-    $(el).trigger('click')
-    $(el2).trigger('click')
-    expect(textArea2.val()).toBe('')
-    expect(textArea2.val()).toBe('')
+    expect($(el).closest('li').find('.show-checkbox-content').length).toBe(1)
+    expect($(el).closest('li').find('.hide-checkbox-content').length).toBe(0)
   })
 })
