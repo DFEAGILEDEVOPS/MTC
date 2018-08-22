@@ -1,6 +1,6 @@
-const R = require('ramda')
 const accessArrangementsService = require('../services/access-arrangements.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
+const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
 const pupilService = require('../services/pupil.service')
 const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const monitor = require('../helpers/monitor')
@@ -97,20 +97,12 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   let accessArrangements
   let questionReaderReasons
-  const reqBody = R.clone(req.body)
-  const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
   let formData
-  let pupil
+  const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
   try {
+    formData = await pupilAccessArrangementsEditService.getEditData(req.body, pupilUrlSlug, req.user.School)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
-    if (Object.keys(reqBody).length === 0) {
-      formData = await pupilAccessArrangementsService.getPupilEditFormData(pupilUrlSlug)
-    } else {
-      pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, req.user.School)
-      reqBody.foreName = pupil.foreName
-      reqBody.lastName = pupil.lastName
-    }
   } catch (error) {
     return next(error)
   }
@@ -118,7 +110,7 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
     breadcrumbs: req.breadcrumbs(),
     accessArrangements,
     questionReaderReasons,
-    formData: formData || reqBody,
+    formData,
     error: error || new ValidationError()
   })
 }
