@@ -6,7 +6,7 @@ import { clone } from 'ramda'
 import * as winston from 'winston'
 
 let azureTableService: any
-const authTable = 'jonPreparedCheck'
+const authTable = 'preparedCheck'
 
 export const pupilAuthenticationService = {
   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any): Promise<object> {
