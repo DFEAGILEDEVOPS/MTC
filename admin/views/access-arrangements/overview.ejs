@@ -66,7 +66,7 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td>
+                <td class="access-arrangements-pupil-name">
                     <div<% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="highlight-item"<% } %>>
                         <span id="<%= pupil.urlSlug %>">
                         <%= pupil.fullName %>
