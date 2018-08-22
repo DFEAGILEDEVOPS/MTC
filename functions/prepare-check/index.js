@@ -24,6 +24,7 @@ module.exports = function (context, prepareCheckMessage) {
     partitionKey: prepareCheckMessage.schoolPin,
     rowKey: prepareCheckMessage.pupilPin,
     checkCode: prepareCheckMessage.pupil.checkCode,
+    schoolId: prepareCheckMessage.school.id,
     questions: prepareCheckMessage.questions,
     pupil: prepareCheckMessage.pupil,
     school: prepareCheckMessage.school,
