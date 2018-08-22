@@ -216,8 +216,12 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const messages = []
   const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
-  const checkCompleteQueueName = queueNameService.getName(queueNameService.NAMES.CHECK_COMPLETE)
-  const sasToken = sasTokenService.generateSasToken(checkCompleteQueueName, sasExpiryDate)
+
+  const checkStartedSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_STARTED, sasExpiryDate)
+  const pupilPreferencesSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_PREFS, sasExpiryDate)
+  const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
+  const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
+
 
   for (let o of checkFormAllocations) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
@@ -235,11 +239,25 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         name: o.school_name
       },
       tokens: {
-        sasToken: {
-          token: sasToken.token,
-          url: sasToken.url
+        checkStarted: {
+          token: checkStartedSasToken.token,
+          url: checkStartedSasToken.url
         },
-        jwtToken: o.pupil_jwtToken
+        pupilPreferences: {
+          token: pupilPreferencesSasToken.token,
+          url: pupilFeedbackSasToken.url
+        },
+        checkComplete: {
+          token: checkCompleteSasToken.token,
+          url: checkCompleteSasToken.url
+        },
+        pupilFeedback: {
+          token: pupilFeedbackSasToken.token,
+          url: checkCompleteSasToken.url
+        },
+        jwt: {
+          token: o.pupil_jwtToken
+        }
       },
       questions: checkFormService.prepareQuestionData(JSON.parse(o.checkForm_formData)),
       config: config

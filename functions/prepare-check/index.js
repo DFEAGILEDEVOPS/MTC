@@ -29,13 +29,7 @@ module.exports = function (context, prepareCheckMessage) {
     pupil: prepareCheckMessage.pupil,
     school: prepareCheckMessage.school,
     config: prepareCheckMessage.config,
-    tokens: {
-      completedCheck: {
-        sasToken: prepareCheckMessage.tokens.sasToken.token,
-        url: prepareCheckMessage.tokens.sasToken.url
-      },
-      jwtToken: prepareCheckMessage.tokens.jwtToken
-    },
+    tokens: prepareCheckMessage.tokens,
     isCollected: false,
     collectedAt: null,
     hasCheckStarted: false,
