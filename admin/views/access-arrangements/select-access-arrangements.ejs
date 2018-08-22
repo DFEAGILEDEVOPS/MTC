@@ -210,7 +210,7 @@
         </div>
         <% if(formData['isEditView']) { %>
             <input type="hidden" id="isEditView" name="isEditView" value="true" />
-            <input type="hidden" id="urlSlug" name="urlSlug" value=<%= formData['pupilUrlSlug']%> />
+            <input type="hidden" id="urlSlug" name="urlSlug" value=<%= formData['pupilUrlSlug'] || formData['urlSlug']%> />
         <% } %>
     </form>
 </div>

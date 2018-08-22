@@ -24,11 +24,12 @@ accessArrangementsService.getAccessArrangements = async () => {
  * @returns {Object}
  */
 accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
+  const urlSlug = requestData.pupilUrlSlug || requestData.urlSlug
   const validationError = accessArrangementsValidator.validate(requestData)
   if (validationError.hasError()) {
     throw validationError
   }
-  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(requestData.pupilUrlSlug, dfeNumber)
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
   const processedData = await accessArrangementsService.process(requestData, pupil, dfeNumber, userId)
   return accessArrangementsService.save(processedData, pupil)
 }
