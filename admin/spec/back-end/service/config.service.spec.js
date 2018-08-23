@@ -79,12 +79,33 @@ describe('config service', () => {
       expect(config.audibleSounds).toBe(false)
     })
 
-    it('it sets audible sounds to false if pupil has no access arrangements', async () => {
+    it('it sets numpad removal to true if RON is flagged for the pupil', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['RON'])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1 }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.numpadRemoval).toBe(true)
+    })
+
+    it('it sets numpad removal to false if RON is not flagged for the pupil', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['---'])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1 }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.numpadRemoval).toBe(false)
+    })
+
+    it('it sets all access arrangements flags to false if pupil has no access arrangements', async () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds')
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([])
       const config = await configService.getConfig(pupilMock)
       expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).not.toHaveBeenCalled()
       expect(config.audibleSounds).toBe(false)
+      expect(config.numpadRemoval).toBe(false)
     })
   })
 

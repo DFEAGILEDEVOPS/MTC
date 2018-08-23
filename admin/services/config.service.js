@@ -42,7 +42,8 @@ const configService = {
     // specific config for a pupil
     const checkOptions = {
       speechSynthesis: !!pupil.speechSynthesis,
-      audibleSounds: false
+      audibleSounds: false,
+      numpadRemoval: false
     }
 
     let pupilAccessArrangements
@@ -59,9 +60,10 @@ const configService = {
       winston.error('Failed to get access arrangements: ' + error.message)
     }
 
-    if (accessArrangementsCodes.includes('ATA')) {
-      checkOptions.audibleSounds = true
-    }
+    accessArrangementsCodes.forEach(code => {
+      if (code === 'ATA') checkOptions.audibleSounds = true
+      if (code === 'RON') checkOptions.numpadRemoval = true
+    })
 
     return R.merge(config, checkOptions)
   }
