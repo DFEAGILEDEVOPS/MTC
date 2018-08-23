@@ -20,7 +20,7 @@ describe('access arrangements controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
-    req.user = { School: 9991001 }
+    req.user = {School: 9991001}
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
     return req
@@ -40,7 +40,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      await controller.getOverview(req, res, next)
+      await controller.getOverview(req, res)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
     })
@@ -78,6 +78,43 @@ describe('access arrangements controller:', () => {
       expect(questionReaderReasonsService.getQuestionReaderReasons).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
       expect(pupilService.getPupilsWithFullNames).not.toHaveBeenCalled()
+    })
+  })
+  describe('postSubmitAccessArrangements route', () => {
+    let reqParams = {
+      method: 'POST',
+      url: '/access-arrangements/submit',
+      body: {
+      },
+      user: {
+        id: 1,
+        School: 1
+      }
+    }
+    it('submits pupils access arrangements', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(accessArrangementsService, 'submit').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      await controller.postSubmitAccessArrangements(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+      expect(accessArrangementsService.submit).toHaveBeenCalled()
+    })
+    it('calls next if accessArrangementsService submit throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      const error = new Error('error')
+      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(error))
+      try {
+        await controller.postSubmitAccessArrangements(req, res, next)
+      } catch (error) {
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
 })

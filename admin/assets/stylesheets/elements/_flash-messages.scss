@@ -13,6 +13,10 @@
   a:hover {
     color: $green;
   }
+  &.clickable {
+    text-decoration: underline;
+    color: $green;
+  }
 }
 
 // Green border to highlight table cell content
