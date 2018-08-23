@@ -151,7 +151,7 @@ describe('accessArrangementsService', () => {
       expect(pupil.id).toBe(1)
     })
     it('calls sqlUpdate if pupilAccessArrangement record exists', async () => {
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({pupil_id: 1})
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([{pupil_id: 1}])
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
       await accessArrangementsService.save({}, {id: 1})
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)

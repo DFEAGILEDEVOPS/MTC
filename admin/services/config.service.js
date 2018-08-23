@@ -3,7 +3,7 @@
 const R = require('ramda')
 const winston = require('winston')
 
-const accessArrangementsService = require('./access-arrangements.service')
+const accessArrangementsDataService = require('./data-access/access-arrangements.data.service')
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
@@ -45,25 +45,22 @@ const configService = {
       audibleSounds: false
     }
 
-    let accessArrangements
     let pupilAccessArrangements
+    let accessArrangementsCodes
     try {
-      accessArrangements = await accessArrangementsService.getAccessArrangements()
-      pupilAccessArrangements = await pupilAccessArrangementsDataService.sqlFindAccessArrangementsByPupilId(pupil.id)
+      pupilAccessArrangements = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
+      if (pupilAccessArrangements && pupilAccessArrangements.length) {
+        const accessArrangementsIds = pupilAccessArrangements.map(aa => aa['accessArrangements_id'])
+        accessArrangementsCodes = await accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds(accessArrangementsIds)
+      } else {
+        accessArrangementsCodes = []
+      }
     } catch (error) {
       winston.error('Failed to get access arrangements: ' + error.message)
     }
 
-    // remap codes as an array of [id]: code for faster lookups
-    const accessArrangementsCodes = accessArrangements.reduce((memo, aa) => ({ ...memo, [aa.id]: aa.code }), {})
-
-    if (pupilAccessArrangements && pupilAccessArrangements['accessArrangements_ids']) {
-      const pupilAccessArrangementsCodes = JSON.parse(pupilAccessArrangements['accessArrangements_ids'])
-        .map(id => accessArrangementsCodes[id])
-
-      if (pupilAccessArrangementsCodes.includes('ATA')) {
-        checkOptions.audibleSounds = true
-      }
+    if (accessArrangementsCodes.includes('ATA')) {
+      checkOptions.audibleSounds = true
     }
 
     return R.merge(config, checkOptions)
