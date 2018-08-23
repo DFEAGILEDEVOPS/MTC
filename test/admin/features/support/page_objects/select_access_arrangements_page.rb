@@ -23,6 +23,12 @@ class SelectAccessArrangementsPage < SitePrism::Page
   element :input_assistance_reason, '#inputAssistanceInformation'
   element :input_assistance_notice, '.notice'
 
+  section :error_summary, 'div[aria-labelledby="error-summary-heading-1"]' do
+    element :error_heading, '#error-summary-heading-1', text: 'You need to fix the errors on this page before continuing'
+    element :error_info, 'p', text: 'See highlighted errors below'
+    element :error_text, 'ul li a'
+  end
+
   def select_access_arrangement(access_arrangment_name)
     access_arrangment_type = find_access_arrangement_row(access_arrangment_name)
     access_arrangment_type.checkbox.click
