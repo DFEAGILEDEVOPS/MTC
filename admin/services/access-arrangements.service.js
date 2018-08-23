@@ -18,19 +18,19 @@ accessArrangementsService.getAccessArrangements = async () => {
 
 /**
  * Submit access arrangements for single pupil
- * @param {Object} requestData
+ * @param {Object} submittedData
  * @param {Number} dfeNumber
  * @param {Number} userId
  * @returns {Object}
  */
-accessArrangementsService.submit = async (requestData, dfeNumber, userId) => {
-  const urlSlug = requestData.pupilUrlSlug || requestData.urlSlug
-  const validationError = accessArrangementsValidator.validate(requestData)
+accessArrangementsService.submit = async (submittedData, dfeNumber, userId) => {
+  const urlSlug = submittedData.pupilUrlSlug || submittedData.urlSlug
+  const validationError = accessArrangementsValidator.validate(submittedData)
   if (validationError.hasError()) {
     throw validationError
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
-  const processedData = await accessArrangementsService.process(requestData, pupil, dfeNumber, userId)
+  const processedData = await accessArrangementsService.process(submittedData, pupil, dfeNumber, userId)
   return accessArrangementsService.save(processedData, pupil)
 }
 
@@ -69,7 +69,7 @@ accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId
   if (questionReaderReasonId) {
     pupilAccessArrangements['questionReaderReasons_id'] = questionReaderReasonId
   }
-  omittedFields.push('_csrf', 'accessArrangements', 'questionReaderReason', 'pupilUrlSlug')
+  omittedFields.push('accessArrangements', 'questionReaderReason', 'pupilUrlSlug')
   omittedFields.forEach(field => {
     delete pupilAccessArrangements[field]
   })

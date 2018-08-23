@@ -1,3 +1,4 @@
+const R = require('ramda')
 const accessArrangementsService = require('../services/access-arrangements.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
@@ -74,7 +75,16 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
 controller.postSubmitAccessArrangements = async (req, res, next) => {
   let pupil
   try {
-    pupil = await accessArrangementsService.submit(req.body, req.user.School, req.user.id)
+    const submittedData = R.pick([
+      'accessArrangements',
+      'inputAssistanceInformation',
+      'questionReaderReason',
+      'questionReaderOtherInformation',
+      'isEditView',
+      'pupilUrlSlug',
+      'urlSlug'
+    ], req.body)
+    pupil = await accessArrangementsService.submit(submittedData, req.user.School, req.user.id)
   } catch (error) {
     if (error.name === 'ValidationError') {
       const controllerMethod = !req.body.isEditView ? 'getSelectAccessArrangements' : 'getEditAccessArrangements'
@@ -95,12 +105,23 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  */
 controller.getEditAccessArrangements = async (req, res, next, error) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
+  req.breadcrumbs('Access arrangements', '/access-arrangements/overview')
+  req.breadcrumbs('Edit pupils and access arrangements')
   let accessArrangements
   let questionReaderReasons
   let formData
   const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
+  const dfeNumber = req.user.School
   try {
-    formData = await pupilAccessArrangementsEditService.getEditData(req.body, pupilUrlSlug, req.user.School)
+    const submittedData = R.pick([
+      'accessArrangements',
+      'inputAssistanceInformation',
+      'questionReaderReason',
+      'questionReaderOtherInformation',
+      'isEditView',
+      'urlSlug'
+    ], req.body)
+    formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, dfeNumber)
     accessArrangements = await accessArrangementsService.getAccessArrangements()
     questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
   } catch (error) {

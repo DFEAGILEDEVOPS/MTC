@@ -7,19 +7,22 @@ const pupilAccessArrangementsEditService = {}
 
 /**
  * Get pupil access arrangements edit data
- * @returns {Promise<Array>}
+ * @param {Object} submittedData
+ * @param {String} pupilUrlSlug
+ * @param {Number} dfeNumber
+ * @returns {Object}
  */
-pupilAccessArrangementsEditService.getEditData = async (requestData, pupilUrlSlug, dfeNumber) => {
+pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlSlug, dfeNumber) => {
   if (!pupilUrlSlug) {
     throw new Error('Pupil url slug not provided')
   }
-  const reqBody = R.clone(requestData)
+  const existingData = R.clone(submittedData)
   let formData
-  if (Object.keys(reqBody).length === 0) {
+  if (Object.keys(existingData).length === 0) {
     formData = await pupilAccessArrangementsService.getPupilEditFormData(pupilUrlSlug)
   } else {
     const pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, dfeNumber)
-    formData = reqBody
+    formData = existingData
     formData.foreName = pupil.foreName
     formData.lastName = pupil.lastName
   }
