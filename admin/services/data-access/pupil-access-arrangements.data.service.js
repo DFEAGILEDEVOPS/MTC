@@ -116,7 +116,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (d
     }
   ]
   const sql =
-    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, aa.description
+    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description
   FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
     INNER JOIN ${sqlService.adminSchema}.pupil p
       ON paa.pupil_id = p.id
