@@ -77,8 +77,16 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   await checkDataService.sqlCreateBatch(checks)
 }
 
-// PrepareCheck 2: Write an entry to the checkFormAllocationTable, and place a message on the queue
-// for writing to the data store used by pupil authentication.
+/**
+ * Prepare a check for one or more pupils
+ * This function will: * prepare a new check by writing an entry to the checkFormAllocation table
+ *                     * place a message on the `prepare-check` queue for writing to `preparedCheck` table
+ * @param pupilIds
+ * @param dfeNumber
+ * @param schoolId
+ * @param isLiveCheck
+ * @return {Promise<void>}
+ */
 checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId, isLiveCheck) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
