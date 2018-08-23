@@ -16,9 +16,9 @@ const config = require('./config')
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 
-let logLevel = 'debug'
+let logLevel = 'error'
 if (process.env.NODE_ENV !== 'production') {
-  logLevel = 'error'
+  logLevel = 'debug'
 }
 
 // Creates and configures an ExpressJS web server.
