@@ -35,9 +35,6 @@ export const pupilAuthenticationService = {
     }
 
     const { result } = await tableService.retrieveEntityAsync(authTable, schoolPin, pupilPin)
-    if (result.isCollected._ === true) {
-      throw new Error('Repeat attempts to collect data are not allowed')
-    }
 
     // Prepare the pupil data for use by the SPA
     const data = this.preparePupilData(result)

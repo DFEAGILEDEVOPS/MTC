@@ -54,13 +54,4 @@ describe('pupilAuthenticationService', () => {
     await pupilAuthenticationService.authenticate('1234', 'pin1', dummyDriver)
     expect(dummyDriver.retrieveEntityAsync).toHaveBeenCalled()
   })
-
-  it('throws an error if the data has already been collected', async () => {
-    mockResult.isCollected._ = true
-    try {
-      await pupilAuthenticationService.authenticate('1234', 'pin1', dummyDriver)
-    } catch (error) {
-      expect(error.message).toBe('Repeat attempts to collect data are not allowed')
-    }
-  })
 })
