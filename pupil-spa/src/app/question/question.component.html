@@ -6,7 +6,7 @@
 </div>
 <div class="question-container">
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div class="question-and-answer"><span class="question" *ngIf="shouldShowQuestion">{{ factor1 }} &times; {{ factor2 }} = </span>
+        <div class="question-and-answer"><span class="question"><span *ngIf="shouldShowQuestion">{{ factor1 }} &times; {{ factor2 }} = </span></span>
             <div class="answer-container"><span class="answer" id="js-answer" [innerText]="answer"></span>
                 <div class="numpad-container" *ngIf="!config.numpadRemoval">
                     <table class="numpad-{{accessArrangements.fontSize}}" id="js-numpad">
