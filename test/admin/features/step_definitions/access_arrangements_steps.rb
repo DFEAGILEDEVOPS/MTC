@@ -60,6 +60,13 @@ Given(/^I search for the pupil for access arrangement$/) do
   step "I search for pupil '#{@details_hash[:first_name]}'"
 end
 
+Given(/^I have selected access arrangement '(.*)' for a pupil$/) do |access_arrangement_type|
+  step "I search for the pupil for access arrangement"
+  select_access_arrangements_page.auto_search_list[0].click
+  select_access_arrangements_page.select_access_arrangement(access_arrangement_type)
+  select_access_arrangements_page.save.click
+end
+
 When(/^I save access arrangements without selecting pupil$/) do
   select_access_arrangements_page.select_access_arrangement("Audible time alert")
   select_access_arrangements_page.save.click
@@ -99,4 +106,11 @@ Then(/^I can see the error message for access arrangmenets '(.*)'$/) do |error_m
   expect(select_access_arrangements_page.error_summary).to have_error_heading
   expect(select_access_arrangements_page.error_summary).to have_error_info
   expect(select_access_arrangements_page.error_summary.error_text.text.eql?(error_message)). to be_truthy, "Expected: #{error_message}....but Got Actual: #{select_access_arrangements_page.error_summary.error_text.text}"
+end
+
+Then(/^I can see the pupil in the access arrangment pupil list with access arrangment type '(.*)'$/) do |access_arrangement_type|
+  expect(access_arrangements_page.success_message.text.eql?("Access arrangements applied to #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")).to be_truthy, "Actual info message is : #{access_arrangements_page.success_message.text}"
+  hightlighted_row = access_arrangements_page.pupil_list.rows.find {|row| row.has_highlighted_pupil?}
+  expect(hightlighted_row.pupil_name.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  expect(hightlighted_row.access_arrangement_name.text).to include(access_arrangement_type)
 end
