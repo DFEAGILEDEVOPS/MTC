@@ -245,7 +245,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         },
         pupilPreferences: {
           token: pupilPreferencesSasToken.token,
-          url: pupilFeedbackSasToken.url
+          url: pupilPreferencesSasToken.url
         },
         checkComplete: {
           token: checkCompleteSasToken.token,
@@ -253,7 +253,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         },
         pupilFeedback: {
           token: pupilFeedbackSasToken.token,
-          url: checkCompleteSasToken.url
+          url: pupilFeedbackSasToken.url,
         },
         jwt: {
           token: o.pupil_jwtToken
