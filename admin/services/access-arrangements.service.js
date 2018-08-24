@@ -57,13 +57,13 @@ accessArrangementsService.process = async (requestData, pupil, dfeNumber, userId
   pupilAccessArrangements['pupil_id'] = pupil.id
   pupilAccessArrangements['recordedBy_user_id'] = userId
   pupilAccessArrangements['questionReaderReasonCode'] = questionReaderReason
-  if (!pupilAccessArrangements.accessArrangements.includes('ITA')) {
+  if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
     omittedFields.push('inputAssistanceInformation')
   }
-  if (pupilAccessArrangements.questionReaderReason !== 'OTH') {
+  if (pupilAccessArrangements.questionReaderReason !== questionReaderReasonsDataService.CODES.OTHER) {
     omittedFields.push('questionReaderOtherInformation')
   }
-  if (pupilAccessArrangements.accessArrangements.includes('QNR')) {
+  if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.QUESTION_READER)) {
     questionReaderReasonId = await questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode(pupilAccessArrangements.questionReaderReasonCode)
   }
   if (questionReaderReasonId) {

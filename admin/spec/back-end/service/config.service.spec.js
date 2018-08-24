@@ -60,7 +60,9 @@ describe('config service', () => {
     })
 
     it('it sets audible sounds to true if ATA is flagged for the pupil', async () => {
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['ATA'])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.AUDIBLE_SOUNDS
+      ])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
         { accessArrangements_id: 1 }
       ])
@@ -70,7 +72,9 @@ describe('config service', () => {
     })
 
     it('it sets numpad removal to true if RON is flagged for the pupil', async () => {
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['RON'])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.NUMPAD_REMOVAL
+      ])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
         { accessArrangements_id: 1 }
       ])

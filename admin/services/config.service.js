@@ -61,8 +61,8 @@ const configService = {
     }
 
     accessArrangementsCodes.forEach(code => {
-      if (code === 'ATA') checkOptions.audibleSounds = true
-      if (code === 'RON') checkOptions.numpadRemoval = true
+      if (code === accessArrangementsDataService.CODES.AUDIBLE_SOUNDS) checkOptions.audibleSounds = true
+      if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
     })
 
     return R.merge(config, checkOptions)
