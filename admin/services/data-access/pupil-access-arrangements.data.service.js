@@ -100,4 +100,31 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   return sqlService.modify(sql, params)
 }
 
+/**
+ * Find pupil ids with access arrangements based on DfE Number.
+ * @param {Number} dfeNumber
+ * @return {Promise<Array>}
+ */
+pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (dfeNumber) => {
+  const params = [
+    {
+      name: 'dfeNumber',
+      value: dfeNumber,
+      type: TYPES.Int
+    }
+  ]
+  const sql =
+    `SELECT p.urlSlug, p.foreName, p.middleNames, p.lastName, p.dateOfBirth, aa.description
+  FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
+    INNER JOIN ${sqlService.adminSchema}.pupil p
+      ON paa.pupil_id = p.id
+    INNER JOIN ${sqlService.adminSchema}.school s
+      ON p.school_id = s.id
+    INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
+      ON aa.id = paa.accessArrangements_id
+  WHERE s.dfeNumber = @dfeNumber
+  ORDER BY p.lastName`
+  return sqlService.query(sql, params)
+}
+
 module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)

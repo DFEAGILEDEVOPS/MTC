@@ -6,6 +6,7 @@ const httpMocks = require('node-mocks-http')
 
 const controller = require('../../../controllers/access-arrangements')
 const accessArrangementsService = require('../../../services/access-arrangements.service')
+const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const questionReaderReasonsService = require('../../../services/question-reader-reasons.service')
 const pupilService = require('../../../services/pupil.service')
 
@@ -40,9 +41,22 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
-      await controller.getOverview(req, res)
+      spyOn(pupilAccessArrangementsService, 'getPupils')
+      await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Access arrangements')
       expect(res.render).toHaveBeenCalled()
+    })
+    it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
+      try {
+        await controller.getOverview(req, res, next)
+      } catch (error) {
+        expect(error.message).toBe('error')
+      }
+      expect(res.render).not.toHaveBeenCalled()
     })
   })
   describe('getSelectAccessArrangements route', () => {

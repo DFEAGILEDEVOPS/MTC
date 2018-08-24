@@ -16,11 +16,19 @@ Feature: Generate Pupil PINs Familiarisation
     When I click Generate PINs button
     Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
+  @pupil_not_taking_check
   Scenario: Generate Pins familiarisation Pupil List Page display pupil not taking check
     Given I have a pupil not taking the check
     And I am on the generate pupil pins familiarisation page
     When I click Generate PINs button
-    Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page
+    Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page
+
+  @pupil_not_taking_check
+  Scenario: Generate Pins familiarisation Pupil List Page does not display pupil with reason letf school
+    Given I have a pupil not taking the check with reason 'Left school'
+    And I am on the generate pupil pins familiarisation page
+    When I click Generate PINs button
+    Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
   Scenario: Sorting Pupil list on Generate Pins familiarisation page
     Given I am logged in

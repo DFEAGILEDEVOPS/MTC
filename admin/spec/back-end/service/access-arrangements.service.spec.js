@@ -143,17 +143,17 @@ describe('accessArrangementsService', () => {
     })
   })
   describe('save', () => {
-    it('calls sqlCreate if pupilAccessArrangement record does not exist', async () => {
+    it('calls sqlInsertAccessArrangements without isUpdated boolean if pupilAccessArrangement record does not exist', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
-      const pupil = await accessArrangementsService.save({}, {id: 1})
+      const pupil = await accessArrangementsService.save({}, {id: '1', urlSlug: 'pupilUrlSlug'})
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({})
-      expect(pupil.id).toBe(1)
+      expect(pupil.urlSlug).toBe('pupilUrlSlug')
     })
-    it('calls sqlUpdate if pupilAccessArrangement record exists', async () => {
+    it('calls sqlInsertAccessArrangements with isUpdated boolean if pupilAccessArrangement record exists', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([{pupil_id: 1}])
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
-      await accessArrangementsService.save({}, {id: 1})
+      const pupil = await accessArrangementsService.save({}, {id: '1', urlSlug: 'pupilUrlSlug'})
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
   })

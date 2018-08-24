@@ -17,7 +17,7 @@
       "direction": "out",
       // this name refers to the name of the context.binding property that will be inserted into the table
       "name": "data",
-      "tableName": "{tableName}",
+      "tableName": "preparedCheck",
       "connection": "StorageAccount"
     }
   ]

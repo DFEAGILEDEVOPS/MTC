@@ -162,4 +162,40 @@ describe('attendanceService', () => {
       done()
     })
   })
+
+  describe('#hasAttendance', () => {
+    describe('for live env', () => {
+      it('returns valid if pupil has any attendance', async () => {
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'A' })
+        const result = await service.hasAttendance('id', 'live')
+        expect(result).toBe(true)
+      })
+
+      it('returns invalid if there is no attendance', async () => {
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue(undefined)
+        const result = await service.hasAttendance('id', 'live')
+        expect(result).toBe(false)
+      })
+    })
+
+    describe('for familiarisation env', () => {
+      it('returns valid if pupil has left school attendance', async () => {
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'LEFTT' })
+        const result = await service.hasAttendance('id', 'familiarisation')
+        expect(result).toBe(true)
+      })
+
+      it('returns invalid if pupil has other attendance than left school', async () => {
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue({ id: 'id', code: 'A' })
+        const result = await service.hasAttendance('id', 'familiarisation')
+        expect(result).toBe(false)
+      })
+
+      it('returns invalid if there is no attendance', async () => {
+        spyOn(pupilAttendanceDataService, 'findOneByPupilId').and.returnValue(undefined)
+        const result = await service.hasAttendance('id', 'familiarisation')
+        expect(result).toBe(false)
+      })
+    })
+  })
 })
