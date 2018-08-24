@@ -79,8 +79,10 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
  */
 pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
   const select = `
-  SELECT *
-  FROM ${sqlService.adminSchema}.${table}
+  SELECT p.*, a.code
+  FROM ${sqlService.adminSchema}.${table} p
+  INNER JOIN ${sqlService.adminSchema}.[attendanceCode] a
+  ON p.attendanceCode_id = a.id
   `
   const params = [
     {

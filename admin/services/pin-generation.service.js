@@ -5,9 +5,9 @@ const crypto = bluebird.promisifyAll(require('crypto'))
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkDataService = require('../services/data-access/check.data.service')
 const groupDataService = require('../services/data-access/group.data.service')
-const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
 const randomGenerator = require('../lib/random-generator')
 const pinValidator = require('../lib/validator/pin-validator')
+const pupilAttendanceService = require('../services/attendance.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
 const config = require('../config')
@@ -74,15 +74,14 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
  */
 pinGenerationService.isValid = async (p, pinEnv = 'live') => {
   const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
-  const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(p.id)
-  const hasAttendance = pupilAttendance && pupilAttendance.attendanceCode_id
+  const hasAttendance = await pupilAttendanceService.hasAttendance(p.id, pinEnv)
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
   const hasValidPin = pinValidator.isActivePin(p.pin, p.pinExpiresAt)
   // TODO: use pinEnv to differentiate between live and familiarisation checks
   return pinEnv === 'live'
     ? !hasValidPin && !hasAttendance && !canRestart
-    : !hasValidPin
+    : !hasValidPin && !hasAttendance
 }
 
 /**
