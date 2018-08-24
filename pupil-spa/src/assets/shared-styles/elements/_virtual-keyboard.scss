@@ -1,11 +1,37 @@
 .numpad {
   border-spacing: 10px;
 
-  td {
-    height: pem(65px, 36);
-    width: pem(100px, 36);
-    padding: 0;
-    margin: 0;
+  $custom-75p: (question-font: 140px, button-width: 100%, height: 100px);
+  $custom-100p: (question-font: 60px, button-width: 100%, height: 100px);
+
+  @mixin customsize($question-font, $button-width, $button-height, $button-number-size, $button-text-size) {
+    .numpad-button {
+      $font-size: $button-number-size;
+      $font-size-640: 24px;
+      $font-size-print: 18pt;
+      $line-height: (40 / $font-size);
+      $line-height-640: (25 / $font-size-640);
+      $tabular-numbers: false;
+      $font-weight: 400;
+      @include button($grey-1);
+      @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
+
+      padding: 0.1em 0 0 0;
+    }
+
+    .numpad-enter-button {
+      @include button($grey-1);
+      @include core-80;
+
+      padding: 0.1em 0 0 0;
+    }
+
+    td {
+      height: pem(65px, $button-number-size);
+      width: pem(100px, $button-number-size);
+      padding: 0;
+      margin: 0;
+    }
   }
 
   td > button {
@@ -22,23 +48,5 @@
     padding: 0;
   }
 
-  .enter-key {
-    @include core-27;
-  }
-
-  .numpad-button {
-    @include button($grey-1);
-    @include core-36;
-
-    padding: 0.1em 0 0 0;
-  }
-
-  .enter-button {
-    @include button($grey-1);
-    @include core-27;
-
-    width: 100%;
-    height: 100%;
-    padding: 0.1em 0 0 0;
-  }
+  @include customsize($custom-100p...);
 }
