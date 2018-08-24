@@ -16,8 +16,9 @@ const config = require('./config')
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 
+let logLevel = 'error'
 if (process.env.NODE_ENV !== 'production') {
-  winston.level = 'debug'
+  logLevel = 'debug'
 }
 
 // Creates and configures an ExpressJS web server.
@@ -37,7 +38,7 @@ class App {
 
   // Configure Express middleware.
   private middleware (): void {
-    if (config.Logging.Express.UseWinston === 'true') {
+    if (config.Logging.Express.UseWinston === true) {
       /**
        * Express logging to winston
        */
@@ -45,7 +46,8 @@ class App {
         transports: [
           new winston.transports.Console({
             json: true,
-            colorize: true
+            colorize: true,
+            level: logLevel
           })
         ],
         meta: true, // optional: control whether you want to log the meta data about the request (default to true)
@@ -101,10 +103,7 @@ class App {
   private routes (): void {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
-
-    if (config.Endpoints.Auth) {
-      this.express.use('/auth', authRoutes)
-    }
+    this.express.use('/auth', authRoutes)
 
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {
