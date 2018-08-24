@@ -230,7 +230,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
-
   for (let o of checkFormAllocations) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
     const message = {
@@ -261,7 +260,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         },
         pupilFeedback: {
           token: pupilFeedbackSasToken.token,
-          url: pupilFeedbackSasToken.url,
+          url: pupilFeedbackSasToken.url
         },
         jwt: {
           token: o.pupil_jwtToken

@@ -85,17 +85,17 @@ function initElemets () {
 
   const $questionReaderReasons =
     `<div class="hide-checkbox-content">
-        <div class="form-group">${questionReaderReasons.map(function (qrr, i) {
-          return `<div class="multiple-choice">
-                <input id="questionReaderReason-${i}" type="radio" name="questionReaderReason"
-                    class="question-reader-reason" value="${qrr.code}">
-                    <label for="questionReaderReason-${i}">${qrr.title}</label>
-            </div>
-        ${qrr.code === 'OTH' ? $questionReaderOtherTextArea : ''}`
-        }
-    )}
+      <div class="form-group">${questionReaderReasons.map(function (qrr, i) {
+    return `<div class="multiple-choice">
+      <input id="questionReaderReason-${i}" type="radio" name="questionReaderReason"
+      class="question-reader-reason" value="${qrr.code}">
+        <label for="questionReaderReason-${i}">${qrr.title}</label>
       </div>
-    </div>`
+        ${qrr.code === 'OTH' ? $questionReaderOtherTextArea : ''}`
+  }
+  )}
+    </div>
+  </div>`
 
   const $accessArrangementsListItems = accessArrangements.map(function (aa, i) {
     return `<li>

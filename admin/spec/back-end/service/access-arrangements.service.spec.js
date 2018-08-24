@@ -153,7 +153,7 @@ describe('accessArrangementsService', () => {
     it('calls sqlInsertAccessArrangements with isUpdated boolean if pupilAccessArrangement record exists', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue({pupil_id: 1})
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
-      const pupil = await accessArrangementsService.save({}, {id: '1', urlSlug: 'pupilUrlSlug'})
+      await accessArrangementsService.save({}, {id: '1', urlSlug: 'pupilUrlSlug'})
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
   })
