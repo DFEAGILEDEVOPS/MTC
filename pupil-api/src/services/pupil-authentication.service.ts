@@ -1,5 +1,3 @@
-'use strict'
-
 import * as azureStorage from 'azure-storage'
 import * as bluebird from 'bluebird'
 import { clone } from 'ramda'
@@ -8,29 +6,33 @@ import * as winston from 'winston'
 let azureTableService: any
 const authTable = 'preparedCheck'
 
+function initAzureTableService (): void {
+  if (!azureTableService) {
+    azureTableService = azureStorage.createTableService()
+    bluebird.promisifyAll(azureTableService, {
+      promisifier: (originalFunction) => function (...args) {
+        return new Promise((resolve, reject) => {
+          try {
+            originalFunction.call(this, ...args, (error, result, response) => {
+              if (error) {
+                return reject(error)
+              }
+              resolve({ result, response })
+            })
+          } catch (error) {
+            reject(error)
+          }
+        })
+      }
+    })
+  }
+}
+
 export const pupilAuthenticationService = {
   authenticate: async function authenticate (pupilPin: string, schoolPin: string, tableService?: any): Promise<object> {
     // set tableService to azureTableService if not provided, but only instantiate it once.
     if (!tableService) {
-      if (!azureTableService) {
-        azureTableService = azureStorage.createTableService()
-        bluebird.promisifyAll(azureTableService, {
-          promisifier: (originalFunction) => function (...args) {
-            return new Promise((resolve, reject) => {
-              try {
-                originalFunction.call(this, ...args, (error, result, response) => {
-                  if (error) {
-                    return reject(error)
-                  }
-                  resolve({ result, response })
-                })
-              } catch (error) {
-                reject(error)
-              }
-            })
-          }
-        })
-      }
+      initAzureTableService()
       tableService = azureTableService
     }
 
