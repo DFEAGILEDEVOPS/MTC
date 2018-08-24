@@ -45,6 +45,7 @@ export class WarmupQuestionService extends QuestionService {
     config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
     config.numpadRemoval = configData[ 'numpadRemoval' ];
+    config.fontSize = configData[ 'fontSize' ];
     this.config = config;
   }
 }

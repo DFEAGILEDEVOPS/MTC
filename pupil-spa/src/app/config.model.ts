@@ -4,6 +4,7 @@ export class Config {
   private _speechSynthesis: boolean;
   private _audibleSounds: boolean;
   private _numpadRemoval: boolean;
+  private _fontSize: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -42,6 +43,14 @@ export class Config {
   }
 
   set numpadRemoval(value: boolean) {
+    this._numpadRemoval = value;
+  }
+
+  get fontSize(): boolean {
+    return this._numpadRemoval;
+  }
+
+  set fontSize(value: boolean) {
     this._numpadRemoval = value;
   }
 }
