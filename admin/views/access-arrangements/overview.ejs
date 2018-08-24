@@ -10,7 +10,7 @@
     <div class="column-two-thirds">
         <% if (messages && messages.info) { %>
         <div class="info-message clickable">
-            <%= messages.info[0] %>
+            <a href="#<%= highlight %>"><%= messages.info[0] %></a>
         </div>
         <% } %>
         <header class="page-header">
@@ -55,7 +55,45 @@
         </form>
     </div>
     <div class="column-two-thirds">
+        <%if (pupils.length > 0) { %>
+        <table id='submitted-pupil-access-arrangements'>
+            <thead>
+            <tr>
+                <th scope="col">Pupil</th>
+                <th scope="col">Arrangement</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% pupils.forEach( (pupil) => { %>
+            <tr>
+                <td class="access-arrangements-pupil-name">
+                    <div<% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="highlight-item"<% } %>>
+                        <div id="<%= pupil.urlSlug %>">
+                        <%= pupil.fullName %>
+                            <% if (pupil.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= pupil.dateOfBirth %>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </td>
+                <td class="pupil-access-arrangements">
+                    <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement, i) => { %>
+                        <%if (pupilAccessArrangement.length - 1 !== i && pupilAccessArrangement.length > 1) { %>
+                            <span><%= pupilAccessArrangement %></span><br />
+                        <% } else { %>
+                            <span><%= pupilAccessArrangement %></span>
+                        <% } %>
+                        <% }) %>
+                </td>
+            </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
         No pupils with access arrangements or modifications selected.
+        <% } %>
     </div>
 </div>
 
