@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express'
 import * as winston from 'winston'
 
@@ -8,7 +7,7 @@ import { pupilAuthenticationService } from '../services/pupil-authentication.ser
 class AuthController {
   async postAuth (req: Request, res: Response) {
     const contentType = req.get('Content-Type')
-    if (!(contentType === 'application/json' || contentType === 'application/json; charset=utf-8')) {
+    if (!req.is('application/json')) {
       winston.error('Bad Request: Content type is: ' + contentType)
       return apiResponse.badRequest(res)
     }
