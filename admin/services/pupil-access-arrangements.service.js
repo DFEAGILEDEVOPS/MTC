@@ -41,12 +41,12 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
   }
   const pupilAccessArrangementsData = await pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug(urlSlug)
   const formData = pupilAccessArrangementsData.reduce((acc, item) => {
-    acc.pupilUrlSlug = !acc.pupilUrlSlug ? item.urlSlug : acc.pupilUrlSlug
-    acc.foreName = !acc.foreName ? item.foreName : acc.foreName
-    acc.lastName = !acc.lastName ? item.lastName : acc.lastName
-    acc.inputAssistanceInformation = !acc.inputAssistanceInformation ? item.inputAssistanceInformation : acc.inputAssistanceInformation
-    acc.questionReaderOtherInformation = !acc.questionReaderOtherInformation ? item.questionReaderOtherInformation : acc.questionReaderOtherInformation
-    acc.questionReaderReason = !acc.questionReaderReason ? item.questionReaderReasonCode : acc.questionReaderReason
+    acc.pupilUrlSlug = acc.pupilUrlSlug || item.urlSlug
+    acc.foreName = acc.foreName || item.foreName
+    acc.lastName = acc.lastName || item.lastName
+    acc.inputAssistanceInformation = acc.inputAssistanceInformation || item.inputAssistanceInformation
+    acc.questionReaderOtherInformation = acc.questionReaderOtherInformation || item.questionReaderOtherInformation
+    acc.questionReaderReason = acc.questionReaderReason || item.questionReaderReasonCode
     acc.accessArrangements.push(item.accessArrangementCode)
     return acc
   }, { accessArrangements: [] })
