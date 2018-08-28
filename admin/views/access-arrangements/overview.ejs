@@ -68,14 +68,14 @@
             <tr>
                 <td class="access-arrangements-pupil-name">
                     <div<% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="highlight-item"<% } %>>
-                        <span id="<%= pupil.urlSlug %>">
+                        <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
-                        </span>
-                        <% if (pupil.showDoB) { %>
-                        <div class="font-greyed-out font-xsmall">
-                            Date of birth: <%= pupil.dateOfBirth %>
+                            <% if (pupil.showDoB) { %>
+                            <div class="font-greyed-out font-xsmall">
+                                Date of birth: <%= pupil.dateOfBirth %>
+                            </div>
+                            <% } %>
                         </div>
-                        <% } %>
                     </div>
                 </td>
                 <td class="pupil-access-arrangements">
