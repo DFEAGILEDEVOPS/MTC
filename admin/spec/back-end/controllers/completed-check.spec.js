@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, afterEach, expect, it */
+/* global describe, beforeEach, afterEach, expect, it, spyOn */
 const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')

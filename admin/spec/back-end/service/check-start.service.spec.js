@@ -5,7 +5,9 @@
 const moment = require('moment')
 const winston = require('winston')
 
+const azureQueueService = require('../../../services/azure-queue.service')
 const checkDataService = require('../../../services/data-access/check.data.service')
+const checkFormAllocationDataService = require('../../../services/data-access/check-form-allocation.data.service')
 const checkFormDataService = require('../../../services/data-access/check-form.data.service')
 const checkFormService = require('../../../services/check-form.service')
 const checkStartService = require('../../../services/check-start.service')
@@ -39,19 +41,25 @@ describe('check-start.service', () => {
   const dfeNumber = 9991999
   const schoolId = 42
 
-  describe('#prepareCheck', () => {
-    const mockPupils = [
-      {id: 1},
-      {id: 2},
-      {id: 3}
-    ]
-    const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
-    const pupilIdsHackAttempt = ['1', '2', '3', '4']
+  const mockPupils = [
+    {id: 1},
+    {id: 2},
+    {id: 3}
+  ]
+  const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
+  const pupilIdsHackAttempt = ['1', '2', '3', '4']
+  const mockPreparedCheck = {pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true}
+  const mockPreparedCheckQueueMessages = [
+    {mock: 'message'},
+    {mock: 'message'},
+    {mock: 'message'}
+  ]
 
+  describe('#prepareCheck', () => {
     beforeEach(() => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(pinGenerationService, 'updatePupilPins')
-      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue({pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true})
+      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(mockPreparedCheck)
       spyOn(checkDataService, 'sqlCreateBatch')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
@@ -175,6 +183,60 @@ describe('check-start.service', () => {
           }
         })
       })
+    })
+  })
+
+  describe('#preparecheck2', () => {
+    beforeEach(() => {
+      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve(mockPupils))
+      spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
+      spyOn(pinGenerationService, 'updatePupilPins')
+      spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
+      spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
+      spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
+      spyOn(checkFormAllocationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({insertId: 1}))
+      spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
+      spyOn(azureQueueService, 'addMessage')
+    })
+
+    it('throws an error if the pupilIds are not provided', async () => {
+      try {
+        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, true)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('pupilIds is required')
+      }
+    })
+
+    it('throws an error if the schoolId is not provided', async () => {
+      try {
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, true)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('schoolId is required')
+      }
+    })
+
+    it('throws an error if provided with pupilIds that are not a part of the school', async () => {
+      try {
+        spyOn(winston, 'error')
+        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, true)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Validation failed')
+      }
+    })
+
+    it('calls initialisePupilCheck to randomly select a check form', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
+      expect(checkFormAllocationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+    })
+
+    it('adds messages to the queue', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(mockPupils.length)
     })
   })
 
