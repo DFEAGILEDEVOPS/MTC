@@ -12,8 +12,11 @@ const checkFormDataService = require('../../../services/data-access/check-form.d
 const checkFormService = require('../../../services/check-form.service')
 const checkStartService = require('../../../services/check-start.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
+const configService = require('../../../services/config.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const sasTokenService = require('../../../services/sas-token.service')
+
 
 const checkWindowMock = require('../mocks/check-window-2')
 const checkFormMock = {
@@ -337,5 +340,58 @@ describe('check-start.service', () => {
       expect(res.hasOwnProperty('checkCode')).toBeTruthy()
       expect(res.hasOwnProperty('questions')).toBeTruthy()
     })
+  })
+
+  describe('#prepareQueueMessages', () => {
+    const mockCheckFormAllocation = require('../mocks/check-form-allocation')
+    const mockConfig = {
+      speechSynthesis: false,
+      loadingTimeLimit: 3,
+      questionTimeLimit: 6
+    }
+
+    beforeEach(() => {
+      spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocation]))
+      spyOn(configService, 'getConfig').and.returnValue(Promise.resolve(mockConfig))
+      spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
+        return {
+          'token': '<someToken',
+          'url': `http://localhost/${s}`
+        }
+      })
+      spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
+    })
+
+    it('throws an error if the check form allocation IDs are not supplied', async () => {
+      try {
+        await checkStartService.prepareCheckQueueMessages()
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('checkFormAllocationIds is not defined')
+      }
+    })
+
+    it('throws an error if the check form allocation ID param is not an array', async () => {
+      try {
+        await checkStartService.prepareCheckQueueMessages({})
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('checkFormAllocationIds must be an array')
+      }
+    })
+
+    it('makes a call to fetch the check form allocations from the db', async () => {
+      await checkStartService.prepareCheckQueueMessages([1])
+      expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
+    })
+
+    it('prepares the question data', async () => {
+      const res = await checkStartService.prepareCheckQueueMessages([1])
+      expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
+      expect(Object.keys(res[0].questions[0])).toContain('order')
+      expect(Object.keys(res[0].questions[0])).toContain('factor1')
+      expect(Object.keys(res[0].questions[0])).toContain('factor2')
+    })
+
   })
 })
