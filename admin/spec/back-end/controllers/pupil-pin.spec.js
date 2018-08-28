@@ -31,7 +31,6 @@ describe('pupilPin controller:', () => {
   }
 
   describe('getGeneratePinsOverview route', () => {
-    let sandbox
     let goodReqParamsLive = {
       method: 'GET',
       url: '/pupil-pin/generate-live-pins-overview',
@@ -85,7 +84,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getGeneratePinsList route', () => {
-    let sandbox
     let next
     let controller
     let goodReqParamsLive = {
@@ -303,7 +301,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getViewAndPrintPins route', () => {
-    let sandbox
     let next
     let goodReqParamsLive = {
       method: 'POST',
@@ -382,7 +379,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getViewAndCustomPrintPins route', () => {
-    let sandbox
     let next
     let goodReqParamsLive = {
       method: 'POST',
