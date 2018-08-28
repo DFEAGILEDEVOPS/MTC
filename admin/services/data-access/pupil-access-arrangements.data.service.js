@@ -1,28 +1,26 @@
 'use strict'
 
 const { TYPES } = require('tedious')
-const R = require('ramda')
 const monitor = require('../../helpers/monitor')
 
 const sqlService = require('./sql.service')
 const pupilAccessArrangementsDataService = {}
 
 /**
- * Find pupil access arrangement by pupil Id
+ * Find pupil access arrangements by pupil Id
  * @param {Number} pupilId
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = async function (pupilId) {
   const sql = `
-  SELECT TOP 1 
+  SELECT
   *
   FROM ${sqlService.adminSchema}.[pupilAccessArrangements]
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
   ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
+  return sqlService.query(sql, params)
 }
 
 /**

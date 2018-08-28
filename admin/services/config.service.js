@@ -1,7 +1,10 @@
 'use strict'
 
 const R = require('ramda')
+const winston = require('winston')
 
+const accessArrangementsDataService = require('./data-access/access-arrangements.data.service')
+const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
 const {QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS} = require('../config')
@@ -38,7 +41,26 @@ const configService = {
 
     // specific config for a pupil
     const checkOptions = {
-      speechSynthesis: !!pupil.speechSynthesis
+      speechSynthesis: !!pupil.speechSynthesis,
+      audibleSounds: false
+    }
+
+    let pupilAccessArrangements
+    let accessArrangementsCodes
+    try {
+      pupilAccessArrangements = await pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId(pupil.id)
+      if (pupilAccessArrangements && pupilAccessArrangements.length) {
+        const accessArrangementsIds = pupilAccessArrangements.map(aa => aa['accessArrangements_id'])
+        accessArrangementsCodes = await accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds(accessArrangementsIds)
+      } else {
+        accessArrangementsCodes = []
+      }
+    } catch (error) {
+      winston.error('Failed to get access arrangements: ' + error.message)
+    }
+
+    if (accessArrangementsCodes.includes('ATA')) {
+      checkOptions.audibleSounds = true
     }
 
     return R.merge(config, checkOptions)

@@ -10,6 +10,7 @@ import { SpokenQuestionComponent } from './spoken-question.component';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
@@ -33,13 +34,7 @@ describe('SpokenQuestionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SpokenQuestionComponent);
     component = fixture.componentInstance;
-
-    // Mock out the soundComponent that should be passed in as an Input
-    component.soundComponent = {
-      playEndOfQuestionSound() {},
-      playTimeRunningOutAlertSound() {}
-    };
-
+    component.soundComponent = new SoundComponentMock();
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
     // prevent SpeechServiceMock from calling 'end' by default

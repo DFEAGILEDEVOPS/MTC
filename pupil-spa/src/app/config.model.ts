@@ -2,6 +2,7 @@ export class Config {
   private _questionTime: number;
   private _loadingTime: number;
   private _speechSynthesis: boolean;
+  private _audibleSounds: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -25,5 +26,13 @@ export class Config {
 
   set speechSynthesis(value: boolean) {
     this._speechSynthesis = value;
+  }
+
+  get audibleSounds(): boolean {
+    return this._audibleSounds;
+  }
+
+  set audibleSounds(value: boolean) {
+    this._audibleSounds = value;
   }
 }
