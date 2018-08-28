@@ -95,6 +95,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
   req.flash('info', `Access arrangements applied to ${pupil.lastName}, ${pupil.foreName}`)
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
+
 /**
  * Edit access arrangements for single pupil
  * @param req

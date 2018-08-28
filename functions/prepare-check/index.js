@@ -24,21 +24,16 @@ module.exports = function (context, prepareCheckMessage) {
     partitionKey: prepareCheckMessage.schoolPin,
     rowKey: prepareCheckMessage.pupilPin,
     checkCode: prepareCheckMessage.pupil.checkCode,
+    schoolId: prepareCheckMessage.school.id,
     questions: prepareCheckMessage.questions,
     pupil: prepareCheckMessage.pupil,
     school: prepareCheckMessage.school,
     config: prepareCheckMessage.config,
-    tokens: {
-      completedCheck: {
-        sasToken: prepareCheckMessage.tokens.sasToken.token,
-        url: prepareCheckMessage.tokens.sasToken.url
-      },
-      jwtToken: prepareCheckMessage.tokens.jwtToken
-    },
+    tokens: prepareCheckMessage.tokens,
     isCollected: false,
     collectedAt: null,
     hasCheckStarted: false,
-    createdAt: new Date(),
+    createdAt: new Date(), // This ought to work but doesn't: {'_': new Date(), '$': 'Edm.DateTime'},
     updatedAt: new Date()
   }
 
