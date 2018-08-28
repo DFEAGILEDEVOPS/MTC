@@ -2,7 +2,7 @@
 
 /* global $ describe it expect beforeEach */
 
-function initElemets () {
+function initElements () {
   const $accessArrangementsList = $('<ul class="checkbox-list" id="accessArrangementsList" role="listbox" aria-label="Select access arrangement(s)"></ul>')
   const accessArrangements = [
     {
@@ -115,14 +115,40 @@ function initElemets () {
   })
   $accessArrangementsList.append($accessArrangementsListItems)
   $(document.body).append($accessArrangementsList)
+  const $formButtons = `<div class="form-buttons">
+    <input type="submit" id="save-access-arrangement" class="button" value="Save" />
+    <a href="/access-arrangements/overview" class="button button-secondary">Cancel</a>
+    </div>
+  `
+  const $modalBox = `<div class="modal-overlay" id="js-modal-overlay"></div>
+    <dialog class="modal-box" id="js-modal-box" role="dialog" aria-labelledby="modal-title" tabindex="-1">
+        <div role="document">
+            <h1 id="modal-title"></h1>
+            <div class="modal-content">
+                <p>
+                <div class="modal-buttons">
+                    <span class="modal-confirm">
+                        <a href="" class="button-secondary" id="js-modal-confirmation-button" title=""></a>
+                    </span>
+                    <span class="modal-cancel">
+                        <a href="" class="button-secondary" id="js-modal-cancel-button" data-focus-back="js-modal-link" title=""></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </dialog>
+  `
+  const $editViewInput = `<input type="hidden" id="isEditView" name="isEditView" value="true" />`
+  $(document.body).append($formButtons)
+  $(document.body).append($modalBox)
+  $(document.body).append($editViewInput)
 }
 
 describe('pupil-access-arrangements-selection', function () {
-  initElemets()
   describe('after page load', function () {
     beforeEach(function () {
       $('body').empty()
-      initElemets()
+      initElements()
       window.GOVUK.accessArrangements()
     })
 
@@ -159,13 +185,20 @@ describe('pupil-access-arrangements-selection', function () {
       expect(textArea2.val()).toBe('')
       expect(textArea2.val()).toBe('')
     })
+    it('it should show the modal when the user submitts with no checkboxes are checked', function () {
+      const el = $('#save-access-arrangement')
+      $(el).trigger('click')
+      expect($('#js-modal-box')[0].classList[1]).toBe('show')
+    })
   })
   it('it should add show-checkbox-content if relevant checkbox is checked on page load', function () {
+    initElements()
     const el = $('.checkbox-list').find('input:checkbox')[3]
     el.checked = true
     // Fire method as if page reload occurred
     window.GOVUK.accessArrangements()
     expect($(el).closest('li').find('.show-checkbox-content').length).toBe(1)
     expect($(el).closest('li').find('.hide-checkbox-content').length).toBe(0)
+    el.checked = false
   })
 })
