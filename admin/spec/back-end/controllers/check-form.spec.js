@@ -669,7 +669,7 @@ describe('check-form controller:', () => {
             {
               id: 1,
               name: 'window 1',
-              checkStartDate: '2017-09-10 00:00:00.000 +00:00'
+              checkStartDate: '2017-09-10T00:00:00.000Z'
             }
           )
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
@@ -734,7 +734,7 @@ describe('check-form controller:', () => {
             {
               id: 1,
               name: 'window 1',
-              checkStartDate: '2017-09-10 00:00:00.000 +00:00'
+              checkStartDate: '2017-09-10T00:00:00.000Z'
             }
           )
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(checkWindowsMock)
@@ -769,7 +769,7 @@ describe('check-form controller:', () => {
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue({
             id: 1,
             name: 'window 1',
-            checkStartDate: '2017-09-10 00:00:00.000 +00:00'
+            checkStartDate: '2017-09-10T00:00:00.000Z'
           })
           spyOn(checkFormService, 'getUnassignedFormsForCheckWindow').and.returnValue(Promise.reject(new Error('Error')))
           controller = require('../../../controllers/check-form').assignCheckFormToWindowPage
