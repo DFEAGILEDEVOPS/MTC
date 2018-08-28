@@ -157,4 +157,25 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
   return sqlService.query(sql, params)
 }
 
+/**
+ * Delete pupil's access arrangements.
+ * @param {String} urlSlug
+ * @return {Object}
+ */
+pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (urlSlug) => {
+  const sql = `DELETE paa FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
+    INNER JOIN ${sqlService.adminSchema}.pupil p
+    ON p.id = paa.pupil_id
+    WHERE p.urlSlug = @urlSlug`
+  const params = [
+    {
+      name: 'urlSlug',
+      value: urlSlug,
+      type: TYPES.NVarChar
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
+}
+
 module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)

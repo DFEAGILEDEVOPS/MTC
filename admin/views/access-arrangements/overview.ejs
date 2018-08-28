@@ -13,6 +13,11 @@
             <a href="#<%= highlight %>"><%= messages.info[0] %></a>
         </div>
         <% } %>
+        <% if (messages && messages.deleteInfo) { %>
+        <div class="info-message">
+            <%= messages.deleteInfo[0] %>
+        </div>
+        <% } %>
         <header class="page-header">
             <h1 class="heading-xlarge">Access arrangements</h1>
         </header>
@@ -56,7 +61,7 @@
     </div>
     <div class="column-two-thirds">
         <%if (pupils.length > 0) { %>
-        <table id='submitted-pupil-access-arrangements'>
+        <table id="submitted-pupil-access-arrangements">
             <thead>
             <tr>
                 <th scope="col">Pupil</th>
@@ -67,7 +72,7 @@
             <% pupils.forEach( (pupil) => { %>
             <tr>
                 <td class="access-arrangements-pupil-name">
-                    <div<% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="highlight-item"<% } %>>
+                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
                             <% if (pupil.showDoB) { %>
@@ -79,13 +84,9 @@
                     </div>
                 </td>
                 <td class="pupil-access-arrangements">
-                    <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement, i) => { %>
-                        <%if (pupilAccessArrangement.length - 1 !== i && pupilAccessArrangement.length > 1) { %>
-                            <span><%= pupilAccessArrangement %></span><br />
-                        <% } else { %>
-                            <span><%= pupilAccessArrangement %></span>
-                        <% } %>
-                        <% }) %>
+                    <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement) => { %>
+                    <div><%= pupilAccessArrangement %></div>
+                    <% }) %>
                 </td>
             </tr>
             <% }) %>

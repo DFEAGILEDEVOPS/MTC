@@ -13,6 +13,7 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
   router.get('/select-access-arrangements', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.getSelectAccessArrangements(req, res, next))
   router.get('/select-access-arrangements/:pupilUrlSlug', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.getEditAccessArrangements(req, res, next))
   router.post('/submit', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.postSubmitAccessArrangements(req, res, next))
+  router.get('/delete-access-arrangements/:pupilUrlSlug', isAuthenticated(rolesConfig.ROLE_TEACHER), (req, res, next) => accessArrangementsController.getDeleteAccessArrangements(req, res, next))
 }
 
 module.exports = router
