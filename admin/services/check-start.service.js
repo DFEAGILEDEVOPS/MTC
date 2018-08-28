@@ -99,7 +99,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
   const difference = setValidationService.validate(pupilIds.map(x => parseInt(x, 10)), pupils)
   if (difference.size > 0) {
-    winston.warn(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
+    winston.error(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
     throw new Error('Validation failed')
   }
 
