@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
-        this.router.navigate(['sign-in-success']);
+        this.router.navigate(['welcome']);
       },
       () => {
         this.loginSucceeded = false;

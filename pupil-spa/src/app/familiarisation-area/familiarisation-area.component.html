@@ -1,0 +1,50 @@
+<app-header class="full-width"></app-header>
+
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div class="column-full">
+      <header class="page-header">
+          <span class="signed-as">Signed as {{pupil.firstName}} {{pupil.lastName}} <a routerLink="/sign-out" >sign out</a></span>
+          <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}} {{pupil.lastName}}</h1>
+      </header>
+      <p>
+        <strong class="bold-small">
+          Choose size of words and numbers
+        </strong>
+      </p>
+      <div class="grid-row">
+        <div class="column-one-third">
+          <fieldset>
+            <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
+              <input type="radio" 
+                     value="{{selectedFont.val}}" 
+                     id="font-{{selectedFont.val}}" 
+                     name="font-size"
+                     (change)="selectionChange(selectedFont.val)">
+              <label class="font-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="column-two-thirds">
+          <div *ngIf="selectedSize" class="preview-box {{selectedSize}}">
+            <div class="badge">Size preview</div>
+            <div class="question-text">123</div>
+            <table>
+                <tr>
+                    <td><button type="button">1</button></td>
+                    <td><button type="button">2</button></td>
+                    <td><button type="button">3</button></td>
+                </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="sign-out-link">
+          <p class="lede">
+            <a routerLink="/sign-out" >This is not me, sign out</a>
+          </p>
+        </div>
+        <button class="button" (click)="onClick()">Next</button>
+      </div>
+  </div>
+</main>
