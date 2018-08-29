@@ -47,10 +47,10 @@ export class Config {
   }
 
   get fontSize(): boolean {
-    return this._numpadRemoval;
+    return this._fontSize;
   }
 
   set fontSize(value: boolean) {
-    this._numpadRemoval = value;
+    this._fontSize = value;
   }
 }
