@@ -66,12 +66,13 @@
             <tr>
                 <th scope="col">Pupil</th>
                 <th scope="col">Arrangement</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-pupil-name">
+                <td class="access-arrangements-column">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -88,6 +89,9 @@
                     <div><%= pupilAccessArrangement %></div>
                     <% }) %>
                 </td>
+                <td class="access-arrangements-column">
+                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove arrangements</a>
+                </td>
             </tr>
             <% }) %>
             </tbody>
@@ -97,6 +101,14 @@
         <% } %>
     </div>
 </div>
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Remove arrangements',
+    modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
+}) %>
 
 <div class="back-to-top-container">
     <a href="#top">Back to top</a>
