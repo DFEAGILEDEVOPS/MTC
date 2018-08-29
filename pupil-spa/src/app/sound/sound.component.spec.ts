@@ -1,14 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SoundComponent } from './sound.component';
+import { QuestionService } from '../services/question/question.service';
+import { QuestionServiceMock } from '../services/question/question.service.mock';
 
 describe('SoundComponent', () => {
   let component: SoundComponent;
   let fixture: ComponentFixture<SoundComponent>;
+  let mockQuestionService: QuestionServiceMock;
 
   beforeEach(async(() => {
+    mockQuestionService = new QuestionServiceMock();
     TestBed.configureTestingModule({
-      declarations: [ SoundComponent ]
+      declarations: [ SoundComponent ],
+      providers: [
+        {provide: QuestionService, useValue: mockQuestionService}
+      ]
     })
     .compileComponents();
   }));

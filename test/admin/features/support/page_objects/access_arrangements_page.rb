@@ -11,8 +11,8 @@ class AccessArrangementsPage < SitePrism::Page
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
       element :highlighted_pupil, '.highlight-item'
-      element :pupil_name, 'td:nth-of-type(1)'
-      element :access_arrangement_name, 'td:nth-of-type(2)'
+      element :pupil_name, 'td:nth-of-type(1) a'
+      elements :access_arrangement_name, 'td:nth-of-type(2) span'
     end
   end
 

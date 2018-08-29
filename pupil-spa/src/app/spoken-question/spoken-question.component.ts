@@ -17,17 +17,6 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   private subscription: Subscription;
 
-  /**
-   * Set to true after the audible alert has played to indicate the end of the question time is near.
-   * @type {boolean}
-   */
-  private hasAudibleAlertPlayed = false;
-
-  /**
-   * Reference to the Sound component
-   */
-  @Input() public soundComponent;
-
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected registerInputService: RegisterInputService,
@@ -75,23 +64,5 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
     bodyTag.removeAttribute('data-sequence-number');
     bodyTag.removeAttribute('data-factor1');
     bodyTag.removeAttribute('data-factor2');
-  }
-
-  /**
-   * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
-   */
-  preSendTimeoutEvent() {
-    this.soundComponent.playEndOfQuestionSound();
-  }
-
-  /**
-   * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
-   * @param remainingTime
-   */
-  countdownIntervalHook(remainingTime) {
-    if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
-      this.soundComponent.playTimeRunningOutAlertSound();
-      this.hasAudibleAlertPlayed = true;
-    }
   }
 }

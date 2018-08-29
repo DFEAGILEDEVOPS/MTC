@@ -69,6 +69,17 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   public isWarmUpQuestion: boolean;
 
+  /**
+   * Set to true after the audible alert has played to indicate the end of the question time is near.
+   * @type {boolean}
+   */
+  private hasAudibleAlertPlayed = false;
+
+  /**
+   * Reference to the Sound component
+   */
+  @Input() public soundComponent;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -113,6 +124,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
   preSendTimeoutEvent() {
+    this.soundComponent.playEndOfQuestionSound();
   }
 
   /**
@@ -120,6 +132,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * @param remainingTime
    */
   countdownIntervalHook(remainingTime) {
+    if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
+      this.soundComponent.playTimeRunningOutAlertSound();
+      this.hasAudibleAlertPlayed = true;
+    }
   }
 
   /**

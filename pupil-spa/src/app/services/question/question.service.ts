@@ -76,6 +76,7 @@ export class QuestionService {
     config.loadingTime = configData[ 'loadingTime' ];
     config.questionTime = configData[ 'questionTime' ];
     config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
+    config.audibleSounds = configData[ 'audibleSounds' ];
     this.config = config;
   }
 }
