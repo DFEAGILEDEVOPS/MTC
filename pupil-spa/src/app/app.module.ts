@@ -51,6 +51,7 @@ import { SubmissionFailedComponent } from './submission-failed/submission-failed
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 import { FamiliarisationAreaComponent } from './familiarisation-area/familiarisation-area.component';
+import { FamiliarisationSettingsComponent } from './familiarisation-settings/familiarisation-settings.component';
 
 
 const appRoutes: Routes = [
@@ -64,7 +65,8 @@ const appRoutes: Routes = [
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
-  {path: 'welcome', component: FamiliarisationAreaComponent }
+  {path: 'font-choice', component: FamiliarisationAreaComponent },
+  {path: 'access-settings', component: FamiliarisationSettingsComponent }
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -93,6 +95,7 @@ const appRoutes: Routes = [
     WarmupLoadingComponent,
     QuestionsIntroComponent,
     FamiliarisationAreaComponent,
+    FamiliarisationSettingsComponent,
   ],
   imports: [
     RouterModule.forRoot(

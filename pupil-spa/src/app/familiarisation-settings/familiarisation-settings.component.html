@@ -1,0 +1,27 @@
+<app-header class="full-width"></app-header>
+
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div class="column-full">
+      <header class="page-header">
+          <h1 class="heading-xlarge" tabindex="0">Settings for you</h1>
+      </header>
+      <p>
+        <strong class="bold-small">
+          You have the following settings on your check
+        </strong>
+      </p>
+      <ol class="list list-number">
+        <li *ngIf="config.audibleSounds">Beep</li>
+        <li *ngIf="config.numpadRemoval">Numpad removal</li>
+        <li *ngIf="config.colourContrast">Colour contrast</li>
+        <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+      </ol>
+      <div class="sign-out-link">
+        <p class="lede">
+          <button class="button" (click)="onClick()">Confirm</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
