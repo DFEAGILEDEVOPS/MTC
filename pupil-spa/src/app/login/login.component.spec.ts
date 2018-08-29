@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user/user.service';
 import { LoginComponent } from './login.component';
 import { Login } from './login.model';
+import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -54,6 +56,7 @@ describe('LoginComponent', () => {
         { provide: Login, useValue: mockLoginModel },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
+        { provide: StorageService, useClass: StorageServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
@@ -97,17 +100,10 @@ describe('LoginComponent', () => {
     it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        expect(mockRouter.navigate).toHaveBeenCalled();
         expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1);
         expect(mockRegisterInputService.initialise).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
-      component.onSubmit('goodPin', 'goodPin');
-      fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
       });
     });
 
@@ -115,11 +111,30 @@ describe('LoginComponent', () => {
       component.onSubmit('goodPin', 'goodPin');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
-        expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        expect(mockRouter.navigate).toHaveBeenCalled();
         expect(mockUserService.login).toHaveBeenCalledTimes(1);
       });
     });
 
+    describe('for no access arrangements', () => {
+      it('should redirect to success page given a valid schoolPin and pupilPin', async () => {
+        component.onSubmit('goodPin', 'goodPin');
+        fixture.whenStable().then(() => {
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+        });
+      });
+    });
+
+    describe('for font-size access arrangements', () => {
+      it('should redirect to the font selection page given a valid schoolPin and pupilPin', async () => {
+        spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true });
+        component.onSubmit('goodPin', 'goodPin');
+        fixture.whenStable().then(() => {
+          expect(mockQuestionService.getConfig).toHaveBeenCalled();
+          expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
+        });
+      });
+    });
   });
 
   describe('should fail logging in when PIN(s) are invalid', () => {

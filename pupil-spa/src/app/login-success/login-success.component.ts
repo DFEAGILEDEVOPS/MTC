@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Pupil } from '../pupil';
 import { School } from '../school';
+import { Config } from '../config.model';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
 import { DeviceService } from '../services/device/device.service';
@@ -18,6 +19,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   pupil: Pupil;
   school: School;
+  config: Config;
   private speechListenerEvent: any;
 
   constructor(private router: Router,
@@ -54,6 +56,8 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     // remove pupil data from local storage after setting them visually
     const checkCode = pupilData.checkCode;
     this.storageService.setItem('pupil', { checkCode });
+
+    this.config = this.questionService.getConfig();
   }
 
   async ngOnInit() {
@@ -63,7 +67,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.config.speechSynthesis) {
       this.speechService.speakElement(this.elRef.nativeElement);
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
@@ -80,7 +84,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     // remove pupil data from memory once component is destroyed
     this.pupil = undefined;
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.config.speechSynthesis) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);

@@ -229,3 +229,26 @@ body {
 .full-width {
   width: 100%;
 }
+
+/* Sidebar */
+.sidebar {
+  margin-top: 40px;
+}
+
+.support-column {
+  border-top: pem(10px) solid $mainstream-brand;
+  padding-top: pem(10px);
+
+  ul {
+    @include core-16();
+
+    list-style: none;
+  }
+
+  h2, h3, h4 {
+    @include bold-24();
+
+    margin-top: 0.3em;
+    margin-bottom: 0.5em;
+  }
+}
