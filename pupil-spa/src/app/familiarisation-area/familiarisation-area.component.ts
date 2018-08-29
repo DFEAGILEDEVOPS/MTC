@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../services/storage/storage.service';
 import { Pupil } from '../pupil';
+import { AccessArrangements, accessArrangementsDataKey } from '../access-arrangements';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,20 +14,22 @@ export class FamiliarisationAreaComponent implements OnInit {
   private selectedSize;
 
   private fontSettings = [
-    {label: 'Very small', val: 'xsmall'},
-    {label: 'Small', val: 'small'},
-    {label: 'Regular', val: 'regular'},
-    {label: 'Large', val: 'large'},
-    {label: 'Very large', val: 'xlarge'},
-    {label: 'Largest', val: 'xxlarge'}
+    { label: 'Very small', val: 'xsmall' },
+    { label: 'Small', val: 'small' },
+    { label: 'Regular', val: 'regular' },
+    { label: 'Large', val: 'large' },
+    { label: 'Very large', val: 'xlarge' },
+    { label: 'Largest', val: 'xxlarge' }
   ];
 
-  constructor(private router: Router,
-              private storageService: StorageService) {
+  constructor(
+    private router: Router,
+    private storageService: StorageService
+  ) {
     const pupilData = storageService.getItem('pupil');
 
     this.pupil = new Pupil;
-    this.pupil.firstName =pupilData.firstName;
+    this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;
   }
 
@@ -38,6 +41,10 @@ export class FamiliarisationAreaComponent implements OnInit {
   }
 
   onClick() {
+    const accessArrangements = new AccessArrangements;
+    accessArrangements.fontSize = this.selectedSize || 'regular';
+    this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
+
     this.router.navigate(['sign-in-success']);
   }
 
