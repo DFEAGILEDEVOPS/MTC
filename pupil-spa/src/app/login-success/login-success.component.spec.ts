@@ -1,6 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { HttpModule } from '@angular/http';
 
 import { DeviceService } from '../services/device/device.service';
 import { LoginSuccessComponent } from './login-success.component';
@@ -15,6 +14,8 @@ import { UserService } from '../services/user/user.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
@@ -30,10 +31,12 @@ describe('LoginSuccessComponent', () => {
     };
 
     const injector = TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpClientModule],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       declarations: [LoginSuccessComponent],
       providers: [
+        HttpClient,
+        HttpClientModule,
         DeviceService,
         { provide: Router, useValue: mockRouter },
         StorageService,

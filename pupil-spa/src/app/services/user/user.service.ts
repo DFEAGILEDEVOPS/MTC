@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import 'rxjs/add/operator/toPromise';
-import { Http, RequestOptions, Headers } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StorageService } from '../storage/storage.service';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';
@@ -14,25 +14,19 @@ export class UserService {
   private loggedIn = false;
   data: any = {};
 
-  constructor(private http: Http, private storageService: StorageService) {
+  constructor(private http: HttpClient, private storageService: StorageService) {
     this.loggedIn = !!this.storageService.getItem(accessTokenKey);
   }
 
   login(schoolPin, pupilPin): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      const requestArgs = new RequestOptions({headers: headers});
+      const headers = {
+        headers: new HttpHeaders( { 'Content-Type': 'application/json' })
+      };
 
-      await this.http.post(`${APP_CONFIG.authURL}`,
-        { schoolPin, pupilPin },
-        requestArgs)
+      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin }, headers)
         .toPromise()
-        .then((response) => {
-          if (response.status !== 200) {
-            return reject(new Error('Login Error:' + response.status + ':' + response.statusText));
-          }
-          const data = response.json();
+        .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
           this.storageService.setItem(questionsDataKey, data[questionsDataKey]);
