@@ -10,8 +10,10 @@ import {
 } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
+import { StorageService } from '../services/storage/storage.service';
 import { QuestionService } from '../services/question/question.service';
 import { Config } from '../config.model';
+import { AccessArrangements, accessArrangementsDataKey } from '../access-arrangements';
 
 @Component({
   selector: 'app-practice-question',
@@ -57,6 +59,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Contains access arrangements flags
    */
   protected config: Config;
+
+  /**
+   * Set a reference to the access arrangements settings for a user.
+   */
+  protected accessArrangements: AccessArrangements;
 
   /**
    * The users answer made up of recorded numbers.
@@ -106,9 +113,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected questionService: QuestionService,
+              protected storageService: StorageService,
               protected speechService: SpeechService) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
+
+    const accessArrangementsData = storageService.getItem(accessArrangementsDataKey);
+    this.accessArrangements = new AccessArrangements;
+    this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
   }
 
   ngOnInit() {
