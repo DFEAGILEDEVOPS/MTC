@@ -165,7 +165,6 @@ class SqlDbHelper
     access_arrangement_array
   end
 
-
   def self.question_reader_reasons
     sql = "SELECT * FROM [mtc_admin].[questionReaderReasons]"
     result = SQL_CLIENT.execute(sql)
