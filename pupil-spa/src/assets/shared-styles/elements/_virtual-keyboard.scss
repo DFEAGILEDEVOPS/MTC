@@ -1,37 +1,9 @@
-.numpad {
+@mixin customizable($button-width, $button-height, $button-number-size, $button-text-size, $base) {
   border-spacing: 10px;
-
-  $custom-75p: (question-font: 140px, button-width: 100%, height: 100px);
-  $custom-100p: (question-font: 60px, button-width: 100%, height: 100px);
-
-  @mixin customsize($question-font, $button-width, $button-height, $button-number-size, $button-text-size) {
-    .numpad-button {
-      $font-size: $button-number-size;
-      $font-size-640: 24px;
-      $font-size-print: 18pt;
-      $line-height: (40 / $font-size);
-      $line-height-640: (25 / $font-size-640);
-      $tabular-numbers: false;
-      $font-weight: 400;
-      @include button($grey-1);
-      @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
-
-      padding: 0.1em 0 0 0;
-    }
-
-    .numpad-enter-button {
-      @include button($grey-1);
-      @include core-80;
-
-      padding: 0.1em 0 0 0;
-    }
-
-    td {
-      height: pem(65px, $button-number-size);
-      width: pem(100px, $button-number-size);
-      padding: 0;
-      margin: 0;
-    }
+  
+  td {
+    padding: 0;
+    margin: 0;
   }
 
   td > button {
@@ -39,14 +11,54 @@
     color: $white;
     border: 0;
     cursor: pointer;
-    font-size: 36px;
     font-weight: 400;
-    height: pem(65px, 36);
-    width: pem(100px, 36);
+    height: pem($button-height, $base);
+    width: pem($button-width, $base);
     text-align: center;
     margin: 0;
     padding: 0;
   }
 
-  @include customsize($custom-100p...);
+  .numpad-button {
+    @include button($grey-1);
+    @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
+    line-height: $button-number-size !important;
+
+    padding: 0.1em 0 0 0;
+  }
+
+  .enter-button {
+    @include button($grey-1);
+    @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
+    line-height: $button-text-size !important;
+
+    width: 100%;
+    height: 100%;
+    padding: 0.1em 0 0 0;
+  }
 }
+  
+  .numpad-xsmall {
+    @include customizable(60px, 44px, 12px, 12px, 12);
+  }
+
+  .numpad-small {
+    @include customizable(60px, 44px, 19px, 19px, 19);
+  }
+  
+  .numpad {
+    @include customizable(100px, 65px, 36px, 27px, 36);
+  }
+  
+  .numpad-large {
+    @include customizable(125px, 70px, 45px, 40px, 45);
+  }
+  
+  .numpad-xlarge {
+    @include customizable(140px, 70px, 54px, 45px, 54);
+  }
+  
+  .numpad-xxlarge {
+    @include customizable(140px, 60px, 60px, 40px, 60);
+  }
+  
