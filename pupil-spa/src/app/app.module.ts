@@ -52,6 +52,7 @@ import { SubmissionPendingComponent } from './submission-pending/submission-pend
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 import { FamiliarisationAreaComponent } from './familiarisation-area/familiarisation-area.component';
 import { FamiliarisationSettingsComponent } from './familiarisation-settings/familiarisation-settings.component';
+import { FamiliarisationColourComponent } from './familiarisation-colour/familiarisation-colour.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { Config } from '../config.model';
@@ -8,7 +8,7 @@ import { Config } from '../config.model';
   templateUrl: './familiarisation-settings.component.html',
   styleUrls: ['./familiarisation-settings.component.scss']
 })
-export class FamiliarisationSettingsComponent implements OnInit {
+export class FamiliarisationSettingsComponent {
   private config: Config;
 
   constructor(
@@ -16,9 +16,6 @@ export class FamiliarisationSettingsComponent implements OnInit {
     private questionService: QuestionService
   ) {
     this.config = questionService.getConfig();
-  }
-
-  ngOnInit() {
   }
 
   onClick() {

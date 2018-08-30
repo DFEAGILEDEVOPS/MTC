@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
+import { QuestionService } from '../services/question/question.service';
 import { Pupil } from '../pupil';
 import { AccessArrangements, accessArrangementsDataKey } from '../access-arrangements';
-import { Router } from '@angular/router';
+import { Config } from '../config.model';
 
 @Component({
   selector: 'app-familiarisation-area',
   templateUrl: './familiarisation-area.component.html',
   styleUrls: ['./familiarisation-area.component.scss']
 })
-export class FamiliarisationAreaComponent implements OnInit {
+export class FamiliarisationAreaComponent {
   private pupil: Pupil;
   private selectedSize;
 
@@ -24,6 +26,7 @@ export class FamiliarisationAreaComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private questionService: QuestionService,
     private storageService: StorageService
   ) {
     const pupilData = storageService.getItem('pupil');
@@ -31,9 +34,6 @@ export class FamiliarisationAreaComponent implements OnInit {
     this.pupil = new Pupil;
     this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;
-  }
-
-  ngOnInit() {
   }
 
   selectionChange(selectedFont) {
@@ -45,7 +45,11 @@ export class FamiliarisationAreaComponent implements OnInit {
     accessArrangements.fontSize = this.selectedSize || 'regular';
     this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
 
-    this.router.navigate(['sign-in-success']);
+    if (this.questionService.getConfig().colourContrast) {
+      this.router.navigate(['colour-choice']);
+    } else {
+      this.router.navigate(['access-settings']);
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-@mixin customizable($button-width, $button-height, $button-number-size, $button-text-size) {
+@mixin customsize($button-width, $button-height, $button-number-size, $button-text-size) {
   border-spacing: 10px;
 
   td {
@@ -37,25 +37,25 @@
 }
 
 .numpad-xsmall {
-  @include customizable(60px, 44px, 12px, 12px);
+  @include customsize(60px, 44px, 12px, 12px);
 }
 
 .numpad-small {
-  @include customizable(60px, 44px, 19px, 19px);
+  @include customsize(60px, 44px, 19px, 19px);
 }
 
 .numpad-regular {
-  @include customizable(100px, 65px, 36px, 27px);
+  @include customsize(100px, 65px, 36px, 27px);
 }
 
 .numpad-large {
-  @include customizable(125px, 70px, 45px, 40px);
+  @include customsize(125px, 70px, 45px, 40px);
 }
 
 .numpad-xlarge {
-  @include customizable(140px, 70px, 54px, 45px);
+  @include customsize(140px, 70px, 54px, 45px);
 }
 
 .numpad-xxlarge {
-  @include customizable(140px, 60px, 60px, 40px);
+  @include customsize(140px, 60px, 60px, 40px);
 }

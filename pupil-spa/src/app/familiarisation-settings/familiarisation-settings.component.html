@@ -3,13 +3,14 @@
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
     <div class="column-full">
+      <div class="back-link-wrapper">
+        <a routerLink="/font-choice" class="back-link">Back</a>
+      </div>
       <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Settings for you</h1>
       </header>
       <p>
-        <strong class="bold-small">
           You have the following settings on your check
-        </strong>
       </p>
       <ol class="list list-number">
         <li *ngIf="config.audibleSounds">Beep</li>

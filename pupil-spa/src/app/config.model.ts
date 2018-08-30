@@ -5,6 +5,7 @@ export class Config {
   private _audibleSounds: boolean;
   private _numpadRemoval: boolean;
   private _fontSize: boolean;
+  private _colourContrast: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -52,5 +53,13 @@ export class Config {
 
   set fontSize(value: boolean) {
     this._fontSize = value;
+  }
+
+  get colourContrast(): boolean {
+    return this._colourContrast;
+  }
+
+  set colourContrast(value: boolean) {
+    this._colourContrast = value;
   }
 }
