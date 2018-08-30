@@ -8,18 +8,19 @@ import 'rxjs/add/operator/catch';
  */
 export class AppConfig {
   readonly apiURL: string;
+  readonly applicationInsightsInstrumentationKey: string;
   readonly authURL: string;
-  readonly checkStartedURL: string;
-  readonly checkSubmissionURL: string;
-  readonly production: boolean;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
+  readonly checkStartedURL: string;
   readonly checkSubmissionApiErrorDelay: number;
   readonly checkSubmissionAPIErrorMaxAttempts: number;
+  readonly checkSubmissionURL: string;
+  readonly featureUseHpa: boolean;
+  readonly googleAnalyticsTrackingCode: string;
+  readonly production: boolean;
   readonly submissionPendingViewMinDisplay: number;
   readonly supportNumber: string;
-  readonly googleAnalyticsTrackingCode: string;
-  readonly applicationInsightsInstrumentationKey: string;
 }
 
 /**

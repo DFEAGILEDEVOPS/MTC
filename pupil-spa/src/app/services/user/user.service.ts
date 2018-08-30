@@ -8,6 +8,7 @@ const configDataKey = 'config';
 const pupilDataKey = 'pupil';
 const schoolDataKey = 'school';
 const accessTokenKey = 'access_token';
+const tokenKey = 'tokens';
 
 @Injectable()
 export class UserService {
@@ -33,7 +34,13 @@ export class UserService {
           this.storageService.setItem(configDataKey, data[configDataKey]);
           this.storageService.setItem(pupilDataKey, data[pupilDataKey]);
           this.storageService.setItem(schoolDataKey, data[schoolDataKey]);
-          this.storageService.setItem(accessTokenKey, data[accessTokenKey]);
+          if (APP_CONFIG.featureUseHpa === true) {
+            this.storageService.setItem(accessTokenKey, data[tokenKey]['jwt']['token']);
+            this.storageService.setItem(tokenKey, data[tokenKey]);
+          } else {
+            this.storageService.setItem(accessTokenKey, data[accessTokenKey]);
+          }
+
           resolve();
         },
         (err) => {
