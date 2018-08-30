@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-survey-welcome',
   templateUrl: './survey-welcome.component.html',
   styleUrls: ['./survey-welcome.component.scss']
 })
-export class SurveyWelcomeComponent implements OnInit {
-  showDetails = false;
-  
+export class SurveyWelcomeComponent {
+  private showDetails: Boolean = false;
+
   constructor() { }
 
-  ngOnInit() {
-  }
-
   toggleDetails() {
-    this.showDetails = !this.showDetails
+    this.showDetails = !this.showDetails;
   }
-
 }
