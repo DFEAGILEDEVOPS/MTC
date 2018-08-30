@@ -72,8 +72,11 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-column">
-                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
+                <td class="access-arrangements-pupil">
+                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
+                            <% const highlightedStyle = pupil.arrangements.length > 1 ? `height: ${pupil.arrangements.length * 35}px` : '' %>
+                            class="panel panel-border-narrow green-panel"  style="<%= highlightedStyle %>"
+                        <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
                             <% if (pupil.showDoB) { %>
@@ -84,12 +87,12 @@
                         </div>
                     </div>
                 </td>
-                <td class="pupil-access-arrangements">
+                <td class="access-arrangements-list">
                     <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement) => { %>
                     <div><%= pupilAccessArrangement %></div>
                     <% }) %>
                 </td>
-                <td class="access-arrangements-column">
+                <td class="access-arrangements-action">
                     <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove arrangements</a>
                 </td>
             </tr>
