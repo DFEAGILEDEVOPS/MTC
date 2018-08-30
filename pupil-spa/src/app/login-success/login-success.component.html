@@ -1,4 +1,5 @@
 <app-header class="full-width"></app-header>
+<app-page-modifications>
 <main id="content" class="js-content" role="main">
     <div class="grid-row">
         <div class="column-two-thirds">
@@ -52,8 +53,11 @@
                 <h3 class="heading-medium">Settings</h3>
                 <nav role="navigation">
                     <ul class="list">
-                        <li>
-                            <a href="/welcome" *ngIf="config.fontSize">Edit size of words and numbers</a>
+                        <li *ngIf="config.colourContrast">
+                            <a href="/colour-choice">Edit colour of page</a>
+                        </li>
+                        <li *ngIf="config.fontSize">
+                            <a href="/font-choice">Edit size of words and numbers</a>
                         </li>
                     </ul>
                 </nav>
@@ -61,3 +65,4 @@
         </div>
     </div>
 </main>
+</app-page-modifications>

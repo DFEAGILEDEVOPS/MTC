@@ -52,6 +52,7 @@ import { SubmissionPendingComponent } from './submission-pending/submission-pend
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 import { FamiliarisationAreaComponent } from './familiarisation-area/familiarisation-area.component';
 import { FamiliarisationSettingsComponent } from './familiarisation-settings/familiarisation-settings.component';
+import { PageModificationsComponent } from './page-modifications/page-modifications.component';
 
 
 const appRoutes: Routes = [
@@ -66,6 +67,7 @@ const appRoutes: Routes = [
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'font-choice', component: FamiliarisationAreaComponent },
+  {path: 'colour-choice', component: FamiliarisationColourComponent },
   {path: 'access-settings', component: FamiliarisationSettingsComponent }
   // { path: '**', component: NotFoundComponent }
 ];
@@ -95,7 +97,9 @@ const appRoutes: Routes = [
     WarmupLoadingComponent,
     QuestionsIntroComponent,
     FamiliarisationAreaComponent,
+    FamiliarisationColourComponent,
     FamiliarisationSettingsComponent,
+    PageModificationsComponent,
   ],
   imports: [
     RouterModule.forRoot(
