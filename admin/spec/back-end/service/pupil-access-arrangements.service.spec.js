@@ -174,7 +174,7 @@ describe('pupilAccessArrangementsService', () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
       try {
         await pupilAccessArrangementsService.deletePupilAccessArrangements()
-        fail()
+        fail('deletePupilAccessArrangements method did not throw an error')
       } catch (error) {
         expect(error.message).toBe('Pupil url slug is not provided')
       }
