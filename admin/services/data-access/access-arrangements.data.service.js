@@ -41,6 +41,24 @@ accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async func
 }
 
 /**
+ * Find access arrangement codes by ids
+ * @param {Array} ids
+ * @returns {Array}
+ */
+accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds = async function (ids) {
+  if (Object.keys(accessArrangementCodes).length === 0) {
+    // init
+    await init()
+  }
+  const result = []
+  Object.keys(accessArrangementCodes).forEach(code => {
+    if (!accessArrangementCodes[code] || !ids.includes(accessArrangementCodes[code].id)) return
+    result.push(code)
+  })
+  return result
+}
+
+/**
  * Initialise method to populate accessArrangementCodes for caching purposes
  * @returns {Array}
  */

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { QuestionService } from '../services/question/question.service';
 
 @Component({
   selector: 'app-sound',
@@ -9,18 +10,22 @@ export class SoundComponent implements OnInit {
   @ViewChild('endOfQuestionSound') public endOfQuestionSound: ElementRef;
   @ViewChild('timeRunningOutAlertSound') public timeRunningOutAlertSound: ElementRef;
 
-  constructor() {
+  constructor(private questionService: QuestionService) {
   }
 
   ngOnInit() {
   }
 
   playEndOfQuestionSound() {
-    this.endOfQuestionSound.nativeElement.play();
+    if (this.questionService.getConfig().audibleSounds) {
+      this.endOfQuestionSound.nativeElement.play();
+    }
   }
 
   playTimeRunningOutAlertSound() {
-    this.timeRunningOutAlertSound.nativeElement.play();
+    if (this.questionService.getConfig().audibleSounds) {
+      this.timeRunningOutAlertSound.nativeElement.play();
+    }
   }
 
 }

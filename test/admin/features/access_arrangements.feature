@@ -1,4 +1,4 @@
-@access_arrangements @wip @feature_toggle
+@access_arrangements @feature_toggle @remove_access_arrangements @wip
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design
@@ -47,3 +47,29 @@ Feature: Access Arrangements
   Scenario: Pupil list is displayed with access arrangment on landing page
     Given I have selected access arrangement 'Audible time alert' for a pupil
     Then I can see the pupil in the access arrangment pupil list with access arrangment type 'Audible time alert'
+
+  Scenario: Editting access arrangements page matches design
+    Given I have added a pupil with an access arrangement
+    When I select the pupil to edit the access arrangement
+    Then the page should match design
+
+  Scenario: Access arrangements for pupils can be edited
+    Given I have added a pupil with an access arrangement
+    When I select the pupil to edit the access arrangement
+    Then I should be able to change the pupils access arrangements
+
+  Scenario: Users can select all access arrangements
+    Given I have a pupil who needs all possible access arrangements
+    Then the arrangements should be listed against the pupil
+
+  Scenario: Users can decide to cancel any changes to access arrangements
+    Given I have added a pupil with an access arrangement
+    When I select the pupil to edit the access arrangement
+    And I add a new access arrangement
+    But I decide to cancel any update
+    Then I should see no changes made to the pupils access arrangements
+
+  Scenario: Access arrangements can be removed
+    Given I have added a pupil with an access arrangement
+    Then I should be able to remove any access arrangements for the pupil
+

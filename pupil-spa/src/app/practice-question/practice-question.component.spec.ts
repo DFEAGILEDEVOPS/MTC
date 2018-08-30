@@ -9,6 +9,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
@@ -31,6 +32,7 @@ describe('PractiseQuestionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PracticeQuestionComponent);
     component = fixture.componentInstance;
+    component.soundComponent = new SoundComponentMock();
     fixture.detectChanges();
   });
 

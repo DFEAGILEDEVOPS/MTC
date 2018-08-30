@@ -112,5 +112,70 @@ Then(/^I can see the pupil in the access arrangment pupil list with access arran
   expect(access_arrangements_page.success_message.text.eql?("Access arrangements applied to #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")).to be_truthy, "Actual info message is : #{access_arrangements_page.success_message.text}"
   hightlighted_row = access_arrangements_page.pupil_list.rows.find {|row| row.has_highlighted_pupil?}
   expect(hightlighted_row.pupil_name.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
-  expect(hightlighted_row.access_arrangement_name.text).to include(access_arrangement_type)
+  expect(hightlighted_row.access_arrangement_name.first.text).to include(access_arrangement_type)
+end
+
+Given(/^I have added a pupil with an access arrangement$/) do
+  step 'I am on the select access arrangements page'
+  @pupil_name = 'School 3, Pupil 02'
+  select_access_arrangements_page.search_pupil.set(@pupil_name.gsub(',', ''))
+  select_access_arrangements_page.auto_search_list[0].click
+  @access_arrangement_name = "Audible time alert"
+  select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
+  select_access_arrangements_page.save.click
+end
+
+When(/^I select the pupil to edit the access arrangement$/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
+  pupil_row.pupil_name.click
+end
+
+Then(/^the page should match design$/) do
+  expect(select_access_arrangements_page).to have_pupil_name
+  expect(select_access_arrangements_page.pupil_name.text).to eql "For #{@pupil_name}"
+end
+
+Then(/^I should be able to change the pupils access arrangements$/) do
+  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip)['id']
+  current_aa = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id).map {|aa| aa['accessArrangements_id']}
+  select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
+  @new_access_arrangement_name = "Remove on-screen number pad"
+  select_access_arrangements_page.select_access_arrangement(@new_access_arrangement_name)
+  select_access_arrangements_page.save.click
+  new_aa = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id).map {|aa| aa['accessArrangements_id']}
+  expect(new_aa).to_not eql current_aa
+end
+
+Given(/^I have a pupil who needs all possible access arrangements$/) do
+  step 'I am on the select access arrangements page'
+  @pupil_name = 'School 3, Pupil 03'
+  select_access_arrangements_page.search_pupil.set(@pupil_name.gsub(',', ''))
+  select_access_arrangements_page.auto_search_list[0].click
+  SqlDbHelper.access_arrangements.map{|a| a['description']}.each do |aa|
+    select_access_arrangements_page.select_access_arrangement(aa)
+  end
+  select_access_arrangements_page.input_assistance_reason.set 'This is a reason for input assistance'
+  question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Question reader (reason required)")
+  question_reader_row.question_reader_reason[2].question_reader_reason_radio.click
+  select_access_arrangements_page.save.click
+end
+
+Then(/^the arrangements should be listed against the pupil$/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
+  aa_array = SqlDbHelper.access_arrangements.map{|a| a['description'].gsub('(reason required)','').strip}
+  expect(aa_array).to eql pupil_row.access_arrangement_name.map{|a| a.text}
+end
+
+And(/^I add a new access arrangement$/) do
+  @new_access_arrangement_name = "Remove on-screen number pad"
+  select_access_arrangements_page.select_access_arrangement(@new_access_arrangement_name)
+end
+
+But(/^I decide to cancel any update$/) do
+  select_access_arrangements_page.cancel.click
+end
+
+Then(/^I should see no changes made to the pupils access arrangements$/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
+  expect(@access_arrangement_name).to eql pupil_row.access_arrangement_name.map{|a| a.text}.first
 end
