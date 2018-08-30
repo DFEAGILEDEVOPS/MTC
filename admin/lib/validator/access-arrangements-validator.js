@@ -1,5 +1,6 @@
 'use strict'
 const ValidationError = require('../validation-error')
+const toBool = require('to-bool')
 const accessArrangementsErrorMessages = require('../errors/access-arrangements')
 
 /**
@@ -13,10 +14,11 @@ module.exports.validate = (accessArrangementsData) => {
     accessArrangements: accessArrangementsCodes,
     questionReaderReason: questionReaderReasonCode,
     inputAssistanceInformation,
-    questionReaderOtherInformation
+    questionReaderOtherInformation,
+    isEditView
   } = accessArrangementsData
 
-  if (!pupilUrlSlug) {
+  if (!pupilUrlSlug && !toBool(isEditView)) {
     validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
   }
   if (!accessArrangementsCodes || accessArrangementsCodes.length === 0) {

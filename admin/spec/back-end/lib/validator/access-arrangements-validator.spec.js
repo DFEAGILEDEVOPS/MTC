@@ -74,5 +74,16 @@ describe('Access arrangements validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('questionReaderOtherInformation')).toBeTruthy()
     })
+    it('ignores pupilUrlSlug value when isEditView is true ', () => {
+      const requestData = {
+        isEditView: 'true',
+        accessArrangements: ['ATA'],
+        questionReaderReason: 'VIM',
+        inputAssistanceInformation: '',
+        questionReaderOtherInformation: ''
+      }
+      const validationError = accessArrangementsValidator.validate(requestData)
+      expect(validationError.hasError()).toBeFalsy()
+    })
   })
 })
