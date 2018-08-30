@@ -1,0 +1,77 @@
+<app-header class="full-width"></app-header>
+
+<main id="content" class="js-content" role="main">
+  <div class="heading-block">
+      <header>
+          <div class="organisation-logo">
+              <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+          </div>
+      </header>
+  </div>
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <header>
+        <h1 class="heading-xlarge">Multiplication tables check ICT survey</h1>
+      </header>
+      <h3 class="heading-medium">
+        The purpose of this survey is to help us understand about 
+        information and communications technology (ICT) used in schools.
+      </h3>
+      <div class="panel panel-border-wide">
+        <p>
+          Complete this survey using your school ICT. If you have a range of devices, please run this survey on them one at a time.
+        </p>
+      </div>
+      <p>
+        Following the connection test, please give us feedback on ICT issues you may have come across. 
+      </p>
+      <p> 
+        You will be able to preview the multiplication tables check system after the connections test. 
+      </p>
+      <details>
+        <summary (click)="toggleDetails()"><span class="summary">{{ showDetails ? 'Less details' : 'More details' }}</span></summary>
+        <div class="panel panel-border-narrow">
+          <p>
+            This test will determine your:
+          </p>
+          <ul class="list list-bullet">
+            <li>browser settings</li>
+            <li>connection speed</li>
+            <li>device type (if available)</li>
+            <li>operating system</li>
+            <li>processing speed</li>
+            <li>screen width</li>
+          </ul>
+          <p>
+            During this process, data files will be downloaded, held temporarily and then deleted. 
+            All data will be anonymised unless contact details are provided in your feedback.
+          </p>
+        </div>
+      </details>
+      <p>
+        <button class="button button-start">Start now</button>
+      </p>
+    </div>
+  </div>
+</main>
+<footer class="group js-footer" id="footer" role="contentinfo">
+  <div class="footer-wrapper">
+    <div class="footer-meta">
+      <div class="footer-meta-inner">
+        <h2 class="visuallyhidden">Support links</h2>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+        <div class="open-government-licence">
+          <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
+          <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
+        </div>
+      </div>
+      <div class="copyright">
+        <a href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">© Crown copyright</a>
+      </div>
+    </div>
+  </div>
+</footer>
