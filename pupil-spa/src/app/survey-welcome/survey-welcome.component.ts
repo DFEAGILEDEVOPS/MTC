@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SurveyWelcomeComponent implements OnInit {
   showDetails = false;
+  
   constructor() { }
 
   ngOnInit() {

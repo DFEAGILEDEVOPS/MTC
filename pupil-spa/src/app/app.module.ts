@@ -51,6 +51,7 @@ import { SubmissionFailedComponent } from './submission-failed/submission-failed
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
 import { SurveyWelcomeComponent } from './survey-welcome/survey-welcome.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 const appRoutes: Routes = [
@@ -95,6 +96,7 @@ const appRoutes: Routes = [
     WarmupLoadingComponent,
     QuestionsIntroComponent,
     SurveyWelcomeComponent,
+    FooterComponent,
   ],
   imports: [
     RouterModule.forRoot(
