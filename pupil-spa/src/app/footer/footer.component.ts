@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
   selector: 'app-footer',
@@ -6,7 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
+  linkContact;
+  linkCookies;
 
-  constructor() { }
+  constructor() {
+    this.linkContact = `${APP_CONFIG.apiURL}/contact`;
+    this.linkCookies = `${APP_CONFIG.apiURL}/cookies`;  
+   }
 
 }
