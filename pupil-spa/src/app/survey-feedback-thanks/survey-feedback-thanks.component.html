@@ -1,0 +1,25 @@
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div *ngIf="!previewed" class="column-two-thirds">
+      <header class="page-header">
+        <h1 class="heading-xlarge" tabindex="0">Thank you for feedback</h1>
+      </header>
+      <p class="lede">
+         We appreciate the time you took to give us feedback, your opinion is important to us.
+      </p>
+      <a routerLink="/check-start" class="button">Preview multiplication tables check</a>
+    </div>
+    <div *ngIf="previewed" class="column-full">
+      <header class="page-header">
+          <h1 class="heading-xlarge" tabindex="0">Thank you for feedback</h1>
+      </header>
+      <p class="lede">
+        We appreciate your participation in this survey.
+      </p>
+      <p class="lede">
+        <a routerLink="/check-start">Preview multiplication tables check again</a>
+      </p>
+    </div>
+  </div>
+</main>

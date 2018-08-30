@@ -1,0 +1,26 @@
+<app-header class="full-width"></app-header>
+<main id="content" class="js-content" role="main">
+  <div class="grid-row">
+    <div *ngIf="feedbackGiven" class="column-two-thirds">
+      <header class="page-header">
+        <h1 class="heading-xlarge" tabindex="0">Preview completed</h1>
+      </header>
+      <p class="lede">
+        We appreciate your participation in this survey.
+      </p>
+      <a routerLink="/check-start">Preview again</a>
+    </div>
+    <div *ngIf="!feedbackGiven" class="column-full">
+      <header class="page-header">
+          <h1 class="heading-xlarge" tabindex="0">Preview completed</h1>
+      </header>
+      <p class="lede">
+        We value your opinion and would like your feedback.
+      </p>
+      <p class="lede">
+        Or you may <a routerLink="/check-start">preview again</a>
+      </p>
+      <a routerLink="/ict-survey/feedback" class="button">Give feedback</a>
+    </div>
+  </div>
+</main>

@@ -50,6 +50,11 @@ import { SpokenQuestionComponent } from './spoken-question/spoken-question.compo
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
+import { TestCompletedComponent } from './test-completed/test-completed.component';
+import { SurveyFeedbackComponent } from './survey-feedback/survey-feedback.component';
+import { ConnectionTestComponent } from './connection-test/connection-test.component';
+import { PreviewCompletedComponent } from './preview-completed/preview-completed.component';
+import { SurveyFeedbackThanksComponent } from './survey-feedback-thanks/survey-feedback-thanks.component';
 
 
 const appRoutes: Routes = [
@@ -62,7 +67,14 @@ const appRoutes: Routes = [
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'check-complete', component: CheckCompleteComponent },
-  {path: 'submission-failed', component: SubmissionFailedComponent }
+  {path: 'submission-failed', component: SubmissionFailedComponent },
+  {path: 'ict-survey', children: [
+    {path: 'test-completed', component: TestCompletedComponent},
+    {path: 'feedback', component: SurveyFeedbackComponent},
+    {path: 'test', component: ConnectionTestComponent},
+    {path: 'feedback-thanks', component: SurveyFeedbackThanksComponent},
+    {path: 'preview-completed', component: PreviewCompletedComponent}
+  ]}
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -90,6 +102,11 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     QuestionsIntroComponent,
+    TestCompletedComponent,
+    SurveyFeedbackComponent,
+    ConnectionTestComponent,
+    PreviewCompletedComponent,
+    SurveyFeedbackThanksComponent,
   ],
   imports: [
     RouterModule.forRoot(
