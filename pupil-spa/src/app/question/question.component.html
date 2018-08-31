@@ -8,7 +8,7 @@
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
         <div class="question-and-answer"><span class="question">{{ factor1 }} &times; {{ factor2 }} = </span>
             <div class="answer-container"><span class="answer" id="js-answer" [innerText]="answer"></span>
-                <div class="numpad-container">
+                <div class="numpad-container" *ngIf="!config.numpadRemoval">
                     <table class="numpad" id="js-numpad">
                         <tr>
                             <td class="key js-key"><button type="button" class="numpad-button" id="kb1" (click)="onClickAnswer(1)">1</button></td>
