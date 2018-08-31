@@ -3,8 +3,12 @@ import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
 import { QuestionService } from '../services/question/question.service';
 import { Pupil } from '../pupil';
-import { AccessArrangements, accessArrangementsDataKey } from '../access-arrangements';
 import { Config } from '../config.model';
+import {
+  AccessArrangements,
+  AccessArrangementsConfig,
+  accessArrangementsDataKey
+} from '../access-arrangements';
 
 @Component({
   selector: 'app-familiarisation-area',
@@ -14,23 +18,16 @@ import { Config } from '../config.model';
 export class FamiliarisationAreaComponent {
   private pupil: Pupil;
   private selectedSize;
-
-  private fontSettings = [
-    { label: 'Very small', val: 'xsmall' },
-    { label: 'Small', val: 'small' },
-    { label: 'Regular', val: 'regular' },
-    { label: 'Large', val: 'large' },
-    { label: 'Very large', val: 'xlarge' },
-    { label: 'Largest', val: 'xxlarge' }
-  ];
+  private fontSettings;
 
   constructor(
     private router: Router,
     private questionService: QuestionService,
     private storageService: StorageService
   ) {
-    const pupilData = storageService.getItem('pupil');
+    this.fontSettings = AccessArrangementsConfig.fontSettings;
 
+    const pupilData = storageService.getItem('pupil');
     this.pupil = new Pupil;
     this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;

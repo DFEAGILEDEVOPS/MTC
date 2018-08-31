@@ -1,11 +1,11 @@
 .font-xsmall {
-    font-size: 12px
+    font-size: 12px;
 }
 .font-small {
     font-size: 19px;
 }
 .font-regular {
-    font-size: 27px
+    font-size: 27px;
 }
 .font-large {
     font-size: 40px;
@@ -76,7 +76,7 @@ $custom-xxlarge: (160px, 140px, 60px, 60px);
 
 @mixin font-settings($question-font, $button-width, $button-height, $button-font) {
     > .question-text {
-        font-size: $question-font
+        font-size: $question-font;
     }
 
     > table button {
@@ -87,28 +87,28 @@ $custom-xxlarge: (160px, 140px, 60px, 60px);
 }
 
 .xsmall {
-    @include font-settings($custom-xsmall...)
+    @include font-settings($custom-xsmall...);
 }
 
 .small {
-    @include font-settings($custom-small...)
+    @include font-settings($custom-small...);
 }
 
 .regular {
-    @include font-settings($custom-regular...)
+    @include font-settings($custom-regular...);
 }
 
 .large {
-    @include font-settings($custom-large...)
+    @include font-settings($custom-large...);
 }
 
 .xlarge {
-    @include font-settings($custom-xlarge...)
+    @include font-settings($custom-xlarge...);
 }
 
 .xxlarge {
     > table button {
         line-height: 65px;
     }
-    @include font-settings($custom-xxlarge...)
+    @include font-settings($custom-xxlarge...);
 }
