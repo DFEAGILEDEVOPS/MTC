@@ -1,7 +1,7 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
-    <div *ngIf="testSuccessfull" class="column-full">
+    <div *ngIf="testSuccessful" class="column-full">
       <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Completed successfully</h1>
       </header>
@@ -13,7 +13,7 @@
       </p>
       <a routerLink="/check-start" class="button">Preview multiplication tables check</a>
     </div>
-    <div *ngIf="!testSuccessfull" class="column-full">
+    <div *ngIf="!testSuccessful" class="column-full">
       <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Unsuccessful</h1>
       </header>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-survey-feedback-thanks',
@@ -8,6 +9,8 @@ import { Component } from '@angular/core';
 export class SurveyFeedbackThanksComponent {
   private previewed: Boolean;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) {
+    this.previewed = this.route.snapshot.paramMap.get('completed') === 'true' ? true : false;
+  }
 
 }

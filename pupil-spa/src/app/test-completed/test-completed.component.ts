@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-test-completed',
@@ -8,6 +9,8 @@ import { Component } from '@angular/core';
 export class TestCompletedComponent {
   private testSuccessful: Boolean;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) {
+    this.testSuccessful = this.route.snapshot.paramMap.get('success') === 'true' ? true : false;
+  }
 
 }

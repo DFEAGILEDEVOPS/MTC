@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PreviewCompletedComponent } from './preview-completed.component';
 
@@ -9,7 +10,17 @@ describe('PreviewCompletedComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PreviewCompletedComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [ NO_ERRORS_SCHEMA ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: {
+            get: () => {
+              return 'true';
+            }
+          } } }
+        }
+      ]
     })
     .compileComponents();
   }));
