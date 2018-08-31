@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { GlobalErrorHandler } from './error-handler';
 
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
     SurveyFeedbackThanksComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: false} // <-- debugging purposes only
