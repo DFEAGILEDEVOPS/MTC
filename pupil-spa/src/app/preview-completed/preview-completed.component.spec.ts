@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PreviewCompletedComponent } from './preview-completed.component';
 
 describe('PreviewCompletedComponent', () => {
@@ -8,7 +8,8 @@ describe('PreviewCompletedComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PreviewCompletedComponent ]
+      declarations: [ PreviewCompletedComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));

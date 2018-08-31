@@ -10,7 +10,7 @@ import { Validators } from '@angular/forms';
 })
 export class SurveyFeedbackComponent {
   feedbackForm;
-  
+
   constructor(
     private router: Router,
     private formBuilder: FormBuilder) {

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { SurveyFeedbackComponent } from './survey-feedback.component';
 
 describe('SurveyFeedbackComponent', () => {
@@ -8,7 +8,8 @@ describe('SurveyFeedbackComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SurveyFeedbackComponent ]
+      declarations: [ SurveyFeedbackComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
     .compileComponents();
   }));

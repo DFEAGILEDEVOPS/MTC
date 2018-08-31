@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-preview-completed',
@@ -7,9 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreviewCompletedComponent implements OnInit {
   feedbackGiven;
-  constructor() { }
 
-  ngOnInit() {
-  }
+  constructor() { }
 
 }
