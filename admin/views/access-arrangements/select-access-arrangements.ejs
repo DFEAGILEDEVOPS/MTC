@@ -24,7 +24,7 @@
 <% } %>
 
 <div class="grid-row" id="select-access-arrangements" aria-describedby="heading-xlarge">
-    <form method="post" action="/access-arrangements/submit" autocomplete="off">
+    <form id="submitAccessArrangements" method="post" action="/access-arrangements/submit" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div class="column-two-thirds">
             <h1 class="heading-xlarge" id="heading-xlarge"><%= pageTitle %></h1>
@@ -88,7 +88,7 @@
                                             name="inputAssistanceInformation"
                                             class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'form-control-error' : '' %>"
                                             rows="3"
-                                            maxlength="1000"><%=formData['inputAssistanceInformation']%></textarea>
+                                            maxlength="1000"><%=formData['inputAssistanceInformation'] && formData['inputAssistanceInformation'].trim()%></textarea>
                                 </div>
                             </div>
                             <br />
@@ -214,6 +214,16 @@
         <% } %>
     </form>
 </div>
+<% if(formData['isEditView']) { %>
+    <%- partial('partials/_modal_box', {
+        modalTitle: 'Remove arrangements',
+        modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
+        modalConfirmationLabel: 'Yes',
+        modalConfirmationUrl: '#',
+        modalCancelLabel: 'No',
+        modalCancelUrl: '/access-arrangements/select-access-arrangements/' + formData['pupilUrlSlug']
+    }) %>
+<% } %>
 <% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>
 <script>
   $(function () {

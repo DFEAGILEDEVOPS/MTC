@@ -1,5 +1,6 @@
 const R = require('ramda')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
+const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const monitor = require('../helpers/monitor')
 
@@ -54,4 +55,18 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
   return formData
 }
 
+/**
+ * Delete pupil's access arrangements
+ * @param {String} urlSlug
+ * @param {Number} dfeNumber
+ * @returns {Object}
+ */
+pupilAccessArrangementsService.deletePupilAccessArrangements = async (urlSlug, dfeNumber) => {
+  if (!urlSlug) {
+    throw new Error('Pupil url slug is not provided')
+  }
+  const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, dfeNumber)
+  await pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements(urlSlug)
+  return pupil
+}
 module.exports = monitor('pupil-access-arrangements.service', pupilAccessArrangementsService)
