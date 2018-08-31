@@ -9,7 +9,7 @@ import { Validators } from '@angular/forms';
   styleUrls: ['./survey-feedback.component.scss']
 })
 export class SurveyFeedbackComponent {
-  feedbackForm;
+  private feedbackForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -27,7 +27,6 @@ export class SurveyFeedbackComponent {
   }
 
   onSubmit() {
-    console.log(this.feedbackForm.value);
     this.router.navigate(['ict-survey/feedback-thanks']);
   }
 

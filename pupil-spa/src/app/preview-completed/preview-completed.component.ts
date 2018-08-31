@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
   templateUrl: './preview-completed.component.html',
   styleUrls: ['./preview-completed.component.scss']
 })
-export class PreviewCompletedComponent implements OnInit {
-  feedbackGiven;
+export class PreviewCompletedComponent {
+  private feedbackGiven: Boolean;
 
   constructor() { }
 

@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./survey-feedback-thanks.component.scss']
 })
 export class SurveyFeedbackThanksComponent {
-  previewed;
+  private previewed: Boolean;
 
   constructor() { }
 

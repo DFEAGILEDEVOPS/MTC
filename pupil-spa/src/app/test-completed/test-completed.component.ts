@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./test-completed.component.scss']
 })
 export class TestCompletedComponent {
-  testSuccessfull;
+  private testSuccessful: Boolean;
 
   constructor() { }
 
