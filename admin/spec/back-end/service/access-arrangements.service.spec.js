@@ -62,7 +62,7 @@ describe('accessArrangementsService', () => {
     it('returns a processed access arrangements submission object', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA'],
+        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
         questionReaderReason: '',
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
@@ -70,7 +70,12 @@ describe('accessArrangementsService', () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }])
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
       expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes).toHaveBeenCalled()
-      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{id: 1, code: 'ATA'}], recordedBy_user_id: 1, questionReaderReasonCode: ''}))
+      expect(result).toEqual(Object({
+        pupil_id: 1,
+        accessArrangementsIdsWithCodes: [{id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS}],
+        recordedBy_user_id: 1,
+        questionReaderReasonCode: ''
+      }))
     })
     it('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
@@ -90,7 +95,7 @@ describe('accessArrangementsService', () => {
     it('throws an error if pupil record is not found', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA'],
+        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
         questionReaderReason: '',
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
@@ -105,41 +110,84 @@ describe('accessArrangementsService', () => {
     it('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA', 'ITA'],
+        accessArrangements: [
+          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
+          accessArrangementsDataService.CODES.INPUT_ASSISTANCE
+        ],
         questionReaderReason: '',
         inputAssistanceInformation: 'inputAssistanceInformation',
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
-      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }], recordedBy_user_id: 1, inputAssistanceInformation: 'inputAssistanceInformation', questionReaderReasonCode: ''}))
+      expect(result).toEqual(Object({
+        pupil_id: 1,
+        accessArrangementsIdsWithCodes: [
+          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+          { id: 2, code: accessArrangementsDataService.CODES.INPUT_ASSISTANCE }
+        ],
+        recordedBy_user_id: 1,
+        inputAssistanceInformation: 'inputAssistanceInformation',
+        questionReaderReasonCode: ''
+      }))
     })
     it('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA', 'QNR'],
-        questionReaderReason: 'VIM',
+        accessArrangements: [
+          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
+          accessArrangementsDataService.CODES.QUESTION_READER
+        ],
+        questionReaderReason: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
         inputAssistanceInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+        { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+        { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
+      ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
       expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
-      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }], recordedBy_user_id: 1, questionReaderReasonCode: 'VIM', questionReaderReasons_id: 1}))
+      expect(result).toEqual(Object({
+        pupil_id: 1,
+        accessArrangementsIdsWithCodes: [
+            { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+            { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
+        ],
+        recordedBy_user_id: 1,
+        questionReaderReasonCode: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
+        questionReaderReasons_id: 1
+      }))
     })
     it('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATA', 'QNR'],
-        questionReaderReason: 'OTH',
+        accessArrangements: [
+          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
+          accessArrangementsDataService.CODES.QUESTION_READER
+        ],
+        questionReaderReason: questionReaderReasonsDataService.CODES.OTHER,
         inputAssistanceInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }])
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+        { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+        { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
+      ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
       const result = await accessArrangementsService.process(requestData, {id: 1}, 12345, 1)
-      expect(result).toEqual(Object({pupil_id: 1, accessArrangementsIdsWithCodes: [{ id: 1, code: 'ATA' }, { id: 3, code: 'QNR' }], recordedBy_user_id: 1, questionReaderReasonCode: 'OTH', questionReaderReasons_id: 4, questionReaderOtherInformation: 'questionReaderOtherInformation'}))
+      expect(result).toEqual(Object({
+        pupil_id: 1,
+        accessArrangementsIdsWithCodes: [
+          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+          { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
+        ],
+        recordedBy_user_id: 1,
+        questionReaderReasonCode: questionReaderReasonsDataService.CODES.OTHER,
+        questionReaderReasons_id: 4,
+        questionReaderOtherInformation: 'questionReaderOtherInformation'
+      }))
     })
   })
   describe('save', () => {

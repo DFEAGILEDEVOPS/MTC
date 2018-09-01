@@ -72,7 +72,7 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-column">
+                <td class="access-arrangements-pupil-name">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
@@ -90,7 +90,7 @@
                     <% }) %>
                 </td>
                 <td class="access-arrangements-column">
-                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove arrangements</a>
+                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
                 </td>
             </tr>
             <% }) %>

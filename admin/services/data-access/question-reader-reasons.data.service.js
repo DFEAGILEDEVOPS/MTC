@@ -6,6 +6,16 @@ const questionReaderReasonsDataService = {}
 const questionReaderCodes = {}
 
 /**
+ * Constants to describe the question reader reason codes
+ */
+questionReaderReasonsDataService.CODES = Object.freeze({
+  ENGLISH_AS_ADDITIONAL_LANGUAGE: 'EAL',
+  SLOW_PROCESSING: 'SLP',
+  VISUAL_IMPAIRMENTS: 'VIM',
+  OTHER: 'OTH'
+})
+
+/**
  * Find question reader reasons
  * @returns {Promise<Array>}
  */

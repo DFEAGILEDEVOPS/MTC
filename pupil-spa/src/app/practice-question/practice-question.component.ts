@@ -11,6 +11,7 @@ import {
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
+import { Config } from '../config.model';
 
 @Component({
   selector: 'app-practice-question',
@@ -50,6 +51,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Reference to global window object
    */
   protected window: any;
+
+  /**
+   * Set a reference to the config.
+   * Contains access arrangements flags
+   */
+  protected config: Config;
 
   /**
    * The users answer made up of recorded numbers.
@@ -101,6 +108,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
               protected questionService: QuestionService,
               protected speechService: SpeechService) {
     this.window = windowRefService.nativeWindow;
+    this.config = this.questionService.getConfig();
   }
 
   ngOnInit() {
@@ -229,7 +237,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     this.addQuestionAnsweredEvent();
     this.submitted = true;
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.config.speechSynthesis) {
       this.speechService.waitForEndOfSpeech().then(() => {
         this.manualSubmitEvent.emit(this.answer);
       });
@@ -263,7 +271,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       question: `${this.factor1}x${this.factor2}`
     }));
     this.submitted = true;
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.config.speechSynthesis) {
       this.speechService.waitForEndOfSpeech().then(() => {
         this.timeoutEvent.emit(this.answer);
       });
@@ -282,7 +290,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
-      if (this.questionService.getConfig().speechSynthesis) {
+      if (this.config.speechSynthesis) {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
