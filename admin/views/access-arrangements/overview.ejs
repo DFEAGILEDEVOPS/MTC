@@ -84,12 +84,12 @@
                         </div>
                     </div>
                 </td>
-                <td class="pupil-access-arrangements">
+                <td class="access-arrangements-list">
                     <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement) => { %>
                     <div><%= pupilAccessArrangement %></div>
                     <% }) %>
                 </td>
-                <td class="access-arrangements-column">
+                <td>
                     <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
                 </td>
             </tr>
