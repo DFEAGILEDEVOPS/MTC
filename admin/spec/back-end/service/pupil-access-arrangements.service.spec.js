@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn beforeEach */
+/* global describe, it, expect spyOn beforeEach fail */
 
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -174,6 +174,7 @@ describe('pupilAccessArrangementsService', () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
       try {
         await pupilAccessArrangementsService.deletePupilAccessArrangements()
+        fail('deletePupilAccessArrangements method did not throw an error')
       } catch (error) {
         expect(error.message).toBe('Pupil url slug is not provided')
       }

@@ -88,7 +88,7 @@
                                             name="inputAssistanceInformation"
                                             class="form-control form-control-3-4 access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'form-control-error' : '' %>"
                                             rows="3"
-                                            maxlength="1000"><%=formData['inputAssistanceInformation']%></textarea>
+                                            maxlength="1000"><%=formData['inputAssistanceInformation'] && formData['inputAssistanceInformation'].trim()%></textarea>
                                 </div>
                             </div>
                             <br />
@@ -221,7 +221,7 @@
         modalConfirmationLabel: 'Yes',
         modalConfirmationUrl: '#',
         modalCancelLabel: 'No',
-        modalCancelUrl: '#'
+        modalCancelUrl: '/access-arrangements/select-access-arrangements/' + formData['pupilUrlSlug']
     }) %>
 <% } %>
 <% const pupilUrlSlug = !!formData['pupilUrlSlug'] ? formData['pupilUrlSlug'] : '' %>

@@ -49,7 +49,9 @@ $(function () {
   }
 
   function toggleShowHideModal (e) {
-    e.preventDefault()
+    if (e.target.id !== 'js-modal-cancel-button') {
+      e.preventDefault()
+    }
     $('#js-modal-overlay').toggleClass('show')
     var modalBox = $('#js-modal-box')
     if (modalBox.hasClass('show')) {
