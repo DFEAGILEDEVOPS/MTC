@@ -1,6 +1,7 @@
 'use strict'
 
 const { TYPES } = require('tedious')
+const R = require('ramda')
 const monitor = require('../../helpers/monitor')
 
 const sqlService = require('./sql.service')
@@ -9,7 +10,7 @@ const pupilAccessArrangementsDataService = {}
 /**
  * Find pupil access arrangements by pupil Id
  * @param {Number} pupilId
- * @returns {Promise<Object>}
+ * @returns {Promise<Array>}
  */
 pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = async function (pupilId) {
   const sql = `
@@ -153,6 +154,27 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
       ON qrr.id = paa.questionReaderReasons_id
     WHERE p.urlSlug = @urlSlug`
   return sqlService.query(sql, params)
+}
+
+/**
+ * Delete pupil's access arrangements.
+ * @param {String} urlSlug
+ * @return {Object}
+ */
+pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (urlSlug) => {
+  const sql = `DELETE paa FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
+    INNER JOIN ${sqlService.adminSchema}.pupil p
+    ON p.id = paa.pupil_id
+    WHERE p.urlSlug = @urlSlug`
+  const params = [
+    {
+      name: 'urlSlug',
+      value: urlSlug,
+      type: TYPES.NVarChar
+    }
+  ]
+  const result = await sqlService.query(sql, params)
+  return R.head(result)
 }
 
 module.exports = monitor('pupil-access-arrangements.data-service', pupilAccessArrangementsDataService)

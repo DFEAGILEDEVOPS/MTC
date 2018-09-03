@@ -208,4 +208,34 @@ describe('access arrangements controller:', () => {
       expect(next).toHaveBeenCalledWith(error)
     })
   })
+  describe('getDeleteAccessArrangements route', () => {
+    let reqParams = (urlSlug) => {
+      return {
+        method: 'GET',
+        url: `/access-arrangements/delete-access-arrangements/${urlSlug}`,
+        params: {
+          pupilUrlSlug: 'pupilUrlSlug'
+        }
+      }
+    }
+    it('redirects to overview page when successfully deleting', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      await controller.getDeleteAccessArrangements(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+    it('calls next when an error occurs during service call', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      const error = new Error('error')
+      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue(Promise.reject(error))
+      await controller.getDeleteAccessArrangements(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
 })

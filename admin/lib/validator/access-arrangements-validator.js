@@ -21,7 +21,7 @@ module.exports.validate = (accessArrangementsData) => {
   if (!pupilUrlSlug && !toBool(isEditView)) {
     validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
   }
-  if (!accessArrangementsCodes || accessArrangementsCodes.length === 0) {
+  if ((!accessArrangementsCodes || accessArrangementsCodes.length === 0) && !toBool(isEditView)) {
     validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
   }
   if (accessArrangementsCodes && accessArrangementsCodes.includes('ITA') && !inputAssistanceInformation) {
