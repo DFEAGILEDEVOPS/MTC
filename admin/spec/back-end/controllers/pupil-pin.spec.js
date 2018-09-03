@@ -1,9 +1,7 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine spyOn */
-const proxyquire = require('proxyquire')
+/* global describe beforeEach it expect jasmine spyOn */
 const httpMocks = require('node-mocks-http')
-const sinon = require('sinon')
 
 const checkStartService = require('../../../services/check-start.service')
 const dateService = require('../../../services/date.service')
@@ -33,7 +31,6 @@ describe('pupilPin controller:', () => {
   }
 
   describe('getGeneratePinsOverview route', () => {
-    let sandbox
     let goodReqParamsLive = {
       method: 'GET',
       url: '/pupil-pin/generate-live-pins-overview',
@@ -54,14 +51,6 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
-
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create()
-    })
-
-    afterEach(() => {
-      sandbox.restore()
-    })
 
     describe('for live pins', () => {
       it('displays the generate pins overview page if no active pins are present', async (done) => {
@@ -95,7 +84,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getGeneratePinsList route', () => {
-    let sandbox
     let next
     let controller
     let goodReqParamsLive = {
@@ -120,24 +108,17 @@ describe('pupilPin controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     describe('for live pins', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
-          sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(schoolMock)
-          controller = proxyquire('../../../controllers/pupil-pin.js', {
-            '../../services/data-access/school.data.service': schoolDataService
-          }).getGeneratePinsList
+          controller = require('../../../controllers/pupil-pin').getGeneratePinsList
+          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
         })
 
-        it('displays the generate pins list page', async (done) => {
+        it('displays the generate pins list page', async () => {
           const res = getRes()
           const req = getReq(goodReqParamsLive)
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
@@ -146,7 +127,6 @@ describe('pupilPin controller:', () => {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Select pupils')
           expect(res.render).toHaveBeenCalled()
-          done()
         })
       })
     })
@@ -154,13 +134,11 @@ describe('pupilPin controller:', () => {
     describe('for familiarisation pins', () => {
       describe('when the school is found in the database', () => {
         beforeEach(() => {
-          sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(schoolMock)
-          controller = proxyquire('../../../controllers/pupil-pin.js', {
-            '../../services/data-access/school.data.service': schoolDataService
-          }).getGeneratePinsList
+          controller = require('../../../controllers/pupil-pin').getGeneratePinsList
+          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(schoolMock))
         })
 
-        it('displays the generate pins list page', async (done) => {
+        it('displays the generate pins list page', async () => {
           const res = getRes()
           const req = getReq(goodReqParamsFam)
           spyOn(pinGenerationService, 'getPupils').and.returnValue(Promise.resolve({}))
@@ -169,23 +147,20 @@ describe('pupilPin controller:', () => {
           await controller(req, res, next)
           expect(res.locals.pageTitle).toBe('Select pupils')
           expect(res.render).toHaveBeenCalled()
-          done()
         })
       })
 
       describe('when the school is not found in the database', () => {
         beforeEach(() => {
-          sandbox.mock(schoolDataService).expects('sqlFindOneByDfeNumber').resolves(undefined)
-          controller = proxyquire('../../../controllers/pupil-pin.js', {
-            '../../services/data-access/school.data.service': schoolDataService
-          }).getGeneratePinsList
+          controller = require('../../../controllers/pupil-pin').getGeneratePinsList
+          spyOn(schoolDataService, 'sqlFindOneByDfeNumber').and.returnValue(Promise.resolve(undefined))
         })
-        it('it throws an error', async (done) => {
+
+        it('it throws an error', async () => {
           const res = getRes()
           const req = getReq(goodReqParamsFam)
           await controller(req, res, next)
           expect(next).toHaveBeenCalled()
-          done()
         })
       })
     })
@@ -326,7 +301,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getViewAndPrintPins route', () => {
-    let sandbox
     let next
     let goodReqParamsLive = {
       method: 'POST',
@@ -350,12 +324,7 @@ describe('pupilPin controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     describe('for live pins', () => {
@@ -410,7 +379,6 @@ describe('pupilPin controller:', () => {
   })
 
   describe('getViewAndCustomPrintPins route', () => {
-    let sandbox
     let next
     let goodReqParamsLive = {
       method: 'POST',
@@ -434,12 +402,7 @@ describe('pupilPin controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.sandbox.create()
       next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     describe('for live pins', () => {
