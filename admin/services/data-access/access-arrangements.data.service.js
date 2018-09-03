@@ -35,7 +35,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
 
 /**
  * Find access arrangement by codes
- * @param {Number} codes
+ * @param {Array} codes
  * @returns {Array}
  */
 accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async function (codes) {

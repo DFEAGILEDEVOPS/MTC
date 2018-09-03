@@ -1,7 +1,8 @@
 'use strict'
-/* global describe, it, expect spyOn beforeEach */
+/* global describe, it, expect spyOn beforeEach fail */
 
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
+const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
 
 const pupilAccessArrangementsMock = [
@@ -157,6 +158,28 @@ describe('pupilAccessArrangementsService', () => {
           isEditView: true
         }
       )
+    })
+  })
+  describe('deletePupilAccessArrangements', () => {
+    it('returns pupil data when successfully deleting relevant access arrangements', async () => {
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
+      const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements('urlSlug', 9991001)
+      expect(pupilData).toEqual({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).toHaveBeenCalled()
+    })
+    it('rejects if url slug is not present', async () => {
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
+      spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
+      try {
+        await pupilAccessArrangementsService.deletePupilAccessArrangements()
+        fail('deletePupilAccessArrangements method did not throw an error')
+      } catch (error) {
+        expect(error.message).toBe('Pupil url slug is not provided')
+      }
+      expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
+      expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).not.toHaveBeenCalled()
     })
   })
 })

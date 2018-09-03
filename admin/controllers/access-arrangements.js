@@ -137,4 +137,24 @@ controller.getEditAccessArrangements = async (req, res, next, error) => {
   })
 }
 
+/**
+ * Delete access arrangements for single pupil
+ * @param req
+ * @param res
+ * @param next
+ * @returns {Promise.<void>}
+ */
+controller.getDeleteAccessArrangements = async (req, res, next) => {
+  const dfeNumber = req.user.School
+  let pupil
+  try {
+    const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
+    pupil = await pupilAccessArrangementsService.deletePupilAccessArrangements(pupilUrlSlug, dfeNumber)
+  } catch (error) {
+    return next(error)
+  }
+  req.flash('deleteInfo', `Access arrangements removed for ${pupil.lastName}, ${pupil.foreName}`)
+  return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
+}
+
 module.exports = monitor('access-arrangements.controller', controller)
