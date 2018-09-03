@@ -3,7 +3,7 @@
 // setup Jasmine
 const Jasmine = require('jasmine')
 const jasmine = new Jasmine()
-const jasmineConfig = require('./../spec/support/jasmine.integration.json')
+const jasmineConfig = require('../spec/back-end/support/jasmine.integration.json')
 jasmine.loadConfig(jasmineConfig)
 // long timeout for SQL table build
 jasmine.jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000
