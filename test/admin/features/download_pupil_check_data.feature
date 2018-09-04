@@ -11,3 +11,9 @@ Feature:
   Scenario: Download Pupil Check Data page display information as per the design
     When I am on the download pupil check data page
     Then download pupil check data page display information as per the design
+
+  Scenario: Error message is not displayed after generating PS report
+    And I am on the download pupil check data page
+    When I click generate latest file
+    Then I will not see the error message
+

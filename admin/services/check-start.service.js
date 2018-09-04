@@ -76,8 +76,16 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   await checkDataService.sqlCreateBatch(checks)
 }
 
-// PrepareCheck 2: Write an entry to the checkFormAllocationTable, and place a message on the queue
-// for writing to the data store used by pupil authentication.
+/**
+ * Prepare a check for one or more pupils
+ * This function will: * prepare a new check by writing an entry to the checkFormAllocation table
+ *                     * place a message on the `prepare-check` queue for writing to `preparedCheck` table
+ * @param pupilIds
+ * @param dfeNumber
+ * @param schoolId
+ * @param isLiveCheck
+ * @return {Promise<void>}
+ */
 checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId, isLiveCheck) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
@@ -91,7 +99,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const pupils = await pupilDataService.sqlFindByIds(pupilIds, schoolId)
   const difference = setValidationService.validate(pupilIds.map(x => parseInt(x, 10)), pupils)
   if (difference.size > 0) {
-    winston.warn(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
+    winston.error(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
     throw new Error('Validation failed')
   }
 
@@ -222,7 +230,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
-
   for (let o of checkFormAllocations) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
     const message = {
@@ -253,7 +260,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         },
         pupilFeedback: {
           token: pupilFeedbackSasToken.token,
-          url: pupilFeedbackSasToken.url,
+          url: pupilFeedbackSasToken.url
         },
         jwt: {
           token: o.pupil_jwtToken

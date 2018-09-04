@@ -1,6 +1,7 @@
 'use strict'
 const {TYPES} = require('tedious')
 const R = require('ramda')
+const winston = require('winston')
 
 const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
@@ -14,6 +15,18 @@ const anomalyReportCacheDataService = {
    * @return {Promise<{insertId: Array<number>, rowsModified: <number>}>}
    */
   sqlInsertMany: async function (dataObjects) {
+    if (!dataObjects) {
+      winston.error('No anomalies to save')
+      throw new Error('No anomalies to save')
+    }
+    if (!Array.isArray(dataObjects)) {
+      winston.error('dataObjects must be an array')
+      throw new Error('dataObjects must be an array')
+    }
+    if (dataObjects.length === 0) {
+      winston.error('No dataObjects provided to save')
+      throw new Error('No dataObjects provided to save')
+    }
     const insertSql = `
     DECLARE @output TABLE (id int);
     INSERT INTO ${sqlService.adminSchema}.${table}
