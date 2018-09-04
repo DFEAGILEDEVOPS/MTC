@@ -13,7 +13,16 @@ class AccessArrangementsPage < SitePrism::Page
       element :highlighted_pupil, '.highlight-item'
       element :pupil_name, 'td:nth-of-type(1) a'
       elements :access_arrangement_name, 'td:nth-of-type(2) span'
+      element :remove, 'td:nth-of-type(3) a'
     end
+  end
+
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :content, '.modal-content p'
+    element :cancel, '.modal-cancel'
+    element :confirm, '.modal-confirm'
+
   end
 
 

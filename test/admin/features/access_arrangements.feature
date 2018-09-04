@@ -69,7 +69,17 @@ Feature: Access Arrangements
     But I decide to cancel any update
     Then I should see no changes made to the pupils access arrangements
 
-  Scenario: Access arrangements can be removed
-    Given I have added a pupil with an access arrangement
-    Then I should be able to remove any access arrangements for the pupil
+  Scenario: Modal to remove Access arrangements is displayed as per design
+    Given I have selected access arrangement 'Audible time alert' for a pupil
+    When I want to remove all access arrangement for a pupil
+    Then modal to remove access arrangements is displayed as per the design
 
+  Scenario: Pupil is removed from the list when all access arrangement of that pupil is removed
+    Given I have selected access arrangement 'Audible time alert' for a pupil
+    When I removed all access arrangement for a pupil
+    Then the pupil is removed from the access arrangmenet pupil list
+
+  Scenario: Pupil is not removed from the list when teacher select No from the modal to remove access arrangements
+    Given I have selected access arrangement 'Audible time alert' for a pupil
+    When I decided to select no from the modal to remove access arrangment
+    Then the pupil is not removed from the access arrangmenet pupil list

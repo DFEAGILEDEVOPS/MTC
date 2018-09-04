@@ -179,3 +179,43 @@ Then(/^I should see no changes made to the pupils access arrangements$/) do
   pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
   expect(@access_arrangement_name).to eql pupil_row.access_arrangement_name.map{|a| a.text}.first
 end
+
+When(/^I want to remove all access arrangement for a pupil/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
+  pupil_row.remove.click
+end
+
+When(/^I removed all access arrangement for a pupil$/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
+  pupil_row.remove.click
+  access_arrangements_page.modal.confirm.click
+end
+
+When(/^I decided to select no from the modal to remove access arrangment$/) do
+  pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
+  pupil_row.remove.click
+  access_arrangements_page.modal.cancel.click
+end
+
+Then(/^modal to remove access arrangements is displayed as per the design$/) do
+  expect(access_arrangements_page.modal).to have_heading
+  expect(access_arrangements_page.modal.heading.text).to eql 'Remove arrangements'
+
+  expect(access_arrangements_page.modal).to have_content
+  expect(access_arrangements_page.modal.content.text).to eql 'Are you sure you want to remove all access arrangements for this pupil?'
+
+  expect(access_arrangements_page.modal).to have_cancel
+  expect(access_arrangements_page.modal).to have_confirm
+end
+
+Then(/^the pupil is removed from the access arrangmenet pupil list$/) do
+  expect(access_arrangements_page.success_message.text.eql?("Access arrangements removed for #{@details_hash[:last_name]}, #{@details_hash[:first_name]}"))
+
+  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text}
+  expect(pupils_from_page.include?(@details_hash[:first_name])).to be_falsy, "#{@details_hash[:first_name]} is displayed in the list ... Expected - It Shouldn't"
+end
+
+Then(/^the pupil is not removed from the access arrangmenet pupil list$/) do
+  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text}
+  expect(pupils_from_page.join.include?(@details_hash[:first_name])).to be_truthy, "#{@details_hash[:first_name]} is not displayed in the list ... Expected - It Should"
+end
