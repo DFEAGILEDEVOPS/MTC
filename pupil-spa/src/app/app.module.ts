@@ -62,8 +62,8 @@ import { FooterComponent } from './footer/footer.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
-  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
+  {path: 'check', component: CheckComponent},
+  {path: 'check-start', component: InstructionsComponent},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
   {path: 'sign-in', component: LoginComponent},

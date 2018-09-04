@@ -12,17 +12,28 @@ const configKey = 'config';
 export class QuestionService {
 
   protected currentQuestion;
-  protected questions;
-  protected config: Config;
+  protected config;
+
+  protected questions = [
+    {'order':1,'factor1':2,'factor2':5},
+    {'order':2,'factor1':11,'factor2':2},
+    {'order':3,'factor1':5,'factor2':10},
+    {'order':4,'factor1':4,'factor2':4},
+    {'order':5,'factor1':3,'factor2':9}
+  ];
 
   constructor(protected storageService: StorageService,
               protected speechService: SpeechService) {
     this.currentQuestion = 0;
 
-    // Re-read the stored questions on page refresh
-    if (this.storageService.getItem(questionKey) && this.storageService.getItem(configKey)) {
-      this.initialise();
-    }
+    const config = new Config();
+    config.loadingTime = 2;
+    config.questionTime = 6;
+    config.speechSynthesis = false;
+    config.audibleSounds = false;
+    config.warmupLoadingTime = 3;
+
+    this.config = config;
   }
 
   public getNumberOfQuestions(): number {
@@ -66,18 +77,5 @@ export class QuestionService {
   reset() {
     this.questions = null;
     this.config = null;
-  }
-
-  initialise() {
-    const questionData = this.storageService.getItem(questionKey);
-    const configData = this.storageService.getItem(configKey);
-    this.questions = questionData;
-    const config = new Config();
-    config.loadingTime = configData[ 'loadingTime' ];
-    config.questionTime = configData[ 'questionTime' ];
-    config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
-    config.audibleSounds = configData[ 'audibleSounds' ];
-    config.numpadRemoval = configData[ 'numpadRemoval' ];
-    this.config = config;
   }
 }

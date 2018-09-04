@@ -12,6 +12,7 @@ import { SubmissionService } from '../services/submission/submission.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { AppInsights } from 'applicationinsights-js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-check',
@@ -47,7 +48,8 @@ export class CheckComponent implements OnInit {
               private warmupQuestionService: WarmupQuestionService,
               private auditService: AuditService,
               private storageService: StorageService,
-              protected windowRefService: WindowRefService) {
+              protected windowRefService: WindowRefService,
+              private router: Router) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -261,18 +263,11 @@ export class CheckComponent implements OnInit {
       }
       case CheckComponent.submissionPendingRe.test(stateDesc): {
         // Display pending screen
-        this.auditService.addEntry(new CheckSubmissionPending());
-        this.storageService.setItem('pending_submission', true);
+        this.storageService.setItem('preview_completed', true);
+        this.storageService.removeItem('checkstate');
         this.isWarmUp = false;
-        this.viewState = 'submission-pending';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: '/submission-pending'
-        });
-        AppInsights.trackPageView(
-          'Submission pending',
-          '/submission-pending'
-        );
+        //should redirect to: ict-survey/preview-completed
+        this.router.navigate(['feedback-thanks']);
         break;
       }
     }

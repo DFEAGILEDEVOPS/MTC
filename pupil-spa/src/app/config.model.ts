@@ -4,6 +4,7 @@ export class Config {
   private _speechSynthesis: boolean;
   private _audibleSounds: boolean;
   private _numpadRemoval: boolean;
+  private _warmupLoadingTime: number;
 
   get questionTime(): number {
     return this._questionTime;
@@ -43,5 +44,12 @@ export class Config {
 
   set numpadRemoval(value: boolean) {
     this._numpadRemoval = value;
+  }
+
+  get warmupLoadingTime() {
+    return this._warmupLoadingTime;
+  }
+  set warmupLoadingTime(value: number) {
+    this._warmupLoadingTime = value;
   }
 }

@@ -55,16 +55,7 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   async onClick() {
-    this.auditService.addEntry(new CheckStarted());
     this.clickEvent.emit(null);
-    this.submissionService.submitCheckStartData().toPromise()
-      .then(() => {
-        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      })
-      .catch((error) => {
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      });
   }
 
   ngOnDestroy(): void {
