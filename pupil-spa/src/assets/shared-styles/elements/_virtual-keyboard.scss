@@ -45,7 +45,7 @@
 }
 
 .numpad-regular {
-  @include customsize(100px, 65px, 36px, 27px);
+  @include customsize(70px, 50px, 36px, 27px);
 }
 
 .numpad-large {
@@ -57,5 +57,5 @@
 }
 
 .numpad-xxlarge {
-  @include customsize(140px, 60px, 60px, 40px);
+  @include customsize(140px, 60px, 60px, 50px);
 }

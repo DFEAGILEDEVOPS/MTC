@@ -1,20 +1,20 @@
 .font-xsmall {
-    font-size: 12px;
+    font-size: 9px;
 }
 .font-small {
-    font-size: 19px;
+    font-size: 12px;
 }
 .font-regular {
-    font-size: 27px;
+    font-size: 14px;
 }
 .font-large {
-    font-size: 40px;
+    font-size: 24px;
 }
 .font-xlarge {
-    font-size: 45px;
+    font-size: 28px;
 }
 .font-xxlarge {
-    font-size: 50px
+    font-size: 30px;
 }
 
 .signed-as {
@@ -69,10 +69,10 @@ label {
 
 $custom-xsmall: (20px, 60px, 44px, 12px);
 $custom-small: (40px, 60px, 44px, 19px);
-$custom-regular: (60px, 70px, 50px, 36px);
-$custom-large: (100px, 125px, 70px, 45px);
-$custom-xlarge: (120px, 140px, 70px, 54px);
-$custom-xxlarge: (160px, 140px, 60px, 60px);
+$custom-regular: (60px, 70px, 50px, 27px);
+$custom-large: (100px, 125px, 70px, 40px);
+$custom-xlarge: (120px, 140px, 70px, 45px);
+$custom-xxlarge: (160px, 140px, 60px, 50px);
 
 @mixin font-settings($question-font, $button-width, $button-height, $button-font) {
     > .question-text {
@@ -107,8 +107,5 @@ $custom-xxlarge: (160px, 140px, 60px, 60px);
 }
 
 .xxlarge {
-    > table button {
-        line-height: 65px;
-    }
     @include font-settings($custom-xxlarge...);
 }
