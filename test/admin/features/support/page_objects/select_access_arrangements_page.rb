@@ -20,6 +20,8 @@ class SelectAccessArrangementsPage < SitePrism::Page
       end
     end
   end
+  element :confirm_removal, '#js-modal-confirmation-button'
+  element :cancel_removal, '#js-modal-cancel-button'
 
   element :input_assistance_info, '.show-checkbox-content .form-label'
   element :input_assistance_reason, '#inputAssistanceInformation'
