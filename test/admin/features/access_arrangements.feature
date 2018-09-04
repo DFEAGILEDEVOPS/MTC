@@ -83,3 +83,12 @@ Feature: Access Arrangements
     Given I have selected access arrangement 'Audible time alert' for a pupil
     When I decided to select no from the modal to remove access arrangment
     Then the pupil is not removed from the access arrangmenet pupil list
+
+  Scenario: Removal of Access arrangements can be cancelled
+    Given I have added a pupil with an access arrangement
+    When I decide against removing access arrangements against a pupil
+    Then there should be no change made to the pupils access arrangements
+
+  Scenario: Access arrangements can be removed from the edit page
+    Given I have added a pupil with an access arrangement
+    Then I should be able to remove any access arrangements for the pupil from the edit page

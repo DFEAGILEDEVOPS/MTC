@@ -219,3 +219,26 @@ Then(/^the pupil is not removed from the access arrangmenet pupil list$/) do
   pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text}
   expect(pupils_from_page.join.include?(@details_hash[:first_name])).to be_truthy, "#{@details_hash[:first_name]} is not displayed in the list ... Expected - It Should"
 end
+
+When(/^I decide against removing access arrangements against a pupil$/) do
+  step 'I select the pupil to edit the access arrangement'
+  select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
+  select_access_arrangements_page.save.click
+  select_access_arrangements_page.cancel_removal.click
+end
+
+Then(/^there should be no change made to the pupils access arrangements$/) do
+  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip)['id']
+  aa_id = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id).first['accessArrangements_id']
+  aa_description = SqlDbHelper.find_access_arrangements_by_id(aa_id).first['description']
+  expect(@access_arrangement_name).to eql aa_description
+end
+
+Then(/^I should be able to remove any access arrangements for the pupil from the edit page$/) do
+  step 'I select the pupil to edit the access arrangement'
+  select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
+  select_access_arrangements_page.save.click
+  select_access_arrangements_page.confirm_removal.click
+  expect(access_arrangements_page.success_message.text).to eql "Access arrangements removed for #{@pupil_name}"
+  expect(access_arrangements_page).to have_no_pupils_message
+end
