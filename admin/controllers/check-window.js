@@ -6,7 +6,7 @@ const monitor = require('../helpers/monitor')
 const controller = {
 
   /**
-   * Returns manage check window hub page
+   * Returns check windows hub page
    * @param req
    * @param res
    * @param next
