@@ -32,8 +32,8 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
  */
 pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, isUpdate = false) => {
   const {
-    pupilId,
-    recordedByUserId,
+    pupil_id: pupilId,
+    recordedBy_user_id: recordedByUserId,
     accessArrangementsIdsWithCodes,
     questionReaderReasonCode,
     inputAssistanceInformation,
