@@ -74,8 +74,8 @@
             <tr>
                 <td class="access-arrangements-pupil">
                     <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
-                            <% const highlightedStyle = pupil.arrangements.length > 1 ? `height: ${pupil.arrangements.length * 35}px;margin-top: 5px;` : '' %>
-                            class="panel panel-border-narrow green-panel"  style="<%= highlightedStyle %>"
+                                <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
+                            class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
                         <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
