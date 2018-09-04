@@ -4,6 +4,7 @@ module.exports = {
   id: 29,
   name: 'MTC0061',
   checkStartDate: moment.utc('2018-06-01 08:00:00'),
+  checkEndDate: moment().add(10, 'days'),
   updatedAt: moment.utc('2017-11-21 15:21:40'),
   createdAt: moment.utc('2017-11-21T15:21:40'),
   questions: [

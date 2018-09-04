@@ -64,7 +64,11 @@ anomalyReportService.batchProduceCacheData = async (batchIds) => {
     anomalyReportService.detectAnomalies(checkWithForm)
   })
 
-  await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
+  if (anomalyReportService.reportedAnomalies.length > 0) {
+    await anomalyReportCacheDataService.sqlInsertMany(anomalyReportService.reportedAnomalies)
+  } else {
+    winston.info('anomalyReportService.batchProduceCacheData: No anomalies detected')
+  }
 }
 
 /**
