@@ -15,11 +15,11 @@ export class QuestionService {
   protected config;
 
   protected questions = [
-    {'order':1,'factor1':2,'factor2':5},
-    {'order':2,'factor1':11,'factor2':2},
-    {'order':3,'factor1':5,'factor2':10},
-    {'order':4,'factor1':4,'factor2':4},
-    {'order':5,'factor1':3,'factor2':9}
+    {'order': 1, 'factor1': 2, 'factor2': 5},
+    {'order': 2, 'factor1': 11, 'factor2': 2},
+    {'order': 3, 'factor1': 5, 'factor2': 10},
+    {'order': 4, 'factor1': 4, 'factor2': 4},
+    {'order': 5, 'factor1': 3, 'factor2': 9}
   ];
 
   constructor(protected storageService: StorageService,

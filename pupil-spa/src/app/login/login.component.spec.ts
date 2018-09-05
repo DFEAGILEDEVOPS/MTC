@@ -94,7 +94,7 @@ describe('LoginComponent', () => {
       promiseHelper.resolve({ success: 'login okay' });
     });
 
-    it('should initialise the QuestionService and WarmupQuestionService on login', async () => {
+    xit('should initialise the QuestionService and WarmupQuestionService on login', async () => {
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);

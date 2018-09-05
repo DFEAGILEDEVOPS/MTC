@@ -41,7 +41,6 @@ describe('QuestionService', () => {
   }));
 
   it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
     const q = service.getQuestion(1);
 
     expect(q.constructor.name).toBe('Question');
@@ -51,42 +50,36 @@ describe('QuestionService', () => {
   }));
 
   it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
-    const q = service.getQuestion(8);
+    const q = service.getQuestion(3);
     expect(q.constructor.name).toBe('Question');
-    expect(q.factor1).toBe(4);
-    expect(q.factor2).toBe(9);
-    expect(q.sequenceNumber).toBe(8);
+    expect(q.factor1).toBe(5);
+    expect(q.factor2).toBe(10);
+    expect(q.sequenceNumber).toBe(3);
   }));
 
   it('getQuestion() with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
     expect(function () {
       service.getQuestion(100);
     }).toThrow(new Error('Out of range: question 100 does not exist'));
   }));
 
   it('getQuestion() with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
     expect(function () {
       service.getQuestion(-1);
     }).toThrow(new Error('Out of range: question -1 does not exist'));
   }));
 
   it('getQuestion() with a non-integer throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
     expect(function () {
       service.getQuestion(5.5);
     }).toThrow(new Error('sequenceNumber is not an integer'));
   }));
 
   it('getNumberOfQuestions() returns the correct number of questions', inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
-    expect(service.getNumberOfQuestions()).toBe(10);
+    expect(service.getNumberOfQuestions()).toBe(5);
   }));
 
   it('reset() clears the questions and config',  inject([QuestionService], (service: QuestionService) => {
-    service.initialise();
     expect(service['questions']).toBeDefined();
     expect(service.getConfig()).toBeDefined();
     service.reset();
