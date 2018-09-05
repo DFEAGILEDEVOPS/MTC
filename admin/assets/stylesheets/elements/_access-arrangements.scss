@@ -19,7 +19,16 @@
   margin-top: pem(40px);
 }
 
-.access-arrangements-pupil-name {
-  text-decoration: underline;
+#submitted-pupil-access-arrangements td {
   vertical-align: baseline;
+}
+
+.access-arrangements-pupil {
+  text-decoration: underline;
+  width: pem(200px);
+}
+
+.access-arrangements-list {
+  width: pem(230px);
+  line-height: pem(30px);
 }
