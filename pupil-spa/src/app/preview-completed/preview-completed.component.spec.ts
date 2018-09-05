@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PreviewCompletedComponent } from './preview-completed.component';
+import { StorageService } from '../services/storage/storage.service';
 
 describe('PreviewCompletedComponent', () => {
   let component: PreviewCompletedComponent;
@@ -12,6 +13,7 @@ describe('PreviewCompletedComponent', () => {
       declarations: [ PreviewCompletedComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
+        StorageService,
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: {

@@ -10,7 +10,7 @@ export class PreviewCompletedComponent {
   private feedbackGiven: Boolean;
 
   constructor(private storage: StorageService) {
-    this.feedbackGiven = this.storage.getItem('feedback_given') === true ? true : false;
+    this.feedbackGiven = this.storage.getItem('feedback_given') === true;
   }
 
 }

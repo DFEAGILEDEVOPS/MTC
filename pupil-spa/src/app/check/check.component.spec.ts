@@ -44,7 +44,7 @@ describe('CheckComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],         // we don't need to test sub-components
       providers: [
         AnswerService,
-        { provide:Router, useClass: class { navigate = jasmine.createSpy("navigate")}},
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate')} },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },

@@ -10,7 +10,7 @@ export class SurveyFeedbackThanksComponent {
   private previewed: Boolean;
 
   constructor(private storage: StorageService) {
-    this.previewed = this.storage.getItem('preview_completed') === true ? true : false;
+    this.previewed = this.storage.getItem('preview_completed') === true;
   }
 
 }
