@@ -157,6 +157,14 @@ class SqlDbHelper
     access_arrangement_array
   end
 
+  def self.find_access_arrangements_by_id(id)
+    sql = "SELECT * FROM [mtc_admin].[accessArrangements] where id='#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    access_arrangement_array = result.each {|row| row.map}
+    result.cancel
+    access_arrangement_array
+  end
+
   def self.get_access_arrangements_for_a_pupil(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[pupilAccessArrangements] WHERE pupil_id = '#{pupil_id}'"
     result = SQL_CLIENT.execute(sql)

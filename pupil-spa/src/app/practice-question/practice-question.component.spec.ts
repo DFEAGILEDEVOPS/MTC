@@ -94,30 +94,36 @@ describe('PractiseQuestionComponent', () => {
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('123');
       });
+      component.onSubmit();
     }));
     it('only allows submit to happen once', async(() => {
       component.answer = '124';
       component.onSubmit(); // burn the submit
       expect(component.onSubmit()).toBeFalsy();  // test repeat submission fails
     }));
-    it('returns false if the answer is too short', async(() => {
+    it('returns false if the answer is too short', () => {
       component.answer = '';
       expect(component.onSubmit()).toBeFalsy();
-    }));
+    });
   });
 
   describe('sendTimeoutEvent', () => {
-    it('emits the answer', async(() => {
+    it('emits the answer', (done: DoneFn) => {
       component.answer = '125';
       component.timeoutEvent.subscribe(g => {
         expect(g).toEqual('125');
+        done();
       });
+    });
+
+    it('returns false for a duplicate timeout event', () => {
+      component.answer = '126';
       expect(component[ 'submitted' ]).toBe(false);
       component.sendTimeoutEvent();
       // A duplicate timeout should return false;
       const retVal = component.sendTimeoutEvent();
       expect(retVal).toBe(false);
-    }));
+    });
   });
 
   describe('handleKeyboardEvent', () => {
