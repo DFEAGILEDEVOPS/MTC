@@ -69,10 +69,10 @@ label {
 
 $custom-xsmall: (20px, 60px, 44px, 12px);
 $custom-small: (40px, 60px, 44px, 19px);
-$custom-regular: (60px, 70px, 50px, 27px);
-$custom-large: (100px, 125px, 70px, 40px);
-$custom-xlarge: (120px, 140px, 70px, 45px);
-$custom-xxlarge: (160px, 140px, 60px, 50px);
+$custom-regular: (60px, 70px, 50px, 36px);
+$custom-large: (100px, 125px, 70px, 45px);
+$custom-xlarge: (120px, 140px, 70px, 54px);
+$custom-xxlarge: (160px, 140px, 60px, 60px);
 
 @mixin font-settings($question-font, $button-width, $button-height, $button-font) {
     > .question-text {
@@ -107,5 +107,8 @@ $custom-xxlarge: (160px, 140px, 60px, 50px);
 }
 
 .xxlarge {
+    > table button {
+        line-height: 65px;
+    }
     @include font-settings($custom-xxlarge...);
 }
