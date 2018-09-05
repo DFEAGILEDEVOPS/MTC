@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { AppConfigService } from './config.service';
-import { XHRBackend } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MockBackend } from '@angular/http/testing';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 
@@ -15,8 +14,7 @@ describe('AppConfigService', () => {
     const injector = TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
-        AppConfigService,
-        { provide: XHRBackend, useClass: MockBackend }
+        AppConfigService
       ]
     });
     service = TestBed.get(AppConfigService);

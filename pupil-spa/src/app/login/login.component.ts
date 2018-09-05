@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { QuestionService } from '../services/question/question.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { Login } from './login.model';
