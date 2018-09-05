@@ -266,8 +266,7 @@ export class CheckComponent implements OnInit {
         this.storageService.setItem('preview_completed', true);
         this.storageService.removeItem('checkstate');
         this.isWarmUp = false;
-        // should redirect to: ict-survey/preview-completed
-        this.router.navigate(['feedback-thanks']);
+        this.router.navigate(['ict-survey/preview-completed']);
         break;
       }
     }

@@ -1,7 +1,7 @@
 <app-header class="full-width"></app-header>
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
-    <div *ngIf="!previewed" class="column-two-thirds">
+    <div *ngIf="!preview_completed" class="column-two-thirds">
       <header class="page-header">
         <h1 class="heading-xlarge" tabindex="0">Thank you for your feedback</h1>
       </header>
@@ -10,7 +10,7 @@
       </p>
       <a routerLink="/check-start" class="button">Preview multiplication tables check</a>
     </div>
-    <div *ngIf="previewed" class="column-full">
+    <div *ngIf="preview_completed" class="column-full">
       <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Thank you for your feedback</h1>
       </header>
