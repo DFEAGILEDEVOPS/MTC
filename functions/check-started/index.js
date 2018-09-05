@@ -25,21 +25,19 @@ module.exports = async function (context, checkStartMessage) {
   // Update the admin database to update the check status to Check Started
   try {
     await updateAdminDatabaseForCheckStarted(checkStartMessage.checkCode, context.log)
-    context.log('updateAdminDatabaseForCheckStarted(): Admin DB updated')
+    context.log('SUCCESS: Admin DB updated')
   } catch (error) {
-    context.log.error(`Bailing out: unable to update admin db for [${checkStartMessage.checkCode}]`)
-    context.done(error)
-    return
+    context.log.error(`ERROR: unable to update admin db for [${checkStartMessage.checkCode}]`)
+    throw error
   }
 
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   try {
     await deleteFromPreparedCheckTableStorage(checkStartMessage.checkCode, context.log)
-    context.log('updateAdminDatabaseForCheckStarted(): table storage cache deleted from preparedCheck table')
+    context.log('SUCCESS: Table storage cache deleted from preparedCheck table')
   } catch (error) {
-    context.log.error(`Bailing out: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
-    context.done(error)
-    return
+    context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
+    throw error
   }
 
   // Store the raw message to an audit log
@@ -53,7 +51,6 @@ module.exports = async function (context, checkStartMessage) {
   }
 
   context.bindings.pupilEventsTable.push(entity)
-  context.done()
 }
 
 /**
