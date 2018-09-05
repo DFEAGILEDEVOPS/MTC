@@ -72,8 +72,11 @@
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-pupil-name">
-                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
+                <td class="access-arrangements-pupil">
+                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
+                                <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
+                            class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
+                        <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
                             <% if (pupil.showDoB) { %>
