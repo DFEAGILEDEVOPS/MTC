@@ -17,10 +17,6 @@ let mockBackend: MockBackend;
 let submissionService: SubmissionService;
 let storageService: StorageService;
 
-const shouldNotExecute = () => {
-  expect('this code').toBe('not executed');
-};
-
 describe('SubmissionService', () => {
   let http: HttpClient;
   let service: SubmissionService;

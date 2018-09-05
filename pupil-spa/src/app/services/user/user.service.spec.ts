@@ -1,16 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpModule,
-  Http,
-  Response,
-  ResponseOptions,
-  XHRBackend
-} from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
 import { UserService } from './user.service';
 import { StorageService } from '../storage/storage.service';
 import * as mockLoginResponseBody from '../../login.userService.response.mock.json';
-import { AppConfigService, loadConfigMockService } from '../config/config.service';
+import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
 
 const shouldNotExecute = () => {
   expect('this code').toBe('not executed');
@@ -18,70 +12,61 @@ const shouldNotExecute = () => {
 
 let userService: UserService;
 let storageService: StorageService;
-let mockBackend: MockBackend;
 const pupilDataKey = 'pupil';
 const questionsDataKey = 'questions';
 const configDataKey = 'config';
 
 describe('UserService', () => {
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
 
     const inject = TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [HttpClientTestingModule],
       providers: [
         UserService,
-        { provide: XHRBackend, useClass: MockBackend },
         StorageService
       ]
     });
 
+    // Inject the http service and test controller for each test
+    httpClient = TestBed.get(HttpClient);
+    httpTestingController = TestBed.get(HttpTestingController);
+
     userService = inject.get(UserService);
     storageService = inject.get(StorageService);
-    mockBackend = inject.get(XHRBackend);
-
   });
 
   describe('login', () => {
-
     it('should persist response body to storage', () => {
-
-      mockBackend.connections.subscribe((connection) => {
-        connection.mockRespond(new Response(new ResponseOptions({
-          body: JSON.stringify(mockLoginResponseBody),
-          status: 200
-        })));
-      });
-
       spyOn(storageService, 'setItem');
 
       userService.login('abc12345', '9999a').then(() => {
-        expect(storageService.setItem)
-          .toHaveBeenCalledWith(pupilDataKey, mockLoginResponseBody[pupilDataKey]);
-        expect(storageService.setItem)
-          .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
-        expect(storageService.setItem)
-        .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
-      },
+          expect(storageService.setItem)
+            .toHaveBeenCalledWith(pupilDataKey, mockLoginResponseBody[pupilDataKey]);
+          expect(storageService.setItem)
+            .toHaveBeenCalledWith(questionsDataKey, mockLoginResponseBody[questionsDataKey]);
+          expect(storageService.setItem)
+            .toHaveBeenCalledWith(configDataKey, mockLoginResponseBody[configDataKey]);
+        },
         (err) => {
           shouldNotExecute();
         });
+
+      const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
+      req.flush(mockLoginResponseBody);
+
+      // Finally, assert that there are no outstanding requests.
+      httpTestingController.verify();
     });
 
     it('should return a promise that rejects on invalid login', () => {
-
       spyOn(storageService, 'setItem');
-
-      mockBackend.connections.subscribe((connection) => {
-        connection.mockRespond(new Response(new ResponseOptions({
-          body: JSON.stringify(mockLoginResponseBody),
-          status: 401
-        })));
-      });
 
       userService.login('xxx', 'xxx').then(
         (res) => {
-          shouldNotExecute();
+          fail('expected to reject');
         },
         (err) => {
           expect(err).toBeTruthy();
@@ -91,6 +76,12 @@ describe('UserService', () => {
       });
 
       expect(storageService.setItem).not.toHaveBeenCalled();
+
+      const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
+      req.flush('Unauthorised', { status: 401, statusText: 'Not authorised' });
+
+      // Finally, assert that there are no outstanding requests.
+      httpTestingController.verify();
     });
   });
 
