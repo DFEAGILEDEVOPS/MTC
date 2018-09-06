@@ -1001,14 +1001,15 @@ kuler@1.0.x:
   dependencies:
     colornames "^1.1.1"
 
-"less-tedious@https://github.com/DFEAGILEDEVOPS/less-tedious":
-  version "1.0.0"
-  resolved "https://github.com/DFEAGILEDEVOPS/less-tedious#f8bd2161dad4c3e384d2777a74f45f8127e8af28"
+"less-tedious@https://github.com/DFEAGILEDEVOPS/less-tedious#v1.1.0":
+  version "1.1.0"
+  resolved "https://github.com/DFEAGILEDEVOPS/less-tedious#83c047bb8fc2a20213e9f129caa46f76ffe4649d"
   dependencies:
+    moment "^2.22.2"
     ramda "^0.25.0"
-    standard "^11.0.1"
     tedious "^2.3.1"
     tedious-connection-pool "^1.0.5"
+    winston "^3.0.0"
 
 levn@^0.3.0, levn@~0.3.0:
   version "0.3.0"
@@ -1558,7 +1559,7 @@ standard-engine@~8.0.0:
     minimist "^1.1.0"
     pkg-conf "^2.0.0"
 
-standard@11.0.1, standard@^11.0.1:
+standard@11.0.1:
   version "11.0.1"
   resolved "http://registry.npmjs.org/standard/-/standard-11.0.1.tgz#49be40c76f1d564964b22bbf7309929ad0335e29"
   dependencies:

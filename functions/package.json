@@ -11,7 +11,7 @@
     "bluebird": "^3.5.2",
     "dotenv": "^6.0.0",
     "help": "^3.0.2",
-    "less-tedious": "https://github.com/DFEAGILEDEVOPS/less-tedious",
+    "less-tedious": "https://github.com/DFEAGILEDEVOPS/less-tedious#v1.1.0",
     "moment": "^2.22.2",
     "ramda": "^0.25.0",
     "to-bool": "^0.0.1",
