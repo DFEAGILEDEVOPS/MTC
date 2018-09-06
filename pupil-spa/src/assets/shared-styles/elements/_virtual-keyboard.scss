@@ -59,3 +59,7 @@
 .numpad-xxlarge {
   @include customsize(140px, 60px, 60px, 50px);
 }
+
+.numpad-default {
+  @include customsize(100px, 65px, 36px, 27px);
+}
