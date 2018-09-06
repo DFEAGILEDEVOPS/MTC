@@ -34,7 +34,7 @@ module.exports = async function (context, checkStartMessage) {
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   try {
     await deleteFromPreparedCheckTableStorage(checkStartMessage.checkCode, context.log)
-    context.log('SUCCESS: Table storage cache deleted from preparedCheck table')
+    context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
     throw error
