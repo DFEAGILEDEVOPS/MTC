@@ -56,7 +56,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Set a reference to the config.
    * Contains access arrangements flags
    */
-  protected config: Config;
+  public config: Config;
 
   /**
    * The users answer made up of recorded numbers.
