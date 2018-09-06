@@ -3,21 +3,20 @@
 <main id="content" class="js-content" role="main">
     <div class="grid-row">
         <div class="column-two-thirds">
-            <div class="back-link-wrapper">
+            <div *ngIf="isAAUser" class="back-link-wrapper">
               <a routerLink="/sign-out" class="back-link">Back</a>
             </div>
             <header class="page-header">
-                <h1 class="heading-xlarge" tabindex="0">Is this you?</h1>
+                <h1 *ngIf="isAAUser" class="heading-xlarge" tabindex="0">Is this you?</h1>
+                <h1 *ngIf="!isAAUser" class="heading-xlarge" tabindex="0">Welcome, {{ pupil.firstName }}</h1>
             </header>
-            <p class="lede" tabindex="0">
-                If this is you, please confirm.
-            </p>
             <div class="notice" tabindex="0">
                 <i class="icon icon-important">
                     <span class="visually-hidden">Warning</span>
                 </i>
                 <strong class="bold-small">
-                    After you confirm, you cannot come back to this page
+                    Do not press 'Next' if this is not you,
+                    <a routerLink="/sign-out">sign out</a>
                 </strong>
             </div>
             <br />
@@ -41,27 +40,7 @@
             >
                 {{school.name}}
             </strong></p>
-            <div class="sign-out-link">
-                <p class="lede">
-                    <a routerLink="/sign-out" >This is not me, sign out</a>
-                </p>
-            </div>
-          <button class="button" (click)="onClick()">Confirm</button>
-        </div>
-        <div class="column-one-third sidebar" aria-label="sidebar">
-            <aside role="complementary" class="support-column">
-                <h3 class="heading-medium">Settings</h3>
-                <nav role="navigation">
-                    <ul class="list">
-                        <li *ngIf="config.colourContrast">
-                            <a href="/colour-choice">Edit colour of page</a>
-                        </li>
-                        <li *ngIf="config.fontSize">
-                            <a href="/font-choice">Edit size of words and numbers</a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
+          <button class="button" (click)="onClick()">Next</button>
         </div>
     </div>
 </main>

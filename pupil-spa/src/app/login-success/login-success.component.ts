@@ -21,6 +21,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   school: School;
   config: Config;
   private speechListenerEvent: any;
+  private isAAUser = false;
 
   constructor(private router: Router,
               private storageService: StorageService,
@@ -58,6 +59,7 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setItem('pupil', { checkCode });
 
     this.config = this.questionService.getConfig();
+    this.isAAUser = this.config.fontSize || this.config.colourContrast;
   }
 
   async ngOnInit() {
