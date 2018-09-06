@@ -11,13 +11,10 @@
         <%- partial('partials/_session_expiry') %>
 
         <ol class="list">
-            <!--<li>-->
-                <!--<h2 class="heading-small"><a href="/service-manager/check-windows">Manage check windows</a></h2>-->
-                <!--<p>Create, edit or remove check windows </p>-->
-            <!--</li>-->
+            <% const hrefValue = isNewCheckWindow ? '/check-window/manage-check-windows' : '/service-manager/check-windows' %>
             <li>
-            <h2 class="heading-small"><a href="/check-window/manage-check-windows">Manage check windows</a></h2>
-            <p>Create, edit or remove check windows</p>
+                <h2 class="heading-small"><a href="<%= hrefValue %>">Manage check windows</a></h2>
+                <p>Create, edit or remove check windows</p>
             </li>
             <li>
                 <h2 class="heading-small"><a href="/service-manager/upload-pupil-census">Upload pupil census</a></h2>
