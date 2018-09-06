@@ -115,7 +115,6 @@ async function deleteFromPreparedCheckTableStorage (checkCode, logger) {
   // Delete the prepared check so the pupil cannot login again
   try {
     const res = await azureTableService.deleteEntityAsync(preparedCheckTable, entity)
-    logger('RES ', res)
     if (!(res && res.result && res.result.isSuccessful === true)) {
       throw new Error('deleteFromPreparedCheckTableStorage(): bad result from deleteEntity')
     }
