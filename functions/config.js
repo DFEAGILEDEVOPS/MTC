@@ -2,8 +2,6 @@
 require('dotenv').config()
 const os = require('os')
 const toBool = require('to-bool')
-
-const twoMinutesInMilliseconds = 120000
 const oneMinuteInMilliseconds = 60000
 
 const getEnvironment = () => {
