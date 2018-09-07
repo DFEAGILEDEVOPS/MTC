@@ -12,6 +12,7 @@ const checkWindowAddService = require('../services/check-window-add.service')
 const checkWindowEditService = require('../services/check-window-edit.service')
 const ValidationError = require('../lib/validation-error')
 const monitor = require('../helpers/monitor')
+const featureToggles = require('feature-toggles')
 
 const controller = {
 
@@ -24,11 +25,12 @@ const controller = {
    */
   getServiceManagerHome: async (req, res, next) => {
     res.locals.pageTitle = 'MTC Administration Homepage'
-
+    const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
     try {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        isNewCheckWindow
       })
     } catch (error) {
       next(error)
