@@ -8,20 +8,6 @@ let initialised
 
 const init = (app) => {
   if (initialised) return
-  /**
- * Logging
- * use LogDNA transport for winston if configuration setting available
- */
-/*   if (config.Logging.LogDna.key) {
-    require('logdna')
-    const options = config.Logging.LogDna
-    // Defaults to false, when true ensures meta object will be searchable
-    options.index_meta = true
-    // Only add this line in order to track exceptions
-    options.handleExceptions = true
-    winston.add(winston.transports.Logdna, options)
-    winston.info(`logdna transport enabled for ${options.hostname}`)
-  } */
 
   winston.level = config.Logging.LogLevel
 
