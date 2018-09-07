@@ -1,4 +1,4 @@
-DROP INDEX checkWindow_urlSlug_uindex ON [mtc].[mtc_admin].[checkWindow];
+DROP INDEX checkWindow_urlSlug_uindex ON [mtc_admin].[checkWindow];
 
 -- Drop the constraint introduced by the un-named DEFAULT()
 -- we need to find the name first
