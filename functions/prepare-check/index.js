@@ -54,13 +54,11 @@ function validateMessage (message) {
   validateQuestions(message.questions)
   validateSchool(message.school)
   validateConfig(message.config)
-  return true
 }
 
 function validatePupil (pupil) {
   const pupilProperties = ['firstName', 'lastName', 'dob', 'checkCode']
   schemaValidator(pupil, pupilProperties, 'pupil')
-  return true
 }
 
 function validateQuestions (questions) {
@@ -73,19 +71,16 @@ function validateQuestions (questions) {
       throw new Error('Invalid question')
     }
   })
-  return true
 }
 
 function validateSchool (school) {
   const schoolProperties = ['id', 'name']
   schemaValidator(school, schoolProperties, 'school')
-  return true
 }
 
 function validateConfig (config) {
   const configProperties = ['questionTime', 'loadingTime', 'speechSynthesis']
   schemaValidator(config, configProperties, 'config')
-  return true
 }
 
 function schemaValidator (obj, requiredPropertyList, name = 'schema') {
@@ -94,5 +89,4 @@ function schemaValidator (obj, requiredPropertyList, name = 'schema') {
     throw new Error(`${name} is not an object`)
   }
   requiredPropertyList.map(check)
-  return true
 }
