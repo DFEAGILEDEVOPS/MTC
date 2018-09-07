@@ -5,6 +5,7 @@ dist: trusty
 branches:
   only:
     - master
+    - support/2018-ict-survey
 
 cache:
   yarn: true

@@ -1,0 +1,58 @@
+<app-header class="full-width"></app-header>
+
+<main id="content" class="js-content" role="main">
+  <div class="heading-block">
+      <header>
+          <div class="organisation-logo">
+              <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+          </div>
+      </header>
+  </div>
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <header>
+        <h1 class="heading-xlarge">Multiplication tables check ICT survey</h1>
+      </header>
+      <p class="lede">
+        The purpose of this survey is to help us understand the information
+        and communications technology (ICT) used in schools.
+      </p>
+      <div class="panel panel-border-wide">
+        <p>
+          Please complete the survey using your school ICT. If you have a range of devices, complete the survey on them one at a time.
+        </p>
+      </div>
+      <p>
+        Following the connection test, please give us feedback on any ICT issues you encounter.
+      </p>
+      <p>
+        You will be able to preview the multiplication tables check system after the connections test.
+      </p>
+      <details>
+        <summary (click)="toggleDetails()"><span class="summary">{{ showDetails ? 'Less detail' : 'More detail' }}</span></summary>
+        <div class="panel panel-border-narrow">
+          <p>
+            This test will determine your:
+          </p>
+          <ul class="list list-bullet">
+            <li>browser settings</li>
+            <li>connection speed</li>
+            <li>device type (if available)</li>
+            <li>operating system</li>
+            <li>processing speed</li>
+            <li>screen width</li>
+          </ul>
+          <p>
+            During this process, data files will be downloaded, held temporarily and then deleted.
+            All data will be anonymised unless contact details are provided in your feedback.
+          </p>
+        </div>
+      </details>
+      <p>
+        <button class="button button-start">Start now</button>
+      </p>
+    </div>
+  </div>
+</main>
+<app-footer></app-footer>

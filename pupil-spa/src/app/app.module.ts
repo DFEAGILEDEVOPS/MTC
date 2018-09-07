@@ -56,6 +56,8 @@ import { SurveyFeedbackComponent } from './survey-feedback/survey-feedback.compo
 import { ConnectionTestComponent } from './connection-test/connection-test.component';
 import { PreviewCompletedComponent } from './preview-completed/preview-completed.component';
 import { SurveyFeedbackThanksComponent } from './survey-feedback-thanks/survey-feedback-thanks.component';
+import { SurveyWelcomeComponent } from './survey-welcome/survey-welcome.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 const appRoutes: Routes = [
@@ -74,7 +76,8 @@ const appRoutes: Routes = [
     {path: 'feedback', component: SurveyFeedbackComponent},
     {path: 'test', component: ConnectionTestComponent},
     {path: 'feedback-thanks/:completed', component: SurveyFeedbackThanksComponent},
-    {path: 'preview-completed/:feedbackGiven', component: PreviewCompletedComponent}
+    {path: 'preview-completed/:feedbackGiven', component: PreviewCompletedComponent},
+    {path: 'start', component: SurveyWelcomeComponent},
   ]}
   // { path: '**', component: NotFoundComponent }
 ];
@@ -108,6 +111,8 @@ const appRoutes: Routes = [
     ConnectionTestComponent,
     PreviewCompletedComponent,
     SurveyFeedbackThanksComponent,
+    SurveyWelcomeComponent,
+    FooterComponent,
   ],
   imports: [
     ReactiveFormsModule,

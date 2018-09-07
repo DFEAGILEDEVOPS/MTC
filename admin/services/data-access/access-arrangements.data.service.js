@@ -6,6 +6,19 @@ const accessArrangementsDataService = {}
 const accessArrangementCodes = {}
 
 /**
+ * Constants to describe the access arrangements codes
+ */
+accessArrangementsDataService.CODES = Object.freeze({
+  AUDIBLE_SOUNDS: 'ATA',
+  COLOUR_CONTRAST: 'CCT',
+  FONT_SIZE: 'FTS',
+  INPUT_ASSISTANCE: 'ITA',
+  NEXT_BETWEEN_QUESTIONS: 'NBQ',
+  QUESTION_READER: 'QNR',
+  NUMPAD_REMOVAL: 'RON'
+})
+
+/**
  * Find access arrangements
  * @returns {Promise<Array>}
  */
@@ -22,7 +35,7 @@ accessArrangementsDataService.sqlFindAccessArrangements = async function () {
 
 /**
  * Find access arrangement by codes
- * @param {Number} codes
+ * @param {Array} codes
  * @returns {Array}
  */
 accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes = async function (codes) {
