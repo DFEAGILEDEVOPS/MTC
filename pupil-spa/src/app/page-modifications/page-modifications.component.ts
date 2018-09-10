@@ -10,7 +10,7 @@ import { Config } from '../config.model';
   styleUrls: ['./page-modifications.component.scss']
 })
 export class PageModificationsComponent {
-  private accessArrangements: AccessArrangements;
+  accessArrangements: AccessArrangements;
 
   constructor(
     private router: Router,

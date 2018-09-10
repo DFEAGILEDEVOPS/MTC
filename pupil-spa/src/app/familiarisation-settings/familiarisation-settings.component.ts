@@ -9,7 +9,7 @@ import { Config } from '../config.model';
   styleUrls: ['./familiarisation-settings.component.scss']
 })
 export class FamiliarisationSettingsComponent {
-  private config: Config;
+  config: Config;
 
   constructor(
     private router: Router,

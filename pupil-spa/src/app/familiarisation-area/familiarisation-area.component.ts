@@ -16,9 +16,9 @@ import {
   styleUrls: ['./familiarisation-area.component.scss']
 })
 export class FamiliarisationAreaComponent {
-  private pupil: Pupil;
-  private selectedSize;
-  private fontSettings;
+  pupil: Pupil;
+  selectedSize;
+  fontSettings;
 
   constructor(
     private router: Router,

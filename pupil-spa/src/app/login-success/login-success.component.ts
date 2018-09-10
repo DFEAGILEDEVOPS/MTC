@@ -20,8 +20,8 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   pupil: Pupil;
   school: School;
   config: Config;
-  private speechListenerEvent: any;
-  private isAAUser = false;
+  speechListenerEvent: any;
+  isAAUser = false;
 
   constructor(private router: Router,
               private storageService: StorageService,
