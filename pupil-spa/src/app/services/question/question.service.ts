@@ -27,7 +27,7 @@ export class QuestionService {
     this.currentQuestion = 0;
 
     const config = new Config();
-    config.loadingTime = 2;
+    config.loadingTime = 3;
     config.questionTime = 6;
     config.speechSynthesis = false;
     config.audibleSounds = false;
