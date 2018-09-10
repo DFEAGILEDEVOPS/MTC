@@ -65,7 +65,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.questionService.initialise();
         this.warmupQuestionService.initialise();
         this.registerInputService.initialise();
-        this.router.navigate(['sign-in-success']);
+
+        const config = this.questionService.getConfig();
+        if (config.fontSize) {
+          this.router.navigate(['font-choice']);
+        } else {
+          this.router.navigate(['sign-in-success']);
+        }
       },
       () => {
         this.loginSucceeded = false;

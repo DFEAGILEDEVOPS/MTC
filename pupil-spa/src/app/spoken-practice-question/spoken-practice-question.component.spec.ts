@@ -9,6 +9,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SoundComponentMock } from '../sound/sound-component-mock';
 
 describe('SpokenPracticeQuestionComponent', () => {
@@ -23,7 +24,7 @@ describe('SpokenPracticeQuestionComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        StorageService,
+        { provide: StorageService, useClass: StorageServiceMock },
         WindowRefService,
       ]
     })
