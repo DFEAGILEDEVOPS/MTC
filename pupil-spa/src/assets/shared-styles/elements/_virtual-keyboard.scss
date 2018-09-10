@@ -1,9 +1,7 @@
-.numpad {
+@mixin customsize($button-width, $button-height, $button-number-size, $button-text-size) {
   border-spacing: 10px;
 
   td {
-    height: pem(65px, 36);
-    width: pem(100px, 36);
     padding: 0;
     margin: 0;
   }
@@ -13,32 +11,55 @@
     color: $white;
     border: 0;
     cursor: pointer;
-    font-size: 36px;
     font-weight: 400;
-    height: pem(65px, 36);
-    width: pem(100px, 36);
+    height: $button-height;
+    width: $button-width;
     text-align: center;
     margin: 0;
     padding: 0;
   }
 
-  .enter-key {
-    @include core-27;
-  }
-
   .numpad-button {
     @include button($grey-1);
-    @include core-36;
+    @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
+    line-height: $button-number-size !important;
 
     padding: 0.1em 0 0 0;
   }
 
-  .enter-button {
+  .numpad-enter-button {
     @include button($grey-1);
-    @include core-27;
+    @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
+    line-height: $button-text-size !important;
 
-    width: 100%;
-    height: 100%;
     padding: 0.1em 0 0 0;
   }
+}
+
+.numpad-xsmall {
+  @include customsize(60px, 44px, 12px, 12px);
+}
+
+.numpad-small {
+  @include customsize(60px, 44px, 19px, 19px);
+}
+
+.numpad-regular {
+  @include customsize(70px, 50px, 36px, 27px);
+}
+
+.numpad-large {
+  @include customsize(125px, 70px, 45px, 40px);
+}
+
+.numpad-xlarge {
+  @include customsize(140px, 70px, 54px, 45px);
+}
+
+.numpad-xxlarge {
+  @include customsize(140px, 60px, 60px, 50px);
+}
+
+.numpad-default {
+  @include customsize(100px, 65px, 36px, 27px);
 }

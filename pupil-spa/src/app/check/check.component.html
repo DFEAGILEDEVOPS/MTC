@@ -1,5 +1,6 @@
 <app-sound #sound></app-sound>
 
+<app-page-modifications>
 <div [ngSwitch]="viewState">
     <app-warmup-intro *ngSwitchCase="'warmup-intro'"
         (clickEvent)="warmupIntroClickHandler()">
@@ -64,3 +65,4 @@
   <app-submission-pending *ngSwitchCase="'submission-pending'">
   </app-submission-pending>
 </div>
+</app-page-modifications>
