@@ -39,4 +39,7 @@
 
 .green-panel {
   border-color: $green;
+  div:first-child {
+    margin-top: -15px;
+  }
 }

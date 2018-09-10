@@ -10,7 +10,7 @@
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "npm run genconfig && ng build",
     "test": "npm run genconfig && ng test",
-    "test-single": "npm run genconfig && ng test --single-run=true --browsers ChromeHeadless",
+    "test-single": "npm run genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",

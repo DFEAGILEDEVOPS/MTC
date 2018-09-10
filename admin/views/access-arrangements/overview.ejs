@@ -66,13 +66,17 @@
             <tr>
                 <th scope="col">Pupil</th>
                 <th scope="col">Arrangement</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <% pupils.forEach( (pupil) => { %>
             <tr>
-                <td class="access-arrangements-pupil-name">
-                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %> class="panel panel-border-narrow green-panel" <% } %>>
+                <td class="access-arrangements-pupil">
+                    <div <% if (highlight && highlight.includes(pupil.urlSlug)) { %>
+                                <% const VerticalBarStyle = `height:${230 - 35 * (7 - pupil.arrangements.length)}px` %>
+                            class="panel panel-border-narrow green-panel"  style="<%= VerticalBarStyle %>"
+                        <% } %>>
                         <div id="<%= pupil.urlSlug %>">
                             <a href="/access-arrangements/select-access-arrangements/<%= pupil.urlSlug%>"><%= pupil.fullName %></a>
                             <% if (pupil.showDoB) { %>
@@ -83,10 +87,13 @@
                         </div>
                     </div>
                 </td>
-                <td class="pupil-access-arrangements">
+                <td class="access-arrangements-list">
                     <% pupil.arrangements && pupil.arrangements.forEach((pupilAccessArrangement) => { %>
                     <div><%= pupilAccessArrangement %></div>
                     <% }) %>
+                </td>
+                <td>
+                    <a class="modal-link font-small" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= pupil.urlSlug %>">Remove</a>
                 </td>
             </tr>
             <% }) %>
@@ -97,6 +104,14 @@
         <% } %>
     </div>
 </div>
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Remove arrangements',
+    modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
+    modalConfirmationLabel: 'Yes',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'No',
+    modalCancelUrl: '#'
+}) %>
 
 <div class="back-to-top-container">
     <a href="#top">Back to top</a>

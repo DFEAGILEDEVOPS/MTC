@@ -32,8 +32,8 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
  */
 pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, isUpdate = false) => {
   const {
-    pupil_id,
-    recordedBy_user_id,
+    pupil_id: pupilId,
+    recordedBy_user_id: recordedByUserId,
     accessArrangementsIdsWithCodes,
     questionReaderReasonCode,
     inputAssistanceInformation,
@@ -47,7 +47,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   if (isUpdate) {
     params.push({
       name: `pupil_id`,
-      value: pupil_id,
+      value: pupilId,
       type: TYPES.Int
     })
     queries.push(`DELETE ${sqlService.adminSchema}.[pupilAccessArrangements] WHERE pupil_id = @pupil_id`)
@@ -57,12 +57,12 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     inserts.push(`(@pupil_id${idx}, @recordedBy_user_id${idx}, @accessArrangements_id${idx}, @questionReaderReasons_id${idx}, @inputAssistanceInformation${idx}, @questionReaderOtherInformation${idx})`)
     params.push({
       name: `pupil_id${idx}`,
-      value: pupil_id,
+      value: pupilId,
       type: TYPES.Int
     })
     params.push({
       name: `recordedBy_user_id${idx}`,
-      value: recordedBy_user_id,
+      value: recordedByUserId,
       type: TYPES.Int
     })
     params.push({

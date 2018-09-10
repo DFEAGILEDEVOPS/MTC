@@ -122,6 +122,12 @@ After("@multiple_pupil_upload") do
   FileUtils.rm(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
+After("@remove_access_arrangements") do
+  step 'I have signed in with teacher2'
+  school_landing_page.access_arrangements.click
+  access_arrangements_page.remove_all_pupils
+end
+
 After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")
