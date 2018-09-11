@@ -8,6 +8,7 @@ import { QuestionRendered, QuestionAnswered, QuestionTimerStarted, QuestionTimer
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
@@ -29,7 +30,7 @@ describe('QuestionComponent', () => {
         { provide: AuditService, useValue: auditServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        StorageService,
+        { provide: StorageService, useClass: StorageServiceMock },
         WindowRefService,
         { provide: RegisterInputService, useClass: RegisterInputServiceMock }
       ]

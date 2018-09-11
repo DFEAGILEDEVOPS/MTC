@@ -1,0 +1,109 @@
+.font-xsmall {
+    font-size: 9px;
+}
+.font-small {
+    font-size: 12px;
+}
+.font-regular {
+    font-size: 14px;
+}
+.font-large {
+    font-size: 24px;
+}
+.font-xlarge {
+    font-size: 28px;
+}
+.font-xxlarge {
+    font-size: 30px;
+}
+
+.multiple-choice {
+    margin-bottom: 20px;
+}
+
+label {
+    line-height: 28px;
+}
+
+.preview-box {
+    border: 1px solid #6f777b;
+    float: left;
+    padding: 0 30px 30px;
+    min-width: 350px;
+    min-height: 190px;
+    position: relative;
+
+    > .badge {
+        color: #fff;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #6f777b;
+        display: inline-block;
+        font-weight: bold;
+        padding: 8px 15px;
+        width: auto;
+    }
+
+    > .question-text {
+        margin-top: 55px;
+        text-align: center;
+    }
+
+    table {
+        border-spacing: 10px;
+        margin: auto;
+    }
+
+    > table button {
+        background-color: #6f777b;
+        border: none;
+        color: #fff;
+    }
+}
+
+$custom-xsmall: (20px, 60px, 44px, 12px);
+$custom-small: (40px, 60px, 44px, 19px);
+$custom-regular: (60px, 70px, 50px, 36px);
+$custom-large: (100px, 125px, 70px, 45px);
+$custom-xlarge: (120px, 140px, 70px, 54px);
+$custom-xxlarge: (160px, 140px, 60px, 60px);
+
+@mixin font-settings($question-font, $button-width, $button-height, $button-font) {
+    > .question-text {
+        font-size: $question-font;
+    }
+
+    > table button {
+        width: $button-width;
+        height: $button-height;
+        font-size: $button-font;
+    }
+}
+
+.xsmall {
+    @include font-settings($custom-xsmall...);
+}
+
+.small {
+    @include font-settings($custom-small...);
+}
+
+.regular {
+    @include font-settings($custom-regular...);
+}
+
+.large {
+    @include font-settings($custom-large...);
+}
+
+.xlarge {
+    @include font-settings($custom-xlarge...);
+}
+
+.xxlarge {
+    > table button {
+        line-height: 65px;
+    }
+    @include font-settings($custom-xxlarge...);
+}
