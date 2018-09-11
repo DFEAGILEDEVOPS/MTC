@@ -1,4 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { XHRBackend } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Observable } from 'rxjs/Observable';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { DeviceService } from '../device/device.service';
@@ -6,7 +10,7 @@ import { DeviceService } from '../device/device.service';
 import { ConnectionTestService } from './connection-test.service';
 
 describe('ConnectionTestService', () => {
-  let service, storageService, deviceService;
+  let service, storageService, deviceService, http, router;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
@@ -29,7 +33,7 @@ describe('ConnectionTestService', () => {
       }),
       getNetworkInformation: jasmine.createSpy('getNetworkInformation').and.returnValue({
         downlink: 1.55,
-        effectiveType: "4g",
+        effectiveType: '4g',
         rtt: 50
       }),
       getScreenProperties: jasmine.createSpy('getScreenProperties').and.returnValue({
@@ -40,10 +44,23 @@ describe('ConnectionTestService', () => {
         innerWidth: 1514,
         innerHeight: 344,
         colorDepth: 24,
-        orientation: "landscape-primary"
+        orientation: 'landscape-primary'
       })
     };
+    http = {
+      get: jasmine.createSpy('get').and.returnValue(Observable.of({
+        headers: {
+          keys: () => ['content-length'],
+          get: () => 1,
+        }
+      })),
+    };
+    router = {
+      navigate: jasmine.createSpy('navigate'),
+    };
     service = new ConnectionTestService(
+      http,
+      router,
       storageService,
       deviceService,
     );
@@ -54,7 +71,10 @@ describe('ConnectionTestService', () => {
   });
 
   it('extracts all info from deviceService',  async () => {
-    await service.getTestResults();
+    service.processingTime = 1;
+    service.connectionSpeed = 2;
+
+    const testData = await service.getTestResults();
 
     expect(deviceService.getBatteryInformation).toHaveBeenCalled();
     expect(deviceService.getCpuInformation).toHaveBeenCalled();
@@ -62,12 +82,100 @@ describe('ConnectionTestService', () => {
     expect(deviceService.getNetworkInformation).toHaveBeenCalled();
     expect(deviceService.getScreenProperties).toHaveBeenCalled();
 
-    const testData = await service.getTestResults();
+    expect(testData).toEqual({
+      device: {
+        battery: {
+          chargingTime: 'Infinity',
+          dischargingTime: 2000,
+          isCharging: false,
+          levelPercent: 28
+        },
+        cpu: {
+          hardwareConcurrency: 8
+        },
+        navigator: {
+          userAgent: 'Chrome',
+          platform: 'Win32',
+          language: 'en-US',
+          cookieEnabled: true,
+          doNotTrack: null
+        },
+        networkConnection: {
+          downlink: 1.55,
+          effectiveType: '4g',
+          rtt: 50
+        },
+        screen: {
+          screenWidth: 1536,
+          screenHeight: 864,
+          outerWidth: 1528,
+          outerHeight: 344,
+          innerWidth: 1514,
+          innerHeight: 344,
+          colorDepth: 24,
+          orientation: 'landscape-primary'
+        }
+      },
+      processingTime: 1,
+      connectionSpeed: 2
+    });
+  });
 
-    expect(testData.device.battery.dischargingTime).toBe(2000);
-    expect(testData.device.cpu.hardwareConcurrency).toBe(8);
-    expect(testData.device.navigator.platform).toBe('Win32');
-    expect(testData.device.networkConnection.effectiveType).toBe('4g');
-    expect(testData.device.screen.innerWidth).toBe(1514);
+  describe('#startTest', () => {
+    beforeEach(() => {
+      spyOn(service, 'benchmarkProcessing').and.returnValue(Promise.resolve(true));
+      spyOn(service, 'benchmarkConnection').and.returnValue(Promise.resolve(true));
+      spyOn(service, 'getTestResults').and.returnValue(Promise.resolve('results'));
+    });
+
+    it('starts both benchmarks when starting the test and submits the result tests', async () => {
+      spyOn(service, 'submitTest');
+      await service.startTest();
+
+      expect(service.benchmarkProcessing).toHaveBeenCalled();
+      expect(service.benchmarkConnection).toHaveBeenCalled();
+      expect(service.getTestResults).toHaveBeenCalled();
+      expect(service.submitTest).toHaveBeenCalledWith('results');
+      expect(router.navigate).toHaveBeenCalledWith(['/ict-survey/test-completed']);
+    });
+
+    it('sets test_status in localstorage to true if it succeeded', async () => {
+      spyOn(service, 'submitTest').and.returnValue(Promise.resolve(true));
+      await service.startTest();
+
+      expect(storageService.getItem('test_status')).toBe(true);
+    });
+
+    it('sets test_status in localstorage to false if it fails', async () => {
+      spyOn(service, 'submitTest').and.returnValue(Promise.reject(true));
+      await service.startTest();
+
+      expect(storageService.getItem('test_status')).toBe(false);
+    });
+  });
+
+  describe('#benchmarkProcessing', () => {
+    it('should call this.fibonacci and set processingTime', async () => {
+      spyOn(service, 'fibonacci');
+      service.fibonacciN = 10;
+      service.fibonacciIterations = 2;
+      service.processingTime = -1;
+
+      await service.benchmarkProcessing();
+
+      expect(service.fibonacci.calls.allArgs()).toEqual([[10], [10]]);
+      expect(service.processingTime).not.toEqual(-1);
+    });
+  });
+
+  describe('#benchmarkConnection', () => {
+    it('should get the picture and set connectionSpeed', async () => {
+      service.connectionSpeed = -1;
+
+      await service.benchmarkConnection();
+
+      expect(http.get).toHaveBeenCalled();
+      expect(service.connectionSpeed).not.toEqual(-1);
+    });
   });
 });
