@@ -12,11 +12,13 @@ winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
 
-const checkStatusTable = '[checkStatus]'
+// SQL server table
 const checkResultTable = '[checkResult]'
-const checkTable = '[checkFormAllocation]'
 const schema = ['mtc_admin']
+
+// Table Storage
 const preparedCheckTable = 'preparedCheck'
+
 let azureTableService
 initAzureTableService()
 
@@ -28,7 +30,7 @@ module.exports = async function (context, completedCheckMessage) {
     await savePayloadToAdminDatabase(completedCheckMessage, context.log)
     context.log('SUCCESS: Admin DB updated')
   } catch (error) {
-    context.log.error(`ERROR: unable to update admin db for [${checkStartMessage.checkCode}]`)
+    context.log.error(`ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
     throw error
   }
 
@@ -38,7 +40,7 @@ module.exports = async function (context, completedCheckMessage) {
     await deleteFromPreparedCheckTableStorage(completedCheckMessage.checkCode, context.log)
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
-    context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
+    context.log.error(`ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
     throw error
   }
 
@@ -56,15 +58,27 @@ module.exports = async function (context, completedCheckMessage) {
 }
 
 async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
-  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, checkFormAllocation_id) VALUES (@payload, @checkFormAllocation_id)`
+  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, checkFormAllocation_id) VALUES (@payload, @checkFormAllocationId)`
   const params = [
     {
       name: 'payload',
       value: completedCheckMessage,
       type: TYPES.NVarChar
     },
-
+    {
+      name: 'checkFormAllocationId',
+      value: completedCheckMessage.checkId,
+      type: TYPES.Int
+    }
   ]
+
+  try {
+    const res = await sqlService.modify(sql, params)
+    logger.info(`SUCCESS: payload inserted into admin DB for checkCode [${checkStartMessage.checkCode}]`)
+  } catch (error) {
+    logger.error(`ERROR: failed to insert payload into admin DB for checkCode [${checkStartMessage.checkCode}]: ${error.message}`)
+    throw error
+  }
 }
 
 async function deleteFromPreparedCheckTableStorage (checkCode, logger) {
