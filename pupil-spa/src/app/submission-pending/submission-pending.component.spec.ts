@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SubmissionPendingComponent } from './submission-pending.component';
@@ -25,7 +25,6 @@ describe('SubmissionPendingComponent', () => {
   let storageService;
   let component;
   let router: Router;
-  let activatedRoute: ActivatedRoute;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionPendingComponent ],
@@ -38,12 +37,10 @@ describe('SubmissionPendingComponent', () => {
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
       ]
     })
     .compileComponents();
     router = TestBed.get(Router);
-    activatedRoute = TestBed.get(ActivatedRoute);
   }));
 
   beforeEach(() => {
@@ -98,7 +95,6 @@ describe('SubmissionPendingComponent', () => {
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
-      activatedRoute.snapshot.queryParams.unfinishedCheck = true;
       await component.ngOnInit();
       expect(component.title).toBe('Uploading previous check');
     });
