@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { Angulartics2Module } from 'angulartics2';
 import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { GlobalErrorHandler } from './error-handler';
 
@@ -50,6 +51,11 @@ import { SpokenQuestionComponent } from './spoken-question/spoken-question.compo
 import { SubmissionFailedComponent } from './submission-failed/submission-failed.component';
 import { SubmissionPendingComponent } from './submission-pending/submission-pending.component';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
+import { TestCompletedComponent } from './test-completed/test-completed.component';
+import { SurveyFeedbackComponent } from './survey-feedback/survey-feedback.component';
+import { ConnectionTestComponent } from './connection-test/connection-test.component';
+import { PreviewCompletedComponent } from './preview-completed/preview-completed.component';
+import { SurveyFeedbackThanksComponent } from './survey-feedback-thanks/survey-feedback-thanks.component';
 import { SurveyWelcomeComponent } from './survey-welcome/survey-welcome.component';
 import { FooterComponent } from './footer/footer.component';
 
@@ -66,7 +72,12 @@ const appRoutes: Routes = [
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'ict-survey', children: [
-    {path: 'start', component: SurveyWelcomeComponent}
+    {path: 'test-completed/:success', component: TestCompletedComponent},
+    {path: 'feedback', component: SurveyFeedbackComponent},
+    {path: 'test', component: ConnectionTestComponent},
+    {path: 'feedback-thanks/:completed', component: SurveyFeedbackThanksComponent},
+    {path: 'preview-completed/:feedbackGiven', component: PreviewCompletedComponent},
+    {path: 'start', component: SurveyWelcomeComponent},
   ]}
   // { path: '**', component: NotFoundComponent }
 ];
@@ -95,10 +106,16 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     QuestionsIntroComponent,
+    TestCompletedComponent,
+    SurveyFeedbackComponent,
+    ConnectionTestComponent,
+    PreviewCompletedComponent,
+    SurveyFeedbackThanksComponent,
     SurveyWelcomeComponent,
     FooterComponent,
   ],
   imports: [
+    ReactiveFormsModule,
     RouterModule.forRoot(
       appRoutes,
       {enableTracing: false} // <-- debugging purposes only
