@@ -70,7 +70,7 @@ describe('SubmissionPendingComponent', () => {
       expect(submissionService.submitData).toHaveBeenCalled();
       expect(component.loadComponent).toHaveBeenCalledWith(true);
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
-      expect(component.title).toBe('You have finished the check');
+      expect(component.title).toBe('You have finished');
       expect(auditService.addEntry).toHaveBeenCalledTimes(2);
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
     });
@@ -89,11 +89,12 @@ describe('SubmissionPendingComponent', () => {
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
     });
-    it('provides an appropriate title when a previous check is detected though a URL param', async () => {
+    it('provides an appropriate title when a previous check is detected from check status service', async () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
       spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
+      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(true);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
