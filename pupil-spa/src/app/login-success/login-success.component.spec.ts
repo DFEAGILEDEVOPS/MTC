@@ -80,7 +80,7 @@ describe('LoginSuccessComponent', () => {
 
   it('asks the user to confirm their details', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('p.lede').textContent).toMatch(/If this is you, please confirm/);
+    expect(compiled.querySelector('.notice .bold-small').textContent).toMatch(/Do not press 'Next' if this is not you,/);
   });
 
   it('redirects to warm up introduction page', () => {

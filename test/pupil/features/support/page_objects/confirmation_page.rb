@@ -7,8 +7,8 @@ class ConfirmationPage < SitePrism::Page
   element :last_name, "#last-name"
   element :school_name, "#school"
   element :dob, "#dob"
-  element :come_back_message, ".bold-small", text: 'After you confirm, you cannot come back to this page'
+  element :come_back_message, "strong.bold-small"
   element :back_sign_in_page, "a[href='/sign-out']"
-  element :read_instructions,"button", text: 'Confirm'
+  element :read_instructions,"button", text: 'Next'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 end
