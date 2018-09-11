@@ -1,4 +1,8 @@
 #!/bin/bash
+testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
+testSasUrl=${TEST_SAS_URL:-""}
+testSasToken=${TEST_SAS_TOKEN:-""}
+connectionTestFile=${TEST_CONNECTION_FILE:-"/public/images/spinner-120x120.gif"}
 apiUrl=${API_URL:-"http://localhost:3001"}
 authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
 checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
@@ -39,6 +43,10 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
+  "testSasQueueName": "$testSasQueueName",
+  "testSasUrl": "$testSasUrl",
+  "testSasToken": "$testSasToken",
+  "connectionTestFile": "$connectionTestFile",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF

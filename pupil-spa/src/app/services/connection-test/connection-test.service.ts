@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { APP_CONFIG } from '../config/config.service';
 import { DeviceService } from '../device/device.service';
+import { StorageService } from '../storage/storage.service';
+
+declare let AzureStorage: any;
 
 @Injectable()
 export class ConnectionTestService {
+  private readonly queueName = APP_CONFIG.testSasQueueName;
   private timeoutSeconds = 30;
   private fibonacciN = 10000;
   private fibonacciIterations = 50000;
@@ -11,6 +17,8 @@ export class ConnectionTestService {
   private connectionSpeed = -1;
 
   constructor(private http: HttpClient,
+              private router: Router,
+              private storageService: StorageService,
               private deviceService: DeviceService) {}
 
   async startTest() {
@@ -20,7 +28,15 @@ export class ConnectionTestService {
     ]);
 
     const testResults = await this.getTestResults();
-    this.submitTest(testResults);
+
+    try {
+      await this.submitTest(testResults);
+      this.storageService.setItem('test_status', true);
+    } catch (e) {
+      this.storageService.setItem('test_status', false);
+    }
+
+    this.router.navigate(['/ict-survey/test-completed']);
   }
 
   async getTestResults(): Promise<object> {
@@ -52,7 +68,8 @@ export class ConnectionTestService {
 
   public benchmarkConnection(): Promise<void> {
     return new Promise(resolve => {
-      const testUrl = `/public/images/spinner-120x120.gif?nc=${Math.random() * 5000}`;
+      const connectionTestFile = APP_CONFIG.connectionTestFile;
+      const testUrl = `${connectionTestFile}?nc=${Math.random() * 5000}`;
       const startTime = Date.now();
 
       this.http.get(testUrl, { responseType: 'text', observe: 'response' }).subscribe((resp: any) => {
@@ -67,8 +84,32 @@ export class ConnectionTestService {
     });
   }
 
-  private submitTest(testResults: object): void {
+  private submitTest(testResults: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.queueName === '') {
+        return reject();
+      }
 
+      const queueService = this.getQueueService();
+      const encoder = new AzureStorage.Queue.QueueMessageEncoder.TextBase64QueueMessageEncoder();
+
+      const message = JSON.stringify(testResults);
+      const encodedMessage = encoder.encode(message);
+      queueService.createMessage(this.queueName, encodedMessage, function (error, result, response) {
+        if (error) {
+          return reject();
+        }
+
+        resolve();
+      });
+    });
+  }
+
+  private getQueueService() {
+    return AzureStorage.Queue.createQueueServiceWithSas(
+      APP_CONFIG.testSasUrl,
+      APP_CONFIG.testSasToken
+    ).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter());
   }
 
   private fibonacci(n: number): number {

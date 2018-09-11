@@ -34,7 +34,8 @@
               "src/public/styles/styles.css"
             ],
             "scripts": [
-              "src/public/google-analytics/analytics.js"
+              "src/public/google-analytics/analytics.js",
+              "src/assets/javascripts/azure-storage.queue.min.js"
             ]
           },
           "configurations": {

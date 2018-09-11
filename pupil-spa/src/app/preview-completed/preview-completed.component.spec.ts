@@ -12,6 +12,7 @@ describe('PreviewCompletedComponent', () => {
       declarations: [ PreviewCompletedComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
+        StorageService,
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: {
