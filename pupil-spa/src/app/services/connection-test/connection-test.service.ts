@@ -1,57 +1,74 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { WindowRefService } from '../window-ref/window-ref.service';
+import { DeviceService } from '../device/device.service';
 
 @Injectable()
 export class ConnectionTestService {
-  private windowObj;
-  private timeout = 3000;
+  private timeoutSeconds = 30;
   private fibonacciN = 10000;
+  private fibonacciIterations = 50000;
   private processingTime = -1;
   private connectionSpeed = -1;
 
   constructor(private http: HttpClient,
-              private windowRef: WindowRefService) {
-    this.windowObj = windowRef.nativeWindow;
+              private deviceService: DeviceService) {}
+
+  async startTest() {
+    await Promise.all([
+      this.benchmarkProcessing(),
+      this.benchmarkConnection()
+    ]);
+
+    const testResults = await this.getTestResults();
+    this.submitTest(testResults);
   }
 
-  public startTest() {
-    // setTimeout needed as 'rendering' seems to be blocked in some browsers otherwise
-    setTimeout(() => this.benchmarkProcessing(), 1);
-
-    this.benchmarkConnection();
-  }
-
-  public getTestResults(): object {
+  async getTestResults(): Promise<object> {
     return {
-      ...this.getBrowserData(),
+      device: {
+        battery: await this.deviceService.getBatteryInformation(),
+        cpu: this.deviceService.getCpuInformation(),
+        navigator: this.deviceService.getNavigatorProperties(),
+        networkConnection: this.deviceService.getNetworkInformation(),
+        screen: this.deviceService.getScreenProperties(),
+      },
       processingTime: this.processingTime,
       connectionSpeed: this.connectionSpeed,
     };
   }
 
-  public benchmarkProcessing(): void {
-    const startTime = Date.now();
+  public benchmarkProcessing(): Promise<void> {
+    return new Promise(resolve => {
+      const startTime = Date.now();
 
-    for (let i = 0; i < 50000; i++) {
-      this.fibonacci(this.fibonacciN);
-    }
+      for (let i = 0; i < this.fibonacciIterations; i++) {
+        this.fibonacci(this.fibonacciN);
+      }
 
-    this.processingTime = Date.now() - startTime;
+      this.processingTime = Date.now() - startTime;
+      resolve();
+    });
   }
 
-  public benchmarkConnection(): void {
-    const testUrl = `/public/images/spinner-120x120.gif?nc=${Math.random() * 5000}`;
-    const startTime = Date.now();
+  public benchmarkConnection(): Promise<void> {
+    return new Promise(resolve => {
+      const testUrl = `/public/images/spinner-120x120.gif?nc=${Math.random() * 5000}`;
+      const startTime = Date.now();
 
-    this.http.get(testUrl, { responseType: 'text', observe: 'response' }).subscribe((resp: any) => {
-      const requestSize = resp.headers.keys().includes('content-length')
-        ? resp.headers.get('content-length')
-        : resp.body.length;
+      this.http.get(testUrl, { responseType: 'text', observe: 'response' }).subscribe((resp: any) => {
+        const requestSize = resp.headers.keys().includes('content-length')
+          ? resp.headers.get('content-length')
+          : resp.body.length;
 
-      const endTime = Date.now();
-      this.connectionSpeed = ((requestSize * 8) / ((endTime - startTime) / 1000)) / 1024;
+        const endTime = Date.now();
+        this.connectionSpeed = ((requestSize * 8) / ((endTime - startTime) / 1000)) / 1024;
+        resolve();
+      });
     });
+  }
+
+  private submitTest(testResults: object): void {
+
   }
 
   private fibonacci(n: number): number {
@@ -67,24 +84,4 @@ export class ConnectionTestService {
 
     return fn;
   }
-
-  private getBrowserData(): object {
-    const window = this.windowObj;
-
-    const data = {
-      browser: {
-        userAgent: window.navigator.userAgent,
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight,
-        screenWidth: window.screen.width,
-        screenHeight: window.screen.height
-      },
-      os: {
-        platform: window.navigator.platform
-      }
-    };
-
-    return data;
-  }
-
 }

@@ -18,7 +18,8 @@ export class ConnectionTestComponent implements OnInit {
     this.storageService.setItem('preview_completed', false);
   }
 
-  ngOnInit() {
-    this.connectionTestService.startTest();
+  async ngOnInit() {
+    // setTimeout needed as 'rendering' seems to be blocked in some browsers otherwise
+    setTimeout(() => this.connectionTestService.startTest(), 1000);
   }
 }
