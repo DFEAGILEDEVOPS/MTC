@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SubmissionPendingComponent } from './submission-pending.component';
@@ -25,6 +25,7 @@ describe('SubmissionPendingComponent', () => {
   let storageService;
   let component;
   let router: Router;
+  let activatedRoute: ActivatedRoute;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionPendingComponent ],
@@ -37,10 +38,12 @@ describe('SubmissionPendingComponent', () => {
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } } } },
       ]
     })
     .compileComponents();
     router = TestBed.get(Router);
+    activatedRoute = TestBed.get(ActivatedRoute);
   }));
 
   beforeEach(() => {
@@ -86,15 +89,15 @@ describe('SubmissionPendingComponent', () => {
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
       expect(auditService.addEntry).toHaveBeenCalledTimes(1);
     });
-    it('provides an appropriate title when a previous check is detected from check status service', async () => {
+    it('provides an appropriate title when a previous check is detected though a URL param', async () => {
       submissionService = fixture.debugElement.injector.get(SubmissionService);
       auditService = fixture.debugElement.injector.get(AuditService);
       checkStatusService = fixture.debugElement.injector.get(CheckStatusService);
       spyOn(checkStatusService, 'hasFinishedCheck').and.returnValue(false);
-      spyOn(checkStatusService, 'hasUnfinishedCheck').and.returnValue(true);
       spyOn(submissionService, 'submitData').and.returnValue({ toPromise: () => Promise.resolve('ok') });
       spyOn(component, 'loadComponent').and.returnValue(Promise.resolve());
       spyOn(component, 'sleep').and.returnValue(Promise.resolve());
+      activatedRoute.snapshot.queryParams.unfinishedCheck = true;
       await component.ngOnInit();
       expect(component.title).toBe('Uploading previous check');
     });

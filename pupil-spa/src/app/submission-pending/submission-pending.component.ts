@@ -37,8 +37,8 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
       await this.router.navigate(['/check-complete']);
       return;
     }
-    const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
-    this.title = hasUnfinishedCheck ?
+    const queryParams = this.route.snapshot.queryParams;
+    this.title = queryParams && queryParams.unfinishedCheck ?
       'Uploading previous check' : 'You have finished';
     const start = Date.now();
     await this.submissionService.submitData().toPromise()
