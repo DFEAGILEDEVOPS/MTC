@@ -1,18 +1,37 @@
 <app-header class="full-width"></app-header>
 <app-page-modifications>
-<main id="content" class="js-content" role="main">
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <header class="page-header">
-                <h1 class="heading-xlarge" tabindex="0">Unable to connect</h1>
-            </header>
-            <div class="panel panel-border-wide" tabindex="0">
-                Please contact the helpline on {{supportNumber}} for advice on how to upload the check.
+  <main id="content" class="js-content" role="main">
+      <div class="grid-row">
+          <div class="column-two-thirds">
+              <header class="page-header">
+                  <h1 class="heading-xlarge" tabindex="0">Not able to upload</h1>
+              </header>
+            <div class="notice">
+              <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+              </i>
+              <strong class="bold-small">
+                Please tell your teacher
+              </strong>
             </div>
-            <a routerLink="/check" class="button">
-                Retry
+            <br />
+            <details>
+              <summary><span class="summary">Instructions for teacher</span></summary>
+              <ol class="list list-number">
+                <li>Press the ‘Try upload again’ button</li>
+                <li>If that still doesn't work please contact the helpline for advice on how to upload the check.</li>
+                <div class="panel panel-border-wide">
+                  <div class="bold-small">Standards and testing agency helpline</div>
+                  <div>Telephone: 0345 278 8080</div>
+                  <div>Monday to Friday, 9am to 5pm</div>
+                </div>
+              </ol>
+            </details>
+            <br />
+            <a routerLink="/check" [queryParams]="{unfinishedCheck: true}" class="button">
+              Try upload again
             </a>
-        </div>
-    </div>
-</main>
+          </div>
+      </div>
+  </main>
 </app-page-modifications>

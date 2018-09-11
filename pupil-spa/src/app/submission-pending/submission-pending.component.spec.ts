@@ -70,7 +70,7 @@ describe('SubmissionPendingComponent', () => {
       expect(submissionService.submitData).toHaveBeenCalled();
       expect(component.loadComponent).toHaveBeenCalledWith(true);
       expect(component.loadComponent).toHaveBeenCalledTimes(1);
-      expect(component.title).toBe('You have finished the check');
+      expect(component.title).toBe('You have finished');
       expect(auditService.addEntry).toHaveBeenCalledTimes(2);
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
     });
