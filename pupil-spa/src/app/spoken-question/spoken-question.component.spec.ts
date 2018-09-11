@@ -4,6 +4,8 @@ import { AuditService } from '../services/audit/audit.service';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
+import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenQuestionComponent } from './spoken-question.component';
@@ -25,6 +27,7 @@ describe('SpokenQuestionComponent', () => {
         WindowRefService,
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        { provide: StorageService, useClass: StorageServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock }
       ]
     })

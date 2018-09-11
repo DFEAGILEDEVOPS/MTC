@@ -10,7 +10,7 @@ class CheckPage < SitePrism::Page
   element :answer, '#js-answer'
   element :question_container, '.question-container'
 
-  section :number_pad, NumberPadSection, '.numpad'
+  section :number_pad, NumberPadSection, '.numpad-default'
 
   def wait_for_preload_to_expire(time=3)
     wait_until(time + 0.5, 0.1) {preload.visible?}

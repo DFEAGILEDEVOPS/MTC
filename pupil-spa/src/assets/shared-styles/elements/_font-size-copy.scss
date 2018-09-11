@@ -1,0 +1,47 @@
+@mixin copy-size($copy-size, $question-text-size, $button-text-size) {
+  p, strong, li, span {
+    font-size: $copy-size;
+  }
+
+  .button {
+    font-size: $button-text-size;
+  }
+
+  .question-and-answer {
+    font-size: $question-text-size;
+    line-height: $question-text-size !important;
+  }
+
+  .question {
+    font-size: $question-text-size;
+    max-width: 444px;
+  }
+
+  .answer {
+    font-size: $question-text-size;
+  }
+}
+
+.copy-size-xsmall {
+  @include copy-size(9px, 20px, 12px);
+}
+
+.copy-size-small {
+  @include copy-size(12px, 40px, 19px);
+}
+
+.copy-size-regular {
+  @include copy-size(14px, 60px, 27px);
+}
+
+.copy-size-large {
+  @include copy-size(24px, 100px, 40px);
+}
+
+.copy-size-xlarge {
+  @include copy-size(28px, 120px, 45px);
+}
+
+.copy-size-xxlarge {
+  @include copy-size(30px, 160px, 50px);
+}

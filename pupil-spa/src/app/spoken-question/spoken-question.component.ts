@@ -3,6 +3,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
 import { QuestionRendered } from '../services/audit/auditEntry';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
+import { StorageService } from '../services/storage/storage.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Subscription } from 'rxjs/Subscription';
@@ -21,9 +22,10 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected windowRefService: WindowRefService,
               protected registerInputService: RegisterInputService,
               protected zone: NgZone,
+              protected storageService: StorageService,
               protected speechService: SpeechService,
               protected questionService: QuestionService) {
-    super(auditService, windowRefService, registerInputService, questionService, speechService);
+    super(auditService, windowRefService, registerInputService, questionService, storageService, speechService);
   }
 
   ngOnInit() {

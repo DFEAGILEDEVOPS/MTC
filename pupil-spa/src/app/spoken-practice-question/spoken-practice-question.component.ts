@@ -5,6 +5,7 @@ import { PracticeQuestionComponent } from '../practice-question/practice-questio
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
+import { StorageService } from '../services/storage/storage.service';
 import { QuestionRendered } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
 
@@ -20,8 +21,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected windowRefService: WindowRefService,
               protected speechService: SpeechService,
               protected zone: NgZone,
+              protected storageService: StorageService,
               protected questionService: QuestionService) {
-    super(auditService, windowRefService, questionService, speechService);
+    super(auditService, windowRefService, questionService, storageService, speechService);
   }
 
   ngOnInit() {
