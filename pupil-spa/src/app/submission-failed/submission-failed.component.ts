@@ -6,6 +6,7 @@ import { APP_CONFIG } from '../services/config/config.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
+import 'details-element-polyfill';
 
 @Component({
   selector: 'app-submission-failed',
