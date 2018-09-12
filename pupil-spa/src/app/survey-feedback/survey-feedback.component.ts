@@ -12,7 +12,7 @@ import { StorageService } from '../services/storage/storage.service';
 })
 export class SurveyFeedbackComponent {
   private feedbackForm: FormGroup;
-  private userSubmittedForm: boolean = false;
+  private userSubmittedForm = false;
 
   constructor(
     private router: Router,
@@ -36,8 +36,9 @@ export class SurveyFeedbackComponent {
   async onSubmit() {
     if (this.feedbackForm.valid) {
       this.userSubmittedForm = true;
-      scroll(0,0);
-      return; 
+      // scroll to the top so users can see validation errors
+      scroll(0, 0);
+      return ;
     }
 
     try {

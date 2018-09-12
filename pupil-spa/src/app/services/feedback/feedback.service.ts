@@ -49,10 +49,10 @@ export class FeedbackService {
 
   postSurveyFeedback(feedbackData: object): Promise<void> {
     return new Promise((resolve, reject) => {
-      
+
       const message               = JSON.stringify(feedbackData);
 
-      const queueService          = this.queueService.getQueueService(APP_CONFIG.testSasUrl,APP_CONFIG.feedbackSasToken);
+      const queueService          = this.queueService.getQueueService(APP_CONFIG.testSasUrl, APP_CONFIG.feedbackSasToken);
       const encodedMessage        = this.queueService.encodeMessage(message);
 
       queueService.createMessage(APP_CONFIG.feedbackSasQueueName, encodedMessage, function (error, result, response) {

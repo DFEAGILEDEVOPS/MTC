@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { APP_CONFIG } from '../config/config.service'
+import { APP_CONFIG } from '../config/config.service';
 
 declare let AzureStorage;
 
@@ -16,7 +16,7 @@ export class AzureQueueService {
 
   public encodeMessage(message: string): string {
     const encoder = this.getEncoder();
-    return encoder.encodeMessage(message)
+    return encoder.encodeMessage(message);
   }
 
   private getEncoder() {
