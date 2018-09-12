@@ -10,3 +10,7 @@ create table mtc_admin.checkResult
     constraint checkResult_checkFormAllocation_id_fk
     references mtc_admin.checkFormAllocation
 );
+
+-- only one set of results allowed per check
+create unique index checkResult_checkFormAllocation_id_uindex
+  on mtc_admin.checkResult (checkFormAllocation_id);
