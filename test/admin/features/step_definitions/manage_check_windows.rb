@@ -81,3 +81,14 @@ Then(/^the check name should be sorted z\-a by default$/) do
   windows_from_page = manage_check_window_page.windows_table.rows.map {|row| row.check_name.text}
   expect(windows_removed_empties.sort.reverse).to eql windows_from_page
 end
+
+Given(/^I am on the updated manage check windows page$/) do
+admin_page.updated_manage_check_windows.click
+end
+
+Then(/^the manage check window hub page should match design$/) do
+  expect(manage_check_window_page).to have_heading
+  expect(manage_check_window_page).to have_updated_page_instructions
+  expect(manage_check_window_page).to have_panel
+  expect(manage_check_window_page).to have_create_new_window
+end
