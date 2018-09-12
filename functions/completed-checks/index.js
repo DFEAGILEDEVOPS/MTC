@@ -12,14 +12,12 @@ const R = require('ramda')
 winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
+const { deleteFromPreparedCheckTableStorage } = require('../lib/lib')
 
 // SQL server table
 const checkResultTable = '[checkResult]'
 const checkFormAllocationTable = '[checkFormAllocation]'
 const schema = ['mtc_admin']
-
-// Table Storage
-const preparedCheckTable = 'preparedCheck'
 
 let azureTableService
 initAzureTableService()
@@ -39,7 +37,7 @@ module.exports = async function (context, completedCheckMessage) {
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   // This is a backup process in case the check-started message was not received.
   try {
-    await deleteFromPreparedCheckTableStorage(completedCheckMessage.checkCode, context.log, false)
+    await deleteFromPreparedCheckTableStorage(azureStorage, azureTableService, completedCheckMessage.checkCode, context.log)
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     // We can ignore "not found" errors in this function
@@ -88,49 +86,7 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
   logger.info(`SUCCESS: savePayloadToAdminDatabase: succeeded for checkCode: [${completedCheckMessage.checkCode}]`)
 }
 
-async function deleteFromPreparedCheckTableStorage (checkCode, logger) {
-  const query = new azureStorage.TableQuery()
-    .top(1)
-    .where('checkCode eq ?', checkCode)
 
-  let check
-
-  try {
-    const data = await azureTableService.queryEntitiesAsync(preparedCheckTable, query, null)
-    check = data.response.body.value[0]
-  } catch (error) {
-    const msg = `deleteFromPreparedCheckTableStorage(): error during retrieve for table storage check for checkCode [${checkCode}]`
-    logger.error(msg)
-    logger.error(error.message)
-    throw new Error(msg)
-  }
-
-  if (!check) {
-    const msg = `deleteFromPreparedCheckTableStorage(): check does not exist: [${checkCode}]`
-    logger.info(msg)
-    const error = new Error(msg)
-    error.type = 'NOT_FOUND'
-    throw error
-  }
-
-  const entity = {
-    PartitionKey: check.PartitionKey,
-    RowKey: check.RowKey
-  }
-
-  // Delete the prepared check so the pupil cannot login again
-  try {
-    const res = await azureTableService.deleteEntityAsync(preparedCheckTable, entity)
-    if (!(res && res.result && res.result.isSuccessful === true)) {
-      throw new Error('deleteFromPreparedCheckTableStorage(): bad result from deleteEntity')
-    }
-  } catch (error) {
-    const msg = `deleteFromPreparedCheckTableStorage(): failed to delete prepared check for checkCode: [${checkCode}]`
-    logger.error(msg)
-    logger.error(error.message)
-    throw error
-  }
-}
 
 /**
  * Promisify the azureStorage library as it still lacks Promise support
