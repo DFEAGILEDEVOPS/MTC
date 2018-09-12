@@ -45,15 +45,15 @@ describe('QuestionService', () => {
 
     expect(q.constructor.name).toBe('Question');
     expect(q.factor1).toBe(2);
-    expect(q.factor2).toBe(5);
+    expect(q.factor2).toBe(4);
     expect(q.sequenceNumber).toBe(1);
   }));
 
   it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
     const q = service.getQuestion(3);
     expect(q.constructor.name).toBe('Question');
-    expect(q.factor1).toBe(5);
-    expect(q.factor2).toBe(10);
+    expect(q.factor1).toBe(11);
+    expect(q.factor2).toBe(5);
     expect(q.sequenceNumber).toBe(3);
   }));
 
