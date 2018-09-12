@@ -44,7 +44,7 @@ import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.componen
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppUsageService } from './services/app-usage/app-usage.service';
-
+import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
@@ -152,7 +152,8 @@ const appRoutes: Routes = [
     WarmupQuestionService,
     WindowRefService,
     CheckStatusService,
-    AppUsageService
+    AppUsageService,
+    AzureQueueService
   ],
   bootstrap: [AppComponent]
 })
