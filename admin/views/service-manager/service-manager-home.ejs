@@ -11,13 +11,14 @@
         <%- partial('partials/_session_expiry') %>
 
         <ol class="list">
+            <% const hrefValue = isNewCheckWindow ? '/check-window/manage-check-windows' : '/service-manager/check-windows' %>
             <li>
-                <h2 class="heading-small"><a href="/service-manager/check-windows">Manage check windows</a></h2>
-                <p>Create and edit check administration windows</p>
+                <h2 class="heading-small"><a href="<%= hrefValue %>">Manage check windows</a></h2>
+                <p>Create, edit or remove check windows</p>
             </li>
             <li>
                 <h2 class="heading-small"><a href="/service-manager/upload-pupil-census">Upload pupil census</a></h2>
-                <p>Upload pupil data into the active check window</p>
+                <p>Enter pupil data into the check</p>
             </li>
             <li>
                 <h2 class="heading-small"><a href="/service-manager/check-settings">Settings on pupil check</a></h2>
@@ -28,17 +29,6 @@
                 <h2 class="heading-small"><a href="#">Settings on school pages</a></h2>
                 <p>Change the settings within the school pages</p>
             </li>
-
-            <li>
-                <h2 class="heading-small"><a href="#">Manage access arrangements</a></h2>
-                <p>Approve or reject access arrangement requests</p>
-            </li>
-
-            <li>
-                <h2 class="heading-small"><a href="#">Manage restart requests</a></h2>
-                <p>Approve or reject restart requests</p>
-            </li>
-
             <li>
                 <h2 class="heading-small"><a href="#">View progress reports</a></h2>
                 <p>View reports of this check window</p>
