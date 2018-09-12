@@ -236,10 +236,12 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
       pupil: {
+        id: o.pupil_id,
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
-        checkCode: o.checkFormAllocation_checkCode
+        checkCode: o.checkFormAllocation_checkCode,
+        checkFormAllocationId: o.checkFormAllocation_id
       },
       school: {
         id: o.school_id,
