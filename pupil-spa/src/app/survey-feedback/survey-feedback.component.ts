@@ -10,23 +10,31 @@ import { Validators } from '@angular/forms';
 })
 export class SurveyFeedbackComponent {
   private feedbackForm: FormGroup;
+  private userSubmittedForm: boolean = false;
 
   constructor(
     private router: Router,
     private formBuilder: FormBuilder) {
 
     this.feedbackForm = this.formBuilder.group({
-      comment: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      contactNumber: ['', Validators.required],
-      emailAddress: ['', Validators.required],
+      comment: ['', [Validators.required, Validators.maxLength(1200)]],
+      firstName: [''],
+      lastName: [''],
+      contactNumber: [''],
+      emailAddress: [''],
       schoolName: ['']
     });
 
   }
 
+  get comment() { return this.feedbackForm.get('comment'); }
+
   onSubmit() {
+    if (!this.feedbackForm.valid) {
+      this.userSubmittedForm = true;
+      scroll(0,0);      
+      return
+    }
     this.router.navigate(['ict-survey/feedback-thanks']);
   }
 
