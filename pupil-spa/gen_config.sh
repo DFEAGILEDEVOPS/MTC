@@ -3,7 +3,6 @@ testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
 testSasUrl=${TEST_SAS_URL:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
 feedbackSasQueueName=${FEEDBACK_SAS_QUEUE_NAME:-""}
-feedbackSasUrl=${FEEDBACK_SAS_URL:-""}
 feedbackSasToken=${FEEDBACK_SAS_TOKEN:-""}
 connectionTestFile=${TEST_CONNECTION_FILE:-"/public/images/spinner-120x120.gif"}
 apiUrl=${API_URL:-"http://localhost:3001"}
@@ -49,9 +48,8 @@ cat <<EOF > config.json
   "testSasQueueName": "$testSasQueueName",
   "testSasUrl": "$testSasUrl",
   "testSasToken": "$testSasToken",
-  "feedbackSasQueueName": "$feedbackSasQueueName":
-  "feedbackSasUrl": "$feedbackSasUrl"
-  "feedbackSasToken": "$feedbackSasToken"
+  "feedbackSasQueueName": "$feedbackSasQueueName",
+  "feedbackSasToken": "$feedbackSasToken",
   "connectionTestFile": "$connectionTestFile",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }

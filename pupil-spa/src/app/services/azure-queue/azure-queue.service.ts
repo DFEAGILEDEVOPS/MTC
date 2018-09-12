@@ -7,11 +7,16 @@ declare let AzureStorage;
 export class AzureQueueService {
   constructor() { }
 
-  private getQueueService(sasUrl: string, sasToken: string) {
+  public getQueueService(sasUrl: string, sasToken: string) {
     return AzureStorage.Queue.createQueueServiceWithSas(
-      APP_CONFIG[sasUrl],
-      APP_CONFIG[sasToken]
+      sasUrl,
+      sasToken
     ).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter());
+  }
+
+  public encodeMessage(message: string): string {
+    const encoder = this.getEncoder();
+    return encoder.encodeMessage(message)
   }
 
   private getEncoder() {
