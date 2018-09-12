@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { StorageService } from '../services/storage/storage.service';
 import { ConnectionTestService } from '../services/connection-test/connection-test.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
 
 @Component({
   selector: 'app-connection-test',

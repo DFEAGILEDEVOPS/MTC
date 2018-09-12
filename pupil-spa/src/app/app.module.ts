@@ -73,7 +73,7 @@ const appRoutes: Routes = [
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'ict-survey', children: [
-    {path: 'test-completed/:success', component: TestCompletedComponent},
+    {path: 'test-completed', component: TestCompletedComponent},
     {path: 'feedback', component: SurveyFeedbackComponent},
     {path: 'test', component: ConnectionTestComponent},
     {path: 'feedback-thanks/:completed', component: SurveyFeedbackThanksComponent},
