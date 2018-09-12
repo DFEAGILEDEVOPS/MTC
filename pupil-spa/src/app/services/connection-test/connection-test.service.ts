@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { APP_CONFIG } from '../config/config.service';
 import { DeviceService } from '../device/device.service';
 import { StorageService } from '../storage/storage.service';
+import { AzureQueueService } from '../../services/azure-queue/azure-queue.service';
 
 declare let AzureStorage: any;
 
@@ -19,7 +20,8 @@ export class ConnectionTestService {
   constructor(private http: HttpClient,
               private router: Router,
               private storageService: StorageService,
-              private deviceService: DeviceService) {}
+              private deviceService: DeviceService,
+              private queueService: AzureQueueService) {}
 
   async startTest() {
     await Promise.all([
@@ -90,11 +92,15 @@ export class ConnectionTestService {
         return reject();
       }
 
-      const queueService = this.getQueueService();
-      const encoder = new AzureStorage.Queue.QueueMessageEncoder.TextBase64QueueMessageEncoder();
-
       const message = JSON.stringify(testResults);
-      const encodedMessage = encoder.encode(message);
+
+      const queueService = this.queueService.getQueueService(
+        APP_CONFIG.testSasUrl,
+        APP_CONFIG.testSasToken
+      );
+
+      const encodedMessage = this.queueService.encodeMessage(message);
+
       queueService.createMessage(this.queueName, encodedMessage, function (error, result, response) {
         if (error) {
           return reject();
@@ -103,13 +109,6 @@ export class ConnectionTestService {
         resolve();
       });
     });
-  }
-
-  private getQueueService() {
-    return AzureStorage.Queue.createQueueServiceWithSas(
-      APP_CONFIG.testSasUrl,
-      APP_CONFIG.testSasToken
-    ).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter());
   }
 
   private fibonacci(n: number): number {
