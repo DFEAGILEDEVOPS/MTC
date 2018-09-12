@@ -7,6 +7,7 @@ const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
 const winston = require('winston')
 const { TYPES } = require('tedious')
+const R = require('ramda')
 
 winston.level = 'error'
 const config = require('../config')
@@ -14,6 +15,7 @@ sqlService.initialise(config)
 
 // SQL server table
 const checkResultTable = '[checkResult]'
+const checkFormAllocationTable = '[checkFormAllocation]'
 const schema = ['mtc_admin']
 
 // Table Storage
@@ -37,11 +39,14 @@ module.exports = async function (context, completedCheckMessage) {
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   // This is a backup process in case the check-started message was not received.
   try {
-    await deleteFromPreparedCheckTableStorage(completedCheckMessage.checkCode, context.log)
+    await deleteFromPreparedCheckTableStorage(completedCheckMessage.checkCode, context.log, false)
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
-    context.log.error(`ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
-    throw error
+    // We can ignore "not found" errors in this function
+    if (error.type !== 'NOT_FOUND') {
+      context.log.error(`ERROR: unable to delete from table storage for [${completedCheckMessage.checkCode}]`)
+      throw error
+    }
   }
 
   // Default output is bound to the pupilEvents table (saved in table storage)
@@ -54,31 +59,33 @@ module.exports = async function (context, completedCheckMessage) {
     processedAt: moment().toDate()
   }
   context.bindings.pupilEventsTable.push(entity)
-  context.done()
 }
 
+/**
+ * High level function to save the payload into the admin db
+ * @param completedCheckMessage
+ * @param logger
+ * @return {Promise<void>}
+ */
 async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
-  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, checkFormAllocation_id) VALUES (@payload, @checkFormAllocationId)`
-  const params = [
-    {
-      name: 'payload',
-      value: completedCheckMessage,
-      type: TYPES.NVarChar
-    },
-    {
-      name: 'checkFormAllocationId',
-      value: completedCheckMessage.checkId,
-      type: TYPES.Int
-    }
-  ]
+  let checkFormAllocationData
 
   try {
-    const res = await sqlService.modify(sql, params)
-    logger.info(`SUCCESS: payload inserted into admin DB for checkCode [${checkStartMessage.checkCode}]`)
+    checkFormAllocationData = await sqlFetchCheckFormAllocation(completedCheckMessage.checkCode)
+    logger.info('savePayloadToAdminDatabase: data retrieved from SQL: ' + checkFormAllocationData)
   } catch (error) {
-    logger.error(`ERROR: failed to insert payload into admin DB for checkCode [${checkStartMessage.checkCode}]: ${error.message}`)
+    logger.error(`ERROR: savePayloadToAdminDatabase: failed to retrieve checkFormAllocationData for checkCode: [${completedCheckMessage.checkCode}]`)
     throw error
   }
+
+  try {
+    await sqlInsertPayload(completedCheckMessage, checkFormAllocationData.id)
+  } catch (error) {
+    logger.error(`ERROR: savePayloadToAdminDatabase: failed to insert for checkCode: [${completedCheckMessage.checkCode}]`)
+    throw error
+  }
+
+  logger.info(`SUCCESS: savePayloadToAdminDatabase: succeeded for checkCode: [${completedCheckMessage.checkCode}]`)
 }
 
 async function deleteFromPreparedCheckTableStorage (checkCode, logger) {
@@ -99,9 +106,11 @@ async function deleteFromPreparedCheckTableStorage (checkCode, logger) {
   }
 
   if (!check) {
-    const msg = `deleteFromPreparedCheckTableStorage(): failed to retrieve prepared check for checkCode: [${checkCode}]`
-    logger.error(msg)
-    throw new Error(msg)
+    const msg = `deleteFromPreparedCheckTableStorage(): check does not exist: [${checkCode}]`
+    logger.info(msg)
+    const error = new Error(msg)
+    error.type = 'NOT_FOUND'
+    throw error
   }
 
   const entity = {
@@ -146,4 +155,46 @@ function initAzureTableService () {
       }
     })
   }
+}
+
+/**
+ * Retrieve the checkFormAllocation data from the db
+ * @param checkCode
+ * @return {Promise<void>}
+ */
+async function sqlFetchCheckFormAllocation(checkCode) {
+  const sql = `SELECT TOP 1 * FROM ${schema}.${checkFormAllocationTable} WHERE checkCode = @checkCode`
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    },
+  ]
+  const res = await sqlService.query(sql, params)
+  return R.head(res)
+}
+
+/**
+ * Insert the payload into the checkResult table
+ * @param payload
+ * @param checkFormAllocationId
+ * @return {Promise<void>}
+ */
+async function sqlInsertPayload (payload, checkFormAllocationId) {
+  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, checkFormAllocation_id) VALUES (@payload, @checkFormAllocationId)`
+  const params = [
+    {
+      name: 'payload',
+      value: JSON.stringify(payload),
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'checkFormAllocationId',
+      value: checkFormAllocationId,
+      type: TYPES.Int
+    }
+  ]
+
+  await sqlService.modify(sql, params)
 }
