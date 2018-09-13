@@ -44,6 +44,7 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AppUsageService } from './services/app-usage/app-usage.service';
 import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
+import { CheckStartService } from './services/check-start/check-start.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -56,7 +57,9 @@ import { FamiliarisationAreaComponent } from './familiarisation-area/familiarisa
 import { FamiliarisationSettingsComponent } from './familiarisation-settings/familiarisation-settings.component';
 import { FamiliarisationColourComponent } from './familiarisation-colour/familiarisation-colour.component';
 import { PageModificationsComponent } from './page-modifications/page-modifications.component';
+import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
 
+declare var AzureStorage: IAzureStorage;
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
@@ -140,8 +143,13 @@ const appRoutes: Routes = [
     WindowRefService,
     CheckStatusService,
     AppUsageService,
+    CheckStartService,
     TokenService,
     AzureQueueService,
+    {
+      provide: QUEUE_STORAGE_TOKEN,
+      useValue: AzureStorage.Queue
+    }
   ],
   bootstrap: [AppComponent]
 })

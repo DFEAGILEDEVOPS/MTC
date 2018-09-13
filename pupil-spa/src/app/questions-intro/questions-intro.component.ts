@@ -4,18 +4,15 @@ import {
   QuestionIntroRendered,
   CheckStarted,
 } from '../services/audit/auditEntry';
-import { SubmissionService } from '../services/submission/submission.service';
 import { AuditService } from '../services/audit/audit.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { StorageService } from '../services/storage/storage.service';
-import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { CheckStartService } from '../services/check-start/check-start.service';
 
 @Component({
   selector: 'app-questions-intro',
   templateUrl: './questions-intro.component.html',
-  styleUrls: ['./questions-intro.component.scss']
+  styleUrls: ['./questions-intro.component.scss'],
 })
 export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -32,11 +29,8 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
 
   constructor(
     private auditService: AuditService,
-    private submissionService: SubmissionService,
     private questionService: QuestionService,
     private speechService: SpeechService,
-    private storageService: StorageService,
-    private azureQueueService: AzureQueueService,
     private checkStartService: CheckStartService,
     private elRef: ElementRef
   ) {

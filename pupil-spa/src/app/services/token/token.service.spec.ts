@@ -21,4 +21,9 @@ describe('TokenService', () => {
   it('should be created', () => {
     expect(tokenService).toBeTruthy();
   });
+  it('getToken should fetch the tokens using storage service', () => {
+    spyOn(mockStorageService, 'getItem').and.returnValue({ 'check-started': { token: 'token', url: 'url'} });
+    const checkStartedToken = tokenService.getToken('check-started');
+    expect (checkStartedToken).toEqual({ token: 'token', url: 'url'});
+  });
 });

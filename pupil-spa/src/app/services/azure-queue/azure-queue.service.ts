@@ -1,59 +1,62 @@
 import * as bluebird from 'bluebird';
-import { WindowRefService } from '../window-ref/window-ref.service';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TokenService } from '../token/token.service';
+import {
+  IQueueStorage,
+  IQueueService,
+  QUEUE_STORAGE_TOKEN,
+  ITextBase64QueueMessageEncoder,
+} from './azureStorage';
+import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 
 /**
  * Declaration of azure queue service
  */
+
+declare let AzureStorage;
+
 @Injectable()
 export class AzureQueueService {
-  private window;
-  private queueService;
+  private serviceInstance: IQueueService;
+  private encoder: ITextBase64QueueMessageEncoder;
 
   constructor(private tokenService: TokenService,
-              private windowRefService: WindowRefService) {
-    this.window = windowRefService.nativeWindow;
+              @Inject(QUEUE_STORAGE_TOKEN) private queueStorage: IQueueStorage) {
   }
 
   /**
-   * Initialise queue service for messaging
-   * @param {String} queue
-   * @param {String} tokenKey
+   * Create a queue service and promisify library calls
+   * @param {String} queueName
+   * @param {String} url
+   * @param {String} token
    * @returns {Promise}
    */
-  private initQueueService(queue, tokenKey): void {
-    const token = this.tokenService.getToken(tokenKey);
-    if (!this.queueService) {
-      this.queueService = this.window.AzureStorage.Queue
-        .createQueueServiceWithSas(token.url.replace(queue, ''), token.token)
-        .withFilter(new this.window.AzureStorage.Queue.ExponentialRetryPolicyFilter()
-        );
-    }
-  }
-
-  /**
-   * Setup promisified queue service methods required for message creation
-   * @returns {Promise}
-   */
-  private initQueueMessaging(): void {
-      this.queueService.performRequest = bluebird.promisify(this.queueService.performRequest, this.queueService);
-      this.queueService.createMessage = bluebird.promisify(this.queueService.createMessage, this.queueService);
+  private createQueueService(queueName: string, url: string, token: string): IQueueService {
+    const service =  this.queueStorage
+      .createQueueServiceWithSas(url.replace(queueName, ''), token)
+      .withFilter(new this.queueStorage.ExponentialRetryPolicyFilter());
+    service.performRequest = bluebird.promisify(service.performRequest, service);
+    service.createMessage = bluebird.promisify(service.createMessage, service);
+    return service;
   }
 
   /**
    * Add message to the queue
-   * @param {String} queue
-   * @param {String} tokenKey
+   * @param {String} queueName
+   * @param {String} url
+   * @param {String} token
    * @param {Object} payload
-   * @returns {Promise.<void>}
+   * @returns {Promise.<Object>}
    */
-  public async addMessage(queue, tokenKey, payload): Promise<void> {
-    this.initQueueService(queue, tokenKey);
-    this.initQueueMessaging();
+  public async addMessage(queueName: string, url: string, token: string, payload: object): Promise<Object> {
+    if (!this.serviceInstance) {
+      this.serviceInstance = this.createQueueService(queueName, url, token);
+    }
+    if (!this.encoder) {
+      this.encoder = new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
+    }
     const message = JSON.stringify(payload);
-    const encoder = new this.window.AzureStorage.Queue.QueueMessageEncoder.BinaryBase64QueueMessageEncoder();
-    const encodedMessage = encoder.encode(message);
-    await this.queueService.createMessage(queue, encodedMessage);
+    const encodedMessage = this.encoder.encode(message);
+    return this.serviceInstance.createMessage(queueName, encodedMessage);
   }
 }

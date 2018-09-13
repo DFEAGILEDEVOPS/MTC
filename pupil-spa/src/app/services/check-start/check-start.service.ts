@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { APP_CONFIG } from '../config/config.service';
 import {
   CheckStartedApiCalled,
   CheckStartedAPICallSucceeded,
@@ -7,6 +8,7 @@ import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
+import { TokenService } from '../token/token.service';
 
 /**
  * Declaration of check start service
@@ -17,6 +19,7 @@ export class CheckStartService {
   constructor(private azureQueueService: AzureQueueService,
               private submissionService: SubmissionService,
               private storageService: StorageService,
+              private tokenService: TokenService,
               private auditService: AuditService) {
   }
 
@@ -25,15 +28,26 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    const payload  = this.storageService.getItem('pupil');
-    await this.azureQueueService.addMessage('check-started', 'checkStarted', payload);
-    this.submissionService.submitCheckStartData().toPromise()
-      .then(() => {
-        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      })
-      .catch((error) => {
-        this.auditService.addEntry(new CheckStartedApiCalled());
-      });
+    if (APP_CONFIG.featureUseHpa === true) {
+      const queueName = 'check-started';
+      const { url, token } = this.tokenService.getToken('checkStarted');
+      // Create a model for the payload
+      const payload = this.storageService.getItem('pupil');
+      let result;
+      try {
+        result = await this.azureQueueService.addMessage(queueName, url, token, payload);
+      } catch (error) {
+        throw new Error(error);
+      }
+    } else {
+      this.submissionService.submitCheckStartData().toPromise()
+        .then(() => {
+          this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+          this.auditService.addEntry(new CheckStartedApiCalled());
+        })
+        .catch((error) => {
+          this.auditService.addEntry(new CheckStartedApiCalled());
+        });
+    }
   }
 }
