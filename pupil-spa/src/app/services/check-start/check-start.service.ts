@@ -33,10 +33,15 @@ export class CheckStartService {
       const { url, token } = this.tokenService.getToken('checkStarted');
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
-      let result;
+      let message;
       try {
-        result = await this.azureQueueService.addMessage(queueName, url, token, payload);
+        message = await this.azureQueueService.addMessage(queueName, url, token, payload);
+        if (message && message.messageId) {
+          this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+          this.auditService.addEntry(new CheckStartedApiCalled());
+        }
       } catch (error) {
+        this.auditService.addEntry(new CheckStartedApiCalled());
         throw new Error(error);
       }
     } else {

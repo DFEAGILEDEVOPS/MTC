@@ -31,7 +31,7 @@ export class AzureQueueService {
    * @param {String} token
    * @returns {Promise}
    */
-  private createQueueService(queueName: string, url: string, token: string): IQueueService {
+  private initQueueService(queueName: string, url: string, token: string): IQueueService {
     const service =  this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(new this.queueStorage.ExponentialRetryPolicyFilter());
@@ -50,7 +50,7 @@ export class AzureQueueService {
    */
   public async addMessage(queueName: string, url: string, token: string, payload: object): Promise<Object> {
     if (!this.serviceInstance) {
-      this.serviceInstance = this.createQueueService(queueName, url, token);
+      this.serviceInstance = this.initQueueService(queueName, url, token);
     }
     if (!this.encoder) {
       this.encoder = new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
