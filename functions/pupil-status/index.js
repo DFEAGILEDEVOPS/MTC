@@ -7,14 +7,14 @@ const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
 const winston = require('winston')
 const { TYPES } = require('tedious')
+const { getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
 
 winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
 
 const schema = '[mtc_admin]'
-let azureTableService
-initAzureTableService()
+const azureTableService = getPromisifiedAzureTableService()
 
 module.exports = async function (context, pupilStatusMessage) {
   context.log('pupil-status message received')
@@ -33,29 +33,4 @@ module.exports = async function (context, pupilStatusMessage) {
   }
 
   context.bindings.pupilEventsTable.push(entity)
-}
-
-/**
- * Promisify the azureStorage library as it still lacks Promise support
- */
-function initAzureTableService () {
-  if (!azureTableService) {
-    azureTableService = azureStorage.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
-        return new Promise((resolve, reject) => {
-          try {
-            originalFunction.call(this, ...args, (error, result, response) => {
-              if (error) {
-                return reject(error)
-              }
-              resolve({ result, response })
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
-      }
-    })
-  }
 }
