@@ -1,0 +1,43 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', { breadcrumbs: breadcrumbs }) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge">Manage check windows</h1>
+        <%- partial('partials/_session_expiry') %>
+        <p class="lede">Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.</p>
+        <div class="panel panel-border-wide">Check will be available for schools on weekdays from 8am to 3:30pm</div>
+        <br />
+
+        <div class="button-wrapper">
+            <a class="button button-primary" href="#">Create new check window</a>
+        </div>
+        <br />
+        No check windows created.
+    </div>
+
+    <div class="column-one-third sidebar" aria-label="sidebar">
+        <aside role="complementary" class="support-column">
+            <h3 class="heading-medium">Related</h3>
+            <nav role="navigation">
+                <ul class="list">
+                    <li>
+                        <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Guidance</a>
+                    </li>
+                    <li>
+                        <a href="/service-manager/check-settings">Settings on pupil check</a>
+                    </li>
+                    <li>
+                        <a href="#" class="font-greyed-out disabled-link">Progress reports</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
+</div>
