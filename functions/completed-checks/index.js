@@ -12,23 +12,32 @@ const R = require('ramda')
 winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage } = require('../lib/lib')
+const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/lib')
 
 // SQL server table
 const checkResultTable = '[checkResult]'
 const checkFormAllocationTable = '[checkFormAllocation]'
 const schema = ['mtc_admin']
+const checkStatusTable = '[checkStatus]'
+const checkTable = '[checkFormAllocation]'
 
-let azureTableService
-initAzureTableService()
+// Table Storage
+const azureTableService = getPromisifiedAzureTableService()
 
 module.exports = async function (context, completedCheckMessage) {
   context.log('completed-check message received', completedCheckMessage.checkCode)
 
-  // Update the admin database to update the check status to Check Started
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, context.log)
-    context.log('SUCCESS: Admin DB updated')
+    context.log('SUCCESS: Admin DB payload updated')
+  } catch (error) {
+    context.log.error(`ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
+    throw error
+  }
+
+  try {
+    await updateCheckStatusToComplete(completedCheckMessage.checkCode, context.log)
+    context.log('SUCCESS: Admin DB check status updated')
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
     throw error
@@ -37,7 +46,7 @@ module.exports = async function (context, completedCheckMessage) {
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   // This is a backup process in case the check-started message was not received.
   try {
-    await deleteFromPreparedCheckTableStorage(azureStorage, azureTableService, completedCheckMessage.checkCode, context.log)
+    await deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     // We can ignore "not found" errors in this function
@@ -86,33 +95,6 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
   logger.info(`SUCCESS: savePayloadToAdminDatabase: succeeded for checkCode: [${completedCheckMessage.checkCode}]`)
 }
 
-
-
-/**
- * Promisify the azureStorage library as it still lacks Promise support
- */
-function initAzureTableService () {
-  if (!azureTableService) {
-    azureTableService = azureStorage.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
-        return new Promise((resolve, reject) => {
-          try {
-            originalFunction.call(this, ...args, (error, result, response) => {
-              if (error) {
-                return reject(error)
-              }
-              resolve({ result, response })
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
-      }
-    })
-  }
-}
-
 /**
  * Retrieve the checkFormAllocation data from the db
  * @param checkCode
@@ -153,4 +135,35 @@ async function sqlInsertPayload (payload, checkFormAllocationId) {
   ]
 
   await sqlService.modify(sql, params)
+}
+
+/**
+ * Update the check status to complete
+ * @param {string} checkCode - GUID
+ * @param {function} logger
+ */
+async function updateCheckStatusToComplete(checkCode, logger) {
+  // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
+  const sql = `UPDATE ${schema}.${checkTable}
+               SET checkStatus_id = 
+                  (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP')                  
+               where checkCode = @checkCode`
+
+  const params = [
+    {
+      name: 'checkCode',
+      value: checkCode,
+      type: TYPES.UniqueIdentifier
+    }
+  ]
+
+  try {
+    const res = await sqlService.modify(sql, params)
+    if (res.rowsModified === 0) {
+      logger('updateAdminDatabaseForCheckStarted: no rows modified.  This may be a bad checkCode.')
+    }
+  } catch (error) {
+    logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
+    throw error
+  }
 }

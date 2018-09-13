@@ -1,23 +1,20 @@
 'use strict'
 
-const azureStorage = require('azure-storage')
-const bluebird = require('bluebird')
 const moment = require('moment')
-const sqlService = require('less-tedious')
-const uuid = require('uuid/v4')
 const winston = require('winston')
+const uuid = require('uuid/v4')
 const { TYPES } = require('tedious')
+const sqlService = require('less-tedious')
+const config = require('../config')
 
 winston.level = 'error'
-const config = require('../config')
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage } = require('../lib/lib')
+const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/lib')
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[checkFormAllocation]'
-const schema = ['mtc_admin']
-let azureTableService
-initAzureTableService()
+const schema = '[mtc_admin]'
+const azureTableService = getPromisifiedAzureTableService()
 
 module.exports = async function (context, checkStartMessage) {
   context.log('check-started message received', checkStartMessage.checkCode)
@@ -33,7 +30,7 @@ module.exports = async function (context, checkStartMessage) {
 
   // Delete the row in the preparedCheck table - prevent pupils logging in again.
   try {
-    await deleteFromPreparedCheckTableStorage(azureStorage, azureTableService, checkStartMessage.checkCode, context.log)
+    await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
@@ -81,30 +78,5 @@ async function updateAdminDatabaseForCheckStarted (checkCode, logger) {
   } catch (error) {
     logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
     throw error
-  }
-}
-
-/**
- * Promisify the azureStorage library as it still lacks Promise support
- */
-function initAzureTableService () {
-  if (!azureTableService) {
-    azureTableService = azureStorage.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
-        return new Promise((resolve, reject) => {
-          try {
-            originalFunction.call(this, ...args, (error, result, response) => {
-              if (error) {
-                return reject(error)
-              }
-              resolve({ result, response })
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
-      }
-    })
   }
 }
