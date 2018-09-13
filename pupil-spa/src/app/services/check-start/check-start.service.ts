@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import {
   CheckStartedApiCalled,
+  CheckStartedAPICallFailed,
   CheckStartedAPICallSucceeded,
 } from '../audit/auditEntry';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
@@ -33,16 +34,16 @@ export class CheckStartService {
       const { url, token } = this.tokenService.getToken('checkStarted');
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
-      let message;
+      const retryConfig = {
+        checkStartAPIErrorDelay: APP_CONFIG.checkStartAPIErrorDelay,
+        checkStartAPIErrorMaxAttempts: APP_CONFIG.checkStartAPIErrorMaxAttempts
+      };
       try {
-        message = await this.azureQueueService.addMessage(queueName, url, token, payload);
-        if (message && message.messageId) {
-          this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-          this.auditService.addEntry(new CheckStartedApiCalled());
-        }
-      } catch (error) {
         this.auditService.addEntry(new CheckStartedApiCalled());
-        throw new Error(error);
+        await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+      } catch (error) {
+        this.auditService.addEntry(new CheckStartedAPICallFailed(error));
       }
     } else {
       this.submissionService.submitCheckStartData().toPromise()

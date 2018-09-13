@@ -5,7 +5,7 @@ export interface IAzureStorage {
 }
 
 export interface IQueueStorage {
-  ExponentialRetryPolicyFilter: any;
+  LinearRetryPolicyFilter: any;
   createQueueServiceWithSas: (uri: string, sharedAccessToken: string) => IQueueService;
   QueueMessageEncoder: IQueueMessageEncoder;
 }

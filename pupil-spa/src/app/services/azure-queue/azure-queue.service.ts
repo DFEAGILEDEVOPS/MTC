@@ -29,12 +29,15 @@ export class AzureQueueService {
    * @param {String} queueName
    * @param {String} url
    * @param {String} token
+   * @param {Object} retryConfig
    * @returns {Promise}
    */
-  private initQueueService(queueName: string, url: string, token: string): IQueueService {
+  private initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
     const service =  this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
-      .withFilter(new this.queueStorage.ExponentialRetryPolicyFilter());
+      .withFilter(
+        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.checkStartAPIErrorMaxAttempts, retryConfig.checkStartAPIErrorDelay)
+      );
     service.performRequest = bluebird.promisify(service.performRequest, service);
     service.createMessage = bluebird.promisify(service.createMessage, service);
     return service;
@@ -46,11 +49,12 @@ export class AzureQueueService {
    * @param {String} url
    * @param {String} token
    * @param {Object} payload
+   * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage(queueName: string, url: string, token: string, payload: object): Promise<Object> {
+  public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
     if (!this.serviceInstance) {
-      this.serviceInstance = this.initQueueService(queueName, url, token);
+      this.serviceInstance = this.initQueueService(queueName, url, token, retryConfig);
     }
     if (!this.encoder) {
       this.encoder = new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
