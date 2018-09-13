@@ -10,13 +10,18 @@
           <h2 class="heading-medium error-summary-heading" id="error-summary">
             You need to fix the error on this page before continuing
           </h2>
-    
+
           <p>
             See highlighted errors below
           </p>
-    
+
           <ul class="error-summary-list">
-            <p><a href='ict-survey/feedback#feedback-comment'>Feedback comment is missing</a></p>
+            <p *ngIf="comment.value.length === 0">
+              <a href='ict-survey/feedback#feedback-comment'>Feedback comment is missing</a>
+            </p>
+            <p *ngIf="comment.value.length > 1200">
+              <a href='ict-survey/feedback#feedback-comment'>Feedback comment limit is 1200 characters</a>
+            </p>
           </ul>
       </div>
 
