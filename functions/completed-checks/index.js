@@ -1,7 +1,5 @@
 'use strict'
 
-const azureStorage = require('azure-storage')
-const bluebird = require('bluebird')
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
@@ -100,14 +98,14 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
  * @param checkCode
  * @return {Promise<void>}
  */
-async function sqlFetchCheckFormAllocation(checkCode) {
+async function sqlFetchCheckFormAllocation (checkCode) {
   const sql = `SELECT TOP 1 * FROM ${schema}.${checkFormAllocationTable} WHERE checkCode = @checkCode`
   const params = [
     {
       name: 'checkCode',
       value: checkCode,
       type: TYPES.UniqueIdentifier
-    },
+    }
   ]
   const res = await sqlService.query(sql, params)
   return R.head(res)
@@ -142,7 +140,7 @@ async function sqlInsertPayload (payload, checkFormAllocationId) {
  * @param {string} checkCode - GUID
  * @param {function} logger
  */
-async function updateCheckStatusToComplete(checkCode, logger) {
+async function updateCheckStatusToComplete (checkCode, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
                SET checkStatus_id = 
