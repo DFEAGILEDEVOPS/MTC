@@ -1,11 +1,11 @@
-# QueueTrigger - JavaScript
+# check-started - QueueTrigger - JavaScript
 
-The `QueueTrigger` makes it incredibly easy to react to new Queues inside of Azure Queue Storage. This sample demonstrates a simple use case of processing data from a given Queue using C#.
+The `check-started` QueueTrigger reacts to messages on the `check-started` queue put there by 
+the Pupil SPA front-end client.  It indicates that the check identified by the `checkCode`  in
+the message has been started.
 
-## How it works
-
-For a `QueueTrigger` to work, you provide a path which dictates where the queue messages are located inside your container.
-
-## Learn more
-
-<TODO> Documentation
+Actions taken during function execution:
+    * copies the message to the audit table `pupilEvents`
+    * updates the Admin DB to mark the check as started
+    * removes the entry in the `preparedCheck` table so the pupil can't login in again
+    

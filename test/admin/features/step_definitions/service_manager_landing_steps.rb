@@ -87,8 +87,8 @@ And(/^the service managers homepage should match design$/) do
   step "I should be given the option to upload pupil census data"
   step "I should be given the option to adjust settings on pupil check"
   step "I should be given the option to adjust settings on school pages"
-  step "I should be given the option to manage access arangements"
-  step "I should be given the option to manage restart requests"
+  # step "I should be given the option to manage access arangements"
+  # step "I should be given the option to manage restart requests"
   step "I should be given the option to view progress reports"
   step "I should be given some guidance"
 end
