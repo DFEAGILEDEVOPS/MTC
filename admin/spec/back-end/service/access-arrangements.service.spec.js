@@ -152,8 +152,8 @@ describe('accessArrangementsService', () => {
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
-            { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-            { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
+          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
+          { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
         ],
         recordedBy_user_id: 1,
         questionReaderReasonCode: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
