@@ -1,12 +1,16 @@
 class IctSurveyPage < SitePrism::Page
   set_url 'ict-survey/start'
 
-  element :heading, '.heading-xlarge', text: "Multiplication tables check ICT survey"
+  element :heading, '.heading-xlarge'
   element :purpose_message, '.lede', text: "The purpose of this survey is to help us understand the information and communications technology (ICT) used in schools."
   element :info_message_1, '.panel-border-wide p', text: "Please complete the survey using your school ICT. If you have a range of devices, complete the survey on them one at a time."
   element :info_message_2, '.column-two-thirds p', text: "Following the connection test, please give us feedback on any ICT issues you encounter."
   element :info_message_3, '.column-two-thirds p', text: "You will be able to preview the multiplication tables check system after the connections test."
   element :start_now_button, '.button-start'
+
+  element :preview_multiplication_table_check, '.button', text: "Preview multiplication tables check"
+  element :feedback_link, 'a', text: "feedback"
+
 
   section :more_detail, 'details' do
     element :toggle, 'summary'
@@ -24,4 +28,18 @@ class IctSurveyPage < SitePrism::Page
   element :footer_contact_link, '.footer-wrapper .footer-meta .footer-meta-inner ul li a', text: "Contact"
   element :footer_cookies_link, '.footer-wrapper .footer-meta .footer-meta-inner ul li a', text: "Cookies"
   element :footer_link, '.footer-wrapper .footer-meta .copyright a'
+
+  def wait_for_test_to_finish
+    i = 0
+    while i < 360
+      if(has_preview_multiplication_table_check?)
+        break
+      else
+        sleep 0.5
+        i = i + 1
+      end
+    end
+  end
+
 end
+
