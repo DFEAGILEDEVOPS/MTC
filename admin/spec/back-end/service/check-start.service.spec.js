@@ -16,8 +16,6 @@ const configService = require('../../../services/config.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
-
-
 const checkWindowMock = require('../mocks/check-window-2')
 const checkFormMock = {
   id: 100,
@@ -392,6 +390,5 @@ describe('check-start.service', () => {
       expect(Object.keys(res[0].questions[0])).toContain('factor1')
       expect(Object.keys(res[0].questions[0])).toContain('factor2')
     })
-
   })
 })
