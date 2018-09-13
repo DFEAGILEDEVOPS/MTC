@@ -14,7 +14,7 @@ sqlService.initialise(config)
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[checkFormAllocation]'
-const schema = ['mtc_admin']
+const schema = '[mtc_admin]'
 const preparedCheckTable = 'preparedCheck'
 let azureTableService
 initAzureTableService()
