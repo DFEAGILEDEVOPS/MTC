@@ -10,7 +10,7 @@ const R = require('ramda')
 winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/lib')
+const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
 
 // SQL server table
 const checkResultTable = '[checkResult]'

@@ -9,7 +9,7 @@ const config = require('../config')
 
 winston.level = 'error'
 sqlService.initialise(config)
-const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/lib')
+const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[checkFormAllocation]'
