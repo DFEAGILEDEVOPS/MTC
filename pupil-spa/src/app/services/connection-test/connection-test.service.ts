@@ -75,12 +75,12 @@ export class ConnectionTestService {
     return `${APP_CONFIG.testSasUrl}/connection-test/data/${fileSize}.text`
   }
 
-  requestFile(url: string) {
+  requestFile(url: string): any {
     return new Promise(resolve => {
       const startTime = Date.now();
 
       this.http.get(url, { responseType: 'text', observe: 'response' }).subscribe((resp: any) => {
-        const fileSize = resp.headers.keys().includes('content-length')? resp.headers.get('content-length'): resp.body.length;
+        const fileSize = resp.headers.keys().includes('content-length') ? resp.headers.get('content-length') : resp.body.length;
         const downloadTime = Date.now() - startTime;
 
         resolve({downloadTime, fileSize});
@@ -88,21 +88,31 @@ export class ConnectionTestService {
     });
   }
 
-  async benchmarkConnection(fileSizeIndex: number = 0) {
-    const currentFile     = this.filesSizes[fileSizeIndex];
-    const fileUrl         = this.getFileUrl(this.filesSizes[fileSizeIndex]);
-    const currentFileSize = parseInt(this.filesSizes[fileSizeIndex].replace(/\D/g, ''), 10);
-    const multiplier      = (fileSizeIndex < 2) ? 1024 : 1048576;
+  async benchmarkConnection(): Promise<any> {
+    let downloadTime, currentFileSize;
 
-    const { downloadTime,  fileSize } = await this.requestFile(fileUrl)
-      
-    if (downloadTime < 8000 && currentFileSize * multiplier !== fileSize) {
-      this.benchmarkConnection(fileSizeIndex);
-    } else if (downloadTime < 8000){
-      this.benchmarkConnection(++fileSizeIndex);
-    } else {
-      Math.floor((currentFileSize / downloadTime) * 8000); 
+    for (let i = 0; i < this.filesSizes.length; i++) {
+      const currentFile     = this.filesSizes[i];
+      const fileUrl         = this.getFileUrl(this.filesSizes[i]);
+      // dealing with kb or mb
+      const multiplier      = (i < 2) ? 1024 : 1048576;
+      const data = await this.requestFile(fileUrl);
+
+      currentFileSize = parseInt(this.filesSizes[i].replace(/\D/g, ''), 10);
+
+      downloadTime = data.downloadTime;
+
+      // repeat iteration
+      if (downloadTime < 8000 && data.fileSize !== multiplier * currentFileSize) {
+        i--;
+      }
+      if (downloadTime > 8000) {
+        break;
+      }
+
     }
+    this.connectionSpeed = Math.floor((currentFileSize / downloadTime) * 8000);
+    return;
   }
 
   private submitTest(testResults: object): Promise<void> {
