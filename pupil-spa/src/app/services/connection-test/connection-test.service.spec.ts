@@ -3,17 +3,18 @@ import { XHRBackend } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Observable } from 'rxjs/Observable';
-import { StorageService } from '../storage/storage.service';
-import { StorageServiceMock } from '../storage/storage.service.mock';
+import { AzureQueueServiceMock } from '../azure-queue/azure-queue.service.mock';
 import { DeviceService } from '../device/device.service';
+import { StorageServiceMock } from '../storage/storage.service.mock';
 
 import { ConnectionTestService } from './connection-test.service';
 
 describe('ConnectionTestService', () => {
-  let service, storageService, deviceService, http, router;
+  let service, storageService, deviceService, queueService, http, router;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
+    queueService = new AzureQueueServiceMock();
     deviceService = {
       getBatteryInformation: jasmine.createSpy('getBatteryInformation').and.returnValue({
         chargingTime: 'Infinity',
@@ -63,6 +64,7 @@ describe('ConnectionTestService', () => {
       router,
       storageService,
       deviceService,
+      queueService,
     );
   });
 

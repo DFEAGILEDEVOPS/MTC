@@ -8,6 +8,8 @@ import { StorageService } from '../services/storage/storage.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
+import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
+import { AzureQueueServiceMock } from '../services/azure-queue/azure-queue.service.mock';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('FeedbackComponent', () => {
@@ -27,6 +29,7 @@ describe('FeedbackComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
         { provide: Router, useValue: mockRouter },
+        { provide: AzureQueueService, useClass: AzureQueueServiceMock },
         StorageService,
         FeedbackService
       ]

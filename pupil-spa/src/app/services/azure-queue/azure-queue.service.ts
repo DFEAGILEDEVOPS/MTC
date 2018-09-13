@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { APP_CONFIG } from '../config/config.service';
 
 declare let AzureStorage;
 
 @Injectable()
 export class AzureQueueService {
-  constructor() { }
-
   public getQueueService(sasUrl: string, sasToken: string) {
     return AzureStorage.Queue.createQueueServiceWithSas(
       sasUrl,
@@ -16,7 +13,7 @@ export class AzureQueueService {
 
   public encodeMessage(message: string): string {
     const encoder = this.getEncoder();
-    return encoder.encodeMessage(message);
+    return encoder.encode(message);
   }
 
   private getEncoder() {

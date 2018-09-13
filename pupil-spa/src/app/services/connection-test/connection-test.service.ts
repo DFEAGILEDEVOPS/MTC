@@ -6,8 +6,6 @@ import { DeviceService } from '../device/device.service';
 import { StorageService } from '../storage/storage.service';
 import { AzureQueueService } from '../../services/azure-queue/azure-queue.service';
 
-declare let AzureStorage: any;
-
 @Injectable()
 export class ConnectionTestService {
   private readonly queueName = APP_CONFIG.testSasQueueName;
