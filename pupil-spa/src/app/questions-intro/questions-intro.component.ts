@@ -12,7 +12,7 @@ import { CheckStartService } from '../services/check-start/check-start.service';
 @Component({
   selector: 'app-questions-intro',
   templateUrl: './questions-intro.component.html',
-  styleUrls: ['./questions-intro.component.scss'],
+  styleUrls: ['./questions-intro.component.scss']
 })
 export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy {
 
