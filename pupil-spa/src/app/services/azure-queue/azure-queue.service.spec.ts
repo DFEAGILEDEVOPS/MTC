@@ -1,6 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
-import { QUEUE_STORAGE_TOKEN } from './azureStorage';
-import { queueStorageStub, queueServiceStub } from './queue-storage-stub';
+import { IQueueService, QUEUE_STORAGE_TOKEN } from './azureStorage';
 import { AzureQueueService } from './azure-queue.service';
 
 describe('AzureQueueService', () => {
@@ -11,7 +10,7 @@ describe('AzureQueueService', () => {
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
-        { provide: QUEUE_STORAGE_TOKEN, useValue: queueStorageStub },
+        { provide: QUEUE_STORAGE_TOKEN },
       ]
     })
     .compileComponents();
@@ -20,7 +19,19 @@ describe('AzureQueueService', () => {
     azureQueueService = TestBed.get(AzureQueueService);
   });
   it('should successfully send a message to the queue', async () => {
-    spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceStub);
+    const queueServiceMock: IQueueService = {
+      createMessage: (
+        queueName: string,
+        encodedMessage: string,
+      ) => ({ messageId: '1' }),
+      performRequest: () => {},
+      withFilter: () => this
+    };
+    const textBase64QueueMessageEncoderMock = {
+      encode: () => 'encodedMessage'
+    };
+    spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock);
+    spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock);
     const message = await azureQueueService.addMessage('queue',
       'url',
       'token',

@@ -42,6 +42,14 @@ export class AzureQueueService {
   }
 
   /**
+   * Create a text base64 queue message encoder
+   * @returns {Object}
+   */
+  public getTextBase64QueueMessageEncoder(): TextBase64QueueMessageEncoder {
+    return new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
+  }
+
+  /**
    * Add message to the queue
    * @param {String} queueName
    * @param {String} url
@@ -55,7 +63,7 @@ export class AzureQueueService {
       this.serviceInstance = this.initQueueService(queueName, url, token, retryConfig);
     }
     if (!this.encoder) {
-      this.encoder = new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
+      this.encoder = this.getTextBase64QueueMessageEncoder();
     }
     const message = JSON.stringify(payload);
     const encodedMessage = this.encoder.encode(message);

@@ -15,7 +15,6 @@ import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
-import { queueStorageStub } from '../services/azure-queue/queue-storage-stub';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
@@ -39,7 +38,7 @@ describe('QuestionsIntroComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: QUEUE_STORAGE_TOKEN, useValue: queueStorageStub },
+        { provide: QUEUE_STORAGE_TOKEN },
         AzureQueueService,
         TokenService,
         StorageService,

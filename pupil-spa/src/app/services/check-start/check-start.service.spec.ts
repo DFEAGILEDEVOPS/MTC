@@ -9,7 +9,6 @@ import { AuditService } from '../audit/audit.service';
 import { TokenService } from '../token/token.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
-import { queueStorageStub } from '../azure-queue/queue-storage-stub';
 import { APP_INITIALIZER } from '@angular/core';
 
 let checkStartService: CheckStartService;
@@ -27,7 +26,7 @@ describe('CheckStartService', () => {
           AppConfigService,
           { provide: StorageService, useValue: mockStorageService },
           { provide: SubmissionService, useClass: SubmissionServiceMock },
-          { provide: QUEUE_STORAGE_TOKEN, useValue: queueStorageStub },
+          { provide: QUEUE_STORAGE_TOKEN },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           TokenService,
           AzureQueueService,
