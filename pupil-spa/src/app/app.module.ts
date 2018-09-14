@@ -62,8 +62,8 @@ import { FooterComponent } from './footer/footer.component';
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'sign-in', pathMatch: 'full'},
-  {path: 'check', component: CheckComponent, canActivate: [LoggedInGuard]},
-  {path: 'check-start', component: InstructionsComponent, canActivate: [LoggedInGuard]},
+  {path: 'check', component: CheckComponent},
+  {path: 'check-start', component: InstructionsComponent},
   {path: 'feedback', component: FeedbackComponent},
   {path: 'feedback-thanks', component: FeedbackThanksComponent},
   {path: 'sign-in', component: LoginComponent},
@@ -72,11 +72,11 @@ const appRoutes: Routes = [
   {path: 'check-complete', component: CheckCompleteComponent },
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'ict-survey', children: [
-    {path: 'test-completed/:success', component: TestCompletedComponent},
+    {path: 'test-completed', component: TestCompletedComponent},
     {path: 'feedback', component: SurveyFeedbackComponent},
     {path: 'test', component: ConnectionTestComponent},
-    {path: 'feedback-thanks/:completed', component: SurveyFeedbackThanksComponent},
-    {path: 'preview-completed/:feedbackGiven', component: PreviewCompletedComponent},
+    {path: 'feedback-thanks', component: SurveyFeedbackThanksComponent},
+    {path: 'preview-completed', component: PreviewCompletedComponent},
     {path: 'start', component: SurveyWelcomeComponent},
   ]}
   // { path: '**', component: NotFoundComponent }
