@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { StorageService } from '../storage/storage.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
 import { DeviceService } from '../device/device.service';
+import { APP_CONFIG } from '../../services/config/config.service';
 
 import { ConnectionTestService } from './connection-test.service';
 
@@ -171,11 +172,36 @@ describe('ConnectionTestService', () => {
   describe('#benchmarkConnection', () => {
     it('should get the picture and set connectionSpeed', async () => {
       service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValue(Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 }));
+      await service.benchmarkConnection();
+      
+      expect(service.requestFile).toHaveBeenCalled();
+      expect(service.connectionSpeed).not.toEqual(-1);
+    });
+
+    it('should try to download bigger file when download time is less than 8 seconds', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(Promise.resolve({ fileSize: 128 * 1024, downloadTime: 7001 }),Promise.resolve({ fileSize: 512 * 1024, downloadTime: 8001 }));
 
       await service.benchmarkConnection();
 
-      expect(http.get).toHaveBeenCalled();
+      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
+      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/512kb.text`);
+      expect(service.requestFile.calls.count()).toEqual(2);
       expect(service.connectionSpeed).not.toEqual(-1);
     });
+
+    it('should retry to download the same file if the size doesnt match', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 }));
+
+      await service.benchmarkConnection();
+
+      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
+      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
+      expect(service.requestFile.calls.count()).toEqual(2);
+      expect(service.connectionSpeed).not.toEqual(-1);
+    })
   });
 });
