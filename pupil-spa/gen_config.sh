@@ -2,7 +2,7 @@
 testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
 testSasUrl=${TEST_SAS_URL:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
-connectionTestFile=${TEST_CONNECTION_FILE:-"/public/images/spinner-120x120.gif"}
+connectionTestBlobStorageName=${TEST_BLOB_STORAGE_NAME}
 apiUrl=${API_URL:-"http://localhost:3001"}
 authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
 checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
@@ -46,7 +46,7 @@ cat <<EOF > config.json
   "testSasQueueName": "$testSasQueueName",
   "testSasUrl": "$testSasUrl",
   "testSasToken": "$testSasToken",
-  "connectionTestFile": "$connectionTestFile",
+  "connectionTestBlobStorageName": "$connectionTestBlobStorageName",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF
