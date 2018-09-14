@@ -72,7 +72,7 @@ export class ConnectionTestService {
   }
 
   private getFileUrl(fileSize: string): string {
-    return `${APP_CONFIG.testSasUrl}/${APP_CONFIG.connectionTestBlobStorageName}/${fileSize}.text`
+    return `${APP_CONFIG.testSasUrl}/${APP_CONFIG.connectionTestBlobStorageName}/${fileSize}.text`;
   }
 
   requestFile(url: string): any {
