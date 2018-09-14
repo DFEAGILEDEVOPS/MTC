@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
+import * as bluebird from 'bluebird';
 import {
   IQueueStorage,
   IQueueService,
   QUEUE_STORAGE_TOKEN,
   ITextBase64QueueMessageEncoder,
-  IPromisifier,
 } from './azureStorage';
 import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
-import { Promisifier } from './promisify';
 
 /**
  * Declaration of azure queue service
@@ -29,17 +28,16 @@ export class AzureQueueService {
    * @param {String} url
    * @param {String} token
    * @param {Object} retryConfig
-   * @returns {Promise}
+   * @returns {Object}
    */
-  private initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
-    const service =  this.queueStorage
+  public initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
+    const service = this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(
         new this.queueStorage.LinearRetryPolicyFilter(retryConfig.checkStartAPIErrorMaxAttempts, retryConfig.checkStartAPIErrorDelay)
       );
-    const promisifier: IPromisifier = new Promisifier();
-    service.performRequest = promisifier.promisify(service.performRequest, service);
-    service.createMessage = promisifier.promisify(service.createMessage, service);
+    service.performRequest = bluebird.promisify(service.performRequest, service);
+    service.createMessage = bluebird.promisify(service.createMessage, service);
     return service;
   }
 

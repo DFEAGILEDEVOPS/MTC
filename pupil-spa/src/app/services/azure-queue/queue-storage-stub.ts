@@ -1,5 +1,4 @@
 import {
-  IPromisifier,
   IQueueMessageEncoder,
   IQueueService,
   IQueueStorage,
@@ -18,27 +17,16 @@ const queueMessageEncoder: IQueueMessageEncoder = {
 };
 
 export const queueStorageStub: IQueueStorage = {
-  createQueueServiceWithSas: () => queueService,
+  createQueueServiceWithSas: () => queueServiceStub,
   LinearRetryPolicyFilter: () => {},
   QueueMessageEncoder: queueMessageEncoder
 };
 
-const queueService: IQueueService = {
+export const queueServiceStub: IQueueService = {
   createMessage: (
     queueName: string,
     encodedMessage: string,
   ) => ({ messageId: '1' }),
   performRequest: () => {},
-  withFilter: () => queueService
+  withFilter: () => queueServiceStub
 };
-
-// export const promisifier: IPromisifier = {
-//   promisify: () => ({ messageId: '1' })
-// };
-
-export class PromisifierStub implements IPromisifier {
-  constructor() {}
-  public promisify(method, service) {
-    return ({ messageId: '1' });
-  }
-}

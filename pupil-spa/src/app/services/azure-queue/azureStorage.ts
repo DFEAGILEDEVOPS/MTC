@@ -24,8 +24,4 @@ export interface ITextBase64QueueMessageEncoder {
   encode: (message: string) => string;
 }
 
-export interface IPromisifier {
-  promisify: (method: any, service: any) => any;
-}
-
 export const QUEUE_STORAGE_TOKEN = new InjectionToken<IQueueStorage>('QUEUE_STORAGE_TOKEN');

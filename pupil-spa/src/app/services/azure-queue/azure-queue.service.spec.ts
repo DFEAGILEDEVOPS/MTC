@@ -1,8 +1,7 @@
 import { async, TestBed } from '@angular/core/testing';
 import { QUEUE_STORAGE_TOKEN } from './azureStorage';
-import { queueStorageStub, PromisifierStub } from './queue-storage-stub';
+import { queueStorageStub, queueServiceStub } from './queue-storage-stub';
 import { AzureQueueService } from './azure-queue.service';
-import { Promisifier } from './promisify';
 
 describe('AzureQueueService', () => {
 
@@ -13,7 +12,6 @@ describe('AzureQueueService', () => {
       providers: [
         AzureQueueService,
         { provide: QUEUE_STORAGE_TOKEN, useValue: queueStorageStub },
-        { provide: Promisifier, useClass: PromisifierStub }
       ]
     })
     .compileComponents();
@@ -22,6 +20,7 @@ describe('AzureQueueService', () => {
     azureQueueService = TestBed.get(AzureQueueService);
   });
   it('should successfully send a message to the queue', async () => {
+    spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceStub);
     const message = await azureQueueService.addMessage('queue',
       'url',
       'token',
@@ -32,5 +31,6 @@ describe('AzureQueueService', () => {
       }
     );
     expect(message).toEqual({ messageId: '1' });
+    expect(azureQueueService.initQueueService).toHaveBeenCalled();
   });
 });
