@@ -17,11 +17,22 @@ import { TokenService } from '../token/token.service';
 @Injectable()
 export class CheckStartService {
 
+  featureUseHpa;
+  checkStartAPIErrorDelay;
+  checkStartAPIErrorMaxAttempts;
+
   constructor(private azureQueueService: AzureQueueService,
               private submissionService: SubmissionService,
               private storageService: StorageService,
               private tokenService: TokenService,
               private auditService: AuditService) {
+    const { featureUseHpa,
+      checkStartAPIErrorDelay,
+      checkStartAPIErrorMaxAttempts
+    } = APP_CONFIG;
+    this.featureUseHpa = featureUseHpa;
+    this.checkStartAPIErrorDelay = checkStartAPIErrorDelay;
+    this.checkStartAPIErrorMaxAttempts = checkStartAPIErrorMaxAttempts;
   }
 
   /**
@@ -29,14 +40,14 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    if (APP_CONFIG.featureUseHpa === true) {
+    if (this.featureUseHpa === true) {
       const queueName = 'check-started';
       const { url, token } = this.tokenService.getToken('checkStarted');
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
       const retryConfig = {
-        checkStartAPIErrorDelay: APP_CONFIG.checkStartAPIErrorDelay,
-        checkStartAPIErrorMaxAttempts: APP_CONFIG.checkStartAPIErrorMaxAttempts
+        checkStartAPIErrorDelay: this.checkStartAPIErrorDelay,
+        checkStartAPIErrorMaxAttempts: this.checkStartAPIErrorMaxAttempts
       };
       try {
         this.auditService.addEntry(new CheckStartedApiCalled());
