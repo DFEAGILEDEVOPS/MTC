@@ -57,14 +57,13 @@ export class CheckStartService {
         this.auditService.addEntry(new CheckStartedAPICallFailed(error));
       }
     } else {
-      this.submissionService.submitCheckStartData().toPromise()
-        .then(() => {
-          this.auditService.addEntry(new CheckStartedAPICallSucceeded());
-          this.auditService.addEntry(new CheckStartedApiCalled());
-        })
-        .catch((error) => {
-          this.auditService.addEntry(new CheckStartedApiCalled());
-        });
+      try {
+        await this.submissionService.submitCheckStartData().toPromise();
+        this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      } catch (error) {
+        this.auditService.addEntry(new CheckStartedApiCalled());
+      };
     }
   }
 }
