@@ -7,7 +7,7 @@ set -e
 cd ../../admin && npm start > server.admin.log 2>&1 &
 
 # start pupil-auth service
-cd ../../pupil-auth && npm start > server.auth.log 2>&1 &
+#cd ../../pupil-auth && npm start > server.auth.log 2>&1 &
 
 # start pupil app
 cd ../../pupil-spa && npm start &

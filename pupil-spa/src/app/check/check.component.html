@@ -6,7 +6,7 @@
     </app-warmup-intro>
     <app-warmup-loading *ngSwitchCase="'warmup-preload'"
         [question]="question"
-        [loadingTimeout]="config.loadingTime"
+        [loadingTimeout]="config.warmupLoadingTime"
         (timeoutEvent)="loadingTimeoutHandler($event)"
         [total]="totalNumberOfQuestions">
     </app-warmup-loading>
