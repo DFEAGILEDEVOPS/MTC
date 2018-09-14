@@ -34,7 +34,7 @@ export class SurveyFeedbackComponent {
   get comment() { return this.feedbackForm.get('comment'); }
 
   async onSubmit() {
-    if (!this.feedbackForm.valid) {
+    if (this.isFormInvalid()) {
       this.userSubmittedForm = true;
       // scroll to the top so users can see validation errors
       scroll(0, 0);
@@ -49,4 +49,7 @@ export class SurveyFeedbackComponent {
     this.router.navigate(['ict-survey/feedback-thanks']);
   }
 
+  isFormInvalid(): boolean {
+    return !this.feedbackForm.valid;
+  }
 }
