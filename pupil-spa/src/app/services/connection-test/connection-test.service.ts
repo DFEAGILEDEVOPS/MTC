@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent } from '@angular/common/http';
-import { map, tap, last } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { APP_CONFIG } from '../config/config.service';
 import { DeviceService } from '../device/device.service';
@@ -11,15 +11,15 @@ declare let AzureStorage: any;
 @Injectable()
 export class ConnectionTestService {
   private readonly queueName = APP_CONFIG.testSasQueueName;
-  private timeoutSeconds = 30;
   private fibonacciN = 10000;
   private fibonacciIterations = 50000;
   private processingTime = -1;
   private connectionSpeed = -1;
   private connectionTestResult: number;
   private filesSizes = [
-    '128kb', '512kb', '1mb', '2mb', '4mb', '8mb', '16mb', '32mb', '64mb', '128mb'
+    '128kb', '256kb', '512kb', '1mb', '2mb', '4mb', '8mb', '16mb', '32mb', '64mb', '128mb'
   ];
+  private downloadTimeTimeout = 8 * 1000; // 8 seconds
 
   constructor(private http: HttpClient,
               private router: Router,
@@ -72,47 +72,62 @@ export class ConnectionTestService {
   }
 
   private getFileUrl(fileSize: string): string {
-    return `${APP_CONFIG.testSasUrl}/${APP_CONFIG.connectionTestBlobStorageName}/${fileSize}.text`;
+    // strip the trailing '/' if there is any
+    const connectionTestBlobUrl = APP_CONFIG.connectionTestBlobUrl.replace(/\/$/, '');
+
+    return `${connectionTestBlobUrl}/${APP_CONFIG.connectionTestBlobStorageName}/${fileSize}.text?nocache=${(new Date()).getTime()}`;
   }
 
-  requestFile(url: string): any {
-    return new Promise(resolve => {
-      const startTime = Date.now();
+  private requestFile(url: string): Promise<any> {
+    const startTime = Date.now();
 
-      this.http.get(url, { responseType: 'text', observe: 'response' }).subscribe((resp: any) => {
-        const fileSize = resp.headers.keys().includes('content-length') ? resp.headers.get('content-length') : resp.body.length;
-        const downloadTime = Date.now() - startTime;
+    return this.http
+      .get(url, { responseType: 'text', observe: 'response' })
+      .pipe(
+        map((resp: any) => {
+          const fileSize = resp.headers.keys().includes('content-length')
+            ? resp.headers.get('content-length')
+            : resp.body.length;
+          const downloadTime = Date.now() - startTime;
 
-        resolve({downloadTime, fileSize});
-      });
+          return { downloadTime, fileSize };
+        })
+      )
+      .toPromise();
+  }
+
+  public benchmarkConnection(): Promise<any> {
+    return new Promise(async (resolve) => {
+      let downloadTime, currentFileSize, multiplier;
+
+      for (let i = 0; i < this.filesSizes.length; i++) {
+        // dealing with kb or mb
+        multiplier = this.filesSizes[i].endsWith('kb') ? 1024 : 1024 * 1024;
+        const fileUrl = this.getFileUrl(this.filesSizes[i]);
+
+        let data;
+        try {
+          data = await this.requestFile(fileUrl);
+        } catch (e) {
+          continue;
+        }
+
+        currentFileSize = parseInt(this.filesSizes[i].replace(/\D/g, ''), 10);
+        downloadTime = data.downloadTime;
+
+        // retry downloading the file if the fileSize doesn't correspond
+        // to what we expected here
+        if (downloadTime < this.downloadTimeTimeout && data.fileSize !== multiplier * currentFileSize) {
+          i--;
+        }
+        if (downloadTime > this.downloadTimeTimeout) {
+          break;
+        }
+      }
+
+      this.connectionSpeed = currentFileSize * multiplier / downloadTime;
+      resolve();
     });
-  }
-
-  async benchmarkConnection(): Promise<any> {
-    let downloadTime, currentFileSize;
-
-    for (let i = 0; i < this.filesSizes.length; i++) {
-      const currentFile     = this.filesSizes[i];
-      const fileUrl         = this.getFileUrl(this.filesSizes[i]);
-      // dealing with kb or mb
-      const multiplier      = (i < 2) ? 1024 : 1048576;
-      const data = await this.requestFile(fileUrl);
-
-      currentFileSize = parseInt(this.filesSizes[i].replace(/\D/g, ''), 10);
-
-      downloadTime = data.downloadTime;
-
-      // repeat iteration
-      if (downloadTime < 8000 && data.fileSize !== multiplier * currentFileSize) {
-        i--;
-      }
-      if (downloadTime > 8000) {
-        break;
-      }
-
-    }
-    this.connectionSpeed = Math.floor((currentFileSize / downloadTime) * 8000);
-    return;
   }
 
   private submitTest(testResults: object): Promise<void> {

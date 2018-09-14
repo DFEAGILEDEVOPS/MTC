@@ -170,11 +170,22 @@ describe('ConnectionTestService', () => {
   });
 
   describe('#benchmarkConnection', () => {
-    it('should get the picture and set connectionSpeed', async () => {
+    beforeEach(() => {
+      jasmine.clock().mockDate(new Date('2018-01-01'));
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('should get the first file and set connectionSpeed if timeout is > than 8000', async () => {
       service.connectionSpeed = -1;
       spyOn(service, 'requestFile').and.returnValue(Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 }));
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
+
       await service.benchmarkConnection();
 
+      expect(service.getFileUrl).toHaveBeenCalled();
       expect(service.requestFile).toHaveBeenCalled();
       expect(service.connectionSpeed).not.toEqual(-1);
     });
@@ -183,13 +194,14 @@ describe('ConnectionTestService', () => {
       service.connectionSpeed = -1;
       spyOn(service, 'requestFile').and.returnValues(
         Promise.resolve({ fileSize: 128 * 1024, downloadTime: 7001 }),
-        Promise.resolve({ fileSize: 512 * 1024, downloadTime: 8001 })
+        Promise.resolve({ fileSize: 256 * 1024, downloadTime: 8001 })
       );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
 
       await service.benchmarkConnection();
 
-      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
-      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/512kb.text`);
+      expect(service.requestFile).toHaveBeenCalledWith('128kb');
+      expect(service.requestFile).toHaveBeenCalledWith('256kb');
       expect(service.requestFile.calls.count()).toEqual(2);
       expect(service.connectionSpeed).not.toEqual(-1);
     });
@@ -200,11 +212,12 @@ describe('ConnectionTestService', () => {
         Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
         Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 })
       );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
 
       await service.benchmarkConnection();
 
-      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
-      expect(service.requestFile).toHaveBeenCalledWith(`${APP_CONFIG.testSasUrl}/connection-test/data/128kb.text`);
+      expect(service.requestFile).toHaveBeenCalledWith('128kb');
+      expect(service.requestFile).toHaveBeenCalledWith('128kb');
       expect(service.requestFile.calls.count()).toEqual(2);
       expect(service.connectionSpeed).not.toEqual(-1);
     });
