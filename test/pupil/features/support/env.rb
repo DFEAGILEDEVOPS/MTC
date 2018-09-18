@@ -12,7 +12,9 @@ require 'mongo'
 require 'waitutil'
 require 'tiny_tds'
 require 'show_me_the_cookies'
+require 'httparty'
 require_relative '../../features/support/browserstack_driver_helper'
+require_relative '../../features/support/request_helper'
 
 require_relative 'helpers'
 include Helpers
