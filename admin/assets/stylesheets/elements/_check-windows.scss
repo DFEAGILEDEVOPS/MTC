@@ -19,3 +19,22 @@
     }
   }
 }
+
+.inline-group {
+  display: inline-block;
+  margin-bottom: pem(20px);
+}
+
+.start-date {
+  float: left;
+}
+
+.end-date {
+  float: left;
+}
+
+.separator {
+  float: left;
+  margin-top: pem(30px);
+  margin-right: pem(15px);
+}
