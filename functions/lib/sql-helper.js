@@ -10,7 +10,7 @@ const schema = '[mtc_admin]'
 /**
  * Retrieve the checkFormAllocation data from the db
  * @param checkCode
- * @return {Promise<void>}
+ * @return {Promise<object>}
  */
 module.exports.sqlFindCheckByCheckCode = async function (checkCode) {
   const sql = `SELECT TOP 1 * FROM ${schema}.${checkFormAllocationTable} WHERE checkCode = @checkCode`
