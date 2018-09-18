@@ -7,32 +7,51 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
+import { CheckStartService } from '../services/check-start/check-start.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { SubmissionServiceMock } from '../services/submission/submission.service.mock';
+import { AuditEntry, CheckStarted, QuestionIntroRendered } from '../services/audit/auditEntry';
+import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
+import { TokenService } from '../services/token/token.service';
+import { StorageService } from '../services/storage/storage.service';
 import { SubmissionService } from '../services/submission/submission.service';
-import { AuditEntry, QuestionIntroRendered } from '../services/audit/auditEntry';
-import 'rxjs/add/operator/toPromise';
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { AppUsageService } from '../services/app-usage/app-usage.service';
 
 describe('QuestionsIntroComponent', () => {
   let component: QuestionsIntroComponent;
   let fixture: ComponentFixture<QuestionsIntroComponent>;
-  let submissionService;
   let auditEntryInserted: AuditEntry;
   let auditService;
+  let checkStartService;
   let addEntrySpy;
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
+    const inject = TestBed.configureTestingModule({
       declarations: [ QuestionsIntroComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
+      imports: [HttpClientTestingModule],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: SubmissionService, useClass: SubmissionServiceMock }
+        { provide: QUEUE_STORAGE_TOKEN },
+        AzureQueueService,
+        TokenService,
+        StorageService,
+        CheckStartService,
+        SubmissionService,
+        CheckStartService,
+        AppUsageService
       ]
-    })
-    .compileComponents();
+    });
+    httpClient = TestBed.get(HttpClient);
+    httpTestingController = TestBed.get(HttpTestingController);
+    checkStartService = inject.get(CheckStartService);
+    inject.compileComponents();
   }));
 
   beforeEach(() => {
@@ -50,43 +69,19 @@ describe('QuestionsIntroComponent', () => {
   });
 
   describe('onClick()', () => {
-    describe('when submission service call succeeds', () => {
-      beforeEach(() => {
-        submissionService = fixture.debugElement.injector.get(SubmissionService);
-        spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue({ toPromise: () => Promise.resolve() });
-      });
-      it('successfully calls submission service and audit service', async (async() => {
+    describe('calls check start submit', () => {
+      it('successfully calls check start service', async (async() => {
+        checkStartService = fixture.debugElement.injector.get(CheckStartService);
+        spyOn(checkStartService, 'submit');
         component.clickEvent.subscribe(g => {
           expect(g).toBe(null);
         });
         await component.onClick();
         fixture.whenStable().then(() => {
           fixture.detectChanges();
-          expect(auditService.addEntry).toHaveBeenCalledTimes(4);
-          expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedAPICallSucceeded');
-          expect(addEntrySpy.calls.all()[3].args[0].type).toEqual('CheckStartedApiCalled');
+          expect(auditEntryInserted instanceof CheckStarted).toBeTruthy();
         });
-        expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
-      }));
-    });
-    describe('when submission service call fails', () => {
-      beforeEach(() => {
-        submissionService = fixture.debugElement.injector.get(SubmissionService);
-        spyOn(submissionService, 'submitCheckStartData')
-          .and.returnValue({ toPromise: () => Promise.reject(new Error('Error')) });
-      });
-      it('throws the error and logs in audit service the failure', (async () => {
-        component.clickEvent.subscribe(g => {
-          expect(g).toBe(null);
-        });
-        await component.onClick();
-        fixture.whenStable()
-          .then(() => {
-            expect(auditService.addEntry).toHaveBeenCalledTimes(3);
-            expect(addEntrySpy.calls.all()[2].args[0].type).toEqual('CheckStartedApiCalled');
-          });
-        expect(submissionService.submitCheckStartData).toHaveBeenCalledTimes(1);
+        expect(checkStartService.submit).toHaveBeenCalledTimes(1);
       }));
     });
   });
