@@ -2,7 +2,7 @@
   "disabled": false,
   "bindings": [
     {
-      "name": "checkStartMessage",
+      "name": "feedbackMessage",
       "type": "queueTrigger",
       "direction": "in",
       "queueName": "pupil-feedback",
