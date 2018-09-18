@@ -99,8 +99,14 @@ export class ConnectionTestService {
   public benchmarkConnection(): Promise<any> {
     return new Promise(async (resolve) => {
       let downloadTime, currentFileSize, multiplier;
+      let maxRetries = 3;
 
       for (let i = 0; i < this.filesSizes.length; i++) {
+        if (maxRetries === 0) {
+          maxRetries = 3;
+          continue;
+        }
+
         // dealing with kb or mb
         multiplier = this.filesSizes[i].endsWith('kb') ? 1024 : 1024 * 1024;
         const fileUrl = this.getFileUrl(this.filesSizes[i]);
@@ -115,13 +121,15 @@ export class ConnectionTestService {
         currentFileSize = parseInt(this.filesSizes[i].replace(/\D/g, ''), 10);
         downloadTime = data.downloadTime;
 
+        if (downloadTime >= this.downloadTimeTimeout) {
+          break;
+        }
+
         // retry downloading the file if the fileSize doesn't correspond
         // to what we expected here
-        if (downloadTime < this.downloadTimeTimeout && data.fileSize !== multiplier * currentFileSize) {
+        if (data.fileSize !== multiplier * currentFileSize) {
           i--;
-        }
-        if (downloadTime > this.downloadTimeTimeout) {
-          break;
+          maxRetries--;
         }
       }
 

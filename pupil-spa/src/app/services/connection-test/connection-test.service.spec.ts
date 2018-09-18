@@ -200,8 +200,7 @@ describe('ConnectionTestService', () => {
 
       await service.benchmarkConnection();
 
-      expect(service.requestFile).toHaveBeenCalledWith('128kb');
-      expect(service.requestFile).toHaveBeenCalledWith('256kb');
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['256kb']]);
       expect(service.requestFile.calls.count()).toEqual(2);
       expect(service.connectionSpeed).not.toEqual(-1);
     });
@@ -216,10 +215,26 @@ describe('ConnectionTestService', () => {
 
       await service.benchmarkConnection();
 
-      expect(service.requestFile).toHaveBeenCalledWith('128kb');
-      expect(service.requestFile).toHaveBeenCalledWith('128kb');
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['128kb']]);
       expect(service.requestFile.calls.count()).toEqual(2);
       expect(service.connectionSpeed).not.toEqual(-1);
+    });
+
+    it('should limit same file downloads if the size doesnt match', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 256 * 1024, downloadTime: 8001 })
+      );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
+
+      await service.benchmarkConnection();
+
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['128kb'], ['128kb'], ['256kb'], ['256kb']]);
+      expect(service.requestFile.calls.count()).toEqual(5);
     });
   });
 });
