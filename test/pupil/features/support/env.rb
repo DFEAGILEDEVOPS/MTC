@@ -12,10 +12,16 @@ require 'mongo'
 require 'waitutil'
 require 'tiny_tds'
 require 'show_me_the_cookies'
+require 'httparty'
 require_relative '../../features/support/browserstack_driver_helper'
+require_relative '../../features/support/request_helper'
 
 require_relative 'helpers'
 include Helpers
+
+ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
+
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
