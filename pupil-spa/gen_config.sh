@@ -1,4 +1,9 @@
 #!/bin/bash
+# Initialise .env first
+if [ -f ".env" ]; then
+    export $(egrep -v '^#' .env | xargs)
+fi
+
 testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
 testSasUrl=${TEST_SAS_URL:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
