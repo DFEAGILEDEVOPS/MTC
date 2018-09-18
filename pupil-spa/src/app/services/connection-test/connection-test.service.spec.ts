@@ -46,7 +46,8 @@ describe('ConnectionTestService', () => {
         innerHeight: 344,
         colorDepth: 24,
         orientation: 'landscape-primary'
-      })
+      }),
+      getLocalStorageStatus: jasmine.createSpy('getLocalStorageStatus').and.returnValue(true)
     };
     http = {
       get: jasmine.createSpy('get').and.returnValue(Observable.of({
@@ -82,6 +83,7 @@ describe('ConnectionTestService', () => {
     expect(deviceService.getNavigatorProperties).toHaveBeenCalled();
     expect(deviceService.getNetworkInformation).toHaveBeenCalled();
     expect(deviceService.getScreenProperties).toHaveBeenCalled();
+    expect(deviceService.getLocalStorageStatus).toHaveBeenCalled();
 
     expect(testData).toEqual({
       device: {
@@ -115,7 +117,8 @@ describe('ConnectionTestService', () => {
           innerHeight: 344,
           colorDepth: 24,
           orientation: 'landscape-primary'
-        }
+        },
+        localStorageEnabled: true
       },
       processingTime: 1,
       connectionSpeed: 2

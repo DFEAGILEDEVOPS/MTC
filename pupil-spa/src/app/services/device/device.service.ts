@@ -52,6 +52,21 @@ export class DeviceService {
   }
 
   /**
+   * Basic localstorage feature check
+   * @return {boolean}
+   */
+  getLocalStorageStatus() {
+    const test = 'test';
+    try {
+      localStorage.setItem(test, test);
+      localStorage.removeItem(test);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Warning: experimental - limited support
    */
   getOrientation() {

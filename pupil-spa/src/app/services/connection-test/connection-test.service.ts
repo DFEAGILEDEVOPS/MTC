@@ -52,6 +52,7 @@ export class ConnectionTestService {
         navigator: this.deviceService.getNavigatorProperties(),
         networkConnection: this.deviceService.getNetworkInformation(),
         screen: this.deviceService.getScreenProperties(),
+        localStorageEnabled: this.deviceService.getLocalStorageStatus(),
       },
       processingTime: this.processingTime,
       connectionSpeed: this.connectionSpeed,
