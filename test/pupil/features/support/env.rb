@@ -19,6 +19,10 @@ require_relative '../../features/support/request_helper'
 require_relative 'helpers'
 include Helpers
 
+ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
+
+
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
   config.app_host = ENV["BASE_URL"] ||= 'http://localhost:4200'

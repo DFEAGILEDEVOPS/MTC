@@ -1,9 +1,9 @@
 Given(/^I have generated a pin via the admin app$/) do
-  visit 'http://localhost:3001'
+  visit ENV['ADMIN_BASE_URL']
   find('#username').set 'teacher1'
   find('#password').set 'password'
   find('input[value="Sign in"]').click
-  visit 'http://localhost:3001/pupil-pin/generate-live-pins-list'
+  visit ENV['ADMIN_BASE_URL']+'/pupil-pin/generate-live-pins-list'
   all('tbody tr').first.find('input[type="checkbox"]').click
   find('.sticky-banner-wrapper #stickyConfirm').click
   @school_password = all('.pin-content span:nth-child(2)').last.text
