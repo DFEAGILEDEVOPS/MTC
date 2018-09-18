@@ -11,7 +11,7 @@ import { APP_CONFIG } from '../../services/config/config.service';
 import { ConnectionTestService } from './connection-test.service';
 
 describe('ConnectionTestService', () => {
-  let service, storageService, deviceService, http, router;
+  let service, storageService, deviceService, http, router, windowRefService;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
@@ -60,11 +60,18 @@ describe('ConnectionTestService', () => {
     router = {
       navigate: jasmine.createSpy('navigate'),
     };
+    windowRefService = {
+      nativeWindow: {
+        setTimeout: jasmine.createSpy('setTimeout'),
+        clearTimeout: jasmine.createSpy('clearTimeout'),
+      }
+    };
     service = new ConnectionTestService(
       http,
       router,
       storageService,
       deviceService,
+      windowRefService,
     );
   });
 

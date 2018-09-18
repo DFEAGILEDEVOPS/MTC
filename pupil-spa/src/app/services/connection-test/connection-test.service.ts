@@ -5,34 +5,51 @@ import { Router } from '@angular/router';
 import { APP_CONFIG } from '../config/config.service';
 import { DeviceService } from '../device/device.service';
 import { StorageService } from '../storage/storage.service';
+import { WindowRefService } from '../window-ref/window-ref.service';
 
 declare let AzureStorage: any;
 
 @Injectable()
 export class ConnectionTestService {
   private readonly queueName = APP_CONFIG.testSasQueueName;
-  private fibonacciN = 10000;
-  private fibonacciIterations = 50000;
-  private processingTime = -1;
-  private connectionSpeed = -1;
-  private connectionTestResult: number;
-  private filesSizes = [
+  private readonly timeoutInSeconds = 30;
+  private readonly fibonacciN = 10000;
+  private readonly fibonacciIterations = 5000;
+  private readonly downloadTimeTimeout = 8 * 1000; // 8 seconds
+  private readonly filesSizes = [
     '128kb', '256kb', '512kb', '1mb', '2mb', '4mb', '8mb', '16mb', '32mb', '64mb', '128mb'
   ];
-  private downloadTimeTimeout = 8 * 1000; // 8 seconds
+  private processingTime = -1;
+  private connectionSpeed = -1;
+  private testTimeout;
+  private testRunning = true;
 
   constructor(private http: HttpClient,
               private router: Router,
               private storageService: StorageService,
-              private deviceService: DeviceService) {}
+              private deviceService: DeviceService,
+              private windowRefService: WindowRefService) {}
 
   async startTest() {
+    const _window = this.windowRefService.nativeWindow;
+
+    this.testTimeout = _window.setTimeout(() => {
+      this.testRunning = false;
+      this.storageService.setItem('test_status', false);
+      this.router.navigate(['/ict-survey/test-completed']);
+    }, this.timeoutInSeconds * 1000);
+
     await Promise.all([
       this.benchmarkProcessing(),
       this.benchmarkConnection()
     ]);
 
     const testResults = await this.getTestResults();
+
+    // exit without submitting if the test is not running anymore (timeout)
+    if (!this.testRunning) {
+      return;
+    }
 
     try {
       await this.submitTest(testResults);
@@ -41,6 +58,7 @@ export class ConnectionTestService {
       this.storageService.setItem('test_status', false);
     }
 
+    _window.clearTimeout(this.testTimeout);
     this.router.navigate(['/ict-survey/test-completed']);
   }
 
@@ -64,6 +82,10 @@ export class ConnectionTestService {
       const startTime = Date.now();
 
       for (let i = 0; i < this.fibonacciIterations; i++) {
+        // stop the fibonacci computing if the test is not running
+        if (!this.testRunning) {
+          break;
+        }
         this.fibonacci(this.fibonacciN);
       }
 
@@ -103,6 +125,10 @@ export class ConnectionTestService {
       let maxRetries = 3;
 
       for (let i = 0; i < this.filesSizes.length; i++) {
+        // stop download attempts if the test is not running
+        if (!this.testRunning) {
+          break;
+        }
         if (maxRetries === 0) {
           maxRetries = 3;
           continue;
