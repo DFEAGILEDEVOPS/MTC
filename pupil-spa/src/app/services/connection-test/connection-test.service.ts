@@ -17,7 +17,8 @@ export class ConnectionTestService {
   private readonly fibonacciIterations = 5000;
   private readonly downloadTimeTimeout = 8 * 1000; // 8 seconds
   private readonly filesSizes = [
-    '128kb', '256kb', '512kb', '1mb', '2mb', '4mb', '8mb', '16mb', '32mb', '64mb', '128mb'
+    // the maximum filesize that will be downloaded is the last one in the list
+    '128kb', '256kb', '512kb', '1mb', '2mb', '4mb'// , '8mb', '16mb', '32mb', '64mb', '128mb'
   ];
   private processingTime = -1;
   private connectionSpeed = -1;
