@@ -21,6 +21,7 @@ include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
+ENV['WAIT_TIME'] ||= '20'
 
 
 Capybara.configure do |config|
