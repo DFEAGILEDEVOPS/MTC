@@ -7,9 +7,9 @@ import { APP_CONFIG } from '../services/config/config.service';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
-  private linkPrivacy: String;
-  private linkContact: String;
-  private linkCookies: String;
+  public linkPrivacy: String;
+  public linkContact: String;
+  public linkCookies: String;
 
   constructor() {
     this.linkPrivacy = `${APP_CONFIG.apiURL}/privacy`;

@@ -1,4 +1,14 @@
 #!/bin/bash
+# Initialise .env first
+if [ -f ".env" ]; then
+    export $(egrep -v '^#' .env | xargs)
+fi
+
+testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
+testSasUrl=${TEST_SAS_URL:-""}
+testSasToken=${TEST_SAS_TOKEN:-""}
+connectionTestBlobUrl=${TEST_BLOB_URL:-""}
+connectionTestBlobStorageName=${TEST_BLOB_STORAGE_NAME:-""}
 apiUrl=${API_URL:-"http://localhost:3001"}
 authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
 checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
@@ -39,6 +49,11 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
+  "testSasQueueName": "$testSasQueueName",
+  "testSasUrl": "$testSasUrl",
+  "testSasToken": "$testSasToken",
+  "connectionTestBlobUrl": "$connectionTestBlobUrl",
+  "connectionTestBlobStorageName": "$connectionTestBlobStorageName",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF

@@ -1,23 +1,24 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit} from '@angular/core';
 import { StorageService } from '../services/storage/storage.service';
+import { ConnectionTestService } from '../services/connection-test/connection-test.service';
 
 @Component({
   selector: 'app-connection-test',
   templateUrl: './connection-test.component.html',
   styleUrls: ['./connection-test.component.scss']
 })
-export class ConnectionTestComponent {
-
+export class ConnectionTestComponent implements OnInit {
   constructor(
-    private storage: StorageService,
-    private router: Router
-  ) {
-    // reset the feedback and preview flags when starting the test
-    this.storage.setItem('feedback_given', false);
-    this.storage.setItem('preview_completed', false);
+    private storageService: StorageService,
+    private connectionTestService: ConnectionTestService) {
 
-    setTimeout(() => router.navigate(['ict-survey/test-completed']), 10000);
+    // reset the feedback and preview flags when starting the test
+    this.storageService.setItem('feedback_given', false);
+    this.storageService.setItem('preview_completed', false);
   }
 
+  async ngOnInit() {
+    // setTimeout needed as 'rendering' seems to be blocked in some browsers otherwise
+    setTimeout(() => this.connectionTestService.startTest(), 1000);
+  }
 }

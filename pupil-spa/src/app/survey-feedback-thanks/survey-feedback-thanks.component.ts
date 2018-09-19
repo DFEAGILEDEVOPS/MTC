@@ -7,7 +7,7 @@ import { StorageService } from '../services/storage/storage.service';
   styleUrls: ['./survey-feedback-thanks.component.scss']
 })
 export class SurveyFeedbackThanksComponent {
-  private previewed: Boolean;
+  public previewed: Boolean;
 
   constructor(private storage: StorageService) {
     this.previewed = this.storage.getItem('preview_completed') === true;

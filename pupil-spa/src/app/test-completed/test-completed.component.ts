@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-test-completed',
@@ -7,10 +7,10 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./test-completed.component.scss']
 })
 export class TestCompletedComponent {
-  private testSuccessful: Boolean;
+  public testSuccessful: Boolean;
 
-  constructor(private route: ActivatedRoute) {
-    this.testSuccessful = this.route.snapshot.paramMap.get('success') === 'true' ? true : false;
+  constructor(private storage: StorageService) {
+    this.testSuccessful = this.storage.getItem('test_status') === true;
   }
 
 }

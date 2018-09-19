@@ -18,6 +18,7 @@ import { AppComponent } from './app.component';
 import { AuditService } from './services/audit/audit.service';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
 import { CheckComponent } from './check/check.component';
+import { ConnectionTestService } from './services/connection-test/connection-test.service';
 import { DeviceService } from './services/device/device.service';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { FeedbackService } from './services/feedback/feedback.service';
@@ -138,6 +139,7 @@ const appRoutes: Routes = [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     AnswerService,
     AuditService,
+    ConnectionTestService,
     DeviceService,
     FeedbackService,
     LoggedInGuard,

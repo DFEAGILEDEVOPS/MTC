@@ -3,15 +3,16 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConnectionTestComponent } from './connection-test.component';
 import { StorageService } from '../services/storage/storage.service';
+import { ConnectionTestService } from '../services/connection-test/connection-test.service';
 
 describe('ConnectionTestComponent', () => {
   let component: ConnectionTestComponent;
   let fixture: ComponentFixture<ConnectionTestComponent>;
-  let mockRouter;
+  let connectionTestServiceMock;
 
   beforeEach(async(() => {
-    mockRouter = {
-      navigate: jasmine.createSpy('navigate')
+    connectionTestServiceMock = {
+      startTest: jasmine.createSpy('startTest')
     };
 
     TestBed.configureTestingModule({
@@ -19,7 +20,7 @@ describe('ConnectionTestComponent', () => {
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
         StorageService,
-        { provide: Router, useValue: mockRouter },
+        { provide: ConnectionTestService, useValue: connectionTestServiceMock },
       ]
     })
     .compileComponents();
