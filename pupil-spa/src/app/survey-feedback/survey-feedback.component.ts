@@ -11,8 +11,8 @@ import { StorageService } from '../services/storage/storage.service';
   styleUrls: ['./survey-feedback.component.scss']
 })
 export class SurveyFeedbackComponent {
-  private feedbackForm: FormGroup;
-  private userSubmittedForm = false;
+  public feedbackForm: FormGroup;
+  public userSubmittedForm = false;
 
   constructor(
     private router: Router,

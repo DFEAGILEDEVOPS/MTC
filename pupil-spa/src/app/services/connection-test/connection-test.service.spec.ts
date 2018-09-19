@@ -6,11 +6,12 @@ import { Observable } from 'rxjs/Observable';
 import { AzureQueueServiceMock } from '../azure-queue/azure-queue.service.mock';
 import { DeviceService } from '../device/device.service';
 import { StorageServiceMock } from '../storage/storage.service.mock';
+import { APP_CONFIG } from '../../services/config/config.service';
 
 import { ConnectionTestService } from './connection-test.service';
 
 describe('ConnectionTestService', () => {
-  let service, storageService, deviceService, queueService, http, router;
+  let service, storageService, deviceService, queueService, http, router, windowRefService;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
@@ -45,8 +46,9 @@ describe('ConnectionTestService', () => {
         innerWidth: 1514,
         innerHeight: 344,
         colorDepth: 24,
-        orientation: 'landscape-primary'
-      })
+        orientation: 'landscape-primary',
+      }),
+      getLocalStorageStatus: jasmine.createSpy('getLocalStorageStatus').and.returnValue(true)
     };
     http = {
       get: jasmine.createSpy('get').and.returnValue(Observable.of({
@@ -59,12 +61,19 @@ describe('ConnectionTestService', () => {
     router = {
       navigate: jasmine.createSpy('navigate'),
     };
+    windowRefService = {
+      nativeWindow: {
+        setTimeout: jasmine.createSpy('setTimeout'),
+        clearTimeout: jasmine.createSpy('clearTimeout'),
+      }
+    };
     service = new ConnectionTestService(
       http,
       router,
       storageService,
       deviceService,
       queueService,
+      windowRefService,
     );
   });
 
@@ -83,6 +92,7 @@ describe('ConnectionTestService', () => {
     expect(deviceService.getNavigatorProperties).toHaveBeenCalled();
     expect(deviceService.getNetworkInformation).toHaveBeenCalled();
     expect(deviceService.getScreenProperties).toHaveBeenCalled();
+    expect(deviceService.getLocalStorageStatus).toHaveBeenCalled();
 
     expect(testData).toEqual({
       device: {
@@ -116,7 +126,8 @@ describe('ConnectionTestService', () => {
           innerHeight: 344,
           colorDepth: 24,
           orientation: 'landscape-primary'
-        }
+        },
+        localStorageEnabled: true
       },
       processingTime: 1,
       connectionSpeed: 2
@@ -171,13 +182,71 @@ describe('ConnectionTestService', () => {
   });
 
   describe('#benchmarkConnection', () => {
-    it('should get the picture and set connectionSpeed', async () => {
+    beforeEach(() => {
+      jasmine.clock().mockDate(new Date('2018-01-01'));
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('should get the first file and set connectionSpeed if timeout is > than 8000', async () => {
       service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValue(Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 }));
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
 
       await service.benchmarkConnection();
 
-      expect(http.get).toHaveBeenCalled();
+      expect(service.getFileUrl).toHaveBeenCalled();
+      expect(service.requestFile).toHaveBeenCalled();
       expect(service.connectionSpeed).not.toEqual(-1);
+    });
+
+    it('should try to download bigger file when download time is less than 8 seconds', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(
+        Promise.resolve({ fileSize: 128 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 256 * 1024, downloadTime: 8001 })
+      );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
+
+      await service.benchmarkConnection();
+
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['256kb']]);
+      expect(service.requestFile.calls.count()).toEqual(2);
+      expect(service.connectionSpeed).not.toEqual(-1);
+    });
+
+    it('should retry to download the same file if the size doesnt match', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 128 * 1024, downloadTime: 8001 })
+      );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
+
+      await service.benchmarkConnection();
+
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['128kb']]);
+      expect(service.requestFile.calls.count()).toEqual(2);
+      expect(service.connectionSpeed).not.toEqual(-1);
+    });
+
+    it('should limit same file downloads if the size doesnt match', async() => {
+      service.connectionSpeed = -1;
+      spyOn(service, 'requestFile').and.returnValues(
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 124 * 1024, downloadTime: 7001 }),
+        Promise.resolve({ fileSize: 256 * 1024, downloadTime: 8001 })
+      );
+      spyOn(service, 'getFileUrl').and.callFake((fileSize) => fileSize);
+
+      await service.benchmarkConnection();
+
+      expect(service.requestFile.calls.allArgs()).toEqual([['128kb'], ['128kb'], ['128kb'], ['256kb'], ['256kb']]);
+      expect(service.requestFile.calls.count()).toEqual(5);
     });
   });
 });

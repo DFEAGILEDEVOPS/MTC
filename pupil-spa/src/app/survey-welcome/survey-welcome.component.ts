@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./survey-welcome.component.scss']
 })
 export class SurveyWelcomeComponent {
-  private showDetails: Boolean = false;
+  public showDetails: Boolean = false;
 
   constructor() { }
 

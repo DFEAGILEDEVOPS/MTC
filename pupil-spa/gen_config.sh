@@ -1,10 +1,16 @@
 #!/bin/bash
+# Initialise .env first
+if [ -f ".env" ]; then
+    export $(egrep -v '^#' .env | xargs)
+fi
+
 testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
 testSasUrl=${TEST_SAS_URL:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
 feedbackSasQueueName=${FEEDBACK_SAS_QUEUE_NAME:-""}
 feedbackSasToken=${FEEDBACK_SAS_TOKEN:-""}
-connectionTestFile=${TEST_CONNECTION_FILE:-"/public/images/spinner-120x120.gif"}
+connectionTestBlobUrl=${TEST_BLOB_URL:-""}
+connectionTestBlobStorageName=${TEST_BLOB_STORAGE_NAME:-""}
 apiUrl=${API_URL:-"http://localhost:3001"}
 authUrl=${AUTH_URL:-"http://localhost:3001/api/questions"}
 checkStartedUrl=${CHECK_STARTED_URL:-"http://localhost:3001/api/check-started"}
@@ -50,7 +56,8 @@ cat <<EOF > config.json
   "testSasToken": "$testSasToken",
   "feedbackSasQueueName": "$feedbackSasQueueName",
   "feedbackSasToken": "$feedbackSasToken",
-  "connectionTestFile": "$connectionTestFile",
+  "connectionTestBlobUrl": "$connectionTestBlobUrl",
+  "connectionTestBlobStorageName": "$connectionTestBlobStorageName",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF

@@ -7,7 +7,7 @@ import { StorageService } from '../services/storage/storage.service';
   styleUrls: ['./preview-completed.component.scss']
 })
 export class PreviewCompletedComponent {
-  private feedbackGiven: Boolean;
+  public feedbackGiven: Boolean;
 
   constructor(private storage: StorageService) {
     this.feedbackGiven = this.storage.getItem('feedback_given') === true;

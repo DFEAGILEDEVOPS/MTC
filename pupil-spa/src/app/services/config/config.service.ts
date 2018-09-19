@@ -23,10 +23,10 @@ export class AppConfig {
   readonly testSasQueueName: string;
   readonly testSasUrl: string;
   readonly testSasToken: string;
-  readonly connectionTestFile: string;
   readonly feedbackSasQueueName: string;
-  readonly feedbackSasUrl: string;
   readonly feedbackSasToken: string;
+  readonly connectionTestBlobUrl: string;
+  readonly connectionTestBlobStorageName: string;
 }
 
 /**
