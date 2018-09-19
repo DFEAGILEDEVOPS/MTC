@@ -1,4 +1,4 @@
-#@wip
+@wip
 Feature: Pupil Api
 
   Scenario: 200 response code is given when valid credentials are provided
