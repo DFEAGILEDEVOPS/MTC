@@ -22,4 +22,18 @@ module Helpers
     device_info['screen'].nil? ? (p "Screen information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['screen'].keys).to eql ["screenWidth", "screenHeight", "outerWidth", "outerHeight", "innerWidth", "innerHeight", "colorDepth", "orientation"])
   end
 
+  def create_pupil_details_hash(pupil_details)
+    {'firstName' => pupil_details['foreName'], 'lastName' => pupil_details['lastName'],
+     'dob' => pupil_details['dateOfBirth'].strftime("%-d %B %Y"),
+     'checkCode' => SqlDbHelper.get_pupil_check_form_allocation(pupil_details['id'])['checkCode']}
+  end
+
+  def create_school_details_hash(school_id)
+    {"id" => SqlDbHelper.find_school(school_id)['id'], "name"=>SqlDbHelper.find_school(school_id)['name']}
+  end
+
+  def create_config_details_hash
+    {"questionTime"=>SqlDbHelper.get_settings['questionTimeLimit'].to_i, "loadingTime"=>SqlDbHelper.get_settings['loadingTimeLimit'].to_i, "speechSynthesis"=>false, "audibleSounds"=>false, "numpadRemoval"=>false, "fontSize"=>false, "colourContrast"=>false}
+  end
+
 end
