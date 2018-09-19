@@ -81,3 +81,8 @@ Feature:
     When I try to submit an check end date that consists of letters
     Then I should see an error stating the check end date has to be numerical
 
+  @wip
+  Scenario: Create check window Page should display all fields as per design
+    Given I am on the create a check window page
+    Then create check window page should display all fields as per new design
+
