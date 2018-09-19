@@ -39,7 +39,7 @@ And(/^I should see a valid response$/) do
 end
 
 Given(/^I make a request with invalid credentials$/) do
-  @response = RequestHelper.auth('abc12345', '9999')
+  @response = RequestHelper.auth('bac12345', '0000')
 end
 
 And(/^I should see a unauthorised response$/) do
