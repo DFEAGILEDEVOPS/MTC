@@ -29,6 +29,7 @@ const controller = {
    */
   createCheckWindow: async (req, res, next) => {
     res.locals.pageTitle = 'Create check window'
+    req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('check-window/create-check-window', {
       breadcrumbs: req.breadcrumbs(),
