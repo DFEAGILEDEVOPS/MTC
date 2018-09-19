@@ -1,0 +1,33 @@
+@import '../../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs';
+
+.breadcrumbs{
+    @include breadcrumbs
+}
+
+.list-contents {
+    list-style: none;
+
+    .list-item-dashed:before {
+        content: "— ";
+    }
+}
+
+h2 {
+    margin: 30px 0;
+}
+
+.top {
+    margin-top: 90px;
+}
+
+.related {
+    .border {
+        height: 10px;
+        background-color: #005ea5;
+        width: 100%;
+    }   
+
+    h2 {
+        margin: 10px 0 20px 0;
+    }
+}
