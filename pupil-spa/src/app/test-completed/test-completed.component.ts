@@ -7,7 +7,7 @@ import { StorageService } from '../services/storage/storage.service';
   styleUrls: ['./test-completed.component.scss']
 })
 export class TestCompletedComponent {
-  private testSuccessful: Boolean;
+  public testSuccessful: Boolean;
 
   constructor(private storage: StorageService) {
     this.testSuccessful = this.storage.getItem('test_status') === true;
