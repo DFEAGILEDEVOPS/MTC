@@ -159,4 +159,20 @@ class SqlDbHelper
     data
   end
 
+  def self.get_pupil_check_form_allocation(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[checkFormAllocation] WHERE pupil_Id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
+  def self.get_settings
+    sql = "SELECT * FROM [mtc_admin].[settings]"
+    result = SQL_CLIENT.execute(sql)
+    settings_res = result.first
+    result.cancel
+    settings_res
+  end
+
 end
