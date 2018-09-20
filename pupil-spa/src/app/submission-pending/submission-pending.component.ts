@@ -1,7 +1,4 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { SubmissionService } from '../services/submission/submission.service';
-import { StorageService } from '../services/storage/storage.service';
-import { AuditService } from '../services/audit/audit.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpeechService } from '../services/speech/speech.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
@@ -20,10 +17,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   clickEvent: EventEmitter<any> = new EventEmitter();
 
   public title;
-  constructor(private storageService: StorageService,
-              private submissionService: SubmissionService,
-              private auditService: AuditService,
-              private router: Router,
+  constructor(private router: Router,
               private route: ActivatedRoute,
               private questionService: QuestionService,
               private speechService: SpeechService,

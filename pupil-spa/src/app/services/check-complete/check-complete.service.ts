@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
+import { queueNames } from '../azure-queue/queue-names';
 
 /**
  * Declaration of check start service
@@ -56,7 +57,7 @@ export class CheckCompleteService {
    */
   public async submit(startTime): Promise<void> {
     if (this.featureUseHpa === true) {
-      const queueName = 'check-complete';
+      const queueName = queueNames.checkComplete;
       const {url, token} = this.tokenService.getToken('checkComplete');
       const retryConfig = {
         errorDelay: this.checkSubmissionApiErrorDelay,

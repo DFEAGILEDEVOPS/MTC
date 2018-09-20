@@ -10,6 +10,7 @@ import { AuditService } from '../audit/audit.service';
 import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
+import { queueNames } from '../azure-queue/queue-names';
 
 /**
  * Declaration of check start service
@@ -41,7 +42,7 @@ export class CheckStartService {
    */
   public async submit(): Promise<void> {
     if (this.featureUseHpa === true) {
-      const queueName = 'check-started';
+      const queueName = queueNames.checkStarted;
       const { url, token } = this.tokenService.getToken('checkStarted');
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
