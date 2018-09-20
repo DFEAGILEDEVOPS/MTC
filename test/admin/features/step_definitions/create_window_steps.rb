@@ -28,6 +28,32 @@ Then(/^create check window page should display all fields as per design$/) do
   expect(add_edit_check_window_page).to have_check_end_year
 end
 
+Then(/^create check window page should display all fields as per new design$/) do
+  expect(add_edit_check_window_page).to have_check_name
+
+  expect(add_edit_check_window_page).to have_admin_start_day
+  expect(add_edit_check_window_page).to have_admin_start_month
+  expect(add_edit_check_window_page).to have_admin_start_year
+  expect(add_edit_check_window_page).to have_admin_end_day
+  expect(add_edit_check_window_page).to have_admin_end_month
+  expect(add_edit_check_window_page).to have_admin_end_year
+
+  expect(add_edit_check_window_page).to have_familiarisation_check_start_day
+  expect(add_edit_check_window_page).to have_familiarisation_check_start_month
+  expect(add_edit_check_window_page).to have_familiarisation_check_start_year
+  expect(add_edit_check_window_page).to have_familiarisation_check_end_day
+  expect(add_edit_check_window_page).to have_familiarisation_check_end_month
+  expect(add_edit_check_window_page).to have_familiarisation_check_end_year
+
+  expect(add_edit_check_window_page).to have_live_check_start_day
+  expect(add_edit_check_window_page).to have_live_check_start_month
+  expect(add_edit_check_window_page).to have_live_check_start_year
+  expect(add_edit_check_window_page).to have_live_check_end_day
+  expect(add_edit_check_window_page).to have_live_check_end_month
+  expect(add_edit_check_window_page).to have_live_check_end_year
+end
+
+
 When(/^I submit details for a valid check window$/) do
   today_date = Date.today
   @admin_start_date = today_date + 30
