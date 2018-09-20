@@ -1,0 +1,277 @@
+<div class="grid-row">
+    <div class="column-one-half">
+        <%- partial('partials/_breadcrumbs', {breadcrumbs: breadcrumbs}) %>
+    </div>
+    <div class="column-one-half">
+        <%- partial('partials/_name_and_sign_out') %>
+    </div>
+</div>
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 class="heading-xlarge"><%= pageTitle %></h1>
+        <form action="#" method="post">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+            <div class="form-group">
+                <label for="checkWindowName" class="form-label-bold">
+                    Check window name
+                </label>
+                <input class="form-control"
+                       id="checkWindowName"
+                       name="checkWindowName"
+                       type="text"
+                       value=""
+                       aria-required="true"
+                       aria-label="Check window name."
+                >
+            </div>
+            <br />
+            <div class="inline-group">
+                <label class="form-label-bold">
+                    School administration period
+                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                </label>
+                <div class="form-group start-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="adminStartDay">Day</label>
+                            <input class="form-control"
+                                   id="adminStartDay"
+                                   name="adminStartDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration start day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="adminStartMonth">Month</label>
+                            <input class="form-control"
+                                   id="adminStartMonth"
+                                   name="adminStartMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration start month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="adminStartYear">Year</label>
+                            <input class="form-control"
+                                   id="adminStartYear"
+                                   name="adminStartYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration start year."
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="separator">to</div>
+                <div class="form-group end-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="adminEndDay">Day</label>
+                            <input class="form-control"
+                                   id="adminEndDay"
+                                   name="adminEndDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration end day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="adminEndMonth">Month</label>
+                            <input class="form-control"
+                                   id="adminEndMonth"
+                                   name="adminEndMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration end month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="adminEndYear">Year</label>
+                            <input class="form-control"
+                                   id="adminEndYear"
+                                   name="adminEndYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Administration end year."
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inline-group">
+                <label class="form-label-bold">
+                    Pupil familiarisation check period
+                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                </label>
+                <div class="form-group start-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="familiarisationCheckStartDay">Day</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckStartDay"
+                                   name="familiarisationCheckStartDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation start day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="familiarisationCheckStartMonth">Month</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckStartMonth"
+                                   name="familiarisationCheckStartMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation start month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="familiarisationCheckStartYear">Year</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckStartYear"
+                                   name="familiarisationCheckStartYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation start year."
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="separator">to</div>
+                <div class="form-group end-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="familiarisationCheckEndDay">Day</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckEndDay"
+                                   name="familiarisationCheckEndDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation end day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="familiarisationCheckEndMonth">Month</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckEndMonth"
+                                   name="familiarisationCheckEndMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation end month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="familiarisationCheckEndYear">Year</label>
+                            <input class="form-control"
+                                   id="familiarisationCheckEndYear"
+                                   name="familiarisationCheckEndYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Familiarisation end year."
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="inline-group">
+                <label class="form-label-bold">
+                    Pupil live check period
+                    <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                </label>
+                <div class="form-group start-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="liveCheckStartDay">Day</label>
+                            <input class="form-control"
+                                   id="liveCheckStartDay"
+                                   name="liveCheckStartDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check start day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="liveCheckStartMonth">Month</label>
+                            <input class="form-control"
+                                   id="liveCheckStartMonth"
+                                   name="liveCheckStartMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check start month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="liveCheckStartYear">Year</label>
+                            <input class="form-control"
+                                   id="liveCheckStartYear"
+                                   name="liveCheckStartYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check start year."
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="separator">to</div>
+                <div class="form-group end-date">
+                    <div class="form-date">
+                        <div class="form-group form-group-day">
+                            <label class="form-label" for="liveCheckEndDay">Day</label>
+                            <input class="form-control"
+                                   id="liveCheckEndDay"
+                                   name="liveCheckEndDay"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check end day."
+                            >
+                        </div>
+                        <div class="form-group form-group-month">
+                            <label class="form-label" for="liveCheckEndMonth">Month</label>
+                            <input class="form-control"
+                                   id="liveCheckEndMonth"
+                                   name="liveCheckEndMonth"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check end month."
+                            >
+                        </div>
+                        <div class="form-group form-group-year">
+                            <label class="form-label" for="liveCheckEndYear">Year</label>
+                            <input class="form-control"
+                                   id="liveCheckEndYear"
+                                   name="liveCheckEndYear"
+                                   type="number"
+                                   value=""
+                                   aria-required="true"
+                                   aria-label="Live check end year."
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <input class="button" type="submit" value="Save">
+                <a href="/check-window/manage-check-windows" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
