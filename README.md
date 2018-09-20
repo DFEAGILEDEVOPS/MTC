@@ -54,6 +54,100 @@ where `<image-name>` is a friendly name that allows you to easily identify the i
 
 To make the pupil-spa use the auth microservice instead of the API in admin, change the AUTH_URL environment variable in `pupil-spa/Dockerfile` and the `docker-compose.*.yml` files relevant for pupil-spa
 
+## ICT Survey Setup
+
+You need a storage account to be set up. For the ICT Survey setup, create
+two queues:
+
+- `survey-feedback`
+- `connection-tests`
+
+...and one blob container:
+
+- `connection-test`
+
+(These are examples that can be changed, as long as they're consistent
+with the environment variables).
+
+### Queue setup
+
+- Set up the queue names in the env vars:
+  - `TEST_SAS_QUEUE_NAME`
+  - `FEEDBACK_SAS_QUEUE_NAME`
+- Get a SAS token for both queues, and set the token and URL in the env
+  vars:
+  - `TEST_SAS_URL` will be the same URL for both queues, and should look
+    like `<accountname>.queue.core.microsoft.net/`
+  - `TEST_SAS_TOKEN` and `FEEDBACK_SAS_TOKEN` for the tokens generated
+    previously.
+- Update CORS for the queues.
+
+Note: To create the SAS token:
+  - Right-click on the queue name in Storage Explorer
+  - Choose ‘Get Shared Access Signature’
+  - Create one with only ‘Add’ ticked in the checkboxes
+    - Start time should be the current time, or one in the past; and
+      expiry time should be sufficiently far in the future.
+
+Note: To set CORS:
+  - Right-click on ‘Queues’ in Storage Explorer
+  - Choose ‘Configure CORS Settings’, and then Add
+    - Allowed origins: `*` (can be `*` for testing; should be the
+      official URL of the SPA app in production)
+    - Methods: `POST`
+    - Headers: `*`
+    - Max age: `3600`
+
+### Blob setup:
+
+- Generate the container and set up the name and URL in the env vars:
+  - `TEST_BLOB_URL` should look like
+    `<accountname>.blob.core.microsoft.net/`
+  - `TEST_BLOB_STORAGE_NAME` should be `connection-test` (if not
+    changed previously)
+- Set the public access level to ‘public read access for blobs only’
+- Set up CORS as above:
+  - Allowed origins: `*` (can be `*` for testing; should be the
+    official URL of the SPA app in production)
+  - Allowed methods: `GET`
+  - Allowed headers: `*`
+  - Exposed headers: `*`
+- Create the files locally and upload them in the root of the blob
+storage using something like this:
+
+```bash
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 134217728 > 128mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 67108864 > 64mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 33554432 > 32mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 16777216 > 16mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 8388608 > 8mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 4194304 > 4mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 2097152 > 2mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 1048576 > 1mb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 524288 > 512kb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 262144 > 256kb.text
+cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 131072 > 128kb.text
+```
+
+After everything, the environment should look similar to this:
+
+```bash
+TEST_SAS_URL='https://<accountname>.queue.core.windows.net/'
+TEST_SAS_QUEUE_NAME='connection-tests'
+TEST_SAS_TOKEN='?st=<token>'
+FEEDBACK_SAS_QUEUE_NAME='survey-feedback'
+FEEDBACK_SAS_TOKEN='?st=<token>'
+TEST_BLOB_URL='https://<accountname>.blob.core.windows.net/'
+TEST_BLOB_STORAGE_NAME='connection-test'
+```
+
+### Checking results in the Storage Explorer
+
+After any messages are pushed onto the queues, double-click on the
+queue name that you want to check in Storage Explorer, and they should
+appear in a container on the right. Double-clicking on a specific row
+will display that specific message.
+
 # Enabling AMQP 1.0 in Rabbit MQ
 
 In order to use the npm package `amqp10` with Rabbit MQ the `rabbitmq_amqp1_0` plugin must be enabled within Rabbit MQ.
