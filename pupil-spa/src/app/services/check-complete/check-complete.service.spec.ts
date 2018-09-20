@@ -1,24 +1,25 @@
-import { TestBed } from '@angular/core/testing';
-import { CheckCompleteService } from './check-complete.service';
-import { SubmissionService } from '../submission/submission.service';
-import { SubmissionServiceMock } from '../submission/submission.service.mock';
-import { StorageService } from '../storage/storage.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { AuditService } from '../audit/audit.service';
-import { TokenService } from '../token/token.service';
-import { AppConfigService, loadConfigMockService } from '../config/config.service';
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { APP_INITIALIZER } from '@angular/core';
+import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-let checkCompleteService: CheckCompleteService;
-let submissionService: SubmissionService;
-let tokenService: TokenService;
-let azureQueueService: AzureQueueService;
+import { AuditService } from '../audit/audit.service';
+import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { CheckCompleteService } from './check-complete.service';
+import { AppConfigService, loadConfigMockService } from '../config/config.service';
+import { StorageService } from '../storage/storage.service';
+import { SubmissionService } from '../submission/submission.service';
+import { SubmissionServiceMock } from '../submission/submission.service.mock';
+import { TestBed } from '@angular/core/testing';
+import { TokenService } from '../token/token.service';
+
 let auditService: AuditService;
+let azureQueueService: AzureQueueService;
+let checkCompleteService: CheckCompleteService;
 let router: Router;
 let storageService: StorageService;
+let submissionService: SubmissionService;
+let tokenService: TokenService;
 
 describe('CheckCompleteService', () => {
   beforeEach(() => {
@@ -26,14 +27,14 @@ describe('CheckCompleteService', () => {
         imports: [RouterTestingModule.withRoutes([])],
         providers: [
           AppConfigService,
-          StorageService,
-          {provide: SubmissionService, useClass: SubmissionServiceMock},
-          {provide: QUEUE_STORAGE_TOKEN},
-          {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
-          TokenService,
-          AzureQueueService,
           AuditService,
           CheckCompleteService,
+          AzureQueueService,
+          StorageService,
+          TokenService,
+          {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
+          {provide: QUEUE_STORAGE_TOKEN},
+          {provide: SubmissionService, useClass: SubmissionServiceMock},
         ]
       }
     );
@@ -60,8 +61,8 @@ describe('CheckCompleteService', () => {
         .and.returnValue({ toPromise: () => Promise.resolve() });
       await checkCompleteService.submit(Date.now());
       expect(addEntrySpy).toHaveBeenCalledTimes(2);
-      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionApiCalled');
+      expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
+      expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
       expect(submissionService.submitData).toHaveBeenCalledTimes(1);
     });
     it('submit should call submission service unsuccessfully and audit failure', async () => {

@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
+import { AuditService } from '../audit/audit.service';
+import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
   CheckSubmissionAPICallSucceeded,
 } from '../audit/auditEntry';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
-import { AuditService } from '../audit/audit.service';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { SubmissionService } from '../submission/submission.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
-import { Router } from '@angular/router';
 
 /**
  * Declaration of check start service
@@ -18,64 +18,68 @@ import { Router } from '@angular/router';
 @Injectable()
 export class CheckCompleteService {
 
-  featureUseHpa;
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
+  featureUseHpa;
   submissionPendingViewMinDisplay;
 
-  constructor(private azureQueueService: AzureQueueService,
-              private submissionService: SubmissionService,
+  constructor(private auditService: AuditService,
+              private azureQueueService: AzureQueueService,
+              private router: Router,
               private storageService: StorageService,
-              private tokenService: TokenService,
-              private auditService: AuditService,
-              private router: Router) {
+              private submissionService: SubmissionService,
+              private tokenService: TokenService) {
     const { featureUseHpa,
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
       submissionPendingViewMinDisplay,
     } = APP_CONFIG;
-    this.featureUseHpa = featureUseHpa;
     this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
     this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
+    this.featureUseHpa = featureUseHpa;
     this.submissionPendingViewMinDisplay = submissionPendingViewMinDisplay;
   }
 
+  /**
+   * Sleep function (milliseconds) to provide minimal display time for submission pending screen
+   * @param {Number} ms
+   * @returns {Promise.<void>}
+   */
   private sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
    * Check complete submission
-   * @param {Number} startTime
+   * @param {Number} startTime Date time in milliseconds on the exact moment before check submission is called
    * @returns {Promise.<void>}
    */
   public async submit(startTime): Promise<void> {
     if (this.featureUseHpa === true) {
       const queueName = 'check-complete';
-      const { url, token } = this.tokenService.getToken('checkComplete');
-      const payload = this.storageService.getAllItems();
+      const {url, token} = this.tokenService.getToken('checkComplete');
       const retryConfig = {
         errorDelay: this.checkSubmissionApiErrorDelay,
         errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
       };
+      this.auditService.addEntry(new CheckSubmissionApiCalled());
+      const payload = this.storageService.getAllItems();
       try {
-        this.auditService.addEntry(new CheckSubmissionApiCalled());
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
         await this.onSuccess(startTime);
       } catch (error) {
-        const auditEntry = new CheckSubmissionAPIFailed(error);
-        await this.onError(auditEntry);
+        this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
+        this.router.navigate(['/submission-failed']);
       }
     } else {
+      this.auditService.addEntry(new CheckSubmissionApiCalled());
       try {
         await this.submissionService.submitData().toPromise();
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        this.auditService.addEntry(new CheckSubmissionApiCalled());
         await this.onSuccess(startTime);
       } catch (error) {
-        const auditEntry = new CheckSubmissionApiCalled();
-        await this.onError(auditEntry);
+        this.router.navigate(['/submission-failed']);
       }
     }
   }
@@ -97,15 +101,5 @@ export class CheckCompleteService {
       await this.sleep(displayTime);
     }
     this.router.navigate(['/check-complete']);
-  }
-
-  /**
-   * On error handler
-   * @param {Object} auditEntry
-   * @returns {Promise.<void>}
-   */
-  async onError(auditEntry): Promise<void> {
-    this.auditService.addEntry(auditEntry);
-    this.router.navigate(['/submission-failed']);
   }
 }
