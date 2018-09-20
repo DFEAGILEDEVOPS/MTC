@@ -6,7 +6,9 @@ alter table [mtc_admin].[checkFormAllocation]
 go
 
 update cfa
-set school_id = p.school_id
+set
+      school_id = p.school_id,
+      pin = p.pin
 FROM [mtc_admin].[checkFormAllocation] cfa JOIN [mtc_admin].[pupil] p
          ON (p.id = cfa.pupil_id);
 
