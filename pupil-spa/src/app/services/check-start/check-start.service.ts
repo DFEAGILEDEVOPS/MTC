@@ -46,8 +46,8 @@ export class CheckStartService {
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
       const retryConfig = {
-        checkStartAPIErrorDelay: this.checkStartAPIErrorDelay,
-        checkStartAPIErrorMaxAttempts: this.checkStartAPIErrorMaxAttempts
+        errorDelay: this.checkStartAPIErrorDelay,
+        errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
       };
       try {
         this.auditService.addEntry(new CheckStartedApiCalled());
