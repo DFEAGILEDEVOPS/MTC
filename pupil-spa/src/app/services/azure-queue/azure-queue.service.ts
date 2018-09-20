@@ -4,7 +4,6 @@ import {
   IQueueStorage,
   IQueueService,
   QUEUE_STORAGE_TOKEN,
-  ITextBase64QueueMessageEncoder,
 } from './azureStorage';
 import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 
@@ -16,8 +15,6 @@ declare let AzureStorage;
 
 @Injectable()
 export class AzureQueueService {
-  private serviceInstance: IQueueService;
-  private encoder: ITextBase64QueueMessageEncoder;
 
   constructor(@Inject(QUEUE_STORAGE_TOKEN) private queueStorage: IQueueStorage) {
   }
@@ -59,14 +56,10 @@ export class AzureQueueService {
    * @returns {Promise.<Object>}
    */
   public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
-    if (!this.serviceInstance) {
-      this.serviceInstance = this.initQueueService(queueName, url, token, retryConfig);
-    }
-    if (!this.encoder) {
-      this.encoder = this.getTextBase64QueueMessageEncoder();
-    }
+    const queueService = this.initQueueService(queueName, url, token, retryConfig);
+    const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
-    const encodedMessage = this.encoder.encode(message);
-    return this.serviceInstance.createMessage(queueName, encodedMessage);
+    const encodedMessage = encoder.encode(message);
+    return queueService.createMessage(queueName, encodedMessage);
   }
 }

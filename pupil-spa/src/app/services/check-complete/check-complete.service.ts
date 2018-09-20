@@ -68,7 +68,7 @@ export class CheckCompleteService {
       try {
         await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        await this.onSuccess(startTime);
+        this.onSuccess(startTime);
       } catch (error) {
         this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
         this.router.navigate(['/submission-failed']);
@@ -78,7 +78,7 @@ export class CheckCompleteService {
       try {
         await this.submissionService.submitData().toPromise();
         this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        await this.onSuccess(startTime);
+        this.onSuccess(startTime);
       } catch (error) {
         this.router.navigate(['/submission-failed']);
       }
