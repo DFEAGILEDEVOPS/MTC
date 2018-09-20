@@ -11,10 +11,11 @@ winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
 const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+const sqlUtil = require('../lib/sql-helper')
 
 // SQL server table
 const checkResultTable = '[checkResult]'
-const checkFormAllocationTable = '[checkFormAllocation]'
+
 const schema = ['mtc_admin']
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[checkFormAllocation]'
@@ -76,7 +77,7 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
   let checkFormAllocationData
 
   try {
-    checkFormAllocationData = await sqlFetchCheckFormAllocation(completedCheckMessage.checkCode)
+    checkFormAllocationData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
     logger.info('savePayloadToAdminDatabase: data retrieved from SQL: ' + checkFormAllocationData)
   } catch (error) {
     logger.error(`ERROR: savePayloadToAdminDatabase: failed to retrieve checkFormAllocationData for checkCode: [${completedCheckMessage.checkCode}]`)
@@ -91,24 +92,6 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
   }
 
   logger.info(`SUCCESS: savePayloadToAdminDatabase: succeeded for checkCode: [${completedCheckMessage.checkCode}]`)
-}
-
-/**
- * Retrieve the checkFormAllocation data from the db
- * @param checkCode
- * @return {Promise<void>}
- */
-async function sqlFetchCheckFormAllocation (checkCode) {
-  const sql = `SELECT TOP 1 * FROM ${schema}.${checkFormAllocationTable} WHERE checkCode = @checkCode`
-  const params = [
-    {
-      name: 'checkCode',
-      value: checkCode,
-      type: TYPES.UniqueIdentifier
-    }
-  ]
-  const res = await sqlService.query(sql, params)
-  return R.head(res)
 }
 
 /**
