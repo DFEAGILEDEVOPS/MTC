@@ -23,8 +23,9 @@ export class AppConfig {
   readonly testSasQueueName: string;
   readonly testSasUrl: string;
   readonly testSasToken: string;
-  readonly feedbackSasQueueName: string;
+  readonly feedbackTableName: string;
   readonly feedbackSasToken: string;
+  readonly feedbackTableUrl: string;
   readonly connectionTestBlobUrl: string;
   readonly connectionTestBlobStorageName: string;
 }

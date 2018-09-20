@@ -11,6 +11,17 @@ export class AzureQueueService {
     ).withFilter(new AzureStorage.Queue.ExponentialRetryPolicyFilter());
   }
 
+  public getTableService(storageUrl: string, sasToken: string) {
+    return AzureStorage.Table.createTableServiceWithSas(
+      storageUrl,
+      sasToken
+    );
+  }
+
+  public getGenerator(): any {
+    return AzureStorage.Table.TableUtilities.entityGenerator;
+  }
+
   public encodeMessage(message: string): string {
     const encoder = this.getEncoder();
     return encoder.encode(message);

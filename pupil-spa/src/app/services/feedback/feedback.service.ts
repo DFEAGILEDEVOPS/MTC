@@ -10,7 +10,7 @@ export class FeedbackService {
   constructor(
     private http: Http,
     private storageService: StorageService,
-    private queueService: AzureQueueService) {
+    private azureService: AzureQueueService) {
   }
 
   async postFeedback() {
@@ -47,19 +47,29 @@ export class FeedbackService {
         }).catch(error => new Error(error));
   }
 
-  postSurveyFeedback(feedbackData: object): Promise<void> {
+  postSurveyFeedback(feedbackData: object) {
     return new Promise((resolve, reject) => {
-      const message = JSON.stringify(feedbackData);
-      const queueService = this.queueService.getQueueService(APP_CONFIG.testSasUrl, APP_CONFIG.feedbackSasToken);
-      const encodedMessage = this.queueService.encodeMessage(message);
+      const tableService = this.azureService.getTableService(APP_CONFIG.feedbackTableUrl, APP_CONFIG.feedbackSasToken);
+      const generator = this.azureService.getGenerator();
 
-      queueService.createMessage(APP_CONFIG.feedbackSasQueueName, encodedMessage, function (error, result, response) {
+      const entity = {
+        PartitionKey: generator.String('partitionKey'), // partitionKey and rowKey has to be replaced
+        RowKey: generator.String('4'), // guid?
+        comment: generator.String('String'),
+        firstName: generator.String('String'),
+        lastName: generator.String('String'),
+        contactNumber: generator.String('String'),
+        emailAddress: generator.String('String'),
+        schoolName: generator.String('String')
+      }
+
+      tableService.insertEntity(APP_CONFIG.feedbackTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }
-
-        resolve();
       });
+
+      resolve();
     });
   }
 }
