@@ -34,7 +34,7 @@ export class AzureQueueService {
     const service = this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(
-        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.checkStartAPIErrorMaxAttempts, retryConfig.checkStartAPIErrorDelay)
+        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.errorMaxAttempts, retryConfig.errorDelay)
       );
     service.performRequest = bluebird.promisify(service.performRequest, service);
     service.createMessage = bluebird.promisify(service.createMessage, service);

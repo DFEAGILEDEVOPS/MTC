@@ -55,8 +55,8 @@ export class CheckCompleteService {
       const { url, token } = this.tokenService.getToken('checkComplete');
       const payload = this.storageService.getAllItems();
       const retryConfig = {
-        checkSubmissionApiErrorDelay: this.checkSubmissionApiErrorDelay,
-        checkSubmissionAPIErrorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
+        errorDelay: this.checkSubmissionApiErrorDelay,
+        errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
       };
       try {
         this.auditService.addEntry(new CheckSubmissionApiCalled());
