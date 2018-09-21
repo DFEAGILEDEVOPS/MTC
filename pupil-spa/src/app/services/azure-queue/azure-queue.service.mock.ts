@@ -2,13 +2,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AzureQueueServiceMock {
-  public getQueueService() {
+  public getTableService() {
     return {
-      createMessage: (queueName, message, cb) => { cb(); }
+      insertEntity: (tableName, message, cb) => { cb(); }
     };
-  }
-
-  public encodeMessage(message: string): string {
-    return message;
   }
 }

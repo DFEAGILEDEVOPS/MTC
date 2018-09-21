@@ -69,19 +69,22 @@ describe('FeedService', () => {
   });
 
   describe('#postSurveyFeedback', () => {
+    beforeEach(() => {
+      spyOn(feedbackService, 'generateEntity').and.returnValue('entity');
+    });
+
     it('should get the queue service and encode the json stringified data', async () => {
-      spyOn(mockQueueService, 'getQueueService').and.callThrough();
-      spyOn(mockQueueService, 'encodeMessage');
+      spyOn(mockQueueService, 'getTableService').and.callThrough();
 
       await feedbackService.postSurveyFeedback(mockFeedbackData);
 
-      expect(mockQueueService.getQueueService).toHaveBeenCalled();
-      expect(mockQueueService.encodeMessage).toHaveBeenCalledWith(JSON.stringify(mockFeedbackData));
+      expect(mockQueueService.getTableService).toHaveBeenCalled();
+      expect(feedbackService.generateEntity).toHaveBeenCalledWith(mockFeedbackData);
     });
 
     it('rejects when createMessage returns an error', async (done) => {
-      spyOn(mockQueueService, 'getQueueService').and.returnValue({
-        createMessage: (queueName, message, cb) => { cb('error'); }
+      spyOn(mockQueueService, 'getTableService').and.returnValue({
+        insertEntity: (tableName, message, cb) => { cb('error'); }
       });
 
       try {
@@ -93,8 +96,8 @@ describe('FeedService', () => {
     });
 
     it('resolves when createMessage does not return errors', async (done) => {
-      spyOn(mockQueueService, 'getQueueService').and.returnValue({
-        createMessage: (queueName, message, cb) => { cb(); }
+      spyOn(mockQueueService, 'getTableService').and.returnValue({
+        insertEntity: (tableName, message, cb) => { cb(); }
       });
 
       try {

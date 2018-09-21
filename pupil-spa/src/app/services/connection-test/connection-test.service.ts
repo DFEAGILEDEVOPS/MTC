@@ -173,11 +173,11 @@ export class ConnectionTestService {
     const generator = this.azureService.getGenerator();
 
     return {
-      PartitionKey: generator.String('connection_test'),
+      PartitionKey: generator.String(uuid()),
       RowKey: generator.String(uuid()),
       device: generator.String(JSON.stringify(testResults.device)),
-      processingTime: generator.String(testResults.processingTime),
-      connectionSpeed: generator.String(testResults.connectionSpeed)
+      processingTime: generator.Int64(testResults.processingTime),
+      connectionSpeed: generator.Double(testResults.connectionSpeed)
     };
   }
 

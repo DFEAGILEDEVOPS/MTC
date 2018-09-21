@@ -52,7 +52,7 @@ export class FeedbackService {
     const generator = this.azureService.getGenerator();
 
     return {
-      PartitionKey: generator.String('survey_feedback'),
+      PartitionKey: generator.String(uuid()),
       RowKey: generator.String(uuid()),
       comment: generator.String(feedbackData.comment),
       firstName: generator.String(feedbackData.firstName),
