@@ -169,6 +169,18 @@ export class ConnectionTestService {
     });
   }
 
+  generateEntity(testResults: any): any {
+    const generator = this.azureService.getGenerator();
+
+    return {
+      PartitionKey: generator.String('connection_test'),
+      RowKey: generator.String(uuid()),
+      device: generator.String(JSON.stringify(testResults.device)),
+      processingTime: generator.String(testResults.processingTime),
+      connectionSpeed: generator.String(testResults.connectionSpeed)
+    };
+  }
+
   private submitTest(testResults: any): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.tableName === '') {
@@ -176,23 +188,15 @@ export class ConnectionTestService {
       }
 
       const tableService = this.azureService.getTableService(APP_CONFIG.testTableUrl, APP_CONFIG.testSasToken);
-      const generator = this.azureService.getGenerator();
-
-      const entity = {
-        PartitionKey: generator.String('connection_test'),
-        RowKey: generator.String(uuid()),
-        device: generator.String(JSON.stringify(testResults.device)),
-        processingTime: generator.String(testResults.processingTime),
-        connectionSpeed: generator.String(testResults.connectionSpeed)
-      }
+      const entity = this.generateEntity(testResults);
 
       tableService.insertEntity(APP_CONFIG.testTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }
-      });
 
-      resolve();
+        resolve();
+      });
     });
   }
 

@@ -48,29 +48,34 @@ export class FeedbackService {
         }).catch(error => new Error(error));
   }
 
-  postSurveyFeedback(feedbackData: object) {
+  generateEntity(feedbackData: any): any {
+    const generator = this.azureService.getGenerator();
+
+    return {
+      PartitionKey: generator.String('survey_feedback'),
+      RowKey: generator.String(uuid()),
+      comment: generator.String(feedbackData.comment),
+      firstName: generator.String(feedbackData.firstName),
+      lastName: generator.String(feedbackData.lastName),
+      contactNumber: generator.String(feedbackData.contactNumber),
+      emailAddress: generator.String(feedbackData.emailAddress),
+      schoolName: generator.String(feedbackData.schoolName)
+    };
+  }
+
+  postSurveyFeedback(feedbackData: any) {
     return new Promise((resolve, reject) => {
       const tableService = this.azureService.getTableService(APP_CONFIG.feedbackTableUrl, APP_CONFIG.feedbackSasToken);
-      const generator = this.azureService.getGenerator();
 
-      const entity = {
-        PartitionKey: generator.String('survey_feedback'),
-        RowKey: generator.String(uuid()),
-        comment: generator.String('String'),
-        firstName: generator.String('String'),
-        lastName: generator.String('String'),
-        contactNumber: generator.String('String'),
-        emailAddress: generator.String('String'),
-        schoolName: generator.String('String')
-      }
+      const entity = this.generateEntity(feedbackData);
 
       tableService.insertEntity(APP_CONFIG.feedbackTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }
-      });
 
-      resolve();
+        resolve();
+      });
     });
   }
 }
