@@ -26,6 +26,16 @@ create table mtc_admin.checkFormAllocation
 )
 go
 
+--
+-- alter table [mtc_admin].[pupilFeedback]
+--   drop constraint FK_pupilFeedback_check_id;
+-- alter table [mtc_admin].[pupilFeedback]
+--   drop column checkFormAllocation_id;
+--
+alter table [mtc_admin].[pupilFeedback]
+    add checkFormAllocation_id int not null
+    constraint FK_checkFormAllocation_id_checkFormAllocation_id references [mtc_admin].[checkFormAllocation] (id);
+
 -- alter table [mtc_admin].[checkResult]
 --     add check_id int not null
 --     constraint FK_checkResult_check_id_check_id references [mtc_admin].[check](id);
