@@ -3,7 +3,7 @@ alter table [mtc_admin].[check] add
   checkStatus_id int not null
     CONSTRAINT DF_check_checkStatus_id_default default 1
     CONSTRAINT FK_check_checkStatus_id_checkStatus_id references [mtc_admin].[checkStatus](id),
-  isLiveCheck bit;
+  isLiveCheck bit not null;
 
 alter table [mtc_admin].[checkFormAllocation]
   drop constraint
