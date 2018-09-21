@@ -7,9 +7,7 @@ import { APP_CONFIG } from '../services/config/config.service';
   styleUrls: ['./privacy.component.scss']
 })
 export class PrivacyComponent {
-  private linkCookies: String;
 
   constructor() {
-    this.linkCookies = `${APP_CONFIG.apiURL}/cookies`;
   }
 }
