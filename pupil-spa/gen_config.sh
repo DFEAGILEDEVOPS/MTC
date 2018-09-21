@@ -13,6 +13,8 @@ checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}
 checkStartAPIErrorMaxAttempts=${CHECK_START_MAX_ATTEMPTS:-"3"}
 checkSubmissionAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"30000"}
 checkSubmissionAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"10"}
+feedbackAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"3000"}
+feedbackAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"3"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
 supportNumber=${SUPPORT_NUMBER:-"0345 278 8080"}
 gaCode=${GA_CODE:-"null"}
@@ -42,6 +44,8 @@ cat <<EOF > config.json
   "checkStartAPIErrorMaxAttempts": $checkStartAPIErrorMaxAttempts,
   "checkSubmissionApiErrorDelay": $checkSubmissionAPIErrorDelay,
   "checkSubmissionAPIErrorMaxAttempts": $checkSubmissionAPIErrorMaxAttempts,
+  "feedbackAPIErrorDelay": $feedbackAPIErrorDelay,
+  "feedbackAPIErrorMaxAttempts": $feedbackAPIErrorMaxAttempts,
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
