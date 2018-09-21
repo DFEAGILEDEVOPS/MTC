@@ -63,11 +63,7 @@ export class FeedbackService {
       errorDelay: this.feedbackAPIErrorDelay,
       errorMaxAttempts: this.feedbackAPIErrorMaxAttempts
     };
-    try {
-      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
-    } catch (error) {
-      return new Error(error);
-    }
+    await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
   }
 
   /**
