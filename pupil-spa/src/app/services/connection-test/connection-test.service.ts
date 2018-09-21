@@ -12,7 +12,7 @@ declare let AzureStorage: any;
 
 @Injectable()
 export class ConnectionTestService {
-  private readonly queueName = APP_CONFIG.testSasQueueName;
+  private readonly tableName = APP_CONFIG.testTableName;
   private readonly timeoutInSeconds = 30;
   private readonly fibonacciN = 10000;
   private readonly fibonacciIterations = 5000;
@@ -30,7 +30,7 @@ export class ConnectionTestService {
               private router: Router,
               private storageService: StorageService,
               private deviceService: DeviceService,
-              private queueService: AzureQueueService,
+              private azureService: AzureQueueService,
               private windowRefService: WindowRefService) {}
 
   async startTest() {
@@ -65,7 +65,7 @@ export class ConnectionTestService {
     this.router.navigate(['/ict-survey/test-completed']);
   }
 
-  async getTestResults(): Promise<object> {
+  async getTestResults(): Promise<any> {
     return {
       device: {
         battery: await this.deviceService.getBatteryInformation(),
@@ -168,27 +168,32 @@ export class ConnectionTestService {
     });
   }
 
-  private submitTest(testResults: object): Promise<void> {
+  private submitTest(testResults: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.queueName === '') {
+      if (this.tableName === '') {
         return reject();
       }
 
       const message = JSON.stringify(testResults);
 
-      const queueService = this.queueService.getQueueService(
-        APP_CONFIG.testSasUrl,
-        APP_CONFIG.testSasToken
-      );
+      const tableService = this.azureService.getTableService(APP_CONFIG.testTableUrl, APP_CONFIG.testSasToken);
+      const generator = this.azureService.getGenerator();
 
-      const encodedMessage = this.queueService.encodeMessage(message);
-      queueService.createMessage(this.queueName, encodedMessage, function (error, result, response) {
+      const entity = {
+        PartitionKey: generator.String('partitionKey'), // partitionKey and rowKey has to be replaced
+        RowKey: generator.String('6'), // guid?
+        device: generator.String(JSON.stringify(testResults.device)),
+        processingTime: generator.String(testResults.processingTime),
+        connectionSpeed: generator.String(testResults.connectionSpeed)
+      }
+
+      tableService.insertEntity(APP_CONFIG.testTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }
-
-        resolve();
       });
+
+      resolve();
     });
   }
 

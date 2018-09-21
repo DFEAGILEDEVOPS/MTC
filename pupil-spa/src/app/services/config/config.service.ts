@@ -20,8 +20,8 @@ export class AppConfig {
   readonly supportNumber: string;
   readonly googleAnalyticsTrackingCode: string;
   readonly applicationInsightsInstrumentationKey: string;
-  readonly testSasQueueName: string;
-  readonly testSasUrl: string;
+  readonly testTableUrl: string;
+  readonly testTableName: string;
   readonly testSasToken: string;
   readonly feedbackTableName: string;
   readonly feedbackSasToken: string;

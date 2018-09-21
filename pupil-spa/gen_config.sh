@@ -4,8 +4,8 @@ if [ -f ".env" ]; then
     export $(egrep -v '^#' .env | xargs)
 fi
 
-testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
-testSasUrl=${TEST_SAS_URL:-""}
+testTableUrl=${TEST_TABLE_URL:-""}
+testTableName=${TEST_TABLE_NAME:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
 feedbackSasToken=${FEEDBACK_SAS_TOKEN:-""}
 feedbackTableName=${FEEDBACK_TABLE_NAME:-""}
@@ -52,8 +52,8 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
-  "testSasQueueName": "$testSasQueueName",
-  "testSasUrl": "$testSasUrl",
+  "testTableUrl": "$testTableUrl",
+  "testTableName": "$testTableName",
   "testSasToken": "$testSasToken",
   "feedbackTableName": "$feedbackTableName",
   "feedbackSasToken": "$feedbackSasToken",
