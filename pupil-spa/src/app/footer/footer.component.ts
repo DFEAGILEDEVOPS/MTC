@@ -8,10 +8,8 @@ import { APP_CONFIG } from '../services/config/config.service';
 })
 export class FooterComponent {
   public linkContact: String;
-  public linkCookies: String;
 
   constructor() {
     this.linkContact = `${APP_CONFIG.apiURL}/contact`;
-    this.linkCookies = `${APP_CONFIG.apiURL}/cookies`;
   }
 }
