@@ -3,6 +3,7 @@ import { APP_CONFIG } from '../config/config.service';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import uuid from 'uuidv4';
 
 @Injectable()
 export class FeedbackService {
@@ -53,8 +54,8 @@ export class FeedbackService {
       const generator = this.azureService.getGenerator();
 
       const entity = {
-        PartitionKey: generator.String('partitionKey'), // partitionKey and rowKey has to be replaced
-        RowKey: generator.String('4'), // guid?
+        PartitionKey: generator.String('survey_feedback'),
+        RowKey: generator.String(uuid()),
         comment: generator.String('String'),
         firstName: generator.String('String'),
         lastName: generator.String('String'),

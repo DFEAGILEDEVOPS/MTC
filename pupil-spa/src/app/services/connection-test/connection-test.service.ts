@@ -7,6 +7,7 @@ import { DeviceService } from '../device/device.service';
 import { StorageService } from '../storage/storage.service';
 import { AzureQueueService } from '../../services/azure-queue/azure-queue.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import uuid from 'uuidv4';
 
 declare let AzureStorage: any;
 
@@ -174,14 +175,12 @@ export class ConnectionTestService {
         return reject();
       }
 
-      const message = JSON.stringify(testResults);
-
       const tableService = this.azureService.getTableService(APP_CONFIG.testTableUrl, APP_CONFIG.testSasToken);
       const generator = this.azureService.getGenerator();
 
       const entity = {
-        PartitionKey: generator.String('partitionKey'), // partitionKey and rowKey has to be replaced
-        RowKey: generator.String('6'), // guid?
+        PartitionKey: generator.String('connection_test'),
+        RowKey: generator.String(uuid()),
         device: generator.String(JSON.stringify(testResults.device)),
         processingTime: generator.String(testResults.processingTime),
         connectionSpeed: generator.String(testResults.connectionSpeed)
