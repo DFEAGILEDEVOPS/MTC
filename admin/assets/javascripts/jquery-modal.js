@@ -17,7 +17,7 @@ $(function () {
     $('#js-modal-overlay').on('click', function (e) {
       toggleShowHideModal(e)
     })
-    $('body').on('keydown', function (e) {
+    $('#modal-wrapper').on('keydown', function (e) {
       var modalBox = $('#js-modal-box')
       // escape keystroke should hide the modal when it is visible
       if (e.keyCode === 27 && modalBox.hasClass('show')) {
