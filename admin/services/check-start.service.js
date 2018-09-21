@@ -20,6 +20,7 @@ const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 const azureQueueService = require('../services/azure-queue.service')
 const monitor = require('../helpers/monitor')
+const checkStateService = require('../services/check-state.service')
 
 const checkStartService = {}
 
@@ -202,6 +203,7 @@ checkStartService.pupilLogin = async function (pupilId) {
   }
 
   await checkDataService.sqlUpdate(checkData)
+  await checkStateService.changeState(check.checkCode, checkStateService.States.Collected)
   const questions = JSON.parse(checkForm.formData)
   return { checkCode: check.checkCode, questions }
 }

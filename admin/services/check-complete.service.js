@@ -12,6 +12,7 @@ const psUtilService = require('./psychometrician-util.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const checkFormDataService = require('../services/data-access/check-form.data.service')
 const monitor = require('../helpers/monitor')
+const checkStateService = require('../services/check-state.service')
 
 const checkCompleteService = {}
 
@@ -43,6 +44,9 @@ checkCompleteService.completeCheck = async function (completedCheck) {
 
   // store to data store
   await completedCheckDataService.sqlAddResult(completedCheck.data.pupil.checkCode, completedCheck, receivedByServerAt)
+
+  // Update the check status to complete
+  await checkStateService.changeState(completedCheck.data.pupil.checkCode, checkStateService.States.Complete)
 
   if (config.autoMark) {
     // HACK temporary way to mark checks until we move to a dedicated scheduled process
