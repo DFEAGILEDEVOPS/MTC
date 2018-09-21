@@ -73,7 +73,7 @@ describe('FeedbackService', () => {
         expect(service.postPupilFeedback).not.toHaveBeenCalled();
         expect(storageService.getItem).toHaveBeenCalledTimes(2);
       }));
-    it('should return false if feedback is not fetched before making any call',
+    it('should return if feedback is not fetched before making any call',
       inject([FeedbackService], async (service: FeedbackService) => {
         service.featureUseHpa = true;
         spyOn(storageService, 'getItem').and.returnValues(undefined, accessTokenMock);
