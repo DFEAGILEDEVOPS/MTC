@@ -70,7 +70,6 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds, pinEnv === 'live')
-    delete c.isLiveCheck // this not used in the check table (deprecated); but by the checkFormAllocation table
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
