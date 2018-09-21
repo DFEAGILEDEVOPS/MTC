@@ -57,7 +57,7 @@ To make the pupil-spa use the auth microservice instead of the API in admin, cha
 ## ICT Survey Setup
 
 You need a storage account to be set up. For the ICT Survey setup, create
-two queues:
+two tables:
 
 - `survey-feedback`
 - `connection-tests`
@@ -69,28 +69,28 @@ two queues:
 (These are examples that can be changed, as long as they're consistent
 with the environment variables).
 
-### Queue setup
+### Table setup
 
-- Set up the queue names in the env vars:
-  - `TEST_SAS_QUEUE_NAME`
-  - `FEEDBACK_SAS_QUEUE_NAME`
-- Get a SAS token for both queues, and set the token and URL in the env
+- Set up the table names in the env vars:
+  - `TEST_TABLE_NAME`
+  - `FEEDBACK_TABLE_NAME`
+- Get a SAS token for both tables, and set the token and URL in the env
   vars:
-  - `TEST_SAS_URL` will be the same URL for both queues, and should look
-    like `<accountname>.queue.core.microsoft.net/`
+  - `TEST_TABLE_URL` and `FEEDBACK_TABLE_URL` should look
+    like `<accountname>.table.core.microsoft.net/`
   - `TEST_SAS_TOKEN` and `FEEDBACK_SAS_TOKEN` for the tokens generated
     previously.
-- Update CORS for the queues.
+- Update CORS for the tables.
 
 Note: To create the SAS token:
-  - Right-click on the queue name in Storage Explorer
+  - Right-click on the table name in Storage Explorer
   - Choose ‘Get Shared Access Signature’
   - Create one with only ‘Add’ ticked in the checkboxes
     - Start time should be the current time, or one in the past; and
       expiry time should be sufficiently far in the future.
 
 Note: To set CORS:
-  - Right-click on ‘Queues’ in Storage Explorer
+  - Right-click on ‘Tables’ in Storage Explorer
   - Choose ‘Configure CORS Settings’, and then Add
     - Allowed origins: `*` (can be `*` for testing; should be the
       official URL of the SPA app in production)
@@ -132,10 +132,11 @@ cat /dev/urandom | LC_ALL=C tr -dc "[:alnum:]" | head -c 131072 > 128kb.text
 After everything, the environment should look similar to this:
 
 ```bash
-TEST_SAS_URL='https://<accountname>.queue.core.windows.net/'
-TEST_SAS_QUEUE_NAME='connection-tests'
+TEST_TABLE_URL='https://<accountname>.table.core.windows.net/'
+TEST_TABLE_NAME='connection-tests'
 TEST_SAS_TOKEN='?st=<token>'
-FEEDBACK_SAS_QUEUE_NAME='survey-feedback'
+FEEDBACK_TABLE_URL='https://<accountname>.table.core.windows.net/'
+FEEDBACK_TABLE_NAME='survey-feedback'
 FEEDBACK_SAS_TOKEN='?st=<token>'
 TEST_BLOB_URL='https://<accountname>.blob.core.windows.net/'
 TEST_BLOB_STORAGE_NAME='connection-test'
@@ -143,8 +144,8 @@ TEST_BLOB_STORAGE_NAME='connection-test'
 
 ### Checking results in the Storage Explorer
 
-After any messages are pushed onto the queues, double-click on the
-queue name that you want to check in Storage Explorer, and they should
+After any messages are inserted into the tables, double-click on the
+tblae name that you want to check in Storage Explorer, and they should
 appear in a container on the right. Double-clicking on a specific row
 will display that specific message.
 
