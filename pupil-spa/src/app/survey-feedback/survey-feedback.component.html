@@ -5,15 +5,47 @@
       <header class="page-header">
           <h1 class="heading-xlarge">Give feedback</h1>
       </header>
-      <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
-        <div class="text">
-          <h2 class="heading-large">
-            Did you encounter any problems running the connection test on your ICT?
+
+      <div *ngIf="userSubmittedForm && comment.invalid" class="error-summary" role="alert" aria-labelledby="error-summary" tabindex="-1">
+          <h2 class="heading-medium error-summary-heading" id="error-summary">
+            You need to fix the error on this page before continuing
           </h2>
+
           <p>
-            <textarea #commentText name="commentText" class="textarea form-control" formControlName="comment"></textarea>
+            See highlighted errors below
           </p>
-          <p class="no-top-margin">(Limit is 1200 characters)</p>
+
+          <ul class="error-summary-list">
+            <p *ngIf="comment.value.length === 0">
+              <a href='ict-survey/feedback#feedback-comment'>Feedback comment is missing</a>
+            </p>
+            <p *ngIf="comment.value.length > 1200">
+              <a href='ict-survey/feedback#feedback-comment'>Feedback comment limit is 1200 characters</a>
+            </p>
+          </ul>
+      </div>
+
+      <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+        <div class="text" [ngClass]="{'form-group-error': userSubmittedForm && comment.invalid}">
+          <fieldset>
+            <legend id="feedback-comment">
+              <h2 class="heading-large">
+                Did you encounter any problems running the connection test on your ICT?
+              </h2>
+              <span *ngIf="userSubmittedForm && comment.invalid" class="error-message">
+                <p *ngIf="comment.value.length === 0">
+                  Feedback comment is missing
+                </p>
+                <p *ngIf="comment.value.length > 1200">
+                  Feedback comment limit is 1200 characters
+                </p>
+              </span>
+            </legend>
+            <p>
+              <textarea #commentText name="commentText" class="textarea form-control" formControlName="comment" maxlength="1200"></textarea>
+            </p>
+            <p class="no-top-margin">(Limit is 1200 characters)</p>
+          </fieldset>
         </div>
 
         <div>
@@ -51,7 +83,7 @@
         </div>
 
         <div class="form-group">
-            <input class="button" value="Send feedback" type="submit" [disabled]="!feedbackForm.valid">
+            <input class="button" value="Send feedback" type="submit">
         </div>
       </form>
     </div>

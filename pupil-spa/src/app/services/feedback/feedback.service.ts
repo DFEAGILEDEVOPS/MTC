@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
+import { AzureQueueService } from '../azure-queue/azure-queue.service';
 
 @Injectable()
 export class FeedbackService {
 
-  constructor(private http: Http, private storageService: StorageService) {
+  constructor(
+    private http: Http,
+    private storageService: StorageService,
+    private queueService: AzureQueueService) {
   }
 
   async postFeedback() {
@@ -41,5 +45,21 @@ export class FeedbackService {
             return new Error('Feedback Error:' + response.status + ':' + response.statusText);
           }
         }).catch(error => new Error(error));
+  }
+
+  postSurveyFeedback(feedbackData: object): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const message = JSON.stringify(feedbackData);
+      const queueService = this.queueService.getQueueService(APP_CONFIG.testSasUrl, APP_CONFIG.feedbackSasToken);
+      const encodedMessage = this.queueService.encodeMessage(message);
+
+      queueService.createMessage(APP_CONFIG.feedbackSasQueueName, encodedMessage, function (error, result, response) {
+        if (error) {
+          return reject();
+        }
+
+        resolve();
+      });
+    });
   }
 }

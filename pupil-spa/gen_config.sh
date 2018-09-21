@@ -7,6 +7,8 @@ fi
 testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
 testSasUrl=${TEST_SAS_URL:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
+feedbackSasQueueName=${FEEDBACK_SAS_QUEUE_NAME:-""}
+feedbackSasToken=${FEEDBACK_SAS_TOKEN:-""}
 connectionTestBlobUrl=${TEST_BLOB_URL:-""}
 connectionTestBlobStorageName=${TEST_BLOB_STORAGE_NAME:-""}
 apiUrl=${API_URL:-"http://localhost:3001"}
@@ -52,6 +54,8 @@ cat <<EOF > config.json
   "testSasQueueName": "$testSasQueueName",
   "testSasUrl": "$testSasUrl",
   "testSasToken": "$testSasToken",
+  "feedbackSasQueueName": "$feedbackSasQueueName",
+  "feedbackSasToken": "$feedbackSasToken",
   "connectionTestBlobUrl": "$connectionTestBlobUrl",
   "connectionTestBlobStorageName": "$connectionTestBlobStorageName",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
