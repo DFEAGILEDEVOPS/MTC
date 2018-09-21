@@ -70,7 +70,6 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds, pinEnv === 'live')
-    delete c.isLiveCheck // this not used in the check table (deprecated); but by the checkFormAllocation table
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
@@ -117,14 +116,15 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const allForms = await checkFormService.getAllFormsForCheckWindow(checkWindow.id)
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
-  // Create the checkFormAllocations for each pupil
-  const checkFormAllocations = []
+  // Create the checks for each pupil
+  const checks = []
   for (let pupilId of pupilIds) {
     const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck)
-    checkFormAllocations.push(c)
+    checks.push(c)
   }
-  const res = await checkFormAllocationDataService.sqlCreateBatch(checkFormAllocations)
+  // const res = await checkFormAllocationDataService.sqlCreateBatch(checkFormAllocations)
+  const res = await checkDataService.sqlCreateBatch(checks)
 
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
