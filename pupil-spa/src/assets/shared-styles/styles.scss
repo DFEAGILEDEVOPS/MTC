@@ -215,3 +215,8 @@ body {
 .full-width {
   width: 100%;
 }
+
+/* breadcrumbs */
+.breadcrumbs {
+  @include breadcrumbs;
+}
