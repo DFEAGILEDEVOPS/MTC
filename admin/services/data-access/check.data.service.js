@@ -205,23 +205,28 @@ checkDataService.sqlFindLastStartedCheckByPupilId = async function (pupilId) {
  * @return {Promise}
  */
 checkDataService.sqlCreateBatch = async function (checks) {
-  const insert = `INSERT INTO ${sqlService.adminSchema}.${table} (
+  const insert = ` DECLARE @output TABLE (id int);
+  INSERT INTO ${sqlService.adminSchema}.${table} (
     pupil_id,
+    checkForm_id,
     checkWindow_id,
-    checkForm_id
-  )  VALUES`
+    isLiveCheck
+  )  OUTPUT inserted.ID INTO @output
+  VALUES `
+  const output = `; SELECT * from @output`
 
   const params = []
   const insertClauses = []
 
   checks.forEach((c, i) => {
     params.push({name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int})
-    params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
     params.push({name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int})
-    insertClauses.push(`(@pupil_id${i}, @checkWindow_id${i}, @checkForm_id${i})`)
+    params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
+    params.push({name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit})
+    insertClauses.push(`(@pupil_id${i}, @checkForm_id${i}, @checkWindow_id${i}, @isLiveCheck${i})`)
   })
 
-  const sql = [insert, insertClauses.join(', ')].join(' ')
+  const sql = [insert, insertClauses.join(', '), output].join(' ')
   return sqlService.modify(sql, params)
 }
 

@@ -194,9 +194,9 @@ describe('check-start.service', () => {
       spyOn(pinGenerationService, 'updatePupilPins')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+      spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({insertId: 1}))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      spyOn(checkFormAllocationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({insertId: 1}))
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessage')
     })
@@ -232,7 +232,7 @@ describe('check-start.service', () => {
     it('calls initialisePupilCheck to randomly select a check form', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
-      expect(checkFormAllocationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+      expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {
