@@ -7,12 +7,13 @@ import { DeviceService } from '../device/device.service';
 import { StorageService } from '../storage/storage.service';
 import { AzureQueueService } from '../../services/azure-queue/azure-queue.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import uuid from 'uuidv4';
 
 declare let AzureStorage: any;
 
 @Injectable()
 export class ConnectionTestService {
-  private readonly queueName = APP_CONFIG.testSasQueueName;
+  private readonly tableName = APP_CONFIG.testTableName;
   private readonly timeoutInSeconds = 30;
   private readonly fibonacciN = 10000;
   private readonly fibonacciIterations = 5000;
@@ -30,7 +31,7 @@ export class ConnectionTestService {
               private router: Router,
               private storageService: StorageService,
               private deviceService: DeviceService,
-              private queueService: AzureQueueService,
+              private azureService: AzureQueueService,
               private windowRefService: WindowRefService) {}
 
   async startTest() {
@@ -65,7 +66,7 @@ export class ConnectionTestService {
     this.router.navigate(['/ict-survey/test-completed']);
   }
 
-  async getTestResults(): Promise<object> {
+  async getTestResults(): Promise<any> {
     return {
       device: {
         battery: await this.deviceService.getBatteryInformation(),
@@ -168,21 +169,28 @@ export class ConnectionTestService {
     });
   }
 
-  private submitTest(testResults: object): Promise<void> {
+  generateEntity(testResults: any): any {
+    const generator = this.azureService.getGenerator();
+
+    return {
+      PartitionKey: generator.String(uuid()),
+      RowKey: generator.String(uuid()),
+      device: generator.String(JSON.stringify(testResults.device)),
+      processingTime: generator.Int64(testResults.processingTime),
+      connectionSpeed: generator.Double(testResults.connectionSpeed)
+    };
+  }
+
+  private submitTest(testResults: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.queueName === '') {
+      if (this.tableName === '') {
         return reject();
       }
 
-      const message = JSON.stringify(testResults);
+      const tableService = this.azureService.getTableService(APP_CONFIG.testTableUrl, APP_CONFIG.testSasToken);
+      const entity = this.generateEntity(testResults);
 
-      const queueService = this.queueService.getQueueService(
-        APP_CONFIG.testSasUrl,
-        APP_CONFIG.testSasToken
-      );
-
-      const encodedMessage = this.queueService.encodeMessage(message);
-      queueService.createMessage(this.queueName, encodedMessage, function (error, result, response) {
+      tableService.insertEntity(APP_CONFIG.testTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }

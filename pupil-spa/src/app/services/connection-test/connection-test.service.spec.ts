@@ -11,11 +11,11 @@ import { APP_CONFIG } from '../../services/config/config.service';
 import { ConnectionTestService } from './connection-test.service';
 
 describe('ConnectionTestService', () => {
-  let service, storageService, deviceService, queueService, http, router, windowRefService;
+  let service, storageService, deviceService, azureService, http, router, windowRefService;
 
   beforeEach(() => {
     storageService = new StorageServiceMock();
-    queueService = new AzureQueueServiceMock();
+    azureService = new AzureQueueServiceMock();
     deviceService = {
       getBatteryInformation: jasmine.createSpy('getBatteryInformation').and.returnValue({
         chargingTime: 'Infinity',
@@ -72,7 +72,7 @@ describe('ConnectionTestService', () => {
       router,
       storageService,
       deviceService,
-      queueService,
+      azureService,
       windowRefService,
     );
   });
@@ -164,6 +164,38 @@ describe('ConnectionTestService', () => {
       await service.startTest();
 
       expect(storageService.getItem('test_status')).toBe(false);
+    });
+  });
+
+  describe('#submitTest', () => {
+    beforeEach(() => {
+      spyOn(service, 'generateEntity').and.returnValue('entity');
+    });
+
+    it('generates the entity and submits the results in azure', async (done) => {
+      spyOn(azureService, 'getTableService').and.returnValue({
+        insertEntity: (table, entity, cb) => { cb(); }
+      });
+
+      try {
+        await service.submitTest('results');
+        done();
+      } catch (e) {
+        fail('expected to succeed');
+      }
+    });
+
+    it('fails when there is an azure error', async (done) => {
+      spyOn(azureService, 'getTableService').and.returnValue({
+        insertEntity: (table, entity, cb) => { cb('error'); }
+      });
+
+      try {
+        await service.submitTest('results');
+        fail('expected to fail');
+      } catch (e) {
+        done();
+      }
     });
   });
 

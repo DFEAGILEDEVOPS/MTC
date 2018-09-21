@@ -3,6 +3,7 @@ import { APP_CONFIG } from '../config/config.service';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { StorageService } from '../storage/storage.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import uuid from 'uuidv4';
 
 @Injectable()
 export class FeedbackService {
@@ -10,7 +11,7 @@ export class FeedbackService {
   constructor(
     private http: Http,
     private storageService: StorageService,
-    private queueService: AzureQueueService) {
+    private azureService: AzureQueueService) {
   }
 
   async postFeedback() {
@@ -47,13 +48,28 @@ export class FeedbackService {
         }).catch(error => new Error(error));
   }
 
-  postSurveyFeedback(feedbackData: object): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const message = JSON.stringify(feedbackData);
-      const queueService = this.queueService.getQueueService(APP_CONFIG.testSasUrl, APP_CONFIG.feedbackSasToken);
-      const encodedMessage = this.queueService.encodeMessage(message);
+  generateEntity(feedbackData: any): any {
+    const generator = this.azureService.getGenerator();
 
-      queueService.createMessage(APP_CONFIG.feedbackSasQueueName, encodedMessage, function (error, result, response) {
+    return {
+      PartitionKey: generator.String(uuid()),
+      RowKey: generator.String(uuid()),
+      comment: generator.String(feedbackData.comment),
+      firstName: generator.String(feedbackData.firstName),
+      lastName: generator.String(feedbackData.lastName),
+      contactNumber: generator.String(feedbackData.contactNumber),
+      emailAddress: generator.String(feedbackData.emailAddress),
+      schoolName: generator.String(feedbackData.schoolName)
+    };
+  }
+
+  postSurveyFeedback(feedbackData: any) {
+    return new Promise((resolve, reject) => {
+      const tableService = this.azureService.getTableService(APP_CONFIG.feedbackTableUrl, APP_CONFIG.feedbackSasToken);
+
+      const entity = this.generateEntity(feedbackData);
+
+      tableService.insertEntity(APP_CONFIG.feedbackTableName, entity, (error, result, response) => {
         if (error) {
           return reject();
         }

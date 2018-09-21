@@ -4,11 +4,12 @@ if [ -f ".env" ]; then
     export $(egrep -v '^#' .env | xargs)
 fi
 
-testSasQueueName=${TEST_SAS_QUEUE_NAME:-""}
-testSasUrl=${TEST_SAS_URL:-""}
+testTableUrl=${TEST_TABLE_URL:-""}
+testTableName=${TEST_TABLE_NAME:-""}
 testSasToken=${TEST_SAS_TOKEN:-""}
-feedbackSasQueueName=${FEEDBACK_SAS_QUEUE_NAME:-""}
 feedbackSasToken=${FEEDBACK_SAS_TOKEN:-""}
+feedbackTableName=${FEEDBACK_TABLE_NAME:-""}
+feedbackTableUrl=${FEEDBACK_TABLE_URL:-""} 
 connectionTestBlobUrl=${TEST_BLOB_URL:-""}
 connectionTestBlobStorageName=${TEST_BLOB_STORAGE_NAME:-""}
 apiUrl=${API_URL:-"http://localhost:3001"}
@@ -51,11 +52,12 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
-  "testSasQueueName": "$testSasQueueName",
-  "testSasUrl": "$testSasUrl",
+  "testTableUrl": "$testTableUrl",
+  "testTableName": "$testTableName",
   "testSasToken": "$testSasToken",
-  "feedbackSasQueueName": "$feedbackSasQueueName",
+  "feedbackTableName": "$feedbackTableName",
   "feedbackSasToken": "$feedbackSasToken",
+  "feedbackTableUrl": "$feedbackTableUrl",
   "connectionTestBlobUrl": "$connectionTestBlobUrl",
   "connectionTestBlobStorageName": "$connectionTestBlobStorageName",
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
