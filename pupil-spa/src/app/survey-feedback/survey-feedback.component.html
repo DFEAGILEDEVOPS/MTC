@@ -33,11 +33,16 @@
                 Did you encounter any problems running the connection test on your ICT?
               </h2>
               <span *ngIf="userSubmittedForm && comment.invalid" class="error-message">
-                Provide details
+                <p *ngIf="comment.value.length === 0">
+                  Feedback comment is missing
+                </p>
+                <p *ngIf="comment.value.length > 1200">
+                  Feedback comment limit is 1200 characters
+                </p>
               </span>
             </legend>
             <p>
-              <textarea #commentText name="commentText" class="textarea form-control" formControlName="comment"></textarea>
+              <textarea #commentText name="commentText" class="textarea form-control" formControlName="comment" maxlength="1200"></textarea>
             </p>
             <p class="no-top-margin">(Limit is 1200 characters)</p>
           </fieldset>
