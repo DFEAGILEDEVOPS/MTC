@@ -211,20 +211,20 @@ checkStartService.pupilLogin = async function (pupilId) {
 /**
  * Query the DB and put the info into messages suitable for placing on the prepare-check queue
  * The message needs to contain everything the pupil needs to login and take the check
- * @param checkFormAllocationIds
+ * @param CheckIds
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkFormAllocationIds) {
-  if (!checkFormAllocationIds) {
-    throw new Error('checkFormAllocationIds is not defined')
+checkStartService.prepareCheckQueueMessages = async function (checkIds) {
+  if (!checkIds) {
+    throw new Error('checkIds is not defined')
   }
 
-  if (!Array.isArray(checkFormAllocationIds)) {
-    throw new Error('checkFormAllocationIds must be an array')
+  if (!Array.isArray(checkIds)) {
+    throw new Error('checkIds must be an array')
   }
 
   const messages = []
-  const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
+  const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkIds)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
 
   const checkStartedSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_STARTED, sasExpiryDate)
@@ -232,7 +232,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
-  for (let o of checkFormAllocations) {
+  for (let o of checks) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
     const message = {
       schoolPin: o.school_pin,
@@ -242,8 +242,8 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
-        checkCode: o.checkFormAllocation_checkCode,
-        checkFormAllocationId: o.checkFormAllocation_id,
+        checkCode: o.check_checkCode,
+        check_id: o.check_check_id,
         pinExpiresAt: o.pupil_pinExpiresAt
       },
       school: {
