@@ -84,6 +84,7 @@ describe('CheckCompleteService', () => {
       spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
+      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.resolve());
       await checkCompleteService.submit(Date.now());
@@ -92,6 +93,7 @@ describe('CheckCompleteService', () => {
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
+      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
       expect(router.navigate).toHaveBeenCalledWith(['/check-complete']);
     });
     it('submit should call azure queue service service unsuccessfully, audit failure and redirect to submission failed page', async () => {
@@ -99,6 +101,7 @@ describe('CheckCompleteService', () => {
       spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
+      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.reject(new Error('error')));
       await checkCompleteService.submit(Date.now());
@@ -107,6 +110,7 @@ describe('CheckCompleteService', () => {
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
       expect(storageService.setItem).toHaveBeenCalledTimes(0);
+      expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
       expect(router.navigate).toHaveBeenCalledWith(['/submission-failed']);
     });
   });

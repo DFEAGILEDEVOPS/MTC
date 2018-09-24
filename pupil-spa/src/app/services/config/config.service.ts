@@ -21,6 +21,8 @@ export class AppConfig {
   readonly production: boolean;
   readonly submissionPendingViewMinDisplay: number;
   readonly supportNumber: string;
+  readonly feedbackAPIErrorDelay: number;
+  readonly feedbackAPIErrorMaxAttempts: number;
 }
 
 /**
@@ -41,7 +43,6 @@ export function loadConfigService(configService: AppConfigService): Function {
 
 /**
  * Mock helper
- * @param {AppConfigService} configService
  * @returns {Function}
  */
 export function loadConfigMockService(): Function {
