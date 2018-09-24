@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,9 +6,6 @@ import { APP_CONFIG } from '../services/config/config.service';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
-  public linkContact: String;
-
   constructor() {
-    this.linkContact = `${APP_CONFIG.apiURL}/contact`;
   }
 }
