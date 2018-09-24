@@ -64,7 +64,7 @@ export class CheckStartService {
         this.auditService.addEntry(new CheckStartedApiCalled());
       } catch (error) {
         this.auditService.addEntry(new CheckStartedApiCalled());
-      };
+      }
     }
   }
 }
