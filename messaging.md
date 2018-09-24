@@ -9,11 +9,13 @@ Each queue has a corresponding poison queue which is automatically created the f
 
 ## Inventory
 
-| Queue | Publisher(s) | Subscriber |   |   |
-|---|---|---|---|---|
-| prepare-check | `admin` | `functions/prepare-check` |
-| check-started | `pupil-spa` | `functions/check-started` |
+| Queue | Publisher(s) | Subscriber |
+|---|---|---|
 | check-complete | `pupil-spa` | `functions/completed-checks` |
+| check-started | `pupil-spa` | `functions/check-started` |
+| prepare-check | `admin` | `functions/prepare-check` |
 | pupil-feedback | `pupil-spa` | `functions/feedback` |
 | pupil-prefs | `pupil-spa` | `functions/pupil-prefs` |
 | pupil-status | TBD | `functions/pupil-status` |
+
+A canonical definition of all queues and tables used for back-end processing is kept in [admin/tables-queues.json](./admin/tables-queues.json)
