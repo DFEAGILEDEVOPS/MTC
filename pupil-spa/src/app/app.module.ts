@@ -45,6 +45,7 @@ import { AppUsageService } from './services/app-usage/app-usage.service';
 import { TokenService } from './services/token/token.service';
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { CheckStartService } from './services/check-start/check-start.service';
+import { CheckCompleteService} from './services/check-complete/check-complete.service';
 
 import { CheckStatusService } from './services/check-status/check-status.service';
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
@@ -144,6 +145,7 @@ const appRoutes: Routes = [
     CheckStatusService,
     AppUsageService,
     CheckStartService,
+    CheckCompleteService,
     TokenService,
     AzureQueueService,
     {

@@ -1,13 +1,9 @@
 import { Component, EventEmitter, OnInit, Output, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { APP_CONFIG } from '../services/config/config.service';
-import { SubmissionService } from '../services/submission/submission.service';
-import { StorageService } from '../services/storage/storage.service';
-import { AuditService } from '../services/audit/audit.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CheckSubmissionApiCalled, CheckSubmissionAPICallSucceeded } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { QuestionService } from '../services/question/question.service';
+import { CheckCompleteService } from '../services/check-complete/check-complete.service';
 
 @Component({
   selector: 'app-submission-pending',
@@ -21,14 +17,12 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   clickEvent: EventEmitter<any> = new EventEmitter();
 
   public title;
-  constructor(private storageService: StorageService,
-              private submissionService: SubmissionService,
-              private auditService: AuditService,
-              private router: Router,
+  constructor(private router: Router,
               private route: ActivatedRoute,
               private questionService: QuestionService,
               private speechService: SpeechService,
               private checkStatusService: CheckStatusService,
+              private checkCompleteService: CheckCompleteService,
               private elRef: ElementRef) {
   }
 
@@ -40,34 +34,8 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
     const queryParams = this.route.snapshot.queryParams;
     this.title = queryParams && queryParams.unfinishedCheck ?
       'Uploading previous check' : 'You have finished';
-    const start = Date.now();
-    await this.submissionService.submitData().toPromise()
-      .then(async () => {
-        this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-        this.auditService.addEntry(new CheckSubmissionApiCalled());
-        this.storageService.setItem('pending_submission', false);
-        this.storageService.setItem('completed_submission', true);
-        // Display pending screen for the minimum configurable time
-        const end = Date.now();
-        const duration = end - start;
-        const minDisplay = APP_CONFIG.submissionPendingViewMinDisplay;
-        if (duration < minDisplay) {
-          const displayTime = minDisplay - duration;
-          await this.sleep(displayTime);
-        }
-        await this.loadComponent(true);
-        return;
-      })
-      .catch(async (error) => {
-        this.auditService.addEntry(new CheckSubmissionApiCalled());
-        await this.loadComponent(false);
-        return;
-      });
-  }
-
-  async loadComponent(success) {
-    const path = success ? 'check-complete' : 'submission-failed';
-    return this.router.navigate([`/${path}`]);
+    const startTime = Date.now();
+    await this.checkCompleteService.submit(startTime);
   }
 
   ngAfterViewInit() {
@@ -78,10 +46,6 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
         this.speechService.speakFocusedElement(event.target);
       }, true);
     }
-  }
-
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   ngOnDestroy(): void {
