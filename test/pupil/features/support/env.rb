@@ -15,6 +15,9 @@ require 'show_me_the_cookies'
 require 'httparty'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
+require 'azure/storage/table'
+require 'azure/storage/queue'
+require 'azure/storage/blob'
 
 require_relative 'helpers'
 include Helpers
@@ -81,4 +84,18 @@ SQL_CLIENT.execute('SET QUOTED_IDENTIFIER ON').do
 SQL_CLIENT.execute('SET ANSI_WARNINGS ON').do
 SQL_CLIENT.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
 
+if File.exist?('../../admin/.env')
+  credentials = File.read('../../admin/.env').split('AZURE_STORAGE_CONNECTION_STRING').last.split(';')
+  @account_name = credentials.find{|a| a.include? 'AccountName' }.gsub('AccountName=','')
+  @account_key = credentials.find{|a| a.include? 'AccountKey' }.gsub('AccountKey=','')
+end
+
+ENV["AZURE_ACCOUNT_NAME"] ||= @account_name
+ENV["AZURE_ACCOUNT_KEY"] ||= @account_key
+
+AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
+
+binding.pry
 Capybara.visit Capybara.app_host
