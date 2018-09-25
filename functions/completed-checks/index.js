@@ -5,7 +5,6 @@ const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
 const winston = require('winston')
 const { TYPES } = require('tedious')
-const R = require('ramda')
 
 winston.level = 'error'
 const config = require('../config')
@@ -18,7 +17,7 @@ const checkResultTable = '[checkResult]'
 
 const schema = ['mtc_admin']
 const checkStatusTable = '[checkStatus]'
-const checkTable = '[checkFormAllocation]'
+const checkTable = '[check]'
 
 // Table Storage
 const azureTableService = getPromisifiedAzureTableService()
@@ -35,7 +34,7 @@ module.exports = async function (context, completedCheckMessage) {
   }
 
   try {
-    await updateCheckStatusToComplete(completedCheckMessage.checkCode, context.log)
+    await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
     context.log('SUCCESS: Admin DB check status updated')
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
@@ -74,18 +73,18 @@ module.exports = async function (context, completedCheckMessage) {
  * @return {Promise<void>}
  */
 async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
-  let checkFormAllocationData
+  let checkData
 
   try {
-    checkFormAllocationData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
-    logger.info('savePayloadToAdminDatabase: data retrieved from SQL: ' + checkFormAllocationData)
+    checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
+    logger.info('savePayloadToAdminDatabase: data retrieved from SQL: ' + checkData)
   } catch (error) {
     logger.error(`ERROR: savePayloadToAdminDatabase: failed to retrieve checkFormAllocationData for checkCode: [${completedCheckMessage.checkCode}]`)
     throw error
   }
 
   try {
-    await sqlInsertPayload(completedCheckMessage, checkFormAllocationData.id)
+    await sqlInsertPayload(completedCheckMessage, checkData.id)
   } catch (error) {
     logger.error(`ERROR: savePayloadToAdminDatabase: failed to insert for checkCode: [${completedCheckMessage.checkCode}]`)
     throw error
@@ -96,12 +95,12 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
 
 /**
  * Insert the payload into the checkResult table
- * @param payload
- * @param checkFormAllocationId
+ * @param {object} payload
+ * @param {number} checkId
  * @return {Promise<void>}
  */
-async function sqlInsertPayload (payload, checkFormAllocationId) {
-  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, checkFormAllocation_id) VALUES (@payload, @checkFormAllocationId)`
+async function sqlInsertPayload (payload, checkId) {
+  const sql = `INSERT INTO ${schema}.${checkResultTable} (payload, check_id) VALUES (@payload, @checkId)`
   const params = [
     {
       name: 'payload',
@@ -109,8 +108,8 @@ async function sqlInsertPayload (payload, checkFormAllocationId) {
       type: TYPES.NVarChar
     },
     {
-      name: 'checkFormAllocationId',
-      value: checkFormAllocationId,
+      name: 'checkId',
+      value: checkId,
       type: TYPES.Int
     }
   ]
@@ -119,22 +118,29 @@ async function sqlInsertPayload (payload, checkFormAllocationId) {
 }
 
 /**
- * Update the check status to complete
+ * Update the Admin DB
+ * Set check status to complete, received timestamp to current timestamp
  * @param {string} checkCode - GUID
  * @param {function} logger
  */
-async function updateCheckStatusToComplete (checkCode, logger) {
+async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
                SET checkStatus_id = 
-                  (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP')                  
-               where checkCode = @checkCode`
+                  (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'CMP'),
+               receivedByServerAt = @receivedByServerAt          
+               WHERE checkCode = @checkCode`
 
   const params = [
     {
       name: 'checkCode',
       value: checkCode,
       type: TYPES.UniqueIdentifier
+    },
+    {
+      name: 'receivedByServerAt',
+      value: new Date(),
+      type: TYPES.DateTime
     }
   ]
 
