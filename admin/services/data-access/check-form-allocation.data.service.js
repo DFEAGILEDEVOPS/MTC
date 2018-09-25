@@ -10,6 +10,7 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
   const select = `SELECT 
       chk.id as check_id,
       chk.checkCode as check_checkCode,
+      chk.isLiveCheck as check_isLiveCheck,
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,

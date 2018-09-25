@@ -234,6 +234,10 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
 
   for (let o of checks) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+
+    // Pass the isLiveCheck config in to the SPA
+    config.practice = !o.check_isLiveCheck
+
     const message = {
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
