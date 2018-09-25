@@ -85,3 +85,38 @@ group that will be executed on one of the nodes
 You can also pass in any other options by using the following:
 
 `rake parallel OPTS='BASE_URL=http://localhost:3002 -t @tag' NODES=4 GROUP_SIZE=6`
+
+
+##Using Ruby with Azure Storage
+
+Create a file named `.env` in the root of `/admin` and put 
+in your `AZURE_STORAGE_CONNECTION_STRING` in to it.
+
+If you want to set environment variables to run the tests without the `.env` file please set the following vars:
+`ENV["AZURE_ACCOUNT_NAME"]` and `ENV["AZURE_ACCOUNT_KEY"]` 
+
+#####Using Ruby with Azure Storage Queues
+
+In the `test/pupil/features/support/azure_queue_helper.rb` we have a method 
+to retrieve a number of messages from a given queue. Each message has a property called `message_text`
+which is Base64 encoded. Use the `decode_message_text` method to decode the message once the message
+required has been found.
+ 
+More methods and information can be found here:
+https://github.com/azure/azure-storage-ruby/tree/master/queue
+
+#####Using Ruby with Azure Storage Blob containers
+
+In `test/pupil/features/support/azure_blob_helper.rb` we have the `get_blobs` method which takes a argument
+for the container name. This will return a list of blobs in the container.
+ 
+More methods and information can be found here:
+https://github.com/azure/azure-storage-ruby/tree/master/blob
+
+#####Using Ruby with Azure Storage Tables
+
+In the `test/pupil/features/support/azure_table_helper.rb` we have a method to retrieve a row from a given 
+table using the `PartitionKey` and `RowKey`. 
+
+More methods and information can be found here:
+https://github.com/azure/azure-storage-ruby/tree/master/table
