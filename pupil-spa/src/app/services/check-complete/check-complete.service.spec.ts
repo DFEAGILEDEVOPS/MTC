@@ -84,6 +84,7 @@ describe('CheckCompleteService', () => {
       spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
+      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: {checkCode: 'abc-def'} } );
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.resolve());
       await checkCompleteService.submit(Date.now());
@@ -99,6 +100,7 @@ describe('CheckCompleteService', () => {
       spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
+      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: {checkCode: 'def-ghi'} } );
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.reject(new Error('error')));
       await checkCompleteService.submit(Date.now());
