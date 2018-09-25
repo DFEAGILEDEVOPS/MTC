@@ -184,7 +184,7 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
 /**
  *
  * @param pupilId
- * @return {Promise<*>} checkCode - UUID v4
+ * @return {Promise<*>} partial check data
  */
 checkStartService.pupilLogin = async function (pupilId) {
   const check = await checkDataService.sqlFindOneForPupilLogin(pupilId)
@@ -205,7 +205,7 @@ checkStartService.pupilLogin = async function (pupilId) {
   await checkDataService.sqlUpdate(checkData)
   await checkStateService.changeState(check.checkCode, checkStateService.States.Collected)
   const questions = JSON.parse(checkForm.formData)
-  return { checkCode: check.checkCode, questions }
+  return { checkCode: check.checkCode, questions, practice: !check.isLiveCheck }
 }
 
 /**
