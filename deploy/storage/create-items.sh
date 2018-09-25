@@ -14,7 +14,7 @@ storageAccountKey=$2
 allowedOrigins=$3
 
 # set the cors rule for the queues
-az storage cors add --methods POST --origins allowedOrigins --services q
+az storage cors add --methods POST --origins allowedOrigins --services q --account-name $storageAccountName --account-key $storageAccountKey
 
 declare -a queuenames=('check-started' 'check-complete' 'pupil-feedback' 'pupil-prefs' 'prepare-check' 'pupil-status')
 # create queues if they do not exist
