@@ -1,7 +1,5 @@
 'use strict'
 
-const azureStorage = require('azure-storage')
-const bluebird = require('bluebird')
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
@@ -24,7 +22,7 @@ module.exports = async function (context, pupilStatusMessage) {
   // Store the raw message to an audit log
   context.bindings.pupilEventsTable = []
   const entity = {
-      // TODO will we always have a check code?
+    // TODO will we always have a check code?
     PartitionKey: pupilStatusMessage.checkCode,
     RowKey: uuid(),
     eventType: 'pupil-status',
