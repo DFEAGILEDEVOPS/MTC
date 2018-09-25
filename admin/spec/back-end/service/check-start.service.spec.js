@@ -11,6 +11,7 @@ const checkFormAllocationDataService = require('../../../services/data-access/ch
 const checkFormDataService = require('../../../services/data-access/check-form.data.service')
 const checkFormService = require('../../../services/check-form.service')
 const checkStartService = require('../../../services/check-start.service')
+const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const configService = require('../../../services/config.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
@@ -284,6 +285,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await service.pupilLogin(1)
       expect(checkDataService.sqlFindOneForPupilLogin).toHaveBeenCalled()
     })
@@ -292,6 +294,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(null)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       try {
         await service.pupilLogin(1)
         fail('expected to throw')
@@ -304,6 +307,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await service.pupilLogin(1)
       expect(checkFormDataService.sqlGetActiveForm).toHaveBeenCalled()
     })
@@ -312,6 +316,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue(null)
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       try {
         await service.pupilLogin(1)
       } catch (error) {
@@ -323,6 +328,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await service.pupilLogin(1)
       expect(checkDataService.sqlUpdate).toHaveBeenCalled()
       const arg = checkDataService.sqlUpdate.calls.mostRecent().args[0]
@@ -334,6 +340,7 @@ describe('check-start.service', () => {
       spyOn(checkDataService, 'sqlFindOneForPupilLogin').and.returnValue(preparedCheckMock)
       spyOn(checkFormDataService, 'sqlGetActiveForm').and.returnValue([checkFormMock])
       spyOn(checkDataService, 'sqlUpdate')
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       const res = await service.pupilLogin(1)
       expect(res.hasOwnProperty('checkCode')).toBeTruthy()
       expect(res.hasOwnProperty('questions')).toBeTruthy()
@@ -365,7 +372,7 @@ describe('check-start.service', () => {
         await checkStartService.prepareCheckQueueMessages()
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('checkFormAllocationIds is not defined')
+        expect(error.message).toBe('checkIds is not defined')
       }
     })
 
@@ -374,7 +381,7 @@ describe('check-start.service', () => {
         await checkStartService.prepareCheckQueueMessages({})
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('checkFormAllocationIds must be an array')
+        expect(error.message).toBe('checkIds must be an array')
       }
     })
 
