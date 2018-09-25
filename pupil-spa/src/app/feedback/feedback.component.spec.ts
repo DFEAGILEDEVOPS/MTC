@@ -4,18 +4,20 @@ import {
   Http
 } from '@angular/http';
 import { Router } from '@angular/router';
+import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { StorageService } from '../services/storage/storage.service';
 import { FeedbackService } from '../services/feedback/feedback.service';
+import { TokenService } from '../services/token/token.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 
 describe('FeedbackComponent', () => {
   let component: FeedbackComponent;
   let fixture: ComponentFixture<FeedbackComponent>;
   const store = {};
   let mockRouter;
-
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
@@ -26,9 +28,12 @@ describe('FeedbackComponent', () => {
       imports: [HttpModule],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
+        { provide: QUEUE_STORAGE_TOKEN },
         { provide: Router, useValue: mockRouter },
+        AzureQueueService,
+        FeedbackService,
         StorageService,
-        FeedbackService
+        TokenService
       ]
     });
     const storageService = injector.get(StorageService);
