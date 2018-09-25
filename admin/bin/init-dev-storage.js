@@ -29,28 +29,30 @@ async function createTables (tables) {
   return Promise.all(tableCreates)
 }
 
-async function deleteQueues (queues) {
+async function deleteQueueMessages (queues) {
   const queueDeletes = queues.map(q => {
-    return queueService.deleteQueueIfExistsAsync(q)
+    return queueService.clearMessagesAsync(q)
   })
   return Promise.all(queueDeletes)
 }
 
 async function createQueues (tables) {
   const queueCreates = queueNames.map(q => {
-    return queueService.createQueueAsync(q)
+    return queueService.createQueueIfNotExistsAsync(q)
   })
   return Promise.all(queueCreates)
 }
 
 async function main () {
   await deleteTables(tableNames)
-  await deleteQueues(queueNames)
+  await deleteQueueMessages(queueNames)
   await createTables(tableNames)
   await createQueues(queueNames)
 }
 
-main()
+main().then(() => {
+  console.log('done')
+})
 
 /**
  * Promisify and cache the azureTableService library as it still lacks Promise support
