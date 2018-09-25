@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const checkDataService = require('./data-access/check.data.service')
 const checkStatusDataService = require('./data-access/check-status.data.service')
@@ -23,7 +23,7 @@ const checkStatusCodes = Object.freeze({
   'Expired': { code: 'EXP' },
   'Complete': { code: 'CMP' },
   'Started': { code: 'STD' },
-  'Collected': { code: 'COL'}
+  'Collected': { code: 'COL' }
 })
 
 /**

@@ -10,7 +10,7 @@ const table = 'checkStatus'
  * @param {integer} status
  */
 module.exports.sqlFindOneById = async function sqlFindOneById (id) {
-    return sqlService.findOneById(table, id)
+  return sqlService.findOneById(table, id)
 }
 
 /**
