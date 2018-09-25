@@ -10,9 +10,10 @@ const azure = require('azure-storage')
 const bluebird = require('bluebird')
 const names = require('../../deploy/storage/tables-queues.json')
 
-const queues = names['queues']
+const queueNames = names['queues']
 const tableNames = names['tables']
-const tableService = getPromisifiedAzureTableService(azure)
+const tableService = getPromisifiedService(azure.createTableService())
+const queueService = getPromisifiedService(azure.createQueueService())
 
 async function deleteTables (tables) {
   const tableDeletes = tables.map(table => {
@@ -28,9 +29,25 @@ async function createTables (tables) {
   return Promise.all(tableCreates)
 }
 
+async function deleteQueues (queues) {
+  const queueDeletes = queues.map(q => {
+    return queueService.deleteQueueIfExistsAsync(q)
+  })
+  return Promise.all(queueDeletes)
+}
+
+async function createQueues (tables) {
+  const queueCreates = queueNames.map(q => {
+    return queueService.createQueueAsync(q)
+  })
+  return Promise.all(queueCreates)
+}
+
 async function main () {
   await deleteTables(tableNames)
+  await deleteQueues(queueNames)
   await createTables(tableNames)
+  await createQueues(queueNames)
 }
 
 main()
@@ -38,9 +55,8 @@ main()
 /**
  * Promisify and cache the azureTableService library as it still lacks Promise support
  */
-function getPromisifiedAzureTableService (azureStorage) {
-  const azureTableService = azureStorage.createTableService()
-  bluebird.promisifyAll(azureTableService, {
+function getPromisifiedService (storageService) {
+  bluebird.promisifyAll(storageService, {
     promisifier: (originalFunction) => function (...args) {
       return new Promise((resolve, reject) => {
         try {
@@ -57,5 +73,5 @@ function getPromisifiedAzureTableService (azureStorage) {
     }
   })
 
-  return azureTableService
+  return storageService
 }
