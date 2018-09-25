@@ -6,26 +6,56 @@ Requires your local env file to be configured with the following...
 */
 
 require('dotenv').config()
-const names = require('../tables-queues.json')
 const azure = require('azure-storage')
+const bluebird = require('bluebird')
+const names = require('../../deploy/storage/tables-queues.json')
 
 const queues = names['queues']
-const tables = names['tables']
+const tableNames = names['tables']
+const tableService = getPromisifiedAzureTableService(azure)
 
-const tableService = azure.createTableService()
-tableService.deleteTableIfExists(tables[0], (error, result, response) => {
-  if (error) {
-    console.error(error)
-  }
-})
+async function deleteTables (tables) {
+  const tableDeletes = tables.map(table => {
+    return tableService.deleteTableIfExistsAsync(table)
+  })
+  return Promise.all(tableDeletes)
+}
 
-tableService.createTableIfNotExists(tables[0], (error, result, response) => {
-  if (error) {
-    console.error(error)
-  }
-})
+async function createTables (tables) {
+  const tableCreates = tables.map(table => {
+    return tableService.createTableAsync(table)
+  })
+  return Promise.all(tableCreates)
+}
 
-/*
-tables.forEach(t => {
-  console.log(t)
-}) */
+async function main () {
+  await deleteTables(tableNames)
+  await createTables(tableNames)
+}
+
+main()
+
+/**
+ * Promisify and cache the azureTableService library as it still lacks Promise support
+ */
+function getPromisifiedAzureTableService (azureStorage) {
+  const azureTableService = azureStorage.createTableService()
+  bluebird.promisifyAll(azureTableService, {
+    promisifier: (originalFunction) => function (...args) {
+      return new Promise((resolve, reject) => {
+        try {
+          originalFunction.call(this, ...args, (error, result, response) => {
+            if (error) {
+              return reject(error)
+            }
+            resolve({ result, response })
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    }
+  })
+
+  return azureTableService
+}
