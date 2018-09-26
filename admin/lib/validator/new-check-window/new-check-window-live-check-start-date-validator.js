@@ -26,7 +26,7 @@ module.exports.validate = (validationError, liveCheckStartDateData) => {
   if (!isLiveCheckStartDayEmpty && !isInt(liveCheckStartDateData.liveCheckStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('liveCheckStartDay', checkWindowErrorMessages.liveCheckStartDayWrongDay)
   }
-  if (!isLiveCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(liveCheckStartDateData.liveCheckStartDay)) {
+  if (!isLiveCheckStartDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(liveCheckStartDateData.liveCheckStartDay))) {
     validationError.addError('liveCheckStartDay', checkWindowErrorMessages.liveCheckStartDayInvalidChars)
   }
   // Live check start month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, liveCheckStartDateData) => {
   if (!isLiveCheckStartMonthEmpty && !isInt(liveCheckStartDateData.liveCheckStartMonth, { min: 1, max: 12 })) {
     validationError.addError('liveCheckStartMonth', checkWindowErrorMessages.liveCheckStartMonthWrongDay)
   }
-  if (!isLiveCheckStartMonthEmpty && !XRegExp('^[0-9]+$').test(liveCheckStartDateData.liveCheckStartMonth)) {
+  if (!isLiveCheckStartMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(liveCheckStartDateData.liveCheckStartMonth))) {
     validationError.addError('liveCheckStartMonth', checkWindowErrorMessages.liveCheckStartMonthInvalidChars)
   }
   // Live check start year

@@ -26,7 +26,7 @@ module.exports.validate = (validationError, familiarisationCheckStartDateData) =
   if (!isFamiliarisationCheckStartDayEmpty && !isInt(familiarisationCheckStartDateData.familiarisationCheckStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('familiarisationCheckStartDay', checkWindowErrorMessages.familiarisationCheckStartDayWrongDay)
   }
-  if (!isFamiliarisationCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckStartDateData.familiarisationCheckStartDay)) {
+  if (!isFamiliarisationCheckStartDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(familiarisationCheckStartDateData.familiarisationCheckStartDay))) {
     validationError.addError('familiarisationCheckStartDay', checkWindowErrorMessages.familiarisationCheckStartDayInvalidChars)
   }
   // Familiarisation check start month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, familiarisationCheckStartDateData) =
   if (!isFamiliarisationCheckStartMonthEmpty && !isInt(familiarisationCheckStartDateData.familiarisationCheckStartMonth, { min: 1, max: 12 })) {
     validationError.addError('familiarisationCheckStartMonth', checkWindowErrorMessages.familiarisationCheckStartMonthWrongDay)
   }
-  if (!isFamiliarisationCheckStartMonthEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckStartDateData.familiarisationCheckStartMonth)) {
+  if (!isFamiliarisationCheckStartMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(familiarisationCheckStartDateData.familiarisationCheckStartMonth))) {
     validationError.addError('familiarisationCheckStartMonth', checkWindowErrorMessages.familiarisationCheckStartMonthInvalidChars)
   }
   // Familiarisation check start year

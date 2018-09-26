@@ -75,12 +75,12 @@ module.exports = {
   liveCheckEndYearInvalidChars: 'Enter a year in 4 digits for live check end date',
   liveCheckEndYearRequired: '"Live check end year" is required',
 
-  adminStartDateInThePast: 'Administration start date must be in the future',
-  adminEndDateInThePast: 'Administration end date must be in the future',
-  familiarisationCheckStartDateInThePast: '"Familiarisation check start date" must be in the future',
-  familiarisationCheckEndDateInThePast: '"Familiarisation check end date" must be in the future',
-  liveCheckStartDateInThePast: '"Live check start date" must be in the future',
-  liveCheckEndDateInThePast: '"Live check end date" must be in the future',
+  adminStartDateInThePast: 'Enter a start date in the future for administration start date',
+  adminEndDateInThePast: 'Enter an end date in the future for administration end date',
+  familiarisationCheckStartDateInThePast: 'Enter a start date in the future for familiarisation check start date',
+  familiarisationCheckEndDateInThePast: 'Enter an end date in the future for familiarisation check end date',
+  liveCheckStartDateInThePast: 'Enter a start date in the future for live check start date',
+  liveCheckEndDateInThePast: 'Enter an end date in the future for live check end date',
 
   checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"',
   checkDateBeforeAdminDate: '"Check start date" must occur after the "Administration start date"',

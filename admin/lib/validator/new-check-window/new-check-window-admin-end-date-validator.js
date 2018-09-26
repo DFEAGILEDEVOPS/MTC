@@ -26,7 +26,7 @@ module.exports.validate = (validationError, adminEndDateData) => {
   if (!isAdminEndDayEmpty && !isInt(adminEndDateData.adminEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('adminEndDay', checkWindowErrorMessages.adminEndDayWrongDay)
   }
-  if (!isAdminEndDayEmpty && !XRegExp('^[0-9]+$').test(adminEndDateData.adminEndDay)) {
+  if (!isAdminEndDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(adminEndDateData.adminEndDay))) {
     validationError.addError('adminEndDay', checkWindowErrorMessages.adminEndDayInvalidChars)
   }
   // Admin end month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, adminEndDateData) => {
   if (!isAdminEndMonthEmpty && !isInt(adminEndDateData.adminEndMonth, { min: 1, max: 12 })) {
     validationError.addError('adminEndMonth', checkWindowErrorMessages.adminEndMonthWrongDay)
   }
-  if (!isAdminEndMonthEmpty && !XRegExp('^[0-9]+$').test(adminEndDateData.adminEndMonth)) {
+  if (!isAdminEndMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(adminEndDateData.adminEndMonth))) {
     validationError.addError('adminEndMonth', checkWindowErrorMessages.adminEndMonthInvalidChars)
   }
   // Admin end year

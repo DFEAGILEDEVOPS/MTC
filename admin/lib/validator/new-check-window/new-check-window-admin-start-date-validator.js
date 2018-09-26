@@ -26,7 +26,7 @@ module.exports.validate = (validationError, adminStartDateData) => {
   if (!isAdminStartDayEmpty && !isInt(adminStartDateData.adminStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayWrongDay)
   }
-  if (!isAdminStartDayEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartDay)) {
+  if (!isAdminStartDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(adminStartDateData.adminStartDay))) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayInvalidChars)
   }
   // Admin start month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, adminStartDateData) => {
   if (!isAdminStartMonthEmpty && !isInt(adminStartDateData.adminStartMonth, { min: 1, max: 12 })) {
     validationError.addError('adminStartMonth', checkWindowErrorMessages.adminStartMonthWrongDay)
   }
-  if (!isAdminStartMonthEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartMonth)) {
+  if (!isAdminStartMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(adminStartDateData.adminStartMonth))) {
     validationError.addError('adminStartMonth', checkWindowErrorMessages.adminStartMonthInvalidChars)
   }
   // Admin start year

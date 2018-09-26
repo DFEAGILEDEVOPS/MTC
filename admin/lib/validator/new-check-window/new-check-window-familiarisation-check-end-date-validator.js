@@ -26,7 +26,7 @@ module.exports.validate = (validationError, familiarisationCheckEndDateData) => 
   if (!isFamiliarisationCheckEndDayEmpty && !isInt(familiarisationCheckEndDateData.familiarisationCheckEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('familiarisationCheckEndDay', checkWindowErrorMessages.familiarisationCheckEndDayWrongDay)
   }
-  if (!isFamiliarisationCheckEndDayEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckEndDateData.familiarisationCheckEndDay)) {
+  if (!isFamiliarisationCheckEndDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(familiarisationCheckEndDateData.familiarisationCheckEndDay))) {
     validationError.addError('familiarisationCheckEndDay', checkWindowErrorMessages.familiarisationCheckEndDayInvalidChars)
   }
   // Familiarisation check end month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, familiarisationCheckEndDateData) => 
   if (!isFamiliarisationCheckEndMonthEmpty && !isInt(familiarisationCheckEndDateData.familiarisationCheckEndMonth, { min: 1, max: 12 })) {
     validationError.addError('familiarisationCheckEndMonth', checkWindowErrorMessages.familiarisationCheckEndMonthWrongDay)
   }
-  if (!isFamiliarisationCheckEndMonthEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckEndDateData.familiarisationCheckEndMonth)) {
+  if (!isFamiliarisationCheckEndMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(familiarisationCheckEndDateData.familiarisationCheckEndMonth))) {
     validationError.addError('familiarisationCheckEndMonth', checkWindowErrorMessages.familiarisationCheckEndMonthInvalidChars)
   }
   // Familiarisation check end year

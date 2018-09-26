@@ -26,7 +26,7 @@ module.exports.validate = (validationError, liveCheckEndDateData) => {
   if (!isLiveCheckEndDayEmpty && !isInt(liveCheckEndDateData.liveCheckEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('liveCheckEndDay', checkWindowErrorMessages.liveCheckEndDayWrongDay)
   }
-  if (!isLiveCheckEndDayEmpty && !XRegExp('^[0-9]+$').test(liveCheckEndDateData.liveCheckEndDay)) {
+  if (!isLiveCheckEndDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(liveCheckEndDateData.liveCheckEndDay))) {
     validationError.addError('liveCheckEndDay', checkWindowErrorMessages.liveCheckEndDayInvalidChars)
   }
   // Live check end month
@@ -37,7 +37,7 @@ module.exports.validate = (validationError, liveCheckEndDateData) => {
   if (!isLiveCheckEndMonthEmpty && !isInt(liveCheckEndDateData.liveCheckEndMonth, { min: 1, max: 12 })) {
     validationError.addError('liveCheckEndMonth', checkWindowErrorMessages.liveCheckEndMonthWrongDay)
   }
-  if (!isLiveCheckEndMonthEmpty && !XRegExp('^[0-9]+$').test(liveCheckEndDateData.liveCheckEndMonth)) {
+  if (!isLiveCheckEndMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(liveCheckEndDateData.liveCheckEndMonth))) {
     validationError.addError('liveCheckEndMonth', checkWindowErrorMessages.liveCheckEndMonthInvalidChars)
   }
   // Live check end year
