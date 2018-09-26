@@ -22,15 +22,17 @@
 
 .inline-group {
   display: inline-block;
-  margin-bottom: pem(20px);
+  margin-bottom: pem(50px);
 }
 
 .start-date {
   float: left;
+  margin-bottom: 0;
 }
 
 .end-date {
   float: left;
+  margin-bottom: 0;
 }
 
 .separator {
@@ -42,8 +44,4 @@
 .hint-spacious {
   margin-bottom: pem(5px);
   padding-top: pem(5px);
-}
-
-.no-right-margin {
-  margin-right: 0;
 }

@@ -59,11 +59,15 @@
                        type="text"
                        value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
                        aria-required="true"
+                       maxlength="35"
                        aria-label="Check window name."
                 >
             </div>
             <br />
-            <div class="inline-group">
+            <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
+            error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
+            error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear')
+                    ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     School administration period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
@@ -92,10 +96,7 @@
                     <span class="error-message"><%= error.get('adminEndYear') %></span>
                     <% } %>
                 </label>
-                <div class="form-group start-date <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
-                error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
-                error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear')
-                        ? 'form-group-error no-right-margin' : '' %>">
+                <div class="form-group start-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="adminStartDay">Day</label>
@@ -171,7 +172,10 @@
                     </div>
                 </div>
             </div>
-            <div class="inline-group">
+            <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
+            error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
+            error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear')
+                    ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil familiarisation check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
@@ -200,10 +204,7 @@
                     <span class="error-message"><%= error.get('familiarisationCheckEndYear') %></span>
                     <% } %>
                 </label>
-                <div class="form-group start-date <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
-                error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
-                error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear')
-                        ? 'form-group-error no-right-margin' : '' %>">
+                <div class="form-group start-date">
                 <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="familiarisationCheckStartDay">Day</label>
@@ -279,7 +280,10 @@
                     </div>
                 </div>
             </div>
-            <div class="inline-group">
+            <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
+            error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
+            error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear')
+                    ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil live check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
@@ -308,10 +312,7 @@
                     <span class="error-message"><%= error.get('liveCheckEndYear') %></span>
                     <% } %>
                 </label>
-                <div class="form-group start-date <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
-                error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
-                error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear')
-                        ? 'form-group-error no-right-margin' : '' %>">
+                <div class="form-group start-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="liveCheckStartDay">Day</label>

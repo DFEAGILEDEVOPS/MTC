@@ -1,5 +1,5 @@
 'use strict'
-const checkWindowErrorMessages = require('../../errors/check-window')
+const checkWindowErrorMessages = require('../../errors/new-check-window')
 const { isEmpty } = require('validator')
 
 /**
@@ -8,10 +8,7 @@ const { isEmpty } = require('validator')
  * @param {String} checkWindowName
  */
 module.exports.validate = (validationError, checkWindowName) => {
-  if (isEmpty(checkWindowName.trim())) {
-    validationError.addError('checkWindowName', checkWindowErrorMessages.checkWindowName)
-  }
-  if (checkWindowName.length < 2 || checkWindowName.length > 35) {
+  if (isEmpty(checkWindowName.trim()) || checkWindowName.length < 2 || checkWindowName.length > 35) {
     validationError.addError('checkWindowName', checkWindowErrorMessages.checkWindowNameLength)
   }
 }
