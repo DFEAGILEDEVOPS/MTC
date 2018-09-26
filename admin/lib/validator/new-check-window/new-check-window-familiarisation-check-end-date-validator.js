@@ -16,13 +16,14 @@ module.exports.validate = (validationError, familiarisationCheckEndDateData) => 
   const currentYear = currentDate.format('YYYY')
   const familiarisationCheckEndDate = dateService.createUTCFromDayMonthYear(familiarisationCheckEndDateData.familiarisationCheckEndDay,
     familiarisationCheckEndDateData.familiarisationCheckEndMonth, familiarisationCheckEndDateData.familiarisationCheckEndYear)
+  const maxDaysInMonth = familiarisationCheckEndDate ? moment(familiarisationCheckEndDate).daysInMonth() : 31
 
   // Familiarisation check end day
   const isFamiliarisationCheckEndDayEmpty = isEmpty(familiarisationCheckEndDateData.familiarisationCheckEndDay.trim())
   if (isFamiliarisationCheckEndDayEmpty) {
     validationError.addError('familiarisationCheckEndDay', checkWindowErrorMessages.familiarisationCheckEndDayRequired)
   }
-  if (!isFamiliarisationCheckEndDayEmpty && !isInt(familiarisationCheckEndDateData.familiarisationCheckEndDay, { min: 1, max: 31 })) {
+  if (!isFamiliarisationCheckEndDayEmpty && !isInt(familiarisationCheckEndDateData.familiarisationCheckEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('familiarisationCheckEndDay', checkWindowErrorMessages.familiarisationCheckEndDayWrongDay)
   }
   if (!isFamiliarisationCheckEndDayEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckEndDateData.familiarisationCheckEndDay)) {

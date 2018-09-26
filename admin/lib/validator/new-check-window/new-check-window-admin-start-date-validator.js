@@ -16,13 +16,14 @@ module.exports.validate = (validationError, adminStartDateData) => {
   const currentYear = currentDate.format('YYYY')
   const adminStartDate = dateService.createUTCFromDayMonthYear(adminStartDateData.adminStartDay,
     adminStartDateData.adminStartMonth, adminStartDateData.adminStartYear)
+  const maxDaysInMonth = adminStartDate ? moment(adminStartDate).daysInMonth() : 31
 
   // Admin start day
   const isAdminStartDayEmpty = isEmpty(adminStartDateData.adminStartDay.trim())
   if (isAdminStartDayEmpty) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayRequired)
   }
-  if (!isAdminStartDayEmpty && !isInt(adminStartDateData.adminStartDay, { min: 1, max: 31 })) {
+  if (!isAdminStartDayEmpty && !isInt(adminStartDateData.adminStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('adminStartDay', checkWindowErrorMessages.adminStartDayWrongDay)
   }
   if (!isAdminStartDayEmpty && !XRegExp('^[0-9]+$').test(adminStartDateData.adminStartDay)) {

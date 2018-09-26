@@ -16,13 +16,14 @@ module.exports.validate = (validationError, familiarisationCheckStartDateData) =
   const currentYear = currentDate.format('YYYY')
   const familiarisationCheckStartDate = dateService.createUTCFromDayMonthYear(familiarisationCheckStartDateData.familiarisationCheckStartDay,
     familiarisationCheckStartDateData.familiarisationCheckStartMonth, familiarisationCheckStartDateData.familiarisationCheckStartYear)
+  const maxDaysInMonth = familiarisationCheckStartDate ? moment(familiarisationCheckStartDate).daysInMonth() : 31
 
   // Familiarisation check start day
   const isFamiliarisationCheckStartDayEmpty = isEmpty(familiarisationCheckStartDateData.familiarisationCheckStartDay.trim())
   if (isFamiliarisationCheckStartDayEmpty) {
     validationError.addError('familiarisationCheckStartDay', checkWindowErrorMessages.familiarisationCheckStartDayRequired)
   }
-  if (!isFamiliarisationCheckStartDayEmpty && !isInt(familiarisationCheckStartDateData.familiarisationCheckStartDay, { min: 1, max: 31 })) {
+  if (!isFamiliarisationCheckStartDayEmpty && !isInt(familiarisationCheckStartDateData.familiarisationCheckStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('familiarisationCheckStartDay', checkWindowErrorMessages.familiarisationCheckStartDayWrongDay)
   }
   if (!isFamiliarisationCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(familiarisationCheckStartDateData.familiarisationCheckStartDay)) {

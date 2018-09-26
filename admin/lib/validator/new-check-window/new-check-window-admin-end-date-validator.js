@@ -16,13 +16,14 @@ module.exports.validate = (validationError, adminEndDateData) => {
   const currentYear = currentDate.format('YYYY')
   const adminEndDate = dateService.createUTCFromDayMonthYear(adminEndDateData.adminEndDay,
     adminEndDateData.adminEndMonth, adminEndDateData.adminEndYear)
+  const maxDaysInMonth = adminEndDate ? moment(adminEndDate).daysInMonth() : 31
 
   // Admin end day
   const isAdminEndDayEmpty = isEmpty(adminEndDateData.adminEndDay.trim())
   if (isAdminEndDayEmpty) {
     validationError.addError('adminEndDay', checkWindowErrorMessages.adminEndDayRequired)
   }
-  if (!isAdminEndDayEmpty && !isInt(adminEndDateData.adminEndDay, { min: 1, max: 31 })) {
+  if (!isAdminEndDayEmpty && !isInt(adminEndDateData.adminEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('adminEndDay', checkWindowErrorMessages.adminEndDayWrongDay)
   }
   if (!isAdminEndDayEmpty && !XRegExp('^[0-9]+$').test(adminEndDateData.adminEndDay)) {

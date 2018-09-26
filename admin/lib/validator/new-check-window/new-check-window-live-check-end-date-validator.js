@@ -16,13 +16,14 @@ module.exports.validate = (validationError, liveCheckEndDateData) => {
   const currentYear = currentDate.format('YYYY')
   const liveCheckEndDate = dateService.createUTCFromDayMonthYear(liveCheckEndDateData.liveCheckEndDay,
     liveCheckEndDateData.liveCheckEndMonth, liveCheckEndDateData.liveCheckEndYear)
+  const maxDaysInMonth = liveCheckEndDate ? moment(liveCheckEndDate).daysInMonth() : 31
 
   // Live check end day
   const isLiveCheckEndDayEmpty = isEmpty(liveCheckEndDateData.liveCheckEndDay.trim())
   if (isLiveCheckEndDayEmpty) {
     validationError.addError('liveCheckEndDay', checkWindowErrorMessages.liveCheckEndDayRequired)
   }
-  if (!isLiveCheckEndDayEmpty && !isInt(liveCheckEndDateData.liveCheckEndDay, { min: 1, max: 31 })) {
+  if (!isLiveCheckEndDayEmpty && !isInt(liveCheckEndDateData.liveCheckEndDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('liveCheckEndDay', checkWindowErrorMessages.liveCheckEndDayWrongDay)
   }
   if (!isLiveCheckEndDayEmpty && !XRegExp('^[0-9]+$').test(liveCheckEndDateData.liveCheckEndDay)) {

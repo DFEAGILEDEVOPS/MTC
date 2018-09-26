@@ -16,13 +16,14 @@ module.exports.validate = (validationError, liveCheckStartDateData) => {
   const currentYear = currentDate.format('YYYY')
   const liveCheckStartDate = dateService.createUTCFromDayMonthYear(liveCheckStartDateData.liveCheckStartDay,
     liveCheckStartDateData.liveCheckStartMonth, liveCheckStartDateData.liveCheckStartYear)
+  const maxDaysInMonth = liveCheckStartDate ? moment(liveCheckStartDate).daysInMonth() : 31
 
   // Live check start day
   const isLiveCheckStartDayEmpty = isEmpty(liveCheckStartDateData.liveCheckStartDay.trim())
   if (isLiveCheckStartDayEmpty) {
     validationError.addError('liveCheckStartDay', checkWindowErrorMessages.liveCheckStartDayRequired)
   }
-  if (!isLiveCheckStartDayEmpty && !isInt(liveCheckStartDateData.liveCheckStartDay, { min: 1, max: 31 })) {
+  if (!isLiveCheckStartDayEmpty && !isInt(liveCheckStartDateData.liveCheckStartDay, { min: 1, max: maxDaysInMonth })) {
     validationError.addError('liveCheckStartDay', checkWindowErrorMessages.liveCheckStartDayWrongDay)
   }
   if (!isLiveCheckStartDayEmpty && !XRegExp('^[0-9]+$').test(liveCheckStartDateData.liveCheckStartDay)) {
