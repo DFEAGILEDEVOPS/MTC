@@ -59,8 +59,8 @@ To make the pupil-spa use the auth microservice instead of the API in admin, cha
 You need a storage account to be set up. For the ICT Survey setup, create
 two tables:
 
-- `survey-feedback`
-- `connection-tests`
+- `surveyFeedback`
+- `connectionTests`
 
 ...and one blob container:
 
@@ -133,10 +133,10 @@ After everything, the environment should look similar to this:
 
 ```bash
 TEST_TABLE_URL='https://<accountname>.table.core.windows.net/'
-TEST_TABLE_NAME='connection-tests'
+TEST_TABLE_NAME='connectionTests'
 TEST_SAS_TOKEN='?st=<token>'
 FEEDBACK_TABLE_URL='https://<accountname>.table.core.windows.net/'
-FEEDBACK_TABLE_NAME='survey-feedback'
+FEEDBACK_TABLE_NAME='surveyFeedback'
 FEEDBACK_SAS_TOKEN='?st=<token>'
 TEST_BLOB_URL='https://<accountname>.blob.core.windows.net/'
 TEST_BLOB_STORAGE_NAME='connection-test'
