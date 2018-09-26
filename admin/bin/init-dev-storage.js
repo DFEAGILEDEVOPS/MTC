@@ -10,6 +10,11 @@ const azure = require('azure-storage')
 const bluebird = require('bluebird')
 const names = require('../../deploy/storage/tables-queues.json')
 
+if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
+  process.exitCode = -1
+  console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
+}
+
 const queueNames = names['queues']
 const tableNames = names['tables']
 const tableService = getPromisifiedService(azure.createTableService())

@@ -16,7 +16,7 @@
     "test": "nyc -r html ./run-jasmine.js",
     "client-test": "karma start karma.conf.js",
     "testDebug": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jasmine",
-    "purgedata": "../_util/local-dev/purge-queues-tables.sh"
+    "purgestorage": "bin/init-dev-storage.js"
   },
   "engines": {
     "node": ">= 8.4"
