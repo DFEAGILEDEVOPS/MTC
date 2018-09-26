@@ -15,16 +15,23 @@ const tableNames = names['tables']
 const tableService = getPromisifiedService(azure.createTableService())
 const queueService = getPromisifiedService(azure.createQueueService())
 
-async function deleteTables (tables) {
-  const tableDeletes = tables.map(table => {
-    return tableService.deleteTableIfExistsAsync(table)
-  })
-  return Promise.all(tableDeletes)
+async function deleteTableEntities (tables) {
+  const deletions = []
+  for (let index = 0; index < tables.length; index++) {
+    const table = tables[index]
+    const query = new azure.TableQuery()
+    const data = await tableService.queryEntitiesAsync(table, query, null)
+    const entities = data.result.entries
+    entities.forEach(entity => {
+      deletions.push(tableService.deleteEntityAsync(table, entity))
+    })
+  }
+  await Promise.all(deletions)
 }
 
 async function createTables (tables) {
   const tableCreates = tables.map(table => {
-    return tableService.createTableAsync(table)
+    return tableService.createTableIfNotExistsAsync(table)
   })
   return Promise.all(tableCreates)
 }
@@ -44,10 +51,10 @@ async function createQueues (tables) {
 }
 
 async function main () {
-  await deleteTables(tableNames)
+  await createQueues(queueNames)
   await deleteQueueMessages(queueNames)
   await createTables(tableNames)
-  await createQueues(queueNames)
+  await deleteTableEntities(tableNames)
 }
 
 main().then(() => {
