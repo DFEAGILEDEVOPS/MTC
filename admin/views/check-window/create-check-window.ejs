@@ -8,18 +8,56 @@
 </div>
 <div class="grid-row">
     <div class="column-two-thirds">
+
+        <% if (error.hasError()) { %>
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">You need to fix the errors on this page before continuing.</h2>
+            <p>See highlighted errors below.</p>
+            <ul class="error-summary-list">
+                <% error.getUniqueFields([
+                    'checkWindowName',
+                    'adminStartDay',
+                    'adminStartMonth',
+                    'adminStartYear',
+                    'adminEndDay',
+                    'adminEndMonth',
+                    'adminEndYear',
+                    'familiarisationCheckStartDay',
+                    'familiarisationCheckStartMonth',
+                    'familiarisationCheckStartYear',
+                    'familiarisationCheckEndDay',
+                    'familiarisationCheckEndMonth',
+                    'familiarisationCheckEndYear',
+                    'liveCheckStartDay',
+                    'liveCheckStartMonth',
+                    'liveCheckStartYear',
+                    'liveCheckEndDay',
+                    'liveCheckEndMonth',
+                    'liveCheckEndYear'
+                ]).map(f => { %>
+                <% if (typeof error.get(f) !== 'boolean') { %>
+                <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
+                <% } %>
+                <% }); %>
+            </ul>
+        </div>
+        <% } %>
+
         <h1 class="heading-xlarge"><%= pageTitle %></h1>
-        <form action="#" method="post">
+        <form action="/check-window/submit-check-window" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-            <div class="form-group">
+            <div class="form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">
                 <label for="checkWindowName" class="form-label-bold">
                     Check window name
+                    <% if (error.isError('checkWindowName')) { %>
+                    <span class="error-message"><%= error.get('checkWindowName') %></span>
+                    <% } %>
                 </label>
-                <input class="form-control"
+                <input class="form-control <%= error.isError('checkWindowName') ? 'form-control-error' : '' %>"
                        id="checkWindowName"
                        name="checkWindowName"
                        type="text"
-                       value=""
+                       value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
                        aria-required="true"
                        aria-label="Check window name."
                 >
@@ -29,38 +67,65 @@
                 <label class="form-label-bold">
                     School administration period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% if (error.isError('adminStartDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.adminStartDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('adminStartDay')) { %>
+                    <span class="error-message"><%= error.get('adminStartDay') %></span>
+                    <% } %>
+                    <% if (error.isError('adminStartMonth')) { %>
+                    <span class="error-message"><%= error.get('adminStartMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('adminStartYear')) { %>
+                    <span class="error-message"><%= error.get('adminStartYear') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.adminEndDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndDay')) { %>
+                    <span class="error-message"><%= error.get('adminEndDay') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndMonth')) { %>
+                    <span class="error-message"><%= error.get('adminEndMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndYear')) { %>
+                    <span class="error-message"><%= error.get('adminEndYear') %></span>
+                    <% } %>
                 </label>
-                <div class="form-group start-date">
+                <div class="form-group start-date <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
+                error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
+                error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear')
+                        ? 'form-group-error no-right-margin' : '' %>">
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="adminStartDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminStartDay') ? 'form-control-error' : ''%>"
                                    id="adminStartDay"
                                    name="adminStartDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminStartDay %>"
                                    aria-required="true"
                                    aria-label="Administration start day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="adminStartMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminStartMonth') ? 'form-control-error' : '' %>"
                                    id="adminStartMonth"
                                    name="adminStartMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminStartMonth %>"
                                    aria-required="true"
                                    aria-label="Administration start month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="adminStartYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminStartYear') ? 'form-control-error' : '' %>"
                                    id="adminStartYear"
                                    name="adminStartYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminStartYear %>"
                                    aria-required="true"
                                    aria-label="Administration start year."
                             >
@@ -72,33 +137,33 @@
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="adminEndDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminEndDay') ? 'form-control-error' : ''%>"
                                    id="adminEndDay"
                                    name="adminEndDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminEndDay %>"
                                    aria-required="true"
                                    aria-label="Administration end day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="adminEndMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminEndMonth') ? 'form-control-error' : ''%>"
                                    id="adminEndMonth"
                                    name="adminEndMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminEndMonth %>"
                                    aria-required="true"
                                    aria-label="Administration end month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="adminEndYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('adminEndYear') ? 'form-control-error' : ''%>"
                                    id="adminEndYear"
                                    name="adminEndYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.adminEndYear %>"
                                    aria-required="true"
                                    aria-label="Administration end year."
                             >
@@ -110,38 +175,65 @@
                 <label class="form-label-bold">
                     Pupil familiarisation check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% if (error.isError('familiarisationCheckStartDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckStartDay')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckStartDay') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckStartMonth')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckStartMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckStartYear')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckStartYear') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckEndDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckEndDay')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckEndDay') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckEndMonth')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckEndMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckEndYear')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckEndYear') %></span>
+                    <% } %>
                 </label>
-                <div class="form-group start-date">
-                    <div class="form-date">
+                <div class="form-group start-date <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
+                error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
+                error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear')
+                        ? 'form-group-error no-right-margin' : '' %>">
+                <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="familiarisationCheckStartDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control  <%= error.isError('familiarisationCheckStartDay') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckStartDay"
                                    name="familiarisationCheckStartDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckStartDay %>"
                                    aria-required="true"
                                    aria-label="Familiarisation start day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="familiarisationCheckStartMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control  <%= error.isError('familiarisationCheckStartMonth') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckStartMonth"
                                    name="familiarisationCheckStartMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckStartMonth %>"
                                    aria-required="true"
                                    aria-label="Familiarisation start month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="familiarisationCheckStartYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('familiarisationCheckStartYear') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckStartYear"
                                    name="familiarisationCheckStartYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckStartYear %>"
                                    aria-required="true"
                                    aria-label="Familiarisation start year."
                             >
@@ -153,33 +245,33 @@
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="familiarisationCheckEndDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('familiarisationCheckEndDay') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckEndDay"
                                    name="familiarisationCheckEndDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckEndDay %>"
                                    aria-required="true"
                                    aria-label="Familiarisation end day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="familiarisationCheckEndMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('familiarisationCheckEndMonth') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckEndMonth"
                                    name="familiarisationCheckEndMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckEndMonth %>"
                                    aria-required="true"
                                    aria-label="Familiarisation end month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="familiarisationCheckEndYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('familiarisationCheckEndYear') ? 'form-control-error' : ''%>"
                                    id="familiarisationCheckEndYear"
                                    name="familiarisationCheckEndYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.familiarisationCheckEndYear %>"
                                    aria-required="true"
                                    aria-label="Familiarisation end year."
                             >
@@ -191,38 +283,65 @@
                 <label class="form-label-bold">
                     Pupil live check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% if (error.isError('liveCheckStartDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.liveCheckStartDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckStartDay')) { %>
+                    <span class="error-message"><%= error.get('liveCheckStartDay') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckStartMonth')) { %>
+                    <span class="error-message"><%= error.get('liveCheckStartMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckStartYear')) { %>
+                    <span class="error-message"><%= error.get('liveCheckStartYear') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckEndDateInThePast')) { %>
+                    <span class="error-message"><%= errorMessage.liveCheckEndDateInThePast %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckEndDay')) { %>
+                    <span class="error-message"><%= error.get('liveCheckEndDay') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckEndMonth')) { %>
+                    <span class="error-message"><%= error.get('liveCheckEndMonth') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckEndYear')) { %>
+                    <span class="error-message"><%= error.get('liveCheckEndYear') %></span>
+                    <% } %>
                 </label>
-                <div class="form-group start-date">
+                <div class="form-group start-date <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
+                error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
+                error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear')
+                        ? 'form-group-error no-right-margin' : '' %>">
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="liveCheckStartDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckStartDay') ? 'form-control-error' : ''%>"
                                    id="liveCheckStartDay"
                                    name="liveCheckStartDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckStartDay %>"
                                    aria-required="true"
                                    aria-label="Live check start day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="liveCheckStartMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckStartMonth') ? 'form-control-error' : ''%>"
                                    id="liveCheckStartMonth"
                                    name="liveCheckStartMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckStartMonth %>"
                                    aria-required="true"
                                    aria-label="Live check start month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="liveCheckStartYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckStartYear') ? 'form-control-error' : ''%>"
                                    id="liveCheckStartYear"
                                    name="liveCheckStartYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckStartYear %>"
                                    aria-required="true"
                                    aria-label="Live check start year."
                             >
@@ -234,33 +353,33 @@
                     <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="liveCheckEndDay">Day</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckEndDay') ? 'form-control-error' : ''%>"
                                    id="liveCheckEndDay"
                                    name="liveCheckEndDay"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckEndDay %>"
                                    aria-required="true"
                                    aria-label="Live check end day."
                             >
                         </div>
                         <div class="form-group form-group-month">
                             <label class="form-label" for="liveCheckEndMonth">Month</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckEndMonth') ? 'form-control-error' : ''%>"
                                    id="liveCheckEndMonth"
                                    name="liveCheckEndMonth"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckEndMonth %>"
                                    aria-required="true"
                                    aria-label="Live check end month."
                             >
                         </div>
                         <div class="form-group form-group-year">
                             <label class="form-label" for="liveCheckEndYear">Year</label>
-                            <input class="form-control"
+                            <input class="form-control <%= error.isError('liveCheckEndYear') ? 'form-control-error' : ''%>"
                                    id="liveCheckEndYear"
                                    name="liveCheckEndYear"
                                    type="number"
-                                   value=""
+                                   value="<%= checkWindowData.liveCheckEndYear %>"
                                    aria-required="true"
                                    aria-label="Live check end year."
                             >
