@@ -1,16 +1,16 @@
 const azure = require('azure-storage')
 const commandLineArgs = require('command-line-args')
+const csv = require('fast-csv')
 const fs = require('fs')
 
 const info = `
 **************************************************
-Error ! One ro more of the paramaters are missing!
+Error ! One or more of the paramaters are missing!
 **************************************************
 Options:
 
 -n <mandatory> NAME of the table
--t <mandatory> TOKEN generated for that table 
--k <mandatory> PARTITION ID where data is stored
+-t <mandatory> TOKEN generated for that table
 -u <mandatory> URL of the storage <account>.table.core.windows.net
 -v <optional>  TYPE of data to be fetched available options:
               [feedback, test]
@@ -20,13 +20,12 @@ Options:
 
 Usage:
 
--n TABLENAME -t TOKEN -k PARTITION_ID -u xxx.table.core.windows.net -o feedback
+-n TABLENAME -t TOKEN -u xxx.table.core.windows.net -o feedback
 `
 
 const optionDefinitions = [
   { name: 'name', alias: 'n', type: String },
   { name: 'token', alias: 't', type: String },
-  { name: 'partition_key', alias: 'k', type: String },
   { name: 'url', alias: 'u', type: String },
   { name: 'output', alias: 'o', type: String },
   { name: 'type', alias: 'v', type: String }
@@ -35,14 +34,17 @@ const optionDefinitions = [
 const options = commandLineArgs(optionDefinitions)
 
 const retrieveDataToFile = {
-  columns: {
+  /**
+   * 'Readable' column headers to write in the CSV
+   */
+  headers: {
     feedback: [
       'Comment',
       'First Name',
       'Last Name',
       'Contact Number',
       'Email',
-      'School \n'
+      'School'
     ],
     test: [
       'Battery: Is charging',
@@ -67,10 +69,13 @@ const retrieveDataToFile = {
       'Screen: Colour Depth',
       'Screen: Orientation',
       'Processing time',
-      'Connection Speed \n'
+      'Connection Speed'
     ]
   },
 
+  /**
+   * The type => methodToUse mapping used with the type argument
+   */
   extractMethod: {
     feedback: 'getFeedbackData',
     test: 'getTestData'
@@ -81,9 +86,9 @@ const retrieveDataToFile = {
   errors: [],
   table: '',
 
-  fetchEntities: function() {
+  fetchEntities: function () {
     this.tableService.queryEntities(this.table, this.query, null, (error, result, response) => {
-      if(!error){
+      if (!error) {
         if (response.body.value.length) {
           this.createCSV(response.body.value)
         } else {
@@ -94,17 +99,15 @@ const retrieveDataToFile = {
       }
     })
   },
-  
-  extractDeviceData: function(deviceData) {
+
+  /**
+   * Expand the device JSON object
+   */
+  extractDeviceData: function (deviceData) {
     let data = []
-    
+
     Object.keys(deviceData).map(keyName => {
       for (let key in deviceData[keyName]) {
-        if (key === 'userAgent') {
-          // comma in user agent breaks csv
-          data.push(deviceData[keyName][key].replace(',', ' '))
-          continue
-        }
         data.push(deviceData[keyName][key])
       }
     })
@@ -112,69 +115,68 @@ const retrieveDataToFile = {
     return data
   },
 
-  getRowData: function(row) {
-    let deviceData = JSON.parse(row.device)
+  getTestRowData: function (row) {
+    let deviceData
     let deviceDataArr
 
     try {
-      //device data is saved as json
-      //if parsing json faile reow id will be pushed to thiserrors
-      //and saved to errors.csv
+      // parse the JSON device data
+      // invalid rows will be saved to errors and displayed later
+      deviceData = JSON.parse(row.device)
       deviceDataArr = this.extractDeviceData(deviceData)
-    } catch(e) {
+    } catch (e) {
       this.errors.push(row.RowKey)
       return []
     }
-    
-    //add not nested columns
+
+    // add the normal, non-nested columns
     deviceDataArr.push(row.processingTime)
     deviceDataArr.push(row.connectionSpeed)
     return deviceDataArr
   },
 
-  getTestData: function(entities) {
-    return entities.map(elem => {
-      return this.getRowData(elem)
-    })
+  getTestData: function (entities) {
+    return entities.map(elem => this.getTestRowData(elem))
   },
 
-  getFeedbackData: function(entities) {
-    return entities.map(elem => {
-      return [elem.comment, elem.firstName, elem.lastName, elem.contactNumber, elem.emailAddress, elem.schoolName]
-    }).join('\n')
+  getFeedbackData: function (entities) {
+    return entities.map(elem => (
+      [elem.comment, elem.firstName, elem.lastName, elem.contactNumber, elem.emailAddress, elem.schoolName]
+    )).join('\n')
   },
 
-  createCSV: function(entities) {
+  createCSV: function (entities) {
     const data = this[this.extractMethod[this.type]](entities)
-    const toSave = this.columns[this.type] + data;
     const filename = `${this.output}.csv`
 
-    fs.writeFile(filename, toSave, error => {
+    const ws = fs.createWriteStream(filename)
+    ws.write(this.headers[this.type] + '\n')
+    csv
+      .write(data, {header: false})
+      .pipe(ws)
+
+    console.log(`Data is being saved to ${filename}\n`)
+
+    if (this.errors.length === 0) {
+      return
+    }
+
+    const errorsToSave = 'The following rows could not be saved:\n' + this.errors.join('\n')
+
+    console.log('Some of the rows werent saved in the CSV file. Saving errors... \n')
+
+    fs.writeFile('errors.csv', errorsToSave, error => {
       if (error) {
-          return console.log(error)
+        return console.log(error)
       }
-  
-      console.log(`Data saved to ${filename}`)
 
-      if (this.errors.length) {
-        const errorsToSave = 'Not saved rows \n' + this.errors.join('\n')
-
-        console.log('\nSome of the rows werent saved in the CSV file. Saving errors... \n')
-
-        fs.writeFile('errors.csv', errorsToSave, error => {
-          if (error) {
-            return console.log(error)
-          }
-
-          console.log('List of not saved rows IDs can be found here: erros.csv')
-        })
-      }
+      console.log('The list of unsaved rows IDs can be found in errors.csv')
     })
   },
 
-  start: function(options) {
-    if (!options.name || !options.token || !options.partition_key || !options.url) {
-        return console.log(info)
+  start: function (options) {
+    if (!options.name || !options.token || !options.url) {
+      return console.log(info)
     }
 
     console.log('Fetching data... \n')
@@ -184,7 +186,7 @@ const retrieveDataToFile = {
     this.output = options.output || this.type
 
     this.tableService = azure.createTableServiceWithSas(options.url, options.token)
-    this.query = new azure.TableQuery().where('PartitionKey eq ?', options.partition_key)
+    this.query = new azure.TableQuery()
     this.fetchEntities()
   }
 }
