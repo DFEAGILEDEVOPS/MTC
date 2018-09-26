@@ -101,6 +101,7 @@ const getQuestions = async (req, res) => {
     const checkData = await checkStartService.pupilLogin(data.pupil.id)
     questions = checkFormService.prepareQuestionData(checkData.questions)
     pupilData.checkCode = checkData.checkCode
+    pupilConfig.practice = checkData.practice
   } catch (error) {
     winston.error('Failed to prepare question data: ' + error.message)
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: check data')

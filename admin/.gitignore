@@ -61,3 +61,6 @@ data/files/*
 # dotenv files
 .env
 *.env
+
+# don't show stuff generated from ~/bin/generate-dependency-graphs.sh
+dependency-graphs
