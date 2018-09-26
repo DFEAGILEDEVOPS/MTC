@@ -6,6 +6,7 @@ const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
 const controller = require('../../../controllers/check-window')
+const newCheckWindowAddService = require('../../../services/new-check-window-add.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -56,6 +57,47 @@ describe('access arrangements controller:', () => {
       await controller.createCheckWindow(req, res, next)
       expect(res.locals.pageTitle).toBe('Create check window')
       expect(res.render).toHaveBeenCalled()
+    })
+  })
+  describe('submitCheckWindow route', () => {
+    let reqParams = {
+      method: 'POST',
+      url: '/check-window/submit-check-window',
+      body: {}
+    }
+
+    it('submits the new check windows form page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(newCheckWindowAddService, 'process')
+      await controller.submitCheckWindow(req, res, next)
+      expect(newCheckWindowAddService.process).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('calls render when newCheckWindowAddService process throws a validation error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      const error = new Error('error')
+      error.name = 'ValidationError'
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
+      }
+      const rejection = unsafeReject(Promise.reject(error))
+      spyOn(newCheckWindowAddService, 'process').and.returnValue(rejection)
+      try {
+        await controller.submitCheckWindow(req, res, next)
+      } catch (error) {
+        expect(error.name).toBe('ValidationError')
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
+      expect(newCheckWindowAddService.process).toHaveBeenCalled()
     })
   })
 })
