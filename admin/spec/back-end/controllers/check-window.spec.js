@@ -3,8 +3,6 @@
 /* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
-const R = require('ramda')
-
 const controller = require('../../../controllers/check-window')
 
 describe('access arrangements controller:', () => {
