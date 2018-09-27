@@ -8,7 +8,8 @@ const { isEmpty } = require('validator')
  * @param {String} checkWindowName
  */
 module.exports.validate = (validationError, checkWindowName) => {
-  if (isEmpty(checkWindowName.trim()) || checkWindowName.length < 2 || checkWindowName.length > 35) {
+  const CheckWindowNameValue = checkWindowName.trim()
+  if (isEmpty(CheckWindowNameValue) || CheckWindowNameValue.length < 2 || CheckWindowNameValue.length > 35) {
     validationError.addError('checkWindowName', checkWindowErrorMessages.checkWindowNameLength)
   }
 }

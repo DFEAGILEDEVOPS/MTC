@@ -55,39 +55,39 @@ module.exports.validate = (checkWindowData) => {
 
   // Compare date fields
   // Admin start date
-  if (adminStartDate && moment(adminStartDate).isAfter(familiarisationCheckStartDate)) {
+  if (adminStartDate && adminStartDate.isAfter(familiarisationCheckStartDate)) {
     validationError.addError('adminStartDateAfterFamiliarisationCheckStartDate', true)
   }
-  if (adminStartDate && moment(adminStartDate).isAfter(liveCheckStartDate)) {
+  if (adminStartDate && adminStartDate.isAfter(liveCheckStartDate)) {
     validationError.addError('adminStartDateAfterLiveCheckStartDate', true)
   }
   // Admin end date
-  if (adminEndDate && moment(adminEndDate).isBefore(adminStartDate)) {
+  if (adminEndDate && adminEndDate.isBefore(adminStartDate)) {
     validationError.addError('adminEndDateBeforeAdminStartDate', true)
   }
-  if (adminEndDate && moment(adminEndDate).isBefore(liveCheckEndDate)) {
+  if (adminEndDate && adminEndDate.isBefore(liveCheckEndDate)) {
     validationError.addError('adminEndDateBeforeLiveCheckEndDate', true)
   }
-  if (adminEndDate && moment(adminEndDate).isBefore(familiarisationCheckEndDate)) {
+  if (adminEndDate && adminEndDate.isBefore(familiarisationCheckEndDate)) {
     validationError.addError('adminEndDateBeforeFamiliarisationCheckEndDate', true)
   }
   // Familiarisation check start date
-  if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isAfter(liveCheckStartDate)) {
+  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isAfter(liveCheckStartDate)) {
     validationError.addError('familiarisationCheckStartDateAfterLiveCheckStartDate', true)
   }
-  if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isAfter(familiarisationCheckEndDate)) {
+  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isAfter(familiarisationCheckEndDate)) {
     validationError.addError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate', true)
   }
   // Familiarisation check end date
-  if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isBefore(adminStartDate)) {
+  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(adminStartDate)) {
     validationError.addError('familiarisationCheckEndDateBeforeAdminStartDate', true)
   }
   // Live check start date
-  if (liveCheckStartDate && moment(liveCheckStartDate).isAfter(liveCheckEndDate)) {
+  if (liveCheckStartDate && liveCheckStartDate.isAfter(liveCheckEndDate)) {
     validationError.addError('liveCheckStartDateAfterLiveCheckEndDate', true)
   }
   // Live check end date
-  if (liveCheckEndDate && moment(liveCheckEndDate).isBefore(adminStartDate)) {
+  if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate)) {
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
   return validationError
