@@ -142,7 +142,7 @@ const retrieveDataToFile = {
   getFeedbackData: function (entities) {
     return entities.map(elem => (
       [elem.comment, elem.firstName, elem.lastName, elem.contactNumber, elem.emailAddress, elem.schoolName]
-    )).join('\n')
+    ))
   },
 
   createCSV: function (entities) {
