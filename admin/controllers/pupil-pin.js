@@ -98,7 +98,9 @@ const postGeneratePins = async (req, res, next) => {
   let school
   try {
     // OLD code - writes to check table
-    await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
+    if (!featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      await checkStartService.prepareCheck(pupilsList, req.user.School, req.user.schoolId, pinEnv)
+    }
 
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {

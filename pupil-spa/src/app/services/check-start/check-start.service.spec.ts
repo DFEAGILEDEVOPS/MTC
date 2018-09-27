@@ -73,6 +73,9 @@ describe('CheckStartService', () => {
   describe('when featureUseHpa toggle is on', () => {
     beforeEach(() => {
       checkStartService.featureUseHpa = true;
+      spyOn(mockStorageService, 'getItem').and.returnValue({
+        checkCode: 'abc-def'
+      });
     });
     it('submit should call azure queue service successfully and audit successful call', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
