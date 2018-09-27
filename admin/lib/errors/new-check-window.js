@@ -82,7 +82,14 @@ module.exports = {
   liveCheckStartDateInThePast: 'Enter a start date in the future for live check start date',
   liveCheckEndDateInThePast: 'Enter an end date in the future for live check end date',
 
-  checkEndDateBeforeStartDate: '"Check end date" must occur after "Check start date"',
-  checkDateBeforeAdminDate: '"Check start date" must occur after the "Administration start date"',
-  checkStartDateAfterEndDate: '"Check start date" must occur before the "Check end date"'
+  adminStartDateAfterFamiliarisationCheckStartDate: 'Enter a school administration start date which is before or on the same day as the familiarisation start date',
+  adminStartDateAfterLiveCheckStartDate: 'Enter a school administration start date which is before the live check start date',
+  adminEndDateBeforeAdminStartDate: 'Enter a school administration end date which is after the administration start date',
+  adminEndDateBeforeLiveCheckEndDate: 'Enter a school administration end date which is after the live check start date',
+  adminEndDateBeforeFamiliarisationCheckEndDate: 'Enter a school administration end date which is after the familiarisation check end date',
+  familiarisationCheckStartDateAfterLiveCheckStartDate: 'Enter a familiarisation check start date which is before the live check start date',
+  familiarisationCheckStartDateAfterFamiliarisationCheckEndDate: 'Enter a familiarisation check start date which is before the check end date',
+  familiarisationCheckEndDateBeforeAdminStartDate: 'Enter a familiarisation check end date which is after the administration start date',
+  liveCheckStartDateAfterLiveCheckEndDate: 'Enter a live check start date which is before the check end date',
+  liveCheckEndDateBeforeAdminStartDate: 'Enter a live check end date which is after the administration start date'
 }

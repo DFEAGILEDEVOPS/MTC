@@ -54,6 +54,60 @@ module.exports.validate = (checkWindowData) => {
     checkWindowData['liveCheckEndMonth'], checkWindowData['liveCheckEndYear'])
 
   // Compare date fields
-
+  // Admin start date
+  if (adminStartDate && moment(adminStartDate).isAfter(familiarisationCheckStartDate)) {
+    validationError.addError('adminStartDateAfterFamiliarisationCheckStartDate', true)
+  }
+  if (adminStartDate && moment(adminStartDate).isAfter(liveCheckStartDate)) {
+    validationError.addError('adminStartDateAfterLiveCheckStartDate', true)
+  }
+  // Admin end date
+  if (adminEndDate && moment(adminEndDate).isBefore(adminStartDate)) {
+    validationError.addError('adminEndDateBeforeAdminStartDate', true)
+  }
+  if (adminEndDate && moment(adminEndDate).isBefore(liveCheckEndDate)) {
+    validationError.addError('adminEndDateBeforeLiveCheckEndDate', true)
+  }
+  if (adminEndDate && moment(adminEndDate).isBefore(familiarisationCheckEndDate)) {
+    validationError.addError('adminEndDateBeforeFamiliarisationCheckEndDate', true)
+  }
+  // Familiarisation check start date
+  if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isAfter(liveCheckStartDate)) {
+    validationError.addError('familiarisationCheckStartDateAfterLiveCheckStartDate', true)
+  }
+  if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isAfter(familiarisationCheckEndDate)) {
+    validationError.addError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate', true)
+  }
+  // Familiarisation check end date
+  if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isBefore(adminStartDate)) {
+    validationError.addError('familiarisationCheckEndDateBeforeAdminStartDate', true)
+  }
+  // Live check start date
+  if (liveCheckStartDate && moment(liveCheckStartDate).isAfter(liveCheckEndDate)) {
+    validationError.addError('liveCheckStartDateAfterLiveCheckEndDate', true)
+  }
+  // Live check end date
+  if (liveCheckEndDate && moment(liveCheckEndDate).isBefore(adminStartDate)) {
+    validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
+  }
+  // if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isBefore(adminStartDate)) {
+  //   validationError.addError('familiarisationCheckStartDateBeforeAdminStartDate', true)
+  // }
+  // if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isAfter(adminEndDate)) {
+  //   validationError.addError('familiarisationCheckEndDateAfterAdminEndDate', true)
+  // }
+  // if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isBefore(familiarisationCheckStartDate)) {
+  //   validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
+  // }
+  // Live check start date
+  // if (liveCheckStartDate && moment(liveCheckStartDate).isBefore(adminStartDate)) {
+  //   validationError.addError('liveCheckStartDateBeforeAdminStartDate', true)
+  // }
+  // if (liveCheckStartDate && moment(liveCheckStartDate).isBefore(familiarisationCheckStartDate)) {
+  //   validationError.addError('liveCheckStartDateBeforeFamiliarisationCheckStartDate', true)
+  // }
+  // if (liveCheckEndDate && moment(liveCheckEndDate).isBefore(liveCheckStartDate)) {
+  //   validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
+  // }
   return validationError
 }

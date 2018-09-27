@@ -95,6 +95,21 @@
                     <% if (error.isError('adminEndYear')) { %>
                     <span class="error-message"><%= error.get('adminEndYear') %></span>
                     <% } %>
+                    <% if (error.isError('adminStartDateAfterFamiliarisationCheckStartDate')) { %>
+                    <span class="error-message"><%= error.get('adminStartDateAfterFamiliarisationCheckStartDate') %></span>
+                    <% } %>
+                    <% if (error.isError('adminStartDateAfterLiveCheckStartDate')) { %>
+                    <span class="error-message"><%= error.get('adminStartDateAfterLiveCheckStartDate') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndDateBeforeAdminStartDate')) { %>
+                    <span class="error-message"><%= error.get('adminEndDateBeforeAdminStartDate') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndDateBeforeLiveCheckEndDate')) { %>
+                    <span class="error-message"><%= error.get('adminEndDateBeforeLiveCheckEndDate') %></span>
+                    <% } %>
+                    <% if (error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')) { %>
+                    <span class="error-message"><%= error.get('adminEndDateBeforeFamiliarisationCheckEndDate') %></span>
+                    <% } %>
                 </label>
                 <div class="form-group start-date">
                     <div class="form-date">
@@ -203,6 +218,15 @@
                     <% if (error.isError('familiarisationCheckEndYear')) { %>
                     <span class="error-message"><%= error.get('familiarisationCheckEndYear') %></span>
                     <% } %>
+                    <% if (error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckStartDateAfterLiveCheckStartDate') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') %></span>
+                    <% } %>
+                    <% if (error.isError('familiarisationCheckEndDateBeforeAdminStartDate')) { %>
+                    <span class="error-message"><%= error.get('familiarisationCheckEndDateBeforeAdminStartDate') %></span>
+                    <% } %>
                 </label>
                 <div class="form-group start-date">
                 <div class="form-date">
@@ -310,6 +334,12 @@
                     <% } %>
                     <% if (error.isError('liveCheckEndYear')) { %>
                     <span class="error-message"><%= error.get('liveCheckEndYear') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckStartDateAfterLiveCheckEndDate')) { %>
+                    <span class="error-message"><%= error.get('liveCheckStartDateAfterLiveCheckEndDate') %></span>
+                    <% } %>
+                    <% if (error.isError('liveCheckEndDateBeforeAdminStartDate')) { %>
+                    <span class="error-message"><%= error.get('liveCheckEndDateBeforeAdminStartDate') %></span>
                     <% } %>
                 </label>
                 <div class="form-group start-date">
