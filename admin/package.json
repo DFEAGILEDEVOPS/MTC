@@ -96,6 +96,7 @@
     "karma-jasmine": "^1.1.2",
     "karma-jquery": "^0.2.3",
     "karma-safari-launcher": "^1.0.0",
+    "madge": "^3.2.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^1.17.2",
     "nyc": "^11.5.0",
