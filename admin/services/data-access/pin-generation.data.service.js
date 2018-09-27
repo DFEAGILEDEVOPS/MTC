@@ -5,12 +5,12 @@ const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
 
 const serviceToExport = {
-  sqlFindEligiblePupilsBySchool: async (dfeNumber) => {
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.vewPupilPinGeneration WHERE dfeNumber=@dfeNumber`
+  sqlFindEligiblePupilsBySchool: async (schoolId) => {
+    const sql = `SELECT * FROM ${sqlService.adminSchema}.vewPupilPinGeneration WHERE school_id=@schoolId`
     const params = [
       {
-        name: 'dfeNumber',
-        value: dfeNumber,
+        name: 'schoolId',
+        value: schoolId,
         type: TYPES.Int
       }
     ]
