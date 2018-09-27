@@ -4,23 +4,27 @@
   <div class="grid-row">
     <div class="column-full">
       <div class="back-link-wrapper">
-        <a routerLink="/font-choice" class="back-link">Back</a>
+        <a [routerLink]="config.fontSize ? '/font-choice' : '/sign-out'" class="back-link">Back</a>
       </div>
       <header class="page-header">
-          <h1 class="heading-xlarge" tabindex="0">Settings for you</h1>
+          <h1 class="heading-xlarge" tabindex="0">Your settings</h1>
       </header>
-      <p>
+      <p class="lede">
           You have the following settings on your check
       </p>
       <ol class="list list-number">
-        <li *ngIf="config.audibleSounds">Beep</li>
-        <li *ngIf="config.numpadRemoval">Numpad removal</li>
+        <li *ngIf="config.audibleSounds">Time alert</li>
+        <li *ngIf="config.numpadRemoval">Remove number pad</li>
         <li *ngIf="config.colourContrast">Colour contrast</li>
         <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
       </ol>
+      <p>
+        If you need to add or remove any settings, please tell your teacher and
+        <a routerLink="/sign-out">sign out</a>.
+      </p>
       <div class="sign-out-link">
         <p class="lede">
-          <button class="button" (click)="onClick()">Confirm</button>
+          <button class="button" (click)="onClick()">Next</button>
         </p>
       </div>
     </div>
