@@ -24,7 +24,6 @@ module.exports = function (context, prepareCheckMessage) {
     partitionKey: prepareCheckMessage.schoolPin,
     rowKey: prepareCheckMessage.pupilPin,
     checkCode: prepareCheckMessage.pupil.checkCode,
-    checkFormAllocationId: prepareCheckMessage.pupil.checkFormAllocationId,
     pupilId: prepareCheckMessage.pupil.id,
     schoolId: prepareCheckMessage.school.id,
     questions: prepareCheckMessage.questions,
@@ -35,7 +34,6 @@ module.exports = function (context, prepareCheckMessage) {
     tokens: prepareCheckMessage.tokens,
     isCollected: false,
     collectedAt: null,
-    hasCheckStarted: false,
     createdAt: new Date(), // This ought to work but doesn't: {'_': new Date(), '$': 'Edm.DateTime'},
     updatedAt: new Date()
   }
