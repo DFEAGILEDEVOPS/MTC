@@ -20,6 +20,7 @@ const sasTokenService = require('../services/sas-token.service')
 const setValidationService = require('../services/set-validation.service')
 const azureQueueService = require('../services/azure-queue.service')
 const monitor = require('../helpers/monitor')
+const checkStateService = require('../services/check-state.service')
 
 const checkStartService = {}
 
@@ -70,7 +71,6 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds, pinEnv === 'live')
-    delete c.isLiveCheck // this not used in the check table (deprecated); but by the checkFormAllocation table
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
@@ -117,14 +117,15 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const allForms = await checkFormService.getAllFormsForCheckWindow(checkWindow.id)
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
-  // Create the checkFormAllocations for each pupil
-  const checkFormAllocations = []
+  // Create the checks for each pupil
+  const checks = []
   for (let pupilId of pupilIds) {
     const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
     const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck)
-    checkFormAllocations.push(c)
+    checks.push(c)
   }
-  const res = await checkFormAllocationDataService.sqlCreateBatch(checkFormAllocations)
+  // const res = await checkFormAllocationDataService.sqlCreateBatch(checkFormAllocations)
+  const res = await checkDataService.sqlCreateBatch(checks)
 
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
@@ -183,7 +184,7 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
 /**
  *
  * @param pupilId
- * @return {Promise<*>} checkCode - UUID v4
+ * @return {Promise<*>} partial check data
  */
 checkStartService.pupilLogin = async function (pupilId) {
   const check = await checkDataService.sqlFindOneForPupilLogin(pupilId)
@@ -202,27 +203,28 @@ checkStartService.pupilLogin = async function (pupilId) {
   }
 
   await checkDataService.sqlUpdate(checkData)
+  await checkStateService.changeState(check.checkCode, checkStateService.States.Collected)
   const questions = JSON.parse(checkForm.formData)
-  return { checkCode: check.checkCode, questions }
+  return { checkCode: check.checkCode, questions, practice: !check.isLiveCheck }
 }
 
 /**
  * Query the DB and put the info into messages suitable for placing on the prepare-check queue
  * The message needs to contain everything the pupil needs to login and take the check
- * @param checkFormAllocationIds
+ * @param CheckIds
  * @return {Promise<Array>}
  */
-checkStartService.prepareCheckQueueMessages = async function (checkFormAllocationIds) {
-  if (!checkFormAllocationIds) {
-    throw new Error('checkFormAllocationIds is not defined')
+checkStartService.prepareCheckQueueMessages = async function (checkIds) {
+  if (!checkIds) {
+    throw new Error('checkIds is not defined')
   }
 
-  if (!Array.isArray(checkFormAllocationIds)) {
-    throw new Error('checkFormAllocationIds must be an array')
+  if (!Array.isArray(checkIds)) {
+    throw new Error('checkIds must be an array')
   }
 
   const messages = []
-  const checkFormAllocations = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkFormAllocationIds)
+  const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkIds)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
 
   const checkStartedSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_STARTED, sasExpiryDate)
@@ -230,8 +232,12 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
   const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
-  for (let o of checkFormAllocations) {
+  for (let o of checks) {
     const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+
+    // Pass the isLiveCheck config in to the SPA
+    config.practice = !o.check_isLiveCheck
+
     const message = {
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
@@ -240,8 +246,8 @@ checkStartService.prepareCheckQueueMessages = async function (checkFormAllocatio
         firstName: o.pupil_foreName,
         lastName: o.pupil_lastName,
         dob: dateService.formatFullGdsDate(o.pupil_dateOfBirth),
-        checkCode: o.checkFormAllocation_checkCode,
-        checkFormAllocationId: o.checkFormAllocation_id,
+        checkCode: o.check_checkCode,
+        check_id: o.check_check_id,
         pinExpiresAt: o.pupil_pinExpiresAt
       },
       school: {
