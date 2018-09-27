@@ -1,4 +1,4 @@
-CREATE VIEW [mtc_admin].vewPupilPinGeneration AS
+CREATE VIEW [mtc_admin].vewPupilActivity AS
 SELECT p.urlSlug, p.foreName, p.lastName, s.id AS [school_id], s.dfeNumber,
   COUNT(r.id) AS [restartCount],
   ISNULL(chkComp.CompletedCheckCount, 0) AS [CompletedCheckCount],
