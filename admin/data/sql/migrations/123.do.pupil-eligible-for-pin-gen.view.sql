@@ -6,8 +6,7 @@ SELECT
  p.dateOfBirth,
  p.urlSlug,
  p.school_id,
- COUNT(chk.id) AS checkCount,
- IIF(COUNT(chk.id) < 3, 1, 0) AS isRestartAllowed
+ COUNT(chk.id) AS checkCount
 FROM
  [mtc_admin].[pupil] p
   LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id)
@@ -22,8 +21,3 @@ GROUP BY
  p.dateOfBirth,
  p.urlSlug,
  p.school_id
-/* moved to the data service so it can consume the config value
-HAVING
- -- only select pupils who are allowed a restart
- COUNT(chk.id) < 3
- */
