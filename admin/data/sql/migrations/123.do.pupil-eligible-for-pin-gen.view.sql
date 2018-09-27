@@ -20,7 +20,8 @@ GROUP BY
  p.forename,
  p.lastname,
  p.dateOfBirth,
- p.urlSlug
+ p.urlSlug,
+ p.school_id
 /* moved to the data service so it can consume the config value
 HAVING
  -- only select pupils who are allowed a restart
