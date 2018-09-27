@@ -96,19 +96,19 @@
                     <span class="error-message"><%= error.get('adminEndYear') %></span>
                     <% } %>
                     <% if (error.isError('adminStartDateAfterFamiliarisationCheckStartDate')) { %>
-                    <span class="error-message"><%= error.get('adminStartDateAfterFamiliarisationCheckStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.adminStartDateAfterFamiliarisationCheckStartDate %></span>
                     <% } %>
                     <% if (error.isError('adminStartDateAfterLiveCheckStartDate')) { %>
-                    <span class="error-message"><%= error.get('adminStartDateAfterLiveCheckStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.adminStartDateAfterLiveCheckStartDate %></span>
                     <% } %>
                     <% if (error.isError('adminEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= error.get('adminEndDateBeforeAdminStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.adminEndDateBeforeAdminStartDate %></span>
                     <% } %>
                     <% if (error.isError('adminEndDateBeforeLiveCheckEndDate')) { %>
-                    <span class="error-message"><%= error.get('adminEndDateBeforeLiveCheckEndDate') %></span>
+                    <span class="error-message"><%= errorMessage.adminEndDateBeforeLiveCheckEndDate %></span>
                     <% } %>
                     <% if (error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')) { %>
-                    <span class="error-message"><%= error.get('adminEndDateBeforeFamiliarisationCheckEndDate') %></span>
+                    <span class="error-message"><%= errorMessage.adminEndDateBeforeFamiliarisationCheckEndDate %></span>
                     <% } %>
                 </label>
                 <div class="form-group start-date">
@@ -219,13 +219,13 @@
                     <span class="error-message"><%= error.get('familiarisationCheckEndYear') %></span>
                     <% } %>
                     <% if (error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckStartDateAfterLiveCheckStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateAfterLiveCheckStartDate %></span>
                     <% } %>
                     <% if (error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') %></span>
+                    <span class="error-message"><%= errorMessage.familiarisationCheckStartDateAfterFamiliarisationCheckEndDate %></span>
                     <% } %>
                     <% if (error.isError('familiarisationCheckEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= error.get('familiarisationCheckEndDateBeforeAdminStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.familiarisationCheckEndDateBeforeAdminStartDate %></span>
                     <% } %>
                 </label>
                 <div class="form-group start-date">
@@ -336,10 +336,10 @@
                     <span class="error-message"><%= error.get('liveCheckEndYear') %></span>
                     <% } %>
                     <% if (error.isError('liveCheckStartDateAfterLiveCheckEndDate')) { %>
-                    <span class="error-message"><%= error.get('liveCheckStartDateAfterLiveCheckEndDate') %></span>
+                    <span class="error-message"><%= errorMessage.liveCheckStartDateAfterLiveCheckEndDate %></span>
                     <% } %>
                     <% if (error.isError('liveCheckEndDateBeforeAdminStartDate')) { %>
-                    <span class="error-message"><%= error.get('liveCheckEndDateBeforeAdminStartDate') %></span>
+                    <span class="error-message"><%= errorMessage.liveCheckEndDateBeforeAdminStartDate %></span>
                     <% } %>
                 </label>
                 <div class="form-group start-date">
