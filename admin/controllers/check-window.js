@@ -2,8 +2,8 @@
 
 const moment = require('moment')
 const monitor = require('../helpers/monitor')
-const checkWindowErrorMessages = require('../lib/errors/new-check-window')
-const newCheckWindowAddService = require('../services/new-check-window-add.service')
+const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
+const checkWindowV2AddService = require('../services/check-window-v2-add.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -52,7 +52,7 @@ const controller = {
   submitCheckWindow: async (req, res, next) => {
     const requestData = req.body
     try {
-      await newCheckWindowAddService.process(requestData)
+      await checkWindowV2AddService.process(requestData)
     } catch (error) {
       if (error.name === 'ValidationError') {
         res.locals.pageTitle = 'Create check window'

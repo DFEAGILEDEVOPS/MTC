@@ -6,7 +6,7 @@ const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
 const controller = require('../../../controllers/check-window')
-const newCheckWindowAddService = require('../../../services/new-check-window-add.service')
+const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -70,12 +70,12 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
-      spyOn(newCheckWindowAddService, 'process')
+      spyOn(checkWindowV2AddService, 'process')
       await controller.submitCheckWindow(req, res, next)
-      expect(newCheckWindowAddService.process).toHaveBeenCalled()
+      expect(checkWindowV2AddService.process).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
-    it('calls render when newCheckWindowAddService process throws a validation error', async () => {
+    it('calls render when checkWindowV2AddService process throws a validation error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
@@ -87,7 +87,7 @@ describe('access arrangements controller:', () => {
         return p
       }
       const rejection = unsafeReject(Promise.reject(error))
-      spyOn(newCheckWindowAddService, 'process').and.returnValue(rejection)
+      spyOn(checkWindowV2AddService, 'process').and.returnValue(rejection)
       try {
         await controller.submitCheckWindow(req, res, next)
       } catch (error) {
@@ -97,7 +97,7 @@ describe('access arrangements controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
-      expect(newCheckWindowAddService.process).toHaveBeenCalled()
+      expect(checkWindowV2AddService.process).toHaveBeenCalled()
     })
   })
 })
