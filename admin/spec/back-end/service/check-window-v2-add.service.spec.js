@@ -5,7 +5,7 @@ const checkWindowV2AddService = require('../../../services/check-window-v2-add.s
 const checkWindowAddValidator = require('../../../lib/validator/check-window-v2/check-window-add-validator')
 const ValidationError = require('../../../lib/validation-error')
 
-describe('new-check-window-add.service', () => {
+describe('check-window-v2-add.service', () => {
   describe('process', () => {
     it('should call validate', async () => {
       const validationError = new ValidationError()

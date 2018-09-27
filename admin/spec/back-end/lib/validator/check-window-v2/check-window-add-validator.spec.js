@@ -2,7 +2,6 @@
 
 /* global describe, it, spyOn expect beforeEach */
 const moment = require('moment')
-const dateService = require('../../../../../services/date.service')
 const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')
 
 const checkWindowNameValidator = require('../../../../../lib/validator/check-window-v2/check-window-name-validator')
