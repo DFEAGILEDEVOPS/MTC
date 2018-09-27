@@ -1,31 +1,3 @@
--- -- remove the pin from the pupil table
--- drop index [mtc_admin].[pupil].[pupil_school_id_pin_uindex];
--- alter table [mtc_admin].[pupil]
---   drop column pin;
-alter table [mtc_admin].[pupil] add
-  pin nvarchar(12),
-  pinExpiresAt datetimeoffset(3);
-go
-
-create unique index [pupil_school_id_pin_uindex] on [mtc_admin].[pupil] (school_id, pin)
-  where pin is not null;
-go
-
--- -- Add the school / pin index
--- create unique index []
---   on [mtc_admin].[check] (school_id, pin)
---   where pin is not null;
-drop index [mtc_admin].[check].[check_school_id_pin_uindex];
-
--- alter table [mtc_admin].[check]
---   add
---   pin nvarchar(12),
---   school_id int;
--- go
-
-alter table [mtc_admin].[check]
-    drop column pin, pinExpiresAt, school_id;
-
 --
 -- drop table [mtc_admin].[checkFormAllocation];
 --
@@ -101,3 +73,4 @@ alter table [mtc_admin].[check]
   drop column
   checkStatus_id,
   isLiveCheck;
+
