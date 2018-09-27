@@ -90,24 +90,5 @@ module.exports.validate = (checkWindowData) => {
   if (liveCheckEndDate && moment(liveCheckEndDate).isBefore(adminStartDate)) {
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
-  // if (familiarisationCheckStartDate && moment(familiarisationCheckStartDate).isBefore(adminStartDate)) {
-  //   validationError.addError('familiarisationCheckStartDateBeforeAdminStartDate', true)
-  // }
-  // if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isAfter(adminEndDate)) {
-  //   validationError.addError('familiarisationCheckEndDateAfterAdminEndDate', true)
-  // }
-  // if (familiarisationCheckEndDate && moment(familiarisationCheckEndDate).isBefore(familiarisationCheckStartDate)) {
-  //   validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
-  // }
-  // Live check start date
-  // if (liveCheckStartDate && moment(liveCheckStartDate).isBefore(adminStartDate)) {
-  //   validationError.addError('liveCheckStartDateBeforeAdminStartDate', true)
-  // }
-  // if (liveCheckStartDate && moment(liveCheckStartDate).isBefore(familiarisationCheckStartDate)) {
-  //   validationError.addError('liveCheckStartDateBeforeFamiliarisationCheckStartDate', true)
-  // }
-  // if (liveCheckEndDate && moment(liveCheckEndDate).isBefore(liveCheckStartDate)) {
-  //   validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
-  // }
   return validationError
 }
