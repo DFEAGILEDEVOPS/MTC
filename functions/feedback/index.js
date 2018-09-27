@@ -66,10 +66,10 @@ async function sqlSaveFeedback (feedbackMessage) {
   await sqlService.modify(sql, params)
 }
 
-function convertMessageToDataObject(message) {
+function convertMessageToDataObject (message) {
   return {
-      inputType: message.inputType,
-      satisfactionRating: message.satisfactionRating,
-      comments: message.comments
+    inputType: message.inputType,
+    satisfactionRating: message.satisfactionRating,
+    comments: message.comments
   }
 }
