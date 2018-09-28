@@ -15,7 +15,7 @@ module.exports.validate = (validationError, dateData) => {
   const currentYear = currentDate.format('YYYY')
   const utcDate = dateService.createUTCFromDayMonthYear(dateData.day,
     dateData.month, dateData.year)
-  const maxDaysInMonth = utcDate && moment(utcDate).daysInMonth()
+  const maxDaysInMonth = utcDate && utcDate.daysInMonth()
   const yearWithinRange = isInt(dateData.year, { min: currentYear, max: (currentYear * 1 + 10) })
   const monthWithinRange = isInt(dateData.month, { min: 1, max: 12 })
 
@@ -46,7 +46,7 @@ module.exports.validate = (validationError, dateData) => {
   }
 
   // UTC Date
-  if (utcDate && moment(currentDate).isAfter(utcDate)) {
+  if (utcDate && currentDate.isAfter(utcDate)) {
     validationError.addError(dateData.dateInThePast, true)
   }
   return validationError
