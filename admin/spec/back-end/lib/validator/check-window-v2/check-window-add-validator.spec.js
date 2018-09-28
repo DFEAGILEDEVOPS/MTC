@@ -5,24 +5,14 @@ const moment = require('moment')
 const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')
 
 const checkWindowNameValidator = require('../../../../../lib/validator/check-window-v2/check-window-name-validator')
-const checkWindowAdminStartDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-admin-start-date-validator')
-const checkWindowAdminEndDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-admin-end-date-validator')
-const checkWindowFamiliarisationCheckStartDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-familiarisation-check-start-date-validator')
-const checkWindowFamiliarisationCheckEndDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-familiarisation-check-end-date-validator')
-const checkWindowLiveCheckStartDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-live-check-start-date-validator')
-const checkWindowLiveCheckEndDateValidator = require('../../../../../lib/validator/check-window-v2/check-window-live-check-end-date-validator')
+const dateValidator = require('../../../../../lib/validator/common/date-validator')
 
 describe('New check window add validator', function () {
   let checkWindowData
   describe('validate', function () {
     beforeEach(() => {
       spyOn(checkWindowNameValidator, 'validate')
-      spyOn(checkWindowAdminStartDateValidator, 'validate')
-      spyOn(checkWindowAdminEndDateValidator, 'validate')
-      spyOn(checkWindowFamiliarisationCheckStartDateValidator, 'validate')
-      spyOn(checkWindowFamiliarisationCheckEndDateValidator, 'validate')
-      spyOn(checkWindowLiveCheckStartDateValidator, 'validate')
-      spyOn(checkWindowLiveCheckEndDateValidator, 'validate')
+      spyOn(dateValidator, 'validate')
       checkWindowData = {
         adminStartDay: moment.utc().add(1, 'days').format('DD'),
         adminStartMonth: moment.utc().add(1, 'days').format('MM'),
@@ -46,12 +36,7 @@ describe('New check window add validator', function () {
     })
     it('returns validationError object', () => {
       const validationError = checkWindowAddValidator.validate(checkWindowData)
-      expect(checkWindowAdminEndDateValidator.validate).toHaveBeenCalled()
-      expect(checkWindowAdminStartDateValidator.validate).toHaveBeenCalled()
-      expect(checkWindowFamiliarisationCheckStartDateValidator.validate).toHaveBeenCalled()
-      expect(checkWindowFamiliarisationCheckEndDateValidator.validate).toHaveBeenCalled()
-      expect(checkWindowLiveCheckStartDateValidator.validate).toHaveBeenCalled()
-      expect(checkWindowLiveCheckEndDateValidator.validate).toHaveBeenCalled()
+      expect(dateValidator.validate).toHaveBeenCalled()
       expect(validationError.hasError()).toBeFalsy()
     })
     it('calls addError with adminStartDateAfterFamiliarisationCheckStartDate if the admin start day is after familiarisation check start date', () => {

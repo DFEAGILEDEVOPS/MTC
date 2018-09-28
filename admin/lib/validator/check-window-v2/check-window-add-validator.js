@@ -1,43 +1,72 @@
 'use strict'
 const R = require('ramda')
+
+const checkWindowErrorMessages = require('../../errors/check-window-v2')
 const dateService = require('../../../services/date.service')
 const ValidationError = require('../../validation-error')
 
 const checkWindowNameValidator = require('./check-window-name-validator')
-const checkWindowAdminStartDateValidator = require('./check-window-admin-start-date-validator')
-const checkWindowAdminEndDateValidator = require('./check-window-admin-end-date-validator')
-const checkWindowFamiliarisationCheckStartDateValidator = require('./check-window-familiarisation-check-start-date-validator')
-const checkWindowFamiliarisationCheckEndDateValidator = require('./check-window-familiarisation-check-end-date-validator')
-const checkWindowLiveCheckStartDateValidator = require('./check-window-live-check-start-date-validator')
-const checkWindowLiveCheckEndDateValidator = require('./check-window-live-check-end-date-validator')
+const dateValidator = require('../common/date-validator')
+
+const checkWindowAddValidator = {}
 
 /**
  * Validates check window insertion data
  * @param {Object} checkWindowData
  * @returns {Object}
  */
-module.exports.validate = (checkWindowData) => {
+checkWindowAddValidator.validate = (checkWindowData) => {
   const validationError = new ValidationError()
   const checkWindowName = R.path(['checkWindowName'], checkWindowData)
   checkWindowNameValidator.validate(validationError, checkWindowName)
 
-  const adminStartDateData = R.pick(['adminStartDay', 'adminStartMonth', 'adminStartYear'], checkWindowData)
-  checkWindowAdminStartDateValidator.validate(validationError, adminStartDateData)
+  const { adminStartDay, adminStartMonth, adminStartYear } = R.pick(['adminStartDay', 'adminStartMonth', 'adminStartYear'], checkWindowData)
+  const adminStartDateValidationData = [adminStartDay, adminStartMonth, adminStartYear, 'adminStartDay', 'adminStartMonth', 'adminStartYear',
+    checkWindowErrorMessages.adminStartDayWrong, checkWindowErrorMessages.adminStartMonthWrong, checkWindowErrorMessages.adminStartYearWrong,
+    checkWindowErrorMessages.adminStartDayInvalidChars, checkWindowErrorMessages.adminStartMonthInvalidChars, checkWindowErrorMessages.adminStartYearInvalidChars,
+    'adminStartDateInThePast']
+  const adminStartDateData = checkWindowAddValidator.generateValidationData(adminStartDateValidationData)
+  dateValidator.validate(validationError, adminStartDateData)
 
-  const adminEndDateData = R.pick(['adminEndDay', 'adminEndMonth', 'adminEndYear'], checkWindowData)
-  checkWindowAdminEndDateValidator.validate(validationError, adminEndDateData)
+  const { adminEndDay, adminEndMonth, adminEndYear } = R.pick(['adminEndDay', 'adminEndMonth', 'adminEndYear'], checkWindowData)
+  const adminEndDateValidationData = [adminEndDay, adminEndMonth, adminEndYear, 'adminEndDay', 'adminEndMonth', 'adminEndYear',
+    checkWindowErrorMessages.adminEndDayWrong, checkWindowErrorMessages.adminEndMonthWrong, checkWindowErrorMessages.adminEndYearWrong,
+    checkWindowErrorMessages.adminEndDayInvalidChars, checkWindowErrorMessages.adminEndMonthInvalidChars, checkWindowErrorMessages.adminEndYearInvalidChars,
+    'adminEndDateInThePast']
+  const adminEndDateData = checkWindowAddValidator.generateValidationData(adminEndDateValidationData)
+  dateValidator.validate(validationError, adminEndDateData)
 
-  const familiarisationCheckStartData = R.pick(['familiarisationCheckStartDay', 'familiarisationCheckStartMonth', 'familiarisationCheckStartYear'], checkWindowData)
-  checkWindowFamiliarisationCheckStartDateValidator.validate(validationError, familiarisationCheckStartData)
+  const { familiarisationCheckStartDay, familiarisationCheckStartMonth, familiarisationCheckStartYear } = R.pick(['familiarisationCheckStartDay', 'familiarisationCheckStartMonth', 'familiarisationCheckStartYear'], checkWindowData)
+  const familiarisationCheckStartDateValidationData = [familiarisationCheckStartDay, familiarisationCheckStartMonth, familiarisationCheckStartYear, 'familiarisationCheckStartDay', 'familiarisationCheckStartMonth', 'familiarisationCheckStartYear',
+    checkWindowErrorMessages.familiarisationCheckStartDayWrong, checkWindowErrorMessages.familiarisationCheckStartMonthWrong, checkWindowErrorMessages.familiarisationCheckStartYearWrong,
+    checkWindowErrorMessages.familiarisationCheckStartDayInvalidChars, checkWindowErrorMessages.familiarisationCheckStartMonthInvalidChars, checkWindowErrorMessages.familiarisationCheckStartYearInvalidChars,
+    'familiarisationCheckStartDateInThePast']
+  const familiarisationCheckStartDateData = checkWindowAddValidator.generateValidationData(familiarisationCheckStartDateValidationData)
+  dateValidator.validate(validationError, familiarisationCheckStartDateData)
 
-  const familiarisationCheckEndData = R.pick(['familiarisationCheckEndDay', 'familiarisationCheckEndMonth', 'familiarisationCheckEndYear'], checkWindowData)
-  checkWindowFamiliarisationCheckEndDateValidator.validate(validationError, familiarisationCheckEndData)
+  const { familiarisationCheckEndDay, familiarisationCheckEndMonth, familiarisationCheckEndYear } = R.pick(['familiarisationCheckEndDay', 'familiarisationCheckEndMonth', 'familiarisationCheckEndYear'], checkWindowData)
+  const familiarisationCheckEndDateValidationData = [familiarisationCheckEndDay, familiarisationCheckEndMonth, familiarisationCheckEndYear, 'familiarisationCheckEndDay', 'familiarisationCheckEndMonth', 'familiarisationCheckEndYear',
+    checkWindowErrorMessages.familiarisationCheckEndDayWrong, checkWindowErrorMessages.familiarisationCheckEndMonthWrong, checkWindowErrorMessages.familiarisationCheckEndYearWrong,
+    checkWindowErrorMessages.familiarisationCheckEndDayInvalidChars, checkWindowErrorMessages.familiarisationCheckEndMonthInvalidChars, checkWindowErrorMessages.familiarisationCheckEndYearInvalidChars,
+    'familiarisationCheckEndDateInThePast']
+  const familiarisationCheckEndDateData = checkWindowAddValidator.generateValidationData(familiarisationCheckEndDateValidationData)
+  dateValidator.validate(validationError, familiarisationCheckEndDateData)
 
-  const liveCheckStartData = R.pick(['liveCheckStartDay', 'liveCheckStartMonth', 'liveCheckStartYear'], checkWindowData)
-  checkWindowLiveCheckStartDateValidator.validate(validationError, liveCheckStartData)
+  const { liveCheckStartDay, liveCheckStartMonth, liveCheckStartYear } = R.pick(['liveCheckStartDay', 'liveCheckStartMonth', 'liveCheckStartYear'], checkWindowData)
+  const liveCheckStartDateValidationData = [liveCheckStartDay, liveCheckStartMonth, liveCheckStartYear, 'liveCheckStartDay', 'liveCheckStartMonth', 'liveCheckStartYear',
+    checkWindowErrorMessages.liveCheckStartDayWrong, checkWindowErrorMessages.liveCheckStartMonthWrong, checkWindowErrorMessages.liveCheckStartYearWrong,
+    checkWindowErrorMessages.liveCheckStartDayInvalidChars, checkWindowErrorMessages.liveCheckStartMonthInvalidChars, checkWindowErrorMessages.liveCheckStartYearInvalidChars,
+    'liveCheckStartDateInThePast']
+  const liveCheckStartDateData = checkWindowAddValidator.generateValidationData(liveCheckStartDateValidationData)
+  dateValidator.validate(validationError, liveCheckStartDateData)
 
-  const liveCheckEndData = R.pick(['liveCheckEndDay', 'liveCheckEndMonth', 'liveCheckEndYear'], checkWindowData)
-  checkWindowLiveCheckEndDateValidator.validate(validationError, liveCheckEndData)
+  const { liveCheckEndDay, liveCheckEndMonth, liveCheckEndYear } = R.pick(['liveCheckEndDay', 'liveCheckEndMonth', 'liveCheckEndYear'], checkWindowData)
+  const liveCheckEndDateValidationData = [liveCheckEndDay, liveCheckEndMonth, liveCheckEndYear, 'liveCheckEndDay', 'liveCheckEndMonth', 'liveCheckEndYear',
+    checkWindowErrorMessages.liveCheckEndDayWrong, checkWindowErrorMessages.liveCheckEndMonthWrong, checkWindowErrorMessages.liveCheckEndYearWrong,
+    checkWindowErrorMessages.liveCheckEndDayInvalidChars, checkWindowErrorMessages.liveCheckEndMonthInvalidChars, checkWindowErrorMessages.liveCheckEndYearInvalidChars,
+    'liveCheckEndDateInThePast']
+  const liveCheckEndDateData = checkWindowAddValidator.generateValidationData(liveCheckEndDateValidationData)
+  dateValidator.validate(validationError, liveCheckEndDateData)
 
   const adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
     checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
@@ -91,3 +120,22 @@ module.exports.validate = (checkWindowData) => {
   }
   return validationError
 }
+
+checkWindowAddValidator.generateValidationData = (dateData) => {
+  return {
+    day: dateData[0],
+    month: dateData[1],
+    year: dateData[2],
+    dayHTMLAttributeId: dateData[3],
+    monthHTMLAttributeId: dateData[4],
+    yearHTMLAttributeId: dateData[5],
+    wrongDayMessage: dateData[6],
+    wrongMonthMessage: dateData[7],
+    wrongYearMessage: dateData[8],
+    dayInvalidChars: dateData[9],
+    monthInvalidChars: dateData[10],
+    yearInvalidChars: dateData[11],
+    dateInThePast: dateData[12]
+  }
+}
+module.exports = checkWindowAddValidator
