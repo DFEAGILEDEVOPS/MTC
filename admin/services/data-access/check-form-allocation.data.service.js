@@ -8,8 +8,9 @@ const checkFormAllocationDataService = {}
 
 checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
   const select = `SELECT 
-      cfa.id as checkFormAllocation_id,
-      cfa.checkCode as checkFormAllocation_checkCode,
+      chk.id as check_id,
+      chk.checkCode as check_checkCode,
+      chk.isLiveCheck as check_isLiveCheck,
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,
@@ -23,13 +24,13 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       school.name as school_name,
       school.pin as school_pin
     FROM 
-      ${sqlService.adminSchema}.${table} cfa 
-      JOIN ${sqlService.adminSchema}.[pupil] pupil ON (cfa.pupil_id = pupil.id)
-      JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (cfa.checkForm_id = checkForm.id)
+      ${sqlService.adminSchema}.[check] chk
+      JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
+      JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (chk.checkForm_id = checkForm.id)
       JOIN ${sqlService.adminSchema}.[school] school on (pupil.school_id = school.id)
     `
   let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
-  const whereClause = `WHERE cfa.id IN (${paramIdentifiers.join(', ')})`
+  const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`
   const sql = [ select, whereClause ].join(' ')
   return sqlService.query(sql, params)
 }
