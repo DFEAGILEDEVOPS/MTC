@@ -23,15 +23,15 @@ describe('New check window add validator', function () {
         familiarisationCheckStartDay: moment.utc().add(2, 'days').format('DD'),
         familiarisationCheckStartMonth: moment.utc().add(2, 'days').format('MM'),
         familiarisationCheckStartYear: moment.utc().add(2, 'days').format('YYYY'),
-        familiarisationCheckEndDay: moment.utc().add(3, 'days').format('DD'),
-        familiarisationCheckEndMonth: moment.utc().add(3, 'days').format('MM'),
-        familiarisationCheckEndYear: moment.utc().add(3, 'days').format('YYYY'),
+        familiarisationCheckEndDay: moment.utc().add(8, 'days').format('DD'),
+        familiarisationCheckEndMonth: moment.utc().add(8, 'days').format('MM'),
+        familiarisationCheckEndYear: moment.utc().add(8, 'days').format('YYYY'),
         liveCheckStartDay: moment.utc().add(4, 'days').format('DD'),
         liveCheckStartMonth: moment.utc().add(4, 'days').format('MM'),
         liveCheckStartYear: moment.utc().add(4, 'days').format('YYYY'),
-        liveCheckEndDay: moment.utc().add(5, 'days').format('DD'),
-        liveCheckEndMonth: moment.utc().add(5, 'days').format('MM'),
-        liveCheckEndYear: moment.utc().add(5, 'days').format('YYYY')
+        liveCheckEndDay: moment.utc().add(8, 'days').format('DD'),
+        liveCheckEndMonth: moment.utc().add(8, 'days').format('MM'),
+        liveCheckEndYear: moment.utc().add(8, 'days').format('YYYY')
       }
     })
     it('returns validationError object', () => {
@@ -88,9 +88,9 @@ describe('New check window add validator', function () {
       expect(validationError.errors.familiarisationCheckStartDateAfterLiveCheckStartDate).toBeTruthy()
     })
     it('calls addError with familiarisationCheckStartDateAfterFamiliarisationCheckEndDate if the familiarisation check start day is after familiarisation check end date', () => {
-      checkWindowData.familiarisationCheckStartDay = moment.utc().add(5, 'days').format('DD')
-      checkWindowData.familiarisationCheckStartMonth = moment.utc().add(5, 'days').format('MM')
-      checkWindowData.familiarisationCheckStartYear = moment.utc().add(5, 'days').format('YYYY')
+      checkWindowData.familiarisationCheckStartDay = moment.utc().add(9, 'days').format('DD')
+      checkWindowData.familiarisationCheckStartMonth = moment.utc().add(9, 'days').format('MM')
+      checkWindowData.familiarisationCheckStartYear = moment.utc().add(9, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.familiarisationCheckStartDateAfterFamiliarisationCheckEndDate).toBeTruthy()
@@ -104,9 +104,9 @@ describe('New check window add validator', function () {
       expect(validationError.errors.familiarisationCheckEndDateBeforeAdminStartDate).toBeTruthy()
     })
     it('calls addError with liveCheckStartDateAfterLiveCheckEndDate if the live check start day is after live check end date', () => {
-      checkWindowData.liveCheckStartDay = moment.utc().add(6, 'days').format('DD')
-      checkWindowData.liveCheckStartMonth = moment.utc().add(6, 'days').format('MM')
-      checkWindowData.liveCheckStartYear = moment.utc().add(6, 'days').format('YYYY')
+      checkWindowData.liveCheckStartDay = moment.utc().add(9, 'days').format('DD')
+      checkWindowData.liveCheckStartMonth = moment.utc().add(9, 'days').format('MM')
+      checkWindowData.liveCheckStartYear = moment.utc().add(9, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.liveCheckStartDateAfterLiveCheckEndDate).toBeTruthy()
@@ -118,6 +118,15 @@ describe('New check window add validator', function () {
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.liveCheckEndDateBeforeAdminStartDate).toBeTruthy()
+    })
+    it('calls addError with familiarisationCheckEndDateNotEqualLiveCheckEndDate if the familiarisation check end day is not equal to live check end date', () => {
+      checkWindowData.liveCheckEndDay = moment.utc().add(6, 'days').format('DD')
+      checkWindowData.liveCheckEndMonth = moment.utc().add(6, 'days').format('MM')
+      checkWindowData.liveCheckEndYear = moment.utc().add(6, 'days').format('YYYY')
+      const validationError = checkWindowAddValidator.validate(checkWindowData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(Object.keys(validationError.errors).length).toBe(1)
+      expect(validationError.errors.familiarisationCheckEndDateNotEqualLiveCheckEndDate).toBeTruthy()
     })
   })
 })

@@ -119,6 +119,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
   if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate)) {
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
+  if (liveCheckEndDate && familiarisationCheckEndDate && !familiarisationCheckEndDate.isSame(liveCheckEndDate)) {
+    validationError.addError('familiarisationCheckEndDateNotEqualLiveCheckEndDate', true)
+  }
   return validationError
 }
 
