@@ -3,6 +3,7 @@ const R = require('ramda')
 
 const checkWindowErrorMessages = require('../../errors/check-window-v2')
 const dateService = require('../../../services/date.service')
+const monitor = require('../../../helpers/monitor')
 const ValidationError = require('../../validation-error')
 
 const checkWindowNameValidator = require('./check-window-name-validator')
@@ -138,4 +139,5 @@ checkWindowAddValidator.generateValidationData = (dateData) => {
     dateInThePast: dateData[12]
   }
 }
-module.exports = checkWindowAddValidator
+
+module.exports = monitor('check-window-add-validator', checkWindowAddValidator)

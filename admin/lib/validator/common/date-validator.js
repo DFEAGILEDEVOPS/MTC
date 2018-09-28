@@ -1,16 +1,20 @@
 'use strict'
+
 const moment = require('moment')
+const { isEmpty, isInt } = require('validator')
+const XRegExp = require('xregexp')
 
 const dateService = require('../../../services/date.service')
-const XRegExp = require('xregexp')
-const { isEmpty, isInt } = require('validator')
+const monitor = require('../../../helpers/monitor')
+
+const dateValidator = {}
 
 /**
  * Validates 3-part date data (day, month, year)
  * @param {Object} validationError
  * @param {Object} dateData
  */
-module.exports.validate = (validationError, dateData) => {
+dateValidator.validate = (validationError, dateData) => {
   const currentDate = moment.utc()
   const currentYear = currentDate.format('YYYY')
   const utcDate = dateService.createUTCFromDayMonthYear(dateData.day,
@@ -51,3 +55,5 @@ module.exports.validate = (validationError, dateData) => {
   }
   return validationError
 }
+
+module.exports = monitor('check-window-name-validator', dateValidator)
