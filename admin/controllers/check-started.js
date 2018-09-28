@@ -2,6 +2,7 @@ const jwtService = require('../services/jwt.service')
 const pinService = require('../services/pin.service')
 const apiResponse = require('./api-response')
 const monitor = require('../helpers/monitor')
+const checkStateService = require('../services/check-state.service')
 
 /**
  * Expires the pupil's pin
@@ -22,6 +23,7 @@ const checkStarted = async (req, res) => {
 
   try {
     await pinService.expirePupilPin(accessToken, checkCode)
+    await checkStateService.changeState(checkCode, checkStateService.States.Started)
   } catch (error) {
     return apiResponse.serverError(res)
   }
