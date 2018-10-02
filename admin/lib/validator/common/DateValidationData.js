@@ -3,7 +3,7 @@
  */
 const DateValidationData = class {
   /**
-   * @param {String} day
+   * @param {String} day displayed in two digits
    * @returns {Object}
    */
   day (day) {
@@ -12,7 +12,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} month
+   * @param {String} month displayed in two digits
    * @returns {Object}
    */
   month (month) {
@@ -21,7 +21,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} year
+   * @param {String} year displayed in four digits
    * @returns {Object}
    */
   year (year) {
@@ -30,7 +30,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} dayHTMLAttributeId
+   * @param {String} dayHTMLAttributeId - element id containing the day
    * @returns {Object}
    */
   dayHTMLAttributeId (dayHTMLAttributeId) {
@@ -39,7 +39,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} monthHTMLAttributeId
+   * @param {String} monthHTMLAttributeId - element id containing the month
    * @returns {Object}
    */
   monthHTMLAttributeId (monthHTMLAttributeId) {
@@ -48,7 +48,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} yearHTMLAttributeId
+   * @param {String} yearHTMLAttributeId - element id containing the year
    * @returns {Object}
    */
   yearHTMLAttributeId (yearHTMLAttributeId) {
@@ -57,7 +57,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} wrongDayMessage
+   * @param {String} wrongDayMessage - message for wrong day
    * @returns {Object}
    */
   wrongDayMessage (wrongDayMessage) {
@@ -66,7 +66,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} wrongMonthMessage
+   * @param {String} wrongMonthMessage - message for wrong month
    * @returns {Object}
    */
   wrongMonthMessage (wrongMonthMessage) {
@@ -75,7 +75,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} wrongYearMessage
+   * @param {String} wrongYearMessage - message for wrong year
    * @returns {Object}
    */
   wrongYearMessage (wrongYearMessage) {
@@ -84,7 +84,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} dayInvalidChars
+   * @param {String} dayInvalidChars - message for invalid chars on day field
    * @returns {Object}
    */
   dayInvalidChars (dayInvalidChars) {
@@ -93,7 +93,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} monthInvalidChars
+   * @param {String} monthInvalidChars - message for invalid chars on month field
    * @returns {Object}
    */
   monthInvalidChars (monthInvalidChars) {
@@ -102,7 +102,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} yearInvalidChars
+   * @param {String} yearInvalidChars - message for invalid chars on year field
    * @returns {Object}
    */
   yearInvalidChars (yearInvalidChars) {
@@ -111,7 +111,7 @@ const DateValidationData = class {
   }
 
   /**
-   * @param {String} dateInThePast
+   * @param {String} dateInThePast - message in case date is in the past
    * @returns {Object}
    */
   dateInThePast (dateInThePast) {
