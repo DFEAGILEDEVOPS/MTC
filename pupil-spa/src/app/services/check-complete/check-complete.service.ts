@@ -56,6 +56,10 @@ export class CheckCompleteService {
    * @returns {Promise.<void>}
    */
   public async submit(startTime): Promise<void> {
+    const config = this.storageService.getItem('config');
+    if (config.practice) {
+      return;
+    }
     if (this.featureUseHpa === true) {
       const queueName = queueNames.checkComplete;
       const {url, token} = this.tokenService.getToken('checkComplete');
