@@ -1,0 +1,7 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,Latency,IdleTime,Connect
+2018/10/01 13:52:13,550,Pupil log in,200,OK,Pupil check 1-1,text,true,,2881,229,2,2,550,0,91
+2018/10/01 13:52:13,186,Pupil log in,200,OK,Pupil check 1-2,text,true,,2872,229,2,2,186,0,2
+2018/10/01 13:52:13,896,Check start,201,Created,Pupil check 1-1,text,true,,675,512,2,2,892,0,812
+2018/10/01 13:52:14,823,Check start,201,Created,Pupil check 1-2,text,true,,675,512,2,2,819,0,739
+2018/10/01 13:52:14,244,Check submission,201,Created,Pupil check 1-2,text,true,,675,36021,2,2,243,0,0
+2018/10/01 13:52:14,248,Check submission,201,Created,Pupil check 1-1,text,true,,675,36033,2,2,247,0,0
