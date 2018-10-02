@@ -12,7 +12,7 @@ import { QuestionService } from '../services/question/question.service';
 })
 export class WarmupLoadingComponent extends LoadingComponent implements AfterViewInit {
 
-  @Input() public familiarisationCheck: boolean = false;
+  @Input() public familiarisationCheck = false;
 
   constructor(auditService: AuditService,
               questionService: QuestionService,

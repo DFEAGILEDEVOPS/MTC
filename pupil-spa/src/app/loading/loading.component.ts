@@ -25,7 +25,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   @Output()
   timeoutEvent: EventEmitter<any> = new EventEmitter();
 
-  @Input() public familiarisationCheck: boolean = false;
+  @Input() public familiarisationCheck = false;
 
   constructor(protected auditService: AuditService,
               protected questionService: QuestionService,
