@@ -5,10 +5,10 @@ const checkWindowAddValidator = require('../lib/validator/check-window-v2/check-
 const monitor = require('../helpers/monitor')
 
 /**
- * Processes request data on adding
+ * Submit request data on adding
  * @param {Object} requestData
  */
-checkWindowV2AddService.process = async (requestData) => {
+checkWindowV2AddService.submit = async (requestData) => {
   const validationError = checkWindowAddValidator.validate(requestData)
   if (validationError.hasError()) {
     throw validationError

@@ -12,7 +12,7 @@ describe('check-window-v2-add.service', () => {
       spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
       try {
-        await checkWindowV2AddService.process(requestData)
+        await checkWindowV2AddService.submit(requestData)
       } catch (error) {
         fail()
       }
@@ -24,7 +24,7 @@ describe('check-window-v2-add.service', () => {
       spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
       const requestData = {}
       try {
-        await checkWindowV2AddService.process(requestData)
+        await checkWindowV2AddService.submit(requestData)
         fail()
       } catch (error) {
         expect(error.name).toBe('ValidationError')

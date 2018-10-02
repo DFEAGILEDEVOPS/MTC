@@ -68,9 +68,9 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
-      spyOn(checkWindowV2AddService, 'process')
+      spyOn(checkWindowV2AddService, 'submit')
       await controller.submitCheckWindow(req, res, next)
-      expect(checkWindowV2AddService.process).toHaveBeenCalled()
+      expect(checkWindowV2AddService.submit).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
     it('calls render when checkWindowV2AddService process throws a validation error', async () => {
@@ -85,7 +85,7 @@ describe('access arrangements controller:', () => {
         return p
       }
       const rejection = unsafeReject(Promise.reject(error))
-      spyOn(checkWindowV2AddService, 'process').and.returnValue(rejection)
+      spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
       try {
         await controller.submitCheckWindow(req, res, next)
       } catch (error) {
@@ -95,7 +95,7 @@ describe('access arrangements controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
-      expect(checkWindowV2AddService.process).toHaveBeenCalled()
+      expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
   })
 })

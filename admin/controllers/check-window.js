@@ -52,7 +52,7 @@ const controller = {
   submitCheckWindow: async (req, res, next) => {
     const requestData = req.body
     try {
-      await checkWindowV2AddService.process(requestData)
+      await checkWindowV2AddService.submit(requestData)
     } catch (error) {
       if (error.name === 'ValidationError') {
         res.locals.pageTitle = 'Create check window'
