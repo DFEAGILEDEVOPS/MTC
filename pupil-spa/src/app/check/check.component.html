@@ -9,7 +9,8 @@
         [question]="question"
         [loadingTimeout]="config.loadingTime"
         (timeoutEvent)="loadingTimeoutHandler($event)"
-        [total]="totalNumberOfQuestions">
+        [total]="totalNumberOfQuestions"
+        [familiarisationCheck]="this.config && this.config.practice">
     </app-warmup-loading>
     <app-warmup-complete *ngSwitchCase="'warmup-complete'"
         (clickEvent)="warmupCompleteClickHandler()">
@@ -21,7 +22,8 @@
         [question]="question"
         [loadingTimeout]="config.loadingTime"
         (timeoutEvent)="loadingTimeoutHandler($event)"
-        [total]="totalNumberOfQuestions">
+        [total]="totalNumberOfQuestions"
+        [familiarisationCheck]="familiarisationCheck">
     </app-loading>
     <app-practice-question
         *ngSwitchCase="'practice-question'"
@@ -31,7 +33,8 @@
         [questionTimeoutSecs]="config.questionTime"
         [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
-        (manualSubmitEvent)="manualSubmitHandler($event)">
+        (manualSubmitEvent)="manualSubmitHandler($event)"
+        [familiarisationCheck]="familiarisationCheck">
     </app-practice-question>
     <app-spoken-practice-question
         *ngSwitchCase="'spoken-practice-question'"
@@ -41,7 +44,8 @@
         [questionTimeoutSecs]="config.questionTime"
         [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
-        (manualSubmitEvent)="manualSubmitHandler($event)">
+        (manualSubmitEvent)="manualSubmitHandler($event)"
+        [familiarisationCheck]="familiarisationCheck">
     </app-spoken-practice-question>
 
     <app-question *ngSwitchCase="'question'"
@@ -51,7 +55,8 @@
         [questionTimeoutSecs]="config.questionTime"
         [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
-        (manualSubmitEvent)="manualSubmitHandler($event)">
+        (manualSubmitEvent)="manualSubmitHandler($event)"
+        [familiarisationCheck]="familiarisationCheck">
     </app-question>
     <app-spoken-question *ngSwitchCase="'spoken-question'"
         [factor1]="question.factor1"
@@ -60,7 +65,8 @@
         [questionTimeoutSecs]="config.questionTime"
         [soundComponent]="sound"
         (timeoutEvent)="questionTimeoutHandler($event)"
-        (manualSubmitEvent)="manualSubmitHandler($event)">
+        (manualSubmitEvent)="manualSubmitHandler($event)"
+        [familiarisationCheck]="familiarisationCheck">
     </app-spoken-question>
   <app-submission-pending *ngSwitchCase="'submission-pending'">
   </app-submission-pending>
