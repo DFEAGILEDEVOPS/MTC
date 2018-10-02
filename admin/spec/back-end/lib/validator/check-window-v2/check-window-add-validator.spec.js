@@ -6,6 +6,8 @@ const checkWindowAddValidator = require('../../../../../lib/validator/check-wind
 
 const checkWindowNameValidator = require('../../../../../lib/validator/check-window-v2/check-window-name-validator')
 const dateValidator = require('../../../../../lib/validator/common/date-validator')
+const DateValidationData = require('../../../../../lib/validator/common/DateValidationData')
+const DateValidationDataMock = require('../common/DateValidationDataMock')
 
 describe('New check window add validator', function () {
   let checkWindowData
@@ -13,6 +15,8 @@ describe('New check window add validator', function () {
     beforeEach(() => {
       spyOn(checkWindowNameValidator, 'validate')
       spyOn(dateValidator, 'validate')
+      spyOn(DateValidationData.prototype, 'day')
+        .and.returnValue(DateValidationDataMock)
       checkWindowData = {
         adminStartDay: moment.utc().add(1, 'days').format('DD'),
         adminStartMonth: moment.utc().add(1, 'days').format('MM'),
