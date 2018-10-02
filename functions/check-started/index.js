@@ -12,7 +12,7 @@ sqlService.initialise(config)
 const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
 
 const checkStatusTable = '[checkStatus]'
-const checkTable = '[checkFormAllocation]'
+const checkTable = '[check]'
 const schema = '[mtc_admin]'
 const azureTableService = getPromisifiedAzureTableService()
 
@@ -21,7 +21,11 @@ module.exports = async function (context, checkStartMessage) {
 
   // Update the admin database to update the check status to Check Started
   try {
-    await updateAdminDatabaseForCheckStarted(checkStartMessage.checkCode, context.log)
+    console.log('checkStartMessage: ', checkStartMessage)
+    await updateAdminDatabaseForCheckStarted(
+      checkStartMessage.checkCode,
+      new Date(checkStartMessage.clientCheckStartedAt),
+      context.log)
     context.log('SUCCESS: Admin DB updated')
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db for [${checkStartMessage.checkCode}]`)
@@ -53,13 +57,15 @@ module.exports = async function (context, checkStartMessage) {
 /**
  * Update the master SQL Server admin database that the check indicated by <checkCode> has now been started
  * @param {String} checkStarted - the unique GUID that identifies the check in the admin DB
+ * @param {Date} startedAt
  * @return {Promise<void>}
  */
-async function updateAdminDatabaseForCheckStarted (checkCode, logger) {
+async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {
   // For performance reasons we avoid doing a lookup on the checkCode - just issue the UPDATE
   const sql = `UPDATE ${schema}.${checkTable}
                SET checkStatus_id = 
-                  (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'STD')                  
+                  (SELECT TOP 1 id from ${schema}.${checkStatusTable} WHERE code = 'STD'),
+                  startedAt = @startedAt                
                where checkCode = @checkCode`
 
   const params = [
@@ -67,6 +73,11 @@ async function updateAdminDatabaseForCheckStarted (checkCode, logger) {
       name: 'checkCode',
       value: checkCode,
       type: TYPES.UniqueIdentifier
+    },
+    {
+      name: 'startedAt',
+      value: startedAt,
+      type: TYPES.DateTime
     }
   ]
 

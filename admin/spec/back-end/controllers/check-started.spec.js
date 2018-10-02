@@ -4,6 +4,7 @@ const httpMocks = require('node-mocks-http')
 const sinon = require('sinon')
 const jwtService = require('../../../services/jwt.service')
 const pinService = require('../../../services/pin.service')
+const checkStateService = require('../../../services/check-state.service')
 
 describe('check started controller', () => {
   function getRes () {
@@ -53,6 +54,7 @@ describe('check started controller', () => {
       req.body.checkCode = 'checkCode'
       const controller = require('../../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.reject(new Error('error'))))
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await controller(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(401)
@@ -66,6 +68,7 @@ describe('check started controller', () => {
       const controller = require('../../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.resolve('ok')))
       spyOn(pinService, 'expirePupilPin').and.returnValue((Promise.reject(new Error('error'))))
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await controller(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)
@@ -79,6 +82,7 @@ describe('check started controller', () => {
       const controller = require('../../../controllers/check-started').checkStarted
       spyOn(jwtService, 'verify').and.returnValue((Promise.resolve('ok')))
       spyOn(pinService, 'expirePupilPin').and.returnValue((Promise.resolve('ok')))
+      spyOn(checkStateService, 'changeState').and.returnValue(Promise.resolve())
       await controller(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(201)
