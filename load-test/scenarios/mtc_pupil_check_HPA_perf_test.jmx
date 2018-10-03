@@ -119,7 +119,7 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;QueueMessage&gt;&lt;MessageText&gt;${__base64Encode({&quot;checkCode&quot; : &quot;${checkCode}&quot;})}&lt;/MessageText&gt;&lt;/QueueMessage&gt;&#xd;
+                <stringProp name="Argument.value">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;QueueMessage&gt;&lt;MessageText&gt;${__base64Encode(${checkStartJson})}&lt;/MessageText&gt;&lt;/QueueMessage&gt;&#xd;
 &#xd;
 </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
@@ -140,7 +140,24 @@
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
+        <hashTree>
+          <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+            <collectionProp name="UserParameters.names">
+              <stringProp name="601235430">currentTime</stringProp>
+              <stringProp name="2026642163">checkStartJsonString</stringProp>
+              <stringProp name="-289634238">checkStartJson</stringProp>
+            </collectionProp>
+            <collectionProp name="UserParameters.thread_values">
+              <collectionProp name="-782417066">
+                <stringProp name="-2051715600">${__time(yyyy-MM-dd&apos;T&apos;hh:mm:ss.SS&apos;Z&apos;)}</stringProp>
+                <stringProp name="-1502721665">{&quot;checkCode&quot;:&quot;${checkCode}&quot;,&quot;clientCheckStartedAt&quot;:&quot;${currentTime}&quot;}</stringProp>
+                <stringProp name="330607931">${__evalVar(checkStartJsonString)}</stringProp>
+              </collectionProp>
+            </collectionProp>
+            <boolProp name="UserParameters.per_iteration">false</boolProp>
+          </UserParameters>
+          <hashTree/>
+        </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Check submission" enabled="true">
           <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
