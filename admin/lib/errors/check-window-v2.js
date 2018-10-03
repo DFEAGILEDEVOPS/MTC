@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  checkWindowNameLength: 'Enter a name of check window with more than 1 and less than 35 characters',
+  checkWindowNameLength: 'Enter a name between 1 and 35 characters',
 
   adminStartDayWrong: 'Enter a valid day for administration start date',
   adminStartDayInvalidChars: 'Enter a day in 2 digits for administration start date',
