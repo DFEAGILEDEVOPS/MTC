@@ -83,6 +83,14 @@ describe('CheckCompleteService', () => {
       expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
       expect(submissionService.submitData).toHaveBeenCalledTimes(1);
     });
+    it('submit should return if the app is configured to run in practice mode', async () => {
+      const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
+      spyOn(submissionService, 'submitData');
+      await checkCompleteService.submit(Date.now());
+      expect(addEntrySpy).toHaveBeenCalledTimes(0);
+      expect(submissionService.submitData).toHaveBeenCalledTimes(0);
+    });
   });
   describe('when featureUseHpa toggle is on', () => {
     beforeEach(() => {
