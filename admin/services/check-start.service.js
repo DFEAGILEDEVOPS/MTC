@@ -12,6 +12,7 @@ const checkWindowDataService = require('../services/data-access/check-window.dat
 const config = require('../config')
 const configService = require('../services/config.service')
 const dateService = require('../services/date.service')
+const featureToggles = require('feature-toggles')
 const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -105,12 +106,6 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
 
   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-  // TODO: Remove maxAttempts and reintroduce it within pin generation service once verified that travis can successfully use node env variables
-  const maxAttempts = config.Data.pinSubmissionMaxAttempts
-  const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
-  // Update the pins for each pupil
-  // TODO: choose pinEnv here for the pupil pin
-  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId)
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
@@ -121,10 +116,9 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const checks = []
   for (let pupilId of pupilIds) {
     const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
-    const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck)
+    const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck, schoolId)
     checks.push(c)
   }
-  // const res = await checkFormAllocationDataService.sqlCreateBatch(checkFormAllocations)
   const res = await checkDataService.sqlCreateBatch(checks)
 
   // Create and save JWT Tokens for all pupils
@@ -155,11 +149,15 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
  * @param {boolean} isLiveCheck
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
-checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds, isLiveCheck) {
+checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds, isLiveCheck, schoolId = null) {
   const checkForm = await checkFormService.allocateCheckForm(availableForms, usedFormIds)
 
   if (!checkForm) {
     throw new Error('CheckForm not allocated')
+  }
+
+  if (typeof isLiveCheck !== 'boolean') {
+    throw new Error('isLiveCheck must be a boolean value')
   }
 
   winston.debug(`checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`)
@@ -167,16 +165,18 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
   const checkData = {
     pupil_id: pupilId,
     checkForm_id: checkForm.id,
-    checkWindow_id: checkWindow.id
+    checkWindow_id: checkWindow.id,
+    isLiveCheck: isLiveCheck
   }
 
-  if (typeof isLiveCheck !== 'boolean') {
-    throw new Error('isLiveCheck must be a boolean value')
+  if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+    checkData.pin = pinGenerationService.generatePupilPin() // TODO: move pin generation to the database
+    checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime()
+    checkData.school_id = schoolId
   }
 
   // checkCode will be created by the database on insert
   // checkStatus_id will default to '1' - 'New'
-  checkData.isLiveCheck = isLiveCheck
 
   return checkData
 }
@@ -237,7 +237,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
 
     // Pass the isLiveCheck config in to the SPA
     config.practice = !o.check_isLiveCheck
-
     const message = {
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
