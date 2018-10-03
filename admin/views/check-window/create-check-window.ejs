@@ -362,6 +362,9 @@
                     <% if (error.isError('liveCheckEndDateBeforeAdminStartDate')) { %>
                     <span class="error-message"><%= errorMessage.liveCheckEndDateBeforeAdminStartDate %></span>
                     <% } %>
+                    <% if (error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate')) { %>
+                    <span class="error-message"><%= errorMessage.liveCheckEndDateNotEqualFamiliarisationCheckEndDate %></span>
+                    <% } %>
                 </label>
                 <div class="form-group start-date">
                     <div class="form-date">

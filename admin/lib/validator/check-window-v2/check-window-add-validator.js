@@ -196,6 +196,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
   if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(familiarisationCheckStartDate)) {
     validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
   }
+  if (familiarisationCheckEndDate && !familiarisationCheckEndDate.isSame(liveCheckEndDate)) {
+    validationError.addError('familiarisationCheckEndDateNotEqualLiveCheckEndDate', true)
+  }
   // Live check start date
   if (liveCheckStartDate && liveCheckStartDate.isAfter(liveCheckEndDate)) {
     validationError.addError('liveCheckStartDateAfterLiveCheckEndDate', true)
@@ -210,11 +213,11 @@ checkWindowAddValidator.validate = (checkWindowData) => {
   if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate)) {
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
-  if (liveCheckEndDate && familiarisationCheckEndDate && !familiarisationCheckEndDate.isSame(liveCheckEndDate)) {
-    validationError.addError('familiarisationCheckEndDateNotEqualLiveCheckEndDate', true)
-  }
   if (liveCheckEndDate && liveCheckEndDate.isBefore(liveCheckStartDate)) {
     validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
+  }
+  if (liveCheckEndDate && !liveCheckEndDate.isSame(familiarisationCheckEndDate)) {
+    validationError.addError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate', true)
   }
   return validationError
 }

@@ -80,5 +80,6 @@ module.exports = {
   liveCheckStartDateBeforeAdminStartDate: 'Enter a live check start date which is after the administration start date',
   liveCheckStartDateBeforeFamiliarisationCheckStartDate: 'Enter a live check start date which is after the familiarisation check start date',
   liveCheckEndDateBeforeLiveCheckStartDate: 'Enter a live check end date which is after the live check start date',
-  liveCheckEndDateBeforeAdminStartDate: 'Enter a live check end date which is after the administration start date'
+  liveCheckEndDateBeforeAdminStartDate: 'Enter a live check end date which is after the administration start date',
+  liveCheckEndDateNotEqualFamiliarisationCheckEndDate: 'Enter a live check end date which is the same as familiarisation check end date'
 }
