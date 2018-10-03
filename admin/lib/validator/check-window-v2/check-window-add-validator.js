@@ -183,13 +183,28 @@ checkWindowAddValidator.validate = (checkWindowData) => {
   if (familiarisationCheckStartDate && familiarisationCheckStartDate.isAfter(familiarisationCheckEndDate)) {
     validationError.addError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate', true)
   }
+  if (familiarisationCheckStartDate && familiarisationCheckStartDate.isBefore(adminStartDate)) {
+    validationError.addError('familiarisationCheckStartDateBeforeAdminStartDate', true)
+  }
   // Familiarisation check end date
   if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(adminStartDate)) {
     validationError.addError('familiarisationCheckEndDateBeforeAdminStartDate', true)
   }
+  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isAfter(adminEndDate)) {
+    validationError.addError('familiarisationCheckEndDateAfterAdminEndDate', true)
+  }
+  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(familiarisationCheckStartDate)) {
+    validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
+  }
   // Live check start date
   if (liveCheckStartDate && liveCheckStartDate.isAfter(liveCheckEndDate)) {
     validationError.addError('liveCheckStartDateAfterLiveCheckEndDate', true)
+  }
+  if (liveCheckStartDate && liveCheckStartDate.isBefore(adminStartDate)) {
+    validationError.addError('liveCheckStartDateBeforeAdminStartDate', true)
+  }
+  if (liveCheckStartDate && liveCheckStartDate.isBefore(familiarisationCheckStartDate)) {
+    validationError.addError('liveCheckStartDateBeforeFamiliarisationCheckStartDate', true)
   }
   // Live check end date
   if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate)) {
@@ -197,6 +212,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
   }
   if (liveCheckEndDate && familiarisationCheckEndDate && !familiarisationCheckEndDate.isSame(liveCheckEndDate)) {
     validationError.addError('familiarisationCheckEndDateNotEqualLiveCheckEndDate', true)
+  }
+  if (liveCheckEndDate && liveCheckEndDate.isBefore(liveCheckStartDate)) {
+    validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
   }
   return validationError
 }

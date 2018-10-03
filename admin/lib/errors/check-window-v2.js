@@ -69,10 +69,16 @@ module.exports = {
   adminEndDateBeforeAdminStartDate: 'Enter a school administration end date which is after the administration start date',
   adminEndDateBeforeLiveCheckEndDate: 'Enter a school administration end date which is after the live check end date',
   adminEndDateBeforeFamiliarisationCheckEndDate: 'Enter a school administration end date which is after the familiarisation check end date',
+  familiarisationCheckStartDateBeforeAdminStartDate: 'Enter a familiarisation check start date which is after the administration start date',
   familiarisationCheckStartDateAfterLiveCheckStartDate: 'Enter a familiarisation check start date which is before the live check start date',
-  familiarisationCheckStartDateAfterFamiliarisationCheckEndDate: 'Enter a familiarisation check start date which is before the check end date',
+  familiarisationCheckStartDateAfterFamiliarisationCheckEndDate: 'Enter a familiarisation check start date which is before the familiarisation check end date',
   familiarisationCheckEndDateBeforeAdminStartDate: 'Enter a familiarisation check end date which is after the administration start date',
+  familiarisationCheckEndDateAfterAdminEndDate: 'Enter a familiarisation check end date which is before the administration end date',
+  familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate: 'Enter a familiarisation check end date which is after the familiarisation check start date',
   familiarisationCheckEndDateNotEqualLiveCheckEndDate: 'Enter a familiarisation check end date which is the same as live check end date',
   liveCheckStartDateAfterLiveCheckEndDate: 'Enter a live check start date which is before the live check end date',
+  liveCheckStartDateBeforeAdminStartDate: 'Enter a live check start date which is after the administration start date',
+  liveCheckStartDateBeforeFamiliarisationCheckStartDate: 'Enter a live check start date which is after the familiarisation check start date',
+  liveCheckEndDateBeforeLiveCheckStartDate: 'Enter a live check end date which is after the live check start date',
   liveCheckEndDateBeforeAdminStartDate: 'Enter a live check end date which is after the administration start date'
 }

@@ -43,21 +43,23 @@ describe('New check window add validator', function () {
       expect(dateValidator.validate).toHaveBeenCalled()
       expect(validationError.hasError()).toBeFalsy()
     })
-    it('calls addError with adminStartDateAfterFamiliarisationCheckStartDate if the admin start day is after familiarisation check start date', () => {
+    it('calls addError with adminStartDateAfterFamiliarisationCheckStartDate and familiarisationCheckStartDateBeforeAdminStartDate if the admin start day is after familiarisation check start date', () => {
       checkWindowData.adminStartDay = moment.utc().add(3, 'days').format('DD')
       checkWindowData.adminStartMonth = moment.utc().add(3, 'days').format('MM')
       checkWindowData.adminStartYear = moment.utc().add(3, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminStartDateAfterFamiliarisationCheckStartDate).toBeTruthy()
+      expect(validationError.errors.familiarisationCheckStartDateBeforeAdminStartDate).toBeTruthy()
     })
-    it('calls addError with adminStartDateAfterLiveCheckStartDate if the admin start day is after live check start date', () => {
+    it('calls addError with adminStartDateAfterLiveCheckStartDate and liveCheckStartDateBeforeAdminStartDate if the admin start day is after live check start date', () => {
       checkWindowData.adminStartDay = moment.utc().add(5, 'days').format('DD')
       checkWindowData.adminStartMonth = moment.utc().add(5, 'days').format('MM')
       checkWindowData.adminStartYear = moment.utc().add(5, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminStartDateAfterLiveCheckStartDate).toBeTruthy()
+      expect(validationError.errors.liveCheckStartDateBeforeAdminStartDate).toBeTruthy()
     })
     it('calls addError with adminEndDateBeforeAdminStartDate if the admin end day is before admin start date', () => {
       checkWindowData.adminEndDay = moment.utc().format('DD')
@@ -75,29 +77,32 @@ describe('New check window add validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminEndDateBeforeLiveCheckEndDate).toBeTruthy()
     })
-    it('calls addError with adminEndDateBeforeFamiliarisationCheckEndDate if the admin end day is before familiarisation check end date', () => {
+    it('calls addError with adminEndDateBeforeFamiliarisationCheckEndDate and familiarisationCheckEndDateAfterAdminEndDate if the admin end day is before familiarisation check end date', () => {
       checkWindowData.adminEndDay = moment.utc().format('DD')
       checkWindowData.adminEndMonth = moment.utc().format('MM')
       checkWindowData.adminEndYear = moment.utc().format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminEndDateBeforeFamiliarisationCheckEndDate).toBeTruthy()
+      expect(validationError.errors.familiarisationCheckEndDateAfterAdminEndDate).toBeTruthy()
     })
-    it('calls addError with familiarisationCheckStartDateAfterLiveCheckStartDate if the familiarisation check start day is after live check start date', () => {
+    it('calls addError with familiarisationCheckStartDateAfterLiveCheckStartDate and liveCheckStartDateBeforeFamiliarisationCheckStartDate if the familiarisation check start day is after live check start date', () => {
       checkWindowData.familiarisationCheckStartDay = moment.utc().add(5, 'days').format('DD')
       checkWindowData.familiarisationCheckStartMonth = moment.utc().add(5, 'days').format('MM')
       checkWindowData.familiarisationCheckStartYear = moment.utc().add(5, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.familiarisationCheckStartDateAfterLiveCheckStartDate).toBeTruthy()
+      expect(validationError.errors.liveCheckStartDateBeforeFamiliarisationCheckStartDate).toBeTruthy()
     })
-    it('calls addError with familiarisationCheckStartDateAfterFamiliarisationCheckEndDate if the familiarisation check start day is after familiarisation check end date', () => {
+    it('calls addError with familiarisationCheckStartDateAfterFamiliarisationCheckEndDate and familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate if the familiarisation check start day is after familiarisation check end date', () => {
       checkWindowData.familiarisationCheckStartDay = moment.utc().add(9, 'days').format('DD')
       checkWindowData.familiarisationCheckStartMonth = moment.utc().add(9, 'days').format('MM')
       checkWindowData.familiarisationCheckStartYear = moment.utc().add(9, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.familiarisationCheckStartDateAfterFamiliarisationCheckEndDate).toBeTruthy()
+      expect(validationError.errors.familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate).toBeTruthy()
     })
     it('calls addError with familiarisationCheckEndDateBeforeAdminStartDate if the familiarisation check end day is before admin start date', () => {
       checkWindowData.familiarisationCheckEndDay = moment.utc().format('DD')
@@ -107,13 +112,14 @@ describe('New check window add validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.familiarisationCheckEndDateBeforeAdminStartDate).toBeTruthy()
     })
-    it('calls addError with liveCheckStartDateAfterLiveCheckEndDate if the live check start day is after live check end date', () => {
+    it('calls addError with liveCheckStartDateAfterLiveCheckEndDate and liveCheckEndDateBeforeLiveCheckStartDate if the live check start day is after live check end date', () => {
       checkWindowData.liveCheckStartDay = moment.utc().add(9, 'days').format('DD')
       checkWindowData.liveCheckStartMonth = moment.utc().add(9, 'days').format('MM')
       checkWindowData.liveCheckStartYear = moment.utc().add(9, 'days').format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.liveCheckStartDateAfterLiveCheckEndDate).toBeTruthy()
+      expect(validationError.errors.liveCheckEndDateBeforeLiveCheckStartDate).toBeTruthy()
     })
     it('calls addError with liveCheckEndDateBeforeAdminStartDate if the live check end day is before admin start date', () => {
       checkWindowData.liveCheckEndDay = moment.utc().format('DD')
