@@ -26,7 +26,7 @@ describe('CheckCompleteComponent', () => {
       declarations: [ CheckCompleteComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
       providers: [
-        WindowRefService
+        WindowRefService,
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
