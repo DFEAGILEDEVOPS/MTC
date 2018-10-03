@@ -279,7 +279,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
       questions: checkFormService.prepareQuestionData(JSON.parse(o.checkForm_formData)),
       config: config
     }
-    if (hasLiveChecks) {
+    if (o.check_isLiveCheck) {
       message.tokens.checkComplete = {
         token: checkCompleteSasToken.token,
         url: checkCompleteSasToken.url
