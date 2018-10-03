@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
 echo "Purging Azure Storage..."
-cd admin && yarn purgestorage
+(cd ${scriptDir}/admin && yarn purgestorage)
 
 echo "Stopping docker..."
 docker-compose down
