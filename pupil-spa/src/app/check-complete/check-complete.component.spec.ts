@@ -4,6 +4,7 @@ import { CheckCompleteComponent } from './check-complete.component';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
@@ -30,6 +31,7 @@ describe('CheckCompleteComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: Router, useValue: mockRouter },
       ]
     })

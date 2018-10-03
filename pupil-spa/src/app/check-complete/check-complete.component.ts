@@ -6,6 +6,8 @@ import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 import { Router } from '@angular/router';
 import { CheckComponent } from '../check/check.component';
+import { WarmupQuestionService } from '../services/question/warmup-question.service';
+import { Config } from '../config.model';
 
 @Component({
   selector: 'app-check-complete',
@@ -16,17 +18,22 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
 
   protected window: any;
   private speechListenerEvent: any;
+  public familiarisationCheck: boolean;
 
   constructor(protected windowRefService: WindowRefService,
               private questionService: QuestionService,
               private speechService: SpeechService,
               private elRef: ElementRef,
               private storageService: StorageService,
+              private warmupQuestionService: WarmupQuestionService,
               private router: Router) {
     this.window = windowRefService.nativeWindow;
   }
 
   ngOnInit() {
+    const config: Config = this.warmupQuestionService.getConfig();
+    this.familiarisationCheck = config && config.practice;
+
     this.window.ga('send', {
       hitType: 'pageview',
       page: '/check-complete'
