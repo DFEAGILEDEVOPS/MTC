@@ -57,7 +57,7 @@ describe('CheckCompleteComponent', () => {
       expect(storageService.removeItem).toHaveBeenCalledWith(CheckComponent.checkStateKey);
       expect(storageService.getItem(CheckComponent.checkStateKey)).not.toBeDefined();
       expect(storageService.setItem).toHaveBeenCalledWith('completed_submission', false);
-      expect(storageService.getItem('completed_submission')).toBeFalsy(); 
+      expect(storageService.getItem('completed_submission')).toBeFalsy();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-start']);
     });
   });

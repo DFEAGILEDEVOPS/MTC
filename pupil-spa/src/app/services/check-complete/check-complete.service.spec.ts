@@ -22,7 +22,6 @@ describe('CheckCompleteService', () => {
   let mockRouter;
 
   beforeEach(() => {
-    
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
