@@ -1,4 +1,5 @@
 import { Component, OnInit} from '@angular/core';
+import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 import { ConnectionTestService } from '../services/connection-test/connection-test.service';
 
@@ -15,6 +16,8 @@ export class ConnectionTestComponent implements OnInit {
     // reset the feedback and preview flags when starting the test
     this.storageService.setItem('feedback_given', false);
     this.storageService.setItem('preview_completed', false);
+
+    AppInsights.trackPageView('ICT-Survey Test', '/ict-survey/test');
   }
 
   async ngOnInit() {

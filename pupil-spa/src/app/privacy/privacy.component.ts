@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppInsights } from 'applicationinsights-js';
 import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
@@ -9,5 +10,6 @@ import { APP_CONFIG } from '../services/config/config.service';
 export class PrivacyComponent {
 
   constructor() {
+    AppInsights.trackPageView('ICT-Survey Privacy', '/ict-survey/privacy');
   }
 }

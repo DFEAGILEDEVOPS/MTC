@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-survey-welcome',
@@ -8,7 +9,9 @@ import { Component } from '@angular/core';
 export class SurveyWelcomeComponent {
   public showDetails: Boolean = false;
 
-  constructor() { }
+  constructor() {
+    AppInsights.trackPageView('ICT-Survey Start', '/ict-survey/start');
+  }
 
   toggleDetails() {
     this.showDetails = !this.showDetails;

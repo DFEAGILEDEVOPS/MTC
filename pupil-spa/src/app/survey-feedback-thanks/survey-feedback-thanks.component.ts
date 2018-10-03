@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 
 @Component({
@@ -11,6 +12,8 @@ export class SurveyFeedbackThanksComponent {
 
   constructor(private storage: StorageService) {
     this.previewed = this.storage.getItem('preview_completed') === true;
+
+    AppInsights.trackPageView('ICT-Survey Feedback Thanks', '/ict-survey/feedback-thanks');
   }
 
 }
