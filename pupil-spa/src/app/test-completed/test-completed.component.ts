@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 
 @Component({
@@ -11,6 +12,8 @@ export class TestCompletedComponent {
 
   constructor(private storage: StorageService) {
     this.testSuccessful = this.storage.getItem('test_status') === true;
+
+    AppInsights.trackPageView('ICT-Survey Test Completed', '/ict-survey/test-completed');
   }
 
 }

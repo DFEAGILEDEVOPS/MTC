@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { AppInsights } from 'applicationinsights-js';
 import { FeedbackService } from '../services/feedback/feedback.service';
 import { StorageService } from '../services/storage/storage.service';
 
@@ -29,6 +30,7 @@ export class SurveyFeedbackComponent {
       schoolName: ['']
     });
 
+    AppInsights.trackPageView('ICT-Survey Feedback', '/ict-survey/feedback');
   }
 
   get comment() { return this.feedbackForm.get('comment'); }
