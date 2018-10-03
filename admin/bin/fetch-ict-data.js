@@ -2,6 +2,7 @@ const azure = require('azure-storage')
 const commandLineArgs = require('command-line-args')
 const csv = require('fast-csv')
 const fs = require('fs')
+const R = require('ramda')
 
 const info = `
 **************************************************
@@ -47,19 +48,11 @@ const retrieveDataToFile = {
       'School'
     ],
     test: [
-      'Battery: Is charging',
-      'Battery: Percent',
-      'Battery: Charging time',
-      'Battery: Discharging time',
-      'Cpu: Hardware concurrency',
       'Navigator: User agent',
       'Navigator: Platform',
       'Navigator: Language',
       'Navigator: Cookie enabled',
       'Navigator: Do not track',
-      'NetworkConnection: Downlink',
-      'NetworkConnection: EffectiveType',
-      'NetworkConnection: RRT',
       'Screen: Screen Width',
       'Screen: Screen Height',
       'Screen: Outer Width',
@@ -68,10 +61,45 @@ const retrieveDataToFile = {
       'Screen: Inner Height',
       'Screen: Colour Depth',
       'Screen: Orientation',
+      'Cpu: Hardware concurrency',
+      'Battery: Is charging',
+      'Battery: Percent',
+      'Battery: Charging time',
+      'Battery: Discharging time',
+      'NetworkConnection: Downlink',
+      'NetworkConnection: EffectiveType',
+      'NetworkConnection: RTT',
       'Processing time',
       'Connection Speed'
     ]
   },
+
+  /**
+   * Paths for the device JSON with all captured details
+   */
+  deviceDataPaths: [
+    ['navigator', 'userAgent'],
+    ['navigator', 'platform'],
+    ['navigator', 'language'],
+    ['navigator', 'cookieEnabled'],
+    ['navigator', 'doNotTrack'],
+    ['screen', 'screenWidth'],
+    ['screen', 'screenHeight'],
+    ['screen', 'outerWidth'],
+    ['screen', 'outerHeight'],
+    ['screen', 'innerWidth'],
+    ['screen', 'innerHeight'],
+    ['screen', 'colorDepth'],
+    ['screen', 'orientation'],
+    ['cpu', 'hardwareConcurrency'],
+    ['battery', 'isCharging'],
+    ['battery', 'levelPercent'],
+    ['battery', 'chargingTime'],
+    ['battery', 'dischargingTime'],
+    ['networkConnection', 'downlink'],
+    ['networkConnection', 'effectiveType'],
+    ['networkConnection', 'rtt']
+  ],
 
   /**
    * The type => methodToUse mapping used with the type argument
@@ -104,13 +132,7 @@ const retrieveDataToFile = {
    * Expand the device JSON object
    */
   extractDeviceData: function (deviceData) {
-    let data = []
-
-    Object.keys(deviceData).map(keyName => {
-      for (let key in deviceData[keyName]) {
-        data.push(deviceData[keyName][key])
-      }
-    })
+    const data = this.deviceDataPaths.map(path => R.path(path, deviceData))
 
     return data
   },
