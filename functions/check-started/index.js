@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const R = require('ramda')
 const winston = require('winston')
 const uuid = require('uuid/v4')
 const { TYPES } = require('tedious')
@@ -21,7 +22,7 @@ module.exports = async function (context, checkStartMessage) {
 
   // Update the admin database to update the check status to Check Started
   try {
-    console.log('checkStartMessage: ', checkStartMessage)
+    context.log('checkStartMessage: ', checkStartMessage)
     await updateAdminDatabaseForCheckStarted(
       checkStartMessage.checkCode,
       new Date(checkStartMessage.clientCheckStartedAt),
@@ -32,10 +33,14 @@ module.exports = async function (context, checkStartMessage) {
     throw error
   }
 
-  // Delete the row in the preparedCheck table - prevent pupils logging in again.
+  // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.
   try {
-    await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
-    context.log('SUCCESS: pupil check row deleted from preparedCheck table')
+    const check = await sqlFindCheckByCheckCode(checkStartMessage.checkCode, context.log)
+    context.log('check: ', check)
+    if (check.isLiveCheck) {
+      await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+      context.log('SUCCESS: pupil check row deleted from preparedCheck table')
+    }
   } catch (error) {
     context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
     throw error
@@ -56,8 +61,9 @@ module.exports = async function (context, checkStartMessage) {
 
 /**
  * Update the master SQL Server admin database that the check indicated by <checkCode> has now been started
- * @param {String} checkStarted - the unique GUID that identifies the check in the admin DB
+ * @param {String} checkCode - the unique GUID that identifies the check in the admin DB
  * @param {Date} startedAt
+ * @param {Function} logger
  * @return {Promise<void>}
  */
 async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {
@@ -90,4 +96,27 @@ async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger)
     logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
     throw error
   }
+}
+
+/**
+ * Fetch check record based on check code
+ * @param {String} checkCode - the unique GUID that identifies the check in the admin DB
+ * @param {Function} logger
+ * @return {Object} check record
+ */
+async function sqlFindCheckByCheckCode (checkCode, logger) {
+  const sql = ` SELECT TOP 1 * 
+                FROM ${schema}.${checkTable}
+                WHERE data IS NULL 
+                AND checkCode = @checkCode
+                ORDER BY createdAt DESC`
+  const params = [{name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier}]
+  const result = await sqlService.query(sql, params)
+  const check = R.head(result)
+  if (!check) {
+    const error = new Error('Unable to find a prepared check for checkCode: ' + checkCode)
+    logger.error(error)
+    throw error
+  }
+  return check
 }
