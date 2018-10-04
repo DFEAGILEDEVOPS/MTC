@@ -138,7 +138,7 @@ describe('pupilCensusService', () => {
       spyOn(jobDataService, 'sqlCreate')
       spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusSubmittedMock)
-      await pupilCensusService.create(pupilCensusMock, {output: 'Inserted 5000 rows'})
+      await pupilCensusService.create(pupilCensusMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })

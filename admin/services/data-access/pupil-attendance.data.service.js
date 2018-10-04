@@ -1,6 +1,6 @@
 'use strict'
 
-const {TYPES} = require('tedious')
+const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const R = require('ramda')
 const winston = require('winston')
@@ -67,7 +67,7 @@ pupilAttendanceDataService.findByPupilIds = async (ids) => {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE pupil_id IN (' + paramIdentifiers.join(', ') + ') AND isDeleted=0'
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)

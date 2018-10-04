@@ -1,5 +1,5 @@
 'use strict'
-const {TYPES} = require('tedious')
+const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
 

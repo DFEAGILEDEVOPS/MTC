@@ -447,7 +447,7 @@ sqlService.buildParameterList = (ary, type) => {
     params.push({ name: `p${i}`, type, value: ary[i] })
     paramIdentifiers.push(`@p${i}`)
   }
-  return {params, paramIdentifiers}
+  return { params, paramIdentifiers }
 }
 
 sqlService.modifyWithTransaction = async (sqlStatements, params) => {

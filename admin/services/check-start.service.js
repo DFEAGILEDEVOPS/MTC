@@ -130,7 +130,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
-    const token = await jwtService.createToken({id: pupil}, checkWindow.checkEndDate)
+    const token = await jwtService.createToken({ id: pupil }, checkWindow.checkEndDate)
     pupilUpdates.push({ id: pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret })
   }
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
@@ -233,7 +233,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
   for (let o of checks) {
-    const config = await configService.getConfig({id: o.pupil_id}) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
+    const config = await configService.getConfig({ id: o.pupil_id }) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
 
     // Pass the isLiveCheck config in to the SPA
     config.practice = !o.check_isLiveCheck

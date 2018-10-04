@@ -99,11 +99,11 @@ function getEncryptedVars (data) {
   sign.write(encBuf)
   sign.end()
   const signatureB64 = sign.sign(senderFakePrivateKey, 'base64')
-  return {encBuf, encKeyBuf, encIvBuf, signatureB64}
+  return { encBuf, encKeyBuf, encIvBuf, signatureB64 }
 }
 
 const data = 'SessionToken=abc-1234;UserName=Test User;UserType=SuperUser;School=9991001;EmailAddress=example@example.com'
-const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
+const { encBuf, encKeyBuf, encIvBuf, signatureB64 } = getEncryptedVars(data)
 
 describe('nca tools auth service', function () {
   it('authenticates a valid packet', () => {
@@ -175,7 +175,7 @@ describe('nca tools auth service', function () {
   it('throws an error if the SessionToken is not provided', () => {
     try {
       const data = 'UserName=Test User;UserType=SuperUser;School=9991001;EmailAddress=example@example.com'
-      const {encBuf, encKeyBuf, encIvBuf, signatureB64} = getEncryptedVars(data)
+      const { encBuf, encKeyBuf, encIvBuf, signatureB64 } = getEncryptedVars(data)
       ncaToolsAuthService.authenticate(
         encKeyBuf.toString('base64'),
         encIvBuf.toString('base64'),
