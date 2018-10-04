@@ -95,6 +95,9 @@
                     <% if (error.isError('adminEndYear')) { %>
                     <span class="error-message"><%= error.get('adminEndYear') %></span>
                     <% } %>
+                    <% if (error.isError('adminStartDateAfterAdminEndDate')) { %>
+                    <span class="error-message"><%= errorMessage.adminStartDateAfterAdminEndDate %></span>
+                    <% } %>
                     <% if (error.isError('adminStartDateAfterFamiliarisationCheckStartDate')) { %>
                     <span class="error-message"><%= errorMessage.adminStartDateAfterFamiliarisationCheckStartDate %></span>
                     <% } %>

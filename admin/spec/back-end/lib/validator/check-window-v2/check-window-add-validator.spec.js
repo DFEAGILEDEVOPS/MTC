@@ -61,13 +61,14 @@ describe('New check window add validator', function () {
       expect(validationError.errors.adminStartDateAfterLiveCheckStartDate).toBeTruthy()
       expect(validationError.errors.liveCheckStartDateBeforeAdminStartDate).toBeTruthy()
     })
-    it('calls addError with adminEndDateBeforeAdminStartDate if the admin end day is before admin start date', () => {
+    it('calls addError with adminEndDateBeforeAdminStartDate and adminStartDateAfterAdminEndDate if the admin end day is before admin start date', () => {
       checkWindowData.adminEndDay = moment.utc().format('DD')
       checkWindowData.adminEndMonth = moment.utc().format('MM')
       checkWindowData.adminEndYear = moment.utc().format('YYYY')
       const validationError = checkWindowAddValidator.validate(checkWindowData)
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminEndDateBeforeAdminStartDate).toBeTruthy()
+      expect(validationError.errors.adminStartDateAfterAdminEndDate).toBeTruthy()
     })
     it('calls addError with adminEndDateBeforeLiveCheckEndDate if the admin end day is before live check end date', () => {
       checkWindowData.adminEndDay = moment.utc().format('DD')

@@ -160,6 +160,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
 
   // Compare date fields
   // Admin start date
+  if (adminStartDate && adminStartDate.isSameOrAfter(adminEndDate)) {
+    validationError.addError('adminStartDateAfterAdminEndDate', true)
+  }
   if (adminStartDate && adminStartDate.isAfter(familiarisationCheckStartDate)) {
     validationError.addError('adminStartDateAfterFamiliarisationCheckStartDate', true)
   }
