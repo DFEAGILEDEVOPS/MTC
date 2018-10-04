@@ -10,13 +10,13 @@
         [loadingTimeout]="config.loadingTime"
         (timeoutEvent)="loadingTimeoutHandler($event)"
         [total]="totalNumberOfQuestions"
-        [familiarisationCheck]="this.config && this.config.practice">
+        [familiarisationCheck]="familiarisationCheck">
     </app-warmup-loading>
     <app-warmup-complete *ngSwitchCase="'warmup-complete'"
         (clickEvent)="warmupCompleteClickHandler()">
     </app-warmup-complete>
     <app-questions-intro *ngSwitchCase="'questions-intro'"
-                         (clickEvent)="questionsIntroClickHandler()">
+        (clickEvent)="questionsIntroClickHandler()">
     </app-questions-intro>
     <app-loading *ngSwitchCase="'preload'"
         [question]="question"

@@ -14,5 +14,5 @@
     </div>
   </div>
 </header>
-<div *ngIf="this.config && !this.config.practice" id="global-header-bar"></div>
-<div *ngIf="this.config && this.config.practice" id="familiarisation-header-bar">Familiarisation check</div>
+<div *ngIf="!familiarisationCheck" id="global-header-bar"></div>
+<div *ngIf="familiarisationCheck" id="familiarisation-header-bar">Familiarisation check</div>

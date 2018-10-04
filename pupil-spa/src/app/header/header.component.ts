@@ -11,6 +11,8 @@ import { QuestionService } from '../services/question/question.service';
 })
 export class HeaderComponent implements OnInit {
 
+  public familiarisationCheck: boolean;
+
   config: Config;
   govukRoot = 'https://www.gov.uk';
   govukAssetPath = 'assets/govuk_template';
@@ -21,6 +23,7 @@ export class HeaderComponent implements OnInit {
     private questionService: QuestionService,
   ) {
     this.config = this.questionService.getConfig();
+    this.familiarisationCheck = this.config && this.config.practice;
   }
 
   ngOnInit() {
