@@ -28,10 +28,10 @@ describe('CheckStartService', () => {
           { provide: SubmissionService, useClass: SubmissionServiceMock },
           { provide: QUEUE_STORAGE_TOKEN },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-          AuditService,
-          AzureQueueService,
-          CheckStartService,
           TokenService,
+          AzureQueueService,
+          AuditService,
+          CheckStartService,
         ]
       }
     );
@@ -73,7 +73,9 @@ describe('CheckStartService', () => {
   describe('when featureUseHpa toggle is on', () => {
     beforeEach(() => {
       checkStartService.featureUseHpa = true;
-      spyOn(mockStorageService, 'getItem').and.returnValues({ checkCode: 'abc-def' }, { practice: false });
+      spyOn(mockStorageService, 'getItem').and.returnValue({
+        checkCode: 'abc-def'
+      });
     });
     it('submit should call azure queue service successfully and audit successful call', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
