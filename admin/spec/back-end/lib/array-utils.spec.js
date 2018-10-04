@@ -64,7 +64,7 @@ describe('arrayUtils', () => {
       expect(() => { arrayUtils.countNonEmptyRows(9) }).toThrow()
     })
     it('throws an error if passed an object as an argument', () => {
-      expect(() => { arrayUtils.countNonEmptyRows({foo: 'bar'}) }).toThrow()
+      expect(() => { arrayUtils.countNonEmptyRows({ foo: 'bar' }) }).toThrow()
     })
   })
 })

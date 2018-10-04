@@ -864,7 +864,7 @@ describe('check-form controller:', () => {
       describe('Unhappy path - When checkWindowDataService.fetchCheckWindow', () => {
         beforeEach(() => {
           const assignedCheckForms = [
-            {'_id': 100, 'name': 'MTC0100'}
+            { '_id': 100, 'name': 'MTC0100' }
           ]
           spyOn(checkWindowDataService, 'sqlFindOneById').and.returnValue(Promise.reject(new Error('Error')))
           spyOn(checkFormService, 'getAssignedFormsForCheckWindow').and.returnValue(assignedCheckForms)

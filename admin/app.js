@@ -68,7 +68,7 @@ const attendance = require('./routes/attendance')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 
-if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 const app = express()
 
 setupBrowserSecurity(app)
@@ -195,7 +195,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    {passReqToCallback: true},
+    { passReqToCallback: true },
     require('./authentication/local-strategy')
   )
 )
