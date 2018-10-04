@@ -145,7 +145,8 @@ describe('CheckCompleteService', () => {
       expect(addEntrySpy).toHaveBeenCalledTimes(0);
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
-      expect(router.navigate).not.toHaveBeenCalled();
+      expect(storageService.setItem).toHaveBeenCalledTimes(2);
+      expect(router.navigate).toHaveBeenCalledTimes(1);
     });
   });
 });

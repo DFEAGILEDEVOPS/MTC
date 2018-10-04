@@ -58,7 +58,7 @@ export class CheckCompleteService {
   public async submit(startTime): Promise<void> {
     const config = this.storageService.getItem('config');
     if (config.practice) {
-      return;
+      return this.onSuccess(startTime);
     }
     if (this.featureUseHpa === true) {
       const queueName = queueNames.checkComplete;
