@@ -32,9 +32,11 @@ module.exports = async function (context, checkStartMessage) {
     throw error
   }
 
-  // Delete the row in the preparedCheck table - prevent pupils logging in again.
+  // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.
   try {
-    await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+    if (!checkStartMessage.practice) {
+      await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+    }
     context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
