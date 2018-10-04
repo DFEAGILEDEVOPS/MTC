@@ -1,15 +1,17 @@
+const featureToggles = require('feature-toggles')
 const R = require('ramda')
+
 const config = require('../config')
 const monitor = require('../helpers/monitor')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinService = require('../services/pin.service')
 const pinGenerationService = require('../services/pin-generation.service')
+const pinGenerationV2Service = require('../services/pin-generation-v2.service')
 const groupService = require('../services/group.service')
 const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
-const featureToggles = require('feature-toggles')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
@@ -20,7 +22,11 @@ const getGeneratePinsOverview = async (req, res, next) => {
   const helplineNumber = config.Data.helplineNumber
   let pupils
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+    } else {
+      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    }
   } catch (err) {
     return next(err)
   }
@@ -38,6 +44,13 @@ const getGeneratePinsOverview = async (req, res, next) => {
   })
 }
 
+/**
+ * Display a list of Pupils who can have a pin generated
+ * @param req
+ * @param res
+ * @param next
+ * @return {Promise<*>}
+ */
 const getGeneratePinsList = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
   res.locals.pinEnv = pinEnv
@@ -58,7 +71,13 @@ const getGeneratePinsList = async (req, res, next) => {
     if (!school) {
       return next(Error(`School [${req.user.school}] not found`))
     }
-    pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
+
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupils = await pinGenerationV2Service.getPupilsWhoCanHaveAPinGenerated(school.id)
+    } else {
+      pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
+    }
+
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
@@ -141,7 +160,11 @@ const getViewAndPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+    } else {
+      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    }
     if (pupils.length > 0) {
       pupils = await groupService.assignGroupsToPupils(req.user.schoolId, pupils)
     }
@@ -180,7 +203,11 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   let qrDataURL
   const date = dateService.formatDayAndDate()
   try {
-    pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+    } else {
+      pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
+    }
     school = await pinService.getActiveSchool(req.user.School)
     error = await checkWindowSanityCheckService.check()
     if (pupils.length > 0) {
