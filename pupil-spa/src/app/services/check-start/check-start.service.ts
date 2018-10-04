@@ -46,7 +46,9 @@ export class CheckStartService {
       const { url, token } = this.tokenService.getToken('checkStarted');
       // Create a model for the payload
       const payload = this.storageService.getItem('pupil');
+      const config = this.storageService.getItem('config');
       payload.clientCheckStartedAt = new Date();
+      payload.practice = config.practice;
       const retryConfig = {
         errorDelay: this.checkStartAPIErrorDelay,
         errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
