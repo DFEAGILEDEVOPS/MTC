@@ -11,6 +11,7 @@ const config = require('../config')
 winston.level = 'error'
 sqlService.initialise(config)
 const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+const sqlUtil = require('../lib/sql-helper')
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
@@ -35,9 +36,8 @@ module.exports = async function (context, checkStartMessage) {
 
   // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.
   try {
-    const check = await sqlFindCheckByCheckCode(checkStartMessage.checkCode, context.log)
-    context.log('check: ', check)
-    if (check.isLiveCheck) {
+    const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
+    if (checkData.isLiveCheck) {
       await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
       context.log('SUCCESS: pupil check row deleted from preparedCheck table')
     }
@@ -96,27 +96,4 @@ async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger)
     logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
     throw error
   }
-}
-
-/**
- * Fetch check record based on check code
- * @param {String} checkCode - the unique GUID that identifies the check in the admin DB
- * @param {Function} logger
- * @return {Object} check record
- */
-async function sqlFindCheckByCheckCode (checkCode, logger) {
-  const sql = ` SELECT TOP 1 * 
-                FROM ${schema}.${checkTable}
-                WHERE data IS NULL 
-                AND checkCode = @checkCode
-                ORDER BY createdAt DESC`
-  const params = [{name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier}]
-  const result = await sqlService.query(sql, params)
-  const check = R.head(result)
-  if (!check) {
-    const error = new Error('Unable to find a prepared check for checkCode: ' + checkCode)
-    logger.error(error)
-    throw error
-  }
-  return check
 }
