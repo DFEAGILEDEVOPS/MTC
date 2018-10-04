@@ -1,7 +1,6 @@
 'use strict'
 
 const moment = require('moment')
-const R = require('ramda')
 const winston = require('winston')
 const uuid = require('uuid/v4')
 const { TYPES } = require('tedious')
