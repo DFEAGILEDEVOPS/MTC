@@ -1,8 +1,6 @@
 import { APP_INITIALIZER } from '@angular/core';
 import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
@@ -16,15 +14,19 @@ import { TokenService } from '../token/token.service';
 let auditService: AuditService;
 let azureQueueService: AzureQueueService;
 let checkCompleteService: CheckCompleteService;
-let router: Router;
 let storageService: StorageService;
 let submissionService: SubmissionService;
 let tokenService: TokenService;
 
 describe('CheckCompleteService', () => {
+  let mockRouter;
+
   beforeEach(() => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+
     const inject = TestBed.configureTestingModule({
-        imports: [RouterTestingModule.withRoutes([])],
         providers: [
           AppConfigService,
           AuditService,
@@ -35,6 +37,7 @@ describe('CheckCompleteService', () => {
           {provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true},
           {provide: QUEUE_STORAGE_TOKEN},
           {provide: SubmissionService, useClass: SubmissionServiceMock},
+          {provide: Router, useValue: mockRouter}
         ]
       }
     );
@@ -43,7 +46,6 @@ describe('CheckCompleteService', () => {
     tokenService = inject.get(TokenService);
     azureQueueService = inject.get(AzureQueueService);
     auditService = inject.get(AuditService);
-    router = TestBed.get(Router);
     storageService = TestBed.get(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
@@ -81,7 +83,6 @@ describe('CheckCompleteService', () => {
     });
     it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
       spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
@@ -94,11 +95,10 @@ describe('CheckCompleteService', () => {
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(router.navigate).toHaveBeenCalledWith(['/check-complete']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
     });
     it('submit should call azure queue service service unsuccessfully, audit failure and redirect to submission failed page', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
       spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
@@ -111,7 +111,7 @@ describe('CheckCompleteService', () => {
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
       expect(storageService.setItem).toHaveBeenCalledTimes(0);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
-      expect(router.navigate).toHaveBeenCalledWith(['/submission-failed']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
     });
   });
 });

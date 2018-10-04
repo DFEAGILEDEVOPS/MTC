@@ -47,6 +47,7 @@ export class WarmupQuestionService extends QuestionService {
     config.numpadRemoval = configData[ 'numpadRemoval' ];
     config.fontSize = configData[ 'fontSize' ];
     config.colourContrast = configData[ 'colourContrast' ];
+    config.practice = configData[ 'practice' ];
     this.config = config;
   }
 }

@@ -110,6 +110,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   @Output() public timeoutEvent: EventEmitter<any> = new EventEmitter();
 
+  @Input() public familiarisationCheck = false;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected questionService: QuestionService,
