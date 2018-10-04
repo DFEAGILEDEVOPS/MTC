@@ -73,7 +73,7 @@ const getGeneratePinsList = async (req, res, next) => {
     }
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWhoCanHaveAPinGenerated(school.id)
+      pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id)
     } else {
       pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
     }

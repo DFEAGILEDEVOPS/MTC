@@ -7,8 +7,12 @@ const config = require('../../config')
 
 const serviceToExport = {
   sqlFindEligiblePupilsBySchool: async (schoolId) => {
-    const sql = `SELECT * FROM ${sqlService.adminSchema}.vewPupilsEligibleForPinGeneration
-     WHERE school_id=@schoolId AND checkCount < @maxRestartsAllowed`
+    const sql = `SELECT 
+                  * 
+                FROM ${sqlService.adminSchema}.vewPupilsEligibleForPinGeneration
+                WHERE school_id=@schoolId 
+                AND checkCount < @maxRestartsAllowed
+                ORDER BY lastName asc, foreName asc, middleNames asc `
     const params = [
       {
         name: 'schoolId',
