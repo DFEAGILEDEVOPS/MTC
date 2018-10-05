@@ -131,8 +131,7 @@ const postGeneratePins = async (req, res, next) => {
     }
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      // New code - writes to allocateCheckFormTable, depends on school pin being ready
-      // disabled as not yet working correctly in travis.
+      // New code, depends on school pin being ready
       await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
     }
 
