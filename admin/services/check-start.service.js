@@ -211,7 +211,7 @@ checkStartService.pupilLogin = async function (pupilId) {
 /**
  * Query the DB and put the info into messages suitable for placing on the prepare-check queue
  * The message needs to contain everything the pupil needs to login and take the check
- * @param CheckIds
+ * @param checkIds
  * @return {Promise<Array>}
  */
 checkStartService.prepareCheckQueueMessages = async function (checkIds) {
@@ -227,9 +227,14 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
   const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkIds)
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
 
+  const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
+  let checkCompleteSasToken
+
   const checkStartedSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_STARTED, sasExpiryDate)
   const pupilPreferencesSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_PREFS, sasExpiryDate)
-  const checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
+  if (hasLiveChecks) {
+    checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
+  }
   const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
 
   for (let o of checks) {
@@ -263,10 +268,6 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
           token: pupilPreferencesSasToken.token,
           url: pupilPreferencesSasToken.url
         },
-        checkComplete: {
-          token: checkCompleteSasToken.token,
-          url: checkCompleteSasToken.url
-        },
         pupilFeedback: {
           token: pupilFeedbackSasToken.token,
           url: pupilFeedbackSasToken.url
@@ -277,6 +278,12 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
       },
       questions: checkFormService.prepareQuestionData(JSON.parse(o.checkForm_formData)),
       config: config
+    }
+    if (o.check_isLiveCheck) {
+      message.tokens.checkComplete = {
+        token: checkCompleteSasToken.token,
+        url: checkCompleteSasToken.url
+      }
     }
     messages.push(message)
   }
