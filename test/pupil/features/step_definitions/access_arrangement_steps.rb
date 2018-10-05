@@ -1,6 +1,4 @@
 Given(/^I logged in with user with access arrangement '(.*)'$/) do|access_arrangmenets_type|
-  access_arrangmenets = access_arrangmenets_type.split(',')
-
   sign_in_page.load
   ct = Time.now
   new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
@@ -12,15 +10,10 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do|access_arrang
   SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
   SqlDbHelper.create_check(new_time, new_time, @pupil['id'])
   SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
+
   @school = SqlDbHelper.find_school(@pupil['school_id'])
-  access_arrangmenets.each do |access_arr_type|
-    case access_arr_type
-      when 'Audible Time Alert'
-        SqlDbHelper.set_pupil_access_arrangement(@pupil['id'], new_time, new_time, 1)
-      when 'Remove on-screen number pad'
-        SqlDbHelper.set_pupil_access_arrangement(@pupil['id'], new_time, new_time, 7)
-    end
-  end
+
+  access_arrangements_setting_page.set_access_arrangement(@pupil['id'], new_time, access_arrangmenets_type)
 
   sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
@@ -35,7 +28,11 @@ Then(/^I can see setting page as per design$/) do
 end
 
 Then(/^I can see following access arrangement$/) do |table|
-expect(access_arrangements_setting_page.access_arrangements_list[0].text.eql?(table.hashes[0]['access_arrangement_type'])).to be_truthy, "Expected: #{table.hashes[0]['access_arrangement_type']}....Got: #{access_arrangements_setting_page.access_arrangements_list[0].text}"
-expect(access_arrangements_setting_page.access_arrangements_list[1].text.eql?(table.hashes[1]['access_arrangement_type'])).to be_truthy, "Expected: #{table.hashes[1]['access_arrangement_type']}....Got: #{access_arrangements_setting_page.access_arrangements_list[1].text}"
-
+  i=0
+  table.hashes.each do |hash|
+    expected_access_arr_type = hash['access_arrangement_type']
+    actual_access_arr_type = access_arrangements_setting_page.access_arrangements_list[i].text
+    i= i+1
+    expect(actual_access_arr_type.eql?(expected_access_arr_type)).to be_truthy, "Expected: #{expected_access_arr_type}...but got Actual: #{actual_access_arr_type}"
+  end
 end
