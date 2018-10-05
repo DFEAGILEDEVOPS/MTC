@@ -6,12 +6,16 @@ echo "Purging Azure Storage..."
 (cd ${scriptDir}/admin && yarn purgestorage)
 
 echo "Starting docker..."
-(docker-compose up -d)
+docker-compose up -d
 
-echo "Stabilising MS SQL Server..."
-sleep 5
+echo -n "Stabilising MS SQL Server"
+for i in $(seq 1 8); do
+    sleep 1
+    echo -n "."
+done;
+echo ""
 
-echo -n "Running migrations..."
+echo "Running migrations..."
 (cd ${scriptDir}/admin && yarn migrate-sql)
 
 echo "MTC Infrastructure ready!"
