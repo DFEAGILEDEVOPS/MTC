@@ -7,7 +7,7 @@ const azureQueueService = require('../../../services/azure-queue.service')
 describe('azure-queue-service', () => {
   describe('add-message', () => {
     let queueServiceMock
-    const payload = {some: 'payLoad'}
+    const payload = { some: 'payLoad' }
     const queueName = 'some-test-queue'
 
     beforeEach(() => {
