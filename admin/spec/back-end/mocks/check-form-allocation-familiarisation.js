@@ -12,7 +12,7 @@ module.exports = {
   checkFormAllocation_id: 1,
   checkFormAllocation_checkCode: '47D48E2C-DEA0-421A-9EBA-14CFC3AEE25C',
   pupil_id: 1,
-  check_isLiveCheck: true,
+  check_isLiveCheck: false,
   pupil_foreName: 'Juliana',
   pupil_lastName: 'Brewer',
   pupil_dateOfBirth: moment('2008-06-10T01:00:00.260'),
