@@ -8,14 +8,14 @@ const settingsValidationSchema = {
   'questionTimeLimit': {
     notEmpty: true,
     isFloat: {
-      options: [{min: 1, max: 60}] // Max number to be confirmed
+      options: [{ min: 1, max: 60 }] // Max number to be confirmed
     },
     errorMessage: settingsErrorMessages.questionTimeLimit
   },
   'loadingTimeLimit': {
     notEmpty: true,
     isFloat: {
-      options: [{min: 1, max: 5}] // Max number to be confirmed
+      options: [{ min: 1, max: 5 }] // Max number to be confirmed
     },
     errorMessage: settingsErrorMessages.loadingTimeLimit
   }

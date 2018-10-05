@@ -219,10 +219,10 @@ checkDataService.sqlCreateBatch = async function (checks) {
   const insertClauses = []
 
   checks.forEach((c, i) => {
-    params.push({name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int})
-    params.push({name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int})
-    params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
-    params.push({name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit})
+    params.push({ name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int })
+    params.push({ name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int })
+    params.push({ name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int })
+    params.push({ name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit })
     insertClauses.push(`(@pupil_id${i}, @checkForm_id${i}, @checkWindow_id${i}, @isLiveCheck${i})`)
   })
 
@@ -244,7 +244,7 @@ checkDataService.sqlFindOneForPupilLogin = async function (pupilId) {
   AND pupil_id = @pupilId
   ORDER BY createdAt DESC 
   `
-  const params = [{name: 'pupilId', value: pupilId, type: TYPES.Int}]
+  const params = [{ name: 'pupilId', value: pupilId, type: TYPES.Int }]
   const result = await sqlService.query(sql, params)
   return R.head(result)
 }

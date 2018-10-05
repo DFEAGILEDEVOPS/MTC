@@ -31,7 +31,7 @@ const storeLogonEvent = async (pupilId, schoolPin, pupilPin, isAuthenticated, ht
 }
 
 const getQuestions = async (req, res) => {
-  const {pupilPin, schoolPin} = req.body
+  const { pupilPin, schoolPin } = req.body
 
   if (!pupilPin || !schoolPin) {
     await storeLogonEvent(null, schoolPin, pupilPin, false, 400, 'Bad request')
@@ -89,7 +89,7 @@ const getQuestions = async (req, res) => {
   try {
     const expiryDate = moment().add(config.Tokens.jwtTimeOutHours, 'hours')
     token = await jwtService.createToken(data.pupil, expiryDate)
-    await pupilDataService.sqlUpdate({id: data.pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret}) // Placeholder until this entire api is removed.
+    await pupilDataService.sqlUpdate({ id: data.pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret }) // Placeholder until this entire api is removed.
   } catch (error) {
     winston.error('Failed to create a JWT: ' + error.message)
     await storeLogonEvent(data.pupil.id, schoolPin, pupilPin, false, 500, 'Server error: token')
