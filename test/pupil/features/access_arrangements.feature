@@ -6,5 +6,6 @@ Feature: Access Arrangements
     Then I can see setting page as per design
     And I can see following access arrangement
       | access_arrangement_type |
-      | Time alert              |
       | Remove number pad       |
+      | Time alert              |
+
