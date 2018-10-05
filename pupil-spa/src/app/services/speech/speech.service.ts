@@ -20,6 +20,8 @@ export class SpeechService implements OnDestroy {
   // Garbage Collector hack for Chrome implementations of the speech API..
   // See https://bugs.chromium.org/p/chromium/issues/detail?id=509488 for why this is necessary
   private utterancesGC = [];
+  private focusTriggeredByCode = false; // to disable reading out focused elements when focused through code
+  private focusInterruptedPageSpeech = false; // to disable changing focus at the end of speech when interrupted
 
   // Observable string stream
   speechStatus = this.speechStatusSource.asObservable();
@@ -85,7 +87,7 @@ export class SpeechService implements OnDestroy {
    * @param utterance
    * @param cancelBeforeSpeaking
    */
-  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<void> {
+  async speak(utterance: string, cancelBeforeSpeaking: boolean = true): Promise<{}> {
     if (!this.isSupported()) {
       return;
     }
@@ -107,6 +109,8 @@ export class SpeechService implements OnDestroy {
 
     this.utterancesGC.push(utterance);
     this.synth.speak(sayThis);
+
+    return new Promise((resolve) => resolve());
   }
 
   /**
@@ -148,7 +152,8 @@ export class SpeechService implements OnDestroy {
    * Parse the source of a NativeElement and speak the text
    * @param nativeElement
    */
-  speakElement(nativeElement): void {
+  speakElement(nativeElement): Promise<{}> {
+    this.focusInterruptedPageSpeech = false;
     const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
 
     // clone the element in memory to make non-visible modifications
@@ -182,7 +187,7 @@ export class SpeechService implements OnDestroy {
       speechText += ' , ' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
     }
 
-    this.speak(speechText
+    return this.speak(speechText
                // remove unnecessary newlines
                .replace(/[\n\r]+/g, ' ')
                // remove the leading comma, if there is any
@@ -193,11 +198,40 @@ export class SpeechService implements OnDestroy {
 
   /**
    * Speak a specific, focused element
+   * @param nativeElement
    */
   speakFocusedElement(nativeElement): void {
     const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
 
     this.speak(speechText);
+  }
+
+  /**
+   * Focus this item after the page is being read out
+   * @param nativeElement
+   */
+  focusEndOfSpeech(nativeElement): void {
+    this.waitForEndOfSpeech().then(() => {
+      if (this.focusInterruptedPageSpeech) {
+        return;
+      }
+      this.focusTriggeredByCode = true;
+      nativeElement.setAttribute('tabindex', '-1');
+      nativeElement.focus();
+      nativeElement.setAttribute('tabindex', '0');
+      this.focusTriggeredByCode = false;
+    });
+  }
+
+  /**
+   * Call this function when an element is focused on the page
+   * @param event
+   */
+  focusEventListenerHook(event): void {
+    if (!this.focusTriggeredByCode) {
+      this.speakFocusedElement(event.target);
+      this.focusInterruptedPageSpeech = true;
+    }
   }
 
   /**
