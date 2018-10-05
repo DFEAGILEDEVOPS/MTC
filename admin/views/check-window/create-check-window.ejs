@@ -356,6 +356,9 @@
                     <% if (error.isError('liveCheckStartDateBeforeAdminStartDate')) { %>
                     <span class="error-message"><%= errorMessage.liveCheckStartDateBeforeAdminStartDate %></span>
                     <% } %>
+                    <% if (error.isError('liveCheckEndDateAfterAdminEndDate')) { %>
+                    <span class="error-message"><%= errorMessage.liveCheckEndDateAfterAdminEndDate %></span>
+                    <% } %>
                     <% if (error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate')) { %>
                     <span class="error-message"><%= errorMessage.liveCheckStartDateBeforeFamiliarisationCheckStartDate %></span>
                     <% } %>

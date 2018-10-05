@@ -78,7 +78,8 @@ describe('New check window add validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminEndDateBeforeLiveCheckEndDate).toBeTruthy()
     })
-    it('calls addError with adminEndDateBeforeFamiliarisationCheckEndDate and familiarisationCheckEndDateAfterAdminEndDate if the admin end day is before familiarisation check end date', () => {
+    it('calls addError with adminEndDateBeforeFamiliarisationCheckEndDate, familiarisationCheckEndDateAfterAdminEndDate ' +
+      ' and liveCheckEndDateAfterAdminEndDate if the admin end day is before familiarisation check end date', () => {
       checkWindowData.adminEndDay = moment.utc().format('DD')
       checkWindowData.adminEndMonth = moment.utc().format('MM')
       checkWindowData.adminEndYear = moment.utc().format('YYYY')
@@ -86,6 +87,7 @@ describe('New check window add validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.errors.adminEndDateBeforeFamiliarisationCheckEndDate).toBeTruthy()
       expect(validationError.errors.familiarisationCheckEndDateAfterAdminEndDate).toBeTruthy()
+      expect(validationError.errors.liveCheckEndDateAfterAdminEndDate).toBeTruthy()
     })
     it('calls addError with familiarisationCheckStartDateAfterLiveCheckStartDate and liveCheckStartDateBeforeFamiliarisationCheckStartDate if the familiarisation check start day is after live check start date', () => {
       checkWindowData.familiarisationCheckStartDay = moment.utc().add(5, 'days').format('DD')
