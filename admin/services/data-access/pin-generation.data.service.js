@@ -10,18 +10,12 @@ const serviceToExport = {
     const sql = `SELECT 
                   * 
                 FROM ${sqlService.adminSchema}.vewPupilsEligibleForPinGeneration
-                WHERE school_id=@schoolId 
-                AND checkCount < @maxRestartsAllowed
+                WHERE school_id=@schoolId                 
                 ORDER BY lastName asc, foreName asc, middleNames asc `
     const params = [
       {
         name: 'schoolId',
         value: schoolId,
-        type: TYPES.Int
-      },
-      {
-        name: 'maxRestartsAllowed',
-        value: config.RESTART_MAX_ATTEMPTS,
         type: TYPES.Int
       }
     ]
