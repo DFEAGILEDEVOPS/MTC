@@ -13,7 +13,7 @@ const checkWindowNameValidator = {}
  */
 checkWindowNameValidator.validate = (validationError, checkWindowName) => {
   const CheckWindowNameValue = checkWindowName.trim()
-  if (isEmpty(CheckWindowNameValue) || CheckWindowNameValue.length < 2 || CheckWindowNameValue.length > 35) {
+  if (isEmpty(CheckWindowNameValue) || CheckWindowNameValue.length < 1 || CheckWindowNameValue.length > 35) {
     validationError.addError('checkWindowName', checkWindowErrorMessages.checkWindowNameLength)
   }
 }
