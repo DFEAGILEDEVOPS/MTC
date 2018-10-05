@@ -10,20 +10,16 @@
           You have the following settings on your check
       </p>
       <ol class="list list-number">
-        <li *ngIf="config.audibleSounds">Time alert</li>
-        <li *ngIf="config.numpadRemoval">Remove number pad</li>
         <li *ngIf="config.colourContrast">Colour contrast</li>
         <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+        <li *ngIf="config.numpadRemoval">Remove number pad</li>
+        <li *ngIf="config.audibleSounds">Time alert</li>
       </ol>
       <p>
         If you need to add or remove any settings, please tell your teacher and
         <a routerLink="/sign-out">sign out</a>.
       </p>
-      <div class="sign-out-link">
-        <p class="lede">
-          <button class="button" (click)="onClick()">Next</button>
-        </p>
-      </div>
+      <button class="button" (click)="onClick()">Next</button>
     </div>
   </div>
 </main>
