@@ -66,7 +66,9 @@
             <br />
             <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
             error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
-            error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear')
+            error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear') ||
+            error.isError('adminStartDateAfterAdminEndDate') ||error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
+            error.isError('adminEndDateBeforeAdminStartDate') ||error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
                     ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     School administration period
@@ -192,8 +194,10 @@
             </div>
             <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
             error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
-            error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear')
-                    ? 'form-group-error' : '' %>">
+            error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear') ||
+            error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate') ||error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') || error.isError('familiarisationCheckStartDateBeforeAdminStartDate') ||
+            error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
+            error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil familiarisation check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
@@ -321,8 +325,11 @@
             </div>
             <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
             error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
-            error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear')
-                    ? 'form-group-error' : '' %>">
+            error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear') ||
+            error.isError('liveCheckStartDateAfterLiveCheckEndDate') ||error.isError('liveCheckStartDateBeforeAdminStartDate') || error.isError('liveCheckEndDateAfterAdminEndDate') ||
+            error.isError('liveCheckEndDateAfterAdminEndDate') ||error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') || error.isError('liveCheckEndDateBeforeLiveCheckStartDate') ||
+            error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') ||error.isError('liveCheckEndDateBeforeLiveCheckStartDate') || error.isError('liveCheckEndDateBeforeAdminStartDate') ||
+            error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil live check period
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
