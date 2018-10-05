@@ -109,8 +109,6 @@ export class SpeechService implements OnDestroy {
 
     this.utterancesGC.push(utterance);
     this.synth.speak(sayThis);
-
-    return new Promise((resolve) => resolve());
   }
 
   /**
