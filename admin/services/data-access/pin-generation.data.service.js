@@ -3,7 +3,7 @@
 const {TYPES} = require('tedious')
 const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
-const config = require('../../config')
+
 
 const serviceToExport = {
   sqlFindEligiblePupilsBySchool: async (schoolId) => {
