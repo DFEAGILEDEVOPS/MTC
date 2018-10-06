@@ -27,7 +27,7 @@ describe('sas-token.service', () => {
 
     it('throws an error if the expiryDate is not a moment object', () => {
       try {
-        sasTokenService.generateSasToken(queueName, {object: 'yes'}, queueServiceMock)
+        sasTokenService.generateSasToken(queueName, { object: 'yes' }, queueServiceMock)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('Invalid expiryDate')
