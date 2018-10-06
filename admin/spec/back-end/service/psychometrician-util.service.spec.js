@@ -948,13 +948,13 @@ describe('psychometrician-util.service', () => {
         'eventType': 'click',
         'input': 'Enter'
       })
-      const markedAnswerMock = {answer: '10'}
+      const markedAnswerMock = { answer: '10' }
       const res = service.getTimeoutWithNoResponseFlag(input, markedAnswerMock)
       expect(res).toBe('')
     })
 
     it('returns 0 (timeout with no response) when there is a timeout without an answer', () => {
-      const res = service.getTimeoutWithNoResponseFlag([], {answer: ''})
+      const res = service.getTimeoutWithNoResponseFlag([], { answer: '' })
       expect(res).toBe(0)
     })
 
@@ -963,30 +963,30 @@ describe('psychometrician-util.service', () => {
         'clientTimestamp': '2017-10-17T18:20:44.999Z',
         'eventType': 'click',
         'input': '1'
-      }], {answer: '1'})
+      }], { answer: '1' })
       expect(res).toBe(1)
     })
 
     it('returns 1 (timeout with no response) when there isnt any input and there is an answer', () => {
       // this would be a bug of some sort..., as any answer must have a corresponding input
-      const res = service.getTimeoutWithNoResponseFlag([], {answer: '1'})
+      const res = service.getTimeoutWithNoResponseFlag([], { answer: '1' })
       expect(res).toBe(1)
     })
   })
 
   describe('#getTimeoutWithCorrectAnswer', () => {
     it('returns an empty string if there was NOT a timeout', () => {
-      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, {isCorrect: true, answer: '10'})
+      const res = service.getTimeoutWithCorrectAnswer(keyboardInput, { isCorrect: true, answer: '10' })
       expect(res).toBe('')
     })
 
     it('returns 1 if there was a timeout and the answer is correct', () => {
-      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: true, answer: '2'})
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, { isCorrect: true, answer: '2' })
       expect(res).toBe(1)
     })
 
     it('returns 0 if there was a timeout and the answer is incorrect', () => {
-      const res = service.getTimeoutWithCorrectAnswer(mouseInput, {isCorrect: false, answer: '2'})
+      const res = service.getTimeoutWithCorrectAnswer(mouseInput, { isCorrect: false, answer: '2' })
       expect(res).toBe(0)
     })
   })
@@ -1114,15 +1114,15 @@ describe('psychometrician-util.service', () => {
   })
 
   describe('#getInputMethod', () => {
-    const mouseInput = [{eventType: 'mousedown'}, {eventType: 'click'}]
-    const keyInput = [{eventType: 'keydown'}]
-    const touchInput = [{eventType: 'touchstart'}, {eventType: 'click'}]
+    const mouseInput = [{ eventType: 'mousedown' }, { eventType: 'click' }]
+    const keyInput = [{ eventType: 'keydown' }]
+    const touchInput = [{ eventType: 'touchstart' }, { eventType: 'click' }]
     const mixedInput = [
-      {eventType: 'keydown'},
-      {eventType: 'mousedown'},
-      {eventType: 'click'},
-      {eventType: 'touchstart'},
-      {eventType: 'click'}
+      { eventType: 'keydown' },
+      { eventType: 'mousedown' },
+      { eventType: 'click' },
+      { eventType: 'touchstart' },
+      { eventType: 'click' }
     ]
 
     it('returns "t" for touch input', () => {

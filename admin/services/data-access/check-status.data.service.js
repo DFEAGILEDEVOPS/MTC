@@ -21,7 +21,7 @@ module.exports.sqlFindOneById = async function sqlFindOneById (id) {
 module.exports.sqlFindOneByCode = async function sqlFindOneByCode (code) {
   const sql = `SELECT TOP 1 * from ${sqlService.adminSchema}.${table}
     WHERE code = @code`
-  const param = {name: 'code', value: code, type: TYPES.Char}
+  const param = { name: 'code', value: code, type: TYPES.Char }
   const res = await sqlService.query(sql, [param])
   return R.head(res)
 }
