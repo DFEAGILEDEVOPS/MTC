@@ -104,7 +104,7 @@ describe('check-form.service', () => {
     })
 
     it('selects the only seen form available when there is only one form provided', async () => {
-      const f = await service.allocateCheckForm([{id: 1, name: 'Form 1'}], [1])
+      const f = await service.allocateCheckForm([{ id: 1, name: 'Form 1' }], [1])
       expect(f.name).toBe('Form 1')
     })
 

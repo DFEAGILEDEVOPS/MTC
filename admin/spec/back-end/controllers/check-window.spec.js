@@ -17,7 +17,7 @@ describe('access arrangements controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
-    req.user = {School: 9991001}
+    req.user = { School: 9991001 }
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
     return req

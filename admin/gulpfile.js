@@ -52,7 +52,7 @@ gulp.task('clean', function () {
     'public/javascripts/app.js',
     'public/stylesheets/application.css',
     'public/stylesheets/application-ie8.css'
-  ], {read: false})
+  ], { read: false })
     .pipe(clean())
 })
 
@@ -75,7 +75,7 @@ gulp.task('copy-csv-files', function () {
 })
 
 gulp.task('realclean', ['clean'], function () {
-  return gulp.src('./node_modules', {read: false})
+  return gulp.src('./node_modules', { read: false })
     .pipe(clean())
 })
 
@@ -83,6 +83,6 @@ gulp.task('build', ['sass', 'bundle-js', 'copy-images', 'copy-pdfs', 'copy-csv-f
 
 gulp.task('sass', function () {
   return gulp.src('./assets/**/*.scss')
-    .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+    .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
 })
