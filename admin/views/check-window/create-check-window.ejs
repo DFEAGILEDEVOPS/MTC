@@ -9,7 +9,7 @@
 <div class="grid-row">
     <div class="column-two-thirds">
         <h1 class="heading-xlarge"><%= pageTitle %></h1>
-        <form action="#" method="post">
+        <form action="/check-window/submit-check-window" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
             <div class="form-group">
                 <label for="checkWindowName" class="form-label-bold">
