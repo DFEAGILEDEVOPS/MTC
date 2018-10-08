@@ -201,10 +201,10 @@ pupilDataService.sqlFindPupilsByUrlSlug = async (slugs, schoolId) => {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-  const {params, paramIdentifiers} = sqlService.buildParameterList(slugs, TYPES.UniqueIdentifier)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(slugs, TYPES.UniqueIdentifier)
   const whereClause = 'WHERE urlSlug IN (' + paramIdentifiers.join(', ') + ')' +
     'AND school_id = @schoolId'
-  params.push({name: 'schoolId', type: TYPES.Int, value: schoolId})
+  params.push({ name: 'schoolId', type: TYPES.Int, value: schoolId })
   const sql = [select, whereClause].join(' ')
   return sqlService.query(sql, params)
 }
@@ -227,10 +227,10 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')' +
     ' AND school_id = @schoolId'
-  params.push({name: 'schoolId', type: TYPES.Int, value: schoolId})
+  params.push({ name: 'schoolId', type: TYPES.Int, value: schoolId })
   const orderClause = 'ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
   const sql = [select, whereClause, orderClause].join(' ')
   return sqlService.query(sql, params)
@@ -248,10 +248,10 @@ pupilDataService.sqlFindByIdAndDfeNumber = async function (ids, dfeNumber) {
       FROM 
       ${sqlService.adminSchema}.${table} p JOIN [school] s ON p.school_id = s.id
       `
-  const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+  const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = 'WHERE p.id IN (' + paramIdentifiers.join(', ') + ')'
   const andClause = 'AND s.dfeNumber = @dfeNumber'
-  params.push({name: 'dfeNumber', value: dfeNumber, type: TYPES.Int})
+  params.push({ name: 'dfeNumber', value: dfeNumber, type: TYPES.Int })
   const sql = [select, whereClause, andClause].join(' ')
   return sqlService.query(sql, params)
 }

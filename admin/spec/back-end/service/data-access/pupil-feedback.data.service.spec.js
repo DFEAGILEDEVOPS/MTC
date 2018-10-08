@@ -9,7 +9,7 @@ describe('pupil-feedback.data.service', () => {
   describe('#create', () => {
     it('makes the expected calls', async (done) => {
       spyOn(sqlService, 'create').and.returnValue(Promise.resolve())
-      await service.sqlCreate({test: 'property'})
+      await service.sqlCreate({ test: 'property' })
       expect(sqlService.create).toHaveBeenCalled()
       done()
     })

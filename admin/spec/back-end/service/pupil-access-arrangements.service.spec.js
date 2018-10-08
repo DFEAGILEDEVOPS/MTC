@@ -162,10 +162,10 @@ describe('pupilAccessArrangementsService', () => {
   })
   describe('deletePupilAccessArrangements', () => {
     it('returns pupil data when successfully deleting relevant access arrangements', async () => {
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
       const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements('urlSlug', 9991001)
-      expect(pupilData).toEqual({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      expect(pupilData).toEqual({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).toHaveBeenCalled()
     })
