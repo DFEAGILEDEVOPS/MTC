@@ -1,1 +1,4 @@
-UPDATE mtc_admin.checkWindow SET adminEndDate = DATEADD(day, 10, adminStartDate), familiarisationCheckStartDate = DATEADD(day, 2, adminStartDate), familiarisationCheckEndDate = checkEndDate
+UPDATE mtc_admin.checkwindow
+SET    adminenddate = Dateadd(day, 10, adminstartdate),
+       familiarisationcheckstartdate = Dateadd(day, 2, adminstartdate),
+       familiarisationcheckenddate = checkenddate
