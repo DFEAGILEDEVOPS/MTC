@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 const monitor = require('../helpers/monitor')
+const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -55,6 +56,17 @@ const controller = {
     try {
       flashMessage = await checkWindowV2AddService.submit(requestData)
     } catch (error) {
+      if (error.name === 'ValidationError') {
+        res.locals.pageTitle = 'Create check window'
+        return res.render('check-window/create-check-window', {
+          error: error || new ValidationError(),
+          errorMessage: checkWindowErrorMessages,
+          breadcrumbs: req.breadcrumbs(),
+          checkWindowData: requestData,
+          successfulPost: false,
+          currentYear: moment().format('YYYY')
+        })
+      }
       return next(error)
     }
     req.flash('info', flashMessage)

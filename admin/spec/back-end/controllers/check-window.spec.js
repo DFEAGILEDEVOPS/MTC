@@ -79,6 +79,32 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      const error = new Error('error')
+      error.name = 'error'
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
+      }
+      const rejection = unsafeReject(Promise.reject(error))
+      spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
+      try {
+        await controller.submitCheckWindow(req, res, next)
+      } catch (error) {
+        expect(error.name).toBe('error')
+        expect(error.message).toBe('error')
+      }
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(checkWindowV2AddService.submit).toHaveBeenCalled()
+    })
+    it('calls render when checkWindowV2AddService process throws a validation error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
       const error = new Error('error')
       error.name = 'ValidationError'
       const unsafeReject = p => {
@@ -94,8 +120,8 @@ describe('access arrangements controller:', () => {
         expect(error.message).toBe('error')
       }
       expect(res.redirect).not.toHaveBeenCalled()
-      expect(next).toHaveBeenCalled()
-      expect(req.flash).not.toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
   })
