@@ -39,12 +39,9 @@ async function main () {
       ]
 
       const sql = `
-        IF NOT EXISTS (SELECT * FROM ${sqlService.adminSchema}.[user]
-          WHERE identifier = '${teacherIdentifier}' AND school_id = ${school.id})
-        BEGIN
-          INSERT INTO ${sqlService.adminSchema}.[user] (identifier, passwordHash, school_id, role_id)
-          VALUES (@teacherIdentifier, @passwordHash, @schoolId, 3)
-        END`
+        INSERT INTO ${sqlService.adminSchema}.[user] (identifier, passwordHash, school_id, role_id)
+        VALUES (@teacherIdentifier, @passwordHash, @schoolId, 3)
+      `
 
       try {
 
