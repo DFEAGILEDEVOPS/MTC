@@ -3,12 +3,8 @@
 <main id="content" class="js-content" role="main">
     <div class="grid-row">
         <div class="column-two-thirds">
-            <div *ngIf="isAAUser" class="back-link-wrapper">
-              <a routerLink="/sign-out" class="back-link">Back</a>
-            </div>
             <header class="page-header">
-                <h1 *ngIf="isAAUser" class="heading-xlarge" tabindex="0">Is this you?</h1>
-                <h1 *ngIf="!isAAUser" class="heading-xlarge" tabindex="0">Welcome, {{ pupil.firstName }}</h1>
+                <h1 class="heading-xlarge" tabindex="0">Welcome, {{ pupil.firstName }}</h1>
             </header>
             <p id="first-name" class="lede" tabindex="0">First name: <strong
                 class="bold-medium"
@@ -30,7 +26,7 @@
             >
                 {{school.name}}
             </strong></p>
-            <p class="notice" tabindex="0">
+            <div class="notice" tabindex="0">
                 <i class="icon icon-important">
                     <span class="visually-hidden">Warning</span>
                 </i>
@@ -38,8 +34,7 @@
                     Do not press 'Next' if this is not you,
                     <a routerLink="/sign-out">sign out</a>
                 </strong>
-            </p>
-            <br />
+            </div>
           <button class="button" (click)="onClick()">Next</button>
         </div>
     </div>

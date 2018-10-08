@@ -19,6 +19,13 @@ let submissionService: SubmissionService;
 let tokenService: TokenService;
 
 describe('CheckCompleteService', () => {
+  const getItemMock = (arg, isPractice) => {
+    if (arg === 'config') {
+      return ({
+        practice: isPractice
+      });
+    }
+  };
   let mockRouter;
 
   beforeEach(() => {
@@ -59,8 +66,9 @@ describe('CheckCompleteService', () => {
     });
     it('submit should call submission service successfully and audit successful call', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
       spyOn(submissionService, 'submitData')
-        .and.returnValue({ toPromise: () => Promise.resolve() });
+        .and.returnValue({toPromise: () => Promise.resolve()});
       await checkCompleteService.submit(Date.now());
       expect(addEntrySpy).toHaveBeenCalledTimes(2);
       expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
@@ -69,12 +77,21 @@ describe('CheckCompleteService', () => {
     });
     it('submit should call submission service unsuccessfully and audit failure', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
       spyOn(submissionService, 'submitData')
-        .and.returnValue({ toPromise: () => Promise.reject(new Error('error')) });
+        .and.returnValue({toPromise: () => Promise.reject(new Error('error'))});
       await checkCompleteService.submit(Date.now());
       expect(addEntrySpy).toHaveBeenCalledTimes(1);
       expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
       expect(submissionService.submitData).toHaveBeenCalledTimes(1);
+    });
+    it('submit should return if the app is configured to run in practice mode', async () => {
+      const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
+      spyOn(submissionService, 'submitData');
+      await checkCompleteService.submit(Date.now());
+      expect(addEntrySpy).toHaveBeenCalledTimes(0);
+      expect(submissionService.submitData).toHaveBeenCalledTimes(0);
     });
   });
   describe('when featureUseHpa toggle is on', () => {
@@ -83,9 +100,10 @@ describe('CheckCompleteService', () => {
     });
     it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
+      spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.resolve());
       await checkCompleteService.submit(Date.now());
@@ -97,11 +115,13 @@ describe('CheckCompleteService', () => {
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
     });
-    it('submit should call azure queue service service unsuccessfully, audit failure and redirect to submission failed page', async () => {
+    it(`submit should call azure queue service service unsuccessfully, audit failure
+      and redirect to submission failed page`, async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
-      spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token'});
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, false));
+      spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
       spyOn(storageService, 'setItem');
-      spyOn(storageService, 'getAllItems').and.returnValue({ pupil: { checkCode: 'checkCode'} });
+      spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
       spyOn(azureQueueService, 'addMessage')
         .and.returnValue(Promise.reject(new Error('error')));
       await checkCompleteService.submit(Date.now());
@@ -112,6 +132,21 @@ describe('CheckCompleteService', () => {
       expect(storageService.setItem).toHaveBeenCalledTimes(0);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
+    });
+    it('submit should return if the app is configured to run in practice mode', async () => {
+      const addEntrySpy = spyOn(auditService, 'addEntry');
+      spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
+      spyOn(router, 'navigate');
+      spyOn(tokenService, 'getToken');
+      spyOn(storageService, 'setItem');
+      spyOn(storageService, 'getAllItems');
+      spyOn(azureQueueService, 'addMessage');
+      await checkCompleteService.submit(Date.now());
+      expect(addEntrySpy).toHaveBeenCalledTimes(0);
+      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
+      expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
+      expect(storageService.setItem).toHaveBeenCalledTimes(2);
+      expect(router.navigate).toHaveBeenCalledTimes(1);
     });
   });
 });

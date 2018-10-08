@@ -56,7 +56,7 @@ function writeCsv (data) {
   }
   const ws = fs.createWriteStream(outputFilename, { flags: 'a' })
   csv
-    .write(data, {headers: false})
+    .write(data, { headers: false })
     .pipe(ws)
   ws.write('\n')
 }
