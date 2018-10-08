@@ -1,10 +1,12 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach fail it expect jasmine spyOn */
 
+const moment = require('moment')
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
+const checkWindowErrorMessages = require('../../../lib/errors/check-window-v2')
 
 describe('access arrangements controller:', () => {
   let next
@@ -88,15 +90,10 @@ describe('access arrangements controller:', () => {
       }
       const rejection = unsafeReject(Promise.reject(error))
       spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
-      try {
-        await controller.submitCheckWindow(req, res, next)
-      } catch (error) {
-        expect(error.name).toBe('error')
-        expect(error.message).toBe('error')
-      }
+      await controller.submitCheckWindow(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
-      expect(next).toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
       expect(req.flash).not.toHaveBeenCalled()
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
@@ -104,24 +101,20 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      const error = new Error('error')
-      error.name = 'ValidationError'
+      const renderSpy = spyOn(res, 'render')
+      const validationError = new Error('error')
+      validationError.name = 'ValidationError'
       const unsafeReject = p => {
         p.catch(ignore => ignore)
         return p
       }
-      const rejection = unsafeReject(Promise.reject(error))
+      const rejection = unsafeReject(Promise.reject(validationError))
       spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
-      try {
-        await controller.submitCheckWindow(req, res, next)
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-        expect(error.message).toBe('error')
-      }
+      await controller.submitCheckWindow(req, res, next)
+      expect(next).not.toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+      expect(renderSpy.calls.all()[0].args[1].error).toBe(validationError)
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
   })
