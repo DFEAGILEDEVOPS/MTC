@@ -1,4 +1,4 @@
-UPDATE mtc_admin.checkwindow
-SET    adminenddate = NULL,
-       familiarisationcheckstartdate = NULL,
-       familiarisationcheckenddate = NULL
+UPDATE mtc_admin.checkWindow
+SET    adminEndDate = NULL,
+       familiarisationCheckStartDate = NULL,
+       familiarisationCheckEndDate = NULL
