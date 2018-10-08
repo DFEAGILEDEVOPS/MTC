@@ -14,15 +14,12 @@ async function main () {
     }
     const schools = await sqlService.query(`SELECT * FROM school`)
     const numSchools = schools.length
-    let school, params
+    let params
 
     winston.info(`${numSchools} schools`)
     winston.info(`Generating ${numPupils} pupils per school`)
 
-    // Not using Promise.all/schools.map because of pool errors
-    for (let i = 0; i < numSchools; i++) {
-      school = schools[i]
-
+    await Promise.all(schools.map(async school => {
       // maybe use sqlService.generateParams
       params = [
         {
@@ -38,9 +35,9 @@ async function main () {
       ]
       const sql = `
       BEGIN
-        DECLARE @cnt INT = 0;
+        DECLARE @cnt INT = 1;
         DECLARE @baseUpn INT = 80120000 + @schoolId
-        WHILE @cnt < ${numPupils}
+        WHILE @cnt <= ${numPupils}
         BEGIN
           BEGIN TRY
             INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
@@ -55,7 +52,7 @@ async function main () {
       const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
       const pupilsList = pupils.map(p => p.id)
       await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
-    }
+    }))
 
     winston.info('DONE')
     sqlPoolService.drain()
