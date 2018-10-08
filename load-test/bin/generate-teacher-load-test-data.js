@@ -12,8 +12,8 @@ const pinGenerationService = require('../../admin/services/pin-generation.servic
 const checkStartService = require('../../admin/services/check-start.service')
 
 const passwordHash = "$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK";
-const deleteTeachersSql = "DELETE FROM user WHERE role_id"
 
+winston.transports.Console.level = 'debug';
 
 async function main () {
 
@@ -29,8 +29,7 @@ async function main () {
     let i = 0; const numSchools = schools.length; 
 
     winston.info(`${numSchools} schools`)
-    winston.info('Generating ${teacherLength} teachers per school...')
-
+    winston.info(`Generating ${teacherLength} teachers per school...`)
     for(; i < numSchools; i++) {
 
       let school = schools[i]
@@ -48,17 +47,19 @@ async function main () {
         }
       ]
       const sql = `
-        DECLARE @cnt INT = 1;
-        WHILE @cnt <= 2
         BEGIN
-            IF NOT EXISTS (SELECT * FROM ${sqlService.adminSchema}.[user]
-                WHERE identifier = 'teacher'+CAST(@cnt AS NVARCHAR))
+            DECLARE @cnt INT = 1;
+            WHILE @cnt <= ${teacherLength}
             BEGIN
-                INSERT INTO ${sqlService.adminSchema}.[user] (identifier, passwordHash, school_id, role_id)
-                VALUES ('teacher'+CAST(@cnt AS NVARCHAR), @passwordHash, @schoolId, 3)
+                IF NOT EXISTS (SELECT * FROM ${sqlService.adminSchema}.[user]
+                    WHERE identifier = 'teacher'+CAST(@cnt AS NVARCHAR))
+                BEGIN
+                    INSERT INTO ${sqlService.adminSchema}.[user] (identifier, passwordHash, school_id, role_id)
+                    VALUES ('teacher'+CAST(@cnt AS NVARCHAR), @passwordHash, @schoolId, 3)
+                END
                 SET @cnt = @cnt + 1;
-            END
-        END`
+            END;
+        END;`
       
       await sqlService.query(sql, params)
 
