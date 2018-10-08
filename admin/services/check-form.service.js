@@ -93,7 +93,7 @@ const checkFormService = {
    * @param questions
    */
   prepareQuestionData: function (questions) {
-    return questions.map((q, i) => { return {order: ++i, factor1: q.f1, factor2: q.f2} })
+    return questions.map((q, i) => { return { order: ++i, factor1: q.f1, factor2: q.f2 } })
   },
 
   /**

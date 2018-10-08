@@ -44,7 +44,7 @@ const jwtService = {
 
     // Construct a JWT token
     const token = await jwt.sign(payload, jwtSecret)
-    return {token, jwtSecret}
+    return { token, jwtSecret }
   },
   /**
    * Verify a token

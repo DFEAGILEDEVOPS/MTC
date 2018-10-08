@@ -44,17 +44,17 @@ describe('check-start.service', () => {
   const schoolId = 42
 
   const mockPupils = [
-    {id: 1},
-    {id: 2},
-    {id: 3}
+    { id: 1 },
+    { id: 2 },
+    { id: 3 }
   ]
   const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
-  const mockPreparedCheck = {pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true}
+  const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockPreparedCheckQueueMessages = [
-    {mock: 'message'},
-    {mock: 'message'},
-    {mock: 'message'}
+    { mock: 'message' },
+    { mock: 'message' },
+    { mock: 'message' }
   ]
 
   describe('#prepareCheck', () => {
@@ -195,7 +195,7 @@ describe('check-start.service', () => {
       spyOn(pinGenerationService, 'updatePupilPins')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({insertId: 1}))
+      spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
