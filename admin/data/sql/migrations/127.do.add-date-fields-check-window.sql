@@ -1,0 +1,3 @@
+ALTER TABLE mtc_admin.checkWindow ADD adminEndDate datetimeoffset NULL
+ALTER TABLE mtc_admin.checkWindow ADD familiarisationCheckStartDate datetimeoffset NULL
+ALTER TABLE mtc_admin.checkWindow ADD familiarisationCheckEndDate datetimeoffset NULL
