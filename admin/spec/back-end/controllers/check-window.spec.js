@@ -71,30 +71,48 @@ describe('access arrangements controller:', () => {
       spyOn(checkWindowV2AddService, 'submit')
       await controller.submitCheckWindow(req, res, next)
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
     })
-    it('calls render when checkWindowV2AddService process throws a validation error', async () => {
+    it('calls next when checkWindowV2AddService submit throws an error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
       spyOn(res, 'render')
       const error = new Error('error')
-      error.name = 'ValidationError'
+      error.name = 'error'
       const unsafeReject = p => {
         p.catch(ignore => ignore)
         return p
       }
       const rejection = unsafeReject(Promise.reject(error))
       spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
-      try {
-        await controller.submitCheckWindow(req, res, next)
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-        expect(error.message).toBe('error')
+      await controller.submitCheckWindow(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(checkWindowV2AddService.submit).toHaveBeenCalled()
+    })
+    it('calls render when checkWindowV2AddService process throws a validation error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      const renderSpy = spyOn(res, 'render')
+      const validationError = new Error('error')
+      validationError.name = 'ValidationError'
+      const unsafeReject = p => {
+        p.catch(ignore => ignore)
+        return p
       }
+      const rejection = unsafeReject(Promise.reject(validationError))
+      spyOn(checkWindowV2AddService, 'submit').and.returnValue(rejection)
+      await controller.submitCheckWindow(req, res, next)
+      expect(next).not.toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(res.render).toHaveBeenCalled()
+      expect(renderSpy.calls.all()[0].args[1].error).toBe(validationError)
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
   })
