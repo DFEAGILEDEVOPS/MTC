@@ -43,7 +43,7 @@ Then(/^I should not see the window in the list$/) do
   expect(manage_check_window_page).to have_no_windows_table
 end
 
-When(/^I try to submit a check name that is less than (\d+) characters long$/) do |arg|
+When(/^I try to submit a check name that is less than (\d+) character long$/) do |arg|
   today_date = Date.today
   @admin_start_date = today_date + 3
   @admin_end_date = today_date + 10
@@ -76,7 +76,7 @@ When(/^I try to submit a check name that is less than (\d+) characters long$/) d
   add_edit_check_window_v2_page.save_changes.click
 end
 
-Then(/^I should see an error stating the check name cannot be less than (\d+) characters long$/) do |arg|
+Then(/^I should see an error stating the check name cannot be less than (\d+) character long$/) do |arg|
   expect(add_edit_check_window_v2_page.error_summary.error_messages.first.text).to eql 'Enter a name between 1 and 35 characters'
 end
 
@@ -120,8 +120,10 @@ Then(/^I should see error messages stating the dates must be in the future$/) do
                                                                                         "Enter an end date in the future for administration end date",
                                                                                         "Enter a start date in the future for familiarisation check start date",
                                                                                         "Enter an end date in the future for familiarisation check end date",
+                                                                                        "Enter a familiarisation check start date which is before the live check start date",
                                                                                         "Enter a start date in the future for live check start date",
-                                                                                        "Enter an end date in the future for live check end date"]
+                                                                                        "Enter an end date in the future for live check end date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date"]
 end
 
 
@@ -165,10 +167,13 @@ Then(/^I should see error messages stating the end dates must be at least one da
                                                                                         "Enter a school administration end date which is after the administration start date",
                                                                                         "Enter a school administration end date which is after the live check end date",
                                                                                         "Enter a school administration end date which is after the familiarisation check end date",
+                                                                                        "Enter a familiarisation check start date which is before the live check start date",
                                                                                         "Enter a familiarisation check start date which is before the familiarisation check end date",
                                                                                         "Enter a familiarisation check end date which is before the administration end date",
                                                                                         "Enter a familiarisation check end date which is after the familiarisation check start date",
                                                                                         "Enter a live check start date which is before the live check end date",
+                                                                                        "Enter a live check end date which is before the administration end date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date",
                                                                                         "Enter a live check end date which is after the live check start date"]
 end
 
@@ -212,10 +217,13 @@ Then(/^I should see an error stating the admin end date must be after the end da
                                                                                         "Enter a school administration end date which is after the administration start date",
                                                                                         "Enter a school administration end date which is after the live check end date",
                                                                                         "Enter a school administration end date which is after the familiarisation check end date",
+                                                                                        "Enter a familiarisation check start date which is before the live check start date",
                                                                                         "Enter a familiarisation check start date which is before the familiarisation check end date",
                                                                                         "Enter a familiarisation check end date which is before the administration end date",
                                                                                         "Enter a familiarisation check end date which is after the familiarisation check start date",
                                                                                         "Enter a live check start date which is before the live check end date",
+                                                                                        "Enter a live check end date which is before the administration end date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date",
                                                                                         "Enter a live check end date which is after the live check start date"]
 end
 
@@ -689,10 +697,12 @@ Then(/^I should see an error stating I should enter a valid year$/) do
                             "Enter a valid year for familiarisation check start date",
                             "Enter an end date in the future for familiarisation check end date",
                             "Enter a valid year for familiarisation check end date",
+                            "Enter a familiarisation check start date which is before the live check start date",
                             "Enter a start date in the future for live check start date",
                             "Enter a valid year for live check start date",
                             "Enter an end date in the future for live check end date",
-                            "Enter a valid year for live check end date"]
+                            "Enter a valid year for live check end date",
+                            "Enter a live check start date which is after the familiarisation check start date"]
   expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_summary_errors
@@ -737,8 +747,10 @@ Then(/^I should see an error stating the admin start date must be before the sta
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a school administration start date which is before or on the same day as the familiarisation start date",
                                                                                         "Enter a school administration start date which is before the live check start date",
+                                                                                        "Enter a familiarisation check start date which is before the live check start date",
                                                                                         "Enter a familiarisation check start date which is the same date or after the administration start date",
-                                                                                        "Enter a live check start date which is after the administration start date"]
+                                                                                        "Enter a live check start date which is after the administration start date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date"]
 end
 
 
@@ -778,8 +790,10 @@ end
 Then(/^I should see an error stating live end date must occur after admin start date$/) do
   expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
-  expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a familiarisation check end date which is the same as live check end date",
+  expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a familiarisation check start date which is before the live check start date",
+                                                                                        "Enter a familiarisation check end date which is the same as live check end date",
                                                                                         "Enter a live check start date which is before the live check end date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date",
                                                                                         "Enter a live check end date which is after the live check start date",
                                                                                         "Enter a live check end date which is after the administration start date",
                                                                                         "Enter a live check end date which is the same as familiarisation check end date"]
@@ -821,9 +835,11 @@ end
 Then(/^I should see an error stating familirisation end date must occur after admin start date$/) do
   expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
-  expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a familiarisation check start date which is before the familiarisation check end date",
+  expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a familiarisation check start date which is before the live check start date",
+                                                                                        "Enter a familiarisation check start date which is before the familiarisation check end date",
                                                                                         "Enter a familiarisation check end date which is after the administration start date",
                                                                                         "Enter a familiarisation check end date which is after the familiarisation check start date",
                                                                                         "Enter a familiarisation check end date which is the same as live check end date",
+                                                                                        "Enter a live check start date which is after the familiarisation check start date",
                                                                                         "Enter a live check end date which is the same as familiarisation check end date"]
 end

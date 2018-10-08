@@ -1,4 +1,4 @@
-@wip
+#@wip
 @feature-toggle
 Feature:
   Check window validation
@@ -11,8 +11,8 @@ Feature:
 
   Scenario: Name of check window cannot be less 2 characters
     Given I navigate to the create check window page
-    When I try to submit a check name that is less than 2 characters long
-    Then I should see an error stating the check name cannot be less than 2 characters long
+    When I try to submit a check name that is less than 1 character long
+    Then I should see an error stating the check name cannot be less than 1 character long
 
   Scenario: Dates entered must be in the future
     Given I navigate to the create check window page
