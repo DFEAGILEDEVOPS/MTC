@@ -38,14 +38,14 @@ const bulkLoadData = (connection, pupilData, schools, jobId) => {
       resolve(`Inserted ${rowCount} rows`)
     })
 
-    bulkLoad.addColumn('school_id', TYPES.Int, {nullable: false})
-    bulkLoad.addColumn('upn', TYPES.Char, {length: 13, nullable: false})
-    bulkLoad.addColumn('lastName', TYPES.NVarChar, {length: 'max', nullable: false})
-    bulkLoad.addColumn('foreName', TYPES.NVarChar, {length: 'max', nullable: false})
-    bulkLoad.addColumn('middleNames', TYPES.NVarChar, {length: 'max', nullable: true})
-    bulkLoad.addColumn('gender', TYPES.Char, {length: 1, nullable: false})
-    bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, {nullable: false})
-    bulkLoad.addColumn('job_id', TYPES.Int, {nullable: true})
+    bulkLoad.addColumn('school_id', TYPES.Int, { nullable: false })
+    bulkLoad.addColumn('upn', TYPES.Char, { length: 13, nullable: false })
+    bulkLoad.addColumn('lastName', TYPES.NVarChar, { length: 'max', nullable: false })
+    bulkLoad.addColumn('foreName', TYPES.NVarChar, { length: 'max', nullable: false })
+    bulkLoad.addColumn('middleNames', TYPES.NVarChar, { length: 'max', nullable: true })
+    bulkLoad.addColumn('gender', TYPES.Char, { length: 1, nullable: false })
+    bulkLoad.addColumn('dateOfBirth', TYPES.DateTimeOffset, { nullable: false })
+    bulkLoad.addColumn('job_id', TYPES.Int, { nullable: true })
 
     for (let index = 0; index < pupilData.length; index++) {
       const csvRow = pupilData[index]

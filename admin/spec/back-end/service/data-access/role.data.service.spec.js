@@ -9,7 +9,7 @@ describe('role.data.service', () => {
 
   describe('#sqlFindOneById', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'findOneById').and.returnValue(Promise.resolve({userMock: 'true'}))
+      spyOn(sqlService, 'findOneById').and.returnValue(Promise.resolve({ userMock: 'true' }))
       service = proxyquire('../../../../services/data-access/role.data.service', {
         './sql.service': sqlService
       })
