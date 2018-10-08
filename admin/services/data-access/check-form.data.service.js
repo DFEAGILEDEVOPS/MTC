@@ -221,7 +221,7 @@ const checkFormDataService = {
     SELECT *
     FROM ${sqlService.adminSchema}.${table}
     `
-    const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+    const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)

@@ -7,7 +7,7 @@ const accessArrangementsDataService = require('./data-access/access-arrangements
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
-const {QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS} = require('../config')
+const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 const monitor = require('../helpers/monitor')
 
 /** @namespace */

@@ -18,7 +18,7 @@ describe('admin-logon-event.data.service', () => {
     })
 
     it('makes the expected calls', async (done) => {
-      const data = {test: 'property'}
+      const data = { test: 'property' }
       await service.sqlCreate(data)
       expect(sqlService.create).toHaveBeenCalledWith('[adminLogonEvent]', data)
       done()

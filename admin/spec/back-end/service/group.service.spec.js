@@ -177,7 +177,7 @@ describe('group.service', () => {
     describe('happy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({'insertId': 1}))
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
         spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 
@@ -192,7 +192,7 @@ describe('group.service', () => {
     describe('unhappy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({'insertId': 1}))
+        spyOn(groupDataService, 'sqlCreate').and.returnValue(Promise.resolve({ 'insertId': 1 }))
         spyOn(groupDataService, 'sqlAssignPupilsToGroup').and.returnValue(Promise.resolve())
       })
 

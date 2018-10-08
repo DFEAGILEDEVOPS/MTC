@@ -37,7 +37,7 @@ psUtilService.getClientTimestampDiffFromAuditEvents = function (firstAuditEventT
   return moment.duration(
     moment(psUtilService.getClientTimestampFromAuditEvent(secondAuditEventType, completedCheck))
       .diff(moment(psUtilService.getClientTimestampFromAuditEvent(firstAuditEventType, completedCheck)))
-  ).format('HH:mm:ss', {trim: false})
+  ).format('HH:mm:ss', { trim: false })
 }
 
 /**

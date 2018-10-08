@@ -4,17 +4,17 @@ const apiResponse = {}
 
 apiResponse.unauthorised = function (res) {
   this.setJsonHeader(res)
-  return res.status(401).json({error: 'Unauthorised'})
+  return res.status(401).json({ error: 'Unauthorised' })
 }
 
 apiResponse.badRequest = function (res) {
   this.setJsonHeader(res)
-  return res.status(400).json({error: 'Bad request'})
+  return res.status(400).json({ error: 'Bad request' })
 }
 
 apiResponse.serverError = function (res) {
   this.setJsonHeader(res)
-  return res.status(500).json({error: 'Server error'})
+  return res.status(500).json({ error: 'Server error' })
 }
 
 apiResponse.setJsonHeader = function (res) {
