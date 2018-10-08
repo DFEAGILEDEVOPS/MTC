@@ -1,12 +1,10 @@
 'use strict'
 
-/* global describe beforeEach fail it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn */
 
-const moment = require('moment')
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
-const checkWindowErrorMessages = require('../../../lib/errors/check-window-v2')
 
 describe('access arrangements controller:', () => {
   let next
