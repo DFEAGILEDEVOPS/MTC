@@ -1,17 +1,18 @@
 const winston = require('winston')
+const bcrypt = require('bcryptjs')
 const { TYPES } = require('tedious')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
 
-const passwordHash = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
-
 async function main () {
   try {
-    const schools = await sqlService.query(`SELECT id FROM school`)
+    const password = process.argv[2] || 'password'
+    const passwordHash = bcrypt.hashSync(password)
+    const schools = await sqlService.query('SELECT id FROM school')
     const numSchools = schools.length
     let school, teacherIdentifier
 
-    winston.info(`${numSchools} schools`)
+    winston.info(`Generating 1 teacher with password '${password}' for ${numSchools} schools`)
 
     for (let i = 0; i < numSchools; i++) {
       school = schools[i]
