@@ -7,7 +7,7 @@
                 <h1 class="heading-xlarge" tabindex="0">Thank you</h1>
             </header>
             <p class="lede" tabindex="0" *ngIf='familiarisationCheck'>
-                You can <a href="" (click)="onStartAgainClick()">start again</a> if you would like another go.
+                You can <a href="" (click)="onStartAgainClick($event)">start again</a> if you would like another go.
             </p>
             <p class="lede" tabindex="0" *ngIf='!familiarisationCheck'>
                 Please leave <a routerLink="/feedback">feedback.</a>

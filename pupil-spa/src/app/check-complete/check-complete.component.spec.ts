@@ -53,11 +53,14 @@ describe('CheckCompleteComponent', () => {
 
   describe('onClickStartAgain', () => {
     it('should clear the storageService state and redirect to the check start page', async () => {
-      component.onStartAgainClick();
+      const mockEvent = new Event('click');
+      spyOn(mockEvent, 'preventDefault');
+      component.onStartAgainClick(mockEvent);
       expect(storageService.removeItem).toHaveBeenCalledWith(CheckComponent.checkStateKey);
       expect(storageService.getItem(CheckComponent.checkStateKey)).not.toBeDefined();
       expect(storageService.setItem).toHaveBeenCalledWith('completed_submission', false);
       expect(storageService.getItem('completed_submission')).toBeFalsy();
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-start']);
     });
   });

@@ -61,7 +61,8 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  onStartAgainClick(): void {
+  onStartAgainClick(event): void {
+    event.preventDefault();
     this.storageService.removeItem(CheckComponent.checkStateKey);
     this.storageService.setItem('completed_submission', false);
     this.router.navigate(['/check-start']);
