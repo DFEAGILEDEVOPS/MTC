@@ -136,7 +136,6 @@ describe('CheckCompleteService', () => {
     it('submit should return if the app is configured to run in practice mode', async () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getItem').and.callFake(arg => getItemMock(arg, true));
-      spyOn(router, 'navigate');
       spyOn(tokenService, 'getToken');
       spyOn(storageService, 'setItem');
       spyOn(storageService, 'getAllItems');
@@ -146,7 +145,7 @@ describe('CheckCompleteService', () => {
       expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
       expect(storageService.setItem).toHaveBeenCalledTimes(2);
-      expect(router.navigate).toHaveBeenCalledTimes(1);
+      expect(mockRouter.navigate).toHaveBeenCalledTimes(1);
     });
   });
 });
