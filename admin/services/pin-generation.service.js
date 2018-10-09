@@ -139,18 +139,6 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
 }
 
 /**
- * HPA version
- */
-pinGenerationService.updatePins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv) => {
-  if (!Array.isArray(pupilsList)) {
-    throw new Error('Received list of pupils is not an array')
-  }
-  if (!schoolId) {
-    throw new Error('Parameter `schoolId` not provided', schoolId)
-  }
-}
-
-/**
  * Generate school password
  * @param school
  * @returns { pin: string, pinExpiresAt: Moment } || undefined
