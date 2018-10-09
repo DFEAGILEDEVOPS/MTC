@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Config } from '../config.model';
 import { QuestionService } from '../services/question/question.service';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { QuestionService } from '../services/question/question.service';
 export class HeaderComponent implements OnInit {
 
   public familiarisationCheck: boolean;
+  public isLoggedIn: boolean;
 
   config: Config;
   govukRoot = 'https://www.gov.uk';
@@ -21,8 +23,10 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private questionService: QuestionService,
+    private userService: UserService
   ) {
     this.config = this.questionService.getConfig();
+    this.isLoggedIn = this.userService.isLoggedIn();
     this.familiarisationCheck = this.config && this.config.practice;
   }
 

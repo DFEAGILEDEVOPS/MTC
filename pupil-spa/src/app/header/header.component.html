@@ -15,4 +15,4 @@
   </div>
 </header>
 <div *ngIf="!familiarisationCheck" id="global-header-bar"></div>
-<div *ngIf="familiarisationCheck" id="familiarisation-header-bar">Familiarisation check</div>
+<div *ngIf="familiarisationCheck && isLoggedIn" id="familiarisation-header-bar">Familiarisation check</div>
