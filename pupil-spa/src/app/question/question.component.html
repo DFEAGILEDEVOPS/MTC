@@ -3,6 +3,7 @@
     <div class="remaining-time" id="js-page-time-settings">
         Time left: <span id="js-page-timer" class="bold timer">{{remainingTime}}</span>
     </div>
+    <div *ngIf="familiarisationCheck" class="familiarisation-title">Familiarisation check</div>
 </div>
 <div class="question-container">
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
