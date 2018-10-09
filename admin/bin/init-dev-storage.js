@@ -17,6 +17,8 @@ if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
 
 const queueNames = names['queues']
 const tableNames = names['tables']
+const poisonQueues = queueNames.map(q => q + '-poison')
+const allQueues = queueNames.concat(poisonQueues)
 const tableService = getPromisifiedService(azure.createTableService())
 const queueService = getPromisifiedService(azure.createQueueService())
 
@@ -48,23 +50,30 @@ async function deleteQueueMessages (queues) {
   return Promise.all(queueDeletes)
 }
 
-async function createQueues (tables) {
-  const queueCreates = queueNames.map(q => {
+async function createQueues (queues) {
+  const queueCreates = queues.map(q => {
     return queueService.createQueueIfNotExistsAsync(q)
   })
   return Promise.all(queueCreates)
 }
 
 async function main () {
-  await createQueues(queueNames)
-  await deleteQueueMessages(queueNames)
+  await createQueues(allQueues)
+  await deleteQueueMessages(allQueues)
   await createTables(tableNames)
   await deleteTableEntities(tableNames)
 }
 
-main().then(() => {
+main()
+  .then(() => {
   console.log('done')
-})
+  },
+  (error) => {
+    console.error(error.message)
+  })
+  .catch(error => {
+    console.error('Caught error: ' + error.message)
+  })
 
 /**
  * Promisify and cache the azureTableService library as it still lacks Promise support

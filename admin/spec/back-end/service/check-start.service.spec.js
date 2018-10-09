@@ -15,6 +15,7 @@ const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const configService = require('../../../services/config.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
+const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
 const checkWindowMock = require('../mocks/check-window-2')
@@ -190,9 +191,7 @@ describe('check-start.service', () => {
 
   describe('#preparecheck2', () => {
     beforeEach(() => {
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve(mockPupils))
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
-      spyOn(pinGenerationService, 'updatePupilPins')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
@@ -200,6 +199,8 @@ describe('check-start.service', () => {
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessage')
+      spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
+      spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -230,10 +231,20 @@ describe('check-start.service', () => {
       }
     })
 
+    it('calls getPupilsEligibleForPinGenerationById to find pupils', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(pinGenerationV2Service.getPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
+    })
+
     it('calls initialisePupilCheck to randomly select a check form', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+    })
+
+    it ('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
+        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+        expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {
