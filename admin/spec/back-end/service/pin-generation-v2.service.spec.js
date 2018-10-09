@@ -1,13 +1,12 @@
 'use strict'
 
-/* global describe */
+/* global describe it spyOn expect fail */
 const winston = require('winston')
 const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
 
 // sut
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
-
 
 describe('pin-generation-v2.service', () => {
   describe('#getPupilsEligibleForPinGeneration', () => {
@@ -27,7 +26,7 @@ describe('pin-generation-v2.service', () => {
     })
   })
 
-  describe('#getPupilsWithActivePins',  () => {
+  describe('#getPupilsWithActivePins', () => {
     it('makes a call to the data service to get pupils with active pins', async () => {
       spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins')
       spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
@@ -59,41 +58,41 @@ describe('pin-generation-v2.service', () => {
       spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById')
       const schoolId = 42
       const pupils = [
-        {id: 1, isRestart: false},
-        {id: 2, isRestart: false},
-        {id: 3, isRestart: false}
+        { id: 1, isRestart: false },
+        { id: 2, isRestart: false },
+        { id: 3, isRestart: false }
       ]
       const checkIds = [1, 2, 3]
       await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, checkIds)
       expect(pinGenerationDataService.sqlFindChecksForPupilsById).not.toHaveBeenCalled()
     })
   })
-  it('retrieves all the checks if there are any restarts', async () =>  {
+  it('retrieves all the checks if there are any restarts', async () => {
     spyOn(pinGenerationDataService, 'updatePupilRestartsWithCheckInformation')
     spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue([
-      {id: 1, pupil_id: 1},
-      {id: 2, pupil_id: 2},
-      {id: 3, pupil_id: 3}
+      { id: 1, pupil_id: 1 },
+      { id: 2, pupil_id: 2 },
+      { id: 3, pupil_id: 3 }
     ])
     const schoolId = 42
     const pupils = [
-      {id: 1, isRestart: false},
-      {id: 2, isRestart: true, pupilRestart_id: 9},
-      {id: 3, isRestart: false}
+      { id: 1, isRestart: false },
+      { id: 2, isRestart: true, pupilRestart_id: 9 },
+      { id: 3, isRestart: false }
     ]
     const checkIds = [1, 2, 3]
     await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, checkIds)
     expect(pinGenerationDataService.sqlFindChecksForPupilsById).toHaveBeenCalledTimes(1)
   })
-  it('Logs an error in the data service if it errors while retrieving all the checks ', async () =>  {
+  it('Logs an error in the data service if it errors while retrieving all the checks ', async () => {
     spyOn(pinGenerationDataService, 'updatePupilRestartsWithCheckInformation')
     spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(Promise.reject(new Error('mock error')))
     spyOn(winston, 'error')
     const schoolId = 42
     const pupils = [
-      {id: 1, isRestart: false},
-      {id: 2, isRestart: true, pupilRestart_id: 9},
-      {id: 3, isRestart: false}
+      { id: 1, isRestart: false },
+      { id: 2, isRestart: true, pupilRestart_id: 9 },
+      { id: 3, isRestart: false }
     ]
     const checkIds = [1, 2, 3]
     try {
@@ -106,36 +105,36 @@ describe('pin-generation-v2.service', () => {
   it('calls updatePupilRestartsWithCheckInformation to write the restart information to the db', async () => {
     spyOn(pinGenerationDataService, 'updatePupilRestartsWithCheckInformation')
     spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue([
-      {id: 1, pupil_id: 1},
-      {id: 2, pupil_id: 2},
-      {id: 3, pupil_id: 3}
+      { id: 1, pupil_id: 1 },
+      { id: 2, pupil_id: 2 },
+      { id: 3, pupil_id: 3 }
     ])
     const schoolId = 42
     const pupils = [
-      {id: 1, isRestart: false},
-      {id: 2, isRestart: true, pupilRestart_id: 9},
-      {id: 3, isRestart: false}
+      { id: 1, isRestart: false },
+      { id: 2, isRestart: true, pupilRestart_id: 9 },
+      { id: 3, isRestart: false }
     ]
     const checkIds = [1, 2, 3]
     await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, checkIds)
     expect(pinGenerationDataService.updatePupilRestartsWithCheckInformation).toHaveBeenCalledTimes(1)
     expect(pinGenerationDataService.updatePupilRestartsWithCheckInformation).toHaveBeenCalledWith([
-      {pupilRestartId: 9, checkId: 2}
+      { pupilRestartId: 9, checkId: 2 }
     ])
   })
   it('Logs an error in the data service if it errors while calling updatePupilRestartsWithCheckInformation', async () => {
     spyOn(pinGenerationDataService, 'updatePupilRestartsWithCheckInformation').and.returnValue(Promise.reject(new Error('mock error')))
     spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue([
-      {id: 1, pupil_id: 1},
-      {id: 2, pupil_id: 2},
-      {id: 3, pupil_id: 3}
+      { id: 1, pupil_id: 1 },
+      { id: 2, pupil_id: 2 },
+      { id: 3, pupil_id: 3 }
     ])
     spyOn(winston, 'error')
     const schoolId = 42
     const pupils = [
-      {id: 1, isRestart: false},
-      {id: 2, isRestart: true, pupilRestart_id: 9},
-      {id: 3, isRestart: false}
+      { id: 1, isRestart: false },
+      { id: 2, isRestart: true, pupilRestart_id: 9 },
+      { id: 3, isRestart: false }
     ]
     const checkIds = [1, 2, 3]
     try {

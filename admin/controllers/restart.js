@@ -52,7 +52,6 @@ controller.getSelectRestartList = async (req, res, next) => {
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
-
   } catch (error) {
     return next(error)
   }

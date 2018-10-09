@@ -242,9 +242,9 @@ describe('check-start.service', () => {
       expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
-    it ('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
-        expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
+    it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {

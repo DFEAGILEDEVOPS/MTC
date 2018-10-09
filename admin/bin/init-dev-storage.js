@@ -66,7 +66,7 @@ async function main () {
 
 main()
   .then(() => {
-  console.log('done')
+    console.log('done')
   },
   (error) => {
     console.error(error.message)

@@ -4,7 +4,6 @@ const { TYPES } = require('tedious')
 const sqlService = require('./sql.service')
 const monitor = require('../../helpers/monitor')
 
-
 const serviceToExport = {
   sqlFindEligiblePupilsBySchool: async (schoolId) => {
     const sql = `SELECT 
@@ -51,7 +50,6 @@ const serviceToExport = {
     return sqlService.query(sql, [param])
   },
 
-
   sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds) => {
     const select = `SELECT * 
                     FROM ${sqlService.adminSchema}.[vewPupilsEligibleForPinGeneration]`
@@ -80,10 +78,10 @@ const serviceToExport = {
       value: schoolId,
       type: TYPES.Int
     }
-    const checkParams = checkIds.map( (checkId, index) => { return { name: `checkId${index}`, value: checkId, type: TYPES.Int } } )
-    const checkIdentifiers = checkIds.map( (checkId, index) => `@checkId${index}` )
-    const pupilParams = pupilIds.map( (pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } } )
-    const pupilIdentifiers = pupilIds.map( (pupilId, index) => `@pupilId${index}` )
+    const checkParams = checkIds.map((checkId, index) => { return { name: `checkId${index}`, value: checkId, type: TYPES.Int } })
+    const checkIdentifiers = checkIds.map((checkId, index) => `@checkId${index}`)
+    const pupilParams = pupilIds.map((pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } })
+    const pupilIdentifiers = pupilIds.map((pupilId, index) => `@pupilId${index}`)
     const whereClause = `WHERE school_id = @schoolId 
                          AND id IN (${checkIdentifiers.join(', ')}) 
                          AND pupil_id IN (${pupilIdentifiers.join(', ')})`
@@ -97,10 +95,10 @@ const serviceToExport = {
    * @param updateData - [ { pupilRestartId: 2, checkId: 3}, [...] ]
    */
   updatePupilRestartsWithCheckInformation: async (updateData) => {
-    const restartIdParams = updateData.map( ( data, index ) => { return { name: `checkId${index}`, value: data.checkId, type: TYPES.Int } } )
-    const pupilRestartParams = updateData.map( (data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } } )
-    const updates = updateData.map( ( data, index ) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}` )
-    return sqlService.modify(updates.join(";\n"), restartIdParams.concat(pupilRestartParams))
+    const restartIdParams = updateData.map((data, index) => { return { name: `checkId${index}`, value: data.checkId, type: TYPES.Int } })
+    const pupilRestartParams = updateData.map((data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } })
+    const updates = updateData.map((data, index) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
+    return sqlService.modify(updates.join(';\n'), restartIdParams.concat(pupilRestartParams))
   }
 }
 

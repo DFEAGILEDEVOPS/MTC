@@ -234,7 +234,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId) => {
 groupDataService.sqlFindGroupsByIds = async (schoolId, pupilIds) => {
   if (!schoolId || !pupilIds || pupilIds.length < 1) return false
 
-  const ids = pupilIds.map(p => { p.id })
+  const ids = pupilIds.map(p => p.id)
 
   let sqlInit = `SELECT DISTINCT p.group_id as id, g.name 
     FROM ${sqlService.adminSchema}.[pupilGroup] p 

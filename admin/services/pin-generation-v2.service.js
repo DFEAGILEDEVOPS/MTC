@@ -79,7 +79,7 @@ const serviceToExport = {
 
     const updateData = pupilsDoingARestart.map(p => {
       const restart = restartChecks.find(r => r.pupil_id === p.id)
-      return {pupilRestartId: p.pupilRestart_id, checkId: restart.id }
+      return { pupilRestartId: p.pupilRestart_id, checkId: restart.id }
     })
 
     try {

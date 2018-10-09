@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, expect */
+/* global describe it spyOn expect */
 
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
@@ -8,8 +8,8 @@ const pupilIdentificationFlagService = require('../../../services/pupil-identifi
 // sut
 const restartV2Service = require('../../../services/restart-v2.service')
 
-describe('restart-v2.service', () =>  {
-  describe('#getPupilsEligibleForRestart',  () => {
+describe('restart-v2.service', () => {
+  describe('#getPupilsEligibleForRestart', () => {
     it('calls the restart data service to find the pupils', async () => {
       const schoolId = 42
       spyOn(restartDataService, 'sqlFindPupilsEligibleForRestart').and.returnValue([])

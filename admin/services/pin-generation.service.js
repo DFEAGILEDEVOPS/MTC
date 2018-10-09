@@ -189,7 +189,7 @@ pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
  * Generate Pupil Pin
  * @returns {String}
  */
- pinGenerationService.generatePupilPin = () => {
+pinGenerationService.generatePupilPin = () => {
   const pupilPinLength = 4
   return randomGenerator.getRandom(pupilPinLength, chars)
 }
