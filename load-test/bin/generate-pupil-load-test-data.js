@@ -12,12 +12,20 @@ async function main () {
     if (!numPupils) {
       throw new Error('Pupil length argument is not supplied or is not a valid number')
     }
-    const schools = await sqlService.query(`SELECT * FROM school`)
-    const numSchools = schools.length
+
+    let schools = await sqlService.query(`SELECT * FROM school`)
+    let numSchools = schools.length
     let params
 
-    winston.info(`${numSchools} schools`)
-    winston.info(`Generating ${numPupils} pupils per school`)
+    let pupilsPerSchool = Math.round(numPupils / numSchools)
+    if (pupilsPerSchool < 1) {
+      pupilsPerSchool = 1
+      schools = schools.slice(0, numPupils)
+    }
+
+    console.log(schools.length)
+
+    winston.info(`Generating ${numPupils} pupils`)
 
     await Promise.all(schools.map(async school => {
       // maybe use sqlService.generateParams
@@ -37,7 +45,7 @@ async function main () {
       BEGIN
         DECLARE @cnt INT = 1;
         DECLARE @baseUpn INT = 80120000 + @schoolId
-        WHILE @cnt <= ${numPupils}
+        WHILE @cnt <= ${pupilsPerSchool}
         BEGIN
           BEGIN TRY
             INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
