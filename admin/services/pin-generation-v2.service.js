@@ -64,7 +64,7 @@ const serviceToExport = {
   checkAndUpdateRestarts: async function (schoolId, pupils, newCheckIds) {
     const pupilsDoingARestart = R.filter(R.propEq('isRestart', true), pupils)
     if (R.isEmpty(pupilsDoingARestart)) {
-      console.log('No pupils doing a restart')
+      winston.log('No pupils doing a restart')
       return
     }
 
