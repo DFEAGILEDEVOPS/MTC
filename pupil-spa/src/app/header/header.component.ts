@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Config } from '../config.model';
 import { QuestionService } from '../services/question/question.service';
 import { UserService } from '../services/user/user.service';
@@ -12,8 +12,10 @@ import { UserService } from '../services/user/user.service';
 })
 export class HeaderComponent implements OnInit {
 
-  public familiarisationCheck: boolean;
+  public shouldShowFamiliarisationBar: boolean;
   public isLoggedIn: boolean;
+
+  @Input() public noFamiliarisationBar = false;
 
   config: Config;
   govukRoot = 'https://www.gov.uk';
@@ -27,10 +29,12 @@ export class HeaderComponent implements OnInit {
   ) {
     this.config = this.questionService.getConfig();
     this.isLoggedIn = this.userService.isLoggedIn();
-    this.familiarisationCheck = this.config && this.config.practice;
   }
 
   ngOnInit() {
+    this.shouldShowFamiliarisationBar = !this.noFamiliarisationBar
+      && this.isLoggedIn
+      && this.config && this.config.practice;
   }
 
 }
