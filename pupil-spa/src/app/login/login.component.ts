@@ -34,6 +34,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
+    if (this.userService.isLoggedIn()) {
+      this.router.navigate(['sign-in-success']);
+    }
   }
 
   ngAfterViewInit() {

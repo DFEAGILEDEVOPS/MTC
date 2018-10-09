@@ -36,6 +36,9 @@ describe('LoginComponent', () => {
     mockUserService = {
       login: function () {
         return undefined;
+      },
+      isLoggedIn: function () {
+        return false;
       }
     };
 
