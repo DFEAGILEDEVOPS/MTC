@@ -28,6 +28,12 @@ const pinGenerationService = {}
 const chars = '23456789'
 
 /**
+ * Get the expiry time for a pin
+ *
+ */
+pinGenerationService.getPinExpiryTime = pinExpiryTime
+
+/**
  * Fetch pupils and filter required only pupil attributes
  * @param dfeNumber
  * @returns {Array}
@@ -133,6 +139,18 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
 }
 
 /**
+ * HPA version
+ */
+pinGenerationService.updatePins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv) => {
+  if (!Array.isArray(pupilsList)) {
+    throw new Error('Received list of pupils is not an array')
+  }
+  if (!schoolId) {
+    throw new Error('Parameter `schoolId` not provided', schoolId)
+  }
+}
+
+/**
  * Generate school password
  * @param school
  * @returns { pin: string, pinExpiresAt: Moment } || undefined
@@ -171,7 +189,7 @@ pinGenerationService.generateCryptoRandomNumber = (minimum, maximum) => {
  * Generate Pupil Pin
  * @returns {String}
  */
-pinGenerationService.generatePupilPin = () => {
+ pinGenerationService.generatePupilPin = () => {
   const pupilPinLength = 4
   return randomGenerator.getRandom(pupilPinLength, chars)
 }
