@@ -19,7 +19,7 @@ export class FamiliarisationSettingsComponent {
   }
 
   onClick() {
-    this.router.navigate(['sign-in-success']);
+    this.router.navigate(['check-start']);
   }
 
 }

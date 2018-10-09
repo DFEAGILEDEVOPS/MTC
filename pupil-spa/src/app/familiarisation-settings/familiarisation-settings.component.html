@@ -12,6 +12,25 @@
       <ol class="list list-number">
         <li *ngIf="config.colourContrast">Colour contrast</li>
         <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+        <li class="extra-space" *ngIf="config.inputAssistance">Input assistant</li>
+          <div class="grid-row">
+            <div class="column-two-thirds no-padding">
+              <div class="panel panel-border-wide padding-left no-padding">
+                <div>Please enter the first and last name of the input assistant that will be helping you through the check</div>
+                <br>
+                <div class="form-group">
+                  <label for="assistantFirstName" class="form-label">First name of input assistant</label>
+                  <input #assistantFirstName id="assistantFirstName" class="form-control" required minlength="1"
+                         name="assistantFirstName" spellcheck="false" autocorrect="off">
+                </div>
+                <div class="form-group">
+                  <label for="assistantLastName" class="form-label">Last name of input assistant</label>
+                  <input #pupilPin id="assistantLastName" class="form-control" required minlength="1"
+                         name="pupilPin" spellcheck="false" autocorrect="off">
+                </div>
+              </div>
+            </div>
+          </div>
         <li *ngIf="config.numpadRemoval">Remove number pad</li>
         <li *ngIf="config.audibleSounds">Time alert</li>
       </ol>

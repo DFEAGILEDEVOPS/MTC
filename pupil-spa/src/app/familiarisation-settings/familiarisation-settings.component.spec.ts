@@ -43,7 +43,7 @@ describe('FamiliarisationSettingsComponent', () => {
   it('should redirect to the sign-in-success page on click', () => {
     component.onClick();
     fixture.whenStable().then(() => {
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
     });
   });
 });
