@@ -7,7 +7,8 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForPinGeneration AS
                p.dateOfBirth,
                p.urlSlug,
                p.school_id,
-               CAST (0 as bit) as isRestart
+               CAST (0 as bit) as isRestart,
+               (SELECT NULL) as pupilRestart_id
       FROM
                [mtc_admin].[pupil] p
                  LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id)
@@ -38,7 +39,8 @@ UNION
              expChk.dateOfBirth,
              expChk.urlSlug,
              expChk.school_id,
-             CAST (0 as bit) as isRestart
+             CAST (0 as bit) as isRestart,
+             (SELECT NULL) as pupilRestart_id
       FROM
            (SELECT
                        p.id,
@@ -105,7 +107,8 @@ UNION
                      p.dateOfBirth,
                      p.urlSlug,
                      p.school_id,
-                     CAST (1 as bit) as isRestart
+                     CAST (1 as bit) as isRestart,
+                     pr.id as pupilRestart_id
       FROM           [mtc_admin].[pupil] p INNER JOIN
                      [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
       WHERE
