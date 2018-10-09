@@ -11,4 +11,6 @@ class ConfirmationPage < SitePrism::Page
   element :back_sign_in_page, "a[href='/sign-out']"
   element :read_instructions,"button", text: 'Next'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
+
+  element :familiarisation_header, '#familiarisation-header-bar'
 end
