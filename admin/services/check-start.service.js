@@ -127,7 +127,7 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   const res = await checkDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId) ? res.insertId : [res.insertId]
 
-  pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, newCheckIds)
+  await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, newCheckIds)
 
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
