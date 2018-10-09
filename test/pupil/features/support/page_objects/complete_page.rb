@@ -6,16 +6,16 @@ class CompletePage < SitePrism::Page
   element :sign_out, 'a[href="/sign-out"]'
   element :feedback, 'p > a[href="/feedback"]'
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
-
+  element :start_again, 'a', text: 'start again'
 
   def wait_for_complete_page
     i = 0
     while i < 20
-      if(has_completion_text?)
+      if(has_heading?)
         puts "Complete Page is visible."
         break
       else
-        puts "waiting for Complete Page to be visible. Visibility status is: #{has_completion_text?}"
+        puts "waiting for Complete Page to be visible. Visibility status is: #{has_heading?}"
         sleep 0.5
         i = i + 1
       end
