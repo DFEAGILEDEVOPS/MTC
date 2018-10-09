@@ -94,6 +94,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   @Input() public soundComponent;
 
+  public shouldShowQuestion: boolean;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -121,6 +123,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     const accessArrangementsData = storageService.getItem(accessArrangementsDataKey);
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'default';
+    this.shouldShowQuestion = true;
   }
 
   ngOnInit() {
@@ -306,6 +309,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
+          this.shouldShowQuestion = true;
         }
         this.speechService.speakChar(char);
       }
