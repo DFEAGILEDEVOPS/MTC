@@ -24,7 +24,7 @@ describe('access arrangements controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
-    req.user = {School: 9991001}
+    req.user = { School: 9991001 }
     req.breadcrumbs = jasmine.createSpy('breadcrumbs')
     req.flash = jasmine.createSpy('flash')
     return req
@@ -112,7 +112,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
-      spyOn(accessArrangementsService, 'submit').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      spyOn(accessArrangementsService, 'submit').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       await controller.postSubmitAccessArrangements(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
@@ -222,7 +222,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
       spyOn(res, 'redirect')
-      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({id: 1, foreName: 'foreName', lastName: 'lastName'})
+      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()

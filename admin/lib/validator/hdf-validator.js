@@ -11,14 +11,14 @@ const hdfValidationSchema = {
   'jobTitle': {
     notEmpty: true,
     isLength: {
-      options: [{min: 1, max: 35}]
+      options: [{ min: 1, max: 35 }]
     },
     errorMessage: hdfErrorMessages.jobTitle
   },
   'fullName': {
     notEmpty: true,
     isLength: {
-      options: [{min: 1, max: 35}]
+      options: [{ min: 1, max: 35 }]
     },
     errorMessage: hdfErrorMessages.fullName
   }

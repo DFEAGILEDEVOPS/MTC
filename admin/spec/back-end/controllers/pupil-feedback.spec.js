@@ -136,7 +136,7 @@ describe('Pupil Feedback controller', () => {
         body: feedbackData
       })
       const res = httpMocks.createResponse()
-      const postCheck = await mockCheckData({create: reject})
+      const postCheck = await mockCheckData({ create: reject })
       await postCheck(req, res)
       const data = JSON.parse(res._getData())
       expect(res.statusCode).toBe(500)

@@ -127,7 +127,7 @@ psychometricianReportService.generateReport = async function () {
   return new Promise((resolve, reject) => {
     csv.writeToString(
       output,
-      {headers: headers},
+      { headers: headers },
       function (err, data) {
         if (err) { reject(err) }
         resolve(data)
@@ -151,7 +151,7 @@ psychometricianReportService.generateScoreReport = async function () {
   return new Promise((resolve, reject) => {
     csv.writeToString(
       output,
-      {headers: true},
+      { headers: true },
       function (err, data) {
         if (err) { reject(err) }
         resolve(data)
