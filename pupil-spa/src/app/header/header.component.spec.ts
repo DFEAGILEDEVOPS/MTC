@@ -3,16 +3,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
+import { UserService } from '../services/user/user.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
+  let mockUserService;
 
   beforeEach(async(() => {
+    mockUserService = {
+      isLoggedIn: jasmine.createSpy('isLoggedIn')
+    };
     TestBed.configureTestingModule({
       declarations: [ HeaderComponent ],
       providers: [
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: UserService, useValue: mockUserService }
       ]
     })
     .compileComponents();
