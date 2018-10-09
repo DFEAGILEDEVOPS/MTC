@@ -22,4 +22,9 @@ export class FamiliarisationSettingsComponent {
     this.router.navigate(['check-start']);
   }
 
+  onSubmit() {
+    // placeholder for next pull request
+    this.router.navigate(['check-start']);
+  }
+
 }
