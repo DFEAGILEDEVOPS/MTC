@@ -21,11 +21,15 @@
 
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
-* While in `load-test/bin` directory:
-    * The following command will execute a node script which takes total schools required as an argument and will generate 60 pupils for each school: `OVERRIDE_PIN_EXPIRY=true node generate-pupil-load-test-data.js 60`
-    * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing: `node extract-pins-to-csv.js`
+* Create a file called `allowed_words.txt` in the `load-test` directory containing a list of comma separated 3 letter words to use for the school pin generation
+* The following command will execute a node script which takes the number of pupils as an argument and will generate pupils spread across the schools in the database
+    * While in `load-test` directory:
+    * `OVERRIDE_PIN_EXPIRY=true ALLOWED_WORDS=$(cat allowed_words.txt) node bin/generate-pupil-load-test-data.js 20000`
+* The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing:
+    * While in the `load-test` directory:
+    * `node bin/extract-pins-to-csv.js`
     
-## Execute pupil load test    
+## Execute pupil load test
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter pupil check load test in CLI mode:
 
 `` jmeter -n -t ../scenarios/mtc_pupil_check_perf_test.jmx -l reports/pupil-performance-test.csv -Djmeter.save.saveservice.output_format=csv -e -o reports/PupilHTMLReports -Jhost=localhost -Jthreads=3600 -Jramp=50
@@ -44,7 +48,7 @@ This command above takes the following arguments:
 
 In order to rerun the test execute `undo-generate-pupil-load-test-data.sql` as SA to undo the test data population.
 
-## Execute Admin load test    
+## Execute Admin load test
 Assuming `jmeter` directory is placed within the load-test directory, execute the following command to run JMeter Admin load test in CLI mode:
 
 `` jmeter -n  -t ../scenarios/mtc_admin_login.jmx -l reports/mtc_admin_test_result.csv  -Djmeter.save.saveservice.output_format=csv -e -o reports/MTCAdminHTMLReports -Jhost=admin-as-feb-mtc-staging.azurewebsites.net -Jthreads=80 -Jramp=1600
