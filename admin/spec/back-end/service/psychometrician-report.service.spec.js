@@ -46,24 +46,24 @@ describe('psychometricians-report.service', () => {
     checkMock.formData = JSON.stringify(checkFormMock.formData)
     beforeEach(() => {
       spyOn(completedCheckDataService, 'sqlFindByIds').and.returnValue([
-        {id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': {'access_token': 'access_token'} }},
-        {id: 10, pupil_id: 2, checkForm_id: 3},
-        {id: 11, pupil_id: 3, checkForm_id: 4}
+        { id: 9, pupil_id: 1, checkForm_id: 2, data: { 'data': { 'access_token': 'access_token' } } },
+        { id: 10, pupil_id: 2, checkForm_id: 3 },
+        { id: 11, pupil_id: 3, checkForm_id: 4 }
       ])
       spyOn(psychometicianDataService, 'sqlFindPupilsByIds').and.returnValue([
-        {id: 1, school_id: 5},
-        {id: 2, school_id: 6},
-        {id: 3, school_id: 7}
+        { id: 1, school_id: 5 },
+        { id: 2, school_id: 6 },
+        { id: 3, school_id: 7 }
       ])
       spyOn(checkFormService, 'getCheckFormsByIds').and.returnValue([
-        {id: 2, formData: checkMock.formData},
-        {id: 3, formData: checkMock.formData},
-        {id: 4, formData: checkMock.formData}
+        { id: 2, formData: checkMock.formData },
+        { id: 3, formData: checkMock.formData },
+        { id: 4, formData: checkMock.formData }
       ])
       spyOn(schoolDataService, 'sqlFindByIds').and.returnValue([
-        {id: 5},
-        {id: 6},
-        {id: 7}
+        { id: 5 },
+        { id: 6 },
+        { id: 7 }
       ])
       spyOn(answerDataService, 'sqlFindByCheckIds').and.returnValue({
         9: [],
@@ -155,16 +155,16 @@ describe('psychometricians-report.service', () => {
         urn: 'URN99'
       }
       const markedAnswers = [
-        {id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1},
-        {id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1},
-        {id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0},
-        {id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1},
-        {id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1},
-        {id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1},
-        {id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1},
-        {id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1},
-        {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
-        {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
+        { id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1 },
+        { id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1 },
+        { id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0 },
+        { id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1 },
+        { id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1 },
+        { id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1 },
+        { id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1 },
+        { id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1 },
+        { id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1 },
+        { id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1 }
       ]
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
@@ -205,16 +205,16 @@ describe('psychometricians-report.service', () => {
         urn: 'URN99'
       }
       const markedAnswers = [
-        {id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1},
-        {id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1},
-        {id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0},
-        {id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1},
-        {id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1},
-        {id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1},
-        {id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1},
-        {id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1},
-        {id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1},
-        {id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1}
+        { id: 1, factor1: 2, factor2: 5, answer: '10', isCorrect: 1 },
+        { id: 2, factor1: 11, factor2: 2, answer: '22', isCorrect: 1 },
+        { id: 3, factor1: 5, factor2: 10, answer: '', isCorrect: 0 },
+        { id: 4, factor1: 4, factor2: 4, answer: '16', isCorrect: 1 },
+        { id: 5, factor1: 3, factor2: 9, answer: '27', isCorrect: 1 },
+        { id: 6, factor1: 2, factor2: 4, answer: '8', isCorrect: 1 },
+        { id: 7, factor1: 3, factor2: 3, answer: '9', isCorrect: 1 },
+        { id: 8, factor1: 4, factor2: 9, answer: '36', isCorrect: 1 },
+        { id: 9, factor1: 6, factor2: 5, answer: '30', isCorrect: 1 },
+        { id: 10, factor1: 12, factor2: 12, answer: '144', isCorrect: 1 }
       ]
       const checkForm = Object.assign({}, checkFormMock)
       checkForm.formData = JSON.parse(checkForm.formData)
@@ -242,9 +242,9 @@ describe('psychometricians-report.service', () => {
   describe('#generateReport', () => {
     beforeEach(() => {
       spyOn(psychometricianReportCacheDataService, 'sqlFindAll').and.returnValue([
-        {jsonData: {PupilId: 'valOne', propTwo: 1}},
-        {jsonData: {Mark: 'ValTwo', propTwo: 2}},
-        {jsonData: {Response: 'valThree', propTwo: null}}
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } },
+        { jsonData: { Response: 'valThree', propTwo: null } }
       ])
     })
 
@@ -258,9 +258,9 @@ describe('psychometricians-report.service', () => {
   describe('#generateScoreReport', () => {
     beforeEach(async () => {
       spyOn(psychometricianReportCacheDataService, 'sqlFindAll').and.returnValue([
-        {jsonData: {PupilId: 'valOne', propTwo: 1}},
-        {jsonData: {Mark: 'ValTwo', propTwo: 2}},
-        {jsonData: {Response: 'valThree', propTwo: null}}
+        { jsonData: { PupilId: 'valOne', propTwo: 1 } },
+        { jsonData: { Mark: 'ValTwo', propTwo: 2 } },
+        { jsonData: { Response: 'valThree', propTwo: null } }
       ])
     })
 

@@ -30,7 +30,7 @@ anomalyReportService.generateReport = async () => {
   return new Promise((resolve, reject) => {
     csv.writeToString(
       output,
-      {headers: headers},
+      { headers: headers },
       function (err, data) {
         if (err) { reject(err) }
         resolve(data)

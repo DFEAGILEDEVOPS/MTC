@@ -160,8 +160,8 @@ describe('pupil service', () => {
   describe('#getPupilsWithFullNames', () => {
     it('it returns an object with combined name values and urlSlug', async () => {
       const pupilMocks = [
-        {foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345'},
-        {foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345'}
+        { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
+        { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
       spyOn(pupilDataService, 'sqlFindPupilsByDfeNumber').and.returnValue(pupilMocks)
       let pupils

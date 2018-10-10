@@ -19,7 +19,7 @@ describe('setting-log.data.service', () => {
     let mock
 
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('modify').resolves({rowsAffected: 1})
+      mock = sandbox.mock(sqlService).expects('modify').resolves({ rowsAffected: 1 })
       service = proxyquire('../../../../services/data-access/setting-log.data.service', {
         '../../../../services/data-access/sql.service': sqlService
       })

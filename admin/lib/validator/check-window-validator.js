@@ -12,13 +12,13 @@ let checkWindowValidationSchema = {
     notEmpty: true,
     errorMessage: checkWindowErrorMessages.checkWindowName,
     isLength: {
-      options: [{min: 2, max: 35}],
+      options: [{ min: 2, max: 35 }],
       errorMessage: checkWindowErrorMessages.checkWindowNameLength
     }
   },
   'checkEndDay': {
     isInt: {
-      options: [{min: 1, max: 31}],
+      options: [{ min: 1, max: 31 }],
       errorMessage: checkWindowErrorMessages.checkEndDayWrongDay
     },
     matches: {
@@ -30,7 +30,7 @@ let checkWindowValidationSchema = {
   },
   'checkEndMonth': {
     isInt: {
-      options: [{min: 1, max: 12}],
+      options: [{ min: 1, max: 12 }],
       errorMessage: checkWindowErrorMessages.checkEndMonthWrongDay
     },
     matches: {
@@ -42,11 +42,11 @@ let checkWindowValidationSchema = {
   },
   'checkEndYear': {
     isInt: {
-      options: [{min: currentYear, max: (currentYear * 1 + 10)}],
+      options: [{ min: currentYear, max: (currentYear * 1 + 10) }],
       errorMessage: checkWindowErrorMessages.checkEndYearWrongDay
     },
     isLength: {
-      options: [{min: 4, max: 4}],
+      options: [{ min: 4, max: 4 }],
       errorMessage: checkWindowErrorMessages.enterValidYear
     },
     matches: {
@@ -61,7 +61,7 @@ let checkWindowValidationSchema = {
 const checkWindowValidationSchemaAdminDate = {
   'adminStartDay': {
     isInt: {
-      options: [{min: 1, max: 31}],
+      options: [{ min: 1, max: 31 }],
       errorMessage: checkWindowErrorMessages.adminStartDayWrongDay
     },
     matches: {
@@ -73,7 +73,7 @@ const checkWindowValidationSchemaAdminDate = {
   },
   'adminStartMonth': {
     isInt: {
-      options: [{min: 1, max: 12}],
+      options: [{ min: 1, max: 12 }],
       errorMessage: checkWindowErrorMessages.adminStartMonthWrongDay
     },
     matches: {
@@ -85,7 +85,7 @@ const checkWindowValidationSchemaAdminDate = {
   },
   'adminStartYear': {
     isInt: {
-      options: [{min: currentYear}],
+      options: [{ min: currentYear }],
       errorMessage: checkWindowErrorMessages.adminStartYearWrongDay
     },
     matches: {
@@ -93,7 +93,7 @@ const checkWindowValidationSchemaAdminDate = {
       errorMessage: checkWindowErrorMessages.adminStartYearInvalidChars
     },
     isLength: {
-      options: [{min: 4, max: 4}],
+      options: [{ min: 4, max: 4 }],
       errorMessage: checkWindowErrorMessages.enterValidYear
     },
     notEmpty: true,
@@ -104,7 +104,7 @@ const checkWindowValidationSchemaAdminDate = {
 const checkWindowValidationSchemaCheckStart = {
   'checkStartDay': {
     isInt: {
-      options: [{min: 1, max: 31}],
+      options: [{ min: 1, max: 31 }],
       errorMessage: checkWindowErrorMessages.checkStartDayWrongDay
     },
     matches: {
@@ -116,7 +116,7 @@ const checkWindowValidationSchemaCheckStart = {
   },
   'checkStartMonth': {
     isInt: {
-      options: [{min: 1, max: 12}],
+      options: [{ min: 1, max: 12 }],
       errorMessage: checkWindowErrorMessages.checkStartMonthWrongDay
     },
     matches: {
@@ -128,11 +128,11 @@ const checkWindowValidationSchemaCheckStart = {
   },
   'checkStartYear': {
     isInt: {
-      options: [{min: currentYear}],
+      options: [{ min: currentYear }],
       errorMessage: checkWindowErrorMessages.checkStartYearWrongDay
     },
     isLength: {
-      options: [{min: 4, max: 4}],
+      options: [{ min: 4, max: 4 }],
       errorMessage: checkWindowErrorMessages.enterValidYear
     },
     matches: {

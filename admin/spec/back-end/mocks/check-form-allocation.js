@@ -1,17 +1,18 @@
 'use strict'
 const moment = require('moment')
 const questions = [
-  {'f1': 2, 'f2': 5},
-  {'f1': 11, 'f2': 2},
-  {'f1': 5, 'f2': 10},
-  {'f1': 4, 'f2': 4},
-  {'f1': 3, 'f2': 9}
+  { 'f1': 2, 'f2': 5 },
+  { 'f1': 11, 'f2': 2 },
+  { 'f1': 5, 'f2': 10 },
+  { 'f1': 4, 'f2': 4 },
+  { 'f1': 3, 'f2': 9 }
 ]
 
 module.exports = {
   checkFormAllocation_id: 1,
   checkFormAllocation_checkCode: '47D48E2C-DEA0-421A-9EBA-14CFC3AEE25C',
   pupil_id: 1,
+  check_isLiveCheck: true,
   pupil_foreName: 'Juliana',
   pupil_lastName: 'Brewer',
   pupil_dateOfBirth: moment('2008-06-10T01:00:00.260'),
