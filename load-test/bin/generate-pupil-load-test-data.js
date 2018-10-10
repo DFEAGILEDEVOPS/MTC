@@ -15,19 +15,22 @@ async function main () {
 
     let schools, numSchools, pupilsPerSchool, pupilsRemainder, params
 
-    schools = await sqlService.query(`SELECT * FROM school`)
+    schools = await sqlService.query(`SELECT id, dfeNumber FROM ${sqlService.adminSchema}.[school]`)
     numSchools = schools.length
 
+    // When generating less pupils than the total number of schools, slice
+    // the schools array to the number of pupils and set 1 pupil per school
     pupilsPerSchool = Math.floor(numPupils / numSchools)
     if (pupilsPerSchool < 1) {
       pupilsPerSchool = 1
       schools = schools.slice(0, numPupils)
+      numSchools = schools.length
       pupilsRemainder = 0
     } else {
       pupilsRemainder = numPupils - (pupilsPerSchool * numSchools)
     }
 
-    winston.info(`Generating ${numPupils} pupils across ${schools.length} schools`)
+    winston.info(`Generating ${numPupils} pupils across ${numSchools} schools`)
 
     for (let i = 0; i < numSchools; i++) {
       let school = schools[i]
