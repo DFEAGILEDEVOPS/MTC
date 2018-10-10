@@ -1,8 +1,11 @@
 const winston = require('winston')
 const { TYPES } = require('tedious')
 const moment = require('moment')
+const R = require('ramda')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
+const pinGenerationService = require('../../admin/services/pin-generation.service')
+const schoolDataService = require('../../admin/services/data-access/school.data.service')
 const pupilDataService = require('../../admin/services/data-access/pupil.data.service')
 const checkStartService = require('../../admin/services/check-start.service')
 
@@ -15,7 +18,7 @@ async function main () {
 
     let schools, numSchools, pupilsPerSchool, pupilsRemainder, params
 
-    schools = await sqlService.query(`SELECT id, dfeNumber FROM ${sqlService.adminSchema}.[school]`)
+    schools = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[school]`)
     numSchools = schools.length
 
     // When generating less pupils than the total number of schools, slice
@@ -67,6 +70,10 @@ async function main () {
         END;
       END`
       await sqlService.query(sql, params)
+      if (!school.pin) {
+        let update = pinGenerationService.generateSchoolPassword(school)
+        await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+      }
       const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
       const pupilsList = pupils.map(p => p.id)
       await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
