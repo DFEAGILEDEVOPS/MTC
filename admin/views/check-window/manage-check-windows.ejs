@@ -9,6 +9,11 @@
 
 <div class="grid-row">
     <div class="column-two-thirds">
+        <% if (messages && messages.info && messages.info.length) { %>
+        <div class="info-message">
+            <%= messages.info %>
+        </div>
+        <% } %>
         <h1 class="heading-xlarge">Manage check windows</h1>
         <%- partial('partials/_session_expiry') %>
         <p class="lede">Create, edit or remove check windows. Test development is responsible for assigning check forms to the check windows created here.</p>
