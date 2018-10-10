@@ -7,7 +7,6 @@ const checkWindowsMock = require('../mocks/check-windows')
 const checkWindowMock = require('../mocks/check-window')
 const checkMock = require('../mocks/check')
 const moment = require('moment')
-const R = require('ramda')
 
 describe('check-window.service', () => {
   let service, checkWindowDataService, checkFormDataService, checkDataService
@@ -316,8 +315,8 @@ describe('check-window.service', () => {
       const checkWindowData = {
         name: 'checkWindowName',
         adminStartDate: checkWindowMock.adminStartDate,
-        adminEndDate: R.clone(checkWindowMock.checkEndDate).add(2, 'days'),
-        familiarisationCheckStartDate: R.clone(checkWindowMock.checkStartDate).subtract(1, 'days'),
+        adminEndDate: moment(checkWindowMock.checkEndDate).add(2, 'days'),
+        familiarisationCheckStartDate: moment(checkWindowMock.checkStartDate).subtract(1, 'days'),
         familiarisationCheckEndDate: checkWindowMock.checkEndDate,
         checkStartDate: checkWindowMock.checkStartDate,
         checkEndDate: checkWindowMock.checkEndDate
