@@ -18,11 +18,18 @@ Given(/^I have logged in$/) do
   sign_in_page.load
   ct = Time.now
   new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  @pupil = SqlDbHelper.find_next_pupil
+  @pin = 4.times.map {rand(2..9)}.join
+  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time, @pin)
+  current_time = Time.now + 86400
+  new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
+  SqlDbHelper.create_check(new_time, new_time, @pupil['id'])
+  SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
 
-  SqlDbHelper.expire_pin("Standard","Pupil",1,false)
-  SqlDbHelper.reset_pin("Standard","Pupil",1, new_time, "9999")
-  @pupil_information = SqlDbHelper.find_pupil_via_pin("9999")
-  sign_in_page.login("abc12345","9999")
+  @school = SqlDbHelper.find_school(@pupil['school_id'])
+
+  sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
 end
 

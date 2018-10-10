@@ -7,7 +7,7 @@ const winston = require('winston')
 
 const jwtService = require('../../../services/jwt.service')
 const checkCompleteService = require('../../../services/check-complete.service')
-const {audit, inputs, answers} = require('../mocks/check-complete')
+const { audit, inputs, answers } = require('../mocks/check-complete')
 
 const validToken = 'good_token'
 let sandbox
@@ -46,7 +46,7 @@ describe('completed check controller', () => {
     goodReq = httpMocks.createRequest({
       method: 'POST',
       url: '/api/completed-check',
-      body: {audit, inputs, answers, validToken}
+      body: { audit, inputs, answers, validToken }
     })
   })
 

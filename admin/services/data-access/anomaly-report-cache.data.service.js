@@ -1,5 +1,5 @@
 'use strict'
-const {TYPES} = require('tedious')
+const { TYPES } = require('tedious')
 const R = require('ramda')
 const winston = require('winston')
 
