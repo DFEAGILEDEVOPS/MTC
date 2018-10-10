@@ -140,8 +140,8 @@ class SqlDbHelper
   end
 
 
-  def self.create_check(updatedime, createdTime, pupil_id)
-    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, isLiveCheck) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{true}' )"
+  def self.create_check(updatedime, createdTime, pupil_id, is_live_check=true)
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, isLiveCheck) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{is_live_check}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
