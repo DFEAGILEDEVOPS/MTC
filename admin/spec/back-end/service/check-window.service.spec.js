@@ -7,6 +7,7 @@ const checkWindowsMock = require('../mocks/check-windows')
 const checkWindowMock = require('../mocks/check-window')
 const checkMock = require('../mocks/check')
 const moment = require('moment')
+const R = require('ramda')
 
 describe('check-window.service', () => {
   let service, checkWindowDataService, checkFormDataService, checkDataService
@@ -280,17 +281,48 @@ describe('check-window.service', () => {
     })
   })
   describe('#submit', () => {
+    let requestData
+    beforeEach(() => {
+      requestData = {
+        checkWindowName: 'checkWindowName',
+        adminStartDay: '01',
+        adminStartMonth: '01',
+        adminStartYear: moment.utc().format('YYYY'),
+        checkStartDay: '01',
+        checkStartMonth: '01',
+        checkStartYear: moment.utc().format('YYYY')
+      }
+    })
     it('submits existing check window data', async () => {
       spyOn(checkWindowDataService, 'sqlUpdate')
       spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
-      await service.submit({}, { id: 1 })
+      await service.submit(requestData, { id: 1 })
       expect(checkWindowDataService.sqlUpdate).toHaveBeenCalledTimes(1)
     })
     it('submits new check window data', async () => {
       spyOn(checkWindowDataService, 'sqlCreate')
       spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(checkWindowMock.checkEndDate)
-      await service.submit({})
+      await service.submit(requestData)
       expect(checkWindowDataService.sqlCreate).toHaveBeenCalledTimes(1)
+    })
+    it('creates adminEndDate, familiarisationCheckStartDate and familiarisationCheckEndDate as part of the saving process for new check window', async () => {
+      spyOn(checkWindowDataService, 'sqlCreate')
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValues(
+        checkWindowMock.adminStartDate,
+        checkWindowMock.checkStartDate,
+        checkWindowMock.checkEndDate
+      )
+      await service.submit(requestData)
+      const checkWindowData = {
+        name: 'checkWindowName',
+        adminStartDate: checkWindowMock.adminStartDate,
+        adminEndDate: R.clone(checkWindowMock.checkEndDate).add(2, 'days'),
+        familiarisationCheckStartDate: R.clone(checkWindowMock.checkStartDate).subtract(1, 'days'),
+        familiarisationCheckEndDate: checkWindowMock.checkEndDate,
+        checkStartDate: checkWindowMock.checkStartDate,
+        checkEndDate: checkWindowMock.checkEndDate
+      }
+      expect(checkWindowDataService.sqlCreate).toHaveBeenCalledWith(checkWindowData)
     })
   })
   describe('#marKDeleted', () => {
