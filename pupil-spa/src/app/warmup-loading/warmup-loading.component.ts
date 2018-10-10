@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, Input } from '@angular/core';
 import { LoadingComponent } from '../loading/loading.component';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
@@ -11,6 +11,8 @@ import { QuestionService } from '../services/question/question.service';
   styles: []
 })
 export class WarmupLoadingComponent extends LoadingComponent implements AfterViewInit {
+
+  @Input() public familiarisationCheck = false;
 
   constructor(auditService: AuditService,
               questionService: QuestionService,

@@ -34,6 +34,7 @@ export class CheckComponent implements OnInit {
 
   public config: Config;
   public isWarmUp: boolean;
+  public familiarisationCheck: boolean;
   public question: Question;
   public state: number;
   public viewState: string;
@@ -86,6 +87,8 @@ export class CheckComponent implements OnInit {
   ngOnInit() {
     // console.log('check.component: ngOnInit() called');
     this.config = this.warmupQuestionService.getConfig();
+
+    this.familiarisationCheck = this.config && this.config.practice;
 
     this.initStates();
 
