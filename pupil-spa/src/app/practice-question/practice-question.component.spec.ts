@@ -243,6 +243,8 @@ describe('PractiseQuestionComponent', () => {
 
       tick(50);
       expect(component.soundComponent.playEndOfQuestionSound).toHaveBeenCalled();
+
+      tick(500); // skip the pause
     }));
   });
 });
