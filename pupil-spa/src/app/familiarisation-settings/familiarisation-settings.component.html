@@ -2,51 +2,83 @@
 
 <main id="content" class="js-content" role="main">
   <div class="grid-row">
-    <form *ngIf="config.inputAssistance" (ngSubmit)="onSubmit()" autocomplete="off"
-          autocapitalize="none">
-      <div class="column-full">
-        <header class="page-header">
+    <div class="full-width">
+      <div *ngIf="userSubmittedForm && (inputAssistantFirstName.invalid || inputAssistantLastName.invalid)" class="error-summary" role="alert" aria-labelledby="error-summary" tabindex="-1">
+        <h2 class="heading-medium error-summary-heading" id="error-summary">
+          You need to fix the error on this page before continuing
+        </h2>
+        <p>
+          See highlighted errors below
+        </p>
+        <ul class="error-summary-list">
+          <p *ngIf="inputAssistantFirstName.value.length === 0 || inputAssistantFirstName.value.length > 128">
+            <a href='/access-settings#inputAssistantFirstName'>Enter a first name</a>
+          </p>
+          <p *ngIf="hasSpecialCharacters(inputAssistantFirstName.value)">
+            <a href='/access-settings#inputAssistantFirstName'>Enter a first name without special characters</a>
+          </p>
+          <p *ngIf="inputAssistantLastName.value.length === 0 || inputAssistantLastName.value.length > 128">
+            <a href='/access-settings#inputAssistantLastName'>Enter a last name</a>
+          </p>
+          <p *ngIf="hasSpecialCharacters(inputAssistantLastName.value)">
+            <a href='/access-settings#inputAssistantFirstName'>Enter a last name without special characters</a>
+          </p>
+        </ul>
+      </div>
+      <form *ngIf="config.inputAssistance" [formGroup]="familiarisationSettingsForm"
+            (ngSubmit)="onSubmit(inputAssistantFirstName.value, inputAssistantLastName.value)">
+          <header class="page-header">
             <h1 class="heading-xlarge" tabindex="0">Your settings</h1>
-        </header>
+          </header>
         <p class="lede">
             You have the following settings on your check
-        </p>
-        <ol class="list list-number">
-          <li *ngIf="config.colourContrast">Colour contrast</li>
-          <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
-          <li class="extra-space" *ngIf="config.inputAssistance">Input assistant</li>
+          </p>
+          <ol class="list list-number">
+            <li *ngIf="config.colourContrast">Colour contrast</li>
+            <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+            <li class="extra-space" *ngIf="config.inputAssistance">Input assistant</li>
             <div class="grid-row">
               <div class="column-two-thirds no-padding">
                 <div class="panel panel-border-wide padding-left no-padding">
                   <div>Please enter the first and last name of the input assistant that will be helping you through the check</div>
                   <br>
-                  <div class="form-group">
-                    <label for="assistantFirstName" class="form-label">First name of input assistant</label>
-                    <input #assistantFirstName id="assistantFirstName" class="form-control" required minlength="1"
-                           name="assistantFirstName" spellcheck="false" autocorrect="off">
+                  <div [ngClass]="{ 'form-group': true, 'form-group-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').invalid}">
+                    <label for="inputAssistantFirstName" class="form-label">
+                      First name of input assistant
+                      <span *ngIf="userSubmittedForm && (inputAssistantFirstName.value.length === 0 || inputAssistantFirstName.value.length > 128)" class="error-message">Enter a first name</span>
+                      <span *ngIf="userSubmittedForm && hasSpecialCharacters(inputAssistantFirstName.value)" class="error-message">Enter a first name without special characters</span>
+                    </label>
+                    <input #inputAssistantFirstName id="inputAssistantFirstName"
+                           [ngClass]="{ 'form-control': true, 'form-control-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').invalid}"
+                           required minlength="1" formControlName="inputAssistantFirstName" name="inputAssistantFirstName" spellcheck="false" autocorrect="off" autocomplete="off">
                   </div>
-                  <div class="form-group">
-                    <label for="assistantLastName" class="form-label">Last name of input assistant</label>
-                    <input #pupilPin id="assistantLastName" class="form-control" required minlength="1"
-                           name="pupilPin" spellcheck="false" autocorrect="off">
+                  <div [ngClass]="{ 'form-group': true, 'form-group-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').invalid}">
+                    <label for="inputAssistantLastName" class="form-label">
+                      Last name of input assistant
+                      <span *ngIf="userSubmittedForm && (inputAssistantLastName.value.length === 0 || inputAssistantLastName.value.length > 128)" class="error-message">Enter a last name</span>
+                      <span *ngIf="userSubmittedForm && hasSpecialCharacters(inputAssistantLastName.value)" class="error-message">Enter a last name without special characters</span>
+                    </label>
+                    <input #inputAssistantLastName id="inputAssistantLastName"
+                           [ngClass]="{ 'form-control': true, 'form-control-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').invalid}"
+                           required minlength="1" formControlName="inputAssistantLastName" name="inputAssistantLastName" spellcheck="false" autocorrect="off" autocomplete="off">
                   </div>
                 </div>
               </div>
             </div>
-          <li *ngIf="config.numpadRemoval">Remove number pad</li>
-          <li *ngIf="config.audibleSounds">Time alert</li>
-        </ol>
-        <p>
-          If you need to add or remove any settings, please tell your teacher and
-          <a routerLink="/sign-out">sign out</a>.
-        </p>
-        <button *ngIf="!config.inputAssistance" class="button" (click)="onClick()">Next</button>
-        <div *ngIf="config.inputAssistance" class="form-group">
+            <li *ngIf="config.numpadRemoval">Remove number pad</li>
+            <li *ngIf="config.audibleSounds">Time alert</li>
+          </ol>
           <p>
-            <input class="button button-start" type="submit" value="Next">
+            If you need to add or remove any settings, please tell your teacher and
+            <a routerLink="/sign-out">sign out</a>.
           </p>
-        </div>
-      </div>
-    </form>
+          <button *ngIf="!config.inputAssistance" class="button" (click)="onClick()">Next</button>
+          <div *ngIf="config.inputAssistance" class="form-group">
+            <p>
+              <input class="button button-start" type="submit" value="Next">
+            </p>
+          </div>
+      </form>
+    </div>
   </div>
 </main>
