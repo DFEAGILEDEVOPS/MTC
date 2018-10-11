@@ -94,3 +94,8 @@ Feature:
     When I enter all the years for each of the dates with an invalid year
     Then I should see an error stating I should enter a valid year
 
+  Scenario: Users can create a check window
+    Given I navigate to the create check window page
+    When I submit details of a valid check window
+#    Then I should see it added to the list of check windows YET TO BE IMPLEMENTED
+    And stored correctly in the db
