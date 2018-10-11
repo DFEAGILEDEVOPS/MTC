@@ -5,6 +5,7 @@
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -37,9 +38,19 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getCheckWindows')
       await controller.getManageCheckWindows(req, res, next)
       expect(res.locals.pageTitle).toBe('Manage check windows')
       expect(res.render).toHaveBeenCalled()
+    })
+    it('calls next if getCheckWindows method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getCheckWindows').and.returnValue(Promise.reject(new Error('error')))
+      await controller.getManageCheckWindows(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
   describe('createCheckWindow route', () => {

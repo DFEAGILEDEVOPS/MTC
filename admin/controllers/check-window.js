@@ -4,6 +4,7 @@ const moment = require('moment')
 const monitor = require('../helpers/monitor')
 const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -18,9 +19,16 @@ const controller = {
   getManageCheckWindows: async (req, res, next) => {
     res.locals.pageTitle = 'Manage check windows'
     req.breadcrumbs(res.locals.pageTitle)
+    let checkWindows
+    try {
+      checkWindows = await checkWindowV2Service.getCheckWindows()
+    } catch (error) {
+      return next(error)
+    }
     return res.render('check-window/manage-check-windows', {
       breadcrumbs: req.breadcrumbs(),
-      messages: res.locals.messages
+      messages: res.locals.messages,
+      checkWindows
     })
   },
 

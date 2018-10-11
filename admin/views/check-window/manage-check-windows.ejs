@@ -24,7 +24,34 @@
             <a class="button button-primary" href="/check-window/create-check-window">Create new check window</a>
         </div>
         <br />
+        <% if (Array.isArray(checkWindows) && checkWindows.length > 0) { %>
+        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+            <thead>
+            <tr>
+                <th scope="col"><a>Check window</a></th>
+                <th scope="col"><a>Status</a></th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% checkWindows.forEach((checkWindow) => { %>
+            <tr>
+                <td>
+                    <span class="bold-small"><%= checkWindow.name %></span>
+                </td>
+                <td><%= checkWindow.status %></td>
+                <td>
+                    <% if (checkWindow.canRemove) { %>
+                    <a href="" class="modal-link" id="js-modal-link">Remove</a>
+                    <% } %>
+                </td>
+            </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
         No check windows created.
+        <% } %>
     </div>
 
     <div class="column-one-third sidebar" aria-label="sidebar">

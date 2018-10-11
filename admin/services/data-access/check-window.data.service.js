@@ -314,6 +314,15 @@ const checkWindowDataService = {
     ]
     const rows = await sqlService.query(sql, params)
     return R.head(rows)
+  },
+
+  /**
+   * Fetch all check windows with status
+   * @return {Promise<Array>}
+   */
+  sqlFindCheckWindowsWithStatus: async () => {
+    const sql = `SE LECT * FROM ${sqlService.adminSchema}.[vewCheckWindowWithStatus]`
+    return sqlService.query(sql)
   }
 }
 
