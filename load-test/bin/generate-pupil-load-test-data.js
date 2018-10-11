@@ -11,6 +11,7 @@ const checkStartService = require('../../admin/services/check-start.service')
 
 async function main () {
   try {
+    const chunkSize = 300
     const numPupils = parseInt(process.argv[2])
     if (!numPupils) {
       throw new Error('Pupil length argument is not supplied or is not a valid number')
@@ -35,26 +36,28 @@ async function main () {
 
     winston.info(`Generating ${numPupils} pupils across ${numSchools} schools`)
 
-    for (let i = 0; i < numSchools; i++) {
-      let school = schools[i]
-      let totalPupils = pupilsPerSchool
-      if (i < pupilsRemainder) {
-        totalPupils += 1
-      }
-      // maybe use sqlService.generateParams
-      params = [
-        {
-          name: 'schoolId',
-          value: school.id,
-          type: TYPES.Int
-        },
-        {
-          name: 'dateOfBirth',
-          value: randomDob(),
-          type: TYPES.DateTimeOffset
+    for (let chunkIndex = 0; chunkIndex <= numSchools; chunkIndex += chunkSize) {
+      let schoolsChunk = schools.slice(chunkIndex, chunkIndex + chunkSize)
+      await Promise.all(schoolsChunk.map(async (school, i) => {
+        let totalPupils = pupilsPerSchool
+        let schoolIndex = chunkIndex + i
+        if (schoolIndex < pupilsRemainder) {
+          totalPupils += 1
         }
-      ]
-      const sql = `
+        // maybe use sqlService.generateParams
+        params = [
+          {
+            name: 'schoolId',
+            value: school.id,
+            type: TYPES.Int
+          },
+          {
+            name: 'dateOfBirth',
+            value: randomDob(),
+            type: TYPES.DateTimeOffset
+          }
+        ]
+        const sql = `
       BEGIN
         DECLARE @cnt INT = 1;
         DECLARE @baseUpn INT = 80120000 + @schoolId
@@ -69,19 +72,21 @@ async function main () {
           SET @cnt = @cnt + 1;
         END;
       END`
-      await sqlService.query(sql, params)
-      if (!school.pin) {
-        let update = pinGenerationService.generateSchoolPassword(school)
-        await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
-      }
-      const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
-      const pupilsList = pupils.map(p => p.id)
-      await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
+        await sqlService.query(sql, params)
+        if (!school.pin) {
+          let update = pinGenerationService.generateSchoolPassword(school)
+          await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
+        }
+        const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
+        const pupilsList = pupils.map(p => p.id)
+        await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
+      }))
     }
 
     winston.info('DONE')
     sqlPoolService.drain()
   } catch (error) {
+    console.log('error')
     winston.info(error)
     process.exitCode = 1
     sqlPoolService.drain()
