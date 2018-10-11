@@ -23,8 +23,9 @@
 * Ensure admin application is running and the migrations have been applied
 * Create a file called `allowed_words.txt` in the `load-test` directory containing a list of comma separated 3 letter words to use for the school pin generation
 * The following command will execute a node script which takes the number of pupils as an argument and will generate pupils spread across the schools in the database
+* The script will load the data asyncrounously in chunks depending on the sql pool size. Please sepcify the pool environment variable as demonstrated below 
     * While in `load-test` directory:
-    * `OVERRIDE_PIN_EXPIRY=true ALLOWED_WORDS=$(cat allowed_words.txt) node bin/generate-pupil-load-test-data.js 20000`
+    * `SQL_POOL_MIN_COUNT=300 SQL_POOL_MAX_COUNT=300 OVERRIDE_PIN_EXPIRY=true ALLOWED_WORDS=$(cat allowed_words.txt) node bin/generate-pupil-load-test-data.js 20000`
 * The following command will update `load-test/scenarios/data/pupilLogins.csv` with all the school password and pupil pin combinations required for the JMeter pupil load testing:
     * While in the `load-test` directory:
     * `node bin/extract-pins-to-csv.js`
