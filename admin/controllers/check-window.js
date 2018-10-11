@@ -19,7 +19,8 @@ const controller = {
     res.locals.pageTitle = 'Manage check windows'
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('check-window/manage-check-windows', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      messages: res.locals.messages
     })
   },
 
@@ -51,8 +52,9 @@ const controller = {
    */
   submitCheckWindow: async (req, res, next) => {
     const requestData = req.body
+    let flashMessage
     try {
-      await checkWindowV2AddService.submit(requestData)
+      flashMessage = await checkWindowV2AddService.submit(requestData)
     } catch (error) {
       if (error.name === 'ValidationError') {
         res.locals.pageTitle = 'Create check window'
@@ -67,6 +69,7 @@ const controller = {
       }
       return next(error)
     }
+    req.flash('info', flashMessage)
     return res.redirect('/check-window/manage-check-windows')
   }
 }
