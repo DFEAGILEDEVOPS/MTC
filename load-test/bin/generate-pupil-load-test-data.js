@@ -11,7 +11,7 @@ const checkStartService = require('../../admin/services/check-start.service')
 
 async function main () {
   try {
-    const chunkSize = 300
+    const chunkSize = process.env.SQL_POOL_MAX_COUNT || 10
     const numPupils = parseInt(process.argv[2])
     if (!numPupils) {
       throw new Error('Pupil length argument is not supplied or is not a valid number')
@@ -35,6 +35,7 @@ async function main () {
     }
 
     winston.info(`Generating ${numPupils} pupils across ${numSchools} schools`)
+    winston.info(`SQL Pool / Chunk size: ${chunkSize}`)
 
     for (let chunkIndex = 0; chunkIndex <= numSchools; chunkIndex += chunkSize) {
       let schoolsChunk = schools.slice(chunkIndex, chunkIndex + chunkSize)
