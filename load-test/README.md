@@ -21,7 +21,7 @@
 
 ### Install Jmeter Plugins - Custom JMeter Functions
 * download Jmeter plugin manager
-https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager?utm_source=blog&utm_medium=BM_blog&utm_campaign=how-to-use-the-custom-jmeter-functions-plugin-part2
+https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
 * download the Custom JMeter Functions plugin
 https://jmeter-plugins.org/wiki/Functions/
 
