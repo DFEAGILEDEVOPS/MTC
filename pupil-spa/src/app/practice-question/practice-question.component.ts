@@ -154,7 +154,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
   preSendTimeoutEvent() {
-    this.soundComponent.playEndOfQuestionSound();
+    if (!this.config.speechSynthesis) {
+      return this.soundComponent.playEndOfQuestionSound();
+    }
+
+    this.speechService.waitForEndOfSpeech().then(() => {
+      this.soundComponent.playEndOfQuestionSound();
+    });
   }
 
   /**
