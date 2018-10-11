@@ -139,8 +139,9 @@ class SqlDbHelper
     chk_form_res
   end
 
-  def self.create_check(updatedime, createdTime, pupil_id)
-    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1)"
+
+  def self.create_check(updatedime, createdTime, pupil_id, is_live_check=true)
+    sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, isLiveCheck) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{is_live_check}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
@@ -174,5 +175,12 @@ class SqlDbHelper
     result.cancel
     settings_res
   end
+
+  def self.set_pupil_access_arrangement(pupil_id, created_time, updated_time, access_arrangments_id)
+    sql = "INSERT INTO [mtc_admin].[pupilAccessArrangements] (pupil_id, createdAt, updatedAt, recordedBy_user_id, accessArrangements_id) VALUES ( #{pupil_id}, '#{created_time}', '#{updated_time}', 4, '#{access_arrangments_id}' )"
+    result = SQL_CLIENT.execute(sql)
+    result.insert
+  end
+
 
 end

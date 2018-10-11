@@ -59,7 +59,10 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setItem('pupil', { checkCode });
 
     this.config = this.questionService.getConfig();
-    this.isAAUser = this.config.fontSize || this.config.colourContrast;
+    this.isAAUser = this.config.fontSize
+      || this.config.colourContrast
+      || this.config.audibleSounds
+      || this.config.numpadRemoval;
   }
 
   async ngOnInit() {
