@@ -2,6 +2,7 @@
 /* global describe it expect beforeEach jasmine spyOn */
 const httpMocks = require('node-mocks-http')
 const restartService = require('../../../services/restart.service')
+const restartV2Service = require('../../../services/restart-v2.service')
 const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
 const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
@@ -91,6 +92,7 @@ describe('restart controller:', () => {
       spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
       spyOn(restartService, 'getPupils').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
+      spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(null)
       await controller(req, res, next)
       expect(res.locals.pageTitle).toBe('Select pupils for restart')
@@ -103,9 +105,14 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getSelectRestartList
       spyOn(res, 'render').and.returnValue(null)
-      spyOn(restartService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
-      await controller(req, res, next)
-      expect(next).toHaveBeenCalled()
+      spyOn(restartService, 'getPupils').and.throwError(new Error('mock error'))
+      spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.throwError(new Error('mock error'))
+      try {
+        await controller(req, res, next)
+        expect(next).toHaveBeenCalledWith(new Error('mock error'))
+      } catch (error) {
+        fail('not expected to throw')
+      }
       done()
     })
   })
@@ -144,6 +151,7 @@ describe('restart controller:', () => {
       spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsMock)
       spyOn(restartValidator, 'validateReason').and.returnValue(validationError)
       spyOn(restartService, 'getPupils').and.returnValue(pupilMock)
+      spyOn(restartV2Service, 'getPupilsEligibleForRestart').and.returnValue(pupilsMock)
       spyOn(restartService, 'getReasons').and.returnValue(null)
       spyOn(groupService, 'findGroupsByPupil').and.returnValue(pupilsMock)
       spyOn(res, 'render').and.returnValue(null)
