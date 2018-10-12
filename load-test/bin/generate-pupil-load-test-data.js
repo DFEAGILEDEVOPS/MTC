@@ -1,17 +1,15 @@
 const winston = require('winston')
 const { TYPES } = require('tedious')
 const moment = require('moment')
-const R = require('ramda')
 const sqlService = require('../../admin/services/data-access/sql.service')
 const sqlPoolService = require('../../admin/services/data-access/sql.pool.service')
-const pinGenerationService = require('../../admin/services/pin-generation.service')
-const schoolDataService = require('../../admin/services/data-access/school.data.service')
-const pupilDataService = require('../../admin/services/data-access/pupil.data.service')
-const checkStartService = require('../../admin/services/check-start.service')
 
 async function main () {
   try {
-    const chunkSize = process.env.SQL_POOL_MAX_COUNT || 10
+    const pinExpireyDays = 1
+    const pinExpireyDate = new Date()
+    pinExpireyDate.setDate(pinExpireyDate.getDate() + pinExpireyDays)
+
     const numPupils = parseInt(process.argv[2])
     if (!numPupils) {
       throw new Error('Pupil length argument is not supplied or is not a valid number')
@@ -35,54 +33,61 @@ async function main () {
     }
 
     winston.info(`Generating ${numPupils} pupils across ${numSchools} schools`)
-    winston.info(`SQL Pool / Chunk size: ${chunkSize}`)
 
-    for (let chunkIndex = 0; chunkIndex <= numSchools; chunkIndex += chunkSize) {
-      let schoolsChunk = schools.slice(chunkIndex, chunkIndex + chunkSize)
-      await Promise.all(schoolsChunk.map(async (school, i) => {
-        let totalPupils = pupilsPerSchool
-        let schoolIndex = chunkIndex + i
-        if (schoolIndex < pupilsRemainder) {
-          totalPupils += 1
+    for (let i = 0; i < numSchools; i++) {
+      let school = schools[i]
+      let totalPupils = pupilsPerSchool
+      if (i < pupilsRemainder) {
+        totalPupils += 1
+      }
+      // maybe use sqlService.generateParams
+      params = [
+        {
+          name: 'schoolId',
+          value: school.id,
+          type: TYPES.Int
+        },
+        {
+          name: 'dateOfBirth',
+          value: randomDob(),
+          type: TYPES.DateTimeOffset
+        },
+        {
+          name: 'pinExpiresAt',
+          value: pinExpireyDate,
+          type: TYPES.DateTimeOffset
         }
-        // maybe use sqlService.generateParams
-        params = [
-          {
-            name: 'schoolId',
-            value: school.id,
-            type: TYPES.Int
-          },
-          {
-            name: 'dateOfBirth',
-            value: randomDob(),
-            type: TYPES.DateTimeOffset
-          }
-        ]
-        const sql = `
+      ]
+
+      // TODO set school pin?
+      // TODO set check pin?
+      // TODO is anything else required to emulate prepareCheck()?
+      const sql = `
+      DECLARE @cnt INT = 1;
+      DECLARE @baseUpn INT = 80120000 + @schoolId
+      BEGIN TRAN
+      WHILE @cnt <= ${totalPupils}
       BEGIN
-        DECLARE @cnt INT = 1;
-        DECLARE @baseUpn INT = 80120000 + @schoolId
-        WHILE @cnt <= ${totalPupils}
-        BEGIN
-          BEGIN TRY
-            INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
-            VALUES (@schoolId, CAST(@cnt AS NVARCHAR), 'Pupil', 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A')
-          END TRY
-          BEGIN CATCH
-          END CATCH
-          SET @cnt = @cnt + 1;
-        END;
-      END`
-        await sqlService.query(sql, params)
-        if (!school.pin) {
-          let update = pinGenerationService.generateSchoolPassword(school)
-          await schoolDataService.sqlUpdate(R.assoc('id', school.id, update))
-        }
-        const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
-        const pupilsList = pupils.map(p => p.id)
-        await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
-      }))
+      BEGIN TRY
+
+      INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount, pin, pinExpiresAt) 
+      VALUES (@schoolId, CAST(@cnt AS NVARCHAR), 'Pupil', 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
+      INSERT ${sqlService.adminSchema}.[check] (pupil_id, checkwindow_id, checkform_id, checkstatus_id, islivecheck)
+      VALUES (scope_identity(), 1, 1, 1, 0)
+
+      END TRY
+      BEGIN CATCH
+      END CATCH
+      SET @cnt = @cnt + 1;
+      END;
+      COMMIT TRAN`
+      await sqlService.query(sql, params)
     }
+    // Kept temporarily for reference
+    // const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
+    // const pupilsList = pupils.map(p => p.id)
+    // const pupils = await sqlServ
+    // await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
 
     winston.info('DONE')
     sqlPoolService.drain()
