@@ -83,8 +83,12 @@ controller.postSubmitRestartList = async (req, res, next) => {
     let groupIds = req.params.groupIds || ''
 
     try {
-      pupils = await restartService.getPupils(req.user.School)
-      pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
+      if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+        pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
+      } else {
+        pupils = await restartService.getPupils(req.user.School)
+        pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
+      }
       reasons = await restartService.getReasons()
       if (pupils.length > 0) {
         groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
