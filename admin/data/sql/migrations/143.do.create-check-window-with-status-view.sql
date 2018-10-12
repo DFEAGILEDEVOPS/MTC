@@ -1,8 +1,8 @@
 CREATE VIEW [mtc_admin].vewCheckWindowWithStatus
 AS SELECT cw.urlSlug, cw.name, CAST(
     CASE
-        WHEN GETUTCDATE() < cw.checkStartDate THEN 'Inactive'
-        WHEN GETUTCDATE() >= cw.checkStartDate AND GETUTCDATE() <= cw.checkEndDate THEN 'Active'
+        WHEN GETUTCDATE() < cw.adminStartDate THEN 'Inactive'
+        WHEN GETUTCDATE() >= cw.adminStartDate AND GETUTCDATE() <= cw.adminEndDate THEN 'Active'
         ELSE 'Past'
     END AS NVARCHAR(50)
    ) AS [status]
