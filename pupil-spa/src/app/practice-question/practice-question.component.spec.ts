@@ -135,12 +135,12 @@ describe('PractiseQuestionComponent', () => {
       });
     });
 
-    it('returns false for a duplicate timeout event', () => {
+    it('returns false for a duplicate timeout event', async () => {
       component.answer = '126';
       expect(component[ 'submitted' ]).toBe(false);
       component.sendTimeoutEvent();
       // A duplicate timeout should return false;
-      const retVal = component.sendTimeoutEvent();
+      const retVal = await component.sendTimeoutEvent();
       expect(retVal).toBe(false);
     });
   });
@@ -243,8 +243,6 @@ describe('PractiseQuestionComponent', () => {
 
       tick(50);
       expect(component.soundComponent.playEndOfQuestionSound).toHaveBeenCalled();
-
-      tick(500); // skip the pause
     }));
   });
 });

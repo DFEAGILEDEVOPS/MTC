@@ -160,10 +160,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     await this.speechService.waitForEndOfSpeech();
     this.soundComponent.playEndOfQuestionSound();
-
-    // artificial 0.5s pause to allow the sound component time to play
-    // otherwise it will overlap with the next section speech
-    await new Promise(resolve => setTimeout(resolve, 500));
   }
 
   /**
@@ -189,7 +185,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     // Set the amount of time the user can have on the question
     this.timeout = this.window.setTimeout(async () => {
-      await this.preSendTimeoutEvent();
+      this.preSendTimeoutEvent();
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
 
@@ -298,7 +294,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * timed out.  Send whatever answer has been collected so far.
    * @return {boolean}
    */
-  sendTimeoutEvent() {
+  async sendTimeoutEvent() {
     // console.log('sendTimeoutEvent() called');
     if (this.submitted) {
       // console.log('sendTimeout(): answer already submitted');
@@ -311,12 +307,15 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }));
     this.submitted = true;
     if (this.config.speechSynthesis) {
-      this.speechService.waitForEndOfSpeech().then(() => {
-        this.timeoutEvent.emit(this.answer);
-      });
-    } else {
-      this.timeoutEvent.emit(this.answer);
+      await this.speechService.waitForEndOfSpeech();
+
+      if (this.config.audibleSounds) {
+        // artificial 0.5s pause to allow the sound component time to play
+        // otherwise it will overlap with the next section speech
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
     }
+    this.timeoutEvent.emit(this.answer);
   }
 
   /**
