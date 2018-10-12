@@ -79,6 +79,25 @@ const controller = {
     }
     req.flash('info', flashMessage)
     return res.redirect('/check-window/manage-check-windows')
+  },
+
+  /**
+   * Soft delete a check window
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<*>}
+   */
+  removeCheckWindow: async (req, res, next) => {
+    let result
+    try {
+      result = await checkWindowV2Service.markDeleted(req.params.checkWindowUrlSlug)
+    } catch (error) {
+      return next(error)
+    }
+    const { type, message } = result
+    req.flash(type, message)
+    return res.redirect('/check-window/manage-check-windows')
   }
 }
 

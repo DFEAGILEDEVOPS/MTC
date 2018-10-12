@@ -323,6 +323,7 @@ const checkWindowDataService = {
   sqlFindCheckWindowsWithStatus: async () => {
     const sql = `SELECT *
     FROM ${sqlService.adminSchema}.[vewCheckWindowWithStatus]
+    WHERE isDeleted=0
     ORDER BY name ASC`
     return sqlService.query(sql)
   }

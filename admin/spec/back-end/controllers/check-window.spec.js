@@ -127,4 +127,36 @@ describe('access arrangements controller:', () => {
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
     })
   })
+  describe('removeCheckWindow route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/remove/:checkWindowUrlSlug',
+      params: {
+        checkWindowUrlSlug: 'checkWindowUrlSlug'
+      }
+    }
+
+    it('calls markDeleted to perform check window deletion marking', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'markDeleted').and.returnValue({ type: 'type', message: 'message' })
+      await controller.removeCheckWindow(req, res, next)
+      expect(checkWindowV2Service.markDeleted).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('calls next if an error is thrown from markDeleted method', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'markDeleted').and.returnValue(Promise.reject(new Error('error')))
+      await controller.removeCheckWindow(req, res, next)
+      expect(checkWindowV2Service.markDeleted).toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
+    })
+  })
 })

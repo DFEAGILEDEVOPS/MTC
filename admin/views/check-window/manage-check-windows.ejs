@@ -74,6 +74,15 @@
     </div>
 </div>
 
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Remove check window',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Confirm',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'Cancel',
+    modalCancelUrl: '#'
+}) %>
+
 <script>
   $(function () {
     window.GOVUK.tableSort.applySorting(window.document, 'checkWindowList', {
