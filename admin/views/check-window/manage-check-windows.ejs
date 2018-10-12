@@ -28,8 +28,8 @@
         <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
             <thead>
             <tr>
-                <th scope="col"><a>Check window</a></th>
-                <th scope="col"><a>Status</a></th>
+                <th scope="col"><a class="sortingLink">Check window<span class="sort-icon asc"></span></a></th>
+                <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
                 <th scope="col">&nbsp;</th>
             </tr>
             </thead>
@@ -37,12 +37,12 @@
             <% checkWindows.forEach((checkWindow) => { %>
             <tr>
                 <td>
-                    <span class="bold-small"><%= checkWindow.name %></span>
+                    <span class="bold-small"><a href=""><%= checkWindow.name %></a></span>
                 </td>
                 <td><%= checkWindow.status %></td>
                 <td>
                     <% if (checkWindow.canRemove) { %>
-                    <a href="" class="modal-link" id="js-modal-link">Remove</a>
+                    <a href="/check-window/remove/<%= checkWindow.urlSlug %>" class="modal-link" id="js-modal-link">Remove</a>
                     <% } %>
                 </td>
             </tr>
@@ -73,3 +73,12 @@
         </aside>
     </div>
 </div>
+
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'checkWindowList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>

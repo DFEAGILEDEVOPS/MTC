@@ -321,7 +321,9 @@ const checkWindowDataService = {
    * @return {Promise<Array>}
    */
   sqlFindCheckWindowsWithStatus: async () => {
-    const sql = `SE LECT * FROM ${sqlService.adminSchema}.[vewCheckWindowWithStatus]`
+    const sql = `SELECT *
+    FROM ${sqlService.adminSchema}.[vewCheckWindowWithStatus]
+    ORDER BY name ASC`
     return sqlService.query(sql)
   }
 }
