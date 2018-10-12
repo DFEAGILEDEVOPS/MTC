@@ -44,11 +44,14 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
     this.auditService.addEntry(new QuestionIntroRendered());
 
     if (this.questionService.getConfig().speechSynthesis) {
-      this.speechService.speakElement(this.elRef.nativeElement);
+      this.speechService.speakElement(this.elRef.nativeElement).then(() => {
+        this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#start-now-button'));
+      });
 
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
-        this.speechService.speakFocusedElement(event.target);
-      }, true);
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
+        (event) => { this.speechService.focusEventListenerHook(event); },
+        true
+      );
     }
   }
 
