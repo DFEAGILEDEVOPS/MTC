@@ -1,5 +1,8 @@
+const featureToggles = require('feature-toggles')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 const restartService = require('../services/restart.service')
+const restartV2Service = require('../services/restart-v2.service')
 const groupService = require('../services/group.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const ValidationError = require('../lib/validation-error')
@@ -38,8 +41,14 @@ controller.getSelectRestartList = async (req, res, next) => {
   let groupIds = req.params.groupIds || ''
 
   try {
-    pupils = await restartService.getPupils(req.user.School)
+    if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+      pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
+    } else {
+      pupils = await restartService.getPupils(req.user.School)
+    }
+
     reasons = await restartService.getReasons()
+
     if (pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
     }
@@ -74,8 +83,12 @@ controller.postSubmitRestartList = async (req, res, next) => {
     let groupIds = req.params.groupIds || ''
 
     try {
-      pupils = await restartService.getPupils(req.user.School)
-      pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
+      if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
+        pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
+      } else {
+        pupils = await restartService.getPupils(req.user.School)
+        pupils = pupilIdentificationFlag.addIdentificationFlags(pupils)
+      }
       reasons = await restartService.getReasons()
       if (pupils.length > 0) {
         groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
