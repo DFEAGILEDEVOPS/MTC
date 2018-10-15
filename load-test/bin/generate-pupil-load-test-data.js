@@ -7,8 +7,7 @@ const sqlPoolService = require('../../admin/services/data-access/sql.pool.servic
 async function main () {
   try {
     const pinExpireyDays = 1
-    const pinExpireyDate = new Date()
-    pinExpireyDate.setDate(pinExpireyDate.getDate() + pinExpireyDays)
+    const pinExpireyDate = moment().add(pinExpireyDays, 'day').toDate()
 
     const numPupils = parseInt(process.argv[2])
     if (!numPupils) {
@@ -58,9 +57,6 @@ async function main () {
         }
       ]
 
-      // TODO set school pin?
-      // TODO set check pin?
-      // TODO is anything else required to emulate prepareCheck()?
       const sql = `
       DECLARE @cnt INT = 1;
       DECLARE @baseUpn INT = 80120000 + @schoolId
