@@ -16,7 +16,7 @@
 
 ### Windows
 * Install JDK 7 or later
-* Download [JMeter 5.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-4.0.tgz)
+* Download [JMeter 5.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
 ## Pupil load test data preparation

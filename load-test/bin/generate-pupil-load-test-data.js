@@ -98,9 +98,9 @@ async function main () {
 }
 
 function randomPass () {
-  let chars = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)
-  let numbers = Math.random().toString().substr(2, 5)
-  return chars + numbers
+  let chars = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6)
+  let numbers = Math.random().toString().substr(2, 2)
+  return chars.substr(0, 3) + numbers + chars.substr(3)
 }
 
 function randomDob () {
