@@ -94,9 +94,10 @@ async function main () {
 }
 
 function randomPass () {
-  let chars = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6)
-  let numbers = Math.random().toString().substr(2, 2)
-  return chars.substr(0, 3) + numbers + chars.substr(3)
+  const chars = Math.random().toString(36).replace(/[^a-z]+/g, '')
+  const chars2 = Math.random().toString(36).replace(/[^a-z]+/g, '')
+  const numbers = Math.random().toString().substr(2, 2)
+  return chars.substr(0, 3) + numbers + chars2.substr(0, 3)
 }
 
 function randomDob () {
