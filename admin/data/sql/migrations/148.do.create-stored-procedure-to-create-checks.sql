@@ -5,6 +5,10 @@ CREATE PROCEDURE [mtc_admin].[spCreateChecks]
     @TVP [mtc_admin].[CheckTableType] READONLY
 AS
 
+  -- Connection pooling is enabled - make sure we are not in an existing transaction
+  IF @@TRANCOUNT <> 0  -- Rollback old transactions before starting another
+    ROLLBACK TRAN
+
   DECLARE checkArgsList CURSOR
   FOR SELECT pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id
       FROM @TVP
