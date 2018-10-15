@@ -40,7 +40,6 @@ async function main () {
       if (i < pupilsRemainder) {
         totalPupils += 1
       }
-      // maybe use sqlService.generateParams
       params = [
         {
           name: 'schoolId',
@@ -70,6 +69,10 @@ async function main () {
       BEGIN
       BEGIN TRY
 
+      UPDATE ${sqlService.adminSchema}.[school] 
+      SET pin = '${randomPass()}', pinExpiresAt = @pinExpiresAt
+      WHERE id = ${school.id} AND pin IS NULL
+
       INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount, pin, pinExpiresAt) 
       VALUES (@schoolId, CAST(@cnt AS NVARCHAR), 'Pupil', 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
       INSERT ${sqlService.adminSchema}.[check] (pupil_id, checkwindow_id, checkform_id, checkstatus_id, islivecheck)
@@ -83,11 +86,6 @@ async function main () {
       COMMIT TRAN`
       await sqlService.query(sql, params)
     }
-    // Kept temporarily for reference
-    // const pupils = await pupilDataService.sqlFindPupilsByDfeNumber(school.dfeNumber)
-    // const pupilsList = pupils.map(p => p.id)
-    // const pupils = await sqlServ
-    // await checkStartService.prepareCheck(pupilsList, school.dfeNumber, school.id)
 
     winston.info('DONE')
     sqlPoolService.drain()
@@ -97,6 +95,12 @@ async function main () {
     process.exitCode = 1
     sqlPoolService.drain()
   }
+}
+
+function randomPass () {
+  let chars = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 3)
+  let numbers = Math.random().toString().substr(2, 5)
+  return chars + numbers
 }
 
 function randomDob () {
