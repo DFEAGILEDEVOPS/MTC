@@ -10,7 +10,7 @@
         There will be {{count}} questions.
       </p>
       <div>
-        <button type="button" class="button button-start" id="start-now-button" (click)="onClick()">
+        <button *ngIf="showStartButton" type="button" class="button button-start" id="start-now-button" (click)="onClick()">
           Start now
         </button>
       </div>

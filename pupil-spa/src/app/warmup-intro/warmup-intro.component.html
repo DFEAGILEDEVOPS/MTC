@@ -12,7 +12,7 @@
         <div class="column-two-thirds">
             <p class="lede" tabindex="0">There will be 3 practice questions.</p>
           <br />
-          <button class="button button-start" role="button" id="start-now-button" (click)="onClick()">Start now
+          <button *ngIf="showStartButton" class="button button-start" role="button" id="start-now-button" (click)="onClick()">Start now
             </button>
         </div>
     </div>
