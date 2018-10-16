@@ -8,7 +8,6 @@ import { AuditService } from '../services/audit/audit.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { CheckStartService } from '../services/check-start/check-start.service';
-import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
   selector: 'app-questions-intro',
@@ -27,7 +26,6 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
   clickEvent: EventEmitter<any> = new EventEmitter();
 
   public count: number;
-  private showStartButton = false;
 
   constructor(
     private auditService: AuditService,
@@ -55,7 +53,6 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
         true
       );
     }
-    setTimeout(() => { this.showStartButton = true; }, APP_CONFIG.buttonHideDelay);
   }
 
   async onClick() {

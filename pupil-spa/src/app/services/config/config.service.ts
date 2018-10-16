@@ -25,7 +25,6 @@ export class AppConfig {
   readonly feedbackAPIErrorMaxAttempts: number;
   readonly pupilPrefsAPIErrorDelay: number;
   readonly pupilPrefsAPIErrorMaxAttempts: number;
-  readonly buttonHideDelay: number;
 }
 
 /**
