@@ -5,9 +5,9 @@ end
 
 When(/^I fill in details of a valid check window$/) do
   today_date = Date.today
-  @admin_start_date = today_date + 3
+  @admin_start_date = today_date + 2
   @admin_end_date = today_date + 10
-  @familiarisation_start_date = today_date + 4
+  @familiarisation_start_date = today_date + 3
   @familiarisation_end_date = today_date + 9
   @live_start_date = today_date + 4
   @live_end_date = today_date + 9

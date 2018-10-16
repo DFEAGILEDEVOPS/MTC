@@ -28,6 +28,12 @@ const pinGenerationService = {}
 const chars = '23456789'
 
 /**
+ * Get the expiry time for a pin
+ *
+ */
+pinGenerationService.getPinExpiryTime = pinExpiryTime
+
+/**
  * Fetch pupils and filter required only pupil attributes
  * @param dfeNumber
  * @returns {Array}
