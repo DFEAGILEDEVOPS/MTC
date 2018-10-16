@@ -6,4 +6,4 @@ AS SELECT cw.urlSlug, cw.name, cw.isDeleted, CAST(
         ELSE 'Past'
     END AS NVARCHAR(50)
    ) AS [status]
-FROM mtc.mtc_admin.checkWindow cw
+FROM [mtc_admin].checkWindow cw

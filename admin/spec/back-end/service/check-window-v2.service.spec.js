@@ -1,7 +1,8 @@
 'use strict'
-/* global describe expect it fail spyOn */
+/* global beforeEach describe expect it fail spyOn */
 
 const moment = require('moment')
+const uuid = require('uuid/v4')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
@@ -29,6 +30,10 @@ describe('check-window-v2.service', () => {
     })
   })
   describe('markDeleted', () => {
+    let urlSlug
+    beforeEach(() => {
+      urlSlug = uuid().toUpperCase()
+    })
     it('should mark the check window as deleted when it is in the future', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
         id: 1,
@@ -36,15 +41,45 @@ describe('check-window-v2.service', () => {
         adminEndDate: moment.utc().add(2, 'days')
       })
       spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
-      const result = await checkWindowV2Service.markDeleted('urlSlug')
-      expect(result).toEqual({ type: 'info', message: 'Check window deleted.' })
+      await checkWindowV2Service.markDeleted(urlSlug)
       expect(checkWindowDataService.sqlDeleteCheckWindow).toHaveBeenCalled()
+    })
+    it('should throw an error if check window url slug is not found', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      try {
+        await checkWindowV2Service.markDeleted('')
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+    it('should throw an error if check window url slug is invalid', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      urlSlug = urlSlug.substring(0, urlSlug.length - 1)
+      try {
+        await checkWindowV2Service.markDeleted(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
     it('should throw an error if check window is not found', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue(undefined)
       spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
       try {
-        await checkWindowV2Service.markDeleted('urlSlug')
+        await checkWindowV2Service.markDeleted(urlSlug)
         fail()
       } catch (error) {
         expect(error.message).toBe('Check window not found')
@@ -59,7 +94,7 @@ describe('check-window-v2.service', () => {
       })
       spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
       try {
-        await checkWindowV2Service.markDeleted('urlSlug')
+        await checkWindowV2Service.markDeleted(urlSlug)
         fail()
       } catch (error) {
         expect(error.message).toBe('Deleting an active check window is not permitted')
@@ -74,7 +109,7 @@ describe('check-window-v2.service', () => {
       })
       spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
       try {
-        await checkWindowV2Service.markDeleted('urlSlug')
+        await checkWindowV2Service.markDeleted(urlSlug)
         fail()
       } catch (error) {
         expect(error.message).toBe('Deleting an past check window is not permitted')

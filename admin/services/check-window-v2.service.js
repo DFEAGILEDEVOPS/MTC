@@ -2,6 +2,8 @@
 
 const moment = require('moment')
 const monitor = require('../helpers/monitor')
+const validate = require('uuid-validate')
+
 const checkWindowDataService = require('./data-access/check-window.data.service')
 
 const checkWindowV2Service = {}
@@ -21,6 +23,9 @@ checkWindowV2Service.getCheckWindows = async () => {
  * @returns {Object|Error} Either a successful message or throws an exception
  */
 checkWindowV2Service.markDeleted = async (urlSlug) => {
+  if (!urlSlug || !validate(urlSlug)) {
+    throw new Error('Check window url slug is not valid')
+  }
   const currentUTCTimestamp = moment.utc()
   const checkWindow = await checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
   if (!checkWindow) {
@@ -31,13 +36,8 @@ checkWindowV2Service.markDeleted = async (urlSlug) => {
   }
   if (checkWindow.adminStartDate.isSameOrBefore(currentUTCTimestamp) && checkWindow.adminEndDate.isSameOrAfter(currentUTCTimestamp)) {
     throw new Error('Deleting an active check window is not permitted')
-  } else {
-    await checkWindowDataService.sqlDeleteCheckWindow(checkWindow.id)
-    return {
-      type: 'info',
-      message: 'Check window deleted.'
-    }
   }
+  return checkWindowDataService.sqlDeleteCheckWindow(checkWindow.id)
 }
 
 module.exports = monitor('check-window-v2.service', checkWindowV2Service)
