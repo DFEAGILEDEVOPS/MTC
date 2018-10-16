@@ -21,23 +21,10 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
     super(auditService, questionService, speechService, elRef);
   }
 
-  ngAfterViewInit() {
+  addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       practiseSequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`
     }));
-
-    // wait for the component to be rendered first, before parsing the text
-    if (this.questionService.getConfig().speechSynthesis) {
-      this.speechService.speakElement(this.elRef.nativeElement);
-    }
-    this.elRef.nativeElement.querySelector('#goButton').focus();
-  }
-
-  ngOnDestroy(): void {
-    // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().speechSynthesis) {
-      this.speechService.cancel();
-    }
   }
 }

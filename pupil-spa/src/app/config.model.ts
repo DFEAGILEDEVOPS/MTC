@@ -7,6 +7,7 @@ export class Config {
   private _fontSize: boolean;
   private _colourContrast: boolean;
   private _practice: boolean;
+  private _nextBetweenQuestions: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -70,5 +71,13 @@ export class Config {
 
   set practice(value: boolean) {
     this._practice = value;
+  }
+
+  get nextBetweenQuestions(): boolean {
+    return this._nextBetweenQuestions;
+  }
+
+  set nextBetweenQuestions(value: boolean) {
+    this._nextBetweenQuestions = value;
   }
 }

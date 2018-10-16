@@ -67,6 +67,7 @@ const configService = {
       if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
       if (code === accessArrangementsDataService.CODES.FONT_SIZE) checkOptions.fontSize = true
       if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) checkOptions.colourContrast = true
+      if (code === accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS) checkOptions.nextBetweenQuestions = true
     })
 
     return R.merge(config, checkOptions)
