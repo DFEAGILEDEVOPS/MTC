@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
@@ -114,6 +114,7 @@ const appRoutes: Routes = [
       {enableTracing: false} // <-- debugging purposes only
     ),
     FormsModule,
+    ReactiveFormsModule,
     BrowserModule,
     HttpModule,
     HttpClientModule,

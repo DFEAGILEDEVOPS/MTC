@@ -24,6 +24,7 @@ export class QuestionServiceMock {
     config.questionTime = 5;
     config.speechSynthesis = false;
     config.audibleSounds = true;
+    config.inputAssistance = true;
     return config;
   }
 

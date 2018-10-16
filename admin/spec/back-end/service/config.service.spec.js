@@ -106,6 +106,17 @@ describe('config service', () => {
       expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
       expect(config.colourContrast).toBe(true)
     })
+    it('it sets input assistance to true if ITA is flagged for the pupil', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.INPUT_ASSISTANCE
+      ])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1 }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.inputAssistance).toBe(true)
+    })
 
     it('it sets all access arrangements to false if not flagged for the pupil', async () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue(['---'])
