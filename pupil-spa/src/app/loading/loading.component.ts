@@ -4,6 +4,7 @@ import { PauseRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { Question } from '../services/question/question.model';
+import { Config } from '../config.model';
 
 @Component({
   selector: 'app-loading',
@@ -12,6 +13,8 @@ import { Question } from '../services/question/question.model';
 })
 
 export class LoadingComponent implements AfterViewInit, OnDestroy {
+
+  protected config: Config;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
@@ -31,6 +34,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
               protected questionService: QuestionService,
               protected speechService: SpeechService,
               protected elRef: ElementRef) {
+    this.config = this.questionService.getConfig();
   }
 
   /**
@@ -56,16 +60,34 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     return false;
   }
 
-  ngAfterViewInit() {
-    // console.log('loading.component: after view init called');
+  addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       sequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`
     }));
+  }
+
+  ngAfterViewInit() {
+    this.addAuditServiceEntry();
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
+
+      if (!this.config.nextBetweenQuestions) {
+        setTimeout(() => {
+          this.speechService.waitForEndOfSpeech().then(() => {
+            this.sendTimeoutEvent();
+          });
+        }, this.loadingTimeout * 1000);
+      }
+    } else {
+      if (!this.config.nextBetweenQuestions) {
+        setTimeout(() => {
+          this.sendTimeoutEvent();
+        }, this.loadingTimeout * 1000);
+      }
     }
+
     this.elRef.nativeElement.querySelector('#goButton').focus();
   }
 
@@ -75,7 +97,11 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
+<<<<<<< HEAD
     if (this.questionService.getConfig().questionReader) {
+=======
+    if (this.config.speechSynthesis) {
+>>>>>>> 73669655... Set the visibility of the question next button based on admin access arrangements
       this.speechService.cancel();
     }
   }

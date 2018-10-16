@@ -8,7 +8,7 @@
     <p id="js-loading" class="text-center aa-lead-size">
       Practice question {{question.sequenceNumber}}&hellip;
     </p>
-    <button
+    <button *ngIf="config.nextBetweenQuestions"
       type="button"
       class="item-center button button-start"
       id="goButton"

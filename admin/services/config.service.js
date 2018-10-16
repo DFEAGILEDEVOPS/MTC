@@ -80,6 +80,7 @@ const configService = {
         checkOptions.colourContrastCode = colourContrastAccessArrangement && colourContrastAccessArrangement.pupilColourContrastCode
       }
       if (code === accessArrangementsDataService.CODES.QUESTION_READER) checkOptions.questionReader = true
+      if (code === accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS) checkOptions.nextBetweenQuestions = true
     })
 
     return R.merge(config, checkOptions)

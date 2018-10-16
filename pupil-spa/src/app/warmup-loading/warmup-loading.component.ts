@@ -21,7 +21,7 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
     super(auditService, questionService, speechService, elRef);
   }
 
-  ngAfterViewInit() {
+  addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       practiseSequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`
