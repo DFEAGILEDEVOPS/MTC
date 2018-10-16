@@ -19,6 +19,12 @@
 * Download [JMeter 4.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-4.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
+### Install Jmeter Plugins - Custom JMeter Functions
+* download Jmeter plugin manager
+https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
+* download the Custom JMeter Functions plugin
+https://jmeter-plugins.org/wiki/Functions/
+
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
 * While in `load-test/bin` directory:
