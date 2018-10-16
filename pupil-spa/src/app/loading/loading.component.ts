@@ -15,6 +15,7 @@ import { Config } from '../config.model';
 export class LoadingComponent implements AfterViewInit, OnDestroy {
 
   protected config: Config;
+  protected nextButtonDelayFinished = false;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
@@ -79,16 +80,21 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
             this.sendTimeoutEvent();
           });
         }, this.loadingTimeout * 1000);
+      } else {
+        setTimeout(() => { this.nextButtonDelayFinished = true; }, 1000);
       }
     } else {
       if (!this.config.nextBetweenQuestions) {
         setTimeout(() => {
           this.sendTimeoutEvent();
         }, this.loadingTimeout * 1000);
+      } else {
+        setTimeout(() => { this.nextButtonDelayFinished = true; }, 1000);
       }
     }
-
-    this.elRef.nativeElement.querySelector('#goButton').focus();
+    if (this.config.nextBetweenQuestions) {
+      this.elRef.nativeElement.querySelector('#goButton').focus();
+    }
   }
 
   sendTimeoutEvent() {
