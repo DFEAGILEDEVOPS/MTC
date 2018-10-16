@@ -16,7 +16,7 @@ async function main () {
 
     let schools, numSchools, pupilsPerSchool, pupilsRemainder, params
 
-    schools = await sqlService.query(`SELECT * FROM ${sqlService.adminSchema}.[school]`)
+    schools = await sqlService.query(`SELECT id FROM ${sqlService.adminSchema}.[school]`)
     numSchools = schools.length
 
     // When generating less pupils than the total number of schools, slice
@@ -61,16 +61,18 @@ async function main () {
       DECLARE @cnt INT = 1;
       DECLARE @baseUpn INT = 80120000 + @schoolId
       BEGIN TRAN
+
+      UPDATE ${sqlService.adminSchema}.[school]
+      SET pin = '${randomPass()}', pinExpiresAt = @pinExpiresAt
+      WHERE id = ${school.id} AND pin IS NULL
+
       WHILE @cnt <= ${totalPupils}
       BEGIN
       BEGIN TRY
 
-      UPDATE ${sqlService.adminSchema}.[school] 
-      SET pin = '${randomPass()}', pinExpiresAt = @pinExpiresAt
-      WHERE id = ${school.id} AND pin IS NULL
-
       INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount, pin, pinExpiresAt) 
       VALUES (@schoolId, CAST(@cnt AS NVARCHAR), 'Pupil', 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
+
       INSERT ${sqlService.adminSchema}.[check] (pupil_id, checkwindow_id, checkform_id, checkstatus_id, islivecheck)
       VALUES (scope_identity(), 1, 1, 1, 0)
 
