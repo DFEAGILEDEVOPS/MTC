@@ -49,6 +49,6 @@ cat <<EOF > config.json
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
-  "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed,
+  "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed
 }
 EOF

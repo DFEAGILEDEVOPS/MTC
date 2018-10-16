@@ -6,7 +6,7 @@
     <p id="js-loading" class="font-large text-center">
       Question {{question.sequenceNumber}}&hellip;
     </p>
-    <button *ngIf="config.nextBetweenQuestions"
+    <button *ngIf="config.nextBetweenQuestions && nextButtonDelayFinished"
       type="button"
       class="item-center button button-start"
       id="goButton"
