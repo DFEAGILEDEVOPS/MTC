@@ -15,7 +15,6 @@ export class FamiliarisationSettingsComponent {
   config: Config;
   public familiarisationSettingsForm: FormGroup;
   public userSubmittedForm = false;
-  private regExpPattern = /^[a-zA-Z0-9À-ÖØ-öø-ÿ’'-]*$/;
   private validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
 
   constructor(
@@ -61,9 +60,4 @@ export class FamiliarisationSettingsComponent {
     this.storageService.setItem('pupil', pupilData);
     this.router.navigate(['check-start']);
   }
-
-  hasSpecialCharacters(inputValue) {
-    return !(this.regExpPattern.test(inputValue));
-  }
-
 }
