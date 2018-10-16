@@ -4,7 +4,7 @@ CREATE TABLE #pinStaging (pin INT);
 GO
 
 DECLARE @i int;
-SET @i = 2222;
+SET @i = 2222; -- start at 2222 as 0's and 1's aren't allowed
 
 WHILE (@i < 10000)
 BEGIN
