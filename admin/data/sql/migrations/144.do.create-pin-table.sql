@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS [mtc_admin].[pin];
 create table [mtc_admin].[pin] (
   [id] [int] IDENTITY(1,1) NOT NULL,
   [createdAt] [datetimeoffset](3) NOT NULL
-    CONSTRAINT[DF_pin_created_at] DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT[DF_pin_created_at] DEFAULT GETUTCDATE(),
   [updatedAt] [datetimeoffset](3) NOT NULL
-    CONSTRAINT [DF_pin_updated_at] DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT [DF_pin_updated_at] DEFAULT GETUTCDATE(),
   [version] [rowversion],
   [val] [int] NULL
     CONSTRAINT [IX_pin_val_unique] UNIQUE(val),
