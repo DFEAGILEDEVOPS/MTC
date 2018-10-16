@@ -46,7 +46,7 @@ AS
                                   FROM [mtc_admin].[pin] p
                                          LEFT JOIN [mtc_admin].[checkPin] cp ON (p.id = cp.pin_id)
                                   WHERE cp.pin_id IS NULL
-                                    AND (cp.school_id IS NULL OR cp.school_id <> 1)));
+                                    AND (cp.school_id IS NULL OR cp.school_id <> @schoolId)));
 
     -- Store the check.id in the output table
     INSERT INTO @output (id) (SELECT @checkId);
