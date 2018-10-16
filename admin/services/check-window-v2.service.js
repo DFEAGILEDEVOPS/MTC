@@ -9,6 +9,18 @@ const checkWindowDataService = require('./data-access/check-window.data.service'
 const checkWindowV2Service = {}
 
 /**
+ * Get check window based on urlSlug
+ * @param {String} urlSlug
+ * @returns {Object|Error} Check window object or error object
+ */
+checkWindowV2Service.getCheckWindow = async (urlSlug) => {
+  if (!urlSlug || !validate(urlSlug)) {
+    throw new Error('Check window url slug is not valid')
+  }
+  return checkWindowDataService.sqlFindOneByUrlSlug(urlSlug)
+}
+
+/**
  * Get all check windows recorded in the database with their status
  * @returns {Array} List of check windows
  */
@@ -20,6 +32,7 @@ checkWindowV2Service.getCheckWindows = async () => {
 
 /**
  * Mark check window as deleted based on url slug
+ * @param {String} urlSlug
  * @returns {Object|Error} Either a successful message or throws an exception
  */
 checkWindowV2Service.markDeleted = async (urlSlug) => {

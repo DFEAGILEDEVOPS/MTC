@@ -89,12 +89,15 @@ const controller = {
    * @returns {Promise.<*>}
    */
   removeCheckWindow: async (req, res, next) => {
+    const urlSlug = req.params.checkWindowUrlSlug
+    let checkWindow
     try {
-      await checkWindowV2Service.markDeleted(req.params.checkWindowUrlSlug)
+      checkWindow = await checkWindowV2Service.getCheckWindow(urlSlug)
+      await checkWindowV2Service.markDeleted(urlSlug)
     } catch (error) {
       return next(error)
     }
-    req.flash('info', 'Check window deleted.')
+    req.flash('info', `${checkWindow['name']} has been successfully removed`)
     return res.redirect('/check-window/manage-check-windows')
   }
 }

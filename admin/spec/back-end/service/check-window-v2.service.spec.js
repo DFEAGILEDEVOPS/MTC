@@ -7,6 +7,38 @@ const checkWindowDataService = require('../../../services/data-access/check-wind
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
 describe('check-window-v2.service', () => {
+  describe('getCheckWindow', () => {
+    let urlSlug
+    beforeEach(() => {
+      urlSlug = uuid().toUpperCase()
+    })
+    it('should get check window based on urlSlug', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ name: 'Check window' })
+      const result = await checkWindowV2Service.getCheckWindow(urlSlug)
+      expect(result).toEqual({ name: 'Check window' })
+    })
+    it('should throw an error if urlSlug is empty', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      try {
+        await checkWindowV2Service.getCheckWindow(undefined)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
+    })
+    it('should throw an error if urlSlug is invalid', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      urlSlug = urlSlug.substring(0, urlSlug.length - 1)
+      try {
+        await checkWindowV2Service.getCheckWindow(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
+    })
+  })
   describe('getCheckWindows', () => {
     it('should get check windows names with statuses and provide canRemove boolean flag', async () => {
       spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatus').and.returnValue([
