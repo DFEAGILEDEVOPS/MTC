@@ -4,6 +4,7 @@ const moment = require('moment')
 const monitor = require('../helpers/monitor')
 const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
+const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
 const controller = {
@@ -18,9 +19,16 @@ const controller = {
   getManageCheckWindows: async (req, res, next) => {
     res.locals.pageTitle = 'Manage check windows'
     req.breadcrumbs(res.locals.pageTitle)
+    let checkWindows
+    try {
+      checkWindows = await checkWindowV2Service.getCheckWindows()
+    } catch (error) {
+      return next(error)
+    }
     return res.render('check-window/manage-check-windows', {
       breadcrumbs: req.breadcrumbs(),
-      messages: res.locals.messages
+      messages: res.locals.messages,
+      checkWindows
     })
   },
 
@@ -70,6 +78,23 @@ const controller = {
       return next(error)
     }
     req.flash('info', flashMessage)
+    return res.redirect('/check-window/manage-check-windows')
+  },
+
+  /**
+   * Soft delete a check window
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<*>}
+   */
+  removeCheckWindow: async (req, res, next) => {
+    try {
+      await checkWindowV2Service.markDeleted(req.params.checkWindowUrlSlug)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'Check window deleted.')
     return res.redirect('/check-window/manage-check-windows')
   }
 }

@@ -5,6 +5,7 @@
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -37,9 +38,19 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getCheckWindows')
       await controller.getManageCheckWindows(req, res, next)
       expect(res.locals.pageTitle).toBe('Manage check windows')
       expect(res.render).toHaveBeenCalled()
+    })
+    it('calls next if getCheckWindows method throws an error', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getCheckWindows').and.returnValue(Promise.reject(new Error('error')))
+      await controller.getManageCheckWindows(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
     })
   })
   describe('createCheckWindow route', () => {
@@ -114,6 +125,38 @@ describe('access arrangements controller:', () => {
       expect(next).not.toHaveBeenCalled()
       expect(renderSpy.calls.all()[0].args[1].error).toBe(validationError)
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
+    })
+  })
+  describe('removeCheckWindow route', () => {
+    let reqParams = {
+      method: 'GET',
+      url: '/remove/:checkWindowUrlSlug',
+      params: {
+        checkWindowUrlSlug: 'checkWindowUrlSlug'
+      }
+    }
+
+    it('calls markDeleted to perform check window deletion marking', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'markDeleted').and.returnValue({ type: 'type', message: 'message' })
+      await controller.removeCheckWindow(req, res, next)
+      expect(checkWindowV2Service.markDeleted).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('calls next if an error is thrown from markDeleted method', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'markDeleted').and.returnValue(Promise.reject(new Error('error')))
+      await controller.removeCheckWindow(req, res, next)
+      expect(checkWindowV2Service.markDeleted).toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
+      expect(req.flash).not.toHaveBeenCalled()
+      expect(res.redirect).not.toHaveBeenCalled()
     })
   })
 })
