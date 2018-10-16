@@ -16,7 +16,6 @@ checkSubmissionAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"10"}
 feedbackAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"3000"}
 feedbackAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"3"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
-buttonHideDelay=${BUTTON_HIDE_DELAY:-"1000"}
 supportNumber=${SUPPORT_NUMBER:-"0345 278 8080"}
 gaCode=${GA_CODE:-"null"}
 if [ $gaCode == "null" ]
@@ -51,6 +50,5 @@ cat <<EOF > config.json
   "supportNumber": "$supportNumber",
   "googleAnalyticsTrackingCode": $gaCodeParsed,
   "applicationInsightsInstrumentationKey": $applicationInsightsCodeParsed,
-  "buttonHideDelay": $buttonHideDelay
 }
 EOF

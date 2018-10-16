@@ -5,7 +5,6 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { AppInsights } from 'applicationinsights-js';
-import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
   selector: 'app-warmup-intro',
@@ -24,7 +23,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
   protected window: any;
 
   private speechListenerEvent: any;
-  private showStartButton = false;
 
   constructor(private auditService: AuditService,
               protected windowRefService: WindowRefService,
@@ -55,7 +53,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
         true
       );
     }
-    setTimeout(() => { this.showStartButton = true; }, APP_CONFIG.buttonHideDelay);
   }
 
   onClick() {

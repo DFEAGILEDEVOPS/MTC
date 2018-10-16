@@ -23,7 +23,6 @@ export class AppConfig {
   readonly supportNumber: string;
   readonly feedbackAPIErrorDelay: number;
   readonly feedbackAPIErrorMaxAttempts: number;
-  readonly buttonHideDelay: number;
 }
 
 /**
