@@ -7,7 +7,10 @@ AS
 
   -- Connection pooling is enabled - make sure we are not in an existing transaction
   IF @@TRANCOUNT <> 0  -- Rollback old transactions before starting another
-    ROLLBACK TRAN
+    ROLLBACK TRANSACTION
+
+  BEGIN TRY
+  BEGIN TRANSACTION
 
   DECLARE checkArgsList CURSOR
   FOR SELECT pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id
@@ -27,7 +30,7 @@ AS
 
   OPEN checkArgsList
   FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @schoolId
-  WHILE (@@FETCH_STATUS=0) BEGIN
+  WHILE (@@FETCH_STATUS = 0) BEGIN
 
     -- Create the check
     INSERT INTO [mtc_admin].[check]
@@ -51,10 +54,36 @@ AS
     FETCH checkArgsList INTO @pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @schoolId
   END
 
+  COMMIT TRANSACTION
+
   -- OUTPUT newly created check IDs to the caller
   SELECT * from @output;
 
   CLOSE checkArgsList
   DEALLOCATE checkArgsList
 
-GO
+  END TRY
+  BEGIN CATCH
+      IF (@@TRANCOUNT > 0)
+        BEGIN
+          ROLLBACK TRANSACTION
+          PRINT 'Error detected, all changes reversed'
+        END
+      DECLARE @ErrorMessage NVARCHAR(4000);
+      DECLARE @ErrorSeverity INT;
+      DECLARE @ErrorState INT;
+
+      SELECT @ErrorMessage = ERROR_MESSAGE(),
+             @ErrorSeverity = ERROR_SEVERITY(),
+             @ErrorState = ERROR_STATE();
+
+      -- Use RAISERROR inside the CATCH block to return
+      -- error information about the original error that
+      -- caused execution to jump to the CATCH block.
+      RAISERROR (@ErrorMessage, -- Message text.
+        @ErrorSeverity, -- Severity.
+        @ErrorState -- State.
+      );
+  END CATCH
+
+  GO
