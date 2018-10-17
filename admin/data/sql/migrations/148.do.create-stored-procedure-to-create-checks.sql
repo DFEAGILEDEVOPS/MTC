@@ -34,19 +34,20 @@ AS
 
     -- Create the check
     INSERT INTO [mtc_admin].[check]
-        (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
-    VALUES (@pupilId, @checkFormId, @checkWindowId, @isLiveCheck, @pinExpiresAt, @schoolId);
+        (pupil_id, checkForm_id, checkWindow_id, isLiveCheck)
+    VALUES (@pupilId, @checkFormId, @checkWindowId, @isLiveCheck);
 
     -- Get the check.id we just inserted
     SET @checkId = SCOPE_IDENTITY();
 
     -- Assign a pin to the check
-    INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pin_id)
-    VALUES (@schoolId, @checkId, (SELECT TOP 1 p.id
-                                  FROM [mtc_admin].[pin] p
-                                         LEFT JOIN [mtc_admin].[checkPin] cp ON (p.id = cp.pin_id)
-                                  WHERE (cp.pin_id IS NULL OR (cp.school_id <> @schoolId AND cp.pin_id IS NOT NULL))
-                                  ORDER BY NEWID()));
+    INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pinExpiresAt, pin_id)
+    VALUES (@schoolId, @checkId, @pinExpiresAt, (SELECT TOP 1 p.id
+                                                 FROM [mtc_admin].[pin] p
+                                                        LEFT JOIN [mtc_admin].[checkPin] cp ON (p.id = cp.pin_id)
+                                                 WHERE (cp.pin_id IS NULL OR
+                                                        (cp.school_id <> @schoolId AND cp.pin_id IS NOT NULL))
+                                                 ORDER BY NEWID()));
 
     -- Store the check.id in the output table
     INSERT INTO @output (id) (SELECT @checkId);
