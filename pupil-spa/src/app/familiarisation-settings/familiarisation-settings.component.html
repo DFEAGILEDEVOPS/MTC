@@ -11,13 +11,13 @@
           See highlighted errors below
         </p>
         <ul class="error-summary-list">
-          <p *ngIf="inputAssistantFirstName.errors && (inputAssistantFirstName.errors.required || inputAssistantFirstName.errors.maxLength)">
+          <p *ngIf="inputAssistantFirstName.errors && (inputAssistantFirstName.errors.required || inputAssistantFirstName.errors.maxlength)">
             <a href='/access-settings#inputAssistantFirstName'>Enter a first name</a>
           </p>
           <p *ngIf="inputAssistantFirstName.errors && inputAssistantFirstName.errors.pattern">
             <a href='/access-settings#inputAssistantFirstName'>Enter a first name without special characters</a>
           </p>
-          <p *ngIf="inputAssistantLastName.errors && (inputAssistantLastName.errors.required || inputAssistantLastName.errors.maxLength)">
+          <p *ngIf="inputAssistantLastName.errors && (inputAssistantLastName.errors.required || inputAssistantLastName.errors.maxlength)">
             <a href='/access-settings#inputAssistantLastName'>Enter a last name</a>
           </p>
           <p *ngIf="inputAssistantLastName.errors && inputAssistantLastName.errors.pattern">
@@ -45,7 +45,7 @@
                   <div [ngClass]="{ 'form-group': true, 'form-group-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').invalid}">
                     <label for="inputAssistantFirstName" class="form-label">
                       First name of input assistant
-                      <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').errors && (familiarisationSettingsForm.get('inputAssistantFirstName').errors['required'] || familiarisationSettingsForm.get('inputAssistantFirstName').errors['maxLength'])" class="error-message">Enter a first name</span>
+                      <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').errors && (familiarisationSettingsForm.get('inputAssistantFirstName').errors['required'] || familiarisationSettingsForm.get('inputAssistantFirstName').errors['maxlength'])" class="error-message">Enter a first name</span>
                       <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantFirstName').errors && familiarisationSettingsForm.get('inputAssistantFirstName').errors['pattern']" class="error-message">Enter a first name without special characters</span>
                     </label>
                     <input #inputAssistantFirstName id="inputAssistantFirstName"
@@ -55,7 +55,7 @@
                   <div [ngClass]="{ 'form-group': true, 'form-group-error': userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').invalid}">
                     <label for="inputAssistantLastName" class="form-label">
                       Last name of input assistant
-                      <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').errors && (familiarisationSettingsForm.get('inputAssistantLastName').errors['required'] || familiarisationSettingsForm.get('inputAssistantLastName').errors['maxLength'])" class="error-message">Enter a last name</span>
+                      <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').errors && (familiarisationSettingsForm.get('inputAssistantLastName').errors['required'] || familiarisationSettingsForm.get('inputAssistantLastName').errors['maxlength'])" class="error-message">Enter a last name</span>
                       <span *ngIf="userSubmittedForm && familiarisationSettingsForm.get('inputAssistantLastName').errors && familiarisationSettingsForm.get('inputAssistantLastName').errors['pattern']" class="error-message">Enter a last name without special characters</span>
                     </label>
                     <input #inputAssistantLastName id="inputAssistantLastName"
