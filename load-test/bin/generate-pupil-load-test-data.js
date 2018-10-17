@@ -6,8 +6,8 @@ const sqlPoolService = require('../../admin/services/data-access/sql.pool.servic
 
 async function main () {
   try {
-    const pinExpireyDays = 1
-    const pinExpireyDate = moment().add(pinExpireyDays, 'day').toDate()
+    const pinExpiryDays = 1
+    const pinExpiryDate = moment().add(pinExpiryDays, 'day').toDate()
 
     const numPupils = parseInt(process.argv[2])
     if (!numPupils) {
@@ -52,7 +52,7 @@ async function main () {
         },
         {
           name: 'pinExpiresAt',
-          value: pinExpireyDate,
+          value: pinExpiryDate,
           type: TYPES.DateTimeOffset
         }
       ]
