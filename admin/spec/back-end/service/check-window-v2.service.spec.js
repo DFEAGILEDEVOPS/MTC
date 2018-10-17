@@ -1,0 +1,152 @@
+'use strict'
+/* global beforeEach describe expect it fail spyOn */
+
+const moment = require('moment')
+const uuid = require('uuid/v4')
+const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
+const checkWindowV2Service = require('../../../services/check-window-v2.service')
+
+describe('check-window-v2.service', () => {
+  describe('getCheckWindow', () => {
+    let urlSlug
+    beforeEach(() => {
+      urlSlug = uuid().toUpperCase()
+    })
+    it('should get check window based on urlSlug', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ name: 'Check window' })
+      const result = await checkWindowV2Service.getCheckWindow(urlSlug)
+      expect(result).toEqual({ name: 'Check window' })
+    })
+    it('should throw an error if urlSlug is empty', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      try {
+        await checkWindowV2Service.getCheckWindow(undefined)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
+    })
+    it('should throw an error if urlSlug is invalid', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+      urlSlug = urlSlug.substring(0, urlSlug.length - 1)
+      try {
+        await checkWindowV2Service.getCheckWindow(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
+    })
+  })
+  describe('getCheckWindows', () => {
+    it('should get check windows names with statuses and provide canRemove boolean flag', async () => {
+      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatus').and.returnValue([
+        {
+          name: 'name1',
+          status: 'Inactive'
+        },
+        {
+          name: 'name2',
+          status: 'Active'
+        },
+        {
+          name: 'name3',
+          status: 'Past'
+        }
+      ])
+      const result = await checkWindowV2Service.getCheckWindows()
+      expect(result[0].canRemove).toBeTruthy()
+      expect(result[1].canRemove).toBeFalsy()
+      expect(result[2].canRemove).toBeFalsy()
+    })
+  })
+  describe('markDeleted', () => {
+    let urlSlug
+    beforeEach(() => {
+      urlSlug = uuid().toUpperCase()
+    })
+    it('should mark the check window as deleted when it is in the future', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      await checkWindowV2Service.markDeleted(urlSlug)
+      expect(checkWindowDataService.sqlDeleteCheckWindow).toHaveBeenCalled()
+    })
+    it('should throw an error if check window url slug is not found', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      try {
+        await checkWindowV2Service.markDeleted('')
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+    it('should throw an error if check window url slug is invalid', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      urlSlug = urlSlug.substring(0, urlSlug.length - 1)
+      try {
+        await checkWindowV2Service.markDeleted(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window url slug is not valid')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+    it('should throw an error if check window is not found', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue(undefined)
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      try {
+        await checkWindowV2Service.markDeleted(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Check window not found')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+    it('should throw an error if check window is active', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().subtract(1, 'days'),
+        adminEndDate: moment.utc().add(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      try {
+        await checkWindowV2Service.markDeleted(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Deleting an active check window is not permitted')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+    it('should throw an error if check window is a past one', async () => {
+      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+        id: 1,
+        adminStartDate: moment.utc().subtract(4, 'days'),
+        adminEndDate: moment.utc().subtract(2, 'days')
+      })
+      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      try {
+        await checkWindowV2Service.markDeleted(urlSlug)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Deleting an past check window is not permitted')
+      }
+      expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+  })
+})

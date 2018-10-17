@@ -24,7 +24,34 @@
             <a class="button button-primary" href="/check-window/create-check-window">Create new check window</a>
         </div>
         <br />
+        <% if (Array.isArray(checkWindows) && checkWindows.length > 0) { %>
+        <table class="spacious" id="checkWindowList" role="listbox" aria-label="Check windows list.">
+            <thead>
+            <tr>
+                <th scope="col"><a class="sortingLink">Check window<span class="sort-icon asc"></span></a></th>
+                <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% checkWindows.forEach((checkWindow) => { %>
+            <tr>
+                <td>
+                    <span class="bold-small"><a href=""><%= checkWindow.name %></a></span>
+                </td>
+                <td><%= checkWindow.status %></td>
+                <td>
+                    <% if (checkWindow.canRemove) { %>
+                    <a href="/check-window/remove/<%= checkWindow.urlSlug %>" class="modal-link" id="js-modal-link">Remove</a>
+                    <% } %>
+                </td>
+            </tr>
+            <% }) %>
+            </tbody>
+        </table>
+        <% } else { %>
         No check windows created.
+        <% } %>
     </div>
 
     <div class="column-one-third sidebar" aria-label="sidebar">
@@ -46,3 +73,21 @@
         </aside>
     </div>
 </div>
+
+<%- partial('partials/_modal_box', {
+    modalTitle: 'Remove check window',
+    modalText: 'Are you sure you want to remove this?',
+    modalConfirmationLabel: 'Confirm',
+    modalConfirmationUrl: '#',
+    modalCancelLabel: 'Cancel',
+    modalCancelUrl: '#'
+}) %>
+
+<script>
+  $(function () {
+    window.GOVUK.tableSort.applySorting(window.document, 'checkWindowList', {
+      sortNullsLast: false,
+      ignoredStrings: []
+    })
+  })
+</script>
