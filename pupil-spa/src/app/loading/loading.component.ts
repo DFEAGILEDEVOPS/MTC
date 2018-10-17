@@ -1,4 +1,13 @@
-import { Component, AfterViewInit, Input, Output, EventEmitter, HostListener, ElementRef, OnDestroy } from '@angular/core';
+import { Component,
+  AfterViewInit,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  ElementRef,
+  OnDestroy,
+  AfterViewChecked
+} from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { PauseRendered } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
@@ -12,10 +21,13 @@ import { Config } from '../config.model';
   styleUrls: ['./loading.component.scss']
 })
 
-export class LoadingComponent implements AfterViewInit, OnDestroy {
+export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
 
   protected config: Config;
   protected nextButtonDelayFinished = false;
+
+  @Input()
+  public nextQuestionButtonDelay = 1;
 
   @Input()
   public question: Question = new Question(0, 0, 0);
@@ -71,29 +83,19 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.addAuditServiceEntry();
     // wait for the component to be rendered first, before parsing the text
-    if (this.config.speechSynthesis) {
-      this.speechService.speakElement(this.elRef.nativeElement);
 
-      if (!this.config.nextBetweenQuestions) {
-        setTimeout(() => {
-          this.speechService.waitForEndOfSpeech().then(() => {
-            this.sendTimeoutEvent();
-          });
-        }, this.loadingTimeout * 1000);
-      } else {
-        setTimeout(() => { this.nextButtonDelayFinished = true; }, 1000);
-      }
+    if (!this.config.nextBetweenQuestions) {
+      setTimeout(async () => {
+        if (this.config.speechSynthesis) {
+          await this.speechService.waitForEndOfSpeech();
+        }
+
+        this.sendTimeoutEvent();
+      }, this.loadingTimeout * 1000);
     } else {
-      if (!this.config.nextBetweenQuestions) {
-        setTimeout(() => {
-          this.sendTimeoutEvent();
-        }, this.loadingTimeout * 1000);
-      } else {
-        setTimeout(() => { this.nextButtonDelayFinished = true; }, 1000);
-      }
-    }
-    if (this.config.nextBetweenQuestions) {
-      this.elRef.nativeElement.querySelector('#goButton').focus();
+      setTimeout(() => {
+        this.nextButtonDelayFinished = true;
+      }, this.nextQuestionButtonDelay * 1000);
     }
   }
 
@@ -105,6 +107,12 @@ export class LoadingComponent implements AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.config.speechSynthesis) {
       this.speechService.cancel();
+    }
+  }
+
+  ngAfterViewChecked() {
+    if (this.config.nextBetweenQuestions && this.nextButtonDelayFinished) {
+      this.elRef.nativeElement.querySelector('#goButton').focus();
     }
   }
 }
