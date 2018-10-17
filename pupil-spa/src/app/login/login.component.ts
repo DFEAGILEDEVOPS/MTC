@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
         const config = this.questionService.getConfig();
         if (config.fontSize) {
           this.router.navigate(['font-choice']);
+        } else if (config.audibleSounds || config.numpadRemoval || config.questionReader) {
+          this.router.navigate(['access-settings']);
         } else {
           this.router.navigate(['sign-in-success']);
         }
