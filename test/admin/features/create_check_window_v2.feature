@@ -97,5 +97,16 @@ Feature:
   Scenario: Users can create a check window
     Given I navigate to the create check window page
     When I submit details of a valid check window
-#    Then I should see it added to the list of check windows YET TO BE IMPLEMENTED
+    Then I should see it added to the list of check windows
     And stored correctly in the db
+
+  Scenario: Users can delete a check window
+    Given I previously created a check window
+    When I decide to remove it
+    Then it should be removed from the list of windows
+
+  Scenario: Removal of check window can be cancelled
+    Given I previously created a check window
+    When I consider removing it
+    But then change my mind
+    Then it should be still in the list of windows
