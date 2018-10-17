@@ -47,7 +47,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Experimental: Flag to indicate whether we want speech synthesis
    */
-  protected hasSpeechSynthesis = false;
+  protected hasQuestionReader = false;
 
   /**
    * Reference to global window object
@@ -272,7 +272,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
     this.addQuestionAnsweredEvent();
     this.submitted = true;
-    if (this.config.speechSynthesis) {
+    if (this.config.questionReader) {
       this.speechService.waitForEndOfSpeech().then(() => {
         this.manualSubmitEvent.emit(this.answer);
       });
@@ -306,7 +306,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       question: `${this.factor1}x${this.factor2}`
     }));
     this.submitted = true;
-    if (this.config.speechSynthesis) {
+    if (this.config.questionReader) {
       await this.speechService.waitForEndOfSpeech();
 
       if (this.config.audibleSounds) {
@@ -329,7 +329,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.startedAnswering = true;
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
-      if (this.config.speechSynthesis) {
+      if (this.config.questionReader) {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
@@ -352,7 +352,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
 
     if (this.answer.length > 0) {
-      if (this.questionService.getConfig().speechSynthesis) {
+      if (this.questionService.getConfig().questionReader) {
         this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
       }
       this.answer = this.answer.substr(0, this.answer.length - 1);
@@ -368,7 +368,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.hasStartedAnswering()) {
       return;
     }
-    if (!this.questionService.getConfig().speechSynthesis) {
+    if (!this.questionService.getConfig().questionReader) {
       return;
     }
 

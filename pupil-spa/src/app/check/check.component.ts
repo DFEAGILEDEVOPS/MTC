@@ -350,7 +350,7 @@ export class CheckComponent implements OnInit {
     this.allowedStates.push('warmup-intro');
     for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`LW${i + 1}`);
-      if (this.config.speechSynthesis) {
+      if (this.config.questionReader) {
         this.allowedStates.push(`SW${i + 1}`);
       } else {
         this.allowedStates.push(`W${i + 1}`);
@@ -362,7 +362,7 @@ export class CheckComponent implements OnInit {
     // Setup the Questions
     for (let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`L${i + 1}`);
-      if (this.config.speechSynthesis) {
+      if (this.config.questionReader) {
         this.allowedStates.push(`SQ${i + 1}`);
       } else {
         this.allowedStates.push(`Q${i + 1}`);

@@ -39,7 +39,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit() {
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
@@ -50,7 +50,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
 
   ngOnDestroy(): void {
     // stop the current speech process if the page is changed
-    if (this.questionService.getConfig().speechSynthesis) {
+    if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
