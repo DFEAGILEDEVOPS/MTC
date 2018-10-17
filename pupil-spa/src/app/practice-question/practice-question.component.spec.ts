@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PracticeQuestionComponent } from './practice-question.component';
 import { AuditService } from '../services/audit/audit.service';
@@ -15,13 +15,16 @@ import { SoundComponentMock } from '../sound/sound-component-mock';
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
   let fixture: ComponentFixture<PracticeQuestionComponent>;
+  let mockSpeechService: SpeechServiceMock;
 
   beforeEach(async(() => {
+    mockSpeechService = new SpeechServiceMock();
+
     TestBed.configureTestingModule({
       declarations: [ PracticeQuestionComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: SpeechService, useValue: mockSpeechService },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: StorageService, useClass: StorageServiceMock },
         WindowRefService
@@ -132,12 +135,12 @@ describe('PractiseQuestionComponent', () => {
       });
     });
 
-    it('returns false for a duplicate timeout event', () => {
+    it('returns false for a duplicate timeout event', async () => {
       component.answer = '126';
       expect(component[ 'submitted' ]).toBe(false);
       component.sendTimeoutEvent();
       // A duplicate timeout should return false;
-      const retVal = component.sendTimeoutEvent();
+      const retVal = await component.sendTimeoutEvent();
       expect(retVal).toBe(false);
     });
   });
@@ -217,4 +220,29 @@ describe('PractiseQuestionComponent', () => {
     });
   });
 
+  describe('preSendTimeoutEvent', () => {
+    it('should play the end of question sound', () => {
+      component.config.speechSynthesis = false;
+      spyOn(component.soundComponent, 'playEndOfQuestionSound');
+      component.preSendTimeoutEvent();
+
+      expect(component.soundComponent.playEndOfQuestionSound).toHaveBeenCalled();
+    });
+
+    it('should play the end of question sound after speech ends', <any>fakeAsync(() => {
+      component.config.speechSynthesis = true;
+      spyOn(mockSpeechService, 'waitForEndOfSpeech').and.returnValue(
+        new Promise(resolve => setTimeout(resolve, 100))
+      );
+      spyOn(component.soundComponent, 'playEndOfQuestionSound');
+      component.preSendTimeoutEvent();
+
+      tick(50);
+      expect(mockSpeechService.waitForEndOfSpeech).toHaveBeenCalled();
+      expect(component.soundComponent.playEndOfQuestionSound).not.toHaveBeenCalled();
+
+      tick(50);
+      expect(component.soundComponent.playEndOfQuestionSound).toHaveBeenCalled();
+    }));
+  });
 });
