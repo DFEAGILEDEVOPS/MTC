@@ -6,6 +6,9 @@
     "test": "jasmine */*.spec.js",
     "lint": "standard"
   },
+  "engines": {
+    "node": ">=8.11.1"
+  },
   "dependencies": {
     "azure-storage": "^2.10.1",
     "bluebird": "^3.5.2",
