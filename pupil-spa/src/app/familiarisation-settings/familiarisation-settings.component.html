@@ -36,7 +36,7 @@
           <ol class="list list-number">
             <li *ngIf="config.colourContrast">Colour contrast</li>
             <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
-            <li class="extra-space" *ngIf="config.inputAssistance">Input assistant</li>
+            <li class="extra-space">Input assistant</li>
             <div class="grid-row">
               <div class="column-two-thirds no-padding">
                 <div class="panel panel-border-wide padding-left no-padding">
@@ -72,13 +72,31 @@
             If you need to add or remove any settings, please tell your teacher and
             <a routerLink="/sign-out">sign out</a>.
           </p>
-          <button *ngIf="!config.inputAssistance" class="button" (click)="onClick()">Next</button>
-          <div *ngIf="config.inputAssistance" class="form-group">
+          <div class="form-group">
             <p>
               <input class="button button-start" type="submit" value="Next">
             </p>
           </div>
       </form>
+      <div *ngIf="!config.inputAssistance">
+        <header class="page-header">
+          <h1 class="heading-xlarge" tabindex="0">Your settings</h1>
+        </header>
+        <p class="lede">
+          You have the following settings on your check
+        </p>
+        <ol class="list list-number">
+          <li *ngIf="config.colourContrast">Colour contrast</li>
+          <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+          <li *ngIf="config.numpadRemoval">Remove number pad</li>
+          <li *ngIf="config.audibleSounds">Time alert</li>
+        </ol>
+        <p>
+          If you need to add or remove any settings, please tell your teacher and
+          <a routerLink="/sign-out">sign out</a>.
+        </p>
+        <button class="button" (click)="onClick()">Next</button>
+      </div>
     </div>
   </div>
 </main>
