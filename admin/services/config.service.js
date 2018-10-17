@@ -46,7 +46,8 @@ const configService = {
       numpadRemoval: false,
       fontSize: false,
       colourContrast: false,
-      questionReader: false
+      questionReader: false,
+      nextBetweenQuestions: false
     }
 
     let pupilAccessArrangements
