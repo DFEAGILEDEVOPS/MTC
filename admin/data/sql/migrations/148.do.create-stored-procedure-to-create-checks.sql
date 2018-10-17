@@ -45,8 +45,8 @@ AS
     VALUES (@schoolId, @checkId, (SELECT TOP 1 p.id
                                   FROM [mtc_admin].[pin] p
                                          LEFT JOIN [mtc_admin].[checkPin] cp ON (p.id = cp.pin_id)
-                                  WHERE cp.pin_id IS NULL
-                                    AND (cp.school_id IS NULL OR cp.school_id <> @schoolId)));
+                                  WHERE (cp.pin_id IS NULL OR (cp.school_id <> @schoolId AND cp.pin_id IS NOT NULL))
+                                  ORDER BY NEWID()));
 
     -- Store the check.id in the output table
     INSERT INTO @output (id) (SELECT @checkId);
