@@ -14,11 +14,11 @@ const checkWindowV2UpdateService = {}
  * @returns {String} flash message for successful db insertion
  */
 checkWindowV2UpdateService.submit = async (requestData) => {
+  const checkWindow = await checkWindowV2Service.getCheckWindow(requestData.checkWindowUrlSlug)
   const validationError = checkWindowAddValidator.validate(requestData)
   if (validationError.hasError()) {
     throw validationError
   }
-  const checkWindow = await checkWindowV2Service.getCheckWindow(requestData.checkWindowUrlSlug)
   const checkWindowData = checkWindowHelper.prepareSubmissionData(requestData, checkWindow.id)
   await checkWindowDataService.sqlUpdate(checkWindowData)
   return `${checkWindowData.name} has been edited`

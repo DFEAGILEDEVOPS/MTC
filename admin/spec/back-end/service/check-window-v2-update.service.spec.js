@@ -54,7 +54,7 @@ describe('check-window-v2-update.service', () => {
           expect(Object.keys(error.errors).length).toBe(1)
         }
         expect(checkWindowAddValidator.validate).toHaveBeenCalled()
-        expect(checkWindowV2Service.getCheckWindow).not.toHaveBeenCalled()
+        expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
         expect(checkWindowHelper.prepareSubmissionData).not.toHaveBeenCalled()
         expect(checkWindowDataService.sqlUpdate).not.toHaveBeenCalled()
       })
