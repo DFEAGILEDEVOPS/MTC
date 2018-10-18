@@ -1,6 +1,5 @@
 -- create a pin table
-DROP TABLE IF EXISTS [mtc_admin].[pin];
-create table [mtc_admin].[pin] (
+CREATE TABLE [mtc_admin].[pin] (
   [id] [int] IDENTITY(1,1) NOT NULL,
   [createdAt] [datetimeoffset](3) NOT NULL
     CONSTRAINT[DF_pin_created_at] DEFAULT GETUTCDATE(),

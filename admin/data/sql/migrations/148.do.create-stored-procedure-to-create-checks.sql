@@ -1,5 +1,5 @@
 -- create the create checks stored procedure
-DROP PROCEDURE  IF EXISTS [mtc_admin].[spCreateChecks];
+DROP PROCEDURE IF EXISTS [mtc_admin].[spCreateChecks];
 GO
 CREATE PROCEDURE [mtc_admin].[spCreateChecks]
     @TVP [mtc_admin].[CheckTableType] READONLY

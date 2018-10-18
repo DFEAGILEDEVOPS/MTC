@@ -1,5 +1,5 @@
-
 -- Drop the unused cols and their indexes from the `check` table
+
 drop index check_school_id_pin_checkStatus_id_uindex
   on [mtc_admin].[check];
 go
