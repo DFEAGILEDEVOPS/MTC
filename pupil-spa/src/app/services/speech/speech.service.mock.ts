@@ -33,4 +33,8 @@ export class SpeechServiceMock {
   }
 
   speakElement (arg) {}
+
+  waitForEndOfSpeech () {
+    return Promise.resolve(true);
+  }
 }

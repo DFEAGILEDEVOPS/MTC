@@ -36,7 +36,12 @@ const checkStartService = {}
  * @param {string} pinEnv
  * @return {Promise<void>}
  */
-checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, pinEnv) {
+checkStartService.prepareCheck = async function (
+  pupilIds,
+  dfeNumber,
+  schoolId,
+  pinEnv
+) {
   // TODO: add transaction wrapper around the service calls to generate pins and checks
 
   if (!dfeNumber) {
@@ -49,10 +54,19 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
 
   // Validate the incoming pupil list to ensure that the pupils are real ids
   // and that they belong to the user's school
-  const pupils = await pupilDataService.sqlFindByIdAndDfeNumber(pupilIds, dfeNumber)
-  const difference = setValidationService.validate(pupilIds.map(x => parseInt(x, 10)), pupils)
+  const pupils = await pupilDataService.sqlFindByIdAndDfeNumber(
+    pupilIds,
+    dfeNumber
+  )
+  const difference = setValidationService.validate(
+    pupilIds.map(x => parseInt(x, 10)),
+    pupils
+  )
   if (difference.size > 0) {
-    winston.warn(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
+    winston.warn(
+      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
+      difference
+    )
     throw new Error('Validation failed')
   }
 
@@ -62,18 +76,33 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
   const maxAttempts = config.Data.pinSubmissionMaxAttempts
   const attemptsRemaining = config.Data.pinSubmissionMaxAttempts
   // Update the pins for each pupil
-  await pinGenerationService.updatePupilPins(pupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv)
+  await pinGenerationService.updatePupilPins(
+    pupilIds,
+    dfeNumber,
+    maxAttempts,
+    attemptsRemaining,
+    schoolId,
+    pinEnv
+  )
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindow(checkWindow.id)
+  const allForms = await checkFormService.getAllFormsForCheckWindow(
+    checkWindow.id
+  )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
 
   // Create the check for each pupil
   const checks = []
   for (let pid of pupilIds) {
     const usedFormIds = usedForms[pid] ? usedForms[pid].map(f => f.id) : []
-    const c = await checkStartService.initialisePupilCheck(pid, checkWindow, allForms, usedFormIds, pinEnv === 'live')
+    const c = await checkStartService.initialisePupilCheck(
+      pid,
+      checkWindow,
+      allForms,
+      usedFormIds,
+      pinEnv === 'live'
+    )
     checks.push(c)
   }
   await checkDataService.sqlCreateBatch(checks)
@@ -89,7 +118,12 @@ checkStartService.prepareCheck = async function (pupilIds, dfeNumber, schoolId, 
  * @param isLiveCheck
  * @return {Promise<void>}
  */
-checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId, isLiveCheck) {
+checkStartService.prepareCheck2 = async function (
+  pupilIds,
+  dfeNumber,
+  schoolId,
+  isLiveCheck
+) {
   if (!pupilIds) {
     throw new Error('pupilIds is required')
   }
@@ -101,47 +135,92 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
   // * that they belong to the user's school
   // * that they are eligible for pin generation
   // This also adds the `isRestart` flag onto the pupil object is the pupil is consuming a restart
-  const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(schoolId, pupilIds)
+  const pupils = await pinGenerationV2Service.getPupilsEligibleForPinGenerationById(
+    schoolId,
+    pupilIds
+  )
 
   // Check to see if we lost any pupils during the data select, indicating - they weren't eligible for instance.
-  const difference = setValidationService.validate(pupilIds.map(x => parseInt(x, 10)), pupils)
+  const difference = setValidationService.validate(
+    pupilIds.map(x => parseInt(x, 10)),
+    pupils
+  )
   if (difference.size > 0) {
-    winston.error(`checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `, difference)
+    winston.error(
+      `checkStartService.prepareCheck: incoming pupil Ids not found for school [${dfeNumber}]: `,
+      difference
+    )
     throw new Error('Validation failed')
   }
 
   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
+  winston.info('#datebug got checkWindow')
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
-  const allForms = await checkFormService.getAllFormsForCheckWindow(checkWindow.id)
+  const allForms = await checkFormService.getAllFormsForCheckWindow(
+    checkWindow.id
+  )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
+  winston.info('#datebug got usedForms')
 
   // Create the checks for each pupil
   const checks = []
   for (let pupilId of pupilIds) {
-    const usedFormIds = usedForms[pupilId] ? usedForms[pupilId].map(f => f.id) : []
-    const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck, schoolId)
+    const usedFormIds = usedForms[pupilId]
+      ? usedForms[pupilId].map(f => f.id)
+      : []
+    const c = await checkStartService.initialisePupilCheck(
+      pupilId,
+      checkWindow,
+      allForms,
+      usedFormIds,
+      isLiveCheck,
+      schoolId
+    )
     checks.push(c)
   }
+  winston.info('#datebug creating batch')
   const res = await pinGenerationDataService.sqlCreateBatch(checks)
-  const newCheckIds = Array.isArray(res.insertId) ? res.insertId : [res.insertId]
-  await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, newCheckIds)
+  const newCheckIds = Array.isArray(res.insertId)
+    ? res.insertId
+    : [res.insertId]
 
+  winston.info('#datebug calling pinGenV2.checkAndUpdateRestarts')
+  await pinGenerationV2Service.checkAndUpdateRestarts(
+    schoolId,
+    pupils,
+    newCheckIds
+  )
+
+  winston.info('#datebug creating jwt tokens')
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
-    const token = await jwtService.createToken({ id: pupil }, checkWindow.checkEndDate)
-    pupilUpdates.push({ id: pupil.id, jwtToken: token.token, jwtSecret: token.jwtSecret })
+    const token = await jwtService.createToken(
+      { id: pupil },
+      checkWindow.checkEndDate
+    )
+    pupilUpdates.push({
+      id: pupil.id,
+      jwtToken: token.token,
+      jwtSecret: token.jwtSecret
+    })
   }
+  winston.info('#datebug calling pupilDataService.sqlUpdateTokensBatch')
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
+  winston.info('#datebug calling this.prepareCheckQueueMessages')
   // Prepare a bunch of messages ready to be inserted into the queue
-  const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(newCheckIds)
+  const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
+    newCheckIds
+  )
 
   // Inject messages into the queue
-  const prepareCheckQueueName = queueNameService.getName(queueNameService.NAMES.PREPARE_CHECK)
+  const prepareCheckQueueName = queueNameService.getName(
+    queueNameService.NAMES.PREPARE_CHECK
+  )
   for (let msg of prepareCheckQueueMessages) {
     azureQueueService.addMessage(prepareCheckQueueName, msg)
   }
@@ -157,8 +236,18 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
  * @param {boolean} isLiveCheck
  * @return {Promise<{pupil_id: *, checkWindow_id, checkForm_id}>}
  */
-checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, availableForms, usedFormIds, isLiveCheck, schoolId = null) {
-  const checkForm = await checkFormService.allocateCheckForm(availableForms, usedFormIds)
+checkStartService.initialisePupilCheck = async function (
+  pupilId,
+  checkWindow,
+  availableForms,
+  usedFormIds,
+  isLiveCheck,
+  schoolId = null
+) {
+  const checkForm = await checkFormService.allocateCheckForm(
+    availableForms,
+    usedFormIds
+  )
 
   if (!checkForm) {
     throw new Error('CheckForm not allocated')
@@ -168,7 +257,9 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
     throw new Error('isLiveCheck must be a boolean value')
   }
 
-  winston.debug(`checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`)
+  winston.debug(
+    `checkStartService.initialisePupilCheck(): allocated form ${checkForm.id}`
+  )
 
   const checkData = {
     pupil_id: pupilId,
@@ -210,7 +301,10 @@ checkStartService.pupilLogin = async function (pupilId) {
   }
 
   await checkDataService.sqlUpdate(checkData)
-  await checkStateService.changeState(check.checkCode, checkStateService.States.Collected)
+  await checkStateService.changeState(
+    check.checkCode,
+    checkStateService.States.Collected
+  )
   const questions = JSON.parse(checkForm.formData)
   return { checkCode: check.checkCode, questions, practice: !check.isLiveCheck }
 }
@@ -231,18 +325,32 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
   }
 
   const messages = []
-  const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(checkIds)
+  const checks = await checkFormAllocationDataService.sqlFindByIdsHydrated(
+    checkIds
+  )
   const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
 
   const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
   let checkCompleteSasToken
 
-  const checkStartedSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_STARTED, sasExpiryDate)
-  const pupilPreferencesSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_PREFS, sasExpiryDate)
+  const checkStartedSasToken = sasTokenService.generateSasToken(
+    queueNameService.NAMES.CHECK_STARTED,
+    sasExpiryDate
+  )
+  const pupilPreferencesSasToken = sasTokenService.generateSasToken(
+    queueNameService.NAMES.PUPIL_PREFS,
+    sasExpiryDate
+  )
   if (hasLiveChecks) {
-    checkCompleteSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.CHECK_COMPLETE, sasExpiryDate)
+    checkCompleteSasToken = sasTokenService.generateSasToken(
+      queueNameService.NAMES.CHECK_COMPLETE,
+      sasExpiryDate
+    )
   }
-  const pupilFeedbackSasToken = sasTokenService.generateSasToken(queueNameService.NAMES.PUPIL_FEEDBACK, sasExpiryDate)
+  const pupilFeedbackSasToken = sasTokenService.generateSasToken(
+    queueNameService.NAMES.PUPIL_FEEDBACK,
+    sasExpiryDate
+  )
 
   for (let o of checks) {
     const config = await configService.getConfig({ id: o.pupil_id }) // ToDo: performance note: this does 2 sql lookups per pupil. Optimise!
@@ -282,7 +390,9 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
           token: o.pupil_jwtToken
         }
       },
-      questions: checkFormService.prepareQuestionData(JSON.parse(o.checkForm_formData)),
+      questions: checkFormService.prepareQuestionData(
+        JSON.parse(o.checkForm_formData)
+      ),
       config: config
     }
     if (o.check_isLiveCheck) {
