@@ -85,13 +85,53 @@ describe('LoginSuccessComponent', () => {
     expect(compiled.querySelector('.notice .bold-small').textContent).toMatch(/Do not press 'Next' if this is not you,/);
   });
 
-  it('redirects to warm up introduction page when there access settings page is not required to be displayed', () => {
-    component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
+  describe('for no access arrangements', () => {
+    it('should redirect to warm up introduction page', async () => {
+      component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
+      });
+    });
   });
-  it('redirects to access settings page when there access settings page is required to be displayed', () => {
-    questionService.getConfig = jasmine.createSpy().and.returnValue({ inputAssistance: true });
-    component.onClick();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+
+  describe('for access arrangements', () => {
+    it('should redirect to the font selection page when fontSize is enabled', async () => {
+      spyOnProperty(component.config, 'fontSize').and.returnValue(true);
+      component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice']);
+      });
+    });
+
+    it('should redirect to the AA settings page when audibleSounds is enabled', async () => {
+      spyOnProperty(component.config, 'audibleSounds').and.returnValue(true);
+      component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+      });
+    });
+
+    it('should redirect to the AA settings page when numpadRemoval is enabled', async () => {
+      spyOnProperty(component.config, 'numpadRemoval').and.returnValue(true);
+      component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+      });
+    });
+
+    it('should redirect to the AA settings page when questionReader is enabled', async () => {
+      spyOnProperty(component.config, 'questionReader').and.returnValue(true);
+      component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+      });
+    });
+    
+    it('should redirect to the AA settings page when inputAssistance is enabled', async () => {
+      spyOnProperty(component.config, 'inputAssistance').and.returnValue(true);
+      component.onClick();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+    });
   });
+
 });
