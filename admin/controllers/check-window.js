@@ -99,6 +99,32 @@ const controller = {
     }
     req.flash('info', `${checkWindow['name']} has been successfully removed`)
     return res.redirect('/check-window/manage-check-windows')
+  },
+
+  /**
+   * Edit check window form.
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+
+  getCheckWindowEditForm: async (req, res, next) => {
+    req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
+    res.locals.pageTitle = 'Edit check window'
+    let checkWindowData
+    try {
+      checkWindowData = await checkWindowV2Service.getCheckWindowEditData(req.params.checkWindowUrlSlug)
+    } catch (error) {
+      return next(error)
+    }
+    return res.render('check-window/create-check-window', {
+      error: new ValidationError(),
+      errorMessage: checkWindowErrorMessages,
+      breadcrumbs: req.breadcrumbs(),
+      checkWindowData: checkWindowData,
+      currentYear: moment().format('YYYY')
+    })
   }
 }
 

@@ -160,5 +160,35 @@ describe('access arrangements controller:', () => {
       expect(req.flash).not.toHaveBeenCalled()
       expect(res.redirect).not.toHaveBeenCalled()
     })
+    describe('getCheckWindowEditForm route', () => {
+      let reqParams = {
+        method: 'GET',
+        url: '/edit/:checkWindowUrlSlug',
+        params: {
+          checkWindowUrlSlug: 'checkWindowUrlSlug'
+        }
+      }
+      it('calls getCheckWindowEditData and renders check window form', async () => {
+        const res = getRes()
+        const req = getReq(reqParams)
+        spyOn(res, 'render')
+        spyOn(checkWindowV2Service, 'getCheckWindowEditData')
+        await controller.getCheckWindowEditForm(req, res, next)
+        expect(checkWindowV2Service.getCheckWindowEditData).toHaveBeenCalled()
+        expect(next).not.toHaveBeenCalled()
+        expect(res.locals.pageTitle).toBe('Edit check window')
+        expect(res.render).toHaveBeenCalled()
+      })
+      it('calls next when getCheckWindowEditData throws an error', async () => {
+        const res = getRes()
+        const req = getReq(reqParams)
+        spyOn(res, 'render')
+        spyOn(checkWindowV2Service, 'getCheckWindowEditData').and.returnValue(Promise.reject(new Error('error')))
+        await controller.getCheckWindowEditForm(req, res, next)
+        expect(checkWindowV2Service.getCheckWindowEditData).toHaveBeenCalled()
+        expect(next).toHaveBeenCalled()
+        expect(res.render).not.toHaveBeenCalled()
+      })
+    })
   })
 })
