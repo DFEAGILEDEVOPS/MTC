@@ -81,6 +81,7 @@ export class QuestionService {
     config.fontSize = configData[ 'fontSize' ];
     config.colourContrast = configData[ 'colourContrast' ];
     config.practice = configData[ 'practice' ];
+    config.nextBetweenQuestions = configData[ 'nextBetweenQuestions' ];
     this.config = config;
   }
 }
