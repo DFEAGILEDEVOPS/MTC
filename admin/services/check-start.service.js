@@ -155,7 +155,6 @@ checkStartService.prepareCheck2 = async function (
 
   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-  winston.info('#datebug got checkWindow')
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
@@ -163,7 +162,6 @@ checkStartService.prepareCheck2 = async function (
     checkWindow.id
   )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
-  winston.info('#datebug got usedForms')
 
   // Create the checks for each pupil
   const checks = []
@@ -181,20 +179,17 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  winston.info('#datebug creating batch')
   const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
     : [res.insertId]
 
-  winston.info('#datebug calling pinGenV2.checkAndUpdateRestarts')
   await pinGenerationV2Service.checkAndUpdateRestarts(
     schoolId,
     pupils,
     newCheckIds
   )
 
-  winston.info('#datebug creating jwt tokens')
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
@@ -208,10 +203,8 @@ checkStartService.prepareCheck2 = async function (
       jwtSecret: token.jwtSecret
     })
   }
-  winston.info('#datebug calling pupilDataService.sqlUpdateTokensBatch')
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
-  winston.info('#datebug calling this.prepareCheckQueueMessages')
   // Prepare a bunch of messages ready to be inserted into the queue
   const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
     newCheckIds
