@@ -2,7 +2,6 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "func host start",
-    "pack": "funcpack pack .",
     "test": "jasmine */*.spec.js",
     "lint": "standard"
   },
