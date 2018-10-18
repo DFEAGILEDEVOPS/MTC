@@ -19,7 +19,7 @@
     "purgestorage": "bin/init-dev-storage.js"
   },
   "engines": {
-    "node": ">= 8.4"
+    "node": ">= 8.11"
   },
   "dependencies": {
     "applicationinsights": "^0.22.0",
