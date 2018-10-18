@@ -1,7 +1,7 @@
 version: '3'
 services:
   sqldb:
-    image: "microsoft/mssql-server-linux:2017-GDR"
+    image: "mcr.microsoft.com/mssql/server:2017-CU10-ubuntu"
     container_name: mtc_mssql
     ports:
     - "1433:1433"
