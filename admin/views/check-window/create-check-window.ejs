@@ -311,7 +311,7 @@
                 <input type="hidden" name="familiarisationCheckStartDay" value="<%= checkWindowData.familiarisationCheckStartDay %>">
                 <input type="hidden" name="familiarisationCheckStartMonth" value="<%= checkWindowData.familiarisationCheckStartMonth %>">
                 <input type="hidden" name="familiarisationCheckStartYear" value="<%= checkWindowData.familiarisationCheckStartYear %>">
-                <div class="disabled-check-window-field <%= checkWindowData.familiarisationPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
                 <% } %>
                 <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
                 <div class="separator">to</div>
@@ -358,7 +358,7 @@
                 <input type="hidden" name="familiarisationCheckEndDay" value="<%= checkWindowData.familiarisationCheckEndDay %>">
                 <input type="hidden" name="familiarisationCheckEndMonth" value="<%= checkWindowData.familiarisationCheckEndMonth %>">
                 <input type="hidden" name="familiarisationCheckEndYear" value="<%= checkWindowData.familiarisationCheckEndYear %>">
-                <span class="disabled-check-window-field <%= checkWindowData.familiarisationPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
+                <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
                 <% } %>
             </div>
             <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||

@@ -48,9 +48,9 @@ checkWindowHelper.getEditViewData = (checkWindowData) => {
     liveCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindowData.checkEndDate),
   }
   checkWindowViewData.adminPeriodDisabled = checkWindowViewData.adminStartDateDisabled && checkWindowViewData.adminEndDateDisabled
-  checkWindowViewData.familiarisationPeriodDisabled = checkWindowViewData.familiarisationCheckStartDateDisabled && checkWindowViewData.familiarisationCheckEndDateDisabled
-  checkWindowViewData.livePeriodDisabled = checkWindowViewData.liveCheckStartDateDisabled && checkWindowViewData.liveCheckEndDateDisabled
-  checkWindowViewData.pastCheckWindow = checkWindowViewData.adminPeriodDisabled && checkWindowViewData.familiarisationPeriodDisabled && checkWindowViewData.livePeriodDisabled
+  checkWindowViewData.familiarisationCheckPeriodDisabled = checkWindowViewData.familiarisationCheckStartDateDisabled && checkWindowViewData.familiarisationCheckEndDateDisabled
+  checkWindowViewData.liveCheckPeriodDisabled = checkWindowViewData.liveCheckStartDateDisabled && checkWindowViewData.liveCheckEndDateDisabled
+  checkWindowViewData.pastCheckWindow = checkWindowViewData.adminPeriodDisabled && checkWindowViewData.familiarisationCheckPeriodDisabled && checkWindowViewData.liveCheckPeriodDisabled
   return checkWindowViewData
 }
 
