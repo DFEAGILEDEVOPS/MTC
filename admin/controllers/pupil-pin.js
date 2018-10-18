@@ -12,6 +12,7 @@ const dateService = require('../services/date.service')
 const qrService = require('../services/qr.service')
 const checkStartService = require('../services/check-start.service')
 const checkWindowSanityCheckService = require('../services/check-window-sanity-check.service')
+const winston = require('winston')
 
 const getGeneratePinsOverview = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
@@ -132,6 +133,7 @@ const postGeneratePins = async (req, res, next) => {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
+      winston.info('#datebug calling checkStartService.prepareCheck2')
       await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
     }
 
