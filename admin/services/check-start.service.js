@@ -154,7 +154,6 @@ checkStartService.prepareCheck2 = async function (
 
   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-  winston.info('#datebug got checkWindow')
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
@@ -162,7 +161,6 @@ checkStartService.prepareCheck2 = async function (
     checkWindow.id
   )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
-  winston.info('#datebug got usedForms')
 
   // Create the checks for each pupil
   const checks = []
@@ -181,6 +179,7 @@ checkStartService.prepareCheck2 = async function (
     checks.push(c)
   }
   winston.info('#datebug creating batch')
+  winston.info(checks)
   const res = await checkDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
