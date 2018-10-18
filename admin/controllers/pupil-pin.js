@@ -133,6 +133,7 @@ const postGeneratePins = async (req, res, next) => {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
+      winston.info('#datebug calling checkStartService.prepareCheck2')
       await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
     }
 
