@@ -149,4 +149,26 @@ describe('check-window-v2.service', () => {
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
   })
+  describe('getCheckWindowEditData', () => {
+    it('fetch the checkWindow record and shape the data for the UI', async () => {
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({
+        id: 1,
+        urlSlug: uuid(),
+        adminStartDate: moment.utc().add(1, 'days'),
+        adminEndDate: moment.utc().add(10, 'days'),
+        familiarisationCheckStartDate: moment.utc().add(2, 'days'),
+        familiarisationCheckEndDate: moment.utc().add(5, 'days'),
+        checkStartDate: moment.utc().add(3, 'days'),
+        checkEndDate: moment.utc().add(5, 'days')
+      })
+      const checkWindowData = await checkWindowV2Service.getCheckWindowEditData('urlSlug')
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+      expect(checkWindowData.adminStartDateDisabled).toBeFalsy()
+      expect(checkWindowData.adminEndDateDisabled).toBeFalsy()
+      expect(checkWindowData.familiarisationCheckStartDateDisabled).toBeFalsy()
+      expect(checkWindowData.familiarisationCheckEndDateDisabled).toBeFalsy()
+      expect(checkWindowData.liveCheckStartDateDisabled).toBeFalsy()
+      expect(checkWindowData.liveCheckEndDateDisabled).toBeFalsy()
+    })
+  })
 })
