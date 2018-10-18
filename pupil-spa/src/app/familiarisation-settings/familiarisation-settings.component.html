@@ -12,13 +12,13 @@
         </p>
         <ul class="error-summary-list">
           <p *ngIf="inputAssistantFirstName.errors && (inputAssistantFirstName.errors.required || inputAssistantFirstName.errors.maxlength)">
-            <a href='/access-settings#inputAssistantFirstName'>Enter a first name</a>
+            <a href='/access-settings#inputAssistantFirstName'>Enter a first name in no more than 128 characters</a>
           </p>
           <p *ngIf="inputAssistantFirstName.errors && inputAssistantFirstName.errors.pattern">
             <a href='/access-settings#inputAssistantFirstName'>Enter a first name without special characters</a>
           </p>
           <p *ngIf="inputAssistantLastName.errors && (inputAssistantLastName.errors.required || inputAssistantLastName.errors.maxlength)">
-            <a href='/access-settings#inputAssistantLastName'>Enter a last name</a>
+            <a href='/access-settings#inputAssistantLastName'>Enter a last name in no more than 128 characters</a>
           </p>
           <p *ngIf="inputAssistantLastName.errors && inputAssistantLastName.errors.pattern">
             <a href='/access-settings#inputAssistantFirstName'>Enter a last name without special characters</a>
