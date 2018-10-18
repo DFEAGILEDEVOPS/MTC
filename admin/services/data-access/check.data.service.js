@@ -210,10 +210,7 @@ checkDataService.sqlCreateBatch = async function (checks) {
     pupil_id,
     checkForm_id,
     checkWindow_id,
-    isLiveCheck,
-    pin,
-    pinExpiresAt,
-    school_id
+    isLiveCheck
   )  OUTPUT inserted.ID INTO @output
   VALUES `
   const output = `; SELECT * from @output`
@@ -226,11 +223,7 @@ checkDataService.sqlCreateBatch = async function (checks) {
     params.push({ name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int })
     params.push({ name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int })
     params.push({ name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit })
-    params.push({ name: `pin${i}`, value: c.pin, type: TYPES.NVarChar })
-    params.push({ name: `pinExpiresAt${i}`, value: c.pinExpiresAt, type: TYPES.DateTime })
-    params.push({ name: `school_id${i}`, value: c.school_id, type: TYPES.Int })
-    insertClauses.push(`(@pupil_id${i}, @checkForm_id${i}, @checkWindow_id${i}, @isLiveCheck${i}, @pin${i}, 
-                         @pinExpiresAt${i}, @school_id${i})`)
+    insertClauses.push(`(@pupil_id${i}, @checkForm_id${i}, @checkWindow_id${i}, @isLiveCheck${i})`)
   })
 
   const sql = [insert, insertClauses.join(', '), output].join(' ')

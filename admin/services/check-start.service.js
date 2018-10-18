@@ -16,6 +16,7 @@ const featureToggles = require('feature-toggles')
 const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
+const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
@@ -124,9 +125,8 @@ checkStartService.prepareCheck2 = async function (pupilIds, dfeNumber, schoolId,
     const c = await checkStartService.initialisePupilCheck(pupilId, checkWindow, allForms, usedFormIds, isLiveCheck, schoolId)
     checks.push(c)
   }
-  const res = await checkDataService.sqlCreateBatch(checks)
+  const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId) ? res.insertId : [res.insertId]
-
   await pinGenerationV2Service.checkAndUpdateRestarts(schoolId, pupils, newCheckIds)
 
   // Create and save JWT Tokens for all pupils
@@ -178,7 +178,6 @@ checkStartService.initialisePupilCheck = async function (pupilId, checkWindow, a
   }
 
   if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-    checkData.pin = pinGenerationService.generatePupilPin() // TODO: move pin generation to the database
     checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime()
     checkData.school_id = schoolId
   }

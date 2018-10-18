@@ -55,8 +55,9 @@ const serviceToExport = {
    * @param {[number]} pupilIds - pupils known to be doing a restart
    */
   sqlFindChecksForPupilsById: async (schoolId, checkIds, pupilIds) => {
-    const select = `SELECT * 
-                    FROM ${sqlService.adminSchema}.[check]`
+    const select = `SELECT c.* 
+                    FROM ${sqlService.adminSchema}.[check] c
+                      JOIN ${sqlService.adminSchema}.[pupil] p ON (c.pupil_id = p.id)`
     const schoolParam = {
       name: 'schoolId',
       value: schoolId,
@@ -66,9 +67,9 @@ const serviceToExport = {
     const checkIdentifiers = checkIds.map((checkId, index) => `@checkId${index}`)
     const pupilParams = pupilIds.map((pupilId, index) => { return { name: `pupilId${index}`, value: pupilId, type: TYPES.Int } })
     const pupilIdentifiers = pupilIds.map((pupilId, index) => `@pupilId${index}`)
-    const whereClause = `WHERE school_id = @schoolId 
-                         AND id IN (${checkIdentifiers.join(', ')}) 
-                         AND pupil_id IN (${pupilIdentifiers.join(', ')})`
+    const whereClause = `WHERE p.school_id = @schoolId 
+                         AND c.id IN (${checkIdentifiers.join(', ')}) 
+                         AND c.pupil_id IN (${pupilIdentifiers.join(', ')})`
     const sql = [select, whereClause].join('\n')
     return sqlService.query(sql, [schoolParam].concat(checkParams).concat(pupilParams))
   },
@@ -83,6 +84,40 @@ const serviceToExport = {
     const pupilRestartParams = updateData.map((data, index) => { return { name: `pupilRestartId${index}`, value: data.pupilRestartId, type: TYPES.Int } })
     const updates = updateData.map((data, index) => `UPDATE ${sqlService.adminSchema}.[pupilRestart] SET check_id = @checkId${index} WHERE id = @pupilRestartId${index}`)
     return sqlService.modify(updates.join(';\n'), restartIdParams.concat(pupilRestartParams))
+  },
+
+  /**
+   * Batch create checks with pins, now using a stored procedure
+   * A pin will be randomly allocated
+   *
+   * @param {[{pupilId, checkFormId, checkWindowId, isLiveCheck, pinExpiresAt, schoolId}]} checks - array of check objects to create
+   * @return {Promise<void>}
+   */
+  sqlCreateBatch: async (checks) => {
+    const declareTable = `declare @tvp as [mtc_admin].CheckTableType`
+    const insertHeader = `INSERT into @tvp
+        (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
+        VALUES`
+    const inserts = checks.map((check, index) => {
+      return `(@pupilId${index}, @checkFormId${index}, @checkWindowId${index}, @isLiveCheck${index}, @pinExpiresAt${index}, @schoolId${index})`
+    })
+    const params = []
+    checks.map((check, index) => {
+      params.push( { name: `pupilId${index}`, value: check.pupil_id, type: TYPES.Int })
+      params.push( { name: `checkFormId${index}`, value: check.checkForm_id, type: TYPES.Int })
+      params.push( { name: `checkWindowId${index}`, value: check.checkWindow_id, type: TYPES.Int })
+      params.push( { name: `isLiveCheck${index}`, value: check.isLiveCheck, type: TYPES.Bit })
+      params.push( { name: `pinExpiresAt${index}`, value: check.pinExpiresAt, type: TYPES.DateTime })
+      params.push( { name: `schoolId${index}`, value: check.school_id, type: TYPES.Int })
+    })
+    const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
+    const insertSql = insertHeader + inserts.join(",\n")
+
+    const sql = [declareTable, insertSql, exec].join(";\n")
+
+    const res = await sqlService.modify(sql, params)
+    console.log("\n\n BAtch inserts: ", res)
+    return res
   }
 }
 
