@@ -120,6 +120,7 @@ const controller = {
   getCheckWindowEditForm: async (req, res, next) => {
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     res.locals.pageTitle = 'Edit check window'
+    req.breadcrumbs(res.locals.pageTitle)
     let checkWindowData
     let checkWindowViewData
     try {
