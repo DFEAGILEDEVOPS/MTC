@@ -3,7 +3,9 @@
 const moment = require('moment')
 const monitor = require('../helpers/monitor')
 const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
+const checkWindowHelper = require('../helpers/check-window')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
+const checkWindowV2UpdateService = require('../services/check-window-v2-update.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -60,9 +62,15 @@ const controller = {
    */
   submitCheckWindow: async (req, res, next) => {
     const requestData = req.body
+    const { checkWindowUrlSlug } = requestData
     let flashMessage
     try {
-      flashMessage = await checkWindowV2AddService.submit(requestData)
+      if (checkWindowUrlSlug) {
+        flashMessage = await checkWindowV2UpdateService.submit(requestData)
+      }
+      else {
+        flashMessage = await checkWindowV2AddService.submit(requestData)
+      }
     } catch (error) {
       if (error.name === 'ValidationError') {
         res.locals.pageTitle = 'Create check window'
@@ -113,8 +121,10 @@ const controller = {
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     res.locals.pageTitle = 'Edit check window'
     let checkWindowData
+    let checkWindowViewData
     try {
-      checkWindowData = await checkWindowV2Service.getCheckWindowEditData(req.params.checkWindowUrlSlug)
+      checkWindowData = await checkWindowV2Service.getCheckWindow(req.params.checkWindowUrlSlug)
+      checkWindowViewData = checkWindowHelper.getEditViewData(checkWindowData)
     } catch (error) {
       return next(error)
     }
@@ -122,7 +132,7 @@ const controller = {
       error: new ValidationError(),
       errorMessage: checkWindowErrorMessages,
       breadcrumbs: req.breadcrumbs(),
-      checkWindowData: checkWindowData,
+      checkWindowData: checkWindowViewData,
       currentYear: moment().format('YYYY')
     })
   }

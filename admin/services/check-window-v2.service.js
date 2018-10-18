@@ -53,48 +53,4 @@ checkWindowV2Service.markDeleted = async (urlSlug) => {
   return checkWindowDataService.sqlDeleteCheckWindow(checkWindow.id)
 }
 
-/**
- * Fetch check window data for the edit form
- * @param {String} urlSlug
- * @returns {Object|Error} Either a successful message or throws an exception
- */
-checkWindowV2Service.getCheckWindowEditData = async (urlSlug) => {
-  const checkWindow = await checkWindowV2Service.getCheckWindow(urlSlug)
-  const currentDate = moment.utc()
-  return {
-    adminStartDate: checkWindow.adminStartDate,
-    adminStartDay: checkWindow.adminStartDate.format('D'),
-    adminStartMonth: checkWindow.adminStartDate.format('MM'),
-    adminStartYear: checkWindow.adminStartDate.format('YYYY'),
-    adminStartDateDisabled: currentDate.isSameOrAfter(checkWindow.adminStartDate),
-    adminEndDate: checkWindow.adminEndDate,
-    adminEndDay: checkWindow.adminEndDate.format('D'),
-    adminEndMonth: checkWindow.adminEndDate.format('MM'),
-    adminEndYear: checkWindow.adminEndDate.format('YYYY'),
-    adminEndDateDisabled: currentDate.isSameOrAfter(checkWindow.adminEndDate),
-    checkWindowUrlSlug: checkWindow.urlSlug,
-    checkWindowName: checkWindow.name,
-    familiarisationCheckStartDate: checkWindow.familiarisationCheckStartDate,
-    familiarisationCheckStartDay: checkWindow.familiarisationCheckStartDate.format('D'),
-    familiarisationCheckStartMonth: checkWindow.familiarisationCheckStartDate.format('MM'),
-    familiarisationCheckStartYear: checkWindow.familiarisationCheckStartDate.format('YYYY'),
-    familiarisationCheckStartDateDisabled: currentDate.isSameOrAfter(checkWindow.familiarisationCheckStartDate),
-    familiarisationCheckEndDate: checkWindow.familiarisationCheckEndDate,
-    familiarisationCheckEndDay: checkWindow.familiarisationCheckEndDate.format('D'),
-    familiarisationCheckEndMonth: checkWindow.familiarisationCheckEndDate.format('MM'),
-    familiarisationCheckEndYear: checkWindow.familiarisationCheckEndDate.format('YYYY'),
-    familiarisationCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindow.familiarisationCheckEndDate),
-    liveCheckStartDate: checkWindow.checkStartDate,
-    liveCheckStartDay: checkWindow.checkStartDate.format('D'),
-    liveCheckStartMonth: checkWindow.checkStartDate.format('MM'),
-    liveCheckStartYear: checkWindow.checkStartDate.format('YYYY'),
-    liveCheckStartDateDisabled: currentDate.isSameOrAfter(checkWindow.checkStartDate),
-    liveCheckEndDate: checkWindow.checkEndDate,
-    liveCheckEndDay: checkWindow.checkEndDate.format('D'),
-    liveCheckEndMonth: checkWindow.checkEndDate.format('MM'),
-    liveCheckEndYear: checkWindow.checkEndDate.format('YYYY'),
-    liveCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindow.checkEndDate)
-  }
-}
-
 module.exports = monitor('check-window-v2.service', checkWindowV2Service)
