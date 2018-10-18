@@ -212,7 +212,7 @@ checkStartService.prepareCheck2 = async function (
 
   winston.info('#datebug calling this.prepareCheckQueueMessages')
   // Prepare a bunch of messages ready to be inserted into the queue
-  const prepareCheckQueueMessages = await this.prepareCheckQueueMessages(
+  const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
     newCheckIds
   )
 
