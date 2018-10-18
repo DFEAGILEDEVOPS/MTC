@@ -28,7 +28,6 @@ export class FamiliarisationSettingsComponent {
       inputAssistantFirstName: new FormControl('', Validators.compose([
         Validators.required,
         Validators.maxLength(128),
-
         Validators.pattern(this.validationPattern)
       ])),
       inputAssistantLastName: new FormControl('', Validators.compose([
