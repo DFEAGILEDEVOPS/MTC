@@ -27,7 +27,6 @@ const pinExpiryTime = () => {
   } else {
     toReturn = fourPmToday()
   }
-  winston.info(`pinExpiryTime generated ${toReturn}`)
   return toReturn
 }
 
