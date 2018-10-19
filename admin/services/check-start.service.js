@@ -16,6 +16,7 @@ const featureToggles = require('feature-toggles')
 const jwtService = require('../services/jwt.service')
 const pinGenerationService = require('../services/pin-generation.service')
 const pinGenerationV2Service = require('../services/pin-generation-v2.service')
+const pinGenerationDataService = require('../services/data-access/pin-generation.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
@@ -154,7 +155,6 @@ checkStartService.prepareCheck2 = async function (
 
   // Find the check window we are working in
   const checkWindow = await checkWindowDataService.sqlFindOneCurrent()
-  winston.info('#datebug got checkWindow')
 
   // Find all used forms for each pupil, so we make sure they do not
   // get allocated the same form twice
@@ -162,7 +162,6 @@ checkStartService.prepareCheck2 = async function (
     checkWindow.id
   )
   const usedForms = await checkDataService.sqlFindAllFormsUsedByPupils(pupilIds)
-  winston.info('#datebug got usedForms')
 
   // Create the checks for each pupil
   const checks = []
@@ -180,20 +179,17 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
-  winston.info('#datebug creating batch')
-  const res = await checkDataService.sqlCreateBatch(checks)
+  const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
     : [res.insertId]
 
-  winston.info('#datebug calling pinGenV2.checkAndUpdateRestarts')
   await pinGenerationV2Service.checkAndUpdateRestarts(
     schoolId,
     pupils,
     newCheckIds
   )
 
-  winston.info('#datebug creating jwt tokens')
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
@@ -207,10 +203,8 @@ checkStartService.prepareCheck2 = async function (
       jwtSecret: token.jwtSecret
     })
   }
-  winston.info('#datebug calling pupilDataService.sqlUpdateTokensBatch')
   await pupilDataService.sqlUpdateTokensBatch(pupilUpdates)
 
-  winston.info('#datebug calling this.prepareCheckQueueMessages')
   // Prepare a bunch of messages ready to be inserted into the queue
   const prepareCheckQueueMessages = await checkStartService.prepareCheckQueueMessages(
     newCheckIds
@@ -268,7 +262,6 @@ checkStartService.initialisePupilCheck = async function (
   }
 
   if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-    checkData.pin = pinGenerationService.generatePupilPin() // TODO: move pin generation to the database
     checkData.pinExpiresAt = pinGenerationService.getPinExpiryTime()
     checkData.school_id = schoolId
   }
