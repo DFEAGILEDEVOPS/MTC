@@ -27,7 +27,6 @@ module.exports = async function (context, completedCheckMessage) {
 
   try {
     await savePayloadToAdminDatabase(completedCheckMessage, context.log)
-    context.log('SUCCESS: Admin DB payload updated')
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db payload for [${completedCheckMessage.checkCode}]`)
     throw error
@@ -35,7 +34,6 @@ module.exports = async function (context, completedCheckMessage) {
 
   try {
     await updateAdminDatabaseForCheckComplete(completedCheckMessage.checkCode, context.log)
-    context.log('SUCCESS: Admin DB check status updated')
   } catch (error) {
     context.log.error(`ERROR: unable to update admin db for [${completedCheckMessage.checkCode}]`)
     throw error
@@ -45,7 +43,6 @@ module.exports = async function (context, completedCheckMessage) {
   // This is a backup process in case the check-started message was not received.
   try {
     await deleteFromPreparedCheckTableStorage(azureTableService, completedCheckMessage.checkCode, context.log)
-    context.log('SUCCESS: pupil check row deleted from preparedCheck table')
   } catch (error) {
     // We can ignore "not found" errors in this function
     if (error.type !== 'NOT_FOUND') {
@@ -77,20 +74,17 @@ async function savePayloadToAdminDatabase (completedCheckMessage, logger) {
 
   try {
     checkData = await sqlUtil.sqlFindCheckByCheckCode(completedCheckMessage.checkCode)
-    logger.info('savePayloadToAdminDatabase: data retrieved from SQL: ' + checkData)
   } catch (error) {
-    logger.error(`ERROR: savePayloadToAdminDatabase: failed to retrieve checkFormAllocationData for checkCode: [${completedCheckMessage.checkCode}]`)
+    logger.error(`completed-check: ERROR: savePayloadToAdminDatabase(): failed to retrieve checkFormAllocationData for checkCode: ${completedCheckMessage.checkCode}`)
     throw error
   }
 
   try {
     await sqlInsertPayload(completedCheckMessage, checkData.id)
   } catch (error) {
-    logger.error(`ERROR: savePayloadToAdminDatabase: failed to insert for checkCode: [${completedCheckMessage.checkCode}]`)
+    logger.error(`completed-check: ERROR: savePayloadToAdminDatabase(): failed to insert for checkCode: ${completedCheckMessage.checkCode}`)
     throw error
   }
-
-  logger.info(`SUCCESS: savePayloadToAdminDatabase: succeeded for checkCode: [${completedCheckMessage.checkCode}]`)
 }
 
 /**
@@ -147,10 +141,10 @@ async function updateAdminDatabaseForCheckComplete (checkCode, logger) {
   try {
     const res = await sqlService.modify(sql, params)
     if (res.rowsModified === 0) {
-      logger('updateAdminDatabaseForCheckStarted: no rows modified.  This may be a bad checkCode.')
+      logger(`completed-check: updateAdminDatabaseForCheckStarted(): no rows modified.  This may be a bad checkCode ${checkCode}`)
     }
   } catch (error) {
-    logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
+    logger(`completed-check: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode} : ${error.message}`)
     throw error
   }
 }
