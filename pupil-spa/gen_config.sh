@@ -24,7 +24,7 @@ then
 else
     gaCodeParsed="\"$gaCode\""
 fi
-applicationInsightsCode=${APP_INSIGHTS_CODE:-"null"}
+applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY:-"null"}
 if [ $applicationInsightsCode == "null" ]
 then
     applicationInsightsCodeParsed="null"
