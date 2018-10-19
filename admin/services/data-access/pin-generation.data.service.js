@@ -112,12 +112,8 @@ const serviceToExport = {
     })
     const exec = 'EXEC [mtc_admin].[spCreateChecks] @tvp'
     const insertSql = insertHeader + inserts.join(",\n")
-
     const sql = [declareTable, insertSql, exec].join(";\n")
-
-    const res = await sqlService.modify(sql, params)
-    console.log("\n\n BAtch inserts: ", res)
-    return res
+    return sqlService.modify(sql, params)
   }
 }
 
