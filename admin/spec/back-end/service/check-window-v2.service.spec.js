@@ -5,6 +5,7 @@ const moment = require('moment')
 const uuid = require('uuid/v4')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
+const dateService = require('../../../services/date.service')
 
 describe('check-window-v2.service', () => {
   describe('getCheckWindow', () => {
@@ -147,6 +148,25 @@ describe('check-window-v2.service', () => {
         expect(error.message).toBe('Deleting an past check window is not permitted')
       }
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
+    })
+  })
+  describe('prepareSubmissionData', () => {
+    it('should prepare data for submission', async () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(moment.utc())
+      const requestData = {
+        checkWindowName: 'Check window'
+      }
+      const checkWindowData = checkWindowV2Service.prepareSubmissionData(requestData)
+      expect(Object.keys(checkWindowData).length).toBe(7)
+      expect(checkWindowData.adminStartDate).toBeDefined()
+      expect(checkWindowData.adminEndDate).toBeDefined()
+      expect(checkWindowData.familiarisationCheckStartDate).toBeDefined()
+      expect(checkWindowData.familiarisationCheckEndDate).toBeDefined()
+      expect(checkWindowData.checkStartDate).toBeDefined()
+      expect(checkWindowData.checkEndDate).toBeDefined()
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(6)
+      expect(checkWindowData.checkEndDate.format('HH:mm:ss')).toBe('22:59:59')
+      expect(checkWindowData.familiarisationCheckEndDate.format('HH:mm:ss')).toBe('22:59:59')
     })
   })
 })

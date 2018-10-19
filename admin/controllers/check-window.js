@@ -3,7 +3,7 @@
 const moment = require('moment')
 const monitor = require('../helpers/monitor')
 const checkWindowErrorMessages = require('../lib/errors/check-window-v2')
-const checkWindowHelper = require('../helpers/check-window')
+const checkWindowPresenter = require('../helpers/check-window-presenter')
 const checkWindowV2AddService = require('../services/check-window-v2-add.service')
 const checkWindowV2UpdateService = require('../services/check-window-v2-update.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
@@ -66,20 +66,26 @@ const controller = {
     let flashMessage
     try {
       if (checkWindowUrlSlug) {
-        flashMessage = await checkWindowV2UpdateService.submit(requestData)
-      }
-      else {
-        flashMessage = await checkWindowV2AddService.submit(requestData)
+        await checkWindowV2UpdateService.submit(requestData)
+        const checkWindow = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+        flashMessage = `${checkWindow.name} has been edited`
+      } else {
+        await checkWindowV2AddService.submit(requestData)
+        flashMessage = `${requestData.checkWindowName} has been created`
       }
     } catch (error) {
       if (error.name === 'ValidationError') {
-        res.locals.pageTitle = 'Create check window'
+        res.locals.pageTitle = checkWindowUrlSlug ? 'Edit check window' : 'Create check window'
+        let checkWindowViewData = requestData
+        if (checkWindowUrlSlug) {
+          const checkWindowData = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
+          checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData, requestData)
+        }
         return res.render('check-window/create-check-window', {
           error: error || new ValidationError(),
           errorMessage: checkWindowErrorMessages,
           breadcrumbs: req.breadcrumbs(),
-          checkWindowData: requestData,
-          successfulPost: false,
+          checkWindowData: checkWindowViewData,
           currentYear: moment().format('YYYY')
         })
       }
@@ -125,7 +131,7 @@ const controller = {
     let checkWindowViewData
     try {
       checkWindowData = await checkWindowV2Service.getCheckWindow(req.params.checkWindowUrlSlug)
-      checkWindowViewData = checkWindowHelper.getEditViewData(checkWindowData)
+      checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData)
     } catch (error) {
       return next(error)
     }

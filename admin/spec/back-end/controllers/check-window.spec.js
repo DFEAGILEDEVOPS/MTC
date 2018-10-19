@@ -4,8 +4,9 @@
 
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/check-window')
-const checkWindowHelper = require('../../../helpers/check-window')
+const checkWindowPresenter = require('../../../helpers/check-window-presenter')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
+const checkWindowV2UpdateService = require('../../../services/check-window-v2-update.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 
 describe('access arrangements controller:', () => {
@@ -73,7 +74,17 @@ describe('access arrangements controller:', () => {
     let reqParams = {
       method: 'POST',
       url: '/check-window/submit-check-window',
-      body: {}
+      body: {
+        checkWindowName: 'New check window'
+      }
+    }
+
+    let reqEditParams = {
+      method: 'POST',
+      url: '/check-window/submit-check-window',
+      body: {
+        checkWindowUrlSlug: 'checkWindowUrlSlug'
+      }
     }
 
     it('submits the new check windows form page', async () => {
@@ -84,7 +95,20 @@ describe('access arrangements controller:', () => {
       await controller.submitCheckWindow(req, res, next)
       expect(checkWindowV2AddService.submit).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(req.flash).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalledWith('info', 'New check window has been created')
+      expect(res.redirect).toHaveBeenCalled()
+    })
+    it('submits the edited check windows form page', async () => {
+      const res = getRes()
+      const req = getReq(reqEditParams)
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2UpdateService, 'submit')
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ name: 'Edited check window' })
+      await controller.submitCheckWindow(req, res, next)
+      expect(checkWindowV2UpdateService.submit).toHaveBeenCalled()
+      expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalledWith('info', 'Edited check window has been edited')
       expect(res.redirect).toHaveBeenCalled()
     })
     it('calls next when checkWindowV2AddService submit throws an error', async () => {
@@ -173,11 +197,11 @@ describe('access arrangements controller:', () => {
         const res = getRes()
         const req = getReq(reqParams)
         spyOn(res, 'render')
-        spyOn(checkWindowHelper, 'getEditViewData')
+        spyOn(checkWindowPresenter, 'getViewModelData')
         spyOn(checkWindowV2Service, 'getCheckWindow')
         await controller.getCheckWindowEditForm(req, res, next)
         expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
-        expect(checkWindowHelper.getEditViewData).toHaveBeenCalled()
+        expect(checkWindowPresenter.getViewModelData).toHaveBeenCalled()
         expect(next).not.toHaveBeenCalled()
         expect(res.locals.pageTitle).toBe('Edit check window')
         expect(res.render).toHaveBeenCalled()
@@ -187,9 +211,10 @@ describe('access arrangements controller:', () => {
         const req = getReq(reqParams)
         spyOn(res, 'render')
         spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue(Promise.reject(new Error('error')))
-        spyOn(checkWindowHelper, 'getEditViewData')
+        spyOn(checkWindowPresenter, 'getViewModelData')
         await controller.getCheckWindowEditForm(req, res, next)
         expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
+        expect(checkWindowPresenter.getViewModelData).not.toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
         expect(res.render).not.toHaveBeenCalled()
       })
