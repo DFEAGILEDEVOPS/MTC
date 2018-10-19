@@ -3,6 +3,7 @@ const commandLineArgs = require('command-line-args')
 const csv = require('fast-csv')
 const fs = require('fs')
 const R = require('ramda')
+const device = require('device')
 
 const info = `
 **************************************************
@@ -48,7 +49,10 @@ const retrieveDataToFile = {
       'School'
     ],
     test: [
-      'Navigator: User agent',
+      'Device: Type',
+      'Device: Model',
+      'Device: OS',
+      'Device: Agent',
       'Navigator: Platform',
       'Navigator: Language',
       'Navigator: Cookie enabled',
@@ -78,7 +82,10 @@ const retrieveDataToFile = {
    * Paths for the device JSON with all captured details
    */
   deviceDataPaths: [
-    ['navigator', 'userAgent'],
+    ['device', 'type'],
+    ['device', 'model'],
+    ['device', 'parser', 'useragent', 'os'],
+    ['agent'],
     ['navigator', 'platform'],
     ['navigator', 'language'],
     ['navigator', 'cookieEnabled'],
@@ -132,6 +139,8 @@ const retrieveDataToFile = {
    * Expand the device JSON object
    */
   extractDeviceData: function (deviceData) {
+    deviceData.device = device(deviceData.navigator.userAgent, { parseUserAgent: true })
+    deviceData.agent = deviceData.device.parser.useragent.toAgent()
     const data = this.deviceDataPaths.map(path => R.path(path, deviceData))
 
     return data
@@ -174,7 +183,7 @@ const retrieveDataToFile = {
     const ws = fs.createWriteStream(filename)
     ws.write(this.headers[this.type] + '\n')
     csv
-      .write(data, {header: false})
+      .write(data, { header: false })
       .pipe(ws)
 
     console.log(`Data is being saved to ${filename}\n`)
