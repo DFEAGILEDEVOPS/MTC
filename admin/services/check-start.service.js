@@ -351,6 +351,7 @@ checkStartService.prepareCheckQueueMessages = async function (checkIds) {
     // Pass the isLiveCheck config in to the SPA
     config.practice = !o.check_isLiveCheck
     const message = {
+      checkCode: o.check_checkCode,
       schoolPin: o.school_pin,
       pupilPin: o.pupil_pin,
       pupil: {
