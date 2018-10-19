@@ -12,7 +12,6 @@ const pupilIdentificationFlagService = require('../services/pupil-identification
 const restartService = require('../services/restart.service')
 const config = require('../config')
 const monitor = require('../helpers/monitor')
-const winston = require('winston')
 
 const allowedWords = new Set(
   (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
@@ -184,13 +183,9 @@ pinGenerationService.generateSchoolPassword = school => {
   }
   const wordsArray = Array.from(allowedWords)
   const firstRandomWord =
-    wordsArray[
-      pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)
-    ]
+    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
   const secondRandomWord =
-    wordsArray[
-      pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)
-    ]
+    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
   const newExpiry = pinExpiryTime()
