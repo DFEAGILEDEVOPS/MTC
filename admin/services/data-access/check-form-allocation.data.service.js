@@ -11,8 +11,8 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       chk.id as check_id,
       chk.checkCode as check_checkCode,
       chk.isLiveCheck as check_isLiveCheck,
-      chk.pin as pupil_pin,
-      chk.pinExpiresAt as pupil_pinExpiresAt,
+      pin.val as pupil_pin,
+      cp.pinExpiresAt as pupil_pinExpiresAt,
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,
@@ -28,6 +28,8 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
       JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (chk.checkForm_id = checkForm.id)
       JOIN ${sqlService.adminSchema}.[school] school on (pupil.school_id = school.id)
+      JOIN ${sqlService.adminSchema}.[checkPin] cp on (chk.id = cp.check_id)
+      JOIN ${sqlService.adminSchema}.[pin] pin ON (cp.pin_id = pin.id)
     `
   let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`

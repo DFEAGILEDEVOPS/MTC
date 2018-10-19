@@ -22,7 +22,6 @@ module.exports = async function (context, checkStartMessage) {
 
   // Update the admin database to update the check status to Check Started
   try {
-    context.log('checkStartMessage: ', checkStartMessage)
     await updateAdminDatabaseForCheckStarted(
       checkStartMessage.checkCode,
       new Date(checkStartMessage.clientCheckStartedAt),
