@@ -1,19 +1,48 @@
 <app-header class="full-width"></app-header>
 
 <app-page-modifications>
-<main id="content" class="js-content" role="main">
-  <div class="grid-row">
-    <div class="column-full">
-      <div class="back-link-wrapper">
-        <a routerLink="/sign-out" class="back-link">Back</a>
-      </div>
-      <header class="page-header">
+  <main id="content" class="js-content" role="main">
+    <div class="grid-row">
+      <div class="column-full">
+        <div class="back-link-wrapper">
+          <a routerLink="/font-choice" class="back-link">Back</a>
+        </div>
+        <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Choose colour of page</h1>
-      </header>
-      <p class="lede">
-        <button class="button" (click)="onClick()">Confirm</button>
-      </p>
+        </header>
+        <div class="grid-row">
+          <div class="column-one-third">
+            <fieldset>
+              <div class="multiple-choice" *ngFor="let contrastSetting of contrastSettings">
+                <input type="radio"
+                        value="{{contrastSetting.val}}"
+                        id="contrast-{{contrastSetting.val}}"
+                        name="colour-contrast"
+                        [checked]="!selectedContrast && contrastSetting.val === 'bow'"
+                        (change)="selectionChange(contrastSetting.val)">
+                <label for="contrast-{{contrastSetting.val}}"><span class="contrast-{{contrastSetting.val}}">{{contrastSetting.label}}</span></label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="column-two-thirds">
+            <div *ngIf="selectedContrast" class="preview-box contrast-{{selectedContrast}}">
+              <div class="badge">Colour preview</div>
+              <div class="question-text">123</div>
+              <table>
+                <tr>
+                  <td><button type="button">1</button></td>
+                  <td><button type="button">2</button></td>
+                  <td><button type="button">3</button></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <p class="lede">
+          If you don't need this setting, <a routerLink="/sign-out">please tell your teacher and sign out</a>.
+        </p>
+        <button class="button" (click)="onClick()">Next</button>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 </app-page-modifications>

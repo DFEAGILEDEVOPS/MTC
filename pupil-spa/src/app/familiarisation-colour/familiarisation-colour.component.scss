@@ -1,0 +1,71 @@
+
+input {
+  background-color: black;
+  color: #000;
+}
+
+.contrast-yob {
+  background-color: #000;
+  color: #ff0;
+}
+
+.contrast-bob {
+  background-color: #96adfc;
+  color: #000;
+}
+
+.contrast-bop {
+  background-color: #edd1b0;
+  color: #000;
+}
+
+.contrast-boc {
+  background-color: #fff5cd;
+  color: #00008b;
+}
+
+.multiple-choice {
+  margin-bottom: 20px;
+}
+
+label span {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+}
+
+.preview-box {
+  border: 1px solid #6f777b;
+  float: left;
+  padding: 0 30px 30px;
+  min-width: 350px;
+  min-height: 190px;
+  position: relative;
+
+  > .badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    font-weight: bold;
+    padding: 8px 15px;
+    width: auto;
+  }
+
+  > .question-text {
+    margin-top: 55px;
+    text-align: center;
+  }
+
+  table {
+    border-spacing: 10px;
+    margin: auto;
+  }
+
+  > table button {
+    border-width: 2px;
+    border-style: solid;
+    background: none;
+    border-color: inherit;
+  }
+}
