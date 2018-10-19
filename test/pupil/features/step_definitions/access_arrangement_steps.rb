@@ -17,6 +17,7 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do|access_arrang
 
   sign_in_page.login(@school['pin'], @pin)
   sign_in_page.sign_in_button.click
+  confirmation_page.read_instructions.click
 end
 
 Then(/^I can see setting page as per design$/) do
@@ -27,6 +28,13 @@ Then(/^I can see setting page as per design$/) do
   expect(access_arrangements_setting_page).to have_access_arrangements_list
 end
 
+Then(/^I can see setting page for input assistance as per design$/) do
+  step 'I can see setting page as per design'
+  expect(access_arrangements_setting_page).to have_input_assistance_message
+  expect(access_arrangements_setting_page).to have_input_assistance_first_name
+  expect(access_arrangements_setting_page).to have_input_assistance_last_name
+end
+
 Then(/^I can see following access arrangement$/) do |table|
   i=0
   table.hashes.each do |hash|
@@ -34,5 +42,15 @@ Then(/^I can see following access arrangement$/) do |table|
     actual_access_arr_type = access_arrangements_setting_page.access_arrangements_list[i].text
     i= i+1
     expect(actual_access_arr_type.eql?(expected_access_arr_type)).to be_truthy, "Expected: #{expected_access_arr_type}...but got Actual: #{actual_access_arr_type}"
+  end
+end
+
+When(/^I click Next button on setting page$/) do
+  access_arrangements_setting_page.next_btn.click
+end
+
+Then(/^I can see following message for input assistance$/) do|table|
+  table.hashes.each do |hash|
+    expect(access_arrangements_setting_page.error_summary.error_list.text.include?(hash['error_message'])).to be_truthy, "Expected: #{hash['error_message']}....but Got #{access_arrangements_setting_page.error_summary.error_list.text} "
   end
 end

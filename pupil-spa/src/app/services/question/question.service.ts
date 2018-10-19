@@ -77,6 +77,7 @@ export class QuestionService {
     config.questionTime = configData[ 'questionTime' ];
     config.speechSynthesis = configData['speechSynthesis'] && this.speechService.isSupported();
     config.audibleSounds = configData[ 'audibleSounds' ];
+    config.inputAssistance = configData[ 'inputAssistance' ];
     config.numpadRemoval = configData[ 'numpadRemoval' ];
     config.fontSize = configData[ 'fontSize' ];
     config.colourContrast = configData[ 'colourContrast' ];
