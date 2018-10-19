@@ -139,8 +139,10 @@ const retrieveDataToFile = {
    * Expand the device JSON object
    */
   extractDeviceData: function (deviceData) {
-    deviceData.device = device(deviceData.navigator.userAgent, { parseUserAgent: true })
-    deviceData.agent = deviceData.device.parser.useragent.toAgent()
+    if (deviceData.navigator && deviceData.navigator.userAgent) {
+      deviceData.device = device(deviceData.navigator.userAgent, { parseUserAgent: true })
+      deviceData.agent = deviceData.device.parser.useragent.toAgent()
+    }
     const data = this.deviceDataPaths.map(path => R.path(path, deviceData))
 
     return data
