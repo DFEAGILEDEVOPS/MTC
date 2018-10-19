@@ -59,7 +59,10 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setItem('pupil', { checkCode });
 
     this.config = this.questionService.getConfig();
-    this.isAAUser = this.config.fontSize || this.config.colourContrast;
+    this.isAAUser = this.config.fontSize
+      || this.config.colourContrast
+      || this.config.audibleSounds
+      || this.config.numpadRemoval;
   }
 
   async ngOnInit() {
@@ -70,16 +73,25 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
     if (this.config.speechSynthesis) {
-      this.speechService.speakElement(this.elRef.nativeElement);
+      this.speechService.speakElement(this.elRef.nativeElement).then(() => {
+        this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#confirm-identity-button'));
+      });
 
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
-        this.speechService.speakFocusedElement(event.target);
-      }, true);
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
+        (event) => { this.speechService.focusEventListenerHook(event); },
+        true
+      );
     }
   }
 
   onClick() {
-    this.router.navigate(['check-start']);
+    const config = this.questionService.getConfig();
+    const hasAccessSettings = config.audibleSounds || config.numpadRemoval || config.inputAssistance;
+    if (hasAccessSettings) {
+      this.router.navigate(['access-settings']);
+    } else {
+      this.router.navigate(['check-start']);
+    }
   }
 
   ngOnDestroy(): void {

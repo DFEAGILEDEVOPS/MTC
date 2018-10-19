@@ -2,9 +2,9 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "func host start",
-    "pack": "funcpack pack .",
     "test": "jasmine */*.spec.js",
-    "lint": "standard"
+    "lint": "standard",
+    "pack": "funcpack pack ."
   },
   "dependencies": {
     "azure-storage": "^2.10.1",

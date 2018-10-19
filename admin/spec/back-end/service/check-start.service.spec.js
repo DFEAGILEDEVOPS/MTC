@@ -13,11 +13,13 @@ const checkFormService = require('../../../services/check-form.service')
 const checkStartService = require('../../../services/check-start.service')
 const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
+const checkWindowMock = require('../mocks/check-window-2')
 const configService = require('../../../services/config.service')
+const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
+const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
-const checkWindowMock = require('../mocks/check-window-2')
 const checkFormMock = {
   id: 100,
   name: 'MTC0100',
@@ -44,17 +46,17 @@ describe('check-start.service', () => {
   const schoolId = 42
 
   const mockPupils = [
-    {id: 1},
-    {id: 2},
-    {id: 3}
+    { id: 1 },
+    { id: 2 },
+    { id: 3 }
   ]
   const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
   const pupilIdsHackAttempt = ['1', '2', '3', '4']
-  const mockPreparedCheck = {pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true}
+  const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockPreparedCheckQueueMessages = [
-    {mock: 'message'},
-    {mock: 'message'},
-    {mock: 'message'}
+    { mock: 'message' },
+    { mock: 'message' },
+    { mock: 'message' }
   ]
 
   describe('#prepareCheck', () => {
@@ -190,16 +192,17 @@ describe('check-start.service', () => {
 
   describe('#preparecheck2', () => {
     beforeEach(() => {
-      spyOn(pupilDataService, 'sqlFindByIds').and.returnValue(Promise.resolve(mockPupils))
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
-      spyOn(pinGenerationService, 'updatePupilPins')
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({insertId: 1}))
+      // spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessage')
+      spyOn(pinGenerationV2Service, 'getPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
+      spyOn(pinGenerationV2Service, 'checkAndUpdateRestarts').and.returnValue(Promise.resolve())
     })
 
     it('throws an error if the pupilIds are not provided', async () => {
@@ -230,10 +233,20 @@ describe('check-start.service', () => {
       }
     })
 
+    it('calls getPupilsEligibleForPinGenerationById to find pupils', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(pinGenerationV2Service.getPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
+    })
+
     it('calls initialisePupilCheck to randomly select a check form', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
-      expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+      expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {
+      await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
+      expect(pinGenerationV2Service.checkAndUpdateRestarts).toHaveBeenCalledTimes(1)
     })
 
     it('adds messages to the queue', async () => {
@@ -347,16 +360,15 @@ describe('check-start.service', () => {
     })
   })
 
-  describe('#prepareQueueMessages', () => {
-    const mockCheckFormAllocation = require('../mocks/check-form-allocation')
+  describe('#prepareCheckQueueMessages', () => {
+    const mockCheckFormAllocationLive = require('../mocks/check-form-allocation')
+    const mockCheckFormAllocationFamiliarisation = require('../mocks/check-form-allocation-familiarisation')
     const mockConfig = {
       speechSynthesis: false,
       loadingTimeLimit: 3,
       questionTimeLimit: 6
     }
-
     beforeEach(() => {
-      spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocation]))
       spyOn(configService, 'getConfig').and.returnValue(Promise.resolve(mockConfig))
       spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
         return {
@@ -366,36 +378,51 @@ describe('check-start.service', () => {
       })
       spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
     })
+    describe('when live checks are generated', () => {
+      beforeEach(() => {
+        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationLive]))
+      })
 
-    it('throws an error if the check form allocation IDs are not supplied', async () => {
-      try {
-        await checkStartService.prepareCheckQueueMessages()
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('checkIds is not defined')
-      }
+      it('throws an error if the check form allocation IDs are not supplied', async () => {
+        try {
+          await checkStartService.prepareCheckQueueMessages()
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('checkIds is not defined')
+        }
+      })
+
+      it('throws an error if the check form allocation ID param is not an array', async () => {
+        try {
+          await checkStartService.prepareCheckQueueMessages({})
+          fail('expected to throw')
+        } catch (error) {
+          expect(error.message).toBe('checkIds must be an array')
+        }
+      })
+
+      it('makes a call to fetch the check form allocations from the db', async () => {
+        await checkStartService.prepareCheckQueueMessages([1])
+        expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
+      })
+
+      it('prepares the question data', async () => {
+        const res = await checkStartService.prepareCheckQueueMessages([1])
+        expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
+        expect(Object.keys(res[0].questions[0])).toContain('order')
+        expect(Object.keys(res[0].questions[0])).toContain('factor1')
+        expect(Object.keys(res[0].questions[0])).toContain('factor2')
+      })
     })
-
-    it('throws an error if the check form allocation ID param is not an array', async () => {
-      try {
-        await checkStartService.prepareCheckQueueMessages({})
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('checkIds must be an array')
-      }
-    })
-
-    it('makes a call to fetch the check form allocations from the db', async () => {
-      await checkStartService.prepareCheckQueueMessages([1])
-      expect(checkFormAllocationDataService.sqlFindByIdsHydrated).toHaveBeenCalled()
-    })
-
-    it('prepares the question data', async () => {
-      const res = await checkStartService.prepareCheckQueueMessages([1])
-      expect(checkFormService.prepareQuestionData).toHaveBeenCalled()
-      expect(Object.keys(res[0].questions[0])).toContain('order')
-      expect(Object.keys(res[0].questions[0])).toContain('factor1')
-      expect(Object.keys(res[0].questions[0])).toContain('factor2')
+    describe('when familiarisation checks are generated', () => {
+      beforeEach(() => {
+        spyOn(checkFormAllocationDataService, 'sqlFindByIdsHydrated').and.returnValue(Promise.resolve([mockCheckFormAllocationFamiliarisation]))
+      })
+      it('does not generate and include check complete sas token when familiarisation checks are generated', async () => {
+        const res = await checkStartService.prepareCheckQueueMessages([1])
+        expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(3)
+        expect(Object.keys(res[0].tokens)).not.toContain('checkComplete')
+      })
     })
   })
 })

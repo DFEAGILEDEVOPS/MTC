@@ -25,6 +25,8 @@ const csurf = require('csurf')
 const setupLogging = require('./helpers/logger')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 
+const app = express()
+setupLogging(app)
 azure.startInsightsIfConfigured()
 
 /**
@@ -68,11 +70,9 @@ const attendance = require('./routes/attendance')
 const accessArrangements = require('./routes/access-arrangements')
 const checkWindow = require('./routes/check-window')
 
-if (process.env.NODE_ENV === 'development') piping({ignore: [/test/, '/coverage/']})
-const app = express()
+if (process.env.NODE_ENV === 'development') piping({ ignore: [/test/, '/coverage/'] })
 
 setupBrowserSecurity(app)
-setupLogging(app)
 
 // Use the feature toggle middleware to enable it in res.locals
 app.use(featureToggles.middleware)
@@ -195,7 +195,7 @@ passport.use(new CustomStrategy(
 // Passport with local strategy
 passport.use(
   new LocalStrategy(
-    {passReqToCallback: true},
+    { passReqToCallback: true },
     require('./authentication/local-strategy')
   )
 )

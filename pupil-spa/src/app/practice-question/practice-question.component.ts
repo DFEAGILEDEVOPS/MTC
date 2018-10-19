@@ -73,6 +73,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   public answer = '';
 
   /**
+   * Flag to indicate that there was an input to the question
+   */
+  protected startedAnswering = false;
+
+  /**
    * The remaining time in seconds until the answer is automatically submitted
    * Used in the template.
    */
@@ -94,6 +99,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   @Input() public soundComponent;
 
+  public shouldShowQuestion: boolean;
+
   @Input() public factor1 = 0;
 
   @Input() public factor2 = 0;
@@ -110,6 +117,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   @Output() public timeoutEvent: EventEmitter<any> = new EventEmitter();
 
+  @Input() public familiarisationCheck = false;
+
   constructor(protected auditService: AuditService,
               protected windowRefService: WindowRefService,
               protected questionService: QuestionService,
@@ -121,6 +130,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     const accessArrangementsData = storageService.getItem(accessArrangementsDataKey);
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'default';
+    this.shouldShowQuestion = true;
   }
 
   ngOnInit() {
@@ -143,7 +153,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
-  preSendTimeoutEvent() {
+  async preSendTimeoutEvent() {
+    if (!this.config.speechSynthesis) {
+      return this.soundComponent.playEndOfQuestionSound();
+    }
+
+    await this.speechService.waitForEndOfSpeech();
     this.soundComponent.playEndOfQuestionSound();
   }
 
@@ -169,7 +184,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
     // Set the amount of time the user can have on the question
-    this.timeout = this.window.setTimeout(() => {
+    this.timeout = this.window.setTimeout(async () => {
       this.preSendTimeoutEvent();
       this.sendTimeoutEvent();
     }, this.questionTimeoutSecs * 1000);
@@ -192,6 +207,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    */
   hasAnswer() {
     return this.answer.length > 0;
+  }
+
+  /**
+   * Check if there was an input to the question.
+   * @return {boolean}
+   */
+  hasStartedAnswering() {
+    return this.startedAnswering;
   }
 
   /**
@@ -271,7 +294,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * timed out.  Send whatever answer has been collected so far.
    * @return {boolean}
    */
-  sendTimeoutEvent() {
+  async sendTimeoutEvent() {
     // console.log('sendTimeoutEvent() called');
     if (this.submitted) {
       // console.log('sendTimeout(): answer already submitted');
@@ -284,12 +307,15 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }));
     this.submitted = true;
     if (this.config.speechSynthesis) {
-      this.speechService.waitForEndOfSpeech().then(() => {
-        this.timeoutEvent.emit(this.answer);
-      });
-    } else {
-      this.timeoutEvent.emit(this.answer);
+      await this.speechService.waitForEndOfSpeech();
+
+      if (this.config.audibleSounds) {
+        // artificial 0.5s pause to allow the sound component time to play
+        // otherwise it will overlap with the next section speech
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
     }
+    this.timeoutEvent.emit(this.answer);
   }
 
   /**
@@ -300,14 +326,16 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     if (this.submitted) {
         return;
     }
+    this.startedAnswering = true;
     // console.log(`addChar() called with ${char}`);
     if (this.answer.length < 5) {
       if (this.config.speechSynthesis) {
         // if user input interrupts the question being read out, start the timer
         if (!this.timeout) {
           this.startTimer();
+          this.shouldShowQuestion = true;
         }
-        this.speechService.speakChar(char);
+        this.speechService.speakQueued(char);
       }
 
       this.answer = this.answer.concat(char);
@@ -324,10 +352,28 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
 
     if (this.answer.length > 0) {
+      if (this.questionService.getConfig().speechSynthesis) {
+        this.speechService.speakQueued('Delete ' + this.answer[this.answer.length - 1]);
+      }
       this.answer = this.answer.substr(0, this.answer.length - 1);
     }
   }
 
+  /**
+   * Repeat the question for webspeech users when pressing tab
+   * Return early and do nothing if the user already started answering
+   * or the user doesn't have the speech flag on.
+   */
+  repeatQuestion() {
+    if (this.hasStartedAnswering()) {
+      return;
+    }
+    if (!this.questionService.getConfig().speechSynthesis) {
+      return;
+    }
+
+    this.speechService.speakQuestion(this.factor1 + ' times ' + this.factor2);
+  }
   /**
    * Handle key presses
    * @param {KeyboardEvent} event
@@ -343,6 +389,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
       case 'Delete':
       case 'Del':
         this.deleteChar();
+        break;
+      case 'Tab':
+        this.repeatQuestion();
         break;
       case 'Enter':
         this.onSubmit();

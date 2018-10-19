@@ -7,7 +7,7 @@ const accessArrangementsDataService = require('./data-access/access-arrangements
 const pupilAccessArrangementsDataService = require('./data-access/pupil-access-arrangements.data.service')
 const settingDataService = require('./data-access/setting.data.service')
 const groupDataService = require('./data-access/group.data.service')
-const {QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS} = require('../config')
+const { QUESTION_TIME_LIMIT, TIME_BETWEEN_QUESTIONS } = require('../config')
 const monitor = require('../helpers/monitor')
 
 /** @namespace */
@@ -43,6 +43,7 @@ const configService = {
     const checkOptions = {
       speechSynthesis: !!pupil.speechSynthesis,
       audibleSounds: false,
+      inputAssistance: false,
       numpadRemoval: false,
       fontSize: false,
       colourContrast: false
@@ -64,6 +65,7 @@ const configService = {
 
     accessArrangementsCodes.forEach(code => {
       if (code === accessArrangementsDataService.CODES.AUDIBLE_SOUNDS) checkOptions.audibleSounds = true
+      if (code === accessArrangementsDataService.CODES.INPUT_ASSISTANCE) checkOptions.inputAssistance = true
       if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
       if (code === accessArrangementsDataService.CODES.FONT_SIZE) checkOptions.fontSize = true
       if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) checkOptions.colourContrast = true

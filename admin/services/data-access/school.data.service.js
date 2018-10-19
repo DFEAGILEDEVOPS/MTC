@@ -23,7 +23,7 @@ const schoolDataService = {
    * @return {Promise<void>}
    */
   sqlFindOneBySchoolPin: async (pin) => {
-    const paramPin = {name: 'pin', type: TYPES.Char, value: pin}
+    const paramPin = { name: 'pin', type: TYPES.Char, value: pin }
     const sql = `
         SELECT *    
         FROM ${sqlService.adminSchema}.${table}
@@ -39,7 +39,7 @@ const schoolDataService = {
    * @return {Promise<void>}
    */
   sqlFindOneByDfeNumber: async (dfeNumber) => {
-    const paramDfeNumber = {name: 'dfeNumber', type: TYPES.Int, value: dfeNumber}
+    const paramDfeNumber = { name: 'dfeNumber', type: TYPES.Int, value: dfeNumber }
     const sql = `
         SELECT *    
         FROM ${sqlService.adminSchema}.${table}
@@ -71,7 +71,7 @@ const schoolDataService = {
     SELECT *
     FROM ${sqlService.adminSchema}.${table}
     `
-    const {params, paramIdentifiers} = sqlService.buildParameterList(ids, TYPES.Int)
+    const { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
     const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)
@@ -90,7 +90,7 @@ const schoolDataService = {
   SELECT *
   FROM ${sqlService.adminSchema}.${table}
   `
-    const {params, paramIdentifiers} = sqlService.buildParameterList(dfeNumbers, TYPES.Int)
+    const { params, paramIdentifiers } = sqlService.buildParameterList(dfeNumbers, TYPES.Int)
     const whereClause = 'WHERE dfeNumber IN (' + paramIdentifiers.join(', ') + ')'
     const sql = [select, whereClause].join(' ')
     return sqlService.query(sql, params)

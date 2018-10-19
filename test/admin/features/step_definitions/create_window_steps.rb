@@ -720,3 +720,56 @@ Then(/^I should see error message for the following check end date$/) do |table|
     end
   end
 end
+
+Then(/^I should see it added to the list of check windows$/) do
+  @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
+  expect(@check_window.status.text).to eql 'Inactive'
+  expect(@check_window).to have_remove_window
+  expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been created'
+end
+
+And(/^stored correctly in the db$/) do
+  window_in_db = SqlDbHelper.check_window_details(@check_window_hash[:check_name])
+  expect(window_in_db['adminStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_month].to_s + ' ' + @check_window_hash[:admin_start_year].to_s
+  expect(window_in_db['adminEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_end_day].to_s + ' ' + @check_window_hash[:admin_end_month].to_s + ' ' + @check_window_hash[:admin_end_year].to_s
+  expect(window_in_db['familiarisationCheckStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_start_day].to_s + ' ' + @check_window_hash[:familiarisation_start_month].to_s + ' ' + @check_window_hash[:familiarisation_start_year].to_s
+  expect(window_in_db['familiarisationCheckEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_end_day].to_s + ' ' + @check_window_hash[:familiarisation_end_month].to_s + ' ' + @check_window_hash[:familiarisation_end_year].to_s
+  expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:live_start_day].to_s + ' ' + @check_window_hash[:live_start_month].to_s + ' ' + @check_window_hash[:live_start_year].to_s
+  expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:live_end_day].to_s + ' ' + @check_window_hash[:live_end_month].to_s + ' ' + @check_window_hash[:live_end_year].to_s
+end
+
+When(/^I submit details of a valid check window$/) do
+  step 'I fill in details of a valid check window'
+  add_edit_check_window_v2_page.save_changes.click
+end
+
+Given(/^I previously created a check window$/) do
+  step 'I navigate to the create check window page'
+  step 'I submit details of a valid check window'
+  step 'I should see it added to the list of check windows'
+end
+
+When(/^I decide to remove it$/) do
+  @check_window.remove_window.click
+  manage_check_window_page.modal.confirm.click
+end
+
+Then(/^it should be removed from the list of windows$/) do
+  expect(manage_check_window_page.windows_table.rows.
+      find {|chk| chk.text.include? @check_window_hash[:check_name]}).to be_nil
+  expect(manage_check_window_page.flash_message.text).to eql 'Check window deleted.'
+end
+
+But(/^then change my mind$/) do
+  manage_check_window_page.modal.cancel.click
+end
+
+When(/^I consider removing it$/) do
+  @check_window.remove_window.click
+end
+
+Then(/^it should be still in the list of windows$/) do
+  @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
+  expect(@check_window.status.text).to eql 'Inactive'
+  expect(@check_window).to have_remove_window
+end

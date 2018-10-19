@@ -10,6 +10,7 @@ const config = require('../config')
 winston.level = 'error'
 sqlService.initialise(config)
 const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+const sqlUtil = require('../lib/sql-helper')
 
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
@@ -21,7 +22,6 @@ module.exports = async function (context, checkStartMessage) {
 
   // Update the admin database to update the check status to Check Started
   try {
-    console.log('checkStartMessage: ', checkStartMessage)
     await updateAdminDatabaseForCheckStarted(
       checkStartMessage.checkCode,
       new Date(checkStartMessage.clientCheckStartedAt),
@@ -32,10 +32,13 @@ module.exports = async function (context, checkStartMessage) {
     throw error
   }
 
-  // Delete the row in the preparedCheck table - prevent pupils logging in again.
+  // Delete the row in the preparedCheck table for live checks only - prevent pupils logging in again.
   try {
-    await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
-    context.log('SUCCESS: pupil check row deleted from preparedCheck table')
+    const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
+    if (checkData.isLiveCheck) {
+      await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+      context.log('SUCCESS: pupil check row deleted from preparedCheck table')
+    }
   } catch (error) {
     context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
     throw error
@@ -56,8 +59,9 @@ module.exports = async function (context, checkStartMessage) {
 
 /**
  * Update the master SQL Server admin database that the check indicated by <checkCode> has now been started
- * @param {String} checkStarted - the unique GUID that identifies the check in the admin DB
+ * @param {String} checkCode - the unique GUID that identifies the check in the admin DB
  * @param {Date} startedAt
+ * @param {Function} logger
  * @return {Promise<void>}
  */
 async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger) {

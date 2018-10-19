@@ -13,19 +13,30 @@ const restartService = require('../services/restart.service')
 const config = require('../config')
 const monitor = require('../helpers/monitor')
 
-const allowedWords = new Set((config.Data.allowedWords && config.Data.allowedWords.split(',')) || [])
+const allowedWords = new Set(
+  (config.Data.allowedWords && config.Data.allowedWords.split(',')) || []
+)
 
 const fourPmToday = () => moment().startOf('day').add(16, 'hours')
 
 const pinExpiryTime = () => {
+  let toReturn
   if (config.OverridePinExpiry) {
-    return moment().endOf('day')
+    toReturn = moment().endOf('day')
+  } else {
+    toReturn = fourPmToday()
   }
-  return fourPmToday()
+  return toReturn
 }
 
 const pinGenerationService = {}
 const chars = '23456789'
+
+/**
+ * Get the expiry time for a pin
+ *
+ */
+pinGenerationService.getPinExpiryTime = pinExpiryTime
 
 /**
  * Fetch pupils and filter required only pupil attributes
@@ -34,21 +45,23 @@ const chars = '23456789'
  */
 pinGenerationService.getPupils = async (dfeNumber, pinEnv) => {
   let pupils = await pupilDataService.sqlFindPupilsByDfeNumber(dfeNumber)
-  pupils = await Promise.all(pupils.map(async p => {
-    const isValid = await pinGenerationService.isValid(p, pinEnv)
-    if (isValid) {
-      return {
-        id: p.id,
-        pin: p.pin,
-        group_id: p.group_id,
-        dateOfBirth: p.dateOfBirth,
-        foreName: p.foreName,
-        lastName: p.lastName,
-        fullName: `${p.lastName}, ${p.foreName}`,
-        middleNames: p.middleNames
+  pupils = await Promise.all(
+    pupils.map(async p => {
+      const isValid = await pinGenerationService.isValid(p, pinEnv)
+      if (isValid) {
+        return {
+          id: p.id,
+          pin: p.pin,
+          group_id: p.group_id,
+          dateOfBirth: p.dateOfBirth,
+          foreName: p.foreName,
+          lastName: p.lastName,
+          fullName: `${p.lastName}, ${p.foreName}`,
+          middleNames: p.middleNames
+        }
       }
-    }
-  }))
+    })
+  )
   pupils = pupils.filter(p => !!p)
   if (pupils.length === 0) return []
   // determine if more than one pupil has same full name
@@ -73,7 +86,9 @@ pinGenerationService.filterGroups = async (schoolId, pupilIds) => {
  * @returns {Boolean}
  */
 pinGenerationService.isValid = async (p, pinEnv = 'live') => {
-  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(p.id)
+  const checkCount = await checkDataService.sqlFindNumberOfChecksStartedByPupil(
+    p.id
+  )
   const hasAttendance = await pupilAttendanceService.hasAttendance(p.id, pinEnv)
   if (checkCount === restartService.totalChecksAllowed) return false
   const canRestart = await restartService.canRestart(p.id)
@@ -94,7 +109,14 @@ pinGenerationService.isValid = async (p, pinEnv = 'live') => {
  * @param pinEnv
  * @throws
  */
-pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv) => {
+pinGenerationService.updatePupilPins = async (
+  pupilsList,
+  dfeNumber,
+  maxAttempts,
+  attemptsRemaining,
+  schoolId,
+  pinEnv
+) => {
   if (!Array.isArray(pupilsList)) {
     throw new Error('Received list of pupils is not an array')
   }
@@ -111,21 +133,36 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
       pupil.pinExpiresAt = pinExpiryTime()
     }
   })
-  const data = pupils.map(p => ({ id: p.id, pin: p.pin, pinExpiresAt: p.pinExpiresAt }))
+  const data = pupils.map(p => ({
+    id: p.id,
+    pin: p.pin,
+    pinExpiresAt: p.pinExpiresAt
+  }))
   try {
     await pupilDataService.sqlUpdatePinsBatch(data, pinEnv)
   } catch (error) {
     if (attemptsRemaining === 0) {
-      throw new Error(`${maxAttempts} allowed attempts 
-      for pin generation resubmission have been reached`)
+      throw new Error(
+        `${maxAttempts} allowed attempts 
+      for pin generation resubmission have been reached`
+      )
     }
     // Handle duplicate pins
     if (error.number === 2601 && attemptsRemaining !== 0) {
       attemptsRemaining -= 1
-      const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(dfeNumber)
+      const pupilsWithActivePins = await pupilDataService.sqlFindPupilsWithActivePins(
+        dfeNumber
+      )
       const pupilIdsWithActivePins = pupilsWithActivePins.map(p => p.id)
       const pendingPupilIds = R.difference(ids, pupilIdsWithActivePins)
-      await pinGenerationService.updatePupilPins(pendingPupilIds, dfeNumber, maxAttempts, attemptsRemaining, schoolId, pinEnv)
+      await pinGenerationService.updatePupilPins(
+        pendingPupilIds,
+        dfeNumber,
+        maxAttempts,
+        attemptsRemaining,
+        schoolId,
+        pinEnv
+      )
     } else {
       throw new Error(error)
     }
@@ -137,7 +174,7 @@ pinGenerationService.updatePupilPins = async (pupilsList, dfeNumber, maxAttempts
  * @param school
  * @returns { pin: string, pinExpiresAt: Moment } || undefined
  */
-pinGenerationService.generateSchoolPassword = (school) => {
+pinGenerationService.generateSchoolPassword = school => {
   if (allowedWords.size < 5) {
     throw new Error('Service is incorrectly configured')
   }
@@ -145,8 +182,10 @@ pinGenerationService.generateSchoolPassword = (school) => {
     return undefined
   }
   const wordsArray = Array.from(allowedWords)
-  const firstRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
-  const secondRandomWord = wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
+  const firstRandomWord =
+    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
+  const secondRandomWord =
+    wordsArray[ pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1) ]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
   const newExpiry = pinExpiryTime()

@@ -19,6 +19,21 @@
 * Download [JMeter 5.0](http://www-us.apache.org/dist//jmeter/binaries/apache-jmeter-5.0.tgz)
 * Run `/bin/jmeter.bat` to launch JMeter
 
+
+## Teacher load test data preparation
+* Ensure admin application is running and the migrations have been applied
+* If a password is not specified the passwords will be set to 'password'
+* While in `load-test/bin` directory:
+    * The following command will execute a node script which takes a password as an optional argument and will generate one teacher for each school in the database: `node generate-teacher-load-test-data.js`
+    * To set a custom password (i.e. 'newpassword') run: `node generate-teacher-load-test-data.js newpassword`
+
+### Install Jmeter Plugins - Custom JMeter Functions
+* download Jmeter plugin manager
+https://www.blazemeter.com/blog/how-install-jmeter-plugins-manager
+* download the Custom JMeter Functions plugin
+https://jmeter-plugins.org/wiki/Functions/
+
+
 ## Pupil load test data preparation
 * Ensure admin application is running and the migrations have been applied
 * The following command will execute a node script which takes the number of pupils as an argument and will generate pupils spread across the schools in the database

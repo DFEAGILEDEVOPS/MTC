@@ -24,7 +24,7 @@ describe('markingService', () => {
 
     it('throws an error if the arg is invalid', async () => {
       try {
-        await service.mark({data: ''})
+        await service.mark({ data: '' })
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')
@@ -33,7 +33,7 @@ describe('markingService', () => {
 
     it('throws an error if the arg is invalid', async () => {
       try {
-        await service.mark({data: {answers: null}})
+        await service.mark({ data: { answers: null } })
         fail('expected to be thrown')
       } catch (err) {
         expect(err.message).toBe('missing or invalid argument')

@@ -11,13 +11,13 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       chk.id as check_id,
       chk.checkCode as check_checkCode,
       chk.isLiveCheck as check_isLiveCheck,
+      pin.val as pupil_pin,
+      cp.pinExpiresAt as pupil_pinExpiresAt,
       pupil.id as pupil_id,
       pupil.foreName as pupil_foreName,
       pupil.lastName as pupil_lastName,
       pupil.dateOfBirth as pupil_dateOfBirth,
       pupil.jwtToken as pupil_jwtToken,
-      pupil.pin as pupil_pin,
-      pupil.pinExpiresAt as pupil_pinExpiresAt,
       checkForm.id as checkForm_id,
       checkForm.formData as checkForm_formData,
       school.id as school_id,
@@ -28,6 +28,8 @@ checkFormAllocationDataService.sqlFindByIdsHydrated = function (ids) {
       JOIN ${sqlService.adminSchema}.[pupil] pupil ON (chk.pupil_id = pupil.id)
       JOIN ${sqlService.adminSchema}.[checkForm] checkForm ON (chk.checkForm_id = checkForm.id)
       JOIN ${sqlService.adminSchema}.[school] school on (pupil.school_id = school.id)
+      JOIN ${sqlService.adminSchema}.[checkPin] cp on (chk.id = cp.check_id)
+      JOIN ${sqlService.adminSchema}.[pin] pin ON (cp.pin_id = pin.id)
     `
   let { params, paramIdentifiers } = sqlService.buildParameterList(ids, TYPES.Int)
   const whereClause = `WHERE chk.id IN (${paramIdentifiers.join(', ')})`
@@ -50,10 +52,10 @@ checkFormAllocationDataService.sqlCreateBatch = async function (checkFormAllocat
   const insertClauses = []
 
   checkFormAllocations.forEach((c, i) => {
-    params.push({name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int})
-    params.push({name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int})
-    params.push({name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int})
-    params.push({name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit})
+    params.push({ name: `pupil_id${i}`, value: c.pupil_id, type: TYPES.Int })
+    params.push({ name: `checkForm_id${i}`, value: c.checkForm_id, type: TYPES.Int })
+    params.push({ name: `checkWindow_id${i}`, value: c.checkWindow_id, type: TYPES.Int })
+    params.push({ name: `isLiveCheck${i}`, value: c.isLiveCheck, type: TYPES.Bit })
     insertClauses.push(`(@pupil_id${i}, @checkForm_id${i}, @checkWindow_id${i}, @isLiveCheck${i})`)
   })
 

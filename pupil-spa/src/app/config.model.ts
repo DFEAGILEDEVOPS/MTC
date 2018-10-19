@@ -3,9 +3,11 @@ export class Config {
   private _loadingTime: number;
   private _speechSynthesis: boolean;
   private _audibleSounds: boolean;
+  private _inputAssistance: boolean;
   private _numpadRemoval: boolean;
   private _fontSize: boolean;
   private _colourContrast: boolean;
+  private _practice: boolean;
 
   get questionTime(): number {
     return this._questionTime;
@@ -39,6 +41,14 @@ export class Config {
     this._audibleSounds = value;
   }
 
+  get inputAssistance(): boolean {
+    return this._inputAssistance;
+  }
+
+  set inputAssistance(value: boolean) {
+    this._inputAssistance = value;
+  }
+
   get numpadRemoval(): boolean {
     return this._numpadRemoval;
   }
@@ -61,5 +71,13 @@ export class Config {
 
   set colourContrast(value: boolean) {
     this._colourContrast = value;
+  }
+
+  get practice(): boolean {
+    return this._practice;
+  }
+
+  set practice(value: boolean) {
+    this._practice = value;
   }
 }
