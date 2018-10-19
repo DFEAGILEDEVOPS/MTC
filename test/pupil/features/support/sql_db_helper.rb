@@ -177,7 +177,11 @@ class SqlDbHelper
   end
 
   def self.set_pupil_access_arrangement(pupil_id, created_time, updated_time, access_arrangments_id)
-    sql = "INSERT INTO [mtc_admin].[pupilAccessArrangements] (pupil_id, createdAt, updatedAt, recordedBy_user_id, accessArrangements_id) VALUES ( #{pupil_id}, '#{created_time}', '#{updated_time}', 4, '#{access_arrangments_id}' )"
+    if (access_arrangments_id.eql?(4))
+      sql = "INSERT INTO [mtc_admin].[pupilAccessArrangements] (pupil_id, createdAt, updatedAt, recordedBy_user_id, inputAssistanceInformation, accessArrangements_id) VALUES ( #{pupil_id}, '#{created_time}', '#{updated_time}', 4, 'This is Test', '#{access_arrangments_id}' )"
+    else
+      sql = "INSERT INTO [mtc_admin].[pupilAccessArrangements] (pupil_id, createdAt, updatedAt, recordedBy_user_id, accessArrangements_id) VALUES ( #{pupil_id}, '#{created_time}', '#{updated_time}', 4, '#{access_arrangments_id}' )"
+    end
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
