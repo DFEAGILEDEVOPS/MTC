@@ -1,5 +1,6 @@
 'use strict'
-/* global describe it expect beforeEach jasmine spyOn */
+/* global describe it expect beforeEach jasmine spyOn fail */
+
 const httpMocks = require('node-mocks-http')
 const restartService = require('../../../services/restart.service')
 const restartV2Service = require('../../../services/restart-v2.service')
