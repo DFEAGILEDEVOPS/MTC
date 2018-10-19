@@ -43,6 +43,7 @@ const configService = {
     const checkOptions = {
       speechSynthesis: !!pupil.speechSynthesis,
       audibleSounds: false,
+      inputAssistance: false,
       numpadRemoval: false,
       fontSize: false,
       colourContrast: false
@@ -64,6 +65,7 @@ const configService = {
 
     accessArrangementsCodes.forEach(code => {
       if (code === accessArrangementsDataService.CODES.AUDIBLE_SOUNDS) checkOptions.audibleSounds = true
+      if (code === accessArrangementsDataService.CODES.INPUT_ASSISTANCE) checkOptions.inputAssistance = true
       if (code === accessArrangementsDataService.CODES.NUMPAD_REMOVAL) checkOptions.numpadRemoval = true
       if (code === accessArrangementsDataService.CODES.FONT_SIZE) checkOptions.fontSize = true
       if (code === accessArrangementsDataService.CODES.COLOUR_CONTRAST) checkOptions.colourContrast = true

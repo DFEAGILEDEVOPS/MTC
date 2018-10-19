@@ -3,6 +3,7 @@ export class Config {
   private _loadingTime: number;
   private _speechSynthesis: boolean;
   private _audibleSounds: boolean;
+  private _inputAssistance: boolean;
   private _numpadRemoval: boolean;
   private _fontSize: boolean;
   private _colourContrast: boolean;
@@ -38,6 +39,14 @@ export class Config {
 
   set audibleSounds(value: boolean) {
     this._audibleSounds = value;
+  }
+
+  get inputAssistance(): boolean {
+    return this._inputAssistance;
+  }
+
+  set inputAssistance(value: boolean) {
+    this._inputAssistance = value;
   }
 
   get numpadRemoval(): boolean {
