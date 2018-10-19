@@ -23,8 +23,8 @@ import { Config } from '../config.model';
 
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
 
-  protected config: Config;
-  protected nextButtonDelayFinished = false;
+  public config: Config;
+  public nextButtonDelayFinished = false;
 
   @Input()
   public nextQuestionButtonDelay = 1;
