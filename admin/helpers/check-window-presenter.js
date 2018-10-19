@@ -42,7 +42,7 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
     liveCheckStartYear: requestData.liveCheckStartYear || checkWindowData.checkStartDate.format('YYYY'),
     liveCheckStartDateDisabled: currentDate.isSameOrAfter(checkWindowData.checkStartDate),
     liveCheckEndDate: checkWindowData.checkEndDate,
-    liveCheckEndDay: requestData.liveCheckEndDate || checkWindowData.checkEndDate.format('D'),
+    liveCheckEndDay: requestData.liveCheckEndDay || checkWindowData.checkEndDate.format('D'),
     liveCheckEndMonth: requestData.liveCheckEndMonth || checkWindowData.checkEndDate.format('MM'),
     liveCheckEndYear: requestData.liveCheckEndYear || checkWindowData.checkEndDate.format('YYYY'),
     liveCheckEndDateDisabled: currentDate.isSameOrAfter(checkWindowData.checkEndDate)
