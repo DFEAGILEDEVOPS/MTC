@@ -13,12 +13,13 @@ const checkFormService = require('../../../services/check-form.service')
 const checkStartService = require('../../../services/check-start.service')
 const checkStateService = require('../../../services/check-state.service')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
+const checkWindowMock = require('../mocks/check-window-2')
 const configService = require('../../../services/config.service')
+const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pinGenerationService = require('../../../services/pin-generation.service')
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const sasTokenService = require('../../../services/sas-token.service')
-const checkWindowMock = require('../mocks/check-window-2')
 const checkFormMock = {
   id: 100,
   name: 'MTC0100',
@@ -194,7 +195,8 @@ describe('check-start.service', () => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
+      // spyOn(checkDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
@@ -239,7 +241,7 @@ describe('check-start.service', () => {
     it('calls initialisePupilCheck to randomly select a check form', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
-      expect(checkDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
+      expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     it('calls checkAndUpdateRestarts so that pupilRestarts can be updated', async () => {

@@ -2,6 +2,16 @@
 
 ## Tooling
 
+### [nvm](https://github.com/creationix/nvm)
+
+We recommend using `nvm` to manage the `node` version.  The project has `.nvmrc` files to support `nvm`.
+
+Documentation: https://github.com/creationix/nvm#nvmrc
+
+Usage: `nvm use`
+
+when first entering a particular project directory.
+
 ### [git-secrets](https://github.com/awslabs/git-secrets) 
 
 It is highly recommended to install git-secrets to prevent security credentials from being committed to the repository.

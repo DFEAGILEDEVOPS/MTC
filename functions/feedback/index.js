@@ -40,7 +40,7 @@ async function sqlSaveFeedback (feedbackMessage) {
     throw new Error(`sqlSaveFeedback(): check not found for checkCode [${feedbackMessage.checkCode}]`)
   }
   const feedbackData = convertMessageToDataObject(feedbackMessage)
-  const sql = `INSERT INTO ${schema}.${feedbackTable} (checkFormAllocation_id, inputType, satisfactionRating, comments) VALUES (@p1, @p2, @p3, @p4)`
+  const sql = `INSERT INTO ${schema}.${feedbackTable} (check_id, inputType, satisfactionRating, comments) VALUES (@p1, @p2, @p3, @p4)`
   const params = [
     {
       name: 'p1',
