@@ -25,7 +25,7 @@ The following environment variables can be injected at start up...
 |`AUTH_URL`   |`url`   |Legacy mode only.  The full URL for pupil authentication   |
 |`CHECK_STARTED_URL`   |`url`   |Legacy mode only.  The full URL for check start notification   |
 |`CHECK_SUBMISSION_URL`   |`url`   |Legacy mode only.  The full URL for check submission   |
-|`PRODUCTION`   |`true|false`   |Production or debug mode   |
+|`PRODUCTION`   |`true / false`   |Production or debug mode   |
 |`APPINSIGHTS_INSTRUMENTATIONKEY`   |`uuid`   |The instrumentation key of the Application insights instance   |
 |`GA_CODE`   |`string`   |The unique identifier of the Google analytics instance   |
 |`CHECK_START_ERROR_DELAY`   |`integer`   |The delay in milliseconds between attempts to submit the check started notification   |
