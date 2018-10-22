@@ -1,0 +1,95 @@
+#page-modifications {
+  height: 100vh;
+}
+
+@mixin colour-contrast($background-colour, $copy-colour) {
+  background-color: $background-colour;
+
+  #global-header {
+    background-color: $copy-colour !important;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+
+    .header-wrapper, .header-logo {
+      background: none;
+    }
+
+    #proposition-name, #logo {
+      color: $background-colour !important;
+    }
+  }
+
+  #familiarisation-header-bar {
+    background-color: $background-colour !important;
+    color: $copy-colour !important;
+  }
+
+  h1, h2, h3, h4, p, strong, li, span, a {
+    color: $copy-colour !important;
+  }
+
+  .back-link {
+    border-bottom-color: $copy-colour !important;
+    &:before {
+      border-right-color: $copy-colour !important;
+    }
+  }
+
+  .button, button, .numpad-button {
+    background-color: $copy-colour !important;
+    color: $background-colour !important;
+    box-shadow: none;
+  }
+
+  .answer {
+    box-shadow: 0 0 0 3px $copy-colour !important;
+  }
+
+  .practice-box {
+    background-color: $background-colour !important;
+    color: $copy-colour !important;
+    border: 2px solid $copy-colour !important;
+  }
+}
+
+.colour-contrast-yob {
+  $copy-color: #ff0;
+  $background-colour: #000;
+
+  @include colour-contrast($background-colour, $copy-color);
+  // Some YOB colour are inverted
+  .numpad-button {
+    background-color: $background-colour !important;
+    color: $copy-color !important;
+    border: 2px solid $copy-color !important;
+  }
+  #global-header {
+    border: 2px solid $copy-color !important;
+    background-color: $background-colour !important;
+
+    .header-wrapper, .header-logo {
+      background: none;
+    }
+
+    #proposition-name, #logo {
+      color: $copy-color !important;
+    }
+  }
+  label {
+    color: $copy-color !important;
+  }
+}
+
+.colour-contrast-bob {
+  @include colour-contrast(#96adfc, #000000);
+}
+
+.colour-contrast-bop {
+  @include colour-contrast(#edd1b0, #000000);
+}
+
+.colour-contrast-boc {
+  @include colour-contrast(#fff5cd, #00008b);
+}
