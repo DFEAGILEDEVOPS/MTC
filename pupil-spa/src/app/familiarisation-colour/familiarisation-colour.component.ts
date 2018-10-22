@@ -34,6 +34,6 @@ export class FamiliarisationColourComponent {
     accessArrangements.contrast = this.selectedContrast || 'bow';
     this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
 
-    this.router.navigate(['sign-in-success']);
+    this.router.navigate(['access-settings']);
   }
 }
