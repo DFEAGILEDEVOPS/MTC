@@ -10,7 +10,7 @@
           You have the following settings on your check
       </p>
       <ol class="list list-number">
-        <li *ngIf="config.colourContrast">Colour contrast</li>
+        <li *ngIf="config.colourContrast"><a routerLink="/colour-choice">Edit colour</a> of page</li>
         <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
         <li *ngIf="config.numpadRemoval">Remove number pad</li>
         <li *ngIf="config.audibleSounds">Time alert</li>
