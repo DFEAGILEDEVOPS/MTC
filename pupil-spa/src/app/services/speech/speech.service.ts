@@ -190,6 +190,8 @@ export class SpeechService implements OnDestroy {
                .replace(/[\n\r]+/g, ' ')
                // remove the leading comma, if there is any
                .replace(/^ , /g, ' ')
+               // remove duplicate commas, if there is any
+               .replace(/(\s*,\s*),/g, '$1')
                // remove commas that appear after a period without text inbetween
                .replace(/\.\s*,/g, '. '));
   }
