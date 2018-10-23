@@ -37,7 +37,7 @@
             <% checkWindows.forEach((checkWindow) => { %>
             <tr>
                 <td>
-                    <span class="bold-small"><a href=""><%= checkWindow.name %></a></span>
+                    <span class="bold-small"><a href="/check-window/edit/<%= checkWindow.urlSlug %>"><%= checkWindow.name %></a></span>
                 </td>
                 <td><%= checkWindow.status %></td>
                 <td>
