@@ -3,6 +3,8 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FamiliarisationColourComponent } from './familiarisation-colour.component';
+import { StorageService } from '../services/storage/storage.service';
+import { StorageServiceMock } from '../services/storage/storage.service.mock';
 
 describe('FamiliarisationColourComponent', () => {
   let mockRouter;
@@ -18,7 +20,8 @@ describe('FamiliarisationColourComponent', () => {
       declarations: [ FamiliarisationColourComponent ],
       schemas: [ NO_ERRORS_SCHEMA ],
       providers: [
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: StorageService, useClass: StorageServiceMock }
       ]
     });
   }));
@@ -33,10 +36,10 @@ describe('FamiliarisationColourComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect to the sign-in-success page on click', () => {
+  it('should redirect to the access-settings page on click', () => {
     component.onClick();
     fixture.whenStable().then(() => {
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success']);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
     });
   });
 });
