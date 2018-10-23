@@ -75,7 +75,7 @@ describe('FamiliarisationAreaComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
     });
   });
-  describe('When featureUseHpa is true', () => {
+  describe('When featureUseHpa is enabled', () => {
     beforeEach(() => {
       component.featureUseHpa = true;
     });
@@ -105,6 +105,25 @@ describe('FamiliarisationAreaComponent', () => {
         expect(tokenService.getToken).toHaveBeenCalled();
         expect(azureQueueService.addMessage).toHaveBeenCalled();
         expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
+      });
+    });
+  });
+  describe('when featureHpa is not enabled', () => {
+    beforeEach(() => {
+      component.featureUseHpa = false;
+    });
+    it('should not call pupil prefs azure queue storage', async () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: false });
+      spyOn(tokenService, 'getToken');
+      spyOn(azureQueueService, 'addMessage');
+      spyOn(auditService, 'addEntry');
+      await component.onClick();
+      fixture.whenStable().then(() => {
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+        expect(auditService.addEntry).not.toHaveBeenCalled();
+        expect(mockStorageService.getItem).toHaveBeenCalledTimes(1);
+        expect(tokenService.getToken).not.toHaveBeenCalled();
+        expect(azureQueueService.addMessage).not.toHaveBeenCalled();
       });
     });
   });
