@@ -52,6 +52,18 @@
     color: $copy-colour !important;
     border: 2px solid $copy-colour !important;
   }
+
+  .wait {
+    .background-fill {
+      fill: $background-colour !important;
+    }
+    .copy-stroke {
+      stroke: $copy-colour !important;
+    }
+    .copy-fill {
+      fill: $copy-colour !important;
+    }
+  }
 }
 
 .colour-contrast-yob {
@@ -82,6 +94,12 @@
   }
   .button-start {
     background: none;
+  }
+  // Fill eyes when YOB
+  .wait {
+    .eye-cover {
+      fill: $copy-color !important;
+    }
   }
 }
 
