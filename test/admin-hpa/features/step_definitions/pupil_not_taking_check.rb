@@ -1,5 +1,5 @@
 Given(/^I am on the pupil not taking check page$/) do
-  step 'I am logged in'
+  step 'I have signed in with teacher3'
   pupils_not_taking_check_page.load
 end
 
