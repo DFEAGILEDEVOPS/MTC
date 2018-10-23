@@ -10,7 +10,7 @@
           <h1 class="heading-xlarge" tabindex="0">Choose colour of page</h1>
         </header>
         <div class="grid-row">
-          <div class="column-one-third">
+          <div class="column-one-half">
             <fieldset>
               <div class="multiple-choice" *ngFor="let contrastSetting of contrastSettings">
                 <input type="radio"
@@ -23,7 +23,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="column-two-thirds">
+          <div class="column-one-half">
             <div *ngIf="selectedContrast" class="preview-box contrast-{{selectedContrast}}">
               <div class="badge">Colour preview</div>
               <div class="question-text">123</div>

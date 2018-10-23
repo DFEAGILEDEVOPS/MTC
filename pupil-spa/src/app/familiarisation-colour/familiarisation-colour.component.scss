@@ -66,8 +66,8 @@ label span {
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 0 30px 30px;
-  min-width: 400px;
+  padding: 0;
+  width: 100%;
   min-height: 300px;
   position: relative;
 
@@ -95,6 +95,7 @@ label span {
   > table button {
     border: none;
     font-size: 36px;
+    padding: 0;
     width: 70px;
     height: 50px;
   }
