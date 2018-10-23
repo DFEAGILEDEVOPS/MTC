@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Pupil } from '../pupil';
 import {
   AccessArrangementsConfig,
   AccessArrangements,
@@ -14,7 +13,6 @@ import { StorageService } from '../services/storage/storage.service';
   styleUrls: ['./familiarisation-colour.component.scss']
 })
 export class FamiliarisationColourComponent {
-  pupil: Pupil;
   selectedContrast;
   contrastSettings;
 
