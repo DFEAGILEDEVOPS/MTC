@@ -66,9 +66,8 @@ label span {
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 0;
+  padding: 0 0 20% 0;
   width: 100%;
-  min-height: 300px;
   position: relative;
 
   > .badge {
@@ -82,9 +81,9 @@ label span {
   }
 
   > .question-text {
-    margin-top: 55px;
+    margin-top: 20%;
     text-align: center;
-    font-size: 60px;
+    font-size: inherit;
   }
 
   table {
@@ -92,9 +91,8 @@ label span {
     margin: auto;
   }
 
-  > table button {
+  > table .button {
     border: none;
-    font-size: 36px;
     padding: 0;
     width: 70px;
     height: 50px;
