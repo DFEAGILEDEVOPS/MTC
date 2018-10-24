@@ -60,6 +60,7 @@ async function main () {
       const sql = `
       DECLARE @cnt INT = 1;
       DECLARE @baseUpn INT = 80120000 + @schoolId
+      DECLARE @tvp AS ${sqlService.adminSchema}.CheckTableType
       BEGIN TRAN
 
       UPDATE ${sqlService.adminSchema}.[school]
@@ -71,17 +72,20 @@ async function main () {
       BEGIN TRY
 
       INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount, pin, pinExpiresAt) 
-      VALUES (@schoolId, CAST(@cnt AS NVARCHAR), 'Pupil', 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
+      VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
 
-      INSERT ${sqlService.adminSchema}.[check] (pupil_id, checkwindow_id, checkform_id, checkstatus_id, islivecheck)
-      VALUES (scope_identity(), 1, 1, 1, 0)
-
+      INSERT into @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
+      VALUES (scope_identity(), 1, 1, 0, @pinExpiresAt, @schoolId)
+      
       END TRY
       BEGIN CATCH
       END CATCH
       SET @cnt = @cnt + 1;
       END;
-      COMMIT TRAN`
+      COMMIT TRAN
+      
+      EXEC [mtc_admin].[spCreateChecks] @tvp
+      `
       await sqlService.query(sql, params)
     }
 
