@@ -6,6 +6,7 @@ import {
   accessArrangementsDataKey
 } from '../access-arrangements';
 import { StorageService } from '../services/storage/storage.service';
+import { RouteService } from '../services/route/route.service';
 
 @Component({
   selector: 'app-familiarisation-colour',
@@ -18,7 +19,8 @@ export class FamiliarisationColourComponent {
 
   constructor(
     private router: Router,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private routeService: RouteService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
   }
@@ -31,7 +33,10 @@ export class FamiliarisationColourComponent {
     const accessArrangements = new AccessArrangements;
     accessArrangements.contrast = this.selectedContrast || 'bow';
     this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
-
-    this.router.navigate(['access-settings']);
+    if (this.routeService.getPreviousUrl() === '/access-settings') {
+      this.router.navigate(['access-settings']);
+    } else {
+      this.router.navigate(['sign-in-success']);
+    }
   }
 }
