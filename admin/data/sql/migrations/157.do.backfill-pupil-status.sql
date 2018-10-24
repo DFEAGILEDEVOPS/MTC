@@ -4,7 +4,7 @@ declare @statusId int;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'UNALLOC');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
        LEFT JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
 WHERE chk.id IS NULL;
@@ -15,7 +15,7 @@ WHERE chk.id IS NULL;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'ALLOC');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
        LEFT JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
 WHERE chk.isLiveCheck = 1
@@ -27,7 +27,7 @@ AND chk.id IS NULL;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'LOGGED_IN');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
        INNER JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
        INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
@@ -40,7 +40,7 @@ AND   chk.isLiveCheck = 1;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'STARTED');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
        INNER JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
        INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
@@ -53,7 +53,7 @@ WHERE chkStatus.code = 'STD'
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'COMPLETED');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
     INNER JOIN [mtc_admin].[check] chk ON (p.id = chk.pupil_id)
     INNER JOIN [mtc_admin].[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id)
@@ -65,7 +65,7 @@ AND   chk.isLiveCheck = 1;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'NOT_TAKING');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
     INNER JOIN [mtc_admin].[pupilAttendance] pa ON (p.id = pa.pupil_id)
 WHERE pa.isDeleted = 0;
@@ -75,7 +75,7 @@ WHERE pa.isDeleted = 0;
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'UNALLOC');
 
 UPDATE [mtc_admin].[pupil]
-SET status_id = @statusId
+SET pupilStatus_id = @statusId
 FROM [mtc_admin].[pupil] p
       INNER JOIN [mtc_admin].[pupilRestart] pr ON (p.id = pr.pupil_id)
 WHERE

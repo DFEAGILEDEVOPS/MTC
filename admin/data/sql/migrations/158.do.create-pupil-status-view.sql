@@ -1,3 +1,5 @@
+-- helper view for DBAs / developers
+
 CREATE VIEW [mtc_admin].[vewPupilStatus] AS (
       SELECT
               p.foreName,
@@ -7,5 +9,5 @@ CREATE VIEW [mtc_admin].[vewPupilStatus] AS (
               p.gender,
               ps.code
       FROM    [mtc_admin].[pupil] p
-              LEFT JOIN [mtc_admin].[pupilStatus] ps ON (p.status_id = ps.id)
-                                            );
+              LEFT JOIN [mtc_admin].[pupilStatus] ps ON (p.pupilStatus_id = ps.id)
+);
