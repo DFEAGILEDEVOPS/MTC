@@ -71,11 +71,11 @@ async function main () {
       BEGIN
       BEGIN TRY
 
-      INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount, pin, pinExpiresAt) 
-      VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1,RIGHT('0000'+CAST(@cnt as NVARCHAR), 4), @pinExpiresAt)
+      INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount) 
+      VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1)
 
       INSERT into @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
-      VALUES (scope_identity(), 1, 1, 0, @pinExpiresAt, @schoolId)
+      VALUES (scope_identity(), 1, 1, 1, @pinExpiresAt, @schoolId)
       
       END TRY
       BEGIN CATCH
