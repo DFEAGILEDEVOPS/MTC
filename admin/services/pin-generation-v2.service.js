@@ -18,8 +18,8 @@ const serviceToExport = {
    * @param schoolId
    * @return {Promise<*>}
    */
-  getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId) {
-    const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId)
+  getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId, isLiveCheck) {
+    const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId, isLiveCheck)
 
     // Fix up the pupil names for the GUI
     const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)

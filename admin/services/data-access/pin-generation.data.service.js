@@ -34,9 +34,10 @@ const serviceToExport = {
     return sqlService.query(sql, [param])
   },
 
-  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds) => {
+  sqlFindPupilsEligibleForPinGenerationById: async (schoolId, pupilIds, isLiveCheck) => {
+    const table = isLiveCheck ? 'vewPupilsEligibleForPinGeneration' : 'vewPupilsEligibleForFamiliarisationPinGeneration'
     const select = `SELECT * 
-                    FROM ${sqlService.adminSchema}.[vewPupilsEligibleForPinGeneration]`
+                    FROM ${sqlService.adminSchema}.[${table}]`
     let { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
     const whereClause = `WHERE id IN (${paramIdentifiers.join(', ')}) AND school_id = @schoolId`
     params.push({
