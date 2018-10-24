@@ -57,11 +57,15 @@ export class FamiliarisationAreaComponent {
   async onClick() {
     const accessArrangements = new AccessArrangements;
     accessArrangements.fontSize = this.selectedSize || 'regular';
+    const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
+    const fontCode = fontSetting.code;
     if (this.featureUseHpa === true) {
       const queueName = queueNames.pupilPreferences;
       const { url, token } = this.tokenService.getToken('pupilPreferences');
       const payload = {
-        fontSize: accessArrangements.fontSize,
+        preferences: {
+          fontSizeCode: fontCode,
+        },
         checkCode: this.pupil.checkCode
       };
       const retryConfig = {
