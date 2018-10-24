@@ -30,12 +30,12 @@ const serviceToExport = {
   /**
    * Return a list of pupils who have an active pin - one that can be used to take a check
    * TODO: add pinEnv
-   * @param schoolId
-   * @param pinEnv
+   * @param {number} schoolId
+   * @param {boolean} isLiveCheck
    * @return {Promise<void>}
    */
-  getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, pinEnv) {
-    const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, pinEnv)
+  getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, isLiveCheck) {
+    const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, isLiveCheck)
 
     // Fix up the pupil names for the GUI
     const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)

@@ -24,7 +24,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   let pupils
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
@@ -133,7 +133,6 @@ const postGeneratePins = async (req, res, next) => {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
-      winston.info('#datebug calling checkStartService.prepareCheck2')
       await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
     }
 
@@ -162,7 +161,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
@@ -205,7 +204,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
