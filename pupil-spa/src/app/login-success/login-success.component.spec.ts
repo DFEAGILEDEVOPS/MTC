@@ -9,12 +9,11 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { QuestionService } from '../services/question/question.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { UserService } from '../services/user/user.service';
 import { AuditService } from '../services/audit/audit.service';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 describe('LoginSuccessComponent', () => {
@@ -23,6 +22,7 @@ describe('LoginSuccessComponent', () => {
   let store: {};
   let mockRouter;
   let appUsageService;
+  let questionService;
   let storageService;
 
   beforeEach(() => {
@@ -41,15 +41,16 @@ describe('LoginSuccessComponent', () => {
         { provide: Router, useValue: mockRouter },
         StorageService,
         { provide: SpeechService, useClass: SpeechServiceMock },
-        { provide: QuestionService, useClass: QuestionServiceMock },
         UserService,
         AuditService,
+        QuestionService,
         WindowRefService,
-        AppUsageService
+        AppUsageService,
       ]
     });
     storageService = injector.get(StorageService);
     appUsageService = injector.get(AppUsageService);
+    questionService = injector.get(QuestionService);
     injector.compileComponents();
 
     store = {};
@@ -67,6 +68,7 @@ describe('LoginSuccessComponent', () => {
   });
 
   beforeEach(() => {
+    spyOn(questionService, 'getConfig').and.returnValue({ fontSize: true } );
     fixture = TestBed.createComponent(LoginSuccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -83,9 +85,13 @@ describe('LoginSuccessComponent', () => {
     expect(compiled.querySelector('.notice .bold-small').textContent).toMatch(/Do not press 'Next' if this is not you,/);
   });
 
-  it('redirects to warm up introduction page', () => {
+  it('redirects to warm up introduction page when there access settings page is not required to be displayed', () => {
     component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['check-start']);
   });
-
+  it('redirects to access settings page when there access settings page is required to be displayed', () => {
+    questionService.getConfig = jasmine.createSpy().and.returnValue({ inputAssistance: true });
+    component.onClick();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
+  });
 });

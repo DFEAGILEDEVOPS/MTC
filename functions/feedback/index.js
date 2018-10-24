@@ -37,7 +37,7 @@ module.exports = async function (context, feedbackMessage) {
 async function sqlSaveFeedback (feedbackMessage) {
   const check = await sqlUtil.sqlFindCheckByCheckCode(feedbackMessage.checkCode)
   if (!check) {
-    throw new Error(`sqlSaveFeedback(): check not found for checkCode [${feedbackMessage.checkCode}]`)
+    throw new Error(`feedback: sqlSaveFeedback(): check not found for checkCode [${feedbackMessage.checkCode}]`)
   }
   const feedbackData = convertMessageToDataObject(feedbackMessage)
   const sql = `INSERT INTO ${schema}.${feedbackTable} (check_id, inputType, satisfactionRating, comments) VALUES (@p1, @p2, @p3, @p4)`

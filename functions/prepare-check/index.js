@@ -7,7 +7,7 @@ const R = require('ramda')
  * @param {} prepareCheckMessage
  */
 module.exports = function (context, prepareCheckMessage) {
-  context.log.verbose('prepareCheck: got message from prepare-check queue', prepareCheckMessage)
+  context.log('prepare-check message received', prepareCheckMessage.checkCode)
   // TODO: Add a version strategy: version field, version handler.
   // TODO: Add batch processing: e.g. handle 100 at a time
   try {
@@ -15,7 +15,7 @@ module.exports = function (context, prepareCheckMessage) {
   } catch (error) {
     // After 5 attempts at processing the message will be moved to the poison queue
     // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-queue#trigger---poison-messages
-    context.log.error('prepareCheck: message failed validation')
+    context.log.error('prepareCheck: message failed validation', prepareCheckMessage.checkCode)
     context.done(error)
     return
   }
@@ -41,7 +41,6 @@ module.exports = function (context, prepareCheckMessage) {
   const outputProp = 'data'
 
   // Happy path - write to Table Storage
-  context.log('prepareCheck: saving to table storage: ', preparedCheck)
   context.bindings[outputProp] = []
   context.bindings[outputProp].push(preparedCheck)
   context.done()
