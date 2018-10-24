@@ -15,6 +15,7 @@ async function main () {
     }
 
     let schools, numSchools, pupilsPerSchool, pupilsRemainder, params
+    let existingPupils = 0
 
     schools = await sqlService.query(`SELECT id FROM ${sqlService.adminSchema}.[school]`)
     numSchools = schools.length
@@ -59,37 +60,50 @@ async function main () {
 
       const sql = `
       DECLARE @cnt INT = 1;
-      DECLARE @baseUpn INT = 80120000 + @schoolId
-      DECLARE @tvp AS ${sqlService.adminSchema}.CheckTableType
+      DECLARE @baseUpn INT = 80120000 + @schoolId;
+      DECLARE @tvp AS ${sqlService.adminSchema}.CheckTableType;
+      DECLARE @existingPupils INT = 0;
       BEGIN TRAN
 
-      UPDATE ${sqlService.adminSchema}.[school]
-      SET pin = '${randomPass()}', pinExpiresAt = @pinExpiresAt
-      WHERE id = ${school.id} AND pin IS NULL
+        UPDATE ${sqlService.adminSchema}.[school]
+        SET pin = '${randomPass()}', pinExpiresAt = @pinExpiresAt
+        WHERE id = ${school.id} AND pin IS NULL;
 
-      WHILE @cnt <= ${totalPupils}
-      BEGIN
-      BEGIN TRY
+        WHILE @cnt <= ${totalPupils}
+        BEGIN
+          BEGIN TRY
 
-      INSERT ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount) 
-      VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1)
+            INSERT INTO ${sqlService.adminSchema}.[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn, isTestAccount) 
+            VALUES (@schoolId, 'Pupil', CAST(@cnt AS NVARCHAR), 'M', @dateOfBirth, CAST(@baseUpn AS NVARCHAR) + CAST(@cnt AS NVARCHAR) + '1A', 1);
 
-      INSERT into @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
-      VALUES (scope_identity(), 1, 1, 1, @pinExpiresAt, @schoolId)
-      
-      END TRY
-      BEGIN CATCH
-      END CATCH
-      SET @cnt = @cnt + 1;
-      END;
+            INSERT INTO @tvp (pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id)
+            VALUES (scope_identity(), 1, 1, 1, @pinExpiresAt, @schoolId);
+          
+          END TRY
+          BEGIN CATCH
+            -- The try/catch statement catches duplicate inserts for already generated pupils
+            -- If the generated pupil already exists in the db then we can assume that the 
+            -- spCreateChecks procedure has already been called for that pupil
+            -- Keep a count of existingPupils for feedback later on
+            SET @existingPupils = @existingPupils + 1;
+          END CATCH
+          SET @cnt = @cnt + 1;
+        END
       COMMIT TRAN
       
-      EXEC [mtc_admin].[spCreateChecks] @tvp
-      `
-      await sqlService.query(sql, params)
-    }
+      EXEC [mtc_admin].[spCreateChecks] @tvp;
 
-    winston.info('DONE')
+      SELECT @existingPupils as existingPupils;
+      `
+      let result = await sqlService.query(sql, params)
+      existingPupils += result[0]['existingPupils'] || 0
+    }
+    winston.info('Finished')
+    if (existingPupils) {
+      winston.info(`${existingPupils} pupils already generated, added ${numPupils - existingPupils} new pupils`)
+    } else {
+      winston.info(`Generated ${numPupils} new pupils`)
+    }
     sqlPoolService.drain()
   } catch (error) {
     console.log('error')
