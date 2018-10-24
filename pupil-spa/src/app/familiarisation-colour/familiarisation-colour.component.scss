@@ -1,0 +1,100 @@
+
+input {
+  background-color: black;
+  color: #000;
+}
+
+p {
+  margin: 30px 0;
+}
+
+.contrast-bow {
+  background-color: #fff;
+  color: #000 !important;
+  button, .badge {
+    background-color: #6f777b;
+    color: #fff;
+  }
+}
+
+.contrast-yob {
+  background-color: #000;
+  color: #ff0 !important;
+  button, .badge {
+    background: #ff0;
+    color: #000;
+  }
+}
+
+.contrast-bob {
+  background-color: #96adfc;
+  color: #000 !important;
+  button, .badge {
+    background-color: #000;
+    color: #96adfc;
+  }
+}
+
+.contrast-bop {
+  background-color: #edd1b0;
+  color: #000 !important;
+  button, .badge {
+    background-color: #000;
+    color: #edd1b0;
+  }
+}
+
+.contrast-boc {
+  background-color: #fff5cd;
+  color: #00008b !important;
+  button, .badge {
+    background-color: #00008b;
+    color: #fff5cd;
+  }
+}
+
+.multiple-choice {
+  margin: 20px 0;
+}
+
+label span {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+}
+
+.preview-box {
+  border: 1px solid #6f777b;
+  float: left;
+  padding: 0 0 20% 0;
+  width: 100%;
+  position: relative;
+
+  > .badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    font-weight: bold;
+    padding: 8px 15px;
+    width: auto;
+  }
+
+  > .question-text {
+    margin-top: 20%;
+    text-align: center;
+    font-size: inherit;
+  }
+
+  table {
+    border-spacing: 10px;
+    margin: auto;
+  }
+
+  > table .button {
+    border: none;
+    padding: 0;
+    width: 70px;
+    height: 50px;
+  }
+}
