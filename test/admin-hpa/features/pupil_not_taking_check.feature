@@ -119,7 +119,7 @@ Feature:
     But I decide to change it
     Then the updated reason should be stored
 
-  @pupil_not_taking_check @local
+  @pupil_not_taking_check
   Scenario: List of pupils not taking check is displayed on the hub page
     Given I have previously added a reason for a pupil
     When I have navigated away and then return to the pupil not taking check page

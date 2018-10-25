@@ -87,31 +87,28 @@ end
 
 Given(/^I have single pupils for restart$/) do
   step 'I have generated a pin for a pupil'
-
-  ct = Time.now
-  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-  SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
-
-  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
-  SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
-
+  step 'pupil logs in and completed the check'
   step 'I am on the Restarts Page'
 end
 
 Given(/^I have multiple pupils for restart$/) do
   step 'I have generated pins for multiple pupils'
-  ct = Time.now
-  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
-    SqlDbHelper.reset_pin(pupil_firstname, pupil_lastname, 2)
-
-    pupil_id = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
-    SqlDbHelper.create_check(new_time, new_time, pupil_id['id'], new_time, new_time)
+    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    pupil_id = pupil_detail['id']
+    check_entry = SqlDbHelper.check_details(pupil_id)
+    pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+    pupil_pin = pupil_pin_detail['val']
+    school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+    response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+    @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+    response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
+    response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
   end
+
   step 'I am on the Restarts Page'
 end
 
@@ -144,20 +141,21 @@ And(/^Pupil has taken a 2nd check$/) do
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-  SqlDbHelper.set_school_pin_expiry('1001', new_time)
+  step 'pupil logs in and completed the check'
+  # ct = Time.now
+  # new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  # SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
+  # SqlDbHelper.set_school_pin_expiry('1001', new_time)
 
   step "I am on the generate pupil pins page"
 
-  ct = Time.now
-  new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-  SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
-
-  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
-  SqlDbHelper.create_check(new_time, new_time, pupil_id['id'].to_s, new_time, new_time)
+  # ct = Time.now
+  # new_time = ct.strftime("%Y-%m-%d %H:%M:%S.%LZ")
+  # SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
+  # SqlDbHelper.reset_pin(@details_hash[:first_name], @details_hash[:last_name], 2)
+  #
+  # pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])
+  # SqlDbHelper.create_check(new_time, new_time, pupil_id['id'].to_s, new_time, new_time)
 
   restarts_page.load
 end
@@ -266,3 +264,16 @@ Then(/^I should see the restarts page matches design$/) do
 
 end
 
+Given(/^pupil logs in and completed the check$/) do
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_id = pupil_detail['id']
+  check_entry = SqlDbHelper.check_details(pupil_id)
+  pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+  pupil_pin = pupil_pin_detail['val']
+  school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+  @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+  response_check_start = RequestHelper.check_start_call(@parsed_response_pupil_auth['pupil']['checkCode'], @parsed_response_pupil_auth['tokens']['checkComplete']['url'], @parsed_response_pupil_auth['tokens']['checkComplete']['token'])
+  response_check_complete = RequestHelper.check_complete_call(@parsed_response_pupil_auth)
+end
