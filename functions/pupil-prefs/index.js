@@ -79,7 +79,7 @@ async function updatePupilAccessArrangementsPreference (checkCode, prefField, pr
                )                
                WHERE pupil_Id = (
                   SELECT p.id FROM ${schema}.${pupilTable} p
-                  FULL OUTER JOIN ${schema}.${checkTable} chk
+                  LEFT OUTER JOIN ${schema}.${checkTable} chk
                   ON chk.pupil_id = p.id
                   WHERE chk.checkCode = @checkCode
                ) AND accessArrangements_id = (
