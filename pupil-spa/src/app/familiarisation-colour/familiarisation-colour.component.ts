@@ -16,6 +16,7 @@ import { RouteService } from '../services/route/route.service';
 export class FamiliarisationColourComponent {
   selectedContrast;
   contrastSettings;
+  accessArrangements;
 
   constructor(
     private router: Router,
@@ -23,6 +24,8 @@ export class FamiliarisationColourComponent {
     private routeService: RouteService
   ) {
     this.contrastSettings = AccessArrangementsConfig.contrastSettings;
+    this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
+    this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
 
   selectionChange(selectedContrast) {
