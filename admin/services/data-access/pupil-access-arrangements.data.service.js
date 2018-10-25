@@ -15,7 +15,7 @@ const pupilAccessArrangementsDataService = {}
 pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = async function (pupilId) {
   const sql = `
   SELECT
-  *, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
+  paa.*, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
   FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
   LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
   ON paa.pupilFontSizes_id = pfs.id
