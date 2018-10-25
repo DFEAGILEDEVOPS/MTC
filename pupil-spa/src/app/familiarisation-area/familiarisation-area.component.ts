@@ -52,14 +52,12 @@ export class FamiliarisationAreaComponent {
     this.pupil.checkCode = pupilData.checkCode;
     const config = this.storageService.getItem('config');
     const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
-    if (fontSetting) {
-      this.selectedSize = fontSetting.val;
-      this.setFontSize(this.selectedSize);
-    }
+    this.selectedSize = (fontSetting && fontSetting.val) || 'regular';
+    this.setFontSize(this.selectedSize);
   }
 
   setFontSize(fontValue) {
-    this.accessArrangements.fontSize = fontValue || 'regular';
+    this.accessArrangements.fontSize = fontValue;
     this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
   }
 
