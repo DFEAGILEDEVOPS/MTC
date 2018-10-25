@@ -1,6 +1,7 @@
 .contrast-bow {
   background-color: #fff;
   color: #000 !important;
+
   button, .badge {
     background-color: #6f777b !important;
     color: #fff !important;
@@ -10,6 +11,7 @@
 .contrast-yob {
   background-color: #000;
   color: #ff0 !important;
+
   button, .badge {
     background: #000 !important;
     color: #ff0 !important;
@@ -20,6 +22,7 @@
 .contrast-bob {
   background-color: #96adfc;
   color: #000 !important;
+
   button, .badge {
     background-color: #000 !important;
     color: #96adfc !important;
@@ -38,6 +41,7 @@
 .contrast-boc {
   background-color: #fff5cd;
   color: #00008b !important;
+
   button, .badge {
     background-color: #00008b !important;
     color: #fff5cd !important;
@@ -47,9 +51,11 @@
 span.contrast-yob {
   border: 2px solid #ff0 !important;
 }
+
 span.contrast-boc {
   border: 2px solid #00008b !important;
 }
+
 span.contrast-bow,  span.contrast-bob, span.contrast-bop {
   border: 2px solid #000 !important;
 }

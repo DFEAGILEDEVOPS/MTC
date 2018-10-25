@@ -32,6 +32,7 @@
 
   .back-link {
     border-bottom-color: $copy-colour !important;
+
     &:before {
       border-right-color: $copy-colour !important;
     }
@@ -55,12 +56,15 @@
   }
 
   .wait {
+
     .background-fill {
       fill: $background-colour !important;
     }
+
     .copy-stroke {
       stroke: $copy-colour !important;
     }
+
     .copy-fill {
       fill: $copy-colour !important;
     }
@@ -72,12 +76,14 @@
   $background-colour: #000;
 
   @include colour-contrast($background-colour, $copy-color);
+
   // Some YOB colour are inverted
   .numpad-button {
     background-color: $background-colour !important;
     color: $copy-color !important;
     border: 2px solid $copy-color !important;
   }
+
   #global-header {
     border: 2px solid $copy-color !important;
     background-color: $background-colour !important;
@@ -90,12 +96,15 @@
       color: $copy-color !important;
     }
   }
+
   label {
     color: $copy-color !important;
   }
+
   .button-start {
     background: none;
   }
+
   // Fill eyes when YOB
   .wait {
     .eye-cover {
