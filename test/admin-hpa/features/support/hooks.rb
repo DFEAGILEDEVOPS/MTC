@@ -32,21 +32,8 @@ Before("@poltergeist") do
   Capybara.current_driver = :poltergeist
 end
 
-Before("@pupil_not_taking_check") do
-  step "I am logged in"
-  pupils_not_taking_check_page.load
-  expect(pupils_not_taking_check_page).to be_displayed
-  rows = all('a', text: 'Remove').count
-  rows.to_i.times do |row|
-    all('a', text: 'Remove').first.click
-    pupils_not_taking_check_page.load
-  end if pupils_not_taking_check_page.has_pupil_list?
-  pupils_not_taking_check_page.sign_out.click
-  visit current_url
-end
-
 After("@pupil_not_taking_check") do
-  step "I am logged in"
+  step "I have signed in with teacher3"
   pupils_not_taking_check_page.load
   expect(pupils_not_taking_check_page).to be_displayed
   rows = all('a', text: 'Remove').count
@@ -67,32 +54,32 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
-Before("@reset_all_pins") do
-  SqlDbHelper.reset_all_pins
-  SqlDbHelper.reset_all_pin_expiry_times
-end
+# Before("@reset_all_pins") do
+#   SqlDbHelper.reset_all_pins
+#   SqlDbHelper.reset_all_pin_expiry_times
+# end
+#
+# Before("@reset_pin_restart_check") do
+#   SqlDbHelper.reset_all_pins
+#   SqlDbHelper.reset_all_pin_expiry_times
+#   SqlDbHelper.delete_all_checks
+#   SqlDbHelper.delete_all_restarts
+# end
 
-Before("@reset_pin_restart_check") do
-  SqlDbHelper.reset_all_pins
-  SqlDbHelper.reset_all_pin_expiry_times
-  SqlDbHelper.delete_all_checks
-  SqlDbHelper.delete_all_restarts
-end
-
-Before("@reset_checks") do
-  SqlDbHelper.delete_all_checks
-end
-
-Before("@reset_pin_restart_check") do
-  SqlDbHelper.reset_all_pins
-  SqlDbHelper.reset_all_pin_expiry_times
-  SqlDbHelper.delete_all_checks
-  SqlDbHelper.delete_all_restarts
-end
-
-Before("@reset_checks") do
-  SqlDbHelper.delete_all_checks
-end
+# Before("@reset_checks") do
+#   SqlDbHelper.delete_all_checks
+# end
+#
+# Before("@reset_pin_restart_check") do
+#   SqlDbHelper.reset_all_pins
+#   SqlDbHelper.reset_all_pin_expiry_times
+#   SqlDbHelper.delete_all_checks
+#   SqlDbHelper.delete_all_restarts
+# end
+#
+# Before("@reset_checks") do
+#   SqlDbHelper.delete_all_checks
+# end
 
 After("@delete_census") do
   step "I am logged in with a service manager"
@@ -101,9 +88,11 @@ After("@delete_census") do
 end
 
 Before("@remove_all_groups") do
-  step 'I am on the groups page'
-  group_pupils_page.remove_all_groups
-  visit Capybara.app_host + '/sign-out'
+  # step 'I am on the groups page'
+  # group_pupils_page.remove_all_groups
+  # visit Capybara.app_host + '/sign-out'
+  SqlDbHelper.delete_all_from_pupil_group
+  SqlDbHelper.delete_all_from_group
 end
 
 Before("@no_active_check_window ") do

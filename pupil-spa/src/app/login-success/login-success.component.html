@@ -26,15 +26,15 @@
             >
                 {{school.name}}
             </strong></p>
-            <div class="notice" tabindex="0">
+            <p class="notice" tabindex="0">
                 <i class="icon icon-important">
-                    <span class="visually-hidden">Warning</span>
+                    <strong class="visually-hidden">Warning</strong>
                 </i>
                 <strong class="bold-small">
                     Do not press 'Next' if this is not you,
                     <a routerLink="/sign-out">sign out</a>
                 </strong>
-            </div>
+            </p>
             <button id="confirm-identity-button" role="button" class="button" (click)="onClick()">
               Next
             </button>

@@ -24,7 +24,7 @@ Then(/^I should see related content$/) do
 end
 
 Given(/^I am on the create group page$/) do
-  step 'I am logged in'
+  step 'I have signed in with teacher5'
   school_landing_page.group_pupils.click
   group_pupils_page.create_group.click
 end

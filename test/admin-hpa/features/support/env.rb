@@ -14,9 +14,18 @@ require 'fileutils'
 require 'date'
 require 'waitutil'
 require 'tiny_tds'
+require 'httparty'
+require 'json'
+require 'base64'
+require 'nokogiri'
 require_relative '../../features/support/browserstack_driver_helper'
+require_relative '../../features/support/request_helper'
 require_relative 'helpers'
 include Helpers
+
+ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
+ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
+ENV['WAIT_TIME'] ||= '60'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym

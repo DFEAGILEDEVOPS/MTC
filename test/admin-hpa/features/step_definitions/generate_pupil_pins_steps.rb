@@ -31,14 +31,16 @@ And(/^I click Generate PINs button$/) do
   generated_pins_page.generate_more_pin_btn.click if generated_pins_page.has_generate_more_pin_btn?
 end
 
-Given(/^I have a pupil with active pin$/) do
-  name = (0...8).map {(65 + rand(26)).chr}.join
-  step "I am on the add pupil page"
-  step "I submit the form with the name fields set as #{name}"
-  step "the pupil details should be stored"
-  @pupil_forename = @details_hash[:first_name]
-  SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
-end
+# Given(/^I have a pupil with active pin$/) do
+#   # name = (0...8).map {(65 + rand(26)).chr}.join
+#   # step "I am on the add pupil page"
+#   # step "I submit the form with the name fields set as #{name}"
+#   # step "the pupil details should be stored"
+#   # @pupil_forename = @details_hash[:first_name]
+#   # SqlDbHelper.set_pupil_pin(@details_hash[:first_name], @details_hash[:last_name], 2, "2345")
+#
+#   step 'I have generated a pin for a pupil'
+# end
 
 Given(/^I have a pupil not taking the check$/) do
   step 'I am on the pupil reason page'
@@ -132,12 +134,6 @@ When(/^I have generated a pin for a pupil$/) do
   step "I click Generate PINs button"
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
-
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@details_hash[:first_name], @details_hash[:last_name], 2, new_time)
-  SqlDbHelper.set_school_pin_expiry('1001', new_time)
-
 end
 
 When(/^I click view all pins button$/) do
@@ -151,7 +147,7 @@ When(/^I expired the pupil pin$/) do
 end
 
 Given(/^I have generated pin for all pupil$/) do
-  step "I am logged in"
+  step "I have signed in with teacher4"
   step "I am on Generate pins Pupil List page"
   generate_pins_overview_page.select_all_pupils.click
   generate_pins_overview_page.sticky_banner.confirm.click
@@ -184,15 +180,6 @@ Given(/^I have generated pins for multiple pupils$/) do
   step "I am logged in"
   step "I am on Generate pins Pupil List page"
   @pupil_names_arr = generate_pins_overview_page.generate_pin_for_multiple_pupils(2)
-
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil_names_arr.each do |pupil|
-    pupil_lastname = pupil.split(',')[0]
-    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    SqlDbHelper.set_pupil_pin_expiry(pupil_firstname, pupil_lastname, 2, new_time)
-  end
-  SqlDbHelper.set_school_pin_expiry('1001', new_time)
   step "I am on the generate pupil pins page"
 end
 
@@ -207,8 +194,9 @@ end
 
 Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  wait_until {!(SqlDbHelper.pupil_details(pupil_upn)['pin']).nil?}
-  pupil_pin = SqlDbHelper.pupil_details(pupil_upn)['pin']
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  check_entry = SqlDbHelper.check_details(pupil_id)
+  pupil_pin = SqlDbHelper.get_pupil_pin(check_entry['id'])['val']
   expect(generated_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
 
@@ -341,7 +329,7 @@ end
 
 When(/^a pupil becomes available for pin generation again$/) do
   SqlDbHelper.reset_pin(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2)
-  SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
+  # SqlDbHelper.set_pupil_pin_expiry(@pupil_group_array.first.split(',')[1].strip, @pupil_group_array.first.split(',')[0], 2, nil)
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
