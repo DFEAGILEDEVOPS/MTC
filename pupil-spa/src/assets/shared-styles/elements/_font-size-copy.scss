@@ -1,5 +1,9 @@
 @mixin copy-size($copy-size, $question-text-size, $button-text-size) {
-  p, strong, li, span {
+  p, strong, li {
+    font-size: $copy-size;
+  }
+
+  .familiarisation-title, .loading-text {
     font-size: $copy-size;
   }
 
@@ -8,17 +12,17 @@
   }
 
   .question-and-answer {
-    font-size: $question-text-size;
+    font-size: $question-text-size !important;
     line-height: $question-text-size !important;
   }
 
   .question {
-    font-size: $question-text-size;
+    font-size: $question-text-size !important;
     max-width: 444px;
   }
 
   .answer {
-    font-size: $question-text-size;
+    font-size: $question-text-size !important;
   }
 }
 
