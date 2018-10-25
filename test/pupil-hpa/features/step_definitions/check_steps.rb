@@ -123,18 +123,21 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_inputs = JSON.parse page.evaluate_script('window.localStorage.getItem("inputs");')
   storage_audit = JSON.parse page.evaluate_script('window.localStorage.getItem("audit");')
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  chk_data = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
-  check = JSON.parse(chk_data['data'])
-  storage_answers.each {|answer| expect(check['data']['answers']).to include answer}
-  storage_inputs.each {|input| expect(check['data']['inputs']).to include input}
-  expect(check['data']['access_token']).to eql storage_access_token
-  [storage_school].each {|audit| expect(check['data']['school']).to include audit}
-  [storage_config].each {|audit| expect(check['data']['config']).to include audit}
-  storage_questions.each {|audit| expect(check['data']['questions']).to include audit}
-  [storage_pupil].each {|audit| expect(check['data']['pupil']).to include audit}
+  wait_until(60, 1){SqlDbHelper.get_check(storage_pupil['checkCode'])}
+  check = SqlDbHelper.get_check(storage_pupil['checkCode'])
+  wait_until(60, 1){SqlDbHelper.get_check_result(check['id'])}
+  check_result = SqlDbHelper.get_check_result(check['id'])
+  check = JSON.parse(check_result['payload'])
+  storage_answers.each {|answer| expect(check['answers']).to include answer}
+  storage_inputs.each {|input| expect(check['inputs']).to include input}
+  expect(check['tokens']['jwt']['token']).to eql storage_access_token
+  [storage_school].each {|audit| expect(check['school']).to include audit}
+  [storage_config].each {|audit| expect(check['config']).to include audit}
+  storage_questions.each {|audit| expect(check['questions']).to include audit}
+  [storage_pupil].each {|audit| expect(check['pupil']).to include audit}
   storage_audit.each do|audit|
     if !((audit['type'].eql?('CheckSubmissionAPICallSucceeded')) || (audit['type'].eql?('CheckSubmissionApiCalled')) || (audit['type'].eql?('CheckComplete')))
-      expect(check['data']['audit']).to include audit
+      expect(check['audit']).to include audit
     end
   end
 end

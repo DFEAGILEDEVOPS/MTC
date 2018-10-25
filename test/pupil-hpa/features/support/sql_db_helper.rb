@@ -16,6 +16,22 @@ class SqlDbHelper
     @array_of_schools
   end
 
+  def self.get_pupil_pin(pupil_id, school_id)
+    check_query = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(check_query)
+    check_row = result.first
+    result.cancel
+    checkpin_query = "SELECT * FROM [mtc_admin].[checkPin] WHERE check_id='#{check_row['id']}' AND school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(checkpin_query)
+    checkpin_query = result.first
+    result.cancel
+    pin_query = "SELECT * FROM [mtc_admin].[pin] WHERE id='#{checkpin_query['pin_id']}'"
+    result = SQL_CLIENT.execute(pin_query)
+    pin_query = result.first
+    result.cancel
+    pin_query
+  end
+
   def self.find_pupil_via_pin(pin)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin='#{pin}'"
     result = SQL_CLIENT.execute(sql)
@@ -30,6 +46,14 @@ class SqlDbHelper
     pupil_details_res = result.first
     result.cancel
     pupil_details_res
+  end
+
+  def self.find_teacher(name)
+    sql = "SELECT * FROM [mtc_admin].[user] WHERE identifier='#{name}'"
+    result = SQL_CLIENT.execute(sql)
+    teacher_res = result.first
+    result.cancel
+    teacher_res
   end
 
   def self.find_pupil_from_school(first_name, school_id)
@@ -184,6 +208,22 @@ class SqlDbHelper
     end
     result = SQL_CLIENT.execute(sql)
     result.insert
+  end
+
+  def self.get_check(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode='#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
+  def self.get_check_result(check_id)
+    sql = "SELECT * FROM [mtc_admin].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
   end
 
 

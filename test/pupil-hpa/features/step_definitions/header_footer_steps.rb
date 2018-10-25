@@ -15,21 +15,12 @@ Then(/^I should see a footer with a link to crown copyright$/) do
 end
 
 Given(/^I have logged in$/) do
+  teacher_pupil_hash = generate_pins_overview_page.generate_pin
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == teacher_pupil_hash[:pupil_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   sign_in_page.load
-  ct = Time.now
-  new_time = Time.new(ct.year, ct.mon, ct.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  @pupil = SqlDbHelper.find_next_pupil
-  @pin = 4.times.map {rand(2..9)}.join
-  SqlDbHelper.reset_pin(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time, @pin)
-  current_time = Time.now + 86400
-  new_time = Time.new(current_time.year, current_time.mon, current_time.day, 22, 00, 00, "+02:00").strftime("%Y-%m-%d %H:%M:%S.%LZ")
-  SqlDbHelper.set_pupil_pin_expiry(@pupil['foreName'], @pupil['lastName'], @pupil['school_id'], new_time)
-  SqlDbHelper.create_check(new_time, new_time, @pupil['id'])
-  SqlDbHelper.set_school_pin(@pupil['school_id'], new_time, 'abc35def')
-
-  @school = SqlDbHelper.find_school(@pupil['school_id'])
-
-  sign_in_page.login(@school['pin'], @pin)
+  sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
 end
 
