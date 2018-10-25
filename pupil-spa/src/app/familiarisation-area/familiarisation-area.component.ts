@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../services/config/config.service';
@@ -25,6 +25,7 @@ export class FamiliarisationAreaComponent {
   accessArrangements;
   featureUseHpa;
   pupil: Pupil;
+  validSelection = false;
   selectedSize;
   fontSettings;
   pupilPrefsAPIErrorDelay;
@@ -54,6 +55,7 @@ export class FamiliarisationAreaComponent {
     const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
     this.selectedSize = (fontSetting && fontSetting.val) || 'regular';
     this.setFontSize(this.selectedSize);
+    this.checkValidSelection();
   }
 
   setFontSize(fontValue) {
@@ -63,6 +65,7 @@ export class FamiliarisationAreaComponent {
 
     selectionChange(selectedFont) {
     this.selectedSize = selectedFont;
+    this.checkValidSelection();
   }
 
   async onClick() {
@@ -98,4 +101,15 @@ export class FamiliarisationAreaComponent {
     }
   }
 
+  @HostListener('window:resize')
+  checkValidSelection() {
+    const width = window.innerWidth;
+    if (width < 641 && (this.selectedSize === 'xlarge' || this.selectedSize === 'xxlarge')) {
+      this.validSelection = false;
+    } else if (width < 720 && (this.selectedSize === 'xxlarge')) {
+      this.validSelection = false;
+    } else {
+      this.validSelection = true;
+    }
+  }
 }
