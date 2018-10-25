@@ -25,10 +25,11 @@ module.exports = async function (context, checkStartMessage) {
     await updateAdminDatabaseForCheckStarted(
       checkStartMessage.checkCode,
       new Date(checkStartMessage.clientCheckStartedAt),
-      context.log)
-    context.log('SUCCESS: Admin DB updated')
+      context.log
+    )
+    context.log(`check-started: SUCCESS: Admin DB updated for ${checkStartMessage.checkCode}`)
   } catch (error) {
-    context.log.error(`ERROR: unable to update admin db for [${checkStartMessage.checkCode}]`)
+    context.log.error(`check-started: ERROR: unable to update admin db for ${checkStartMessage.checkCode}`)
     throw error
   }
 
@@ -37,10 +38,10 @@ module.exports = async function (context, checkStartMessage) {
     const checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
     if (checkData.isLiveCheck) {
       await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
-      context.log('SUCCESS: pupil check row deleted from preparedCheck table')
+      context.log('check-started: SUCCESS: pupil check row deleted from preparedCheck table for', checkStartMessage.checkCode)
     }
   } catch (error) {
-    context.log.error(`ERROR: unable to delete from table storage for [${checkStartMessage.checkCode}]`)
+    context.log.error(`check-started: ERROR: unable to delete from table storage for ${checkStartMessage.checkCode}`)
     throw error
   }
 
@@ -88,10 +89,10 @@ async function updateAdminDatabaseForCheckStarted (checkCode, startedAt, logger)
   try {
     const res = await sqlService.modify(sql, params)
     if (res.rowsModified === 0) {
-      logger('updateAdminDatabaseForCheckStarted: no rows modified.  This may be a bad checkCode.')
+      logger(`check-started: updateAdminDatabaseForCheckStarted(): no rows modified.  This may be a bad checkCode: ${checkCode}`)
     }
   } catch (error) {
-    logger('updateAdminDatabaseForCheckStarted: failed to update the SQL DB: ' + error.message)
+    logger(`check-started: updateAdminDatabaseForCheckStarted(): failed to update the SQL DB for ${checkCode}: ${error.message}`)
     throw error
   }
 }
