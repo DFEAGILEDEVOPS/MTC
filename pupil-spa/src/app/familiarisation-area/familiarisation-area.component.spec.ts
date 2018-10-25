@@ -56,7 +56,7 @@ describe('FamiliarisationAreaComponent', () => {
       component = fixture.componentInstance;
       fixture.detectChanges();
     }));
-    it('should expected the component to exist', () => {
+    it('should expect the component to exist', () => {
       fixture.whenStable().then(() => {
         expect(component).toBeTruthy();
       });
