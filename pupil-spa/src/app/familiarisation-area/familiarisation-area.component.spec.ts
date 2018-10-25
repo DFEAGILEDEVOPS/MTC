@@ -56,7 +56,7 @@ describe('FamiliarisationAreaComponent', () => {
       component = fixture.componentInstance;
       fixture.detectChanges();
     }));
-    it('should create', () => {
+    it('should expected the component to exist', () => {
       fixture.whenStable().then(() => {
         expect(component).toBeTruthy();
       });
@@ -64,7 +64,6 @@ describe('FamiliarisationAreaComponent', () => {
 
     it('should set the font size if it is detected in the config', () => {
       spyOn(mockStorageService, 'setItem');
-      component.ngOnInit();
       expect (mockStorageService.setItem).not.toHaveBeenCalled();
     });
 
@@ -148,13 +147,12 @@ describe('FamiliarisationAreaComponent', () => {
           return { fontSizeCode: 'VSM' };
         }
       });
+      spyOn(mockStorageService, 'setItem');
       fixture = TestBed.createComponent(FamiliarisationAreaComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();
     }));
     it('should set the font size in the current component', () => {
-      spyOn(mockStorageService, 'setItem');
-      component.ngOnInit();
       const accessArrangements = new AccessArrangements();
       accessArrangements.fontSize = 'xsmall';
       expect (mockStorageService.setItem.calls.all()[0].args[1]).toEqual(accessArrangements);

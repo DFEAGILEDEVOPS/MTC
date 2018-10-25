@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../services/config/config.service';
@@ -21,7 +21,7 @@ import { queueNames } from '../services/azure-queue/queue-names';
   templateUrl: './familiarisation-area.component.html',
   styleUrls: ['./familiarisation-area.component.scss']
 })
-export class FamiliarisationAreaComponent implements OnInit {
+export class FamiliarisationAreaComponent {
   accessArrangements;
   featureUseHpa;
   pupil: Pupil;
@@ -50,9 +50,6 @@ export class FamiliarisationAreaComponent implements OnInit {
     this.pupil.firstName = pupilData.firstName;
     this.pupil.lastName = pupilData.lastName;
     this.pupil.checkCode = pupilData.checkCode;
-  }
-
-  ngOnInit() {
     const config = this.storageService.getItem('config');
     const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
     if (fontSetting) {

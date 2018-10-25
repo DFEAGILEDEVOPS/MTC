@@ -17,9 +17,9 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
   SELECT
   *, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
   FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
-  LEFT JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
+  FULL OUTER JOIN ${sqlService.adminSchema}.[pupilFontSizes] pfs
   ON paa.pupilFontSizes_id = pfs.id
-  LEFT JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
+  FULL OUTER JOIN ${sqlService.adminSchema}.[pupilColourContrasts] pcc
   ON paa.pupilColourContrasts_id = pcc.id
   WHERE pupil_id = @pupilId`
   const params = [

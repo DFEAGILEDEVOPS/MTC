@@ -21,16 +21,36 @@ sqlService.initialise(config)
 module.exports = async function (context, pupilPrefsMessage) {
   const { checkCode, preferences } = pupilPrefsMessage
   const { fontSizeCode, colourContrastCode } = preferences
-  context.log('pupil-preferences message received', checkCode)
-  // TODO: purpose: process pupil preferences messages and put into pupilEvents table
+  context.log('pupil-prefs message received', checkCode, fontSizeCode, colourContrastCode)
+
+  if (!checkCode) {
+    const error = new Error('pupil-prefs: checkCode not present')
+    context.log.error(error.message)
+    throw error
+  }
+
+  if (!fontSizeCode && !colourContrastCode) {
+    const error = new Error('pupil-prefs: no pupil preference code value is provided')
+    context.log.error(error.message)
+    throw error
+  }
 
   // Update pupil access arrangements preference based on code presence in the payload
-  if (fontSizeCode) {
-    await updatePupilAccessArrangementsPreference(checkCode, 'pupilfontSizes_id', pupilFontSizesTable, fontSizeCode, 'FTS', context.log)
+  try {
+    if (fontSizeCode) {
+      await updatePupilAccessArrangementsPreference(checkCode, 'pupilfontSizes_id', pupilFontSizesTable, fontSizeCode, 'FTS')
+      context.log(`pupil-prefs: SUCCESS: pupil access arrangement row updated for checkCode ${checkCode} and font size code ${fontSizeCode}`)
+    }
+    if (colourContrastCode) {
+      await updatePupilAccessArrangementsPreference(checkCode, 'pupilColourContrasts_id', pupilColourContrastsTable, colourContrastCode, 'CCT')
+      context.log(`pupil-prefs: SUCCESS: pupil access arrangement row updated for checkCode ${checkCode} and colour contrast code ${fontSizeCode}`)
+    }
+  } catch (error) {
+    const codeValue = fontSizeCode || colourContrastCode
+    context.log.error(`pupil-prefs: ERROR: unable to update pupil access arrangement row for ${checkCode} and code value ${codeValue}`)
+    throw error
   }
-  if (colourContrastCode) {
-    await updatePupilAccessArrangementsPreference(checkCode, 'pupilColourContrasts_id', pupilColourContrastsTable, colourContrastCode, 'CCT', context.log)
-  }
+
   context.bindings.pupilEventsTable = []
   const entity = {
     PartitionKey: checkCode,
@@ -49,10 +69,9 @@ module.exports = async function (context, pupilPrefsMessage) {
  * @param {String} prefTable - reference table to match id
  * @param {String} prefCode - code value to be matched with reference table
  * @param {String} accessArrangementCode - code value for relevant access arrangement
- * @param {Function} logger
  * @return {Promise<void>}
  */
-async function updatePupilAccessArrangementsPreference (checkCode, prefField, prefTable, prefCode, accessArrangementCode, logger) {
+async function updatePupilAccessArrangementsPreference (checkCode, prefField, prefTable, prefCode, accessArrangementCode) {
   const sql = `UPDATE ${schema}.${pupilAccessArrangementsTable}
                SET ${prefField} = (
                 SELECT id FROM ${schema}.${prefTable} 
@@ -60,8 +79,8 @@ async function updatePupilAccessArrangementsPreference (checkCode, prefField, pr
                )                
                WHERE pupil_Id = (
                   SELECT p.id FROM ${schema}.${pupilTable} p
-                  LEFT JOIN ${schema}.${checkTable} chk
-                  ON chk.pupil_id= p.id
+                  FULL OUTER JOIN ${schema}.${checkTable} chk
+                  ON chk.pupil_id = p.id
                   WHERE chk.checkCode = @checkCode
                ) AND accessArrangements_id = (
                   SELECT id FROM ${schema}.${accessArrangementsTable}
@@ -85,13 +104,5 @@ async function updatePupilAccessArrangementsPreference (checkCode, prefField, pr
       type: TYPES.Char
     }
   ]
-  try {
-    const res = await sqlService.modify(sql, params)
-    if (res.rowsModified === 0) {
-      logger(`pupil-prefs: updatePupilAccessArrangements(): no rows modified.  This may be a bad checkCode: ${checkCode} or ${prefTable} code: ${prefCode}`)
-    }
-  } catch (error) {
-    logger(`pupil-prefs: updatePupilAccessArrangements(): failed to update the SQL DB for ${checkCode} and ${prefTable} with code ${prefCode}: ${error.message}`)
-    throw error
-  }
+  return sqlService.modify(sql, params)
 }
