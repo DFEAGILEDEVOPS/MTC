@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { APP_CONFIG } from '../services/config/config.service';
@@ -21,7 +21,8 @@ import { queueNames } from '../services/azure-queue/queue-names';
   templateUrl: './familiarisation-area.component.html',
   styleUrls: ['./familiarisation-area.component.scss']
 })
-export class FamiliarisationAreaComponent {
+export class FamiliarisationAreaComponent implements OnInit {
+  accessArrangements;
   featureUseHpa;
   pupil: Pupil;
   selectedSize;
@@ -39,6 +40,7 @@ export class FamiliarisationAreaComponent {
 
 ) {
     const { featureUseHpa, pupilPrefsAPIErrorDelay, pupilPrefsAPIErrorMaxAttempts } = APP_CONFIG;
+    this.accessArrangements = new AccessArrangements;
     this.featureUseHpa = featureUseHpa;
     this.fontSettings = AccessArrangementsConfig.fontSettings;
     this.pupilPrefsAPIErrorDelay = pupilPrefsAPIErrorDelay;
@@ -50,14 +52,26 @@ export class FamiliarisationAreaComponent {
     this.pupil.checkCode = pupilData.checkCode;
   }
 
-  selectionChange(selectedFont) {
+  ngOnInit() {
+    const config = this.storageService.getItem('config');
+    const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
+    if (fontSetting) {
+      this.setFontSize(fontSetting.val);
+    }
+  }
+
+  setFontSize(fontValue) {
+    this.accessArrangements.fontSize = fontValue || 'regular';
+    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
+  }
+
+    selectionChange(selectedFont) {
     this.selectedSize = selectedFont;
   }
 
   async onClick() {
-    const accessArrangements = new AccessArrangements;
-    accessArrangements.fontSize = this.selectedSize || 'regular';
-    const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
+    this.setFontSize(this.selectedSize);
+    const fontSetting = this.fontSettings.find(f => f.val === this.accessArrangements.fontSize);
     const fontCode = fontSetting.code;
     if (this.featureUseHpa === true) {
       const queueName = queueNames.pupilPreferences;
@@ -80,7 +94,7 @@ export class FamiliarisationAreaComponent {
         this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
       }
     }
-    this.storageService.setItem(accessArrangementsDataKey, accessArrangements);
+    this.storageService.setItem(accessArrangementsDataKey, this.accessArrangements);
     if (this.questionService.getConfig().colourContrast) {
       this.router.navigate(['colour-choice']);
     } else {
