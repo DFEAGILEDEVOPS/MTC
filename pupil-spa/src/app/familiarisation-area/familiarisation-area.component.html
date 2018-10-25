@@ -12,7 +12,7 @@
           </strong>
         </p>
         <div class="grid-row">
-          <div class="column-one-third">
+          <div class="column-half">
             <fieldset>
               <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
                 <input type="radio"
@@ -25,7 +25,7 @@
               </div>
             </fieldset>
           </div>
-          <div class="column-two-thirds">
+          <div class="column-half">
             <div *ngIf="selectedSize" class="preview-box {{selectedSize}}">
               <div class="badge">Size preview</div>
               <div class="question-text">123</div>
@@ -36,6 +36,14 @@
                       <td><button type="button">3</button></td>
                   </tr>
               </table>
+            </div>
+            <div class="notice warning-box {{selectedSize}}" tabindex="0">
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+                <strong class="bold-large">
+                  This size won't work on your screen. Please choose another size or use a device with a larger screen.
+                </strong>
             </div>
           </div>
         </div>

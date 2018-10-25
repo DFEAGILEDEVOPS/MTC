@@ -28,10 +28,12 @@ label {
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 0 30px 30px;
-  min-width: 350px;
-  min-height: 190px;
+  padding-bottom: 30px;
+  width: 100%;
+  max-width: 100%;
   position: relative;
+  overflow: hidden;
+  margin: 0;
 
   > .badge {
     color: #fff;
@@ -59,6 +61,19 @@ label {
     background-color: #6f777b;
     border: none;
     color: #fff;
+  }
+}
+
+.warning-box {
+  float: left;
+  max-width: 100%;
+  background-color: rgba(0, 94, 165, 1);
+  color: #fff;
+  display: none;
+  padding: 20px 20px 20px 20px;
+  i {
+    margin-left: 20px;
+    top: 40px;
   }
 }
 
@@ -107,4 +122,26 @@ $custom-xxlarge: (160px, 140px, 60px, 60px);
   }
 
   @include font-settings($custom-xxlarge...);
+}
+
+@media screen and (max-width: 641px) {
+  .preview-box.xlarge,
+  .preview-box.xxlarge {
+    display: none;
+  }
+
+  .warning-box.xlarge,
+  .warning-box.xxlarge {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 641px) and (max-width: 720px) {
+  .preview-box.xxlarge {
+    display: none;
+  }
+
+  .warning-box.xxlarge {
+    display: block;
+  }
 }
