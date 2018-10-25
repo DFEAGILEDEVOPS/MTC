@@ -19,7 +19,7 @@
                        value="{{selectedFont.val}}"
                        id="font-{{selectedFont.val}}"
                        name="font-size"
-                       [checked]="!selectedSize && selectedFont.val === 'regular'"
+                       [checked]="selectedSize === selectedFont.val"
                        (change)="selectionChange(selectedFont.val)">
                 <label class="font-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
               </div>

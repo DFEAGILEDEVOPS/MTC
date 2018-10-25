@@ -53,7 +53,8 @@ export class FamiliarisationAreaComponent {
     const config = this.storageService.getItem('config');
     const fontSetting = this.fontSettings.find(f => f.code === config.fontSizeCode);
     if (fontSetting) {
-      this.setFontSize(fontSetting.val);
+      this.selectedSize = fontSetting.val;
+      this.setFontSize(this.selectedSize);
     }
   }
 
