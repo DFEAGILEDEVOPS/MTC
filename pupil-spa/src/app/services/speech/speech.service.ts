@@ -244,6 +244,14 @@ export class SpeechService implements OnDestroy {
       return 'Button: ';
     } else if (nativeElement.tagName === 'A') {
       return 'Link: ';
+    } else if (nativeElement.tagName === 'LI') {
+      const parent = nativeElement.parentNode;
+      if (parent.tagName === 'OL') {
+        const index = Array.prototype.indexOf.call(parent.children, nativeElement);
+        return `${index + 1}: `;
+      } else {
+        return '';
+      }
     } else {
       return '';
     }
