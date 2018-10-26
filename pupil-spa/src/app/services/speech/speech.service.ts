@@ -182,18 +182,14 @@ export class SpeechService implements OnDestroy {
         continue;
       }
 
-      speechText += ' , ' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
+      speechText += '\n' + this.addTextBeforeSpeakingElement(elements[i]) + elements[i].textContent;
     }
 
     return this.speak(speechText
-               // remove unnecessary newlines
-               .replace(/[\n\r]+/g, ' ')
-               // remove the leading comma, if there is any
-               .replace(/^ , /g, ' ')
-               // remove duplicate commas, if there is any
-               .replace(/(\s*,\s*),/g, '$1')
-               // remove commas that appear after a period without text inbetween
-               .replace(/\.\s*,/g, '. '));
+                // remove empty lines
+                .replace(/^\s+$/gm, '')
+                // replace newlines with commas
+                .replace(/[\n\r]+/g, ' , '));
   }
 
   /**
