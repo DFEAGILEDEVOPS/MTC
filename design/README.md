@@ -1,3 +1,3 @@
-# Design and exploratory work
+# Design
 
-This folder is for spikes and exploratory work
+This directory is for design assets
