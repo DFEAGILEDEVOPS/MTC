@@ -13,12 +13,12 @@ import { SpeechService } from '../services/speech/speech.service';
   styleUrls: ['./familiarisation-settings.component.scss']
 })
 export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestroy {
-  public familiarisationSettingsForm: FormGroup;
-  public userSubmittedForm = false;
-  private validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
 
   private config: Config;
   private speechListenerEvent: any;
+  public inputAssistanceForm: FormGroup;
+  public formSubmitted = false;
+  private validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -29,7 +29,7 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
     private speechService: SpeechService
   ) {
     this.config = questionService.getConfig();
-    this.familiarisationSettingsForm = this.formBuilder.group({
+    this.inputAssistanceForm = this.formBuilder.group({
       inputAssistantFirstName: new FormControl('', Validators.compose([
         Validators.required,
         Validators.maxLength(128),
@@ -70,21 +70,30 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
     }
   }
 
-  onClick() {
-    this.router.navigate(['check-start']);
+  get inputAssistantFirstName() {
+    return this.inputAssistanceForm.get('inputAssistantFirstName');
   }
 
-  onSubmit(inputAssistantFirstName, inputAssistantLastName) {
-    if (!this.familiarisationSettingsForm.valid) {
-      this.userSubmittedForm = true;
-      return;
+  get inputAssistantLastName() {
+    return this.inputAssistanceForm.get('inputAssistantLastName');
+  }
+
+  onClick() {
+    if (this.config.inputAssistance) {
+      this.inputAssistanceForm.updateValueAndValidity();
+
+      if (!this.inputAssistanceForm.valid) {
+        this.formSubmitted = true;
+        return;
+      } else {
+        const pupilData = this.storageService.getItem('pupil');
+        pupilData.inputAssistant = {
+          firstName: this.inputAssistantFirstName.value,
+          lastName: this.inputAssistantLastName.value,
+        };
+        this.storageService.setItem('pupil', pupilData);
+      }
     }
-    const pupilData = this.storageService.getItem('pupil');
-    pupilData.inputAssistant = {
-      firstName: inputAssistantFirstName,
-      lastName: inputAssistantLastName,
-    };
-    this.storageService.setItem('pupil', pupilData);
     this.router.navigate(['check-start']);
   }
 }
