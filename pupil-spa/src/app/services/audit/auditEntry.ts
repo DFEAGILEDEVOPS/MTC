@@ -1,9 +1,10 @@
-export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
-  'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' | 'CheckSubmissionPending' |
-  'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' | 'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'CheckStarted' |
-  'QuestionRendered' | 'QuestionAnswered' | 'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' |
-  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' |
-  'AppError' | 'DuplicateAnswerError';
+export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded' | 'PupilPrefsAPICallFailed' |
+  'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
+  'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' |
+  'CheckSubmissionPending' | 'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' |
+  'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' |'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
+  'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
+  'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' | 'DuplicateAnswerError';
 
 export abstract class AuditEntry {
 
@@ -11,6 +12,24 @@ export abstract class AuditEntry {
     public type: AuditEntryType,
     public clientTimestamp: Date,
     public data?: object) { }
+}
+
+export class PupilPrefsAPICalled extends AuditEntry {
+  constructor(data?: any) {
+    super('PupilPrefsAPICalled', new Date(), data);
+  }
+}
+
+export class PupilPrefsAPICallSucceeded extends AuditEntry {
+  constructor(data?: any) {
+    super('PupilPrefsAPICallSucceeded', new Date(), data);
+  }
+}
+
+export class PupilPrefsAPICallFailed extends AuditEntry {
+  constructor(data?: any) {
+    super('PupilPrefsAPICallFailed', new Date(), data);
+  }
 }
 
 export class WarmupStarted extends AuditEntry {
