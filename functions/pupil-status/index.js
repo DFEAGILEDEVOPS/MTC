@@ -3,21 +3,36 @@
 const moment = require('moment')
 const sqlService = require('less-tedious')
 const uuid = require('uuid/v4')
-const winston = require('winston')
 const { TYPES } = require('tedious')
-const { getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+const R = require('ramda')
 
-winston.level = 'error'
 const config = require('../config')
 sqlService.initialise(config)
+const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
 
-const schema = '[mtc_admin]'
-const azureTableService = getPromisifiedAzureTableService()
-
+/**
+ * Re-compute the pupil status and write it to the Admin database
+ * @param context
+ * @param pupilStatusMessage
+ * @return {Promise<void>}
+ */
 module.exports = async function (context, pupilStatusMessage) {
-  context.log('pupil-status message received')
+  context.log(`pupil-status message received for pupilId ${pupilStatusMessage.pupilId}`)
 
-  // TODO process pupil status
+  if (typeof pupilStatusMessage !== 'object') {
+    throw new Error('pupil-status: Badly formed message')
+  }
+
+  if (!pupilStatusMessage.hasOwnProperty('pupilId')) {
+    throw new Error('pupil-status: Invalid message')
+  }
+
+  try {
+    await recalculatePupilStatus(pupilStatusMessage.pupilId)
+  } catch (error) {
+    context.log.error('pupil-status: Failed to recalculate pupil status')
+    throw error
+  }
 
   // Store the raw message to an audit log
   context.bindings.pupilEventsTable = []
@@ -31,4 +46,50 @@ module.exports = async function (context, pupilStatusMessage) {
   }
 
   context.bindings.pupilEventsTable.push(entity)
+}
+
+async function recalculatePupilStatus (pupilId) {
+  const currentData = await getCurrentPupilData(pupilId)
+  // console.log('Current data ', currentData)
+  const currentStatusCode = R.head(currentData).pupilStatusCode
+  const targetStatusCode = pupilStatusAnalysisService.analysePupilData(currentData)
+
+  if (currentStatusCode !== targetStatusCode) {
+    await changePupilState(pupilId, targetStatusCode)
+    console.log(`pupil-status: State change transition for pupil ${pupilId} from ${currentStatusCode} to ${targetStatusCode}`)
+  }
+}
+
+async function getCurrentPupilData (pupilId) {
+  const sql = `SELECT 
+    p.id as pupil_id,
+    pstatus.code as pupilStatusCode,
+    chk.id as check_id,
+    chkStatus.code as checkStatusCode,
+    pa.id as pupilAttendance_id
+  FROM 
+        ${sqlService.adminSchema}.[pupil] p
+        INNER JOIN ${sqlService.adminSchema}.[pupilStatus] pstatus ON (p.pupilStatus_id = pstatus.id)
+        LEFT OUTER JOIN ${sqlService.adminSchema}.[check] chk ON (p.id = chk.pupil_id)
+        LEFT OUTER JOIN ${sqlService.adminSchema}.[checkStatus] chkStatus ON (chk.checkStatus_id = chkStatus.id AND chk.isLiveCheck = 1)
+        LEFT OUTER JOIN ${sqlService.adminSchema}.[pupilAttendance] pa ON (pa.pupil_id = p.id AND pa.isDeleted = 0)
+  WHERE p.id = @pupilId
+  ORDER BY chk.id ASC`
+
+  const params = [
+    { name: 'pupilId', value: pupilId, type: TYPES.Int }
+  ]
+
+  return sqlService.query(sql, params)
+}
+
+async function changePupilState (pupilId, targetStatusCode) {
+  const sql = `UPDATE ${sqlService.adminSchema}.[pupil] 
+               SET pupilStatus_id = (SELECT id from ${sqlService.adminSchema}.[pupilStatus] WHERE code = @code)
+               WHERE id = @pupilId`
+  const params = [
+    { name: 'code', value: targetStatusCode, type: TYPES.NVarChar },
+    { name: 'pupilId', value: pupilId, type: TYPES.Int }
+  ]
+  return sqlService.modify(sql, params)
 }
