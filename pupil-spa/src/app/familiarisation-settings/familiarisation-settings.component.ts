@@ -1,11 +1,10 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { Validators } from '@angular/forms';
 import { Config } from '../config.model';
 import { SpeechService } from '../services/speech/speech.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-familiarisation-settings',
@@ -16,12 +15,12 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
 
   private config: Config;
   private speechListenerEvent: any;
-  public inputAssistanceForm: FormGroup;
   public formSubmitted = false;
-  private validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
+  public validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
+
+  @ViewChild('inputAssistantForm') public inputAssistantForm: NgForm;
 
   constructor(
-    private formBuilder: FormBuilder,
     private router: Router,
     private elRef: ElementRef,
     private questionService: QuestionService,
@@ -29,18 +28,6 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
     private speechService: SpeechService
   ) {
     this.config = questionService.getConfig();
-    this.inputAssistanceForm = this.formBuilder.group({
-      inputAssistantFirstName: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.maxLength(128),
-        Validators.pattern(this.validationPattern)
-      ])),
-      inputAssistantLastName: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.maxLength(128),
-        Validators.pattern(this.validationPattern)
-      ])),
-    });
   }
 
   get inputAssistantFirstName() { return this.familiarisationSettingsForm.get('inputAssistantFirstName'); }
@@ -70,26 +57,16 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
     }
   }
 
-  get inputAssistantFirstName() {
-    return this.inputAssistanceForm.get('inputAssistantFirstName');
-  }
-
-  get inputAssistantLastName() {
-    return this.inputAssistanceForm.get('inputAssistantLastName');
-  }
-
   onClick() {
     if (this.config.inputAssistance) {
-      this.inputAssistanceForm.updateValueAndValidity();
-
-      if (!this.inputAssistanceForm.valid) {
-        this.formSubmitted = true;
+      this.formSubmitted = true;
+      if (!this.inputAssistantForm.valid) {
         return;
       } else {
         const pupilData = this.storageService.getItem('pupil');
         pupilData.inputAssistant = {
-          firstName: this.inputAssistantFirstName.value,
-          lastName: this.inputAssistantLastName.value,
+          firstName: this.inputAssistantForm.value.inputAssistantFirstName,
+          lastName: this.inputAssistantForm.value.inputAssistantLastName,
         };
         this.storageService.setItem('pupil', pupilData);
       }
