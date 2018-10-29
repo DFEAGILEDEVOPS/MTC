@@ -17,7 +17,7 @@ class ManageCheckWindowPage < SitePrism::Page
   section :windows_table, '#checkWindowList' do
     elements :coloumns, 'tr th'
     sections :rows, 'tbody tr' do
-      element :check_name, 'td:nth-of-type(1)'
+      element :check_name, 'td:nth-of-type(1) a'
       element :admin_start_date, 'td:nth-of-type(2)'
       element :status, 'td:nth-of-type(2)'
       element :check_period, 'td:nth-of-type(3)'
