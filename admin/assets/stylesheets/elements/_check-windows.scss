@@ -21,7 +21,7 @@
 }
 
 .inline-group {
-  display: inline-block;
+  display: table;
   margin-bottom: pem(50px);
 }
 
@@ -44,4 +44,13 @@
 .hint-spacious {
   margin-bottom: pem(5px);
   padding-top: pem(5px);
+}
+
+.disabled-check-window-field {
+  margin-top: pem(10px);
+  margin-bottom: pem(10px);
+}
+
+.left-float {
+  float: left;
 }
