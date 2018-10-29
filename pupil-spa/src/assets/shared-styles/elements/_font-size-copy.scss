@@ -1,17 +1,31 @@
-@mixin copy-size($copy-size, $question-text-size, $button-text-size) {
-  p, strong, li {
-    font-size: $copy-size;
+@mixin copy-size($header-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
+  p, li {
+    font-size: $copy-size !important;
+  }
+
+  strong {
+    font-size: $lead-size !important;
+  }
+
+  a {
+    font-size: $link-size !important;
+  }
+
+  h1 {
+    font-size: $header-size !important;
   }
 
   .familiarisation-title, .loading-text {
-    font-size: $copy-size;
+    font-size: $lead-size !important;
   }
 
   .button {
-    font-size: $button-text-size;
+    font-size: $button-text-size !important;
+    width: $button-width !important;
+    height: $button-height !important;
   }
 
-  .question-and-answer {
+  /*.question-and-answer {
     font-size: $question-text-size !important;
     line-height: $question-text-size !important;
   }
@@ -23,29 +37,29 @@
 
   .answer {
     font-size: $question-text-size !important;
-  }
+  }*/
 }
 
 .copy-size-xsmall {
-  @include copy-size(9px, 20px, 12px);
+  @include copy-size(24px, 14px, 12px, 12px, 12px, 70px, 40px);
 }
 
 .copy-size-small {
-  @include copy-size(12px, 40px, 19px);
+  @include copy-size(36px, 18px, 14px, 14px, 14px, 70px, 40px);
 }
 
 .copy-size-regular {
-  @include copy-size(14px, 60px, 27px);
+
 }
 
 .copy-size-large {
-  @include copy-size(24px, 100px, 40px);
+  @include copy-size(60px, 30px, 24px, 20px, 24px, 120px, 50px);
 }
 
 .copy-size-xlarge {
-  @include copy-size(28px, 120px, 45px);
+  @include copy-size(72px, 36px, 28px, 24px, 28px, 150px, 60px);
 }
 
 .copy-size-xxlarge {
-  @include copy-size(30px, 160px, 50px);
+  @include copy-size(96px, 48px, 38px, 32px, 38px, 180px, 70px);
 }
