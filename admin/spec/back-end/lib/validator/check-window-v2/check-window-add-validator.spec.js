@@ -2,9 +2,10 @@
 
 /* global describe, it, spyOn expect beforeEach */
 const moment = require('moment')
-const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')
 
+const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')
 const checkWindowNameValidator = require('../../../../../lib/validator/check-window-v2/check-window-name-validator')
+const dateService = require('../../../../../services/date.service')
 const dateValidator = require('../../../../../lib/validator/common/date-validator')
 const DateValidationData = require('../../../../../lib/validator/common/DateValidationData')
 const DateValidationDataMock = require('../common/DateValidationDataMock')
@@ -141,6 +142,90 @@ describe('New check window add validator', function () {
       expect(Object.keys(validationError.errors).length).toBe(2)
       expect(validationError.errors.familiarisationCheckEndDateNotEqualLiveCheckEndDate).toBeTruthy()
       expect(validationError.errors.liveCheckEndDateNotEqualFamiliarisationCheckEndDate).toBeTruthy()
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if adminStartDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: true,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: false
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if adminEndDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: true,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: false
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if familiarisationCheckStartDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: true,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: false
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if familiarisationCheckEndDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: true,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: false
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if liveCheckStartDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: true,
+        liveCheckEndDateDisabled: false
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
+    })
+    it('should not call createUTCFromDayMonthYear and dateValidator validate methods if liveCheckEndDateDisabled', () => {
+      spyOn(dateService, 'createUTCFromDayMonthYear')
+      const validationConfig = {
+        adminStartDateDisabled: false,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: false,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: false,
+        liveCheckEndDateDisabled: true
+      }
+      checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalledTimes(5)
+      expect(dateValidator.validate).toHaveBeenCalledTimes(5)
     })
   })
 })
