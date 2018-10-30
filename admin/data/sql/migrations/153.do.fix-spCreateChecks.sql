@@ -21,8 +21,6 @@ AS
   DECLARE @isLiveCheck bit
   DECLARE @pinExpiresAt datetimeoffset
   DECLARE @schoolId int
-  DECLARE @pin int
-  DECLARE @err int
   DEClARE @checkId int
   DECLARE @output TABLE (id int);
 
@@ -42,7 +40,7 @@ AS
     INSERT INTO [mtc_admin].[checkPin] (school_id, check_id, pinExpiresAt, pin_id)
     VALUES (@schoolId, @checkId, @pinExpiresAt, (SELECT TOP 1 p.id FROM mtc_admin.pin p 
                     LEFT OUTER JOIN (SELECT cp.pin_id, cp.school_id FROM mtc_admin.checkPin cp WHERE school_id = @schoolId) 
-                    AS vew ON p.id = vew.pin_id WHERE vew.pin_id IS NULL))
+                    AS vew ON p.id = vew.pin_id WHERE vew.pin_id IS NULL ORDER BY NEWID()))
 
     -- Store the check.id in the output table
     INSERT INTO @output (id) (SELECT @checkId);
