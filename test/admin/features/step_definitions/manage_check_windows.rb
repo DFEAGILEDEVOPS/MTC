@@ -88,7 +88,7 @@ end
 
 Then(/^the manage check window hub page should match design$/) do
   expect(manage_check_window_page).to have_heading
-  expect(manage_check_window_page).to have_updated_page_instructions
+  expect(manage_check_window_page).to have_page_instructions
   expect(manage_check_window_page).to have_panel
   expect(manage_check_window_page).to have_create_new_window
 end

@@ -757,7 +757,7 @@ end
 Then(/^it should be removed from the list of windows$/) do
   expect(manage_check_window_page.windows_table.rows.
       find {|chk| chk.text.include? @check_window_hash[:check_name]}).to be_nil
-  expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been successfully removed.'
+  expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been successfully removed'
 end
 
 But(/^then change my mind$/) do
