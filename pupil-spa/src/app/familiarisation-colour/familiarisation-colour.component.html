@@ -21,14 +21,14 @@
             </fieldset>
           </div>
           <div class="column-two-thirds">
-            <div *ngIf="selectedContrast" class="preview-box contrast-{{selectedContrast}}">
-              <div class="badge"><span>Colour preview</span></div>
+            <div *ngIf="selectedContrast" class="preview-box contrast-{{selectedContrast}} {{accessArrangements.fontSize}}">
+              <div class="badge">Colour preview</div>
               <div class="question-text question-and-answer "><span>123</span></div>
               <table>
                 <tr>
-                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">1</button></td>
-                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">2</button></td>
-                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">3</button></td>
+                  <td><button class="numpad-button" type="button">1</button></td>
+                  <td><button class="numpad-button" type="button">2</button></td>
+                  <td><button class="numpad-button" type="button">3</button></td>
                 </tr>
               </table>
             </div>

@@ -145,6 +145,24 @@ span.xsmall {
   position: relative;
   margin: 10px 0 0 40px;
 
+  @media (max-width: 640px) {
+    padding: 20px 0 0 0;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  @media (max-width: 780px) {
+    padding: 20px;
+    margin: 0;
+    max-width: 100%;
+
+    &.large {
+      table {
+        border-spacing: 2px;
+      }
+    }
+  }
+
   > .badge {
     position: absolute;
     top: 0;
@@ -171,31 +189,31 @@ span.xsmall {
     width: 100px;
     height: 70px;
     font-size: 36px;
+  }
 
-    &.xxlarge {
-      width: 140px;
-      height: 70px;
-      font-size: 56px;
-    }
-    &.xlarge {
-      width: 125px;
-      height: 70px;
-      font-size: 42px;
-    }
-    &.large {
-      width: 100px;
-      height: 70px;
-      font-size: 48px;
-    }
-    &.small {
-      width: 70px;
-      height: 50px;
-      font-size: 21px;
-    }
-    &.xsmall {
-      width: 60px;
-      height: 44px;
-      font-size: 19px;
-    }
+  &.xxlarge table .numpad-button {
+    width: 140px;
+    height: 70px;
+    font-size: 56px;
+  }
+  &.xlarge table .numpad-button {
+    width: 125px;
+    height: 70px;
+    font-size: 42px;
+  }
+  &.large table .numpad-button {
+    width: 100px;
+    height: 70px;
+    font-size: 48px;
+  }
+  &.small table .numpad-button {
+    width: 70px;
+    height: 50px;
+    font-size: 21px;
+  }
+  &.xsmall table .numpad-button {
+    width: 60px;
+    height: 44px;
+    font-size: 19px;
   }
 }
