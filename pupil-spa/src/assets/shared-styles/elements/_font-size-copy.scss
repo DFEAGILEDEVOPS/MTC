@@ -17,7 +17,13 @@
     font-size: $header-size !important;
   }
 
-  .familiarisation-title, .loading-text, .remaining-time-warmup, .remaining-time {
+  #global-header {
+    #proposition-name, #logo {
+      font-size: $lead-size !important;
+    }
+  }
+
+  .familiarisation-title, #familiarisation-header-bar, .loading-text, .remaining-time-warmup, .remaining-time {
     font-size: $copy-size !important;
   }
 
