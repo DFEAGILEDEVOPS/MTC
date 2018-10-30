@@ -46,6 +46,7 @@
         <h1 class="heading-xlarge"><%= pageTitle %></h1>
         <form action="/check-window/submit-check-window" method="post">
             <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+
             <div class="form-group <%= error.isError('checkWindowName') ? 'form-group-error' : '' %>">
                 <label for="checkWindowName" class="form-label-bold">
                     Check window name
@@ -53,6 +54,7 @@
                     <span class="error-message"><%= error.get('checkWindowName') %></span>
                     <% } %>
                 </label>
+                <% if (!checkWindowData.pastCheckWindow) { %>
                 <input class="form-control <%= error.isError('checkWindowName') ? 'form-control-error' : '' %>"
                        id="checkWindowName"
                        name="checkWindowName"
@@ -62,6 +64,10 @@
                        maxlength="35"
                        aria-label="Check window name."
                 >
+                <% } else { %>
+                <input type="hidden" name="checkWindowName" value="<%= checkWindowData.checkWindowName %>">
+                <div class="disabled-check-window-field"><%= checkWindowData.checkWindowName %></div>
+                <% } %>
             </div>
             <br />
             <div class="inline-group <%= error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
@@ -72,7 +78,9 @@
                     ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     School administration period
+                    <% if (!checkWindowData.adminPeriodDisabled) { %>
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% } %>
                     <% if (error.isError('adminStartDateInThePast')) { %>
                     <span class="error-message"><%= errorMessage.adminStartDateInThePast %></span>
                     <% } %>
@@ -116,6 +124,7 @@
                     <span class="error-message"><%= errorMessage.adminEndDateBeforeFamiliarisationCheckEndDate %></span>
                     <% } %>
                 </label>
+                <% if (!checkWindowData.adminStartDateDisabled) { %>
                 <div class="form-group start-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -153,7 +162,16 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="adminStartDay" value="<%= checkWindowData.adminStartDay %>">
+                <input type="hidden" name="adminStartMonth" value="<%= checkWindowData.adminStartMonth %>">
+                <input type="hidden" name="adminStartYear" value="<%= checkWindowData.adminStartYear %>">
+                <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                <% } %>
+                <% if (!checkWindowData.adminStartDateDisabled) { %>
                 <div class="separator">to</div>
+                <% } %>
+                <% if (!checkWindowData.adminEndDateDisabled) { %>
                 <div class="form-group end-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -191,6 +209,12 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="adminEndDay" value="<%= checkWindowData.adminEndDay %>">
+                <input type="hidden" name="adminEndMonth" value="<%= checkWindowData.adminEndMonth %>">
+                <input type="hidden" name="adminEndYear" value="<%= checkWindowData.adminEndYear %>">
+                <div class="disabled-check-window-field <%= checkWindowData.adminPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.adminEndDate.format('D MMMM YYYY') %></div>
+                <% } %>
             </div>
             <div class="inline-group <%= error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
             error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
@@ -200,7 +224,9 @@
             error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil familiarisation check period
+                    <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% } %>
                     <% if (error.isError('familiarisationCheckStartDateInThePast')) { %>
                     <span class="error-message"><%= errorMessage.familiarisationCheckStartDateInThePast %></span>
                     <% } %>
@@ -247,8 +273,9 @@
                     <span class="error-message"><%= errorMessage.familiarisationCheckEndDateNotEqualLiveCheckEndDate %></span>
                     <% } %>
                 </label>
+                <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
                 <div class="form-group start-date">
-                <div class="form-date">
+                    <div class="form-date">
                         <div class="form-group form-group-day">
                             <label class="form-label" for="familiarisationCheckStartDay">Day</label>
                             <input class="form-control  <%= error.isError('familiarisationCheckStartDay') ? 'form-control-error' : ''%>"
@@ -284,7 +311,16 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="familiarisationCheckStartDay" value="<%= checkWindowData.familiarisationCheckStartDay %>">
+                <input type="hidden" name="familiarisationCheckStartMonth" value="<%= checkWindowData.familiarisationCheckStartMonth %>">
+                <input type="hidden" name="familiarisationCheckStartYear" value="<%= checkWindowData.familiarisationCheckStartYear %>">
+                <div class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                <% } %>
+                <% if (!checkWindowData.familiarisationCheckStartDateDisabled) { %>
                 <div class="separator">to</div>
+                <% } %>
+                <% if (!checkWindowData.familiarisationCheckEndDateDisabled) { %>
                 <div class="form-group end-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -322,6 +358,12 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="familiarisationCheckEndDay" value="<%= checkWindowData.familiarisationCheckEndDay %>">
+                <input type="hidden" name="familiarisationCheckEndMonth" value="<%= checkWindowData.familiarisationCheckEndMonth %>">
+                <input type="hidden" name="familiarisationCheckEndYear" value="<%= checkWindowData.familiarisationCheckEndYear %>">
+                <span class="disabled-check-window-field <%= checkWindowData.familiarisationCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.familiarisationCheckEndDate.format('D MMMM YYYY') %></span>
+                <% } %>
             </div>
             <div class="inline-group <%= error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
             error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
@@ -332,7 +374,9 @@
             error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'form-group-error' : '' %>">
                 <label class="form-label-bold">
                     Pupil live check period
+                    <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
                     <span class="form-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
+                    <% } %>
                     <% if (error.isError('liveCheckStartDateInThePast')) { %>
                     <span class="error-message"><%= errorMessage.liveCheckStartDateInThePast %></span>
                     <% } %>
@@ -379,6 +423,7 @@
                     <span class="error-message"><%= errorMessage.liveCheckEndDateNotEqualFamiliarisationCheckEndDate %></span>
                     <% } %>
                 </label>
+                <% if (!checkWindowData.liveCheckStartDateDisabled) { %>
                 <div class="form-group start-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -416,7 +461,16 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="liveCheckStartDay" value="<%= checkWindowData.liveCheckStartDay %>">
+                <input type="hidden" name="liveCheckStartMonth" value="<%= checkWindowData.liveCheckStartMonth %>">
+                <input type="hidden" name="liveCheckStartYear" value="<%= checkWindowData.liveCheckStartYear %>">
+                <div class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckStartDate.format('D MMMM YYYY') %> to&nbsp;</div>
+                <% } %>
+                <% if (!checkWindowData.liveCheckStartDateDisabled) { %>
                 <div class="separator">to</div>
+                <% } %>
+                <% if (!checkWindowData.liveCheckEndDateDisabled) { %>
                 <div class="form-group end-date">
                     <div class="form-date">
                         <div class="form-group form-group-day">
@@ -454,11 +508,20 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                <input type="hidden" name="liveCheckEndDay" value="<%= checkWindowData.liveCheckEndDay %>">
+                <input type="hidden" name="liveCheckEndMonth" value="<%= checkWindowData.liveCheckEndMonth %>">
+                <input type="hidden" name="liveCheckEndYear" value="<%= checkWindowData.liveCheckEndYear %>">
+                <span class="disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDate.format('D MMMM YYYY') %></span>
+                <% } %>
             </div>
+            <% if (!checkWindowData.pastCheckWindow) { %>
             <div class="form-buttons">
+                <input type="hidden" name="checkWindowUrlSlug" value="<%= checkWindowData.checkWindowUrlSlug %>">
                 <input class="button" type="submit" value="Save">
                 <a href="/check-window/manage-check-windows" class="button button-secondary">Cancel</a>
             </div>
+            <% } %>
         </form>
     </div>
 </div>
