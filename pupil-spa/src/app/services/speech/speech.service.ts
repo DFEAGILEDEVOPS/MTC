@@ -152,7 +152,7 @@ export class SpeechService implements OnDestroy {
    */
   speakElement(nativeElement): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
-    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span';
+    const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, button, a, span, fieldset';
 
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
