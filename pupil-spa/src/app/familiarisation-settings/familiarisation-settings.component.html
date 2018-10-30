@@ -25,7 +25,7 @@
           </p>
         </ul>
       </div>
-      <form *ngIf="config.inputAssistance" [formGroup]="familiarisationSettingsForm"
+      <form *ngIf="config.inputAssistance && !config.practice" [formGroup]="familiarisationSettingsForm"
             (ngSubmit)="onSubmit(inputAssistantFirstName.value, inputAssistantLastName.value)">
           <header class="page-header">
             <h1 class="heading-xlarge" tabindex="0">Your settings</h1>
@@ -74,7 +74,7 @@
             </p>
           </div>
       </form>
-      <div *ngIf="!config.inputAssistance">
+      <div *ngIf="!config.inputAssistance || (config.practice && config.inputAssistance)">
         <header class="page-header">
           <h1 class="heading-xlarge" tabindex="0">Your settings</h1>
         </header>
@@ -84,6 +84,7 @@
         <ol class="list list-number">
           <li *ngIf="config.colourContrast">Colour contrast</li>
           <li *ngIf="config.fontSize">Font size <a routerLink="/font-choice">Edit</a></li>
+          <li *ngIf="config.inputAssistance">Input assistant</li>
           <li *ngIf="config.numpadRemoval">Remove number pad</li>
           <li *ngIf="config.audibleSounds">Time alert</li>
         </ol>
