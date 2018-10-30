@@ -55,7 +55,7 @@ end
 
 Then (/^modal is displayed as per the design$/) do
   expect(manage_check_window_page.modal).to have_heading
-  expect(manage_check_window_page.modal.heading.text).to eql 'Please confirm'
+  expect(manage_check_window_page.modal.heading.text).to eql 'Remove check window'
 
   expect(manage_check_window_page.modal).to have_content
   expect(manage_check_window_page.modal.content.text).to eql 'Are you sure you want to remove this?'
@@ -88,7 +88,7 @@ end
 
 Then(/^the manage check window hub page should match design$/) do
   expect(manage_check_window_page).to have_heading
-  expect(manage_check_window_page).to have_updated_page_instructions
+  expect(manage_check_window_page).to have_page_instructions
   expect(manage_check_window_page).to have_panel
   expect(manage_check_window_page).to have_create_new_window
 end
