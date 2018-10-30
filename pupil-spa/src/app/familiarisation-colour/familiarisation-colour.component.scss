@@ -102,40 +102,62 @@ span.contrast-bow,  span.contrast-bob, span.contrast-bop {
 }
 
 .multiple-choice {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 p {
   margin: 30px 0;
 }
 
-label span {
-  padding: 10px 20px;
-  margin-left: 10px;
+label > span {
+  padding: 10px 0;
   border: none;
+  display: inline-block;
+  text-align: center;
+  width: 150px;
+  margin-top: -10px;
+}
+
+span.xxlarge {
+  width: 280px !important;
+}
+
+span.xlarge {
+  width: 220px !important;
+}
+
+span.large {
+  width: 180px !important;
+}
+
+span.small {
+  width: 120px !important;
+}
+
+span.xsmall {
+  width: 100px !important;
 }
 
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 0 0 20% 0;
-  width: 100%;
+  padding: 60px;
   position: relative;
+  margin: 10px 0 0 40px;
 
   > .badge {
     position: absolute;
     top: 0;
     left: 0;
     display: inline-block;
-    font-weight: bold;
+    text-transform: uppercase;
     padding: 8px 15px;
     width: auto;
   }
 
   > .question-text {
-    margin-top: 20%;
+    margin-top: 10%;
     text-align: center;
-    font-size: inherit;
   }
 
   table {
@@ -143,10 +165,37 @@ label span {
     margin: auto;
   }
 
-  > table .button {
+  > table .numpad-button {
     border: none;
     padding: 0;
-    width: 70px;
-    height: 50px;
+    width: 100px;
+    height: 70px;
+    font-size: 36px;
+
+    &.xxlarge {
+      width: 140px;
+      height: 70px;
+      font-size: 56px;
+    }
+    &.xlarge {
+      width: 125px;
+      height: 70px;
+      font-size: 42px;
+    }
+    &.large {
+      width: 100px;
+      height: 70px;
+      font-size: 48px;
+    }
+    &.small {
+      width: 70px;
+      height: 50px;
+      font-size: 21px;
+    }
+    &.xsmall {
+      width: 60px;
+      height: 44px;
+      font-size: 19px;
+    }
   }
 }

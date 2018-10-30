@@ -7,7 +7,7 @@
           <h1 class="heading-xlarge" tabindex="0">Choose colour of page</h1>
         </header>
         <div class="grid-row">
-          <div class="column-one-half">
+          <div class="column-one-third">
             <fieldset>
               <div class="multiple-choice" *ngFor="let contrastSetting of contrastSettings">
                 <input type="radio"
@@ -16,19 +16,19 @@
                         name="colour-contrast"
                         [checked]="selectedContrast == contrastSetting.val"
                         (change)="selectionChange(contrastSetting.val)">
-                <label for="contrast-{{contrastSetting.val}}"><span class="contrast-{{contrastSetting.val}}">{{contrastSetting.label}}</span></label>
+                <label for="contrast-{{contrastSetting.val}}"><span class="contrast-{{contrastSetting.val}} aa-copy-size {{accessArrangements.fontSize}}">{{contrastSetting.label}}</span></label>
               </div>
             </fieldset>
           </div>
-          <div class="column-one-half">
+          <div class="column-two-thirds">
             <div *ngIf="selectedContrast" class="preview-box contrast-{{selectedContrast}}">
               <div class="badge"><span>Colour preview</span></div>
-              <div class="question-text"><span>123</span></div>
+              <div class="question-text question-and-answer "><span>123</span></div>
               <table>
                 <tr>
-                  <td><button class="button" type="button">1</button></td>
-                  <td><button class="button" type="button">2</button></td>
-                  <td><button class="button" type="button">3</button></td>
+                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">1</button></td>
+                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">2</button></td>
+                  <td><button class="numpad-button {{accessArrangements.fontSize}}" type="button">3</button></td>
                 </tr>
               </table>
             </div>
