@@ -21,6 +21,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
   public errorSatisfactionRating: boolean;
   public errorCommentExists: boolean;
   public enableSubmit: boolean;
+  public speechListenerEvent: any;
 
   private pupilData: object;
   private feedbackExists: boolean;
@@ -69,9 +70,12 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.speakElement(this.elRef.nativeElement).then(() => {
-        this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#confirm-identity-button'));
-      });
+      this.speechService.speakElement(this.elRef.nativeElement);
+
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
+        (event) => { this.speechService.focusEventListenerHook(event); },
+        true
+      );
     }
   }
 
@@ -79,6 +83,8 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
+
+      this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 

@@ -197,7 +197,16 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    */
   speakFocusedElement(nativeElement): void {
-    const speechText = this.addTextBeforeSpeakingElement(nativeElement) + nativeElement.textContent;
+    const { id, nodeName, parentNode } = nativeElement;
+
+    let toSpeak = nativeElement;
+
+    if (nodeName === 'INPUT' && id && parentNode) {
+      // if there is a label for this input element
+      toSpeak = parentNode.querySelector(`label[for="${id}"]`) || toSpeak;
+    }
+
+    const speechText = this.addTextBeforeSpeakingElement(toSpeak) + toSpeak.textContent;
 
     this.speak(speechText);
   }
