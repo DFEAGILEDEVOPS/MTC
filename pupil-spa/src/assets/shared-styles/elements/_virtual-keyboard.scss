@@ -1,5 +1,8 @@
-@mixin customsize($button-width, $button-height, $button-number-size, $button-text-size) {
-  border-spacing: 10px;
+@mixin customsize($button-width, $button-height, $button-number-size, $button-text-size, $answer-height) {
+
+  table {
+    border-spacing: 10px;
+  }
 
   td {
     padding: 0;
@@ -22,44 +25,45 @@
   .numpad-button {
     @include button($grey-1);
     @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
-    line-height: $button-number-size !important;
 
+    line-height: $button-number-size !important;
     padding: 0.1em 0 0 0;
   }
 
   .numpad-enter-button {
     @include button($grey-1);
     @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
-    line-height: $button-text-size !important;
 
+    line-height: $button-text-size !important;
     padding: 0.1em 0 0 0;
+  }
+
+  .answer, .question {
+    height: $answer-height !important;
+    line-height: $answer-height !important;
   }
 }
 
-.numpad-xsmall {
-  @include customsize(60px, 44px, 19px, 14px);
+.question-container.xsmall {
+  @include customsize(60px, 44px, 19px, 14px, 50px);
 }
 
-.numpad-small {
-  @include customsize(70px, 50px, 28px, 21px);
+.question-container.small {
+  @include customsize(70px, 50px, 28px, 21px, 70px);
 }
 
-.numpad-regular {
-  //@include customsize(70px, 50px, 36px, 27px);
+.question-container.regular, .question-container.default {
+  @include customsize(100px, 70px, 36px, 28px, 100px);
 }
 
-.numpad-large {
-  @include customsize(100px, 70px, 48px, 35px);
+.question-container.large {
+  @include customsize(100px, 70px, 48px, 35px, 100px);
 }
 
-.numpad-xlarge {
-  @include customsize(125px, 70px, 56px, 42px);
+.question-container.xlarge {
+  @include customsize(125px, 70px, 56px, 42px, 120px);
 }
 
-.numpad-xxlarge {
-  @include customsize(150px, 70px, 72px, 56px);
-}
-
-.numpad-default {
-  //@include customsize(100px, 65px, 36px, 27px);
+.question-container.xxlarge {
+  @include customsize(150px, 70px, 72px, 56px, 150px);
 }

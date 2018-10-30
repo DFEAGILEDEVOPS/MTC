@@ -13,7 +13,7 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 
 .question-container {
   margin: 0 15px;
-  max-width: 960px;
+  max-width: 1020px;
   vertical-align: top;
 
   @media (min-width: 641px) {
@@ -53,20 +53,16 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
 }
 
 .question {
-  // mobile view
   display: block;
-  line-height: 1.15 !important;
+  vertical-align: top;
   margin: 0 auto; // center it in the page
   text-align: right;
-  vertical-align: top;
-  width: 223px;  // mobile
+  max-width: 490px;
 
   // For tablets we want the question and answer to be on the same line
   @include media(tablet) {
     margin: 0;
-    width: 3.7em;
     display: inline-block;
-    line-height: 1.425em !important;
   }
 
   @include media(desktop) {
@@ -88,11 +84,11 @@ $small-screen-breakpoint: 485px; // screens below this threshold get a fallback 
   border: 2px solid $black;
   box-shadow: 0 0 0 3px $focus-colour;
   display: block;
-  height: pem(80px, 64);
   margin: 0 10px;
   text-align: right;
   max-width: 100%;
   line-height: 1.35em;
+  height: 100px;
 
   // Tablet : question and answer on one line
   @include media(tablet) {

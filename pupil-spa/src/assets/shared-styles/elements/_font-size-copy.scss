@@ -17,7 +17,7 @@
     font-size: $header-size !important;
   }
 
-  .familiarisation-title, .loading-text {
+  .familiarisation-title, .loading-text, .remaining-time-warmup, .remaining-time {
     font-size: $copy-size !important;
   }
 
@@ -37,13 +37,12 @@
     font-size: $question-text-size !important;
   }
 
-  .badge {
+  .badge, .practice-box {
     font-size: $copy-size;
   }
 
   .question {
     font-size: $question-text-size !important;
-    max-width: 444px;
   }
 
   .answer {
