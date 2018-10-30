@@ -18,14 +18,19 @@
   }
 
   .familiarisation-title, .loading-text {
-    font-size: $lead-size !important;
+    font-size: $copy-size !important;
   }
 
-  .button:not(.numpad-button) {
+  .button:not(.numpad-button):not(.button-start) {
     font-size: $button-text-size !important;
     width: $button-width !important;
     height: $button-height !important;
     line-height: 0.5em;
+  }
+
+  .button-start {
+    font-size: $button-text-size !important;
+    line-height: 1.5em;
   }
 
   .question-and-answer {
