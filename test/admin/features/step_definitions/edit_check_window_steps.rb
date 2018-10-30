@@ -169,7 +169,7 @@ end
 Then(/^I should see it updated in the list of check windows$/) do
   @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
   expect(@check_window.status.text).to eql 'Inactive'
-  expect(@check_window).to have_remove_window
+  expect(@check_window).to have_remove
   expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been edited'
 end
 
@@ -182,7 +182,7 @@ end
 Then(/^I should see no changes made in the list of windows$/) do
   @check_window = manage_check_window_page.find_check_row(@old_check_window_name)
   expect(@check_window.status.text).to eql 'Inactive'
-  expect(@check_window).to have_remove_window
+  expect(@check_window).to have_remove
 end
 
 And(/^stored as it was in the db$/) do

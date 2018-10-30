@@ -21,8 +21,8 @@ class ManageCheckWindowPage < SitePrism::Page
       element :admin_start_date, 'td:nth-of-type(2)'
       element :status, 'td:nth-of-type(2)'
       element :check_period, 'td:nth-of-type(3)'
-      element :remove_window, 'td #js-modal-link', text: 'Remove'
-      element :remove, 'td:nth-of-type(4)', text: 'Remove'
+      element :remove, 'td #js-modal-link', text: 'Remove'
+      # element :remove, 'td:nth-of-type(4)', text: 'Remove'
     end
     sections :expired_rows, 'tbody tr.font-greyed-out' do
       element :check_name, 'td:nth-of-type(1)'

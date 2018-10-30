@@ -1,8 +1,8 @@
 Given(/^I have created a check window$/) do
   step "I am on the create a check window page"
-  step "I submit details for a valid check window"
-  step "I should see it added to the list of windows"
-  step "stored correctly in the database"
+  step "I submit details of a valid check window"
+  step "I should see it added to the list of check windows"
+  step "stored correctly in the db"
 end
 
 
@@ -724,7 +724,7 @@ end
 Then(/^I should see it added to the list of check windows$/) do
   @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
   expect(@check_window.status.text).to eql 'Inactive'
-  expect(@check_window).to have_remove_window
+  expect(@check_window).to have_remove
   expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been created'
 end
 
@@ -750,14 +750,14 @@ Given(/^I previously created a check window$/) do
 end
 
 When(/^I decide to remove it$/) do
-  @check_window.remove_window.click
+  @check_window.remove.click
   manage_check_window_page.modal.confirm.click
 end
 
 Then(/^it should be removed from the list of windows$/) do
   expect(manage_check_window_page.windows_table.rows.
       find {|chk| chk.text.include? @check_window_hash[:check_name]}).to be_nil
-  expect(manage_check_window_page.flash_message.text).to eql 'Check window deleted.'
+  expect(manage_check_window_page.flash_message.text).to eql @check_window_hash[:check_name] + ' has been successfully removed.'
 end
 
 But(/^then change my mind$/) do
@@ -765,11 +765,11 @@ But(/^then change my mind$/) do
 end
 
 When(/^I consider removing it$/) do
-  @check_window.remove_window.click
+  @check_window.remove.click
 end
 
 Then(/^it should be still in the list of windows$/) do
   @check_window = manage_check_window_page.find_check_row(@check_window_hash[:check_name])
   expect(@check_window.status.text).to eql 'Inactive'
-  expect(@check_window).to have_remove_window
+  expect(@check_window).to have_remove
 end
