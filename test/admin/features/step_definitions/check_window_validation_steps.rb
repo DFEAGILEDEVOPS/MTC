@@ -40,7 +40,8 @@ But(/^decide I against creating it$/) do
 end
 
 Then(/^I should not see the window in the list$/) do
-  expect(manage_check_window_page).to have_no_windows_table
+
+  expect(manage_check_window_page.windows_table.rows.find {|chk| chk.text.include? @check_window_hash[:check_name]}).to be_nil
 end
 
 When(/^I try to submit a check name that is less than (\d+) character long$/) do |arg|
