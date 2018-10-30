@@ -58,7 +58,6 @@ describe('config service', () => {
       spyOn(settingDataService, 'sqlFindOne')
       spyOn(groupDataService, 'sqlFindOneGroupByPupilId')
     })
-
     it('it sets audible sounds to true if ATA is flagged for the pupil', async () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
         accessArrangementsDataService.CODES.AUDIBLE_SOUNDS
@@ -136,6 +135,28 @@ describe('config service', () => {
       expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).not.toHaveBeenCalled()
       expect(config.audibleSounds).toBe(false)
       expect(config.numpadRemoval).toBe(false)
+    })
+    it('it sets pupil font size selection in the config based on the received value from the database', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.FONT_SIZE
+      ])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1, pupilFontSizeCode: 'LRG' }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.fontSizeCode).toBe('LRG')
+    })
+    it('it sets colour contrast selection in the config based on the received value from the database', async () => {
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsCodesWithIds').and.returnValue([
+        accessArrangementsDataService.CODES.COLOUR_CONTRAST
+      ])
+      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([
+        { accessArrangements_id: 1, pupilColourContrastCode: 'BOW' }
+      ])
+      const config = await configService.getConfig(pupilMock)
+      expect(accessArrangementsDataService.sqlFindAccessArrangementsCodesWithIds).toHaveBeenCalled()
+      expect(config.colourContrastCode).toBe('BOW')
     })
   })
 
