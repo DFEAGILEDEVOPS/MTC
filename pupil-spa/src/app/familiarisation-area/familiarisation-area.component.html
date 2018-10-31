@@ -4,15 +4,13 @@
     <div class="grid-row">
       <div class="column-full">
         <header class="page-header">
-            <h1 class="heading-xlarge" tabindex="0">Welcome, {{pupil.firstName}} {{pupil.lastName}}</h1>
+          <h1 class="aa-title-size" tabindex="0">Welcome, {{pupil.firstName}} {{pupil.lastName}}</h1>
         </header>
-        <p>
-          <strong class="bold-small">
-            Choose size of words and numbers
-          </strong>
+        <p class="aa-lead-size">
+          Choose size of words and numbers
         </p>
         <div class="grid-row">
-          <div class="column-one-half">
+          <div class="column-one-third">
             <fieldset>
               <div class="multiple-choice" *ngFor="let selectedFont of fontSettings">
                 <input type="radio"
@@ -21,19 +19,19 @@
                       name="font-size"
                       [checked]="selectedSize == selectedFont.val"
                       (change)="selectionChange(selectedFont.val)">
-                <label class="font-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
+                <label class="aa-copy-size-{{selectedFont.val}}" for="font-{{selectedFont.val}}">{{selectedFont.label}}</label>
               </div>
             </fieldset>
           </div>
-          <div class="column-one-half">
+          <div class="column-two-thirds">
             <div *ngIf="selectedSize && validSelection" class="preview-box {{selectedSize}}">
               <div class="badge">Size preview</div>
-              <div class="question-text">123</div>
+              <div class="question-text aa-question-size-{{selectedSize}}">123</div>
               <table>
                   <tr>
-                      <td><button type="button">1</button></td>
-                      <td><button type="button">2</button></td>
-                      <td><button type="button">3</button></td>
+                      <td><button type="button aa-button-size-{{selectedSize}}">1</button></td>
+                      <td><button type="button aa-question-size-{{selectedSize}}">2</button></td>
+                      <td><button type="button aa-question-size-{{selectedSize}}">3</button></td>
                   </tr>
               </table>
             </div>
@@ -41,18 +39,18 @@
                 <i class="icon icon-important">
                     <span class="visually-hidden">Warning</span>
                 </i>
-                <strong class="bold-large">
+                <p>
                   This size won't work on your screen. Please choose another size or use a device with a larger screen.
-                </strong>
+                </p>
             </div>
           </div>
         </div>
         <div class="sign-out-link">
-            <p class="lede">
+            <p class="lede aa-link-size">
               <a routerLink="/sign-out" >This is not me, sign out</a>
             </p>
           </div>
-          <button [disabled]="!validSelection" class="button" (click)="onClick()">Next</button>
+          <button [disabled]="!validSelection" class="button aa-button-size" (click)="onClick()">Next</button>
         </div>
     </div>
   </main>
