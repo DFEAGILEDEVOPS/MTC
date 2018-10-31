@@ -1,5 +1,5 @@
 <div class="question-header">
-    <div *ngIf="isWarmUpQuestion" class="practice-box">practice</div>
+    <div *ngIf="isWarmUpQuestion" class="practice-box aa-copy-size-{{accessArrangements.fontSize}}">practice</div>
     <div class="remaining-time" id="js-page-time-settings">
         Time left: <span id="js-page-timer" class="bold timer">{{remainingTime}}</span>
     </div>
@@ -7,8 +7,8 @@
 </div>
 <div class="question-container {{accessArrangements.fontSize}}">
     <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div class="question-and-answer"><span class="question"><span *ngIf="shouldShowQuestion">{{ factor1 }}&times;{{ factor2 }}=</span></span>
-            <div class="answer-container"><span class="answer" id="js-answer" [innerText]="answer"></span>
+        <div class="question-and-answer"><span class="question aa-question-size-{{accessArrangements.fontSize}}"><span *ngIf="shouldShowQuestion">{{ factor1 }}&times;{{ factor2 }}=</span></span>
+            <div class="answer-container"><span class="answer aa-question-size-{{accessArrangements.fontSize}}" id="js-answer" [innerText]="answer"></span>
                 <div class="numpad-container" *ngIf="!config.numpadRemoval">
                     <table class="numpad" id="js-numpad">
                         <tr>
