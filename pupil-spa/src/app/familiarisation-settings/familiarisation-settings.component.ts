@@ -30,10 +30,6 @@ export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestro
     this.config = questionService.getConfig();
   }
 
-  get inputAssistantFirstName() { return this.familiarisationSettingsForm.get('inputAssistantFirstName'); }
-  get inputAssistantLastName() { return this.familiarisationSettingsForm.get('inputAssistantLastName'); }
-
-
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
     if (this.questionService.getConfig().questionReader) {

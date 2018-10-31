@@ -15,6 +15,7 @@ import { AppUsageService } from '../services/app-usage/app-usage.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { Config } from '../config.model';
 
 describe('LoginSuccessComponent', () => {
   let component: LoginSuccessComponent;
@@ -68,7 +69,7 @@ describe('LoginSuccessComponent', () => {
   });
 
   beforeEach(() => {
-    spyOn(questionService, 'getConfig').and.returnValue({ fontSize: true } );
+    spyOn(questionService, 'getConfig').and.returnValue(new Config());
     fixture = TestBed.createComponent(LoginSuccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -126,7 +127,7 @@ describe('LoginSuccessComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['access-settings']);
       });
     });
-    
+
     it('should redirect to the AA settings page when inputAssistance is enabled', async () => {
       spyOnProperty(component.config, 'inputAssistance').and.returnValue(true);
       component.onClick();

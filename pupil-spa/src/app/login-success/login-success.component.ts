@@ -21,7 +21,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   school: School;
   config: Config;
   speechListenerEvent: any;
-  isAAUser = false;
 
   constructor(private router: Router,
               private storageService: StorageService,
@@ -59,10 +58,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.storageService.setItem('pupil', { checkCode });
 
     this.config = this.questionService.getConfig();
-    this.isAAUser = this.config.fontSize
-      || this.config.colourContrast
-      || this.config.audibleSounds
-      || this.config.numpadRemoval;
   }
 
   async ngOnInit() {
@@ -85,9 +80,11 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    const config = this.questionService.getConfig();
-    const hasAccessSettings = config.audibleSounds || config.numpadRemoval || config.inputAssistance || config.questionReader;
-    if (config.fontSize) {
+    const hasAccessSettings = this.config.audibleSounds ||
+                              this.config.numpadRemoval ||
+                              this.config.inputAssistance ||
+                              this.config.questionReader;
+    if (this.config.fontSize) {
       this.router.navigate(['font-choice']);
     } else if (hasAccessSettings) {
       this.router.navigate(['access-settings']);
