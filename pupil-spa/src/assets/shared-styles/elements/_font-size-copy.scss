@@ -1,7 +1,7 @@
 $aa-copy-size-xxlarge: 38px;
 $aa-copy-size-xlarge: 28px;
 $aa-copy-size-large: 24px;
-$aa-copy-size-regular: 19px; // Should match application default 
+$aa-copy-size-regular: 19px; // Should match application default
 $aa-copy-size-small: 14px;
 $aa-copy-size-xsmall: 12px;
 
@@ -47,25 +47,25 @@ $aa-button-height-regular: 40px;// Should match application default
 $aa-button-height-small: 40px;
 $aa-button-height-xsmall: 40px;
 
-@mixin copy-size($question-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
+@mixin copy-size($size, $question-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
 
-  .aa-copy-size {
+  .aa-copy-size-#{$size} {
     font-size: $copy-size !important;
   }
 
-  .aa-lead-size {
+  .aa-lead-size-#{$size} {
     font-size: $lead-size !important;
   }
 
-  .aa-link-size {
+  .aa-link-size-#{$size} {
     font-size: $link-size !important;
   }
 
-  .aa-question-size {
+  .aa-question-size-#{$size} {
     font-size: $question-size !important;
   }
 
-  .aa-button-size {
+  .aa-button-size-#{$size} {
     font-size: $button-text-size !important;
     width: $button-width !important;
     height: $button-height !important;
@@ -73,74 +73,63 @@ $aa-button-height-xsmall: 40px;
   }
 }
 
-.copy-size-xsmall {
-  @include copy-size(
-    $aa-question-size-xsmall,
-    $aa-lead-size-xsmall,
-    $aa-copy-size-xsmall,
-    $aa-link-size-xsmall,
-    $aa-button-size-xsmall,
-    $aa-button-width-xsmall,
-    $aa-button-height-xsmall
-  );
-}
-
-.copy-size-small {
-  @include copy-size(
-    $aa-question-size-small,
-    $aa-lead-size-small,
-    $aa-copy-size-small,
-    $aa-link-size-small,
-    $aa-button-size-small,
-    $aa-button-width-small,
-    $aa-button-height-small
-  );
-}
-
-.copy-size-regular {
-  @include copy-size(
-    $aa-question-size-regular,
-    $aa-lead-size-regular,
-    $aa-copy-size-regular,
-    $aa-link-size-regular,
-    $aa-button-size-regular,
-    $aa-button-width-regular,
-    $aa-button-height-regular
-  );
-}
-
-.copy-size-large {
-  @include copy-size(
-    $aa-question-size-large,
-    $aa-lead-size-large,
-    $aa-copy-size-large,
-    $aa-link-size-large,
-    $aa-button-size-large,
-    $aa-button-width-large,
-    $aa-button-height-large
-  );
-}
-
-.copy-size-xlarge {
-  @include copy-size(
-    $aa-question-size-xlarge,
-    $aa-lead-size-xlarge,
-    $aa-copy-size-xlarge,
-    $aa-link-size-xlarge,
-    $aa-button-size-xlarge,
-    $aa-button-width-xlarge,
-    $aa-button-height-xlarge
-  );
-}
-
-.copy-size-xxlarge {
-  @include copy-size(
-    $aa-question-size-xxlarge,
-    $aa-lead-size-xxlarge,
-    $aa-copy-size-xxlarge,
-    $aa-link-size-xxlarge,
-    $aa-button-size-xxlarge,
-    $aa-button-width-xxlarge,
-    $aa-button-height-xxlarge
-  );
-}
+@include copy-size(
+  "xsmall",
+  $aa-question-size-xsmall,
+  $aa-lead-size-xsmall,
+  $aa-copy-size-xsmall,
+  $aa-link-size-xsmall,
+  $aa-button-size-xsmall,
+  $aa-button-width-xsmall,
+  $aa-button-height-xsmall
+);
+@include copy-size(
+  "small",
+  $aa-question-size-small,
+  $aa-lead-size-small,
+  $aa-copy-size-small,
+  $aa-link-size-small,
+  $aa-button-size-small,
+  $aa-button-width-small,
+  $aa-button-height-small
+);
+@include copy-size(
+  "regular",
+  $aa-question-size-regular,
+  $aa-lead-size-regular,
+  $aa-copy-size-regular,
+  $aa-link-size-regular,
+  $aa-button-size-regular,
+  $aa-button-width-regular,
+  $aa-button-height-regular
+);
+@include copy-size(
+  "large",
+  $aa-question-size-large,
+  $aa-lead-size-large,
+  $aa-copy-size-large,
+  $aa-link-size-large,
+  $aa-button-size-large,
+  $aa-button-width-large,
+  $aa-button-height-large
+);
+@include copy-size(
+  "xlarge",
+  $aa-question-size-xlarge,
+  $aa-lead-size-xlarge,
+  $aa-copy-size-xlarge,
+  $aa-link-size-xlarge,
+  $aa-button-size-xlarge,
+  $aa-button-width-xlarge,
+  $aa-button-height-xlarge
+);
+@include copy-size(
+  "xxlarge",
+  $aa-question-size-xxlarge,
+  $aa-lead-size-xxlarge,
+  $aa-copy-size-xxlarge,
+  $aa-link-size-xxlarge,
+  $aa-button-size-xxlarge,
+  $aa-button-width-xxlarge,
+  $aa-button-height-xxlarge
+);
