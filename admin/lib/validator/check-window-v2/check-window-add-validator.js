@@ -15,12 +15,28 @@ const checkWindowAddValidator = {}
 /**
  * Validates check window insertion data
  * @param {Object} checkWindowData
+ * @param {Object} validationConfig set of rules for validation
  * @returns {Object}
  */
-checkWindowAddValidator.validate = (checkWindowData) => {
+checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) => {
   const validationError = new ValidationError()
   const checkWindowName = R.path(['checkWindowName'], checkWindowData)
   checkWindowNameValidator.validate(validationError, checkWindowName)
+  let adminStartDateDisabled = false
+  let adminEndDateDisabled = false
+  let familiarisationCheckStartDateDisabled = false
+  let familiarisationCheckEndDateDisabled = false
+  let liveCheckStartDateDisabled = false
+  let liveCheckEndDateDisabled = false
+
+  if (validationConfig) {
+    adminStartDateDisabled = validationConfig.adminStartDateDisabled
+    adminEndDateDisabled = validationConfig.adminEndDateDisabled
+    familiarisationCheckStartDateDisabled = validationConfig.familiarisationCheckStartDateDisabled
+    familiarisationCheckEndDateDisabled = validationConfig.familiarisationCheckEndDateDisabled
+    liveCheckStartDateDisabled = validationConfig.liveCheckStartDateDisabled
+    liveCheckEndDateDisabled = validationConfig.liveCheckEndDateDisabled
+  }
 
   const {
     adminStartDay,
@@ -58,7 +74,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.adminStartMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.adminStartYearInvalidChars)
     .dateInThePast('adminStartDateInThePast')
-  dateValidator.validate(validationError, adminStartDateData)
+  if (!adminStartDateDisabled) {
+    dateValidator.validate(validationError, adminStartDateData)
+  }
 
   const adminEndDateData = new DateValidationData()
   adminEndDateData
@@ -75,7 +93,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.adminEndMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.adminEndYearInvalidChars)
     .dateInThePast('adminEndDateInThePast')
-  dateValidator.validate(validationError, adminEndDateData)
+  if (!adminEndDateDisabled) {
+    dateValidator.validate(validationError, adminEndDateData)
+  }
 
   const familiarisationCheckStartDateData = new DateValidationData()
   familiarisationCheckStartDateData
@@ -92,8 +112,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.familiarisationCheckStartMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.familiarisationCheckStartYearInvalidChars)
     .dateInThePast('familiarisationCheckStartDateInThePast')
-  dateValidator.validate(validationError, familiarisationCheckStartDateData)
-
+  if (!familiarisationCheckStartDateDisabled) {
+    dateValidator.validate(validationError, familiarisationCheckStartDateData)
+  }
   const familiarisationCheckEndDateData = new DateValidationData()
   familiarisationCheckEndDateData
     .day(familiarisationCheckEndDay)
@@ -109,8 +130,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.familiarisationCheckEndMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.familiarisationCheckEndYearInvalidChars)
     .dateInThePast('familiarisationCheckEndDateInThePast')
-  dateValidator.validate(validationError, familiarisationCheckEndDateData)
-
+  if (!familiarisationCheckEndDateDisabled) {
+    dateValidator.validate(validationError, familiarisationCheckEndDateData)
+  }
   const liveCheckStartDateData = new DateValidationData()
   liveCheckStartDateData
     .day(liveCheckStartDay)
@@ -126,8 +148,9 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.liveCheckStartMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.liveCheckStartYearInvalidChars)
     .dateInThePast('liveCheckStartDateInThePast')
-  dateValidator.validate(validationError, liveCheckStartDateData)
-
+  if (!liveCheckStartDateDisabled) {
+    dateValidator.validate(validationError, liveCheckStartDateData)
+  }
   const liveCheckEndDateData = new DateValidationData()
   liveCheckEndDateData
     .day(liveCheckEndDay)
@@ -143,20 +166,40 @@ checkWindowAddValidator.validate = (checkWindowData) => {
     .monthInvalidChars(checkWindowErrorMessages.liveCheckEndMonthInvalidChars)
     .yearInvalidChars(checkWindowErrorMessages.liveCheckEndYearInvalidChars)
     .dateInThePast('liveCheckEndDateInThePast')
-  dateValidator.validate(validationError, liveCheckEndDateData)
+  if (!liveCheckEndDateDisabled) {
+    dateValidator.validate(validationError, liveCheckEndDateData)
+  }
+  let adminStartDate
+  let adminEndDate
+  let familiarisationCheckStartDate
+  let familiarisationCheckEndDate
+  let liveCheckStartDate
+  let liveCheckEndDate
 
-  const adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
-    checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
-  const adminEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminEndDay'],
-    checkWindowData['adminEndMonth'], checkWindowData['adminEndYear'])
-  const familiarisationCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckStartDay'],
-    checkWindowData['familiarisationCheckStartMonth'], checkWindowData['familiarisationCheckStartYear'])
-  const familiarisationCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckEndDay'],
-    checkWindowData['familiarisationCheckEndMonth'], checkWindowData['familiarisationCheckEndYear'])
-  const liveCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckStartDay'],
-    checkWindowData['liveCheckStartMonth'], checkWindowData['liveCheckStartYear'])
-  const liveCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckEndDay'],
-    checkWindowData['liveCheckEndMonth'], checkWindowData['liveCheckEndYear'])
+  if (!adminStartDateDisabled) {
+    adminStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminStartDay'],
+      checkWindowData['adminStartMonth'], checkWindowData['adminStartYear'])
+  }
+  if (!adminEndDateDisabled) {
+    adminEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['adminEndDay'],
+      checkWindowData['adminEndMonth'], checkWindowData['adminEndYear'])
+  }
+  if (!familiarisationCheckStartDateDisabled) {
+    familiarisationCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckStartDay'],
+      checkWindowData['familiarisationCheckStartMonth'], checkWindowData['familiarisationCheckStartYear'])
+  }
+  if (!familiarisationCheckEndDateDisabled) {
+    familiarisationCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['familiarisationCheckEndDay'],
+      checkWindowData['familiarisationCheckEndMonth'], checkWindowData['familiarisationCheckEndYear'])
+  }
+  if (!liveCheckStartDateDisabled) {
+    liveCheckStartDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckStartDay'],
+      checkWindowData['liveCheckStartMonth'], checkWindowData['liveCheckStartYear'])
+  }
+  if (!liveCheckEndDateDisabled) {
+    liveCheckEndDate = dateService.createUTCFromDayMonthYear(checkWindowData['liveCheckEndDay'],
+      checkWindowData['liveCheckEndMonth'], checkWindowData['liveCheckEndYear'])
+  }
 
   // Compare date fields
   // Admin start date

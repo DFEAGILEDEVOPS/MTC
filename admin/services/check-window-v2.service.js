@@ -1,6 +1,7 @@
 'use strict'
 
 const moment = require('moment')
+const dateService = require('./date.service')
 const monitor = require('../helpers/monitor')
 const validate = require('uuid-validate')
 
@@ -51,6 +52,62 @@ checkWindowV2Service.markDeleted = async (urlSlug) => {
     throw new Error('Deleting an active check window is not permitted')
   }
   return checkWindowDataService.sqlDeleteCheckWindow(checkWindow.id)
+}
+
+/**
+ * Prepare validated data for submission
+ * @param {Object} requestData
+ * @param {Number} checkWindowId
+ * @returns {Object} Formatted check window data
+ */
+checkWindowV2Service.prepareSubmissionData = (requestData, checkWindowId = null) => {
+  const checkWindowData = {}
+  if (checkWindowId) {
+    checkWindowData.id = checkWindowId
+  }
+  checkWindowData.name = requestData.checkWindowName
+  checkWindowData.adminStartDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['adminStartDay'],
+      requestData['adminStartMonth'],
+      requestData['adminStartYear']
+    )
+  checkWindowData.adminEndDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['adminEndDay'],
+      requestData['adminEndMonth'],
+      requestData['adminEndYear']
+    )
+  checkWindowData.familiarisationCheckStartDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['familiarisationCheckStartDay'],
+      requestData['familiarisationCheckStartMonth'],
+      requestData['familiarisationCheckStartYear']
+    )
+  checkWindowData.familiarisationCheckEndDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['familiarisationCheckEndDay'],
+      requestData['familiarisationCheckEndMonth'],
+      requestData['familiarisationCheckEndYear']
+    )
+  checkWindowData.checkStartDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['liveCheckStartDay'],
+      requestData['liveCheckStartMonth'],
+      requestData['liveCheckStartYear']
+    )
+  checkWindowData.checkEndDate =
+    dateService.createUTCFromDayMonthYear(
+      requestData['liveCheckEndDay'],
+      requestData['liveCheckEndMonth'],
+      requestData['liveCheckEndYear']
+    )
+  // This will ensure the last day of the check window will be taken into account for checks
+  // To avoid overflow to the next day during BST the time is set at 1 hour 59mins and 59 seconds before the day change
+  const endofDayTime = { hour: 23, minute: 59, second: 59 }
+  checkWindowData.checkEndDate.set(endofDayTime)
+  checkWindowData.familiarisationCheckEndDate.set(endofDayTime)
+  return checkWindowData
 }
 
 module.exports = monitor('check-window-v2.service', checkWindowV2Service)
