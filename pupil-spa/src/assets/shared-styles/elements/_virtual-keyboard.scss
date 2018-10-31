@@ -2,16 +2,16 @@
 
 @mixin customsize($size, $button-width, $button-height, $button-number-size, $button-text-size, $answer-height) {
 
-  .question-container.#{size} {
+  .question-container.#{$size} {
     table {
       border-spacing: 10px;
     }
-  
+
     td {
       padding: 0;
       margin: 0;
     }
-  
+
     td > button {
       background-color: $grey-1;
       color: $white;
@@ -31,7 +31,7 @@
     }
   }
 
-  .numpad-button-#{$size}, .question-container.#{size} .numpad-button {
+  .numpad-button-#{$size}, .question-container.#{$size} .numpad-button {
     @include button($grey-1);
     @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
 
@@ -41,7 +41,7 @@
     height: $button-height !important;
   }
 
-  .numpad-enter-button-#{$size}, .question-container.#{size} .numpad-enter-button {
+  .numpad-enter-button-#{$size}, .question-container.#{$size} .numpad-enter-button {
     @include button($grey-1);
     @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
 
