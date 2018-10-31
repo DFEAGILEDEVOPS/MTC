@@ -24,14 +24,14 @@
             </fieldset>
           </div>
           <div class="column-two-thirds">
-            <div *ngIf="selectedSize && validSelection" class="preview-box {{selectedSize}}">
+            <div *ngIf="selectedSize && validSelection" class="preview-box">
               <div class="badge">Size preview</div>
               <div class="question-text aa-question-size-{{selectedSize}}">123</div>
               <table>
                   <tr>
-                      <td><button type="button aa-button-size-{{selectedSize}}">1</button></td>
-                      <td><button type="button aa-question-size-{{selectedSize}}">2</button></td>
-                      <td><button type="button aa-question-size-{{selectedSize}}">3</button></td>
+                      <td><button class="numpad-button-{{selectedSize}}" type="button">1</button></td>
+                      <td><button class="numpad-button-{{selectedSize}}" type="button">2</button></td>
+                      <td><button class="numpad-button-{{selectedSize}}" type="button">3</button></td>
                   </tr>
               </table>
             </div>

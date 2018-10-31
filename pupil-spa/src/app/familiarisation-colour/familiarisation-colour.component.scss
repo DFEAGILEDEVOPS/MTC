@@ -1,3 +1,5 @@
+@import "../../shared-styles/elements/aa-variables.scss";
+
 .contrast-bow {
   background-color: #fff;
   color: #000 !important;
@@ -186,34 +188,5 @@ span.xsmall {
   > table .numpad-button {
     border: none;
     padding: 0;
-    width: 100px;
-    height: 70px;
-    font-size: 36px;
-  }
-
-  &.xxlarge table .numpad-button {
-    width: 140px;
-    height: 70px;
-    font-size: 56px;
-  }
-  &.xlarge table .numpad-button {
-    width: 125px;
-    height: 70px;
-    font-size: 42px;
-  }
-  &.large table .numpad-button {
-    width: 100px;
-    height: 70px;
-    font-size: 48px;
-  }
-  &.small table .numpad-button {
-    width: 70px;
-    height: 50px;
-    font-size: 21px;
-  }
-  &.xsmall table .numpad-button {
-    width: 60px;
-    height: 44px;
-    font-size: 19px;
   }
 }
