@@ -190,6 +190,17 @@ checkStartService.prepareCheck2 = async function (
     newCheckIds
   )
 
+  if (isLiveCheck) {
+    const pupilStatusQueueName = queueNameService.getName(
+      queueNameService.NAMES.PUPIL_STATUS
+    )
+
+    // Request the pupil status be re-computed
+    for (let pupil of pupils) {
+      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: pupil.id })
+    }
+  }
+
   // Create and save JWT Tokens for all pupils
   const pupilUpdates = []
   for (let pupil of pupils) {
