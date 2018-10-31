@@ -1,81 +1,146 @@
-@mixin copy-size($question-text-size, $header-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
-  // $copy-size is also used for practive / time left 
+$aa-copy-size-xxlarge: 38px;
+$aa-copy-size-xlarge: 28px;
+$aa-copy-size-large: 24px;
+$aa-copy-size-regular: 19px; // Should match application default 
+$aa-copy-size-small: 14px;
+$aa-copy-size-xsmall: 12px;
 
-  p, li, .aa-copy-size {
+$aa-question-size-xxlarge: 160px;
+$aa-question-size-xlarge: 120px;
+$aa-question-size-large: 100px;
+$aa-question-size-regular: 80px; // Should match application default
+$aa-question-size-small: 60px;
+$aa-question-size-xsmall: 40px;
+
+$aa-lead-size-xxlarge: 48px;
+$aa-lead-size-xlarge: 36px;
+$aa-lead-size-large: 30px;
+$aa-lead-size-regular: 24px; // Should match application default
+$aa-lead-size-small: 18px;
+$aa-lead-size-xsmall: 14px;
+
+$aa-link-size-xxlarge: 32px;
+$aa-link-size-xlarge: 24px;
+$aa-link-size-large: 20px;
+$aa-link-size-regular: 19px;// Should match application default
+$aa-link-size-small: 14px;
+$aa-link-size-xsmall: 12px;
+
+$aa-button-size-xxlarge: 38px;
+$aa-button-size-xlarge: 28px;
+$aa-button-size-large: 24px;
+$aa-button-size-regular: 19px;// Should match application default
+$aa-button-size-small: 14px;
+$aa-button-size-xsmall: 12px;
+
+$aa-button-width-xxlarge: 180px;
+$aa-button-width-xlarge: 150px;
+$aa-button-width-large: 120px;
+$aa-button-width-regular: 70px;// Should match application default
+$aa-button-width-small: 70px;
+$aa-button-width-xsmall: 70px;
+
+$aa-button-height-xxlarge: 70px;
+$aa-button-height-xlarge: 60px;
+$aa-button-height-large: 50px;
+$aa-button-height-regular: 40px;// Should match application default
+$aa-button-height-small: 40px;
+$aa-button-height-xsmall: 40px;
+
+@mixin copy-size($question-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
+
+  .aa-copy-size {
     font-size: $copy-size !important;
   }
 
-  strong, .aa-lead-size {
+  .aa-lead-size {
     font-size: $lead-size !important;
   }
 
-  a, .aa-link-size {
+  .aa-link-size {
     font-size: $link-size !important;
   }
 
-  h1, .aa-header-size {
-    font-size: $header-size !important;
+  .aa-question-size {
+    font-size: $question-size !important;
   }
 
-  #global-header {
-    #proposition-name, #logo {
-      font-size: $lead-size !important;
-    }
-  }
-
-  .familiarisation-title, #familiarisation-header-bar, .loading-text, .remaining-time-warmup, .remaining-time {
-    font-size: $copy-size !important;
-  }
-
-  .button:not(.numpad-button):not(.button-start) {
+  .aa-button-size {
     font-size: $button-text-size !important;
     width: $button-width !important;
     height: $button-height !important;
     line-height: 0.5em;
   }
-
-  .button-start {
-    font-size: $button-text-size !important;
-    line-height: 1.5em;
-  }
-
-  .question-and-answer {
-    font-size: $question-text-size !important;
-  }
-
-  .badge, .practice-box {
-    font-size: $copy-size;
-  }
-
-  .question {
-    font-size: $question-text-size !important;
-  }
-
-  .answer {
-    font-size: $question-text-size !important;
-  }
 }
 
 .copy-size-xsmall {
-  @include copy-size(40px, 24px, 14px, 12px, 12px, 12px, 70px, 40px);
+  @include copy-size(
+    $aa-question-size-xsmall,
+    $aa-lead-size-xsmall,
+    $aa-copy-size-xsmall,
+    $aa-link-size-xsmall,
+    $aa-button-size-xsmall,
+    $aa-button-width-xsmall,
+    $aa-button-height-xsmall
+  );
 }
 
 .copy-size-small {
-  @include copy-size(60px, 36px, 18px, 14px, 14px, 14px, 70px, 40px);
+  @include copy-size(
+    $aa-question-size-small,
+    $aa-lead-size-small,
+    $aa-copy-size-small,
+    $aa-link-size-small,
+    $aa-button-size-small,
+    $aa-button-width-small,
+    $aa-button-height-small
+  );
 }
 
 .copy-size-regular {
-
+  @include copy-size(
+    $aa-question-size-regular,
+    $aa-lead-size-regular,
+    $aa-copy-size-regular,
+    $aa-link-size-regular,
+    $aa-button-size-regular,
+    $aa-button-width-regular,
+    $aa-button-height-regular
+  );
 }
 
 .copy-size-large {
-  @include copy-size(100px, 60px, 30px, 24px, 20px, 24px, 120px, 50px);
+  @include copy-size(
+    $aa-question-size-large,
+    $aa-lead-size-large,
+    $aa-copy-size-large,
+    $aa-link-size-large,
+    $aa-button-size-large,
+    $aa-button-width-large,
+    $aa-button-height-large
+  );
 }
 
 .copy-size-xlarge {
-  @include copy-size(120px, 72px, 36px, 28px, 24px, 28px, 150px, 60px);
+  @include copy-size(
+    $aa-question-size-xlarge,
+    $aa-lead-size-xlarge,
+    $aa-copy-size-xlarge,
+    $aa-link-size-xlarge,
+    $aa-button-size-xlarge,
+    $aa-button-width-xlarge,
+    $aa-button-height-xlarge
+  );
 }
 
 .copy-size-xxlarge {
-  @include copy-size(160px, 96px, 48px, 38px, 32px, 38px, 180px, 70px);
+  @include copy-size(
+    $aa-question-size-xxlarge,
+    $aa-lead-size-xxlarge,
+    $aa-copy-size-xxlarge,
+    $aa-link-size-xxlarge,
+    $aa-button-size-xxlarge,
+    $aa-button-width-xxlarge,
+    $aa-button-height-xxlarge
+  );
 }

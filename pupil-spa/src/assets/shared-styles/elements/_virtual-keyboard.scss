@@ -1,3 +1,31 @@
+$aa-numpad-button-number-size-xxlarge: 72px;
+$aa-numpad-button-number-size-xlarge: 56px;
+$aa-numpad-button-number-size-large: 48px;
+$aa-numpad-button-number-size-regular: 36px;
+$aa-numpad-button-number-size-small: 28px;
+$aa-numpad-button-number-size-xsmall: 19px;
+
+$aa-numpad-button-text-size-xxlarge: 56px;
+$aa-numpad-button-text-size-xlarge: 42px;
+$aa-numpad-button-text-size-large: 35px;
+$aa-numpad-button-text-size-regular: 28px;
+$aa-numpad-button-text-size-small: 21px;
+$aa-numpad-button-text-size-xsmall: 14px;
+
+$aa-numpad-button-width-xxlarge: 150px;
+$aa-numpad-button-width-xlarge: 125px;
+$aa-numpad-button-width-large: 100px;
+$aa-numpad-button-width-regular: 100px;
+$aa-numpad-button-width-small: 70px;
+$aa-numpad-button-width-xsmall: 60px;
+
+$aa-numpad-button-height-xxlarge: 70px;
+$aa-numpad-button-height-xlarge: 70px;
+$aa-numpad-button-height-large: 70px;
+$aa-numpad-button-height-regular: 70px;
+$aa-numpad-button-height-small: 50px;
+$aa-numpad-button-height-xsmall: 44px;
+
 @mixin customsize($button-width, $button-height, $button-number-size, $button-text-size, $answer-height) {
 
   table {
@@ -45,25 +73,61 @@
 }
 
 .question-container.xsmall {
-  @include customsize(60px, 44px, 19px, 14px, 50px);
+  @include customsize(
+    $aa-numpad-button-width-xsmall,
+    $aa-numpad-button-height-xsmall,
+    $aa-numpad-button-number-size-xsmall,
+    $aa-numpad-button-text-size-xsmall,
+    50px
+  );
 }
 
 .question-container.small {
-  @include customsize(70px, 50px, 28px, 21px, 70px);
+  @include customsize(
+    $aa-numpad-button-width-small,
+    $aa-numpad-button-height-small,
+    $aa-numpad-button-number-size-small,
+    $aa-numpad-button-text-size-small,
+    70px
+  );
 }
 
 .question-container.regular, .question-container.default {
-  @include customsize(100px, 70px, 36px, 28px, 100px);
+  @include customsize(
+    $aa-numpad-button-width-regular,
+    $aa-numpad-button-height-regular,
+    $aa-numpad-button-number-size-regular,
+    $aa-numpad-button-text-size-regular,
+    100px
+  );
 }
 
 .question-container.large {
-  @include customsize(100px, 70px, 48px, 35px, 100px);
+  @include customsize(
+    $aa-numpad-button-width-large,
+    $aa-numpad-button-height-large,
+    $aa-numpad-button-number-size-large,
+    $aa-numpad-button-text-size-large,
+    100px
+  );
 }
 
 .question-container.xlarge {
-  @include customsize(125px, 70px, 56px, 42px, 120px);
+  @include customsize(
+    $aa-numpad-button-width-xlarge,
+    $aa-numpad-button-height-xlarge,
+    $aa-numpad-button-number-size-xlarge,
+    $aa-numpad-button-text-size-xlarge,
+    120px
+  );
 }
 
 .question-container.xxlarge {
-  @include customsize(150px, 70px, 72px, 56px, 150px);
+  @include customsize(
+    $aa-numpad-button-width-xxlarge,
+    $aa-numpad-button-height-xxlarge,
+    $aa-numpad-button-number-size-xxlarge,
+    $aa-numpad-button-text-size-xxlarge,
+    150px
+  );
 }
