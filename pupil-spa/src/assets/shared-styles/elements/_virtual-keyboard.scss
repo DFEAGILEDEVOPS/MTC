@@ -1,30 +1,37 @@
 @import "./aa-variables.scss";
 
-@mixin customsize($button-width, $button-height, $button-number-size, $button-text-size, $answer-height) {
+@mixin customsize($size, $button-width, $button-height, $button-number-size, $button-text-size, $answer-height) {
 
-  table {
-    border-spacing: 10px;
+  .question-container.#{size} {
+    table {
+      border-spacing: 10px;
+    }
+  
+    td {
+      padding: 0;
+      margin: 0;
+    }
+  
+    td > button {
+      background-color: $grey-1;
+      color: $white;
+      border: 0;
+      cursor: pointer;
+      font-weight: 400;
+      height: $button-height;
+      width: $button-width;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .answer, .question {
+      height: $answer-height !important;
+      line-height: $answer-height !important;
+    }
   }
 
-  td {
-    padding: 0;
-    margin: 0;
-  }
-
-  td > button {
-    background-color: $grey-1;
-    color: $white;
-    border: 0;
-    cursor: pointer;
-    font-weight: 400;
-    height: $button-height;
-    width: $button-width;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-
-  .numpad-button {
+  .numpad-button-#{$size}, .question-container.#{size} .numpad-button {
     @include button($grey-1);
     @include _core-font-generator($button-number-size, $button-number-size, $button-number-size);
 
@@ -32,76 +39,61 @@
     padding: 0.1em 0 0 0;
   }
 
-  .numpad-enter-button {
+  .numpad-enter-button-#{$size}, .question-container.#{size} .numpad-enter-button {
     @include button($grey-1);
     @include _core-font-generator($button-text-size, $button-text-size, $button-text-size);
 
     line-height: $button-text-size !important;
     padding: 0.1em 0 0 0;
   }
-
-  .answer, .question {
-    height: $answer-height !important;
-    line-height: $answer-height !important;
-  }
 }
 
-.question-container.xsmall {
-  @include customsize(
-    $aa-numpad-button-width-xsmall,
-    $aa-numpad-button-height-xsmall,
-    $aa-numpad-button-number-size-xsmall,
-    $aa-numpad-button-text-size-xsmall,
-    50px
-  );
-}
 
-.question-container.small {
-  @include customsize(
-    $aa-numpad-button-width-small,
-    $aa-numpad-button-height-small,
-    $aa-numpad-button-number-size-small,
-    $aa-numpad-button-text-size-small,
-    70px
-  );
-}
-
-.question-container.regular, .question-container.default {
-  @include customsize(
-    $aa-numpad-button-width-regular,
-    $aa-numpad-button-height-regular,
-    $aa-numpad-button-number-size-regular,
-    $aa-numpad-button-text-size-regular,
-    100px
-  );
-}
-
-.question-container.large {
-  @include customsize(
-    $aa-numpad-button-width-large,
-    $aa-numpad-button-height-large,
-    $aa-numpad-button-number-size-large,
-    $aa-numpad-button-text-size-large,
-    100px
-  );
-}
-
-.question-container.xlarge {
-  @include customsize(
-    $aa-numpad-button-width-xlarge,
-    $aa-numpad-button-height-xlarge,
-    $aa-numpad-button-number-size-xlarge,
-    $aa-numpad-button-text-size-xlarge,
-    120px
-  );
-}
-
-.question-container.xxlarge {
-  @include customsize(
-    $aa-numpad-button-width-xxlarge,
-    $aa-numpad-button-height-xxlarge,
-    $aa-numpad-button-number-size-xxlarge,
-    $aa-numpad-button-text-size-xxlarge,
-    150px
-  );
-}
+@include customsize(
+  "xsmall",
+  $aa-numpad-button-width-xsmall,
+  $aa-numpad-button-height-xsmall,
+  $aa-numpad-button-number-size-xsmall,
+  $aa-numpad-button-text-size-xsmall,
+  50px
+);
+@include customsize(
+  "small",
+  $aa-numpad-button-width-small,
+  $aa-numpad-button-height-small,
+  $aa-numpad-button-number-size-small,
+  $aa-numpad-button-text-size-small,
+  70px
+);
+@include customsize(
+  "regular",
+  $aa-numpad-button-width-regular,
+  $aa-numpad-button-height-regular,
+  $aa-numpad-button-number-size-regular,
+  $aa-numpad-button-text-size-regular,
+  100px
+);
+@include customsize(
+  "large",
+  $aa-numpad-button-width-large,
+  $aa-numpad-button-height-large,
+  $aa-numpad-button-number-size-large,
+  $aa-numpad-button-text-size-large,
+  100px
+);
+@include customsize(
+  "xlarge",
+  $aa-numpad-button-width-xlarge,
+  $aa-numpad-button-height-xlarge,
+  $aa-numpad-button-number-size-xlarge,
+  $aa-numpad-button-text-size-xlarge,
+  120px
+);
+@include customsize(
+  "xxlarge",
+  $aa-numpad-button-width-xxlarge,
+  $aa-numpad-button-height-xxlarge,
+  $aa-numpad-button-number-size-xxlarge,
+  $aa-numpad-button-text-size-xxlarge,
+  150px
+);
