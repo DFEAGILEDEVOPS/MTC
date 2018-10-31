@@ -143,27 +143,10 @@ span.xsmall {
 .preview-box {
   border: 1px solid #6f777b;
   float: left;
-  padding: 60px;
+  width: 500px;
+  height: 350px;
   position: relative;
   margin: 10px 0 0 40px;
-
-  @media (max-width: 640px) {
-    padding: 20px 0 0 0;
-    margin: 0;
-    max-width: 100%;
-  }
-
-  @media (max-width: 780px) {
-    padding: 20px;
-    margin: 0;
-    max-width: 100%;
-
-    &.large {
-      table {
-        border-spacing: 2px;
-      }
-    }
-  }
 
   > .badge {
     position: absolute;
@@ -185,7 +168,7 @@ span.xsmall {
     margin: auto;
   }
 
-  > table .numpad-button {
+  > table button {
     border: none;
     padding: 0;
   }
