@@ -222,7 +222,7 @@ describe('PractiseQuestionComponent', () => {
 
   describe('preSendTimeoutEvent', () => {
     it('should play the end of question sound', () => {
-      component.config.speechSynthesis = false;
+      component.config.questionReader = false;
       spyOn(component.soundComponent, 'playEndOfQuestionSound');
       component.preSendTimeoutEvent();
 
@@ -230,7 +230,7 @@ describe('PractiseQuestionComponent', () => {
     });
 
     it('should play the end of question sound after speech ends', <any>fakeAsync(() => {
-      component.config.speechSynthesis = true;
+      component.config.questionReader = true;
       spyOn(mockSpeechService, 'waitForEndOfSpeech').and.returnValue(
         new Promise(resolve => setTimeout(resolve, 100))
       );
