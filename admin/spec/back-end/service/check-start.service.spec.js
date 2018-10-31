@@ -251,7 +251,8 @@ describe('check-start.service', () => {
 
     it('adds messages to the queue', async () => {
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, true)
-      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(mockPupils.length)
+      // pupil status re-calc and prepare-check queues
+      expect(azureQueueService.addMessage).toHaveBeenCalledTimes(mockPupils.length * 2)
     })
   })
 
