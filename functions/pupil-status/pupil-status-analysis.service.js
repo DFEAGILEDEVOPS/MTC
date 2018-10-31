@@ -25,15 +25,15 @@ module.exports = {
       throw new Error('data is not an array')
     }
 
-    const last = R.last(data)
+    const lastCheckTaken = R.last(data)
 
     // Please see the query for how this data structure is generated (multi-way sql join)
     // Attendance codes override all checks (should any have been taken), so this gets checked early.
-    if (last.pupilAttendance_id) {
+    if (lastCheckTaken.pupilAttendance_id) {
       return 'NOT_TAKING'
     }
 
-    switch (last.checkStatusCode) {
+    switch (lastCheckTaken.checkStatusCode) {
       case null:
         return 'UNALLOC'
       case 'NEW':
@@ -47,5 +47,8 @@ module.exports = {
       case 'EXP':
         return 'UNALLOC'
     }
+
+    // default
+    return 'UNALLOC'
   }
 }
