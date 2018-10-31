@@ -2,27 +2,27 @@
 
 @mixin copy-size($size, $question-size, $title-size, $lead-size, $copy-size, $link-size, $button-text-size, $button-width, $button-height) {
 
-  .aa-copy-size-#{$size}, .copy-size-#{size} .aa-copy-size {
+  .aa-copy-size-#{$size}, .copy-size-#{$size} .aa-copy-size {
     font-size: $copy-size !important;
   }
 
-  .aa-title-size-#{$size}, .copy-size-#{size} .aa-title-size {
+  .aa-title-size-#{$size}, .copy-size-#{$size} .aa-title-size {
     font-size: $title-size !important;
   }
 
-  .aa-lead-size-#{$size}, .copy-size-#{size} .aa-lead-size {
+  .aa-lead-size-#{$size}, .copy-size-#{$size} .aa-lead-size {
     font-size: $lead-size !important;
   }
 
-  .aa-link-size-#{$size}, .copy-size-#{size} .aa-link-size {
+  .aa-link-size-#{$size}, .copy-size-#{$size} .aa-link-size {
     font-size: $link-size !important;
   }
 
-  .aa-question-size-#{$size}, .copy-size-#{size} .aa-question-size {
+  .aa-question-size-#{$size}, .copy-size-#{$size} .aa-question-size {
     font-size: $question-size !important;
   }
 
-  .aa-button-size-#{$size}, .copy-size-#{size} .aa-button-size {
+  .aa-button-size-#{$size}, .copy-size-#{$size} .aa-button-size {
     font-size: $button-text-size !important;
     width: $button-width !important;
     height: $button-height !important;
