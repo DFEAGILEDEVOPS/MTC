@@ -37,6 +37,8 @@
 
     line-height: $button-number-size !important;
     padding: 0.1em 0 0 0;
+    width: $button-width !important;
+    height: $button-height !important;
   }
 
   .numpad-enter-button-#{$size}, .question-container.#{size} .numpad-enter-button {
@@ -45,6 +47,8 @@
 
     line-height: $button-text-size !important;
     padding: 0.1em 0 0 0;
+    width: $button-width !important;
+    height: $button-height !important;
   }
 }
 
