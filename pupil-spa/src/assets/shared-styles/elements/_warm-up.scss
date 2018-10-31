@@ -17,9 +17,13 @@
 }
 
 .familiarisation-title {
-  width: 500px;
   font-size: 19px;
   margin: 0 auto 0;
   padding: 0;
   text-align: center;
+
+  @media (max-width: 780px) {
+    display: block;
+    clear: both;
+  }
 }
