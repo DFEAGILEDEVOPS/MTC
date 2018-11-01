@@ -17,14 +17,18 @@ const pupilStatusAnalysisService = require('./pupil-status-analysis.service')
  * @return {Promise<void>}
  */
 module.exports = async function (context, pupilStatusMessage) {
-  context.log(`pupil-status message received for pupilId ${pupilStatusMessage.pupilId}`)
+  context.log(`pupil-status message received for pupilId ${pupilStatusMessage.pupilId} with checkCode ${pupilStatusMessage.checkCode}`)
 
   if (typeof pupilStatusMessage !== 'object') {
     throw new Error('pupil-status: Badly formed message')
   }
 
   if (!pupilStatusMessage.hasOwnProperty('pupilId')) {
-    throw new Error('pupil-status: Invalid message')
+    throw new Error('pupil-status: Invalid message. Missing pupilId.')
+  }
+
+  if (!pupilStatusMessage.hasOwnProperty('checkCode')) {
+    throw new Error('pupil-status: Invalid message. Missing checkCode.')
   }
 
   try {
