@@ -18,18 +18,19 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForPinGeneration AS
           -- don’t select pupils who are not attending
           pa.id IS NULL
   GROUP BY
-           p.id,
-           p.foreName,
-           p.middleNames,
-           p.lastName,
-           p.dateOfBirth,
-           p.urlSlug,
-           p.school_id
+         p.id,
+         p.foreName,
+         p.middleNames,
+         p.lastName,
+         p.dateOfBirth,
+         p.urlSlug,
+         p.school_id
   HAVING
-      -- include all pupils who haven't taken a check
-      count(chk.id) = 0
+         -- include all pupils who haven't taken a check
+         count(chk.id) = 0
 
   UNION
+
   -- include pupils who only have expired checks and no other checks
   SELECT
          expChk.id,
@@ -98,6 +99,7 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForPinGeneration AS
       (otherCheckCount IS NULL OR otherCheckCount = 0)
 
   UNION
+
   -- add pupils who have an unconsumed restart pending
   SELECT
          p.id,
