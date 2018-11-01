@@ -195,8 +195,15 @@ describe('check-start.service', () => {
       spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(Promise.resolve(checkWindowMock))
       spyOn(checkFormService, 'getAllFormsForCheckWindow').and.returnValue(Promise.resolve([]))
       spyOn(checkDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: 1 }))
+      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve({ insertId: [1, 2, 3] }))
       spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
+      spyOn(pinGenerationDataService, 'sqlFindChecksForPupilsById').and.returnValue(
+        Promise.resolve([
+          {id: 1, checkCode: '1A', pupil_id: 1},
+          {id: 1, checkCode: '2A', pupil_id: 2},
+          {id: 3, checkCode: '3A', pupil_id: 3}
+        ])
+      )
       spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
       spyOn(checkStartService, 'prepareCheckQueueMessages').and.returnValue(mockPreparedCheckQueueMessages)
       spyOn(azureQueueService, 'addMessage')
