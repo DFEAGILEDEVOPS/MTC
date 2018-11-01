@@ -24,7 +24,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
   let pupils
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
@@ -54,6 +54,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
  */
 const getGeneratePinsList = async (req, res, next) => {
   const pinEnv = (req.params && req.params.pinEnv === 'live') ? 'live' : 'familiarisation'
+  const isLiveCheck = (req.params && req.params.pinEnv === 'live') ? true : false;
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = 'Select pupils'
   req.breadcrumbs(
@@ -66,7 +67,6 @@ const getGeneratePinsList = async (req, res, next) => {
   let groups = []
   let groupIds = req.params.groupIds || ''
 
-  // TODO: data service call should be moved to a service
   try {
     school = await schoolDataService.sqlFindOneByDfeNumber(req.user.School)
     if (!school) {
@@ -74,7 +74,7 @@ const getGeneratePinsList = async (req, res, next) => {
     }
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id)
+      pupils = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(school.id, isLiveCheck)
     } else {
       pupils = await pinGenerationService.getPupils(school.dfeNumber, pinEnv)
     }
@@ -133,7 +133,6 @@ const postGeneratePins = async (req, res, next) => {
 
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
       // New code, depends on school pin being ready
-      winston.info('#datebug calling checkStartService.prepareCheck2')
       await checkStartService.prepareCheck2(pupilsList, req.user.School, req.user.schoolId, pinEnv === 'live')
     }
 
@@ -162,7 +161,7 @@ const getViewAndPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
@@ -205,7 +204,7 @@ const getViewAndCustomPrintPins = async (req, res, next) => {
   const date = dateService.formatDayAndDate()
   try {
     if (featureToggles.isFeatureEnabled('prepareCheckMessaging')) {
-      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv)
+      pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, pinEnv === 'live')
     } else {
       pupils = await pinService.getPupilsWithActivePins(req.user.School, pinEnv)
     }
