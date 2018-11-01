@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AccessArrangementsConfig,
@@ -13,10 +13,11 @@ import { RouteService } from '../services/route/route.service';
   templateUrl: './familiarisation-colour.component.html',
   styleUrls: ['./familiarisation-colour.component.scss']
 })
-export class FamiliarisationColourComponent {
+export class FamiliarisationColourComponent implements OnInit {
   selectedContrast;
   contrastSettings;
   accessArrangements;
+  backLinkUrl;
 
   constructor(
     private router: Router,
@@ -27,6 +28,14 @@ export class FamiliarisationColourComponent {
     this.accessArrangements = this.storageService.getItem(accessArrangementsDataKey) || new AccessArrangements;
     this.selectedContrast = this.accessArrangements.contrast || 'bow';
   }
+
+  ngOnInit() {
+    const validBackLinks = ['/access-settings', '/font-choice'];
+    if (validBackLinks.indexOf(this.routeService.getPreviousUrl()) !== -1) {
+      this.backLinkUrl = this.routeService.getPreviousUrl();
+    }
+  }
+
 
   selectionChange(selectedContrast) {
     this.selectedContrast = selectedContrast;
