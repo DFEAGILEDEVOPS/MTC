@@ -1,6 +1,6 @@
 declare @statusId int;
 
--- Set pupil status for those pupils who have never been allocated any check
+-- Set pupil status for those pupils who have never been allocated any checks
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'UNALLOC');
 
 UPDATE [mtc_admin].[pupil]
@@ -23,7 +23,7 @@ AND chk.id IS NULL;
 
 
 
--- Set pupil status for those who have have started a check
+-- Set pupil status for those pupils who have have logged in to their check
 set @statusId = (select id from [mtc_admin].[pupilStatus] where code = 'LOGGED_IN');
 
 UPDATE [mtc_admin].[pupil]
