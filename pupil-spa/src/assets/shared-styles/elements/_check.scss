@@ -6,7 +6,7 @@ $horizontal-breakpoint-3: 781px;
   $font-size: 59px;
   $font-size-640: 46px;
   $font-size-print: 28pt;
-  
+
   @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
@@ -39,8 +39,8 @@ $horizontal-breakpoint-3: 781px;
 
 
   /*
-    The familiarisation title content needs to change based on screen size
-    an empty div is used in the question component and the contents
+    The familiarisation title content needs to change based on screen size.
+    An empty div is used in the question component and the contents
     is set using css :after
   */
   .familiarisation-title {
@@ -70,18 +70,33 @@ $horizontal-breakpoint-3: 781px;
 .question-header {
   @extend %contain-floats;
 
-  max-width: 960px;
-  margin: 0;
-
-  @media (min-width: $horizontal-breakpoint-1) {
-    margin: 0 15px;
-  }
-
-  @media (min-width: $horizontal-breakpoint-2) {
-    margin: 0 30px;
-  }
+  margin: 0 auto;
 }
 
+// set maximum header widths based on font size
+.copy-size-xxlarge .question-header {
+  max-width: 980px;
+}
+
+.copy-size-xlarge .question-header {
+  max-width: 790px;
+}
+
+.copy-size-large .question-header {
+  max-width: 660px;
+}
+
+.copy-size-regular .question-header {
+  max-width: 570px;
+}
+
+.copy-size-small .question-header {
+  max-width: 450px;
+}
+
+.copy-size-xsmall .question-header {
+  max-width: 360px;
+}
 
 .question-container {
   display: inline-block;
@@ -107,12 +122,11 @@ $horizontal-breakpoint-3: 781px;
   padding: 0 10px;
 
   @media (min-width: $horizontal-breakpoint-1) {
-    width: 100%;
     margin: 0;
     padding: 0;
-    display: inline-block;
     vertical-align: top;
     text-align: right;
+    display: inline-block;
   }
 }
 
