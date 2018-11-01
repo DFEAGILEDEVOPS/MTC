@@ -205,7 +205,7 @@ class SqlDbHelper
   end
 
   def self.check_details(pupil_id)
-    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id = '#{pupil_id}'"
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id = '#{pupil_id}' ORDER BY id DESC"
     result = SQL_CLIENT.execute(sql)
     chk_res = result.first
     result.cancel
