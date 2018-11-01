@@ -15,23 +15,24 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForLivePinGeneration AS
          LEFT JOIN [mtc_admin].[check] AS chk ON (p.id = chk.pupil_id AND chk.isLiveCheck = 1)
          LEFT JOIN [mtc_admin].[checkStatus] AS chkStatus ON (chk.checkStatus_id = chkStatus.id)
   WHERE
-      -- don’t select pupils who are not attending
-      pa.id IS NULL
-    -- only select live checks
+        -- don’t select pupils who are not attending
+        pa.id IS NULL
+         -- only select live checks
   GROUP BY
-           p.id,
-           p.foreName,
-           p.middleNames,
-           p.lastName,
-           p.dateOfBirth,
-           p.urlSlug,
-           p.school_id
+         p.id,
+         p.foreName,
+         p.middleNames,
+         p.lastName,
+         p.dateOfBirth,
+         p.urlSlug,
+         p.school_id
   HAVING
-      -- include all pupils who haven't taken a check
-      count(chk.id) = 0
+         -- include all pupils who haven't taken a check
+         count(chk.id) = 0
 
 
   UNION
+
     -- include pupils who only have expired checks and no other checks
   SELECT
          expChk.id,
@@ -62,14 +63,14 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForLivePinGeneration AS
         WHERE
             chkStatus.code = 'EXP'
         GROUP BY
-                 p.id,
-                 p.foreName,
-                 p.middleNames,
-                 p.lastName,
-                 p.dateOfBirth,
-                 p.urlSlug,
-                 p.school_id,
-                 chkStatus.code) as expChk
+               p.id,
+               p.foreName,
+               p.middleNames,
+               p.lastName,
+               p.dateOfBirth,
+               p.urlSlug,
+               p.school_id,
+               chkStatus.code) as expChk
          LEFT JOIN
            (SELECT
                    p.id,
@@ -88,18 +89,19 @@ CREATE VIEW [mtc_admin].vewPupilsEligibleForLivePinGeneration AS
             WHERE
                 chkStatus.code <> 'EXP'
             GROUP BY
-                     p.id,
-                     p.foreName,
-                     p.middleNames,
-                     p.lastName,
-                     p.dateOfBirth,
-                     p.urlSlug,
-                     p.school_id,
-                     chkStatus.code) as otherChk ON (expChk.id = otherChk.id)
+                   p.id,
+                   p.foreName,
+                   p.middleNames,
+                   p.lastName,
+                   p.dateOfBirth,
+                   p.urlSlug,
+                   p.school_id,
+                   chkStatus.code) as otherChk ON (expChk.id = otherChk.id)
   WHERE
       (otherCheckCount IS NULL OR otherCheckCount = 0)
 
   UNION
+
     -- add pupils who have an unconsumed restart pending
   SELECT
          p.id,
