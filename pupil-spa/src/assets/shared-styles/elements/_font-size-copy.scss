@@ -28,6 +28,10 @@
     height: $button-height !important;
     line-height: 0.5em;
   }
+
+  .button-start.aa-button-size-#{$size}, .copy-size-#{$size} .button-start.aa-button-size {
+    width: calc(#{$button-width} * 2.1) !important;
+  }
 }
 
 @include copy-size(
