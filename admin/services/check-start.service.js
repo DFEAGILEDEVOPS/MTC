@@ -184,6 +184,12 @@ checkStartService.prepareCheck2 = async function (
     ? res.insertId
     : [res.insertId]
 
+  const newChecks = await pinGenerationDataService.sqlFindChecksForPupilsById(
+    schoolId,
+    newCheckIds,
+    pupilIds
+  )
+
   await pinGenerationV2Service.checkAndUpdateRestarts(
     schoolId,
     pupils,
@@ -196,8 +202,8 @@ checkStartService.prepareCheck2 = async function (
     )
 
     // Request the pupil status be re-computed
-    for (let pupil of pupils) {
-      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: pupil.id })
+    for (let check of newChecks) {
+      azureQueueService.addMessage(pupilStatusQueueName, { version: 1, pupilId: check.pupil_id, checkCode: check.checkCode })
     }
   }
 
