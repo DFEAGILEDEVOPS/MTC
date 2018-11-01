@@ -13,8 +13,8 @@ import { NgForm } from '@angular/forms';
 })
 export class FamiliarisationSettingsComponent implements AfterViewInit, OnDestroy {
 
-  private config: Config;
-  private speechListenerEvent: any;
+  public config: Config;
+  public speechListenerEvent: any;
   public formSubmitted = false;
   public validationPattern = '^[a-zA-Z0-9À-ÖØ-öø-ÿ’\'-]*$';
 
