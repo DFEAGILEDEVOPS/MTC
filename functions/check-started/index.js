@@ -12,17 +12,17 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
-const azureStorageService = azure.createQueueService()
 const sqlUtil = require('../lib/sql-helper')
 const config = require('../config')
-const { deleteFromPreparedCheckTableStorage, getPromisifiedAzureTableService } = require('../lib/azure-storage-helper')
+
+const azureStorageHelper = require('../lib/azure-storage-helper')
 
 winston.level = 'error'
 sqlService.initialise(config)
 const checkStatusTable = '[checkStatus]'
 const checkTable = '[check]'
 const schema = '[mtc_admin]'
-const azureTableService = getPromisifiedAzureTableService()
+const azureTableService = azureStorageHelper.getPromisifiedAzureTableService()
 
 module.exports = async function (context, checkStartMessage) {
   context.log('check-started message received', checkStartMessage.checkCode)
@@ -45,7 +45,7 @@ module.exports = async function (context, checkStartMessage) {
   try {
     checkData = await sqlUtil.sqlFindCheckByCheckCode(checkStartMessage.checkCode)
     if (checkData.isLiveCheck) {
-      await deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
+      await azureStorageHelper.deleteFromPreparedCheckTableStorage(azureTableService, checkStartMessage.checkCode, context.log)
       context.log('check-started: SUCCESS: pupil check row deleted from preparedCheck table for', checkStartMessage.checkCode)
     }
   } catch (error) {
@@ -57,14 +57,8 @@ module.exports = async function (context, checkStartMessage) {
   try {
     if (checkData.isLiveCheck) {
       const pupilStatusQueueName = 'pupil-status'
-      const message = JSON.stringify({ version: 1, pupilId: checkData.pupil_id, checkCode: checkStartMessage.checkCode })
-      const encodedMessage = Buffer.from(message).toString('base64')
-      azureStorageService.createMessage(pupilStatusQueueName, encodedMessage, function (error, result, response) {
-        if (error) {
-          context.log.error(`check-started: Error injecting message into queue [${pupilStatusQueueName}]: ${error.message} for checkCode ${checkStartMessage.checkCode}`)
-          throw error
-        }
-      })
+      const message = { version: 1, pupilId: checkData.pupil_id, checkCode: checkStartMessage.checkCode }
+      await azureStorageHelper.addMessageToQueue(pupilStatusQueueName, message)
     }
   } catch (error) {
     context.log.error(`check-started: Error requesting a pupil-status change for checkCode ${checkStartMessage.checkCode}`)
