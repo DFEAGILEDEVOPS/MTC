@@ -148,6 +148,13 @@ span.xsmall {
   position: relative;
   margin: 10px 0 0 40px;
 
+  @media (max-width: 640px) {
+    margin: 0;
+    max-width: 100%;
+    height: auto;
+    padding-bottom: 20px;
+  }
+
   > .badge {
     position: absolute;
     top: 0;
