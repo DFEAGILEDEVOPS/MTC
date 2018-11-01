@@ -10,15 +10,6 @@ $horizontal-breakpoint-3: 781px;
   @include _core-font-generator($font-size, $font-size-640, $font-size-print, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
-// Warm-up questions
-.warm-up-questions-label {
-  background-color: $govuk-blue;
-  color: $white;
-  padding:.526315em .789473em .263157em;
-  font-size: 1em;
-  font-weight: bold;
-}
-
 .practice-box {
   color: $white;
   background-color: $grey-1;
@@ -36,24 +27,24 @@ $horizontal-breakpoint-3: 781px;
 */
 .question-wrapper {
   text-align: center;
+}
 
+/*
+  The familiarisation title content needs to change based on screen size.
+  An empty div is used in the question component and the contents
+  is set using css :after
+*/
+.familiarisation-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
 
-  /*
-    The familiarisation title content needs to change based on screen size.
-    An empty div is used in the question component and the contents
-    is set using css :after
-  */
-  .familiarisation-title {
-    position: absolute;
-    left: 50%;
-
-    &:after {
-      content: "Familiarisation Check";
-      display: inline-block;
-      position: relative;
-      top: 5px;
-      left: -50%;
-    }
+  &:after {
+    content: "Familiarisation Check";
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    left: -50%;
   }
 }
 
@@ -61,7 +52,7 @@ $horizontal-breakpoint-3: 781px;
   See comment above. Here we chance the contents of the familiarisation-title
   when the user has set the default font and is on a small screen
 */
-.copy-size-regular .question-wrapper .familiarisation-title:after {
+.copy-size-regular .familiarisation-title:after {
   @media (max-width: $horizontal-breakpoint-1) {
     content: "Learn";
   }

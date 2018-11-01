@@ -1,10 +1,10 @@
 <div class="question-wrapper">
     <div class="question-header">
-        <div *ngIf="1 || isWarmUpQuestion" class="practice-box aa-copy-size">practice</div>
+        <div *ngIf="isWarmUpQuestion" class="practice-box aa-copy-size">practice</div>
         <div class="remaining-time aa-copy-size" id="js-page-time-settings">
             Time left: <span id="js-page-timer" class="bold timer aa-copy-size">{{remainingTime}}</span>
         </div>
-        <div *ngIf="1 || familiarisationCheck" class="familiarisation-title aa-copy-size"><!-- contents set in _check.scss --></div>
+        <div *ngIf="familiarisationCheck" class="familiarisation-title aa-copy-size"><!-- contents set in _check.scss --></div>
     </div>
     <div class="question-container">
         <form id="js-question-form" (ngSubmit)="onSubmit()" autocomplete="off">
