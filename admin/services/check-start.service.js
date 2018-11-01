@@ -179,6 +179,7 @@ checkStartService.prepareCheck2 = async function (
     )
     checks.push(c)
   }
+  // Create Checks in the Database
   const res = await pinGenerationDataService.sqlCreateBatch(checks)
   const newCheckIds = Array.isArray(res.insertId)
     ? res.insertId
